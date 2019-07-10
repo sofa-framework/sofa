@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,6 +40,8 @@ namespace component
 namespace topology
 {
 
+using sofa::core::objectmodel::ComponentState;
+
 template <class DataTypes>
  PointSetGeometryAlgorithms< DataTypes >::PointSetGeometryAlgorithms()        : GeometryAlgorithms()
         ,d_showIndicesScale (core::objectmodel::Base::initData(&d_showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
@@ -50,6 +52,7 @@ template <class DataTypes>
 template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::init()
 {
+    this->m_componentstate = ComponentState::Invalid;
     if ( this->d_tagMechanics.getValue().size()>0) {
         sofa::core::objectmodel::Tag mechanicalTag(this->d_tagMechanics.getValue());
         object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
@@ -58,6 +61,18 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
     }
     core::topology::GeometryAlgorithms::init();
     this->m_topology = this->getContext()->getMeshTopology();
+    if(this->m_topology==nullptr)
+    {
+        msg_error() << "Unable to get a valid topology from the context";
+        return;
+    }
+
+    if(this->object ==nullptr)
+    {
+        msg_error() << "Unable to get a valid mechanical object from the context";
+        return;
+    }
+    this->m_componentstate = ComponentState::Valid;
 }
 
 template <class DataTypes>

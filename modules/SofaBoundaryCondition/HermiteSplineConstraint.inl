@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,23 +35,6 @@ namespace component
 
 namespace projectiveconstraintset
 {
-
-
-template <class DataTypes>
-HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint()
-    :core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
-    , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
-    , m_x0(initData(&m_x0,"X0","first control point") )
-    , m_dx0(initData(&m_dx0,"dX0","first control tangente") )
-    , m_x1(initData(&m_x1,"X1","second control point") )
-    , m_dx1(initData(&m_dx1,"dX1","second control tangente") )
-    , m_sx0(initData(&m_sx0,"SX0","first interpolation vector") )
-    , m_sx1(initData(&m_sx1,"SX1","second interpolation vector") )
-{
-}
-
 
 template <class DataTypes>
 HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate)

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,7 +59,7 @@ public:
 
 protected:
     Context();
-    virtual ~Context()
+    virtual ~Context() override
     {}
 public:
 
@@ -67,48 +67,48 @@ public:
     /// @{
 
     /// The Context is active
-    virtual bool isActive() const override;
+    bool isActive() const override;
     /// State of the context
-    virtual void setActive(bool val) override;
+    void setActive(bool val) override;
 
 	/// The Context is sleeping
-	virtual bool isSleeping() const override;
+	bool isSleeping() const override;
 
 	/// The Context can change its sleeping state
-	virtual bool canChangeSleepingState() const override;
+	bool canChangeSleepingState() const override;
 
     /// Gravity in local coordinates
-    virtual const Vec3& getGravity() const override;
+    const Vec3& getGravity() const override;
     /// Gravity in local coordinates
-    virtual void setGravity( const Vec3& ) override;
+    void setGravity( const Vec3& ) override;
 
     /// Simulation timestep
-    virtual SReal getDt() const override;
+    SReal getDt() const override;
 
     /// Simulation time
-    virtual SReal getTime() const override;
+    SReal getTime() const override;
 
     /// Animation flag
-    virtual bool getAnimate() const override;
+    bool getAnimate() const override;
     /// @}
 
     /// @name Parameters Setters
     /// @{
 
     /// Simulation timestep
-    virtual void setDt( SReal dt ) override;
+    void setDt( SReal dt ) override;
 
     /// Simulation time
     virtual void setTime( SReal t );
 
     /// Animation flag
-    virtual void setAnimate(bool val) override;
+    void setAnimate(bool val) override;
 
 	/// Sleeping state of the context
-	virtual void setSleeping(bool val) override;
+	void setSleeping(bool val) override;
 
 	/// Sleeping state change of the context
-	virtual void setChangeSleepingState(bool val) override;
+	void setChangeSleepingState(bool val) override;
 
     /// Display flags: Gravity
     virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }

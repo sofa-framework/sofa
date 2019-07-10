@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -56,14 +56,14 @@ public:
 
     void build(const std::vector< std::string >& examples=std::vector< std::string >());
     void filter(const FilterQuery &f);
-    void clear() {QTreeWidget::clear(); SofaLibrary::clear();}
+    void clear() override {QTreeWidget::clear(); SofaLibrary::clear();}
 
     LibraryContainer* getContainer() {return toolbox;};
 
     QWidget *getQWidget() {return this;};
 protected:
     CategoryLibrary *createCategory(const std::string &category, unsigned int numComponent);
-    void addCategory(CategoryLibrary *category);
+    void addCategory(CategoryLibrary *category) override;
 
 
     LibraryContainer *toolbox;

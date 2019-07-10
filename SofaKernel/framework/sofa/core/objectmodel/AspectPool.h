@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,7 +76,7 @@ private:
 
     AspectPool& pool;
     const int id;
-    helper::system::atomic<int> counter;
+    std::atomic<int> counter;
 };
 
 
@@ -104,8 +104,8 @@ public:
 
     AspectRef getAspect(int id);
 
-    int nbAspects() const { return (int) aspects.size(); }
-    int getAspectCounter(int id) const { return aspects[id]->counter; }
+    int nbAspects() const { return int(aspects.size()); }
+    int getAspectCounter(int id) const { return aspects[size_t(id)]->counter; }
 
     friend class Aspect;
 
@@ -121,7 +121,7 @@ private:
     AspectPool(const AspectPool& r);
     AspectPool& operator=(const AspectPool& r);
 
-    typedef helper::system::atomic<int> AtomicInt;
+    typedef std::atomic<int> AtomicInt;
     typedef helper::system::thread::CircularQueue<
     AtomicInt,
     helper::system::thread::FixedPower2Size<SOFA_DATA_MAX_ASPECTS>::type,
@@ -156,7 +156,7 @@ public:
     void clear();
 
 protected:
-    typedef helper::system::atomic<int> AtomicInt;
+    typedef std::atomic<int> AtomicInt;
 
     AspectPool& pool;
     AtomicInt latestID; ///< -1 or aspect ID of the last version sent

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -127,9 +127,8 @@ protected:
 
     virtual void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring);
 
-
-    SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
     SpringForceField(SReal _ks=100.0, SReal _kd=5.0);
+    SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
 
 public:
     bool load(const char *filename);
@@ -139,15 +138,15 @@ public:
 
     const sofa::helper::vector< Spring >& getSprings() const {return springs.getValue();}
 
-    virtual void reinit() override;
-    virtual void init() override;
+    void reinit() override;
+    void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2) override;
-    virtual void addDForce(const core::MechanicalParams*, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2 ) override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2) override;
+    void addDForce(const core::MechanicalParams*, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2 ) override;
 
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     using Inherit::getPotentialEnergy;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const override;
 
     using Inherit::addKToMatrix;
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/);
@@ -161,7 +160,7 @@ public:
     int getDrawMode() const {return drawMode.getValue();}
     void setDrawMode(int m) {drawMode.setValue(m);}
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     // -- Modifiers
 
@@ -195,15 +194,15 @@ public:
         springs.endEdit();
     }
 
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
-    virtual void handleTopologyChange(core::topology::Topology *topo) override;
+    void handleTopologyChange(core::topology::Topology *topo) override;
 
     /// initialization to export kinetic, potential energy  and force intensity to gnuplot files format
-    virtual void initGnuplot(const std::string path) override;
+    void initGnuplot(const std::string path) override;
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(SReal time) override;
+    void exportGnuplot(SReal time) override;
 
     protected:
     /// stream to export Potential Energy to gnuplot files

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,9 +32,10 @@ namespace component
 namespace collision
 {
 
-int LineModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
-        .add< TLineModel<defaulttype::Vec3Types> >()
+int LineCollisionModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
+        .add< LineCollisionModel<defaulttype::Vec3Types> >()
 
+        .addAlias("TLineModel")
         .addAlias("Line")
         .addAlias("LineMeshModel")
         .addAlias("LineSetModel")
@@ -44,7 +45,7 @@ int LineModelClass = core::RegisterObject("collision model using a linear mesh, 
         ;
 
 
-template class SOFA_MESH_COLLISION_API TLineModel<defaulttype::Vec3Types>;
+template class SOFA_MESH_COLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
 
 
 } // namespace collision

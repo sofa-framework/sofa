@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/VisualVisitor.h>
-
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 #ifdef DEBUG_DRAW
 #define DO_DEBUG_DRAW true
@@ -137,7 +137,9 @@ Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 
 void VisualUpdateVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {
+    sofa::helper::AdvancedTimer::stepBegin("VisualUpdateVisitor process: " + vm->getName());
     vm->updateVisual();
+    sofa::helper::AdvancedTimer::stepEnd("VisualUpdateVisitor process: " + vm->getName());
 }
 
 

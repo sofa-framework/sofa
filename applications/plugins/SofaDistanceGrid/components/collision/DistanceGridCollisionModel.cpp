@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,7 +65,7 @@ using namespace defaulttype;
 
 RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
     : modified(true)
-    , fileRigidDistanceGrid( initData( &fileRigidDistanceGrid, "fileRigidDistanceGrid", "load distance grid from specified file"))
+    , fileRigidDistanceGrid( initData( &fileRigidDistanceGrid, "filename", "Load distance grid from specified file"))
     , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
     , translation( initData( &translation, "translation", "translation to apply to input file"))
     , rotation( initData( &rotation, "rotation", "rotation to apply to input file"))
@@ -83,7 +83,7 @@ RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
     , showMaxDist ( initData( &showMaxDist, 0.0, "showMaxDist", "Max distance to render gradients"))
 {
     rigid = NULL;
-    addAlias(&fileRigidDistanceGrid,"filename");
+    addAlias(&fileRigidDistanceGrid,"fileRigidDistanceGrid");
 }
 
 RigidDistanceGridCollisionModel::~RigidDistanceGridCollisionModel()
@@ -438,7 +438,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,in
 ////////////////////////////////////////////////////////////////////////////////
 
 FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
-    : fileFFDDistanceGrid( initData( &fileFFDDistanceGrid, "fileFFDDistanceGrid", "load distance grid from specified file"))
+    : fileFFDDistanceGrid( initData( &fileFFDDistanceGrid, "filename", "Load distance grid from specified file"))
     , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
     , sampling( initData( &sampling, 0.0, "sampling", "if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)"))
     , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
@@ -453,7 +453,7 @@ FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
     ffdMesh = NULL;
     ffdRGrid = NULL;
     ffdSGrid = NULL;
-    addAlias(&fileFFDDistanceGrid,"filename");
+    addAlias(&fileFFDDistanceGrid,"fileFFDDistanceGrid");
     enum_type = FFDDISTANCE_GRIDE_TYPE;
 }
 
@@ -521,8 +521,8 @@ void FFDDistanceGridCollisionModel::init()
     /// fill other data and remove inactive elements
 
     sout << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbHexahedra()<<" cubes."<<sendl;
-    int c=0;
-    for (int e=0; e<ffdMesh->getNbHexahedra(); e++)
+    size_t c=0;
+    for (size_t e=0; e<ffdMesh->getNbHexahedra(); e++)
     {
         if (c != e)
             elems[c].points.swap(elems[e].points); // move the list of points to the new

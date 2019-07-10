@@ -1,13 +1,14 @@
 <!-- Collision Response Stress Test -->
 <Node name="root" dt="0.005">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse name="Response" response="default" />
+    <DefaultContactManager name="Response" response="default" />
     <DiscreteIntersection />
     <MeshGmshLoader name="meshLoader" filename="mesh/smCube27.msh" />
     <Node name="M1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject src="@../meshLoader" dx="0" dy="-10.5" dz="0" />
         <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
@@ -21,12 +22,12 @@
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
             <MechanicalObject position="@[-1].position" dx="0" dy="-10.5" dz="0" />
-            <Sphere listRadius="@[-2].listRadius" />
+            <SphereCollisionModel listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
     <Node name="M2">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" dx="4" dy="0" dz="0" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
@@ -37,7 +38,7 @@
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
             <MechanicalObject position="@[-1].position" />
-            <Sphere listRadius="@[-2].listRadius" />
+            <SphereCollisionModel listRadius="@[-2].listRadius" />
             <RigidMapping />
         </Node>
         <Node name="Visu">
@@ -46,7 +47,7 @@
         </Node>
     </Node>
     <Node name="M3">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject src="@../meshLoader" dx="0" dy="10.5" dz="-4" />
         <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
@@ -60,12 +61,12 @@
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
             <MechanicalObject position="@[-1].position" dx="0" dy="10.5" dz="-4" />
-            <Sphere listRadius="@[-2].listRadius" />
+            <SphereCollisionModel listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
     <Node name="M4">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" dx="0" dy="21" dz="0" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
@@ -80,12 +81,12 @@
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27.sph" />
             <MechanicalObject position="@[-1].position" />
-            <Sphere listRadius="@[-2].listRadius" />
+            <SphereCollisionModel listRadius="@[-2].listRadius" />
             <RigidMapping />
         </Node>
     </Node>
     <Node name="M5">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject src="@../meshLoader" dx="-4" dy="31.5" dz="-4" />
         <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
@@ -99,12 +100,12 @@
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
             <MechanicalObject position="@[-1].position" dx="-4" dy="31.5" dz="-4" />
-            <Sphere listRadius="@[-2].listRadius" />
+            <SphereCollisionModel listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
     <Node name="M6">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" dx="0" dy="45" dz="0" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
@@ -119,13 +120,13 @@
         <Node name="Surf">
             <SphereLoader filename="mesh/dragon.sph" />
             <MechanicalObject position="@[-1].position" />
-            <Sphere listRadius="@[-2].listRadius" />
+            <SphereCollisionModel listRadius="@[-2].listRadius" />
             <RigidMapping />
         </Node>
     </Node>
     <SphereLoader filename="mesh/floor.sph" />
     <MechanicalObject position="@[-1].position" dy="-20" />
-    <Sphere listRadius="@[-2].listRadius" simulated="0" moving="0" />
+    <SphereCollisionModel listRadius="@[-2].listRadius" simulated="0" moving="0" />
     <Node>
         <OglModel name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" dy="-20" />
     </Node>

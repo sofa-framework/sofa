@@ -7,9 +7,7 @@ if(NOT Qt5Core_FOUND)
     set(SOFA_HAVE_QT_LIBRARIES 0)
 endif()
 
-if(SOFA_HAVE_QT_LIBRARIES)
-    sofa_add_application(Modeler Modeler ON)
-endif()
+sofa_add_application(Modeler Modeler OFF)
 
 sofa_add_application(getDeprecatedComponents getDeprecatedComponents OFF)
 
@@ -20,3 +18,5 @@ sofa_add_application(SofaPhysicsAPI SofaPhysicsAPI)
 sofa_add_application(SofaGuiGlut SofaGuiGlut OFF)
 
 sofa_add_application(runSofa runSofa ON)
+
+sofa_add_subdirectory_external(Regression Regression)

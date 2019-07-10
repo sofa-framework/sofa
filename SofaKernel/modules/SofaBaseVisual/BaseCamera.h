@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -100,11 +100,11 @@ public:
                BaseLink::FLAG_STOREPATH> l_background ;
 
     BaseCamera();
-    virtual ~BaseCamera();
+    ~BaseCamera() override;
 
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void bwdInit() override;
+    void init() override;
+    void reinit() override;
+    void bwdInit() override;
 
     void activate();
     void desactivate();
@@ -249,7 +249,7 @@ public:
         return 1.0;
     }
 
-    virtual void draw(const core::visual::VisualParams*) override ;
+    void draw(const core::visual::VisualParams*) override ;
 
 protected:
     void updateOutputData();

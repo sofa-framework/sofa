@@ -1,14 +1,17 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 -9" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaMiscCollision" />
+
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="UniformC Rough">
         <SparseGridRamification n="5 2 2" fileTopology="mesh/c.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
-        <EulerImplicit rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
         <HexahedronFEMForceFieldAndMass youngModulus="100000" poissonRatio="0.3" method="large" density="3" updateStiffnessMatrix="false" printLog="0" />
@@ -21,15 +24,15 @@
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
-            <Point />
-            <Line />
+            <TriangleCollisionModel />
+            <PointCollisionModel />
+            <LineCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
     <Node name="UniformC">
         <SparseGridRamification n="5 2 2" fileTopology="mesh/c.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
-        <EulerImplicit rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="40" />
         <HexahedronFEMForceFieldAndMass youngModulus="100000" poissonRatio="0.3" method="large" density="3" updateStiffnessMatrix="false" printLog="0" />
@@ -42,15 +45,15 @@
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
-            <Point />
-            <Line />
+            <TriangleCollisionModel />
+            <PointCollisionModel />
+            <LineCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
     <Node name="UniformC and finestConnectivity">
         <SparseGridRamification n="5 3 3" fileTopology="mesh/c.obj" nbVirtualFinerLevels="0" finestConnectivity="1" />
-        <EulerImplicit rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="80" />
         <HexahedronFEMForceFieldAndMass youngModulus="100000" poissonRatio="0.3" method="large" density="3" updateStiffnessMatrix="false" printLog="0" />
@@ -63,9 +66,9 @@
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
-            <Point />
-            <Line />
+            <TriangleCollisionModel />
+            <PointCollisionModel />
+            <LineCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>

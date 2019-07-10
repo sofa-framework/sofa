@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -148,117 +148,6 @@ class LinearJacobianBlock< Rigid3(InReal) , V3(OutReal) > :
         getAngular(df) += In::crosscross( childForce, Pa, getAngular(dx) ) * kfactor;
     }
 };
-
-
-//////////////////////////////////////////////////////////////////////////////////
-////  Rigid3 -> ExtVec3   same as Vec3 -> Factorize using partial instanciation ?
-//////////////////////////////////////////////////////////////////////////////////
-
-template<class InReal,class OutReal>
-class LinearJacobianBlock< Rigid3(InReal) , EV3(OutReal) > :
-    public  BaseJacobianBlock< Rigid3(InReal) , EV3(OutReal) >
-{
-    public:
-    typedef Rigid3(InReal) In;
-    typedef EV3(OutReal) Out;
-
-    typedef BaseJacobianBlock<In,Out> Inherit;
-    typedef typename Inherit::InCoord InCoord;
-    typedef typename Inherit::InDeriv InDeriv;
-    typedef typename Inherit::OutCoord OutCoord;
-    typedef typename Inherit::OutDeriv OutDeriv;
-    typedef typename Inherit::MatBlock MatBlock;
-    typedef typename Inherit::KBlock KBlock;
-    typedef typename Inherit::Real Real;
-
-    enum { dim = Out::spatial_dimensions };
-    enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
-
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-
-    /**
-    Mapping:   \f$ p = w.t + w.A.(A0^{-1}.p0-A0^{-1}.t0) = w.t + w.A.q0  \f$
-    where :
-        - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
-        - p0 is the position of p in the reference configuration.
-        - q0 is the local position of p0.
-
-    Jacobian:
-        - \f$ dp = w.dt + Omega x w.A.q0 \f$
-    Geometric Stiffness:
-        - \f$ K = dJ^T/dOmega fc = (fc)x (A.w.q0)x  \f$
-      */
-
-    static const bool constant=false;
-
-    Real Pt;      ///< =   w         =  dp/dt
-    OutCoord Pa0;   ///< =  w.q0    : weighted point in local frame
-    OutCoord Pa;   ///< =  A Pa0        : rotated point
-
-
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
-    {
-        Pt=w;
-        Pa0= InPos.pointToChild(SPos)*Pt;
-        Pa= InPos.rotate(Pa0);  // = (SPos - InPos.getCenter() ) * w[i] ;
-    }
-
-    void addapply( OutCoord& result, const InCoord& data )
-    {
-        Pa= data.rotate(Pa0);
-        result +=  data.getCenter() * Pt + Pa;
-    }
-
-    void addmult( OutDeriv& result,const InDeriv& data )
-    {
-        result += getLinear(data) * Pt + cross(getAngular(data), Pa);
-    }
-
-    void addMultTranspose( InDeriv& result, const OutDeriv& data )
-    {
-        getLinear(result) += data * Pt ;
-        getAngular(result) += cross(Pa, data);
-    }
-
-    MatBlock getJ()
-    {
-        MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
-
-        cpMatrix W=-crossProductMatrix(Pa);
-        for(unsigned int l=0; l<adim; ++l) for (unsigned int i=0; i<dim; ++i) J(i,l+dim)=W(i,l);
-        return J;
-    }
-
-    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
-    {
-        // will only work for 3d rigids
-        Mat<adim,adim,Real> block = crossProductMatrix( childForce ) * crossProductMatrix( Pa );
-
-        if( stabilization )
-        {
-            block.symmetrize(); // symmetrization
-            helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
-        }
-
-        KBlock K;
-        for( unsigned i=0; i<adim; ++i )
-            for( unsigned j=0; j<adim; ++j )
-                K[dim+i][dim+j] = block[i][j];
-        return K;
-    }
-
-    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
-    {
-        getAngular(df) += In::crosscross( childForce, Pa, getAngular(dx) ) * kfactor;
-    }
-};
-
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  Rigid3 -> F331

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
 <Node name="root" gravity="0 0 0" dt="0.02" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisualModels" />
 
   <RequiredPlugin name="SensableEmulation" pluginName="SensableEmulation" />
@@ -8,7 +9,7 @@
   <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
 
-    <CollisionPipeline depth="8" />
+    <DefaultPipeline depth="8" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.6" contactDistance="0.3" />
     <RuleBasedContactManager name="Response" response="FrictionContact"
@@ -19,50 +20,50 @@
 
     <Node name="OmniObject">
         <Node name="RigidLayer">
-            <MechanicalObject name="ToolRealPosition" tags="Omni" template="Rigid" />
+            <MechanicalObject name="ToolRealPosition" tags="Omni" template="Rigid3" />
           <OmniDriverEmu trajPoints="1 0 0 0 0 0 1 0 0 0 4 3 6 1 "  trajTiming="1 2"  scale="25" positionBase="-0.0 -0 -0" orientationBase="0 -0.7071 0 0.7071" orientationTool="0 0.7071 0 0.7071" permanent="1" forceScale="1.0" omniVisu="0" listening="true" handleEventTriggersUpdate="true"/>
           <!--<NewOmniDriver name="omniDriver1" tags="Omni" scale="300" permanent="true" listening="true" alignOmniWithCamera="true"/>-->
             <Node name="Tool1">
-                <MechanicalObject template="Rigid" name="RealPosition"/>
+                <MechanicalObject template="Rigid3" name="RealPosition"/>
                 <SubsetMapping indices="0"/>
             </Node>
         </Node>
     </Node>
 
     <Node name="Tool">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05"/>
 
-        <MechanicalObject name="ms" template="Rigid"/>
+        <MechanicalObject name="ms" template="Rigid3"/>
         <UniformMass totalMass="0.1" />
         <LCPForceFeedback activate="true" tags="Omni" forceCoef="0.001" />
 
         <Node name="ToolCollision">
             <MechanicalObject name="CM" position="0 0 0"/>
-            <Point bothSide="true" group="1" />
+            <PointCollisionModel bothSide="true" group="1" />
             <RigidMapping />
         </Node>
 
         <Node name="ToolVisual">
-            <OglModel template="ExtVec3f" name="VisualModel" fileMesh="data/mesh/dental_instrument.obj" scale3d="10 10 10" translation="-2.12256 1.32361 35.5" rotation="180 0 150" />
-            <RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping" input="@ms" output="@VisualModel" />
+            <OglModel template="ExtVec3d" name="VisualModel" fileMesh="data/mesh/dental_instrument.obj" scale3d="10 10 10" translation="-2.12256 1.32361 35.5" rotation="180 0 150" />
+            <RigidMapping template="Rigid3d,ExtVec3d" name="MM->VM mapping" input="@ms" output="@VisualModel" />
         </Node>
               
 
-        <RestShapeSpringsForceField template="Rigid" stiffness="1000000" angularStiffness="200000000" external_rest_shape="@../OmniObject/RigidLayer/Tool1/RealPosition" />
+        <RestShapeSpringsForceField template="Rigid3" stiffness="1000000" angularStiffness="200000000" external_rest_shape="@../OmniObject/RigidLayer/Tool1/RealPosition" />
         <UncoupledConstraintCorrection compliance="0.001   0.00003 0 0   0.00003 0   0.00003" />
     </Node>
 
 <Node name="Box" >
         <Node name="VisualModel" >
-            <OglModel template="ExtVec3f" name="BoxVisualModel" scale3d="10 10 10" fileMesh="data/mesh/box.obj" />
+            <OglModel template="ExtVec3d" name="BoxVisualModel" scale3d="10 10 10" fileMesh="data/mesh/box.obj" />
         </Node>
         <Node 	name="CollisionModel" >
 
             <MeshObjLoader name="loader"  filename="data/mesh/box.obj" scale="10"/>
             <MeshTopology src="@loader" name="BoxCollisionModel" />
             <MechanicalObject src="@loader" template="Vec3d" name="boxState" />
-            <Triangle />
+            <TriangleCollisionModel />
 
         </Node>
     </Node>

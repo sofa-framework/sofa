@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.01" gravity="0 0 -1">
     <VisualStyle displayFlags="showBehavior hideCollision hideVisual " />
-    <EdgeSetGeometryAlgorithms />
     <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <Node name="Thin shell">
                 <MeshObjLoader name="loader" filename="mesh/triangleGrid_10_10.obj" />
                 <MeshTopology src="@loader" />
+                <EdgeSetGeometryAlgorithms />
                 <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
                 <BoxROI name="box1" box="-0.5 -0.5 -0.5  100.5 0.005 0.005  " />
                 <FixedConstraint indices="@box1.indices"/>

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -98,14 +98,14 @@ protected:
     {
     }
 
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
 public:
     /// Return true if the destination model has the same topology as the source model.
     ///
     /// This is the case for mapping keeping a one-to-one correspondance between
     /// input and output DOFs (mostly identity or data-conversion mappings).
-    virtual bool sameTopology() const override { return true; }
+    bool sameTopology() const override { return true; }
 
     void init() override;
 
@@ -119,7 +119,7 @@ public:
 
     const sofa::defaulttype::BaseMatrix* getJ() override;
 
-    virtual void handleTopologyChange() override;
+    void handleTopologyChange() override;
 
 
 protected:
@@ -146,12 +146,9 @@ extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec2
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6Types, defaulttype::Vec6Types >;
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6Types, defaulttype::Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3Types >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6Types, defaulttype::ExtVec3Types >;
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2Types, defaulttype::Rigid2Types >;
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3Types, defaulttype::Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3Types, defaulttype::ExtVec3Types >;
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2Types, defaulttype::Vec2Types >;
 
 

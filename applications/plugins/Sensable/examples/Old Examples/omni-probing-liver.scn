@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 -9.81 0" dt="0.02" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<OmniDriver name="default38"  listening="1"  scale="15"  positionBase="0 5.5 0"  omniVisu="0"  forceScale="0.01"  deviceIndex="0" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceDetection name="Detection" />
@@ -21,7 +22,7 @@
 			<BarycentricMapping template="Vec3d,ExtVec3f" name="visual mapping"  input="@.."  output="@VisualModel" />
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0"  >
-			<TSphereModel template="Vec3d" name="CollisionModel"  fileSphere="mesh/liver.sph" />
+			<SphereCollisionModel template="Vec3d" name="CollisionModel"  fileSphere="mesh/liver.sph" />
 			<MechanicalObject template="Vec3d" name="default0"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  internalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1" />
 			<BarycentricMapping template="Vec3d,Vec3d" name="sphere mapping" />
 		</Node>
@@ -33,9 +34,9 @@
 			<MeshLoader name="loader"  filename="mesh/blade_instrument_centered.obj" />
 			<MeshTopology name="topology" />
 			<MechanicalObject template="Vec3d" name="collisionDOF"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  internalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0"  filename="mesh/blade_instrument_centered.obj" />
-			<TTriangleModel template="Vec3d" name="instrument"  contactStiffness="10" />
-			<LineModel name="instrument"  contactStiffness="10" />
-			<PointModel name="instrument"  contactStiffness="10" />
+			<TriangleCollisionModel template="Vec3d" name="instrument"  contactStiffness="10" />
+			<LineCollisionModel name="instrument"  contactStiffness="10" />
+			<PointCollisionModel name="instrument"  contactStiffness="10" />
 			<RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@Instrument/rigidDOF"  output="@Instrument/Collision/collisionDOF" />
 		</Node>
 		<Node 	name="Visual-blade-tooltip" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >

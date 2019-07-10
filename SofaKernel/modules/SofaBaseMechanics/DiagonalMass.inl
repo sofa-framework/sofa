@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,11 +56,11 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
                                                                   "If unspecified or wrongly set, the default value is used: totalMass = 1.0"))
     , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "Display the center of gravity of the system" ) )
     , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
-    , d_fileMass( initData(&d_fileMass,  "fileMass", "Xsp3.0 file to specify the mass parameters" ) )
+    , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
     , m_pointHandler(NULL)
     , m_topologyType(TOPOLOGY_UNKNOWN)
 {
-    this->addAlias(&d_fileMass,"filename");
+    this->addAlias(&d_fileMass,"fileMass");
 }
 
 template <class DataTypes, class MassType>
@@ -1090,14 +1090,15 @@ void DiagonalMass<DataTypes, MassType>::initFromMassDensity()
 {
     msg_info() << "massDensity information is used";
 
+    // Compute Mass per vertex using mesh topology
     computeMass();
 
-    const MassVector &vertexMass = d_vertexMass.getValue();
+    // Sum the mass per vertex to obtain total mass
+    const MassVector &vertexMass = d_vertexMass.getValue();    
     Real sumMass = 0.0;
-    for (size_t i=0; i<(size_t)_topology->getNbPoints(); i++)
-    {
-        sumMass += vertexMass[i];
-    }
+    for (auto vMass : vertexMass)
+        sumMass += vMass;
+
     d_totalMass.setValue(sumMass);
 }
 
@@ -1112,13 +1113,13 @@ void DiagonalMass<DataTypes, MassType>::initFromTotalMass()
     Real sumMass = 0.0;
     setMassDensity(1.0);
 
+    // Compute Mass per vertex using mesh topology
     computeMass();
 
+    // Sum the mass per vertex to obtain total mass
     const MassVector &vertexMass = d_vertexMass.getValue();
-    for (size_t i=0; i<(size_t)_topology->getNbPoints(); i++)
-    {
-        sumMass += vertexMass[i];
-    }
+    for (auto vMass : vertexMass)
+        sumMass += vMass;
 
     setMassDensity((Real)totalMassTemp/sumMass);
 
@@ -1324,7 +1325,7 @@ class DiagonalMass<DataTypes, MassType>::Loader : public helper::io::XspLoaderDa
 public:
     DiagonalMass<DataTypes, MassType>* dest;
     Loader(DiagonalMass<DataTypes, MassType>* dest) : dest(dest) {}
-    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal mass, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/)
+    void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal mass, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) override
     {
         dest->addMass(MassType((Real)mass));
     }

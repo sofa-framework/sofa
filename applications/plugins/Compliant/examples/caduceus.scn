@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -50 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin name="Compliant"/>
 
@@ -7,7 +8,7 @@
 
     <VisualStyle displayFlags="showVisual  " />
 
-    <CollisionPipeline depth="15" verbose="0" draw="0" />
+    <DefaultPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance=".5" contactDistance=".3" useLinePoint="false" />
 
@@ -42,9 +43,9 @@
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle  selfCollision="1" />
-            <Line    selfCollision="1" />
-            <Point  selfCollision="1" />
+            <TriangleCollisionModel  selfCollision="1" />
+            <LineCollisionModel    selfCollision="1" />
+            <PointCollisionModel  selfCollision="1" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
 
@@ -78,8 +79,8 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
-            <Line simulated="false" moving="false" proximity="1.4" />
-            <Point simulated="false"  moving="false" proximity="1.4"/>
+            <LineCollisionModel simulated="false" moving="false" proximity="1.4" />
+            <PointCollisionModel simulated="false"  moving="false" proximity="1.4"/>
         </Node>
         
         <Node name="Blobs">
@@ -87,9 +88,9 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
-            <Triangle simulated="false" moving="false" proximity="1" />
-            <Line simulated="false" moving="false" proximity="1" />
-            <Point simulated="false" moving="false" proximity="1" />
+            <TriangleCollisionModel simulated="false" moving="false" proximity="1" />
+            <LineCollisionModel simulated="false" moving="false" proximity="1" />
+            <PointCollisionModel simulated="false" moving="false" proximity="1" />
         </Node>
 
         <Node name="Foot">
@@ -97,9 +98,9 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
-            <Triangle simulated="false" moving="false" proximity="1" />
-            <Line simulated="false" moving="false" proximity="1" />
-            <Point simulated="false" moving="false" proximity="1" />
+            <TriangleCollisionModel simulated="false" moving="false" proximity="1" />
+            <LineCollisionModel simulated="false" moving="false" proximity="1" />
+            <PointCollisionModel simulated="false" moving="false" proximity="1" />
         </Node>
 
 
@@ -108,7 +109,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
-            <Triangle simulated="false" moving="false"/>
+            <TriangleCollisionModel simulated="false" moving="false"/>
         </Node>  -->    
 
 

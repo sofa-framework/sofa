@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -37,7 +37,7 @@ namespace gui
 class OperationCreator
 {
 public:
-    virtual ~OperationCreator() {};
+    virtual ~OperationCreator() {}
     virtual Operation* create() const =0;
     virtual std::string getDescription() const=0;
 };
@@ -46,8 +46,8 @@ template<class RealOperation>
 class TOperationCreator: public OperationCreator
 {
 public:
-    Operation* create() const {return new RealOperation();};
-    std::string getDescription() const { return RealOperation::getDescription();};
+    Operation* create() const override {return new RealOperation();}
+    std::string getDescription() const override { return RealOperation::getDescription();}
 };
 
 
@@ -62,7 +62,7 @@ public:
     {
         static OperationFactory instance;
         return &instance;
-    };
+    }
 
     static std::string GetDescription(const std::string &name)
     {
@@ -87,7 +87,7 @@ public:
             if (op) op->id=name;
             return op;
         }
-        else return NULL;
+        else return nullptr;
     }
 
 };

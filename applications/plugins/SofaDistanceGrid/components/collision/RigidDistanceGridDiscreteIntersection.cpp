@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -199,10 +199,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    detection->baryCoords[0] = Vector3(p1);
-                    detection->baryCoords[1] = Vector3(p2);
-#endif
                     detection->normal = gnormal;
                     detection->value = d - d0;
                     detection->elem.first = e1;
@@ -250,10 +246,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    detection->baryCoords[0] = Vector3(p1);
-                    detection->baryCoords[1] = Vector3(p2);
-#endif
                     detection->normal = gnormal;
                     detection->value = d - d0;
                     detection->elem.first = e1;
@@ -301,10 +293,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                 detection->point[0] = Vector3(p1);
                 detection->point[1] = Vector3(p2) - grad * d;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                detection->baryCoords[0] = Vector3(p1);
-                detection->baryCoords[1] = Vector3(p2);
-#endif
                 detection->normal = r2 * -grad; // normal in global space from p1's surface
                 detection->value = d + margin - d0;
                 detection->elem.first = e1;
@@ -355,10 +343,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    detection->baryCoords[0] = Vector3(p1);
-                    detection->baryCoords[1] = Vector3(p2);
-#endif
                     detection->normal = gnormal;
                     detection->value = d - d0;
                     detection->elem.first = e1;
@@ -403,10 +387,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    detection->baryCoords[0] = Vector3(p1);
-                    detection->baryCoords[1] = Vector3(p2);
-#endif
                     detection->normal = gnormal;
                     detection->value = d - d0;
                     detection->elem.first = e1;
@@ -509,10 +489,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                 detection->point[0] = Vector3(p1); // - normal * d;
                 detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                detection->baryCoords[0] = Vector3(p1);
-                detection->baryCoords[1] = Vector3(p2);
-#endif
                 detection->normal = normal;
                 detection->value = d - d0;
                 detection->elem.first = e1;
@@ -561,10 +537,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                detection->baryCoords[0] = Vector3(p1);
-                detection->baryCoords[1] = Vector3(p2);
-#endif
                 detection->normal = r1 * grad; // normal in global space from p1's surface
                 detection->value = d + margin - d0;
                 detection->elem.first = e1;
@@ -632,10 +604,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
     detection->point[0] = Vector3(p1) - grad * d;
     detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0] = Vector3(p1);
-    detection->baryCoords[1] = Vector3(0,0,0);
-#endif
     detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
     detection->value = d - d0;
     detection->elem.first = e1;
@@ -695,10 +663,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                detection->baryCoords[0] = Vector3(p1);
-                detection->baryCoords[1] = Vector3((iP == 1)?1.0:0.0,(iP == 2)?1.0:0.0,0.0);
-#endif
                 detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
                 detection->value = d - d0;
                 detection->elem.first = e1;
@@ -744,12 +708,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                detection->baryCoords[0] = Vector3(p1);
-                detection->baryCoords[1] = Vector3(((iE != 1)?0.5:0.0),
-                                                   ((iE != 2)?0.5:0.0),
-                                                   0.0);
-#endif
                 detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
                 detection->value = d - d0;
                 detection->elem.first = e1;
@@ -814,10 +772,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                detection->baryCoords[0] = Vector3(p1);
-                detection->baryCoords[1] = Vector3((iP == 1)?1.0:0.0,0.0,0.0);
-#endif
                 detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
                 detection->value = d - d0;
                 detection->elem.first = e1;
@@ -941,10 +895,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, RigidDis
 
             detection->point[0] = e2.origin() + e2.direction()*l0;
             detection->point[1] = p;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-            detection->baryCoords[0] = Vector3(l0,0,0);
-            detection->baryCoords[1] = p;
-#endif
             detection->normal = e2.direction(); // normal in global space from p1's surface
             detection->value = dist;
             detection->elem.first = e2;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -323,7 +323,7 @@ void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r1, const do
     double theta;
     Vec3d n,p,q,perp;
 
-    double theta2 = 2*3.141592653;
+    double theta2 = M_2_PI;
     double m = 16; //precision
 
     /* Normal pointing from p1 to p2 */

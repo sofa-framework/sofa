@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/list.h>
 #include <sofa/defaulttype/TopologyTypes.h>
-#include <limits.h>
+#include <climits>
 
 namespace sofa
 {
@@ -81,46 +81,54 @@ public:
     class Edge : public sofa::helper::fixed_array<PointID,2>
     {
     public:
-        Edge() {}
+        Edge(): sofa::helper::fixed_array<PointID,2>(Topology::InvalidID, Topology::InvalidID){}
         Edge(PointID a, PointID b) : sofa::helper::fixed_array<PointID,2>(a,b) {}
     };
+
     class Triangle : public sofa::helper::fixed_array<PointID,3>
     {
     public:
-        Triangle() {}
+        Triangle(): sofa::helper::fixed_array<PointID,3>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
         Triangle(PointID a, PointID b, PointID c) : sofa::helper::fixed_array<PointID,3>(a,b,c) {}
     };
+
     class Quad : public sofa::helper::fixed_array<PointID,4>
     {
     public:
-        Quad() {}
+        Quad(): sofa::helper::fixed_array<PointID,4>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
         Quad(PointID a, PointID b, PointID c, PointID d) : sofa::helper::fixed_array<PointID,4>(a,b,c,d) {}
     };
+
     class Tetrahedron : public sofa::helper::fixed_array<PointID,4>
     {
     public:
-        Tetrahedron() {}
+        Tetrahedron(): sofa::helper::fixed_array<PointID,4>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
         Tetrahedron(PointID a, PointID b, PointID c, PointID d) : sofa::helper::fixed_array<PointID,4>(a,b,c,d) {}
     };
     typedef Tetrahedron                         Tetra;
+
     class Pyramid : public sofa::helper::fixed_array<PointID,5>
     {
     public:
-        Pyramid() {}
+        Pyramid(): sofa::helper::fixed_array<PointID,5>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
         Pyramid(PointID a, PointID b, PointID c, PointID d, PointID e) : sofa::helper::fixed_array<PointID,5>(a,b,c,d,e) {}
     };
+
     class Pentahedron : public sofa::helper::fixed_array<PointID,6>
     {
     public:
-        Pentahedron() {}
+        Pentahedron(): sofa::helper::fixed_array<PointID,6>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
         Pentahedron(PointID a, PointID b, PointID c, PointID d, PointID e, PointID f) : sofa::helper::fixed_array<PointID,6>(a,b,c,d,e,f) {}
     };
     typedef Pentahedron                          Penta;
+
     class Hexahedron : public sofa::helper::fixed_array<PointID,8>
     {
     public:
-        Hexahedron() {}
-        Hexahedron(PointID a, PointID b, PointID c, PointID d, PointID e, PointID f, PointID g, PointID h) : sofa::helper::fixed_array<PointID,8>(a,b,c,d,e,f,g,h) {}
+        Hexahedron(): sofa::helper::fixed_array<PointID,8>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID,
+                                                           Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
+        Hexahedron(PointID a, PointID b, PointID c, PointID d,
+                   PointID e, PointID f, PointID g, PointID h) : sofa::helper::fixed_array<PointID,8>(a,b,c,d,e,f,g,h) {}
     };
     typedef Hexahedron                          Hexa;
 
@@ -130,7 +138,7 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(Topology)
 protected:
     Topology():BaseObject() {}
-    virtual ~Topology()
+    ~Topology() override
     {}
 public:
     // Access to embedded position information (in case the topology is a regular grid for instance)
@@ -144,9 +152,20 @@ public:
     virtual SReal getPZ(int /*i*/) const { return 0.0; }
 
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
+
+    // Declare invalid topology structures filled with Topology::InvalidID
+    static const sofa::helper::vector<Topology::index_type> InvalidSet;
+    static const Edge                                       InvalidEdge;
+    static const Triangle                                   InvalidTriangle;
+    static const Quad                                       InvalidQuad;
+    static const Tetrahedron                                InvalidTetrahedron;
+    static const Pyramid                                    InvalidPyramid;
+    static const Pentahedron                                InvalidPentahedron;
+    static const Hexahedron                                 InvalidHexahedron;
 };
+
 
 template<class TopologyElement>
 struct TopologyElementInfo;

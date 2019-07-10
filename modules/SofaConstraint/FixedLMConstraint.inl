@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,6 +62,15 @@ void FixedLMConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned
         fc->removeConstraint((unsigned int) pointIndex);
     }
     return;
+}
+
+template <class DataTypes>
+FixedLMConstraint<DataTypes>::FixedLMConstraint(MechanicalState *dof)
+    : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
+    , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
+    , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+{
+    pointHandler = new FCPointHandler(this, &f_indices);
 }
 
 template <class DataTypes>

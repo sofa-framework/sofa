@@ -3,27 +3,25 @@ project(SensableEmulation)
 
 
 set(HEADER_FILES
-    # NewOmniDriverEmu.h
     OmniDriverEmu.h
     config.h
-    pthread/pthread.h
 )
 
 set(SOURCE_FILES
-    # NewOmniDriverEmu.cpp
     OmniDriverEmu.cpp
     initSensableEmulation.cpp
 )
 
 set(README_FILES PluginSensableEmulation.txt)
 
-find_package(SofaGeneral REQUIRED)
+find_package(SofaHaptics REQUIRED)
+find_package(SofaOpenglVisual REQUIRED)
 find_package(Boost QUIET COMPONENTS thread REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SENSABLEEMULATIONPLUGIN")
-target_link_libraries(${PROJECT_NAME} SofaComponentGeneral SofaHaptics ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} SofaHaptics SofaOpenglVisual ${Boost_LIBRARIES})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 # Seems to be required by boost::asio

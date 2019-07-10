@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,7 +43,6 @@ using namespace defaulttype;
 int MLSMappingClass_point = core::RegisterObject("Map child positions using moving least squares.")
 
         .add< MLSMapping< Vec3Types, Vec3Types > >(true)
-        .add< MLSMapping< Vec3Types, ExtVec3Types > >()
         .add< MLSMapping< Vec3Types, F331Types > >()
         .add< MLSMapping< Vec3Types, F332Types > >()
         .add< MLSMapping< Vec3Types, F321Types > >()
@@ -51,7 +50,6 @@ int MLSMappingClass_point = core::RegisterObject("Map child positions using movi
         ;
 
 template class SOFA_Flexible_API MLSMapping< Vec3Types, Vec3Types >;
-template class SOFA_Flexible_API MLSMapping< Vec3Types, ExtVec3Types >;
 template class SOFA_Flexible_API MLSMapping< Vec3Types, F331Types >;
 template class SOFA_Flexible_API MLSMapping< Vec3Types, F332Types >;
 template class SOFA_Flexible_API MLSMapping< Vec3Types, F321Types >;

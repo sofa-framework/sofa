@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <image/config.h>
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #ifdef SOFA_HAVE_SOFAPYTHON
     #include <SofaPython/PythonFactory.h>
@@ -71,6 +73,16 @@ void initExternalModule()
             SP_ADD_CLASS_IN_FACTORY(ImageBData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageB>)
         }
 #endif
+
+        std::string pluginPath = sofa::helper::system::PluginManager::getInstance().findPlugin("image_gui");
+        if (!pluginPath.empty())
+        {
+            sofa::helper::system::PluginManager::getInstance().loadPluginByPath(pluginPath);
+        }
+        else
+        {
+            msg_warning("initImage") << "the sub-plugin image_gui was not successfully loaded";
+        }
     }
 }
 

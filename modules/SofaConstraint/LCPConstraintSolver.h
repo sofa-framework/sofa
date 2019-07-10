@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,7 +51,7 @@ class LCPConstraintProblem : public ConstraintProblem
 public:
     double mu;
 
-    void solveTimed(double tolerance, int maxIt, double timeout);
+    void solveTimed(double tolerance, int maxIt, double timeout) override;
 };
 
 class MechanicalGetConstraintInfoVisitor : public simulation::BaseMechanicalVisitor
@@ -77,7 +77,7 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
+    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override
     {
         if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
         {
@@ -90,17 +90,17 @@ public:
 
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false;
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetConstraintInfoVisitor";}
+    const char* getClassName() const override { return "MechanicalGetConstraintInfoVisitor";}
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -131,7 +131,7 @@ protected:
     /**
     * @brief Default Destructor
     */
-    virtual ~LCPConstraintSolver();
+    ~LCPConstraintSolver() override;
 public:
     void init() override;
 
@@ -170,9 +170,9 @@ public:
     Data<defaulttype::Vector3> showLevelTranslation; ///< Translation between levels
 
     ConstraintProblem* getConstraintProblem() override;
-    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=0) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
+    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
 
-    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
+    void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
     private:
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;

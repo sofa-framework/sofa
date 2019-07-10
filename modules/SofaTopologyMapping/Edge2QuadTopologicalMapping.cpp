@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,7 +36,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
-#include <math.h>
+#include <cmath>
 #include <sofa/defaulttype/Vec.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -63,6 +63,16 @@ int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
         ;
 
 // Implementation
+
+Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
+    : TopologicalMapping()
+    , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
+    , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
+    , edgeList(initData(&edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
+    , flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
+    , m_radiusContainer(nullptr)
+{
+}
 
 void Edge2QuadTopologicalMapping::init()
 {
@@ -245,6 +255,9 @@ void Edge2QuadTopologicalMapping::init()
             //to_tstm->notifyEndingEvent();
             to_tstm->propagateTopologicalChanges();
             Loc2GlobDataVec.endEdit();
+
+            // Need to fully init the target topology
+            to_tstm->init();
         }
 
     }

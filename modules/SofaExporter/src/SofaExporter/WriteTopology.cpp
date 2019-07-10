@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,7 +87,7 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
-    if ( createInMapping || mapping == NULL)
+    if ( createInMapping || mapping == nullptr)
     {
         sofa::component::misc::WriteTopology::SPtr wt;
         context->get(wt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
@@ -118,7 +118,7 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
 simulation::Visitor::Result WriteTopologyActivator::processNodeTopDown( simulation::Node* gnode)
 {
     sofa::component::misc::WriteTopology *wt = gnode->get< sofa::component::misc::WriteTopology >(this->subsetsToManage);
-    if (wt != NULL) { changeStateWriter(wt);}
+    if (wt != nullptr) { changeStateWriter(wt);}
     return simulation::Visitor::RESULT_CONTINUE;
 }
 

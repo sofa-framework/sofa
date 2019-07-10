@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,7 @@ namespace collision
 {
 
 using core::collision::Contact;
+using core::objectmodel::BaseNode;
 
 
 int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for gathering colliding objects in the same group, for consistent time integration")
@@ -49,19 +50,18 @@ int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for ga
 DefaultCollisionGroupManager::DefaultCollisionGroupManager(){}
 DefaultCollisionGroupManager::~DefaultCollisionGroupManager(){}
 
-template <class Container>
-void DefaultCollisionGroupManager::clearGroup(const Container &inNodes,
-                                              simulation::Node::SPtr group)
+void DefaultCollisionGroupManager::clearCollisionGroup(simulation::Node::SPtr group)
 {
-    core::objectmodel::BaseNode::SPtr parent = *inNodes.begin();
-    while(!group->child.empty()) parent->moveChild(*group->child.begin());
+    const simulation::Node::Parents &parents = group->getParents();
+    core::objectmodel::BaseNode::SPtr parent = *parents.begin();
+    while (!group->child.empty()) 
+        parent->moveChild(core::objectmodel::BaseNode::SPtr(group->child.begin()->get()->toBaseNode()));
 
     simulation::CleanupVisitor cleanupvis(sofa::core::ExecParams::defaultInstance());
     cleanupvis.execute(group.get());
     simulation::DeleteVisitor vis(sofa::core::ExecParams::defaultInstance());
     vis.execute(group.get());
     group->detachFromGraph();
-    //delete group;
     group.reset();
 }
 
@@ -69,8 +69,8 @@ void DefaultCollisionGroupManager::clearGroup(const Container &inNodes,
 void DefaultCollisionGroupManager::changeInstance(Instance inst)
 {
     core::collision::CollisionGroupManager::changeInstance(inst);
-    storedGroupSet[instance].swap(groupSet);
-    groupSet.swap(storedGroupSet[inst]);
+    storedGroupSet[instance].swap(groupMap);
+    groupMap.swap(storedGroupSet[inst]);
 }
 
 void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<Contact::SPtr>& contacts)
@@ -87,14 +87,14 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
         Contact* contact = cit->get();
         simulation::Node* group1 = getIntegrationNode(contact->getCollisionModels().first);
         simulation::Node* group2 = getIntegrationNode(contact->getCollisionModels().second);
-        simulation::Node::SPtr group = NULL;
+        simulation::Node::SPtr collGroup = NULL;
         if (group1==NULL || group2==NULL)
         {
         }
         else if (group1 == group2)
         {
             // same group, no new group necessary
-            group = group1;
+            collGroup = group1;
         }
         else if (simulation::Node* parent=group1->findCommonParent(group2))
         {
@@ -108,93 +108,107 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
             if (!mergeSolvers || solver.odeSolver!=NULL)
             {
-                bool group1IsColl = groupSet.find(group1)!=groupSet.end();
-                bool group2IsColl = groupSet.find(group2)!=groupSet.end();
+                auto group1Iter = groupMap.find(group1);
+                auto group2Iter = groupMap.find(group2);
+                bool group1IsColl = group1Iter != groupMap.end();
+                bool group2IsColl = group2Iter != groupMap.end();
                 if (!group1IsColl && !group2IsColl)
                 {
                     char groupName[32];
                     snprintf(groupName,sizeof(groupName),"collision%d",groupIndex++);
                     // create a new group
-                    group = parent->createChild(groupName);
+                    collGroup = parent->createChild(groupName);
 
-                    group->moveChild((simulation::Node*)group1);
-                    group->moveChild((simulation::Node*)group2);
-                    groupSet.insert(group.get());
+                    collGroup->moveChild(BaseNode::SPtr(group1));
+                    collGroup->moveChild(BaseNode::SPtr(group2));
+                    groupMap[group1] = collGroup.get();
+                    groupMap[group2] = collGroup.get();
+                    groupMap[collGroup.get()] = collGroup.get();
                 }
                 else if (group1IsColl)
                 {
-                    group = group1;
+                    collGroup = group1Iter->second;
                     // merge group2 in group1
                     if (!group2IsColl)
                     {
-                        group->moveChild(group2);
+                        collGroup->moveChild(BaseNode::SPtr(group2));
                     }
                     else
                     {
-                        // merge groups and remove group2
+                        simulation::Node::SPtr collGroup2 = group2Iter->second;
+                        if (collGroup == collGroup2)
+                        {
+                            // already in the same collision group
+                            groupMap[group1Iter->first] = group1Iter->second;
+                            groupMap[group2Iter->first] = group2Iter->second;
+                            contactGroup.push_back(collGroup);
+                            continue;
+                        }
+                        groupMap[group2] = collGroup.get();
+                        // merge groups and remove collGroup2
                         SolverSet solver2;
                         if (mergeSolvers)
                         {
-                            solver2.odeSolver = group2->solver[0];
-                            group2->removeObject(solver2.odeSolver);
-                            if (!group2->linearSolver.empty())
+                            solver2.odeSolver = collGroup2->solver[0];
+                            collGroup2->removeObject(solver2.odeSolver);
+                            if (!collGroup2->linearSolver.empty())
                             {
-                                solver2.linearSolver = group2->linearSolver[0];
-                                group2->removeObject(solver2.linearSolver);
+                                solver2.linearSolver = collGroup2->linearSolver[0];
+                                collGroup2->removeObject(solver2.linearSolver);
                             }
-                            if (!group2->constraintSolver.empty())
+                            if (!collGroup2->constraintSolver.empty())
                             {
-                                solver2.constraintSolver = group2->constraintSolver[0];
-                                group2->removeObject(solver2.constraintSolver);
+                                solver2.constraintSolver = collGroup2->constraintSolver[0];
+                                collGroup2->removeObject(solver2.constraintSolver);
                             }
                         }
-                        while(!group2->object.empty())
-                            group->moveObject(*group2->object.begin());
-                        while(!group2->child.empty())
-                            group->moveChild(*group2->child.begin());
-                        parent->removeChild((simulation::Node*)group2);
-                        groupSet.erase(group2);
-                        mergedGroups[group2] = group;
+                        while(!collGroup2->object.empty())
+                            collGroup->moveObject(*collGroup2->object.begin());
+                        while(!collGroup2->child.empty())
+                            collGroup->moveChild(BaseNode::SPtr(*collGroup2->child.begin()));
+                        parent->removeChild(collGroup2);
+                        groupMap.erase(collGroup2.get());
+                        mergedGroups[collGroup2.get()] = collGroup;
                         if (solver2.odeSolver) solver2.odeSolver.reset();
                         if (solver2.linearSolver) solver2.linearSolver.reset();
                         if (solver2.constraintSolver) solver2.constraintSolver.reset();
                         // BUGFIX(2007-06-23 Jeremie A): we can't remove group2 yet, to make sure the keys in mergedGroups are unique.
-                        removedGroup.push_back(group2);
-                        //delete group2;
+                        removedGroup.push_back(collGroup2);                       
                     }
                 }
                 else
                 {
+                    collGroup = group2Iter->second;
                     // group1 is not a collision group while group2 is
-                    group = group2;
-                    group->moveChild(group1);
+                    collGroup->moveChild(BaseNode::SPtr(group1));
+                    groupMap[group1] = collGroup.get();
                 }
-                if (!group->solver.empty())
+                if (!collGroup->solver.empty())
                 {
-                    core::behavior::OdeSolver* solver2 = group->solver[0];
-                    group->removeObject(solver2);
+                    core::behavior::OdeSolver* solver2 = collGroup->solver[0];
+                    collGroup->removeObject(solver2);
                 }
-                if (!group->linearSolver.empty())
+                if (!collGroup->linearSolver.empty())
                 {
-                    core::behavior::BaseLinearSolver* solver2 = group->linearSolver[0];
-                    group->removeObject(solver2);
+                    core::behavior::BaseLinearSolver* solver2 = collGroup->linearSolver[0];
+                    collGroup->removeObject(solver2);
                 }
-                if (!group->constraintSolver.empty())
+                if (!collGroup->constraintSolver.empty())
                 {
-                    core::behavior::ConstraintSolver* solver2 = group->constraintSolver[0];
-                    group->removeObject(solver2);
+                    core::behavior::ConstraintSolver* solver2 = collGroup->constraintSolver[0];
+                    collGroup->removeObject(solver2);
                 }
                 if (solver.odeSolver)
                 {
-                    group->addObject(solver.odeSolver);
+                    collGroup->addObject(solver.odeSolver);
                 }
                 if (solver.linearSolver)
                 {
-                    group->addObject(solver.linearSolver);
+                    collGroup->addObject(solver.linearSolver);
                 }
                 if (solver.constraintSolver)
                 {
-                    group->addObject(solver.constraintSolver);
+                    collGroup->addObject(solver.constraintSolver);
                 }
                 // perform init only once everyone has been added (in case of explicit dependencies)
                 if (solver.odeSolver)
@@ -211,7 +225,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                 }
             }
         }
-        contactGroup.push_back(group);
+        contactGroup.push_back(collGroup);
     }
 
     // now that the groups are final, attach contacts' response
@@ -239,19 +253,22 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
     // finally recreate group vector
     groups.clear();
-    for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
+    for (auto it = contactGroup.begin(); it!= contactGroup.end(); ++it)
         groups.push_back(*it);
 }
 
 
 void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*scene*/)
 {
-    for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
+    for (std::map<simulation::Node*, simulation::Node*>::iterator it = groupMap.begin(); it!=groupMap.end(); ++it)
     {
-        if (*it) clearGroup( (*it)->getParents(), *it );
+        if (it->second->getParents().size() > 0)
+        {
+            clearCollisionGroup(it->second);
+        }
     }
 
-    groupSet.clear();
+    groupMap.clear();
     groups.clear();
 }
 

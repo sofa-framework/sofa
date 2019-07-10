@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -84,12 +84,8 @@ public:
     typedef typename HexahedronFEMForceFieldAndMassT::ElementMass ElementMass;
 
 protected:
+    NonUniformHexahedronFEMForceFieldDensity();
 
-    NonUniformHexahedronFEMForceFieldDensity():NonUniformHexahedronFEMForceFieldAndMass<DataTypes>()
-        ,densityFile(core::objectmodel::Base::initData(&densityFile,"densityFile","RAW File containing gray scale density"))
-        ,dimensionDensityFile(core::objectmodel::Base::initData(&dimensionDensityFile, "dimensionDensityFile", "dimension of the RAW file"))
-    {
-    }
 public:
     void init();
     void draw(const core::visual::VisualParams* vparams);

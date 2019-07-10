@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,7 +66,7 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~HapticDeviceEvent();
+    ~HapticDeviceEvent() override;
 
     /**
      * @brief Get the device X coordinate
@@ -98,14 +98,14 @@ public:
      */
     unsigned char getButtonState() const {return m_buttonState;}
 
-    bool getButton(const int id = 0) const {return (bool) ((m_buttonState >> id) & 1);}
+    bool getButton(const int id = 0) const {return bool(((m_buttonState >> id) & 1));}
 
     /**
      * @brief Get the device Id.
      */
     unsigned int getDeviceId() const {return m_deviceId;}
 
-    virtual const char* getClassName() const { return "HapticDeviceEvent"; }
+    const char* getClassName() const override { return "HapticDeviceEvent"; }
 private:
 
     unsigned int	m_deviceId;

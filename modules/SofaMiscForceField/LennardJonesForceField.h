@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,20 +72,7 @@ protected:
 
     sofa::helper::vector<DForce> dforces;
 
-    LennardJonesForceField()
-        : a(1)
-        , b(1)
-        , aInit  (initData(&aInit  ,Real(0), "aInit"  ,"a for Gravitational FF which corresponds to G*m1*m2 alpha should be equal to 1 and beta to 0."))
-        , alpha  (initData(&alpha  ,Real(6), "alpha"  ,"Alpha"))
-        , beta   (initData(&beta   ,Real(12),"beta"   ,"Beta"))
-        , dmax   (initData(&dmax   ,Real(2), "dmax"   ,"DMax"))
-        , fmax   (initData(&fmax   ,Real(1), "fmax"   ,"FMax"))
-        , d0     (initData(&d0     ,Real(1), "d0"     ,"d0"))
-        , p0     (initData(&p0     ,Real(1), "p0"     ,"p0"))
-        , damping(initData(&damping,Real(0), "damping","Damping"))
-    {
-    }
-
+    LennardJonesForceField();
 public:
 
     void setAInit(Real v) { aInit.setValue(v); }
@@ -98,11 +85,11 @@ public:
     void setDamping(Real v) { damping.setValue(v); }
 
 
-    virtual void init() override;
+    void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& d_x) const override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& d_x) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

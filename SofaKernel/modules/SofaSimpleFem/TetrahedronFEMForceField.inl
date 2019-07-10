@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <set>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
@@ -74,6 +74,7 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
     , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
     , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
+    , l_topology(initLink("topology", "link to the tetrahedron topology container"))
 {
     _poissonRatio.setRequired(true);
     _youngModulus.setRequired(true);
@@ -1349,7 +1350,13 @@ void TetrahedronFEMForceField<DataTypes>::init()
     // At init parallelDataSimu == parallelDataThrd (and it's the case since handleEvent is called)
 
     this->core::behavior::ForceField<DataTypes>::init();
-    _mesh = this->getContext()->getMeshTopology();
+
+    /// Take the user provide topology.
+    _mesh = l_topology.get();
+
+    /// If not possible try to find one in the current context.
+    if(_mesh == nullptr)
+        _mesh = this->getContext()->getMeshTopology();
 
     if (_mesh==NULL)
     {

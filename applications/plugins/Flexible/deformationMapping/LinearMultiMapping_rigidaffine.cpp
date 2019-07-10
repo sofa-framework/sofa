@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,7 +46,6 @@ using namespace defaulttype;
 // Register in the Factory
 int LinearMultiMappingClass_rigid = core::RegisterObject("Map child positions as a linear combination of parents.")
         .add< LinearMultiMapping< Rigid3Types, Affine3Types, Vec3Types > >(true)
-        .add< LinearMultiMapping< Rigid3Types, Affine3Types, ExtVec3fTypes > >()
         .add< LinearMultiMapping< Rigid3Types, Affine3Types, F331Types > >()
         .add< LinearMultiMapping< Rigid3Types, Affine3Types, F321Types > >()
         .add< LinearMultiMapping< Rigid3Types, Affine3Types, F311Types > >()
@@ -55,7 +54,6 @@ int LinearMultiMappingClass_rigid = core::RegisterObject("Map child positions as
         ;
 
 template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, Vec3Types >;
-template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, ExtVec3fTypes >;
 template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, F331Types >;
 template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, F321Types >;
 template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, F311Types >;

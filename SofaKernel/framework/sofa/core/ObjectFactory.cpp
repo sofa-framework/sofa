@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -258,8 +258,8 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             object->addAlias(object->findData(kv.first), alias.c_str()) ;
 
             /// The Alias is used in the argument
-            const char* val = arg->getAttribute(alias) ;
-            if( val ){
+            const std::string val(arg->getAttribute(alias));
+            if( !val.empty() ){
                 newdesc.setAttribute( alias, val );
             }
         }

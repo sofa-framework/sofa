@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   
     <RequiredPlugin name='Flexible' />
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
@@ -37,7 +38,7 @@
 
              
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" />
+	     <OglModel  fileMesh="mesh/torus.obj" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     </Node>
@@ -76,7 +77,7 @@
 
              
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="green"/>
+	     <OglModel  fileMesh="mesh/torus.obj" color="green"/>
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     </Node>

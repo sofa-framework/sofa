@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,8 +66,23 @@ public:
     virtual bool canWriteFileExtension(const char * /*extension*/) { return false; }
 
     /// load the file
-    /// @warning do not forgot to call notifyLoadingScene()
-    virtual sofa::simulation::Node::SPtr load(const char *filename) = 0;
+    sofa::simulation::Node::SPtr load(const char *filename, bool reload = false)
+    {
+        if(reload)
+            notifyReloadingSceneBefore();
+        else
+            notifyLoadingSceneBefore();
+
+        sofa::simulation::Node::SPtr root = doLoad(filename);
+
+        if(reload)
+            notifyReloadingSceneAfter(root);
+        else
+            notifyLoadingSceneAfter(root);
+
+        return root;
+    }
+    virtual sofa::simulation::Node::SPtr doLoad(const char *filename) = 0;
 
     /// write scene graph in the file
     virtual void write(sofa::simulation::Node* /*node*/, const char * /*filename*/) {}
@@ -84,20 +99,27 @@ public:
     struct Listener
     {
         virtual void rightBeforeLoadingScene() {} ///< callback called just before loading the scene file
+        virtual void rightAfterLoadingScene(sofa::simulation::Node::SPtr) {} ///< callback called just after loading the scene file
+
+        virtual void rightBeforeReloadingScene() { this->rightBeforeLoadingScene(); } ///< callback called just before reloading the scene file
+        virtual void rightAfterReloadingScene(sofa::simulation::Node::SPtr root) { this->rightAfterLoadingScene(root); } ///< callback called just after reloading the scene file
     };
 
     /// adding a listener
-    static void addListener( Listener* l ) { s_listerners.insert(l); }
+    static void addListener( Listener* l ) { s_listeners.insert(l); }
 
     /// removing a listener
-    static void removeListener( Listener* l ) { s_listerners.erase(l); }
+    static void removeListener( Listener* l ) { s_listeners.erase(l); }
 
 protected:
 
-    /// the list of listerners
+    /// the list of listeners
     typedef std::set<Listener*> Listeners;
-    static Listeners s_listerners;
-    static void notifyLoadingScene() { for( auto* l : s_listerners ) l->rightBeforeLoadingScene(); }
+    static Listeners s_listeners;
+    static void notifyLoadingSceneBefore() { for( auto* l : s_listeners ) l->rightBeforeLoadingScene(); }
+    static void notifyReloadingSceneBefore() { for( auto* l : s_listeners ) l->rightBeforeReloadingScene(); }
+    static void notifyLoadingSceneAfter(sofa::simulation::Node::SPtr node) { for( auto* l : s_listeners ) l->rightAfterLoadingScene(node); }
+    static void notifyReloadingSceneAfter(sofa::simulation::Node::SPtr node) { for( auto* l : s_listeners ) l->rightAfterReloadingScene(node); }
 
 };
 

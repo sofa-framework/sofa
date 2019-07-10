@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,17 +55,16 @@
 #include "Binding_TriangleSetTopologyModifier.h"
 #include "Binding_PointSetTopologyModifier.h"
 #include "Binding_BaseMapping.h"
+#include "Binding_SparseGridTopology.h"
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
-#include "Binding_OBJExporter.h"
-#include "Binding_STLExporter.h"
 #include "Binding_DataEngine.h"
 #include "PythonFactory.h"
 
 using sofa::PythonFactory;
 
 
-void bindSofaPythonModule()
+void bindSofaPythonModule(PyObject * module)
 {
     static std::string docstring=R"(
             Sofa module.
@@ -75,7 +74,11 @@ void bindSofaPythonModule()
 
             )";
 
-    PythonFactory::s_sofaPythonModule = SP_INIT_MODULE(Sofa,docstring.c_str())
+    if (!module) {
+        module = SP_INIT_MODULE(Sofa,docstring.c_str())
+    }
+
+    PythonFactory::s_sofaPythonModule =  module;
 
     /// non Base-Inherited types
     SP_ADD_CLASS_IN_SOFAMODULE(Data)
@@ -114,9 +117,8 @@ void bindSofaPythonModule()
     SP_ADD_CLASS_IN_FACTORY(MeshLoader,sofa::core::loader::MeshLoader)
     SP_ADD_CLASS_IN_FACTORY(MeshTopology,sofa::component::topology::MeshTopology)
     SP_ADD_CLASS_IN_FACTORY(GridTopology,sofa::component::topology::GridTopology)
+    SP_ADD_CLASS_IN_FACTORY(SparseGridTopology,sofa::component::topology::SparseGridTopology)
     SP_ADD_CLASS_IN_FACTORY(RegularGridTopology,sofa::component::topology::RegularGridTopology)
-    SP_ADD_CLASS_IN_FACTORY(OBJExporter,sofa::component::misc::OBJExporter)
-    SP_ADD_CLASS_IN_FACTORY(STLExporter,sofa::component::misc::STLExporter)
     SP_ADD_CLASS_IN_FACTORY(PythonScriptController,sofa::component::controller::PythonScriptController)
     SP_ADD_CLASS_IN_FACTORY(PythonScriptDataEngine,sofa::component::controller::PythonScriptDataEngine)
     SP_ADD_CLASS_IN_FACTORY(PointSetTopologyModifier,sofa::component::topology::PointSetTopologyModifier)
@@ -126,7 +128,7 @@ void bindSofaPythonModule()
     PyObject* PyExc_SofaException = PyErr_NewExceptionWithDoc(
         (char*) "Sofa.SofaException",
         (char*) "Base exception class for the SofaPython module.",
-        NULL, NULL);
+        nullptr, nullptr);
 
     if ( PyExc_SofaException )
         PyModule_AddObject(PythonFactory::s_sofaPythonModule, "SofaException", PyExc_SofaException);

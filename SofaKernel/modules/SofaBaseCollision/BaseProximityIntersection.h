@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,10 +43,10 @@ public:
     Data<SReal> contactDistance; ///< Distance below which a contact is created
 protected:
     BaseProximityIntersection();
-    virtual ~BaseProximityIntersection() { }
+    ~BaseProximityIntersection() override { }
 public:
     /// Returns true if algorithm uses proximity
-    virtual bool useProximity() const override { return true; }
+    bool useProximity() const override { return true; }
 
     /// Returns the alarm distance (must returns 0 if useProximity() is false)
     SReal getAlarmDistance() const override { return alarmDistance.getValue(); }

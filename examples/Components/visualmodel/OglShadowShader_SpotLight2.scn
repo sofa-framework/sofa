@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	 name="root"  dt="0.02"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<BackgroundSetting color="0.8 0.8 0.8" />
 	<LightManager name="lightManager1"  listening="1"  shadows="1"  softShadows="1" />
 	

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -36,14 +36,15 @@ BaseViewer::BaseViewer()
     : groot(NULL)
     , currentCamera(NULL)
 #ifndef SOFA_NO_OPENGL
-    , texLogo(NULL)
+    , texLogo(nullptr)
 #endif
     , _video(false)
+    , m_isVideoButtonPressed(false)
     , _axis(false)
     , backgroundColour(defaulttype::Vector3())
     , backgroundImageFile("textures/SOFA_logo.bmp")
     , ambientColour(defaulttype::Vector3())
-    , pick(NULL)
+    , pick(nullptr)
     , _screenshotDirectory(".")
 {
     pick = new PickHandler();
@@ -55,7 +56,7 @@ BaseViewer::~BaseViewer()
    if(texLogo)
     {
         delete texLogo;
-        texLogo = NULL;
+        texLogo = nullptr;
     }
 #endif
 }
@@ -128,10 +129,11 @@ void BaseViewer::setPrefix(const std::string& prefix, bool prependDirectory)
                                                       : prefix;
 #ifndef SOFA_NO_OPENGL
     capture.setPrefix(fullPrefix);
-#endif
-#ifdef SOFA_HAVE_FFMPEG
-    videoRecorder.setPrefix(fullPrefix);
-#endif
+
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+    m_videoRecorderFFMPEG.setPrefix(fullPrefix);
+#endif // SOFA_HAVE_FFMPEG_EXEC
+#endif // SOFA_NO_OPENGL
 }
 
 void BaseViewer::screenshot(const std::string& filename, int compression_level)
@@ -220,7 +222,7 @@ void BaseViewer::setBackgroundImage(std::string imageFileName)
         if(texLogo)
         {
             delete texLogo;
-            texLogo = NULL;
+            texLogo = nullptr;
         }
         helper::io::Image* image =  helper::io::Image::FactoryImage::getInstance()->createObject(extension,backgroundImageFile);
         if( !image )

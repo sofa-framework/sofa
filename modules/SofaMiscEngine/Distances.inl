@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,13 +59,13 @@ Distances< DataTypes >::Distances ( sofa::component::topology::DynamicSparseGrid
     initTargetStep ( initData ( &initTargetStep, 1, "initTargetStep","initialize the target MechanicalObject from the grid using this step." ) ),
     zonesFramePair ( initData ( &zonesFramePair, "zonesFramePair","Correspondance between the segmented value and the frames." ) ),
     harmonicMaxValue ( initData ( &harmonicMaxValue, 100.0, "harmonicMaxValue","Max value used to initialize the harmonic distance grid." ) ),
-    fileDistance( initData(&fileDistance, "fileDistance", "file containing the result of the computation of the distances")),
+    fileDistance( initData(&fileDistance, "filename", "file containing the result of the computation of the distances")),
     targetPath(initData(&targetPath, "targetPath", "path to the goal point set topology")),
     target ( targetPointSet ) ,
     hexaContainerPath(initData(&hexaContainerPath, "hexaContainerPath", "path to the grid used to compute the distances")),
     hexaContainer ( hexaTopoContainer )
 {
-    this->addAlias(&fileDistance, "filename");
+    this->addAlias(&fileDistance, "fileDistance");
     zonesFramePair.setDisplayed( false); // GUI can not display map.
 
     sofa::helper::OptionsGroup distanceTypeOptions(5,"Geodesic","Harmonic","Stiffness Diffusion", "Vorono\xEF", "Harmonic with Stiffness");

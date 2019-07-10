@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,7 +43,7 @@
 #define GAUSS_SEIDEL 0
 #define JACOBI 1
 #define CG 2
-#include <image/extlibs/DiffusionSolver/DiffusionSolver.h>
+#include <DiffusionSolver/DiffusionSolver.h>
 
 
 
@@ -302,7 +302,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::Image<T>>
 
 
     template<class DiffusionShapeFunction>
-    static void solveGS(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    static void solveGS(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=nullptr)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveGS( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), 1.5, material /*This->d_weightThreshold.getValue()*/ );
@@ -326,7 +326,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::Image<T>>
     }
 
     template<class DiffusionShapeFunction>
-    static void solveJacobi(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    static void solveJacobi(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=nullptr)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveJacobi( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );
@@ -350,7 +350,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::Image<T>>
     }
 
     template<class DiffusionShapeFunction>
-    static void solveCG(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    static void solveCG(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=nullptr)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveCG( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );

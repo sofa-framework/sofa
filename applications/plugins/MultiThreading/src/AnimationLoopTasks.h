@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,14 +45,14 @@ namespace sofa
         using namespace sofa;
         
         
-        class StepTask : public Task
+        class StepTask : public CpuTask
         {
         public:
-            StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* pStatus);
+            StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, CpuTask::Status* pStatus);
             
-            virtual ~StepTask();
+            ~StepTask() override;
             
-            virtual MemoryAlloc run() final;
+            MemoryAlloc run() final;
             
             
         private:

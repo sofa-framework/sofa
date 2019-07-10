@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -27,11 +27,11 @@
 #include <sofa/helper/system/FileSystem.h>
 
 #include <SofaGraphComponent/SofaDefaultPathSetting.h>
-#include <SofaGraphComponent/BackgroundSetting.h>
 #include <SofaGraphComponent/StatsSetting.h>
+#include <SofaBaseVisual/BackgroundSetting.h>
 
 #include <algorithm>
-#include <string.h>
+#include <cstring>
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
@@ -47,11 +47,11 @@ namespace sofa
 namespace gui
 {
 
-const char* BaseGUI::mProgramName = NULL;
+const char* BaseGUI::mProgramName = nullptr;
 std::string BaseGUI::mGuiName = "";
 std::string BaseGUI::configDirectoryPath = ".";
 std::string BaseGUI::screenshotDirectoryPath = ".";
-ArgumentParser* BaseGUI::mArgumentParser = NULL;
+ArgumentParser* BaseGUI::mArgumentParser = nullptr;
 
 BaseGUI::BaseGUI()
 {

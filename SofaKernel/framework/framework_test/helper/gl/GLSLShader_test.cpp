@@ -14,11 +14,11 @@ struct GLSLShader_test : public ::testing::Test
     GLSLShader_test() {
     }
 
-    void SetUp()
+    void SetUp() override
     {
         sofa::helper::system::DataRepository.addFirstPath(FRAMEWORK_TEST_RESOURCES_DIR);
     }
-    void TearDown()
+    void TearDown() override
     {
         sofa::helper::system::DataRepository.removePath(FRAMEWORK_TEST_RESOURCES_DIR);
     }

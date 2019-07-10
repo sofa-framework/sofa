@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,30 +38,21 @@ namespace constraintset
 {
 
 template<class DataTypes>
-SlidingConstraint<DataTypes>::SlidingConstraint(MechanicalState* object1, MechanicalState* object2)
-    : Inherit(object1, object2)
-    , d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
-    , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
-    , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
-    , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
-    , m_yetIntegrated(false)
+SlidingConstraint<DataTypes>::SlidingConstraint()
+    : SlidingConstraint(nullptr, nullptr)
 {
 }
 
 template<class DataTypes>
 SlidingConstraint<DataTypes>::SlidingConstraint(MechanicalState* object)
-    : Inherit(object, object)
-    , d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
-    , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
-    , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
-    , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
-    , m_yetIntegrated(false)
+    : SlidingConstraint(object, object)
 {
 }
 
 template<class DataTypes>
-SlidingConstraint<DataTypes>::SlidingConstraint()
-    : d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
+SlidingConstraint<DataTypes>::SlidingConstraint(MechanicalState* object1, MechanicalState* object2)
+    : Inherit(object1, object2)
+    , d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
     , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
     , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
     , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))

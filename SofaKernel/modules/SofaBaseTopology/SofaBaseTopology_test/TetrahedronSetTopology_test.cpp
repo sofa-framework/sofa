@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,9 +77,9 @@ bool TetrahedronSetTopology_test::testTetrahedronBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -93,15 +93,15 @@ bool TetrahedronSetTopology_test::testTetrahedronBuffers()
     EXPECT_EQ(topoCon->getNumberOfTetrahedra(), nbrTetrahedron);
     EXPECT_EQ(topoCon->getTetrahedra().size(), nbrTetrahedron);
 
-    // check triangles should not be created
-    EXPECT_EQ(topoCon->getNumberOfTriangles(), 0);
-    EXPECT_EQ(topoCon->getNbTriangles(), 0);
-    EXPECT_EQ(topoCon->getTriangles().size(), 0);
+    // check triangles buffer has been created
+    EXPECT_EQ(topoCon->getNumberOfTriangles(), nbrTriangle);
+    EXPECT_EQ(topoCon->getNbTriangles(), nbrTriangle);
+    EXPECT_EQ(topoCon->getTriangles().size(), nbrTriangle);
 
-    // check edges should not be created
-    EXPECT_EQ(topoCon->getNumberOfEdges(), 0);
-    EXPECT_EQ(topoCon->getNbEdges(), 0);
-    EXPECT_EQ(topoCon->getEdges().size(), 0);
+    // check edges buffer has been created
+    EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getNbEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 elements in this file should be :
     sofa::helper::fixed_array<TetrahedronSetTopologyContainer::PointID, 4> elemTruth0(22, 2, 11, 25);
@@ -139,7 +139,7 @@ bool TetrahedronSetTopology_test::testTetrahedronBuffers()
         EXPECT_EQ(elem2[i], -1);
 
 
-    if(scene != NULL)
+    if(scene != nullptr)
         delete scene;
 
     return true;
@@ -151,9 +151,9 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -170,9 +170,8 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     // check triangle created element
     TetrahedronSetTopologyContainer::Triangle triangle = topoCon->getTriangle(0);
     EXPECT_EQ(triangle[0], 2);
-    EXPECT_EQ(triangle[1], 22);
-    EXPECT_EQ(triangle[2], 11);
-
+    EXPECT_EQ(triangle[1], 11);
+    EXPECT_EQ(triangle[2], 25);    
 
     // check TetrahedraAroundTriangle buffer access
     EXPECT_EQ(elemAroundTriangles.size(), nbrTriangle);
@@ -185,7 +184,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
 
     // check TetrahedraAroundTriangle buffer element for this file
     EXPECT_EQ(elemATriangle[0], 0);
-    EXPECT_EQ(elemATriangle[1], 1);
+    EXPECT_EQ(elemATriangle[1], 3);
 
 
     // check TrianglesInTetrahedron buffer acces
@@ -199,7 +198,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     for (size_t i = 0; i < triangleInElem.size(); i++)
         EXPECT_EQ(triangleInElem[i], triangleInElemM[i]);
 
-    sofa::helper::fixed_array<int, 4> triangleInElemTruth(2, 3, 1, 0);
+    sofa::helper::fixed_array<int, 4> triangleInElemTruth(0, 1, 2, 3);
     for (size_t i = 0; i<triangleInElemTruth.size(); ++i)
         EXPECT_EQ(triangleInElem[i], triangleInElemTruth[i]);
 
@@ -248,9 +247,9 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -345,9 +344,9 @@ bool TetrahedronSetTopology_test::testVertexBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -394,16 +393,16 @@ bool TetrahedronSetTopology_test::checkTopology()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
 
     bool res = topoCon->checkTopology();
     
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
     
     return res;

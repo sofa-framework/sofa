@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,12 +37,6 @@ namespace core
 
 namespace collision
 {
-
-// uncomment if you want to use the freePoint information
-// #define DETECTIONOUTPUT_FREEMOTION
-//#define DETECTIONOUTPUT_BARYCENTRICINFO
-
-
 
 /**
  *  \brief Abstract description of a set of contact point.
@@ -96,10 +90,6 @@ public:
 #ifdef DETECTIONOUTPUT_FREEMOTION
     Vector3 freePoint[2]; ///< free Point in contact on each element
 #endif
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    Vector3 baryCoords[2]; ///< provides the barycentric Coordinates (alpha, beta, gamma) of each contact points over the element
-    ///< (alpha is used for lines / alpha and beta for triangles / alpha, beta and gamma for tetrahedrons)
-#endif
 
     /// Normal of the contact, pointing outward from the first model
     Vector3 normal;
@@ -128,14 +118,14 @@ class TDetectionOutputVector : public DetectionOutputVector, public sofa::helper
 {
 public:
     typedef sofa::helper::vector<DetectionOutput> Vector;
-    virtual ~TDetectionOutputVector() {}
+    ~TDetectionOutputVector() override {}
     /// Clear the content of this vector
-    virtual void clear()
+    void clear() override
     {
         return this->Vector::clear();
     }
     /// Current size (number of detected contacts)
-    virtual unsigned int size() const
+    unsigned int size() const override
     {
         return (unsigned int)this->Vector::size();
     }

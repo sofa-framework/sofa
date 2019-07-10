@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,7 +78,6 @@ protected:
     //////////////////////////////////////////////////////////////////////////////////
     #define V3(type) StdVectorTypes<Vec<3,type>,Vec<3,type>,type>
     #define V2(type) StdVectorTypes<Vec<2,type>,Vec<2,type>,type>
-    #define EV3(type) ExtVectorTypes<Vec<3,type>,Vec<3,type>,type>
 
     #define Rigid3(type)  StdRigidTypes<3,type>
     #define Affine3(type)  StdAffineTypes<3,type>

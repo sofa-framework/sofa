@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -44,14 +44,8 @@ class SofaMouseManager : public QDialog
     std::unique_ptr<Ui_MouseManager> gui;
 public:
 
-    SofaMouseManager();
-    ~SofaMouseManager();
-
-    static SofaMouseManager* getInstance()
-    {
-        static SofaMouseManager instance;
-        return &instance;
-    }
+    SofaMouseManager(QWidget *parent);
+    ~SofaMouseManager() override;
 
     void updateContent();
 

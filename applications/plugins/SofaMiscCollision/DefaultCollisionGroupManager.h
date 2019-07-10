@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,26 +43,26 @@ class SOFA_MISC_COLLISION_API DefaultCollisionGroupManager : public core::collis
 public:
     SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::collision::CollisionGroupManager);
 
-    typedef std::set<simulation::Node::SPtr> GroupSet;
-    GroupSet groupSet;
+    typedef std::map<simulation::Node*, simulation::Node*> GroupMap; 
+    // this map stores the deformable object node and its collision group <deformable object node*, collison group node*>
+    GroupMap groupMap; 
 
 public:
-    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts) override;
-    virtual void clearGroups(core::objectmodel::BaseContext* scene) override;
+    void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts) override;
+    void clearGroups(core::objectmodel::BaseContext* scene) override;
 
 protected:
     DefaultCollisionGroupManager();
-    virtual ~DefaultCollisionGroupManager();
+    ~DefaultCollisionGroupManager() override;
 
     //Find the node containing the ode solver used to animate the mechanical model associated to the collision model
     virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
 
-    virtual void changeInstance(Instance inst) override;
+    void changeInstance(Instance inst) override;
 
-    template <typename Container>
-    void clearGroup(const Container &inNodes, simulation::Node::SPtr group);
+    void clearCollisionGroup(simulation::Node::SPtr group);
 
-    std::map<Instance,GroupSet> storedGroupSet;
+    std::map<Instance,GroupMap> storedGroupSet;
 
 private:
     DefaultCollisionGroupManager(const DefaultCollisionGroupManager& n) ;

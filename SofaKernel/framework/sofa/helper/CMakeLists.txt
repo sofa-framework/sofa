@@ -235,7 +235,7 @@ if(Boost_thread_FOUND)
     list(APPEND SOURCE_FILES system/thread/TimeoutWatchdog.cpp)
 endif()
 
-if(Boost_FILESYSTEM_FOUND AND Boost_LOCALE_FOUND)
+if(Boost_FILESYSTEM_FOUND)
     list(APPEND HEADER_FILES system/FileRepository.h)
     list(APPEND SOURCE_FILES system/FileRepository.cpp)
 endif()
@@ -291,13 +291,13 @@ if(NOT SOFA_NO_OPENGL)
 
 endif()
 
+find_package(FFMPEGexec QUIET)
 
- if(SOFA-EXTERNAL_FFMPEG)
-    list(APPEND HEADER_FILES gl/VideoRecorder.h)
-
-    list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp")
-        include_directories(${SOFA-EXTERNAL_FFMPEG_PATH}/include)
+if (FFMPEG_EXEC_FOUND AND NOT SOFA_NO_OPENGL)
+	list(APPEND HEADER_FILES gl/VideoRecorderFFMPEG.h)
+    list(APPEND SOURCE_FILES gl/VideoRecorderFFMPEG.cpp)
 endif()
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
 if(WIN32)
@@ -313,62 +313,43 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_X11_LIB})
     target_include_directories(${PROJECT_NAME} PRIVATE ${X11_X11_INCLUDE_PATH})
 endif()
-if(SOFA-EXTERNAL_FFMPEG)
-        if (WIN32)
-                 set( FFMPEG_LIBS
-                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avformat.lib"
-                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avcodec.lib"
-                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avutil.lib"
-                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/swscale.lib"
-                 )
-                target_link_libraries(${PROJECT_NAME} PRIVATE ${FFMPEG_LIBS} )
-        elseif (APPLE)
-                set( FFMPEG_LIBS
-                        "libavcodec.a"
-                        "libavformat.a"
-                        "libavutil.a"
-                        "libswscale.a"
-                        "libbz2.a"
-                        "libmp3lame.a"
-                        "libx264.a"
-                        "libfaac.a"
-                        "libxvidcore.a"
-                        "libswresample.a"
-                        "/usr/lib/libiconv.dylib"
-                        )
-                                                find_library(FOUNDATION CoreFoundation)
-                        find_library(VIDEO CoreVideo)
-                        find_library(VIDEO_DECOD_ACC VideoDecodeAcceleration)
-                        find_library(ICONV iconv)
-                        target_link_libraries(${PROJECT_NAME}  ${FFMPEG_LIBS} ${FOUNDATION} ${VIDEO} ${VIDEO_DECOD_ACC})
-        elseif (UNIX)
-            AddLinkerDependencies(avcodec)
-                    AddLinkerDependencies(avformat)
-                        AddLinkerDependencies(avutil)
-                        AddLinkerDependencies(swscale)
-                        AddLinkerDependencies(avdevice)
-                        AddLinkerDependencies(avfilter)
-                        AddLinkerDependencies(swresample)
-                endif()
 
-endif()
 if(APPLE)
+    find_library(ICONV iconv)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${ICONV})
     # on macOS, -framework CoreServices is needed for FileMonitor
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
 endif()
 
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK})
 if(SOFA_BUILD_TESTS)
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES} gtest)
-else()
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK})
+    target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
 endif()
 
+# Json (header only) dependency for AdvancedTimer
+find_package(Json 3.1.2 REQUIRED)
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
+install(DIRECTORY ${JSON_INCLUDE_DIR}
+    COMPONENT headers
+    DESTINATION "include/extlibs"
+    PATTERN "*.in" EXCLUDE
+    PATTERN "*.txt" EXCLUDE
+    PATTERN "*.cpp" EXCLUDE
+    )
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
-# For generated files, like sofa/config.h
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>"
+    "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
+target_include_directories(${PROJECT_NAME} SYSTEM
+    PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>"
+    PUBLIC "$<INSTALL_INTERFACE:include/extlibs/Eigen>"
+    PUBLIC "$<INSTALL_INTERFACE:include/extlibs/json>"
+    )
+if(MSVC)
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
+endif()
+
 set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
 
 # The default binary suffix for libraries/plugins is "_d" when using a debug build.
@@ -381,4 +362,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAHELPER_COM
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "sofa/helper")
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/helper")

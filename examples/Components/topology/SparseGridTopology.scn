@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!-- SparseGrid examples -->
 <Node name="root" dt="0.02" gravity="0 -9 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -24,7 +25,7 @@
         <Node name="Surf">
 	    <SphereLoader filename="mesh/dragon.sph" />
             <MechanicalObject position="@[-1].position" />
-            <TSphereModel listRadius="@[-2].listRadius" />
+            <SphereCollisionModel listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -43,7 +44,7 @@
         <Node name="Surf">
 	    <SphereLoader filename="mesh/dragon.sph" />
             <MechanicalObject position="@[-1].position" />
-            <TSphereModel listRadius="@[-2].listRadius" />
+            <SphereCollisionModel listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -62,7 +63,7 @@
         <Node name="Surf">
 	    <SphereLoader filename="mesh/dragon.sph" />
             <MechanicalObject position="@[-1].position" />
-            <TSphereModel listRadius="@[-2].listRadius" />
+            <SphereCollisionModel listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>

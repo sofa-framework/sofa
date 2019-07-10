@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -35,7 +35,7 @@
 #include "../shapeFunction/ShapeFunctionDiscretizer.h"
 #include "../shapeFunction/ImageShapeFunctionSelectNode.h"
 
-
+#include <SofaSimulationGraph/SimpleApi.h>
 
 #include <SceneCreator/SceneCreator.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -59,6 +59,7 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
 
     virtual void init()
     {
+        sofa::simpleapi::importPlugin("SofaOpenglVisual");
         DataEngine_test<DataEngineType>::init();
 
         const DDGLinkContainer& parent_inputs = this->m_engineInput->DDGNode::getInputs();

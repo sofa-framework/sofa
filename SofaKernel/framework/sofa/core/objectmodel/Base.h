@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -153,7 +153,7 @@ private:
     Base(const Base& b);
     Base& operator=(const Base& b);
 
-    sofa::helper::system::atomic<int> ref_counter;
+    std::atomic<int> ref_counter;
     void addRef();
     void release();
 
@@ -191,6 +191,34 @@ public:
 
     /// Get the template type names (if any) used to instantiate this object
     virtual std::string getTemplateName() const;
+
+    /// Set the source filename (where the component is implemented)
+    void setDefinitionSourceFileName(const std::string& sourceFileName);
+
+    /// Get the source filename (where the component is implemented)
+    const std::string& getDefinitionSourceFileName() const;
+
+    /// Set the source location (where the component is implemented)
+    void setDefinitionSourceFilePos(const int);
+
+    /// Get the source location (where the component is implemented)
+    int getDefinitionSourceFilePos() const;
+
+    /// Set the file where the instance has been created
+    /// This is useful to store where the component was emitted from
+    void setInstanciationSourceFileName(const std::string& sourceFileName);
+
+    /// Get the file where the instance has been created
+    /// This is useful to store where the component was emitted from
+    const std::string& getInstanciationSourceFileName() const;
+
+    /// Set the file location (line number) where the instance has been created
+    /// This is useful to store where the component was emitted from
+    void setInstanciationSourceFilePos(const int);
+
+    /// Get the file location (line number) where the instance has been created
+    /// This is useful to store where the component was emitted from
+    int getInstanciationSourceFilePos() const;
 
     /// @name fields
     ///   Data fields management
@@ -301,7 +329,7 @@ public:
     {
         void* result = findLinkDestClass(T::GetClass(), path, link);
         ptr = reinterpret_cast<T*>(result);
-        return (result != NULL);
+        return (result != nullptr);
     }
 
     virtual void copyAspect(int destAspect, int srcAspect);
@@ -382,7 +410,7 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
-    static std::string typeName(const T* ptr= NULL)
+    static std::string typeName(const T* ptr= nullptr)
     {
         return BaseClass::defaultTypeName(ptr);
     }
@@ -393,7 +421,7 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::className(ptr); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
-    static std::string className(const T* ptr= NULL)
+    static std::string className(const T* ptr= nullptr)
     {
         return BaseClass::defaultClassName(ptr);
     }
@@ -404,7 +432,7 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::namespaceName(ptr); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
-    static std::string namespaceName(const T* ptr= NULL)
+    static std::string namespaceName(const T* ptr= nullptr)
     {
         return BaseClass::defaultNamespaceName(ptr);
     }
@@ -415,7 +443,7 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::templateName(ptr); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
-    static std::string templateName(const T* ptr= NULL)
+    static std::string templateName(const T* ptr= nullptr)
     {
         return BaseClass::defaultTemplateName(ptr);
     }
@@ -427,12 +455,12 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::shortName(ptr); \endcode
     /// This way derived classes can redefine the shortName method
     template< class T>
-    static std::string shortName( const T* ptr = NULL, BaseObjectDescription* = NULL )
+    static std::string shortName( const T* ptr = nullptr, BaseObjectDescription* = nullptr )
     {
         std::string shortname = T::className(ptr);
         if( !shortname.empty() )
         {
-            *shortname.begin() = ::tolower(*shortname.begin());
+            *shortname.begin() = char(::tolower(*shortname.begin()));
         }
         return shortname;
     }
@@ -459,6 +487,11 @@ public:
 
     Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
 
+    std::string m_definitionSourceFileName        {""};
+    int         m_definitionSourceFilePos         {-1};
+    std::string m_instanciationSourceFileName     {""};
+    int         m_instanciationSourceFilePos      {-1};
+
     /// @name casting
     ///   trivial cast to a few base components
     ///   through virtual functions
@@ -471,8 +504,8 @@ public:
 
 
 #define SOFA_BASE_CAST_DEFINITION(NAMESPACE,CLASSNAME) \
-    virtual const NAMESPACE::CLASSNAME* to##CLASSNAME() const { return NULL; } \
-    virtual       NAMESPACE::CLASSNAME* to##CLASSNAME()       { return NULL; }
+    virtual const NAMESPACE::CLASSNAME* to##CLASSNAME() const { return nullptr; } \
+    virtual       NAMESPACE::CLASSNAME* to##CLASSNAME()       { return nullptr; }
 
     SOFA_BASE_CAST_DEFINITION( core,        BaseState                              )
     SOFA_BASE_CAST_DEFINITION( core,        BaseMapping                            )
@@ -541,14 +574,7 @@ namespace logging
         const sofa::core::objectmodel::Base* m_component ;
         std::string                          m_name;
 
-        SofaComponentInfo(const sofa::core::objectmodel::Base* c)
-        {
-            assert(c!=nullptr) ;
-            m_component = c ;
-            m_sender = c->getClassName() ;
-            m_name = c->getName() ;
-        }
-
+        SofaComponentInfo(const sofa::core::objectmodel::Base* c);
         const std::string& name() const { return m_name; }
         std::ostream& toStream(std::ostream &out) const
         {

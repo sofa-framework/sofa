@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -88,16 +88,24 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 		}
 	}
 
-    if (m_container->hasEdgesAroundVertex())
-    {
-        size_t edgeId = m_container->getNumberOfEdges();
+    unsigned int nbrP = m_container->getNbPoints();
+    for(unsigned int i=0; i<2; ++i)
+        if (e[i] + 1 > nbrP) // point not well init
+        {
+            nbrP = e[i] + 1;
+            m_container->setNbPoints(nbrP);
+        }
 
-        sofa::helper::vector< EdgeID > &shell0 = m_container->getEdgesAroundVertexForModification( e[0] );
-        shell0.push_back((EdgeID)edgeId);
+    if (m_container->m_edgesAroundVertex.size() != nbrP)
+        m_container->m_edgesAroundVertex.resize(nbrP);
 
-        sofa::helper::vector< EdgeID > &shell1 = m_container->getEdgesAroundVertexForModification( e[1] );
-        shell1.push_back((EdgeID)edgeId);
-    }
+    size_t edgeId = m_container->getNumberOfEdges();
+
+    sofa::helper::vector< EdgeID > &shell0 = m_container->m_edgesAroundVertex[e[0]];
+    shell0.push_back((EdgeID)edgeId);
+
+    sofa::helper::vector< EdgeID > &shell1 = m_container->m_edgesAroundVertex[e[1]];
+    shell1.push_back((EdgeID)edgeId);
 
     helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = m_container->d_edge;
     m_edge.push_back(e);

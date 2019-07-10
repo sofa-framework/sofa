@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="Root" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     
     <RequiredPlugin pluginName="Flexible"/>    
       
@@ -9,13 +10,14 @@
         
         <BarycentricShapeFunction name="SF"  />
         
-        <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" />
+        <OglModel name="Visual" fileMesh="mesh/torus.obj" />
+
     
 
         <Node 	name="child"   >
             
 	    <MechanicalObject  template="Vec3d" position="0 0 0" />
-    	    <LinearMapping template="Vec3d,Vec3d"  />
+            <LinearMapping template="Vec3d,Vec3d"  input="@../parent" output="@." />
 
         </Node>
 

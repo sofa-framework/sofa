@@ -1,28 +1,29 @@
 <?xml version="1.0"?>
 <!-- Mechanical RuleBasedContactManager Example -->
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaMiscCollision"/>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <FreeMotionAnimationLoop />
 	<GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="1.5" contactDistance="1.0" angleCone="0.0" />
     <RuleBasedContactManager name="Response" response="FrictionContact" rules="4 * default" />
-    <CollisionGroup name="Group" />
+    <DefaultCollisionGroupManager name="Group" />
     
     <Node name="Torus1">
         <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader" />
         <Mesh src="@loader"/>
         <MechanicalObject src="@loader" scale="5.0" />
-        <Triangle simulated="0" moving="0" name="Torus1Triangle" group="1" />
-        <Line simulated="0" moving="0" name="Torus1Triangle" group="1" />
-        <Point simulated="0" moving="0" name="Torus1Triangle" group="1" />
+        <TriangleCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
+        <LineCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
+        <PointCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
         <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="0.5 0.5 0.5 1.0" scale="5.0" />
     </Node>
 	
     <Node name="Torus2">
-		<EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+		<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" scale="5.0" dx="-12" dy="0" />
         <UniformMass filename="BehaviorModels/torus.rigid"/>
@@ -35,15 +36,15 @@
             <MeshObjLoader filename="mesh/torus_for_collision.obj" name="loader" />
             <Mesh src="@loader"/>
             <MechanicalObject src="@loader" scale="5.0" />
-            <Triangle name="Torus2Triangle" group="2" />
-            <Line name="Torus2Triangle" group="2" />
-            <Point name="Torus2Triangle" group="2" />
+            <TriangleCollisionModel name="Torus2Triangle" group="2" />
+            <LineCollisionModel name="Torus2Triangle" group="2" />
+            <PointCollisionModel name="Torus2Triangle" group="2" />
             <RigidMapping />
         </Node>
     </Node>
 	
     <Node name="Torus3">
-		<EulerImplicit rayleighStiffness="0.1" rayleighMass="0.1"/>
+		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1"/>
 		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" scale="5.0" dx="-25" dy="0" />
         <UniformMass filename="BehaviorModels/torus2.rigid"/>
@@ -56,15 +57,15 @@
             <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="5.0" />
-            <Triangle name="Torus3Triangle" group="3" />
-            <Line name="Torus3Triangle" group="3" />
-            <Point name="Torus3Triangle" group="3" />
+            <TriangleCollisionModel name="Torus3Triangle" group="3" />
+            <LineCollisionModel name="Torus3Triangle" group="3" />
+            <PointCollisionModel name="Torus3Triangle" group="3" />
             <RigidMapping />
         </Node>
     </Node>
 	
     <Node name="Torus4">
-		<EulerImplicit rayleighStiffness="0.1" rayleighMass="0.1"/>
+		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1"/>
 		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" scale="5.0" dx="-38" dy="0" />
         <UniformMass filename="BehaviorModels/torus.rigid"/>
@@ -77,9 +78,9 @@
             <MeshObjLoader filename="mesh/torus_for_collision.obj" name="loader" />
             <Mesh src="@loader"/>
             <MechanicalObject src="@loader" scale="5.0" />
-            <Triangle name="Torus4Triangle" group="4" />
-            <Line name="Torus4Line" group="4" />
-            <Point name="Torus4Point" group="4" />
+            <TriangleCollisionModel name="Torus4Triangle" group="4" />
+            <LineCollisionModel name="Torus4Line" group="4" />
+            <PointCollisionModel name="Torus4Point" group="4" />
             <RigidMapping />
         </Node>
     </Node>

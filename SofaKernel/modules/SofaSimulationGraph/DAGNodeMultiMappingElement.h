@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,16 +38,16 @@ class DAGNodeMultiMappingElement : public sofa::simulation::xml::BaseMultiMappin
 public:
     DAGNodeMultiMappingElement(const std::string& name,
             const std::string& type,
-            BaseElement* parent =NULL);
+            BaseElement* parent =nullptr);
 
-    const char* getClass() const;
+    const char* getClass() const override;
 
 protected:
     void updateSceneGraph(
         sofa::core::BaseMapping* multiMapping,
         const helper::vector<simulation::Node*>& ancestorInputs,
         helper::vector<simulation::Node*>& otherInputs,
-        helper::vector<simulation::Node*>& outputs);
+        helper::vector<simulation::Node*>& outputs)  override;
 };
 
 

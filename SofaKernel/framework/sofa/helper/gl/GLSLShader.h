@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,17 +34,13 @@ namespace sofa {
     }
 }
 
-#ifndef SOFA_HAVE_GLEW
-#error GL Shader support requires GLEW. Please define SOFA_HAVE_GLEW to use shaders.
-#endif
 
-#ifdef SOFA_HAVE_GLEW
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 
 #include <string>
-#include <string.h>
+#include <cstring>
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/helper.h>
@@ -294,6 +290,5 @@ protected:
 
 } // namespace sofa
 
-#endif /* SOFA_HAVE_GLEW */
 
 #endif /* SOFA_HELPER_GL_GLSLSHADER_H */

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -170,10 +170,10 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
     sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni(pos* data->scale, rot);
     sofa::defaulttype::SolidTypes<double>::Transform world_H_virtualTool = data->world_H_baseOmni * baseOmni_H_endOmni * data->endOmni_H_virtualTool;
 
-    Vec3d world_pos_tool = world_H_virtualTool.getOrigin();
     Quat world_quat_tool = world_H_virtualTool.getOrientation();
 
     ///////////////// 3D rendering ////////////////
+    //Vec3d world_pos_tool = world_H_virtualTool.getOrigin();
     //double fx=0.0, fy=0.0, fz=0.0;
     //if (data->forceFeedback != NULL)
     //	(data->forceFeedback)->computeForce(world_pos_tool[0], world_pos_tool[1], world_pos_tool[2], world_quat_tool[0], world_quat_tool[1], world_quat_tool[2], world_quat_tool[3], fx, fy, fz);
@@ -188,7 +188,7 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
     // which forcefeedback ?
     ForceFeedback* ff = 0;
     for (int i=0; i<data->forceFeedbacks.size() && !ff; i++)
-        if (data->forceFeedbacks[i]->indice==data->forceFeedbackIndice)
+        if (data->forceFeedbacks[i]->d_indice==data->forceFeedbackIndice)
             ff = data->forceFeedbacks[i];
 
     if (ff != NULL)
@@ -230,16 +230,16 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
     /* HDErrorInfo error;
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
-    	printError(stderr, &error, "Error during scheduler callback");
-    	if (isSchedulerError(&error))
-    	{
-    		return HD_CALLBACK_DONE;
-    	}
+        printError(stderr, &error, "Error during scheduler callback");
+        if (isSchedulerError(&error))
+        {
+                return HD_CALLBACK_DONE;
+        }
            }*/
     /*
-     	OmniX = data->servoDeviceData.transform[12+0]*0.1;
-    	OmniY =	data->servoDeviceData.transform[12+1]*0.1;
-    	OmniZ =	data->servoDeviceData.transform[12+2]*0.1;
+        OmniX = data->servoDeviceData.transform[12+0]*0.1;
+        OmniY =	data->servoDeviceData.transform[12+1]*0.1;
+        OmniZ =	data->servoDeviceData.transform[12+2]*0.1;
     */
 
     //cout << "OmniDriver::stateCallback END" << endl;
@@ -370,7 +370,7 @@ void OmniDriver::cleanup()
 void OmniDriver::setForceFeedbacks(vector<ForceFeedback*> ffs)
 {
     data.forceFeedbacks.clear();
-    for (int i=0; i<ffs.size(); i++)
+    for (size_t i=0; i<ffs.size(); i++)
         data.forceFeedbacks.push_back(ffs[i]);
     data.forceFeedbackIndice = 0;
 }
@@ -382,7 +382,7 @@ void OmniDriver::init()
     if (!mState) serr << "OmniDriver has no binding MechanicalState" << sendl;
     else sout << "[Omni] init" << sendl;
 
-    if(mState->getSize()<toolCount.getValue())
+    if(mState->getSize()<(size_t)toolCount.getValue())
         mState->resize(toolCount.getValue());
 }
 
@@ -436,7 +436,8 @@ void OmniDriver::reinit()
 }
 
 void OmniDriver::draw(const core::visual::VisualParams* vparam){
-	draw();
+    SOFA_UNUSED(vparam);
+    draw();
 }
 
 void OmniDriver::draw()
@@ -449,7 +450,7 @@ void OmniDriver::draw()
 
         visu_base = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-		visu_base->name.setValue("BaseOmni");
+                visu_base->name.setValue("BaseOmni");
         visu_base->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_base->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
@@ -460,7 +461,7 @@ void OmniDriver::draw()
 
         visu_end = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_end->fileMesh.setValue("mesh/stylus.obj");
-		visu_end->name.setValue("Stylus");
+                visu_end->name.setValue("Stylus");
         visu_end->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
         visu_end->init();
@@ -515,8 +516,8 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
                 // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
                 data.forceFeedbackIndice=currentToolIndex;
                 // which forcefeedback ?
-                for (int i=0; i<data.forceFeedbacks.size(); i++)
-                    if (data.forceFeedbacks[i]->indice==data.forceFeedbackIndice)
+                for (size_t i=0; i<data.forceFeedbacks.size(); i++)
+                    if (data.forceFeedbacks[i]->d_indice==data.forceFeedbackIndice)
                         data.forceFeedbacks[i]->setReferencePosition(world_H_virtualTool);
 
                 /// TODO : SHOULD INCLUDE VELOCITY !!

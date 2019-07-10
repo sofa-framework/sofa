@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,12 +52,12 @@ Aspect::~Aspect()
 
 void Aspect::add_ref()
 {
-    counter.inc();
+    counter++;
 }
 
 void Aspect::release()
 {
-    if(counter.dec_and_test_null())
+    if(counter.fetch_sub(1) == 1)
     {
         // release the aspect from the pool.
         pool.release(id);
@@ -83,7 +83,7 @@ AspectPool::AspectPool()
     aspects.resize(SOFA_DATA_MAX_ASPECTS);
     for(int i = 0; i < SOFA_DATA_MAX_ASPECTS; ++i)
     {
-        aspects[i] = new Aspect(*this, i);
+        aspects[size_t(i)] = new Aspect(*this, i);
         AtomicInt aspectID(i);
         freeAspects.push(aspectID);
     }
@@ -118,7 +118,7 @@ AspectRef AspectPool::allocate()
     AtomicInt aspectID;
     if(freeAspects.pop(aspectID))
     {
-        ref = aspects[aspectID];
+        ref = aspects[size_t(aspectID)];
     }
     return ref;
 }
@@ -140,13 +140,13 @@ void AspectPool::release(int id)
 
 AspectRef AspectPool::getAspect(int id)
 {
-    if ((unsigned)id >= aspects.size())
+    if (unsigned(id) >= aspects.size())
     {
         return AspectRef();
     }
     else
     {
-        return aspects[id];
+        return aspects[size_t(id)];
     }
 }
 

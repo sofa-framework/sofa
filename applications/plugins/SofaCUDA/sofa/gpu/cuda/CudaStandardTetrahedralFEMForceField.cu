@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,6 +72,16 @@ void StandardTetrahedralFEMForceFieldCuda3d_addDForce(int nbTetra, int nbEdges, 
 //////////////////////
 // GPU-side methods //
 //////////////////////
+
+/// Declaration of two functions, implemented below
+template <class real>
+__device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_deriveSPKTensor(int tetraIndex, real* tetraInfo, float paramArray0, float paramArray1);
+
+template <class real>
+__device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_ElasticityTensor(int tetraIndex, real* tetraInfo, real outputTensor[][6], real param0, real param1);
+
+	
+	
 template <class real>
 __device__ real dot(real* A, real* B, int n)
 {

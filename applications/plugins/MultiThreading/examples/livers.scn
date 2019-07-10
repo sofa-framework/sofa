@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <!--<RequiredPlugin pluginName="PluginXiCath_1_0.dll" />-->
   <RequiredPlugin pluginName="MultiThreading" />
   
@@ -29,7 +30,7 @@
       <Node name="Surf1" gravity="0 -9.81 0">
         <SphereLoader filename="mesh/liver.sph" />
         <MechanicalObject name="spheres" position="@[-1].position" />
-        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
         <BarycentricMapping name="sphere mapping" input="@../dofs1" output="@spheres" />
       </Node>
     </Node>
@@ -59,7 +60,7 @@
       <Node name="Surf2" gravity="0 -9.81 0">
         <SphereLoader filename="mesh/liver.sph" />
         <MechanicalObject name="spheres" position="@[-1].position" />
-        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
         <BarycentricMapping name="sphere mapping" input="@../dofs2" output="@spheres" />
       </Node>
     </Node>
@@ -89,7 +90,7 @@
       <Node name="Surf3" gravity="0 -9.81 0">
         <SphereLoader filename="mesh/liver.sph" />
         <MechanicalObject name="spheres" position="@[-1].position" />
-        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
         <BarycentricMapping name="sphere mapping" input="@../dofs3" output="@spheres" />
       </Node>
     </Node>
@@ -120,7 +121,7 @@
       <Node name="Surf4" gravity="0 -9.81 0">
         <SphereLoader filename="mesh/liver.sph" />
         <MechanicalObject name="spheres" position="@[-1].position" />
-        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
         <BarycentricMapping name="sphere mapping" input="@../dofs4" output="@spheres" />
       </Node>
     </Node>

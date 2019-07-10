@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaExporter VERSION 1.0 LANGUAGES CXX)
 
-find_package(SofaSimulation REQUIRED) # SofaGeneralLinearSolver
+find_package(SofaSimulation REQUIRED)
 
 set(HEADER_FILES
     src/SofaExporter/config.h
@@ -42,11 +42,42 @@ list(APPEND SOURCE_FILES
     src/SofaExporter/WriteTopology.cpp
     )
 
+find_package(SofaPython QUIET)
+if(SofaPython_FOUND)
+    list(APPEND HEADER_FILES
+        src/SofaExporter/bindings/Binding_OBJExporter.h
+        src/SofaExporter/bindings/Binding_STLExporter.h
+    )
+    list(APPEND SOURCE_FILES
+        src/SofaExporter/bindings/Binding_OBJExporter.cpp
+        src/SofaExporter/bindings/Binding_STLExporter.cpp
+    )
+else()
+    message(STATUS "SofaPython disabled, will not compile python bindings.")
+endif()
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
-target_compile_definitions(${PROJECT_NAME} PRIVATE COMPILE_FLAGS "-DSOFA_BUILD_EXPORTER")
-target_compile_definitions(${PROJECT_NAME} PUBLIC COMPILE_FLAGS "-DSOFA_HAVE_SOFAEXPORTER")
-
+if(SofaPython_FOUND)
+target_link_libraries(${PROJECT_NAME} PRIVATE SofaPython)
+endif()
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_EXPORTER")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAEXPORTER")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
-sofa_create_package(SofaExporter ${PROJECT_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_generate_package(
+    NAME SofaExporter
+    VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "src/SofaExporter"
+    INCLUDE_INSTALL_DIR "SofaExporter/SofaExporter"
+    )
+
+# Enable tests if SofaTest found
+# Will pass only in out-of-SOFA builds
+# See modules/tests/CMakeLists.txt if building through SOFA
+find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    add_subdirectory(SofaExporter_test)
+endif()

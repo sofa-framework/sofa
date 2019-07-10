@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -461,7 +461,7 @@ bool invertMatrix(MatSym<S,real>& dest, const MatSym<S,real>& from)
 
         if (pivot <= (real) MIN_DETERMINANT)
         {
-            msg_error("MatSym") << "invertMatrix finds too small determinant, matrix = "<<from;
+            msg_error("MatSym") << "invertMatrix (general case) finds too small determinant: " << pivot << " for matrix = " << from;
             return false;
         }
 
@@ -516,7 +516,7 @@ bool invertMatrix(MatSym<3,real>& dest, const MatSym<3,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        msg_error("MatSym") << "invertMatrix finds too small determinant, matrix = "<<from;
+        msg_error("MatSym") << "invertMatrix (special case 3x3) finds too small determinant: " << det << " for matrix = " << from;
         return false;
     }
 
@@ -538,7 +538,7 @@ bool invertMatrix(MatSym<2,real>& dest, const MatSym<2,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        msg_error("MatSym") << "invertMatrix finds too small determinant, matrix = "<<from;
+        msg_error("MatSym") << "invertMatrix (special case 2x2) finds too small determinant: " << det << " for matrix = " << from;
         return false;
     }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,6 +68,14 @@ public:
     typedef sofa::helper::fixed_array<EdgeID,6>		EdgesInTetrahedron;
     typedef sofa::helper::fixed_array<QuadID,6>		QuadsInHexahedron;
     typedef sofa::helper::fixed_array<EdgeID,12>    EdgesInHexahedron;
+
+    static EdgesInTriangle        InvalidEdgesInTriangles;
+    static EdgesInQuad            InvalidEdgesInQuad;
+    static TrianglesInTetrahedron InvalidTrianglesInTetrahedron;
+    static EdgesInTetrahedron     InvalidEdgesInTetrahedron;
+    static QuadsInHexahedron      InvalidQuadsInHexahedron;
+    static EdgesInHexahedron      InvalidEdgesInHexahedron;
+
     /// @}
 
     /// dynamic-size neighbors arrays
@@ -88,7 +96,7 @@ public:
 protected:
     BaseMeshTopology()	;
 public:
-    virtual void init() override;
+    void init() override;
 
     /// Load the topology from a file.
     ///
@@ -240,10 +248,10 @@ public:
     /// @name Initial points accessors (only available if the topology was loaded from a file containing this information).
     /// Note that this data is only used for initialization and is not maintained afterwards (i.e. topological changes may not be applied)
     /// @{
-    virtual bool hasPos() const override { return false; }
-    virtual SReal getPX(int) const override { return 0.0; }
-    virtual SReal getPY(int) const override { return 0.0; }
-    virtual SReal getPZ(int) const override { return 0.0; }
+    bool hasPos() const override { return false; }
+    SReal getPX(int) const override { return 0.0; }
+    SReal getPY(int) const override { return 0.0; }
+    SReal getPZ(int) const override { return 0.0; }
     /// @}
 
     /// Procedural creation methods
@@ -321,10 +329,14 @@ protected:
 
 public:
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
+
+// map of triangles orientation inside a tetrahedron.
+static const unsigned int trianglesOrientationInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0}, {0,2,1}};
+static const unsigned int quadsOrientationInHexahedronArray[6][4]= {{0,3,2,1}, {4,5,6,7}, {0,1,5,4}, {1,2,6,5}, {2,3,7,6}, {3,0,4,7}};
 
 } // namespace topology
 

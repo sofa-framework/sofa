@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,15 +48,12 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
         .add< IdentityMapping< Vec6Types, Vec6Types > >()
         .add< IdentityMapping< Rigid3Types, Rigid3Types > >()
         .add< IdentityMapping< Rigid2Types, Rigid2Types > >()
-        .add< IdentityMapping< Vec3dTypes, ExtVec3Types > >()
-        .add< IdentityMapping< Vec6Types, ExtVec3Types > >()
 
 
 
 // Rigid -> Vec
         .add< IdentityMapping< Rigid3Types, Vec3dTypes > >()
         .add< IdentityMapping< Rigid2Types, Vec2Types > >()
-        .add< IdentityMapping< Rigid3Types, ExtVec3Types > >()
 
         ;
 
@@ -66,12 +63,9 @@ template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2Types, Vec2Types >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1Types, Vec1Types >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6Types, Vec3dTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6Types, Vec6Types >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, ExtVec3Types >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6Types, ExtVec3Types >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3Types, Rigid3Types >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2Types, Rigid2Types >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3Types, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3Types, ExtVec3Types >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2Types, Vec2Types >;
 
 

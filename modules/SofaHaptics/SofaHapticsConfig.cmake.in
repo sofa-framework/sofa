@@ -1,0 +1,13 @@
+# CMake package configuration file for the SofaHaptics module
+
+@PACKAGE_INIT@
+
+find_package(SofaGeneral REQUIRED) # To have SofaConstraint
+
+### Is the target existing ?
+if(NOT TARGET SofaHaptics)
+        ### If not we are building out of tree.
+        include("${CMAKE_CURRENT_LIST_DIR}/SofaHapticsTargets.cmake")
+endif()
+
+check_required_components(SofaHaptics)

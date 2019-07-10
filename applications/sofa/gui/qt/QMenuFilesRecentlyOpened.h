@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -37,12 +37,12 @@ namespace qt
 class SOFA_SOFAGUIQT_API QMenuFilesRecentlyOpened: public FilesRecentlyOpenedManager
 {
 public:
-    QMenuFilesRecentlyOpened(const std::string &configFile):FilesRecentlyOpenedManager(configFile),menuRecentlyOpenedFiles(0) {};
-    virtual ~QMenuFilesRecentlyOpened() {if (menuRecentlyOpenedFiles) delete menuRecentlyOpenedFiles;};
-    void openFile(const std::string &file);
+    QMenuFilesRecentlyOpened(const std::string &configFile):FilesRecentlyOpenedManager(configFile),menuRecentlyOpenedFiles(nullptr) {}
+    ~QMenuFilesRecentlyOpened() override {if (menuRecentlyOpenedFiles) delete menuRecentlyOpenedFiles;}
+    void openFile(const std::string &file) override;
 
     QMenu *createWidget(QWidget *parent, const std::string& =std::string("Recently Opened Files ..."));
-    QMenu *getMenu() {return menuRecentlyOpenedFiles;};
+    QMenu *getMenu() {return menuRecentlyOpenedFiles;}
 
 protected:
     void updateWidget();

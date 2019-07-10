@@ -1,10 +1,13 @@
 <?xml version="1.0" ?>
 <Node name="lroot" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
     <DiscreteIntersection/>
-	
+
+    <MeshObjLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
+
     <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -16,13 +19,13 @@
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
         <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
-            <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+            <OglModel  name="VisualModel" src="@../../LiverSurface" />
             <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
             <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject name="spheres" position="@[-1].position" />
-            <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+            <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
             <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
         </Node>
     </Node>

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 #ifndef SOFA_HELPER_SYSTEM_THREAD_CIRCULARQUEUE_H
 #define SOFA_HELPER_SYSTEM_THREAD_CIRCULARQUEUE_H
 
-#include "../atomic.h"
+#include <atomic>
 #include <sofa/helper/fixed_array.h>
 
 namespace sofa
@@ -171,7 +171,7 @@ class SOFA_HELPER_API ManyThreadsPerEnd
 public:
 
 protected:
-    typedef helper::system::atomic<int> AtomicInt;
+    typedef std::atomic<int> AtomicInt;
 
     ManyThreadsPerEnd();
     

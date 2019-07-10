@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -156,13 +156,25 @@ void  FixedConstraint<DataTypes>::checkIndices()
     unsigned int maxIndex=this->mstate->getSize();
 
     const SetIndexArray & indices = d_indices.getValue();
+    SetIndexArray invalidIndices;
     for (unsigned int i=0; i<indices.size(); ++i)
     {
         const unsigned int index=indices[i];
         if (index >= maxIndex)
         {
-            msg_warning() << "Index " << index << " not valid, should be [0,"<< maxIndex <<"]";
-            removeConstraint(index);
+            msg_warning() << "Index " << index << " not valid, should be [0,"<< maxIndex <<"]. Constraint will be removed.";
+            invalidIndices.push_back(index);
+        }
+    }
+
+    // if invalid indices, sort them and remove in decreasing order as removeConstraint perform a swap and pop_back.
+    if (!invalidIndices.empty())
+    {
+        std::sort( invalidIndices.begin(), invalidIndices.end(), std::greater<unsigned int>() );
+        int max = invalidIndices.size()-1;
+        for (int i=max; i>= 0; i--)
+        {
+            removeConstraint(invalidIndices[i]);
         }
     }
 }

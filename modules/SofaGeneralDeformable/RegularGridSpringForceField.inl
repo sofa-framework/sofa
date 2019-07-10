@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,9 +35,31 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
+RegularGridSpringForceField<DataTypes>::RegularGridSpringForceField()
+    : RegularGridSpringForceField(nullptr, nullptr)
+{
+}
+
+template<class DataTypes>
+RegularGridSpringForceField<DataTypes>::RegularGridSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2)
+    : StiffSpringForceField<DataTypes>(object1, object2),
+      linesStiffness  (initData(&linesStiffness,Real(100),"linesStiffness","Lines Stiffness"))
+      , linesDamping  (initData(&linesDamping  ,Real(5),"linesDamping"  ,"Lines Damping"))
+      , quadsStiffness(initData(&quadsStiffness,Real(100),"quadsStiffness","Quads Stiffness"))
+      , quadsDamping  (initData(&quadsDamping  ,Real(5),"quadsDamping"  ,"Quads Damping"))
+      , cubesStiffness(initData(&cubesStiffness,Real(100),"cubesStiffness","Cubes Stiffness"))
+      , cubesDamping  (initData(&cubesDamping  ,Real(5),"cubesDamping"  ,"Cubes Damping"))
+      , topology(nullptr)
+{
+    this->addAlias(&linesStiffness,    "stiffness"); this->addAlias(&linesDamping,    "damping");
+    this->addAlias(&quadsStiffness,    "stiffness"); this->addAlias(&quadsDamping,    "damping");
+    this->addAlias(&cubesStiffness,    "stiffness"); this->addAlias(&cubesDamping,    "damping");
+}
+
+template<class DataTypes>
 void RegularGridSpringForceField<DataTypes>::init()
 {
-    if (this->mstate1 == NULL)
+    if (this->mstate1 == nullptr)
     {
         this->mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>* >(this->getContext()->getMechanicalState());
         this->mstate2 = this->mstate1;

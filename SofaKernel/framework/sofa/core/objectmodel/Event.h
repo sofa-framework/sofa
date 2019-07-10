@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_EVENT_H
 
 #include <sofa/core/core.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace sofa
 {
@@ -39,7 +39,7 @@ namespace objectmodel
     protected:\
     static const size_t s_eventTypeIndex; \
     public:\
-    virtual size_t getEventTypeIndex() const { return T::s_eventTypeIndex; } \
+    virtual size_t getEventTypeIndex() const override { return T::s_eventTypeIndex; } \
     static bool checkEventType( const Event* event ) { return event->getEventTypeIndex() == T::s_eventTypeIndex; }
 
 
@@ -78,6 +78,8 @@ public:
     /// Should be implemented by using macros SOFA_EVENT_H / SOFA_EVENT_CPP
     virtual size_t getEventTypeIndex() const = 0;
 
+    /// \returns the total number of events available in SOFA
+    static size_t getEventTypeCount() { return s_lastEventTypeIndex; }
 protected:
     bool m_handled;
 

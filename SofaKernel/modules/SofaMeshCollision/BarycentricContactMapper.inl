@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,10 +42,10 @@ namespace collision
 template < class TCollisionModel, class DataTypes >
 void BarycentricContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
-    if (mapping!=NULL)
+    if (mapping != nullptr)
     {
         simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             simulation::Node::SPtr child = dynamic_cast<simulation::Node*>(mapping->getContext());
             child->detachFromGraph();
@@ -59,12 +59,13 @@ void BarycentricContactMapper<TCollisionModel,DataTypes>::cleanup()
 template < class TCollisionModel, class DataTypes >
 typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* BarycentricContactMapper<TCollisionModel,DataTypes>::createMapping(const char* name)
 {
-    if (model==NULL) return NULL;
+    if (model == nullptr)
+        return nullptr;
     simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
-    if (parent==NULL)
+    if (parent==nullptr)
     {
         msg_error("BarycentricContactMapper") << "BarycentricContactMapper only works for scenegraph scenes.";
-        return NULL;
+        return nullptr;
     }
     simulation::Node::SPtr child = parent->createChild(name);
     typename MMechanicalObject::SPtr mstate = sofa::core::objectmodel::New<MMechanicalObject>();

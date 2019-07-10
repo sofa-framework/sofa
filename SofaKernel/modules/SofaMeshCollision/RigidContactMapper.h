@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,10 +78,7 @@ public:
     int nbp;
 
 protected:
-    RigidContactMapper()
-        : model(NULL), child(NULL), mapping(NULL), outmodel(NULL), nbp(0)
-    {
-    }
+    RigidContactMapper();
 
 public:
 
@@ -96,9 +93,9 @@ public:
 
     void resize(int size)
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
             mapping->clear(size);
-        if (outmodel!=NULL)
+        if (outmodel != nullptr)
             outmodel->resize(size);
         nbp = 0;
     }
@@ -122,7 +119,7 @@ public:
 
     void update()
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
             map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
@@ -132,7 +129,7 @@ public:
 
     void updateXfree()
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
             map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());

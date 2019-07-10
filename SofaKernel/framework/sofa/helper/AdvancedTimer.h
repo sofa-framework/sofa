@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -120,6 +120,34 @@ namespace helper
   ==== END ====
 
  */
+
+class Record
+{
+public:
+    sofa::helper::system::thread::ctime_t time;
+    enum Type { RNONE, RBEGIN, REND, RSTEP_BEGIN, RSTEP_END, RSTEP, RVAL_SET, RVAL_ADD } type;
+    std::string label;
+    unsigned int id;
+    unsigned int obj;
+    double val;
+    Record() : type(RNONE), id(0), obj(0), val(0) {}
+};
+
+class StepData
+{
+public:
+    int level;
+    int num, numIt;
+    sofa::helper::system::thread::ctime_t tstart;
+    sofa::helper::system::thread::ctime_t tmin;
+    sofa::helper::system::thread::ctime_t tmax;
+    sofa::helper::system::thread::ctime_t ttotal;
+    sofa::helper::system::thread::ctime_t ttotal2;
+    int lastIt;
+    sofa::helper::system::thread::ctime_t lastTime;
+    std::string label;
+    StepData() : level(0), num(0), numIt(0), tstart(0), tmin(0), tmax(0), ttotal(0), ttotal2(0), lastIt(-1), lastTime(0) {}
+};
 
 class SOFA_HELPER_API AdvancedTimer
 {
@@ -264,7 +292,8 @@ public:
     {
         STDOUT,
         LJSON,
-        JSON
+        JSON,
+        GUI
     };
 
 
@@ -303,6 +332,34 @@ public:
      */
     static std::string getTimeAnalysis(IdTimer id, simulation::Node* node);
 
+    /**
+     * @brief getSteps Return the vector of IDStep of the AdvancedTimer given execution
+     * @param id IdTimer, id of the timer
+     * @param processData bool, if true, will force timer data to be processed
+     * @return The timer steps iterator inside a vector
+     */
+    static helper::vector<AdvancedTimer::IdStep> getSteps(IdTimer id, bool processData = false);
+
+    /**
+     * @brief getStepData Return the map of StepData of the AdvancedTimer given execution
+     * @param id IdTimer, id of the timer
+     * @param processData bool, if true, will force timer data to be processed
+     * @return The timer StepData of each timer step inside a map
+     */
+    static std::map<AdvancedTimer::IdStep, StepData> getStepData(IdTimer id, bool processData = false);
+
+    /**
+     * @brief getRecords the vector of \sa Record of the AdvancedTimer given execution id.
+     * @param id IdTimer, id of the timer
+     * @return The timer full records inside a vector of \sa Record
+     */
+    static helper::vector<Record> getRecords(IdTimer id);
+
+    /**
+     * @brief clearDatato clear a specific Timer Data
+     * @param id IdTimer, id of the timer
+     */
+    static void clearData(IdTimer id);
 
     static void clear();
     static void begin(IdTimer id);
@@ -359,6 +416,9 @@ public:
 
     // API using strings instead of Id, to remove the need for Id creation when no timing is recorded
 
+    static void begin(const char* idStr);
+    static void end(const char* idStr);
+
     static void stepBegin(const char* idStr);
     static void stepBegin(const char* idStr, const char* objStr);
     static void stepBegin(const char* idStr, const std::string& objStr);
@@ -392,15 +452,15 @@ public:
         const char* idStr;
         const IdObj obj;
         const char* objStr;
-        StepVar(IdStep id) : id(id), idStr(NULL), objStr(NULL)
+        StepVar(IdStep id) : id(id), idStr(nullptr), objStr(nullptr)
         {
             stepBegin(id);
         }
-        StepVar(const char* idStr) : idStr(idStr), objStr(NULL)
+        StepVar(const char* idStr) : idStr(idStr), objStr(nullptr)
         {
             stepBegin(idStr);
         }
-        StepVar(IdStep id, IdObj obj) : id(id), idStr(NULL), obj(obj), objStr(NULL)
+        StepVar(IdStep id, IdObj obj) : id(id), idStr(nullptr), obj(obj), objStr(nullptr)
         {
             stepBegin(id, obj);
         }
@@ -439,7 +499,7 @@ public:
 
 
     typedef void (*SyncCallBack)(void* userData);
-    static std::pair<SyncCallBack,void*> setSyncCallBack(SyncCallBack cb, void* userData = NULL);
+    static std::pair<SyncCallBack,void*> setSyncCallBack(SyncCallBack cb, void* userData = nullptr);
 
 };
 
@@ -455,6 +515,12 @@ extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
 struct ScopedAdvancedTimer {
 
     const char* message;
+
+    ScopedAdvancedTimer(const std::string& message)
+        : ScopedAdvancedTimer(message.c_str())
+    {
+
+    }
 
     ScopedAdvancedTimer( const char* message )
     : message( message )

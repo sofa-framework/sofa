@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -909,70 +909,6 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
         averageVector2 /=  triangleInf[elementIndex].lastNStressDirection.size();
 
     triangleInf[elementIndex].principalStressDirection = averageVector2;
-
-#ifdef PLOT_CURVE
-    Coord direction2((Real)V(1,D.Ncols() +1 - biggestIndex), (Real)V(2,D.Ncols() +1 - biggestIndex), 0.0);
-    direction2.normalize();
-
-    Coord principalStressDir2 = triangleInf[elementIndex].rotation * direction2;//need to rotate to be in global frame instead of local
-    principalStressDir2 *= fabs((Real)D(D.Ncols() +1 - biggestIndex,D.Ncols() +1 - biggestIndex))/100.0;
-
-    //compute an angle between the principal stress direction and the x-axis
-    Real orientation2 = dot( averageVector2, Coord(1.0, 0.0, 0.0));
-    Real orientation1 = dot( averageVector1, Coord(1.0, 0.0, 0.0));
-    Real orientation0 = dot( principalStressDir, Coord(1.0, 0.0, 0.0));
-    Real orientationSecond = dot( principalStressDir2, Coord(1.0, 0.0, 0.0));
-
-    /* store the values which are plot*/
-    if (allGraphStress.size() <= elementIndex)
-        allGraphStress.resize(elementIndex+1);
-    if (allGraphCriteria.size() <= elementIndex)
-        allGraphCriteria.resize(elementIndex+1);
-    if (allGraphOrientation.size() <= elementIndex)
-        allGraphOrientation.resize(elementIndex+1);
-
-    std::map<std::string, sofa::helper::vector<double> > &stressMap = allGraphStress[elementIndex];
-    std::map<std::string, sofa::helper::vector<double> > &criteriaMap = allGraphCriteria[elementIndex];
-    std::map<std::string, sofa::helper::vector<double> > &orientationMap = allGraphOrientation[elementIndex];
-
-    stressMap["first stress eigenvalue"].push_back((double)(triangleInf[elementIndex].maxStress));
-    stressMap["second stress eigenvalue"].push_back((double)(fabs(D(1,1))));
-
-    criteriaMap["fracture criteria"].push_back((double)(triangleInf[elementIndex].differenceToCriteria));
-
-    orientationMap["principal stress direction orientation with 30-average"].push_back((double)(acos(orientation2) * 180 / 3.14159265));
-    orientationMap["principal stress direction orientation with 10-average"].push_back((double)(acos(orientation1) * 180 / 3.14159265));
-    orientationMap["principal stress direction orientation with no-average"].push_back((double)(acos(orientation0) * 180 / 3.14159265));
-    orientationMap["second stress direction orientation with no-average"].push_back((double)(acos(orientationSecond) * 180 / 3.14159265));
-
-
-    //save values in graphs
-    if (elementIndex == elementID.getValue())
-    {
-        std::map < std::string, sofa::helper::vector<double> >& graphStress = *f_graphStress.beginEdit();
-        sofa::helper::vector<double>& graph_maxStress1 = graphStress["first stress eigenvalue"];
-        graph_maxStress1.push_back((double)(triangleInf[elementIndex].maxStress));
-        sofa::helper::vector<double>& graph_maxStress2 = graphStress["second stress eigenvalue"];
-        graph_maxStress2.push_back((double)(fabs(D(1,1))));
-        f_graphStress.endEdit();
-
-        std::map < std::string, sofa::helper::vector<double> >& graphCriteria = *f_graphCriteria.beginEdit();
-        sofa::helper::vector<double>& graph_criteria = graphCriteria["fracture criteria"];
-        graph_criteria.push_back((double)(triangleInf[elementIndex].differenceToCriteria));
-        f_graphCriteria.endEdit();
-
-        std::map < std::string, sofa::helper::vector<double> >& graphOrientation = *f_graphOrientation.beginEdit();
-        sofa::helper::vector<double>& graph_orientation2 = graphOrientation["principal stress direction orientation with 30-average"];
-        graph_orientation2.push_back((double)(acos(orientation2) * 180 / 3.14159265));
-        sofa::helper::vector<double>& graph_orientation1 = graphOrientation["principal stress direction orientation with 10-average"];
-        graph_orientation1.push_back((double)(acos(orientation1) * 180 / 3.14159265));
-        sofa::helper::vector<double>& graph_orientation0 = graphOrientation["principal stress direction orientation with no-average"];
-        graph_orientation0.push_back((double)(acos(orientation0) * 180 / 3.14159265));
-        sofa::helper::vector<double>& graph_orientationSecond = graphOrientation["second stress direction orientation with no-average"];
-        graph_orientationSecond.push_back((double)(acos(orientationSecond) * 180 / 3.14159265));
-        f_graphOrientation.endEdit();
-    }
-#endif
 
     triangleInfo.endEdit();
 }

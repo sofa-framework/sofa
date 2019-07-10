@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -260,8 +260,7 @@ void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3fTypes>::resize( core:
 // Spread the instanciations over multiple files for more efficient and lightweight compilation
 
 // Instantiations involving only CudaVec3fTypes
-template class BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes>;
-template class BarycentricMapping< CudaVec3fTypes, ExtVec3fTypes>;
+template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes>;
 
 
 } // namespace mapping
@@ -281,7 +280,6 @@ using namespace sofa::component::mapping;
 
 int BarycentricMappingCudaClass_3f = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes> >()
-        .add< BarycentricMapping< CudaVec3fTypes, ExtVec3fTypes> >()
         ;
 
 } // namespace cuda

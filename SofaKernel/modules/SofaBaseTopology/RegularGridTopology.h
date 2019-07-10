@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,13 +61,13 @@ protected:
     /// Constructor for regular grid defined using number of vertices and size
     RegularGridTopology(const Vec3i &numVertices, BoundingBox box );
 
-    virtual void changeGridResolutionPostProcess() override;
+    void changeGridResolutionPostProcess() override;
 public:
     /// BaseObject method should be overwritten by children
-    virtual void init() override;
+    void init() override;
 
     /// BaseObject method should be overwritten by children
-    virtual void reinit() override;
+    void reinit() override;
 
     /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
@@ -76,6 +76,27 @@ public:
      * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
      * */
     Vector3 getPointInGrid(int i, int j, int k) const override;
+
+    /**
+     * Get the index of a node located close to a given position.
+     *
+     * @param position The world coordinates of the queried node.
+     * @return The index of the node, or -1 if no such node exists at that position.
+     */
+    virtual int findPoint(const Vector3& position) const;
+
+    /**
+     * Get the index of a node located at a given position.
+     *
+     * @param position The world coordinates of the queried node.
+     * @param epsilon Allows a small margin around the queried position to find the node. This value
+     * is relative to the size of a cell. As an example, setting epsilon = 0.01 will return the index of the closest
+     * node within a sphere radius of 1% of the cell size around the queried position. Setting this value outside of
+     * [0, 1] will have no effect as only the nodes of the containing cell are taken.
+     *
+     * @return The index of the node, or -1 if no such node exists at that position.
+     */
+    virtual int findPoint(const Vector3& position, SReal epsilon) const;
 
 
     /// set the spatial extent
@@ -128,7 +149,7 @@ public:
     int findNearestHexa(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) { return findNearestCube(pos, fx, fy, fz); }
 
     /// Overload Method of @sa GridTopology::createTexCoords called at init if @sa d_createTexCoords is true
-    virtual void createTexCoords() override;
+    void createTexCoords() override;
 
 public:
     /// Data storing min and max 3D position of the grid bounding box

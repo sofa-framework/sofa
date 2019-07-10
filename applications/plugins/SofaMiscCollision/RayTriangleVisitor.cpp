@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,6 @@
 #include "RayTriangleVisitor.h"
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaOpenglVisual/OglModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -118,9 +117,9 @@ void RayTriangleVisitor::processTriangleModel(simulation::Node* /*node*/, compon
     }
 }
 
-void RayTriangleVisitor::processOglModel(simulation::Node* /*node*/, component::visualmodel::OglModel* om)
+void RayTriangleVisitor::processVisualModel(simulation::Node* /*node*/, component::visualmodel::VisualModelImpl* om)
 {
-    typedef component::visualmodel::OglModel::DataTypes DataTypes;
+    typedef component::visualmodel::VisualModelImpl::DataTypes DataTypes;
 
     const DataTypes::VecCoord& x = om->getVertices();
     for( std::size_t i=0; i<om->getTriangles().size(); i++ )
@@ -171,7 +170,7 @@ void RayTriangleVisitor::processOglModel(simulation::Node* /*node*/, component::
 simulation::Visitor::Result RayTriangleVisitor::processNodeTopDown(simulation::Node* node)
 {
     using core::visual::VisualModel;
-    using sofa::component::visualmodel::OglModel;
+    using component::visualmodel::VisualModelImpl;
     typedef simulation::Node::Sequence<core::CollisionModel> CollisionModels;
     typedef simulation::Node::Sequence<VisualModel> VisualModels;
     using component::collision::TriangleModel;
@@ -184,8 +183,8 @@ simulation::Visitor::Result RayTriangleVisitor::processNodeTopDown(simulation::N
     }
     for( VisualModels::const_iterator it=node->visualModel.begin(), iend=node->visualModel.end(); it!=iend; it++ )
     {
-        if( OglModel* tmodel = dynamic_cast<OglModel*>(*it) ) {
-            processOglModel(node,tmodel);
+        if( VisualModelImpl* tmodel = dynamic_cast<VisualModelImpl*>(*it) ) {
+            processVisualModel(node,tmodel);
         }
     }
 

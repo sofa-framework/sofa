@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 -9.81 0" dt="0.005"   >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showInteractionForceFields" />
   <Gravity name="G"  gravity="0 -9.8 0" />
   <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
 
 
-    <CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+    <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
   <BruteForceDetection name="detection" />
-  <CollisionResponse name="response" response="default" />
+  <DefaultContactManager name="response" response="default" />
   <MinProximityIntersection name="proximity" alarmDistance="0.8" contactDistance="0.5" useSurfaceNormals="true"/>
 
   <NewOmniDriver name="Omni Driver"  listening="true" tags="Omni" forceScale="0.5" scale="500"  permanent="true" />
@@ -23,7 +24,7 @@
     <Node 	name="CollisionModel"  >
 
       <MechanicalObject template="Vec3d" name="Particle"  position="0 0 0" />
-      <Point name="ParticleModel" contactStiffness="2" />
+      <PointCollisionModel name="ParticleModel" contactStiffness="2" />
       <RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@instrumentState"  output="@Particle" />
         <EnslavementForceFeedback name="forcefeedback" tags="Omni" collisionModel1="@ParticleModel" collisionModel2="" relativeStiffness="4" attractionDistance="0.3" normalsPointOut="false"/>
 
@@ -39,7 +40,7 @@
       <MeshObjLoader name="loader"  filename="data/mesh/box_inside.obj" />
       <MeshTopology src="@loader" name="BoxCollisionModel" />
       <MechanicalObject src="@loader" template="Vec3d" name="boxState" />
-      <Triangle />
+      <TriangleCollisionModel />
 
     </Node>
   </Node>

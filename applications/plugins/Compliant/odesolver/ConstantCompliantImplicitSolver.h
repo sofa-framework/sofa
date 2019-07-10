@@ -25,12 +25,12 @@ class SOFA_Compliant_API ConstantCompliantImplicitSolver : public CompliantImpli
 				
     SOFA_CLASS(ConstantCompliantImplicitSolver, CompliantImplicitSolver);
 
-    virtual void reinit();
+    void reinit() override;
 
   protected:
 
     /// a derivable function creating and calling the assembly visitor to create an AssembledSystem
-    virtual void perform_assembly( const core::MechanicalParams *mparams, system_type& sys );
+    void perform_assembly( const core::MechanicalParams *mparams, system_type& sys ) override;
 				
 
 };

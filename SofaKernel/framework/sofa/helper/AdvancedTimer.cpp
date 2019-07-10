@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,6 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/system/atomic.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/map.h>
 #include <../extlibs/json/json.h>
@@ -54,17 +53,6 @@ template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
 
-class Record
-{
-public:
-    ctime_t time;
-    enum Type { RNONE, RBEGIN, REND, RSTEP_BEGIN, RSTEP_END, RSTEP, RVAL_SET, RVAL_ADD } type;
-    unsigned int id;
-    unsigned int obj;
-    double val;
-    Record() : type(RNONE), id(0), obj(0), val(0) {}
-};
-
 class TimerData
 {
 public:
@@ -74,21 +62,6 @@ public:
     int interval;
     int defaultInterval;
     AdvancedTimer::outputType timerOutputType;
-
-    class StepData
-    {
-    public:
-        int level;
-        int num, numIt;
-        ctime_t tstart;
-        ctime_t tmin;
-        ctime_t tmax;
-        ctime_t ttotal;
-        ctime_t ttotal2;
-        int lastIt;
-        ctime_t lastTime;
-        StepData() : level(0), num(0), numIt(0), tstart(0), tmin(0), tmax(0), ttotal(0), ttotal2(0), lastIt(-1), lastTime(0) {}
-    };
 
     std::map<AdvancedTimer::IdStep, StepData> stepData;
     helper::vector<AdvancedTimer::IdStep> steps;
@@ -139,7 +112,7 @@ public:
 
 std::map< AdvancedTimer::IdTimer, TimerData > timers;
 
-helper::system::atomic<int> activeTimers;
+std::atomic<int> activeTimers;
 SOFA_THREAD_SPECIFIC_PTR(std::stack<AdvancedTimer::IdTimer>, curTimerThread);
 SOFA_THREAD_SPECIFIC_PTR(helper::vector<Record>, curRecordsThread);
 
@@ -319,6 +292,14 @@ void AdvancedTimer::end(IdTimer id)
         msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
         return;
     }
+
+    TimerData& dataT = timers[id];
+    if (dataT.timerOutputType == GUI || dataT.timerOutputType == LJSON || dataT.timerOutputType == JSON)
+    {
+        dataT.clear();
+        return;
+    }
+
     helper::vector<Record>* curRecords = getCurRecords();
     if (curRecords)
     {
@@ -361,6 +342,7 @@ std::string AdvancedTimer::end(IdTimer id, simulation::Node* node)
     {
         case JSON   : return getTimeAnalysis(id, node);
         case LJSON  : return getTimeAnalysis(id, node);
+        case GUI    : return std::string("");
         case STDOUT : end(id);
                       return std::string("");
         default :     end(id);
@@ -487,6 +469,16 @@ void AdvancedTimer::valAdd(IdVal id, double val)
 }
 
 // API using strings instead of Id, to remove the need for Id creation when no timing is recorded
+
+void AdvancedTimer::begin(const char* idStr)
+{
+    begin(IdTimer(idStr));
+}
+
+void AdvancedTimer::end(const char* idStr)
+{
+    end(IdTimer(idStr));
+}
 
 void AdvancedTimer::stepBegin(const char* idStr)
 {
@@ -617,6 +609,7 @@ void TimerData::process()
                 ++data.numIt;
             }
             data.lastTime = t;
+            data.label = std::string(id);
             ++data.num;
             break;
         }
@@ -631,6 +624,7 @@ void TimerData::process()
                 ctime_t dur = t - data.lastTime;
                 data.ttotal += dur;
                 data.ttotal2 += dur*dur;
+                data.label = std::string(id);
                 if (data.num == 1 || dur > data.tmax) data.tmax = dur;
                 if (data.num == 1 || dur < data.tmin) data.tmin = dur;
             }
@@ -942,6 +936,8 @@ AdvancedTimer::outputType AdvancedTimer::convertOutputType(std::string type)
 		return LJSON;
 	else if(type.compare("stdout") == 0)
 		return STDOUT;
+    else if(type.compare("gui") == 0)
+        return GUI;
 	else // Add your own outputTypes before the else
 	{
 		msg_warning("AdvancedTimer") << "Unable to set output type to " << type << ". Switching to the default 'stdout' output. Valid types are [stdout, json, ljson].";
@@ -1390,6 +1386,36 @@ json TimerData::getLightJson(std::string stepNumber)
     return jsonOutput;
 }
 
+
+helper::vector<AdvancedTimer::IdStep> AdvancedTimer::getSteps(IdTimer id, bool processData)
+{
+    TimerData& data = timers[id];
+    if (processData)
+        data.process();
+    return data.steps;
+}
+
+std::map<AdvancedTimer::IdStep, StepData> AdvancedTimer::getStepData(IdTimer id, bool processData)
+{
+    TimerData& data = timers[id];
+    if (processData)
+        data.process();
+    return data.stepData;
+}
+
+helper::vector<Record> AdvancedTimer::getRecords(IdTimer id)
+{
+    TimerData& data = timers[id];
+    for (unsigned int i=0; i<data.records.size(); ++i)
+        data.records[i].label = std::string(AdvancedTimer::IdStep(data.records[i].id));
+    return data.records;
+}
+
+void AdvancedTimer::clearData(IdTimer id)
+{
+    TimerData& data = timers[id];
+    data.clear();
+}
 
 std::string AdvancedTimer::getTimeAnalysis(IdTimer id, simulation::Node* node)
 {

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,8 +61,8 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
 
     float radius = 1.0f;
 
-    float const R = 1.f / (float)(desc.rings - 1);
-    float const S = 1.f / (float)(desc.sectors - 1);
+    float const R = 1.f / float(desc.rings - 1);
+    float const S = 1.f / float(desc.sectors - 1);
     unsigned int r, s;
 
     std::vector<GLfloat> vertices;
@@ -83,20 +83,20 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
     {
         for (s = 0; s < desc.sectors; s++)
         {
-            const double y = sin(-M_PI_2 + M_PI * r * R);
-            const double  x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
-            const double  z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
+            const float y = sin(-M_PI_2 + M_PI * r * R);
+            const float  x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
+            const float  z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
 
             *t++ = s*S;
             *t++ = r*R;
 
-            *v++ = (float)x * radius;
-            *v++ = (float)y * radius;
-            *v++ = (float)z * radius;
+            *v++ = x * radius;
+            *v++ = y * radius;
+            *v++ = z * radius;
 
-            *n++ = (float)x;
-            *n++ = (float)y;
-            *n++ = (float)z;
+            *n++ = x;
+            *n++ = y;
+            *n++ = z;
         }
     }
 
@@ -112,15 +112,15 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
     }
 
     //Generate PositionVBO
-    buffer.verticesBufferSize = (vertices.size()*sizeof(vertices[0]));
-    buffer.normalsBufferSize = (normals.size()*sizeof(normals[0]));
-    buffer.texcoordsBufferSize = (texcoords.size()*sizeof(texcoords[0]));
+    buffer.verticesBufferSize = GLint64(vertices.size()*sizeof(vertices[0]));
+    buffer.normalsBufferSize = GLint64(normals.size()*sizeof(normals[0]));
+    buffer.texcoordsBufferSize = GLint64(texcoords.size()*sizeof(texcoords[0]));
     buffer.totalSize = buffer.verticesBufferSize + buffer.normalsBufferSize + buffer.texcoordsBufferSize;
 
     glBindBuffer(GL_ARRAY_BUFFER, buffer.VBO);
     glBufferDataARB(GL_ARRAY_BUFFER,
         buffer.totalSize,
-        NULL,
+        nullptr,
         GL_DYNAMIC_DRAW);
 
     glBufferSubDataARB(GL_ARRAY_BUFFER,
@@ -140,10 +140,10 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
 
     //IBO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()*sizeof(indices[0]), &(indices[0]), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(indices.size()*sizeof(indices[0])), &(indices[0]), GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    buffer.indicesSize = indices.size();
+    buffer.indicesSize = GLint64(indices.size());
 
 }
 
@@ -154,7 +154,7 @@ void BasicShapesGL_Sphere<VertexType>::internalDraw(const GLBuffers &buffer, con
     helper::gl::glTranslate(center[0], center[1], center[2]);
     glScalef(radius, radius, radius);
 
-    glDrawElements(GL_QUADS, (GLsizei)buffer.indicesSize, GL_UNSIGNED_INT, (void*)0);
+    glDrawElements(GL_QUADS, GLsizei(buffer.indicesSize), GL_UNSIGNED_INT, nullptr);
 
     glPopMatrix();
 }
@@ -165,8 +165,8 @@ void BasicShapesGL_Sphere<VertexType>::beforeDraw(const GLBuffers& buffer)
     glMatrixMode(GL_MODELVIEW);
 
     glBindBuffer(GL_ARRAY_BUFFER, buffer.VBO);
-    glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
-    glNormalPointer(GL_FLOAT, 0, (char*)NULL + buffer.verticesBufferSize);
+    glVertexPointer(3, GL_FLOAT, 0, nullptr);
+    glNormalPointer(GL_FLOAT, 0, reinterpret_cast<void*>(buffer.verticesBufferSize) );
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.IBO);
@@ -241,7 +241,7 @@ void BasicShapesGL_Sphere<VertexType>::draw(const helper::vector<VertexType>& ce
 //////////////////////////////////////////////////////////////////////
 template<class VertexType>
 BasicShapesGL_FakeSphere<VertexType>::BasicShapesGL_FakeSphere()
-    : m_shader(NULL)
+    : m_shader(nullptr)
     , b_isInit(false)
 {
 }
@@ -312,21 +312,21 @@ void BasicShapesGL_FakeSphere<VertexType>::generateBuffer(const std::vector<Vert
         //Should try to avoid this test...
         const float& radius = (p < radii.size()) ? radii[p] : radii[0];
 
-        *v++ = (float)vertex[0];
-        *v++ = (float)vertex[1];
-        *v++ = (float)vertex[2];
+        *v++ = float(vertex[0]);
+        *v++ = float(vertex[1]);
+        *v++ = float(vertex[2]);
 
-        *v++ = (float)vertex[0];
-        *v++ = (float)vertex[1];
-        *v++ = (float)vertex[2];
+        *v++ = float(vertex[0]);
+        *v++ = float(vertex[1]);
+        *v++ = float(vertex[2]);
 
-        *v++ = (float)vertex[0];
-        *v++ = (float)vertex[1];
-        *v++ = (float)vertex[2];
+        *v++ = float(vertex[0]);
+        *v++ = float(vertex[1]);
+        *v++ = float(vertex[2]);
 
-        *v++ = (float)vertex[0];
-        *v++ = (float)vertex[1];
-        *v++ = (float)vertex[2];
+        *v++ = float(vertex[0]);
+        *v++ = float(vertex[1]);
+        *v++ = float(vertex[2]);
 
         *t++ = -1.0;
         *t++ = -1.0;
@@ -401,13 +401,13 @@ void BasicShapesGL_FakeSphere<VertexType>::beforeDraw()
     glMatrixMode(GL_MODELVIEW);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_radiusBuffer.VBO);
-    glVertexAttribPointer(m_radiusBuffer.location, 1, GL_FLOAT, GL_FALSE, 0, (char*)NULL + 0);
+    glVertexAttribPointer(m_radiusBuffer.location, 1, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(m_radiusBuffer.location);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_buffer.VBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_buffer.IBO);
-    glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
-    glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + m_buffer.verticesBufferSize);
+    glVertexPointer(3, GL_FLOAT, 0, nullptr);
+    glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>(m_buffer.verticesBufferSize)) ;
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -419,7 +419,7 @@ void BasicShapesGL_FakeSphere<VertexType>::internalDraw()
     m_shader->TurnOn();
 
     glPushMatrix();
-    glDrawElements(GL_QUADS, (GLsizei)m_buffer.indicesSize, GL_UNSIGNED_INT, (void*)0);
+    glDrawElements(GL_QUADS, (GLsizei)m_buffer.indicesSize, GL_UNSIGNED_INT, nullptr);
     glPopMatrix();
     m_shader->TurnOff();
 }

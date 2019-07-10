@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaTest)
-
-set(SOFATEST_VERSION 0.1)
+project(SofaTest VERSION 0.1)
 
 set(HEADER_FILES
     InitPlugin_test.h
@@ -61,7 +59,7 @@ else()
 endif()
 
 # Config files and install rules for pythons scripts
-sofa_set_python_directory(${PROJECT_NAME} "python")
+sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 if(SofaPython_FOUND)
@@ -76,4 +74,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_generate_package(NAME SofaTest VERSION ${SOFATEST_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_ROOT_DIR SofaTest)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

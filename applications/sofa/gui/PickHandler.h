@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -139,10 +139,8 @@ protected:
     MousePosition             mousePosition;
 
 #ifndef SOFA_NO_OPENGL
-#ifdef SOFA_HAVE_GLEW // because FrameBufferObject is defined only for this case
     sofa::helper::gl::FrameBufferObject _fbo;
     sofa::helper::gl::fboParameters     _fboParams;
-#endif /* SOFA_HAVE_GLEW */
 #endif /* SOFA_NO_OPENGL */
 
     ComponentMouseInteraction *interaction;

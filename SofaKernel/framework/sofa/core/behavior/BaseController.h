@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,10 +42,10 @@ namespace behavior
  * Interface of user interaction on SOFA Components.
  * Empty class to provide an interface for the Factory
  */
-class BaseController : public core::objectmodel::BaseObject
+class BaseController : public virtual core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(BaseController, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseController, core::objectmodel::BaseObject);
 
 };
 

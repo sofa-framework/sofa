@@ -3,13 +3,13 @@
 
     <VisualStyle displayFlags="showBehaviorModels showCollisionModels showForceFields" />
     
-    <CollisionPipeline/>
+    <DefaultPipeline/>
     <BruteForceDetection/>
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <DiscreteIntersection/>
     
     
-    <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     
     
@@ -26,7 +26,7 @@
             <Node name="concatenation">
                 <MechanicalObject template="Vec3d" name="dofall" showObject="1"/>
                 <SubsetMultiMapping template="Vec3d,Vec3d" input="@../../dof1 @../dof2" output="@./dofall" indexPairs="0 0 0 1 1 0 1 1"/>
-                <Sphere radius="0.3" selfCollision="1"/>
+                <SphereCollisionModel radius="0.3" selfCollision="1"/>
                 <UniformMass vertexMass="1" />
                 <ConstantForceField points="0" force="1 0 0"/>
             </Node>
@@ -49,7 +49,7 @@
             <Node name="concatenation">
                 <MechanicalObject template="Vec3d" name="dofall" showObject="1"/>
                 <SubsetMultiMapping template="Rigid3d,Vec3d" input="@../../dof1 @../dof2" output="@./dofall" indexPairs="0 0 0 1 1 0 1 1"/>
-                <Sphere radius="0.3" selfCollision="1"/>
+                <SphereCollisionModel radius="0.3" selfCollision="1"/>
                 <UniformMass vertexMass="1" />
                 <ConstantForceField points="0" force="1 0 0"/>
             </Node>

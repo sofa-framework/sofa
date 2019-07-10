@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 
 #include <SofaBoundaryCondition/ConstantForceField.h>
 #include <sofa/helper/system/config.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -231,9 +231,11 @@ void ConstantForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::Mul
 template<class DataTypes>
 void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
-
     SReal aSC = d_arrowSizeCoef.getValue();
+
+    if ((!vparams->displayFlags().getShowForceFields() && (aSC==0)) || (aSC < 0.0)) return;
+
+    vparams->drawTool()->saveLastState();
 
     Deriv singleForce;
     if (d_totalForce.getValue()*d_totalForce.getValue() > 0.0)
@@ -246,7 +248,6 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         singleForce = d_force.getValue();
     }
 
-    if ((!vparams->displayFlags().getShowForceFields() && (aSC==0)) || (aSC < 0.0)) return;
     const VecIndex& indices = d_indices.getValue();
     const VecDeriv& f = d_forces.getValue();
     const Deriv f_end = (f.empty()? singleForce : f[f.size()-1]);

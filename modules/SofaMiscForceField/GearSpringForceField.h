@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -71,28 +71,9 @@ public:
     Real Ratio;	/// Gear ratio (default 1)
 
     ///constructors
-    GearSpring()
-        : m1(0), m2(0), p1(0), p2(0), previousAngle1(0), previousAngle2(0), angle1(0), angle2(0), kd(0)
-        , hardStiffnessTrans(10000), softStiffnessRot(10000), hardStiffnessRot(10000), Ratio(1)
-        //, freeAxis(0,0)
-    {
-        freeAxis = sofa::defaulttype::Vec<2,unsigned int>(0,0);
-    }
-
-    GearSpring(int m1, int m2, int p1, int p2)
-        : m1(m1), m2(m2), p1(p1), p2(p2), previousAngle1(0), previousAngle2(0), angle1(0), angle2(0), kd(0)
-        , hardStiffnessTrans(10000), softStiffnessRot(10000), hardStiffnessRot(10000), Ratio(1)
-        //, freeAxis(0,0)
-    {
-        freeAxis = sofa::defaulttype::Vec<2,unsigned int>(0,0);
-    }
-
-    GearSpring(int m1, int m2, int p1, int p2, Real hardKst, Real softKsr, Real hardKsr, Real kd, Real ratio)
-        : m1(m1), m2(m2), p1(p1), p2(p2), previousAngle1(0), previousAngle2(0), angle1(0), angle2(0), kd(kd)
-        , hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), Ratio(ratio)
-    {
-        freeAxis = sofa::defaulttype::Vec<2,unsigned int>(0,0);
-    }
+    GearSpring();
+    GearSpring(unsigned int m1, unsigned int m2, unsigned int p1, unsigned int p2);
+    GearSpring(unsigned int m1, unsigned int m2, unsigned int p1, unsigned int p2, Real hardKst, Real softKsr, Real hardKsr, Real kd, Real ratio);
 
     //accessors
     Real getHardStiffnessRotation() {return hardStiffnessRot;}
@@ -221,8 +202,8 @@ protected:
     /// Apply the stiffness, i.e. accumulate df given dx
     void addSpringDForce(VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, /*const*/ Spring& spring, Real kFactor);
 
-    GearSpringForceField(MechanicalState* object1, MechanicalState* object2);
     GearSpringForceField();
+    GearSpringForceField(MechanicalState* object1, MechanicalState* object2);
 
     virtual ~GearSpringForceField();
 
@@ -231,15 +212,15 @@ public:
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void bwdInit() override;
+    void init() override;
+    void reinit() override;
+    void bwdInit() override;
 
-    virtual void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
+    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override { return m_potentialEnergy; }
+    SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override { return m_potentialEnergy; }
 
     sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }
 
@@ -321,7 +302,7 @@ public:
     /// bool to allow the display of the extra torsion
     Data<Real> showFactorSize;
 
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
 };
 

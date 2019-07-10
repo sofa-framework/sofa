@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -67,10 +67,10 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     : QWidget(parent)
 {
     //Build codec list
-    listCodecs.push_back(Codec("mpeg", "Mpeg1 (Bad quality but readable everywhere)"));
-    listCodecs.push_back(Codec("mp4", "MP4/Mpeg4 (Good ratio visual quality/bitrate, good compatibility)"));
-    listCodecs.push_back(Codec("mp4","h264", "MP4/H264 (Best ratio visual quality/bitrate, requires libx264)"));
-    listCodecs.push_back(Codec("avi","lossless", "Lossless (No loss of information, best for post-processing and re-encodings)"));
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+    listCodecs.push_back(Codec("mp4", "yuv420p", "Video: h264   (Windows Media Player, QuickTime and compatible with most other players) "));
+    listCodecs.push_back(Codec("mp4", "yuv444p", "Video: h264   (VLC media player) "));
+#endif 
 
     QVBoxLayout *layout=new QVBoxLayout(this);
 
@@ -79,7 +79,7 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     codecComboBox = new QComboBox(this);
     for(unsigned int i=0; i<listCodecs.size(); i++)
         codecComboBox->addItem(QString(listCodecs[i].description.c_str()));
-    codecComboBox->setCurrentIndex(2);
+    codecComboBox->setCurrentIndex(0);
     HLayoutCodec->addWidget (labelCodec);
     HLayoutCodec->addWidget (codecComboBox);
 
@@ -92,13 +92,19 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     HLayoutBitrate->addWidget (labelBitrate);
     HLayoutBitrate->addWidget (bitrateSpinBox);
 
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+    labelBitrate->setVisible(false);
+    bitrateSpinBox->setVisible(false);
+#endif
+
     layout->addLayout(HLayoutCodec);
     layout->addLayout(HLayoutBitrate);
 
     //this->addLayout(layout);
 }
 
-SofaVideoRecorderManager::SofaVideoRecorderManager()
+SofaVideoRecorderManager::SofaVideoRecorderManager(QWidget *parent)
+    : QDialog(parent)
 {
     setupUi(this);
     captureOptionsWidget = new CaptureOptionsWidget(this);
@@ -107,7 +113,7 @@ SofaVideoRecorderManager::SofaVideoRecorderManager()
     internalAddWidget(VideoRecorderOptionGroupBox, captureOptionsWidget);
     internalAddWidget(VideoRecorderOptionGroupBox, movieOptionsWidget);
 
-#ifdef SOFA_HAVE_FFMPEG
+#ifdef SOFA_HAVE_FFMPEG_EXEC
     MovieRecordingTypeRadioButton->setChecked(true);
 #else
     MovieRecordingTypeRadioButton->setHidden(true);

@@ -5,12 +5,13 @@
 -->
 
 <Node name="root" dt="0.005" gravity="10 0 0" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
     <RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
     
-	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+	<DefaultPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
-	<CollisionResponse name="response" response="FrictionContact" />
+	<DefaultContactManager name="response" response="FrictionContact" />
 	<LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
 	<FreeMotionAnimationLoop/>
 	<LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
@@ -24,9 +25,9 @@
 		 	<MeshObjLoader filename="Demos/Dentistry/data/mesh/skull_and_teeth_coarse.obj"  name="loader"/>
 			<Mesh src="@loader" name="ToothCollisionModel"  />
 			<MechanicalObject src="@loader" name="toothState" />		
-			<Triangle name="tooth" contactStiffness="100" simulated="0" moving="0"/>
-			<Line name="tooth" contactStiffness="100" simulated="0" moving="0"/>	
-			<Point name="tooth" contactStiffness="100" simulated="0" moving="0"/>	
+			<TriangleCollisionModel name="tooth" contactStiffness="100" simulated="0" moving="0"/>
+			<LineCollisionModel name="tooth" contactStiffness="100" simulated="0" moving="0"/>	
+			<PointCollisionModel name="tooth" contactStiffness="100" simulated="0" moving="0"/>	
 		</Node>
 	</Node>
 	
@@ -73,8 +74,8 @@
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
 			<Mesh src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
-			<Line name="instrument" contactStiffness="10" />
-			<Point name="instrument" contactStiffness="10" /> 
+			<LineCollisionModel name="instrument" contactStiffness="10" />
+			<PointCollisionModel name="instrument" contactStiffness="10" /> 
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelRight" >

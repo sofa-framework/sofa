@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,6 +44,15 @@ bool Topology::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
+
+const sofa::helper::vector<Topology::index_type> Topology::InvalidSet;
+const Topology::Edge Topology::InvalidEdge;
+const Topology::Triangle Topology::InvalidTriangle;
+const Topology::Quad Topology::InvalidQuad;
+const Topology::Tetrahedron Topology::InvalidTetrahedron;
+const Topology::Pyramid Topology::InvalidPyramid;
+const Topology::Pentahedron Topology::InvalidPentahedron;
+const Topology::Hexahedron Topology::InvalidHexahedron;
 
 
 } // namespace topology

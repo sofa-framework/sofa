@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0 " dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
     <VisualStyle displayFlags="hideWireframe showBehaviorModels" />
@@ -31,7 +32,7 @@
 	<HexahedronFEMForceField youngModulus="1.0" poissonRatio="0" method="polar" updateStiffnessMatrix="false" />
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="beam.obj"  color="blue" />
+	     <OglModel  fileMesh="beam.obj"  color="blue" />
 	     <BarycentricMapping input="@.." output="@." />
 	</Node>
   </Node>
@@ -49,7 +50,7 @@
        <TriangleSetTopologyModifier name="Modifier" />
        <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
        <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-       <TriangleModel name="CollisionModel" />
+       <TriangleCollisionModel name="CollisionModel" />
 
 	<UniformMass totalMass="10" />
 

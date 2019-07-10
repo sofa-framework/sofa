@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,8 +38,7 @@ int TransformEngineClass = core::RegisterObject("Transform position of 3d points
         .add< TransformEngine<defaulttype::Vec2Types> >()
         .add< TransformEngine<defaulttype::Rigid2Types> >()
         .add< TransformEngine<defaulttype::Rigid3Types> >()
- 
-        .add< TransformEngine<defaulttype::ExtVec3fTypes> >()
+
         ;
 
 template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec1Types>;
@@ -47,9 +46,6 @@ template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2Types>;
 template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3Types>;
 template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid2Types>;
 template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid3Types>;
- 
-template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::ExtVec3fTypes>;
-
 
 } // namespace constraint
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,102 +50,6 @@ class MLSJacobianBlock< Rigid3(InReal) , V3(OutReal) > :
 public:
     typedef Rigid3(InReal) In;
     typedef V3(OutReal) Out;
-
-    typedef BaseJacobianBlock<In,Out> Inherit;
-    typedef typename Inherit::InCoord InCoord;
-    typedef typename Inherit::InDeriv InDeriv;
-    typedef typename Inherit::OutCoord OutCoord;
-    typedef typename Inherit::OutDeriv OutDeriv;
-    typedef typename Inherit::MatBlock MatBlock;
-    typedef typename Inherit::KBlock KBlock;
-    typedef typename Inherit::Real Real;
-
-    enum { dim = Out::spatial_dimensions };
-    enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
-
-    typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
-
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-    typedef Mat<dim,dim,Real> rotMat;
-
-    /**
-    Mapping:   \f$ p = w.t + A.A0^{-1}.(p*-w.t0) + w.p0- p*   = w.t + A.q0 + C \f$
-    where :
-        - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
-        - p0 is the position of p in the reference configuration.
-        - p* is the mls coordinate
-        - w is the mls weight (first value of basis)
-
-    Jacobian:    \f$ dp = w.dt + Omega x q0 \f$
-      */
-
-    static const bool constant=false;
-
-    Real Pt;      ///< =   w         =  dp/dt
-    OutCoord Pa0;   ///< =  q0    : weighted point in local frame
-    OutCoord Pa;   ///< =  Omega x q0        : rotated point
-    OutCoord C;   ///< =  w.p0- p*      =  constant term
-
-
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& /*M*/, const Basis& p, const Gradient& /*dp*/, const Hessian& /*ddp*/)
-    {
-        Pt=p[0];
-        rotMat AOinv; InPos.getOrientation().inverse().toMatrix(AOinv);
-        Pa0=AOinv*(BasisToCoord(p)-InPos.getCenter()*Pt);
-        C=SPos*Pt-BasisToCoord(p);
-
-        Pa= InPos.rotate(Pa0);
-    }
-
-    void addapply( OutCoord& result, const InCoord& data )
-    {
-        Pa= data.rotate(Pa0);
-        result +=  data.getCenter() * Pt + Pa + C;
-    }
-
-    void addmult( OutDeriv& result,const InDeriv& data )
-    {
-        result += getLinear(data) * Pt + cross(getAngular(data), Pa);
-    }
-
-    void addMultTranspose( InDeriv& result, const OutDeriv& data )
-    {
-        getLinear(result) += data * Pt ;
-        getAngular(result) += cross(Pa, data);
-    }
-
-    MatBlock getJ()
-    {
-        MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
-
-        cpMatrix W=-crossProductMatrix(Pa);
-        for(unsigned int l=0; l<adim; ++l) for (unsigned int i=0; i<dim; ++i) J(i,l+dim)=W(i,l);
-        return J;
-    }
-
-    // TO DO : implement this !!
-    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
-};
-
-
-//////////////////////////////////////////////////////////////////////////////////
-////  Rigid3 -> ExtVec3   same as Vec3 -> Factorize using partial instanciation ?
-//////////////////////////////////////////////////////////////////////////////////
-
-template<class InReal,class OutReal>
-class MLSJacobianBlock< Rigid3(InReal) , EV3(OutReal) > :
-    public  BaseJacobianBlock< Rigid3(InReal) , EV3(OutReal) >
-{
-public:
-    typedef Rigid3(InReal) In;
-    typedef EV3(OutReal) Out;
 
     typedef BaseJacobianBlock<In,Out> Inherit;
     typedef typename Inherit::InCoord InCoord;

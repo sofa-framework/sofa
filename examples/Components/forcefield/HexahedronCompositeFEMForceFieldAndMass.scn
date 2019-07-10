@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -700 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <!-- A soft gelatin object contains 2 bead, one stiff and one soft. Even using large embedding mesh, the
 	  HexahedronCompositeFEM permits to well simulate the global behavior, and the HexahedronCompositeFEMMapping
 	  permits to have a good interpolation of the inside bead behaviors.-->
@@ -7,14 +8,14 @@
     <Node name="plane">
         <OglModel name="plan" fileMesh="mesh/plane_loop_2.obj" rx="90" rz="90" scale=".2" dy="-2.01" material="Default Diffuse 1 1 0.4 0.4 1 Ambient 1 0.8 0.8 0.8 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
     </Node>
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="Composite elements with 3 differents material stiffnesses">
         <SparseGridMultipleTopology n="6 3 3" fileTopology="mesh/bubille_out.obj" fileTopologies="mesh/bubille_out.obj mesh/bubille_in1.obj mesh/bubille_in2.obj" nbVirtualFinerLevels="3" finestConnectivity="false" stiffnessCoefs="1 0.0001 50" massCoefs="1 1 1" />
-        <EulerImplicit vdamping="0" rayleighMass="0" rayleighStiffness="0" />
+        <EulerImplicitSolver vdamping="0" rayleighMass="0" rayleighStiffness="0" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
         <HexahedronCompositeFEMForceFieldAndMass drawType="0" lumpedMass="false" nbVirtualFinerLevels="2" youngModulus="600" poissonRatio="0.3" method="polar" density=".1" updateStiffnessMatrix="false" printLog="0" />
@@ -24,7 +25,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <HexahedronCompositeFEMMapping />
-            <Triangle />
+            <TriangleCollisionModel />
             <Node name="Soft gelatin">
                 <OglModel name="VisualBody" fileMesh="mesh/bubille_out.obj" normals="0" color="0.1 .8 .3 .6" />
                 <IdentityMapping input="@.." output="@VisualBody" />

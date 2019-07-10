@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,7 +39,6 @@ template class SOFA_CORE_API MechanicalState<Vec1Types>;
 template class SOFA_CORE_API MechanicalState<Vec6Types>;
 template class SOFA_CORE_API MechanicalState<Rigid3Types>;
 template class SOFA_CORE_API MechanicalState<Rigid2Types>;
-template class SOFA_CORE_API MechanicalState<ExtVec3Types>;
 
 
 } // namespace behavior

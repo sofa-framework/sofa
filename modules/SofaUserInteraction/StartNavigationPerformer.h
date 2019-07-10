@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,11 +46,11 @@ namespace collision
         StartNavigationPerformer(BaseMouseInteractor *i)
             : InteractionPerformer(i) {};
 
-        ~StartNavigationPerformer(){};
+        ~StartNavigationPerformer() override{};
 
         // Save the current camera's position and orientation in the appropriated Data of Recorded Camera for navigation. 
-        void start();
-        void execute(){};
+        void start() override;
+        void execute() override{};
 
     };
 

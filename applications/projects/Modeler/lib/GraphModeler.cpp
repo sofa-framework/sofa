@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -61,7 +61,7 @@ int numNode= 0;
 int numComponent= 0;
 }
 
-GraphModeler::GraphModeler(QWidget* parent, const char* name, Qt::WindowFlags f): QTreeWidget(parent), graphListener(NULL), propertyWidget(NULL)
+GraphModeler::GraphModeler(QWidget* parent, const char* name, Qt::WindowFlags f): QTreeWidget(parent), graphListener(nullptr), propertyWidget(nullptr)
 {
     this->setObjectName(name);
     setWindowFlags(f);
@@ -89,7 +89,7 @@ GraphModeler::GraphModeler(QWidget* parent, const char* name, Qt::WindowFlags f)
     this->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(this, SIGNAL(customContextMenuRequested(const QPoint&) ),  this, SLOT( rightClick(const QPoint& )));
-    DialogAdd=NULL;
+    DialogAdd=nullptr;
 }
 
 GraphModeler::~GraphModeler()
@@ -129,7 +129,7 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
             child->setName("Root");
     }
 
-    if (parent != NULL)
+    if (parent != nullptr)
     {
         parent->addChild(child);
 
@@ -142,7 +142,7 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
     }
     else
     {
-        graphListener->addChild(NULL, child.get());
+        graphListener->onBeginAddChild(nullptr, child.get());
         //Set up the root
         this->topLevelItem(0)->setExpanded(true);
 
@@ -159,7 +159,7 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
 
 BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry::SPtr entry, const std::string &templateName, bool saveHistory, bool displayWarning)
 {
-    BaseObject::SPtr object=NULL;
+    BaseObject::SPtr object=nullptr;
     if (!parent || !entry) return object;
 
     std::string templateUsed = templateName;
@@ -235,7 +235,7 @@ BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry:
                 }
             }
         }
-        object = c->createInstance(parent->getContext(), NULL);
+        object = c->createInstance(parent->getContext(), nullptr);
         GraphHistoryManager::Operation adding(object, GraphHistoryManager::Operation::ADD_OBJECT);
         adding.info=std::string("Adding Object ") + object->getClassName();
         emit operationPerformed(adding);
@@ -314,7 +314,7 @@ void GraphModeler::dropEvent(QDropEvent* event)
 
 Base* GraphModeler::getComponent(QTreeWidgetItem *item) const
 {
-    if (!item) return NULL;
+    if (!item) return nullptr;
     std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it;
     for (it = graphListener->items.begin(); it != graphListener->items.end(); ++it)
     {
@@ -323,7 +323,7 @@ Base* GraphModeler::getComponent(QTreeWidgetItem *item) const
             return it->first;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 BaseObject *GraphModeler::getObject(QTreeWidgetItem *item) const
@@ -336,7 +336,7 @@ BaseObject *GraphModeler::getObject(QTreeWidgetItem *item) const
 Node *GraphModeler::getNode(const QPoint &pos) const
 {
     QTreeWidgetItem *item = itemAt(pos);
-    if (!item) return NULL;
+    if (!item) return nullptr;
     return getNode(item);
 }
 
@@ -344,7 +344,7 @@ Node *GraphModeler::getNode(const QPoint &pos) const
 
 Node *GraphModeler::getNode(QTreeWidgetItem *item) const
 {
-    if (!item) return NULL;
+    if (!item) return nullptr;
     sofa::core::objectmodel::Base *component=getComponent(item);
 
     if (Node *node=dynamic_cast<Node*>(component)) return node;
@@ -353,13 +353,13 @@ Node *GraphModeler::getNode(QTreeWidgetItem *item) const
         item = item->parent();
         component=getComponent(item);
         if (Node *node=dynamic_cast<Node*>(component)) return node;
-        return NULL;
+        return nullptr;
     }
 }
 
 QTreeWidgetItem *GraphModeler::getItem(Base *component) const
 {
-    if (!component) return NULL;
+    if (!component) return nullptr;
     std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it;
     for (it = graphListener->items.begin(); it != graphListener->items.end(); ++it)
     {
@@ -368,7 +368,7 @@ QTreeWidgetItem *GraphModeler::getItem(Base *component) const
             return it->second;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void GraphModeler::openModifyObject()
@@ -385,7 +385,7 @@ void GraphModeler::openModifyObject(QTreeWidgetItem *item)
 
     Base* object = graphListener->findObject(item);
     BaseData* data = graphListener->findData(item);
-    if( data == NULL && object == NULL)
+    if( data == nullptr && object == nullptr)
     {
         assert(0);
     }
@@ -466,7 +466,7 @@ void GraphModeler::addInPropertyWidget(QTreeWidgetItem *item, bool clear)
         return;
 
     Base* object = graphListener->findObject(item);
-    if(object == NULL)
+    if(object == nullptr)
         return;
 
     if(propertyWidget)
@@ -499,7 +499,7 @@ void GraphModeler::rightClick(const QPoint& p /*, int  index */)
     bool isSingleSelection= (selection.size() == 1);
     for (unsigned int i=0; i<selection.size(); ++i)
     {
-        if (getObject(item)!=NULL)
+        if (getObject(item)!=nullptr)
         {
             isNode = false;
             break;
@@ -507,7 +507,7 @@ void GraphModeler::rightClick(const QPoint& p /*, int  index */)
     }
 
     bool isLoader = false;
-    if (dynamic_cast<sofa::core::loader::BaseLoader*>(getComponent(item)) != NULL)
+    if (dynamic_cast<sofa::core::loader::BaseLoader*>(getComponent(item)) != nullptr)
         isLoader = true;
 
     QMenu *contextMenu = new QMenu ( this );
@@ -573,7 +573,7 @@ void GraphModeler::expandNode(QTreeWidgetItem* item)
     if (!item) return;
 
     item->setExpanded( true );
-    if ( item != NULL )
+    if ( item != nullptr )
     {
         for(int i=0; i<item->childCount();i++)
         {
@@ -592,17 +592,17 @@ Node::SPtr GraphModeler::loadNode()
 Node::SPtr GraphModeler::loadNode(QTreeWidgetItem* item, std::string filename, bool saveHistory)
 {
     Node::SPtr node;
-    if (!item) node=NULL;
+    if (!item) node=nullptr;
     else node=getNode(item);
 
     if (filename.empty())
     {
-        QString s = getOpenFileName ( this, NULL,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
+        QString s = getOpenFileName ( this, nullptr,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
         if (s.length() >0)
         {
             filename = s.toStdString();
         }
-        else return NULL;
+        else return nullptr;
     }
     return loadNode(node,filename, saveHistory);
 }
@@ -650,7 +650,7 @@ void GraphModeler::linkComponent()
 
     // store the partial component hierarchy i.e we store the parent Nodes only
     std::vector<QTreeWidgetItem*> items;
-    for(QTreeWidgetItem *item = fromItem->parent(); item != NULL; item = item->parent())
+    for(QTreeWidgetItem *item = fromItem->parent(); item != nullptr; item = item->parent())
         items.push_back(item);
 
     // create and show the LinkComponent dialog box
@@ -682,7 +682,7 @@ Node::SPtr GraphModeler::buildNodeFromBaseElement(Node::SPtr node,xml::BaseEleme
     if (newNode->getName() == "Group")
     {
         //We can't use the parent node, as it is null
-        if (!node) return NULL;
+        if (!node) return nullptr;
         //delete newNode;
         newNode = node;
     }
@@ -763,10 +763,10 @@ void GraphModeler::configureElement(Base* b, xml::BaseElement *elem)
 
 Node::SPtr GraphModeler::loadNode(Node::SPtr node, std::string path, bool saveHistory)
 {
-    xml::BaseElement* newXML=NULL;
+    xml::BaseElement* newXML=nullptr;
 
     newXML = xml::loadFromFile (path.c_str() );
-    if (newXML == NULL) return NULL;
+    if (newXML == nullptr) return nullptr;
 
     //-----------------------------------------------------------------
     //Add the content of a xml file
@@ -779,7 +779,7 @@ Node::SPtr GraphModeler::loadNode(Node::SPtr node, std::string path, bool saveHi
 void GraphModeler::loadPreset(std::string presetName)
 {
     xml::BaseElement* newXML = xml::loadFromFile (presetName.c_str() );
-    if (newXML == NULL) return;
+    if (newXML == nullptr) return;
 
     xml::BaseElement::child_iterator<> it(newXML->begin());
     bool elementPresent[3]= {false,false,false};
@@ -816,10 +816,10 @@ void GraphModeler::loadPreset(Node *parent, std::string presetFile,
 {
 
 
-    xml::BaseElement* newXML=NULL;
+    xml::BaseElement* newXML=nullptr;
 
     newXML = xml::loadFromFile (presetFile.c_str() );
-    if (newXML == NULL) return;
+    if (newXML == nullptr) return;
 
     //bool collisionNodeFound=false;
     //xml::BaseElement *meshMecha=NULL;
@@ -896,7 +896,7 @@ void GraphModeler::updatePresetNode(xml::BaseElement &elem, std::string meshFile
 
 bool GraphModeler::getSaveFilename(std::string &filename)
 {
-    QString s = sofa::gui::qt::getSaveFileName ( this, NULL, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
+    QString s = sofa::gui::qt::getSaveFileName ( this, nullptr, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
         std::string extension=sofa::helper::system::SetDirectory::GetExtension(s.toStdString().c_str());
@@ -950,7 +950,7 @@ void GraphModeler::deleteComponent(QTreeWidgetItem* item, bool saveHistory)
     if (!item) return;
 
     Node *parent = getNode(item->parent());
-    bool isNode   = getObject(item)==NULL;
+    bool isNode   = getObject(item)==nullptr;
     if (!isNode && isObjectErasable(getObject(item)))
     {
         BaseObject* object = getObject(item);
@@ -980,10 +980,10 @@ void GraphModeler::deleteComponent(QTreeWidgetItem* item, bool saveHistory)
             emit operationPerformed(removal);
         }
         if (!parent)
-            graphListener->removeChild(parent, node);
+            graphListener->onBeginRemoveChild(parent, node);
         else
-            parent->removeChild((Node*)node);
-        if (!parent && this->children().size() == 0) addNode(NULL);
+            parent->removeChild(dynamic_cast<Node*>(node));
+        if (!parent && this->children().size() == 0) addNode(nullptr);
     }
 
 }
@@ -1006,7 +1006,7 @@ void GraphModeler::changeComponentDataValue(const std::string &name, const std::
 
 Base *GraphModeler::getComponentAbove(QTreeWidgetItem *item)
 {
-    if (!item) return NULL;
+    if (!item) return nullptr;
     QTreeWidgetItem* itemAbove = this->itemAbove(item);
     while (itemAbove && itemAbove->parent() != item->parent() )
     {
@@ -1059,7 +1059,7 @@ void GraphModeler::keyPressEvent ( QKeyEvent * e )
 bool GraphModeler::isNodeErasable ( BaseNode* node)
 {
     QTreeWidgetItem* item = graphListener->items[node];
-    if(item == NULL)
+    if(item == nullptr)
     {
         return false;
     }

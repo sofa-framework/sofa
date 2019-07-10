@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.03" gravity="0 -9.810 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<RequiredPlugin name="SofaMiscCollision"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <LCPConstraintSolver maxIt="1000" tolerance="1e-6" initial_guess="false" build_lcp="true" multi_grid="false" printLog="0" mu="0.000000000000000001"/>
     <FreeMotionAnimationLoop />
-    <CollisionPipeline depth="15" verbose="0" draw="0" />
+    <DefaultPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.1" useLMDFilters="0" />
-    <CollisionResponse name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="FrictionContact" />
     <Node>
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <Node name="TORUS">
             <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0.0" dz="0.0" />
@@ -23,9 +24,9 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" triangulate="true" />
                 <Mesh src="@loader"/>
                 <MechanicalObject src="@loader" scale="1.0" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -62,9 +63,9 @@
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
                 <Mesh src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -93,9 +94,9 @@
             <MeshObjLoader name="loader" filename="mesh/box_inside.obj" triangulate="true" />
             <Mesh src="@loader"/>
             <MechanicalObject src="@loader" />
-            <Triangle simulated="0" moving="0" />
-            <Line simulated="0" moving="0" />
-            <Point simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
+            <LineCollisionModel simulated="0" moving="0" />
+            <PointCollisionModel simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="1 0 0 0.3" />
         </Node>
     </Node>

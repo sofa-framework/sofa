@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,30 +52,17 @@ public:
     /**
      * @brief Default constructor.
      */
-    TriangleInfo(LocalMinDistanceFilter *lmdFilters)
-        : InfoFilter(lmdFilters)
-    {
-
-    }
-
-    /**
-     * @brief Empty constructor. Required by TriangleData<>.
-     */
-    TriangleInfo()
-        : InfoFilter(NULL)
-    {
-
-    }
+    TriangleInfo(LocalMinDistanceFilter *lmdFilters = nullptr);
 
     /**
      * @brief Default destructor.
      */
-    virtual ~TriangleInfo() {}
+    ~TriangleInfo() override {}
 
     /**
      * @brief Returns the validity of a detected contact according to this TriangleInfo.
      */
-    virtual bool validate(const unsigned int /*p*/, const defaulttype::Vector3 & /*PQ*/);
+    bool validate(const unsigned int /*p*/, const defaulttype::Vector3 & /*PQ*/) override;
     /**
      * @brief Output stream.
      */
@@ -96,7 +83,7 @@ public:
      * @brief Computes the region of interest cone of the Triangle primitive.
      */
     //virtual void buildFilter(const Triangle & /*t*/);
-    virtual void buildFilter(unsigned int /*t*/);
+    void buildFilter(unsigned int /*t*/) override;
 
 protected:
 
@@ -116,7 +103,7 @@ public:
 
 protected:
     TriangleLocalMinDistanceFilter();
-    virtual ~TriangleLocalMinDistanceFilter();
+    ~TriangleLocalMinDistanceFilter() override;
 
 public:
 

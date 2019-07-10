@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -112,6 +112,8 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
 
         // inform other objects that the edges are already added
         propagateTopologicalChanges();
+
+        m_container->checkTopology();
     }
     else
     {
@@ -146,6 +148,8 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
 
         // inform other objects that the edges are already added
         propagateTopologicalChanges();
+
+        m_container->checkTopology();
     }
     else
     {
@@ -187,14 +191,29 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
     const TriangleID triangleIndex = (TriangleID)m_container->getNumberOfTriangles();
     helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
 
-    if(m_container->hasTrianglesAroundVertex())
-    {
-        for(unsigned int j=0; j<3; ++j)
+    // update nbr point if needed
+    unsigned int nbrP = m_container->getNbPoints();
+    for(unsigned int i=0; i<3; ++i)
+        if (t[i] + 1 > nbrP) // point not well init
         {
-            sofa::helper::vector< TriangleID > &shell = m_container->getTrianglesAroundVertexForModification( t[j] );
-            shell.push_back( triangleIndex );
+            nbrP = t[i] + 1;
+            m_container->setNbPoints(nbrP);
         }
+
+    // update m_trianglesAroundVertex
+    if (m_container->m_trianglesAroundVertex.size() < nbrP)
+        m_container->m_trianglesAroundVertex.resize(nbrP);
+
+    for(unsigned int j=0; j<3; ++j)
+    {
+        sofa::helper::vector< TriangleID > &shell = m_container->m_trianglesAroundVertex[t[j]];
+        shell.push_back( triangleIndex );
     }
+
+
+    // update edge-triangle cross buffers
+    if (m_container->m_edgesInTriangle.size() < triangleIndex+1)
+        m_container->m_edgesInTriangle.resize(triangleIndex+1);
 
     for(unsigned int j=0; j<3; ++j)
     {
@@ -211,23 +230,26 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 
             edgeIndex = m_container->getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
             assert (edgeIndex != InvalidID);
+            if (edgeIndex == InvalidID)
+            {
+                msg_error() << "Edge creation: " << e1 << " failed in addTriangleProcess. Edge will not be added in buffers.";
+                continue;
+            }
 
             sofa::helper::vector< EdgeID > edgeIndexList;
             edgeIndexList.push_back((EdgeID) edgeIndex);
             addEdgesWarning( v.size(), v, edgeIndexList);
         }
 
-        if(m_container->hasEdgesInTriangle())
-        {
-            m_container->m_edgesInTriangle.resize(triangleIndex+1);
-            m_container->m_edgesInTriangle[triangleIndex][j]= edgeIndex;
-        }
+        // update m_edgesInTriangle
+        m_container->m_edgesInTriangle[triangleIndex][j]= edgeIndex;
 
-        if(m_container->hasTrianglesAroundEdge())
-        {
-            sofa::helper::vector< TriangleID > &shell = m_container->m_trianglesAroundEdge[m_container->m_edgesInTriangle[triangleIndex][j]];
-            shell.push_back( triangleIndex );
-        }
+        // update m_trianglesAroundEdge
+        if (m_container->m_trianglesAroundEdge.size() < m_container->getNbEdges())
+            m_container->m_trianglesAroundEdge.resize(m_container->getNbEdges());
+
+        sofa::helper::vector< TriangleID > &shell = m_container->m_trianglesAroundEdge[edgeIndex];
+        shell.push_back( triangleIndex );
     }
 
     m_triangle.push_back(t);
@@ -523,19 +545,25 @@ void TriangleSetTopologyModifier::removePointsProcess(const sofa::helper::vector
             // updating the triangles connected to the point replacing the removed one:
             // for all triangles connected to the last point
 
+            PointID pointID = indices[i];
+            const sofa::helper::vector<TriangleID> &oldShell = m_container->m_trianglesAroundVertex[pointID];
+            if (!oldShell.empty())
+                msg_error() << "m_trianglesAroundVertex is not empty around point: " << pointID << " with shell array: " << oldShell;
             sofa::helper::vector<TriangleID> &shell = m_container->m_trianglesAroundVertex[lastPoint];
+
+
             for(size_t j=0; j<shell.size(); ++j)
             {
                 const TriangleID q = shell[j];
                 for(unsigned int k=0; k<3; ++k)
                 {
                     if(m_triangle[q][k] == lastPoint)
-                        m_triangle[q][k] = indices[i];
+                        m_triangle[q][k] = pointID;
                 }
             }
 
-            // updating the edge shell itself (change the old index for the new one)
-            m_container->m_trianglesAroundVertex[ indices[i] ] = m_container->m_trianglesAroundVertex[ lastPoint ];
+            // updating the triangle shell itself (change the old index for the new one)
+            m_container->m_trianglesAroundVertex[ pointID ] = m_container->m_trianglesAroundVertex[ lastPoint ];
         }
 
         m_container->m_trianglesAroundVertex.resize( m_container->m_trianglesAroundVertex.size() - indices.size() );

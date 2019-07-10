@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,11 +41,9 @@ using namespace sofa::defaulttype;
 int CenterOfMassMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
         .add< CenterOfMassMapping< Rigid3Types, Vec3Types > >()
         .add< CenterOfMassMapping< Rigid2Types, Vec2Types > >()
-        .add< CenterOfMassMapping< Rigid3Types, ExtVec3Types > >();
+;
 
 template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3Types, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2Types, Vec2Types >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3Types, ExtVec3Types >;
 
 } // namespace mapping
 

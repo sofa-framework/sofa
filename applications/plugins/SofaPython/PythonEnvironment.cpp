@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -183,7 +183,7 @@ void PythonEnvironment::Init()
     // Add the directories listed in the SOFAPYTHON_PLUGINS_PATH environnement
     // variable (colon-separated) to sys.path
     char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
-    if (pathVar != NULL)
+    if (pathVar != nullptr)
     {
         std::istringstream ss(pathVar);
         std::string path;
@@ -195,6 +195,9 @@ void PythonEnvironment::Init()
                 SP_MESSAGE_WARNING("no such directory: '" + path + "'");
         }
     }
+
+    // Add the directories listed in SofaPython.so/../../python
+    addPythonModulePathsForPluginsByName("SofaPython");
 
     // python livecoding related
     PyRun_SimpleString("from SofaPython.livecoding import onReimpAFile");
@@ -251,26 +254,37 @@ void PythonEnvironment::addPythonModulePathsFromConfigFile(const std::string& pa
 void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& pluginsDirectory)
 {
     bool added = false;
+
+    std::vector<std::string> pythonDirs = {
+        pluginsDirectory + "/python",
+        pluginsDirectory + "/python2.7",
+    };
+
     std::vector<std::string> files;
     FileSystem::listDirectory(pluginsDirectory, files);
-
     for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i)
     {
         const std::string pluginSubdir = pluginsDirectory + "/" + *i;
         if (FileSystem::exists(pluginSubdir) && FileSystem::isDirectory(pluginSubdir))
         {
-            const std::string pythonDir = pluginSubdir + "/python";
-            const std::string python27Dir = pluginSubdir + "/python2.7";
-            if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
-            {
-                addPythonModulePath(pythonDir);
-                added = true;
-            }
-            else if (FileSystem::exists(python27Dir) && FileSystem::isDirectory(python27Dir))
-            {
-                addPythonModulePath(python27Dir);
-                added = true;
-            }
+            pythonDirs.push_back(pluginSubdir + "/python");
+            pythonDirs.push_back(pluginSubdir + "/python2.7");
+        }
+    }
+
+    for(std::string pythonDir : pythonDirs)
+    {
+        // Search for a subdir "site-packages"
+        if (FileSystem::exists(pythonDir+"/site-packages") && FileSystem::isDirectory(pythonDir+"/site-packages"))
+        {
+            addPythonModulePath(pythonDir+"/site-packages");
+            added = true;
+        }
+        // Or fallback to "python"
+        else if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
+        {
+            addPythonModulePath(pythonDir);
+            added = true;
         }
     }
 
@@ -338,7 +352,7 @@ bool PythonEnvironment::runString(const std::string& script)
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
     PyObject* result = PyRun_String(script.data(), Py_file_input, pDict, pDict);
 
-    if(0 == result)
+    if(nullptr == result)
     {
         SP_MESSAGE_ERROR("Script (string) import error")
         PyErr_Print();
@@ -450,7 +464,7 @@ bool PythonEnvironment::runFile(const std::string& filename, const std::vector<s
     const int error = PyRun_SimpleFileEx(PyFile_AsFile(script), filename.c_str(), 0);
 
     // don't wait for gc to close the file
-    PyObject_CallMethod(script, (char*) "close", NULL);
+    PyObject_CallMethod(script, (char*) "close", nullptr);
     Py_XDECREF(script);
 
     // restore backup if needed

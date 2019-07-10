@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en_US</string>
 	<key>CFBundleExecutable</key>
-	<string>runSofa</string>
+	<string>bin/runSofa</string>
 	<key>CFBundleGetInfoString</key>
 	<string>Created by the SOFA Team</string>
 	<key>CFBundleIconFile</key>

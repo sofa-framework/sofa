@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,6 +44,30 @@ namespace component
 
 namespace constraintset
 {
+
+
+template <class DataTypes>
+DistanceLMContactConstraint<DataTypes>::DistanceLMContactConstraint()
+    : DistanceLMContactConstraint(nullptr, nullptr)
+{
+}
+
+template <class DataTypes>
+DistanceLMContactConstraint<DataTypes>::DistanceLMContactConstraint( MechanicalState *dof)
+    : DistanceLMContactConstraint(dof, dof)
+{
+}
+
+template <class DataTypes>
+DistanceLMContactConstraint<DataTypes>::DistanceLMContactConstraint( MechanicalState *dof1, MechanicalState * dof2)
+    : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
+    , pointPairs(sofa::core::objectmodel::Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
+    , contactFriction(sofa::core::objectmodel::Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
+    , intersection(0)
+{
+    initColorContactState();
+}
+
 
 template <class DataTypes>
 double DistanceLMContactConstraint<DataTypes>::lengthEdge(const Edge &e, const VecCoord &x1, const VecCoord &x2) const

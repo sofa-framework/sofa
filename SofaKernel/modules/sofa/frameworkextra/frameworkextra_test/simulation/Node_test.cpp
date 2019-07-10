@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,7 +31,8 @@ using sofa::simulation::Node ;
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
-using sofa::core::visual::VisualModel ;
+#include <SofaComponentBase/InfoComponent.h>
+using sofa::component::InfoComponent;
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
@@ -51,14 +52,14 @@ public:
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <OglModel/>                                                             \n"
+                 "   <InfoComponent/>                                                             \n"
                  "   <Node name='child1'>                                                    \n"
-                 "      <OglModel/>                                                          \n"
-                 "      <OglModel/>                                                          \n"
+                 "      <InfoComponent/>                                                          \n"
+                 "      <InfoComponent/>                                                          \n"
                  "      <MechanicalObject />                                                 \n"
                  "      <Node name='child2'>                                                 \n"
-                 "          <OglModel/>                                                      \n"
-                 "          <OglModel/>                                                      \n"
+                 "          <InfoComponent/>                                                      \n"
+                 "          <InfoComponent/>                                                      \n"
                  "      </Node>                                                              \n"
                  "   </Node>                                                                 \n"
                  "</Node>                                                                    \n" ;
@@ -73,16 +74,16 @@ public:
         Node* node =m_root->getChild("child1") ;
 
         /// Query a specific model in a container, this is the old API
-        std::vector<VisualModel*> results ;
-        node->getNodeObjects<VisualModel, std::vector<VisualModel*> >( &results ) ;
+        std::vector<InfoComponent*> results ;
+        node->getNodeObjects<InfoComponent, std::vector<InfoComponent*> >( &results ) ;
         ASSERT_EQ( results.size() , (unsigned int)2 ) ;
 
         /// Query a specific model with a nicer syntax
-        std::vector<VisualModel*> results2 ;
+        std::vector<InfoComponent*> results2 ;
         ASSERT_EQ( node->getNodeObjects(results2).size(), (unsigned int)2 ) ;
 
         /// Query a specific model with a nicer syntax
-        std::vector<VisualModel*> results3 ;
+        std::vector<InfoComponent*> results3 ;
         ASSERT_EQ( node->getNodeObjects(&results3)->size(), (unsigned int)2 ) ;
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
@@ -96,14 +97,14 @@ public:
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <OglModel/>                                                             \n"
+                 "   <InfoComponent/>                                                             \n"
                  "   <Node name='child1'>                                                    \n"
-                 "      <OglModel/>                                                          \n"
-                 "      <OglModel/>                                                          \n"
+                 "      <InfoComponent/>                                                          \n"
+                 "      <InfoComponent/>                                                          \n"
                  "      <MechanicalObject />                                                 \n"
                  "      <Node name='child2'>                                                 \n"
-                 "          <OglModel/>                                                      \n"
-                 "          <OglModel/>                                                      \n"
+                 "          <InfoComponent/>                                                      \n"
+                 "          <InfoComponent/>                                                      \n"
                  "      </Node>                                                              \n"
                  "   </Node>                                                                 \n"
                  "</Node>                                                                    \n" ;
@@ -118,16 +119,16 @@ public:
         Node* node =m_root->getChild("child1") ;
 
         /// Query a specific model in a container, this is the old API
-        std::vector<VisualModel*> results ;
-        node->getTreeObjects<VisualModel, std::vector<VisualModel*> >( &results ) ;
+        std::vector<InfoComponent*> results ;
+        node->getTreeObjects<InfoComponent, std::vector<InfoComponent*> >( &results ) ;
         ASSERT_EQ( results.size() , (unsigned int)4  ) ;
 
         /// Query a specific model with a nicer syntax
-        std::vector<VisualModel*> results2 ;
+        std::vector<InfoComponent*> results2 ;
         ASSERT_EQ( node->getTreeObjects(results2).size(), (unsigned int)4 ) ;
 
         /// Query a specific model with a nicer syntax
-        std::vector<VisualModel*> results3 ;
+        std::vector<InfoComponent*> results3 ;
         ASSERT_EQ( node->getTreeObjects(&results3)->size(), (unsigned int)4 ) ;
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>

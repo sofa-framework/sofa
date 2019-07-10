@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -348,8 +348,8 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         // ================ test getJs() : check that J.vp = vc
         if (this->vectorMaxDiff(Jv, vc) > this->epsilon()*errorMax){
             succeed = false;
-            cout << "Jvp = " << Jv << endl;
-            cout << "vc  = " << vc << endl;
+            msg_info() << "Jvp = " << Jv;
+            msg_info() << "vc  = " << vc;
             ADD_FAILURE() << "getJs() test failed" << endl << "Jvp = " << Jv << endl << "vc  = " << vc << endl;
         }
 
@@ -451,13 +451,13 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         for(Index i=0; i<Np2.size(); i++) in2Dofs[i]->forceMask.clear();
         outDofs->forceMask.assign(outDofs->getSize(),true);
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
-        for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
+        for( unsigned i=0; i<Nc; i++ ) OutType::set( fout[i], 1,1,1 ); // every child forces are non-nul
         for(Index p=0; p<Np1.size(); p++) {
-            WriteInVecDeriv fin = in1Dofs[p]->writeForces();
+            WriteIn1VecDeriv fin = in1Dofs[p]->writeForces();
             copyToData( fin, fIn1p2[p] );  // reset parent forces before accumulating child forces
         }
         for(Index p=0; p<Np2.size(); p++) {
-            WriteInVecDeriv fin = in2Dofs[p]->writeForces();
+            WriteIn2VecDeriv fin = in2Dofs[p]->writeForces();
             copyToData( fin, fIn2p2[p] );  // reset parent forces before accumulating child forces
         }
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
@@ -465,7 +465,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         {
             copyFromData( fIn1p[i], in1Dofs[i]->readForces() );
             for( unsigned j=0; j<Np1[i]; j++ ) {
-                if( fIn1p[i][j] != InDeriv() && !in1Dofs[i]->forceMask.getEntry(j) ){
+                if( fIn1p[i][j] != In1Deriv() && !in1Dofs[i]->forceMask.getEntry(j) ){
                     succeed = false;
                     ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents 0-"<< i << std::endl;
                     break;
@@ -476,7 +476,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         {
             copyFromData( fIn2p[i], in2Dofs[i]->readForces() );
             for( unsigned j=0; j<Np2[i]; j++ ) {
-                if( fIn2p[i][j] != InDeriv() && !in2Dofs[i]->forceMask.getEntry(j) ){
+                if( fIn2p[i][j] != In2Deriv() && !in2Dofs[i]->forceMask.getEntry(j) ){
                     succeed = false;
                     ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents 1-"<< i << std::endl;
                     break;

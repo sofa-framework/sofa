@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,7 +67,7 @@ public:
         m_dataTracker.trackData(input);
     }
 
-    ~TestObject() {}
+    ~TestObject() override {}
 
 
     // my own function to update Data
@@ -105,7 +105,7 @@ struct DataTracker_test: public ::testing::Test
 {
     TestObject testObject;
 
-    void SetUp()
+    void SetUp() override
     {
         testObject.init();
     }
@@ -159,21 +159,24 @@ public:
 
 
     Data< bool > input;
+    Data< bool > input2;
     Data< bool > depend_on_input;
-
+    Data< bool > depend_on_input2;
 
     TestObject2()
         : Inherit1()
         , input(initData(&input,false,"input","input"))
+        , input2(initData(&input2,true,"input2","input2"))
         , depend_on_input(initData(&depend_on_input,"depend_on_input","depend_on_input"))
+        , depend_on_input2(initData(&depend_on_input2,"depend_on_input2","depend_on_input2"))
     {
-        m_dataTracker.addInput(&input); // several inputs can be added
-        m_dataTracker.addOutput(&depend_on_input); // several output can be added
+        m_dataTracker.addInputs({&input,&input2}); // several inputs can be added
+        m_dataTracker.addOutputs({&depend_on_input, &depend_on_input2}); // several output can be added
         m_dataTracker.setUpdateCallback( &TestObject2::myUpdate );
         m_dataTracker.setDirtyValue();
     }
 
-    ~TestObject2() {}
+    ~TestObject2() override {}
 
     static unsigned s_updateCounter;
 
@@ -194,13 +197,15 @@ protected:
 
         // we known who is who from the order Data were added to the DataTrackerEngine
         bool input = static_cast<Data< bool >*>( inputs[0] )->getValue();
+        bool input2 = static_cast<Data< bool >*>( inputs[1] )->getValue();
 
         dataTrackerEngine->cleanDirty();
 
-
         Data< bool >* output = static_cast<Data< bool >*>( outputs[0] );
+        Data< bool >* output2 = static_cast<Data< bool >*>( outputs[1] );
 
         output->setValue( input );
+        output2->setValue( input2 );
     }
 
 };
@@ -223,7 +228,7 @@ struct DataTrackerEngine_test: public BaseTest
 {
 
     static unsigned updateCounter;
-    void SetUp()
+    void SetUp() override
     {
         updateCounter = 0;
     }
@@ -267,6 +272,13 @@ struct DataTrackerEngine_test: public BaseTest
         ASSERT_TRUE(testObject.depend_on_input.getValue()==false);
         ++localCounter;
         ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
+
+        ASSERT_TRUE(testObject.depend_on_input2.getValue());
+        testObject.input2.setValue(false);
+        ASSERT_FALSE(testObject.depend_on_input2.getValue());
+        ++localCounter;
+        ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
+
     }
 
 
@@ -301,11 +313,8 @@ struct DataTrackerEngine_test: public BaseTest
         core::DataTrackerEngine dataTracker;
         dataTracker.addInput(&testObject.myData); // several inputs can be added
         dataTracker.addOutput(&testObject2.myData); // several output can be added
-        dataTracker.setUpdateCallback( &DataTrackerEngine_test::myUpdate );
+        dataTracker.addCallback( &DataTrackerEngine_test::myUpdate );
         dataTracker.setDirtyValue();
-
-
-
         unsigned localCounter = 0u;
 
         testObject.myData.setValue(true);

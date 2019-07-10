@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,7 +54,7 @@ SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObje
 SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & val);
 
 
-void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/) {return;}
+SOFA_SOFAPYTHON_API void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/);
 
 template<typename T, typename... ParametersType>
 void PythonScriptController_parametersToVector(std::vector<PyObject*> & vecParam, T param, ParametersType... otherParameters)

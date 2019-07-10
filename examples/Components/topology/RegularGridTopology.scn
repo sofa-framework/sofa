@@ -1,12 +1,13 @@
 <!-- RegularGrid examples -->
 <Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <DiscreteIntersection/>
     <Node name="LiverFFD-lowres">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
         <MechanicalObject />
         <UniformMass totalMass="100.0" />
@@ -20,12 +21,12 @@
         <Node name="Collision Surface">
 	    <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject position="@[-1].position" translation="-5 0 0" />
-            <Sphere name="Surf" listRadius="@[-2].listRadius" />
+            <SphereCollisionModel name="Surf" listRadius="@[-2].listRadius" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
     </Node>
     <Node name="LiverFFD-hires">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
         <MechanicalObject />
         <UniformMass totalMass="100.0" />
@@ -39,7 +40,7 @@
         <Node name="Collision Surface">
 	    <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject position="@[-1].position" translation="5 0 0" />
-            <Sphere name="Surf" listRadius="@[-2].listRadius" />
+            <SphereCollisionModel name="Surf" listRadius="@[-2].listRadius" />
             <BarycentricMapping input="@.." output="@." />
        </Node>
     </Node>

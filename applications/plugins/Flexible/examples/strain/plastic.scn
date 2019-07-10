@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   
     <RequiredPlugin pluginName="Flexible"/>
   
@@ -48,12 +49,12 @@
 	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
 	     <Mesh src="@loader"/>
  	     <MechanicalObject  />
-             <Triangle />
+             <TriangleCollisionModel />
              <LinearMapping template="Vec3d,Vec3d"/>
 	</Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" />
+	     <OglModel  fileMesh="mesh/torus.obj" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     </Node>
@@ -95,12 +96,12 @@
 	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
 	     <Mesh src="@loader"/>
  	     <MechanicalObject  />
-             <Triangle />
+             <TriangleCollisionModel />
              <LinearMapping template="Vec3d,Vec3d"/>
 	</Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="0.2 0.8 0.2 1"/>
+	     <OglModel  fileMesh="mesh/torus.obj" color="0.2 0.8 0.2 1"/>
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     </Node>
@@ -140,12 +141,12 @@
 	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
 	     <Mesh src="@loader"/>
  	     <MechanicalObject  />
-             <Triangle />
+             <TriangleCollisionModel />
              <LinearMapping template="Vec3d,Vec3d"/>
 	</Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
+	     <OglModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     </Node>

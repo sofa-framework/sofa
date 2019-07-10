@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,22 +38,9 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set of 6D DOF's and a set of angles (µ) using an articulated hierarchy container. ")
-
-        .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types > >()
-
-        /*
-                #ifdef SOFA_WITH_FLOAT
-            .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types > >()
-            .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types > >()
-        
-        #endif
-        */
-        ;
+        .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types > >();
 
 template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types >;
-
-
-
 
 
 } // namespace mapping

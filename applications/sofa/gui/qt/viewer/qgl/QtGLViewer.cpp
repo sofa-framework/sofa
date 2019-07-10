@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -31,11 +31,11 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 //#include <sofa/helper/system/SetDirectory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <fstream>
-#include <string.h>
-#include <math.h>
+#include <cstring>
+#include <cmath>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/gui/BaseGUI.h>
@@ -86,7 +86,6 @@ QGLFormat QtGLViewer::setupGLFormat(const unsigned int nbMSAASamples)
 
     if(!SOFA_GUI_VSYNC)
     {
-        std::cout << "QtGLViewer: disabling vertical refresh sync" << std::endl;
         QSurfaceFormat format;
         format.setSwapInterval(0);
         QSurfaceFormat::setDefaultFormat(format);
@@ -142,6 +141,9 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
     vparams->zFar()  = camera()->zFar();
 
     connect( &captureTimer, SIGNAL(timeout()), this, SLOT(captureEvent()) );
+
+    //change shortcut (now M key) for camera mode to avoid double effects of shortcut
+    setShortcut(CAMERA_MODE, Qt::Key_M);
 }
 
 
@@ -198,9 +200,7 @@ void QtGLViewer::init(void)
         specref[3] = 1.0f;
 
         // Here we initialize our multi-texturing functions
-#ifdef SOFA_HAVE_GLEW
         glewInit();
-#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;

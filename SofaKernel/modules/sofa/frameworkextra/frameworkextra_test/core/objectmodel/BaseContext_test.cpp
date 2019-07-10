@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,7 +31,8 @@ using sofa::core::objectmodel::BaseContext ;
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
-using sofa::core::visual::VisualModel ;
+#include <SofaComponentBase/InfoComponent.h>
+using sofa::component::InfoComponent;
 
 class BaseContext_test: public BaseSimulationTest
 {
@@ -43,14 +44,14 @@ public:
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <OglModel/>                                                             \n"
+                 "   <InfoComponent/>                                                             \n"
                  "   <Node name='child1'>                                                    \n"
-                 "      <OglModel/>                                                          \n"
-                 "      <OglModel/>                                                          \n"
+                 "      <InfoComponent/>                                                          \n"
+                 "      <InfoComponent/>                                                          \n"
                  "      <MechanicalObject />                                                 \n"
                  "      <Node name='child2'>                                                 \n"
-                 "          <OglModel/>                                                      \n"
-                 "          <OglModel/>                                                      \n"
+                 "          <InfoComponent/>                                                      \n"
+                 "          <InfoComponent/>                                                      \n"
                  "      </Node>                                                              \n"
                  "   </Node>                                                                 \n"
                  "</Node>                                                                    \n" ;
@@ -63,12 +64,12 @@ public:
         BaseContext* context = root->getChild("child1")->getContext() ;
 
         /// Query a specific model in a container, this is the old API
-        std::vector<VisualModel*> results ;
-        context->getObjects<VisualModel, std::vector<VisualModel*> >( &results ) ;
+        std::vector<InfoComponent*> results ;
+        context->getObjects<InfoComponent, std::vector<InfoComponent*> >( &results ) ;
         ASSERT_EQ( results.size() , 3 ) ;
 
         /// Query a specific model with a nicer syntax
-        std::vector<VisualModel*> results2 ;
+        std::vector<InfoComponent*> results2 ;
         ASSERT_EQ( context->getObjects(results2).size(), 3 ) ;
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
@@ -81,11 +82,11 @@ public:
         ASSERT_EQ( context->getObjects(BaseContext::SearchDirection::SearchDown).size(), 5) ;
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
-        ASSERT_EQ( context->getObjects<VisualModel>(BaseContext::SearchDirection::SearchDown).size(), 4) ;
+        ASSERT_EQ( context->getObjects<InfoComponent>(BaseContext::SearchDirection::SearchDown).size(), 4) ;
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
         ASSERT_EQ( context->getObjects(BaseContext::SearchDirection::Local).size(), 3) ;
-        ASSERT_EQ( context->getObjects<VisualModel>(BaseContext::SearchDirection::Local).size(), 2) ;
+        ASSERT_EQ( context->getObjects<InfoComponent>(BaseContext::SearchDirection::Local).size(), 2) ;
     }
 };
 

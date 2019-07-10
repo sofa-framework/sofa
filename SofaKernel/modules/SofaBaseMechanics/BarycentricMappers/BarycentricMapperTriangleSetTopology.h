@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,7 +39,6 @@ using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 
 typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 
@@ -53,9 +52,9 @@ public:
                SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Triangle));
     typedef typename Inherit1::Real Real;
 
-    virtual ~BarycentricMapperTriangleSetTopology() override {}
+    ~BarycentricMapperTriangleSetTopology() override {}
 
-    virtual int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
+    int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
     int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
 
 protected:
@@ -69,10 +68,10 @@ protected:
     virtual helper::vector<Triangle> getElements() override;
     virtual helper::vector<SReal> getBaryCoef(const Real* f) override;
     helper::vector<SReal> getBaryCoef(const Real fx, const Real fy);
-    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Triangle& element) override;
-    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Triangle& element) override;
-    virtual void computeDistance(double& d, const Vector3& v) override;
-    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
+    void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Triangle& element) override;
+    void computeCenter(Vector3& center, const typename In::VecCoord& in, const Triangle& element) override;
+    void computeDistance(double& d, const Vector3& v) override;
+    void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
 
     using Inherit1::d_map;
     using Inherit1::m_fromTopology;
@@ -82,8 +81,6 @@ protected:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTRIANGLESETTOPOLOGY_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3dTypes, ExtVec3Types >;
-
 
 #endif
 

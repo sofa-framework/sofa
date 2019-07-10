@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,10 +52,10 @@ WriteState::WriteState()
     , d_DOFsV( initData(&d_DOFsV, helper::vector<unsigned int>(0), "DOFsV", "set the velocity DOFs to write"))
     , d_stopAt( initData(&d_stopAt, 0.0, "stopAt", "stop the simulation when the given threshold is reached"))
     , d_keperiod( initData(&d_keperiod, 0.0, "keperiod", "set the period to measure the kinetic energy increase"))
-    , mmodel(NULL)
-    , outfile(NULL)
+    , mmodel(nullptr)
+    , outfile(nullptr)
 #ifdef SOFA_HAVE_ZLIB
-    , gzfile(NULL)
+    , gzfile(nullptr)
 #endif
     , nextIteration(0)
     , lastTime(0)
@@ -111,7 +111,7 @@ void WriteState::init()
             {
                 msg_error() << "Error creating file "<<filename;
                 delete outfile;
-                outfile = NULL;
+                outfile = nullptr;
             }
         }
     }
@@ -297,12 +297,13 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
 
         //check if the state has to be written or not
         bool writeCurrent = false;
+        SReal epsilonStep = 0.1*this->getContext()->getDt();
         if (nextIteration<d_time.getValue().size())
         {
             // store the actual time instant
             lastTime = d_time.getValue()[nextIteration];
             // if the time simulation is >= that the actual time instant
-            if ( (time > lastTime) || (fabs(time - lastTime)< std::numeric_limits<double>::epsilon()) )
+            if ( (time > lastTime) || (fabs(time - lastTime)< epsilonStep) )
             {
                 writeCurrent = true;
                 firstExport = true;
@@ -315,7 +316,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
             {
                 double nextTime = lastTime + d_period.getValue();
                 // write the state using a period
-                if ( (time > nextTime) || (fabs(time - nextTime)< std::numeric_limits<double>::epsilon()) )
+                if ( (time > nextTime) || (fabs(time - nextTime)< epsilonStep) )
                 {
                     writeCurrent = true;
                     lastTime += d_period.getValue();

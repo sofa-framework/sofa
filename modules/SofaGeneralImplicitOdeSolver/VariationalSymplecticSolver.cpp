@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -98,7 +98,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     const SReal& h = dt;
     const SReal rM = f_rayleighMass.getValue();
     const SReal rK = f_rayleighStiffness.getValue();
-    const bool verbose  = f_verbose.getValue();
 
     if (cpt == 0 || this->getContext()->getTime()==0.0)
     {

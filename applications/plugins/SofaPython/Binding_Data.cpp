@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,9 +25,11 @@
 #include "Binding_LinearSpring.h"
 
 #include <sofa/core/objectmodel/BaseData.h>
+using sofa::core::objectmodel::BaseData ;
+using sofa::core::objectmodel::WriteAccessWithRawPtr;
+
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::BaseObject ;
-using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::Base ;
 
 #include <sofa/defaulttype/DataTypeInfo.h>
@@ -459,7 +461,7 @@ static PyObject * Data_getValue(PyObject *self, PyObject * args)
     int index;
     if (!PyArg_ParseTuple(args, "i",&index))
     {
-        return NULL;
+        return nullptr;
     }
     if ((unsigned int)index>=typeinfo->size())
     {
@@ -467,7 +469,7 @@ static PyObject * Data_getValue(PyObject *self, PyObject * args)
         SP_MESSAGE_ERROR( "Data.getValue index overflow" )
 
                 PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     if (typeinfo->Scalar())
         return PyFloat_FromDouble(typeinfo->getScalarValue(data->getValueVoidPtr(),index));
@@ -478,46 +480,48 @@ static PyObject * Data_getValue(PyObject *self, PyObject * args)
 
     /// should never happen....
     SP_PYERR_SETSTRING_OUTOFBOUND(0) ;
-    return NULL;
+    return nullptr;
 }
-
 
 static PyObject * Data_setValue(PyObject *self, PyObject * args)
 {
     BaseData* data = get_basedata( self );
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); /// info about the data value
-    int index;
+    unsigned int index;
     PyObject *value;
 
     if (!PyArg_ParseTuple(args, "iO", &index, &value)) {
-        return NULL;
+        return nullptr;
     }
 
-    if ((unsigned int)index >= typeinfo->size())
+    if (index >= typeinfo->size())
     {
         SP_PYERR_SETSTRING_OUTOFBOUND(0);
-        return NULL;
+        return nullptr;
     }
 
     if (typeinfo->Scalar() && PyFloat_Check(value))
     {
-        typeinfo->setScalarValue((void*)data->getValueVoidPtr(),index,PyFloat_AsDouble(value));
+        WriteAccessWithRawPtr access {data} ;
+        typeinfo->setScalarValue(access.ptr,index,PyFloat_AsDouble(value));
         return PyInt_FromLong(0);
     }
     if (typeinfo->Integer() && PyInt_Check(value))
     {
-        typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),index,PyInt_AsLong(value));
+        WriteAccessWithRawPtr access {data} ;
+        typeinfo->setIntegerValue(access.ptr,index,PyInt_AsLong(value));
         return PyInt_FromLong(0);
     }
     if (typeinfo->Text() && PyString_Check(value))
     {
-        typeinfo->setTextValue((void*)data->getValueVoidPtr(),index,PyString_AsString(value));
+        WriteAccessWithRawPtr access {data} ;
+        typeinfo->setTextValue(access.ptr,index,PyString_AsString(value));
         return PyInt_FromLong(0);
     }
 
     /// should never happen....
     PyErr_BadArgument();
-    return NULL;
+    return nullptr;
 }
 
 
@@ -526,7 +530,7 @@ static PyObject * Data_getValueTypeString(PyObject *self, PyObject* args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     BaseData* data = get_basedata( self );
@@ -539,7 +543,7 @@ static PyObject * Data_getValueString(PyObject *self, PyObject* args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     BaseData* data = get_basedata( self );
@@ -554,7 +558,7 @@ static PyObject * Data_getSize(PyObject *self, PyObject * args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     BaseData* data = get_basedata( self );
@@ -573,13 +577,14 @@ static PyObject * Data_getSize(PyObject *self, PyObject * args)
 static PyObject * Data_setSize(PyObject *self, PyObject * args)
 {
     BaseData* data = get_basedata( self );
-    int size;
+    unsigned int size;
     if (!PyArg_ParseTuple(args, "i",&size))
     {
-        return NULL;
+        return nullptr;
     }
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-    typeinfo->setSize((void*)data->getValueVoidPtr(),size);
+    WriteAccessWithRawPtr access {data};
+    typeinfo->setSize(access.ptr,size);
     Py_RETURN_NONE;
 }
 
@@ -591,7 +596,7 @@ static PyObject * Data_isSet(PyObject *self, PyObject* args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     return PyBool_FromLong(data->isSet());
@@ -604,7 +609,7 @@ static PyObject * Data_isPersistant(PyObject *self, PyObject * args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     return PyBool_FromLong(data->isPersistent());
@@ -617,7 +622,7 @@ static PyObject * Data_setPersistant(PyObject* self, PyObject* args)
     PyObject* state = nullptr ;
     if (!PyArg_ParseTuple(args, "O", &state))
     {
-        return NULL;
+        return nullptr;
     }
 
     data->setPersistent(PyObject_IsTrue(state));
@@ -641,7 +646,7 @@ static PyObject * Data_updateIfDirty(PyObject *self, PyObject * args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     BaseData* data = get_basedata( self );
@@ -659,7 +664,7 @@ static PyObject * Data_read(PyObject *self, PyObject * args)
     PyObject *value;
     if (!PyArg_ParseTuple(args, "O",&value))
     {
-        return NULL;
+        return nullptr;
     }
 
     if (PyString_Check(value))
@@ -669,7 +674,7 @@ static PyObject * Data_read(PyObject *self, PyObject * args)
     else
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     Py_RETURN_NONE;
@@ -683,7 +688,7 @@ static PyObject * Data_setParent(PyObject *self, PyObject * args)
     PyObject *value;
     if (!PyArg_ParseTuple(args, "O",&value))
     {
-        return NULL;
+        return nullptr;
     }
 
     typedef PyPtr<BaseData> PyBaseData;
@@ -700,7 +705,7 @@ static PyObject * Data_setParent(PyObject *self, PyObject * args)
     else
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     Py_RETURN_NONE;
@@ -714,7 +719,7 @@ static PyObject * Data_getParentPath(PyObject *self, PyObject * args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     BaseData* data = get_basedata( self );
@@ -726,7 +731,7 @@ static PyObject * Data_hasParent(PyObject *self, PyObject * args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     BaseData* data = get_basedata( self );
@@ -804,7 +809,7 @@ static PyObject * Data_getCounter(PyObject * self, PyObject * args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     BaseData* data = get_basedata( self );
@@ -817,7 +822,7 @@ static PyObject * Data_isDirty(PyObject * self, PyObject * args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     BaseData* data = get_basedata( self );
@@ -829,7 +834,7 @@ static PyObject * Data_isRequired(PyObject * self, PyObject * args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     BaseData* data = get_basedata( self );
@@ -841,7 +846,7 @@ static PyObject * Data_isReadOnly(PyObject * self, PyObject * args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     BaseData* data = get_basedata( self );
@@ -854,7 +859,7 @@ static PyObject * Data_getHelp(PyObject *self, PyObject * args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     BaseData* data = get_basedata( self );

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,7 @@
 
 #include <sofa/simulation/Simulation.h>
 
-#include <string.h>
+#include <cstring>
 #include <iostream>
 #include <cassert>
 #include <numeric>
@@ -70,14 +70,14 @@ public:
         points(dest->points)
     {
     }
-    virtual void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal,
-                         SReal, SReal, bool, bool)
+    void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal,
+                         SReal, SReal, bool, bool) override
     {
         Coord c;
         Out::set(c, px, py, pz);
         points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
-    virtual void addSphere(SReal px, SReal py, SReal pz, SReal)
+    void addSphere(SReal px, SReal py, SReal pz, SReal) override
     {
         Coord c;
         Out::set(c, px, py, pz);
@@ -130,7 +130,7 @@ RigidMapping<TIn, TOut>::RigidMapping()
     : Inherit()
     , points(initData(&points, "initialPoints", "Local Coordinates of the points"))
     , index(initData(&index, (unsigned)0, "index", "input DOF index"))
-    , fileRigidMapping(initData(&fileRigidMapping, "fileRigidMapping", "Filename"))
+    , fileRigidMapping(initData(&fileRigidMapping, "filename", "Xsp file where rigid mapping information can be loaded from."))
     , useX0(initData(&useX0, false, "useX0", "Use x0 instead of local copy of initial positions (to support topo changes)"))
     , indexFromEnd(initData(&indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
     , rigidIndexPerPoint(initData(&rigidIndexPerPoint, "rigidIndexPerPoint", "For each mapped point, the index of the Rigid it is mapped from"))
@@ -139,7 +139,7 @@ RigidMapping<TIn, TOut>::RigidMapping()
     , matrixJ()
     , updateJ(false)
 {
-    this->addAlias(&fileRigidMapping, "filename");
+    this->addAlias(&fileRigidMapping, "fileRigidMapping");
 }
 
 template <class TIn, class TOut>

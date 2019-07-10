@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node animate="1">
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <OptiTrackNatNetClient serverName="169.254.165.78" scale="1000" drawOtherMarkersSize="2" drawTrackedMarkersSize="0" />
   <Node name="Head">
     <OptiTrackNatNetDevice name="HeadDevice" trackableName="Head" isGlobalFrame="1" inMarkersMeshFile="./data/optitrack-markers-Head.obj" simMarkersMeshFile="./data/markers-Head.obj" drawMarkersColor="0 1 0 1" drawAxisSize="50 10 50" drawMarkersSize="2" />
@@ -14,7 +15,7 @@
     <Node name="CutEdges">
       <Mesh position="0 0.0167 -0.0424 0 0.1959 0.2303" edges="0 1" />
       <MechanicalObject name="vertices" />
-      <LineModel name="CM" group="1" simulated="0" moving="1" contactStiffness="0" />
+      <LineCollisionModel name="CM" group="1" simulated="0" moving="1" contactStiffness="0" />
       <RigidMapping />
     </Node>
     <Node name="Surface">
@@ -27,8 +28,8 @@
 0 -1.7000 4.8600
 0 -1.7000 8.2993" edges="0 1 1 2 2 3 3 4 4 5 5 6" />
       <MechanicalObject name="vertices" />
-      <PointModel group="2" />
-      <LineModel group="2" />
+      <PointCollisionModel group="2" />
+      <LineCollisionModel group="2" />
       <RigidMapping />
     </Node>
     <Node name="Visual">
@@ -44,7 +45,7 @@
       <MeshObjLoader name="loaderSurface" filename="./data/blade_CM.obj" />
       <Mesh src="@loaderSurface" />
       <MechanicalObject name="vertices" src="@loaderSurface" />
-      <TriangleModel group="2" />
+      <TriangleCollisionModel group="2" />
       <RigidMapping index="2" />
     </Node>
     <Node name="CutVisual">
@@ -60,14 +61,14 @@
       <MeshObjLoader name="loaderPince" filename="./data/pince_left.obj" />
       <Mesh src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
-      <TriangleModel group="1" />
+      <TriangleCollisionModel group="1" />
       <RigidMapping index="1" />
     </Node>
     <Node name="GrabSurfaceR">
       <MeshObjLoader name="loaderPince" filename="./data/pince_right.obj" />
       <Mesh src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
-      <TriangleModel group="1" />
+      <TriangleCollisionModel group="1" />
       <RigidMapping index="2" />
     </Node>
     <Node name="GrabVisualL">

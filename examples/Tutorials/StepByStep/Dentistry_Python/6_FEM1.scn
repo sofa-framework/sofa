@@ -4,15 +4,16 @@ FEM force field of the tongue
 Control the instrument with the UP and DOWN keys + CTRL
 -->
 <Node name="root" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin pluginName="SofaPython"/>
 
     <BackgroundSetting color="0.5 0.5 0.5" />
     <VisualStyle displayFlags="showVisualModels showForceFields" /> 
 
-    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <CollisionResponse name="response" response="FrictionContact" />
+    <DefaultContactManager name="response" response="FrictionContact" />
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" />
 
     <FreeMotionAnimationLoop />
@@ -21,7 +22,7 @@ Control the instrument with the UP and DOWN keys + CTRL
     <Node name="Head">
         <Node name="Tongue" activated="true">
 	    
-            <EulerImplicit name="odesolver" vdamping="4.0"/>
+            <EulerImplicitSolver name="odesolver" vdamping="4.0"/>
             <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
             <SparseGrid n="4 4 6" fileTopology="data/mesh/tongue.obj" />
@@ -44,9 +45,9 @@ Control the instrument with the UP and DOWN keys + CTRL
         	 	<MeshObjLoader filename="data/mesh/tongue.obj"  name="loader"/>
         		<Mesh src="@loader" name="tongueCollisionModel"  />
         		<MechanicalObject src="@loader" name="colTongue"/>		
-        		<Triangle name="tongue" contactStiffness="5"/>
-        		<Line name="tongue" contactStiffness="5"/>	
-        		<Point name="tongue" contactStiffness="5"/>	
+        		<TriangleCollisionModel name="tongue" contactStiffness="5"/>
+        		<LineCollisionModel name="tongue" contactStiffness="5"/>	
+        		<PointCollisionModel name="tongue" contactStiffness="5"/>	
         		<BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@colTongue" mapForces="false"/>
             </Node>
         </Node>
@@ -77,8 +78,8 @@ Control the instrument with the UP and DOWN keys + CTRL
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
             <Mesh src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 0" />
-            <Line name="instrument" contactStiffness="10" />
-            <Point name="instrument" contactStiffness="10" />
+            <LineCollisionModel name="instrument" contactStiffness="10" />
+            <PointCollisionModel name="instrument" contactStiffness="10" />
             <RigidMapping name="MM-CM mapping" input="@../instrumentState" output="@instrumentCollisionState" />
         </Node>
 

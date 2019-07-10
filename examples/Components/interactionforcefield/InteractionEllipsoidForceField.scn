@@ -1,9 +1,10 @@
 <!-- Mechanical InteractionEllipsoidForceField Example -->
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showInteractionForceFields showVisual" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse name="Response" />
+    <DefaultContactManager name="Response" />
     <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
     <Node name="RotatingObstacle">
         <Euler name="odesolver" printLog="false" />
@@ -12,7 +13,7 @@
         <PartialFixedConstraint indices="0" fixedDirections="1 1 1 0 0 0" />
     </Node>
     <Node name="SquareCloth1">
-        <EulerImplicit name="odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject name="MS1" />
         <UniformMass totalMass="100" />

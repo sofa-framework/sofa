@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,13 +22,14 @@
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
 
 #include <map>
 #include <typeinfo>
-#include <string.h>
+#include <cstring>
 #include <sstream>
 
 #define ERROR_LOG_SIZE 100
@@ -69,8 +70,6 @@ Base::Base()
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
-
-
 }
 
 Base::~Base()
@@ -84,7 +83,7 @@ void Base::addRef()
 
 void Base::release()
 {
-    if (ref_counter.dec_and_test_null())
+    if (ref_counter.fetch_sub(1) == 1)
     {
         delete this;
     }
@@ -94,8 +93,8 @@ void Base::release()
 void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed, bool isReadOnly )
 {
     BaseData::DataFlags flags = BaseData::FLAG_DEFAULT;
-    if(isDisplayed) flags |= (BaseData::DataFlags)BaseData::FLAG_DISPLAYED; else flags &= ~(BaseData::DataFlags)BaseData::FLAG_DISPLAYED;
-    if(isReadOnly)  flags |= (BaseData::DataFlags)BaseData::FLAG_READONLY; else flags &= ~(BaseData::DataFlags)BaseData::FLAG_READONLY;
+    if(isDisplayed) flags |= BaseData::DataFlags(BaseData::FLAG_DISPLAYED); else flags &= ~BaseData::DataFlags(BaseData::FLAG_DISPLAYED);
+    if(isReadOnly)  flags |= BaseData::DataFlags(BaseData::FLAG_READONLY); else flags &= ~BaseData::DataFlags(BaseData::FLAG_READONLY);
 
     initData0(field, res, name, help, flags);
 }
@@ -106,26 +105,16 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
     // Questionnable optimization: test a single 'uint32_t' rather that four 'char'
     static const char *draw_str = "draw";
     static const char *show_str = "show";
-    static uint32_t draw_prefix = *(uint32_t*)draw_str;
-    static uint32_t show_prefix = *(uint32_t*)show_str;
+    static uint32_t draw_prefix = *reinterpret_cast<const uint32_t*>(draw_str);
+    static uint32_t show_prefix = *reinterpret_cast<const uint32_t*>(show_str);
 
-    /*
-        std::string ln(name);
-        if( ln.size()>0 && findField(ln) )
-        {
-            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
-            exit( 1 );
-        }
-        m_fieldVec.push_back( std::make_pair(ln,field));
-        m_aliasData.insert(std::make_pair(ln,field));
-    */
     res.owner = this;
     res.data = field;
     res.name = name;
     res.helpMsg = help;
     res.dataFlags = dataFlags;
 
-    uint32_t prefix = *(uint32_t*)name;
+    uint32_t prefix = *reinterpret_cast<const uint32_t*>(name);
 
     if (prefix == draw_prefix || prefix == show_prefix)
         res.group = "Visualization";
@@ -144,9 +133,8 @@ void Base::addData(BaseData* f, const std::string& name)
 {
     if (name.size() > 0 && (findData(name) || findLink(name)))
     {
-        serr << "Data field name " << name
-                << " already used in this class or in a parent class !"
-                << sendl;
+        msg_warning() << "Data field name " << name
+                << " already used in this class or in a parent class !";
     }
     m_vecData.push_back(f);
     m_aliasData.insert(std::make_pair(name, f));
@@ -166,9 +154,8 @@ void Base::addLink(BaseLink* l)
     const std::string& name = l->getName();
     if (name.size() > 0 && (findData(name) || findLink(name)))
     {
-        serr << "Link name " << name
-                << " already used in this class or in a parent class !"
-                << sendl;
+        msg_warning() << "Link name " << name
+                << " already used in this class or in a parent class !";
     }
     m_vecLink.push_back(l);
     m_aliasLink.insert(std::make_pair(name, l));
@@ -346,9 +333,9 @@ BaseData* Base::findData( const std::string &name ) const
         if (range.first != range.second)
             return range.first->second;
         else
-            return NULL;
+            return nullptr;
     }
-    else return NULL;
+    else return nullptr;
 }
 
 /// Find fields given a name: several can be found as we look into the alias map
@@ -374,7 +361,7 @@ BaseLink* Base::findLink( const std::string &name ) const
     if (range.first != range.second)
         return range.first->second;
     else
-        return NULL;
+        return nullptr;
 }
 
 /// Find links given a name: several can be found as we look into the alias map
@@ -405,21 +392,21 @@ bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseL
     if (pathStr.empty() || pathStr == std::string("[]"))
     {
         ptr = this->findData(dataStr);
-        return (ptr != NULL);
+        return (ptr != nullptr);
     }
-    Base* obj = NULL;
+    Base* obj = nullptr;
     if (!findLinkDest(obj, BaseLink::CreateString(pathStr), link))
         return false;
     if (!obj)
         return false;
     ptr = obj->findData(dataStr);
-    return (ptr != NULL);
+    return (ptr != nullptr);
 }
 
 void* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/)
 {
-    serr << "Base: calling unimplemented findLinkDest method" << sendl;
-    return NULL;
+    msg_error() << "Base: calling unimplemented findLinkDest method" ;
+    return nullptr;
 }
 
 bool Base::hasField( const std::string& attribute) const
@@ -435,7 +422,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
     std::vector< BaseLink* > linkVec = findLinks(attribute);
     if (dataVec.empty() && linkVec.empty())
     {
-        serr << "Unknown Data field or Link: " << attribute << sendl;
+        msg_warning() << "Unknown Data field or Link: " << attribute ;
         return false; // no field found
     }
     bool ok = true;
@@ -464,14 +451,14 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
                     ok = true;
                     continue;
                 }
-                serr<<"Could not setup Data link between "<< value << " and " << attribute << "." << sendl;
+                msg_warning()<<"Could not setup Data link between "<< value << " and " << attribute << "." ;
                 ok = false;
                 continue;
             }
             else
             {
                 BaseData* parentData = dataVec[d]->getParent();
-                sout<<"Link from parent Data " << value << " (" << parentData->getValueTypeInfo()->name() << ") to Data " << attribute << "(" << dataVec[d]->getValueTypeInfo()->name() << ") OK" << sendl;
+                msg_info() << "Link from parent Data " << value << " (" << parentData->getValueTypeInfo()->name() << ") to Data " << attribute << "(" << dataVec[d]->getValueTypeInfo()->name() << ") OK";
             }
             /* children Data cannot be modified changing the parent Data value */
             dataVec[d]->setReadOnly(true);
@@ -479,7 +466,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
         }
         if( !(dataVec[d]->read( value )) && !value.empty())
         {
-            serr<<"Could not read value for data field "<< attribute <<": " << value << sendl;
+            msg_warning()<<"Could not read value for data field "<< attribute <<": " << value ;
             ok = false;
         }
     }
@@ -487,19 +474,20 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
     {
         if( !(linkVec[l]->read( value )) && !value.empty())
         {
-            serr<<"Could not read value for link "<< attribute <<": " << value << sendl;
+            msg_warning()<<"Could not read value for link "<< attribute <<": " << value;
             ok = false;
         }
-        sout << "Link " << linkVec[l]->getName() << " = " << linkVec[l]->getValueString() << sendl;
-        unsigned int s = (unsigned int)linkVec[l]->getSize();
+        msg_info() << "Link " << linkVec[l]->getName() << " = " << linkVec[l]->getValueString();
+        unsigned int s = unsigned(linkVec[l]->getSize());
         for (unsigned int i=0; i<s; ++i)
         {
-            sout  << "  " << linkVec[l]->getLinkedPath(i) << " = ";
+            std::stringstream tmp;
+            tmp << "  " << linkVec[l]->getLinkedPath(i) << " = ";
             Base* b = linkVec[l]->getLinkedBase(i);
             BaseData* d = linkVec[l]->getLinkedData(i);
-            if (b) sout << b->getTypeName() << " " << b->getName();
-            if (d) sout << " . " << d->getValueTypeString() << " " << d->getName();
-            sout << sendl;
+            if (b) tmp << b->getTypeName() << " " << b->getName();
+            if (d) tmp << " . " << d->getValueTypeString() << " " << d->getName();
+            msg_info() << tmp.str();
         }
     }
     return ok;
@@ -525,7 +513,7 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
     std::string key,val;
     for( std::map<string,string*>::const_iterator i=args.begin(), iend=args.end(); i!=iend; ++i )
     {
-        if( (*i).second!=NULL )
+        if( (*i).second!=nullptr )
         {
             key=(*i).first;
             val=*(*i).second;
@@ -543,8 +531,8 @@ void  Base::parse ( BaseObjectDescription* arg )
 
         // FIX: "type" is already used to define the type of object to instanciate, any Data with
         // the same name cannot be extracted from BaseObjectDescription
-        if (attrName == std::string("type")) continue;
-
+        if (attrName == std::string("type"))
+            continue;
         if (!hasField(attrName)) continue;
 
         parseField(attrName, it.second);
@@ -561,7 +549,7 @@ void Base::updateLinks(bool logErrors)
         bool ok = (*iLink)->updateLinks();
         if (!ok && (*iLink)->storePath() && logErrors)
         {
-            serr << "Link update failed for " << (*iLink)->getName() << " = " << (*iLink)->getValueString() << sendl;
+            msg_warning() << "Link update failed for " << (*iLink)->getName() << " = " << (*iLink)->getValueString() ;
         }
     }
 }
@@ -572,7 +560,7 @@ void  Base::writeDatas ( std::map<std::string,std::string*>& args )
     {
         BaseData* field = *iData;
         std::string name = field->getName();
-        if( args[name] != NULL )
+        if( args[name] != nullptr )
             *args[name] = field->getValueString();
         else
             args[name] =  new string(field->getValueString());
@@ -581,7 +569,7 @@ void  Base::writeDatas ( std::map<std::string,std::string*>& args )
     {
         BaseLink* link = *iLink;
         std::string name = link->getName();
-        if( args[name] != NULL )
+        if( args[name] != nullptr )
             *args[name] = link->getValueString();
         else
             args[name] =  new string(link->getValueString());
@@ -689,10 +677,78 @@ void Base::clearOutputs()
     clearLoggedMessages();
 }
 
+/// Set the source filename (where the component is implemented)
+void Base::setDefinitionSourceFileName(const std::string& sourceFileName)
+{
+    m_definitionSourceFileName = sourceFileName;
+}
+
+/// Get the source filename (where the component is implemented)
+const std::string& Base::getDefinitionSourceFileName() const
+{
+    return m_definitionSourceFileName;
+}
+
+/// Set the source location (where the component is implemented)
+void Base::setDefinitionSourceFilePos(const int linenum)
+{
+    m_definitionSourceFilePos = linenum;
+}
+
+/// Get the source location (where the component is implemented)
+int Base::getDefinitionSourceFilePos() const
+{
+    return m_definitionSourceFilePos;
+}
+
+/// Set the file where the instance has been created
+/// This is useful to store where the component was emitted from
+void Base::setInstanciationSourceFileName(const std::string& filename)
+{
+    m_instanciationSourceFileName = filename;
+}
+
+/// Get the file where the instance has been created
+/// This is useful to store where the component was emitted from
+const std::string& Base::getInstanciationSourceFileName() const
+{
+    return m_instanciationSourceFileName;
+}
+
+/// Set the file location (line number) where the instance has been created
+/// This is useful to store where the component was emitted from
+void Base::setInstanciationSourceFilePos(const int lineco)
+{
+    m_instanciationSourceFilePos = lineco;
+}
+
+/// Get the file location (line number) where the instance has been created
+/// This is useful to store where the component was emitted from
+int Base::getInstanciationSourceFilePos() const
+{
+    return m_instanciationSourceFilePos;
+}
+
+
 
 
 } // namespace objectmodel
 
 } // namespace core
 
+namespace helper
+{
+namespace logging
+{
+
+SofaComponentInfo::SofaComponentInfo(const sofa::core::objectmodel::Base* c)
+{
+    assert(c!=nullptr) ;
+    m_component = c ;
+    m_sender = c->getClassName() ;
+    m_name = c->getName() ;
+}
+
+} // namespace logging
+} // namespace helper
 } // namespace sofa

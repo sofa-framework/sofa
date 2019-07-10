@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,7 +57,7 @@
 
 
 #include <fstream>
-#include <string.h>
+#include <cstring>
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -95,9 +95,6 @@ void setSimulation ( Simulation* s )
 
 Simulation* getSimulation()
 {
-    //TODO(damien):  replace that with an assert system that use the messaging API.
-    assert(Simulation::theSimulation.get()!=NULL && "There is no simulation initialized.") ;
-
     return Simulation::theSimulation.get();
 }
 
@@ -366,7 +363,6 @@ void Simulation::updateVisualContext (Node* root)
 /// Render the scene
 void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
-    sofa::helper::AdvancedTimer::begin("Animate");
     sofa::helper::AdvancedTimer::stepBegin("Simulation::draw");
 
     sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
@@ -384,7 +380,6 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
     }
 
     sofa::helper::AdvancedTimer::stepEnd("Simulation::draw");
-    sofa::helper::AdvancedTimer::end("Animate");
 }
 
 /// Export a scene to an OBJ 3D Scene
@@ -434,7 +429,7 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 
 
 /// Load a scene from a file
-Node::SPtr Simulation::load ( const char *filename )
+Node::SPtr Simulation::load ( const char *filename, bool reload )
 {
     if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() || // no filename
             sofa::helper::system::SetDirectory::GetExtension(filename).empty() ) // filename with no extension
@@ -442,7 +437,7 @@ Node::SPtr Simulation::load ( const char *filename )
 
     SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
 
-    if (loader) return loader->load(filename);
+    if (loader) return loader->load(filename, reload);
 
     // unable to load file
     serr << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << sendl;

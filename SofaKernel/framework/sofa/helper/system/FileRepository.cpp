@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,7 +32,6 @@
 #endif
 
 #include <boost/filesystem.hpp>
-#include <boost/locale.hpp>
 
 #include <cstring>
 #include <cstdlib>
@@ -211,7 +210,7 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 {
     if (filename.empty()) return false; // no filename
     std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
-    boost::filesystem::path::imbue( boost::locale::generator().generate("") );
+    boost::filesystem::path::imbue(std::locale(""));
     boost::filesystem::path p(newfname);
     if (boost::filesystem::exists(p))
     {
@@ -275,11 +274,11 @@ void FileRepository::print()
 const std::string FileRepository::getPathsJoined()
 {
     std::ostringstream imploded;
-    char* delim = ":";
+    std::string delim = ":";
 #ifdef WIN32
     delim = ";";
 #endif
-    std::copy(vpath.begin(), vpath.end(), std::ostream_iterator<std::string>(imploded, delim));
+    std::copy(vpath.begin(), vpath.end(), std::ostream_iterator<std::string>(imploded, delim.c_str()));
     std::string implodedStr = imploded.str();
     implodedStr = implodedStr.substr(0, implodedStr.size()-1); // remove trailing separator
     return implodedStr;

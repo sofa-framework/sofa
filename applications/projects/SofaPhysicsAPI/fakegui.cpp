@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -33,7 +33,7 @@ void FakeGUI::Create()
 {
     // sofa FakeGUI
     sofa::gui::GUIManager::RegisterGUI("fake", CreateFakeGUI, NULL);
-    sofa::gui::GUIManager::Init(0,"fake");
+    sofa::gui::GUIManager::Init(nullptr,"fake");
     sofa::gui::GUIManager::createGUI(NULL,NULL);
 }
 

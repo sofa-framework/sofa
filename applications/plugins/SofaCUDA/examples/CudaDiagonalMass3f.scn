@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<Node name="lroot" gravity="0 -9.81 0" dt="0.02">
+<Node name="root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 	
     <Node name="Liver" gravity="0 -9.81 0">

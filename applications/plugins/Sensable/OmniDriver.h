@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -111,27 +111,27 @@ public:
     OmniDriver();
     virtual ~OmniDriver();
 
-    virtual void init();
-    virtual void bwdInit();
-    virtual void reset();
-    void reinit();
+    virtual void init() override;
+    virtual void bwdInit() override;
+    virtual void reset() override;
+    void reinit() override;
 
     int initDevice(OmniData& data);
 
-    void cleanup();
+    void cleanup() override;
     virtual void draw();
-	virtual void draw(const core::visual::VisualParams*) override;
+    virtual void draw(const core::visual::VisualParams*) override;
 
     void setForceFeedbacks(vector<ForceFeedback*> ffs);
 
-    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
-    void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
+    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) override;
+    void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) override;
 
     void setDataValue();
     void reinitVisual();
 
 private:
-    void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override;
     sofa::component::visualmodel::OglModel::SPtr visu_base, visu_end;
     bool noDevice;
 

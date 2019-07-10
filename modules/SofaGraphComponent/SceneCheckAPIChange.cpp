@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,7 +77,7 @@ void SceneCheckAPIChange::doInit(Node* node)
     node->getTreeObject(apiversion);
     if(!apiversion)
     {
-        msg_info(this->getName()) << "The 'APIVersion' directive is missing in the current scene. Switching to the default APIVersion level '" << m_selectedApiLevel << "' ";
+        msg_info(this->getName()) << "No 'APIVersion' component in scene. Using the default APIVersion level: " << m_selectedApiLevel;
     }
     else
     {
@@ -96,11 +96,19 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
 
     for (auto& object : node->object )
     {
+        Base* o = object.get();
+
+        if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
+        {
+            msg_deprecated(o) << this->getName() << ": "
+                              << deprecatedComponents.at(o->getClassName()).getMessage();
+        }
+
         if(m_selectedApiLevel != m_currentApiLevel && m_changesets.find(m_selectedApiLevel) != m_changesets.end())
         {
             for(auto& hook : m_changesets[m_selectedApiLevel])
             {
-                hook(object.get());
+                hook(o);
             }
         }
     }
@@ -109,16 +117,10 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
 
 void SceneCheckAPIChange::installDefaultChangeSets()
 {
-    addHookInChangeSet("17.06", [](Base* o){
+    addHookInChangeSet("17.06", [this](Base* o){
         if(o->getClassName() == "BoxStiffSpringForceField" )
-            msg_warning(o) << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'";
-    });
-
-    addHookInChangeSet("17.06", [](Base* o){
-        if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
-        {
-            msg_deprecated(o) << deprecatedComponents.at(o->getClassName()).getMessage();
-        }
+            msg_warning(o) << this->getName() << ": "
+                           << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'";
     });
 }
 

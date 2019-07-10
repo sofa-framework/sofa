@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -89,7 +89,7 @@ void TextureInterpolation<DataTypes>::doUpdate()
 
     const sofa::helper::vector <Coord>& realInputs = _inputField.getValue();
 
-    ResizableExtVector2D& outputs = *(_outputCoord.beginWriteOnly());
+    VecCoord2D& outputs = *(_outputCoord.beginWriteOnly());
     outputs.resize (realInputs.size());
 
     if (realInputs.size() == 0)
@@ -198,7 +198,7 @@ template <class DataTypes>
 void TextureInterpolation<DataTypes>::standardLinearInterpolation()
 {
     const VecCoord3D& coords = _inputCoords.getValue();
-    ResizableExtVector2D& outputs = *(_outputCoord.beginEdit());
+    VecCoord2D& outputs = *(_outputCoord.beginEdit());
 
     outputs.clear();
     outputs.resize(coords.size());

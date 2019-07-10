@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 -9.81 0" dt="0.005" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisualModels showBehaviorModels hideCollisionModels hideBoundingCollisionModels hideMappings hideMechanicalMappings showForceFields showInteractionForceFields hideWireframe hideNormals" />
 	<RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
 
@@ -36,9 +37,9 @@
 			<MeshObjLoader name="loader"  filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj" />
 			<MeshTopology src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" template="Vec3d" name="instrumentCollisionState"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1"  translation="-1.2 -1.6 3.55"  rotation="180 0 150" />
-			<TTriangleModel template="Vec3d" name="instrument"  contactStiffness="10" />
-			<LineModel name="instrument"  contactStiffness="10" />
-			<PointModel name="instrument"  contactStiffness="10" />
+			<TriangleCollisionModel template="Vec3d" name="instrument"  contactStiffness="10" />
+			<LineCollisionModel name="instrument"  contactStiffness="10" />
+			<PointCollisionModel name="instrument"  contactStiffness="10" />
 			<RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@instrumentState"  output="@instrumentCollisionState" />
 		</Node>
 		<VectorSpringForceField template="Vec3d" name="default47"  object1="@Omni/RefModel/instrumentCollisionState"  object2="@Instrument/CollisionModel/instrumentCollisionState"  stiffness="10"  viscosity="0" />
@@ -53,9 +54,9 @@
 			<MeshObjLoader name="loader"  filename="Demos/Dentistry/data/mesh/tooth-closed.obj" />
 			<MeshTopology src="@loader" name="ToothCollisionModel" />
 			<MechanicalObject src="@loader" template="Vec3d" name="toothState"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1"  translation="2 0.5 0"  rotation="0 0 -90" />
-			<TTriangleModel template="Vec3d" name="tooth"  moving="0"  simulated="0"  contactStiffness="100" />
-			<LineModel name="tooth"  moving="0"  simulated="0"  contactStiffness="100" />
-			<PointModel name="tooth"  moving="0"  simulated="0"  contactStiffness="100" />
+			<TriangleCollisionModel template="Vec3d" name="tooth"  moving="0"  simulated="0"  contactStiffness="100" />
+			<LineCollisionModel name="tooth"  moving="0"  simulated="0"  contactStiffness="100" />
+			<PointCollisionModel name="tooth"  moving="0"  simulated="0"  contactStiffness="100" />
 		</Node>
 	</Node>
 </Node>

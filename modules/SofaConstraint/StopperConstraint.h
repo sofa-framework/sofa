@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,20 +44,20 @@ protected:
 public:
 
     StopperConstraintResolution1Dof(const double &min, const double &max)
-    :core::behavior::ConstraintResolution(1)
-    ,_min(min)
-    ,_max(max)
+        : core::behavior::ConstraintResolution(1)
+        , _min(min)
+        , _max(max)
     { 
     }
 
-    virtual void init(int line, double** w, double *force)
+    void init(int line, double** w, double *force) override
     {
         _w = w[line][line];
         _invW = 1.0/_w;
         force[line  ] = 0.0;
     }
 
-    virtual void resolution(int line, double** /*w*/, double* d, double* force, double*)
+    void resolution(int line, double** /*w*/, double* d, double* force, double*) override
     {
         double dfree = d[line] - _w * force[line];
 
@@ -100,16 +100,15 @@ protected:
 
 
 
-    StopperConstraint(MechanicalState* object);
-    StopperConstraint();
+    StopperConstraint(MechanicalState* object = nullptr);
 
     virtual ~StopperConstraint() {}
 public:
-    virtual void init() override;
-    virtual void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x) override;
-    virtual void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) override;
+    void init() override;
+    void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x) override;
+    void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) override;
 
-    virtual void getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
+    void getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP)

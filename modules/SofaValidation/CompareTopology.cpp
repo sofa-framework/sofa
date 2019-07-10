@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,8 +72,9 @@ void CompareTopology::handleEvent(sofa::core::objectmodel::Event* event)
 //-------------------------------- processCompareTopology------------------------------------
 void CompareTopology::processCompareTopology()
 {
+    sofa::core::topology::BaseMeshTopology* topo = nullptr;
+    this->getContext()->get(topo, sofa::core::objectmodel::BaseContext::Local);
 
-    sofa::core::topology::BaseMeshTopology* topo = m_topology = this->getContext()->getMeshTopology();
     if (!topo)
     {
         serr << "Error, compareTopology can't acces to the Topology." << sendl;
@@ -334,7 +335,9 @@ CompareTopologyCreator::CompareTopologyCreator(const std::string &n, const core:
 simulation::Visitor::Result CompareTopologyCreator::processNodeTopDown( simulation::Node* gnode)
 {
     using namespace sofa::defaulttype;
-    sofa::core::topology::BaseMeshTopology* topo = dynamic_cast<sofa::core::topology::BaseMeshTopology *>( gnode->getMeshTopology());
+    sofa::core::topology::BaseMeshTopology* topo = nullptr;
+    gnode->get(topo, sofa::core::objectmodel::BaseContext::Local);
+
     if (!topo)   return simulation::Visitor::RESULT_CONTINUE;
     //We have a meshTopology
     addCompareTopology(topo, gnode);
@@ -349,7 +352,7 @@ void CompareTopologyCreator::addCompareTopology(sofa::core::topology::BaseMeshTo
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
-    if (createInMapping || mapping== NULL)
+    if (createInMapping || mapping== nullptr)
     {
         sofa::component::misc::CompareTopology::SPtr ct; context->get(ct, core::objectmodel::BaseContext::Local);
         if (  ct == NULL )

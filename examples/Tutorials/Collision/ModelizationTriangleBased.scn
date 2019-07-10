@@ -3,7 +3,7 @@
 <Node name="root" dt="0.01" gravity="0 -9.81 0">
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showBehavior showCollisionModels" />
-    <CollisionPipeline />
+    <DefaultPipeline />
     <BruteForceDetection />
     <DefaultContactManager />
     <MinProximityIntersection alarmDistance="1" contactDistance="0.5"/>
@@ -15,13 +15,13 @@
         <UniformMass name="Mass" totalMass="1" />
         <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
         <!-- Collision Models -->
-        <TriangleModel name="Triangles For Collision" />
-        <LineModel name="Lines For Collision" />
-        <PointModel name="Points For Collision" />
+        <TriangleCollisionModel name="Triangles For Collision" />
+        <LineCollisionModel name="Lines For Collision" />
+        <PointCollisionModel name="Points For Collision" />
     </Node>
     <Node name="Floor">
         <MeshTopology name="Topology Floor" filename="mesh/floor.obj" />
         <MechanicalObject name="Floor Particles" />
-        <Triangle name="Floor Triangle For Collision" moving="0" simulated="0" />
+        <TriangleCollisionModel name="Floor Triangle For Collision" moving="0" simulated="0" />
     </Node>
 </Node>

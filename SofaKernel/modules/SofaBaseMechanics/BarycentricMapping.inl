@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,6 +70,8 @@ using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Matrix3;
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vec3d;
+using sofa::core::objectmodel::ComponentState;
+
 // 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
 typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
@@ -217,6 +219,8 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::init()
 {
+    this->m_componentstate = ComponentState::Invalid ;
+
     topology_from = this->fromModel->getContext()->getMeshTopology();
     topology_to = this->toModel->getContext()->getMeshTopology();
 
@@ -230,18 +234,18 @@ void BarycentricMapping<TIn, TOut>::init()
         }
     }
 
-    if ( m_mapper != NULL )
-    {
-        if (useRestPosition.getValue())
-            m_mapper->init ( ((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
-        else
-            m_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
-    }
-    else
+    if ( m_mapper == NULL )
     {
         msg_error() << "Barycentric mapping does not understand topology.";
+        return;
     }
 
+    if (useRestPosition.getValue())
+        m_mapper->init ( ((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
+    else
+        m_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
+
+    this->m_componentstate = ComponentState::Valid ;
 }
 
 template <class TIn, class TOut>
@@ -316,6 +320,7 @@ template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if ( !vparams->displayFlags().getShowMappings() ) return;
+    if (this->m_componentstate != ComponentState::Valid ) return;
 
     // Draw model (out) points
     const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();

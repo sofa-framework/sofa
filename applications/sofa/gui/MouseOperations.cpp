@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -164,7 +164,7 @@ void TopologyOperation::end()
     if (getTopologicalOperation() == 0 || (getTopologicalOperation() == 1 && firstClick))
     {
         pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-        delete performer; performer=0;
+        delete performer; performer=nullptr;
     }
 
 }
@@ -174,7 +174,7 @@ void TopologyOperation::endOperation()
     if (performer)
     {
         pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-        delete performer; performer=0;
+        delete performer; performer=nullptr;
         firstClick = true;
     }
 }
@@ -227,7 +227,7 @@ void InciseOperation::start()
         if (cpt != 0)
         {
             pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-            delete performer; performer=0;
+            delete performer; performer=nullptr;
         }
         performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor.get());
 
@@ -260,14 +260,14 @@ void InciseOperation::endOperation()
 
         //Remove startPerformer
         pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(startPerformer);
-        delete startPerformer; startPerformer=0;
+        delete startPerformer; startPerformer=nullptr;
     }
 
     if (!getKeepPoint())
     {
         cpt = 0; //reinitialization
         pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-        delete performer; performer=0;
+        delete performer; performer=nullptr;
     }
 }
 
@@ -276,7 +276,7 @@ InciseOperation::~InciseOperation()
     if (performer)
     {
         pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-        delete performer; performer=0;
+        delete performer; performer=nullptr;
     }
 }
 

@@ -16,4 +16,4 @@ target_link_libraries(${PROJECT_NAME} ${SOFAGUIMAIN_DEPS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_GUIMAIN")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGui SofaGuiMain "sofa/gui")
+sofa_install_targets(SofaGui SofaGuiMain "SofaGui/sofa/gui")

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,9 +76,9 @@ protected:
 
     virtual ~TriangleSetTopologyAlgorithms() {}
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
     /** \brief  Moves and fixes the two closest points of two triangles to their median point
      */
@@ -98,7 +98,7 @@ public:
     /** \brief Duplicates the given edge. Only works if at least one of its points is adjacent to a border.
      * @returns the number of newly created points, or -1 if the incision failed.
      */
-    virtual int InciseAlongEdge(EdgeID edge, int* createdPoints = NULL);
+    virtual int InciseAlongEdge(EdgeID edge, int* createdPoints = nullptr);
 
 
     /** \brief Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.

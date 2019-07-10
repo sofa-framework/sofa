@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -45,7 +45,7 @@ class CaptureOptionsWidget : public QWidget
     Q_OBJECT
 public:
 
-    CaptureOptionsWidget( QWidget * parent = 0);
+    CaptureOptionsWidget( QWidget * parent = nullptr);
 
     QSpinBox* framerateSpinBox;
     QCheckBox* realtimeCheckBox;
@@ -67,7 +67,7 @@ public:
     };
 
 
-    MovieOptionsWidget( QWidget * parent = 0);
+    MovieOptionsWidget( QWidget * parent = nullptr);
 
     QComboBox* codecComboBox;
     QSpinBox* bitrateSpinBox;
@@ -81,7 +81,7 @@ class SofaVideoRecorderManager: public QDialog, public Ui_VideoRecorderManager
 public:
     enum RecordingType { SCREENSHOTS, MOVIE };
 
-    SofaVideoRecorderManager();
+    SofaVideoRecorderManager(QWidget *parent = Q_NULLPTR);
 
     static SofaVideoRecorderManager* getInstance()
     {

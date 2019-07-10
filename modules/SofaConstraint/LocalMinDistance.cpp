@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -273,10 +273,6 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0] = P;
     detection->point[1] = Q;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0] = alpha;
-    detection->baryCoords[1][0] = beta;
-#endif
     detection->normal = PQ;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -433,11 +429,6 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
     detection->id = e1.getIndex();
     detection->point[0] = Q;
     detection->point[1] = P;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0] = 0;
-    detection->baryCoords[1][0] = alpha;
-    detection->baryCoords[1][1] = beta;
-#endif
     detection->normal = QP;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -591,11 +582,6 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
     detection->id = e1.getIndex();
     detection->point[0] = Q;
     detection->point[1] = P;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0] = 0;
-    detection->baryCoords[1][0] = alpha;
-    detection->baryCoords[1][1] = beta;
-#endif
     detection->normal = QP;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -722,10 +708,6 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
-    detection->baryCoords[1][0]=alpha;
-#endif
     detection->normal=QP;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -851,10 +833,6 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
-    detection->baryCoords[1][0]=alpha;
-#endif
     detection->normal=QP;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -947,10 +925,6 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
-    detection->baryCoords[1][0]=0;
-#endif
     detection->normal=PQ;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -1036,10 +1010,6 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
-    detection->baryCoords[1][0]=0;
-#endif
     detection->normal=PQ;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -1125,10 +1095,6 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
-    detection->baryCoords[1][0]=0;
-#endif
     detection->normal=PQ;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;

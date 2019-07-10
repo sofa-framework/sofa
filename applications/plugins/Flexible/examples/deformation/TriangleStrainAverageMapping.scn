@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 1" time="0" animate="0"  dt="0.02" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
     <VisualStyle displayFlags="showVisualModels showBehaviorModels hideMechanicalMappings showForceFields" />
     <Node 	name="complianceSolverScene" >

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,57 +55,27 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(Mechan
                                     "a real value specifying the tolerance during the constraint solving. (optional, default=0.0001)") )
 
     //TODO(dmarchal): Such kind of behavior shouldn't be implemented in the component but externalized in a second component or in a python script controlling the scene.
-    , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
+    , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
 
     //TODO(dmarchal): what do TEST means in the following ? should it be renamed (EXPERIMENTAL FEATURE) and when those Experimental feature will become official feature ?
     , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
     , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
     , keepOrientDiff(initData(&keepOrientDiff,false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
-
-    , activated(true), iteration(0)
-
-    //0.0001) ;
-
-
 {
     this->f_listening.setValue(true);
 }
 
 template<class DataTypes>
 BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(MechanicalState* object)
-    : Inherit(object, object)
-    , m1(initData(&m1, "first_point","index of the constraint on the first model"))
-    , m2(initData(&m2, "second_point","index of the constraint on the second model"))
-    , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
-    , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance", "a real value specifying the tolerance during the constraint solving. (default=0.0001") )
-
-    , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
-
-    , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
-    , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
-    , keepOrientDiff(initData(&keepOrientDiff,false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
-    , activated(true), iteration(0)
+    : BilateralInteractionConstraint(object, object)
 {
-    this->f_listening.setValue(true);
 }
 
 template<class DataTypes>
 BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint()
-    : m1(initData(&m1, "first_point","index of the constraint on the first model"))
-    , m2(initData(&m2, "second_point","index of the constraint on the second model"))
-    , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
-    , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance", "a real value specifying the tolerance during the constraint solving. (default=0.0001") )
-
-    , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
-
-    , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
-    , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
-    , keepOrientDiff(initData(&keepOrientDiff,false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
-    , activated(true), iteration(0)
+    : BilateralInteractionConstraint(nullptr, nullptr)
 {
-    this->f_listening.setValue(true);
 }
-
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::unspecializedInit()

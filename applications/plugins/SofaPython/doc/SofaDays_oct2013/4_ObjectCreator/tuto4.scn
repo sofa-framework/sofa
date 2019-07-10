@@ -5,21 +5,22 @@
 -->
 
 <Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
 	
-    <CollisionPipeline verbose="0" depth="10" draw="0" />
+    <DefaultPipeline verbose="0" depth="10" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.33" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
 
     <Node name="Floor">
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-10.25" scale="0.5" />
-        <Triangle name="Floor" simulated="0" moving="0" />
-        <Line name="Floor" simulated="0" moving="0" />
-        <Point name="Floor" simulated="0" moving="0" />
+        <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
+        <LineCollisionModel name="Floor" simulated="0" moving="0" />
+        <PointCollisionModel name="Floor" simulated="0" moving="0" />
         <OglModel name="FloorV" filename="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" dy="-10" />
     </Node>
 

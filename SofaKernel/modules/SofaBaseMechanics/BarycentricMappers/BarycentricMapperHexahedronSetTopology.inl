@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -117,12 +117,13 @@ helper::vector<SReal> BarycentricMapperHexahedronSetTopology<In,Out>::getBaryCoe
 {
     helper::vector<SReal> hexahedronCoef{(1-fx)*(1-fy)*(1-fz),
                 (fx)*(1-fy)*(1-fz),
-                (1-fx)*(fy)*(1-fz),
-                (fx)*(fy)*(1-fz),
+                (fx)*(fy)*(1 - fz),
+                (1 - fx)*(fy)*(1 - fz),
                 (1-fx)*(1-fy)*(fz),
                 (fx)*(1-fy)*(fz),
-                (1-fx)*(fy)*(fz),
-                (fx)*(fy)*(fz)};
+                (fx)*(fy)*(fz),
+                (1 - fx)*(fy)*(fz)
+    };
     return hexahedronCoef;
 }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,21 +38,21 @@ class SOFA_SIMULATION_CORE_API TopologyChangeVisitor : public Visitor
 public:
     TopologyChangeVisitor(const sofa::core::ExecParams* params, core::topology::Topology* source);
 
-    virtual ~TopologyChangeVisitor() {}
+    ~TopologyChangeVisitor() override {}
 
     virtual void processTopologyChange(simulation::Node* node, core::objectmodel::BaseObject* obj);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void processNodeBottomUp(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
+    bool isThreadSafe() const override { return true; }
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "topologyChange"; }
-    virtual const char* getClassName() const { return "TopologyChangeVisitor"; }
-    virtual std::string getInfos() const { return "Topology:" + m_source->getName(); }
+    const char* getCategoryName() const override { return "topologyChange"; }
+    const char* getClassName() const override { return "TopologyChangeVisitor"; }
+    virtual std::string getInfos() const override { return "Topology:" + m_source->getName(); }
 
 protected:
     /// Flag to know the number of iterations of the overloaded method processNodeTopDown

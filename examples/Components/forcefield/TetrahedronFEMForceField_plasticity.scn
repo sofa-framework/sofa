@@ -1,12 +1,13 @@
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <VisualStyle displayFlags="showForceFields" />
-  <CollisionPipeline depth="6" verbose="0" draw="0" />
+  <DefaultPipeline depth="6" verbose="0" draw="0" />
   <BruteForceDetection name="N2" />
   <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-  <CollisionResponse name="Response" response="default" />
-  <CollisionGroup name="Group" />
+  <DefaultContactManager name="Response" response="default" />
+  <DefaultCollisionGroupManager name="Group" />
 
-  <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+  <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
   <Node name="Plastic">
@@ -24,7 +25,7 @@
       <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0"/>
       <Mesh src="@loader" />
       <MechanicalObject src="@loader"  />
-      <Triangle />
+      <TriangleCollisionModel />
       <BarycentricMapping />
     </Node>
   </Node>
@@ -45,7 +46,7 @@
       <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0" translation="-6 0 0"/>
       <Mesh src="@loader" />
       <MechanicalObject src="@loader"  />
-      <Triangle />
+      <TriangleCollisionModel />
       <BarycentricMapping />
     </Node>
   </Node>
@@ -66,7 +67,7 @@
       <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0" translation="-12 0 0"/>
       <Mesh src="@loader" />
       <MechanicalObject src="@loader"  />
-      <Triangle />
+      <TriangleCollisionModel />
       <BarycentricMapping />
     </Node>
   </Node>
@@ -86,7 +87,7 @@
       <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0" translation="6 0 0"/>
       <Mesh src="@loader" />
       <MechanicalObject src="@loader"  />
-      <Triangle />
+      <TriangleCollisionModel />
       <BarycentricMapping />
     </Node>
   </Node>

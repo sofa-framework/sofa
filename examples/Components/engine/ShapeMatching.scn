@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 -1 0" dt="0.05"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <CollisionPipeline verbose="0" draw="0" />
+    <DefaultPipeline verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <CollisionResponse name="Response" response="default" />
+    <DefaultContactManager name="Response" response="default" />
 	<Node 	name="dragon"  >
-		<EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+		<EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MeshObjLoader name="loader" filename="mesh/dragon.obj" />
 		<Mesh name="topo" src="@loader" />
@@ -25,9 +26,9 @@
             <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dz="10" />
-            <Triangle contactStiffness="1000" />
-            <Line contactStiffness="1000" />
-            <Point contactStiffness="1000" />
+            <TriangleCollisionModel contactStiffness="1000" />
+            <LineCollisionModel contactStiffness="1000" />
+            <PointCollisionModel contactStiffness="1000" />
             <IdentityMapping />
         </Node>
 	</Node>
@@ -35,9 +36,9 @@
         <MeshObjLoader name="loader" filename="mesh/floor3.obj" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
-        <Triangle name="FloorTriangle" simulated="0" moving="0" />
-        <Line name="FloorLine" simulated="0" moving="0" />
-        <Point name="FloorLine" simulated="0" moving="0" />
+        <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorLine" simulated="0" moving="0" />
+        <PointCollisionModel name="FloorLine" simulated="0" moving="0" />
         <OglModel name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" dy="-10" scale="1.75" />
     </Node>
 </Node>

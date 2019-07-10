@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,19 +35,6 @@ namespace component
 
 namespace projectiveconstraintset
 {
-
-template <class DataTypes>
-ParabolicConstraint<DataTypes>::ParabolicConstraint()
-    :core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_P1(initData(&m_P1,"P1","first point of the parabol") )
-    , m_P2(initData(&m_P2,"P2","second point of the parabol") )
-    , m_P3(initData(&m_P3,"P3","third point of the parabol") )
-    , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
-    , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
-{
-}
-
 
 template <class DataTypes>
 ParabolicConstraint<DataTypes>::ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate)

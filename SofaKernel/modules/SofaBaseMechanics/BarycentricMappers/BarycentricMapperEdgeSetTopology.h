@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,29 +53,29 @@ public:
 
 public:
 
-    virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override
     {
         SOFA_UNUSED(out);
         SOFA_UNUSED(in);
         msg_warning() << "BarycentricMapping not implemented for EdgeSetTopologyContainer.";
     }
-    virtual int addPointInLine(const int edgeIndex, const SReal* baryCoords) override;
-    virtual int createPointInLine(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points) override;
+    int addPointInLine(const int edgeIndex, const SReal* baryCoords) override;
+    int createPointInLine(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points) override;
 
 
 protected:
     BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* fromTopology,
                                      topology::PointSetTopologyContainer* toTopology);
 
-    virtual ~BarycentricMapperEdgeSetTopology() override {}
+    ~BarycentricMapperEdgeSetTopology() override {}
 
     virtual helper::vector<Edge> getElements() override;
     virtual helper::vector<SReal> getBaryCoef(const Real* f) override;
     helper::vector<SReal> getBaryCoef(const Real fx);
-    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Edge& element) override;
-    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Edge& element) override;
-    virtual void computeDistance(double& d, const Vector3& v) override;
-    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
+    void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Edge& element) override;
+    void computeCenter(Vector3& center, const typename In::VecCoord& in, const Edge& element) override;
+    void computeDistance(double& d, const Vector3& v) override;
+    void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
 
     topology::EdgeSetTopologyContainer*	m_fromContainer;
     topology::EdgeSetGeometryAlgorithms<In>* m_fromGeomAlgo;
@@ -88,7 +88,6 @@ protected:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPEREDGESETTOPOLOGY_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3dTypes, Vec3dTypes>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3dTypes, ExtVec3Types>;
 
 
 #endif

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,8 +24,8 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/TypeInfo.h>
-#include <sofa/core/objectmodel/Data.h>
-
+#include <string>
+#include <map>
 
 namespace sofa
 {
@@ -48,15 +48,8 @@ class SOFA_CORE_API ClassInfo
 {
 protected:
     const std::type_info* pt;
-    ClassInfo(const std::type_info* ti)
-        : pt(ti)
-    {
-        classes[sofa::helper::TypeInfo(*ti)] = this;
-    }
-
-    virtual ~ClassInfo()
-    {
-    }
+    ClassInfo(const std::type_info* ti);
+    virtual ~ClassInfo();
 public:
 
     std::string name() const { return pt->name(); }
@@ -74,7 +67,7 @@ public:
 
     virtual bool isInstance(Base* obj) const
     {
-        return dynamicCast(obj) != NULL;
+        return dynamicCast(obj) != nullptr;
     }
 protected:
     static std::map<sofa::helper::TypeInfo, ClassInfo*> classes;

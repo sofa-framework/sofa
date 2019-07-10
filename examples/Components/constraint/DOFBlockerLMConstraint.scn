@@ -1,4 +1,5 @@
 <Node name="Root" gravity="0 0 0" dt="0.001">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields showBoundingCollisionModels" />
     <EulerImplicitSolver name="default26" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <LMConstraintSolver name="ConstraintSolver" constraintVel="1" constraintPos="1" numIterations="27" maxError="1e-7"/>
@@ -16,7 +17,7 @@
             <MeshTopology name="default20" tags="LDI" src="@meshLoader1" position="1 -1 -1 1 -1 1 -1 -1 1 -1 -1 -1 1 1 -1 0.999999 1 1 -1 1 1 -1 1 -1" triangles="4 0 7  0 3 7  2 6 7  2 7 3  1 5 2  5 6 2  0 4 1  4 5 1  4 7 6  4 6 5  0 1 2  0 2 3 " />
             <MechanicalObject template="Vec3d" name="default21"  restScale="1" />
             <RigidMapping template="Rigid,Vec3d" name="default22" />
-            <TriangleModel name="FrictionCoeff" contactFriction="1" />
+            <TriangleCollisionModel name="FrictionCoeff" contactFriction="1" />
         </Node>
     </Node>
     <Node name="RotationConstrained" gravity="0 -9.81 0">
@@ -32,7 +33,7 @@
             <MeshTopology name="default20" tags="LDI" src="@meshLoader0" position="1 -1 -1 1 -1 1 -1 -1 1 -1 -1 -1 1 1 -1 0.999999 1 1 -1 1 1 -1 1 -1" triangles="4 0 7  0 3 7  2 6 7  2 7 3  1 5 2  5 6 2  0 4 1  4 5 1  4 7 6  4 6 5  0 1 2  0 2 3 " />
             <MechanicalObject template="Vec3d" name="default21"  restScale="1" />
             <RigidMapping template="Rigid,Vec3d" name="default22" />
-            <TriangleModel name="FrictionCoeff" contactFriction="1" />
+            <TriangleCollisionModel name="FrictionCoeff" contactFriction="1" />
         </Node>
         <DOFBlockerLMConstraint template="Rigid" name="RotationConstraint" rotationAxis="0 0 0 0 1 0 0 0 0 0 0 1" factorAxis="1" indices="0" />
     </Node>

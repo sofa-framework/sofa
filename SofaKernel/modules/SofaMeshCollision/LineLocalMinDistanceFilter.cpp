@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,6 +39,14 @@ namespace component
 namespace collision
 {
 
+
+LineInfo::LineInfo(LocalMinDistanceFilter *lmdFilters)
+    : InfoFilter(lmdFilters)
+    , m_computedRightAngleCone(0.0)
+    , m_computedLeftAngleCone(0.0)
+    , m_twoTrianglesAroundEdge(false)
+{
+}
 
 void LineInfo::buildFilter(unsigned int edge_index)
 {
@@ -206,7 +214,7 @@ void LineLocalMinDistanceFilter::init()
 {
     this->bmt = getContext()->getMeshTopology();
 
-    if (bmt != 0)
+    if (bmt != nullptr)
     {
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());

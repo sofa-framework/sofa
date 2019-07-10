@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,7 +72,7 @@ public:
         std::stringstream output;
         output << "This component has been PLUGINIZED since SOFA " << sinceVersion << ". "
                   "To continue using this component you need to update you scene "
-                  "and add <RequiredPlugin pluginName='" <<  plugin << "'/>";
+                  "and add <RequiredPlugin name='" <<  plugin << "'/>";
         m_message = output.str();
     }
 };

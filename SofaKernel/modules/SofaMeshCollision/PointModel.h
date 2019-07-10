@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,18 +40,18 @@ namespace collision
 {
 
 template<class DataTypes>
-class TPointModel;
+class PointCollisionModel;
 
 class PointLocalMinDistanceFilter;
 
 template<class TDataTypes>
-class TPoint : public core::TCollisionElementIterator<TPointModel<TDataTypes> >
+class TPoint : public core::TCollisionElementIterator<PointCollisionModel<TDataTypes> >
 {
 public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef TPointModel<DataTypes> ParentModel;
+    typedef PointCollisionModel<DataTypes> ParentModel;
 
     TPoint(ParentModel* model, int index);
     TPoint() {}
@@ -68,7 +68,7 @@ public:
 
     bool testLMD(const sofa::defaulttype::Vector3 &, double &, double &);
 
-    bool activated(core::CollisionModel *cm = 0) const;
+    bool activated(core::CollisionModel *cm = nullptr) const;
 };
 
 class PointActiver
@@ -76,19 +76,19 @@ class PointActiver
 public:
     PointActiver() {}
     virtual ~PointActiver() {}
-    virtual bool activePoint(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
+    virtual bool activePoint(int /*index*/, core::CollisionModel * /*cm*/ = nullptr) {return true;}
 	static PointActiver* getDefaultActiver() { static PointActiver defaultActiver; return &defaultActiver; }
 };
 
 template<class TDataTypes>
-class SOFA_MESH_COLLISION_API TPointModel : public core::CollisionModel
+class SOFA_MESH_COLLISION_API PointCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TPointModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(PointCollisionModel, TDataTypes), core::CollisionModel);
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
-    typedef TPointModel<DataTypes> ParentModel;
+    typedef PointCollisionModel<DataTypes> ParentModel;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -98,22 +98,22 @@ public:
 
     friend class TPoint<DataTypes>;
 protected:
-    TPointModel();
+    PointCollisionModel();
 public:
-    virtual void init() override;
+    void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size) override;
+    void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
-    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
+    void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams*,int index) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
+    bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
@@ -142,12 +142,14 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const TPointModel<DataTypes>* = NULL)
+    static std::string templateName(const PointCollisionModel<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+    void updateNormals();
 
 protected:
 
@@ -162,12 +164,12 @@ protected:
     PointLocalMinDistanceFilter *m_lmdFilter;
     EmptyFilter m_emptyFilter;
 
-    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
-
-    void updateNormals();
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)    
 
     PointActiver *myActiver;
 };
+
+template <class TDataTypes> using TPointModel [[deprecated("The TPointModel is now deprecated please use PointCollisionModel instead.")]] = PointCollisionModel<TDataTypes>;
 
 template<class DataTypes>
 inline TPoint<DataTypes>::TPoint(ParentModel* model, int index)
@@ -199,7 +201,7 @@ template<class DataTypes>
 inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TPointModel<DataTypes>::velocity(int index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
+inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(int index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }
@@ -213,11 +215,11 @@ inline bool TPoint<DataTypes>::activated(core::CollisionModel *cm) const
     return this->model->myActiver->activePoint(this->index, cm);
 }
 
-typedef TPointModel<sofa::defaulttype::Vec3Types> PointModel;
+typedef PointCollisionModel<sofa::defaulttype::Vec3Types> PointModel;
 typedef TPoint<sofa::defaulttype::Vec3Types> Point;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_POINTMODEL_CPP)
-extern template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
 
 #endif
 

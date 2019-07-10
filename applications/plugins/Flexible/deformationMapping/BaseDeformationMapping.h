@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,19 +76,6 @@ public:
     static const bool FMapped=false;
     static defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
 };
-
-template<class TCoord, class TDeriv, class TReal>
-class OutDataTypesInfo<defaulttype::ExtVectorTypes<TCoord, TDeriv, TReal> >
-{
-public:
-    enum {material_dimensions = TCoord::spatial_dimensions};
-    static const bool positionMapped=true;
-    static const bool FMapped=false;
-    static defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
-};
-
-
-
 
 namespace component
 {
@@ -262,9 +249,9 @@ public:
     //@}
 
     ///@brief Get parent state size
-    virtual size_t getFromSize() const { return this->fromModel->getSize(); }
+    size_t getFromSize() const override { return this->fromModel->getSize(); }
     ///@brief Get child state size
-    virtual size_t getToSize()  const { return this->toModel->getSize(); }
+    size_t getToSize()  const override { return this->toModel->getSize(); }
     ///@brief Get child to parent indices as a const reference
     virtual const VecVRef& getChildToParentIndex() { return  f_index.getValue(); }
     ///@brief Get parent indices of the i-th child
@@ -326,7 +313,7 @@ public:
 
 protected:
     BaseDeformationMappingT (core::State<In>* from = NULL, core::State<Out>* to= NULL);
-    virtual ~BaseDeformationMappingT() { }
+    ~BaseDeformationMappingT() override { }
 
 public:
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -196,18 +196,18 @@ const Real* SofaPhysicsOutputMesh::Impl::getVPositions()  ///< vertices position
     Data<ResizableExtVector<Coord> > * data =
         (!sObj->m_vertPosIdx.getValue().empty()) ?
         &(sObj->m_vertices2) : &(sObj->m_positions);
-    return (const Real*) data->getValue().getData();
+    return (const Real*) data->getValue().data();
 }
 const Real* SofaPhysicsOutputMesh::Impl::getVNormals()    ///< vertices normals   (Vec3)
 {
     Data<ResizableExtVector<Deriv> > * data = &(sObj->m_vnormals);
-    return (const Real*) data->getValue().getData();
+    return (const Real*) data->getValue().data();
 }
 
 const Real* SofaPhysicsOutputMesh::Impl::getVTexCoords()  ///< vertices UVs       (Vec2)
 {
     Data<ResizableExtVector<TexCoord> > * data = &(sObj->m_vtexcoords);
-    return (const Real*) data->getValue().getData();
+    return (const Real*) data->getValue().data();
 }
 
 int SofaPhysicsOutputMesh::Impl::getTexCoordRevision()    ///< changes each time tex coord data are updated
@@ -267,7 +267,7 @@ const Real*  SofaPhysicsOutputMesh::Impl::getVAttributeValue(int index)         
     if ((unsigned)index >= sVA.size())
         return NULL;
     else
-        return (const Real*)((ResizableExtVector<Real>*)sVA[index]->getSEValue()->getValueVoidPtr())->getData();
+        return (const Real*)((ResizableExtVector<Real>*)sVA[index]->getSEValue()->getValueVoidPtr())->data();
 }
 
 int          SofaPhysicsOutputMesh::Impl::getVAttributeRevision(int index)      ///< changes each time vertices attribute is updated
@@ -303,7 +303,7 @@ unsigned int SofaPhysicsOutputMesh::Impl::getNbTriangles() ///< number of triang
 const Index* SofaPhysicsOutputMesh::Impl::getTriangles()   ///< triangles topology (3 indices / triangle)
 {
     Data<ResizableExtVector<Triangle> > * data = &(sObj->m_triangles);
-    return (const Index*) data->getValue().getData();
+    return (const Index*) data->getValue().data();
 }
 int SofaPhysicsOutputMesh::Impl::getTrianglesRevision()    ///< changes each time triangles data is updated
 {
@@ -320,7 +320,7 @@ unsigned int SofaPhysicsOutputMesh::Impl::getNbQuads() ///< number of quads
 const Index* SofaPhysicsOutputMesh::Impl::getQuads()   ///< quads topology (4 indices / quad)
 {
     Data<ResizableExtVector<Quad> > * data = &(sObj->m_quads);
-    return (const Index*) data->getValue().getData();
+    return (const Index*) data->getValue().data();
 }
 int SofaPhysicsOutputMesh::Impl::getQuadsRevision()    ///< changes each time quads data is updated
 {

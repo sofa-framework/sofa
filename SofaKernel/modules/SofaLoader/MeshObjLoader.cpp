@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,35 +47,45 @@ int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file
 MeshObjLoader::MeshObjLoader()
     : MeshLoader()
     , d_handleSeams(initData(&d_handleSeams, (bool)false, "handleSeams", "Preserve UV and normal seams information (vertices with multiple UV and/or normals)"))
-    , loadMaterial(initData(&loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))    
+    , d_loadMaterial(initData(&d_loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))
     , faceType(MeshObjLoader::TRIANGLE)
-    , d_material(initData(&d_material,"material","Default material") )
-    , materials(initData(&materials,"materials","List of materials") )
-    , faceList(initData(&faceList,"faceList","List of face definitions.") )
-    , texIndexList(initData(&texIndexList,"texcoordsIndex","Indices of textures coordinates used in faces definition."))
-    , positionsList(initData(&positionsList,"positionsDefinition", "Vertex positions definition"))
-    , texCoordsList(initData(&texCoordsList,"texcoordsDefinition", "Texture coordinates definition"))
-    , normalsIndexList(initData(&normalsIndexList,"normalsIndex","List of normals of elements of the mesh loaded."))
-    , normalsList(initData(&normalsList,"normalsDefinition","Normals definition"))
-    , texCoords(initData(&texCoords,"texcoords","Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data"))
-    , computeMaterialFaces(initData(&computeMaterialFaces, false, "computeMaterialFaces", "True to activate export of Data instances containing list of face indices for each material"))
+    , d_material(initData(&d_material,"defaultMaterial","Default material") )
+    , d_materials(initData(&d_materials,"materials","List of materials") )
+    , d_faceList(initData(&d_faceList,"faceList","List of face definitions.") )
+    , d_texIndexList(initData(&d_texIndexList,"texcoordsIndex","Indices of textures coordinates used in faces definition."))
+    , d_positionsList(initData(&d_positionsList,"positionsDefinition", "Vertex positions definition"))
+    , d_texCoordsList(initData(&d_texCoordsList,"texcoordsDefinition", "Texture coordinates definition"))
+    , d_normalsIndexList(initData(&d_normalsIndexList,"normalsIndex","List of normals of elements of the mesh loaded."))
+    , d_normalsList(initData(&d_normalsList,"normalsDefinition","Normals definition"))
+    , d_texCoords(initData(&d_texCoords,"texcoords","Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data"))
+    , d_computeMaterialFaces(initData(&d_computeMaterialFaces, false, "computeMaterialFaces", "True to activate export of Data instances containing list of face indices for each material"))
     , d_vertPosIdx      (initData   (&d_vertPosIdx, "vertPosIdx", "If vertices have multiple normals/texcoords stores vertices position indices"))
     , d_vertNormIdx     (initData   (&d_vertNormIdx, "vertNormIdx", "If vertices have multiple normals/texcoords stores vertices normal indices"))
 {
-    faceList.setGroup("OBJ");
-    texIndexList.setGroup("OBJ");
-    texCoordsList.setGroup("OBJ");
-    normalsIndexList.setGroup("OBJ");
-    normalsList.setGroup("OBJ");
-    positionsList.setGroup("OBJ");
+    addAlias(&d_material, "material");
+
+    d_material.setGroup("Shading");
+    d_materials.setGroup("Shading");
+
+    d_texIndexList.setGroup("Texturing");
+    d_texCoordsList.setGroup("Texturing");
+    d_texCoords.setGroup("Texturing");
+
+    d_faceList.setGroup("Geometry");
+    d_normalsIndexList.setGroup("Geometry");
+    d_normalsList.setGroup("Geometry");
+    d_positionsList.setGroup("Geometry");
+    d_vertPosIdx.setGroup("Geometry");
+    d_vertNormIdx.setGroup("Geometry");
+
     //BUGFIX: data loaded from OBJ file should not be saved to XML
-    faceList.setPersistent(false);
-    texIndexList.setPersistent(false);
-    texCoordsList.setPersistent(false);
-    normalsIndexList.setPersistent(false);
-    normalsList.setPersistent(false);
-    positionsList.setPersistent(false);
-    texCoords.setPersistent(false);
+    d_faceList.setPersistent(false);
+    d_texIndexList.setPersistent(false);
+    d_texCoordsList.setPersistent(false);
+    d_normalsIndexList.setPersistent(false);
+    d_normalsList.setPersistent(false);
+    d_positionsList.setPersistent(false);
+    d_texCoords.setPersistent(false);
     d_positions.setPersistent(false);
     d_normals.setPersistent(false);
     d_edges.setPersistent(false);
@@ -84,7 +94,7 @@ MeshObjLoader::MeshObjLoader()
     d_edgesGroups.setPersistent(false);
     d_trianglesGroups.setPersistent(false);
     d_quadsGroups.setPersistent(false);
-    texCoords.setPersistent(false);
+    d_texCoords.setPersistent(false);
     d_vertPosIdx.setPersistent(false);
     d_vertNormIdx.setPersistent(false);
 }
@@ -150,14 +160,14 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
  
     const bool handleSeams = d_handleSeams.getValue();
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
-    helper::vector<sofa::defaulttype::Vector2>& my_texCoords = *(texCoordsList.beginEdit());
-    helper::vector<sofa::defaulttype::Vector3>& my_normals   = *(normalsList.beginEdit());
+    helper::vector<sofa::defaulttype::Vector2>& my_texCoords = *(d_texCoordsList.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_normals   = *(d_normalsList.beginEdit());
 
     Material& material = *(d_material.beginEdit());
-    helper::vector<Material>& my_materials = *(materials.beginEdit());
-    helper::SVector< helper::SVector <int> >& my_faceList = *(faceList.beginEdit() );
-    helper::SVector< helper::SVector <int> >& my_normalsList = *(normalsIndexList.beginEdit());
-    helper::SVector< helper::SVector <int> >& my_texturesList   = *(texIndexList.beginEdit());
+    helper::vector<Material>& my_materials = *(d_materials.beginEdit());
+    helper::SVector< helper::SVector <int> >& my_faceList = *(d_faceList.beginEdit() );
+    helper::SVector< helper::SVector <int> >& my_normalsList = *(d_normalsIndexList.beginEdit());
+    helper::SVector< helper::SVector <int> >& my_texturesList   = *(d_texIndexList.beginEdit());
     helper::vector<int> nodes, nIndices, tIndices;
 
     helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
@@ -223,7 +233,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             values >> result[0] >> result[1];
             my_texCoords.push_back(Vector2(result[0],result[1]));
         }
-        else if ((token == "mtllib") && loadMaterial.getValue())
+        else if ((token == "mtllib") && d_loadMaterial.getValue())
         {
             while (!values.eof())
             {
@@ -371,7 +381,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
     if (!d_handleSeams.getValue())
     { // default mode, vertices are never duplicated, only one texcoord and normal is used per vertex
-        helper::vector<sofa::defaulttype::Vector2>& vTexCoords = *texCoords.beginEdit();
+        helper::vector<sofa::defaulttype::Vector2>& vTexCoords = *d_texCoords.beginEdit();
         helper::vector<sofa::defaulttype::Vector3>& vNormals   = *d_normals.beginEdit();
         helper::vector<sofa::defaulttype::Vector3>& vVertices  = *d_positions.beginEdit();
         vVertices = my_positions;
@@ -455,7 +465,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         // Then we can create the final arrays
         helper::vector<sofa::defaulttype::Vector3> vertices2;
         helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3> > > vnormals = d_normals;
-        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector2> > > vtexcoords = texCoords;
+        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector2> > > vtexcoords = d_texCoords;
         helper::WriteAccessor<Data<helper::vector<int> > > vertPosIdx = d_vertPosIdx;
         helper::WriteAccessor<Data<helper::vector<int> > > vertNormIdx = d_vertNormIdx;
 
@@ -552,7 +562,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     }
 
 
-    if (computeMaterialFaces.getValue())
+    if (d_computeMaterialFaces.getValue())
     {
         // create subset lists
         std::map< std::string, helper::vector<unsigned int> > materialFaces[NBFACETYPE];
@@ -589,7 +599,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 this->addData(dOut);
                 dOut->setGroup("Materials");
                 dOut->setValue(faces);
-                subsets_indices.push_back(dOut);
+                d_subsets_indices.push_back(dOut);
             }
         }
     }
@@ -601,14 +611,14 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     d_edges.endEdit();
     d_triangles.endEdit();
     d_quads.endEdit();
-    normalsList.endEdit();
-    normalsIndexList.endEdit();
+    d_normalsList.endEdit();
+    d_normalsIndexList.endEdit();
     d_material.endEdit();
-    materials.endEdit();
-    texIndexList.endEdit();
-    texCoordsList.endEdit();
-    texCoords.endEdit();
-    faceList.endEdit();
+    d_materials.endEdit();
+    d_texIndexList.endEdit();
+    d_texCoordsList.endEdit();
+    d_texCoords.endEdit();
+    d_faceList.endEdit();
     //vertices.endEdit();
     d_normals.endEdit();
     return true;

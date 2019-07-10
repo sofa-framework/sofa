@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 -9.81 0" dt="0.005"   >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showInteractionForceFields showCollisionModels" />
   <Gravity name="G"  gravity="0 -9.8 0" />
     <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
 
-    <CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+    <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
   <BruteForceDetection name="detection" />
-  <CollisionResponse name="response" response="default" />
+  <DefaultContactManager name="response" response="default" />
   <MinProximityIntersection name="proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="true"/>
 
   <NewOmniDriver name="Omni Driver"  listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" />
@@ -22,7 +23,7 @@
     <Node 	name="CollisionModel"  >
 
       <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="0 0 0 " />
-      <Point name="ParticleModel" contactStiffness="1" />
+      <PointCollisionModel name="ParticleModel" contactStiffness="1" />
       <RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@instrumentState"  output="@Particles" />
 
         <EnslavementForceFeedback name="forcefeedback" tags="Omni" collisionModel1="@ParticleModel" collisionModel2="" relativeStiffness="4" attractionDistance="0.03" normalsPointOut="true" contactScale="0.1" penetrationOffset="0.02"/>
@@ -40,7 +41,7 @@
       <MeshObjLoader name="loader"  filename="data/mesh/tooth.obj" />
       <MeshTopology src="@loader" name="ToothCollisionModel" />
       <MechanicalObject src="@loader" template="Vec3d" name="toothState" />
-      <Triangle />
+      <TriangleCollisionModel />
 
     </Node>
   </Node>
@@ -53,7 +54,7 @@
             <MeshObjLoader name="loader"  filename="data/mesh/tooth.obj" translation="0 0 1"/>
             <MeshTopology src="@loader" name="ToothCollisionModel" />
             <MechanicalObject src="@loader" template="Vec3d" name="toothState"/>
-            <Triangle />
+            <TriangleCollisionModel />
 
         </Node>
     </Node>

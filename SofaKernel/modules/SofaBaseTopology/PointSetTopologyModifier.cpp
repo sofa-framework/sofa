@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -364,6 +364,7 @@ void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<Po
         propagateStateChanges();
     }
     m_container->removePoints(indices.size());
+
     sofa::helper::AdvancedTimer::stepEnd("removePointsProcess");
 }
 
@@ -397,9 +398,6 @@ void PointSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector
 void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
-
-    // Declare all engines to dirty:
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
     this->propagateTopologicalEngineChanges();
     
@@ -444,7 +442,6 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-            std::cout << "PointSetTopologyModifier:update " << topoEngine->name << std::endl;
             topoEngine->update();
         }
     }

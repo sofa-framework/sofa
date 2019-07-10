@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -113,7 +113,7 @@ public:
 protected:
     Node(const std::string& name="");
 
-    virtual ~Node();
+    virtual ~Node() override;
 public:
     /// Create, add, then return the new child of this Node
     virtual Node::SPtr createChild(const std::string& nodeName)=0;
@@ -122,7 +122,7 @@ public:
     /// @{
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Initialize the components
     void init(const sofa::core::ExecParams* params);
@@ -299,18 +299,41 @@ public:
 
     /// @}
 
+    /// @name Set/get objects
+    /// @{
+
+    /// Pure Virtual method from BaseNode
+    /// Add a child node
+    virtual void addChild(BaseNode::SPtr node) final;
+    /// Remove a child node
+    virtual void removeChild(BaseNode::SPtr node) final;
+    /// Move a node in this from another node
+    virtual void moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent) final;
+    /// Move a node in this from another node
+    virtual void moveChild(BaseNode::SPtr node) override = 0;
+
+    /// Delegate methods overridden in child classes
+    /// Add a child node
+    virtual void doAddChild(BaseNode::SPtr node) = 0;
+    /// Remove a child node
+    virtual void doRemoveChild(BaseNode::SPtr node) = 0;
+    /// Move a node from another node
+    virtual void doMoveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent) = 0;
+
+    /// @}
+
 
     /// @name Set/get objects
     /// @{
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(sofa::core::objectmodel::BaseObject::SPtr obj) override;
+    virtual bool addObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
 
     /// Remove an object
-    virtual bool removeObject(sofa::core::objectmodel::BaseObject::SPtr obj) override;
+    virtual bool removeObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
 
     /// Move an object from another node
-    virtual void moveObject(sofa::core::objectmodel::BaseObject::SPtr obj) override;
+    virtual void moveObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
 
     /// Find an object given its name
     sofa::core::objectmodel::BaseObject* getObject(const std::string& name) const;
@@ -321,7 +344,7 @@ public:
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override = 0;
+    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override = 0;
 
     /// Generic object access, possibly searching up or down from the current context
     ///
@@ -334,12 +357,12 @@ public:
     /// Generic object access, given a path from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const override = 0;
+    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const override = 0;
 
     /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const  override = 0;
+    void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const  override = 0;
 
     /// Generic list of objects access, possibly searching up or down from the current context
     ///
@@ -450,31 +473,31 @@ public:
     }
 
     /// Topology
-    virtual sofa::core::topology::Topology* getTopology() const override;
+    sofa::core::topology::Topology* getTopology() const override;
 
     /// Mesh Topology (unified interface for both static and dynamic topologies)
-    virtual sofa::core::topology::BaseMeshTopology* getMeshTopology() const override;
+    sofa::core::topology::BaseMeshTopology* getMeshTopology() const override;
 
     /// Mesh Topology that is local to this context (i.e. not within parent contexts)
-    virtual core::topology::BaseMeshTopology* getLocalMeshTopology() const override;
+    core::topology::BaseMeshTopology* getLocalMeshTopology() const override;
 
     /// Degrees-of-Freedom
-    virtual sofa::core::BaseState* getState() const override;
+    sofa::core::BaseState* getState() const override;
 
     /// Mechanical Degrees-of-Freedom
-    virtual sofa::core::behavior::BaseMechanicalState* getMechanicalState() const override;
+    sofa::core::behavior::BaseMechanicalState* getMechanicalState() const override;
 
     /// Shader
-    virtual sofa::core::visual::Shader* getShader() const override;
+    sofa::core::visual::Shader* getShader() const override;
     virtual sofa::core::visual::Shader* getShader(const sofa::core::objectmodel::TagSet& t) const;
 
     /// @name Solvers and main algorithms
     /// @{
 
-    virtual sofa::core::behavior::BaseAnimationLoop* getAnimationLoop() const override;
-    virtual sofa::core::behavior::OdeSolver* getOdeSolver() const override;
-    virtual sofa::core::collision::Pipeline* getCollisionPipeline() const override;
-    virtual sofa::core::visual::VisualLoop* getVisualLoop() const override;
+    sofa::core::behavior::BaseAnimationLoop* getAnimationLoop() const override;
+    sofa::core::behavior::OdeSolver* getOdeSolver() const override;
+    sofa::core::collision::Pipeline* getCollisionPipeline() const override;
+    sofa::core::visual::VisualLoop* getVisualLoop() const override;
 
     /// @}
 
@@ -486,9 +509,10 @@ public:
 
     /// Get a descendant node given its name
     Node* getTreeNode(const std::string& name) const;
+    Node* getNodeInGraph(const std::string& absolutePath) const;
 
     /// Get children nodes
-    virtual Children getChildren() const override;
+    Children getChildren() const override;
 
     BaseContext* getRootContext() const override
     {
@@ -513,7 +537,7 @@ public:
     virtual void initVisualContext() {}
 
     /// Propagate an event
-    virtual void propagateEvent(const sofa::core::ExecParams* params, sofa::core::objectmodel::Event* event) override;
+    void propagateEvent(const sofa::core::ExecParams* params, sofa::core::objectmodel::Event* event) override;
 
     /// Update the visual context values, based on parent and local ContextObjects
     virtual void updateVisualContext();
@@ -538,39 +562,48 @@ public:
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
     virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
 
-	/// override context setSleeping to add notification.
-	virtual void setSleeping(bool /*val*/) override;
+    /// override context setSleeping to add notification.
+    void setSleeping(bool /*val*/) override;
+
 
 protected:
     bool debug_;
     bool initialized;
 
-    virtual void doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-
+    virtual bool doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual bool doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent);
 
     std::stack<Visitor*> actionStack;
+private:    
+    virtual void notifyBeginAddChild(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child);
 
-    virtual void notifyAddChild(Node::SPtr node);
-    virtual void notifyRemoveChild(Node::SPtr node);
-    virtual void notifyMoveChild(Node::SPtr node, Node* prev);
-    virtual void notifyAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyMoveObject(sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev);
-    virtual void notifySleepChanged();
+    virtual void notifyBeginAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyBeginRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+
+    virtual void notifyEndAddChild(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child);
+
+    virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+
+    virtual void notifySleepChanged(Node* node);
+
+    virtual void notifyBeginAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    virtual void notifyBeginRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+
+    virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
 
 
+protected:
     BaseContext* _context;
 
     helper::vector<MutationListener*> listener;
 
 
 public:
-
-    virtual void notifyAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;
-    virtual void notifyRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;
-    virtual void notifyMoveSlave(sofa::core::objectmodel::BaseObject* previousMaster, sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;
-
     virtual void addListener(MutationListener* obj);
     virtual void removeListener(MutationListener* obj);
 

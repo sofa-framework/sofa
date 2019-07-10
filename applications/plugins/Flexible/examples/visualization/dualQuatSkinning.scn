@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root"  dt="0.01"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
       
   <RequiredPlugin name="Compliant" pluginName="Compliant" />
   <RequiredPlugin name="Flexible" pluginName="Flexible" />
@@ -70,7 +71,7 @@
                         <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj"  translation="0 4 0"/>
                         <Mesh src="@loader" />
                         <MechanicalObject name="falling_particle" src="@loader" />
-                        <TTriangleModel template="Vec3d" name="tTriangleModel12"  bothSide="1" />
+                        <TriangleCollisionModel template="Vec3d" name="tTriangleModel12"  bothSide="1" />
                         <LinearMultiMapping template="Rigid,Affine,Vec3d" input1="@../.." input2="@.." output="@falling_particle" printLog="0" assemble="0"/>
                 </Node>
 
@@ -123,7 +124,7 @@
                         <MeshObjLoader name="loaderCpu" filename="mesh/torus_for_collision.obj"  translation="0 4 0"/>
                         <Mesh src="@loaderCpu" />
                         <MechanicalObject name="falling_particle_cpu" src="@loaderCpu" />
-                        <TTriangleModel template="Vec3d" name="tTriangleModel12_cpu"  bothSide="1" />
+                        <TriangleCollisionModel template="Vec3d" name="tTriangleModel12_cpu"  bothSide="1" />
                         <LinearMultiMapping template="Rigid,Affine,ExtVec3f" input1="@../.." input2="@.." output="@falling_particle_cpu" printLog="0" assemble="0"/>
                 </Node>
 

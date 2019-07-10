@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,18 +19,4 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GRAPH_COMPONENT_BACKGROUNDSETTING_H
-#define SOFA_GRAPH_COMPONENT_BACKGROUNDSETTING_H
-
-#include <SofaBaseVisual/BackgroundSetting.h>
-
-namespace sofa
-{
-namespace defaulttype
-{
-    using sofa::component::configurationsetting::BackgroundSetting ;
-} // namespace defaulttype
-} // namespace sofa
-
-
-#endif
+#error "This file has been moved to a new location for release 19.06. You need to update your code by replacing #include<SofaGrapComponent/BackgroundSetting.h> by #include<SofaBaseVisual/BackgroundSetting.h"

@@ -1,11 +1,12 @@
 <Node name="root" dt="0.01">
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" usePointPoint="1" alarmDistance="3.5" contactDistance="1.5" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="Frog">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/frog.obj" />
         <MechanicalObject dx="-10.0" />
@@ -20,15 +21,15 @@
             <MeshObjLoader name="loader" filename="mesh/frog.obj" />
             <Mesh />
             <MechanicalObject src="@loader" />
-            <Triangle group="1" />
-            <Line group="1" />
-            <Point group="1" />
+            <TriangleCollisionModel group="1" />
+            <LineCollisionModel group="1" />
+            <PointCollisionModel group="1" />
             <SurfacePressureForceField pressure="50000.0" pulseMode="true" pressureSpeed="20000.0" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
     </Node>
     <Node name="Frog2">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/frog_quads.obj" />
         <MechanicalObject dx="10.0" />
@@ -43,9 +44,9 @@
             <MeshObjLoader name="loader" filename="mesh/frog_quads.obj" />
             <Mesh />
             <MechanicalObject src="@loader" />
-            <Triangle group="1" />
-            <Line group="1" />
-            <Point group="1" />
+            <TriangleCollisionModel group="1" />
+            <LineCollisionModel group="1" />
+            <PointCollisionModel group="1" />
             <SurfacePressureForceField pressure="50000.0" pulseMode="true" pressureSpeed="20000.0" />
             <BarycentricMapping input="@.." output="@." />
         </Node>

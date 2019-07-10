@@ -1,4 +1,5 @@
 <Node dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="1" gravity="0 -10 0" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 	<Node>
 		<RungeKutta4/>
@@ -7,7 +8,7 @@
         <CGLinearSolver/>-->
 		<MechanicalObject name="MModel" template="CudaVec3f" />
 		<!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
-		<RegularGrid
+		<RegularGridTopology
 			nx="5" ny="40" nz="5"
 			xmin="-1.5" xmax="0"
 			ymin="-3" ymax="12"

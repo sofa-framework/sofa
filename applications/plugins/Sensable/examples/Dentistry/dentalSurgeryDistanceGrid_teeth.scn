@@ -5,12 +5,13 @@
 -->
 
 <Node name="root" dt="0.001" gravity="10 0 0" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
     <RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
     <OmniDriver scale="0.1" orientation="-90 0 90" position="0 -4 0"/>
-	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+	<DefaultPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
-	<CollisionResponse name="response" response="default" />
+	<DefaultContactManager name="response" response="default" />
 	<MinProximityIntersection name="proximity" alarmDistance="0.03" contactDistance="0.03" />
 
 	<Node name="Tooth" >
@@ -84,8 +85,8 @@
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
 			<Mesh src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3"/>
-			<Line name="instrument" contactStiffness="10" />
-			<Point name="instrument" contactStiffness="10" />
+			<LineCollisionModel name="instrument" contactStiffness="10" />
+			<PointCollisionModel name="instrument" contactStiffness="10" />
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelRight" >

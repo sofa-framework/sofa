@@ -1,16 +1,17 @@
 <Node name="root" dt="0.002" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	
-	<CollisionPipeline depth="6" verbose="0" draw="0"/>
+	<DefaultPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-	<CollisionResponse name="Response" response="default" />
-	<CollisionGroup name="Group" />
+	<DefaultContactManager name="Response" response="default" />
+	<DefaultCollisionGroupManager name="Group" />
 	
 	<Node name="M1" processor="0">
     <RungeKutta4 />
 		<MechanicalObject template="Vec3f"/>
-		<UniformMass totalmass="200" />
-		<RegularGrid
+		<UniformMass totalMass="200" />
+		<RegularGridTopology
 			nx="16" ny="16" nz="76"
 			xmin="-9" xmax="-6"
 			ymin="0" ymax="3"
@@ -25,7 +26,7 @@
 		  		ymin="0" ymax="3"
 		  		zmin="0" zmax="15"
 		  	/>
-      <VisualModel name="Visual" />
+      <OglModel name="Visual" />
 		  <SubsetMapping input="@.." output="@Visual" />
 		</Node>
 	</Node>

@@ -1,12 +1,13 @@
 <Node name="root" dt="0.0025" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
-	<CollisionPipeline verbose="0" />
+	<DefaultPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
-	<CollisionResponse name="Response" />
+	<DefaultContactManager name="Response" />
 	<CudaProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
 
 	<Node name="Floor">
-		<RegularGrid
+		<RegularGridTopology
 			nx="2" ny="1" nz="2"
 			xmin="10" xmax="-10"
 			ymin="-3.05" ymax="-3.05"
@@ -19,19 +20,19 @@
 	</Node>
 	<Node name="M1">
 		<RungeKutta4 />
-		<RegularGrid
+		<RegularGridTopology
 			nx="10" ny="10" nz="46"
 			xmin="-1.5" xmax="1.5"
 			ymin="0" ymax="3"
 			zmin="-7.5" zmax="7.5"
 		/>
 		<MechanicalObject />
-		<UniformMass totalmass="400" />
+		<UniformMass totalMass="400" />
 		<BoxConstraint box="-1.6 -0.1 -7.6 1.6 3.1 -7.4" />
 		<MeshSpringForceField stiffness="2333" />
 		<PlaneForceField normal="0 1 0" d="-3" stiffness="10000"  draw="1" />
 		<Node>
-			<RegularGrid
+			<RegularGridTopology
 				nx="2" ny="2" nz="9"
 				xmin="-0.75" xmax="0.75"
 				ymin="0.75" ymax="2.25"
@@ -48,7 +49,7 @@
 				ymin="0" ymax="3"
 				zmin="-7.5" zmax="7.5"
 			/>
-			<VisualModel name="Visual"/>
+			<OglModel name="Visual"/>
 			<SubsetMapping input="@.." output="@Visual" />
 		</Node>
 	</Node>

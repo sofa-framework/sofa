@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -31,7 +31,7 @@
 #include <QPixmap>
 #include <QTableWidget>
 #include <QComboBox>
-
+#include <QDialog>
 #include <iostream>
 
 namespace sofa
@@ -43,12 +43,12 @@ namespace gui
 namespace qt
 {
 
-class WindowVisitor: public QWidget, public Ui_VisitorGUI
+class WindowVisitor: public QDialog, public Ui_VisitorGUI
 {
     Q_OBJECT
 public:
     enum componentType {NODE, COMMENT, COMPONENT, VECTOR, OTHER};
-    WindowVisitor();
+    WindowVisitor(QWidget *parent);
 
     void collapseNode(QTreeWidgetItem* item);
     void expandNode(QTreeWidgetItem* item);

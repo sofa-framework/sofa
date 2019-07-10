@@ -1,19 +1,20 @@
-<Node name="root" gravity="0.0 -2.0 0.0" dt="0.04" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
-	<CollisionPipeline verbose="0" />
+<Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+	<DefaultPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
-	<CollisionResponse name="Response" />
+	<DefaultContactManager name="Response" />
 	<NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
 	<Node name="Floor">
-		<RegularGrid
+		<RegularGridTopology
 			nx="2" ny="1" nz="2"
 			xmin="20" xmax="-20"
 			ymin="-3.05" ymax="-3.05"
 			zmin="-20" zmax="20" />
 		<MechanicalObject />
 		<!--
-		<Triangle simulated="0" moving="0" />
-		<Line simulated="0" moving="0" />
-		<Point simulated="0" moving="0" />
+		<TriangleCollisionModel simulated="0" moving="0" />
+		<LineCollisionModel simulated="0" moving="0" />
+		<PointCollisionModel simulated="0" moving="0" />
 			  -->
 		<Node name="Visu">
 			<OglModel name="Visual" color="red"/>
@@ -21,15 +22,15 @@
 		</Node>
 	</Node>
 	<Node name="SquareCloth1">
-		<EulerImplicit  rayleighStiffness="0.1" />
-		<CGLinearSolver iterations="10" rayleighMass="0.05" threshold="0.000001"/>
-		<RegularGrid
+		<EulerImplicitSolver rayleighMass="0.05" rayleighStiffness="0.1" />
+		<CGLinearSolver iterations="10" threshold="0.000001"/>
+		<RegularGridTopology
 			nx="100" ny="1" nz="100"
 			xmin="12" xmax="-12"
 			ymin="7" ymax="7"
 			zmin="-12" zmax="12" />
 		<MechanicalObject />
-		<UniformMass totalmass="100" />
+		<UniformMass totalMass="100" />
 		<BoxConstraint box="-12 7 12 -10 7 12    10 7 12 12 7 12"/>
 		<MeshSpringForceField name="Springs" stiffness="1000" damping="0"/>
 		<QuadBendingSprings name="Bend" stiffness="2000" damping="1"/>
@@ -40,7 +41,7 @@
 			<IdentityMapping input="@.." output="@Visual"/>
 		</Node>
 		<Node>
-			<RegularGrid
+			<RegularGridTopology
 				nx="4" ny="1" nz="4"
 			xmin="12" xmax="-12"
 			ymin="7" ymax="7"
@@ -53,13 +54,13 @@
 		<!--
 		<Node name="Surf">
 			<MechanicalObject />
-			<RegularGrid
+			<RegularGridTopology
 				nx="100" ny="1" nz="100"
 				xmin="12" xmax="-12"
 				ymin="7" ymax="7"
 				zmin="-12" zmax="12" />
 			<IdentityMapping />
-			<Triangle />
+			<TriangleCollisionModel />
 		</Node>
 		-->
 	</Node>

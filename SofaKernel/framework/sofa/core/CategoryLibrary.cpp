@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -131,6 +131,17 @@ const ComponentLibrary *CategoryLibrary::getComponent( const std::string &catego
 }
 
 
+std::vector<std::string> CategoryLibrary::getCategories()
+{
+    return std::vector<std::string> {"ContextObject", "VisualModel", "BehaviorModel",
+                                         "CollisionModel", "MechanicalState", "ForceField",
+                                         "InteractionForceField", "ProjectiveConstraintSet",
+                                         "ConstraintSet", "Mapping", "Engine", "TopologicalMapping",
+                                         "Mass", "OdeSolver", "ConstraintSolver", "ConstraintSolver",
+                                         "LinearSolver", "AnimationLoop", "Topology", "TopologyObject",
+                                         "Controller", "Loader", "CollisionAlgorithm",
+                                         "ConfigurationSetting", "_Miscellaneous"};
+}
 
 void CategoryLibrary::getCategories(const objectmodel::BaseClass* mclass,
                                     std::vector<std::string>& v)

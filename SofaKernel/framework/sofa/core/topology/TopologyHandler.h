@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -137,6 +137,15 @@ public:
     virtual void ApplyTopologyChange(const core::topology::HexahedraMoved_Adding* /*event*/) {}
     /// Apply renumbering on hexahedron elements.
     virtual void ApplyTopologyChange(const core::topology::HexahedraRenumbering* /*event*/) {}
+
+    // Needed to remove override warnings in TopologyElementHandler
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Point>::EMoved_Adding* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Point>::EMoved_Removing* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Edge>::EMoved* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Triangle>::EMoved* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Quad>::EMoved* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Tetrahedron>::EMoved* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Hexahedron>::EMoved* /*event*/) {}
 
 
     virtual bool isTopologyDataRegistered() {return false;}

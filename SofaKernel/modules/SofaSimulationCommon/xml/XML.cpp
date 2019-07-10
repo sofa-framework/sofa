@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,14 +21,14 @@
 ******************************************************************************/
 #include <string>
 #include <typeinfo>
-#include <stdlib.h>
+#include <cstdlib>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <SofaSimulationCommon/xml/ElementNameHelper.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/core/ObjectFactory.h>
-#include <string.h>
+#include <cstring>
 
 #include <sofa/helper/logging/Message.h>
 
@@ -208,7 +208,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
         if (attr->Value()==NULL) continue;
         if (!(strcmp(attr->Name(), "name"))) continue;
         if (!(strcmp(attr->Name(), "type"))) continue;
-        node->setAttribute(attr->Name(), attr->Value());
+        node->setAttribute(attr->Name(), std::string(attr->Value()));
     }
 
     for (TiXmlNode* child = root->FirstChild() ; child != NULL; child = child->NextSibling())
@@ -425,7 +425,7 @@ void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode)
         if (aname == "name") continue;
         const char* aval = srcNode->getAttribute(aname);
         if (!aval) continue;
-        destNode->setAttribute(aname, aval);
+        destNode->setAttribute(aname, std::string(aval));
     }
     BaseElement::child_iterator<> itS(srcNode->begin());
     for(; itS!=srcNode->end(); ++itS)

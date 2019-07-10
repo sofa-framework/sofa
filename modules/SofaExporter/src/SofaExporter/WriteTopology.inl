@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,10 +48,10 @@ WriteTopology::WriteTopology()
     , f_interval( initData(&f_interval, 0.0, "interval", "time duration between outputs"))
     , f_time( initData(&f_time, helper::vector<double>(0), "time", "set time to write outputs"))
     , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
-    , m_topology(NULL)
-    , outfile(NULL)
+    , m_topology(nullptr)
+    , outfile(nullptr)
     #ifdef SOFA_HAVE_ZLIB
-    , gzfile(NULL)
+    , gzfile(nullptr)
     #endif
     , nextTime(0)
     , lastTime(0)
@@ -97,7 +97,7 @@ void WriteTopology::init()
     {
         msg_error() << "Unable to create the file "<<filename;
         delete outfile;
-        outfile = NULL;
+        outfile = nullptr;
     }
 }
 

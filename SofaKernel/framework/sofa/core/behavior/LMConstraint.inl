@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,6 +35,22 @@ namespace core
 
 namespace behavior
 {
+
+template<class DataTypes1,class DataTypes2>
+LMConstraint<DataTypes1,DataTypes2>::LMConstraint()
+    : LMConstraint(nullptr, nullptr)
+{
+}
+
+template<class DataTypes1,class DataTypes2>
+LMConstraint<DataTypes1,DataTypes2>::LMConstraint( MechanicalState<DataTypes1> *dof1, MechanicalState<DataTypes2> *dof2)
+    : constrainedObject1(dof1)
+    , constrainedObject2(dof2)
+    , simulatedObject1(dof1)
+    , simulatedObject2(dof2)
+{
+}
+
 
 template<class DataTypes1,class DataTypes2>
 LMConstraint<DataTypes1,DataTypes2>::~LMConstraint()

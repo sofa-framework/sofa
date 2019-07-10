@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,12 +45,12 @@ public:
     /// @{
     typedef TClass<TData<T>,BaseData> MyClass;
     static const MyClass* GetClass() { return MyClass::get(); }
-    virtual const BaseClass* getClass() const
+    const BaseClass* getClass() const override
     { return GetClass(); }
 
-    static std::string templateName(const TData<T>* = NULL)
+    static std::string templateName(const TData<T>* = nullptr)
     {
-        T* ptr = NULL;
+        T* ptr = nullptr;
         return BaseData::typeName(ptr);
     }
     /// @}
@@ -60,20 +60,20 @@ public:
     {
     }
 
-    TData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+    TData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : BaseData(helpMsg, isDisplayed, isReadOnly), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
     {
     }
 
-    virtual ~TData()
+    ~TData() override
     {}
 
-    inline void printValue(std::ostream& out) const;
-    inline std::string getValueString() const;
-    inline std::string getValueTypeString() const; // { return std::string(typeid(m_value).name()); }
+    inline void printValue(std::ostream& out) const override;
+    inline std::string getValueString() const override;
+    inline std::string getValueTypeString() const override;
 
     /// Get info about the value type of the associated variable
-    virtual const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const
+    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
     {
         return sofa::defaulttype::VirtualTypeInfo<T>::get();
     }
@@ -85,19 +85,19 @@ public:
     virtual void virtualEndEdit() = 0;
 
     /// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
-    virtual const void* getValueVoidPtr() const
+    const void* getValueVoidPtr() const override
     {
         return &(virtualGetValue());
     }
 
     /// Begin edit current value as a void pointer (use getValueTypeInfo to find how to access it)
-    virtual void* beginEditVoidPtr()
+    void* beginEditVoidPtr() override
     {
         return virtualBeginEdit();
     }
 
     /// End edit current value as a void pointer (use getValueTypeInfo to find how to access it)
-    virtual void endEditVoidPtr()
+    void endEditVoidPtr() override
     {
         virtualEndEdit();
     }
@@ -105,80 +105,23 @@ public:
     /** Try to read argument value from an input stream.
     Return false if failed
      */
-    virtual bool read( const std::string& s )
-    {
-        if (s.empty())
-        {
-            bool resized = getValueTypeInfo()->setSize( virtualBeginEdit(), 0 );
-            virtualEndEdit();
-            return resized;
-        }
-        //serr<<"Field::read "<<s.c_str()<<sendl;
-        std::istringstream istr( s.c_str() );
-        istr >> *virtualBeginEdit();
-        virtualEndEdit();
-        if( istr.fail() )
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
+    virtual bool read( const std::string& s ) override;
 
-    virtual bool isCounterValid() const {return true;}
+    bool isCounterValid() const override {return true;}
 
-    bool copyValue(const TData<T>* parent)
-    {
-        virtualSetValue(parent->virtualGetValue());
-        return true;
-    }
+    bool copyValue(const TData<T>* parent);
 
-    virtual bool copyValue(const BaseData* parent)
-    {
-        const TData<T>* p = dynamic_cast<const TData<T>*>(parent);
-        if (p)
-        {
-            virtualSetValue(p->virtualGetValue());
-            return true;
-        }
-        return BaseData::copyValue(parent);
-    }
+    bool copyValue(const BaseData* parent) override;
 
-
-    virtual bool validParent(BaseData* parent)
-    {
-        if (dynamic_cast<TData<T>*>(parent))
-            return true;
-        return BaseData::validParent(parent);
-    }
+    bool validParent(BaseData* parent) override;
 
 protected:
 
-    BaseLink::InitLink<TData<T> >
-    initLink(const char* name, const char* help)
-    {
-        return BaseLink::InitLink<TData<T> >(this, name, help);
-    }
+    BaseLink::InitLink<TData<T> > initLink(const char* name, const char* help);
 
-    void doSetParent(BaseData* parent)
-    {
-        parentData.set(dynamic_cast<TData<T>*>(parent));
-        BaseData::doSetParent(parent);
-    }
+    void doSetParent(BaseData* parent) override;
 
-    bool updateFromParentValue(const BaseData* parent)
-    {
-        if (parent == parentData.get())
-        {
-            //virtualSetValue(parentData->virtualGetValue());
-            virtualSetLink(*parentData.get());
-            return true;
-        }
-        else
-            return BaseData::updateFromParentValue(parent);
-    }
+    bool updateFromParentValue(const BaseData* parent) override;
 
     SingleLink<TData<T>,TData<T>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentData;
 };
@@ -227,7 +170,6 @@ public:
     void release()
     {
     }
-//    T& value() { return data; }
 };
 
 
@@ -301,11 +243,6 @@ public:
     {
         ptr.reset();
     }
-
-//    T& value()
-//    {
-//        return *beginEdit();
-//    }
 };
 
 /** \brief Container that holds a variable for a component.
@@ -382,7 +319,7 @@ public:
     /** \copydoc BaseData(const BaseData::BaseInitData& init) */
     explicit Data(const BaseData::BaseInitData& init)
         : TData<T>(init)
-        , shared(NULL)
+        , shared(nullptr)
     {
     }
 
@@ -390,16 +327,16 @@ public:
     explicit Data(const InitData& init)
         : TData<T>(init)
         , m_values()
-        , shared(NULL)
+        , shared(nullptr)
     {
         m_values[DDGNode::currentAspect()] = ValueType(init.value);
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
-    Data( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+    Data( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_values()
-        , shared(NULL)
+        , shared(nullptr)
     {
         ValueType val;
         m_values.assign(val);
@@ -408,10 +345,10 @@ public:
     /** \copydoc BaseData(const char*, bool, bool)
      *  \param value The default value.
      */
-    Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+    Data( const T& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_values()
-        , shared(NULL)
+        , shared(nullptr)
     {
         m_values[DDGNode::currentAspect()] = ValueType(value);
     }
@@ -425,9 +362,9 @@ public:
     /// @name Simple edition and retrieval API
     /// @{
 
-    inline T* beginEdit(const core::ExecParams* params = 0)
+    inline T* beginEdit(const core::ExecParams* params = nullptr)
     {
-        size_t aspect = DDGNode::currentAspect(params);
+        size_t aspect = static_cast<size_t>(DDGNode::currentAspect(params));
         this->updateIfDirty(params);
         ++this->m_counters[aspect];
         this->m_isSets[aspect] = true;
@@ -436,18 +373,19 @@ public:
     }
 
     /// BeginEdit method if it is only to write the value
-    inline T* beginWriteOnly(const core::ExecParams* params = 0)
+    inline T* beginWriteOnly(const core::ExecParams* params = nullptr)
     {
-        size_t aspect = DDGNode::currentAspect(params);
+        size_t aspect = static_cast<size_t>(DDGNode::currentAspect(params));
         ++this->m_counters[aspect];
         this->m_isSets[aspect] = true;
         BaseData::setDirtyOutputs(params);
         return m_values[aspect].beginEdit();
     }
 
-    inline void endEdit(const core::ExecParams* params = 0)
+    inline void endEdit(const core::ExecParams* params = nullptr)
     {
         m_values[DDGNode::currentAspect(params)].endEdit();
+        BaseData::notifyEndEdit(params);
     }
 
     /// @warning writeOnly (the Data is not updated before being set)
@@ -464,7 +402,7 @@ public:
         endEdit(params);
     }
 
-    inline const T& getValue(const core::ExecParams* params = 0) const
+    inline const T& getValue(const core::ExecParams* params = nullptr) const
     {
         this->updateIfDirty(params);
         return m_values[DDGNode::currentAspect(params)].getValue();
@@ -493,7 +431,7 @@ public:
         const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
         if (d)
         {
-            size_t aspect = DDGNode::currentAspect();
+            size_t aspect = static_cast<size_t>(DDGNode::currentAspect());
             this->m_values[aspect] = d->m_values[aspect];
             //FIX: update counter
             ++this->m_counters[aspect];
@@ -581,6 +519,77 @@ std::string TData<T>::getValueTypeString() const
     return BaseData::typeName(&virtualGetValue());
 }
 
+template <class T>
+bool TData<T>::read(const std::string& s)
+{
+    if (s.empty())
+    {
+        bool resized = getValueTypeInfo()->setSize( virtualBeginEdit(), 0 );
+        virtualEndEdit();
+        return resized;
+    }
+    std::istringstream istr( s.c_str() );
+    istr >> *virtualBeginEdit();
+    virtualEndEdit();
+    if( istr.fail() )
+    {
+        return false;
+    }
+    return true;
+}
+
+template <class T>
+bool TData<T>::copyValue(const TData<T>* parent)
+{
+    virtualSetValue(parent->virtualGetValue());
+    return true;
+}
+
+template <class T>
+bool TData<T>::copyValue(const BaseData* parent)
+{
+    const TData<T>* p = dynamic_cast<const TData<T>*>(parent);
+    if (p)
+    {
+        virtualSetValue(p->virtualGetValue());
+        return true;
+    }
+    return BaseData::copyValue(parent);
+}
+
+template <class T>
+bool TData<T>::validParent(BaseData* parent)
+{
+    if (dynamic_cast<TData<T>*>(parent))
+        return true;
+    return BaseData::validParent(parent);
+}
+
+template <class T>
+BaseLink::InitLink<TData<T> > TData<T>::initLink(const char* name, const char* help)
+{
+    return BaseLink::InitLink<TData<T> >(this, name, help);
+}
+
+template <class T>
+void TData<T>::doSetParent(BaseData* parent)
+{
+    parentData.set(dynamic_cast<TData<T>*>(parent));
+    BaseData::doSetParent(parent);
+}
+
+template <class T>
+bool TData<T>::updateFromParentValue(const BaseData* parent)
+{
+    if (parent == parentData.get())
+    {
+        //virtualSetValue(parentData->virtualGetValue());
+        virtualSetLink(*parentData.get());
+        return true;
+    }
+    else
+        return BaseData::updateFromParentValue(parent);
+}
 
 #if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
 
@@ -645,11 +654,11 @@ protected:
     const core::ExecParams* dparams;
 
     /// @internal used by WriteOnlyAccessor
-    WriteAccessor( container_type* c, data_container_type& d, const core::ExecParams* params=NULL ) : Inherit(*c), data(d), dparams(params) {}
+    WriteAccessor( container_type* c, data_container_type& d, const core::ExecParams* params=nullptr ) : Inherit(*c), data(d), dparams(params) {}
 
 public:
-    WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d), dparams(NULL) {}
-    WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d), dparams(NULL) {}
+    WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d), dparams(nullptr) {}
+    WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d), dparams(nullptr) {}
     WriteAccessor(const core::ExecParams* params, data_container_type& d) : Inherit(*d.beginEdit(params)), data(d), dparams(params) {}
     WriteAccessor(const core::ExecParams* params, data_container_type* d) : Inherit(*d->beginEdit(params)), data(*d), dparams(params) {}
     ~WriteAccessor() { if (dparams) data.endEdit(dparams); else data.endEdit(); }
@@ -721,5 +730,5 @@ using core::objectmodel::Data;
 
 } // namespace sofa
 
-#endif
+#endif  // SOFA_CORE_OBJECTMODEL_DATA_H
 

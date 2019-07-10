@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -27,10 +27,10 @@
 #include <sofa/helper/system/glu.h>
 #include <qgl.h>
 #include <qtimer.h>
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <fstream>
 
 #include <QtGlobal>
@@ -148,7 +148,7 @@ public:
         ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
         return viewerArg ?
                 new QtViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str(), viewerArg->getNbMSAASamples() ) :
-                new QtViewer(NULL, pArg->getName().c_str(), pArg->getNbMSAASamples() )
+                new QtViewer(nullptr, pArg->getName().c_str(), pArg->getNbMSAASamples() )
                 ;
     }
 
@@ -178,48 +178,48 @@ public:
     static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
 #endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
     QtViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
-    ~QtViewer();
+    ~QtViewer() override;
 
-    QWidget* getQWidget() { return this; }
+    QWidget* getQWidget() override { return this; }
 
-    bool ready() {return !_waitForRender;}
-    void wait() {_waitForRender = true;}
+    bool ready() override {return !_waitForRender;}
+    void wait() override {_waitForRender = true;}
 
 public slots:
-    void resetView();
-    virtual void saveView();
-    virtual void setSizeW(int);
-    virtual void setSizeH(int);
+    void resetView() override;
+    virtual void saveView() override;
+    virtual void setSizeW(int) override;
+    virtual void setSizeH(int) override;
 
-    virtual void getView(defaulttype::Vector3& pos, defaulttype::Quat& ori) const;
-    virtual void setView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori);
-    virtual void newView();
-    virtual void moveView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori);
-    virtual void captureEvent() { SofaViewer::captureEvent(); }
-    virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
-    virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode * node ) { SofaViewer::fitNodeBBox(node); }
-    virtual void fitObjectBBox(sofa::core::objectmodel::BaseObject * obj) { SofaViewer::fitObjectBBox(obj); }
+    virtual void getView(defaulttype::Vector3& pos, defaulttype::Quat& ori) const override;
+    virtual void setView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori) override ;
+    virtual void newView() override ;
+    virtual void moveView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori) override ;
+    virtual void captureEvent()  override { SofaViewer::captureEvent(); }
+    virtual void drawColourPicking (ColourPickingVisitor::ColourCode code) override ;
+    virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode * node )  override { SofaViewer::fitNodeBBox(node); }
+    virtual void fitObjectBBox(sofa::core::objectmodel::BaseObject * obj)  override { SofaViewer::fitObjectBBox(obj); }
 
 signals:
-    void redrawn();
-    void resizeW( int );
-    void resizeH( int );
+    void redrawn() override ;
+    void resizeW( int ) override ;
+    void resizeH( int ) override ;
     void quit();
 
 
 protected:
 
     void calcProjection( int width = 0, int height = 0 );
-    void initializeGL();
-    void paintGL();
-    void paintEvent(QPaintEvent* qpe);
-    void resizeGL( int w, int h );
+    void initializeGL() override;
+    void paintGL() override;
+    void paintEvent(QPaintEvent* qpe) override;
+    void resizeGL( int w, int h ) override;
     /// Overloaded from SofaViewer
-    virtual void viewAll() {}
+    virtual void viewAll()  override {}
 
 public:
 
-    sofa::simulation::Node* getScene()
+    sofa::simulation::Node* getScene() override
     {
         return groot.get();
     }
@@ -235,7 +235,7 @@ public:
     }
 
     void	UpdateOBJ(void);
-    void moveRayPickInteractor(int eventX, int eventY);
+    void moveRayPickInteractor(int eventX, int eventY) override ;
     /////////////////
     // Interaction //
     /////////////////
@@ -253,9 +253,9 @@ public:
     static bool _mouseRotate;
 
 
-    QString helpString() const;
+    QString helpString() const  override ;
 //    void setCameraMode(core::visual::VisualParams::CameraType mode);
-    void screenshot(const std::string& filename, int compression_level = -1);
+    void screenshot(const std::string& filename, int compression_level = -1) override;
 
 private:
 
@@ -276,7 +276,7 @@ private:
     void	DrawLogo(void);
     void	DisplayOBJs();
     void	DisplayMenu(void);
-    virtual void	drawScene();
+    virtual void	drawScene() override ;
     void  MakeStencilMask();
 
     void	ApplySceneTransformation(int x, int y);
@@ -284,13 +284,13 @@ private:
 
     //virtual bool event ( QEvent * e );
 
-    virtual void keyPressEvent ( QKeyEvent * e );
-    virtual void keyReleaseEvent ( QKeyEvent * e );
-    virtual void mousePressEvent ( QMouseEvent * e );
-    virtual void mouseReleaseEvent ( QMouseEvent * e );
-    virtual void mouseMoveEvent ( QMouseEvent * e );
-    virtual void wheelEvent ( QWheelEvent* e);
-    virtual bool mouseEvent ( QMouseEvent * e );
+    void keyPressEvent ( QKeyEvent * e ) override;
+    void keyReleaseEvent ( QKeyEvent * e ) override;
+    void mousePressEvent ( QMouseEvent * e ) override;
+    void mouseReleaseEvent ( QMouseEvent * e ) override;
+    void mouseMoveEvent ( QMouseEvent * e ) override;
+    void wheelEvent ( QWheelEvent* e) override;
+    virtual bool mouseEvent ( QMouseEvent * e ) override;
 };
 
 } // namespace qt

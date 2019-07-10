@@ -1,4 +1,5 @@
 <Node 	name="Root"   >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<MeshSTEPLoader name="loader"  filename="Product.stp"  deflection="0.1"  debug="0"  keepDuplicate="1" />
 	
 	<Node 	name="obj1"  >

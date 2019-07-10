@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -105,17 +105,6 @@ DataWidget::updateDataValue()
                 else
                 {
                     path = objectPath + "." + baseData->getName();
-
-                    // this can happen when a DataWidget (gui associated with the data) is created while the object owner of the Data is being built by the factory and not yet attached to the graph
-                    // it cannot be considered as a problem
-//                    if (ownerAsObject->getContext())
-//                    {
-//                        Logger::mainlog( Logger::Warning, std::string("updateDataValue: ") + path + std::string(" has a context that is not a BaseNode ") + ownerAsObject->getContext()->getName(), "DataWidget" );
-//                    }
-//                    else
-//                    {
-//                        Logger::mainlog( Logger::Warning, std::string("updateDataValue: NULL context for data ") + path, "DataWidget" );
-//                    }
                 }
             }
             else
@@ -164,7 +153,7 @@ typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgume
 
 DataWidget *DataWidget::CreateDataWidget(const DataWidget::CreatorArgument &dwarg)
 {
-    DataWidget *datawidget_ = 0;
+    DataWidget *datawidget_ = nullptr;
     const std::string &widgetName=dwarg.data->getWidget();
     if (widgetName.empty())
         datawidget_ = DataWidgetFactory::CreateAnyObject(dwarg);
@@ -202,27 +191,6 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
             helper_button->setToolTip( ("Data from "+ownerClass).c_str());
             //QToolTip::add(helper_button, ("Data from "+ownerClass).c_str());
     }
-    else
-    {
-        /*
-#ifndef SOFA_GUI_QT_NO_DATA_HELP
-        QLabel* helper_label = new QLabel(this);
-        helper_label->setText(QString(final_str.c_str()));
-        helper_label->setMinimumWidth(20);
-        layout->addWidget(helper_label);
-        if (!ownerClass.empty()) QToolTip::add(helper_label, ("Data from "+ownerClass).c_str());
-#else
-        numLines_ = 0;
-        if (!final_str.empty() || !ownerClass.empty())
-        {
-            if (!final_str.empty()) final_str += '\n';
-            final_str += "Data from ";
-            final_str += ownerClass;
-            QToolTip::add(parent, final_str.c_str());
-        }
-#endif
-        */
-    }
     if(modifiable || !data->getLinkPath().empty())
     {
         linkpath_edit = new QLineEdit(this);
@@ -238,7 +206,7 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
     }
     else
     {
-        linkpath_edit=NULL;
+        linkpath_edit=nullptr;
     }
 }
 
@@ -254,7 +222,6 @@ void QDisplayDataInfoWidget::linkModification()
 }
 void QDisplayDataInfoWidget::linkEdited()
 {
-//    dmsg_error("DataWidget") << "QDisplayDataInfoWidget::linkEdited " << linkpath_edit->text().toStdString() ;
     data->setParent(linkpath_edit->text().toStdString() );
 }
 

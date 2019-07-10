@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -38,9 +38,10 @@
 
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/helper/gl/Texture.h>
-#ifdef SOFA_HAVE_FFMPEG
-#include <sofa/helper/gl/VideoRecorder.h>
-#endif //SOFA_HAVE_FFMPEG
+
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
+#endif // SOFA_HAVE_FFMPEG_EXEC
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -86,7 +87,7 @@ public:
     virtual sofa::simulation::Node* getScene();
     virtual const std::string& getSceneFileName();
     virtual void setSceneFileName(const std::string &f);
-    virtual void setScene(sofa::simulation::Node::SPtr scene, const char* filename = NULL, bool /*keepParams*/= false);
+    virtual void setScene(sofa::simulation::Node::SPtr scene, const char* filename = nullptr, bool /*keepParams*/= false);
     virtual void setCameraMode(core::visual::VisualParams::CameraType);
 
     /// true when the viewer keep the hand on the render
@@ -155,13 +156,14 @@ protected:
 #ifndef SOFA_NO_OPENGL
     sofa::helper::gl::Capture capture;
     sofa::helper::gl::Texture* texLogo;
-#endif
 
-#ifdef SOFA_HAVE_FFMPEG
-    sofa::helper::gl::VideoRecorder videoRecorder;
-#endif
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+    sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
+#endif // SOFA_HAVE_FFMPEG_EXEC
+#endif // SOFA_NO_OPENGL
 
     bool _video;
+    bool m_isVideoButtonPressed;
     bool _axis;
     bool _fullScreen;
     int _background;

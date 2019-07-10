@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -43,7 +43,7 @@
 #include <sofa/gui/BaseGUI.h>
 #include "fakegui.h"
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 #include "../plugins/SceneCreator/SceneCreator.h"
@@ -55,10 +55,10 @@ SofaPhysicsAPI::SofaPhysicsAPI(bool useGUI, int GUIFramerate)
 
 SofaPhysicsAPI::~SofaPhysicsAPI()
 {
-    if (impl != NULL)
+    if (impl != nullptr)
     {
         delete impl;
-        impl = NULL;
+        impl = nullptr;
     }
 }
 
@@ -236,7 +236,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
     m_RootNode = NULL;
     initGLDone = false;
     initTexturesDone = false;
-    texLogo = NULL;
+    texLogo = nullptr;
     lastW = 0;
     lastH = 0;
     vparams = sofa::core::visual::VisualParams::defaultInstance();
@@ -563,7 +563,7 @@ unsigned int SofaPhysicsSimulation::getNbOutputMeshes()
 SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMesh(unsigned int meshID)
 {
     if (meshID >= outputMeshes.size())
-        return NULL;
+        return nullptr;
     else
         return &(outputMeshes[meshID]);
 }
@@ -571,7 +571,7 @@ SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMesh(unsigned int meshID
 SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMeshes()
 {
     if (outputMeshes.empty())
-        return NULL;
+        return nullptr;
     else
         return &(outputMeshes[0]);
 }
@@ -588,7 +588,7 @@ SofaPhysicsDataMonitor** SofaPhysicsSimulation::getDataMonitors()
         sofa::simulation::Node* groot = getScene();
         if (!groot)
         {
-            return NULL;
+            return nullptr;
         }
         groot->get<SofaDataMonitor>(&sofaDataMonitors, sofa::core::objectmodel::BaseContext::SearchDown);
         dataMonitors.resize(sofaDataMonitors.size());
@@ -615,7 +615,7 @@ SofaPhysicsDataController** SofaPhysicsSimulation::getDataControllers()
         sofa::simulation::Node* groot = getScene();
         if (!groot)
         {
-            return NULL;
+            return nullptr;
         }
         groot->get<SofaDataController>(&sofaDataControllers, sofa::core::objectmodel::BaseContext::SearchDown);
         dataControllers.resize(sofaDataControllers.size());
@@ -644,9 +644,7 @@ void SofaPhysicsSimulation::drawGL()
 
     if (!initGLDone)
     {
-#ifdef SOFA_HAVE_GLEW
         glewInit();
-#endif
         //Load texture for logo
         std::string imageFileName = "textures/SOFA_logo.bmp";
         if (sofa::helper::system::DataRepository.findFile(imageFileName))
@@ -654,7 +652,7 @@ void SofaPhysicsSimulation::drawGL()
             if (texLogo)
             {
                 delete texLogo;
-                texLogo = NULL;
+                texLogo = nullptr;
             }
 
             sofa::helper::io::Image* image = sofa::helper::io::Image::FactoryImage::getInstance()->createObject("bmp", sofa::helper::system::DataRepository.getFile(imageFileName));

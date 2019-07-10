@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -94,6 +94,10 @@ bool MeshGmshLoader::load()
     // -- Reading file
     if (node == "$NOD" || node == "$Nodes") // Gmsh format
     {
+        // By default for Gmsh file format, create subElements except if specified not to.
+        if (!d_createSubelements.isSet())
+            d_createSubelements.setValue(true);
+
         // TODO 2018-04-06: temporary change to unify loader API
         //fileRead = readGmsh(file, gmshFormat);
         (void)gmshFormat;

@@ -26,11 +26,28 @@ endif()
 # it. (E.g. some versions of Visual Studio have 'solution folders')
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+# Option for packaging
+option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
+
 ## Change default install prefix
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif()
+if(APPLE AND SOFA_BUILD_APP_BUNDLE)
+    set(SOFA_BUILD_RELEASE_PACKAGE ON)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/runSofa.app/Contents/MacOS)
+    message("SOFA_BUILD_APP_BUNDLE = ${SOFA_BUILD_APP_BUNDLE}\n"
+        "  Forcing SOFA_BUILD_RELEASE_PACKAGE = ${SOFA_BUILD_RELEASE_PACKAGE}\n"
+        "  Forcing CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}"
+        )
+endif()
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
+
+# Use packaging.cmake configuration (used for Continuous Delivery)
+if(SOFA_BUILD_RELEASE_PACKAGE)
+    message("Using package.cmake")
+    include("package.cmake")
+endif()
 
 # Remove generated CMake files, this prevents CMake from finding packages that
 # were disabled (like, unchecked in cmake-gui) after being built once.
@@ -54,16 +71,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTOR
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
 
 ## Environment
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/SofaFramework")
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/packages)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
+list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
 
 ## RPATH
 if(UNIX)
@@ -76,10 +90,18 @@ if(UNIX)
     # the need to play with LD_LIBRARY_PATH to get applications to run.
 
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$$ORIGIN/../lib")
+    set(CMAKE_INSTALL_RPATH
+        "$ORIGIN/../lib"
+        "$$ORIGIN/../lib"
+        )
 
     if(APPLE)
         set(CMAKE_MACOSX_RPATH ON)
+        list(APPEND CMAKE_INSTALL_RPATH
+            "@loader_path/../lib"
+            "@executable_path/../lib"
+            )
+        set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif()
 endif(UNIX)
 
@@ -100,28 +122,21 @@ if(NOT Boost_FOUND)
     endif()
 endif()
 
-### Dependency pack for Windows
+### Windows config
 if(MSVC)
     #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
     add_definitions(-DBOOST_ALL_DYN_LINK)
 
-    set(SOFA_DEPENDENCY_PACK_DIR "" CACHE PATH "sofa windows dependency pack path")
-    if(SOFA_DEPENDENCY_PACK_DIR)
-        set(DEPENDENCY_PACK_DIR "${SOFA_DEPENDENCY_PACK_DIR}")
-    else()
-        # Default
-        set(DEPENDENCY_PACK_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-    endif()
-
-    list(APPEND CMAKE_INCLUDE_PATH ${DEPENDENCY_PACK_DIR}/include)
+    # WinDepPack
+    set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
+    list(APPEND CMAKE_INCLUDE_PATH ${SOFA_DEPENDENCY_PACK_DIR}/include)
     if(CMAKE_CL_64)
-        list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win64)
+        list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win64)
     else()
-        list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win32)
+        list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win32)
     endif()
-
-    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include COMPONENT headers)
-    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
+    install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/include/ DESTINATION include/extlibs/WinDepPack COMPONENT headers)
+    install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
 endif()
 
 ### Mask
@@ -207,17 +222,17 @@ add_subdirectory(SofaGeneral)
 add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 
-## Modules
-## in the consortium convention a module is a similar to a plugin the difference is that
-## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
-add_subdirectory(modules)
-
 # This is all the applications GUI stuff. As there is a dependency to this one
 # In scene creator and SofaPython...it is located here.
 add_subdirectory(SofaGui)
 
-# SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
+# SofaTest, modules depend on SofaPython, so we add SofaPython before.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
+
+## Modules
+## in the consortium convention a module is a similar to a plugin the difference is that
+## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(modules)
 
 ## Scene creator option
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
@@ -249,7 +264,7 @@ if(SOFA_BUILD_TESTS)
     endif()
 
     # Not sure what is it
-    add_subdirectory(applications/plugins/SofaTest/SofaTest_test SofaTest/SofaTest_test)
+    add_subdirectory(applications/plugins/SofaTest/SofaTest_test)
 endif()
 
 ## Plugins
@@ -303,13 +318,8 @@ install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applicat
 set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
 set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
 configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
-    set(SHARE_DIR "share/sofa")
-    set(EXAMPLES_DIR "share/sofa/examples")
-else()
-    set(SHARE_DIR "../share/sofa")
-    set(EXAMPLES_DIR "../share/sofa/examples")
-endif()
+set(SHARE_DIR "../share/sofa")
+set(EXAMPLES_DIR "../share/sofa/examples")
 configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
 
@@ -321,7 +331,7 @@ if(SOFA_INSTALL_RESOURCES_FILES)
 endif()
 
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt" "This folder will be automatically scanned by the Plugin Manager.")
-install(DIRECTORY plugins/ DESTINATION plugins COMPONENT resources)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/plugins/ DESTINATION plugins COMPONENT resources)
 
 
 #######################
@@ -386,10 +396,6 @@ cpack_add_component(applications
     )
 cpack_add_component(headers
     DISPLAY_NAME "C++ Headers"
-    GROUP development
-    )
-cpack_add_component(Eigen_headers
-    DISPLAY_NAME "Eigen Headers"
     GROUP development
     )
 cpack_add_component(GTest_headers
@@ -498,24 +504,25 @@ if(CPACK_BINARY_NSIS)
 endif()
 #######################
 
-if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+if(APPLE)
+    list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/icu4c")
     find_package(ICU COMPONENTS data i18n uc)
-    sofa_install_libraries(${ICU_LIBRARIES})
-endif()
+    sofa_install_libraries(LIBRARIES ${ICU_LIBRARIES})
+    message("ICU_LIBRARIES = ${ICU_LIBRARIES}")
 
-#dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
-#if not set, it will install everything as usual
-#TODO: Redesign of a better architecture about bundling (runSofa ? libraries ? modeler ? other application ?)
-get_property(TEMP_CPACK_COMPONENTS_ALL GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL )
-if(APPLE AND TEMP_CPACK_COMPONENTS_ALL)
-    set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
-    set(CPACK_COMPONENTS_ALL ${TEMP_CPACK_COMPONENTS_ALL})
-endif()
+    if(SOFA_BUILD_APP_BUNDLE)
+        set(CPACK_BINARY_DRAGNDROP ON)
+        set(CPACK_GENERATOR DragNDrop)
 
-option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
-if(SOFA_BUILD_RELEASE_PACKAGE)
-    message("Using package.cmake")
-    include("package.cmake")
+        # Monolithic install containing everything
+        unset(CPACK_COMPONENTS_ALL)
+        set(CPACK_MONOLITHIC_INSTALL ON)
+
+        # Force CPack install dir to $ENV{DESTDIR}/runSofa.app/Contents/MacOS
+        # CPack always adds "$ENV{DESTDIR}/" before CPACK_INSTALL_PREFIX
+        set(CPACK_SET_DESTDIR TRUE)
+        set(CPACK_INSTALL_PREFIX "/runSofa.app/Contents/MacOS")
+    endif()
 endif()
 
 include(CPack)

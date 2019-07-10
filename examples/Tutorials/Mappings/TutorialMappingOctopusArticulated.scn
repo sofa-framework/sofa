@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.05" time="0" animate="0" multiThreadSimulation="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showInteractionForceFields" />
     <DefaultPipeline name="default94" />
     <BruteForceDetection name="N2" />
@@ -18,9 +19,9 @@
             <MeshObjLoader name="loader" filename="mesh/Teodule_LowRes.obj" />
             <MeshTopology src="@loader" name="default47" />
             <MechanicalObject src="@loader" template="Vec3d" name="default36" translation="2 5 -20" rotation="90 0 0" />
-            <TriangleModel name="Teodule Triangle" selfCollision="1" />
-            <LineModel name="Teodule Line" moving="0" simulated="0" contactStiffness="100" />
-            <PointModel name="Teodule Point" moving="0" simulated="0" contactStiffness="100" />
+            <TriangleCollisionModel name="Teodule Triangle" selfCollision="1" />
+            <LineCollisionModel name="Teodule Line" moving="0" simulated="0" contactStiffness="100" />
+            <PointCollisionModel name="Teodule Point" moving="0" simulated="0" contactStiffness="100" />
             <SkinningMapping template="Rigid,Vec3d" name="default38" isMechanical="true"  />
         </Node>
         <Node name="Visu" gravity="0 -9.81 0">
@@ -32,9 +33,9 @@
         <MeshObjLoader name="loader" filename="mesh/SaladBowl.obj" />
         <MeshTopology src="@loader" name="default74" />
         <MechanicalObject src="@loader" template="Vec3d" name="default75" translation="0 -50 -20" rotation="-90 0 0" scale="100" />
-        <TriangleModel name="Floor" moving="0" simulated="0" contactStiffness="1000" />
-        <LineModel name="Floor" moving="0" simulated="0" contactStiffness="1000" />
-        <PointModel name="Floor" moving="0" simulated="0" contactStiffness="1000" />
+        <TriangleCollisionModel name="Floor" moving="0" simulated="0" contactStiffness="1000" />
+        <LineCollisionModel name="Floor" moving="0" simulated="0" contactStiffness="1000" />
+        <PointCollisionModel name="Floor" moving="0" simulated="0" contactStiffness="1000" />
         <OglModel template="ExtVec3f" name="FloorV" fileMesh="mesh/SaladBowl.obj" texturename="textures/floor.bmp" translation="0 -50 -20" rotation="-90 0 0" scale="100" material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
     </Node>
 </Node>

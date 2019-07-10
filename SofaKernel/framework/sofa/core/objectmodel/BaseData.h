@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,7 +68,7 @@ public:
     /// @{
     typedef TClass<BaseData,DDGNode> MyClass;
     static const MyClass* GetClass() { return MyClass::get(); }
-    virtual const BaseClass* getClass() const
+    const BaseClass* getClass() const override
     { return GetClass(); }
     /// @}
 
@@ -76,7 +76,7 @@ public:
     class BaseInitData
     {
     public:
-        BaseInitData() : data(NULL), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(NULL), name(""), ownerClass(""), group(""), widget("") {}
+        BaseInitData() : data(nullptr), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(nullptr), name(""), ownerClass(""), group(""), widget("") {}
         BaseData* data;
         const char* helpMsg;
         DataFlags dataFlags;
@@ -106,7 +106,7 @@ public:
     BaseData(const char* helpMsg, bool isDisplayed=true, bool isReadOnly=false);
 
     /// Destructor.
-    virtual ~BaseData();
+    ~BaseData() override;
 
     /// Assign a value to this %Data from a string representation.
     /// \return true on success.
@@ -151,7 +151,7 @@ public:
     virtual bool copyValue(const BaseData* parent);
 
     /// Copy the value of an aspect into another one.
-    virtual void copyAspect(int destAspect, int srcAspect) = 0;
+    void copyAspect(int destAspect, int srcAspect) override = 0;
 
     /// Release memory allocated for the specified aspect.
     virtual void releaseAspect(int aspect) = 0;
@@ -187,10 +187,10 @@ public:
     /// @{
 
     /// Set one of the flags.
-    void setFlag(DataFlagsEnum flag, bool b)  { if(b) m_dataFlags |= (DataFlags)flag;  else m_dataFlags &= ~(DataFlags)flag; }
+    void setFlag(DataFlagsEnum flag, bool b)  { if(b) m_dataFlags |= static_cast<DataFlags>(flag);  else m_dataFlags &= ~static_cast<DataFlags>(flag); }
 
     /// Get one of the flags.
-    bool getFlag(DataFlagsEnum flag) const { return (m_dataFlags&(DataFlags)flag)!=0; }
+    bool getFlag(DataFlagsEnum flag) const { return (m_dataFlags&static_cast<DataFlags>(flag))!=0; }
 
     /// Return whether this %Data has to be displayed in GUIs.
     bool isDisplayed() const  { return getFlag(FLAG_DISPLAYED); }
@@ -225,18 +225,18 @@ public:
     virtual bool canBeLinked() const { return true; }
 
     /// Return the Base component owning this %Data.
-    Base* getOwner() const { return m_owner; }
+    Base* getOwner() const override { return m_owner; }
     /// Set the owner of this %Data.
     void setOwner(Base* o) { m_owner=o; }
 
     /// This method is needed by DDGNode
-    BaseData* getData() const
+    BaseData* getData() const override
     {
         return const_cast<BaseData*>(this);
     }
 
     /// Return the name of this %Data within the Base component
-    const std::string& getName() const { return m_name; }
+    const std::string& getName() const override { return m_name; }
     /// Set the name of this %Data.
     ///
     /// This method should not be called directly, the %Data registration methods in Base should be used instead.
@@ -249,17 +249,17 @@ public:
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)
-    bool isSet(const core::ExecParams* params=nullptr) const { return m_isSets[currentAspect(params)]; }
+    bool isSet(const core::ExecParams* params=nullptr) const { return m_isSets[static_cast<size_t>(currentAspect(params))]; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    void unset(const core::ExecParams* params=nullptr) { m_isSets[currentAspect(params)] = false; }
+    void unset(const core::ExecParams* params=nullptr) { m_isSets[static_cast<size_t>(currentAspect(params))] = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    void forceSet(const core::ExecParams* params=nullptr) { m_isSets[currentAspect(params)] = true; }
+    void forceSet(const core::ExecParams* params=nullptr) { m_isSets[static_cast<size_t>(currentAspect(params))] = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    int getCounter(const core::ExecParams* params=nullptr) const { return m_counters[currentAspect(params)]; }
+    int getCounter(const core::ExecParams* params=nullptr) const { return m_counters[static_cast<size_t>(currentAspect(params))]; }
 
     /// @}
 
@@ -273,7 +273,7 @@ public:
     BaseData* getParent() const { return parentBaseData.get(); }
 
     /// Update the value of this %Data
-    void update();
+    void update() override;
 
     /// @name Links management
     /// @{
@@ -282,17 +282,17 @@ public:
     /// Accessor to the vector containing all the fields of this object
     const VecLink& getLinks() const { return m_vecLink; }
 
-    virtual bool findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link);
+    virtual bool findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link) override;
 
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
 
     template<class DataT>
     bool findDataLinkDest(DataT*& ptr, const std::string& path, const BaseLink* link)
     {
-        BaseData* base = NULL;
+        BaseData* base = nullptr;
         if (!findDataLinkDest(base, path, link)) return false;
         ptr = dynamic_cast<DataT*>(base);
-        return (ptr != NULL);
+        return (ptr != nullptr);
     }
 
     /// Add a link.
@@ -313,7 +313,7 @@ protected:
 
     virtual void doSetParent(BaseData* parent);
 
-    virtual void doDelInput(DDGNode* n);
+    void doDelInput(DDGNode* n) override;
 
     /// Update this %Data from the value of its parent
     virtual bool updateFromParentValue(const BaseData* parent);
@@ -363,8 +363,38 @@ class LinkTraitsPtrCasts
 public:
     static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
     static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return NULL; }
+    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return nullptr; }
     static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
+};
+
+/** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container
+ *  and providing access to its data through a non-const void* ptr taking care of the
+ * beginEdit/endEdit pairs.
+ *
+ *  Advantadges of using a WriteAccessWithRawPtr are :
+ *
+ *  - It can be faster that the default methods and operators of the container,
+ *  as verifications and changes notifications can be handled in the accessor's
+ *  constructor and destructor instead of at each item access.
+ */
+class WriteAccessWithRawPtr
+{
+public:
+    WriteAccessWithRawPtr(BaseData* data)
+    {
+        m_data = data;
+        ptr = data->beginEditVoidPtr();
+    }
+
+    ~WriteAccessWithRawPtr()
+    {
+        m_data->endEditVoidPtr();
+    }
+
+    void*     ptr;
+private:
+    WriteAccessWithRawPtr(){}
+    BaseData* m_data;
 };
 
 } // namespace objectmodel

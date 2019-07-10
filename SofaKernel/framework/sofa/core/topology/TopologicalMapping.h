@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,7 +60,7 @@ protected:
         , toModel(initLink("output", "Output topology to map"))
     {}
 
-    virtual ~TopologicalMapping() { }
+    ~TopologicalMapping() override { }
 public:
     /// Specify the input and output models.
     virtual void setTopologies(In* from, Out* to)
@@ -136,6 +136,9 @@ public:
 
         msg_info() << "#################";
     }
+
+    /// Method to check the topology mapping maps regarding the upper topology
+    virtual bool checkTopologies() {return false;}
 
     /** return all the from indices in the 'In' topology corresponding to the index in the 'Out' topology.
     *   This function is used instead of  the previous one when the function isTheOutputTopologySubdividingTheInputOne() returns false.

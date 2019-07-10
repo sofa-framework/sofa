@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -90,7 +90,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
-    if ( createInMapping || mapping == NULL)
+    if ( createInMapping || mapping == nullptr)
     {
         sofa::component::misc::WriteState::SPtr ws;
         context->get(ws, this->subsetsToManage, core::objectmodel::BaseContext::Local);
@@ -108,10 +108,14 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate" << extension ;
 
-        ws->d_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
+        ws->d_filename.setValue(ofilename.str());
+        if (!m_times.empty())
+            ws->d_time.setValue(m_times);
 
+        ws->init();
+        ws->f_listening.setValue(true);  //Activated at init
+        
         ++counterWriteState;
-
     }
 }
 
@@ -121,7 +125,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
 simulation::Visitor::Result WriteStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
     sofa::component::misc::WriteState *ws = gnode->get< sofa::component::misc::WriteState >(this->subsetsToManage);
-    if (ws != NULL) { changeStateWriter(ws);}
+    if (ws != nullptr) { changeStateWriter(ws);}
     return simulation::Visitor::RESULT_CONTINUE;
 }
 

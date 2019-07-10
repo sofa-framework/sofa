@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -27,12 +27,12 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/helper/system/SetDirectory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <fstream>
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cmath>
+#include <cstdlib>
 
 #include <qevent.h>
 
@@ -103,7 +103,6 @@ QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
 
     if(!SOFA_GUI_VSYNC)
     {
-        std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
         f.setSwapInterval(0); // disable vertical refresh sync
     }
 
@@ -130,7 +129,6 @@ QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
 //    int val = 0;
 
 #if defined(QT_VERSION) && QT_VERSION >= 0x040200
-    std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
     f.setSwapInterval(0); // disable vertical refresh sync
 #endif
 #if defined(QT_VERSION) && QT_VERSION >= 0x040700
@@ -283,11 +281,9 @@ void QtViewer::initializeGL(void)
         specref[3] = 1.0f;
 
         // Here we initialize our multi-texturing functions
-#ifdef SOFA_HAVE_GLEW
         glewInit();
-        if (!GLEW_ARB_multitexture)
+        if (!GL_ARB_multitexture)
             msg_error("QtViewer") << "GL_ARB_multitexture not supported.";
-#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;

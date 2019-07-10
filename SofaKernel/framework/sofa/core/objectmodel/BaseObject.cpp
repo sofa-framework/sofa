@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -94,9 +94,17 @@ void BaseObject::parse( BaseObjectDescription* arg )
         }
         else
         {
-            std::vector< std::string > attributeList;
-            arg->getAttributeList(attributeList);
-            setSrc(valueString, &attributeList);
+            if(valueString.size() == 1) // ignore '@' alone
+            {
+                msg_warning() << "'src=@' does nothing.";
+            }
+            else
+            {
+                std::vector< std::string > attributeList;
+                arg->getAttributeList(attributeList);
+                setSrc(valueString, &attributeList);
+            }
+
         }
         arg->removeAttribute("src");
     }
@@ -105,7 +113,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
 void BaseObject::setSrc(const std::string &valueString, std::vector< std::string > *attributeList)
 {
-    BaseObject* loader = NULL;
+    BaseObject* loader = nullptr;
 
     std::size_t posAt = valueString.rfind('@');
     if (posAt == std::string::npos) posAt = 0;
@@ -128,7 +136,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
     std::multimap < std::string, BaseData*> dataLoaderMap(loader->m_aliasData);
     std::multimap < std::string, BaseData*>::iterator it_map;
 
-    if (attributeList != 0)
+    if (attributeList != nullptr)
     {
         for (unsigned int j = 0; j<attributeList->size(); ++j)
         {
@@ -153,7 +161,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
     for (it_map = dataLoaderMap.begin(); it_map != dataLoaderMap.end(); ++it_map)
     {
         BaseData* data = obj->findData( (*it_map).first );
-        if (data != NULL)
+        if (data != nullptr)
         {
             if (!(*it_map).second->isAutoLink())
             {
@@ -171,7 +179,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 void* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link)
 {
     if (this->getContext() == BaseContext::getDefault())
-        return NULL;
+        return nullptr;
     else
         return this->getContext()->findLinkDestClass(destType, path, link);
 }
@@ -209,7 +217,7 @@ BaseObject* BaseObject::getSlave(const std::string& name) const
         if ((*iSlaves)->getName() == name)
             return iSlaves->get();
     }
-    return NULL;
+    return nullptr;
 }
 
 void BaseObject::addSlave(BaseObject::SPtr s)

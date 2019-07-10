@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,7 +69,7 @@ public:
         int dataSize;
         int nestedDataSize;
         BaseVTKDataIO() : dataSize(0), nestedDataSize(1) {}
-        virtual ~BaseVTKDataIO() {}
+        ~BaseVTKDataIO() override {}
         virtual void resize(int n) = 0;
         virtual bool read(istream& f, int n, int binary) = 0;
         virtual bool read(const string& s, int n, int binary) = 0;
@@ -87,22 +87,22 @@ public:
     public:
         T* data;
         VTKDataIO() : data(NULL) {}
-        ~VTKDataIO()
+        ~VTKDataIO() override
         {
             if (data)
             {
                 delete[] data;
             }
         }
-        virtual const void* getData() ;
-        virtual void resize(int n) ;
+        const void* getData() override ;
+        void resize(int n) override ;
         static T swapT(T t, int nestedDataSize) ;
-        void swap() ;
-        virtual bool read(const string& s, int n, int binary) ;
-        virtual bool read(const string& s, int binary) ;
-        virtual bool read(istream& in, int n, int binary) ;
-        virtual bool write(ofstream& out, int n, int groups, int binary) ;
-        virtual BaseData* createSofaData() ;
+        void swap() override ;
+        virtual bool read(const string& s, int n, int binary) override;
+        virtual bool read(const string& s, int binary) override;
+        virtual bool read(istream& in, int n, int binary) override;
+        virtual bool write(ofstream& out, int n, int groups, int binary) override;
+        BaseData* createSofaData() override ;
     };
 
     BaseVTKDataIO* newVTKDataIO(const string& typestr) ;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -83,7 +83,7 @@ static PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
 {
     char *name;
     if (!PyArg_ParseTuple(args, "s",&name)) {
-        return NULL;
+        return nullptr;
     }
 
     Node::SPtr node = Node::create( name );
@@ -96,7 +96,7 @@ static PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
 static PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, PyObject * kw) {
     char *type;
     if (!PyArg_ParseTuple(args, "s", &type)) {
-        return NULL;
+        return nullptr;
     }
 
     SP_MESSAGE_DEPRECATED( "Sofa.createObject is deprecated; use Sofa.Node.createObject instead." )
@@ -122,7 +122,7 @@ static PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, PyObje
     {
         SP_MESSAGE_ERROR( "createObject "<<desc.getName().c_str()<<" of type "<<desc.getAttribute("type","") )
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     /// by default, it will always be at least a BaseObject...
@@ -135,7 +135,7 @@ static PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
     // deprecated on date 2012/07/18
     SP_MESSAGE_DEPRECATED( "Sofa.getObject(BaseContext,path) is deprecated. Please use BaseContext.getObject(path) instead." )
     PyErr_BadArgument();
-    return NULL;
+    return nullptr;
 
 }
 
@@ -144,7 +144,7 @@ static PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/)
     // deprecated on date 2012/07/18
     SP_MESSAGE_DEPRECATED( "Sofa.getChildNode(Node,path) is deprecated. Please use Node.getChild(path) instead." )
     PyErr_BadArgument();
-    return NULL;
+    return nullptr;
 }
 
 
@@ -153,7 +153,7 @@ static PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args) {
     char *msgType;
     char *msgValue;
     if (!PyArg_ParseTuple(args, "ss",&msgType,&msgValue)) {
-        return NULL;
+        return nullptr;
     }
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
@@ -164,14 +164,14 @@ static PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args) {
     gui->sendMessage(msgType,msgValue);
 
 
-    return NULL;
+    return nullptr;
 }
 
 /// ask the GUI to save a screenshot
 static PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args) {
     char *filename;
     if (!PyArg_ParseTuple(args, "s",&filename)) {
-        return NULL;
+        return nullptr;
     }
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
@@ -190,7 +190,7 @@ static PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args) {
 static PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * args) {
     int width, height;
     if (!PyArg_ParseTuple(args, "ii", &width, &height)) {
-        return NULL;
+        return nullptr;
     }
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
@@ -211,14 +211,14 @@ static PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * 
     float r = 0.0f, g = 0.0f, b = 0.0f;
     sofa::defaulttype::RGBAColor color;
     if (!PyArg_ParseTuple(args, "fff", &r, &g, &b)) {
-        return NULL;
+        return nullptr;
     }
 
     color[0] = r; color[1] = g; color[2] = b;
     for (int i = 0; i < 3; ++i){
         if (color[i] < 00.f || color[i] > 1.0) {
             PyErr_BadArgument();
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -236,6 +236,21 @@ static PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * 
     return Py_BuildValue("i",0);
 }
 
+/// Check if a viewer is available
+static PyObject * Sofa_hasViewer(PyObject* self, PyObject* args)
+{
+    SOFA_UNUSED(self);
+    SOFA_UNUSED(args);
+    BaseGUI *gui = GUIManager::getGUI();
+    if (!gui)
+    {
+        SP_MESSAGE_ERROR( "hasViewer: no GUI!" )
+        return Py_BuildValue("i",-1);
+    }
+    return Py_BuildValue("i", gui->getViewer() != nullptr);
+}
+
+
 /// set the viewer camera
 static PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
 {
@@ -243,7 +258,7 @@ static PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
     float qx = 0.0f, qy = 0.0f, qz = 0.0f, qw = 1.0f;
 
 	if (!PyArg_ParseTuple(args, "fffffff", &px, &py, &pz, &qx, &qy, &qz, &qw)) {
-        return NULL;
+        return nullptr;
     }
 
     BaseGUI *gui = GUIManager::getGUI();
@@ -300,7 +315,7 @@ static PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args) {
     if (!PyArg_ParseTuple(args, "sd|dddddd", &meshFilename, &density,
                           &sx, &sy, &sz,
                           &rx, &ry, &rz)) {
-        return NULL;
+        return nullptr;
     }
 
     sofa::helper::GenerateRigidInfo rigid;
@@ -320,13 +335,13 @@ static PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args) {
     char* filename;
     PyObject* pyNode;
     if (!PyArg_ParseTuple(args, "Os", &pyNode, &filename)) {
-        return NULL;
+        return nullptr;
     }
 
     BaseNode* node = sofa::py::unwrap<BaseNode>( pyNode );
     if (!node) {
         SP_PYERR_SETSTRING_INVALIDTYPE("BaseNode*") ;
-        return NULL;
+        return nullptr;
     }
 
     getSimulation()->exportGraph( down_cast<Node>(node), filename );
@@ -339,20 +354,20 @@ static PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args) {
 static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args) {
     PyObject* pyNode;
     if (!PyArg_ParseTuple(args, "O", &pyNode)) {
-        return NULL;
+        return nullptr;
     }
 
     BaseNode* basenode = sofa::py::unwrap<BaseNode>( pyNode );
     if (!basenode) {
         SP_PYERR_SETSTRING_INVALIDTYPE("BaseNode*") ;
-        return NULL;
+        return nullptr;
     }
 
     Node* node = down_cast<Node>(basenode);
     Simulation* simulation = getSimulation();
 
     simulation->updateVisual(node);
-    return NULL;
+    return nullptr;
 }
 
 static const std::string s_emitter = "PythonScript";
@@ -461,12 +476,12 @@ static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 {
     char *filename;
     if (!PyArg_ParseTuple(args, "s",&filename)) {
-        return NULL;
+        return nullptr;
     }
 
     if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() || // no filename
             sofa::helper::system::SetDirectory::GetExtension(filename).empty() ) // filename with no extension
-        return NULL;
+        return nullptr;
 
     sofa::simulation::SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
 
@@ -479,7 +494,7 @@ static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
     SP_MESSAGE_ERROR( "Sofa_loadScene: extension ("
                       << sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" );
 
-    return NULL;
+    return nullptr;
 }
 
 
@@ -487,17 +502,17 @@ static PyObject * Sofa_unload(PyObject * /*self*/, PyObject * args)
 {
     PyObject* pyNode;
     if (!PyArg_ParseTuple(args, "O", &pyNode)) {
-        return NULL;
+        return nullptr;
     }
 
     Node* node = sofa::py::unwrap<Node>(pyNode);
     if (!node) {
-        return NULL;
+        return nullptr;
     }
 
     sofa::simulation::getSimulation()->unload( node );
 
-    return NULL;
+    return nullptr;
 }
 
 static PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObject * args)
@@ -531,7 +546,7 @@ static PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
 {
     char *pluginName;
     if (!PyArg_ParseTuple(args, "s", &pluginName)) {
-        return NULL;
+        return nullptr;
     }
 
     PluginManager& pluginManager = PluginManager::getInstance();
@@ -554,7 +569,7 @@ static PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
         std::stringstream ss;
         ss << "cannot find plugin '" << pluginName  << "'";
         PyErr_SetString(PyExc_EnvironmentError, ss.str().c_str());
-        return NULL;
+        return nullptr;
     }
 
     return PyString_FromString(path.c_str());
@@ -600,7 +615,7 @@ static PyObject * Sofa_getAvailableComponents(PyObject * /*self*/, PyObject * ar
     if(PyTuple_Size(args))
     {
         PyErr_SetString(PyExc_RuntimeError, "This function expects no arguments.");
-        return NULL;
+        return nullptr;
     }
 
     std::vector<ObjectFactory::ClassEntry::SPtr> entries ;
@@ -621,7 +636,7 @@ static PyObject * Sofa_getAliasesFor(PyObject * /*self*/, PyObject * args)
 {
     char* componentname;
     if (!PyArg_ParseTuple(args, "s", &componentname)) {
-        return NULL;
+        return nullptr;
     }
 
     const ObjectFactory::ClassEntry& entry = ObjectFactory::getInstance()->getEntry(componentname) ;
@@ -693,7 +708,7 @@ static PyObject * Sofa_timerIsEnabled(PyObject* /*self*/, PyObject *args)
 
     if(!PyArg_ParseTuple(args, "s", &id))
     {
-        return NULL;
+        return nullptr;
     }
 
     answer = AdvancedTimer::isEnabled(id);  // Method call
@@ -742,7 +757,7 @@ static PyObject * Sofa_timerGetInterval(PyObject* /*self*/, PyObject *args)
 
     if(!PyArg_ParseTuple(args, "s", &id))
     {
-        return NULL;
+        return nullptr;
     }
 
     answer = AdvancedTimer::getInterval(id);  // Method call
@@ -765,7 +780,7 @@ static PyObject * Sofa_timerSetInterval(PyObject* /*self*/, PyObject *args)
 
     if(!PyArg_ParseTuple(args, "si", &id, &newValue))
     {
-        return NULL;
+        return nullptr;
     }
 
     AdvancedTimer::setInterval(id, newValue);  // Method call
@@ -788,7 +803,7 @@ static PyObject * Sofa_timerBegin(PyObject* /*self*/, PyObject *args)
 
     if(!PyArg_ParseTuple(args, "s", &id))
     {
-        return NULL;
+        return nullptr;
     }
 
     AdvancedTimer::begin(id);  // Method call
@@ -809,7 +824,7 @@ static PyObject * Sofa_timerStepBegin(PyObject*, PyObject* args)
 
     if(!PyArg_ParseTuple(args, "s", &id))
     {
-        return NULL;
+        return nullptr;
     }
 
     AdvancedTimer::stepBegin(id);  // Method call
@@ -830,7 +845,7 @@ static PyObject * Sofa_timerStepEnd(PyObject*, PyObject* args)
 
     if(!PyArg_ParseTuple(args, "s", &id))
     {
-        return NULL;
+        return nullptr;
     }
 
     AdvancedTimer::stepEnd(id);  // Method call
@@ -848,14 +863,14 @@ static PyObject * Sofa_timerStepEnd(PyObject*, PyObject* args)
  */
 static PyObject * Sofa_timerEnd(PyObject* /*self*/, PyObject *args)
 {
-    char* id = NULL;
-    void* tempNode = NULL;
-    Node* node = NULL;
+    char* id = nullptr;
+    void* tempNode = nullptr;
+    Node* node = nullptr;
     std::string result;
 
     if(!PyArg_ParseTuple(args, "sO", &id, &tempNode))
     {
-        return NULL;
+        return nullptr;
     }
 
     node = down_cast<Node>(((PySPtr<Base>*)tempNode)->object->toBaseNode());
@@ -878,12 +893,12 @@ static PyObject * Sofa_timerEnd(PyObject* /*self*/, PyObject *args)
  */
 static PyObject * Sofa_timerSetOutputType(PyObject* /*self*/, PyObject *args)
 {
-    char* id = NULL;
-    char* newOutputType = NULL;
+    char* id = nullptr;
+    char* newOutputType = nullptr;
 
     if(!PyArg_ParseTuple(args, "ss", &id, &newOutputType))
     {
-        return NULL;
+        return nullptr;
     }
 
     AdvancedTimer::setOutputType(id, newOutputType);
@@ -891,7 +906,22 @@ static PyObject * Sofa_timerSetOutputType(PyObject* /*self*/, PyObject *args)
     Py_RETURN_NONE;
 }
 
+static constexpr const char* addPluginRepository_DOC =
+R"DOC(
+Adds a plugin repository path.
 
+:param path: The repository's directory path
+:type path: str
+)DOC";
+static PyObject * Sofa_addPluginRepository(PyObject *, PyObject *arg)
+{
+    const char *path;
+    if (!PyArg_ParseTuple(arg, "s", &path))
+        return NULL;
+    sofa::helper::system::PluginRepository.addFirstPath(path);
+
+    return Py_None;
+}
 
 /// Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
@@ -904,6 +934,7 @@ SP_MODULE_METHOD(Sofa,sendGUIMessage)
 SP_MODULE_METHOD(Sofa,saveScreenshot)
 SP_MODULE_METHOD(Sofa,setViewerResolution)
 SP_MODULE_METHOD(Sofa,setViewerBackgroundColor)
+SP_MODULE_METHOD(Sofa,hasViewer)
 SP_MODULE_METHOD(Sofa,setViewerCamera)
 SP_MODULE_METHOD(Sofa,getViewerCamera)
 SP_MODULE_METHOD(Sofa,generateRigid)
@@ -923,6 +954,7 @@ SP_MODULE_METHOD_DOC(Sofa,getCategories,"Return from a given component type (cla
 SP_MODULE_METHOD_DOC(Sofa,getAvailableComponents, "Returns the list of the available components in the factory.")
 SP_MODULE_METHOD_DOC(Sofa,getAliasesFor, "Returns the list of the aliases for a given component")
 SP_MODULE_METHOD_DOC(Sofa,getComponentsFromTarget, "Returns a string with the component contained in a given targets (plugins)")
+SP_MODULE_METHOD_DOC(Sofa,addPluginRepository, addPluginRepository_DOC)
 SP_MODULE_METHOD_DOC(Sofa, timerClear, "Method : Sofa_clear \nDesc   : Wrapper for python usage. Clear the timer. \nParam  : PyObject*, self - Object of the python script \nReturn : return None")
 SP_MODULE_METHOD_DOC(Sofa, timerIsEnabled, "Method : Sofa_isEnabled \nDesc   : Wrapper for python usage. Return if the timer is enable or not. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
 SP_MODULE_METHOD_DOC(Sofa, timerSetEnabled, "Method : Sofa_setEnabled \nDesc   : Wrapper for python usage. /!\\ Need to pass an int in arguments insteed of a bool in the python script. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")

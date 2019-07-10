@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,9 +66,14 @@ DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
 {
 # if defined(WIN32)
     std::string p = FileSystem::cleanPath(filename, FileSystem::BACKSLASH);
-    void *handle = ::LoadLibraryExA(p.c_str(), nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
+    void *handle = ::LoadLibraryA(filename.c_str());
+    if (handle == nullptr)
+    {
+        // Retry with altered search path
+        handle = ::LoadLibraryExA(p.c_str(), nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
+    }
 # else
-    void *handle = ::dlopen(filename.c_str(), RTLD_NOW);
+    void *handle = ::dlopen(filename.c_str(), RTLD_NOW | RTLD_GLOBAL);
 # endif
     if (handle == nullptr)
         fetchLastError();

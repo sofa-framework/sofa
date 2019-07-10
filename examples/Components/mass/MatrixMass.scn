@@ -1,13 +1,14 @@
 <Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <DiscreteIntersection />
     <Node name="DragonCoarse">
         <SparseGrid n="2 2 2" fileTopology="mesh/dragon.obj" />
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
         <MatrixMass defaultValue="3" />
@@ -20,7 +21,7 @@
         <Node name="Surf">
 	    <SphereLoader filename="mesh/dragon.sph" />
             <MechanicalObject position="@[-1].position" />
-            <Sphere listRadius="@[-2].listRadius" />
+            <SphereCollisionModel listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>

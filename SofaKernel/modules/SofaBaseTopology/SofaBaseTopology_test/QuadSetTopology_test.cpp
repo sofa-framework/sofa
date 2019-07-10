@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -71,9 +71,9 @@ bool QuadSetTopology_test::testQuadBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -87,10 +87,10 @@ bool QuadSetTopology_test::testQuadBuffers()
     EXPECT_EQ(topoCon->getNumberOfQuads(), nbrQuad);
     EXPECT_EQ(topoCon->getQuads().size(), nbrQuad);
 
-    // check edges should not be created
-    EXPECT_EQ(topoCon->getNumberOfEdges(), 0);
-    EXPECT_EQ(topoCon->getNbEdges(), 0);
-    EXPECT_EQ(topoCon->getEdges().size(), 0);
+    // check edges buffer has been created
+    EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getNbEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 elements in this file should be :
     sofa::helper::fixed_array<QuadSetTopologyContainer::PointID, 4> elemTruth0(3, 11, 5, 4);
@@ -128,7 +128,7 @@ bool QuadSetTopology_test::testQuadBuffers()
         EXPECT_EQ(elem2[i], -1);
 
 
-    if(scene != NULL)
+    if(scene != nullptr)
         delete scene;
 
     return true;
@@ -140,9 +140,9 @@ bool QuadSetTopology_test::testEdgeBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -235,9 +235,9 @@ bool QuadSetTopology_test::testVertexBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -282,16 +282,16 @@ bool QuadSetTopology_test::checkTopology()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
 
     bool res = topoCon->checkTopology();
     
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
     
     return res;

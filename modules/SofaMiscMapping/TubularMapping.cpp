@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,15 +41,11 @@ using namespace core::behavior;
 // Register in the Factory
 int TubularMappingClass = core::RegisterObject("Create a Tube around rigid points")
         .add< TubularMapping< Rigid3Types, Vec3dTypes > > ()
-        .add< TubularMapping< Rigid3Types, ExtVec3Types > >()
-
 
 
         ;
 
 template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3Types, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3Types, ExtVec3Types >;
-
 
 
 

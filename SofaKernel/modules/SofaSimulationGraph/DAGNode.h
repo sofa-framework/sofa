@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,9 +35,6 @@ namespace simulation
 namespace graph
 {
 
-
-
-
 /** Define the structure of the scene as a Directed Acyclic Graph. Contains component objects (as pointer lists) and parents/childs (as DAGNode objects).
  *
  * The visitor traversal is performed in two passes:
@@ -58,41 +55,25 @@ public:
 
 
 protected:
-    DAGNode( const std::string& name="", DAGNode* parent=NULL  );
+    DAGNode( const std::string& name="", DAGNode* parent=nullptr  );
 
-    virtual ~DAGNode();
+    virtual ~DAGNode() override;
 
 public:
     /// Pure Virtual method from Node
     virtual Node::SPtr createChild(const std::string& nodeName) override;
 
-    /// Pure Virtual method from BaseNode
-    /// Add a child node
-    virtual void addChild(BaseNode::SPtr node) override;
-
-    /// Remove a child node
-    virtual void removeChild(BaseNode::SPtr node) override;
-
-    /// Move a node from another node
-    virtual void moveChild(BaseNode::SPtr obj) override;
-
-    /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(core::objectmodel::BaseObject::SPtr obj) override { return simulation::Node::addObject(obj); }
-
-    /// Remove an object
-    virtual bool removeObject(core::objectmodel::BaseObject::SPtr obj) override { return simulation::Node::removeObject(obj); }
-
     /// Remove the current node from the graph: consists in removing the link to its parent
-    virtual void detachFromGraph() override;
+    void detachFromGraph() override;
 
     /// Get a list of parent node
-    virtual Parents getParents() const override;
+    Parents getParents() const override;
 
     /// returns number of parents
-    virtual size_t getNbParents() const override;
+    size_t getNbParents() const override;
 
     /// return the first parent (returns NULL if no parent)
-    virtual BaseNode* getFirstParent() const override;
+    BaseNode* getFirstParent() const override;
 
     /// Test if the given node is a parent of this node.
     bool hasParent(const BaseNode* node) const override;
@@ -115,32 +96,32 @@ public:
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
+    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
 
     /// Generic object access, given a path from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const override;
+    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const override;
 
     /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
+    void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
 
 
     /// Mesh Topology that is relevant for this context
     /// (within it or its parents until a mapping is reached that does not preserve topologies).
-    virtual core::topology::BaseMeshTopology* getActiveMeshTopology() const override;
+    core::topology::BaseMeshTopology* getActiveMeshTopology() const override;
 
 
     /// Called during initialization to corectly propagate the visual context to the children
-    virtual void initVisualContext() override;
+    void initVisualContext() override;
 
     /// Update the whole context values, based on parent and local ContextObjects
-    virtual void updateContext() override;
+    void updateContext() override;
 
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
-    virtual void updateSimulationContext() override;
+    void updateSimulationContext() override;
 
     static DAGNode::SPtr create(DAGNode*, core::objectmodel::BaseObjectDescription* arg)
     {
@@ -151,10 +132,12 @@ public:
 
 
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
-    virtual Node* findCommonParent( Node* node2 ) override;
+    /// it assumes that the DAG node is a tree node. In case of multiple parents it returns any of the parents.
+    /// it uses the node descendancy informations.
+    Node* findCommonParent( Node* node2 ) override;
 
     /// compute the traversal order from this Node
-    virtual void precomputeTraversalOrder( const core::ExecParams* params ) override;
+    void precomputeTraversalOrder( const core::ExecParams* params ) override;
 
 protected:
 
@@ -164,8 +147,11 @@ protected:
 
     LinkParents l_parents;
 
-    virtual void doAddChild(DAGNode::SPtr node);
-    void doRemoveChild(DAGNode::SPtr node);
+    virtual void moveChild(BaseNode::SPtr node) override;
+
+    virtual void doAddChild(BaseNode::SPtr node) override;
+    virtual void doRemoveChild(BaseNode::SPtr node) override;
+    virtual void doMoveChild(BaseNode::SPtr node, BaseNode::SPtr previous_parent) override;
 
 
     /// Execute a recursive action starting from this node.
@@ -184,15 +170,6 @@ protected:
 
     /// traversal updating the descendancy
     void updateDescendancy();
-
-
-    // need to update the ancestor descendancy
-    virtual void notifyAddChild(Node::SPtr node) override;
-    // need to update the ancestor descendancy
-    virtual void notifyRemoveChild(Node::SPtr node) override;
-    // need to update the ancestor descendancy
-    virtual void notifyMoveChild(Node::SPtr node, Node* prev) override;
-
 
     /// traversal flags
     typedef enum

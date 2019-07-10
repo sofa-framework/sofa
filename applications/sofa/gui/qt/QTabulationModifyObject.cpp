@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -54,13 +54,6 @@ QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
     vbox->setSpacing(0);
 
     this->setLayout(vbox);
-
-//    //add a scrollable area for data properties
-//    QScrollArea* m_scrollArea = new QScrollArea();
-//    m_scrollArea->setMinimumSize(400,100);
-//    m_scrollArea->setWidgetResizable(true);
-//    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-//    m_scrollArea->setWidget(this);
 
     //find correct maxPixelSize according to the current screen resolution
     pixelMaxSize = screenHeight - 300;

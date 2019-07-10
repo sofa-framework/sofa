@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -71,7 +71,7 @@ public:
     typename MMapper::SPtr mapper;
 
     BarycentricContactMapper()
-        : model(NULL), mapping(NULL), mapper(NULL)
+        : model(nullptr), mapping(nullptr), mapper(nullptr)
     {
     }
 
@@ -86,7 +86,7 @@ public:
 
     void resize(int size)
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             mapper->clear();
             mapping->getMechTo()[0]->resize(size);
@@ -95,7 +95,7 @@ public:
 
     void update()
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
             map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
@@ -105,7 +105,7 @@ public:
 
     void updateXfree()
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
             map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
@@ -115,7 +115,7 @@ public:
 
     void updateX0()
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
             map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -105,7 +105,15 @@ PSDEDataFactory* getFactoryInstance(){
         s_localfactory->registerCreator("Hexa", new DataCreator<Hexa>());
         s_localfactory->registerCreator("Penta", new DataCreator<Penta>());
 
-        // VECTORS
+        // State vectors
+        s_localfactory->registerCreator(
+                    "Rigid3d::VecCoord", new DataCreator<sofa::defaulttype::Rigid3dTypes::VecCoord>());
+        s_localfactory->registerCreator(
+                    "Rigid3f::VecCoord", new DataCreator<sofa::defaulttype::Rigid3fTypes::VecCoord>());
+        s_localfactory->registerCreator(
+                    "Rigid3::VecCoord", new DataCreator<sofa::defaulttype::Rigid3Types::VecCoord>());
+
+        // General vectors
         for (const auto& container : containers)
         {
             // Scalars
@@ -207,13 +215,19 @@ BaseData* deriveTypeFromParentValue(Base* obj, const std::string& value)
 
         if (!o->getContext())
         {
-	    msg_warning("SofaPython") << "No context created. Cannot find data link to derive input type.";
+            msg_error("SofaPython") << "No context created. Cannot find data link to derive input type.";
             return nullptr;
         }
-        BaseObject* component;
+        Base* component;
         component = o->getContext()->get<BaseObject>(componentPath);
         if (!component)
-	    msg_warning("SofaPython") << "No object with path " << componentPath << " in scene graph.";
+            component = static_cast<sofa::simulation::Node*>(o->getContext())->getNodeInGraph(componentPath);
+
+        if(!component)
+        {
+            msg_error("SofaPython") << "No object or node with path " << componentPath << " in scene graph.";
+            return nullptr;
+        }
         BaseData* parentData = component->findData(parentDataName);
         return parentData->getNewInstance();
     }
@@ -260,7 +274,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     else
     {
         return nullptr;
-    }    
+    }
     BaseData* bd = nullptr;
     if(KwargsOrArgs) // parse kwargs
     {
@@ -322,14 +336,14 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
         }
         else if (std::string(dataName) != "type")
         {
-  	        sofa::helper::vector<std::string> validTypes;
-	          getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
-	          std::string typesString = "[";
-	          for (const auto& i : validTypes)
-	              typesString += i + ", ";
-	          typesString += "\b\b]";
-	          msg_error(obj) << dataRawType << " is not a known type. Available "
-	                            "types are:\n" << typesString;
+            sofa::helper::vector<std::string> validTypes;
+            getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
+            std::string typesString = "[";
+            for (const auto& i : validTypes)
+                typesString += i + ", ";
+            typesString += "\b\b]";
+            msg_error(obj) << dataRawType << " is not a known type. Available "
+                                             "types are:\n" << typesString;
             return nullptr;
         }
         else return new EmptyData;
@@ -379,9 +393,13 @@ static PyObject * Base_addData(PyObject *self, PyObject *args )
 
 static PyObject * Base_addNewData(PyObject *self, PyObject *args) {
     Base* obj = get_base(self);
-    if( helper_addNewData(args, nullptr, obj) == nullptr )
+    BaseData* addeddata = helper_addNewData(args, nullptr, obj);
+    if( addeddata == nullptr )
+    {
+        PyErr_SetString(PyExc_ValueError, "Unable to create a new Sofa data field.");
         return nullptr ;
-    Py_RETURN_NONE;
+    }
+    return SP_BUILD_PYPTR(Data,BaseData,addeddata,false);
 }
 
 static PyObject * Base_getData(PyObject *self, PyObject *args ) {
@@ -621,12 +639,12 @@ static PyObject * Base___dir__(PyObject *self, PyObject * /*args*/) {
 
     /// From methods..
     for (unsigned int i = 0; i < listMethodsSize; ++i, ++dstIndex) {
-          PyObject* tmp = PyList_GetItem(listMethods, i);
+        PyObject* tmp = PyList_GetItem(listMethods, i);
 
-          /// Increment the reference counter to getItem because according to the documentation
-          /// the PyList_SetItem will steal it.
-          Py_INCREF(tmp);
-          PyList_SetItem(pyList, dstIndex, tmp);
+        /// Increment the reference counter to getItem because according to the documentation
+        /// the PyList_SetItem will steal it.
+        Py_INCREF(tmp);
+        PyList_SetItem(pyList, dstIndex, tmp);
     }
 
     /// From links
@@ -655,11 +673,11 @@ static PyObject * Base_downCast(PyObject *self, PyObject * /*args*/) {
 
 SP_CLASS_METHODS_BEGIN(Base)
 SP_CLASS_METHOD_DOC(Base,addNewData, "Add a new Data field to the current object. \n"
-                                        "Eg:                                         \n"
-                                        "  obj.addNewData('myDataName1','theDataGroupA','help message','float',1.0)  \n"
-                                        "  obj.addNewData('myDataName2','theDataGroupA','help message','','@otherComponent.datafield) \n"
-                                        "  obj.addNewData('myDataName3','theDataGroupB','help message','vector<Vec3d>', '@loader.position')     \n"
-                                        "  obj.addNewData('myDataName4','theDataGroupB','help message','string','hello') \n")
+                                     "Eg:                                         \n"
+                                     "  obj.addNewData('myDataName1','theDataGroupA','help message','float',1.0)  \n"
+                                     "  obj.addNewData('myDataName2','theDataGroupA','help message','','@otherComponent.datafield) \n"
+                                     "  obj.addNewData('myDataName3','theDataGroupB','help message','vector<Vec3d>', '@loader.position')     \n"
+                                     "  obj.addNewData('myDataName4','theDataGroupB','help message','string','hello') \n")
 SP_CLASS_METHOD_DOC(Base,addData, "Adds an existing data field to the current object")
 SP_CLASS_METHOD_DOC(Base,findData, "Returns the data field if there is one associated \n"
                                    "with the provided name and downcasts it to the lowest known type. \n"
@@ -667,11 +685,11 @@ SP_CLASS_METHOD_DOC(Base,findData, "Returns the data field if there is one assoc
 SP_CLASS_METHOD_DOC(Base,findLink, "Returns a link field if there is one associated \n"
                                    "with the provided name, returns None otherwhise")
 SP_CLASS_METHOD_DOC(Base,getData, "Returns the data field if there is one associated \n"
-                              "with the provided name but don't downcasts it to the lowest known type. \n"
-                              "Returns None is there is no field with this name.")
+                                  "with the provided name but don't downcasts it to the lowest known type. \n"
+                                  "Returns None is there is no field with this name.")
 SP_CLASS_METHOD_DOC(Base,getLink, "Returns the link field if there is one associated \n"
-                              "with the provided name but. \n"
-                              "Returns None is there is no field with this name.")
+                                  "with the provided name but. \n"
+                                  "Returns None is there is no field with this name.")
 SP_CLASS_METHOD(Base,getClassName)
 SP_CLASS_METHOD(Base,getTemplateName)
 SP_CLASS_METHOD(Base,getName)

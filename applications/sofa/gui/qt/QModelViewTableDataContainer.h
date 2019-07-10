@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -29,6 +29,7 @@
 #endif
 #include <SofaBaseTopology/TopologyData.h>
 
+#include "QMouseWheelAdjustementGuard.h"
 #include "QModelViewTableUpdater.h"
 #include "QDisplayDataWidget.h"
 
@@ -283,6 +284,8 @@ enum
     TABLE_FIXEDSIZE = 1 << 1,
 };
 
+
+
 template<class T, int FLAGS = TABLE_NORMAL>
 class table_data_widget_container
 {
@@ -290,7 +293,6 @@ public:
     typedef T data_type;
     typedef vector_data_trait<data_type> rhelper;
     typedef typename rhelper::value_type row_type;
-    //typedef vector_data_trait<row_type> vhelper;
     typedef default_flat_data_trait<row_type> vhelper;
     typedef typename vhelper::value_type value_type;
     typedef QVBoxLayout Layout;
@@ -307,7 +309,6 @@ public:
 
     table_data_widget_container() : wSize(NULL), wTableView(NULL), wDisplay(NULL), widget(NULL), container_layout(NULL) {}
 
-
     bool createLayout( DataWidget* parent )
     {
         if( parent->layout() != NULL || container_layout != NULL) return false;
@@ -322,7 +323,6 @@ public:
         layout->addItem(container_layout);
         return true;
     }
-
 
     void setCellText(int r, int c, const std::string& s)
     {
@@ -391,6 +391,12 @@ public:
         wSize->setSingleStep(1);
         wSize->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
+        /// Activates the scrolling only when the widget is selected and not when it is
+        /// hovering.
+        wSize->setFocusPolicy(Qt::StrongFocus);
+
+        wSize->installEventFilter(new QMouseWheelAdjustmentGuard(wSize));
+
         wDisplay = new QPushButtonUpdater( QString("Display the values"), parent);
         wDisplay->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -398,7 +404,6 @@ public:
             cols = vhelper::size(*rhelper::get(d,0));
         else
             cols = vhelper::size(row_type());
-
 
         if (FLAGS & TABLE_HORIZONTAL)
             wTableModel = new QTableModelUpdater(cols,dataRows,parent);
@@ -670,78 +675,6 @@ public:
 template<class T>
 class vector_data_trait < sofa::helper::vector<T> > : public vector_data_trait< std::vector<T> >
 {
-};
-
-
-// template<class T>
-// class vector_data_trait < sofa::component::topology::PointData<T> > //: public vector_data_trait < sofa::helper::vector<T> >
-// {
-// public:
-//     typedef sofa::component::topology::PointData<T> data_type;
-//     typedef T value_type;
-//     enum { NDIM = 1 };
-//
-//     static int size(const data_type& d) { return d.getValue().size(); }
-//     static const char* header(const data_type& /*d*/, int /*i*/ = 0)
-//     {
-// 	return NULL;
-//     }
-//     static const value_type* get(const data_type& d, int i = 0)
-//     {
-// 	return ((unsigned)i < (unsigned)size(d.getValue())) ? &(d.getValue()[i]) : NULL;
-//     }
-//     static void set( const value_type& v, data_type& d, int i = 0)
-//     {
-// 	if ((unsigned)i < (unsigned)size(d.getValue()))
-// 	{
-// 	    sofa::helper::vector<T>& d_data = *(d.beginEdit());
-// 	    d_data[i] = v;
-// 	    d.endEdit();
-// 	}
-//     }
-//     static void resize( int s, data_type& d)
-//     {
-//         sofa::helper::vector<T>& d_data = *(d.beginEdit());
-// 	d_data.resize(s);
-// 	d.endEdit();
-//     }
-// };
-
-////////////////////////////////////////////////////////////////
-/// sofa::defaulttype::ExtVector support
-////////////////////////////////////////////////////////////////
-
-template<class T>
-class vector_data_trait < sofa::defaulttype::ExtVector<T> >
-{
-public:
-    typedef sofa::defaulttype::ExtVector<T> data_type;
-    typedef T value_type;
-    enum { NDIM = 1 };
-    static int size(const data_type& d) { return d.size(); }
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
-    {
-        return NULL;
-    }
-    static const value_type* get(const data_type& d, int i = 0)
-    {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
-    }
-    static void set( const value_type& v, data_type& d, int i = 0)
-    {
-        if ((unsigned)i < (unsigned)size(d))
-            d[i] = v;
-    }
-    static void resize( int s, data_type& d)
-    {
-        d.resize(s);
-    }
-};
-
-template<class T>
-class vector_data_trait < sofa::defaulttype::ResizableExtVector<T> > : public vector_data_trait < sofa::defaulttype::ExtVector<T> >
-{
-public:
 };
 
 ////////////////////////////////////////////////////////////////

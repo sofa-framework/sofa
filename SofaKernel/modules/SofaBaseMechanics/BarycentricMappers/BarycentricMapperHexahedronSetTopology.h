@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,7 +40,7 @@ using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
+
 typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 
 /// Class allowing barycentric mapping computation on a HexahedronSetTopology
@@ -55,19 +55,19 @@ public:
 
     typedef typename Inherit1::Real Real;
 
-    virtual ~BarycentricMapperHexahedronSetTopology() override ;
+    ~BarycentricMapperHexahedronSetTopology() override ;
     virtual helper::vector<Hexahedron> getElements() override;
     virtual helper::vector<SReal> getBaryCoef(const Real* f) override;
     helper::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
-    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Hexahedron& element) override;
-    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Hexahedron& element) override;
-    virtual void computeDistance(double& d, const Vector3& v) override;
-    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
+    void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Hexahedron& element) override;
+    void computeCenter(Vector3& center, const typename In::VecCoord& in, const Hexahedron& element) override;
+    void computeDistance(double& d, const Vector3& v) override;
+    void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
 
-    virtual int addPointInCube(const int index, const SReal* baryCoords) override;
-    virtual int setPointInCube(const int pointIndex, const int cubeIndex, const SReal* baryCoords) override;
-    virtual void applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-    virtual void handleTopologyChange(core::topology::Topology* t) override;
+    int addPointInCube(const int index, const SReal* baryCoords) override;
+    int setPointInCube(const int pointIndex, const int cubeIndex, const SReal* baryCoords) override;
+    void applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    void handleTopologyChange(core::topology::Topology* t) override;
 
 protected:
     BarycentricMapperHexahedronSetTopology();
@@ -88,7 +88,6 @@ protected:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERHEXAHEDRONSETTOPOLOGY_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperHexahedronSetTopology< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperHexahedronSetTopology< Vec3dTypes, ExtVec3Types >;
 
 
 #endif

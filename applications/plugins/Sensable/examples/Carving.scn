@@ -1,20 +1,21 @@
 <?xml version="1.0" ?>
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
     <RequiredPlugin name="Carving" pluginName="SofaCarving" />
 
   <VisualStyle displayFlags="" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="false"/>
-    <CollisionGroup />
+    <DefaultCollisionGroupManager />
 
   <CarvingManager key="0" active="true"/>
 
   <Node name="TT">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader filename="data/mesh/cylinder.msh" name="loader" />
         <MechanicalObject src="@loader" name="Volume" />
@@ -26,7 +27,7 @@
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" />
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
-            <TriangleSet />
+            <TriangleCollisionModel />
             <Node name="Visu">
                 <OglModel name="Visual" color="yellow" />
                 <IdentityMapping input="@../../Volume" output="@Visual" />
@@ -47,7 +48,7 @@
         <Node 	name="CollisionModel"  >
 
             <MechanicalObject template="Vec3d" name="Particle"  position="0 0 0" />
-            <Point name="ParticleModel" tags="CarvingTool" contactStiffness="2" />
+            <PointCollisionModel name="ParticleModel" tags="CarvingTool" contactStiffness="2" />
             <RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@instrumentState"  output="@Particle" />
             <EnslavementForceFeedback name="forcefeedback" tags="Omni" collisionModel1="@ParticleModel" collisionModel2="" relativeStiffness="4" attractionDistance="0.3" normalsPointOut="false"/>
 

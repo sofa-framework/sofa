@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,7 @@
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/simulation/Simulation.h>
 
-#include <time.h>
+#include <ctime>
 
 #ifndef NDEBUG
     #define DEBUG_MSG true
@@ -80,10 +80,10 @@ TopologicalChangeProcessor::TopologicalChangeProcessor()
     , m_epsilonSnapPath( initData(&m_epsilonSnapPath, (SReal)0.1, "epsilonSnapPath", "epsilon snap path"))
     , m_epsilonSnapBorder( initData(&m_epsilonSnapBorder, (SReal)0.25, "epsilonSnapBorder", "epsilon snap path"))
     , m_draw( initData(&m_draw, false, "draw", "draw information"))
-    , m_topology(NULL)
+    , m_topology(nullptr)
     , infile(NULL)
 #ifdef SOFA_HAVE_ZLIB
-    , gzfile(NULL)
+    , gzfile(nullptr)
 #endif
     , nextTime(0)
     , lastTime(0)
@@ -131,7 +131,7 @@ void TopologicalChangeProcessor::readDataFile()
     if (gzfile)
     {
         gzclose(gzfile);
-        gzfile = NULL;
+        gzfile = nullptr;
     }
 #endif
 
@@ -305,7 +305,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
     lastTime = time;
     validLines.clear();
     std::string line, cmd;
-    double epsilon = 1e-10;
+    const SReal epsilon = std::numeric_limits<SReal>::epsilon();
     while (nextTime < time || fabs(nextTime - time) < epsilon )
     {
 #ifdef SOFA_HAVE_ZLIB

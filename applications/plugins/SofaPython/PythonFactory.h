@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,6 +51,12 @@ namespace sofa
 /// shortcut for SP_ADD_CLASS with fixed sofa module
 #define SP_ADD_CLASS_IN_SOFAMODULE(C) SP_ADD_CLASS( PythonFactory::s_sofaPythonModule, C )
 
+/// Adds a module (eg. static class) to sofa module
+#define SP_ADD_MODULE_IN_SOFAMODULE(MODULENAME) {\
+            PyObject * m = Py_InitModule(#MODULENAME,MODULENAME##ModuleMethods); \
+            PyModule_AddObject(PythonFactory::s_sofaPythonModule, #MODULENAME, m); \
+            }
+
 /// This is the macro to call to bind a new type inherited from sofa::core::objectmodel::Base
 #define SP_ADD_CLASS_IN_FACTORY( PYTHONNAME, CPPCLASSNAME ) {\
     SP_ADD_CLASS_IN_SOFAMODULE( PYTHONNAME )  \
@@ -87,8 +93,8 @@ protected:
     struct PythonBoundType : public BasePythonBoundType
     {
         PythonBoundType(PyTypeObject*pyTypeObject):BasePythonBoundType(pyTypeObject){}
-        virtual bool canCast(sofa::core::objectmodel::Base* obj) const { return dynamic_cast<T*>(obj)!=nullptr; }
-        virtual bool canCast(sofa::core::objectmodel::BaseData* data) const { return dynamic_cast<T*>(data)!=nullptr; }
+        bool canCast(sofa::core::objectmodel::Base* obj) const override { return dynamic_cast<T*>(obj)!=nullptr; }
+        bool canCast(sofa::core::objectmodel::BaseData* data) const override { return dynamic_cast<T*>(data)!=nullptr; }
     };
 
     /// a list of Abstract classes that can be cheaply deduced from Base* (by static_cast)

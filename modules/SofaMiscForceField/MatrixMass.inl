@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,15 @@ namespace component
 
 namespace mass
 {
+
+template <class DataTypes, class MassType>
+MatrixMass<DataTypes, MassType>::MatrixMass()
+    :  f_mass( initData(&f_mass, "massMatrices", "values of the particles masses") )
+    , _lumped(initData( &_lumped, false, "lumped", ""))
+    , _defaultValue( initData(&_defaultValue, (Real)1.0,"defaultValue", "real default value") )
+    , _usingDefaultDiagonalMatrices(false)
+{
+}
 
 template <class DataTypes, class MassType>
 MatrixMass<DataTypes, MassType>::~MatrixMass()

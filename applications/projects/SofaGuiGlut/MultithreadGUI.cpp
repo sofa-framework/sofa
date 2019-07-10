@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -32,11 +32,11 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <fstream>
-#include <string.h>
-#include <math.h>
+#include <cstring>
+#include <cmath>
 
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
@@ -79,7 +79,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 using sofa::simulation::getSimulation;
 
-MultithreadGUI* MultithreadGUI::instance = NULL;
+MultithreadGUI* MultithreadGUI::instance = nullptr;
 
 // ---------------------------------------------------------
 // --- Multithread related stuff
@@ -344,7 +344,7 @@ void MultithreadGUI::glut_idle()
 // --- Constructor
 // ---------------------------------------------------------
 MultithreadGUI::MultithreadGUI()
-    : renderMsgBuffer(NULL)
+    : renderMsgBuffer(nullptr)
 {
     instance = this;
 
@@ -367,7 +367,7 @@ MultithreadGUI::MultithreadGUI()
     _materialMode = 0;
     _facetNormal = GL_FALSE;
     _renderingMode = GL_RENDER;
-    texLogo = NULL;
+    texLogo = nullptr;
 
     _arrow = gluNewQuadric();
     gluQuadricDrawStyle(_arrow, GLU_FILL);
@@ -435,7 +435,7 @@ MultithreadGUI::~MultithreadGUI()
         delete renderMsgBuffer;
     }
 #endif
-    if (instance == this) instance = NULL;
+    if (instance == this) instance = nullptr;
 }
 
 void MultithreadGUI::initTextures()
@@ -500,11 +500,9 @@ void MultithreadGUI::initializeGL(void)
         specref[2] = 1.0f;
         specref[3] = 1.0f;
         // Here we initialize our multi-texturing functions
-#ifdef SOFA_HAVE_GLEW
         glewInit();
         if (!GLEW_ARB_multitexture)
             std::cerr << "Error: GL_ARB_multitexture not supported\n";
-#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;
@@ -1652,7 +1650,7 @@ void MultithreadGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         case MouseButtonPress:
         {
             //<CAMERA API>
-            sofa::core::objectmodel::MouseEvent* mEvent = NULL;
+            sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
             if (button == GLUT_LEFT_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, eventX, eventY);
             else if (button == GLUT_RIGHT_BUTTON)
@@ -1677,7 +1675,7 @@ void MultithreadGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         case MouseButtonRelease:
         {
             //<CAMERA API>
-            sofa::core::objectmodel::MouseEvent* mEvent = NULL;
+            sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
             if (button == GLUT_LEFT_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, eventX, eventY);
             else if (button == GLUT_RIGHT_BUTTON)

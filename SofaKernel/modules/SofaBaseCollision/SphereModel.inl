@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,7 +49,7 @@ namespace collision
 {
 
 template<class DataTypes>
-TSphereModel<DataTypes>::TSphereModel()
+SphereCollisionModel<DataTypes>::SphereCollisionModel()
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
@@ -59,7 +59,7 @@ TSphereModel<DataTypes>::TSphereModel()
 }
 
 template<class DataTypes>
-TSphereModel<DataTypes>::TSphereModel(core::behavior::MechanicalState<DataTypes>* _mstate )
+SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::MechanicalState<DataTypes>* _mstate )
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius. (default=1.0)"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
@@ -70,7 +70,7 @@ TSphereModel<DataTypes>::TSphereModel(core::behavior::MechanicalState<DataTypes>
 
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::resize(int size)
+void SphereCollisionModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -92,7 +92,7 @@ void TSphereModel<DataTypes>::resize(int size)
 
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::init()
+void SphereCollisionModel<DataTypes>::init()
 {
     if(m_componentstate==ComponentState::Valid){
         msg_warning(this) << "Calling an already fully initialized component. You should use reinit instead." ;
@@ -120,7 +120,7 @@ void TSphereModel<DataTypes>::init()
 
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index)
+void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index)
 {
     if(m_componentstate!=ComponentState::Valid)
         return ;
@@ -132,7 +132,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int
 
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if(m_componentstate!=ComponentState::Valid)
         return ;
@@ -143,7 +143,8 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
     //if (!vparams->isSupported(core::visual::API_OpenGL)) return;
     if (vparams->displayFlags().getShowCollisionModels())
     {
-        vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
+        // Force no wireframe mode to draw sphere collision
+        vparams->drawTool()->setPolygonMode(0,false);
 
         // Check topological modifications
         const int npoints = mstate->getSize();
@@ -167,14 +168,15 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     }
 
+    // restore current polygon mode
+    vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
+
     if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
-
-    vparams->drawTool()->setPolygonMode(0,false);
 }
 
 template <class DataTypes>
-void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
+void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     if(m_componentstate!=ComponentState::Valid)
         return ;
@@ -212,7 +214,7 @@ void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
 
 
 template <class DataTypes>
-void TSphereModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
+void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
 {
     using sofa::defaulttype::Vector3 ;
 
@@ -260,7 +262,7 @@ void TSphereModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDep
 }
 
 template <class DataTypes>
-typename TSphereModel<DataTypes>::Real TSphereModel<DataTypes>::getRadius(const int i) const
+typename SphereCollisionModel<DataTypes>::Real SphereCollisionModel<DataTypes>::getRadius(const int i) const
 {
     if(i < (int) this->radius.getValue().size())
         return radius.getValue()[i];
@@ -269,7 +271,7 @@ typename TSphereModel<DataTypes>::Real TSphereModel<DataTypes>::getRadius(const 
 }
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     if(m_componentstate!=ComponentState::Valid)
         return ;

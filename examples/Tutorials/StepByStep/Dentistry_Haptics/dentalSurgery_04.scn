@@ -1,9 +1,10 @@
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <BackgroundSetting color="0.901960784 0.925490196 0.964705882" />
     <Gravity name="G" gravity="0.0 -9.81 0" />
-    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <CollisionResponse name="response" response="default" />
+    <DefaultContactManager name="response" response="default" />
     <MinProximityIntersection name="proximity" alarmDistance="0.05" contactDistance="0.05" />
     <Node name="Head">
         <OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
@@ -15,9 +16,9 @@
             <Node name="CollisionModel">
                 <Mesh src="@../loader" name="ToothCollisionModel" />
                 <MechanicalObject src="@../loader" name="toothState" />
-                <Triangle name="tooth" contactStiffness="5" simulated="0" moving="0" />
-                <Line name="tooth" contactStiffness="5" simulated="0" moving="0" />
-                <Point name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <TriangleCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <PointCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
             </Node>
             <Node name="VisualModel">
                 <OglModel name="TeethVisualModel" fileMesh="data/mesh/teeth.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
@@ -37,8 +38,8 @@
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
             <Mesh src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 -10" />
-            <Line name="instrument" contactStiffness="5" />
-            <Point name="instrument" contactStiffness="5" />
+            <LineCollisionModel name="instrument" contactStiffness="5" />
+            <PointCollisionModel name="instrument" contactStiffness="5" />
             <RigidMapping name="MM-&gt;CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
         </Node>
     </Node>

@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 0 0" dt="0.01" time="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual" />
     <EulerImplicitSolver name="cg_odesolver" printLog="0" rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver name="linear solver" iterations="50" tolerance="1e-009" threshold="1e-009" />
@@ -21,7 +22,7 @@
         <MeshObjLoader name="MeshLoader" filename="mesh/gear0.obj" />
         <Mesh src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
-        <Triangle />
+        <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="0" />
         <Node name="Visu">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear0.obj" />
@@ -32,7 +33,7 @@
         <MeshObjLoader name="MeshLoader" filename="mesh/gear1.obj" />
         <Mesh src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
-        <Triangle />
+        <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="1" />
         <Node name="Visu">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear1.obj" />
@@ -43,7 +44,7 @@
         <MeshObjLoader name="MeshLoader" filename="mesh/gear2.obj" />
         <Mesh src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
-        <Triangle />
+        <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="2" />
         <Node name="Visu">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear2.obj" />
@@ -54,7 +55,7 @@
         <MeshObjLoader name="MeshLoader" filename="mesh/gear3.obj" />
         <Mesh src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
-        <Triangle />
+        <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="3" />
         <Node name="Visu">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear3.obj" />
@@ -65,7 +66,7 @@
         <MeshObjLoader name="MeshLoader" filename="mesh/gearsupport.obj" />
         <Mesh src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
-        <Triangle />
+        <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="4" />
         <Node name="Visu">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gearsupport.obj" material="Default Diffuse 1 1 1 0.8 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />

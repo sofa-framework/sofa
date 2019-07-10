@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,7 +41,6 @@ using namespace sofa::defaulttype;
 int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
         .add< SubsetMapping< Vec3dTypes, Vec3dTypes > >()
         .add< SubsetMapping< Vec1Types, Vec1Types > >()
-        .add< SubsetMapping< Vec3dTypes, ExtVec3Types > >()
         .add< SubsetMapping< Rigid3Types, Rigid3Types > >()
 
 
@@ -51,7 +50,6 @@ int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
 
 template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, Vec3dTypes >;
 template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1Types, Vec1Types >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, ExtVec3Types >;
 template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3Types, Rigid3Types >;
 
 

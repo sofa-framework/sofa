@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,7 +29,7 @@ namespace sofa
 namespace core
 {
 
-sofa::helper::system::atomic<int> ExecParams::g_nbThreads = 0;
+std::atomic<int> ExecParams::g_nbThreads(0);
 
 ExecParams::ExecParamsThreadStorage::ExecParamsThreadStorage(int tid)
     : execMode(EXEC_DEFAULT)
@@ -45,7 +45,7 @@ ExecParams* ExecParams::defaultInstance()
     ExecParams* ptr = threadParams;
     if (!ptr)
     {
-        ptr = new ExecParams(new ExecParamsThreadStorage(g_nbThreads.exchange_and_add(1)));
+        ptr = new ExecParams(new ExecParamsThreadStorage(g_nbThreads.fetch_add(1)));
         threadParams = ptr;
         if (ptr->threadID())
             msg_info("ExecParams") << "[THREAD " << ptr->threadID() << "]: local ExecParams storage created.";

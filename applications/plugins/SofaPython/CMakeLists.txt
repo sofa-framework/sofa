@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaPython)
-
-set(SOFAPYTHON_MAJOR_VERSION 0)
-set(SOFAPYTHON_MINOR_VERSION 1)
-set(SOFAPYTHON_VERSION ${SOFAPYTHON_MAJOR_VERSION}.${SOFAPYTHON_MINOR_VERSION})
+project(SofaPython VERSION 0.1)
 
 if(UNIX)
   list(APPEND PYTHON_LIBRARIES dl)
@@ -42,14 +38,13 @@ set(HEADER_FILES
     Binding_MeshTopology.h
     Binding_MultiMapping.h
     Binding_Node.h
-    Binding_OBJExporter.h
-    Binding_STLExporter.h
     Binding_PythonScriptController.h
     Binding_PythonScriptDataEngine.h
     Binding_RegularGridTopology.h
     Binding_RigidMapping.h
     Binding_SofaModule.h
 #    Binding_SubsetMultiMapping.h
+    Binding_SparseGridTopology.h
     Binding_Topology.h
     Binding_Vector.h
     Binding_VectorLinearSpringData.h
@@ -103,14 +98,13 @@ set(SOURCE_FILES
     Binding_MeshTopology.cpp
     Binding_MultiMapping.cpp
     Binding_Node.cpp
-    Binding_OBJExporter.cpp
-    Binding_STLExporter.cpp
     Binding_PythonScriptController.cpp
     Binding_PythonScriptDataEngine.cpp
     Binding_RegularGridTopology.cpp
     Binding_RigidMapping.cpp
     Binding_SofaModule.cpp
 #    Binding_SubsetMultiMapping.cpp
+    Binding_SparseGridTopology.cpp
     Binding_Topology.cpp
     Binding_Vector.cpp
     Binding_VectorLinearSpringData.cpp
@@ -153,29 +147,17 @@ find_package(PythonLibs 2.7 REQUIRED)
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
-find_package(SofaExporter)
 
-if(SofaExporter_FOUND)
-list(APPEND SOURCE_FILES
-   Binding_OBJExporter.cpp
-   Binding_STLExporter.cpp
-    )
-
-list(APPEND HEADER_FILES
-   Binding_OBJExporter.h
-   Binding_STLExporter.h
-    )
+GET_FILENAME_COMPONENT(LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} NAME_WE)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(LIBRARY_NAME ${LIBRARY_NAME}_d)
 endif()
-
+add_definitions("-DLIBRARY_NAME=${LIBRARY_NAME}")
 # TODO: Get rid of absolute paths in SofaPython
 add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 
-# SofaPython/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaPython/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaPython/config.h" DESTINATION "include/SofaPython" COMPONENT headers)
-
 # Config files and install rules for pythons scripts
-sofa_set_python_directory(${PROJECT_NAME} "python")
+sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 
 set(SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
 
@@ -188,13 +170,16 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAPYTHON")
+
 target_include_directories(${PROJECT_NAME}
     PUBLIC ${PYTHON_INCLUDE_DIRS}
     PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/>"
     PUBLIC "$<INSTALL_INTERFACE:include>"
     )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral SofaExporter ${PYTHON_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
+
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
@@ -202,9 +187,13 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPYTHON_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COMPILER_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_generate_package(NAME SofaPython VERSION ${SOFAPYTHON_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_ROOT_DIR SofaPython)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

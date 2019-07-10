@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,24 +78,11 @@ public:
     static std::string templateName(const MeshSubsetEngine<DataTypes>* = NULL) { return DataTypes::Name();    }
 
 protected:
-
-    MeshSubsetEngine()    : Inherited()
-      , inputPosition(initData(&inputPosition,"inputPosition","input vertices"))
-      , inputEdges(initData(&inputEdges,"inputEdges","input edges"))
-      , inputTriangles(initData(&inputTriangles,"inputTriangles","input triangles"))
-      , inputQuads(initData(&inputQuads,"inputQuads","input quads"))
-      , indices(initData(&indices,"indices","Index lists of the selected vertices"))
-      , position(initData(&position,"position","Vertices of mesh subset"))
-      , edges(initData(&edges,"edges","edges of mesh subset"))
-      , triangles(initData(&triangles,"triangles","Triangles of mesh subset"))
-      , quads(initData(&quads,"quads","Quads of mesh subset"))
-    {
-    }
-
-    virtual ~MeshSubsetEngine() {}
+    MeshSubsetEngine();
+    ~MeshSubsetEngine() override;
 
 public:
-    virtual void init() override
+    void init() override
     {
         addInput(&inputPosition);
         addInput(&inputEdges);
@@ -109,7 +96,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    override { update();  }
+    void reinit()    override { update();  }
     void doUpdate() override;
 };
 

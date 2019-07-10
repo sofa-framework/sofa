@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -658,40 +658,6 @@ class vector_data_trait < sofa::helper::vector<T> > : public vector_data_trait< 
 //     }
 // };
 
-////////////////////////////////////////////////////////////////
-/// sofa::defaulttype::ExtVector support
-////////////////////////////////////////////////////////////////
-
-template<class T>
-class vector_data_trait < sofa::defaulttype::ExtVector<T> >
-{
-public:
-    typedef sofa::defaulttype::ExtVector<T> data_type;
-    typedef T value_type;
-    enum { NDIM = 1 };
-    static int size(const data_type& d) { return d.size(); }
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
-    {
-        return NULL;
-    }
-    static const value_type* get(const data_type& d, int i = 0)
-    {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
-    }
-    static void set( const value_type& v, data_type& d, int i = 0)
-    {
-        if ((unsigned)i < (unsigned)size(d))
-            d[i] = v;
-    }
-    static void resize( int s, data_type& d)
-    {
-        d.resize(s);
-    }
-};
-
-template<class T>
-class vector_data_trait < sofa::defaulttype::ResizableExtVector<T> > : public vector_data_trait < sofa::defaulttype::ExtVector<T> >
-{};
 
 ////////////////////////////////////////////////////////////////
 /// PointSubset support

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_MESHTOPOLOGY_H
 #include "config.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <iostream>
 #include <sofa/core/topology/Topology.h>
@@ -97,33 +97,33 @@ private:
 protected:
     MeshTopology();
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual int getNbPoints() const override;
+    int getNbPoints() const override;
 
-    virtual void setNbPoints(int n) override;
+    void setNbPoints(int n) override;
 
     // Complete sequence accessors
 
-    virtual const SeqEdges& getEdges() override;
-    virtual const SeqTriangles& getTriangles() override;
-    virtual const SeqQuads& getQuads() override;
-    virtual const SeqTetrahedra& getTetrahedra() override;
-    virtual const SeqHexahedra& getHexahedra() override;
+    const SeqEdges& getEdges() override;
+    const SeqTriangles& getTriangles() override;
+    const SeqQuads& getQuads() override;
+    const SeqTetrahedra& getTetrahedra() override;
+    const SeqHexahedra& getHexahedra() override;
 
     // Random accessors
 
-    virtual size_t getNbEdges() override;
-    virtual size_t getNbTriangles() override;
-    virtual size_t getNbQuads() override;
-    virtual size_t getNbTetrahedra() override;
-    virtual size_t getNbHexahedra() override;
+    size_t getNbEdges() override;
+    size_t getNbTriangles() override;
+    size_t getNbQuads() override;
+    size_t getNbTetrahedra() override;
+    size_t getNbHexahedra() override;
 
-    virtual const Edge getEdge(EdgeID i) override;
-    virtual const Triangle getTriangle(TriangleID i) override;
-    virtual const Quad getQuad(QuadID i) override;
-    virtual const Tetra getTetrahedron(TetraID i) override;
-    virtual const Hexa getHexahedron(HexaID i) override;
+    const Edge getEdge(EdgeID i) override;
+    const Triangle getTriangle(TriangleID i) override;
+    const Quad getQuad(QuadID i) override;
+    const Tetra getTetrahedron(TetraID i) override;
+    const Hexa getHexahedron(HexaID i) override;
 
     // If using STEP loader, include also uv coordinates
     typedef index_type					UVID;
@@ -135,42 +135,102 @@ public:
     void addUV(SReal u, SReal v);
     //
 
-    /// @name neighbors queries
+    /// @name neighbors queries for Edge Topology
     /// @{
     /// Returns the set of edges adjacent to a given vertex.
-    virtual const EdgesAroundVertex &getEdgesAroundVertex(PointID i) override;
-    /// Returns the set of edges adjacent to a given triangle.
-    virtual const EdgesInTriangle &getEdgesInTriangle(TriangleID i) override;
-    /// Returns the set of edges adjacent to a given quad.
-    virtual const EdgesInQuad &getEdgesInQuad(QuadID i) override;
-    /// Returns the set of edges adjacent to a given tetrahedron.
-    virtual const EdgesInTetrahedron& getEdgesInTetrahedron(TetraID i) override;
-    /// Returns the set of edges adjacent to a given hexahedron.
-    virtual const EdgesInHexahedron& getEdgesInHexahedron(HexaID i) override;
+    const EdgesAroundVertex &getEdgesAroundVertex(PointID i) override;
+    /** \brief Returns the TrianglesAroundVertex array (i.e. provide the triangles indices adjacent to each vertex). */
+    const helper::vector< EdgesAroundVertex > &getEdgesAroundVertexArray();
+    /// @}
+
+
+    /// @name neighbors queries for Triangle Topology
+    /// @{
     /// Returns the set of triangle adjacent to a given vertex.
-    virtual const TrianglesAroundVertex &getTrianglesAroundVertex(PointID i) override;
+    const TrianglesAroundVertex &getTrianglesAroundVertex(PointID i) override;
+    /** \brief Returns the TrianglesAroundVertex array (i.e. provide the triangles indices adjacent to each vertex). */
+    const helper::vector< TrianglesAroundVertex > &getTrianglesAroundVertexArray();
+
+    /// Returns the set of 3 edge indices of a given triangle.
+    const EdgesInTriangle &getEdgesInTriangle(TriangleID i) override;
+    /** \brief Returns the EdgesInTriangle array (i.e. provide the 3 edge indices for each triangle). */
+    const helper::vector< EdgesInTriangle > &getEdgesInTriangleArray();
     /// Returns the set of triangle adjacent to a given edge.
-    virtual const TrianglesAroundEdge &getTrianglesAroundEdge(EdgeID i) override;
-    /// Returns the set of triangles adjacent to a given tetrahedron.
-    virtual const TrianglesInTetrahedron& getTrianglesInTetrahedron(TetraID i) override;
+    const TrianglesAroundEdge &getTrianglesAroundEdge(EdgeID i) override;
+    /** \brief Returns the TrianglesAroundEdge array (i.e. provide the triangles indices adjacent to each edge). */
+    const helper::vector< TrianglesAroundEdge > &getTrianglesAroundEdgeArray();
+    /// @}
+
+
+    /// @name neighbors queries for Quad Topology
+    /// @{
     /// Returns the set of quad adjacent to a given vertex.
-    virtual const QuadsAroundVertex &getQuadsAroundVertex(PointID i) override;
+    const QuadsAroundVertex &getQuadsAroundVertex(PointID i) override;
+    /** \brief Returns the QuadsAroundVertex array (i.e. provide the quad indices adjacent to each vertex). */
+    const helper::vector< QuadsAroundVertex > &getQuadsAroundVertexArray();
+
+    /// Returns the set of edges adjacent to a given quad.
+    const EdgesInQuad &getEdgesInQuad(QuadID i) override;
+    /** \brief Returns the EdgesInQuadArray array (i.e. provide the 4 edge indices for each quad) */
+    const helper::vector< EdgesInQuad > &getEdgesInQuadArray();
     /// Returns the set of quad adjacent to a given edge.
-    virtual const QuadsAroundEdge &getQuadsAroundEdge(EdgeID i) override;
-    /// Returns the set of quads adjacent to a given hexahedron.
-    virtual const QuadsInHexahedron& getQuadsInHexahedron(HexaID i) override;
+    const QuadsAroundEdge &getQuadsAroundEdge(EdgeID i) override;
+    /** \brief Returns the QuadsAroundEdge array (i.e. provide the quad indices adjacent to each edge). */
+    const helper::vector< QuadsAroundEdge > &getQuadsAroundEdgeArray();
+    /// @}
+
+
+    /// @name neighbors queries for Tetrahedron Topology
+    /// @{
     /// Returns the set of tetrahedra adjacent to a given vertex.
-    virtual const TetrahedraAroundVertex& getTetrahedraAroundVertex(PointID i) override;
+    const TetrahedraAroundVertex& getTetrahedraAroundVertex(PointID i) override;
+    /** \brief Returns the TetrahedraAroundVertex array (i.e. provide the tetrahedron indices adjacent to each vertex). */
+    const helper::vector< TetrahedraAroundVertex > &getTetrahedraAroundVertexArray();
+
+    /// Returns the set of edges adjacent to a given tetrahedron.
+    const EdgesInTetrahedron& getEdgesInTetrahedron(TetraID i) override;
+    /** \brief Returns the EdgesInTetrahedron array (i.e. provide the 6 edge indices for each tetrahedron). */
+    const helper::vector< EdgesInTetrahedron > &getEdgesInTetrahedronArray();
     /// Returns the set of tetrahedra adjacent to a given edge.
-    virtual const TetrahedraAroundEdge& getTetrahedraAroundEdge(EdgeID i) override;
+    const TetrahedraAroundEdge& getTetrahedraAroundEdge(EdgeID i) override;
+    /** \brief Returns the TetrahedraAroundEdge array (i.e. provide the tetrahedron indices adjacent to each edge). */
+    const helper::vector< TetrahedraAroundEdge > &getTetrahedraAroundEdgeArray();
+
+    /// Returns the set of triangles adjacent to a given tetrahedron.
+    const TrianglesInTetrahedron& getTrianglesInTetrahedron(TetraID i) override;
+    /** \brief Returns the TrianglesInTetrahedron array (i.e. provide the 4 triangle indices for each tetrahedron). */
+    const helper::vector< TrianglesInTetrahedron > &getTrianglesInTetrahedronArray();
     /// Returns the set of tetrahedra adjacent to a given triangle.
-    virtual const TetrahedraAroundTriangle& getTetrahedraAroundTriangle(TriangleID i) override;
+    const TetrahedraAroundTriangle& getTetrahedraAroundTriangle(TriangleID i) override;
+    /** \brief Returns the TetrahedraAroundTriangle array (i.e. provide the tetrahedron indices adjacent to each triangle). */
+    const helper::vector< TetrahedraAroundTriangle > &getTetrahedraAroundTriangleArray();
+    /// @}
+
+
+    /// @name neighbors queries for Hexhaedron Topology
+    /// @{
     /// Returns the set of hexahedra adjacent to a given vertex.
-    virtual const HexahedraAroundVertex& getHexahedraAroundVertex(PointID i) override;
+    const HexahedraAroundVertex& getHexahedraAroundVertex(PointID i) override;
+    /** \brief Returns the HexahedraAroundVertex array (i.e. provide the hexahedron indices adjacent to each vertex).*/
+    const helper::vector< HexahedraAroundVertex > &getHexahedraAroundVertexArray();
+
+    /// Returns the set of edges adjacent to a given hexahedron.
+    const EdgesInHexahedron& getEdgesInHexahedron(HexaID i) override;
+    /** \brief Returns the EdgesInHexahedron array (i.e. provide the 12 edge indices for each hexahedron).	*/
+    const helper::vector< EdgesInHexahedron > &getEdgesInHexahedronArray();
     /// Returns the set of hexahedra adjacent to a given edge.
-    virtual const HexahedraAroundEdge& getHexahedraAroundEdge(EdgeID i) override;
+    const HexahedraAroundEdge& getHexahedraAroundEdge(EdgeID i) override;
+    /** \brief Returns the HexahedraAroundEdge array (i.e. provide the hexahedron indices adjacent to each edge). */
+    const helper::vector< HexahedraAroundEdge > &getHexahedraAroundEdgeArray();
+
+    /// Returns the set of quads adjacent to a given hexahedron.
+    const QuadsInHexahedron& getQuadsInHexahedron(HexaID i) override;
+    /** \brief Returns the QuadsInHexahedron array (i.e. provide the 8 quad indices for each hexahedron).	*/
+    const helper::vector< QuadsInHexahedron > &getQuadsInHexahedronArray();
     /// Returns the set of hexahedra adjacent to a given quad.
-    virtual const HexahedraAroundQuad& getHexahedraAroundQuad(QuadID i) override;
+    const HexahedraAroundQuad& getHexahedraAroundQuad(QuadID i) override;
+    /** \brief Returns the HexahedraAroundQuad array (i.e. provide the hexahedron indices adjacent to each quad). */
+    const helper::vector< HexahedraAroundQuad > &getHexahedraAroundQuadArray();
     /// @}
 
 
@@ -180,10 +240,10 @@ public:
       *
       * @return true if only one connected component
       */
-    virtual bool checkConnexity() override;
+    bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual size_t getNumberOfConnectedComponent() override;
+    size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     virtual const helper::vector<unsigned int> getConnectedElement(unsigned int elem) override;
@@ -201,13 +261,13 @@ public:
 
     // Points accessors (not always available)
 
-    virtual bool hasPos() const override;
-    virtual SReal getPX(int i) const override;
-    virtual SReal getPY(int i) const override;
-    virtual SReal getPZ(int i) const override;
+    bool hasPos() const override;
+    SReal getPX(int i) const override;
+    SReal getPY(int i) const override;
+    SReal getPZ(int i) const override;
 
     // for procedural creation without file loader
-    virtual void clear() override;
+    void clear() override;
     void addPoint(SReal px, SReal py, SReal pz) override;
     void addEdge( int a, int b ) override;
     void addTriangle( int a, int b, int c ) override;
@@ -261,60 +321,6 @@ public:
     //virtual const helper::vector <EdgeID>& getEdgesOnBorder();
 
     //virtual const helper::vector <PointID>& getPointsOnBorder();
-
-    /** \brief Returns the EdgesInTriangle array (i.e. provide the 3 edge indices for each triangle). */
-    const helper::vector< EdgesInTriangle > &getEdgesInTriangleArray();
-
-    /** \brief Returns the TrianglesAroundVertex array (i.e. provide the triangles indices adjacent to each vertex). */
-    const helper::vector< TrianglesAroundVertex > &getTrianglesAroundVertexArray();
-
-    /** \brief Returns the TrianglesAroundEdge array (i.e. provide the triangles indices adjacent to each edge). */
-    const helper::vector< TrianglesAroundEdge > &getTrianglesAroundEdgeArray();
-
-
-
-    /** \brief Returns the EdgesInQuadArray array (i.e. provide the 4 edge indices for each quad) */
-    const helper::vector< EdgesInQuad > &getEdgesInQuadArray();
-
-    /** \brief Returns the QuadsAroundVertex array (i.e. provide the quad indices adjacent to each vertex). */
-    const helper::vector< QuadsAroundVertex > &getQuadsAroundVertexArray();
-
-    /** \brief Returns the QuadsAroundEdge array (i.e. provide the quad indices adjacent to each edge). */
-    const helper::vector< QuadsAroundEdge > &getQuadsAroundEdgeArray();
-
-
-
-    /** \brief Returns the EdgesInHexahedron array (i.e. provide the 12 edge indices for each hexahedron).	*/
-    const helper::vector< EdgesInHexahedron > &getEdgesInHexahedronArray();
-
-    /** \brief Returns the QuadsInHexahedron array (i.e. provide the 8 quad indices for each hexahedron).	*/
-    const helper::vector< QuadsInHexahedron > &getQuadsInHexahedronArray();
-
-    /** \brief Returns the HexahedraAroundVertex array (i.e. provide the hexahedron indices adjacent to each vertex).*/
-    const helper::vector< HexahedraAroundVertex > &getHexahedraAroundVertexArray();
-
-    /** \brief Returns the HexahedraAroundEdge array (i.e. provide the hexahedron indices adjacent to each edge). */
-    const helper::vector< HexahedraAroundEdge > &getHexahedraAroundEdgeArray();
-
-    /** \brief Returns the HexahedraAroundQuad array (i.e. provide the hexahedron indices adjacent to each quad). */
-    const helper::vector< HexahedraAroundQuad > &getHexahedraAroundQuadArray();
-
-
-
-    /** \brief Returns the EdgesInTetrahedron array (i.e. provide the 6 edge indices for each tetrahedron). */
-    const helper::vector< EdgesInTetrahedron > &getEdgesInTetrahedronArray();
-
-    /** \brief Returns the TrianglesInTetrahedron array (i.e. provide the 4 triangle indices for each tetrahedron). */
-    const helper::vector< TrianglesInTetrahedron > &getTrianglesInTetrahedronArray();
-
-    /** \brief Returns the TetrahedraAroundVertex array (i.e. provide the tetrahedron indices adjacent to each vertex). */
-    const helper::vector< TetrahedraAroundVertex > &getTetrahedraAroundVertexArray();
-
-    /** \brief Returns the TetrahedraAroundEdge array (i.e. provide the tetrahedron indices adjacent to each edge). */
-    const helper::vector< TetrahedraAroundEdge > &getTetrahedraAroundEdgeArray();
-
-    /** \brief Returns the TetrahedraAroundTriangle array (i.e. provide the tetrahedron indices adjacent to each triangle). */
-    const helper::vector< TetrahedraAroundTriangle > &getTetrahedraAroundTriangleArray();
 
 public:
     typedef helper::vector<defaulttype::Vec<3, SReal > > SeqPoints;
@@ -620,7 +626,7 @@ public:
     Edge getLocalEdgesInHexahedron (const unsigned int i) const override;
 
   	/** \ brief returns the topologyType */
-	  virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return UpperTopology;}
+	  sofa::core::topology::TopologyObjectType getTopologyType() const override {return UpperTopology;}
   
     int revision;
 

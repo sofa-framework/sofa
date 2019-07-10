@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,21 +63,21 @@ private:
 protected:
     std::map< std::string, std::string > replaceAttribute;
 public:
-    BaseElement(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
+    BaseElement(const std::string& name, const std::string& type, BaseElement* newParent=nullptr);
 
-    virtual ~BaseElement();
+    ~BaseElement() override;
 
     /// Get the node class (Scene, Mapping, ...)
     virtual const char* getClass() const = 0;
 
     /// Get the associated object
-    virtual core::objectmodel::Base* getObject() = 0;
+    core::objectmodel::Base* getObject() override = 0;
 
     /// Get the node instance name
-    std::string getName()
+    std::string getName() override
     { return attributes["name"]; }
 
-    virtual void setName(const std::string& newName)
+    virtual void setName(const std::string& newName) override
     { attributes["name"] = newName; }
 
     /// Get the node instance type (MassObject, IdentityMapping, ...)
@@ -88,7 +88,7 @@ public:
     { attributes["type"] = newType; }
 
     /// Get the parent node
-    sofa::core::objectmodel::BaseObjectDescription* getParent() const
+    sofa::core::objectmodel::BaseObjectDescription* getParent() const override
     { return parent; }
 
     /// Get the parent node
@@ -97,7 +97,7 @@ public:
 
 
     /// Get the file where this description was read from. Useful to resolve relative file paths.
-    std::string getBaseFile();
+    std::string getBaseFile() override;
     virtual void setBaseFile(const std::string& newBaseFile);
 
     const std::string& getSrcFile() const ;
@@ -129,7 +129,7 @@ public:
     virtual bool presenceAttribute(const std::string& s);
 
     /// Remove an attribute. Fails if this attribute is "name" or "type"
-    virtual bool removeAttribute(const std::string& attr);
+    virtual bool removeAttribute(const std::string& attr) override;
 
     /// List of parameters to be replaced
     virtual void addReplaceAttribute(const std::string &attr, const char* val);
@@ -137,7 +137,7 @@ public:
     virtual BaseElement* findNode(const char* nodeName, bool absolute=false);
 
     /// Find a node given its name
-    virtual BaseObjectDescription* find(const char* nodeName, bool absolute=false)
+    BaseObjectDescription* find(const char* nodeName, bool absolute=false) override
     {
         return findNode(nodeName, absolute);
     }
@@ -188,7 +188,7 @@ public:
         ChildList::iterator it;
         Node* current;
         child_iterator(BaseElement* parent, ChildList::iterator it)
-            : parent(parent), it(it), current(NULL)
+            : parent(parent), it(it), current(nullptr)
         {
             checkIt();
         }
@@ -197,10 +197,10 @@ public:
             while (it != parent->children.end())
             {
                 current=dynamic_cast<Node*>(*it);
-                if (current!=NULL) return;
+                if (current!=nullptr) return;
                 ++it;
             }
-            current = NULL;
+            current = nullptr;
         }
     public:
         operator Node*() { return current; }

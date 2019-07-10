@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -73,7 +73,7 @@ struct BarycentricMapperTriangleSetTopologyTest :  public Test, public Barycentr
     typename Out::VecCoord m_out;
     TriangleSetTopologyContainer::SPtr m_topology;
 
-    void SetUp()
+    void SetUp() override
     {
         m_in.push_back(Vector3(0.5, 1.5, 0.0));
         m_in.push_back(Vector3(1.5, 0.0, 2.5));

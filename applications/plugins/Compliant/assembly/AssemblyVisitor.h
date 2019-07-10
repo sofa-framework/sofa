@@ -46,7 +46,7 @@ public:
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
     AssemblyVisitor(const core::MechanicalParams* mparams);
-    virtual ~AssemblyVisitor();
+    ~AssemblyVisitor() override;
 
 //protected:
 //    MultiVecDerivId _velId;
@@ -62,8 +62,8 @@ public:
 	simulation::Node* start_node;
 
 	// collect data chunks during visitor execution
-	virtual Visitor::Result processNodeTopDown(simulation::Node* node);
-	virtual void processNodeBottomUp(simulation::Node* node);
+	Visitor::Result processNodeTopDown(simulation::Node* node) override;
+	void processNodeBottomUp(simulation::Node* node) override;
 	
 	// reset state
 	void clear();
@@ -88,7 +88,7 @@ public:
         const defaulttype::BaseMatrix* Ktilde; ///< geometric stiffness (only valid for mapped dof) @warning: size=parent*parent
 				
 		struct mapped {
-            mapped() : J(NULL) {}
+            mapped() : J(nullptr) {}
             const defaulttype::BaseMatrix* J; ///< mapping jacobian
 		};
 
@@ -275,7 +275,7 @@ struct AssemblyVisitor::process_helper {
 
 
         // full jacobian for multimapping's geometric stiffness
-        rmat* geometricStiffnessJc = NULL;
+        rmat* geometricStiffnessJc = nullptr;
         unsigned localOffsetParentInMapped = 0; // only used for multimappings
         if( boost::out_degree(v,g)>1 && notempty(c->Ktilde) )
         {

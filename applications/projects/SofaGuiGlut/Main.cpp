@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -75,7 +75,6 @@ using sofa::core::ExecParams ;
 
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
-using sofa::helper::Console;
 
 using sofa::component::misc::CompareStateCreator;
 using sofa::component::misc::ReadStateActivator;
@@ -227,12 +226,24 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new TreeSimulation());
 #endif
 
-    if (colorsStatus == "auto")
-        Console::setColorsStatus(Console::ColorsAuto);
+    if (colorsStatus == "unset") {
+        // If the parameter is unset, check the environment variable
+        const char * colorStatusEnvironment = std::getenv("SOFA_COLOR_TERMINAL");
+        if (colorStatusEnvironment != nullptr) {
+            const std::string status (colorStatusEnvironment);
+            if (status == "yes" || status == "on" || status == "always")
+                sofa::helper::console::setStatus(sofa::helper::console::Status::On);
+            else if (status == "no" || status == "off" || status == "never")
+                sofa::helper::console::setStatus(sofa::helper::console::Status::Off);
+            else
+                sofa::helper::console::setStatus(sofa::helper::console::Status::Auto);
+        }
+    } else if (colorsStatus == "auto")
+        sofa::helper::console::setStatus(sofa::helper::console::Status::Auto);
     else if (colorsStatus == "yes")
-        Console::setColorsStatus(Console::ColorsEnabled);
+        sofa::helper::console::setStatus(sofa::helper::console::Status::On);
     else if (colorsStatus == "no")
-        Console::setColorsStatus(Console::ColorsDisabled);
+        sofa::helper::console::setStatus(sofa::helper::console::Status::Off);
 
     //TODO(dmarchal): Use smart pointer there to avoid memory leaks !!
     if (messageHandler == "auto" )
@@ -253,7 +264,7 @@ int main(int argc, char** argv)
     else if (messageHandler == "rich")
     {
         MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter()) ) ;
+        MessageDispatcher::addHandler( new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance()) ) ;
     }
     else if (messageHandler == "test"){
         MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;

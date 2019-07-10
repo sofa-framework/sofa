@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,6 @@ namespace mapping
 
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
 typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
@@ -54,20 +53,20 @@ public:
     typedef typename Inherit1::Real Real;
     typedef typename In::VecCoord VecCoord;
 
-    virtual int addPointInTetra(const int index, const SReal* baryCoords) override ;
+    int addPointInTetra(const int index, const SReal* baryCoords) override ;
 
 protected:
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology,
                                             topology::PointSetTopologyContainer* toTopology);
-    virtual ~BarycentricMapperTetrahedronSetTopology() override {}
+    ~BarycentricMapperTetrahedronSetTopology() override {}
 
     virtual helper::vector<Tetrahedron> getElements() override;
     virtual helper::vector<SReal> getBaryCoef(const Real* f) override;
     helper::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
-    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Tetrahedron& element) override;
-    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Tetrahedron& element) override;
-    virtual void computeDistance(double& d, const Vector3& v) override;
-    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
+    void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Tetrahedron& element) override;
+    void computeCenter(Vector3& center, const typename In::VecCoord& in, const Tetrahedron& element) override;
+    void computeDistance(double& d, const Vector3& v) override;
+    void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
 
     topology::TetrahedronSetTopologyContainer*      m_fromContainer {nullptr};
     topology::TetrahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};
@@ -80,7 +79,6 @@ protected:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTETRAHEDRONSETTOPOLOGY_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, ExtVec3Types >;
 
 
 #endif

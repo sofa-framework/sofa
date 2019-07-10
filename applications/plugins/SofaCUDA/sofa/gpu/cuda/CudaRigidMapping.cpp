@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,26 +40,26 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 
-template class RigidMapping< CudaRigid3fTypes, CudaVec3fTypes>;
-template class RigidMapping< Rigid3fTypes, CudaVec3fTypes>;
-template class RigidMapping< Rigid3Types, CudaVec3Types>;
-template class RigidMapping< Rigid3Types, CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API RigidMapping< Rigid3fTypes, CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API RigidMapping< Rigid3Types, CudaVec3Types>;
+template class SOFA_GPU_CUDA_API RigidMapping< Rigid3Types, CudaVec3f1Types>;
 
-//template class RigidMapping< CudaRigid3fTypes, Vec3dTypes>;
-//template class RigidMapping< CudaRigid3fTypes, Vec3fTypes>;
-template class RigidMapping< CudaRigid3fTypes, CudaVec3f1Types>;
-template class RigidMapping< Rigid3fTypes, CudaVec3f1Types>;
+//template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, Vec3dTypes>;
+//template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, Vec3fTypes>;
+template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API RigidMapping< Rigid3fTypes, CudaVec3f1Types>;
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class RigidMapping< CudaRigid3fTypes, CudaVec3dTypes>;
-template class RigidMapping< Rigid3fTypes, CudaVec3dTypes>;
-template class RigidMapping< Rigid3dTypes, CudaVec3dTypes>;
-//template class RigidMapping< CudaRigid3fTypes, Vec3dTypes>;
-//template class RigidMapping< CudaRigid3fTypes, Vec3fTypes>;
-template class RigidMapping< CudaRigid3fTypes, CudaVec3d1Types>;
-template class RigidMapping< Rigid3fTypes, CudaVec3d1Types>;
-template class RigidMapping< Rigid3dTypes, CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API RigidMapping< Rigid3fTypes, CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API RigidMapping< Rigid3dTypes, CudaVec3dTypes>;
+//template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, Vec3dTypes>;
+//template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, Vec3fTypes>;
+template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API RigidMapping< Rigid3fTypes, CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API RigidMapping< Rigid3dTypes, CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 } // namespace mapping
 

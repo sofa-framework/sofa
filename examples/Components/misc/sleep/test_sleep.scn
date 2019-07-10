@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.01" gravity="0 -9.810 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle displayFlags="" /> <!-- showInteractionForceFields -->
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.1" angleCone="0.0" />
-    <CollisionResponse name="Response" response="FrictionContact" responseParams="mu=0.2" />
+    <DefaultContactManager name="Response" response="FrictionContact" responseParams="mu=0.2" />
 	<SleepController immobileThreshold="0.2" rotationThreshold="0.1" minTimeSinceWakeUp="0.1" printLog="1" />
 	
 	<LightManager />
@@ -17,14 +18,14 @@
 		<TransformEngine name="transform" translation="0 -1.5 0" rotation="0 0 10" scale="10 0.2 4" input_position="@loader.position" />
 		<Mesh src="@loader" />
 		<MechanicalObject position="@transform.output_position" template="Vec3d" />
-		<Triangle simulated="0" moving="0" />
-		<Line simulated="0" moving="0" />
-		<Point simulated="0" moving="0" />
+		<TriangleCollisionModel simulated="0" moving="0" />
+		<LineCollisionModel simulated="0" moving="0" />
+		<PointCollisionModel simulated="0" moving="0" />
 		<OglModel name="Visual" color="1 0 0 1" src="@loader" position="@transform.output_position"/>
     </Node>
 	
     <Node name="Cube1" canChangeSleepingState="true">
-        <EulerImplicit printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9"  />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0" dz="0.0" />
         <UniformMass totalMass="1" />
@@ -41,15 +42,15 @@
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle contactStiffness="10.0" />
-            <Line contactStiffness="10.0" />
-            <Point contactStiffness="10.0" />
+            <TriangleCollisionModel contactStiffness="10.0" />
+            <LineCollisionModel contactStiffness="10.0" />
+            <PointCollisionModel contactStiffness="10.0" />
             <RigidMapping />
         </Node>
     </Node>
 	
 	<Node name="Cube2" canChangeSleepingState="true">
-        <EulerImplicit printLog="false" />
+        <EulerImplicitSolver printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="6.0" dy="6" dz="0.0" />
         <UniformMass totalMass="1" />
@@ -66,9 +67,9 @@
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle contactStiffness="10.0" />
-            <Line contactStiffness="10.0" />
-            <Point contactStiffness="10.0" />
+            <TriangleCollisionModel contactStiffness="10.0" />
+            <LineCollisionModel contactStiffness="10.0" />
+            <PointCollisionModel contactStiffness="10.0" />
             <RigidMapping />
         </Node>
     </Node>
