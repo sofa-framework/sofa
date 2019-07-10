@@ -15,7 +15,8 @@
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
         <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
-            <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel  name="VisualModel" src="@meshLoader_0" />
             <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
