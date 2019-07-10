@@ -16,7 +16,8 @@
         <UniformMass totalMass="5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="red" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/torus2.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="red" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">

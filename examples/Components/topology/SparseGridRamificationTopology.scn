@@ -17,7 +17,8 @@
         <HexahedronFEMForceFieldAndMass youngModulus="100000" poissonRatio="0.3" method="large" density="3" updateStiffnessMatrix="false" printLog="0" />
         <BoxConstraint box="-16 -10 -3 -14 10 3" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/c.obj" color="blue" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/c.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -38,7 +39,8 @@
         <HexahedronFEMForceFieldAndMass youngModulus="100000" poissonRatio="0.3" method="large" density="3" updateStiffnessMatrix="false" printLog="0" />
         <BoxConstraint box="24 -10 -3 26 10 3" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/c.obj" color="red" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/c.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="red" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -59,7 +61,8 @@
         <HexahedronFEMForceFieldAndMass youngModulus="100000" poissonRatio="0.3" method="large" density="3" updateStiffnessMatrix="false" printLog="0" />
         <BoxConstraint box="64 -10 -3 66 10 3" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/c.obj" color="yellow" />
+            <MeshObjLoader name="meshLoader_2" filename="mesh/c.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_2" color="yellow" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">

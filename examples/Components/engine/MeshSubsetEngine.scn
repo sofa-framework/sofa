@@ -8,7 +8,8 @@
     <BoxROI name="boxroi" template="Vec3d" position="@loader.position" box="-15 0 -5 0 10 5" drawBoxes="1"/>
     <MeshSubsetEngine name="engine" inputPosition="@loader.position" inputTriangles="@loader.triangles" inputQuads="@loader.quads" indices="@boxroi.indices"/>
 
-    <OglModel name="Original Mesh (red)" fileMesh="mesh/dragon.obj" color="1 0 0 0.4" dz="0" />
+    <MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
+    <OglModel name="Original Mesh (red)" src="@meshLoader_0" color="1 0 0 0.4" dz="0" />
     <OglModel name="Subset Mesh (blue)" position="@engine.position" triangles="@engine.triangles" quads="@engine.quads" color="0 0.4 1 1"  />
 
 </Node>

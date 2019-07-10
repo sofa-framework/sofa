@@ -21,7 +21,8 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="2000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu">
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
+            <MeshObjLoader name="meshLoader_2" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel name="VisualModel" src="@meshLoader_2" color="red" />
             <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">
@@ -41,7 +42,8 @@
         <UniformMass name="mass" vertexMass="0.05" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <Node name="Visu">
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="blue" dx="10" ry="180" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel name="VisualModel" src="@meshLoader_1" color="blue" dx="10" ry="180" />
             <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">
@@ -62,7 +64,8 @@
         <!--                <FixedConstraint name="FixedConstraint" indices="3 39 64" /> -->
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <Node name="Visu">
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="magenta" dx="20" ry="90" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel name="VisualModel" src="@meshLoader_0" color="magenta" dx="20" ry="90" />
             <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">

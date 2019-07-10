@@ -14,7 +14,8 @@
         <UniformMass vertexMass="0.25" />
         <TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="red" />
             <SurfaceIdentityMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -29,6 +30,7 @@
     <MechanicalObject position="@[-1].position" translation="0 -12.5 0" />
     <SphereCollisionModel name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" contactStiffness="1000" />
     <Node>
-	<OglModel name="FloorV" fileMesh="mesh/floor2.obj" texturename="textures/floor2.bmp" translation="0 -12.5 0" />
+	<MeshObjLoader name="meshLoader_1" filename="mesh/floor2.obj" translation="0 -12.5 0" handleSeams="1" />
+	<OglModel name="FloorV" src="@meshLoader_1" texturename="textures/floor2.bmp" />
     </Node>
 </Node>

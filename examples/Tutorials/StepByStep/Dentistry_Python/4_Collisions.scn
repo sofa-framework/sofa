@@ -29,7 +29,8 @@ Collision algorythm & collision models
                 <PointCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
             </Node>
             <Node name="VisualModel">
-                <OglModel name="TeethVisualModel" fileMesh="data/mesh/teeth.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
+                <MeshObjLoader name="meshLoader_1" filename="data/mesh/teeth.obj" handleSeams="1" />
+                <OglModel name="TeethVisualModel" src="@meshLoader_1" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
             </Node>
         </Node>
     </Node>
@@ -52,7 +53,8 @@ Collision algorythm & collision models
         <UniformMass name="mass" totalMass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <UncoupledConstraintCorrection />
         <Node name="VisualModel">
-            <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" />
+            <MeshObjLoader name="meshLoader_0" filename="data/mesh/dental_instrument.obj" handleSeams="1" />
+            <OglModel name="InstrumentVisualModel" src="@meshLoader_0" color="0.8 0.8 0.8 1.0" />
             <RigidMapping name="MM-VM mapping" input="@../instrumentState" output="@InstrumentVisualModel" />
         </Node>
         <Node name="CollisionModel">

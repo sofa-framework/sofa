@@ -15,7 +15,8 @@
 		<HexahedronFEMForceField template="Vec3d" name="FEM" poissonRatio="0.45" youngModulus="200"  gatherPt=" "  gatherBsize=" " />
 		<SphereCollisionModel template="Vec3d" name="Spheres" />
 		<Node 	 name="VisualNode"  gravity="0 -9.81 0"  >
-			<OglModel template="ExtVec3f" name="Objective"  fileMesh="mesh/dragon.obj"  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
+			<OglModel template="ExtVec3f" name="Objective" src="@meshLoader_0"  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 			<BarycentricMapping template="Vec3d,ExtVec3f" name="Visual Mapping"  input="@../"  output="@Objective" />
 		</Node>
 	</Node>
@@ -26,6 +27,7 @@
 		<TriangleCollisionModel template="Vec3d" name="Triangles"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
 		<LineCollisionModel template="Vec3d" name="Lines"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
 		<PointCollisionModel template="Vec3d" name="Points"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
-		<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/cube.obj"  translation="0 0 -10"  rotation="0 0 0"  scale3d="40 40 0.1"  material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+		<MeshObjLoader name="meshLoader_1" filename="mesh/cube.obj"  translation="0 0 -10"  rotation="0 0 0"  scale3d="40 40 0.1" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1"  material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 	</Node>
 </Node>

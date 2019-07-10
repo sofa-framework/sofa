@@ -15,19 +15,23 @@
         <UniformMass vertexMass="1" />
         <HexahedronFEMForceField youngModulus="3000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
         <Node name="Visu1">
-            <OglModel name="VisualBody" fileMesh="mesh/frog_body.obj" normals="0" color="0.17 0.70 0.05" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/frog_body.obj" handleSeams="1" />
+            <OglModel name="VisualBody" src="@meshLoader_0" normals="0" color="0.17 0.70 0.05" />
             <BarycentricMapping input="@.." output="@VisualBody" />
         </Node>
         <Node name="Visu2">
-            <OglModel name="VisualEyes" fileMesh="mesh/frog_eyes.obj" normals="0" color="0.04 0.19 0.52" />
+            <MeshObjLoader name="meshLoader_2" filename="mesh/frog_eyes.obj" handleSeams="1" />
+            <OglModel name="VisualEyes" src="@meshLoader_2" normals="0" color="0.04 0.19 0.52" />
             <BarycentricMapping input="@.." output="@VisualEyes" />
         </Node>
         <Node name="Visu3">
-            <OglModel name="VisualEyebrows" fileMesh="mesh/frog_eyebrows.obj" normals="0" color="0.44 0.43 0.00" />
+            <MeshObjLoader name="meshLoader_3" filename="mesh/frog_eyebrows.obj" handleSeams="1" />
+            <OglModel name="VisualEyebrows" src="@meshLoader_3" normals="0" color="0.44 0.43 0.00" />
             <BarycentricMapping input="@.." output="@VisualEyebrows" />
         </Node>
         <Node name="Visu4">
-            <OglModel name="VisualLips" fileMesh="mesh/frog_lips.obj" normals="0" color="0.47 0.25 0.03" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/frog_lips.obj" handleSeams="1" />
+            <OglModel name="VisualLips" src="@meshLoader_1" normals="0" color="0.47 0.25 0.03" />
             <BarycentricMapping input="@.." output="@VisualLips" />
         </Node>
         <Node name="Surf">
