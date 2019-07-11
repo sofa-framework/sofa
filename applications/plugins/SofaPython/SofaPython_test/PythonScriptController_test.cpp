@@ -95,9 +95,13 @@ class TestController(Sofa.PythonScriptController):
         f3()
 
     def draw(self):
-        )" + teststring + R"(
-
+        $line
 )";
+        //TODO(dmarchal): I do not use regex_replace because clang 3.4 we use in our CI is buggy.
+        //After 2018 please restore back the regex_replace version
+        //pytmp = std::regex_replace(pytmp, std::regex("\\$line"), teststring);
+        ReplaceSubstring(pytmp, std::string("$line"), teststring) ;
+
         f << pytmp ;
         f.close();
 
@@ -145,12 +149,12 @@ TEST_P(PythonScriptController_test, checkErrorMessageFromCPPBinding)
 }
 
 std::vector<std::string> testvalues = {
-    R"(self.anInvalidFunction())",
-    R"(self.name = 5)",
-    R"(Sofa.BaseContext.getObject(1234, 'WillNotWork'))",
-    R"(Sofa.Topology.setNbPoints(1234))",
-    R"(Sofa.BaseContext.getObject(self.findData('name'), 'WillNotWork'))",
-    R"(Sofa.BaseContext.getObject(None, 'WillNotWork'))"
+    "self.anInvalidFunction()",
+    "self.name = 5",
+    "Sofa.BaseContext.getObject(1234, 'WillNotWork')",
+    "Sofa.Topology.setNbPoints(1234)",
+    "Sofa.BaseContext.getObject(self.findData('name'), 'WillNotWork')",
+    "Sofa.BaseContext.getObject(None, 'WillNotWork')"
 };
 
 INSTANTIATE_TEST_CASE_P(checkErrorMesageFromCPPBinding,
