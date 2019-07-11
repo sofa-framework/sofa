@@ -64,7 +64,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 
-    typedef std::list<int> ListIndex;
+    typedef std::list<size_t> ListIndex;
     typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 protected:
     LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
@@ -109,11 +109,11 @@ public:
 
     void resetForUnbuiltResolution(double * f, std::list<unsigned int>& renumbering) override;
 
-    void addConstraintDisplacement(double *d, int begin,int end) override;
+    void addConstraintDisplacement(double *d, size_t begin,size_t end) override;
 
-    void setConstraintDForce(double *df, int begin, int end, bool update) override;
+    void setConstraintDForce(double *df, size_t begin, size_t end, bool update) override;
 
-    void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
+    void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, size_t begin, size_t end) override;
 
     /// Pre-construction check method called by ObjectFactory.
 #if 0

@@ -1182,7 +1182,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin, int end)
+void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, size_t begin, size_t end)
 {
 #ifdef NEW_METHOD_UNBUILT
 
@@ -1232,7 +1232,7 @@ template<class DataTypes>
 #ifdef NEW_METHOD_UNBUILT
 void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * df, int begin, int end, bool update)
 #else
-void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*df*/, int begin, int end, bool update)
+void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*df*/, size_t begin, size_t end, bool update)
 #endif
 {
 #ifdef NEW_METHOD_UNBUILT
@@ -1298,9 +1298,9 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*
         return;
 
     /// fill a local table of active forces (non-null forces)
-    for (int i = begin; i <= end; i++)
+    for (size_t i = begin; i <= end; i++)
     {
-        int c = id_to_localIndex[i];
+        size_t c = id_to_localIndex[i];
         active_local_force.push_back(c);
     }
     active_local_force.sort();
@@ -1309,7 +1309,7 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*
 }
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
+void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, size_t begin, size_t end)
 {
 #ifdef NEW_METHOD_UNBUILT
 
@@ -1428,13 +1428,13 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
 
 #else
 
-    for (int id1 = begin; id1<=end; id1++)
+    for (size_t id1 = begin; id1<=end; id1++)
     {
-        int c1 = id_to_localIndex[id1];
-        for (int id2 = id1; id2<=end; id2++)
+        size_t c1 = id_to_localIndex[id1];
+        for (size_t id2 = id1; id2<=end; id2++)
         {
-            int c2 = id_to_localIndex[id2];
-            Real w = (Real)localW.element(c1,c2);
+            size_t c2 = id_to_localIndex[id2];
+            Real w = Real(localW.element(c1,c2));
 
             W->add(id1, id2, w);
             if (id1 != id2)

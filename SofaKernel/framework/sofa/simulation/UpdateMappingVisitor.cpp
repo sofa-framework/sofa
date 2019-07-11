@@ -32,7 +32,7 @@ namespace simulation
 void UpdateMappingVisitor::processMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
 {
     std::string msg = "MappingVisitor - processMapping: " + obj->getName();
-    sofa:helper::ScopedAdvancedTimer timer(msg.c_str());
+    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
 
     obj->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
     obj->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
@@ -42,7 +42,7 @@ void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, cor
 {
     // mechanical mappings with isMechanical flag not set are now processed by the MechanicalPropagatePositionVisitor visitor
     std::string msg = "MappingVisitor - processMechanicalMapping: " + obj->getName();
-    sofa:helper::ScopedAdvancedTimer timer(msg.c_str());
+    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
 }
 
 Visitor::Result UpdateMappingVisitor::processNodeTopDown(simulation::Node* node)

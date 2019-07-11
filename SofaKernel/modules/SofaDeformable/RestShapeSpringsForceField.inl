@@ -55,7 +55,7 @@ using core::visual::VisualParams;
 template<class DataTypes>
 RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     : points(initData(&points, "points", "points controlled by the rest shape springs"))
-    , stiffness(initData(&stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
+    , stiffness(initData(&stiffness, "stiffness", "vector of stiffness values between the actual position and the rest shape position"))
     , angularStiffness(initData(&angularStiffness, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
     , pivotPoints(initData(&pivotPoints, "pivot_points", "global pivot points used when translations instead of the rigid mass centers"))
     , external_points(initData(&external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
@@ -88,15 +88,6 @@ template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::bwdInit()
 {
     ForceField<DataTypes>::init();
-
-    if (stiffness.getValue().empty())
-    {
-        msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
-
-        VecReal stiffs;
-        stiffs.push_back(100.0);
-        stiffness.setValue(stiffs);
-    }
 
     if (restMState.get() == NULL)
     {
@@ -150,6 +141,13 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     }
 
     lastUpdatedStep = -1.0;
+    reinit();
+}
+
+
+template<class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::init()
+{
 }
 
 
@@ -159,30 +157,56 @@ void RestShapeSpringsForceField<DataTypes>::reinit()
     if (!checkOutOfBoundsIndices())
     {
         m_indices.clear();
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
     }
     else
     {
         msg_info() << "Indices successfully checked";
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
     }
 
-    if (stiffness.getValue().empty())
+    if (!stiffness.isSet() && !angularStiffness.isSet())
     {
-        msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 " ;
-
-        VecReal stiffs;
-        stiffs.push_back(100.0);
-        stiffness.setValue(stiffs);
+        msg_error(this) << this->getName() << " Needs a stiffness to compute the forces. Set stiffness (and / or angularStiffness for rigids)";
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
     }
-    else
+    else if (!stiffness.isSet() && angularStiffness.isSet() && Coord::total_size < defaulttype::Rigid3Types::coord_total_size)
     {
-        const VecReal &k = stiffness.getValue();
-        if ( k.size() != m_indices.size() )
+        msg_error(this) << this->getName() << " Needs a stiffness to compute the forces. angularStiffness is not used with objects with 3DOFs per node)";
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
+    }
+
+    if (stiffness.isSet())
+    {
+        auto& k = *stiffness.beginEdit();
+        if (k.size() == 1)
+            k.resize(m_indices.size(), k[0]);
+        else if (k.size() != m_indices.size())
         {
-            msg_warning() << "Size of stiffness vector is not correct (" << k.size() << "), should be either 1 or " << m_indices.size() << msgendl
-                          << "First value of stiffness will be used";
+            msg_warning_when(k.size() > m_indices.size(), this) << "stiffness vector is longer than indices vector. Cropping stiffness vector...";
+            msg_warning_when(k.size() > m_indices.size(), this) << "stiffness vector is shorter than indices vector. Resizing stiffness vector by adding a stiffness of 0 on missing indices...";
+            k.resize(m_indices.size(), 0);
         }
+        stiffness.endEdit();
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
     }
 
+    if (angularStiffness.isSet())
+    {
+        auto& k_a = *angularStiffness.beginEdit();
+        if (k_a.size() == 1)
+            k_a.resize(m_indices.size(), k_a[0]);
+        if (k_a.size() != m_indices.size())
+        {
+            msg_warning_when(k_a.size() > m_indices.size(), this) << "angular stiffness vector is longer than indices vector. Cropping stiffness vector...";
+            msg_warning_when(k_a.size() > m_indices.size(), this) << "angular stiffness vector is shorter than indices vector. Resizing stiffness vector by adding a stiffness of 0 on missing indices...";
+            k_a.resize(m_indices.size(), 0);
+        }
+        angularStiffness.endEdit();
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
+    }
 }
 
 template<class DataTypes>
@@ -204,7 +228,7 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     if (m_indices.empty())
     {
         // no point are defined, default case: points = all points
-        for (unsigned int i = 0; i < (unsigned)this->mstate->getSize(); i++)
+        for (unsigned int i = 0; i < unsigned(this->mstate->getSize()); i++)
         {
             m_indices.push_back(i);
         }
@@ -231,6 +255,7 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     if (!checkOutOfBoundsIndices())
     {
         msg_error() << "The dimension of the source and the targeted points are different ";
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         m_indices.clear();
     }
     else
@@ -285,6 +310,9 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(v);
 
+    if (!this->isComponentStateValid())
+        return;
+
     WriteAccessor< DataVecDeriv > f1 = f;
     ReadAccessor< DataVecCoord > p1 = x;
     ReadAccessor< DataVecCoord > p0 = *getExtPosition();
@@ -296,59 +324,29 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
     {
         recomputeIndices();
     }
-
-    if ( k.size()!= m_indices.size() )
+    // Heterogeneous stiffness for each spring
+    for (unsigned int i=0; i<m_indices.size(); i++)
     {
-        // Stiffness is not defined on each point, first stiffness is used
-        const Real k0 = k[0];
+        const unsigned int index = m_indices[i];
+        unsigned int ext_index = m_ext_indices[i];
 
-        for (unsigned int i=0; i<m_indices.size(); i++)
-        {
-            const unsigned int index = m_indices[i];
-            const unsigned int ext_index = m_ext_indices[i];
-
-            Deriv dx = p1[index] - p0[ext_index];
-            f1[index] -=  dx * k0 ;
-        }
-    }
-    else
-    {
-        // Heterogeneous stiffness for each spring
-        for (unsigned int i=0; i<m_indices.size(); i++)
-        {
-            const unsigned int index = m_indices[i];
-            unsigned int ext_index = m_ext_indices[i];
-
-            Deriv dx = p1[index] - p0[ext_index];
-            f1[index] -=  dx * k[i];
-        }
+        Deriv dx = p1[index] - p0[ext_index];
+        f1[index] -=  dx * k[i];
     }
 }
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
+    if (!this->isComponentStateValid())
+        return;
     WriteAccessor< DataVecDeriv > df1 = df;
     ReadAccessor< DataVecDeriv > dx1 = dx;
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = Real(mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
     const VecReal& k = stiffness.getValue();
-
-    if (k.size() != m_indices.size())
+    for (unsigned int i=0; i<m_indices.size(); i++)
     {
-        // Stiffness is not defined on each point, first stiffness is used
-        const Real k0 = k[0] * (Real)kFactor;
-
-        for (unsigned int i=0; i<m_indices.size(); i++)
-        {
-            df1[m_indices[i]] -=  dx1[m_indices[i]] * k0;
-        }
-    }
-    else
-    {
-        for (unsigned int i=0; i<m_indices.size(); i++)
-        {
-            df1[m_indices[i]] -=  dx1[m_indices[i]] * k[i] * kFactor ;
-        }
+        df1[m_indices[i]] -=  dx1[m_indices[i]] * k[i] * kFactor ;
     }
 }
 
@@ -401,40 +399,25 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
+    if (!this->isComponentStateValid())
+        return;
     MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
-    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    size_t offset = mref.offset;
+    Real kFact = Real(mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
 
     const VecReal& k = stiffness.getValue();
-    const int N = Coord::total_size;
+    const size_t  N = Coord::total_size;
 
-    unsigned int curIndex = 0;
+    size_t curIndex = 0;
 
-    if (k.size() != m_indices.size())
+    for (size_t index = 0; index < m_indices.size(); index++)
     {
-        const Real k0 = -k[0] * (Real)kFact;
+        curIndex = m_indices[index];
 
-        for (unsigned int index = 0; index < m_indices.size(); index++)
+        for(size_t  i = 0; i < N; i++)
         {
-            curIndex = m_indices[index];
-
-            for(int i = 0; i < N; i++)
-            {
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, k0);
-            }
-        }
-    }
-    else
-    {
-        for (unsigned int index = 0; index < m_indices.size(); index++)
-        {
-            curIndex = m_indices[index];
-
-            for(int i = 0; i < N; i++)
-            {
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
-            }
+            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
         }
     }
 }
@@ -442,46 +425,28 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix, const vector<unsigned> & addSubIndex )
 {
+    if (!this->isComponentStateValid())
+        return;
     MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
-    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFact = Real(mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
 
-    const VecReal& k = stiffness.getValue();
-    const int N = Coord::total_size;
+    const size_t  N = Coord::total_size;
 
     unsigned int curIndex = 0;
 
-    if (k.size() != m_indices.size())
+    const VecReal& k = stiffness.getValue();
+    for (unsigned int index = 0; index < m_indices.size(); index++)
     {
-        const Real k0 = -k[0] * (Real)kFact;
+        curIndex = m_indices[index];
 
-        for (unsigned int index = 0; index < m_indices.size(); index++)
+        if (std::find(addSubIndex.begin(), addSubIndex.end(), curIndex) == addSubIndex.end())
+            continue;
+
+        for(size_t  i = 0; i < N; i++)
         {
-            curIndex = m_indices[index];
-
-            if (std::find(addSubIndex.begin(), addSubIndex.end(), curIndex) == addSubIndex.end())
-                continue;
-
-            for(int i = 0; i < N; i++)
-            {
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, k0);
-            }
-        }
-    }
-    else
-    {
-        for (unsigned int index = 0; index < m_indices.size(); index++)
-        {
-            curIndex = m_indices[index];
-
-            if (std::find(addSubIndex.begin(), addSubIndex.end(), curIndex) == addSubIndex.end())
-                continue;
-
-            for(int i = 0; i < N; i++)
-            {
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
-            }
+            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
         }
     }
 }

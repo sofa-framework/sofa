@@ -35,11 +35,11 @@ namespace component
 namespace linearsolver
 {
 
-template<int TN> class bloc_index_func
+template<size_t TN> class bloc_index_func
 {
 public:
     enum { N = TN };
-    static void split(int& index, int& modulo)
+    static void split(size_t& index, size_t& modulo)
     {
         modulo = index % N;
         index  = index / N;
@@ -50,7 +50,7 @@ template<> class bloc_index_func<1>
 {
 public:
     enum { N = 1 };
-    static void split(int&, int&)
+    static void split(size_t&, size_t&)
     {
     }
 };
@@ -59,7 +59,7 @@ template<> class bloc_index_func<2>
 {
 public:
     enum { N = 2 };
-    static void split(int& index, int& modulo)
+    static void split(size_t& index, size_t& modulo)
     {
         modulo = index & 1;
         index  = index >> 1;
@@ -70,7 +70,7 @@ template<> class bloc_index_func<4>
 {
 public:
     enum { N = 2 };
-    static void split(int& index, int& modulo)
+    static void split(size_t& index, size_t& modulo)
     {
         modulo = index & 3;
         index  = index >> 2;
@@ -81,7 +81,7 @@ template<> class bloc_index_func<8>
 {
 public:
     enum { N = 2 };
-    static void split(int& index, int& modulo)
+    static void split(size_t& index, size_t& modulo)
     {
         modulo = index & 7;
         index  = index >> 3;
@@ -98,8 +98,8 @@ public:
     typedef typename T::Real Real;
     enum { NL = T::nbLines };
     enum { NC = T::nbCols };
-    static Real& v(Bloc& b, int row, int col) { return b[row][col]; }
-    static const Real& v(const Bloc& b, int row, int col) { return b[row][col]; }
+    static Real& v(Bloc& b, size_t row, size_t col) { return b[row][col]; }
+    static const Real& v(const Bloc& b, size_t row, size_t col) { return b[row][col]; }
     static void clear(Bloc& b) { b.clear(); }
     static bool empty(const Bloc& b)
     {
@@ -110,14 +110,14 @@ public:
     }
     static void invert(Bloc& result, const Bloc& b) { result.invert(b); }
 
-    static void split_row_index(int& index, int& modulo) { bloc_index_func<NL>::split(index, modulo); }
-    static void split_col_index(int& index, int& modulo) { bloc_index_func<NC>::split(index, modulo); }
+    static void split_row_index(size_t& index, size_t& modulo) { bloc_index_func<NL>::split(index, modulo); }
+    static void split_col_index(size_t& index, size_t& modulo) { bloc_index_func<NC>::split(index, modulo); }
 
     static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real>::getElementType(); }
     static const char* Name();
 };
 
-template <int L, int C, class real>
+template <size_t L, size_t C, class real>
 class matrix_bloc_traits < defaulttype::Mat<L,C,real> >
 {
 public:
@@ -125,20 +125,20 @@ public:
     typedef real Real;
     enum { NL = L };
     enum { NC = C };
-    static Real& v(Bloc& b, int row, int col) { return b[row][col]; }
-    static const Real& v(const Bloc& b, int row, int col) { return b[row][col]; }
+    static Real& v(Bloc& b, size_t row, size_t col) { return b[row][col]; }
+    static const Real& v(const Bloc& b, size_t row, size_t col) { return b[row][col]; }
     static void clear(Bloc& b) { b.clear(); }
     static bool empty(const Bloc& b)
     {
-        for (int i=0; i<NL; ++i)
-            for (int j=0; j<NC; ++j)
+        for (size_t i=0; i<NL; ++i)
+            for (size_t j=0; j<NC; ++j)
                 if (b[i][j] != 0) return false;
         return true;
     }
     static void invert(Bloc& result, const Bloc& b) { result.invert(b); }
 
-    static void split_row_index(int& index, int& modulo) { bloc_index_func<NL>::split(index, modulo); }
-    static void split_col_index(int& index, int& modulo) { bloc_index_func<NC>::split(index, modulo); }
+    static void split_row_index(size_t& index, size_t& modulo) { bloc_index_func<NL>::split(index, modulo); }
+    static void split_col_index(size_t& index, size_t& modulo) { bloc_index_func<NC>::split(index, modulo); }
 
     static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real>::getElementType(); }
     static const char* Name();
@@ -169,8 +169,8 @@ public:
     typedef float Real;
     enum { NL = 1 };
     enum { NC = 1 };
-    static Real& v(Bloc& b, int, int) { return b; }
-    static const Real& v(const Bloc& b, int, int) { return b; }
+    static Real& v(Bloc& b, size_t, size_t) { return b; }
+    static const Real& v(const Bloc& b, size_t, size_t) { return b; }
     static void clear(Bloc& b) { b = 0; }
     static bool empty(const Bloc& b)
     {
@@ -178,8 +178,8 @@ public:
     }
     static void invert(Bloc& result, const Bloc& b) { result = 1.0f/b; }
 
-    static void split_row_index(int& index, int& modulo) { bloc_index_func<NL>::split(index, modulo); }
-    static void split_col_index(int& index, int& modulo) { bloc_index_func<NC>::split(index, modulo); }
+    static void split_row_index(size_t& index, size_t& modulo) { bloc_index_func<NL>::split(index, modulo); }
+    static void split_col_index(size_t& index, size_t& modulo) { bloc_index_func<NC>::split(index, modulo); }
 
     static const char* Name() { return "f"; }
     static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return sofa::defaulttype::BaseMatrix::ELEMENT_FLOAT; }
@@ -194,8 +194,8 @@ public:
     typedef double Real;
     enum { NL = 1 };
     enum { NC = 1 };
-    static Real& v(Bloc& b, int, int) { return b; }
-    static const Real& v(const Bloc& b, int, int) { return b; }
+    static Real& v(Bloc& b, size_t, size_t) { return b; }
+    static const Real& v(const Bloc& b, size_t, size_t) { return b; }
     static void clear(Bloc& b) { b = 0; }
     static bool empty(const Bloc& b)
     {
@@ -203,23 +203,23 @@ public:
     }
     static void invert(Bloc& result, const Bloc& b) { result = 1.0/b; }
 
-    static void split_row_index(int& index, int& modulo) { bloc_index_func<NL>::split(index, modulo); }
-    static void split_col_index(int& index, int& modulo) { bloc_index_func<NC>::split(index, modulo); }
+    static void split_row_index(size_t& index, size_t& modulo) { bloc_index_func<NL>::split(index, modulo); }
+    static void split_col_index(size_t& index, size_t& modulo) { bloc_index_func<NC>::split(index, modulo); }
 
     static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return sofa::defaulttype::BaseMatrix::ELEMENT_FLOAT; }
     static const char* Name() { return "d"; }
 };
 
 template <>
-class matrix_bloc_traits < int >
+class matrix_bloc_traits < size_t >
 {
 public:
     typedef float Bloc;
     typedef float Real;
     enum { NL = 1 };
     enum { NC = 1 };
-    static Real& v(Bloc& b, int, int) { return b; }
-    static const Real& v(const Bloc& b, int, int) { return b; }
+    static Real& v(Bloc& b, size_t, size_t) { return b; }
+    static const Real& v(const Bloc& b, size_t, size_t) { return b; }
     static void clear(Bloc& b) { b = 0; }
     static bool empty(const Bloc& b)
     {
@@ -227,8 +227,8 @@ public:
     }
     static void invert(Bloc& result, const Bloc& b) { result = 1.0f/b; }
 
-    static void split_row_index(int& index, int& modulo) { bloc_index_func<NL>::split(index, modulo); }
-    static void split_col_index(int& index, int& modulo) { bloc_index_func<NC>::split(index, modulo); }
+    static void split_row_index(size_t& index, size_t& modulo) { bloc_index_func<NL>::split(index, modulo); }
+    static void split_col_index(size_t& index, size_t& modulo) { bloc_index_func<NC>::split(index, modulo); }
 
     static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return sofa::defaulttype::BaseMatrix::ELEMENT_INT; }
     static const char* Name() { return "f"; }

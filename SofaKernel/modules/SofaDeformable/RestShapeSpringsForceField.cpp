@@ -45,6 +45,8 @@ using namespace sofa::defaulttype;
 template<>
 void RestShapeSpringsForceField<Rigid3Types>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
+    if (!this->isComponentStateValid())
+        return;
     sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
     sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
 
@@ -104,12 +106,14 @@ void RestShapeSpringsForceField<Rigid3Types>::addForce(const core::MechanicalPar
 template<>
 void RestShapeSpringsForceField<Rigid3Types>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
+    if (!this->isComponentStateValid())
+        return;
     sofa::helper::WriteAccessor< DataVecDeriv > df1 = df;
     sofa::helper::ReadAccessor< DataVecDeriv > dx1 = dx;
 
     const VecReal& k = stiffness.getValue();
     const VecReal& k_a = angularStiffness.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = Real(mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
 
     unsigned int curIndex = 0;
 
@@ -125,30 +129,32 @@ void RestShapeSpringsForceField<Rigid3Types>::addDForce(const core::MechanicalPa
 template<>
 void RestShapeSpringsForceField<Rigid3Types>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
+    if (!this->isComponentStateValid())
+        return;
     const VecReal& k = stiffness.getValue();
     const VecReal& k_a = angularStiffness.getValue();
-    const int N = 6;
+    const size_t N = 6;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
-    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    size_t offset = mref.offset;
+    Real kFact = Real(mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
 
-    unsigned int curIndex = 0;
+    size_t curIndex = 0;
 
-    for (unsigned int index = 0; index < m_indices.size(); index++)
+    for (size_t index = 0; index < m_indices.size(); index++)
     {
         curIndex = m_indices[index];
 
         // translation
-        for(int i = 0; i < 3; i++)
+        for(size_t i = 0; i < 3; i++)
         {
-            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * (index < k.size() ? k[index] : k[0]));
+            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
         }
 
         // rotation
-        for(int i = 3; i < 6; i++)
+        for(size_t i = 3; i < 6; i++)
         {
-            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * (index < k_a.size() ? k_a[index] : k_a[0]));
+            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k_a[index]);
         }
     }
 }

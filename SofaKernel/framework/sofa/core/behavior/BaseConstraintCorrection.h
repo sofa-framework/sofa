@@ -139,9 +139,9 @@ public:
     /// @{
     virtual bool hasConstraintNumber(int /*index*/);
     virtual void resetForUnbuiltResolution(double * /*f*/, std::list<unsigned int>& /*renumbering*/);
-    virtual void addConstraintDisplacement(double * /*d*/, int /*begin*/, int /*end*/);
-    virtual void setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/);	  // f += df
-    virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, int /*begin*/,int /*end*/);
+    virtual void addConstraintDisplacement(double * /*d*/, size_t /*begin*/, size_t /*end*/);
+    virtual void setConstraintDForce(double * /*df*/, size_t /*begin*/, size_t /*end*/, bool /*update*/);	  // f += df
+    virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, size_t /*begin*/,size_t /*end*/);
     /// @}
 
 protected:

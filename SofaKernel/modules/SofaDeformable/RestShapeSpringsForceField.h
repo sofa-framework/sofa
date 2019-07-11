@@ -94,6 +94,7 @@ protected:
 
 public:
     /// BaseObject initialization method.
+    void init() override;
     void bwdInit() override ;
     void parse(core::objectmodel::BaseObjectDescription *arg) override ;
     void reinit() override ;

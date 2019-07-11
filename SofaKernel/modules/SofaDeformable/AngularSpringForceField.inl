@@ -91,6 +91,8 @@ void AngularSpringForceField<DataTypes>::reinit()
 template<class DataTypes>
 void AngularSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
+    std::cout << "AddForce" << std::endl;
+
     if(!mState) {
 		msg_info("AngularSpringForceField") << "No Mechanical State found, no force will be computed..." << "\n";
         return;
@@ -155,6 +157,7 @@ void AngularSpringForceField<DataTypes>::addDForce(const core::MechanicalParams*
 template<class DataTypes>
 void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
+    std::cout << "AddKToMatrix" << std::endl;
     const int N = 6;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
@@ -164,11 +167,12 @@ void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     unsigned int curIndex = 0;
     for (unsigned int index = 0; index < indices.getValue().size(); index++)
     {
-//        if (angle <  (angularLimit.getValue()[2*i]/180.0*M_PI) || angle >  (angularLimit.getValue()[2*i+1]/180.0*M_PI))  {
             curIndex = indices.getValue()[index];
-            for(int i = 3; i < 6; i++)
+            for(int i = 3; i < 6; i++) {
+                std::cout << curIndex << std::endl;
+                std::cout << i << " " << N << "\t\t" << offset << std::endl;
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * (index < this->k.size() ? this->k[index] : this->k[0]));
-//        }
+            }
     }
 }
 

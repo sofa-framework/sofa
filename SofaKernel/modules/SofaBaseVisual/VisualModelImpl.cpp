@@ -1253,7 +1253,7 @@ void VisualModelImpl::updateVisual()
     {
         if (useTopology)
         {
-            sofa:helper::ScopedAdvancedTimer timer("VisualModelImpl::updateMesh");
+            sofa::helper::ScopedAdvancedTimer timer("VisualModelImpl::updateMesh");
             /** HD : build also a Ogl description from main Topology. But it needs to be build only once since the topology update
             is taken care of by the handleTopologyChange() routine */
 

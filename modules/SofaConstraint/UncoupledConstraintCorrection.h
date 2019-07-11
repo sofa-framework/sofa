@@ -111,11 +111,11 @@ public:
 
     void resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/) override;
 
-    void addConstraintDisplacement(double *d, int begin,int end) override;
+    void addConstraintDisplacement(double *d, size_t begin,size_t end) override;
 
-    void setConstraintDForce(double *df, int begin, int end, bool update) override;
+    void setConstraintDForce(double *df, size_t begin, size_t end, bool update) override;
 
-    void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
+    void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, size_t begin, size_t end) override;
 
     /// @}
 

@@ -565,7 +565,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin, int end)
+void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, size_t begin, size_t end)
 {
     const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     const unsigned int derivDim = Deriv::size();
@@ -578,7 +578,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
     _new_force = false;
 
     // TODO => optimisation => for each bloc store J[bloc,dof]
-    for (int i = begin; i <= end; i++)
+    for (size_t i = begin; i <= end; i++)
     {
         MatrixDerivRowConstIterator rowIt = constraints.readLine(i);
 
@@ -603,7 +603,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df, int begin, int end, bool update)
+void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df, size_t begin, size_t end, bool update)
 {
 
 
@@ -639,10 +639,10 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
     }
 
     // course on indices of the dofs involved invoved in the bloc //
-    std::list<int>::const_iterator it_dof(Vec_I_list_dof[last_force].begin()), it_end(Vec_I_list_dof[last_force].end());
+    ListIndex::const_iterator it_dof(Vec_I_list_dof[last_force].begin()), it_end(Vec_I_list_dof[last_force].end());
     for(; it_dof!=it_end; ++it_dof)
     {
-        int dof =(*it_dof) ;
+        size_t dof =(*it_dof) ;
         for  (unsigned int j=0; j<derivDim; j++)
             systemRHVector_buf->set(dof * derivDim + j, constraint_force[dof][j]);
     }
@@ -650,7 +650,7 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
+void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, size_t begin, size_t end)
 {
     if(m_componentstate!=ComponentState::Valid)
         return ;
@@ -664,11 +664,11 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
 
     // Compute J
     const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const unsigned int totalNumConstraints = W->rowSize();
+    const size_t totalNumConstraints = W->rowSize();
 
     J.resize(totalNumConstraints, numDOFReals);
 
-    for (int i = begin; i <= end; i++)
+    for (size_t i = begin; i <= end; i++)
     {
 
 
@@ -708,7 +708,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
 
     ListIndex list_dof;
 
-    for (int i = begin; i <= end; i++)
+    for (size_t i = begin; i <= end; i++)
     {
 
 
@@ -728,7 +728,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
     list_dof.sort();
     list_dof.unique();
 
-    for (int i = begin; i <= end; i++)
+    for (size_t i = begin; i <= end; i++)
     {
         Vec_I_list_dof[i] = list_dof;
     }

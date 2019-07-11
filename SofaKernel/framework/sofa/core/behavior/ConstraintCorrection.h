@@ -62,12 +62,12 @@ protected:
     ConstraintCorrection(MechanicalState< DataTypes > *ms = NULL)
         : mstate(ms)
     {
-    };
+    }
 
     /// Default Destructor
     ~ConstraintCorrection() override
     {
-    };
+    }
 public:
     void init() override;
 

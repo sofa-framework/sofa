@@ -45,15 +45,15 @@ void BaseConstraintCorrection::computeResidual(const core::ExecParams* /*params*
     dmsg_warning() << "ComputeResidual is not implemented in " << this->getName() ;
 }
 
-void BaseConstraintCorrection::getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, int /*begin*/,int /*end*/)
+void BaseConstraintCorrection::getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, size_t /*begin*/,size_t /*end*/)
 {
     dmsg_warning() << "getBlockDiagonalCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() ;
 }
 
 bool BaseConstraintCorrection::hasConstraintNumber(int /*index*/) {return true;}
 void BaseConstraintCorrection::resetForUnbuiltResolution(double * /*f*/, std::list<unsigned int>& /*renumbering*/) {}
-void BaseConstraintCorrection::addConstraintDisplacement(double * /*d*/, int /*begin*/, int /*end*/) {}
-void BaseConstraintCorrection::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/) {}	  // f += df
+void BaseConstraintCorrection::addConstraintDisplacement(double * /*d*/, size_t /*begin*/, size_t /*end*/) {}
+void BaseConstraintCorrection::setConstraintDForce(double * /*df*/, size_t /*begin*/, size_t /*end*/, bool /*update*/) {}	  // f += df
 
 
 } // namespace behavior

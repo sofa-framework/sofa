@@ -690,7 +690,7 @@ void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double 
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(double * d, int begin, int end)
+void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(double * d, size_t begin, size_t end)
 {
 /// in the Vec1Types and Vec3Types case, compliance is a vector of size mstate->getSize()
 /// constraint_force contains the force applied on dof involved with the contact
@@ -719,7 +719,7 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(double 
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, int begin, int end, bool update)
+void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, size_t begin, size_t end, bool update)
 {
     /// set a force difference on a set of constraints (between constraint number "begin" and constraint number "end"
     /// if update is false, do nothing
@@ -733,7 +733,7 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
     if (!update)
         return;
 
-    for (int id = begin; id <= end; id++)
+    for (size_t id = begin; id <= end; id++)
     {
 
         MatrixDerivRowConstIterator curConstraint = constraints.readLine(id);
@@ -761,13 +761,13 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
+void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, size_t begin, size_t end)
 {
     const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
 
-    for (int id1 = begin; id1 <= end; id1++)
+    for (size_t id1 = begin; id1 <= end; id1++)
     {
 
         MatrixDerivRowConstIterator curConstraint = constraints.readLine(id1);
@@ -792,7 +792,7 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
         }
 
         // Then the compliance with the remaining constraints
-        for (int id2 = id1+1; id2 <= end; id2++)
+        for (size_t id2 = id1+1; id2 <= end; id2++)
         {
             MatrixDerivRowConstIterator curConstraint2 = constraints.readLine(id2);
 
