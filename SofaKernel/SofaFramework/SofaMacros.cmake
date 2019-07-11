@@ -166,95 +166,100 @@ endmacro()
 #
 # Use this macro (subdirectory or plugin version) to add out-of-repository projects.
 # Usage:
-# Add repository configuration in MyProjectDir/ExternalProjectConfig.cmake.in
-# Call sofa_add_subdirectory_external(MyProjectDir MyProjectName)
-# Or sofa_add_plugin_external(MyProjectDir MyProjectName [ON,OFF])
+# 1. Add repository configuration in MyProjectDir/ExternalProjectConfig.cmake.in
+# 2. Call sofa_add_subdirectory_external(MyProjectDir MyProjectName [ON,OFF] [FETCH_ONLY])
+#      or sofa_add_plugin_external(MyProjectDir MyProjectName [ON,OFF] [FETCH_ONLY])
+# ON,OFF = execute the fetch by default + enable the fetched plugin (if calling sofa_add_plugin_external)
+# FETCH_ONLY = do not "add_subdirectory" the fetched repository
 # See plugins/SofaHighOrder for example
 #
-macro(sofa_add_generic_external directory name type)
-    if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" OR NOT IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-        message("(${CMAKE_CURRENT_LIST_DIR}/${location}) does not exist and will be ignored.")
+function(sofa_add_generic_external directory name type)
+    set(optionArgs FETCH_ONLY)
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
+    # Make directory absolute
+    if(NOT IS_ABSOLUTE "${directory}")
+        set(directory "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+    endif()
+    if(NOT EXISTS "${directory}")
+        message("${directory} does not exist and will be ignored.")
         return()
     endif()
 
-    set(location "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-
-    string(TOUPPER ${type}_${name} option)
-
-    # optional parameter to activate/desactivate the option
+    # Default value for fetch activation and for plugin activation (if adding a plugin)
     set(active OFF)
-    if(${ARGV3})
-        set(active ON)
+    set(optional_argv3 "${ARGV3}")
+    if(optional_argv3)
+        set(active ${optional_argv3})
     endif()
 
-    if("${type}" STREQUAL "Subdirectory")
-        string(TOUPPER MODULE_${PROJECT_NAME} module_name)
-        string(TOUPPER plugin_${PROJECT_NAME} plugin_name)
-        string(TOUPPER ${name} uppername)
-        if(DEFINED ${module_name})
-            set(option ${module_name}_FETCH_${uppername})
-        elseif(DEFINED ${plugin_name})
-            set(option ${plugin_name}_FETCH_${uppername})
-        else()
-            set(option SOFA_FETCH_${uppername})
-        endif()
-        option(${option} "Fetch ${name} repository." ${active})
-    else()
-        option(${option} "Fetch and build the ${name} ${type}." ${active})
-    endif()
+    # Create option
+    string(TOUPPER ${PROJECT_NAME}_FETCH_${name} fetch_enabled)
+    option(${fetch_enabled} "Fetch/update ${name} repository." ${active})
 
-    # Setup temporary directory
-    set(${name}_TEMP_DIR "${CMAKE_BINARY_DIR}/external_directories/fetched/${name}/" )
+    # Setup fetch directory
+    set(fetched_dir "${CMAKE_BINARY_DIR}/external_directories/fetched/${name}" )
 
     # Fetch
-    if(${option})
+    if(${fetch_enabled})
         message("Fetching ${type} ${name}")
 
-        message("Checking for ${${name}_TEMP_DIR}")
-        if(NOT EXISTS ${${name}_TEMP_DIR})
-            message("Creating ${${name}_TEMP_DIR}")
-            file(MAKE_DIRECTORY ${${name}_TEMP_DIR})
+        if(NOT EXISTS ${fetched_dir})
+            file(MAKE_DIRECTORY ${fetched_dir})
         endif()
 
-        # Download and unpack  at configure time
-        configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
-        file(COPY ${location}/ExternalProjectConfig.cmake.in DESTINATION ${${name}_TEMP_DIR})
+        # Download and unpack at configure time
+        configure_file(${directory}/ExternalProjectConfig.cmake.in ${fetched_dir}/CMakeLists.txt)
+        # Copy ExternalProjectConfig.cmake.in in build dir for post-pull recovery in src dir
+        file(COPY ${directory}/ExternalProjectConfig.cmake.in DESTINATION ${fetched_dir})
 
-        #execute script to get src
-        message("Pulling ${name}... ")
+        # Execute commands to fetch content
+        message("  Pulling ...")
+        file(WRITE "${fetched_dir}/logs.txt" "") # Empty log file
         execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -G "${CMAKE_GENERATOR}" .
-            WORKING_DIRECTORY "${${name}_TEMP_DIR}/" )
+            WORKING_DIRECTORY "${fetched_dir}"
+            RESULT_VARIABLE generate_exitcode
+            OUTPUT_VARIABLE generate_logs ERROR_VARIABLE generate_logs)
+        file(APPEND "${fetched_dir}/logs.txt" "${generate_logs}")
         execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-            WORKING_DIRECTORY  "${${name}_TEMP_DIR}/" )
+            WORKING_DIRECTORY "${fetched_dir}"
+            RESULT_VARIABLE build_exitcode
+            OUTPUT_VARIABLE build_logs ERROR_VARIABLE build_logs)
+        file(APPEND "${fetched_dir}/logs.txt" "${build_logs}")
 
-        if(EXISTS "${location}/.git")
-            message("... Done")
-            # add .gitignore for Sofa
-            file(WRITE "${location}/.gitignore" "*")
-            file(COPY ${${name}_TEMP_DIR}/ExternalProjectConfig.cmake.in DESTINATION ${location})
+        if(generate_exitcode EQUAL 0 AND build_exitcode EQUAL 0 AND EXISTS "${directory}/.git")
+            message("  Sucess.")
+            # Add .gitignore for Sofa
+            file(WRITE "${directory}/.gitignore" "*")
+            # Recover ExternalProjectConfig.cmake.in from build dir (erased by pull)
+            file(COPY ${fetched_dir}/ExternalProjectConfig.cmake.in DESTINATION ${directory})
+            # Disable fetching for next configure
+            set(${fetch_enabled} OFF CACHE BOOL "Fetch/update ${name} repository." FORCE)
+            message("  ${fetch_enabled} is now OFF. Set it back to ON to trigger a new fetch.")
         else()
-            message("... error while pulling ${name}")
+            message(SEND_ERROR "Failed to add external repository ${name}."
+                               "\nSee logs in ${fetched_dir}/logs.txt")
         endif()
     endif()
 
     # Add
-    if(EXISTS "${location}/.git" AND IS_DIRECTORY "${location}/.git")
-        configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
-        if("${type}" STREQUAL "Subdirectory")
-            add_subdirectory("${location}" "${name}")
-        elseif("${type}" STREQUAL "Plugin")
+    if(EXISTS "${directory}/.git" AND IS_DIRECTORY "${directory}/.git")
+        configure_file(${directory}/ExternalProjectConfig.cmake.in ${fetched_dir}/CMakeLists.txt)
+        if(NOT ARG_FETCH_ONLY AND "${type}" STREQUAL "Subdirectory")
+            add_subdirectory("${directory}" "${name}")
+        elseif(NOT ARG_FETCH_ONLY AND "${type}" STREQUAL "Plugin")
             sofa_add_plugin("${name}" "${name}" ${active})
         endif()
     endif()
-endmacro()
+endfunction()
 
-macro(sofa_add_subdirectory_external directory name)
-    sofa_add_generic_external(${directory} ${name} "Subdirectory" ${ARGV2})
-endmacro()
+function(sofa_add_subdirectory_external directory name)
+    sofa_add_generic_external(${directory} ${name} "Subdirectory" ${ARGN})
+endfunction()
 
-macro(sofa_add_plugin_external directory name)
-    sofa_add_generic_external(${directory} ${name} "Plugin" ${ARGV2})
-endmacro()
+function(sofa_add_plugin_external directory name)
+    sofa_add_generic_external(${directory} ${name} "Plugin" ${ARGN})
+endfunction()
 
 
 
@@ -710,6 +715,7 @@ function(sofa_install_libraries)
     set(options NO_COPY)
     set(multiValueArgs TARGETS LIBRARIES)
     cmake_parse_arguments("sofa_install_libraries" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    set(no_copy ${sofa_install_libraries_NO_COPY})
     set(targets ${sofa_install_libraries_TARGETS})
     set(libraries ${sofa_install_libraries_LIBRARIES})
 
@@ -758,7 +764,7 @@ function(sofa_install_libraries)
         endif()
     endforeach()
 
-    if(WIN32 AND NOT NO_COPY)
+    if(WIN32 AND NOT no_copy)
         sofa_copy_libraries(LIBRARIES ${libraries})
     endif()
 endfunction()
