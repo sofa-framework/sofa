@@ -45,7 +45,8 @@
     </Node>
 
     <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"/>
+      <MeshObjLoader name="meshLoader_4" filename="mesh/torus.obj" handleSeams="1" />
+      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_4"/>
       <LinearMapping template="Vec3d,ExtVec3f"  />
     </Node>
   </Node>
@@ -85,7 +86,8 @@
     </Node>
 
     <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.4 0.4 0.4"/>
+      <MeshObjLoader name="meshLoader_2" filename="mesh/torus.obj" handleSeams="1" />
+      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_2" color="0.4 0.4 0.4"/>
       <LinearMapping template="Vec3d,ExtVec3f"  />
     </Node>
   </Node>
@@ -126,7 +128,8 @@
     </Node>
 
     <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.2 1 0.2 1" />
+      <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.2 1 0.2 1" />
       <LinearMapping template="Vec3d,ExtVec3f"  />
     </Node>
   </Node>
@@ -165,7 +168,8 @@
     </Node>
 
     <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.1 0.8 0.1 1" />
+      <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" />
+      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_3" color="0.1 0.8 0.1 1" />
       <LinearMapping template="Vec3d,ExtVec3f"  />
     </Node>
   </Node>
@@ -190,7 +194,8 @@
     <MJEDTetrahedralForceField name="ff" materialName="NeoHookean" ParameterSet="384.62 833.33" />
 
     <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
+      <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="1 .4 0.5 1"/>
       <BarycentricMapping template="Vec3d,ExtVec3f"/>
     </Node>
   </Node>-->

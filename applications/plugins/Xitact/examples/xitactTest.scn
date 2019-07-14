@@ -20,9 +20,12 @@
     <UncoupledConstraintCorrection compliance="0.00001  0.000001 0 0 0.000001 0 0.000001"/>
 
     <Node name="VisuOfXitactBase">
-      <OglModel name="VM" fileMesh="dt/cube_low_res.obj" scale="0.003" dy="0.015"  dz="0.030"/>
-      <OglModel name="VM" fileMesh="dt/cube_low_res.obj" scale="0.003" dy="0.030"  dz="0.030"/>
-      <OglModel name="VM" fileMesh="dt/cube_low_res.obj" scale="0.0005"  dy="0.038" />
+      <MeshObjLoader name="meshLoader_2" filename="dt/cube_low_res.obj" scale="0.003" handleSeams="1" />
+      <OglModel name="VM" src="@meshLoader_2" dy="0.015"  dz="0.030"/>
+      <MeshObjLoader name="meshLoader_3" filename="dt/cube_low_res.obj" scale="0.003" handleSeams="1" />
+      <OglModel name="VM" src="@meshLoader_3" dy="0.030"  dz="0.030"/>
+      <MeshObjLoader name="meshLoader_0" filename="dt/cube_low_res.obj" scale="0.0005" handleSeams="1" />
+      <OglModel name="VM" src="@meshLoader_0"  dy="0.038" />
       <RigidMapping input="@.." output="@VM" index="0"/>
     </Node>
 
@@ -134,7 +137,8 @@
     <TriangleCollisionModel simulated="0" moving="0"/>
     <LineCollisionModel simulated="0" moving="0"/>
     <PointCollisionModel simulated="0" moving="0"/>
-    <OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="0.0 0.4 0.6 0.2" scale="0.1" dx="0.4" dy="-0.3"  dz="0.4"/>
+    <MeshObjLoader name="meshLoader_1" filename="mesh/box_outside.obj" scale="0.1" handleSeams="1" />
+    <OglModel name="Visual" src="@meshLoader_1" color="0.0 0.4 0.6 0.2" dx="0.4" dy="-0.3"  dz="0.4"/>
   </Node>
 
 

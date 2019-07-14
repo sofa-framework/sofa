@@ -15,7 +15,8 @@
         <BoxConstraint box="-8.5 0 -2.5 -5 3 2" />
         <RegularGridSpringForceField name="Springs" stiffness="400" damping="4" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/liver-smooth.obj" color="red" translation="-5 0 0" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" translation="-5 0 0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="red" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Collision Surface">
@@ -34,7 +35,8 @@
         <BoxConstraint box="2.5 0 -2.5 5 3 2" />
         <RegularGridSpringForceField name="Springs" stiffness="100" damping="4" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/liver-smooth.obj" color="red" translation="5 0 0" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/liver-smooth.obj" translation="5 0 0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="red" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Collision Surface">

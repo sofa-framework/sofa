@@ -45,7 +45,8 @@
         </Node>
 
         <Node name="ToolVisual">
-            <OglModel template="ExtVec3d" name="VisualModel" fileMesh="data/mesh/dental_instrument.obj" scale3d="10 10 10" translation="-2.12256 1.32361 35.5" rotation="180 0 150" />
+            <MeshObjLoader name="meshLoader_1" filename="data/mesh/dental_instrument.obj" scale3d="10 10 10" translation="-2.12256 1.32361 35.5" rotation="180 0 150" handleSeams="1" />
+            <OglModel template="ExtVec3d" name="VisualModel" src="@meshLoader_1" />
             <RigidMapping template="Rigid3d,ExtVec3d" name="MM->VM mapping" input="@ms" output="@VisualModel" />
         </Node>
               
@@ -56,7 +57,8 @@
 
 <Node name="Box" >
         <Node name="VisualModel" >
-            <OglModel template="ExtVec3d" name="BoxVisualModel" scale3d="10 10 10" fileMesh="data/mesh/box.obj" />
+            <MeshObjLoader name="meshLoader_0"  scale3d="10 10 10"filename="data/mesh/box.obj" handleSeams="1" />
+            <OglModel template="ExtVec3d" name="BoxVisualModel" src="@meshLoader_0" />
         </Node>
         <Node 	name="CollisionModel" >
 

@@ -12,7 +12,8 @@
         <MechanicalObject template="Rigid" />
         <UniformMass totalMass="1" />
         <Node name="Visu">
-            <OglModel color="0.500 0.500 0.500" fileMesh="mesh/sphere.obj" name="Visual" scale="50" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/sphere.obj" scale="50" handleSeams="1" />
+            <OglModel color="0.500 0.500 0.500" src="@meshLoader_0" name="Visual" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">

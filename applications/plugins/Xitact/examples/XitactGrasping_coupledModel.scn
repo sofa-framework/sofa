@@ -15,7 +15,8 @@
 		<TriangleCollisionModel simulated="0" moving="0"/>	
 		<LineCollisionModel simulated="0" moving="0"/>
 		<PointCollisionModel simulated="0" moving="0"/>
-		<OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="0.0 0.4 0.6 0.2" scale="50.0" dz="150"/>
+		<MeshObjLoader name="meshLoader_3" filename="mesh/box_outside.obj" scale="50.0" handleSeams="1" />
+		<OglModel name="Visual" src="@meshLoader_3" color="0.0 0.4 0.6 0.2" dz="150"/>
 	</Node>
 	
   
@@ -27,7 +28,8 @@
     <!--<LinearSolverConstraintCorrection />-->
     <UncoupledConstraintCorrection />
 		<Node name="Visu">
-			<OglModel name="Visual" fileMesh="mesh/torus.obj" color="1.0 0.5 0.25 1.0" scale="8.0" rx="90.0" invertPrimOrientation="1"/>
+			<MeshObjLoader name="meshLoader_8" filename="mesh/torus.obj" scale="8.0" handleSeams="1" />
+			<OglModel name="Visual" src="@meshLoader_8" color="1.0 0.5 0.25 1.0" rx="90.0" invertPrimOrientation="1"/>
 			<RigidMapping input="@.." output="@Visual"/>
 		</Node>
 		
@@ -55,7 +57,8 @@
     <!--<LinearSolverConstraintCorrection />-->
     <PrecomputedConstraintCorrection rotations="true" recompute="0"/>
     <Node name="Visu">
-      <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="-40" dy="0" dz="-70" rx="90" ry="0" rz="0" scale="8.0"/>
+      <MeshObjLoader name="meshLoader_4" filename="mesh/torus.obj" scale="8.0" handleSeams="1" />
+      <OglModel name="Visual" src="@meshLoader_4" color="red" dx="-40" dy="0" dz="-70" rx="90" ry="0" rz="0"/>
       <BarycentricMapping input="@.." output="@Visual" />
     </Node>
     <Node name="Surf2">
@@ -86,9 +89,12 @@
     
 
     <Node name="VisuOfXitactBase">
-      <OglModel name="VM1" fileMesh="dt/cube_low_res.obj" scale="3"   dy="15.0" dz="30" />
-      <OglModel name="VM2" fileMesh="dt/cube_low_res.obj" scale="3"   dy="30.0" dz="30" />
-      <OglModel name="VM3" fileMesh="dt/cube_low_res.obj" scale="0.5" dy="38" />
+      <MeshObjLoader name="meshLoader_5" filename="dt/cube_low_res.obj" scale="3" handleSeams="1" />
+      <OglModel name="VM1" src="@meshLoader_5"   dy="15.0" dz="30" />
+      <MeshObjLoader name="meshLoader_6" filename="dt/cube_low_res.obj" scale="3" handleSeams="1" />
+      <OglModel name="VM2" src="@meshLoader_6"   dy="30.0" dz="30" />
+      <MeshObjLoader name="meshLoader_7" filename="dt/cube_low_res.obj" scale="0.5" handleSeams="1" />
+      <OglModel name="VM3" src="@meshLoader_7" dy="38" />
       <RigidMapping input="@.." output="@VM1" index="0"/>
       <RigidMapping input="@.." output="@VM2" index="0"/>
       <RigidMapping input="@.." output="@VM3" index="0"/>
@@ -200,9 +206,12 @@
     
 
     <Node name="VisuOfXitactBase">
-      <OglModel name="VM1" fileMesh="dt/cube_low_res.obj" scale="3"   dy="15.0" dz="30" />
-      <OglModel name="VM2" fileMesh="dt/cube_low_res.obj" scale="3"   dy="30.0" dz="30" />
-      <OglModel name="VM3" fileMesh="dt/cube_low_res.obj" scale="0.5" dy="38" />
+      <MeshObjLoader name="meshLoader_0" filename="dt/cube_low_res.obj" scale="3" handleSeams="1" />
+      <OglModel name="VM1" src="@meshLoader_0"   dy="15.0" dz="30" />
+      <MeshObjLoader name="meshLoader_1" filename="dt/cube_low_res.obj" scale="3" handleSeams="1" />
+      <OglModel name="VM2" src="@meshLoader_1"   dy="30.0" dz="30" />
+      <MeshObjLoader name="meshLoader_2" filename="dt/cube_low_res.obj" scale="0.5" handleSeams="1" />
+      <OglModel name="VM3" src="@meshLoader_2" dy="38" />
       <RigidMapping input="@.." output="@VM1" index="0"/>
       <RigidMapping input="@.." output="@VM2" index="0"/>
       <RigidMapping input="@.." output="@VM3" index="0"/>

@@ -25,7 +25,8 @@
         <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="0" />
         <Node name="Visu">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear0.obj" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/gear0.obj" handleSeams="1" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" />
             <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -36,7 +37,8 @@
         <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="1" />
         <Node name="Visu">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear1.obj" />
+            <MeshObjLoader name="meshLoader_3" filename="mesh/gear1.obj" handleSeams="1" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_3" />
             <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -47,7 +49,8 @@
         <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="2" />
         <Node name="Visu">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear2.obj" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/gear2.obj" handleSeams="1" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" />
             <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -58,7 +61,8 @@
         <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="3" />
         <Node name="Visu">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear3.obj" />
+            <MeshObjLoader name="meshLoader_2" filename="mesh/gear3.obj" handleSeams="1" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_2" />
             <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -69,7 +73,8 @@
         <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="4" />
         <Node name="Visu">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gearsupport.obj" material="Default Diffuse 1 1 1 0.8 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <MeshObjLoader name="meshLoader_4" filename="mesh/gearsupport.obj" handleSeams="1" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_4" material="Default Diffuse 1 1 1 0.8 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
             <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>

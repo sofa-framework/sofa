@@ -3,6 +3,7 @@
     <RequiredPlugin pluginName="SofaStereo"/>
     <StereoCamera enabled="true" mode="3" strategy="0" baseline="10" />
 
-    <StereoOglModel name="VisualModel" fileMesh="mesh/floor2.obj" textureleft="textures/floor.bmp" textureright="textures/floor2.bmp" />
+    <MeshObjLoader name="meshLoader_0" filename="mesh/floor2.obj" handleSeams="1" />
+    <StereoOglModel name="VisualModel" src="@meshLoader_0" textureleft="textures/floor.bmp" textureright="textures/floor2.bmp" />
 </Node>
     

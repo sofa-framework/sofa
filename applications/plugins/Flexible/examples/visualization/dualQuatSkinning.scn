@@ -52,7 +52,8 @@
                 </Node>
 
                 <Node name="visual"   >
-                    <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 " translation="0 4 0"/>
+                    <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" translation="0 4 0" handleSeams="1" />
+                    <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="1 0.8 0.8 "/>
 
                     <ComputeWeightEngine name="weightEngine" visual="@." shapeFunction="@../../../SF" />
                     <!--ComputeDualQuatEngine template="StdRigidTypes<3,double> >"    name="dq1" x0="@../../dofr.rest_position" x="@../../dofr.position"/>
@@ -116,7 +117,8 @@
                 </Node>
 
                 <Node name="visual_cpu"   >
-                    <OglModel template="ExtVec3f" name="Visual_cpu" fileMesh="mesh/torus.obj" color="1 0.8 0.8 " translation="0 4 0"/>
+                    <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" translation="0 4 0" handleSeams="1" />
+                    <OglModel template="ExtVec3f" name="Visual_cpu" src="@meshLoader_0" color="1 0.8 0.8 "/>
                     <LinearMultiMapping template="Rigid,Affine,ExtVec3f" input1="@../.." input2="@.." output="@." printLog="0" assemble="0"/>
                 </Node>
                 

@@ -14,7 +14,8 @@
         <BoxConstraint box="-18.0 2.0 -5.0 -2.0 3.0 5.0" />
         <MeshSpringForceField name="Springs" stiffness="50000" damping="4" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/frog.obj" color="0.5 1.0 0.5 1.0" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/frog.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="0.5 1.0 0.5 1.0" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="TriangleSurf">
@@ -37,7 +38,8 @@
         <BoxConstraint box="2.0 2.0 -5.0 18.0 3.0 5.0" />
         <MeshSpringForceField name="Springs" stiffness="50000" damping="4" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/frog_quads.obj" color="1.0 0.5 0.5 1.0" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/frog_quads.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="1.0 0.5 0.5 1.0" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="QuadSurf">

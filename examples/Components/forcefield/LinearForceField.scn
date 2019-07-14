@@ -9,7 +9,8 @@
         <!-- forces for a rigid is composed of two parts translation of the rigid dof [x y z] and a quaternion for the rotation [x y z w] -->
         <LinearForceField points="0" forces="0 0 0 0 0 0  1 0 0 0 0 0  -1 0 0 0 0 0  -1 0 0 0 0 0  0 0 0 0 0 0" force="2.0" times="0 4 8 10 12" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="0.3" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" scale="0.3" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="gray" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -21,7 +22,8 @@
         <!-- forces for a rigid is composed of two parts translation of the rigid dof [x y z] and a quaternion for the rotation [x y z w] -->
         <LinearForceField points="0" forces="0 0 0 0 0 0  0 1 0 0 0 0  0 -1 0 0 0 0  0 -1 0 0 0 0  0 0 0 0 0 0" force="2.0" times="0 4 8 10 12" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="0.3" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" scale="0.3" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="gray" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
     </Node>

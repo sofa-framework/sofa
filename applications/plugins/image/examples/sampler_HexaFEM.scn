@@ -20,7 +20,8 @@
           <HexahedronFEMForceField youngModulus="30.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" />
 
 	  <Node name="Visual"  >
-	     <OglModel  fileMesh="mesh/Armadillo_simplified.obj"   />
+	     <MeshObjLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_0"   />
 	     <BarycentricMapping input="@.." output="@." />
 	  </Node>
   </Node>

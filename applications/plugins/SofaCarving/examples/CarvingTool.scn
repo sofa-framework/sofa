@@ -45,7 +45,8 @@
     <LinearMovementConstraint template="Rigid" keyTimes="0 2" movements="0 0 0   0 0 0
 										      0 0 0   0 0 0" />
     <Node 	name="VisualModel" >
-      <OglModel template="ExtVec3f"  name="InstrumentVisualModel"  fileMesh="mesh/dental_instrument_light.obj" scale3d="1 1 1" translation="-0.412256 -0.067639 3.35" rotation="180 0 150" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
+      <MeshObjLoader name="meshLoader_0" filename="mesh/dental_instrument_light.obj" scale3d="1 1 1" translation="-0.412256 -0.067639 3.35" rotation="180 0 150" handleSeams="1" />
+      <OglModel template="ExtVec3f"  name="InstrumentVisualModel" src="@meshLoader_0" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
       <RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
     </Node>
 	

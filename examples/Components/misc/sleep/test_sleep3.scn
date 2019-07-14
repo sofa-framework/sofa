@@ -18,7 +18,8 @@
 			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="1 1 0  0.5 0.5 0.5" indices="@Cube1.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
-            <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" />
+            <MeshObjLoader name="meshLoader_2" filename="mesh/smCube125.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_2" color="red" />
             <SubsetMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
@@ -40,7 +41,8 @@
 			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="1 0 0  0.5 0.5 0.5" indices="@Cube2.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
-            <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" dx="50" dy="20"/>
+            <MeshObjLoader name="meshLoader_1" filename="mesh/smCube125.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="red" dx="50" dy="20"/>
             <SubsetMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
@@ -62,7 +64,8 @@
 			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 1 0  0.5 0.5 0.5" indices="@Cube3.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
-            <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" dx="-30" dy="10"/>
+            <MeshObjLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="red" dx="-30" dy="10"/>
             <SubsetMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
@@ -80,6 +83,7 @@
         <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
         <LineCollisionModel name="FloorLine" simulated="0" moving="0" />
         <PointCollisionModel name="FloorLine" simulated="0" moving="0" />
-        <OglModel name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" scaleTex="0.2 0.2" dy="-10" scale="1.75" />
+        <MeshObjLoader name="meshLoader_3" filename="mesh/floor3.obj" scaleTex="0.2 0.2" scale="1.75" handleSeams="1" />
+        <OglModel name="FloorV" src="@meshLoader_3" texturename="textures/brushed_metal.bmp" dy="-10" />
     </Node>
 </Node>
