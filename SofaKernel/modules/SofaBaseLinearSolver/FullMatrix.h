@@ -393,17 +393,17 @@ public:
     {
         Index nx = v.colSize();
         Index ny = v.rowSize();
-        //out << "[";
+        out << "[";
         for (Index y=0; y<ny; ++y)
         {
-            //out << "\n[";
+            out << "\n[";
             for (Index x=0; x<nx; ++x)
             {
                 out << " " << v.element(y,x);
             }
-            out << "\n";// " ]";
+            out << "\n";
         }
-        //out << " ]";
+        out << " ]";
         return out;
     }
 
