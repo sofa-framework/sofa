@@ -50,12 +50,12 @@ protected:
 public:
     ~FileAccess() override;
 
-    virtual bool open(const std::string& filename, std::ios_base::openmode openMode);
+    virtual bool open(const std::string& filename, std::ios_base::openmode openMode) override;
     void close() override;
 
-    virtual std::streambuf* streambuf() const;
-    virtual std::string readAll();
-    virtual void write(const std::string& data);
+    virtual std::streambuf* streambuf() const override;
+    virtual std::string readAll() override;
+    virtual void write(const std::string& data) override;
 
 private:
     std::fstream myFile;

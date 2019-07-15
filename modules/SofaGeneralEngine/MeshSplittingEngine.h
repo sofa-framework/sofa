@@ -91,31 +91,8 @@ public:
 
 protected:
 
-    MeshSplittingEngine()    : Inherited()
-      , inputPosition(initData(&inputPosition,"position","input vertices"))
-      , inputEdges(initData(&inputEdges,"edges","input edges"))
-      , inputTriangles(initData(&inputTriangles,"triangles","input triangles"))
-      , inputQuads(initData(&inputQuads,"quads","input quads"))
-      , inputTets(initData(&inputTets,"tetrahedra","input tetrahedra"))
-      , inputHexa(initData(&inputHexa,"hexahedra","input hexahedra"))
-      , nbInputs (initData(&nbInputs, (unsigned)0, "nbInputs", "Number of input vectors"))
-      , indices(this, "indices", "input vertex indices", helper::DataEngineInput)
-      , edgeIndices(this, "edgeIndices", "input edge indices", helper::DataEngineInput)
-      , triangleIndices(this, "triangleIndices", "input triangle indices", helper::DataEngineInput)
-      , quadIndices(this, "quadIndices", "input quad indices", helper::DataEngineInput)
-      , tetrahedronIndices(this, "tetrahedronIndices", "input tetrahedron indices", helper::DataEngineInput)
-      , hexahedronIndices(this, "hexahedronIndices", "input hexahedron indices", helper::DataEngineInput)
-      , indexPairs( initData( &indexPairs, helper::vector<unsigned>(), "indexPairs", "couples for input vertices: ROI index + index in the ROI"))
-      , position(this, "position", "output vertices", helper::DataEngineOutput)
-    {
-        resizeData();
-    }
-
-    ~MeshSplittingEngine() override
-    {
-
-    }
-
+    MeshSplittingEngine();
+    ~MeshSplittingEngine() override;
 
 public:
     void init() override

@@ -227,7 +227,6 @@ extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec1Types>;
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec6Types>;
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Rigid3Types>;
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Rigid2Types>;
-extern template class SOFA_CORE_API MechanicalState<defaulttype::ExtVec3Types>;
 
 
 #endif

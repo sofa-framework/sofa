@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="lroot" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
     
     <Node name="Liver" gravity="0 -9.81 0">
@@ -13,7 +14,8 @@
         <MeshSpringForceField template="CudaVec3f" name="FEM" tetrahedraStiffness="10000"/>
         <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
-            <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel  name="VisualModel" src="@meshLoader_0" />
             <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
         </Node>
     </Node>

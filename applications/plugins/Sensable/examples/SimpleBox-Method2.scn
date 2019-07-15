@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
 <Node name="root" gravity="0 0 0" dt="0.02" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisualModels" />
 
     <RequiredPlugin pluginName="Sensable" />
@@ -8,7 +9,7 @@
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver />
 
-    <CollisionPipeline depth="8" />
+    <DefaultPipeline depth="8" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.6" contactDistance="0.3" />
     <RuleBasedContactManager name="Response" response="FrictionContact"
@@ -29,7 +30,7 @@
     </Node>
 
     <Node name="Tool">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver />
 
         <MechanicalObject name="ms" template="Rigid"/>
@@ -38,12 +39,13 @@
 
         <Node name="ToolCollision">
             <MechanicalObject name="CM" position="0 0 0"/>
-            <Point bothSide="true" group="1" />
+            <PointCollisionModel bothSide="true" group="1" />
             <RigidMapping />
         </Node>
 
         <Node name="ToolVisual">
-            <OglModel template="ExtVec3f" name="VisualModel" fileMesh="data/mesh/dental_instrument.obj" scale3d="10 10 10" translation="-2.12256 1.32361 35.5" rotation="180 0 150" />
+            <MeshObjLoader name="meshLoader_1" filename="data/mesh/dental_instrument.obj" scale3d="10 10 10" translation="-2.12256 1.32361 35.5" rotation="180 0 150" handleSeams="1" />
+            <OglModel template="ExtVec3f" name="VisualModel" src="@meshLoader_1" />
             <RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping" input="@ms" output="@VisualModel" />
         </Node>
               
@@ -54,14 +56,15 @@
 
 <Node name="Box" >
         <Node name="VisualModel" >
-            <OglModel template="ExtVec3f" name="BoxVisualModel" scale3d="10 10 10" fileMesh="data/mesh/box.obj" />
+            <MeshObjLoader name="meshLoader_0"  scale3d="10 10 10"filename="data/mesh/box.obj" handleSeams="1" />
+            <OglModel template="ExtVec3f" name="BoxVisualModel" src="@meshLoader_0" />
         </Node>
         <Node 	name="CollisionModel" >
 
             <MeshObjLoader name="loader"  filename="data/mesh/box.obj" scale="10"/>
             <MeshTopology src="@loader" name="BoxCollisionModel" />
             <MechanicalObject src="@loader" template="Vec3d" name="boxState" />
-            <Triangle />
+            <TriangleCollisionModel />
 
         </Node>
     </Node>

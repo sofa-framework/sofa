@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
@@ -24,7 +25,7 @@
         <Node name="Surf" gravity="0 -9.81 0">
             <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject name="spheres" position="@[-1].position" />
-            <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+            <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
             <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
         </Node>
     </Node>

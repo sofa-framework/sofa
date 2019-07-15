@@ -330,12 +330,6 @@ extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3Types, sof
 extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3Types >;
 
-// This one is special: ExtVec3Types are used for output outside of Sofa.
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec2Types, sofa::defaulttype::ExtVec2Types >;
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3Types >;
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6Types, sofa::defaulttype::ExtVec3Types >;
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::ExtVec3Types >;
-
 // cross templates
 #endif
 

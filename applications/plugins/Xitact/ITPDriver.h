@@ -35,8 +35,6 @@
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
 
-//#include <sofa/gui/PickHandler.h>
-//#include <sofa/gui/qt/SofaMouseManager.h>
 #include <SofaUserInteraction/RayModel.h>
 #include <Xitact/config.h>
 

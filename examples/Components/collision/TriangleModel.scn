@@ -1,28 +1,30 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <CollisionPipeline verbose="0" draw="0" />
+    <DefaultPipeline verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <CollisionResponse name="Response" response="default" />
+    <DefaultContactManager name="Response" response="default" />
     <Node name="cubeFEM">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject />
         <UniformMass vertexMass="0.25" />
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="red" />
             <SubsetMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <SubsetMapping />
         </Node>
     </Node>
@@ -30,9 +32,10 @@
         <MeshObjLoader name="loader" filename="mesh/floor3.obj" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
-        <Triangle name="FloorTriangle" simulated="0" moving="0" />
-        <Line name="FloorLine" simulated="0" moving="0" />
-        <Point name="FloorLine" simulated="0" moving="0" />
-        <OglModel name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" dy="-10" scale="1.75" />
+        <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorLine" simulated="0" moving="0" />
+        <PointCollisionModel name="FloorLine" simulated="0" moving="0" />
+        <MeshObjLoader name="meshLoader_1" filename="mesh/floor3.obj" scale="1.75" handleSeams="1" />
+        <OglModel name="FloorV" src="@meshLoader_1" texturename="textures/brushed_metal.bmp" dy="-10" />
     </Node>
 </Node>

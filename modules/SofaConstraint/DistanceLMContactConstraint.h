@@ -72,31 +72,10 @@ public:
 
 
 protected:
-    DistanceLMContactConstraint( MechanicalState *dof)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
-        , pointPairs(sofa::core::objectmodel::Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        , contactFriction(sofa::core::objectmodel::Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
-        , intersection(0)
-    {
-        initColorContactState();
-    }
+    DistanceLMContactConstraint();
+    DistanceLMContactConstraint( MechanicalState *dof);
+    DistanceLMContactConstraint( MechanicalState *dof1, MechanicalState * dof2);
 
-    DistanceLMContactConstraint( MechanicalState *dof1, MechanicalState * dof2)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
-        , pointPairs(sofa::core::objectmodel::Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        , contactFriction(sofa::core::objectmodel::Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
-        , intersection(0)
-    {
-        initColorContactState();
-    }
-
-    DistanceLMContactConstraint()
-        : pointPairs(sofa::core::objectmodel::Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        , contactFriction(sofa::core::objectmodel::Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
-        , intersection(0)
-    {
-        initColorContactState();
-    }
 
     ~DistanceLMContactConstraint() override {}
 public:

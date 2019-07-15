@@ -42,14 +42,12 @@ using namespace core::behavior;
 
 // Register in the Factory
 int HexahedronCompositeFEMMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
-        .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, ExtVec3Types > > >()
         .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3dTypes > > >()
 
 //
 
         ;
 
-template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, ExtVec3Types > >;
 template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3dTypes > >;
 
 

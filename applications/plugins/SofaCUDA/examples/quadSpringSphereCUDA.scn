@@ -1,4 +1,5 @@
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 	<DefaultPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
@@ -12,9 +13,9 @@
 			zmin="-20" zmax="20" />
 		<MechanicalObject />
 		<!--
-		<Triangle simulated="0" moving="0" />
-		<Line simulated="0" moving="0" />
-		<Point simulated="0" moving="0" />
+		<TriangleCollisionModel simulated="0" moving="0" />
+		<LineCollisionModel simulated="0" moving="0" />
+		<PointCollisionModel simulated="0" moving="0" />
 			  -->
 		<Node name="Visu">
 			<OglModel name="Visual" color="red"/>
@@ -62,12 +63,13 @@
 				ymin="7" ymax="7"
 				zmin="-12" zmax="12" />
 			<IdentityMapping />
-			<Triangle />
+			<TriangleCollisionModel />
 		</Node>
 		-->
 	</Node>
 	<Node name="Sphere">
-		<OglModel name="Visual" fileMesh="mesh/sphere.obj" scale="3.95" dx="0" dy="1" dz="3" color="blue"/>
+		<MeshObjLoader name="meshLoader_0" filename="mesh/sphere.obj" scale="3.95" handleSeams="1" />
+		<OglModel name="Visual" src="@meshLoader_0" dx="0" dy="1" dz="3" color="blue"/>
 	</Node>
 </Node>
 

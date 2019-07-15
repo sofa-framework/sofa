@@ -138,10 +138,10 @@ public:
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
     sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
 protected:
-    VectorSpringForceField(MechanicalState* _object=NULL);
-
+    VectorSpringForceField();
+    VectorSpringForceField(MechanicalState* _object);
     VectorSpringForceField(MechanicalState* _object1, MechanicalState* _object2);
-    virtual ~VectorSpringForceField();
+    virtual ~VectorSpringForceField() override;
 
     EdgeDataHandler* edgeHandler;
 
@@ -166,11 +166,11 @@ public:
 
     Real getStiffness() const
     {
-        return (Real)(m_stiffness.getValue());
+        return Real(m_stiffness.getValue());
     }
     const Real getViscosity() const
     {
-        return (Real)(m_viscosity.getValue());
+        return Real(m_viscosity.getValue());
     }
     const topology::EdgeData<sofa::helper::vector<Spring> >& getSpringArray() const
     {

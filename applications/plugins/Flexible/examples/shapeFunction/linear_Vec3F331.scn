@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     
     <RequiredPlugin pluginName="Flexible" />
     <VisualStyle displayFlags="showBehaviorModels showMechanicalMappings showForceFields" />
@@ -25,7 +26,8 @@
     </Node>
 
     <Node 	name="visual"   >
-	<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/ball.obj"/>
+	<MeshObjLoader name="meshLoader_0" filename="mesh/ball.obj" handleSeams="1" />
+	<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0"/>
     	<LinearMapping template="Vec3d,ExtVec3f"/>
     </Node>
 </Node>

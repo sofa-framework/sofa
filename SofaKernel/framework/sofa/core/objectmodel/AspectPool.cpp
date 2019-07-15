@@ -52,12 +52,12 @@ Aspect::~Aspect()
 
 void Aspect::add_ref()
 {
-    counter.inc();
+    counter++;
 }
 
 void Aspect::release()
 {
-    if(counter.dec_and_test_null())
+    if(counter.fetch_sub(1) == 1)
     {
         // release the aspect from the pool.
         pool.release(id);

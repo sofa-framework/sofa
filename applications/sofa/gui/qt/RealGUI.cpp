@@ -321,17 +321,15 @@ RealGUI::RealGUI ( const char* viewername)
       handleTraceVisitor(NULL),
       #endif
 
+      m_sofaMouseManager(nullptr),
       #ifdef SOFAGUIQT_HAS_QTCHARTS
       m_windowTimerProfiler(nullptr),
       #endif
-
-      m_sofaMouseManager(nullptr),
-
       simulationGraph(nullptr),
       mCreateViewersOpt(true),
       mIsEmbeddedViewer(true),
       m_dumpState(false),
-      m_dumpStateStream(NULL),
+      m_dumpStateStream(nullptr),
       m_exportGnuplot(false),
       _animationOBJ(false),
       _animationOBJcounter(0),
@@ -1732,15 +1730,17 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 
 void RealGUI::parseOptions()
 {
-    po::variables_map vm = mArgumentParser->getVariableMap();
-    if(vm.find("interactive") != vm.end())
-        m_enableInteraction = vm["interactive"].as<bool>();
-    if(vm.find("msaa") != vm.end())
-        m_viewerMSAANbSampling = vm["msaa"].as<unsigned int>();
+    if (mArgumentParser) {
+        po::variables_map vm = mArgumentParser->getVariableMap();
+        if(vm.find("interactive") != vm.end())
+            m_enableInteraction = vm["interactive"].as<bool>();
+        if(vm.find("msaa") != vm.end())
+            m_viewerMSAANbSampling = vm["msaa"].as<unsigned int>();
 
-    if(m_enableInteraction)
-        msg_warning("runSofa") << "you activated the interactive mode. This is currently an experimental feature "
-                                  "that may change or be removed in the future. ";
+        if(m_enableInteraction)
+            msg_warning("runSofa") << "you activated the interactive mode. This is currently an experimental feature "
+                                      "that may change or be removed in the future. ";
+    }
 }
 
 //------------------------------------

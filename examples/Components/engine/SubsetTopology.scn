@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="default1" response="default" />
@@ -18,10 +19,12 @@
             <DiagonalMass template="Vec3d" name="default5" massDensity="1.15" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="30" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
-            <TTriangleModel template="Vec3d" name="default7" />
-            <VisualModel template="ExtVec3f" name="Visual" color="blue" />
-            <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
-        </Node>
+            <TriangleCollisionModel template="Vec3d" name="default7" />
+
+            <Node >
+              <OglModel name="Visual" color="blue" />
+              <IdentityMapping input="@.." output="@Visual" />
+            </Node>        </Node>
         <Node name="Out">
             <MechanicalObject template="Vec3d" name="mecaObj2" position="@../meshLoader.position" />
             <TriangleSetTopologyContainer name="Container" position="@mecaObj2.position" triangles="@../Subset.trianglesOutROI" />
@@ -31,10 +34,12 @@
             <DiagonalMass template="Vec3d" name="default5" massDensity="1.15" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="30" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
-            <TTriangleModel template="Vec3d" name="default7" />
+            <TriangleCollisionModel template="Vec3d" name="default7" />
             <FixedConstraint template="Vec3d" name="default6" indices="0 1" />
-            <VisualModel template="ExtVec3f" name="Visual" color="red" />
-            <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
-        </Node>
+            <Node >
+              <OglModel name="Visual" color="red" />
+              <IdentityMapping input="@.." output="@Visual" />
+            </Node>
+	 </Node>
     </Node>
 </Node>

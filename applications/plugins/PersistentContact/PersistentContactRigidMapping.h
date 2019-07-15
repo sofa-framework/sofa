@@ -119,21 +119,9 @@ protected:
     void setDefaultValues();
 };
 
-
-
-
 #if  !defined(SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_CPP)
 extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< defaulttype::Rigid2Types, defaulttype::Vec2Types >;
-
-
-////#ifdef SOFA_WITH_FLOAT
-//extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3Types, Vec3Types >;
-//extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3Types, Vec3Types >;
-//extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2Types, Vec2Types >;
-//extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2Types, Vec2Types >;
-//
-//#endif
 #endif
 
 } // namespace mapping

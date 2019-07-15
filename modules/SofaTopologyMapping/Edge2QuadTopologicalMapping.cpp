@@ -64,6 +64,16 @@ int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
 
 // Implementation
 
+Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
+    : TopologicalMapping()
+    , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
+    , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
+    , edgeList(initData(&edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
+    , flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
+    , m_radiusContainer(nullptr)
+{
+}
+
 void Edge2QuadTopologicalMapping::init()
 {
 

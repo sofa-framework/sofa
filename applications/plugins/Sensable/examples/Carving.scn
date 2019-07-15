@@ -1,20 +1,21 @@
 <?xml version="1.0" ?>
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
     <RequiredPlugin name="Carving" pluginName="SofaCarving" />
 
   <VisualStyle displayFlags="" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="false"/>
-    <CollisionGroup />
+    <DefaultCollisionGroupManager />
 
   <CarvingManager key="0" active="true"/>
 
   <Node name="TT">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader filename="data/mesh/cylinder.msh" name="loader" />
         <MechanicalObject src="@loader" name="Volume" />
@@ -26,7 +27,7 @@
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" />
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
-            <TriangleSet />
+            <TriangleCollisionModel />
             <Node name="Visu">
                 <OglModel name="Visual" color="yellow" />
                 <IdentityMapping input="@../../Volume" output="@Visual" />
@@ -41,13 +42,14 @@
         <MechanicalObject template="Rigid" name="instrumentState" tags="Omni"  />
         <UniformMass template="Rigid" name="mass"  totalMass="0.05" />
         <Node 	name="VisualModel" >
-            <OglModel template="ExtVec3f"  name="InstrumentVisualModel"  fileMesh="data/mesh/dental_instrument.obj" scale3d="1 1 1" translation="-0.212256 0.132361 3.55" rotation="180 0 150" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
+            <MeshObjLoader name="meshLoader_0" filename="data/mesh/dental_instrument.obj" scale3d="1 1 1" translation="-0.212256 0.132361 3.55" rotation="180 0 150" handleSeams="1" />
+            <OglModel template="ExtVec3f"  name="InstrumentVisualModel" src="@meshLoader_0" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
             <RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
         </Node>
         <Node 	name="CollisionModel"  >
 
             <MechanicalObject template="Vec3d" name="Particle"  position="0 0 0" />
-            <Point name="ParticleModel" tags="CarvingTool" contactStiffness="2" />
+            <PointCollisionModel name="ParticleModel" tags="CarvingTool" contactStiffness="2" />
             <RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@instrumentState"  output="@Particle" />
             <EnslavementForceFeedback name="forcefeedback" tags="Omni" collisionModel1="@ParticleModel" collisionModel2="" relativeStiffness="4" attractionDistance="0.3" normalsPointOut="false"/>
 

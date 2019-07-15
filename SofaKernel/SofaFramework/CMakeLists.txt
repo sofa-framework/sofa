@@ -14,10 +14,6 @@ option(SOFA_DETECTIONOUTPUT_FREEMOTION
 "Compile Sofa with the DETECTIONOUTPUT_FREEMOTION macro defined." OFF)
 set(DETECTIONOUTPUT_FREEMOTION ${SOFA_DETECTIONOUTPUT_FREEMOTION}) # Used in sofa/config.h.in
 
-option(SOFA_DETECTIONOUTPUT_BARYCENTRICINFO
-"Compile Sofa with the DETECTIONOUTPUT_BARYCENTRICINFO macro defined." OFF)
-set(DETECTIONOUTPUT_BARYCENTRICINFO ${SOFA_DETECTIONOUTPUT_BARYCENTRICINFO}) # Used in sofa/config.h.in
-
 option(SOFA_NO_OPENGL
 "Compile Sofa with no OpenGL support. (This will define the SOFA_NO_OPENGL
 macro.)" OFF)
@@ -68,9 +64,13 @@ if(NOT SOFA_NO_OPENGL)
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${OPENGL_LIBRARIES})
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${OPENGL_INCLUDE_DIR})
 
-    if(OPENGL_GLU_FOUND AND UNIX AND NOT APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+    if(SOFA_BUILD_RELEASE_PACKAGE AND OPENGL_GLU_FOUND AND UNIX AND NOT APPLE)
         # Add GLU to Linux binaries
-        sofa_install_libraries(TARGETS OpenGL::GLU)
+        if(TARGET OpenGL::GLU)
+            sofa_install_libraries(TARGETS OpenGL::GLU)
+        else()
+            sofa_install_libraries(LIBRARIES ${OPENGL_glu_LIBRARY})
+        endif()
     endif()
 
     ## GLEW

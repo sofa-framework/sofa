@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0 " dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
       <RequiredPlugin pluginName="Flexible"/>
       <RequiredPlugin pluginName="image"/>
 
@@ -9,7 +10,8 @@
 
     <Node 	name="ref_highresFEM"   >
 	<VisualStyle displayFlags="hideWireframe" />
-        <OglModel template="ExtVec3f" name="Visual" fileMesh="../beam/refBeam_Flex.obj" color="0.5 0.5 0.5" translation="-0.5 0 0"/>
+        <MeshObjLoader name="meshLoader_0" filename="../beam/refBeam_Flex.obj" translation="-0.5 0 0" handleSeams="1" />
+        <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.5 0.5 0.5"/>
     </Node>
 
   <Node name="Flexible"   >
@@ -92,7 +94,8 @@
 
     <Node 	name="visual"   >
 <VisualStyle displayFlags="showWireframe" />
-        <OglModel template="ExtVec3f" name="Visual" fileMesh="../beam/beam.obj" color="1 0.8 0.8"/>
+        <MeshObjLoader name="meshLoader_1" filename="../beam/beam.obj" handleSeams="1" />
+        <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="1 0.8 0.8"/>
 	<LinearMapping template="Affine,ExtVec3f"/>
     </Node>
 </Node>

@@ -23,7 +23,6 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/system/atomic.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/map.h>
 #include <../extlibs/json/json.h>
@@ -113,7 +112,7 @@ public:
 
 std::map< AdvancedTimer::IdTimer, TimerData > timers;
 
-helper::system::atomic<int> activeTimers;
+std::atomic<int> activeTimers;
 SOFA_THREAD_SPECIFIC_PTR(std::stack<AdvancedTimer::IdTimer>, curTimerThread);
 SOFA_THREAD_SPECIFIC_PTR(helper::vector<Record>, curRecordsThread);
 

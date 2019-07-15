@@ -1,14 +1,15 @@
 <!-- BeamFEMForceField example -->
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="MultiThreading" />
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.03" contactDistance="0.02" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="beam">
-        <EulerImplicit rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
+        <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
         <BTDLinearSolver bandWidth="11" printLog="false" verbose="false" />
         <MechanicalObject template="Rigid" name="DOFs" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1  3 0 0 0 0 0 1  4 0 0 0 0 0 1  5 0 0 0 0 0 1  6 0 0 0 0 0 1  7 0 0 0 0 0 1
                           8 0 0 0 0 0 1  9 0 0 0 0 0 1  10 0 0 0 0 0 1  11 0 0 0 0 0 1  12 0 0 0 0 0 1  13 0 0 0 0 0 1  14 0 0 0 0 0 1  15 0 0 0 0 0 1
@@ -34,7 +35,7 @@
         <!--
       <Node name="Collision">
         <MechanicalObject/>
-        <Sphere radius=".2" position="0 0 0 0 0 0" />
+        <SphereCollisionModel radius=".2" position="0 0 0 0 0 0" />
         <RigidMapping index="7" />
       </Node>
 -->
@@ -43,7 +44,7 @@
             <CubeTopology nx="256" ny="8" nz="8" min="0 -0.1 -0.1" max="31 0.1 0.1" />
             <MechanicalObject />
             <BeamLinearMapping_mt granularity="512" isMechanical="true" />
-            <Triangle />
+            <TriangleCollisionModel />
             <!--        <OglModel /> -->
         </Node>
     </Node>

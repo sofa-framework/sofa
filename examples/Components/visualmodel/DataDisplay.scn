@@ -1,9 +1,9 @@
 <!-- Use of DataDisplay to show distances from rest shape  -->
 <Node name="root" gravity="0 0 -1" dt="0.05">
     <VisualStyle displayFlags="showVisual hideBehavior hideCollision hideMapping" />
-    <CollisionPipeline verbose="0" name="CollisionPipeline" />
+    <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" name="collision response" />
+    <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection />
 
     <Node name="Mesh">
@@ -12,7 +12,7 @@
     </Node>
 
     <Node name="Simulation">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <RegularGrid src="@/Mesh/Grid" />
         <MechanicalObject />
@@ -20,7 +20,7 @@
         <FixedConstraint indices="0 9 99" />
         <TriangleFEMForceField name="FEM3" youngModulus="5000" poissonRatio="0.3" method="large" />
         <TriangleBendingSprings name="FEM-Bend" stiffness="100" damping="0.1" />
-        <Triangle />
+        <TriangleCollisionModel />
 
         <EvalPointsDistance name="dist" object1="@/Mesh/MO" object2="@." listening="true" period="0.05" draw="false" />
 

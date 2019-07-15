@@ -100,7 +100,6 @@ void PickHandler::allocateSelectionBuffer(int width, int height)
     static bool firstTime=true;
     if (firstTime)
     {
-#if defined (SOFA_HAVE_GLEW)
         _fboParams.depthInternalformat = GL_DEPTH_COMPONENT24;
 #if defined(GL_VERSION_3_0)
         if (GLEW_VERSION_3_0)
@@ -116,12 +115,9 @@ void PickHandler::allocateSelectionBuffer(int width, int height)
         _fboParams.colorType           = GL_FLOAT;
 
         _fbo.setFormat(_fboParams);
-#endif //  (SOFA_HAVE_GLEW)
         firstTime=false;
     }
-#if defined (SOFA_HAVE_GLEW)
     _fbo.init(width,height);
-#endif //  (SOFA_HAVE_GLEW)
 #endif /* SOFA_NO_OPENGL */
     _fboAllocated = true;
 }
@@ -131,9 +127,7 @@ void PickHandler::destroySelectionBuffer()
     /*called when shift key is released */
     assert(_fboAllocated);
 #ifndef SOFA_NO_OPENGL
-#ifdef SOFA_HAVE_GLEW
     _fbo.destroy();
-#endif // SOFA_HAVE_GLEW
 #endif // SOFA_NO_OPENGL
     _fboAllocated = false;
 }
@@ -445,9 +439,6 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
                     result.body=modelInCollision;
                     result.indexCollisionElement = output[i]->elem.second.getIndex();
                     result.point = output[i]->point[1];
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    result.baryCoords = output[i]->baryCoords[1];
-#endif
                     result.dist  = (output[i]->point[1]-output[i]->point[0]).norm();
                     result.rayLength  = d;
                 }
@@ -464,9 +455,6 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
                     result.body=modelInCollision;
                     result.indexCollisionElement = output[i]->elem.first.getIndex();
                     result.point = output[i]->point[0];
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    result.baryCoords = output[i]->baryCoords[0];
-#endif
                     result.dist  = (output[i]->point[1]-output[i]->point[0]).norm();
                     result.rayLength  = d;
                 }
@@ -526,7 +514,6 @@ component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(con
     int y = mousePosition.screenHeight - mousePosition.y;
     TriangleModel* tmodel;
     SphereModel* smodel;
-#ifdef SOFA_HAVE_GLEW
     _fbo.start();
     if(renderCallback)
     {
@@ -546,7 +533,6 @@ component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(con
         result.rayLength = (result.point-origin)*direction;
     }
     _fbo.stop();
-#endif // SOFA_HAVE_GLEW
 #endif // SOFA_NO_OPENGL
     return result;
 }

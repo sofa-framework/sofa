@@ -49,6 +49,8 @@ using sofa::helper::logging::ClangMessageHandler ;
 #include <SofaTest/TestMessageHandler.h>
 using sofa::helper::logging::Message ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 namespace sofa {
 
 struct TestLightManager : public Sofa_test<> {
@@ -87,6 +89,7 @@ void checkAttributes()
 
 TEST_F(TestLightManager, checkAttributes)
 {
+    sofa::simpleapi::importPlugin("SofaOpenglVisual");
     checkAttributes();
 }
 

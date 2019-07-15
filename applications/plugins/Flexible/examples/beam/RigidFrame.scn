@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	 name="Root"  gravity="0 -10 0"  dt="0.001"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
         <RequiredPlugin pluginName="Flexible"/>
         <RequiredPlugin pluginName="image"/>
 	<VisualStyle name="visualStyle1"  displayFlags="showBehaviorModels showInteractionForceFields hideWireframe" />
@@ -25,7 +26,8 @@
 "  object1="@../.."  object2="@." />
 		</Node>
 		<Node 	 name="visual"  >
-			<OglModel template="ExtVec3f" name="Visual"  fileMesh="beam.obj"  material="Default Diffuse 1 1 0.8 0.8 1 Ambient 1 0.2 0.16 0.16 1 Specular 0 1 0.8 0.8 1 Emissive 0 1 0.8 0.8 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<MeshObjLoader name="meshLoader_0" filename="beam.obj" handleSeams="1" />
+			<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0"  material="Default Diffuse 1 1 0.8 0.8 1 Ambient 1 0.2 0.16 0.16 1 Specular 0 1 0.8 0.8 1 Emissive 0 1 0.8 0.8 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 			<LinearMapping template="Rigid,ExtVec3f" name="linearMap2"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="0 - None"  input="@../"  output="@./" />
 		</Node>
 	</Node>
@@ -42,7 +44,8 @@
 "  object1="@../.."  object2="@." />
 		</Node>
 		<Node 	 name="visual"  >
-			<OglModel template="ExtVec3f" name="Visual"  fileMesh="beam.obj"  material="Default Diffuse 1 0.8 1 0.8 1 Ambient 1 0.16 0.2 0.16 1 Specular 0 0.8 1 0.8 1 Emissive 0 0.8 1 0.8 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<MeshObjLoader name="meshLoader_1" filename="beam.obj" handleSeams="1" />
+			<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1"  material="Default Diffuse 1 0.8 1 0.8 1 Ambient 1 0.16 0.2 0.16 1 Specular 0 0.8 1 0.8 1 Emissive 0 0.8 1 0.8 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 			<RigidMapping template="Rigid,ExtVec3f" name="rigidMap2"  input="@../"  output="@./" />
 		</Node>
 	</Node>

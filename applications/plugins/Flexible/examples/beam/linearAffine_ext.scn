@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0 " dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
     <VisualStyle displayFlags="hideWireframe showBehaviorModels" />
@@ -31,7 +32,8 @@
 	<HexahedronFEMForceField youngModulus="1.0" poissonRatio="0" method="polar" updateStiffnessMatrix="false" />
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="beam.obj"  color="blue" />
+	     <MeshObjLoader name="meshLoader_1" filename="beam.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_1"  color="blue" />
 	     <BarycentricMapping input="@.." output="@." />
 	</Node>
   </Node>
@@ -49,7 +51,7 @@
        <TriangleSetTopologyModifier name="Modifier" />
        <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
        <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-       <TriangleModel name="CollisionModel" />
+       <TriangleCollisionModel name="CollisionModel" />
 
 	<UniformMass totalMass="10" />
 
@@ -113,7 +115,8 @@
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="1 0.8 0.8 "/>
+		<MeshObjLoader name="meshLoader_2" filename="beam.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_2" color="1 0.8 0.8 "/>
 	    	<LinearMapping template="Affine,ExtVec3f"/>
 	    </Node>
     </Node>
@@ -145,7 +148,8 @@
 		</Node>
 
 		<Node name="Visual" >
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj"/>
+			<MeshObjLoader name="meshLoader_0" filename="beam.obj" handleSeams="1" />
+			<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0"/>
 			<FrameBlendingMapping template="Affine,ExtVec3d"  input="@../DOFs"  output="@Visual" />
 		</Node>
 
@@ -153,7 +157,7 @@
 			<MeshObjLoader name="MeshLoader" filename="beam.obj"/>
       			<Mesh name="mesh" src="@MeshLoader"  /> 
       			<MechanicalObject  name="PointSet"/>
-      			<Triangle />
+      			<TriangleCollisionModel />
 			<FrameBlendingMapping template="Affine,Vec3d" input="@../DOFs"  output="@PointSet" showStrain="false"/>
 
 			<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 

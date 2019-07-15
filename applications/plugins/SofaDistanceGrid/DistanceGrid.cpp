@@ -82,25 +82,11 @@ int validateDim(int n)
 }
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
-    : meshPts(new DefaultAllocator<Coord>)
+    : meshPts()
     , m_nbRef(1)
     , m_nx(validateDim(nx)), m_ny(validateDim(ny)), m_nz(validateDim(nz))
     , m_nxny(m_nx*m_ny), m_nxnynz(m_nx*m_ny*m_nz)
-    , m_dists(m_nx*m_ny*m_nz, new DefaultAllocator<SReal>)
-    , m_pmin(pmin), m_pmax(pmax)
-    , m_cellWidth   (calcCellWidth(m_nx,m_ny,m_nz,pmin,pmax))
-    , m_invCellWidth(calcInvCellWidth(m_nx,m_ny,m_nz,pmin,pmax))
-    , m_cubeDim(0)
-{
-}
-
-DistanceGrid::DistanceGrid(int nx, int ny, int nz,
-                           Coord pmin, Coord pmax, ExtVectorAllocator<SReal>* alloc)
-    : meshPts(new DefaultAllocator<Coord>)
-    , m_nbRef(1)
-    , m_nx(validateDim(nx)), m_ny(validateDim(ny)), m_nz(validateDim(nz))
-    , m_nxny(m_nx*m_ny), m_nxnynz(m_nx*m_ny*m_nz)
-    , m_dists(m_nx*m_ny*m_nz, alloc)
+    , m_dists(m_nx*m_ny*m_nz)
     , m_pmin(pmin), m_pmax(pmax)
     , m_cellWidth   (calcCellWidth(m_nx,m_ny,m_nz,pmin,pmax))
     , m_invCellWidth(calcInvCellWidth(m_nx,m_ny,m_nz,pmin,pmax))

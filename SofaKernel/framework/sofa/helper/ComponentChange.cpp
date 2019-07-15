@@ -33,15 +33,10 @@ std::map<std::string, Deprecated> deprecatedComponents = {
     // SofaMiscForceField
     {"LennardJonesForceField", Deprecated("v17.12", "v18.12")},
 
-    // SofaOpenglVisual
-    {"OglCylinderModel", Deprecated("v17.12", "v18.12")},
-    {"OglGrid", Deprecated("v17.12", "v18.12")},
-    {"OglRenderingSRGB", Deprecated("v17.12", "v18.12")},
-    {"OglLineAxis", Deprecated("v17.12", "v18.12")},
-    {"OglSceneFrame", Deprecated("v17.12", "v18.12")},
 };
 
 std::map<std::string, ComponentChange> uncreatableComponents = {
+    // SofaDistanceGrid was pluginized in #389
     {"BarycentricPenalityContact", Pluginized("v17.12", "SofaDistanceGrid")},
     {"DistanceGridCollisionModel", Pluginized("v17.12", "SofaDistanceGrid")},
     {"FFDDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
@@ -49,12 +44,13 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"RigidDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
     {"DistanceGridForceField", Pluginized("v17.12", "SofaDistanceGrid")},
 
+    // SofaImplicitField was pluginized in #389
     {"ImplicitSurfaceContainer", Pluginized("v17.12", "SofaImplicitField")},
     {"InterpolatedImplicitSurface", Pluginized("v17.12", "SofaImplicitField")},
     {"SphereSurface", Pluginized("v17.12", "SofaImplicitField")},
     {"ImplicitSurfaceMapping", Pluginized("v17.12", "SofaImplicitField")},
 
-    // Pluginized in #663
+    // SofaPreconditioner was pluginized in #663
     {"ShewchukPCGLinearSolver", Pluginized("v18.06", "SofaPreconditioner")},
     {"JacobiPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
     {"BlockJacobiPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
@@ -62,15 +58,55 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"WarpPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
     {"PrecomputedWarpPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
 
-    // Pluginized in #663
+    // SofaSparseSolver was pluginized in #663
     {"PrecomputedLinearSolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseCholeskySolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseLUSolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseLDLSolver", Pluginized("v18.06", "SofaSparseSolver")},
 
-    /// SofaHaptics pluginzed in #945
-    {"NullForceFeedback", Pluginized("v19.06", "<RequirePlugin name='SofaHaptics'/>")},
-    {"LCPForceFeedback", Pluginized("v19.06", "<RequirePlugin name='SofaHaptics'/>")},
+    // SofaExporter was pluginized in #915
+    {"WriteTopology", Pluginized("v19.06", "SofaExporter")},
+    {"MeshExporter", Pluginized("v19.06", "SofaExporter")},
+    {"OBJExporter", Pluginized("v19.06", "SofaExporter")},
+    {"STLExporter", Pluginized("v19.06", "SofaExporter")},
+    {"VTKExporter", Pluginized("v19.06", "SofaExporter")},
+    {"WriteState", Pluginized("v19.06", "SofaExporter")},
+    {"WriteTopology", Pluginized("v19.06", "SofaExporter")},
+
+    // SofaHaptics was pluginized in #945
+    {"NullForceFeedback", Pluginized("v19.06", "SofaHaptics")},
+    {"LCPForceFeedback", Pluginized("v19.06", "SofaHaptics")},
+
+    // SofaOpenglVisual was pluginized in #1080
+    {"ClipPlane", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"CompositingVisualLoop", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"DataDisplay", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"Light", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"LightManager", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"MergeVisualModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglAttribute", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglColorMap", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglCylinderModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglGrid", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglLabel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglLineAxis", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglOITShader", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglRenderingSRGB", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglSceneFrame", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglShader", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglShaderMacro", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglShaderVisualModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglShadowShader", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglTexture", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglTexturePointer", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglVariable", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglViewport", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"PointSplatModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"PostProcessManager", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"SlicedVolumetricModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"VisualManagerPass", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"VisualmanagerSecondaryPass", Pluginized("v19.06", "SofaOpenglVisual")},
 
     /***********************/
     // REMOVED SINCE v18.12

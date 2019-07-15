@@ -1,49 +1,52 @@
 <?xml version="1.0"?>
 <!-- BilateralInteractionConstraint example -->
 <Node name="root" dt="0.001" gravity="0 -981 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaMiscCollision"/>
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver tolerance="0.001" maxIterations="1000"/>
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <CollisionResponse name="Response" response="FrictionContact" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="CUBE_0">
         <MechanicalObject dy="2.5" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" color="1 0 0 1" dy="2.5" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="1 0 0 1" dy="2.5" />
         </Node>
         <Node name="ColliCube">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" dy="2.5" />
-            <Triangle simulated="0" moving="0" />
-            <Line simulated="0" moving="0" />
-            <Point simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
+            <LineCollisionModel simulated="0" moving="0" />
+            <PointCollisionModel simulated="0" moving="0" />
         </Node>
         <Node name="Constraints">
             <MechanicalObject name="points" template="Vec3d" position="1 1.25 1" />
         </Node>
     </Node>
     <Node name="CUBE_1">
-        <EulerImplicit printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitSolver printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0" dz="0.0" />
         <UniformMass totalMass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" color="1 1 0 1.0" />
+            <MeshObjLoader name="meshLoader_2" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_2" color="1 1 0 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle contactStiffness="10.0" />
-            <Line contactStiffness="10.0" />
-            <Point contactStiffness="10.0" />
+            <TriangleCollisionModel contactStiffness="10.0" />
+            <LineCollisionModel contactStiffness="10.0" />
+            <PointCollisionModel contactStiffness="10.0" />
             <RigidMapping />
         </Node>
         <Node name="Constraints">
@@ -53,22 +56,23 @@
     </Node>
     <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_0/Constraints/points" object2="@CUBE_1/Constraints/points" first_point="0" second_point="0" />
     <Node name="CUBE_2">
-        <EulerImplicit printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitSolver printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="-2.5" dz="0.0" />
         <UniformMass totalMass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 1 0 1.0" />
+            <MeshObjLoader name="meshLoader_3" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_3" color="0 1 0 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="1.0" />
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <RigidMapping />
         </Node>
         <Node name="Constraints">
@@ -78,22 +82,23 @@
     </Node>
     <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_1/Constraints/points" object2="@CUBE_2/Constraints/points" first_point="1" second_point="0" />
     <Node name="CUBE_3">
-        <EulerImplicit printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitSolver printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="-5.0" dz="0.0" />
         <UniformMass totalMass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 1 1 1.0" />
+            <MeshObjLoader name="meshLoader_4" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_4" color="0 1 1 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="1.0" />
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <RigidMapping />
         </Node>
         <Node name="Constraints">
@@ -103,22 +108,23 @@
     </Node>
     <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_2/Constraints/points" object2="@CUBE_3/Constraints/points" first_point="1" second_point="0" />
     <Node name="CUBE_4">
-        <EulerImplicit printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitSolver printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="-2.5" dz="-2.5" />
         <UniformMass totalMass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 0 1 1.0" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="0 0 1 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="1.0" />
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <RigidMapping />
         </Node>
         <Node name="Constraints">

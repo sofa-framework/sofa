@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt=".1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
 <RequiredPlugin name="Flexible" pluginName="Flexible" />
 <RequiredPlugin name="Image" pluginName="image" />
@@ -43,7 +44,8 @@
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/Armadillo_simplified.obj" color="1 0.8 0.8 "/>
+		<MeshObjLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="1 0.8 0.8 "/>
 	    	<LinearMapping template="Affine,ExtVec3f"/>
 	    </Node>
     </Node>

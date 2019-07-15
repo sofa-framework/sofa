@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="Scene" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<RequiredPlugin name="Flexible" pluginName="Flexible" />
 	<RequiredPlugin name="Registration" pluginName="Registration" />
 	<RequiredPlugin name="Image" pluginName="image" />
@@ -9,7 +10,8 @@
 	<CGLinearSolver template="GraphScattered" iterations="15"  threshold="1e-008" />
 
 	<Node name="target">
-			<OglModel name="Bone" fileMesh="data/femur_f.obj"  color="0.5 .4 1 1" />
+			<MeshObjLoader name="meshLoader_0" filename="data/femur_f.obj" handleSeams="1" />
+			<OglModel name="Bone" src="@meshLoader_0"  color="0.5 .4 1 1" />
 	</Node>
 			
 	<Node name="source">
@@ -51,7 +53,8 @@
 					cacheSize="4"
 					stiffness="0.1" damping="0" />
 			<Node name="Visu">
-				<VisualModel fileMesh="data/femur_m.obj" color="1 .4 0.5 1" />
+				<MeshObjLoader name="meshLoader_1" filename="data/femur_m.obj" handleSeams="1" />
+				<OglModel src="@meshLoader_1" color="1 .4 0.5 1" />
 				<IdentityMapping />
 			</Node>		
 		</Node>		

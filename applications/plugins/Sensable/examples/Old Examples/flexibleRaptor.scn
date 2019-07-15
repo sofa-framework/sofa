@@ -5,10 +5,11 @@
 -->
 
 <Node name="root" dt="0.005" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<Gravity name="G" gravity="10 0 0" />
-	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+	<DefaultPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
-	<CollisionResponse name="response" response="FrictionContact" />
+	<DefaultContactManager name="response" response="FrictionContact" />
 	<LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
 	<FreeMotionAnimationLoop/>
 	<LCPConstraintSolver />
@@ -16,7 +17,7 @@
 	<Node name="Raptor">
 		
 
-           	<EulerImplicit name="odesolver" />
+           	<EulerImplicitSolver name="odesolver" />
             	<CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<SparseGrid n="5 5 10" fileTopology="mesh/raptor_8kp.obj" />
 		<MechanicalObject name="mecaRaptor"  rotation="0 0 90"/>
@@ -25,7 +26,8 @@
             	<HexahedronFEMForceField name="FEM" youngModulus="1000000" poissonRatio="0.45" method="large" />
 		<FixedConstraint  name="FixedConstraint" indices="0 1 2 18 19 20 59 58 57 96 97 98 135 136 137" />
 		<Node name="VisualModel" >
-			<OglModel name="RaptorVisualModel" fileMesh="mesh/raptor_35kp.obj" color="white"/> 
+			<MeshObjLoader name="meshLoader_2" filename="mesh/raptor_35kp.obj" handleSeams="1" />
+			<OglModel name="RaptorVisualModel" src="@meshLoader_2" color="white"/> 
 			<BarycentricMapping name="tongueMapping" input="@../mecaRaptor" output="@RaptorVisualModel" />
 		</Node>
 
@@ -33,9 +35,9 @@
 		 	<MeshObjLoader filename="mesh/raptor_8kp.obj"  name="loader"/>
 			<Mesh src="@loader" name="raptorVisualModel"  />
 			<MechanicalObject src="@loader" name="raptorState"/>		
-			<Triangle name="raptor" contactStiffness="100"/>
-			<Line name="raptor" contactStiffness="100"/>	
-			<Point name="raptor" contactStiffness="100"/>	
+			<TriangleCollisionModel name="raptor" contactStiffness="100"/>
+			<LineCollisionModel name="raptor" contactStiffness="100"/>	
+			<PointCollisionModel name="raptor" contactStiffness="100"/>	
 			<BarycentricMapping name="tongueMapping" input="@../mecaRaptor" output="@raptorState" mapForces="false"/>
 		</Node>
 	</Node>
@@ -46,7 +48,8 @@
 		<MechanicalObject template="Rigid" name="DOFs" position="0 0 0  0  0  0  1.0"/>
 		<MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
 		<Node name="VisuAvatar" activated="false" >
-			<OglModel name="Visual" fileMesh="mesh/sphere.obj" color="gray" scale="0.1"/>
+			<MeshObjLoader name="meshLoader_1" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
+			<OglModel name="Visual" src="@meshLoader_1" color="gray"/>
 			<RigidMapping input="@.." output="@Visual" index="0"/>
 		</Node>
 		<Node name="RefModel">
@@ -65,15 +68,16 @@
 		<LCPForceFeedback activate="true" forceCoef="0.001"/> <!-- ADDED : Compute a force-feedback for the device -->
 		<UncoupledConstraintCorrection/>
 		<Node name="VisualModel" >
-			<OglModel name="InstrumentVisualModel" fileMesh="dental_instrument.obj" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
+			<MeshObjLoader name="meshLoader_0" filename="dental_instrument.obj" handleSeams="1" />
+			<OglModel name="InstrumentVisualModel" src="@meshLoader_0" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
 			<RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
 		</Node>
 		<Node name="CollisionModel" >
 			<MeshObjLoader filename="dental_instrument_centerline.obj"  name="loader"/>
 			<Mesh src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
-			<Line name="instrument" contactStiffness="10" />
-			<Point name="instrument" contactStiffness="10" /> 
+			<LineCollisionModel name="instrument" contactStiffness="10" />
+			<PointCollisionModel name="instrument" contactStiffness="10" /> 
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<VectorSpringForceField  object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />

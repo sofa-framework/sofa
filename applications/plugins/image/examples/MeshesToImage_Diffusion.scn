@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 0" dt=".1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
 
   <VisualStyle displayFlags="showVisual showBehaviorModels" />
@@ -29,9 +30,12 @@
 
     
     <Node name="Visu">
-        <VisualModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .05" />
-<!--         <VisualModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 .2" /> -->
-<!--         <VisualModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 .2" /> -->
+        <MeshObjLoader name="meshLoader_0" filename="mesh/bubille_8x8x16.obj" handleSeams="1" />
+        <OglModel name="Gelatin" src="@meshLoader_0" color="0.1 .8 .3 .05" />
+<MeshObjLoader name="meshLoader_1" filename="mesh/bubille_in1.obj" handleSeams="1" />
+<!--         <OglModel name="Ball1" src="@meshLoader_1" color="1 0 0 .2" /> -->
+<MeshObjLoader name="meshLoader_2" filename="mesh/bubille_in2.obj" handleSeams="1" />
+<!--         <OglModel name="Ball2" src="@meshLoader_2" color="0 0 1 .2" /> -->
     </Node>
    
   </Node>

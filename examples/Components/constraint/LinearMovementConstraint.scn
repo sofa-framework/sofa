@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <Node name="Root"  dt="0.1" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <Node name="Spoon1">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" dx="0" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388" />
         <LinearMovementConstraint template="Rigid" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
@@ -17,12 +18,13 @@
             <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/liver.obj" color="red" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/liver.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="red" />
             <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="Spoon2">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" dx="10" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388"/>
         <LinearMovementConstraint template="Rigid" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
@@ -38,12 +40,13 @@
             <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/liver.obj" color="green" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="green" />
             <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual"/>
         </Node>
     </Node>
     <Node name="Spoon3">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" dx="20" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388" />
         <LinearMovementConstraint template="Rigid" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
@@ -59,7 +62,8 @@
             <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/liver.obj" color="blue" />
+            <MeshObjLoader name="meshLoader_2" filename="mesh/liver.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_2" color="blue" />
             <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>

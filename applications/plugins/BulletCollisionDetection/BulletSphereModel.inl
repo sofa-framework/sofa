@@ -13,14 +13,14 @@ namespace collision
 
 template <class DataTypes>
 TBulletSphereModel<DataTypes>::TBulletSphereModel()
-    : TSphereModel<DataTypes>()
+    : SphereCollisionModel<DataTypes>()
     , margin(initData(&margin, (SReal)0.05, "margin","Margin used for collision detection within bullet"))
     , _bt_cshape(0x0)
 {}
 
 template<class DataTypes>
 TBulletSphereModel<DataTypes>::TBulletSphereModel(core::behavior::MechanicalState<DataTypes>* _mstate )
-    : TSphereModel<DataTypes>(_mstate)
+    : SphereCollisionModel<DataTypes>(_mstate)
     , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
     , _bt_cshape(0x0)
 {}
@@ -107,7 +107,7 @@ TBulletSphereModel<DataTypes>::~TBulletSphereModel(){
 
 template <class DataTypes>
 void TBulletSphereModel<DataTypes>::init(){
-    TSphereModel<DataTypes>::init();
+    SphereCollisionModel<DataTypes>::init();
     initBullet();
 }
 

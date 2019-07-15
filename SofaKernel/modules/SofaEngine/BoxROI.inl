@@ -510,37 +510,6 @@ bool BoxROI<DataTypes>::isQuadInBoxes(const Quad& q)
 template <class DataTypes>
 void BoxROI<DataTypes>::doUpdate()
 {
-    if(m_componentstate==ComponentState::Invalid){
-        return ;
-    }
-
-    if(!d_doUpdate.getValue()){
-        return ;
-    }
-    if (d_X0.getValue().size() == 0)
-    {
-        msg_warning() << "No rest position yet defined. Box might not work properly. \n"
-                         "This may be caused by an early call of init() on the box before  \n"
-                         "the mesh or the MechanicalObject of the node was initialized too";
-        return;
-    }
-
-
-    const vector<Vec6>&  alignedBoxes  = d_alignedBoxes.getValue();
-    const vector<Vec10>& orientedBoxes = d_orientedBoxes.getValue();
-
-    if (alignedBoxes.empty() && orientedBoxes.empty()) { return; }
-
-
-    // Read accessor for input topology
-    ReadAccessor< Data<vector<Edge> > > edges = d_edges;
-    ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
-    ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
-    ReadAccessor< Data<vector<Hexa> > > hexahedra = d_hexahedra;
-    ReadAccessor< Data<vector<Quad> > > quad = d_quad;
-
-    const VecCoord& x0 = d_X0.getValue();
-
     // Write accessor for topological element indices in BOX
     SetIndex& indices = *d_indices.beginWriteOnly();
     SetIndex& edgeIndices = *d_edgeIndices.beginWriteOnly();
@@ -573,6 +542,37 @@ void BoxROI<DataTypes>::doUpdate()
     tetrahedraInROI.clear();
     hexahedraInROI.clear();
     quadInROI.clear();
+
+
+    if(m_componentstate==ComponentState::Invalid){
+        return ;
+    }
+
+    if(!d_doUpdate.getValue()){
+        return ;
+    }
+    if (d_X0.getValue().size() == 0)
+    {
+        msg_warning() << "No rest position yet defined. Box might not work properly. \n"
+                         "This may be caused by an early call of init() on the box before  \n"
+                         "the mesh or the MechanicalObject of the node was initialized too";
+        return;
+    }
+
+    const vector<Vec6>&  alignedBoxes  = d_alignedBoxes.getValue();
+    const vector<Vec10>& orientedBoxes = d_orientedBoxes.getValue();
+
+    if (alignedBoxes.empty() && orientedBoxes.empty()) { return; }
+
+
+    // Read accessor for input topology
+    ReadAccessor< Data<vector<Edge> > > edges = d_edges;
+    ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
+    ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
+    ReadAccessor< Data<vector<Hexa> > > hexahedra = d_hexahedra;
+    ReadAccessor< Data<vector<Quad> > > quad = d_quad;
+
+    const VecCoord& x0 = d_X0.getValue();
 
 
     //Points

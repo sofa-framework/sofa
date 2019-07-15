@@ -516,6 +516,12 @@ struct ScopedAdvancedTimer {
 
     const char* message;
 
+    ScopedAdvancedTimer(const std::string& message)
+        : ScopedAdvancedTimer(message.c_str())
+    {
+
+    }
+
     ScopedAdvancedTimer( const char* message )
     : message( message )
     {

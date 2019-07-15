@@ -1,12 +1,13 @@
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <CollisionPipeline verbose="0" draw="1" />
+    <DefaultPipeline verbose="0" draw="1" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="M1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="18" dy="17" dz="29" />
         <UniformMass totalMass="10" />
@@ -20,14 +21,14 @@
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader"/>
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
     <Node name="M3">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="17" dz="29" />
         <UniformMass totalMass="10" />
@@ -41,14 +42,14 @@
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader"/>
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
     <Node name="M4">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.00001" threshold="0.000001" />
         <!--
 		<RungeKutta4 />
@@ -64,9 +65,9 @@
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <RigidMapping />
         </Node>
     </Node>
@@ -74,9 +75,9 @@
         <MeshObjLoader filename="mesh/floor2b.obj" name="loader" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-10.25" scale="0.5" />
-        <Triangle name="Floor" simulated="0" moving="0" />
-        <Line name="Floor" simulated="0" moving="0" />
-        <Point name="Floor" simulated="0" moving="0" />
+        <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
+        <LineCollisionModel name="Floor" simulated="0" moving="0" />
+        <PointCollisionModel name="Floor" simulated="0" moving="0" />
         <OglModel name="FloorV" filename="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" color="gray" dy="-10" />
     </Node>
 </Node>

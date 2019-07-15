@@ -27,7 +27,7 @@
 #include <SofaBaseCollision/DefaultContactManager.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/IdentityContactMapper.h>
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <sofa/simulation/Node.h>
 #include <iostream>
 
@@ -41,12 +41,19 @@ namespace collision
 {
 
 template < class TCollisionModel1, class TCollisionModel2 >
+StickContactConstraint<TCollisionModel1,TCollisionModel2>::StickContactConstraint()
+    : StickContactConstraint(nullptr, nullptr, nullptr)
+{
+    //#TODO -> Check impact of calling setCollisionModel
+}
+
+template < class TCollisionModel1, class TCollisionModel2 >
 StickContactConstraint<TCollisionModel1,TCollisionModel2>::StickContactConstraint(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1)
     , model2(model2)
     , intersectionMethod(intersectionMethod)
-    , m_constraint(NULL)
-    , parent(NULL)
+    , m_constraint(nullptr)
+    , parent(nullptr)
     , f_keepAlive(initData(&f_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
 {
     mapper1.setCollisionModel(model1);
@@ -159,17 +166,9 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
         typename DataTypes2::Real r2 = 0.;
 
         // Create mapping for first point
-        index1 = mapper1.addPointB(o->point[0], index1, r1
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[0]
-#endif
-                                  );
+        index1 = mapper1.addPointB(o->point[0], index1, r1);
         // Create mapping for second point
-        index2 = mapper2.addPointB(o->point[1], index2, r2
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[1]
-#endif
-                                  );
+        index2 = mapper2.addPointB(o->point[1], index2, r2);
         double distance = d0 + r1 + r2;
 
         mappedContacts[i].first.first = index1;

@@ -52,7 +52,7 @@ void PairInteractionConstraint<DataTypes>::init()
 {
     BaseInteractionConstraint::init();
 
-    if (mstate1 == NULL || mstate2 == NULL)
+    if (mstate1 == nullptr || mstate2 == nullptr)
     {
         mstate1 = mstate2 = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     }

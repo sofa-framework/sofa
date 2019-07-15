@@ -1,12 +1,13 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.01" showBoundingTree="0" gravity="0 0 -0.9">
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin name="Carving" pluginName="SofaCarving" />
 
   <VisualStyle displayFlags="showCollisionModels" />
   
-  <CollisionPipeline verbose="0" />
+  <DefaultPipeline verbose="0" />
   <BruteForceDetection name="Detection" />
-  <CollisionResponse response="default" />
+  <DefaultContactManager response="default" />
   <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.02"/>
   
   <CarvingManager active="true" carvingDistance="0.0"/>
@@ -25,7 +26,7 @@
     <Node name="Surface">
       <include href="Objects/TriangleSetTopology.xml" />
       <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
-      <TriangleSet name="triangleCol" tags="CarvingSurface"/>
+      <TriangleCollisionModel name="triangleCol" tags="CarvingSurface"/>
 	  <PointSet name="pointCol" tags="CarvingSurface"/>
       <Node name="Visu">
         <OglModel name="Visual" material="Default Diffuse 1 0 1 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 1 0 1 Emissive 0 1 1 0 1 Shininess 1 100"/>

@@ -1,24 +1,26 @@
 <Node dt="0.01" multiThreadSimulation="0" name="root" time="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="LiverParabolic">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" name="DOFs" position="0 0 0 0 0 0 1" />
         <UniformMass name="mass" totalMass="1" showAxisSizeFactor="0.1" />
         <ParabolicConstraint name="parabol" indices="0" P1="1 0 0" P2="5 3 1" P3="7 6 -5" BeginTime="0.5" EndTime="1.5" />
         <Node name="Visu">
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel name="VisualModel" src="@meshLoader_1" color="red" />
             <RigidMapping input="@.." output="@VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject position="@[-1].position" />
-            <Sphere name="CollisionModel" listRadius="@[-2].listRadius" />
+            <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <RigidMapping name="sphere mapping" />
         </Node>
     </Node>
@@ -26,7 +28,8 @@
         <MeshObjLoader name="loader" filename="mesh/cube.obj" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" scale="20" dz="-35" />
-        <Triangle simulated="0" moving="0" />
-        <OglModel name="Visual" fileMesh="mesh/cube.obj" color="gray" scale="20" dz="-35" />
+        <TriangleCollisionModel simulated="0" moving="0" />
+        <MeshObjLoader name="meshLoader_0" filename="mesh/cube.obj" scale="20" handleSeams="1" />
+        <OglModel name="Visual" src="@meshLoader_0" color="gray" dz="-35" />
     </Node>
 </Node>

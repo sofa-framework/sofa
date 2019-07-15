@@ -76,14 +76,12 @@ void DefaultVisualManagerLoop::updateStep(sofa::core::ExecParams* params)
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("UpdateVisual");
 #endif
-    sofa::helper::AdvancedTimer::begin("UpdateVisual");
 
     gRoot->execute<VisualUpdateVisitor>(params);
-    sofa::helper::AdvancedTimer::end("UpdateVisual");
+    
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("UpdateVisual");
 #endif
-
 }
 
 void DefaultVisualManagerLoop::updateContextStep(sofa::core::visual::VisualParams* vparams)

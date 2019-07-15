@@ -42,7 +42,6 @@ public:
     std::string previousDir;
     std::string directory;
 
-    SetDirectory(const char* filename);
     SetDirectory(const std::string& filename);
 
     ~SetDirectory();
