@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
 <!-- Mechanical RuleBasedContactManager Example -->
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaMiscCollision"/>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <FreeMotionAnimationLoop />
 	<GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="1.5" contactDistance="1.0" angleCone="0.0" />
     <RuleBasedContactManager name="Response" response="FrictionContact" rules="4 * default" />
-    <CollisionGroup name="Group" />
+    <DefaultCollisionGroupManager name="Group" />
     
     <Node name="Torus1">
         <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader" />
@@ -18,17 +19,19 @@
         <TriangleCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
         <LineCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
         <PointCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
-        <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="0.5 0.5 0.5 1.0" scale="5.0" />
+        <MeshObjLoader name="meshLoader_2" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
+        <OglModel name="Visual" src="@meshLoader_2" color="0.5 0.5 0.5 1.0" />
     </Node>
 	
     <Node name="Torus2">
-		<EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+		<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" scale="5.0" dx="-12" dy="0" />
         <UniformMass filename="BehaviorModels/torus.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus.obj" color="0.0 0.5 0.5 1.0" scale="5.0" />
+            <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_3" color="0.0 0.5 0.5 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
@@ -43,13 +46,14 @@
     </Node>
 	
     <Node name="Torus3">
-		<EulerImplicit rayleighStiffness="0.1" rayleighMass="0.1"/>
+		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1"/>
 		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" scale="5.0" dx="-25" dy="0" />
         <UniformMass filename="BehaviorModels/torus2.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="1.0 0.5 0.25 1.0" scale="5.0" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="1.0 0.5 0.25 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
@@ -64,13 +68,14 @@
     </Node>
 	
     <Node name="Torus4">
-		<EulerImplicit rayleighStiffness="0.1" rayleighMass="0.1"/>
+		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1"/>
 		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" scale="5.0" dx="-38" dy="0" />
         <UniformMass filename="BehaviorModels/torus.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus.obj" color="0.0 0.5 0.5 1.0" scale="5.0" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="0.0 0.5 0.5 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">

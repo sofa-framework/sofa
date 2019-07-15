@@ -1,10 +1,11 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="1.0">
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <MultiStepAnimationLoop collisionSteps="10" integrationSteps="2" />
     <Node name="ChainRigid">
         <Node name="TorusFixed">
@@ -12,15 +13,17 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
+            <MeshObjLoader name="meshLoader_4" filename="mesh/torus2.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_4" color="gray" />
         </Node>
         <Node name="TorusRigid">
-            <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid" dx="2.5" />
             <UniformMass />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
+                <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_3" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -32,12 +35,13 @@
             </Node>
         </Node>
         <Node name="TorusRigid">
-            <EulerImplicit />
+            <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid" dx="5" />
             <UniformMass />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
+                <MeshObjLoader name="meshLoader_0" filename="mesh/torus2.obj" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_0" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -49,12 +53,13 @@
             </Node>
         </Node>
         <Node name="TorusRigid">
-            <EulerImplicit />
+            <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid" dx="7.5" />
             <UniformMass />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
+                <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_1" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -66,12 +71,13 @@
             </Node>
         </Node>
         <Node name="TorusRigid">
-            <EulerImplicit />
+            <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid" dx="10" />
             <UniformMass />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
+                <MeshObjLoader name="meshLoader_2" filename="mesh/torus2.obj" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_2" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">

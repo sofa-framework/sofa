@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
   <ImageContainer  name="image" filename="textures/cubemap_bk.bmp" transform="-5 -10 0 0 0 0 0.1 0.1 15 0 1 1" drawBB="1"/>
   <ImageViewer  name="viewer" src="@image" />
-  <OglModel fileMesh="mesh/cube.obj" color="1 1 0.5 1"/>
+  <MeshObjLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" />
+  <OglModel src="@meshLoader_0" color="1 1 0.5 1"/>
 </Node>

@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.01" gravity="0 0 0" animate="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showBehavior showCollisionModels" />
     <ClipPlane position="0 0 0" normal="0 0 1" active="1"/>
@@ -7,7 +8,7 @@
 
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube1">
-        <EulerImplicit name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="CG Solver" />
         <MechanicalObject name="Cube1 RigidDOF" template="Rigid" dy="0" />
         <UniformMass name="UniformMass1" totalMass="10.0" />
@@ -26,7 +27,7 @@
         </Node>-->
     </Node>
     <Node name="Cube2">
-        <EulerImplicit name="EulerImplicit" />
+        <EulerImplicitSolver name="EulerImplicit" />
         <CGLinearSolver name="CG Solver" />
         <MechanicalObject name="Cube2 RigidDOF" template="Rigid" dy="0" dx="0" />
         <UniformMass name="UniformMass2" totalMass="10.0" />

@@ -4,15 +4,16 @@ FEM force field of the tongue
 Control the instrument with the UP and DOWN keys + CTRL
 -->
 <Node name="root" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin pluginName="SofaPython"/>
 
     <BackgroundSetting color="0.5 0.5 0.5" />
     <VisualStyle displayFlags="showVisualModels showForceFields" /> 
 
-    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <CollisionResponse name="response" response="FrictionContact" />
+    <DefaultContactManager name="response" response="FrictionContact" />
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" />
 
     <FreeMotionAnimationLoop />
@@ -21,7 +22,7 @@ Control the instrument with the UP and DOWN keys + CTRL
     <Node name="Head">
         <Node name="Tongue" activated="true">
 	    
-            <EulerImplicit name="odesolver" vdamping="4.0"/>
+            <EulerImplicitSolver name="odesolver" vdamping="4.0"/>
             <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
             <SparseGrid n="4 4 6" fileTopology="data/mesh/tongue.obj" />
@@ -37,7 +38,8 @@ Control the instrument with the UP and DOWN keys + CTRL
 
             <Node name="TongueVisualModel">
                 <VisualStyle displayFlags="showWireframe" /> 
-                <OglModel name="TongueVisualModel" fileMesh="data/mesh/tongue.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
+                <MeshObjLoader name="meshLoader_0" filename="data/mesh/tongue.obj" handleSeams="1" />
+                <OglModel name="TongueVisualModel" src="@meshLoader_0" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
                 <BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@TongueVisualModel" />
             </Node>
             <Node name="TongueCollisionModel">
@@ -70,7 +72,8 @@ Control the instrument with the UP and DOWN keys + CTRL
         <UniformMass name="mass" totalMass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <UncoupledConstraintCorrection />
         <Node name="VisualModel">
-            <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" />
+            <MeshObjLoader name="meshLoader_1" filename="data/mesh/dental_instrument.obj" handleSeams="1" />
+            <OglModel name="InstrumentVisualModel" src="@meshLoader_1" color="0.8 0.8 0.8 1.0" />
             <RigidMapping name="MM-VM mapping" input="@../instrumentState" output="@InstrumentVisualModel" />
         </Node>
         <Node name="CollisionModel">

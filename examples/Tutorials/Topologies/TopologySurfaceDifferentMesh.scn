@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <!-- See https://wiki.sofa-framework.org/wiki/TutorialTopologySurfaceMesh -->
 <Node name="root" gravity="0 -9.81 1" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline name="DefaultCollisionPipeline" depth="6" />
@@ -23,9 +24,11 @@
         <TriangleSetGeometryAlgorithms template="Vec3d" name="Geometry Algorithms" />
         <TriangularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="300" damping="1" />
         <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="80" />
-        <TriangleModel name="models" />
-        <OglModel name="Visual" template="ExtVec3f" color="blue" />
-        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" input="@." output="@Visual" />
+        <TriangleCollisionModel name="models" />
+        <Node >
+          <VisualModel name="Visual" color="blue" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
 	
     <Node name="Cloth Static Mesh (white)">
@@ -38,9 +41,11 @@
         <MeshTopology src="@loader" name="Static Mesh" />
         <MeshSpringForceField name="Springs" template="Vec3d" stiffness="300" damping="1" />
         <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="80" />
-        <TriangleModel name="models" />
-        <OglModel name="Visual" template="ExtVec3f" color="white" />
-        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" input="@." output="@Visual" />
+        <TriangleCollisionModel name="models" />
+        <Node >
+          <VisualModel name="Visual" color="white" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
 	
     <Node name="Cloth Regular Mesh (red)">
@@ -52,8 +57,10 @@
         <RegularGridTopology name="default38" n="30 1 30" min="0 0 -20" max="10 0 -30" p0="0 0 -1" />
         <RegularGridSpringForceField template="Vec3d" stiffness="300" damping="1"/>
         <QuadBendingSprings template="Vec3d" name="Bend" stiffness="20" damping="0" />
-        <OglModel name="Visual" template="ExtVec3f" color="red" />
-        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" input="@." output="@Visual" />
+        <Node >
+          <VisualModel name="Visual" color="red" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
     
 </Node>

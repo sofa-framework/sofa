@@ -1,9 +1,11 @@
 <!--To launch this scene install opencv and activate SOFA_IMAGE_HAVE_OPENCV-->
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
   <ImageContainer  name="CAMERA"  transform="-5 -5 3 0 0 0 0.02 0.02 30 0 1 1" />
   <!-- <ImageFilter  param="5" filter="1" name="engine" src="@CAMERA" /> -->
   <ImageViewer  name="viewer" src="@CAMERA" />
-  <OglModel fileMesh="mesh/cube.obj" color="1 1 0.5 1"/>
+  <MeshObjLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" />
+  <OglModel src="@meshLoader_0" color="1 1 0.5 1"/>
 </Node>

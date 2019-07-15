@@ -1,7 +1,7 @@
 <Node>
     <VisualStyle displayFlags="showBehavior" />
     <Node name="Iterative method">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <RegularGridTopology p0="-2 0 0" />
         <MechanicalObject />
@@ -11,7 +11,7 @@
     </Node>
 
     <Node name="Direct method"> 
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CholeskySolver />
         <RegularGridTopology p0="2 0 0" />
         <MechanicalObject />

@@ -5,7 +5,7 @@
 	<GenericConstraintSolver tolerance="1e-6" printLog="0" maxIterations="200"/>
 	<FreeMotionAnimationLoop/>
 	
-	<CollisionPipeline depth="6" verbose="0" draw="0"/>
+	<DefaultPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="Proximity" alarmDistance="3" contactDistance="0" coneFactor="0.5" angleCone="0.002"/>
 

@@ -1,4 +1,5 @@
 <Node 	name="Root" dt="0.02"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
 	<!-- <BackgroundSetting color="0.2 0.2 0.25" /> -->
     <Gravity name="G" gravity="0 -9.81 0" />
@@ -7,16 +8,16 @@
 
     <RequiredPlugin name="Razer Hydra Driver" pluginName="SixenseHydra" />
 
-	<CollisionPipeline name="pipeline" depth="6" />
+	<DefaultPipeline name="pipeline" depth="6" />
     <BruteForceDetection name="detection" />
     <!-- <NewProximityIntersection alarmDistance="0.02" contactDistance="0.01" /> -->
 	<DiscreteIntersection />
-    <CollisionResponse name="Response" response="default" />
+    <DefaultContactManager name="Response" response="default" />
 	
 	<RazerHydraDriver name="RazerHydraDriver"  listening="true" displayTools="false" scale="0.002" positionBase="0 0.2 -0.4" orientationBase="0.7071 0 0 0.7071" />
 	<!-- http://www.onlineconversion.com/quaternions.htm -->
 	
-	<EulerImplicit vdamping="2.0"  rayleighStiffness="0.1" rayleighMass="0.1" />
+	<EulerImplicitSolver vdamping="2.0"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="30"  tolerance="1e-6" threshold="1e-6" />
 	
 	<Node name="ControlledFist" >
@@ -78,30 +79,30 @@
 		</Node>
 
 		<Node name="VisuSpring">
-			<VisualModel name="Visual" filename="OBJs/BuffoonSpring.obj" scale="1.0" />
+			<OglModel name="Visual" filename="OBJs/BuffoonSpring.obj" scale="1.0" />
 			<BarycentricMapping input="@../DOFs" output="@Visual" />
 		</Node>
 		<Node name="VisuSkin">
-			<VisualModel name="Visual" filename="OBJs/BuffoonHeadSkin.obj" scale="1.0" texturename="OBJs/Buffoon.png" />
+			<OglModel name="Visual" filename="OBJs/BuffoonHeadSkin.obj" scale="1.0" texturename="OBJs/Buffoon.png" />
 			<BarycentricMapping input="@../DOFs" output="@Visual" />
 		</Node>
 		<Node name="VisuRed">
-			<VisualModel name="Visual" filename="OBJs/BuffoonHeadRed.obj" scale="1.0" />
+			<OglModel name="Visual" filename="OBJs/BuffoonHeadRed.obj" scale="1.0" />
 			<BarycentricMapping input="@../DOFs" output="@Visual" />
 		</Node>
 		<Node name="VisuPurple">
-			<VisualModel name="Visual" filename="OBJs/BuffoonHeadPurple.obj" scale="1.0" />
+			<OglModel name="Visual" filename="OBJs/BuffoonHeadPurple.obj" scale="1.0" />
 			<BarycentricMapping input="@../DOFs" output="@Visual" />
 		</Node>
 		<Node name="VisuYellow">
-			<VisualModel name="Visual" filename="OBJs/BuffoonHeadYellow.obj" scale="1.0" />
+			<OglModel name="Visual" filename="OBJs/BuffoonHeadYellow.obj" scale="1.0" />
 			<BarycentricMapping input="@../DOFs" output="@Visual" />
 		</Node>
 		<Node name="BoxRed">
-			<VisualModel name="Visual" filename="OBJs/BoxRed.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
+			<OglModel name="Visual" filename="OBJs/BoxRed.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
 		</Node>
 		<Node name="BoxPurple">
-			<VisualModel name="Visual" filename="OBJs/BoxPurple.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
+			<OglModel name="Visual" filename="OBJs/BoxPurple.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
 		</Node>
     </Node>
 	

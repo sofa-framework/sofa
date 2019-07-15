@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0 " dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="hideWireframe showBehaviorModels" />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
@@ -27,7 +28,8 @@
 	<HexahedronFEMForceField youngModulus="1000.0" poissonRatio="0" method="polar" updateStiffnessMatrix="false" />
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="beam.obj"  color="blue" />
+	     <MeshObjLoader name="meshLoader_0" filename="beam.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_0"  color="blue" />
 	     <BarycentricMapping input="@.." output="@." />
 	</Node>
   </Node>

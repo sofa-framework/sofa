@@ -45,7 +45,6 @@ using namespace defaulttype;
 // Register in the Factory
 int MLSMappingClass_quadratic = core::RegisterObject("Map child positions using generalized moving least squares.")
         .add< MLSMapping< Quadratic3Types, Vec3Types > >()
-        .add< MLSMapping< Quadratic3Types, ExtVec3Types > >()
         .add< MLSMapping< Quadratic3Types, F331Types > >()
 //        .add< MLSMapping< Quadratic3Types, F321Types > >()
 //        .add< MLSMapping< Quadratic3Types, F311Types > >()
@@ -54,7 +53,6 @@ int MLSMappingClass_quadratic = core::RegisterObject("Map child positions using 
         ;
 
 template class SOFA_Flexible_API MLSMapping< Quadratic3Types, Vec3Types >;
-template class SOFA_Flexible_API MLSMapping< Quadratic3Types, ExtVec3Types >;
 template class SOFA_Flexible_API MLSMapping< Quadratic3Types, F331Types >;
 //template class SOFA_Flexible_API MLSMapping< Quadratic3Types, F321Types >;
 //template class SOFA_Flexible_API MLSMapping< Quadratic3Types, F311Types >;

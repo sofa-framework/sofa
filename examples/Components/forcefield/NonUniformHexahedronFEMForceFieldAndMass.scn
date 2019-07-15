@@ -1,19 +1,21 @@
 <Node name="SandBox" animate="0" dt="0.06" gravity="0 0 -9.81" multiThreadSimulation="0" time="0.0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual" />
-    <CollisionPipeline verbose="0" draw="0" />
+    <DefaultPipeline verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <CollisionResponse name="Response" response="default" />
+    <DefaultContactManager name="Response" response="default" />
     <include name="Salad Bowl 1" href="Objects/SaladBowl.xml" contactStiffness="10000" dy="-10" dz="-20" scale="100" />
     <include name="Salad Bowl 2" href="Objects/SaladBowl.xml" contactStiffness="10000" dx="70" dy="-10" dz="-20" scale="100" />
     <Node name="uniform">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <SparseGrid n="8 6 7" fileTopology="mesh/Armadillo_verysimplified.obj" />
         <MechanicalObject dx="70" ry="25" />
         <HexahedronFEMForceFieldAndMass youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0" />
         <Node name="Visuunif">
-            <OglModel name="Visual" fileMesh="mesh/Armadillo_simplified.obj" color="1 .4 0 1" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="1 .4 0 1" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Colliunif">
@@ -27,13 +29,14 @@
         </Node>
     </Node>
     <Node name="non uniform">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <SparseGrid n="8 6 7" fileTopology="mesh/Armadillo_verysimplified.obj" nbVirtualFinerLevels="2" />
         <MechanicalObject ry="25" />
         <NonUniformHexahedronFEMForceFieldAndMass nbVirtualFinerLevels="2" youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0" />
         <Node name="Visunonunif">
-            <OglModel name="Visual" fileMesh="mesh/Armadillo_simplified.obj" color="0.4 0.6 1.0" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="0.4 0.6 1.0" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Collinonunif">

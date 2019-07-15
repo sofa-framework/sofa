@@ -1,11 +1,12 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.005" gravity="0 -9.81 0" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
     <RequiredPlugin name="Geomagic plugin" pluginName="Geomagic" />
     
-    <CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+    <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
     <BruteForceDetection name="detection" />
-    <CollisionResponse name="response" response="FrictionContact" />
+    <DefaultContactManager name="response" response="FrictionContact" />
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
     <FreeMotionAnimationLoop/>
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
@@ -25,7 +26,8 @@
 
         <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
-            <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+            <MeshObjLoader name="meshLoader_2" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel  name="VisualModel" src="@meshLoader_2" />
             <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
@@ -41,7 +43,8 @@
         <MechanicalObject template="Rigid" name="DOFs" position="@GeomagicDevice.positionDevice"/>
         <MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
         <Node name="VisuAvatar" activated="false" >
-            <OglModel name="Visual" fileMesh="mesh/sphere.obj" color="gray" scale="0.1"/>
+            <MeshObjLoader name="meshLoader_0" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="gray"/>
             <RigidMapping input="@.." output="@Visual" index="0"/>
         </Node>
         <Node name="RefModel">
@@ -72,7 +75,8 @@
         <LCPForceFeedback activate="true" forceCoef="0.005"/> <!-- ADDED : Compute a force-feedback for the device -->
         <UncoupledConstraintCorrection/>
         <Node name="VisualModel" >
-            <OglModel name="InstrumentVisualModel" fileMesh="Demos/Dentistry/data/mesh/dental_instrument.obj" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
+            <MeshObjLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
+            <OglModel name="InstrumentVisualModel" src="@meshLoader_1" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
             <RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
         </Node>
         <Node name="CollisionModel" >

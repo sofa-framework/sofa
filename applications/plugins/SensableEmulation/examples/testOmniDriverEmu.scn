@@ -1,9 +1,9 @@
 <Node name="root" dt="0.01" gravity="0 0 0" >
     <RequiredPlugin name="SensableEmulation" pluginName="SensableEmulation" />
 	<Gravity name="G" gravity="10 0 0" />
-	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+	<DefaultPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
-	<CollisionResponse name="response" response="FrictionContact" />
+	<DefaultContactManager name="response" response="FrictionContact" />
 	<LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
 	<FreeMotionAnimationLoop solveVelocityConstraintFirst="true"/>
 	<LCPConstraintSolver tolerance="0.001" maxIt="1000"/>

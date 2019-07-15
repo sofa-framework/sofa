@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
 <!--    <MechanicalObject  template="Rigid" position="0 -1 0 0 0 0 1    0 0 0 0 0 0 1    0 1 0 0 0 0 1"  name="parent"  /> -->
 <!--
@@ -26,7 +27,8 @@
     </Node>
 
     <Node 	name="visual"   >
-	<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"/>
+	<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+	<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0"/>
     	<LinearMapping template="Vec3d,ExtVec3f"/>
     </Node>
 </Node>

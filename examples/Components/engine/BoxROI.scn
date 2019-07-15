@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -9 1" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showWireframe" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
@@ -7,7 +8,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <TreeCollisionGroupManager name="default2" />
     <Node name="SquareGravity" gravity="0 -9.81 0">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
         <MechanicalObject src="@loader" template="Vec3d" name="mecaObj" scale3d="10 10 10" restScale="1" />
@@ -23,7 +24,7 @@
         <TriangleCollisionModel template="Vec3d" name="default7" />
         <BoxROI template="Vec3d" box="3 3 0 6 6 1" orientedBox="3 9 0 6 7 0 3 7 0 1   8 3 0 9 5.5 0 8 6 0 1" drawBoxes="1" position="@mecaObj.position" drawTriangles="1" triangles="@Container.triangles" name="boxROI" />
         <Node name="visu">
-            <VisualModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 0.6 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 0.6 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
             <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@.." output="@Visual" />
         </Node>
     </Node>

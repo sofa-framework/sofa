@@ -1,4 +1,5 @@
 <Node name="root">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <LightManager name="lightManager" />
     <SpotLight name="sideLight" position="0 10 20" direction="0 -0.2 -1" cutoff="45" shadowTextureSize="128" />
     <SpotLight name="upLight" position="0.0 60.0 0.0" direction="0 -1 0.01" cutoff="60" shadowTextureSize="2048" />

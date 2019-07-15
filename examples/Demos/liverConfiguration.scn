@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
@@ -31,7 +32,8 @@
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
         <FixedConstraint template="Vec3d" name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
-            <OglModel template="ExtVec3f" name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel template="ExtVec3f" name="VisualModel" src="@meshLoader_0" />
             <BarycentricMapping template="Vec3d,ExtVec3f" name="visual mapping" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">

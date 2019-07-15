@@ -72,7 +72,7 @@ public:
         std::stringstream output;
         output << "This component has been PLUGINIZED since SOFA " << sinceVersion << ". "
                   "To continue using this component you need to update you scene "
-                  "and add <RequiredPlugin pluginName='" <<  plugin << "'/>";
+                  "and add <RequiredPlugin name='" <<  plugin << "'/>";
         m_message = output.str();
     }
 };

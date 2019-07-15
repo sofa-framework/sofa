@@ -1,6 +1,7 @@
 <!-- example of how to give translation parameter to an image and update it every time step-->
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 -10 0" dt="0.01"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
   	
   	<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />

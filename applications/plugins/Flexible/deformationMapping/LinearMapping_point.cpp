@@ -44,7 +44,6 @@ using namespace defaulttype;
 int LinearMappingClass_point = core::RegisterObject("Map child positions as a linear combination of parents.")
 
         .add< LinearMapping< Vec3Types, Vec3Types > >(true)
-        .add< LinearMapping< Vec3Types, ExtVec3Types > >()
         .add< LinearMapping< Vec3Types, F331Types > >()
         .add< LinearMapping< Vec3Types, F332Types > >()
         .add< LinearMapping< Vec3Types, F321Types > >()
@@ -55,7 +54,6 @@ int LinearMappingClass_point = core::RegisterObject("Map child positions as a li
         ;
 
 template class SOFA_Flexible_API LinearMapping< Vec3Types, Vec3Types >;
-template class SOFA_Flexible_API LinearMapping< Vec3Types, ExtVec3Types >;
 template class SOFA_Flexible_API LinearMapping< Vec3Types, F331Types >;
 template class SOFA_Flexible_API LinearMapping< Vec3Types, F332Types >;
 template class SOFA_Flexible_API LinearMapping< Vec3Types, F321Types >;

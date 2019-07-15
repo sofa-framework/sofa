@@ -46,9 +46,16 @@ using sofa::component::visualmodel::OglLabel ;
 #include <sofa/defaulttype/RGBAColor.h>
 using sofa::defaulttype::RGBAColor ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 class OglLabelTest : public Sofa_test<>
 {
 public:
+    void SetUp(){
+        sofa::simpleapi::importPlugin("SofaOpenglVisual");
+
+    }
+
     void checkExcludingAttributes()
     {
         EXPECT_MSG_EMIT(Warning) ;

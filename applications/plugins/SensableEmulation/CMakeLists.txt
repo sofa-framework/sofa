@@ -15,6 +15,7 @@ set(SOURCE_FILES
 set(README_FILES PluginSensableEmulation.txt)
 
 find_package(SofaHaptics REQUIRED)
+find_package(SofaOpenglVisual REQUIRED)
 find_package(Boost QUIET COMPONENTS thread REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 

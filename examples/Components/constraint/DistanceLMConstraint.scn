@@ -4,7 +4,7 @@
     <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <LMConstraintSolver numIterations="27" maxError="1e-7"/>
     <Node name="AttachOneWay">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <Node name="M1">
             <MechanicalObject />
@@ -14,7 +14,7 @@
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
         <Node name="M2">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject />
             <UniformMass vertexMass="1" />
@@ -22,7 +22,7 @@
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
         <Node name="M3">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject />
             <UniformMass vertexMass="1" />

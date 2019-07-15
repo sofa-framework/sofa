@@ -38,7 +38,6 @@ using namespace sofa::defaulttype;
 
 
 template class SOFA_BASE_MECHANICS_API TopologyBarycentricMapper< Vec3dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API TopologyBarycentricMapper< Vec3dTypes, ExtVec3Types >;
 
 
 

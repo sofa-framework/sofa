@@ -1,13 +1,15 @@
 <?xml version="1.0" ?>
 <!-- See http://wiki.sofa-framework.org/wiki/TutorialMappingDragonRigid -->
 <Node name="root" dt="0.01" gravity="0 0 -9.81">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehavior" />
     <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <MechanicalObject name="RigidDOF" template="Rigid" dz="1" rotation="90 0 -90" />
     <UniformMass name="Mass" filename="BehaviorModels/dragon.rigid" />
     <Node name="DragonVisual">
-        <OglModel name="DragonVisualParticles" fileMesh="mesh/dragon.obj" scale="0.1" />
+        <MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" scale="0.1" handleSeams="1" />
+        <OglModel name="DragonVisualParticles" src="@meshLoader_0" />
         <RigidMapping name="RigidMapping1" input="@../RigidDOF" output="@DragonVisualParticles" />
     </Node>
     <Node name="Dragon">

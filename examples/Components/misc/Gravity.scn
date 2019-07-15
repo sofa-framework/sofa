@@ -1,19 +1,21 @@
 <Node name="root" dt="0.03333">
-    <CollisionPipeline verbose="0" depth="10" draw="0" />
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <DefaultPipeline verbose="0" depth="10" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="Torus">
         <Gravity gravity="0 -10 0" />
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="0" ry="90" />
         <UniformMass totalMass="10" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/torus2_scale3.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -28,14 +30,15 @@
     </Node>
     <Node name="Torus">
         <Gravity gravity="0 10 0" />
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="-20" dz="0" />
         <UniformMass totalMass="10" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader_3" filename="mesh/torus2_scale3.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_3" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -55,7 +58,8 @@
         <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
         <LineCollisionModel name="Floor" simulated="0" moving="0" />
         <PointCollisionModel name="Floor" simulated="0" moving="0" />
-        <OglModel name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" rx="180" dy="30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />
+        <MeshObjLoader name="meshLoader_1" filename="mesh/floor2b.obj" scale="0.5" handleSeams="1" />
+        <OglModel name="FloorV" src="@meshLoader_1" texturename="textures/floor.bmp" rx="180" dy="30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />
     </Node>
     <Node name="Floor">
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
@@ -64,6 +68,7 @@
         <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
         <LineCollisionModel name="Floor" simulated="0" moving="0" />
         <PointCollisionModel name="Floor" simulated="0" moving="0" />
-        <OglModel name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" dy="-30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />/
+        <MeshObjLoader name="meshLoader_2" filename="mesh/floor2b.obj" scale="0.5" handleSeams="1" />
+        <OglModel name="FloorV" src="@meshLoader_2" texturename="textures/floor.bmp" dy="-30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />/
     </Node>
 </Node>

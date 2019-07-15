@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0 " dt="2"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
 
@@ -60,7 +61,8 @@
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel name="Beam" fileMesh="../beam/beam_100-40-1.obj" texturename="../data/mesh/degrade-stiffness.png" />
+		<MeshObjLoader name="meshLoader_0" filename="../beam/beam_100-40-1.obj" handleSeams="1" />
+		<OglModel name="Beam" src="@meshLoader_0" texturename="../data/mesh/degrade-stiffness.png" />
 	    	<LinearMapping template="Affine,ExtVec3f"/>
 	    </Node>
 

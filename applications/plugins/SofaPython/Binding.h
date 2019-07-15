@@ -25,6 +25,6 @@
 #include <SofaPython/config.h>
 
 /// registers "Sofa" python module with sofa types & methods into python framework
-SOFA_SOFAPYTHON_API void bindSofaPythonModule();
+SOFA_SOFAPYTHON_API void bindSofaPythonModule(PyObject * module = nullptr);
 
 #endif // BINDING_H

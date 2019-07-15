@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showVisual" />
-    <CollisionPipeline verbose="0" name="CollisionPipeline" />
+    <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" name="collision response" />
+    <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection />
 <!--    <SplitAndAttachBodyButtonSetting button="Middle" stiffness="5000" arrowSize="0.2" snapDistance="2" />-->
     <Node name="FullTopology">
         <MeshObjLoader name="loader" filename="mesh/sphere_05.obj" />
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <TriangleSetTopologyContainer name="Container1" src="@loader" />
         <TriangleSetTopologyModifier />
@@ -18,7 +18,7 @@
         <BoxROI name="roi1" box="-55 -55 -55 55 55 -25" />
         <FixedConstraint name="FixedConstraint" indices="@roi1.indices" />
         <DiagonalMass massDensity="1" name="computed using mass density" />
-        <TriangleModel group="1" printLog="1" />
+        <TriangleCollisionModel group="1" printLog="1" />
         <TaitSurfacePressureForceField name="Pressure" gamma="5" B="10000" injectedVolume="0" printLog="1" />
         <Node name="SubsetTopology1">
             <BoxROI name="subsetROI" position="@../loader.position" triangles="@../loader.triangles" computeEdges="0" computeTetrahedra="0" box="-55 -55 25 55 55 55" />
@@ -30,7 +30,7 @@
             <IdentityMapping />
             <TriangularFEMForceFieldOptim name="FEM1" youngModulus="1000" poissonRatio="0.3" showStressColorMap="red  1 0 0 1  1 0.5 0.5 1" />
             <FastTriangularBendingSprings name="Bending" bendingStiffness="100" />
-            <!--<TriangleModel color="1 0 0 1" group="1" printLog="1" />-->
+            <!--<TriangleCollisionModel color="1 0 0 1" group="1" printLog="1" />-->
         </Node>
         <Node name="SubsetTopology2">
             <BoxROI name="subsetROI" position="@../loader.position" triangles="@../loader.triangles" computeEdges="0" computeTetrahedra="0" box="-55 -55 -55 55 55 25" />
@@ -42,7 +42,7 @@
             <IdentityMapping />
             <TriangularFEMForceFieldOptim name="FEM2" youngModulus="10000" poissonRatio="0.4" showStressColorMap="green  0 0.5 0 1  0.5 1 0 1" />
             <FastTriangularBendingSprings name="Bending" bendingStiffness="1000" />
-            <!--<TriangleModel group="1" printLog="1" />-->
+            <!--<TriangleCollisionModel group="1" printLog="1" />-->
         </Node>
     </Node>
 </Node>

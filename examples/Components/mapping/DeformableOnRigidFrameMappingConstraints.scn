@@ -1,12 +1,13 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehavior" />
     <FreeMotionAnimationLoop />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.1" />
-    <CollisionResponse name="Response" response="FrictionContact" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultCollisionGroupManager name="Group" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     <Node name="ChainRigid">
         <Node name="TorusFixed">
@@ -16,17 +17,18 @@
             <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
             <PointCollisionModel simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/torus2.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="gray" />
         </Node>
         <Node name="TorusRigid">
-            <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
             <MechanicalObject name="rigidframe" template="Rigid" position="1 2 0 0 0 0.7 0.7" />
             <UniformMass filename="BehaviorModels/torus.rigid" />
             <UncoupledConstraintCorrection />
         </Node>
         <Node name="TorusDeformLocal">
-            <EulerImplicit />
+            <EulerImplicitSolver />
             <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
             <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
             <MechanicalObject />
@@ -47,7 +49,8 @@
                     <BarycentricMapping />
                 </Node>
                 <Node name="Visu">
-                    <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
+                    <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+                    <OglModel name="Visual" src="@meshLoader_0" color="gray" />
                     <BarycentricMapping input="@.." output="@Visual" />
                 </Node>
             </Node>

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
   <VisualStyle displayFlags="showVisual showBehavior hideWireframe" />
 
@@ -19,6 +20,7 @@
 
 	  <MechanicalObject  template="Rigid" name="DOFs" src="@sampler" />
 	  <UniformMass template="Rigid" name="mass"  mass="50 50 [1 0 0,0 1 0,0 0 1]" showAxisSizeFactor='0.5'/>
-	<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/Armadillo_simplified.obj" color="0.5 0.8 0.5 0.6"/>
+	<MeshObjLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+	<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.5 0.8 0.5 0.6"/>
 </Node>
 

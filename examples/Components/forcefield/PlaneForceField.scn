@@ -1,11 +1,12 @@
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <CollisionResponse name="Response" response="default" />
+    <DefaultContactManager name="Response" response="default" />
     <Node name="M1">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject />
         <UniformMass totalMass="10" />
@@ -13,7 +14,8 @@
         <RegularGridSpringForceField name="Springs" stiffness="1000" />
         <PlaneForceField normal="0 1 0" d="-10" stiffness="100000" showPlane="1" showPlaneSize="20"/>
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="blue" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Collis">

@@ -1,12 +1,13 @@
 <!-- Mechanical PointSplatModel Example -->
 <Node dt="0.005" gravity="0 -10 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="SofaSphFluid"/>
     <RequiredPlugin pluginName="SofaMiscCollision"/>
 
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <NewProximityIntersection alarmDistance="0.5" contactDistance="0.3" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <Node name="Fluid">
         <RungeKutta4 />
         <PointSetTopologyContainer />

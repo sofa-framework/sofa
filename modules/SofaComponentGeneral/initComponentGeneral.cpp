@@ -47,8 +47,6 @@
 #endif
 
 #include <SofaEigen2Solver/initEigen2Solver.h>
-#include <SofaOpenglVisual/initOpenGLVisual.h>
-
 
 namespace sofa
 {
@@ -87,9 +85,6 @@ void initComponentGeneral()
     initConstraint();
 #ifdef SOFA_HAVE_NEWMAT
     initDenseSolver();
-#endif
-#ifndef SOFA_NO_OPENGL
-    initOpenGLVisual();
 #endif
 }
 

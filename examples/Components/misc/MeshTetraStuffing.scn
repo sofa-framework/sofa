@@ -1,11 +1,12 @@
 <?xml version="1.0" ?>
 <Node>
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <!--<RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />-->
     <!--
-    <CollisionPipeline verbose="0" name="CollisionPipeline"/>
+    <DefaultPipeline verbose="0" name="CollisionPipeline"/>
     <BruteForceDetection name="N2" />
     <DiscreteIntersection/>
-    <CollisionResponse response="default" name="collision response"/>
+    <DefaultContactManager response="default" name="collision response"/>
 -->
     <VisualStyle displayFlags="showForceFields" />
     <Node name="input">
@@ -13,7 +14,7 @@
         <MeshTetraStuffing name="stuffing" snapPoints="true" splitTetras="true" draw="true" size="0.7" alphaLong="0.3" alphaShort="0.4" inputPoints="@surface.points" inputTriangles="@surface.triangles" />
     </Node>
     <Node activated="1" name="output">
-        <EulerImplicit name="odesolver"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="odesolver"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <TetrahedronSetTopologyContainer name="volume" points="@../input/stuffing.outputPoints" tetras="@../input/stuffing.outputTetras" />
         <MechanicalObject />
@@ -46,7 +47,7 @@
     </Node>
 <!--
     <Node activated="0" name="output-gpu">
-        <EulerImplicit name="odesolver" />
+        <EulerImplicitSolver name="odesolver" />
         <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <Mesh name="volume" points="@../input/stuffing.outputPoints" tetras="@../input/stuffing.outputTetras" />
         <MechanicalObject template="CudaVec3f" />

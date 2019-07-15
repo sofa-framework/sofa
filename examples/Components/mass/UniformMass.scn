@@ -1,14 +1,15 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <!-- <Simulation name="Simulation" /> -->
-    <CollisionPipeline verbose="0" name="CollisionPipeline" />
+    <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" name="collision response" />
+    <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection />
-    <!--<CollisionGroup />-->
+    <!--<DefaultCollisionGroupManager />-->
     <Node name="Liver" depend="topo dofs">
         <!--<CGImplicit iterations="25"/>-->
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <MechanicalObject src="@loader" name="dofs" />
@@ -20,7 +21,8 @@
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu">
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel name="VisualModel" src="@meshLoader_0" color="red" />
             <BarycentricMapping input="@.." output="@VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf">

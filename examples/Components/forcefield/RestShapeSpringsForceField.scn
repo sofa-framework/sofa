@@ -1,6 +1,7 @@
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <Node name="Dragon">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/dragon.obj" />
         <MechanicalObject dx="-12.0" />
@@ -8,7 +9,8 @@
         <RestShapeSpringsForceField name="Springs" stiffness="50"/>
 		
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="0.5 1.0 0.5 1.0" />
+            <MeshObjLoader name="meshLoader_2" filename="mesh/dragon.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_2" color="0.5 1.0 0.5 1.0" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
 		
@@ -23,7 +25,7 @@
         </Node>
     </Node>
 	<Node name="Dragon with Damping">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/dragon.obj" />
         <MechanicalObject dx="12.0" />
@@ -31,7 +33,8 @@
         <RestShapeSpringsForceField name="Springs" stiffness="50"/>
 		
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="1.0 0.5 0.5 1.0" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="1.0 0.5 0.5 1.0" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
 		
@@ -46,13 +49,14 @@
         </Node>
     </Node>
 	<Node name="CUBE">
-		<EulerImplicit />
+		<EulerImplicitSolver />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
 		<MechanicalObject template="Rigid" dx="-12.0" dy="-20" rx="10" />
 		<UniformMass totalMass="1.0" />
 		<RestShapeSpringsForceField name="Springs" stiffness="50" angularStiffness="50"/>
 		<Node name="Visu">
-			<OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.5 1.0 0.5 1.0" />
+			<MeshObjLoader name="meshLoader_3" filename="mesh/smCube27.obj" handleSeams="1" />
+			<OglModel name="Visual" src="@meshLoader_3" color="0.5 1.0 0.5 1.0" />
 			<RigidMapping input="@.." output="@Visual" />
 		</Node>
 		<Node name="Surf2">
@@ -66,13 +70,14 @@
 		</Node>
 	</Node>
 	<Node name="CUBE with Damping">
-		<EulerImplicit />
+		<EulerImplicitSolver />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
 		<MechanicalObject template="Rigid" dx="12.0" dy="-20" rx="10" />
 		<UniformMass totalMass="1.0" />
 		<RestShapeSpringsForceField name="Springs" stiffness="50" angularStiffness="50" />
 		<Node name="Visu">
-			<OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="1.0 0.5 0.5 1.0" />
+			<MeshObjLoader name="meshLoader_0" filename="mesh/smCube27.obj" handleSeams="1" />
+			<OglModel name="Visual" src="@meshLoader_0" color="1.0 0.5 0.5 1.0" />
 			<RigidMapping input="@.." output="@Visual" />
 		</Node>
 		<Node name="Surf2">

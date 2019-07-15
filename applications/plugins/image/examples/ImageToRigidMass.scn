@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
   <VisualStyle displayFlags="showWireframe showVisual showBehaviorModels" />
 
@@ -32,7 +33,7 @@
 		<RigidMapping globalToLocalCoords="1"/>
 
 		<Node 	name="visual" >
-	  		<VisualModel name="mesh"  src="@../../../mesh" color="0.8 0.8 0.8 1"/> 
+	  		<OglModel name="mesh"  src="@../../../mesh" color="0.8 0.8 0.8 1"/> 
 			<IdentityMapping />
 		</Node>
 	</Node>

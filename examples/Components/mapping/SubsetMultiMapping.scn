@@ -3,13 +3,13 @@
 
     <VisualStyle displayFlags="showBehaviorModels showCollisionModels showForceFields" />
     
-    <CollisionPipeline/>
+    <DefaultPipeline/>
     <BruteForceDetection/>
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <DiscreteIntersection/>
     
     
-    <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     
     

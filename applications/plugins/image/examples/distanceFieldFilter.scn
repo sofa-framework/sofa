@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
 <!--  <ImageContainer  name="image" filename="data/pelvis_f.raw"/>-->
 <!--  <ImageFilter  filter="1"  param="5"  name="engine1" src="@image" />-->
@@ -10,5 +11,6 @@
   <ImageFilter template="ImageB,ImageD" filter="16"  param="1"  name="engine" src="@imageBool"/>
   <ImageContainer template="ImageD" name="imageDouble" inputImage="@engine.outputImage" inputTransform="@engine.outputTransform"/>
   <ImageViewer template="ImageD" name="viewerD" src="@imageDouble"  plane="30 53 15"/>
-  <OglModel fileMesh="data/pelvis_f.obj"  color="1 0.8 0.8 1"/>
+  <MeshObjLoader name="meshLoader_0" filename="data/pelvis_f.obj" handleSeams="1" />
+  <OglModel src="@meshLoader_0"  color="1 0.8 0.8 1"/>
 </Node>

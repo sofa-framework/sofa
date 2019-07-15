@@ -49,7 +49,6 @@ namespace mapping
 
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 
 template <class TIn, class TOut>
 class BarycentricMapping : public core::Mapping<TIn, TOut>
@@ -124,7 +123,6 @@ private:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, ExtVec3Types >;
 
 
 #endif

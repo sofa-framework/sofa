@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.005">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <RequiredPlugin pluginName="InvertibleFVM"/>
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
         
     
      <!--EulerImplicit name="cg_odesolver" printLog="false" dt="0.01"/>
@@ -21,7 +22,8 @@
             <InvertibleFVMForceField name="FEM" youngModulus="100" poissonRatio="0"  />
 	    <PlaneForceField normal="0 1 0" d="-0.5" stiffness="100" drawSize="100" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red"  />
+                <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_0" color="red"  />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -43,7 +45,8 @@
             <TetrahedronFEMForceField name="FEM" youngModulus="100" poissonRatio="0" computeGlobalMatrix="false" method="svd" />
 	    <PlaneForceField normal="0 1 0" d="-0.5" stiffness="100" drawSize="100" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="blue" dx="7" />
+                <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_1" color="blue" dx="7" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">

@@ -78,14 +78,12 @@ using namespace sofa::gpu::cuda;
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3fTypes>;
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3f1Types>;
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, Vec3Types>;
-extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, ExtVec3Types>;
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3Types, CudaVec3fTypes>;
 
 // CudaVec3f1Types
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, CudaVec3f1Types>;
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, CudaVec3fTypes>;
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, Vec3Types>;
-extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, ExtVec3Types >;
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3dTypes, CudaVec3f1Types>;
 
 
@@ -94,12 +92,10 @@ extern template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3dTypes, CudaVec3f1
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, CudaVec3dTypes>;
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, CudaVec3fTypes>;
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, Vec3Types>;
-extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, ExtVec3Types >;
 
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3dTypes>;
 extern template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3Types, CudaVec3dTypes>;
 
-extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3d1Types, ExtVec3Types >;
 #endif
 
 #endif

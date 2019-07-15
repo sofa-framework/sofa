@@ -43,7 +43,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaImplicitOdeSolver SofaGeneralLi
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPRECONDITIONER")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
 if(newmat_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaDenseSolver)
@@ -54,5 +54,5 @@ endif()
 
 sofa_generate_package(NAME SofaPreconditioner VERSION ${PROJECT_VERSION} TARGETS SofaPreconditioner
     INCLUDE_SOURCE_DIR "src/SofaPreconditioner"
-    INCLUDE_INSTALL_DIR "SofaPreconditioner"
+    INCLUDE_INSTALL_DIR "SofaPreconditioner/SofaPreconditioner"
     )

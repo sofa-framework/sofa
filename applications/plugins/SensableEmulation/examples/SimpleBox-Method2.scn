@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
 <Node name="root" gravity="0 0 0" dt="0.02" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisualModels" />
 
   <RequiredPlugin name="SensableEmulation" pluginName="SensableEmulation" />
@@ -8,7 +9,7 @@
   <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
 
-    <CollisionPipeline depth="8" />
+    <DefaultPipeline depth="8" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.6" contactDistance="0.3" />
     <RuleBasedContactManager name="Response" response="FrictionContact"
@@ -30,7 +31,7 @@
     </Node>
 
     <Node name="Tool">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05"/>
 
         <MechanicalObject name="ms" template="Rigid3"/>
@@ -44,7 +45,8 @@
         </Node>
 
         <Node name="ToolVisual">
-            <OglModel template="ExtVec3d" name="VisualModel" fileMesh="data/mesh/dental_instrument.obj" scale3d="10 10 10" translation="-2.12256 1.32361 35.5" rotation="180 0 150" />
+            <MeshObjLoader name="meshLoader_1" filename="data/mesh/dental_instrument.obj" scale3d="10 10 10" translation="-2.12256 1.32361 35.5" rotation="180 0 150" handleSeams="1" />
+            <OglModel template="ExtVec3d" name="VisualModel" src="@meshLoader_1" />
             <RigidMapping template="Rigid3d,ExtVec3d" name="MM->VM mapping" input="@ms" output="@VisualModel" />
         </Node>
               
@@ -55,7 +57,8 @@
 
 <Node name="Box" >
         <Node name="VisualModel" >
-            <OglModel template="ExtVec3d" name="BoxVisualModel" scale3d="10 10 10" fileMesh="data/mesh/box.obj" />
+            <MeshObjLoader name="meshLoader_0"  scale3d="10 10 10"filename="data/mesh/box.obj" handleSeams="1" />
+            <OglModel template="ExtVec3d" name="BoxVisualModel" src="@meshLoader_0" />
         </Node>
         <Node 	name="CollisionModel" >
 

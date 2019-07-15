@@ -4,6 +4,7 @@
 	Accuracy of matrix computation can compare with the iterative solver (CG) 
 -->
 <Node name="root" gravity="0 -9.8 0" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline name="default21" verbose="0" />
     <BruteForceDetection name="N2" />
@@ -11,7 +12,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultCollisionGroupManager name="default23" />
     <Node name="DirectSolverNode">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <LULinearSolver name="m_lSolver" printLog="false" verbose="false" />
         <Node name="HexahedraA">
             <MeshGmshLoader name="loader" filename="mesh/SimpleBeamHexa.msh" />
@@ -39,7 +40,7 @@
     </Node>
     <!-- uncomment to see the comparison between direct solver (contribution of interaction & mapping to the global matrix) and the iterative solver 
     <Node name="IterativeSolverNode">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver name="cg_solver" iterations="100" tolerance="1.0e-9" threshold="1.0e-9" />
         <Node name="HexahedraA">
             <HexahedronSetTopologyContainer name="hexaContainer1" filename="mesh/SimpleBeamHexa.msh" />

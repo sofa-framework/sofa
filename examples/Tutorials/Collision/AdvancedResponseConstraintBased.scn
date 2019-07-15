@@ -1,18 +1,19 @@
 <?xml version="1.0" ?>
 <!-- See http://wiki.sofa-framework.org/wiki/TutorialCollisionUncoupledConstraints -->
 <Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showBehavior showCollisionModels" />
     <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" />
-    <CollisionPipeline name="CollisionPipeline" />
+    <DefaultPipeline name="CollisionPipeline" />
     <BruteForceDetection name="BruteForceDetection" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <CollisionResponse name="Response" response="FrictionContact" />
-    <CollisionGroup />
+    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultCollisionGroupManager />
     <LCPConstraintSolver maxIt="1000" tolerance="0.001" maxIterations="1000"/>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube">
-        <EulerImplicit name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject name="Cube RigidDOF" template="Rigid" dy="2" />
         <UniformMass name="UniformMass" totalMass="10.0" />
@@ -33,7 +34,7 @@
     </Node>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube">
-        <EulerImplicit name="EulerImplicit" />
+        <EulerImplicitSolver name="EulerImplicit" />
         <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject name="Cube RigidDOF" template="Rigid" dy="5" dx="1" />
         <UniformMass name="UniformMass" totalMass="10.0" />
