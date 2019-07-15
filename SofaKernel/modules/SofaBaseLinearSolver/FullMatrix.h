@@ -401,7 +401,7 @@ public:
             {
                 out << " " << v.element(y,x);
             }
-            out << "\n";
+            out << " ]";
         }
         out << " ]";
         return out;
