@@ -26,6 +26,7 @@
 #include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/behavior/OdeSolver.h>
 
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 namespace sofa
 {
@@ -72,7 +73,7 @@ public:
     /// Handle Topological Changes.
     void handleTopologyChange() override;
 
-    virtual void computeComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override {}
+    virtual void computeComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
 
     virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix *W) override;
 
@@ -142,6 +143,9 @@ private:
 protected:
 
     sofa::core::behavior::OdeSolver* m_pOdeSolver;
+
+    typedef linearsolver::CompressedRowSparseMatrix< defaulttype::Mat<Coord::total_size, Coord::total_size, Real> > MatrixType;
+    MatrixType m_compliance;
 
     /**
      * @brief Compute dx correction from motion space force vector.

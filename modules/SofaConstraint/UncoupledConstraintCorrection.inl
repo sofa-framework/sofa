@@ -318,11 +318,13 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     }
 }
 
-
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::defaulttype::BaseMatrix *W)
+void UncoupledConstraintCorrection<DataTypes>::computeComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::defaulttype::BaseMatrix *W)
 {
-    const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue(cparams) ;
+    const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue(cparams);
+    if (constraints.size() == 0)
+        return;
+
     VecReal comp = compliance.getValue();
     Real comp0 = defaultCompliance.getValue();
     const bool verbose = f_verbose.getValue();
@@ -331,29 +333,32 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     double factor = 1.0;
     switch (cparams->constOrder())
     {
-    case core::ConstraintParams::POS_AND_VEL :
-    case core::ConstraintParams::POS :
+    case core::ConstraintParams::POS_AND_VEL:
+    case core::ConstraintParams::POS:
         factor = useOdeIntegrationFactors ? m_pOdeSolver->getPositionIntegrationFactor() : 1.0;
         break;
 
-    case core::ConstraintParams::ACC :
-    case core::ConstraintParams::VEL :
+    case core::ConstraintParams::ACC:
+    case core::ConstraintParams::VEL:
         factor = useOdeIntegrationFactors ? m_pOdeSolver->getVelocityIntegrationFactor() : 1.0;
         break;
 
-    default :
+    default:
         break;
     }
 
     comp0 *= Real(factor);
-    for(std::size_t i=0;i<comp.size(); ++i)
+    for (std::size_t i = 0; i<comp.size(); ++i)
     {
         comp[i] *= Real(factor);
     }
 
+    m_compliance.resize(constraints.size(), constraints.size());
 
+    int localRowIndex = -1;
     for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
     {
+        ++localRowIndex;
         int indexCurRowConst = rowIt.index();
         if (rowIt.row().empty()) continue; // ignore constraints with empty Jacobians
 
@@ -368,7 +373,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
         // First the compliance of the constraint with itself
         {
             double w = 0.0;
-            
+
             for (MatrixDerivColConstIterator colIt = colItBegin; colIt != colItEnd; ++colIt)
             {
                 unsigned int dof = colIt.index();
@@ -382,8 +387,8 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
                 //w += (n * n) * (dof < comp.size() ? comp[dof] : comp0);
                 w += UncoupledConstraintCorrection_computeCompliance(dof, n, n, comp0, comp);
             }
-            
-            W->add(indexCurRowConst, indexCurRowConst, w);
+
+            m_compliance.set(localRowIndex, localRowIndex, w);
         }
 
         if (verbose)
@@ -394,18 +399,20 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
         // Then the compliance with the remaining constraints
         MatrixDerivRowConstIterator rowIt2 = rowIt;
         ++rowIt2;
+        int localColumnIndex = localRowIndex;
         for (; rowIt2 != rowItEnd; ++rowIt2)
         {
+            ++localColumnIndex;
             int indexCurColConst = rowIt2.index();
             if (rowIt2.row().empty()) continue; // ignore constraints with empty Jacobians
 
-            // To efficiently compute the compliance between rowIt and rowIt2, we can rely on the
-            // fact that the values are sorted on both rows to iterate through them in one pass,
-            // with a O(n+m) complexity instead of the brute-force O(n*m) nested loop version.
+                                                // To efficiently compute the compliance between rowIt and rowIt2, we can rely on the
+                                                // fact that the values are sorted on both rows to iterate through them in one pass,
+                                                // with a O(n+m) complexity instead of the brute-force O(n*m) nested loop version.
 
             double w = 0.0;
 
-            MatrixDerivColConstIterator colIt  = colItBegin;
+            MatrixDerivColConstIterator colIt = colItBegin;
             MatrixDerivColConstIterator colIt2 = rowIt2.begin();
             const MatrixDerivColConstIterator colIt2End = rowIt2.end();
 
@@ -433,11 +440,53 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 
             if (w != 0.0)
             {
-                W->add(indexCurRowConst, indexCurColConst, w);
-                W->add(indexCurColConst, indexCurRowConst, w);
+                m_compliance.set(localRowIndex, localColumnIndex, w);
+                m_compliance.set(localColumnIndex, localRowIndex, w);
             }
         }
     }
+
+    m_compliance.compress();
+}
+
+template<class DataTypes>
+void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::defaulttype::BaseMatrix *W)
+{
+    const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue(cparams) ;
+   
+    if (constraints.begin() == constraints.end()) return;
+
+    MatrixDerivRowConstIterator jit = constraints.begin();
+    MatrixDerivRowConstIterator iit = constraints.begin();
+
+    for (MatrixType::Index row = 0; row < m_compliance.getRowIndex().size(); ++row)
+    {
+        MatrixType::Range rowRange(m_compliance.getRowBegin()[row], m_compliance.getRowBegin()[row + 1]);
+        iit = constraints.begin();
+        int prevCol = 0;
+        for (MatrixType::Index col = rowRange.begin(); col < rowRange.end(); ++col)
+        {
+            int colIndex = m_compliance.getColsIndex()[col];
+            for (int i = 0; i < Coord::total_size * (colIndex - prevCol); ++i) { ++iit;}
+            //std::advance(iit, 3 * (colIndex - prevCol));
+            prevCol = colIndex;
+            const MatrixType::Bloc& JMinvJTblock = m_compliance.getColsValue()[col];
+            int begin_i = jit.index();
+            int begin_j = iit.index();
+
+            for (int i = 0; i < Coord::total_size; ++i)
+            {
+                for (int j = 0; j < Coord::total_size; ++j)
+                {
+                    W->add(begin_i + i, begin_j + j, JMinvJTblock[i][j]);
+                }
+            }
+        }
+
+        //std::advance(jit, 3);
+        for (int i = 0; i < Coord::total_size; ++i) { ++jit; }
+    }
+    
 }
 
 template<class DataTypes>
