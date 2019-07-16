@@ -45,6 +45,8 @@ set(HEADER_FILES
     TableDataWidget.h
     viewer/SofaViewer.h
     viewer/VisualModelPolicy.h
+    viewer/EngineBackend.h
+    viewer/GLBackend.h
     GenericWidget.h
 )
 
@@ -85,6 +87,7 @@ set(SOURCE_FILES
     WDoubleLineEdit.cpp
     viewer/SofaViewer.cpp
     viewer/VisualModelPolicy.cpp
+    viewer/GLBackend.cpp
     panels/QDocBrowser.cpp
 )
 
@@ -150,19 +153,6 @@ if(SOFAGUI_QGLVIEWER)
     list(APPEND MOC_HEADER_FILES viewer/qgl/QtGLViewer.h)
     list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
 endif()
-
-## Qt3DViewer
-#if(SOFAGUI_QT3DVIEWER)
-#    list(APPEND MOC_HEADER_FILES
-#        viewer/qt3d/Qt3DViewer.h
-#        viewer/qt3d/DrawToolQt3D.h
-#    )
-
-#    list(APPEND SOURCE_FILES
-#        viewer/qt3d/Qt3DViewer.cpp
-#        viewer/qt3d/DrawToolQt3D.cpp
-#    )
-#endif()
 
 # QChart
 find_package(Qt5 COMPONENTS Charts QUIET)

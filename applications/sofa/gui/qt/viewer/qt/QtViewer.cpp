@@ -33,6 +33,7 @@
 #include <cstring>
 #include <cmath>
 #include <cstdlib>
+#include <memory>
 
 #include <qevent.h>
 
@@ -49,6 +50,8 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/gui/ColourPickingVisitor.h>
+#include <sofa/gui/qt/GLPickHandler.h>
+#include <sofa/gui/qt/viewer/GLBackend.h>
 
 #include <QImage>
 
@@ -157,6 +160,8 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
 #ifdef __linux__
     ::setenv("MESA_GL_VERSION_OVERRIDE", "3.0", 1);
 #endif // __linux
+    m_backend.reset(new GLBackend());
+    pick = new GLPickHandler();
 
     this->setObjectName(name);
 
@@ -176,7 +181,7 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     //connect( timerAnimate, SIGNAL(timeout()), this, SLOT(animate()) );
 
     _video = false;
-    _axis = false;
+    m_bShowAxis = false;
     _background = 0;
     _numOBJmodels = 0;
     _materialMode = 0;
@@ -705,7 +710,7 @@ void QtViewer::DisplayOBJs()
 
         getSimulation()->draw(vparams,groot.get());
 
-        if (_axis)
+        if (m_bShowAxis)
         {
 
             SReal* minBBox = vparams->sceneBBox().minBBoxPtr();
@@ -1055,7 +1060,7 @@ void QtViewer::calcProjection(int width, int height)
     if (!currentCamera)
         return;
 
-    if (groot && (!groot->f_bbox.getValue().isValid() || _axis))
+    if (groot && (!groot->f_bbox.getValue().isValid() || m_bShowAxis))
     {
         vparams->sceneBBox() = groot->f_bbox.getValue();
         currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());

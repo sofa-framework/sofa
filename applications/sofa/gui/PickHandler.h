@@ -152,7 +152,7 @@ protected:
     PickingMethod pickingMethod;
 
 
-    BodyPicked findCollision();
+    virtual BodyPicked findCollision();
     BodyPicked findCollisionUsingPipeline();
     BodyPicked findCollisionUsingBruteForce();
     BodyPicked findCollisionUsingColourCoding();
