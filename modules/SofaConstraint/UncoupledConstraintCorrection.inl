@@ -406,9 +406,9 @@ void UncoupledConstraintCorrection<DataTypes>::computeComplianceInConstraintSpac
             int indexCurColConst = rowIt2.index();
             if (rowIt2.row().empty()) continue; // ignore constraints with empty Jacobians
 
-                                                // To efficiently compute the compliance between rowIt and rowIt2, we can rely on the
-                                                // fact that the values are sorted on both rows to iterate through them in one pass,
-                                                // with a O(n+m) complexity instead of the brute-force O(n*m) nested loop version.
+            // To efficiently compute the compliance between rowIt and rowIt2, we can rely on the
+            // fact that the values are sorted on both rows to iterate through them in one pass,
+            // with a O(n+m) complexity instead of the brute-force O(n*m) nested loop version.
 
             double w = 0.0;
 
