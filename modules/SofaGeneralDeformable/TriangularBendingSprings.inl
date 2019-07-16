@@ -727,28 +727,16 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
             if (external)
             {
                 if (d<edgeInf[i].restlength*0.9999)
-                {
                     colors.push_back(sofa::defaulttype::RGBAColor::red());
-                    colors.push_back(sofa::defaulttype::RGBAColor::red());
-                }
                 else
-                {
                     colors.push_back(sofa::defaulttype::RGBAColor::green());
-                    colors.push_back(sofa::defaulttype::RGBAColor::green());
-                }
             }
             else
             {
                 if (d<edgeInf[i].restlength*0.9999)
-                {
                     colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
-                    colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
-                }
                 else
-                {
                     colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
-                    colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
-                }
             }
 
             vertices.push_back( x[edgeInf[i].m1] );
