@@ -459,12 +459,12 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     MatrixDerivRowConstIterator jit = constraints.begin();
     MatrixDerivRowConstIterator iit = constraints.begin();
 
-    for (MatrixType::Index row = 0; row < m_compliance.getRowIndex().size(); ++row)
+    for (typename MatrixType::Index row = 0; row < m_compliance.getRowIndex().size(); ++row)
     {
         MatrixType::Range rowRange(m_compliance.getRowBegin()[row], m_compliance.getRowBegin()[row + 1]);
         iit = constraints.begin();
         int prevCol = 0;
-        for (MatrixType::Index col = rowRange.begin(); col < rowRange.end(); ++col)
+        for (typename MatrixType::Index col = rowRange.begin(); col < rowRange.end(); ++col)
         {
             int colIndex = m_compliance.getColsIndex()[col];
             for (int i = 0; i < Coord::total_size * (colIndex - prevCol); ++i) { ++iit;}
