@@ -461,7 +461,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 
     for (typename MatrixType::Index row = 0; row < m_compliance.getRowIndex().size(); ++row)
     {
-        MatrixType::Range rowRange(m_compliance.getRowBegin()[row], m_compliance.getRowBegin()[row + 1]);
+        typename MatrixType::Range rowRange(m_compliance.getRowBegin()[row], m_compliance.getRowBegin()[row + 1]);
         iit = constraints.begin();
         int prevCol = 0;
         for (typename MatrixType::Index col = rowRange.begin(); col < rowRange.end(); ++col)
@@ -470,7 +470,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
             for (int i = 0; i < Coord::total_size * (colIndex - prevCol); ++i) { ++iit;}
             //std::advance(iit, 3 * (colIndex - prevCol));
             prevCol = colIndex;
-            const MatrixType::Bloc& JMinvJTblock = m_compliance.getColsValue()[col];
+            const typename MatrixType::Bloc& JMinvJTblock = m_compliance.getColsValue()[col];
             int begin_i = jit.index();
             int begin_j = iit.index();
 
