@@ -36,7 +36,7 @@
 #define CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP
 
 #include <CGALPlugin/MeshGenerationFromImage.h>
-#include <image/ImageTypes.h>
+//#include <image/ImageTypes.h>
 
 namespace cgal
 {
