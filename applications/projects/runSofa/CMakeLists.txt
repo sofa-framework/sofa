@@ -70,8 +70,8 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
             COMPONENT applications)
         install(CODE "execute_process(COMMAND /bin/bash
             \"${CMAKE_SOURCE_DIR}/scripts/linux-postinstall-fixup.sh\"
+            \"${CMAKE_BINARY_DIR}\"
             \"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
-            \"${Qt5_DIR}/../../..\"
             )"
             COMPONENT applications)
     elseif(APPLE) # MacOS
