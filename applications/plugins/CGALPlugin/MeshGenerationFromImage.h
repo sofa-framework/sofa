@@ -46,7 +46,6 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/rmath.h>
 
-//#include <image/ImageTypes.h>
 #include <CImgPlugin/CImgData.h>
 
 //CGAL
