@@ -1,16 +1,14 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: linux-postinstall-fixup.sh <install-dir> <qt-dir>"
+    echo "Usage: linux-postinstall-fixup.sh <build-dir> <install-dir>"
 }
 
 if [ "$#" -ge 2 ]; then
-    INSTALL_DIR="$(cd $1 && pwd)"
+    BUILD_DIR="$(cd $1 && pwd)"
+    INSTALL_DIR="$(cd $2 && pwd)"
     
-    QT_DIR=""
-	if [ -d "$2" ]; then
-		QT_DIR="$(cd $2 && pwd)"
-	fi
+    OUTPUT_TMP="all_deps.tmp"
 else
     usage; exit 1
 fi
@@ -23,77 +21,63 @@ rm -rf "$INSTALL_DIR/plugins/imageformats"
 rm -rf "$INSTALL_DIR/plugins/platforms"
 rm -rf "$INSTALL_DIR/plugins/styles"
 
+rm -f "$OUTPUT_TMP"
 
-get-lib-deps() {
-	local base_dir="$1"
-	local libs="$(find "$base_dir" -type f -name "*.so*" -path "$base_dir/lib/*" ; find "$base_dir" -type f -name "*.so*" -path "$base_dir/bin/*")"
-		
-	#echo " ------- libs --------"
-	#echo "$libs"
-	#echo "----------------------"
+echo_debug() {
+    if [ -n "$DEBUG" ] && [ "$DEBUG" -gt 0 ]; then
+        echo $*
+    fi
+}
 
-	ldd $libs | grep " => [^ \.].* " | grep -v "$base_dir" | cut -c2- | sed -e 's/\(.*\) => .*/\1/g' | sort | uniq
+get-lib-deps-assoc() {
+	local base_build_dir="$1"
+	local base_install_dir="$2"
+    local output="$3"
+	local build_libs="$(find "$base_build_dir" -type f -name "*.so*" -path "$base_build_dir/lib/*" ; find "$base_build_dir" -type f -name "*.so*" -path "$base_build_dir/bin/*")"
+	local install_libs="$(find "$base_install_dir" -type f -name "*.so*" -path "$base_install_dir/lib/*" ; find "$base_install_dir" -type f -name "*.so*" -path "$base_install_dir/bin/*")"
+
+	ldd $build_libs $install_libs | # get all deps from libs in build_dir/[bin,lib] and install_dir/[bin,lib]
+        grep " => [^ \.].* " | # remove unneeded results
+        grep -v "$base_build_dir" | # remove deps already satisfied locally (in build_dir)
+        grep -v "$base_install_dir" | # remove deps already satisfied locally (in install_dir)
+        cut -c2- | # remove tabulation at beggining of each line
+        sed -e 's/ (.*//g' | # keep only "libname => libpath"
+        sort | uniq > "$output"
 }
 
 
-echo "  Searching missing deps in $INSTALL_DIR"
+# Write dependencies to OUTPUT_TMP as "<lib-name> => <lib-path>" (from ldd output)
+get-lib-deps-assoc "$BUILD_DIR" "$INSTALL_DIR" "$OUTPUT_TMP"
 
-lib_deps="$(get-lib-deps "$INSTALL_DIR")"
-
-# Copy Qt libs (and their deps)
-if [ -n "$QT_DIR" ]; then
-	qt_deps="$(echo $lib_deps | tr " " "\n" | grep "libQt")"
-
-	qt_deps_to_copy="$qt_deps"
-	for qtlib in $qt_deps; do
-		qt_deps_to_copy="$qt_deps_to_copy $(ldd "$QT_DIR/lib/$qtlib" | grep "$QT_DIR" | cut -c2- | sed -e 's/\(.*\) => .*/\1/g')"
-	done
-	qt_deps_to_copy="$(echo $qt_deps_to_copy | tr " " "\n" | sort | uniq)"
-
-	for qtlib in $qt_deps_to_copy; do
-		echo "    $qtlib"
-		cp -Rf "$QT_DIR/lib/$qtlib"* "$INSTALL_DIR/lib"
-	done
-fi
-
-# Copy libPNG
-if echo "$lib_deps" | grep -q "libpng12"; then
-    echo "    libpng12.so"
-    cp -Rf "/lib/x86_64-linux-gnu/libpng12.so.0"* "$INSTALL_DIR/lib"
-fi
-
-# System libs absent from VM
-cp -Rf "/usr/lib/x86_64-linux-gnu/libmng.so.2"* "$INSTALL_DIR/lib"
-cp -Rf "/usr/lib/x86_64-linux-gnu/libxcb-image.so.0"* "$INSTALL_DIR/lib"
-cp -Rf "/usr/lib/x86_64-linux-gnu/libxcb-keysyms.so.1"* "$INSTALL_DIR/lib"
-cp -Rf "/usr/lib/x86_64-linux-gnu/libxcb-render-util.so.0"* "$INSTALL_DIR/lib"
+# Copy libs
+groups="libQt libpng libicu libmng libxcb"
+for group in $groups; do
+    echo_debug "group = $group"
+    # read all dep lib names matching the group
+    lib_names="$(cat $OUTPUT_TMP | grep "${group}.* =>" | sed -e 's/ => .*//g' | sort | uniq)"
+    echo_debug "lib_names = $lib_names"
+    group_dirname=""
+    for lib_name in $lib_names; do
+        echo_debug "lib_name = $lib_name"
+        # take first path found for the dep lib (paths are sorted so "/a/b/c" comes before "not found")
+        lib_path="$(cat $OUTPUT_TMP | grep "${lib_name} =>" | sed -e 's/.* => //g' | sort | uniq | head -n 1)"
+        echo_debug "lib_path = $lib_path"
+        lib_path_to_copy=""
+        if [[ -e "$lib_path" ]]; then
+            lib_basename="$(basename $lib_path)"
+            group_dirname="$(dirname $lib_path)"
+            echo_debug "group_dirname = $group_dirname"
+            lib_path_to_copy="$lib_path"
+        elif [[ -n "$group_dirname" ]] && [[ -e "$group_dirname/$lib_name" ]]; then
+            lib_basename="$lib_name"
+            lib_path_to_copy="$group_dirname/$lib_name"
+        fi
+        if [[ -e "$lib_path_to_copy" ]]; then
+            echo "  Copying $lib_basename from $lib_path_to_copy"
+            cp -Rf "$lib_path_to_copy"* "$INSTALL_DIR/lib"
+        fi
+    done
+done
 
 echo "Done."
 exit 0
-
-######################################
-
-# TODO
-# Check if the system deps are in default system packages
-# and copy them if not
-
-# refresh libs to integrate new Qt libs
-lib_deps="$(get-lib-deps "$INSTALL_DIR")"
-
-echo " ------- lib_deps --------"
-echo "$lib_deps"
-echo "--------------------------"
-
-rm -f /tmp/linux_postinstall_fixup_manifest
-version="$(lsb_release -a 2>/dev/null | grep "Description" | sed -e 's/.* \([0-9][0-9]\.[0-9][0-9]\.[0-9]*\) .*/\1/g')"
-codename="$(lsb_release -a 2>/dev/null | grep "Codename" | sed -e 's/.*\t\(.*\)/\1/g')"
-manifest="/tmp/ubuntu-$version-desktop-amd64.manifest"
-rm -f "$manifest"
-wget --quiet "http://releases.ubuntu.com/$codename/ubuntu-$version-desktop-amd64.manifest" -O "$manifest"
-
-for lib in $lib_deps; do
-	package="$(dpkg -S $lib | sed -e s/:.*//g)"
-#	if 
-#		...
-#	fi
-done
