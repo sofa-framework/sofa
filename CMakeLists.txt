@@ -509,25 +509,18 @@ if(CPACK_BINARY_NSIS)
 endif()
 #######################
 
-if(APPLE)
-    list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/icu4c")
-    find_package(ICU COMPONENTS data i18n uc)
-    sofa_install_libraries(LIBRARIES ${ICU_LIBRARIES})
-    message("ICU_LIBRARIES = ${ICU_LIBRARIES}")
+if(APPLE AND SOFA_BUILD_APP_BUNDLE)
+    set(CPACK_BINARY_DRAGNDROP ON)
+    set(CPACK_GENERATOR DragNDrop)
 
-    if(SOFA_BUILD_APP_BUNDLE)
-        set(CPACK_BINARY_DRAGNDROP ON)
-        set(CPACK_GENERATOR DragNDrop)
+    # Monolithic install containing everything
+    unset(CPACK_COMPONENTS_ALL)
+    set(CPACK_MONOLITHIC_INSTALL ON)
 
-        # Monolithic install containing everything
-        unset(CPACK_COMPONENTS_ALL)
-        set(CPACK_MONOLITHIC_INSTALL ON)
-
-        # Force CPack install dir to $ENV{DESTDIR}/runSofa.app/Contents/MacOS
-        # CPack always adds "$ENV{DESTDIR}/" before CPACK_INSTALL_PREFIX
-        set(CPACK_SET_DESTDIR TRUE)
-        set(CPACK_INSTALL_PREFIX "/runSofa.app/Contents/MacOS")
-    endif()
+    # Force CPack install dir to $ENV{DESTDIR}/runSofa.app/Contents/MacOS
+    # CPack always adds "$ENV{DESTDIR}" before CPACK_INSTALL_PREFIX
+    set(CPACK_SET_DESTDIR TRUE)
+    set(CPACK_INSTALL_PREFIX "/runSofa.app/Contents/MacOS")
 endif()
 
 include(CPack)
