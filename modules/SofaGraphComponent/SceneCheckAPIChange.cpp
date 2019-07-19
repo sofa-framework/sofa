@@ -117,10 +117,10 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
 
 void SceneCheckAPIChange::installDefaultChangeSets()
 {
-    addHookInChangeSet("17.06", [this](Base* o){
-        if(o->getClassName() == "BoxStiffSpringForceField" )
+    addHookInChangeSet("19.06", [this](Base* o){
+        if(o->getClassName() == "MatrixMass" )
             msg_warning(o) << this->getName() << ": "
-                           << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'";
+                           << "MatrixMass is deprecated since 19.06 and will be removed in 19.12. Use instead MeshMatrixMass or its lumped version DiagonalMass";
     });
 }
 
