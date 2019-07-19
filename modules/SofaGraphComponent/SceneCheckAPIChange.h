@@ -66,7 +66,7 @@ public:
     void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct);
 private:
     std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"};
+    std::string m_selectedApiLevel {"19.06"};
 
     std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets;
 };
