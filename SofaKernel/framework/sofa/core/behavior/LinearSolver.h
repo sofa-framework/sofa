@@ -51,13 +51,6 @@ public:
     SOFA_ABSTRACT_CLASS(BaseLinearSolver, objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseLinearSolver)
 
-    /// Check if this solver handle multiple independent integration groups, placed as child nodes in the scene graph.
-    /// If this is the case, then when collisions occur, the CollisionGroupManager can simply group the interacting groups into new child nodes without creating a new solver to handle them.
-    virtual bool isMultiGroup() const
-    {
-        return false;
-    }
-
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
