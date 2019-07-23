@@ -130,6 +130,9 @@ using sofa::gui::qt::DocBrowser;
 
 using sofa::core::ExecParams;
 
+#include <boost/program_options.hpp>
+
+
 namespace sofa
 {
 
@@ -1731,7 +1734,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 void RealGUI::parseOptions()
 {
     if (mArgumentParser) {
-        po::variables_map vm = mArgumentParser->getVariableMap();
+        boost::program_options::variables_map vm = mArgumentParser->getVariableMap();
         if(vm.find("interactive") != vm.end())
             m_enableInteraction = vm["interactive"].as<bool>();
         if(vm.find("msaa") != vm.end())

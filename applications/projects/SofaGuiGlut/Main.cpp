@@ -29,6 +29,8 @@ using std::string;
 #include <vector>
 using std::vector;
 
+#include <boost/program_options.hpp>
+
 #include "SimpleGUI.h"
 
 #ifdef SOFA_HAVE_BOOST
@@ -178,21 +180,21 @@ int main(int argc, char** argv)
     ArgumentParser* argParser = new ArgumentParser(argc, argv);
 
 #ifdef SOFA_SMP
-    argParser->addArgument(po::value<bool>(&disableStealing)->default_value(false)->implicit_value(true),           "disableStealing,w", "Disable Work Stealing")
-    argParser->addArgument(po::value<std::string>(&nProcs)->default_value(""),                                      "nprocs", "Number of processor")
-    argParser->addArgument(po::value<bool>(&affinity)->default_value(false)->implicit_value(true),                  "affinity", "Enable aFfinity base Work Stealing")
+    argParser->addArgument(boost::program_options::value<bool>(&disableStealing)->default_value(false)->implicit_value(true),           "disableStealing,w", "Disable Work Stealing")
+    argParser->addArgument(boost::program_options::value<std::string>(&nProcs)->default_value(""),                                      "nprocs", "Number of processor")
+    argParser->addArgument(boost::program_options::value<bool>(&affinity)->default_value(false)->implicit_value(true),                  "affinity", "Enable aFfinity base Work Stealing")
 #endif
 
 
-    argParser->addArgument(po::value<bool>(&showHelp)->default_value(false)->implicit_value(true), "help,h", "Display this help message");
-    argParser->addArgument(po::value<bool>(&startAnim)->default_value(false)->implicit_value(true), "start,a", "start the animation loop");
-    argParser->addArgument(po::value<bool>(&printFactory)->default_value(false)->implicit_value(true), "factory,p", "print factory logs");
-    argParser->addArgument(po::value<bool>(&loadRecent)->default_value(false)->implicit_value(true), "recent,r", "load most recently opened file");
-    argParser->addArgument(po::value<bool>(&temporaryFile)->default_value(false)->implicit_value(true), "tmp", "the loaded scene won't appear in history of opened files");
-    argParser->addArgument(po::value<std::string>(&colorsStatus)->default_value("auto")->implicit_value("yes"), "colors,c", "use colors on stdout and stderr (yes, no, auto)");
-    argParser->addArgument(po::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f", "select the message formatting to use (auto, clang, sofa, rich, test)");
-    argParser->addArgument(po::value<std::string>(&gui)->default_value(""), "gui,g", gui_help.c_str());
-    argParser->addArgument(po::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true), "noautoload", "disable plugins autoloading");
+    argParser->addArgument(boost::program_options::value<bool>(&showHelp)->default_value(false)->implicit_value(true), "help,h", "Display this help message");
+    argParser->addArgument(boost::program_options::value<bool>(&startAnim)->default_value(false)->implicit_value(true), "start,a", "start the animation loop");
+    argParser->addArgument(boost::program_options::value<bool>(&printFactory)->default_value(false)->implicit_value(true), "factory,p", "print factory logs");
+    argParser->addArgument(boost::program_options::value<bool>(&loadRecent)->default_value(false)->implicit_value(true), "recent,r", "load most recently opened file");
+    argParser->addArgument(boost::program_options::value<bool>(&temporaryFile)->default_value(false)->implicit_value(true), "tmp", "the loaded scene won't appear in history of opened files");
+    argParser->addArgument(boost::program_options::value<std::string>(&colorsStatus)->default_value("auto")->implicit_value("yes"), "colors,c", "use colors on stdout and stderr (yes, no, auto)");
+    argParser->addArgument(boost::program_options::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f", "select the message formatting to use (auto, clang, sofa, rich, test)");
+    argParser->addArgument(boost::program_options::value<std::string>(&gui)->default_value(""), "gui,g", gui_help.c_str());
+    argParser->addArgument(boost::program_options::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true), "noautoload", "disable plugins autoloading");
 
     argParser->parse();
     files = argParser->getInputFileList();

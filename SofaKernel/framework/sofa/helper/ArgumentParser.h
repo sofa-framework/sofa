@@ -34,9 +34,10 @@
 #include <sofa/helper/logging/Messaging.h>
 
 #include <boost/program_options.hpp>
-#include <boost/program_options/value_semantic.hpp>
-
-namespace po = boost::program_options;
+using boost::program_options::options_description;
+using boost::program_options::positional_options_description;
+using boost::program_options::value_semantic;
+using boost::program_options::variables_map;
 
 
 namespace sofa
@@ -80,7 +81,7 @@ public:
      *  @param      help describing the argument
      ****************************************************************************************/
 
-    void addArgument(const po::value_semantic* s, const std::string name, const std::string help);
+    void addArgument(const value_semantic* s, const std::string name, const std::string help);
     /**
      *****************************************************************************************
      *  @brief      addArgument
@@ -99,7 +100,7 @@ public:
     /// display args with values
     void showArgs();
 
-    po::variables_map getVariableMap();
+    variables_map getVariableMap();
     std::vector<std::string> getInputFileList();
 
     /** last parsed extra arguments */
@@ -110,9 +111,9 @@ public:
 private:
     int m_argc; ///< simple argc parameter copied from constructor
     char **m_argv; ///< simple argv parameter copied from constructor
-    po::variables_map vm; ///< Variable map containing the variable name with its value obtained from parse
-    po::options_description desc; ///< desc contains every options you want to parse. Each options has argument name, help, variables ref ...
-    po::positional_options_description positional_option; ///< this is used for parsing input files without any parameters
+    variables_map vm; ///< Variable map containing the variable name with its value obtained from parse
+    options_description desc; ///< desc contains every options you want to parse. Each options has argument name, help, variables ref ...
+    positional_options_description positional_option; ///< this is used for parsing input files without any parameters
 
 
 

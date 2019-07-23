@@ -117,6 +117,8 @@ using sofa::helper::logging::ClangMessageHandler ;
 #include <sofa/helper/logging/ExceptionMessageHandler.h>
 using sofa::helper::logging::ExceptionMessageHandler;
 
+#include <boost/program_options.hpp>
+
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
@@ -239,41 +241,161 @@ int main(int argc, char** argv)
     gui_help += ")";
 
     ArgumentParser* argParser = new ArgumentParser(argc, argv);
-    argParser->addArgument(po::value<bool>(&showHelp)->default_value(false)->implicit_value(true),                  "help,h", "Display this help message");
-    argParser->addArgument(po::value<bool>(&startAnim)->default_value(false)->implicit_value(true),                 "start,a", "start the animation loop");
-    argParser->addArgument(po::value<bool>(&computationTimeAtBegin)->default_value(false)->implicit_value(true),    "computationTimeAtBegin,b", "Output computation time statistics of the init (at the begin of the simulation)");
-    argParser->addArgument(po::value<unsigned int>(&computationTimeSampling)->default_value(0),                     "computationTimeSampling", "Frequency of display of the computation time statistics, in number of animation steps. 0 means never.");
-    argParser->addArgument(po::value<std::string>(&computationTimeOutputType)->default_value("stdout"),             "computationTimeOutputType,o", "Output type for the computation time statistics: either stdout, json or ljson");
-    argParser->addArgument(po::value<std::string>(&gui)->default_value(""),                                         "gui,g", gui_help.c_str());
-    argParser->addArgument(po::value<std::vector<std::string>>(&plugins),                                           "load,l", "load given plugins");
-    argParser->addArgument(po::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true),         "noautoload", "disable plugins autoloading");
-    argParser->addArgument(po::value<bool>(&noSceneCheck)->default_value(false)->implicit_value(true),              "noscenecheck", "disable scene checking for each scene loading");
-
-    // example of an option using lambda function which ensure the value passed is > 0
-    argParser->addArgument(po::value<unsigned int>(&nbMSSASamples)->default_value(1)->notifier([](unsigned int value)
-    {
-        if (value < 1) {
-            std::cerr << "msaa sample cannot be lower than 1" << std::endl;
-            exit( EXIT_FAILURE );
-        }
-    }),                                                                                                             "msaa,m", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled");
-
-    argParser->addArgument(po::value<bool>(&printFactory)->default_value(false)->implicit_value(true),              "factory,p", "print factory logs");
-    argParser->addArgument(po::value<bool>(&loadRecent)->default_value(false)->implicit_value(true),                "recent,r", "load most recently opened file");
-    argParser->addArgument(po::value<std::string>(&simulationType),                                                 "simu,s", "select the type of simulation (bgl, dag, tree)");
-    argParser->addArgument(po::value<bool>(&temporaryFile)->default_value(false)->implicit_value(true),             "tmp", "the loaded scene won't appear in history of opened files");
-    argParser->addArgument(po::value<bool>(&testMode)->default_value(false)->implicit_value(true),                  "test", "select test mode with xml output after N iteration");
-    argParser->addArgument(po::value<std::string>(&verif)->default_value(""), "verification,v",                     "load verification data for the scene");
-    argParser->addArgument(po::value<std::string>(&colorsStatus)->default_value("unset", "auto")->implicit_value("yes"),     "colors,c", "use colors on stdout and stderr (yes, no, auto)");
-    argParser->addArgument(po::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f",          "select the message formatting to use (auto, clang, sofa, rich, test)");
-    argParser->addArgument(po::value<bool>(&enableInteraction)->default_value(false)->implicit_value(true),         "interactive,i", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)");
-    argParser->addArgument(po::value<std::vector<std::string> >()->multitoken(), "argv",                            "forward extra args to the python interpreter");
+    argParser->addArgument(
+        boost::program_options::value<bool>(&showHelp)
+        ->default_value(false)
+        ->implicit_value(true),
+        "help,h",
+        "Display this help message"
+    );
+    argParser->addArgument(
+        boost::program_options::value<bool>(&startAnim)
+        ->default_value(false)
+        ->implicit_value(true),
+        "start,a",
+        "start the animation loop"
+    );
+    argParser->addArgument(
+        boost::program_options::value<bool>(&computationTimeAtBegin)
+        ->default_value(false)
+        ->implicit_value(true),
+        "computationTimeAtBegin,b",
+        "Output computation time statistics of the init (at the begin of the simulation)"
+    );
+    argParser->addArgument(
+        boost::program_options::value<unsigned int>(&computationTimeSampling)
+        ->default_value(0),
+        "computationTimeSampling",
+        "Frequency of display of the computation time statistics, in number of animation steps. 0 means never."
+    );
+    argParser->addArgument(
+        boost::program_options::value<std::string>(&computationTimeOutputType)
+        ->default_value("stdout"),
+        "computationTimeOutputType,o",
+        "Output type for the computation time statistics: either stdout, json or ljson"
+    );
+    argParser->addArgument(
+        boost::program_options::value<std::string>(&gui)->default_value(""),
+        "gui,g",
+        gui_help.c_str()
+    );
+    argParser->addArgument(
+        boost::program_options::value<std::vector<std::string>>(&plugins),
+        "load,l",
+        "load given plugins"
+    );
+    argParser->addArgument(
+        boost::program_options::value<bool>(&noAutoloadPlugins)
+        ->default_value(false)
+        ->implicit_value(true),
+        "noautoload",
+        "disable plugins autoloading"
+    );
+    argParser->addArgument(
+        boost::program_options::value<bool>(&noSceneCheck)
+        ->default_value(false)
+        ->implicit_value(true),
+        "noscenecheck",
+        "disable scene checking for each scene loading"
+    );
+    argParser->addArgument(
+        boost::program_options::value<bool>(&printFactory)
+        ->default_value(false)
+        ->implicit_value(true),
+        "factory,p",
+        "print factory logs"
+    );
+    argParser->addArgument(
+        boost::program_options::value<bool>(&loadRecent)
+        ->default_value(false)->implicit_value(true),
+        "recent,r",
+        "load most recently opened file"
+    );
+    argParser->addArgument(
+        boost::program_options::value<std::string>(&simulationType),
+        "simu,s", "select the type of simulation (bgl, dag, tree)"
+    );
+    argParser->addArgument(
+        boost::program_options::value<bool>(&temporaryFile)
+        ->default_value(false)->implicit_value(true),
+        "tmp",
+        "the loaded scene won't appear in history of opened files"
+    );
+    argParser->addArgument(
+        boost::program_options::value<bool>(&testMode)
+        ->default_value(false)->implicit_value(true),
+        "test",
+        "select test mode with xml output after N iteration"
+     );
+    argParser->addArgument(
+        boost::program_options::value<std::string>(&verif)
+        ->default_value(""),
+        "verification,v",
+        "load verification data for the scene"
+    );
+    argParser->addArgument(
+        boost::program_options::value<std::string>(&colorsStatus)
+        ->default_value("unset", "auto")
+        ->implicit_value("yes"),
+        "colors,c",
+        "use colors on stdout and stderr (yes, no, auto)"
+    );
+    argParser->addArgument(
+        boost::program_options::value<std::string>(&messageHandler)
+        ->default_value("auto"),
+        "formatting,f",
+        "select the message formatting to use (auto, clang, sofa, rich, test)"
+    );
+    argParser->addArgument(
+        boost::program_options::value<bool>(&enableInteraction)
+        ->default_value(false)
+        ->implicit_value(true),
+        "interactive,i",
+        "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)"
+    );
+    argParser->addArgument(
+        boost::program_options::value<std::vector<std::string> >()
+        ->multitoken(),
+        "argv",
+        "forward extra args to the python interpreter"
+    );
 
 #ifdef SOFA_SMP
-    argParser->addArgument(po::value<bool>(&disableStealing)->default_value(false)->implicit_value(true),           "disableStealing,w", "Disable Work Stealing")
-    argParser->addArgument(po::value<std::string>(&nProcs)->default_value(""),                                      "nprocs", "Number of processor")
-    argParser->addArgument(po::value<bool>(&affinity)->default_value(false)->implicit_value(true),                  "affinity", "Enable aFfinity base Work Stealing")
+    argParser->addArgument(
+        boost::program_options::value<bool>(&disableStealing)
+        ->default_value(false)
+        ->implicit_value(true),
+        "disableStealing,w",
+        "Disable Work Stealing"
+    );
+    argParser->addArgument(
+        boost::program_options::value<std::string>(&nProcs)
+        ->default_value(""),
+        "nprocs",
+        "Number of processor"
+    );
+    argParser->addArgument(
+        boost::program_options::value<bool>(&affinity)
+        ->default_value(false)
+        ->implicit_value(true),
+        "affinity",
+        "Enable aFfinity base Work Stealing"
+    );
 #endif
+
+    // example of an option using lambda function which ensure the value passed is > 0
+    argParser->addArgument(
+        boost::program_options::value<unsigned int>(&nbMSSASamples)
+        ->default_value(1)
+        ->notifier([](unsigned int value) {
+            if (value < 1) {
+                std::cerr << "msaa sample cannot be lower than 1" << std::endl;
+                exit( EXIT_FAILURE );
+            }
+        }),
+        "msaa,m",
+        "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled"
+    );
 
     addGUIParameters(argParser);
     argParser->parse();
