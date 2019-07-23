@@ -2,18 +2,18 @@ cmake_minimum_required(VERSION 3.1)
 project(SceneCreator VERSION 0.1)
 
 set(HEADER_FILES
-    src/SofaExporter/GetAssembledSizeVisitor.h
-    src/SofaExporter/GetVectorVisitor.h
-    src/SofaExporter/SceneCreator.h
-    src/SofaExporter/SceneUtils.h
+    src/SceneCreator/GetAssembledSizeVisitor.h
+    src/SceneCreator/GetVectorVisitor.h
+    src/SceneCreator/SceneCreator.h
+    src/SceneCreator/SceneUtils.h
 )
 
 set(SOURCE_FILES
-    src/SofaExporter/GetAssembledSizeVisitor.cpp
-    src/SofaExporter/GetVectorVisitor.cpp
-    src/SofaExporter/SceneCreator.cpp
-    src/SofaExporter/SceneUtils.cpp
-    src/SofaExporter/initSceneCreator.cpp
+    src/SceneCreator/GetAssembledSizeVisitor.cpp
+    src/SceneCreator/GetVectorVisitor.cpp
+    src/SceneCreator/SceneCreator.cpp
+    src/SceneCreator/SceneUtils.cpp
+    src/SceneCreator/initSceneCreator.cpp
 )
 
 find_package(SofaSimulation REQUIRED)
