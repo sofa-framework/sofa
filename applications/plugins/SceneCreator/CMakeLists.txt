@@ -2,18 +2,18 @@ cmake_minimum_required(VERSION 3.1)
 project(SceneCreator VERSION 0.1)
 
 set(HEADER_FILES
-    GetAssembledSizeVisitor.h
-    GetVectorVisitor.h
-    SceneCreator.h
-    SceneUtils.h
+    src/SofaExporter/GetAssembledSizeVisitor.h
+    src/SofaExporter/GetVectorVisitor.h
+    src/SofaExporter/SceneCreator.h
+    src/SofaExporter/SceneUtils.h
 )
 
 set(SOURCE_FILES
-    GetAssembledSizeVisitor.cpp
-    GetVectorVisitor.cpp
-    SceneCreator.cpp
-    SceneUtils.cpp
-    initSceneCreator.cpp
+    src/SofaExporter/GetAssembledSizeVisitor.cpp
+    src/SofaExporter/GetVectorVisitor.cpp
+    src/SofaExporter/SceneCreator.cpp
+    src/SofaExporter/SceneUtils.cpp
+    src/SofaExporter/initSceneCreator.cpp
 )
 
 find_package(SofaSimulation REQUIRED)
@@ -21,12 +21,11 @@ find_package(Metis QUIET)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SCENECREATOR")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+target_compile_definitions(${PROJECT_NAME} PRIVATE  "-DSOFA_BUILD_SCENECREATOR")
+target_compile_definitions(${PROJECT_NAME} PUBLIC  "-DSOFA_HAVE_SCENECREATOR")
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
 if(Metis_FOUND)
     target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_HAVE_METIS")
@@ -38,6 +37,8 @@ sofa_generate_package(
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
     RELOCATABLE "plugins"
+    INCLUDE_SOURCE_DIR "src/SceneCreator"
+    INCLUDE_INSTALL_DIR "SceneCreator/SceneCreator"
     )
 
 ## Add example project to use sceneCreator
