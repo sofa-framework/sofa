@@ -15,7 +15,6 @@ install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION
 ### Subdirectories
 
 set(SOFACOMMON_TARGETS
-    SofaComponentCommon
     SofaDeformable
     SofaEngine
     SofaExplicitOdeSolver
@@ -28,7 +27,7 @@ set(SOFACOMMON_TARGETS
     SofaEigen2Solver
 )
 
-foreach(TARGET ${SOFACOMMON_TARGETS})
+foreach(TARGET ${SOFACOMMON_TARGETS} SofaComponentCommon)
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")

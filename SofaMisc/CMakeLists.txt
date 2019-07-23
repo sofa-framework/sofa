@@ -15,7 +15,6 @@ install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION
 ### Subdirectories
 
 set(SOFAMISC_TARGETS
-    SofaComponentMisc
     SofaMisc
     SofaMiscEngine
     SofaMiscFem
@@ -25,7 +24,7 @@ set(SOFAMISC_TARGETS
     SofaMiscTopology
 )
 
-foreach(TARGET ${SOFAMISC_TARGETS})
+foreach(TARGET ${SOFAMISC_TARGETS} SofaComponentMisc)
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")

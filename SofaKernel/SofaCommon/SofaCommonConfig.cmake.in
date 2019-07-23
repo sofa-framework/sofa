@@ -4,8 +4,11 @@
 
 find_package(SofaBase REQUIRED SofaComponentBase)
 
-if(NOT TARGET SofaComponentCommon)
-	include("${CMAKE_CURRENT_LIST_DIR}/SofaCommonTargets.cmake")
-endif()
+foreach(target @SOFACOMMON_TARGETS@ SofaComponentCommon)
+    if(NOT TARGET ${target})
+        include("${CMAKE_CURRENT_LIST_DIR}/SofaCommonTargets.cmake")
+        break()
+    endif()
+endforeach()
 
 check_required_components(@SOFACOMMON_TARGETS@)

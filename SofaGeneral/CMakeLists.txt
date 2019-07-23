@@ -32,7 +32,6 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralTopology
     SofaGeneralVisual
     SofaBoundaryCondition
-    SofaComponentGeneral
     SofaConstraint
     SofaGeneralEngine
     SofaGraphComponent
@@ -45,7 +44,7 @@ if(SOFA_HAVE_NEWMAT)
     list(APPEND SOFAGENERAL_TARGETS SofaDenseSolver)
 endif()
 
-foreach(TARGET ${SOFAGENERAL_TARGETS})
+foreach(TARGET ${SOFAGENERAL_TARGETS} SofaComponentGeneral)
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
