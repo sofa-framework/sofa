@@ -32,14 +32,15 @@ set(README_FILES CGALPlugin.txt)
 
 find_package(SofaFramework REQUIRED)
 find_package(CImgPlugin QUIET)
+
 if(CImgPlugin_FOUND)
-	list(APPEND HEADER_FILES MeshGenerationFromImage.h)
-	list(APPEND HEADER_FILES MeshGenerationFromImage.inl)
-	list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
-	find_package(CGAL REQUIRED COMPONENTS ImageIO)
+    list(APPEND HEADER_FILES MeshGenerationFromImage.h)
+    list(APPEND HEADER_FILES MeshGenerationFromImage.inl)
+    list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
+    find_package(CGAL REQUIRED COMPONENTS ImageIO)
 else ()
-	message (STATUS "CImgPlugin not found, won't build MeshGenerationFromImage")
-   find_package(CGAL REQUIRED)
+    message (STATUS "CImgPlugin not found, won't build MeshGenerationFromImage")
+    find_package(CGAL REQUIRED)
 endif()
 
 
@@ -98,14 +99,14 @@ target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationCommon ${Boost_LIBR
 
 
 if(CImgPlugin_FOUND)
-	target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY} CImgPlugin)
+    target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY} CImgPlugin)
 else()
-	target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY})
+    target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY})
 endif()
 
 if(SOFA_BUILD_TESTS)
-   find_package(SofaTest QUIET)
-   add_subdirectory(CGALPlugin_test)
+    find_package(SofaTest QUIET)
+    add_subdirectory(CGALPlugin_test)
 endif()
 
 ## Install rules for the library and the headers; CMake package configurations files
