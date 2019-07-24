@@ -37,7 +37,7 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 // Register in the Factory
-int SPHFluidSurfaceMappingClass = core::RegisterObject("TODO-SPHFluidSurfaceMappingClass")
+int SPHFluidSurfaceMappingClass = core::RegisterObject("SPHFluidSurfaceMappingClass")
         .addAlias("MarchingCubeMapping")
         .add< SPHFluidSurfaceMapping< Vec3Types, Vec3Types > >()
         ;
