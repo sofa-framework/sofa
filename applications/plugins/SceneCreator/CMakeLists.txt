@@ -25,7 +25,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE  "-DSOFA_BUILD_SCENECREATOR")
 target_compile_definitions(${PROJECT_NAME} PUBLIC  "-DSOFA_HAVE_SCENECREATOR")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 if(Metis_FOUND)
     target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_HAVE_METIS")
@@ -38,7 +38,7 @@ sofa_generate_package(
     VERSION ${PROJECT_VERSION}
     RELOCATABLE "plugins"
     INCLUDE_SOURCE_DIR "src/SceneCreator"
-    INCLUDE_INSTALL_DIR "SceneCreator/SceneCreator"
+    INCLUDE_INSTALL_DIR "SceneCreator"
     )
 
 ## Add example project to use sceneCreator
