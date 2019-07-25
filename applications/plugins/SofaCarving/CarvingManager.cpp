@@ -58,9 +58,9 @@ CarvingManager::CarvingManager()
     , d_mouseEvent( initData(&d_mouseEvent, true, "mouseEvent", "Activate carving with middle mouse button") )
     , d_omniEvent( initData(&d_omniEvent, true, "omniEvent", "Activate carving with omni button") )
     , d_activatorName(initData(&d_activatorName, "button1", "activatorName", "Name to active the script event parsing. Will look for 'pressed' or 'release' keyword. For example: 'button1_pressed'"))
-    , m_toolCollisionModel(NULL)
-    , m_intersectionMethod(NULL)
-    , m_detectionNP(NULL)
+    , m_toolCollisionModel(nullptr)
+    , m_intersectionMethod(nullptr)
+    , m_detectionNP(nullptr)
     , m_carvingReady(false)
 {
     this->f_listening.setValue(true);
@@ -76,11 +76,7 @@ void CarvingManager::init()
 {
     // Search for collision model corresponding to the tool.
     if (d_toolModelPath.getValue().empty())
-    {
         m_toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchDown);
-        if (!m_toolCollisionModel)
-            m_toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::BaseContext::SearchDown);
-    }
     else
         m_toolCollisionModel = getContext()->get<core::CollisionModel>(d_toolModelPath.getValue());
 
@@ -91,11 +87,6 @@ void CarvingManager::init()
         std::vector<core::CollisionModel*> models;
         getContext()->get<core::CollisionModel>(&models, core::objectmodel::Tag("CarvingSurface"), core::objectmodel::BaseContext::SearchRoot);
     
-        // extend the research to model without the tag. 
-        if (models.empty())
-            getContext()->get<core::CollisionModel>(&models, core::objectmodel::BaseContext::SearchRoot);
-
-
         // If topological mapping, iterate into child Node to find mapped topology
 	    sofa::core::topology::TopologicalMapping* topoMapping;
         for (size_t i=0;i<models.size();++i)
@@ -117,10 +108,18 @@ void CarvingManager::init()
 
     m_carvingReady = true;
 
-    if (m_toolCollisionModel == NULL) { msg_error() << "m_toolCollisionModel not found"; m_carvingReady = false; }
-    if (m_surfaceCollisionModels.empty()) { msg_error() << "CarvingManager: m_surfaceCollisionModels not found"; m_carvingReady = false; }
-    if (m_intersectionMethod == NULL) { msg_error() << "CarvingManager: m_intersectionMethod not found"; m_carvingReady = false; }
-    if (m_detectionNP == NULL) { msg_error() << "CarvingManager: NarrowPhaseDetection not found"; m_carvingReady = false; }
+    if (m_toolCollisionModel == nullptr) { 
+        msg_error() << "m_toolCollisionModel not found. Set tag 'CarvingTool' to the right collision model or specify the toolModelPath."; 
+        m_carvingReady = false; 
+    }
+
+    if (m_surfaceCollisionModels.empty()) { 
+        msg_error() << "m_surfaceCollisionModels not found. Set tag 'CarvingSurface' to the right collision models."; 
+        m_carvingReady = false; 
+    }
+
+    if (m_intersectionMethod == nullptr) { msg_error() << "m_intersectionMethod not found. Add an Intersection method in your scene."; m_carvingReady = false; }
+    if (m_detectionNP == nullptr) { msg_error() << "NarrowPhaseDetection not found. Add a NarrowPhaseDetection method in your scene."; m_carvingReady = false; }
     
     if (m_carvingReady)
         msg_info() << "CarvingManager: init OK.";
