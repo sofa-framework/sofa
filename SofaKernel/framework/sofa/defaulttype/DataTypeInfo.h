@@ -227,14 +227,19 @@ public:
     virtual std::string name() const = 0;
 
     /// True iff the TypeInfo for this type contains valid information.
+    /// A Type is considered "Valid" if there's at least one specialization of the ValueType
     virtual bool ValidInfo() const = 0;
+
     /// True iff this type has a fixed size.
+    ///  (It cannot be resized)
     virtual bool FixedSize() const = 0;
     /// True iff the default constructor of this type is equivalent to setting the memory to 0.
     virtual bool ZeroConstructor() const = 0;
     /// True iff copying the data can be done with a memcpy().
     virtual bool SimpleCopy() const = 0;
     /// True iff the layout in memory is simply N values of the same base type.
+    /// It means that you can use the abstract index system to iterate over the elements of the type.
+    /// (It doesn't mean that the BaseType is of a fixed size)
     virtual bool SimpleLayout() const = 0;
     /// True iff this type uses integer values.
     virtual bool Integer() const = 0;
@@ -251,14 +256,19 @@ public:
     virtual bool Container() const = 0;
 
     /// The size of this type, in number of elements.
-    /// For example, the size of a `fixed_array<fixed_array<int, 2> 3>` is 6,
+    /// For example, the size of a `fixed_array<fixed_array<int, 2>, 3>` is 6,
     /// and those six elements are conceptually numbered from 0 to 5.  This is
-    /// relevant only if FixedSize() is true.
+    /// relevant only if FixedSize() is true. I FixedSize() is false,
+    /// the return value will be equivalent to the one of byteSize()
     virtual size_t size() const = 0;
     /// The size in bytes of the ValueType
+    /// For example, the size of a fixed_array<fixed_array<int, 2>, 3>` is 4 on most systems,
+    /// as it is the byte size of the smallest dimension in the array (int -> 32bit)
     virtual size_t byteSize() const = 0;
 
-    /// The size of \a data, in number of elements.
+    /// The size of \a data, in number of iterable elements
+    /// (For containers, that'll be the number of elements in the 1st dimension).
+    /// For example, with type == `
     virtual size_t size(const void* data) const = 0;
     /// Resize \a data to \a size elements, if relevant.
 
