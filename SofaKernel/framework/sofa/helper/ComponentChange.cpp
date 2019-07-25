@@ -32,6 +32,7 @@ namespace lifecycle
 std::map<std::string, Deprecated> deprecatedComponents = {
     // SofaMiscForceField
     {"LennardJonesForceField", Deprecated("v17.12", "v18.12")},
+    {"MatrixMass", Deprecated("v19.06", "v19.12")},
 
 };
 
