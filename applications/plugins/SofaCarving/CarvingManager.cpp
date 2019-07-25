@@ -142,22 +142,25 @@ void CarvingManager::doCarve()
     if (detectionOutputs.size() == 0)
         return;
 
+    sofa::helper::ScopedAdvancedTimer("CarvingElems");
+
     // loop on the contact to get the one between the CarvingSurface and the CarvingTool collision model
     const ContactVector* contacts = NULL;
     for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin(); it != detectionOutputs.end(); ++it)
     {
-        const sofa::core::CollisionModel* collMod1 = it->first.first;
-        const sofa::core::CollisionModel* collMod2 = it->first.second;
+        sofa::core::CollisionModel* collMod1 = it->first.first;
+        sofa::core::CollisionModel* collMod2 = it->first.second;
+        sofa::core::CollisionModel* targetModel = nullptr;
 
         if (collMod1 == m_toolCollisionModel && collMod2->hasTag(sofa::core::objectmodel::Tag("CarvingSurface")))
-        {
-            contacts = dynamic_cast<const ContactVector*>(it->second);
-        }
+            targetModel = collMod2;
         else if (collMod2 == m_toolCollisionModel && collMod1->hasTag(sofa::core::objectmodel::Tag("CarvingSurface")))
-        {
-            contacts = dynamic_cast<const ContactVector*>(it->second);
-        }
-        else // not linked to the carving, iterate.
+            targetModel = collMod1;
+        else
+            continue;
+
+        contacts = dynamic_cast<const ContactVector*>(it->second);
+        if (contacts == nullptr || contacts->size() == 0)
             continue;
 
         size_t ncontacts = 0;
@@ -181,14 +184,10 @@ void CarvingManager::doCarve()
             }
         }
 
-        sofa::helper::AdvancedTimer::stepBegin("CarveElems");
         if (!elemsToRemove.empty())
         {
             static TopologicalChangeManager manager;
-            if (it->first.first == m_toolCollisionModel)
-                nbelems += manager.removeItemsFromCollisionModel(it->first.second, elemsToRemove);
-            else
-                nbelems += manager.removeItemsFromCollisionModel(it->first.first, elemsToRemove);
+            nbelems += manager.removeItemsFromCollisionModel(targetModel, elemsToRemove);
         }
     }
 }
