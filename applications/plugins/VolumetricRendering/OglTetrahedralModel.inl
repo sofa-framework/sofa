@@ -368,7 +368,7 @@ void OglTetrahedralModel<DataTypes>::updateVertexBuffer()
     glBufferSubDataARB(GL_ARRAY_BUFFER,
         0,
         positionsBufferSize,
-        vertices.getData());
+        vertices.data());
 
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 
