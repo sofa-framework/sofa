@@ -31,13 +31,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
-// FIX: temporarily disabled as SofaSimpleFem is not supposed to depend on SofaOpenGLVisual
-//#define SIMPLEFEM_COLORMAP
-
-#ifdef SIMPLEFEM_COLORMAP
-#include <SofaOpenglVisual/ColorMap.h>
-#endif
-
 #include <map>
 #include <sofa/helper/map.h>
 
@@ -127,130 +120,25 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     // parse method attribute (for compatibility with non-optimized version)
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        const char* method = arg->getAttribute("method");
-        if (method && *method && std::string(method) != std::string("large"))
-        {
-            serr << "Attribute method was specified as \""<<method<<"\" while this version only implements the \"large\" method. Ignoring..." << sendl;
-        }
-        Inherited::parse(arg);
-    }
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Class to store FEM information on each triangle, for topology modification handling
-    class TriangleInfo
-    {
-    public:
-        //Index ia, ib, ic;
-        Real bx, cx, cy, ss_factor;
-        Transformation init_frame; // Mat<2,3,Real>
-
-        TriangleInfo() { }
-
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInfo& ti )
-        {
-            return os << "bx= " << ti.bx << " cx= " << ti.cx << " cy= " << ti.cy << " ss_factor= " << ti.ss_factor << " init_frame= " << ti.init_frame << " END";
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, TriangleInfo& ti )
-        {
-            std::string str;
-            while (in >> str)
-            {
-                if (str == "END") break;
-                else if (str == "bx=") in >> ti.bx;
-                else if (str == "cx=") in >> ti.cx;
-                else if (str == "cy=") in >> ti.cy;
-                else if (str == "ss_factor=") in >> ti.ss_factor;
-                else if (str == "init_frame=") in >> ti.init_frame;
-                else if (!str.empty() && str[str.length()-1]=='=') in >> str; // unknown value
-            }
-            return in;
-        }
-    };
+    class TriangleInfo;
     Real gamma, mu;
-
-    class TriangleState
-    {
-    public:
-        Transformation frame; // Mat<2,3,Real>
-        Deriv stress;
-
-        TriangleState() { }
-
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleState& ti )
-        {
-            return os << "frame= " << ti.frame << " stress= " << ti.stress << " END";
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, TriangleState& ti )
-        {
-            std::string str;
-            while (in >> str)
-            {
-                if (str == "END") break;
-                else if (str == "frame=") in >> ti.frame;
-                else if (str == "stress=") in >> ti.stress;
-                else if (!str.empty() && str[str.length()-1]=='=') in >> str; // unknown value
-            }
-            return in;
-        }
-    };
-
+    class TriangleState;
     /// Class to store FEM information on each edge, for topology modification handling
-    class EdgeInfo
-    {
-    public:
-        bool fracturable;
-
-        EdgeInfo()
-            : fracturable(false) { }
-
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInfo& /*ei*/ )
-        {
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeInfo& /*ei*/ )
-        {
-            return in;
-        }
-    };
-
+    class EdgeInfo;
     /// Class to store FEM information on each vertex, for topology modification handling
-    class VertexInfo
-    {
-    public:
-        VertexInfo()
-        /*:sumEigenValues(0.0)*/ {}
-
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const VertexInfo& /*vi*/)
-        {
-            return os;
-        }
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, VertexInfo& /*vi*/)
-        {
-            return in;
-        }
-    };
-
+    class VertexInfo;
     /// Topology Data
     typedef typename VecCoord::template rebind<TriangleInfo>::other VecTriangleInfo;
     typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
     typedef typename VecCoord::template rebind<VertexInfo>::other VecVertexInfo;
     typedef typename VecCoord::template rebind<EdgeInfo>::other VecEdgeInfo;
-    topology::TriangleData<VecTriangleInfo> triangleInfo; ///< Internal triangle data (persistent)
-    topology::TriangleData<VecTriangleState> triangleState; ///< Internal triangle data (time-dependent)
-    topology::PointData<VecVertexInfo> vertexInfo; ///< Internal point data
-    topology::EdgeData<VecEdgeInfo> edgeInfo; ///< Internal edge data
+    topology::TriangleData<VecTriangleInfo> d_triangleInfo; ///< Internal triangle data (persistent)
+    topology::TriangleData<VecTriangleState> d_triangleState; ///< Internal triangle data (time-dependent)
+    topology::PointData<VecVertexInfo> d_vertexInfo; ///< Internal point data
+    topology::EdgeData<VecEdgeInfo> d_edgeInfo; ///< Internal edge data
 
 
     class TFEMFFOTriangleInfoHandler : public topology::TopologyDataHandler<Triangle,VecTriangleInfo >
@@ -294,13 +182,6 @@ public:
     };
 
     sofa::core::topology::BaseMeshTopology* _topology;
-
-#ifdef SIMPLEFEM_COLORMAP
-#ifndef SOFA_NO_OPENGL
-	visualmodel::ColorMap::SPtr showStressColorMapReal;
-#endif
-#endif
-
     template<class MatrixWriter>
     void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
 
@@ -310,21 +191,15 @@ public:
 public:
 
     /// Forcefield intern paramaters
-    Data<Real> f_poisson;
-    Data<Real> f_young; ///< Young modulus in Hooke's law
-    Data<Real> f_damping; ///< Ratio damping/stiffness
-    Data<Real> f_restScale; ///< Scale factor applied to rest positions (to simulate pre-stretched materials)
+    Data<Real> d_poisson;
+    Data<Real> d_young; ///< Young modulus in Hooke's law
+    Data<Real> d_damping; ///< Ratio damping/stiffness
+    Data<Real> d_restScale; ///< Scale factor applied to rest positions (to simulate pre-stretched materials)
 
     /// Display parameters
-    Data<bool> showStressValue;
-    Data<bool> showStressVector; ///< Flag activating rendering of stress directions within each triangle
-#ifdef SIMPLEFEM_COLORMAP
-    Data<std::string> showStressColorMap; ///< Color map used to show stress values
-#endif
-    Data<Real> showStressMaxValue; ///< Max value for rendering of stress values
-#ifdef SIMPLEFEM_COLORMAP
-    Data<float> showStressValueAlpha; ///< Alpha (1-transparency) value for rendering of stress values
-#endif
+    Data<bool> d_showStressValue;
+    Data<bool> d_showStressVector; ///< Flag activating rendering of stress directions within each triangle
+    Data<Real> d_showStressMaxValue; ///< Max value for rendering of stress values
 
 
     TFEMFFOTriangleInfoHandler* triangleInfoHandler;
