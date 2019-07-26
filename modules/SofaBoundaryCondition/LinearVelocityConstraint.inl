@@ -61,20 +61,20 @@ void LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyDestroyFunction(
 template <class TDataTypes>
 LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
     : core::behavior::ProjectiveConstraintSet<TDataTypes>(NULL)
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
-    , m_keyVelocities(  initData(&m_keyVelocities,"velocities","velocities corresponding to the key times") )
-    , m_coordinates( initData(&m_coordinates, "coordinates", "coordinates on which to apply velocities") )
+    , d_indices( initData(&d_indices,"indices","Indices of the constrained points") )
+    , d_keyTimes(  initData(&d_keyTimes,"keyTimes","key times for the movements") )
+    , d_keyVelocities(  initData(&d_keyVelocities,"velocities","velocities corresponding to the key times") )
+    , d_coordinates( initData(&d_coordinates, "coordinates", "coordinates on which to apply velocities") )
 {
-    m_indices.beginEdit()->push_back(0);
-    m_indices.endEdit();
+    d_indices.beginEdit()->push_back(0);
+    d_indices.endEdit();
 
-    m_keyTimes.beginEdit()->push_back( 0.0 );
-    m_keyTimes.endEdit();
-    m_keyVelocities.beginEdit()->push_back( Deriv() );
-    m_keyVelocities.endEdit();
+    d_keyTimes.beginEdit()->push_back( 0.0 );
+    d_keyTimes.endEdit();
+    d_keyVelocities.beginEdit()->push_back( Deriv() );
+    d_keyVelocities.endEdit();
 
-    pointHandler = new FCPointHandler(this, &m_indices);
+    pointHandler = new FCPointHandler(this, &d_indices);
 }
 
 
@@ -88,40 +88,40 @@ LinearVelocityConstraint<TDataTypes>::~LinearVelocityConstraint()
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::clearIndices()
 {
-    m_indices.beginEdit()->clear();
-    m_indices.endEdit();
+    d_indices.beginEdit()->clear();
+    d_indices.endEdit();
 }
 
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::addIndex(unsigned int index)
 {
-    m_indices.beginEdit()->push_back(index);
-    m_indices.endEdit();
+    d_indices.beginEdit()->push_back(index);
+    d_indices.endEdit();
 }
 
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::removeIndex(unsigned int index)
 {
-    removeValue(*m_indices.beginEdit(),index);
-    m_indices.endEdit();
+    removeValue(*d_indices.beginEdit(),index);
+    d_indices.endEdit();
 }
 
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::clearKeyVelocities()
 {
-    m_keyTimes.beginEdit()->clear();
-    m_keyTimes.endEdit();
-    m_keyVelocities.beginEdit()->clear();
-    m_keyVelocities.endEdit();
+    d_keyTimes.beginEdit()->clear();
+    d_keyTimes.endEdit();
+    d_keyVelocities.beginEdit()->clear();
+    d_keyVelocities.endEdit();
 }
 
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::addKeyVelocity(Real time, Deriv movement)
 {
-    m_keyTimes.beginEdit()->push_back( time );
-    m_keyTimes.endEdit();
-    m_keyVelocities.beginEdit()->push_back( movement );
-    m_keyVelocities.endEdit();
+    d_keyTimes.beginEdit()->push_back( time );
+    d_keyTimes.endEdit();
+    d_keyVelocities.beginEdit()->push_back( movement );
+    d_keyVelocities.endEdit();
 }
 
 // -- Constraint interface
@@ -135,11 +135,11 @@ void LinearVelocityConstraint<TDataTypes>::init()
     topology = this->getContext()->getMeshTopology();
 
     // Initialize functions and parameters
-    m_indices.createTopologicalEngine(topology, pointHandler);
-    m_indices.registerTopologicalData();
+    d_indices.createTopologicalEngine(topology, pointHandler);
+    d_indices.registerTopologicalData();
 
-    m_coordinates.createTopologicalEngine(topology);
-    m_coordinates.registerTopologicalData();
+    d_coordinates.createTopologicalEngine(topology);
+    d_coordinates.registerTopologicalData();
 
     x0.resize(0);
     xP.resize(0);
@@ -174,7 +174,7 @@ void LinearVelocityConstraint<TDataTypes>::projectResponse(const core::Mechanica
 
     if (finished && nextT != prevT)
     {
-        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
 
         //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -201,8 +201,8 @@ void LinearVelocityConstraint<TDataTypes>::projectVelocity(const core::Mechanica
         //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
         Deriv v = ((nextV - prevV)*((cT - prevT)/(nextT - prevT))) + prevV;
 
-        const SetIndexArray & indices = m_indices.getValue();
-        const SetIndexArray & coordinates = m_coordinates.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
+        const SetIndexArray & coordinates = d_coordinates.getValue();
 
         if (coordinates.size() == 0)
         {
@@ -234,7 +234,7 @@ void LinearVelocityConstraint<TDataTypes>::projectPosition(const core::Mechanica
     //initialize initial Dofs positions, if it's not done
     if (x0.size() == 0)
     {
-        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
         x0.resize( x.size() );
         xP.resize( x.size() );
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -260,8 +260,8 @@ void LinearVelocityConstraint<TDataTypes>::projectPosition(const core::Mechanica
         Real dt = (cT - prevT) / (nextT - prevT);
         Deriv m = (nextV-prevV)*dt + prevV;
 
-        const SetIndexArray & indices = m_indices.getValue();
-        const SetIndexArray & coordinates = m_coordinates.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
+        const SetIndexArray & coordinates = d_coordinates.getValue();
 
         if (coordinates.size() == 0)
         {
@@ -292,17 +292,17 @@ void LinearVelocityConstraint<DataTypes>::findKeyTimes()
     Real cT = (Real) this->getContext()->getTime();
     finished = false;
 
-    if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())
+    if(d_keyTimes.getValue().size() != 0 && cT >= *d_keyTimes.getValue().begin() && cT <= *d_keyTimes.getValue().rbegin())
     {
-        nextT = *m_keyTimes.getValue().begin();
+        nextT = *d_keyTimes.getValue().begin();
         prevT = nextT;
 
-        typename helper::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
-        typename VecDeriv::const_iterator it_v = m_keyVelocities.getValue().begin();
+        typename helper::vector<Real>::const_iterator it_t = d_keyTimes.getValue().begin();
+        typename VecDeriv::const_iterator it_v = d_keyVelocities.getValue().begin();
 
         //WARNING : we consider that the key-events are in chronological order
         //here we search between which keyTimes we are, to know which are the motion to interpolate
-        while( it_t != m_keyTimes.getValue().end() && !finished)
+        while( it_t != d_keyTimes.getValue().end() && !finished)
         {
             if( *it_t <= cT)
             {
@@ -331,15 +331,15 @@ void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(const core::Mec
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
+    if (!vparams->displayFlags().getShowBehaviorModels() || d_keyTimes.getValue().size() == 0 ) return;
     vparams->drawTool()->saveLastState();
 
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
     sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
-    const VecDeriv& keyVelocities = m_keyVelocities.getValue();
-    const SetIndexArray & indices = m_indices.getValue();
+    const VecDeriv& keyVelocities = d_keyVelocities.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     for (unsigned int i=0 ; i<keyVelocities.size()-1 ; i++)
     {
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
