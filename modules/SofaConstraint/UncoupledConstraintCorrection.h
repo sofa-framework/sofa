@@ -147,8 +147,6 @@ protected:
     void computeDx(const Data< VecDeriv > &f, VecDeriv& x);
 };
 
-template<>
-UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<sofa::defaulttype::Rigid3Types> *mm);
 
 template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::init();

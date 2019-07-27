@@ -43,20 +43,6 @@ namespace constraintset
 using namespace sofa::defaulttype;
 
 template<>
-SOFA_CONSTRAINT_API UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<sofa::defaulttype::Rigid3Types> *mm)
-    : Inherit(mm)
-    , compliance(initData(&compliance, "compliance", "Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix"))
-    , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
-    , d_handleTopologyChange(initData(&d_handleTopologyChange, false, "handleTopologyChange", "Enable support of topological changes for compliance vector (should be disabled for rigids)"))
-    , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
-    , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
-    , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, false, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
-    , m_pOdeSolver(NULL)
-{
-}
-
-template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init()
 {
     Inherit::init();
@@ -183,8 +169,7 @@ int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computi
         .add< UncoupledConstraintCorrection< Vec2Types > >()
         .add< UncoupledConstraintCorrection< Vec3Types > >()
         .add< UncoupledConstraintCorrection< Rigid3Types > >()
-
-        ;
+    ;
 
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1Types >;
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec2Types >;
