@@ -113,7 +113,6 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     , compliance(initData(&compliance, "compliance", "compliance value on each dof. If Rigid compliance (7 values): 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix"))
     , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
-    , d_handleTopologyChange(initData(&d_handleTopologyChange, true, "handleTopologyChange", "Enable support of topological changes for compliance vector (disable if another component takes care of this)"))
     , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
     , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
     , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, false, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
@@ -146,9 +145,10 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         if (!defaultCompliance.isSet() && !comp.empty())
             defaultCompliance.setValue(comp[0]); // set default compliance to first one in case it was given in the compliance vector
         if (comp.size() > 1)
-            serr << "Warning compliance size ( " << comp.size() << " is not equal to the size of the mstate (" << x.size() << ")" << sendl;
+            msg_warning() << "Compliance size ( " << comp.size() << " is not equal to the size of the mstate (" << x.size() << ")";
         Real comp0 = (!comp.empty()) ? comp[0] : defaultCompliance.getValue();
-        sout << "Using " << comp0 << " as initial compliance" << sendl;
+        msg_warning() << "Using " << comp0 << " as initial compliance";
+
         VecReal UsedComp;
         for (unsigned int i=0; i<x.size(); i++)
         {
@@ -174,7 +174,7 @@ void UncoupledConstraintCorrection<DataTypes>::init()
     {
         if (d_useOdeSolverIntegrationFactors.getValue() == true)
         {
-            serr << "Can't find any odeSolver" << sendl;
+            msg_error() << "Can't find any odeSolver";
             d_useOdeSolverIntegrationFactors.setValue(false);
         }
         d_useOdeSolverIntegrationFactors.setReadOnly(true);
@@ -297,7 +297,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 
         if (verbose)
         {
-            sout << "C[" << indexCurRowConst << "]";
+            dmsg_info() << "C[" << indexCurRowConst << "]";
         }
 
         const MatrixDerivColConstIterator colItBegin = rowIt.begin();
@@ -314,7 +314,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 
                 if (verbose)
                 {
-                    sout << " dof[" << dof << "]=" << n;
+                    dmsg_info() << " dof[" << dof << "]=" << n;
                 }
 
                 //w += (n * n) * (dof < comp.size() ? comp[dof] : comp0);
