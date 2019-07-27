@@ -30,7 +30,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
-
+#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {
@@ -158,9 +158,17 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         if (!UsedComp.empty())
         {
             compliance.setValue(UsedComp);
+
+            // If compliance is a vector of value per dof, need to register it as a PointData to the current topology
+            sofa::core::topology::BaseMeshTopology* _topology = this->getContext()->getMeshTopology();
+            if (_topology != nullptr)
+            {
+                compliance.createTopologicalEngine(_topology);
+                compliance.registerTopologicalData();
+            }
         }
     }
-
+   
     this->getContext()->get(m_pOdeSolver);
     if (!m_pOdeSolver)
     {
@@ -178,76 +186,6 @@ void UncoupledConstraintCorrection<DataTypes>::reinit()
 {
     Inherit::reinit();
 }
-
-template< class DataTypes >
-void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
-{
-    using sofa::core::topology::TopologyChange;
-    using sofa::core::topology::TopologyChangeType;
-    using sofa::core::topology::BaseMeshTopology;
-
-    if (!d_handleTopologyChange.getValue())
-        return; // another component takes care of updating compliance vector
-
-    BaseMeshTopology *topology = this->getContext()->getMeshTopology();
-    if (!topology)
-        return;
-    if (defaultCompliance.isSet() && compliance.getValue().empty())
-        return; // uniform compliance, no need to update it
-
-    std::list< const TopologyChange * >::const_iterator itBegin = topology->beginChange();
-    std::list< const TopologyChange * >::const_iterator itEnd = topology->endChange();
-
-    VecReal& comp = *(compliance.beginEdit());
-    const Real comp0 = defaultCompliance.getValue();
-
-    for (std::list< const TopologyChange * >::const_iterator changeIt = itBegin; changeIt != itEnd; ++changeIt)
-    {
-        const TopologyChangeType changeType = (*changeIt)->getChangeType();
-
-        switch ( changeType )
-        {
-        case core::topology::POINTSADDED :
-        {
-            unsigned int nbPoints = (static_cast< const sofa::core::topology::PointsAdded *> (*changeIt))->getNbAddedVertices();
-
-            VecReal addedCompliance;
-
-            for (unsigned int i = 0; i < nbPoints; i++)
-            {
-                addedCompliance.push_back(comp0);
-            }
-
-            comp.insert(comp.end(), addedCompliance.begin(), addedCompliance.end());
-
-            break;
-        }
-        case core::topology::POINTSREMOVED :
-        {
-            using sofa::helper::vector;
-
-            const vector< unsigned int > &pts = (static_cast< const sofa::core::topology::PointsRemoved * >(*changeIt))->getArray();
-
-            unsigned int lastIndexVec = comp.size() - 1;
-
-            for (unsigned int i = 0; i < pts.size(); i++)
-            {
-                comp[pts[i]] = comp[lastIndexVec];
-                lastIndexVec--;
-            }
-
-            comp.resize(comp.size() - pts.size());
-
-            break;
-        }
-        default:
-            break;
-        }
-    }
-
-    compliance.endEdit();
-}
-
 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)

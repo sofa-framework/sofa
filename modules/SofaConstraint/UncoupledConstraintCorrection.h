@@ -25,7 +25,7 @@
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/behavior/OdeSolver.h>
-
+#include <SofaBaseTopology/TopologyData.h>
 
 namespace sofa
 {
@@ -70,7 +70,7 @@ public:
     void reinit() override;
 
     /// Handle Topological Changes.
-    void handleTopologyChange() override;
+    //void handleTopologyChange() override;
 
     void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix *W) override;
 
@@ -119,7 +119,7 @@ public:
 
     /// @}
 
-    Data< VecReal > compliance; ///< Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
+    topology::PointData< VecReal > compliance; ///< Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
 
     Data< Real > defaultCompliance; ///< Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)
 
