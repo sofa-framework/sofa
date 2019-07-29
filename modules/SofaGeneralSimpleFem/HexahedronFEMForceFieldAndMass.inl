@@ -42,9 +42,9 @@ template<class DataTypes>
 HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
     : MassT()
     , HexahedronFEMForceFieldT()
-    ,_elementMasses(initData(&_elementMasses,"massMatrices", "Mass matrices per element (M_i)"))
-    , _density(initData(&_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
-    , _lumpedMass(initData(&_lumpedMass,(bool)false,"lumpedMass","Does it use lumped masses?"))
+    , d_elementMasses(initData(&d_elementMasses,"massMatrices", "Mass matrices per element (M_i)"))
+    , d_density(initData(&d_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
+    , d_lumpedMass(initData(&d_lumpedMass,(bool)false,"lumpedMass","Does it use lumped masses?"))
 {
 }
 
@@ -70,10 +70,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 
         if( this->_sparseGrid ) // if sparseGrid -> the filling ratio is taken into account
             volume *= this->_sparseGrid->getMassCoef(i);
-        // 				volume *= (Real) (this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
 
         // mass of a particle...
-        Real mass = Real (( volume * _density.getValue() ) / 8.0 );
+        Real mass = Real (( volume * d_density.getValue() ) / 8.0 );
 
         // ... is added to each particle of the element
         for(int w=0; w<8; ++w)
@@ -82,14 +81,14 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 
 
 
-    if( _lumpedMass.getValue() )
+    if( d_lumpedMass.getValue() )
     {
         _lumpedMasses.resize( this->_initialPoints.getValue().size() );
         i=0;
         for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
 
-            const ElementMass& mass=_elementMasses.getValue()[i];
+            const ElementMass& mass=d_elementMasses.getValue()[i];
 
             for(int w=0; w<8; ++w)
             {
@@ -125,10 +124,10 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
         for(int w=0; w<8; ++w)
             nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
 
-        if( _elementMasses.getValue().size() <= (unsigned)i )
+        if( d_elementMasses.getValue().size() <= (unsigned)i )
         {
-            _elementMasses.beginEdit()->resize( _elementMasses.getValue().size()+1 );
-            computeElementMass( (*_elementMasses.beginEdit())[i], this->_rotatedInitialElements[i],i,	this->_sparseGrid?this->_sparseGrid->getMassCoef(i):1.0 );
+            d_elementMasses.beginEdit()->resize( d_elementMasses.getValue().size()+1 );
+            computeElementMass( (*d_elementMasses.beginEdit())[i], this->_rotatedInitialElements[i],i,	this->_sparseGrid?this->_sparseGrid->getMassCoef(i):1.0 );
         }
     }
 }
@@ -181,7 +180,7 @@ typename HexahedronFEMForceFieldAndMass<DataTypes>::Real HexahedronFEMForceField
     Real t3 = (Real)(signz*signz);
     Real t9 = (Real)(t1*t2);
 
-    return (Real)(t1*t3/72.0+t2*t3/72.0+t9*t3/216.0+t3/24.0+1.0/8.0+t9/72.0+t1/24.0+t2/24.0)*_density.getValue();
+    return (Real)(t1*t3/72.0+t2*t3/72.0+t9*t3/216.0+t3/24.0+1.0/8.0+t9/72.0+t1/24.0+t2/24.0)*d_density.getValue();
 }
 
 
@@ -197,7 +196,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
 {
     helper::WriteAccessor< DataVecDeriv > _f = f;
     helper::ReadAccessor< DataVecDeriv > _dx = dx;
-    if( ! _lumpedMass.getValue() )
+    if( ! d_lumpedMass.getValue() )
     {
         unsigned int i=0;
         typename VecElement::const_iterator it;
@@ -215,7 +214,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
 
             }
 
-            actualF = _elementMasses.getValue()[i] * actualDx;
+            actualF = d_elementMasses.getValue()[i] * actualDx;
 
 
             for(int w=0; w<8; ++w)
@@ -246,7 +245,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
 
     for(it = this->getIndexedElements()->begin(), e=0 ; it != this->getIndexedElements()->end() ; ++it,++e)
     {
-        const ElementMass &Me = _elementMasses.getValue()[e];
+        const ElementMass &Me = d_elementMasses.getValue()[e];
 
         Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
         // find index of node 1
@@ -273,7 +272,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
-    serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented"<<sendl;
+    msg_warning()<<"HexahedronFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented"<<msgendl;
     // need to built the big global mass matrix and to inverse it...
 }
 
@@ -321,7 +320,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
 template<class DataTypes>
 SReal HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/) const
 {
-    serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented"<<sendl; return 0.0;
+    msg_warning()<<"HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented"<<msgendl; return 0.0;
 }
 
 
