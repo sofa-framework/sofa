@@ -52,71 +52,37 @@ public:
     typedef unsigned int Index;
 
     //Input
-    Data<unsigned int> nbROIs; ///< size of indices/value vector
+    Data<unsigned int> d_nbROIs; ///< size of indices/value vector
     helper::vectorData<helper::vector<Index> > f_indices;
 
     //Output
-    Data<helper::vector<helper::SVector<Index> > > f_outputIndices; ///< Vector of ROIs
+    Data<helper::vector<helper::SVector<Index> > > d_outputIndices; ///< Vector of ROIs
 
     virtual std::string getTemplateName() const    override {        return templateName(this);    }
     static std::string templateName(const MergeROIs* = NULL)    {        return std::string();    }
 
-    void init() override
-    {
-        addInput(&nbROIs);
-        f_indices.resize(nbROIs.getValue());
-        addOutput(&f_outputIndices);
-        setDirtyValue();
-    }
+    void init() override;
 
-    void reinit() override
-    {
-        f_indices.resize(nbROIs.getValue());
-        update();
-    }
-
+    void reinit() override;
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        f_indices.parseSizeData(arg, nbROIs);
-        Inherit1::parse(arg);
-    }
+    void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str ) override
-    {
-        f_indices.parseFieldsSizeData(str, nbROIs);
-        Inherit1::parseFields(str);
-    }
+    void parseFields ( const std::map<std::string,std::string*>& str ) override;
 
 protected:
 
     MergeROIs(): Inherited()
-        , nbROIs ( initData ( &nbROIs,(unsigned int)0,"nbROIs","size of indices/value vector" ) )
+        , d_nbROIs ( initData ( &d_nbROIs,(unsigned int)0,"nbROIs","size of indices/value vector" ) )
         , f_indices(this, "indices", "ROIs", helper::DataEngineInput)
-        , f_outputIndices(initData(&f_outputIndices, "roiIndices", "Vector of ROIs"))
+        , d_outputIndices(initData(&d_outputIndices, "roiIndices", "Vector of ROIs"))
     {
     }
 
     ~MergeROIs() override {}
 
-    void doUpdate() override
-    {
-        size_t nb = nbROIs.getValue();
-        f_indices.resize(nb);
-        if(!nb) return;
-
-        helper::WriteOnlyAccessor< Data< helper::vector<helper::SVector<Index> > > > outputIndices = f_outputIndices;
-        outputIndices.resize(nb);
-
-        for(size_t j=0; j<nb;j++)
-        {
-            helper::ReadAccessor< Data< helper::vector<Index> > > indices = f_indices[j];
-            outputIndices[j].resize(indices.size());
-            for(size_t i=0 ; i<indices.size() ; i++) outputIndices[j][i]=indices[i];
-        }
-    }
+    void doUpdate() override;
 
 };
 

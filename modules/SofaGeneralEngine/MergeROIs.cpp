@@ -36,6 +36,48 @@ namespace engine
 
 using namespace sofa;
 
+void MergeROIs::init()
+{
+    addInput(&d_nbROIs);
+    f_indices.resize(d_nbROIs.getValue());
+    addOutput(&d_outputIndices);
+    setDirtyValue();
+}
+
+void MergeROIs::reinit()
+{
+    f_indices.resize(d_nbROIs.getValue());
+    update();
+}
+
+void MergeROIs::parse ( core::objectmodel::BaseObjectDescription* arg )
+{
+    f_indices.parseSizeData(arg, d_nbROIs);
+    Inherit1::parse(arg);
+}
+
+void MergeROIs::parseFields ( const std::map<std::string,std::string*>& str )
+{
+    f_indices.parseFieldsSizeData(str, d_nbROIs);
+    Inherit1::parseFields(str);
+}
+
+void MergeROIs::doUpdate()
+{
+    size_t nb = d_nbROIs.getValue();
+    f_indices.resize(nb);
+    if(!nb) return;
+
+    helper::WriteOnlyAccessor< Data< helper::vector<helper::SVector<Index> > > > outputIndices = d_outputIndices;
+    outputIndices.resize(nb);
+
+    for(size_t j=0; j<nb;j++)
+    {
+        helper::ReadAccessor< Data< helper::vector<Index> > > indices = f_indices[j];
+        outputIndices[j].resize(indices.size());
+        for(size_t i=0 ; i<indices.size() ; i++) outputIndices[j][i]=indices[i];
+    }
+}
 int MergeROIsClass = core::RegisterObject("Merge a list of ROIs (vector<Indices>) into a single Data (vector<svector<Indices>>)")
         .add< MergeROIs >(true)
         ;
