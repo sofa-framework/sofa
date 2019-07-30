@@ -262,9 +262,6 @@ if(SOFA_BUILD_TESTS)
     if(PLUGIN_SOFAPYTHON)
         add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
     endif()
-
-    # Not sure what is it
-    add_subdirectory(applications/plugins/SofaTest/SofaTest_test)
 endif()
 
 ## Plugins
