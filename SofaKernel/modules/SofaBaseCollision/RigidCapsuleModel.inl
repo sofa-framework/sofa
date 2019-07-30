@@ -47,10 +47,10 @@ namespace collision
 
 template<class MyReal>
 TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsuleModel():
-      _capsule_radii(initData(&_capsule_radii, "radii","Radius of each capsule")),
-      _capsule_heights(initData(&_capsule_heights,"heights","The capsule heights")),
-      _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
-      _default_height(initData(&_default_height,(Real)2,"dafaultHeight","The default height")),
+      d_capsule_radii(initData(&d_capsule_radii, "radii","Radius of each capsule")),
+      d_capsule_heights(initData(&d_capsule_heights,"heights","The capsule heights")),
+      d_default_radius(initData(&d_default_radius,(Real)0.5,"defaultRadius","The default radius")),
+      d_default_height(initData(&d_default_height,(Real)2,"dafaultHeight","The default height")),
       _mstate(NULL)
 {
     enum_type = CAPSULE_TYPE;
@@ -58,10 +58,10 @@ TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsuleModel():
 
 template<class MyReal>
 TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsuleModel(core::behavior::MechanicalState<DataTypes>* mstate):
-    _capsule_radii(initData(&_capsule_radii, "radii","Radius of each capsule")),
-    _capsule_heights(initData(&_capsule_heights,"heights","The capsule heights")),
-    _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
-    _default_height(initData(&_default_height,(Real)2,"dafaultHeight","The default height")),
+    d_capsule_radii(initData(&d_capsule_radii, "radii","Radius of each capsule")),
+    d_capsule_heights(initData(&d_capsule_heights,"heights","The capsule heights")),
+    d_default_radius(initData(&d_default_radius,(Real)0.5,"defaultRadius","The default radius")),
+    d_default_height(initData(&d_default_height,(Real)2,"dafaultHeight","The default height")),
     _mstate(mstate)
 {
     enum_type = CAPSULE_TYPE;
@@ -72,13 +72,13 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::resize(int size
 {
     this->core::CollisionModel::resize(size);
 
-    VecReal & capsule_radii = *_capsule_radii.beginEdit();
-    VecReal & capsule_heights = *_capsule_heights.beginEdit();
+    VecReal & capsule_radii = *d_capsule_radii.beginEdit();
+    VecReal & capsule_heights = *d_capsule_heights.beginEdit();
 
     if ((int)capsule_radii.size() < size)
     {
         while((int)capsule_radii.size() < size)
-            capsule_radii.push_back(_default_radius.getValue());
+            capsule_radii.push_back(d_default_radius.getValue());
     }
     else
     {
@@ -88,15 +88,15 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::resize(int size
     if ((int)capsule_heights.size() < size)
     {
         while((int)capsule_heights.size() < size)
-            capsule_heights.push_back(_default_height.getValue());
+            capsule_heights.push_back(d_default_height.getValue());
     }
     else
     {
         capsule_heights.reserve(size);
     }
 
-    _capsule_radii.endEdit();
-    _capsule_heights.endEdit();
+    d_capsule_radii.endEdit();
+    d_capsule_heights.endEdit();
 }
 
 
@@ -107,7 +107,7 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::init()
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
     if (_mstate==NULL)
     {
-        serr<<"TCapsuleModel requires a Rigid Mechanical Model" << sendl;
+        msg_warning()<<"TCapsuleModel requires a Rigid Mechanical Model" << msgendl;
         return;
     }
 
@@ -117,7 +117,7 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::init()
 template <class MyReal>
 unsigned int TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::nbCap()const
 {
-    return _capsule_radii.getValue().size();
+    return d_capsule_radii.getValue().size();
 }
 
 template <class MyReal>
@@ -204,7 +204,7 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core
 template <class MyReal>
 typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::defaultRadius() const
 {
-    return this->_default_radius.getValue();
+    return this->d_default_radius.getValue();
 }
 
 template <class MyReal>
@@ -215,7 +215,7 @@ const typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord
 template <class MyReal>
 typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::radius(int i) const
 {
-    return this->_capsule_radii.getValue()[i];
+    return this->d_capsule_radii.getValue()[i];
 }
 
 template <class MyReal>
@@ -279,7 +279,7 @@ typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord TCaps
 
 template<class MyReal>
 typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::height(int index) const {
-    return ((_capsule_heights.getValue()))[index];
+    return ((d_capsule_heights.getValue()))[index];
 }
 
 template<class MyReal>
@@ -289,7 +289,7 @@ typename TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord TCapsule<s
 
 template<class MyReal>
 Data<typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::VecReal > & TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::writeRadii(){
-    return _capsule_radii;
+    return d_capsule_radii;
 }
 
 }
