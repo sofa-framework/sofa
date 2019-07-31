@@ -20,15 +20,16 @@
     
     <Node name="Number1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-		<SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
         
         <SparseGridRamificationTopology name="grid" n="4 6 3" fileTopology="mesh/n1.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
         
         <MechanicalObject name="Torus1" scale3d="15 15 15" translation="-25 20 -22"/>
         <UniformMass totalMass="100" />
         
-		<HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
-		<GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
+        <HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
+        <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
+	    
         <Node name="Surf">
             <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
             <Node name="Q">
@@ -51,14 +52,14 @@
     
     <Node name="Number01">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-		<SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
         
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>                
         <MechanicalObject name="Torus1" scale3d="15 15 15" translation="-22 20 -22"/>
         <UniformMass totalMass="100" />
         
-		<HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
-		<GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
+        <HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
+        <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
         
         <Node name="Surf">
             <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
@@ -81,15 +82,15 @@
     
     <Node name="Number02">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-		<SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
         
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
         
         <MechanicalObject name="Torus1" scale3d="15 15 15" translation="-8 20 -22"/>
         <UniformMass totalMass="100" />
         
-		<HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
-		<GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
+        <HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
+        <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
         <Node name="Surf">
             <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
             <Node name="Q">
@@ -111,15 +112,15 @@
     
     <Node name="Number03">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-		<SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
         
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
         
         <MechanicalObject name="Torus1" scale3d="15 15 15" translation="6 20 -22"/>
         <UniformMass totalMass="100" />
         
-		<HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
-		<GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
+        <HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
+        <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
         <Node name="Surf">
             <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
             <Node name="Q">
@@ -141,15 +142,15 @@
     
     <Node name="Sofa">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-		<SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
         
         <SparseGridRamificationTopology name="grid" n="2 2 2" fileTopology="mesh/sofa_logo.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
         
         <MechanicalObject name="Torus1" scale3d="2 2 2" translation="0 200 -21"/>
         <UniformMass totalMass="124" />
         
-		<HexahedronFEMForceField name="FEM" youngModulus="15000" poissonRatio="0.45" method="large" />
-		<GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
+        <HexahedronFEMForceField name="FEM" youngModulus="15000" poissonRatio="0.45" method="large" />
+        <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
         
         <Node name="Blobs">
              <MeshObjLoader name="loader" filename="mesh/sofa_logo_collision.obj" />
@@ -160,7 +161,6 @@
              <PointCollisionModel />
              <BarycentricMapping input="@.." output="@." />
         </Node>
-        
         
         <Node name="VisuTorus" tags="Visual">
             <MeshObjLoader name="loader" filename="mesh/sofa_logo.obj" handleSeams="1"/>
