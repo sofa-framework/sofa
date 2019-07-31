@@ -69,9 +69,6 @@ public:
 
     void reinit() override;
 
-    /// Handle Topological Changes.
-    //void handleTopologyChange() override;
-
     void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix *W) override;
 
     void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
