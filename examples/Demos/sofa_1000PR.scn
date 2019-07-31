@@ -9,7 +9,7 @@
 
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver unbuilt="false" tolerance="1e-3" maxIt="200"   printLog="0"/>
-	<DefaultPipeline verbose="0" depth="10" draw="0" />
+    <DefaultPipeline verbose="0" depth="10" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="1.2" contactDistance="0.1" />
     <DefaultContactManager name="Response" response="FrictionContact" />
