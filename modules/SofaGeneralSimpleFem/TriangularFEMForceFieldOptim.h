@@ -123,13 +123,109 @@ public:
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Class to store FEM information on each triangle, for topology modification handling
-    class TriangleInfo;
+    class TriangleInfo
+    {
+    public:
+        //Index ia, ib, ic;
+        Real bx, cx, cy, ss_factor;
+        Transformation init_frame; // Mat<2,3,Real>
+
+        TriangleInfo() { }
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInfo& ti )
+        {
+            return os << "bx= " << ti.bx << " cx= " << ti.cx << " cy= " << ti.cy << " ss_factor= " << ti.ss_factor << " init_frame= " << ti.init_frame << " END";
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, TriangleInfo& ti )
+        {
+            std::string str;
+            while (in >> str)
+            {
+                if (str == "END") break;
+                else if (str == "bx=") in >> ti.bx;
+                else if (str == "cx=") in >> ti.cx;
+                else if (str == "cy=") in >> ti.cy;
+                else if (str == "ss_factor=") in >> ti.ss_factor;
+                else if (str == "init_frame=") in >> ti.init_frame;
+                else if (!str.empty() && str[str.length()-1]=='=') in >> str; // unknown value
+            }
+            return in;
+        }
+    };
+
     Real gamma, mu;
-    class TriangleState;
+    class TriangleState
+    {
+    public:
+        Transformation frame; // Mat<2,3,Real>
+        Deriv stress;
+
+        TriangleState() { }
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleState& ti )
+        {
+            return os << "frame= " << ti.frame << " stress= " << ti.stress << " END";
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, TriangleState& ti )
+        {
+            std::string str;
+            while (in >> str)
+            {
+                if (str == "END") break;
+                else if (str == "frame=") in >> ti.frame;
+                else if (str == "stress=") in >> ti.stress;
+                else if (!str.empty() && str[str.length()-1]=='=') in >> str; // unknown value
+            }
+            return in;
+        }
+    };
     /// Class to store FEM information on each edge, for topology modification handling
-    class EdgeInfo;
+    class EdgeInfo
+    {
+    public:
+        bool fracturable;
+
+        EdgeInfo()
+            : fracturable(false) { }
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInfo& /*ei*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, EdgeInfo& /*ei*/ )
+        {
+            return in;
+        }
+    };
+
     /// Class to store FEM information on each vertex, for topology modification handling
-    class VertexInfo;
+    class VertexInfo
+    {
+    public:
+        VertexInfo()
+        /*:sumEigenValues(0.0)*/ {}
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const VertexInfo& /*vi*/)
+        {
+            return os;
+        }
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, VertexInfo& /*vi*/)
+        {
+            return in;
+        }
+    };
+
     /// Topology Data
     typedef typename VecCoord::template rebind<TriangleInfo>::other VecTriangleInfo;
     typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
