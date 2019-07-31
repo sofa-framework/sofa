@@ -24,7 +24,7 @@
 
 #include <SofaBoundaryCondition/FixedRotationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <utility>
 
 
 namespace sofa
@@ -91,95 +91,86 @@ template <class DataTypes>
 void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
-    if (FixedXRotation.getValue() == true)
+    for (unsigned int i = 0; i < x.size(); i++)
     {
-        for (unsigned int i = 0; i < x.size(); i++)
-        {
-            // Current orientations
-            sofa::defaulttype::Quat Q = x[i].getOrientation();
+        // Current orientations
+        sofa::defaulttype::Quat Q = x[i].getOrientation();
 
-            // Previous orientations
-            sofa::defaulttype::Quat Q_prev = previousOrientation[i];
+        // Previous orientations
+        sofa::defaulttype::Quat Q_prev = previousOrientation[i];
+        auto project = [](Vec3 a, Vec3 b) -> Vec3 {
+            //return (a.normalized() * b.normalized()) * b;
+            return (a * b) * b;
 
-            Vec3 edgez, edgey_prev, edgex, edgey;
-            sofa::defaulttype::Mat<3, 3, Real > R;
+        };
+        auto decompose_ts = [&](sofa::defaulttype::Quat q, Vec3 twistAxis) {
+            Vec3 magic(q[0], q[1], q[2]);
+            Vec3 p = project(magic, twistAxis);
+            std::cout << p << std::endl;
+            sofa::defaulttype::Quat twist(p[0], p[1], p[2], q[3]);
+            if(std::none_of(twist.ptr(), twist.ptr() + 4 * sizeof(double), [](double x) {return x != 0. ;})) {
+                twist = sofa::defaulttype::Quat::identity();
+            }
+            twist.normalize();
+            sofa::defaulttype::Quat swing = q * twist.inverse();
+            return std::make_pair(twist, swing);
+        };
+        const Vec3 vx(1, 0, 0), vy(0, 1, 0), vz(0, 0, 1);
 
+        sofa::defaulttype::Quat Q_remaining = Q;
+        sofa::defaulttype::Quat Qp_remaining = Q_prev;
+        sofa::defaulttype::Quat to_keep = sofa::defaulttype::Quat::identity();
+        sofa::defaulttype::Quat to_keep2 = sofa::defaulttype::Quat::identity();
 
-            edgex = Q.rotate(Vec3(1.0, 0.0, 0.0));
-            edgey_prev = Q_prev.rotate(Vec3(0.0, 1.0, 0.0));
-            edgez = cross(edgex, edgey_prev);
-            edgey = cross(edgez, edgex);
-            R[0][0] = edgex[0];    R[0][1] = edgex[1];    R[0][2] = edgex[2];
-            R[1][0] = edgey[0];    R[1][1] = edgey[1];    R[1][2] = edgey[2];
-            R[2][0] = edgez[0];    R[2][1] = edgez[1];    R[2][2] = edgez[2];
-
-            sofa::defaulttype::Quat newOrientation;
-            newOrientation.fromMatrix(R.transposed());
-            x[i].getOrientation() = newOrientation;
-
-            // Stores orientations for next iteration
-            previousOrientation[i] = newOrientation;
+        if (FixedXRotation.getValue() == true){
+            Q_remaining = decompose_ts(Q_remaining, vx).second;
+            Q_remaining.normalize();
+            auto temp = decompose_ts(Qp_remaining, vx);
+            temp.first.normalize(); temp.second.normalize();
+            std::cout << "iter " << temp.first << " " << temp.second << std::endl;
+            Qp_remaining = temp.second;
+            to_keep *= temp.first;
+            to_keep2 = temp.first * to_keep2;
+            to_keep.normalize();
         }
-    }
-    if (FixedYRotation.getValue() == true)
-    {
-        for (unsigned int i = 0; i < x.size(); i++)
-        {
-            // Current orientations
-            sofa::defaulttype::Quat Q = x[i].getOrientation();
-
-            // Previous orientations
-            sofa::defaulttype::Quat Q_prev = previousOrientation[i];
-
-            Vec3 edgez, edgez_prev, edgex, edgey;
-            sofa::defaulttype::Mat<3, 3, Real > R;
-
-
-            edgey = Q.rotate(Vec3(0.0, 1.0, 0.0));
-            edgez_prev = Q_prev.rotate(Vec3(0.0, 0.0, 1.0));
-            edgex = cross(edgey, edgez_prev);
-            edgez = cross(edgex, edgey);
-            R[0][0] = edgex[0];    R[0][1] = edgex[1];    R[0][2] = edgex[2];
-            R[1][0] = edgey[0];    R[1][1] = edgey[1];    R[1][2] = edgey[2];
-            R[2][0] = edgez[0];    R[2][1] = edgez[1];    R[2][2] = edgez[2];
-
-            sofa::defaulttype::Quat newOrientation;
-            newOrientation.fromMatrix(R.transposed());
-            x[i].getOrientation() = newOrientation;
-
-            // Stores orientations for next iteration
-            previousOrientation[i] = newOrientation;
+        if (FixedYRotation.getValue() == true){
+            Q_remaining = decompose_ts(Q_remaining, vy).second;
+            Q_remaining.normalize();
+            auto temp = decompose_ts(Qp_remaining, vy);
+            temp.first.normalize(); temp.second.normalize();
+            std::cout << "iter " << temp.first << " " << temp.second << std::endl;
+            Qp_remaining = temp.second;
+            to_keep *= temp.first;
+            to_keep2 = temp.first * to_keep2;
+            to_keep.normalize();
         }
-    }
-    if (FixedZRotation.getValue() == true)
-    {
-        for (unsigned int i = 0; i < x.size(); i++)
-        {
-            // Current orientations
-            sofa::defaulttype::Quat Q = x[i].getOrientation();
-
-            // Previous orientations
-            sofa::defaulttype::Quat Q_prev = previousOrientation[i];
-
-            Vec3 edgez, edgex_prev, edgex, edgey;
-            sofa::defaulttype::Mat<3, 3, Real > R;
-
-
-            edgez = Q.rotate(Vec3(0.0, 0.0, 1.0));
-            edgex_prev = Q_prev.rotate(Vec3(1.0, 0.0, 0.0));
-            edgey = defaulttype::cross(edgez, edgex_prev);
-            edgex = defaulttype::cross(edgey, edgez);
-            R[0][0] = edgex[0];    R[0][1] = edgex[1];    R[0][2] = edgex[2];
-            R[1][0] = edgey[0];    R[1][1] = edgey[1];    R[1][2] = edgey[2];
-            R[2][0] = edgez[0];    R[2][1] = edgez[1];    R[2][2] = edgez[2];
-
-            sofa::defaulttype::Quat newOrientation;
-            newOrientation.fromMatrix(R.transposed());
-            x[i].getOrientation() = newOrientation;
-
-            // Stores orientations for next iteration
-            previousOrientation[i] = newOrientation;
+        if (FixedZRotation.getValue() == true){
+            Q_remaining = decompose_ts(Q_remaining, vz).second;
+            Q_remaining.normalize();
+            auto temp = decompose_ts(Qp_remaining, vz);
+            temp.first.normalize(); temp.second.normalize();
+            std::cout << "iter " << temp.first << " " << temp.second << std::endl;
+            Qp_remaining = temp.second;
+            to_keep *= temp.first;
+            to_keep2 = temp.first * to_keep2;
+            to_keep.normalize();
         }
+        auto a = to_keep * Q_remaining;
+        auto b = Q_remaining * to_keep;
+        auto b2 = Q_remaining * to_keep2;
+        a.normalize();
+        b.normalize();
+        b2.normalize();
+        std::cout << "res " << a << std::endl;
+        std::cout << "res " << b << std::endl;
+        std::cout << "res " << b2 << std::endl;
+        std::cout << "Qr " << Q_remaining << std::endl;
+        std::cout << "Qpr " << Qp_remaining << std::endl;
+        std::cout << "keep " << to_keep << std::endl;
+        std::cout << "keep2 " << to_keep2 << std::endl;
+        std::cout << "Q " << Q << std::endl;
+        std::cout << "Qp " << Q_prev << std::endl;
+        x[i].getOrientation() = b2;
     }
 }
 
