@@ -704,13 +704,14 @@ template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     unsigned int i;
-    if (!vparams->displayFlags().getShowForceFields()) return;
-    if (!this->mstate) return;
+    if (!vparams->displayFlags().getShowForceFields()) {return;}
+    if (!this->mstate) {return;}
 
     vparams->drawTool()->saveLastState();
 
-    if (vparams->displayFlags().getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame()){
         vparams->drawTool()->setPolygonMode(0, true);
+    }
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     std::vector<sofa::defaulttype::Vector3> vertices;
@@ -727,16 +728,24 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
             if (external)
             {
                 if (d<edgeInf[i].restlength*0.9999)
+                {
                     colors.push_back(sofa::defaulttype::RGBAColor::red());
+                }
                 else
+                {
                     colors.push_back(sofa::defaulttype::RGBAColor::green());
+                }
             }
             else
             {
                 if (d<edgeInf[i].restlength*0.9999)
+                {
                     colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
+                }
                 else
+                {
                     colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
+                }
             }
 
             vertices.push_back( x[edgeInf[i].m1] );
@@ -745,8 +754,9 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
     }
     vparams->drawTool()->drawLines(vertices, 1, colors);
 
-    if (vparams->displayFlags().getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame()){
         vparams->drawTool()->setPolygonMode(0, false);
+    }
 
     vparams->drawTool()->restoreLastState();
 }
