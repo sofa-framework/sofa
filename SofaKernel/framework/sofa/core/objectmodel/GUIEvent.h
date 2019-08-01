@@ -70,7 +70,7 @@ public:
     const std::string getValue(void) const {return m_value;}
 
 
-    const char* getClassName() const override { return "GUIEvent"; }
+    inline static const char* GetClassName() { return "GUIEvent"; }
 private:
 
     std::string     m_controlID;

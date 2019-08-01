@@ -263,7 +263,7 @@ public:
      */
     ~JoystickEvent() override;
 
-    const char* getClassName() const override { return "JoystickEvent"; }
+    inline static const char* GetClassName() { return "JoystickEvent"; }
 protected:
 
     std::vector< AxisEvent* > axisEvents; ///< State of the Analogic Pad

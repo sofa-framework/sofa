@@ -44,7 +44,7 @@ public:
 
     ~PositionEvent() override;
 
-    const char* getClassName() const override { return "PositionEvent"; }
+    inline static const char* GetClassName() { return "PositionEvent"; }
 
 };
 
