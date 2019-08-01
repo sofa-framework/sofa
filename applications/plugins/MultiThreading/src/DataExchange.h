@@ -52,7 +52,7 @@ namespace sofa
 			~DataExchangeEvent() override {}
 
 			double getDt() const { return dt; }
-			const char* getClassName() const override { return "DataExchangeEvent"; }
+			static inline const char* GetClassName() { return "DataExchangeEvent"; }
 		protected:
 			double dt;
 		};
