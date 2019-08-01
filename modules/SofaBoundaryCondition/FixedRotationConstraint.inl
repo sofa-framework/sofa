@@ -120,7 +120,7 @@ void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalP
         sofa::defaulttype::Quat Qp_remaining = Q_prev;
         sofa::defaulttype::Quat to_keep = sofa::defaulttype::Quat::identity();
 
-        auto remove_rotation = [&Q_remaining, &Qp_remaining, &to_keep](const Vec3 axis) {
+        auto remove_rotation = [&](const Vec3 axis) {
             Q_remaining = decompose_ts(Q_remaining, axis).second;
             sofa::defaulttype::Quat twist;
             std::tie(twist, Qp_remaining) = decompose_ts(Qp_remaining, axis);
