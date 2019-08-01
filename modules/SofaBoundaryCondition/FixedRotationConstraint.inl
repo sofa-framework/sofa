@@ -91,28 +91,27 @@ template <class DataTypes>
 void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
-    for (unsigned int i = 0; i < x.size(); i++)
+    for (unsigned int i = 0; i < x.size(); ++i)
     {
         // Current orientations
         sofa::defaulttype::Quat Q = x[i].getOrientation();
-
         // Previous orientations
         sofa::defaulttype::Quat Q_prev = previousOrientation[i];
-        auto project = [](Vec3 a, Vec3 b) -> Vec3 {
-            //return (a.normalized() * b.normalized()) * b;
-            return (a * b) * b;
 
+        auto project = [](const Vec3 a, const Vec3 b) -> Vec3 {
+            return (a * b) * b;
         };
-        auto decompose_ts = [&](sofa::defaulttype::Quat q, Vec3 twistAxis) {
-            Vec3 magic(q[0], q[1], q[2]);
-            Vec3 p = project(magic, twistAxis);
-            std::cout << p << std::endl;
-            sofa::defaulttype::Quat twist(p[0], p[1], p[2], q[3]);
+        auto decompose_ts = [&](const sofa::defaulttype::Quat q, const Vec3 twistAxis) {
+            Vec3 vec3_part(q[0], q[1], q[2]);
+            Vec3 projected = project(vec3_part, twistAxis);
+            sofa::defaulttype::Quat twist(projected[0], projected[1], projected[2], q[3]);
+            // Singularity : A perpendicular angle would give you quaternion (0, 0, 0, 0)
             if(std::none_of(twist.ptr(), twist.ptr() + 4 * sizeof(double), [](double x) {return x != 0. ;})) {
                 twist = sofa::defaulttype::Quat::identity();
             }
             twist.normalize();
             sofa::defaulttype::Quat swing = q * twist.inverse();
+            swing.normalize();
             return std::make_pair(twist, swing);
         };
         const Vec3 vx(1, 0, 0), vy(0, 1, 0), vz(0, 0, 1);
@@ -120,57 +119,24 @@ void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalP
         sofa::defaulttype::Quat Q_remaining = Q;
         sofa::defaulttype::Quat Qp_remaining = Q_prev;
         sofa::defaulttype::Quat to_keep = sofa::defaulttype::Quat::identity();
-        sofa::defaulttype::Quat to_keep2 = sofa::defaulttype::Quat::identity();
+
+        auto remove_rotation = [&Q_remaining, &Qp_remaining, &to_keep](const Vec3 axis) {
+            Q_remaining = decompose_ts(Q_remaining, axis).second;
+            sofa::defaulttype::Quat twist;
+            std::tie(twist, Qp_remaining) = decompose_ts(Qp_remaining, axis);
+            to_keep = twist * to_keep;
+        };
 
         if (FixedXRotation.getValue() == true){
-            Q_remaining = decompose_ts(Q_remaining, vx).second;
-            Q_remaining.normalize();
-            auto temp = decompose_ts(Qp_remaining, vx);
-            temp.first.normalize(); temp.second.normalize();
-            std::cout << "iter " << temp.first << " " << temp.second << std::endl;
-            Qp_remaining = temp.second;
-            to_keep *= temp.first;
-            to_keep2 = temp.first * to_keep2;
-            to_keep.normalize();
+            remove_rotation(vx);
         }
         if (FixedYRotation.getValue() == true){
-            Q_remaining = decompose_ts(Q_remaining, vy).second;
-            Q_remaining.normalize();
-            auto temp = decompose_ts(Qp_remaining, vy);
-            temp.first.normalize(); temp.second.normalize();
-            std::cout << "iter " << temp.first << " " << temp.second << std::endl;
-            Qp_remaining = temp.second;
-            to_keep *= temp.first;
-            to_keep2 = temp.first * to_keep2;
-            to_keep.normalize();
+            remove_rotation(vy);
         }
         if (FixedZRotation.getValue() == true){
-            Q_remaining = decompose_ts(Q_remaining, vz).second;
-            Q_remaining.normalize();
-            auto temp = decompose_ts(Qp_remaining, vz);
-            temp.first.normalize(); temp.second.normalize();
-            std::cout << "iter " << temp.first << " " << temp.second << std::endl;
-            Qp_remaining = temp.second;
-            to_keep *= temp.first;
-            to_keep2 = temp.first * to_keep2;
-            to_keep.normalize();
+            remove_rotation(vz);
         }
-        auto a = to_keep * Q_remaining;
-        auto b = Q_remaining * to_keep;
-        auto b2 = Q_remaining * to_keep2;
-        a.normalize();
-        b.normalize();
-        b2.normalize();
-        std::cout << "res " << a << std::endl;
-        std::cout << "res " << b << std::endl;
-        std::cout << "res " << b2 << std::endl;
-        std::cout << "Qr " << Q_remaining << std::endl;
-        std::cout << "Qpr " << Qp_remaining << std::endl;
-        std::cout << "keep " << to_keep << std::endl;
-        std::cout << "keep2 " << to_keep2 << std::endl;
-        std::cout << "Q " << Q << std::endl;
-        std::cout << "Qp " << Q_prev << std::endl;
-        x[i].getOrientation() = b2;
+        x[i].getOrientation() = Q_remaining * to_keep;
     }
 }
 
