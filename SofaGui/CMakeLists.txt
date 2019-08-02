@@ -8,8 +8,9 @@ find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaAdvanced REQUIRED)
 
-# Qt GUIs are all based on OpenGL
-if(NOT SOFA_NO_OPENGL)
+option(SOFA_NO_QT "Force Sofa to not take into account the Qt library" OFF)
+
+if(NOT SOFA_NO_QT)
     ## Qt5
     set(QT_USE_IMPORTED_TARGETS 1)
 
@@ -24,7 +25,7 @@ if(NOT SOFA_NO_OPENGL)
 else()
     set(SOFA_HAVE_QT 0)
     set(SOFA_QT5 0)
-endif()
+endif(NOT SOFA_NO_QT)
 
 set(SOFAGUI_TARGETS "")
 
@@ -43,16 +44,7 @@ endif()
 add_subdirectory(../applications/sofa/gui/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
 list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 
-## OpenGL-based GUIs
-if(NOT SOFA_NO_OPENGL)
-    
-    option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
-    if(SOFAGUI_HEADLESS_RECORDER)
-        set(SOFA_GUI_HEADLESS_RECORDER 1) # cmakedefine
-        list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
-        add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
-    endif()
-
+if(NOT SOFA_NO_QT)
     ## Qt GUI
     # Check if Qt(4/5) is present ; if not, disable ability to compile Qt things
     set(SOFA_HAVE_QT_LIBRARIES 1)
@@ -66,23 +58,6 @@ if(NOT SOFA_NO_OPENGL)
         if(SOFAGUI_QT)
 
             ## Qt GUI options, used in the relevant CMakeLists.txt
-
-            ## QtViewer
-            option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
-            if(SOFAGUI_QTVIEWER)
-                set(SOFA_GUI_QTVIEWER 1) # cmakedefine
-            endif()
-
-            ## QglViewer
-            option(SOFAGUI_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
-            if(SOFAGUI_QGLVIEWER)
-                set(SOFA_GUI_QGLVIEWER 1) # cmakedefine
-                find_package(QGLViewer QUIET)
-                if(NOT QGLViewer_FOUND)
-                    add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.7.1/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
-                endif()
-            endif()
-
             ## VSync
             option(SOFAGUI_ENABLE_VSYNC "Enable vertical refresh sync" OFF)
             if(SOFAGUI_ENABLE_VSYNC)
@@ -111,11 +86,45 @@ if(NOT SOFA_NO_OPENGL)
             set(SOFA_GUI_QT 1) # cmakedefine
             list(APPEND SOFAGUI_TARGETS SofaGuiQt)
             add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
-        endif()
+        endif(SOFAGUI_QT)
+
+        # Qt things with OpenGL deps
+        if(NOT SOFA_NO_OPENGL)
+
+            option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
+            if(SOFAGUI_HEADLESS_RECORDER)
+                set(SOFA_GUI_HEADLESS_RECORDER 1) # cmakedefine
+                list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
+                add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
+            endif(SOFAGUI_HEADLESS_RECORDER)
+
+            if(SOFAGUI_QT)
+                set(SOFA_GUI_QT_OPENGL 1) # cmakedefine
+                list(APPEND SOFAGUI_TARGETS SofaGuiQtOpenGL)
+                add_subdirectory(../applications/sofa/gui/qt/gl ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQtOpenGL)
+
+                ## QtViewer
+                option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
+                if(SOFAGUI_QTVIEWER)
+                    set(SOFA_GUI_QTVIEWER 1) # cmakedefine
+                endif()
+
+                ## QglViewer
+                option(SOFAGUI_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
+                if(SOFAGUI_QGLVIEWER)
+                    set(SOFA_GUI_QGLVIEWER 1) # cmakedefine
+                    find_package(QGLViewer QUIET)
+                    if(NOT QGLViewer_FOUND)
+                        add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.7.1/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
+                    endif()
+                endif()
+
+            endif(SOFAGUI_QT)
+        endif(NOT SOFA_NO_OPENGL)
     else()
         message("Cannot find any Qt libraries on your system, please set Qt5_DIR or Qt4_DIR if you want to compile GUIs using Qt")
-    endif()
-endif()
+    endif(SOFA_HAVE_QT_LIBRARIES)
+endif(NOT SOFA_NO_QT)
 
 ## SofaGuiMain
 list(APPEND SOFAGUI_TARGETS SofaGuiMain)

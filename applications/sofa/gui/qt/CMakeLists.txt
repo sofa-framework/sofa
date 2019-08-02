@@ -30,7 +30,6 @@ set(MOC_HEADER_FILES
     SofaPluginManager.h
     WDoubleLineEdit.h
     panels/QDocBrowser.h
-    GLPickHandler.h
 )
 
 # these header files do not need MOCcing
@@ -44,9 +43,7 @@ set(HEADER_FILES
     StructDataWidget.h
     TableDataWidget.h
     viewer/SofaViewer.h
-    viewer/VisualModelPolicy.h
     viewer/EngineBackend.h
-    viewer/GLBackend.h
     GenericWidget.h
 )
 
@@ -63,7 +60,6 @@ set(SOURCE_FILES
     RGBAColorDataWidget.cpp
     ModifyObject.cpp
     PickHandlerCallBacks.cpp
-    GLPickHandler.cpp
     QDataDescriptionWidget.cpp
     QDisplayDataWidget.cpp
     QDisplayLinkWidget.cpp
@@ -86,8 +82,6 @@ set(SOURCE_FILES
     TableDataWidget.cpp
     WDoubleLineEdit.cpp
     viewer/SofaViewer.cpp
-    viewer/VisualModelPolicy.cpp
-    viewer/GLBackend.cpp
     panels/QDocBrowser.cpp
 )
 
@@ -140,20 +134,6 @@ if(SOFAGUI_ENABLE_QWT)
          )
 endif()
 
-# QtViewer
-if(SOFAGUI_QTVIEWER)
-    list(APPEND MOC_HEADER_FILES viewer/qt/QtViewer.h)
-    list(APPEND SOURCE_FILES viewer/qt/QtViewer.cpp)
-endif()
-
-# QGLViewer
-if(SOFAGUI_QGLVIEWER)
-    find_package(QGLViewer)
-
-    list(APPEND MOC_HEADER_FILES viewer/qgl/QtGLViewer.h)
-    list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
-endif()
-
 # QChart
 find_package(Qt5 COMPONENTS Charts QUIET)
 if (Qt5Charts_FOUND)
@@ -170,8 +150,6 @@ endif()
 
 
 set(QT_USE_IMPORTED_TARGETS 1)
-
-find_package(FFMPEGexec QUIET)
 
 find_package(Qt5 COMPONENTS Core QUIET)
 
@@ -262,9 +240,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaLo
 target_link_libraries(${PROJECT_NAME} PUBLIC ${EXT_QT_LIBRARIES})
 if(SOFAGUI_ENABLE_QWT)
     target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
-endif()
-if(SOFAGUI_QGLVIEWER)
-    target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
