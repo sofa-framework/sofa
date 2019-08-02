@@ -71,7 +71,6 @@ namespace qt
 {
 
 
-
 using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;

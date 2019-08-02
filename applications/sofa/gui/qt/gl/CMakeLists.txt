@@ -8,6 +8,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    ../GLPickHandler.cpp
     ../viewer/GLBackend.cpp
     ../viewer/VisualModelPolicy.cpp
 )
@@ -24,6 +25,7 @@ if(SOFAGUI_QGLVIEWER)
     list(APPEND SOURCE_FILES ../viewer/qgl/QtGLViewer.cpp)
 endif()
 
+set(CMAKE_AUTOMOC ON)
 set(QT_USE_IMPORTED_TARGETS 1)
 
 add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${SOURCE_FILES})

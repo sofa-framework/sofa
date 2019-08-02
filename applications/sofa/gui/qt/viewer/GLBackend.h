@@ -22,6 +22,8 @@
 #ifndef SOFA_GLBACKEND_H
 #define SOFA_GLBACKEND_H
 
+#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
+
 #include <sofa/gui/qt/viewer/EngineBackend.h>
 #include <sofa/gui/PickHandler.h>
 #include <SofaGraphComponent/ViewerSetting.h>
@@ -46,7 +48,7 @@ namespace qt
 namespace viewer
 {
 
-class GLBackend : public EngineBackend
+class SOFA_SOFAGUIQTOPENGL_API GLBackend : public EngineBackend
 {
 public:
     GLBackend();

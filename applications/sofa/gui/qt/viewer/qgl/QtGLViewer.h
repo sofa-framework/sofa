@@ -22,6 +22,8 @@
 #ifndef SOFA_GUI_QGLVIEWER_QTVIEWER_H
 #define SOFA_GUI_QGLVIEWER_QTVIEWER_H
 
+#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
+
 #include <sofa/helper/system/gl.h>
 #include <qgl.h>
 #include <qtimer.h>
@@ -63,7 +65,7 @@ namespace viewer
 namespace qgl
 {
 
-class SOFA_SOFAGUIQT_API QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
+class SOFA_SOFAGUIQTOPENGL_API QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
 {
     typedef defaulttype::Vector3::value_type Real;
     Q_OBJECT
