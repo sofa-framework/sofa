@@ -40,7 +40,6 @@
 #include <sofa/helper/system/glu.h>
 #include <sofa/gui/BaseGUI.h>
 #include <qevent.h>
-#include <sofa/gui/qt/GenGraphForm.h>
 
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/Axis.h>

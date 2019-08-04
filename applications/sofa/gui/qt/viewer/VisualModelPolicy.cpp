@@ -21,7 +21,6 @@
 ******************************************************************************/
 
 #include <sofa/gui/qt/viewer/VisualModelPolicy.h>
-#include <sofa/core/visual/DrawToolGL.h>
 
 namespace sofa
 {
@@ -32,26 +31,18 @@ namespace qt
 namespace viewer
 {
 
-void OglModelPolicy::load()
+VisualModelPolicy::VisualModelPolicy(core::visual::VisualParams* vparams)
+		:vparams(vparams)	
 {
-    drawTool = std::unique_ptr<sofa::core::visual::DrawTool>(new sofa::core::visual::DrawToolGL());
-
-    // Replace generic visual models with OglModel
-    sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
-            &classVisualModel);
-    vparams->drawTool() = drawTool.get();
-    vparams->setSupported(sofa::core::visual::API_OpenGL);
 }
 
-void OglModelPolicy::unload()
+VisualModelPolicy::~VisualModelPolicy() 
 {
-    sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
-    vparams->drawTool() = nullptr;
 
 }
 
-}
-}
-}
-}
+} // namespace viewer
+} // namespace qt
+} // namespace gui
+} // namespace sofa
 

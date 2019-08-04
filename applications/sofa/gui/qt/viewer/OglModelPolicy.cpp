@@ -19,25 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_SOFAGUIQTOPENGL_H
-#define SOFA_GUI_QT_SOFAGUIQTOPENGL_H
 
-#include <SofaGui/config.h>
-
-#ifdef SOFA_BUILD_SOFAGUIQTOPENGL
-#	define SOFA_SOFAGUIQTOPENGL_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SOFAGUIQTOPENGL_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/gui/qt/viewer/OglModelPolicy.h>
+#include <sofa/core/visual/DrawToolGL.h>
 
 namespace sofa
 {
 namespace gui
 {
-	SOFA_SOFAGUIQTOPENGL_API void initSofaGUIQtOpenGL();
+namespace qt
+{
+namespace viewer
+{
 
+void OglModelPolicy::load()
+{
+    drawTool = std::unique_ptr<sofa::core::visual::DrawTool>(new sofa::core::visual::DrawToolGL());
+
+    // Replace generic visual models with OglModel
+    sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
+            &classVisualModel);
+    vparams->drawTool() = drawTool.get();
+    vparams->setSupported(sofa::core::visual::API_OpenGL);
+}
+
+void OglModelPolicy::unload()
+{
+    sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
+    vparams->drawTool() = nullptr;
+
+}
+
+} // namespace viewer
+} // namespace qt
 } // namespace gui
-
 } // namespace sofa
 
-#endif

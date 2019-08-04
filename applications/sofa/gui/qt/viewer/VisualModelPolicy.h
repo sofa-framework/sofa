@@ -38,10 +38,8 @@ namespace viewer
 class SOFA_SOFAGUIQT_API VisualModelPolicy
 {
 public:
-    VisualModelPolicy(core::visual::VisualParams* vparams = core::visual::VisualParams::defaultInstance())
-        :vparams(vparams)
-    {}
-    virtual ~VisualModelPolicy() {}
+	VisualModelPolicy(core::visual::VisualParams* vparams = core::visual::VisualParams::defaultInstance());
+	virtual ~VisualModelPolicy();
     virtual void load() = 0;
     virtual void unload() = 0;
 protected:
@@ -50,20 +48,10 @@ protected:
 };
 
 
-class OglModelPolicy : public VisualModelPolicy
-{
-protected:
-    sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
-    std::unique_ptr<sofa::core::visual::DrawTool> drawTool;
-public:
-    void load() override;
-    void unload() override;
-};
-
-}
-}
-}
-}
+} // namespace viewer
+} // namespace qt
+} // namespace gui
+} // namespace sofa
 
 
 

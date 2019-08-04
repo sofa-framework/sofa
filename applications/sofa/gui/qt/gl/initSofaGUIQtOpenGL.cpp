@@ -19,25 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_SOFAGUIQTOPENGL_H
-#define SOFA_GUI_QT_SOFAGUIQTOPENGL_H
 
-#include <SofaGui/config.h>
-
-#ifdef SOFA_BUILD_SOFAGUIQTOPENGL
-#	define SOFA_SOFAGUIQTOPENGL_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SOFAGUIQTOPENGL_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
 
 namespace sofa
 {
+
 namespace gui
 {
-	SOFA_SOFAGUIQTOPENGL_API void initSofaGUIQtOpenGL();
+
+void initSofaGUIQtOpenGL()
+{
+	// This function does nothing. 
+	static bool first = true;
+	if (first)
+	{
+		first = false;
+	}
+}
+
 
 } // namespace gui
 
 } // namespace sofa
-
-#endif

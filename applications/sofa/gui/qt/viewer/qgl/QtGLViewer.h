@@ -33,7 +33,7 @@
 #include <cstring>
 #include <fstream>
 
-#include <sofa/gui/qt/viewer/SofaViewer.h>
+#include <sofa/gui/qt/viewer/OglModelPolicy.h>
 #include <sofa/gui/ViewerFactory.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>

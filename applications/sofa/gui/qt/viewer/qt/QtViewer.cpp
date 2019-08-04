@@ -41,9 +41,6 @@
 #include <OpenGL/OpenGL.h>
 #endif
 
-#include <sofa/gui/qt/GenGraphForm.h>
-
-
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>

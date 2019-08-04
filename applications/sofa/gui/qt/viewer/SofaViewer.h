@@ -22,7 +22,6 @@
 #ifndef SOFA_VIEWER_H
 #define SOFA_VIEWER_H
 
-#include "VisualModelPolicy.h"
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/qt/PickHandlerCallBacks.h>
 #include <sofa/gui/qt/SofaGUIQt.h>
@@ -112,19 +111,6 @@ signals:
     virtual void resizeW(int) = 0;
     virtual void resizeH(int) = 0;
 };
-
-template < typename VisualModelPolicyType >
-class CustomPolicySofaViewer : public VisualModelPolicyType, public sofa::gui::qt::viewer::SofaViewer
-{
-public:
-    using VisualModelPolicyType::load;
-    using VisualModelPolicyType::unload;
-    CustomPolicySofaViewer() { load(); }
-    ~CustomPolicySofaViewer() override { unload(); }
-protected:
-};
-
-typedef CustomPolicySofaViewer< OglModelPolicy > OglModelSofaViewer;
 
 }
 }

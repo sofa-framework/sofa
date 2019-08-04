@@ -43,7 +43,7 @@
 #include <QOpenGLContext>
 #endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 
-#include <sofa/gui/qt/viewer/SofaViewer.h>
+#include <sofa/gui/qt/viewer/OglModelPolicy.h>
 
 #include "../../../ViewerFactory.h"
 

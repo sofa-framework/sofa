@@ -19,25 +19,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_SOFAGUIQTOPENGL_H
-#define SOFA_GUI_QT_SOFAGUIQTOPENGL_H
+#ifndef SOFA_GUI_QT_VIEWER_OGLMODELPOLICY_H
+#define SOFA_GUI_QT_VIEWER_OGLMODELPOLICY_H
 
-#include <SofaGui/config.h>
+#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
 
-#ifdef SOFA_BUILD_SOFAGUIQTOPENGL
-#	define SOFA_SOFAGUIQTOPENGL_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SOFAGUIQTOPENGL_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/gui/qt/viewer/SofaViewer.h>
+#include <sofa/gui/qt/viewer/VisualModelPolicy.h>
 
 namespace sofa
 {
 namespace gui
 {
-	SOFA_SOFAGUIQTOPENGL_API void initSofaGUIQtOpenGL();
+namespace qt
+{
+namespace viewer
+{
+	
+class SOFA_SOFAGUIQTOPENGL_API OglModelPolicy : public VisualModelPolicy
+{
+protected:
+    sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
+    std::unique_ptr<sofa::core::visual::DrawTool> drawTool;
+public:
+    void load() override;
+    void unload() override;
+};
 
+
+template < typename VisualModelPolicyType >
+class SOFA_SOFAGUIQTOPENGL_API CustomPolicySofaViewer : public VisualModelPolicyType, public sofa::gui::qt::viewer::SofaViewer
+{
+public:
+    using VisualModelPolicyType::load;
+    using VisualModelPolicyType::unload;
+    CustomPolicySofaViewer() { load(); }
+    ~CustomPolicySofaViewer() override { unload(); }
+protected:
+};
+
+typedef SOFA_SOFAGUIQTOPENGL_API CustomPolicySofaViewer< OglModelPolicy > OglModelSofaViewer;
+
+} // namespace viewer
+} // namespace qt
 } // namespace gui
-
 } // namespace sofa
 
-#endif
+
+
+#endif // SOFA_GUI_QT_VIEWER_OGLMODELPOLICY_H

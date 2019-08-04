@@ -4,13 +4,15 @@ project(SofaGuiQtOpenGL)
 set(HEADER_FILES
     ../GLPickHandler.h
     ../viewer/GLBackend.h
-    ../viewer/VisualModelPolicy.h
+    ../viewer/OglModelPolicy.h
+    SofaGUIQtOpenGL.h
 )
 
 set(SOURCE_FILES
     ../GLPickHandler.cpp
     ../viewer/GLBackend.cpp
-    ../viewer/VisualModelPolicy.cpp
+    ../viewer/OglModelPolicy.cpp
+    initSofaGUIQtOpenGL.cpp
 )
 
 # QtViewer

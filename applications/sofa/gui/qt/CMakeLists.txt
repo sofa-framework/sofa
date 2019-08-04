@@ -44,6 +44,7 @@ set(HEADER_FILES
     TableDataWidget.h
     viewer/SofaViewer.h
     viewer/EngineBackend.h
+    viewer/VisualModelPolicy.h
     GenericWidget.h
 )
 
@@ -82,6 +83,7 @@ set(SOURCE_FILES
     TableDataWidget.cpp
     WDoubleLineEdit.cpp
     viewer/SofaViewer.cpp
+    viewer/VisualModelPolicy.cpp
     panels/QDocBrowser.cpp
 )
 
