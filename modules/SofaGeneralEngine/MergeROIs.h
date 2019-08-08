@@ -43,7 +43,7 @@ namespace engine
  * This class merges a list of ROIs (vector<Indices>) into a single Data (vector<svector<Indices>>)
  */
 
-class MergeROIs : public sofa::core::DataEngine
+class SOFA_GENERAL_ENGINE_API MergeROIs : public sofa::core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;
