@@ -1298,7 +1298,7 @@ struct DataTypeInfo< sofa::helper::vector<bool,Alloc> > : public VectorTypeInfo<
 template<class Alloc>
 struct DataTypeInfo< sofa::helper::vector<std::string,Alloc> > : public VectorTypeInfo<sofa::helper::vector<std::string,Alloc> >
 {
-    static std::string name() { std::ostringstream o; o << "vector<string>"; return o.str(); }
+    static std::string name() { return "vector<string>"; }
 
     // BaseType size is not fixed. Returning 1
     static size_t size() { return 1; }
