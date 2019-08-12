@@ -13,7 +13,7 @@ fi
 
 if [ -e "$INSTALL_DIR/../MacOS/runSofa" ]; then
     echo "Moving executable to bin ..."
-    mv -f "$INSTALL_DIR/runSofa" "$INSTALL_DIR/bin/runSofa"
+    ( cd "$INSTALL_DIR" && mv -f runSofa* bin )
 fi
 
 echo "Fixing up libs..."

@@ -183,9 +183,8 @@ if(Qt5Core_FOUND)
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
     set(FORM_FILES_GROUP "Generated")
 
-    sofa_install_libraries(TARGETS ${QT_TARGETS})
-
     # QT INSTALL (dirty)
+    sofa_install_libraries(TARGETS ${QT_TARGETS})
     # Get Qt libraries dir
     get_target_property(QtCore_location Qt5::Core LOCATION)
     get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
@@ -219,19 +218,9 @@ if(Qt5Core_FOUND)
     if(EXISTS "${QT_PLUGINS_DIR}/styles")
         install(DIRECTORY "${QT_PLUGINS_DIR}/styles" DESTINATION "bin" COMPONENT applications)
     endif()
-    # Install Qt XCB libraries
-    file(GLOB QT_XCB_LIBRARIES
-        "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5XcbQpa${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-    sofa_install_libraries(LIBRARIES ${QT_XCB_LIBRARIES})
-    # Install Qt ICU libraries
-    file(GLOB QT_ICU_LIBRARIES
-        "${QT_LIBRARIES_DIR}/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-    sofa_install_libraries(LIBRARIES ${QT_ICU_LIBRARIES})
+    if(EXISTS "${QT_PLUGINS_DIR}/xcbglintegrations")
+        install(DIRECTORY "${QT_PLUGINS_DIR}/xcbglintegrations" DESTINATION "bin" COMPONENT applications)
+    endif()
     # Install Apple Qt frameworks
     if(APPLE)
         if(EXISTS "${QT_LIBRARIES_DIR}/QtDBus.framework")
