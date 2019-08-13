@@ -440,8 +440,7 @@ Node::SPtr Simulation::load ( const std::string& filename, bool reload, const st
     if (loader) return loader->load(filename, reload, sceneArgs);
 
     // unable to load file
-    msg_error() << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled";
-
+    msg_error() << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename.c_str())<<") not handled";
     return NULL;
 }
 
