@@ -106,6 +106,54 @@ void GLBackend::addFrameRecorder()
 #endif //SOFA_HAVE_FFMPEG_EXEC
 }
 
+void GLBackend::drawBackgroundImage(const int screenWidth, const int screenHeight)
+{
+    if(!m_texLogo)
+        return;
+
+    if(!m_texLogo->getImage())
+        return;
+
+    int w = m_texLogo->getImage()->getWidth();
+    int h = m_texLogo->getImage()->getHeight();
+
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(-0.5, screenWidth, -0.5, screenHeight, -1.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    m_texLogo->bind();
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0.0, 0.0);
+    glVertex3d((screenWidth - w) / 2, (screenHeight - h) / 2, 0.0);
+
+    glTexCoord2d(1.0, 0.0);
+    glVertex3d(screenWidth - (screenWidth - w) / 2, (screenHeight - h) / 2, 0.0);
+
+    glTexCoord2d(1.0, 1.0);
+    glVertex3d(screenWidth - (screenWidth - w) / 2, screenHeight - (screenHeight - h) / 2, 0.0);
+
+    glTexCoord2d(0.0, 1.0);
+    glVertex3d((screenWidth - w) / 2, screenHeight - (screenHeight - h) / 2, 0.0);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glDisable(GL_TEXTURE_2D);
+}
+
 
 }
 }

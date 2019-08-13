@@ -127,6 +127,8 @@ public:
     virtual void saveView()=0;
     virtual void setSizeW(int)=0;
     virtual void setSizeH(int)=0;
+    virtual int getWidth()=0;
+    virtual int getHeight()=0;
     virtual void captureEvent() {}
     virtual void fitObjectBBox(sofa::core::objectmodel::BaseObject* );
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode*);

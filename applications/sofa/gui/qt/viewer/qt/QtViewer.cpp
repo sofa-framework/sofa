@@ -596,51 +596,7 @@ void QtViewer::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
 // -------------------------------------------------------------------
 void QtViewer::DrawLogo()
 {
-    int w = 0;
-    int h = 0;
-
-//    if (texLogo && texLogo->getImage())
-//    {
-//        h = texLogo->getImage()->getHeight();
-//        w = texLogo->getImage()->getWidth();
-//    }
-//    else
-//        return;
-
-    Enable<GL_TEXTURE_2D> tex;
-    glDisable(GL_DEPTH_TEST);
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(-0.5, _W, -0.5, _H, -1.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-//    if (texLogo)
-//        texLogo->bind();
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_QUADS);
-    glTexCoord2d(0.0, 0.0);
-    glVertex3d((_W - w) / 2, (_H - h) / 2, 0.0);
-
-    glTexCoord2d(1.0, 0.0);
-    glVertex3d(_W - (_W - w) / 2, (_H - h) / 2, 0.0);
-
-    glTexCoord2d(1.0, 1.0);
-    glVertex3d(_W - (_W - w) / 2, _H - (_H - h) / 2, 0.0);
-
-    glTexCoord2d(0.0, 1.0);
-    glVertex3d((_W - w) / 2, _H - (_H - h) / 2, 0.0);
-    glEnd();
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
+    m_backend->drawBackgroundImage(_W, _H);
 }
 
 

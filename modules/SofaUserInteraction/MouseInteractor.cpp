@@ -110,7 +110,6 @@ void BaseMouseInteractor::draw(const core::visual::VisualParams* vparams)
             color = sofa::defaulttype::Vec4f(1.0f,0.0f,0.0f,1.0f);
 
         vparams->drawTool()->setPolygonMode(0, true);
-        //glLineWidth(3);
         lastPicked.body->draw(vparams,lastPicked.indexCollisionElement);
         vparams->drawTool()->setPolygonMode(0, false);
 

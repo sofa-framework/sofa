@@ -373,19 +373,19 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
 {
     if (!currentCamera) return true;
 
-    int viewport[4];
-//    glGetIntegerv(GL_VIEWPORT,viewport);
+    const int w = this->getWidth();
+    const int h = this->getHeight();
 
     MousePosition mousepos;
-    mousepos.screenWidth  = viewport[2];
-    mousepos.screenHeight = viewport[3];
+    mousepos.screenWidth  = w;
+    mousepos.screenHeight = h;
     mousepos.x      = e->x();
     mousepos.y      = e->y();
 
     if (e->modifiers() & Qt::ShiftModifier)
     {
 
-        getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+        getPickHandler()->activateRay(w,h, groot.get());
         getPickHandler()->updateMouse2D( mousepos );
 
         //_sceneTransform.ApplyInverse();
@@ -431,7 +431,7 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
     }
     else
     {
-        getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+        getPickHandler()->activateRay(w,h, groot.get());
     }
     return true;
 }

@@ -138,11 +138,11 @@ protected:
 public:
 
     //void			reshape(int width, int height);
-    int GetWidth()
+    int getWidth() override
     {
         return _W;
     }
-    int GetHeight()
+    int getHeight() override
     {
         return _H;
     }
