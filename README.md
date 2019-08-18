@@ -31,6 +31,25 @@ SOFA's advanced software architecture allows:
 For up-to-date instructions, please refer to the SOFA documentation:  
 https://www.sofa-framework.org/documentation
 
+### Installing with SoftRobots, SofaROSConnector and STLIB libraries
+
++ Clone this repo recursively:
+
+   - With Git 2.13 upwards:
+   ```
+      git clone --recurse-submodules -j$nproc https://github.com/lakehanne/sofa --branch v19.06 
+   ```
+
+    - With Git 1.6.5 upwards:
+     
+     ```
+        git clone --recursive git://github.com/lakehanne/sofa --branch v19.06
+     ```
++ Then create a `build` folder within this the root folder of this projrect. An example CMakeLists options to be built is specified in [sofa-cmake.sh](/sofa-cmake.sh). You can edit the options as you wish for components you want to build. When done, simply run the bash script as 
+
+```
+   bash sofa-cmake.sh
+```
 
 ## Contribution
 
