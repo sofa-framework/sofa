@@ -78,7 +78,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
 list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
-
+# add path to FindROS and Log4CXX by Aichele
+list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/../applications/plugins/SofaROSConnector/cmake/Modules")
 ## RPATH
 if(UNIX)
     # RPATH is a field in ELF binaries that is used as a hint by the system

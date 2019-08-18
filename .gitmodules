@@ -1,0 +1,9 @@
+[submodule "applications/plugins/STLIB"]
+	path = applications/plugins/STLIB
+	url = https://github.com/SofaDefrost/STLIB.git
+[submodule "applications/plugins/SoftRobots"]
+	path = applications/plugins/SoftRobots
+	url = https://github.com/faichele/SoftRobots.git
+[submodule "applications/plugins/SofaROSConnector"]
+	path = applications/plugins/SofaROSConnector
+	url = https://github.com/faichele/SofaROSConnector.git
