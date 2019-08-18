@@ -94,7 +94,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     }
     case Qt::Key_S:
     {
-//        screenshot(capture.findFilename());
+        m_backend->screenshot(m_backend->screenshotName());
         break;
     }
     case Qt::Key_V:
@@ -518,7 +518,7 @@ void SofaViewer::setBackgroundImage(std::string imageFileName)
         {
             helper::vector<std::string> validExtensions;
             helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
-            msg_warning("BaseGLViewer") << "Could not create file '" << imageFileName <<"'" << msgendl
+            msg_warning("SofaViewer") << "Could not create file '" << imageFileName <<"'" << msgendl
                     << "  Valid extensions: " << validExtensions;
         }
         else

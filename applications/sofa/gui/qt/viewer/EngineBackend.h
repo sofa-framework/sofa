@@ -47,7 +47,7 @@ public:
     virtual void setPickingMethod(sofa::gui::PickHandler* pick, sofa::component::configurationsetting::ViewerSetting* viewerConf) =0;
     virtual void setPrefix(const std::string& prefix) =0;
     virtual const std::string screenshotName() =0;
-    virtual void screenshot(const std::string& filename, int compression_level) =0;
+    virtual void screenshot(const std::string& filename, int compression_level = -1) =0;
     virtual void setBackgroundImage(helper::io::Image* image) =0;
     virtual void drawBackgroundImage(const int screenWidth, const int screenHeight)=0;
 
