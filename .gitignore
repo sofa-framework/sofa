@@ -1,5 +1,7 @@
 # Lines that begin with '#' are comments.
 
+build/
+
 # Ignore foo.txt file
 #foo.txt
 

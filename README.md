@@ -45,10 +45,10 @@ https://www.sofa-framework.org/documentation
      ```
         git clone --recursive git://github.com/lakehanne/sofa --branch v19.06
      ```
-+ Then create a `build` folder within this the root folder of this projrect. An example CMakeLists options to be built is specified in [sofa-cmake.sh](/sofa-cmake.sh). You can edit the options as you wish for components you want to build. When done, simply run the bash script as 
++ Then create a `build` folder within the root folder of this projrect. An example CMakeLists options to be built is specified in [sofa-cmake.sh](/sofa-cmake.sh). You can edit the options as you wish for components you want to build. When done, simply run the bash script from within the newly created build folder as 
 
 ```
-   bash sofa-cmake.sh
+   bash ../sofa-cmake.sh
 ```
 
 ## Contribution
