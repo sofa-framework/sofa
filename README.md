@@ -31,6 +31,15 @@ SOFA's advanced software architecture allows:
 For up-to-date instructions, please refer to the SOFA documentation:  
 https://www.sofa-framework.org/documentation
 
+### CGAL Warning on MAC OSX
+
++ On MAC OSX systems, liniking with the cgal library packaged with homebrew or macports oftem fails.
+It is best to download the tarball of the release you prefer, and manually compile in order to get the build to complete all image tests.
+  - Pick your cgal release from [here](https://github.com/CGAL/cgal/releases)
+  - Create a build directory within the decompressed tar folder: `cmake -DCMAKE_BUILD_TYPE=Release ..`
+  - make j2
+  - make install
+
 ### Installing with SoftRobots, SofaROSConnector and STLIB libraries
 
 + Clone this repo recursively:
