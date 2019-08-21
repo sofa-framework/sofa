@@ -76,6 +76,7 @@ BoxROI<DataTypes>::BoxROI()
     , d_computeTetrahedra( initData(&d_computeTetrahedra, true,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI. (default = true)") )
     , d_computeHexahedra( initData(&d_computeHexahedra, true,"computeHexahedra","If true, will compute hexahedra list and index list inside the ROI. (default = true)") )
     , d_computeQuad( initData(&d_computeQuad, true,"computeQuad","If true, will compute quad list and index list inside the ROI. (default = true)") )
+    , d_strict( initData(&d_strict, false,"strict","If true, an element is inside the box iif all of its nodes are inside. If False, only the center point of the element is checked. (default = false)") )
     , d_indices( initData(&d_indices,"indices","Indices of the points contained in the ROI") )
     , d_edgeIndices( initData(&d_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
     , d_triangleIndices( initData(&d_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
@@ -451,6 +452,16 @@ bool BoxROI<DataTypes>::isEdgeInBoxes(const Edge& e)
 }
 
 template <class DataTypes>
+bool BoxROI<DataTypes>::isEdgeInBoxesStrict(const Edge& e)
+{
+    const VecCoord& x0 = d_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[e[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[e[1]]);
+
+    return isPointInBoxes(p0) && isPointInBoxes(p1);
+}
+
+template <class DataTypes>
 bool BoxROI<DataTypes>::isTriangleInBoxes(const Triangle& t)
 {
     const VecCoord& x0 = d_X0.getValue();
@@ -460,6 +471,17 @@ bool BoxROI<DataTypes>::isTriangleInBoxes(const Triangle& t)
     CPos c = (p2+p1+p0)/3.0;
 
     return (isPointInBoxes(c));
+}
+
+template <class DataTypes>
+bool BoxROI<DataTypes>::isTriangleInBoxesStrict(const Triangle& t)
+{
+    const VecCoord& x0 = d_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
+
+    return (isPointInBoxes(p0) && isPointInBoxes(p1) && isPointInBoxes(p2));
 }
 
 template <class DataTypes>
@@ -473,6 +495,18 @@ bool BoxROI<DataTypes>::isTetrahedronInBoxes(const Tetra &t)
     CPos c = (p3+p2+p1+p0)/4.0;
 
     return (isPointInBoxes(c));
+}
+
+template <class DataTypes>
+bool BoxROI<DataTypes>::isTetrahedronInBoxesStrict(const Tetra &t)
+{
+    const VecCoord& x0 = d_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
+    CPos p3 =  DataTypes::getCPos(x0[t[3]]);
+
+    return (isPointInBoxes(p0) && isPointInBoxes(p1) && isPointInBoxes(p2) && isPointInBoxes(p3));
 }
 
 template <class DataTypes>
@@ -493,6 +527,23 @@ bool BoxROI<DataTypes>::isHexahedronInBoxes(const Hexa &t)
 }
 
 template <class DataTypes>
+bool BoxROI<DataTypes>::isHexahedronInBoxesStrict(const Hexa &t)
+{
+    const VecCoord& x0 = d_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
+    CPos p3 =  DataTypes::getCPos(x0[t[3]]);
+    CPos p4 =  DataTypes::getCPos(x0[t[4]]);
+    CPos p5 =  DataTypes::getCPos(x0[t[5]]);
+    CPos p6 =  DataTypes::getCPos(x0[t[6]]);
+    CPos p7 =  DataTypes::getCPos(x0[t[7]]);
+
+    return (isPointInBoxes(p0) && isPointInBoxes(p1) && isPointInBoxes(p2) && isPointInBoxes(p3) &&
+            isPointInBoxes(p4) && isPointInBoxes(p5) && isPointInBoxes(p6) && isPointInBoxes(p7));
+}
+
+template <class DataTypes>
 bool BoxROI<DataTypes>::isQuadInBoxes(const Quad& q)
 {
     const VecCoord& x0 = d_X0.getValue();
@@ -503,13 +554,27 @@ bool BoxROI<DataTypes>::isQuadInBoxes(const Quad& q)
     CPos c = (p3+p2+p1+p0)/4.0;
 
     return (isPointInBoxes(c));
+}
 
+template <class DataTypes>
+bool BoxROI<DataTypes>::isQuadInBoxesStrict(const Quad& q)
+{
+    const VecCoord& x0 = d_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[q[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[q[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[q[2]]);
+    CPos p3 =  DataTypes::getCPos(x0[q[3]]);
+
+    return (isPointInBoxes(p0) && isPointInBoxes(p1) && isPointInBoxes(p2) && isPointInBoxes(p3));
 }
 
 // The update method is called when the engine is marked as dirty.
 template <class DataTypes>
 void BoxROI<DataTypes>::doUpdate()
 {
+    // Check whether an element can partially be inside the box or if all of its nodes must be inside
+    bool strict = d_strict.getValue();
+
     // Write accessor for topological element indices in BOX
     SetIndex& indices = *d_indices.beginWriteOnly();
     SetIndex& edgeIndices = *d_edgeIndices.beginWriteOnly();
@@ -591,7 +656,8 @@ void BoxROI<DataTypes>::doUpdate()
         for(unsigned int i=0 ; i<edges.size() ; i++)
         {
             Edge e = edges[i];
-            if (isEdgeInBoxes(e))
+            bool is_in_box = (strict) ? isEdgeInBoxesStrict(e) : isEdgeInBoxes(e);
+            if (is_in_box)
             {
                 edgeIndices.push_back(i);
                 edgesInROI.push_back(e);
@@ -605,7 +671,8 @@ void BoxROI<DataTypes>::doUpdate()
         for(unsigned int i=0 ; i<triangles.size() ; i++)
         {
             Triangle t = triangles[i];
-            if (isTriangleInBoxes(t))
+            bool is_in_box = (strict) ? isTriangleInBoxesStrict(t) : isTriangleInBoxes(t);
+            if (is_in_box)
             {
                 triangleIndices.push_back(i);
                 trianglesInROI.push_back(t);
@@ -619,7 +686,8 @@ void BoxROI<DataTypes>::doUpdate()
         for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
         {
             Tetra t = tetrahedra[i];
-            if (isTetrahedronInBoxes(t))
+            bool is_in_box = (strict) ? isTetrahedronInBoxesStrict(t) : isTetrahedronInBoxes(t);
+            if (is_in_box)
             {
                 tetrahedronIndices.push_back(i);
                 tetrahedraInROI.push_back(t);
@@ -633,7 +701,8 @@ void BoxROI<DataTypes>::doUpdate()
         for(unsigned int i=0 ; i<hexahedra.size() ; i++)
         {
             Hexa t = hexahedra[i];
-            if (isHexahedronInBoxes(t))
+            bool is_in_box = (strict) ? isHexahedronInBoxesStrict(t) : isHexahedronInBoxes(t);
+            if (is_in_box)
             {
                 hexahedronIndices.push_back(i);
                 hexahedraInROI.push_back(t);
@@ -648,7 +717,8 @@ void BoxROI<DataTypes>::doUpdate()
         for(unsigned int i=0 ; i<quad.size() ; i++)
         {
             Quad q = quad[i];
-            if (isQuadInBoxes(q))
+            bool is_in_box = (strict) ? isQuadInBoxesStrict(q) : isQuadInBoxes(q);
+            if (is_in_box)
             {
                 quadIndices.push_back(i);
                 quadInROI.push_back(q);
