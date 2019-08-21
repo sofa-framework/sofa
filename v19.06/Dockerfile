@@ -35,19 +35,28 @@ RUN apt-get update --fix-missing && \
     libxml2-dev \
     libcgal-dev \
     libblas-dev \
-    iblapack-dev \
+    liblapack-dev \
     libsuitesparse-dev \
-    libassimp-dev \
+    libassimp-dev  \
     # wget \
     # apt-utils \
     # ca-certificates \
-    # python3-pip \
-    && apt-get clean && \
+    # python3-pip \&& \
     rm -rf /var/lib/apt/lists/*
 
+CMD ["/bin/bash -c" "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"]
 # git clone sofa
 RUN git clone git//github.com/lakehanne/sofa -b v19.06 \
 	&&  cd sofa && mkdir build && bash ../sofa-cmake.sh 
 
+# Cleanup
+
+RUN apt-get update && \
+	purge -y --auto-remove gcc wget \
+    && apt-get clean 
+
+RUN wget https://raw.githubusercontent.com/lakehanne/Shells/master/bash_aliases_docker_ros -O ~/.bash_aliases
+RUN echo "source ~/.bash_aliases" >> ~/.zshrc
+ENTRYPOINT ["/usr/bin/zsh"]
 
 
