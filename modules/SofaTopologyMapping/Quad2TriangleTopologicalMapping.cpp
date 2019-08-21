@@ -76,28 +76,37 @@ Quad2TriangleTopologicalMapping::~Quad2TriangleTopologicalMapping()
 
 void Quad2TriangleTopologicalMapping::init()
 {
-    // INITIALISATION of TRIANGULAR mesh from QUADULAR mesh :
-
-    // recheck models
     bool modelsOk = true;
     if (!fromModel)
     {
-        msg_error() << "Pointer to input topology is invalid.";
+        // If the input topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
+        // If it is null at this point, it means no input mesh topology could be found.
+        msg_error() << "No input mesh topology found. Consider setting the '" << fromModel.getName() << "' data attribute.";
         modelsOk = false;
     }
 
     if (!toModel)
     {
-        msg_error() << "Pointer to output topology is invalid.";
+        // If the output topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
+        // If it is null at this point, it means no output mesh topology could be found.
+        msg_error() << "No output mesh topology found. Consider setting the '" << toModel.getName() << "' data attribute.";
         modelsOk = false;
     }
-    else
-    {
+
+    // Making sure the output topology is derived from the triangle topology container
+    if (!dynamic_cast<TriangleSetTopologyContainer *>(toModel.get())) {
+        msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of TriangleSetTopologyContainer. "
+                    << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
+                                                                        " TriangleSetTopologyContainer derived object.";
+        modelsOk = false;
+    } else {
+        // Making sure a topology modifier exists at the same level as the output topology
         TriangleSetTopologyModifier *to_tstm;
         toModel->getContext()->get(to_tstm);
         if (!to_tstm)
         {
-            msg_error() << "No TriangleSetTopologyModifier found in the Triangle topology Node.";
+            msg_error() << "No TriangleSetTopologyModifier found in the output topology node '"
+                        << toModel->getContext()->getName() << "'.";
             modelsOk = false;
         }
     }
@@ -109,10 +118,8 @@ void Quad2TriangleTopologicalMapping::init()
     }
 
 
-    TriangleSetTopologyContainer *to_tstc;
-    toModel->getContext()->get(to_tstc);
     // Clear output topology
-    to_tstc->clear();
+    toModel->clear();
 
     // Set the same number of points
     toModel->setNbPoints(fromModel->getNbPoints());
@@ -127,15 +134,13 @@ void Quad2TriangleTopologicalMapping::init()
     // These values are only correct if the mesh is a grid topology
     int nx = 2;
     int ny = 1;
-    //int nz = 1;
 
     {
-        topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel.get());
-        if (grid != NULL)
+        const auto * grid = dynamic_cast<const topology::GridTopology*>(fromModel.get());
+        if (grid != nullptr)
         {
             nx = grid->getNx()-1;
             ny = grid->getNy()-1;
-            //nz = grid->getNz()-1;
         }
     }
 
@@ -154,19 +159,19 @@ void Quad2TriangleTopologicalMapping::init()
 
     for (unsigned int i=0; i<quadArray.size(); ++i)
     {
-        unsigned int p0 = quadArray[i][0];
-        unsigned int p1 = quadArray[i][1];
-        unsigned int p2 = quadArray[i][2];
-        unsigned int p3 = quadArray[i][3];
+        const auto & p0 = quadArray[i][0];
+        const auto & p1 = quadArray[i][1];
+        const auto & p2 = quadArray[i][2];
+        const auto & p3 = quadArray[i][3];
         if (((i%scale) ^ (i/scale)) & 1)
         {
-            to_tstc->addTriangle(p0, p1, p3);
-            to_tstc->addTriangle(p2, p3, p1);
+            toModel->addTriangle(p0, p1, p3);
+            toModel->addTriangle(p2, p3, p1);
         }
         else
         {
-            to_tstc->addTriangle(p1, p2, p0);
-            to_tstc->addTriangle(p3, p0, p2);
+            toModel->addTriangle(p1, p2, p0);
+            toModel->addTriangle(p3, p0, p2);
         }
 
         Loc2GlobVec.push_back(i);
@@ -178,7 +183,7 @@ void Quad2TriangleTopologicalMapping::init()
     }
 
     // Need to fully init the target topology
-    to_tstc->init();
+    toModel->init();
 
     //to_tstm->propagateTopologicalChanges();
     Loc2GlobDataVec.endEdit();
@@ -202,8 +207,8 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     TriangleSetTopologyModifier *to_tstm;
     toModel->getContext()->get(to_tstm);
 
-    std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+    auto itBegin=fromModel->beginChange();
+    auto itEnd=fromModel->endChange();
 
     sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
@@ -226,24 +231,24 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::QUADSADDED:
         {
-            const sofa::helper::vector<core::topology::BaseMeshTopology::Quad> &quadArray=fromModel->getQuads();
+            const auto & quadArray=fromModel->getQuads();
 
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsAdded *>( *itBegin ) )->getArray();
+            const auto & tab = ( static_cast< const QuadsAdded *>( *itBegin ) )->getArray();
 
             sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
             sofa::helper::vector< unsigned int > trianglesIndexList;
-            unsigned int nb_elems = (unsigned int)toModel->getNbTriangles();
+            auto nb_elems = (unsigned int)toModel->getNbTriangles();
 
             for (unsigned int i = 0; i < tab.size(); ++i)
             {
                 unsigned int k = tab[i];
 
-                unsigned int p0 = quadArray[k][0];
-                unsigned int p1 = quadArray[k][1];
-                unsigned int p2 = quadArray[k][2];
-                unsigned int p3 = quadArray[k][3];
-                core::topology::BaseMeshTopology::Triangle t1 = core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p1, (unsigned int) p2);
-                core::topology::BaseMeshTopology::Triangle t2 = core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p2, (unsigned int) p3);
+                const auto & p0 = quadArray[k][0];
+                const auto & p1 = quadArray[k][1];
+                const auto & p2 = quadArray[k][2];
+                const auto & p3 = quadArray[k][3];
+                const auto t1 = core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p1, (unsigned int) p2);
+                const auto t2 = core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p2, (unsigned int) p3);
 
                 triangles_to_create.push_back(t1);
                 trianglesIndexList.push_back(nb_elems);
@@ -267,14 +272,14 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         }
         case core::topology::QUADSREMOVED:
         {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsRemoved *>( *itBegin ) )->getArray();
+            const auto & tab = ( static_cast< const QuadsRemoved *>( *itBegin ) )->getArray();
 
             unsigned int last = (unsigned int)fromModel->getNbQuads() - 1;
 
             int ind_tmp;
 
             sofa::helper::vector<unsigned int> ind_real_last;
-            unsigned int ind_last = (unsigned int)toModel->getNbTriangles();
+            auto ind_last = (unsigned int)toModel->getNbTriangles();
 
             for (unsigned int i = 0; i < tab.size(); ++i)
             {
@@ -283,7 +288,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 unsigned int k = tab[i];
                 sofa::helper::vector<unsigned int> ind_k;
 
-                std::map<unsigned int, sofa::helper::vector<unsigned int> >::iterator iter_1 = In2OutMap.find(k);
+                auto iter_1 = In2OutMap.find(k);
                 if(iter_1 != In2OutMap.end())
                 {
 
@@ -295,7 +300,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     ind_k = In2OutMap[k];
                     ind_real_last = ind_k;
 
-                    std::map<unsigned int, sofa::helper::vector<unsigned int> >::iterator iter_2 = In2OutMap.find(last);
+                    auto iter_2 = In2OutMap.find(last);
                     if(iter_2 != In2OutMap.end())
                     {
 
@@ -378,7 +383,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSREMOVED:
         {
-            const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+            const auto & tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
             sofa::helper::vector<unsigned int> indices;
 
@@ -399,8 +404,8 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSRENUMBERING:
         {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
-            const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+            const auto & tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+            const auto & inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
             sofa::helper::vector<unsigned int> indices;
             sofa::helper::vector<unsigned int> inv_indices;
@@ -424,7 +429,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSADDED:
         {
-            const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
+            const auto * ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
 
             to_tstm->addPointsProcess(ta->getNbAddedVertices());
             to_tstm->addPointsWarning(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);

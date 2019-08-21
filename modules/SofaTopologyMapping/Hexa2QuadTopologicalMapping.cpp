@@ -64,33 +64,38 @@ Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping()
 {
 }
 
-
-Hexa2QuadTopologicalMapping::~Hexa2QuadTopologicalMapping()
-{
-}
-
 void Hexa2QuadTopologicalMapping::init()
 {
-    // recheck models
     bool modelsOk = true;
     if (!fromModel)
     {
-        msg_error() << "Pointer to input topology is invalid.";
+        // If the input topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
+        // If it is null at this point, it means no input mesh topology could be found.
+        msg_error() << "No input mesh topology found. Consider setting the '" << fromModel.getName() << "' data attribute.";
         modelsOk = false;
     }
 
     if (!toModel)
     {
-        msg_error() << "Pointer to output topology is invalid.";
+        // If the output topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
+        // If it is null at this point, it means no output mesh topology could be found.
+        msg_error() << "No output mesh topology found. Consider setting the '" << toModel.getName() << "' data attribute.";
         modelsOk = false;
     }
-    else
-    {
+
+    // Making sure the output topology is derived from the quad topology container
+    if (!dynamic_cast<QuadSetTopologyContainer *>(toModel.get())) {
+        msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of QuadSetTopologyContainer. "
+                    << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
+                                                                        " QuadSetTopologyContainer derived object.";
+        modelsOk = false;
+    } else {
+        // Making sure a topology modifier exists at the same level as the output topology
         QuadSetTopologyModifier *to_tstm;
         toModel->getContext()->get(to_tstm);
-        if (!to_tstm)
-        {
-            msg_error() << "No QuadSetTopologyModifier found in the Quad topology Node.";
+        if (!to_tstm) {
+            msg_error() << "No QuadSetTopologyModifier found in the output topology node '"
+                        << toModel->getContext()->getName() << "'.";
             modelsOk = false;
         }
     }
@@ -101,10 +106,8 @@ void Hexa2QuadTopologicalMapping::init()
         return;
     }
 
-    QuadSetTopologyContainer *to_tstc;
-    toModel->getContext()->get(to_tstc);
     // Clear output topology
-    to_tstc->clear();
+    toModel->clear();
 
     // Set the same number of points
     toModel->setNbPoints(fromModel->getNbPoints());
@@ -123,9 +126,9 @@ void Hexa2QuadTopologicalMapping::init()
             core::topology::BaseMeshTopology::Quad q = quadArray[i];
 
             if(flipN)
-                to_tstc->addQuad(q[3], q[2], q[1], q[0]);
+                toModel->addQuad(q[3], q[2], q[1], q[0]);
             else
-                to_tstc->addQuad(q[0], q[1], q[2], q[3]);
+                toModel->addQuad(q[0], q[1], q[2], q[3]);
 
             Loc2GlobVec.push_back(i);
             Glob2LocMap[i]= (unsigned int)Loc2GlobVec.size()-1;
@@ -163,10 +166,10 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     QuadSetTopologyModifier *to_tstm;
     toModel->getContext()->get(to_tstm);
 
-    std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+    auto itBegin=fromModel->beginChange();
+    auto itEnd=fromModel->endChange();
 
-    sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    auto & Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     while( itBegin != itEnd )
     {
@@ -187,10 +190,10 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::QUADSREMOVED:
         {
-            unsigned int last = (unsigned int)fromModel->getNbQuads() - 1;
-            unsigned int ind_last = (unsigned int)toModel->getNbQuads();
+            auto last = (unsigned int)fromModel->getNbQuads() - 1;
+            auto ind_last = (unsigned int)toModel->getNbQuads();
 
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsRemoved *>( *itBegin ) )->getArray();
+            const auto & tab = ( static_cast< const QuadsRemoved *>( *itBegin ) )->getArray();
 
             unsigned int ind_tmp;
 
@@ -200,7 +203,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
             {
                 unsigned int k = tab[i];
 
-                std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                auto iter_1 = Glob2LocMap.find(k);
                 if(iter_1 != Glob2LocMap.end())
                 {
 
@@ -209,7 +212,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     unsigned int ind_k = Glob2LocMap[k];
 //                            ind_real_last = ind_k;
 
-                    std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
+                    auto iter_2 = Glob2LocMap.find(last);
                     if(iter_2 != Glob2LocMap.end())
                     {
 
@@ -268,11 +271,11 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const sofa::helper::vector<core::topology::BaseMeshTopology::Hexahedron> &hexahedronArray=fromModel->getHexahedra();
 
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const HexahedraRemoved *>( *itBegin ) )->getArray();
+            const auto & tab = ( static_cast< const HexahedraRemoved *>( *itBegin ) )->getArray();
 
             sofa::helper::vector< core::topology::BaseMeshTopology::Quad > quads_to_create;
             sofa::helper::vector< unsigned int > quadsIndexList;
-            unsigned int nb_elems = (unsigned int)toModel->getNbQuads();
+            auto nb_elems = (unsigned int)toModel->getNbQuads();
             const bool flipN = flipNormals.getValue();
 
             for (unsigned int i = 0; i < tab.size(); ++i)
@@ -341,7 +344,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             nb_elems+=1;
 
                             Loc2GlobVec.push_back(k);
-                            std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                            auto iter_1 = Glob2LocMap.find(k);
                             if(iter_1 != Glob2LocMap.end() )
                             {
                                 msg_warning() << "Failed to add quad " << k << " which already exists";
@@ -361,7 +364,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSREMOVED:
         {
-            const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+            const auto & tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
             sofa::helper::vector<unsigned int> indices;
 
@@ -370,7 +373,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 indices.push_back(tab[i]);
             }
 
-            sofa::helper::vector<unsigned int>& tab_indices = indices;
+            auto & tab_indices = indices;
 
             to_tstm->removePointsWarning(tab_indices, false);
             to_tstm->propagateTopologicalChanges();
@@ -381,8 +384,8 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSRENUMBERING:
         {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
-            const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+            const auto & tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+            const auto & inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
             sofa::helper::vector<unsigned int> indices;
             sofa::helper::vector<unsigned int> inv_indices;
@@ -393,8 +396,8 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 inv_indices.push_back(inv_tab[i]);
             }
 
-            sofa::helper::vector<unsigned int>& tab_indices = indices;
-            sofa::helper::vector<unsigned int>& inv_tab_indices = inv_indices;
+            auto & tab_indices = indices;
+            auto & inv_tab_indices = inv_indices;
 
             to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
             to_tstm->propagateTopologicalChanges();
