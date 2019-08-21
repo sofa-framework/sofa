@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # be sure anaconda is not in the path
 if [ -d /home/$USER/anaconda2/bin ]; then
