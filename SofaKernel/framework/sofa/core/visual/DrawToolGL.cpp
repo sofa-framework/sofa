@@ -146,7 +146,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
 {
     if (points.size() != colors.size()*2)
     {
-        msg_warning("DrawToolGL") << "Sizes mismatch between points.size() and colors.size().";
+        msg_warning("DrawToolGL") << "Sizes mismatch, points.size(): " << points.size() << " should be equal to colors.size()*2: " << colors.size()*2;
         return drawLines(points, size, RGBAColor::red());
     }
 
@@ -1046,6 +1046,15 @@ void DrawToolGL::drawSphere( const Vector3 &p, float radius)
     glPushMatrix();
     helper::gl::drawSphere(p, radius, 32, 16);
     glPopMatrix();
+}
+
+void DrawToolGL::drawSphere(const Vector3 &p, float radius, const Vec4f &color)
+{
+    setMaterial(color);
+    glPushMatrix();
+    helper::gl::drawSphere(p, radius, 32, 16);
+    glPopMatrix();
+    resetMaterial(color);
 }
 
 void DrawToolGL::drawEllipsoid(const Vector3 &p, const Vector3 &radii)
