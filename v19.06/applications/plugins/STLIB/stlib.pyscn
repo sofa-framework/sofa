@@ -1,0 +1,18 @@
+from stlib.scene import MainHeader
+from stlib.solver import DefaultSolver
+from stlib.physics.rigid import Cube, Sphere, Floor
+from stlib.physics.deformable import ElasticMaterialObject
+
+def createScene(rootNode):
+    MainHeader(rootNode)
+    DefaultSolver(rootNode)
+
+    Sphere(rootNode, name="sphere", translation=[-5.0, 0.0, 0.0])
+    Cube(rootNode, name="cube", translation=[5.0,0.0,0.0])
+
+    e = ElasticMaterialObject(rootNode, name="dragon",
+                          surface="mesh/dragon.obj", volume="mesh/liver.msh",
+                          translation=[0.0,0.0,0.0])
+
+    f = Floor(rootNode, name="plane", translation=[0.0, -1.0, 0.0])
+

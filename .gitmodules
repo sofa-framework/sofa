@@ -7,3 +7,6 @@
 [submodule "applications/plugins/SofaROSConnector"]
 	path = applications/plugins/SofaROSConnector
 	url = https://github.com/faichele/SofaROSConnector.git
+[submodule "v19.06/applications/plugins/SofaROSConnector"]
+	path = v19.06/applications/plugins/SofaROSConnector
+	url = https://github.com/lakehanne/SofaROSConnector.git
