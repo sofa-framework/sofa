@@ -487,11 +487,11 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
 
     foreach(target ${the_targets})
         set(version ${${target}_VERSION})
+        string(TOUPPER "${package_name}" package_name_upper)
         if(version VERSION_GREATER "0.0")
             set_target_properties(${target} PROPERTIES VERSION "${version}")
-        elseif(target MATCHES "^Sofa" AND SofaFramework_VERSION)
-            set_target_properties(${target} PROPERTIES VERSION "${SofaFramework_VERSION}")
-        elseif(target MATCHES "^Sofa" AND Sofa_VERSION)
+        elseif(target MATCHES "^Sofa" AND NOT PLUGIN_${package_name_upper} AND Sofa_VERSION)
+            # Default to Sofa_VERSION for all SOFA modules
             set_target_properties(${target} PROPERTIES VERSION "${Sofa_VERSION}")
         endif()
 
