@@ -36,4 +36,6 @@ echo -e "\n\nNow installing in build folder\n\ns"
 
 make install
 
-mv ~/Downloads/$anac /home/$USER
+if [ -d ~/Downloads/$anac ]; then
+	mv ~/Downloads/$anac /home/$USER
+fi

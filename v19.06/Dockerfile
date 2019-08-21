@@ -1,37 +1,49 @@
 FROM debian:latest
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
-ENV PATH /opt/conda/bin:$PATH
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
-# SHELL ["/bin/bash", "-c"]
-# RUN cp /bin/bash /bin/sh
-# RUN source ~/.bashrc
-RUN mkdir -p /root/home
-# WORKDIR /root/home
-
-# this for anaconda
-# SHELL ["/bin/bash", "-c"]
 RUN apt-get update --fix-missing && \
     apt-get install -y \
-    wget \
-    apt-utils \
-    bzip2 \
-    ca-certificates \
     curl \
     git \
     gcc \
-    python3-pip \
+    g++ \
+    zsh \
+    # install lsofa dependencies \
+    build-essential \
+    cmake \
+    ccache \
+    libboost-atomic-dev \
+    libboost-chrono-dev \
+    libboost-date-time-dev \
+    libboost-filesystem-dev \
+    libboost-locale-dev \
+    libboost-regex-dev \
+    libboost-system-dev \
+    libboost-thread-dev \
+    libboost-program-options-dev \
+    python2.7-dev \
+    python-numpy \
+    python-scipy \
+    libpng-dev \
+    libjpeg-dev \
+    libtiff-dev \
+    zlib1g-dev \
+    libglew-dev \
+    # plugin repos \
+    libxml2-dev \
+    libcgal-dev \
+    libblas-dev \
+    iblapack-dev \
+    libsuitesparse-dev \
+    libassimp-dev \
+    # wget \
+    # apt-utils \
+    # ca-certificates \
+    # python3-pip \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-# from the repo
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh -O ~/miniconda.sh && \
-    /bin/bash ~/miniconda.sh -b -p ~/anaconda3 && \
-    rm ~/miniconda.sh && \
-    ~/anaconda3/bin/conda clean -tipsy && \
-    ln -s ~/anaconda3/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo ". ~/anaconda3/etc/profile.d/conda.sh" >> ~/.bashrc && \
-    echo "~/anaconda3/bin/conda activate base" >> ~/.bashrc
 
 ENV TINI_VERSION v0.16.1
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
