@@ -55,7 +55,7 @@ public:
 
     bool contains(BaseObject* o) const;
 
-    const char* getClassName() const override { return "DetachNodeEvent"; }
+    inline static const char* GetClassName() { return "DetachNodeEvent"; }
 protected:
     BaseNode* node;
 };

@@ -35,8 +35,7 @@ SOFA_EVENT_CPP( IdleEvent )
 
 IdleEvent::IdleEvent() {}
 IdleEvent::~IdleEvent() {}
-const char* IdleEvent::getClassName() const { return "IdleEvent"; }
 
-}
-}
-}
+}  // objectmodel
+}  // core
+}  // sofa

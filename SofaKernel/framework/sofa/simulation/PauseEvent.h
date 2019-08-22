@@ -44,7 +44,7 @@ public:
 
     ~PauseEvent() override;
 
-    const char* getClassName() const override { return "PauseEvent"; }
+    inline static const char* GetClassName() { return "PauseEvent"; }
 
 };
 

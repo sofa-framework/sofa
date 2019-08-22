@@ -50,7 +50,7 @@ public:
     /// Return the key released
     char getKey() const;
 
-    const char* getClassName() const override { return "KeyreleasedEvent"; }
+    inline static const char* GetClassName() { return "KeyreleasedEvent"; }
 protected:
     /// Store the key
     char m_char;
