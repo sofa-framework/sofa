@@ -43,6 +43,7 @@ set(HEADER_FILES
     StructDataWidget.h
     TableDataWidget.h
     viewer/SofaViewer.h
+    viewer/EngineBackend.h
     viewer/VisualModelPolicy.h
     GenericWidget.h
 )
@@ -82,6 +83,7 @@ set(SOURCE_FILES
     TableDataWidget.cpp
     WDoubleLineEdit.cpp
     viewer/SofaViewer.cpp
+    viewer/VisualModelPolicy.cpp
     panels/QDocBrowser.cpp
 )
 
@@ -130,22 +132,8 @@ if(SOFAGUI_ENABLE_QWT)
          GraphDataWidget.cpp
          QGraphStatWidget.cpp
          QEnergyStatWidget.cpp
-         QMomentumStatWidget.cpp
+         QMomentumStatWidget.cpp∫
          )
-endif()
-
-# QtViewer
-if(SOFAGUI_QTVIEWER)
-    list(APPEND MOC_HEADER_FILES viewer/qt/QtViewer.h)
-    list(APPEND SOURCE_FILES viewer/qt/QtViewer.cpp)
-endif()
-
-# QGLViewer
-if(SOFAGUI_QGLVIEWER)
-    find_package(QGLViewer)
-
-    list(APPEND MOC_HEADER_FILES viewer/qgl/QtGLViewer.h)
-    list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
 endif()
 
 # QChart
@@ -165,8 +153,6 @@ endif()
 
 set(QT_USE_IMPORTED_TARGETS 1)
 
-find_package(FFMPEGexec QUIET)
-
 find_package(Qt5 COMPONENTS Core QUIET)
 
 if(Qt5Core_FOUND)
@@ -176,7 +162,7 @@ if(Qt5Core_FOUND)
 
     set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL)
     set(EXT_QT_INCLUDES ${EXT_QT_INCLUDES} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
-    set(EXT_QT_LIBRARIES ${EXT_QT_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
+    set(EXT_QT_LIBRARIES ${EXT_QT_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} )
 
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     set(MOC_FILES_GROUP "Generated")
@@ -245,9 +231,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaLo
 target_link_libraries(${PROJECT_NAME} PUBLIC ${EXT_QT_LIBRARIES})
 if(SOFAGUI_ENABLE_QWT)
     target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
-endif()
-if(SOFAGUI_QGLVIEWER)
-    target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")

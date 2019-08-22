@@ -19,20 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGui/config.h>
-#include "Main.h"
-#include "GUIManager.h"
+#ifndef SOFA_GUI_BASEGLVIEWER_H
+#define SOFA_GUI_BASEGLVIEWER_H
 
-#include "BatchGUI.h"
-#ifdef SOFA_GUI_QT
-#include "qt/RealGUI.h"
-#endif
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-#include "headlessRecorder/HeadlessRecorder.h"
-#endif
-#ifdef SOFA_GUI_QT_OPENGL
-#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
-#endif
+#include "sofa/config.h"
+
+#include "BaseViewer.h"
+
+
+
+
 
 namespace sofa
 {
@@ -40,34 +36,32 @@ namespace sofa
 namespace gui
 {
 
-void initMain()
+class SOFA_SOFAGUI_API BaseGLViewer : public BaseViewer
 {
-    // This function does nothing. It is used to make sure that this file is linked, so that the following GUI registrations are made.
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-#ifdef SOFA_GUI_QT_OPENGL
-	// Force Windows to pull the dll while loading SofaGUI (Unix does not need it)
-	initSofaGUIQtOpenGL();
-#endif // SOFA_GUI_QT_OPENGL
+
+public:
+    BaseGLViewer();
+    virtual ~BaseGLViewer() override;
+
+    //Allow to configure your viewer using the Sofa Component, ViewerSetting
+    virtual void configure(sofa::component::configurationsetting::ViewerSetting* viewerConf) override;
+
+    //Fonctions needed to take a screenshot
+    const std::string screenshotName() override;
+    void setPrefix(const std::string& prefix, bool prependDirectory = true) override;
+    virtual void screenshot(const std::string& filename, int compression_level =-1) override;
+
+    virtual void setBackgroundImage(std::string imageFileName = std::string("textures/SOFA_logo.bmp")) override;
+protected:
+    sofa::helper::gl::Capture m_capture;
+    sofa::helper::gl::Texture* m_texLogo;
+
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+    sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
+#endif // SOFA_HAVE_FFMPEG_EXEC
+};
+
+}
 }
 
-int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
-
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2 );
-#endif
-  
-#ifdef SOFA_GUI_QGLVIEWER
-int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
-#endif
-
-#ifdef SOFA_GUI_QTVIEWER
-int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, NULL, 2 );
-#endif
-
-} // namespace gui
-
-} // namespace sofa
+#endif // SOFA_GUI_BASEGLVIEWER_H

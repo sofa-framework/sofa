@@ -19,55 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGui/config.h>
-#include "Main.h"
-#include "GUIManager.h"
+#include "BaseGLViewer.h"
+#include <sofa/gui/PickHandler.h>
+#include "BaseGUI.h"
 
-#include "BatchGUI.h"
-#ifdef SOFA_GUI_QT
-#include "qt/RealGUI.h"
-#endif
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-#include "headlessRecorder/HeadlessRecorder.h"
-#endif
-#ifdef SOFA_GUI_QT_OPENGL
-#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
-#endif
+#include <sofa/helper/Factory.inl>
+#include <SofaBaseVisual/VisualStyle.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa
 {
-
 namespace gui
 {
 
-void initMain()
+BaseGLViewer::BaseGLViewer()
+    : BaseViewer()
+    , m_texLogo(nullptr)
 {
-    // This function does nothing. It is used to make sure that this file is linked, so that the following GUI registrations are made.
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-#ifdef SOFA_GUI_QT_OPENGL
-	// Force Windows to pull the dll while loading SofaGUI (Unix does not need it)
-	initSofaGUIQtOpenGL();
-#endif // SOFA_GUI_QT_OPENGL
+
 }
 
-int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
+BaseGLViewer::~BaseGLViewer()
+{
+   if(m_texLogo)
+    {
+        delete m_texLogo;
+        m_texLogo = nullptr;
+    }
+}
 
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2 );
-#endif
-  
-#ifdef SOFA_GUI_QGLVIEWER
-int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
-#endif
 
-#ifdef SOFA_GUI_QTVIEWER
-int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, NULL, 2 );
-#endif
 
-} // namespace gui
 
-} // namespace sofa
+}
+}
+

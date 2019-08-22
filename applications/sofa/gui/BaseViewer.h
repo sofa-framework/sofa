@@ -36,12 +36,12 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <sofa/helper/gl/Capture.h>
-#include <sofa/helper/gl/Texture.h>
+//#include <sofa/helper/gl/Capture.h>
+//#include <sofa/helper/gl/Texture.h>
 
-#ifdef SOFA_HAVE_FFMPEG_EXEC
-#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
-#endif // SOFA_HAVE_FFMPEG_EXEC
+//#ifdef SOFA_HAVE_FFMPEG_EXEC
+//#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
+//#endif // SOFA_HAVE_FFMPEG_EXEC
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -110,8 +110,8 @@ public:
     virtual void configure(sofa::component::configurationsetting::ViewerSetting* viewerConf);
 
     //Fonctions needed to take a screenshot
-    const std::string screenshotName();
-    void setPrefix(const std::string& prefix, bool prependDirectory = true);
+    virtual const std::string screenshotName();
+    virtual void setPrefix(const std::string& prefix, bool prependDirectory = true);
     virtual void screenshot(const std::string& filename, int compression_level =-1);
 
     virtual void getView(sofa::defaulttype::Vector3& pos, sofa::defaulttype::Quat& ori) const;
@@ -127,6 +127,8 @@ public:
     virtual void saveView()=0;
     virtual void setSizeW(int)=0;
     virtual void setSizeH(int)=0;
+    virtual int getWidth()=0;
+    virtual int getHeight()=0;
     virtual void captureEvent() {}
     virtual void fitObjectBBox(sofa::core::objectmodel::BaseObject* );
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode*);
@@ -153,18 +155,9 @@ protected:
 
     std::string sceneFileName;
 
-#ifndef SOFA_NO_OPENGL
-    sofa::helper::gl::Capture capture;
-    sofa::helper::gl::Texture* texLogo;
-
-#ifdef SOFA_HAVE_FFMPEG_EXEC
-    sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
-#endif // SOFA_HAVE_FFMPEG_EXEC
-#endif // SOFA_NO_OPENGL
-
     bool _video;
     bool m_isVideoButtonPressed;
-    bool _axis;
+    bool m_bShowAxis;
     bool _fullScreen;
     int _background;
     bool initTexturesDone;

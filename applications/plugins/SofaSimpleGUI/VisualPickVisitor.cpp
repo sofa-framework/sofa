@@ -3,7 +3,9 @@
 using std::cout;
 using std::cerr;
 using std::endl;
-//#define DEBUG_DRAW
+
+#include <sofa/helper/system/gl.h>
+
 namespace sofa
 {
 

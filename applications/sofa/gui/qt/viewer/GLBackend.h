@@ -19,20 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGui/config.h>
-#include "Main.h"
-#include "GUIManager.h"
+#ifndef SOFA_GLBACKEND_H
+#define SOFA_GLBACKEND_H
 
-#include "BatchGUI.h"
-#ifdef SOFA_GUI_QT
-#include "qt/RealGUI.h"
-#endif
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-#include "headlessRecorder/HeadlessRecorder.h"
-#endif
-#ifdef SOFA_GUI_QT_OPENGL
 #include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
-#endif
+
+#include <sofa/gui/qt/viewer/EngineBackend.h>
+#include <sofa/gui/PickHandler.h>
+#include <SofaGraphComponent/ViewerSetting.h>
+
+#include <sofa/helper/gl/Capture.h>
+#include <sofa/helper/gl/Texture.h>
+
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
+#endif // SOFA_HAVE_FFMPEG_EXEC
+
 
 namespace sofa
 {
@@ -40,34 +42,44 @@ namespace sofa
 namespace gui
 {
 
-void initMain()
+namespace qt
 {
-    // This function does nothing. It is used to make sure that this file is linked, so that the following GUI registrations are made.
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-#ifdef SOFA_GUI_QT_OPENGL
-	// Force Windows to pull the dll while loading SofaGUI (Unix does not need it)
-	initSofaGUIQtOpenGL();
-#endif // SOFA_GUI_QT_OPENGL
-}
 
-int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
+namespace viewer
+{
 
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2 );
-#endif
-  
-#ifdef SOFA_GUI_QGLVIEWER
-int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
-#endif
+class SOFA_SOFAGUIQTOPENGL_API GLBackend : public EngineBackend
+{
+public:
+    GLBackend();
+    virtual ~GLBackend();
 
-#ifdef SOFA_GUI_QTVIEWER
-int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, NULL, 2 );
-#endif
+    void setPickingMethod(sofa::gui::PickHandler* pick, sofa::component::configurationsetting::ViewerSetting* viewerConf);
+    void setPrefix(const std::string& prefix);
+    const std::string screenshotName();
+    void screenshot(const std::string& filename, int compression_level = -1);
+    void setBackgroundImage(helper::io::Image* image);
+    void drawBackgroundImage(const int screenWidth, const int screenHeight);
+
+    bool initRecorder(int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec="");
+    void endRecorder();
+    void addFrameRecorder();
+
+private:
+    sofa::helper::gl::Capture m_capture;
+    sofa::helper::gl::Texture* m_texLogo;
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+    sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
+#endif // SOFA_HAVE_FFMPEG_EXEC
+
+};
+
+} // namespace viewer
+
+} // namespace qt
 
 } // namespace gui
 
 } // namespace sofa
+
+#endif // SOFA_GLBACKEND_H

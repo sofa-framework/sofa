@@ -19,55 +19,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGui/config.h>
-#include "Main.h"
-#include "GUIManager.h"
+#ifndef SOFA_GUI_QT_VIEWER_OGLMODELPOLICY_H
+#define SOFA_GUI_QT_VIEWER_OGLMODELPOLICY_H
 
-#include "BatchGUI.h"
-#ifdef SOFA_GUI_QT
-#include "qt/RealGUI.h"
-#endif
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-#include "headlessRecorder/HeadlessRecorder.h"
-#endif
-#ifdef SOFA_GUI_QT_OPENGL
 #include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
-#endif
+
+#include <sofa/gui/qt/viewer/SofaViewer.h>
+#include <sofa/gui/qt/viewer/VisualModelPolicy.h>
 
 namespace sofa
 {
-
 namespace gui
 {
-
-void initMain()
+namespace qt
 {
-    // This function does nothing. It is used to make sure that this file is linked, so that the following GUI registrations are made.
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-#ifdef SOFA_GUI_QT_OPENGL
-	// Force Windows to pull the dll while loading SofaGUI (Unix does not need it)
-	initSofaGUIQtOpenGL();
-#endif // SOFA_GUI_QT_OPENGL
-}
+namespace viewer
+{
+	
+class SOFA_SOFAGUIQTOPENGL_API OglModelPolicy : public VisualModelPolicy
+{
+protected:
+    sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
+    std::unique_ptr<sofa::core::visual::DrawTool> drawTool;
+public:
+    void load() override;
+    void unload() override;
+};
 
-int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
 
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2 );
-#endif
-  
-#ifdef SOFA_GUI_QGLVIEWER
-int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
-#endif
+template < typename VisualModelPolicyType >
+class SOFA_SOFAGUIQTOPENGL_API CustomPolicySofaViewer : public VisualModelPolicyType, public sofa::gui::qt::viewer::SofaViewer
+{
+public:
+    using VisualModelPolicyType::load;
+    using VisualModelPolicyType::unload;
+    CustomPolicySofaViewer() { load(); }
+    ~CustomPolicySofaViewer() override { unload(); }
+protected:
+};
 
-#ifdef SOFA_GUI_QTVIEWER
-int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, NULL, 2 );
-#endif
+typedef SOFA_SOFAGUIQTOPENGL_API CustomPolicySofaViewer< OglModelPolicy > OglModelSofaViewer;
 
+} // namespace viewer
+} // namespace qt
 } // namespace gui
-
 } // namespace sofa
+
+
+
+#endif // SOFA_GUI_QT_VIEWER_OGLMODELPOLICY_H

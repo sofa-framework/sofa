@@ -85,6 +85,10 @@ public:
             const std::vector<Vector3>  &normal,
             const Vec4f& color) override;
     virtual void drawTriangles(const std::vector<Vector3> &points,
+            const std::vector< Vec3i > &index,
+            const std::vector<Vector3>  &normal,
+            const std::vector<Vec4f>& color) override;
+    virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
             const std::vector< Vec4f > &color) override;
 

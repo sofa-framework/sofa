@@ -19,55 +19,65 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGui/config.h>
-#include "Main.h"
-#include "GUIManager.h"
+#ifndef SOFA_GUI_GLPICKHANDLER_H
+#define SOFA_GUI_GLPICKHANDLER_H
 
-#include "BatchGUI.h"
-#ifdef SOFA_GUI_QT
-#include "qt/RealGUI.h"
-#endif
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-#include "headlessRecorder/HeadlessRecorder.h"
-#endif
-#ifdef SOFA_GUI_QT_OPENGL
 #include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
-#endif
+#include <sofa/gui/OperationFactory.h>
+
+#include <sofa/gui/PickHandler.h>
+
+#include <sofa/gui/ColourPickingVisitor.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/helper/gl/FrameBufferObject.h>
 
 namespace sofa
 {
+namespace component
+{
+namespace collision
+{
+    class ComponentMouseInteraction;
+    class RayModel;
+}
+namespace configurationsetting
+{
+    class MouseButtonSetting;
+}
+}
+
 
 namespace gui
 {
 
-void initMain()
+class SOFA_SOFAGUIQTOPENGL_API GLPickHandler : public PickHandler
 {
-    // This function does nothing. It is used to make sure that this file is linked, so that the following GUI registrations are made.
-    static bool first = true;
-    if (first)
+    typedef PickHandler Inherit;
+    typedef sofa::component::collision::RayModel MouseCollisionModel;
+    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
+
+public:
+    enum PickingMethod
     {
-        first = false;
-    }
-#ifdef SOFA_GUI_QT_OPENGL
-	// Force Windows to pull the dll while loading SofaGUI (Unix does not need it)
-	initSofaGUIQtOpenGL();
-#endif // SOFA_GUI_QT_OPENGL
+        RAY_CASTING,
+        SELECTION_BUFFER
+    };
+
+    GLPickHandler(double defaultLength = 1000000);
+    virtual ~GLPickHandler() override;
+
+    void allocateSelectionBuffer(int width, int height) override;
+    void destroySelectionBuffer() override;
+
+    BodyPicked findCollisionUsingColourCoding(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction) override;
+
+protected:
+    bool _fboAllocated;
+    sofa::helper::gl::FrameBufferObject _fbo;
+    sofa::helper::gl::fboParameters     _fboParams;
+
+};
+}
 }
 
-int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
-
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2 );
 #endif
-  
-#ifdef SOFA_GUI_QGLVIEWER
-int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
-#endif
-
-#ifdef SOFA_GUI_QTVIEWER
-int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, NULL, 2 );
-#endif
-
-} // namespace gui
-
-} // namespace sofa

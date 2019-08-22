@@ -19,55 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGui/config.h>
-#include "Main.h"
-#include "GUIManager.h"
 
-#include "BatchGUI.h"
-#ifdef SOFA_GUI_QT
-#include "qt/RealGUI.h"
-#endif
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-#include "headlessRecorder/HeadlessRecorder.h"
-#endif
-#ifdef SOFA_GUI_QT_OPENGL
-#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
-#endif
+#include <sofa/gui/qt/viewer/OglModelPolicy.h>
+#include <sofa/core/visual/DrawToolGL.h>
 
 namespace sofa
 {
-
 namespace gui
 {
-
-void initMain()
+namespace qt
 {
-    // This function does nothing. It is used to make sure that this file is linked, so that the following GUI registrations are made.
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-#ifdef SOFA_GUI_QT_OPENGL
-	// Force Windows to pull the dll while loading SofaGUI (Unix does not need it)
-	initSofaGUIQtOpenGL();
-#endif // SOFA_GUI_QT_OPENGL
+namespace viewer
+{
+
+void OglModelPolicy::load()
+{
+    drawTool = std::unique_ptr<sofa::core::visual::DrawTool>(new sofa::core::visual::DrawToolGL());
+
+    // Replace generic visual models with OglModel
+    sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
+            &classVisualModel);
+    vparams->drawTool() = drawTool.get();
+    vparams->setSupported(sofa::core::visual::API_OpenGL);
 }
 
-int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
+void OglModelPolicy::unload()
+{
+    sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
+    vparams->drawTool() = nullptr;
 
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2 );
-#endif
-  
-#ifdef SOFA_GUI_QGLVIEWER
-int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
-#endif
+}
 
-#ifdef SOFA_GUI_QTVIEWER
-int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, NULL, 2 );
-#endif
-
+} // namespace viewer
+} // namespace qt
 } // namespace gui
-
 } // namespace sofa
+

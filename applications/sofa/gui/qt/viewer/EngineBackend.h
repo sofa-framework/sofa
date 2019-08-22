@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGui/config.h>
-#include "Main.h"
-#include "GUIManager.h"
+#ifndef SOFA_ENGINEBACKEND_H
+#define SOFA_ENGINEBACKEND_H
 
-#include "BatchGUI.h"
-#ifdef SOFA_GUI_QT
-#include "qt/RealGUI.h"
-#endif
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-#include "headlessRecorder/HeadlessRecorder.h"
-#endif
-#ifdef SOFA_GUI_QT_OPENGL
-#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
-#endif
+#include <sofa/gui/PickHandler.h>
+#include <SofaGraphComponent/ViewerSetting.h>
+
+#include <sofa/helper/io/Image.h>
 
 namespace sofa
 {
@@ -40,34 +33,39 @@ namespace sofa
 namespace gui
 {
 
-void initMain()
+namespace qt
 {
-    // This function does nothing. It is used to make sure that this file is linked, so that the following GUI registrations are made.
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-#ifdef SOFA_GUI_QT_OPENGL
-	// Force Windows to pull the dll while loading SofaGUI (Unix does not need it)
-	initSofaGUIQtOpenGL();
-#endif // SOFA_GUI_QT_OPENGL
-}
 
-int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
+namespace viewer
+{
 
-#ifdef SOFA_GUI_HEADLESS_RECORDER
-int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2 );
-#endif
-  
-#ifdef SOFA_GUI_QGLVIEWER
-int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
-#endif
+class EngineBackend
+{
+public:
+    EngineBackend() {}
 
-#ifdef SOFA_GUI_QTVIEWER
-int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, NULL, 2 );
-#endif
+    virtual void setPickingMethod(sofa::gui::PickHandler* pick, sofa::component::configurationsetting::ViewerSetting* viewerConf) =0;
+    virtual void setPrefix(const std::string& prefix) =0;
+    virtual const std::string screenshotName() =0;
+    virtual void screenshot(const std::string& filename, int compression_level = -1) =0;
+    virtual void setBackgroundImage(helper::io::Image* image) =0;
+    virtual void drawBackgroundImage(const int screenWidth, const int screenHeight)=0;
+
+    virtual bool initRecorder(int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec="")  =0;
+    virtual void endRecorder() =0;
+    virtual void addFrameRecorder() =0;
+
+
+private:
+
+};
+
+} // namespace viewer
+
+} // namespace qt
 
 } // namespace gui
 
 } // namespace sofa
+
+#endif // SOFA_ENGINEBACKEND_H

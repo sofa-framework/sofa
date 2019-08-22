@@ -278,6 +278,14 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const std::ve
     resetMaterial(color);
 }
 
+void DrawToolGL::drawTriangles(const std::vector<Vector3> &points,
+    const std::vector< Vec3i > &index,
+    const std::vector<Vector3>  &normal,
+    const std::vector<Vec4f>& colour)
+{
+    //todo !
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawTriangles(const std::vector<Vector3> &points,

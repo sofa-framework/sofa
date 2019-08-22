@@ -80,6 +80,10 @@ public:
             const std::vector<Vector3>  &normal,
             const Vec4f& colour) = 0 ;
     virtual void drawTriangles(const std::vector<Vector3> &points,
+        const std::vector< Vec3i > &index,
+        const std::vector<Vector3>  &normal,
+        const std::vector<Vec4f>& colour) = 0;
+    virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector< Vec4f > &colour) = 0 ;
     virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
