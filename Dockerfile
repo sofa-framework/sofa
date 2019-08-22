@@ -62,7 +62,7 @@ RUN wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -
     # && ./qt.run && rm qt.run
 
 # git clone sofa
-RUN "$(git clone --recursive https://github.com/lakehanne/sofa -b v19.06 /sofa)"
+RUN git clone --recursive https://github.com/lakehanne/sofa -b v19.06 /sofa
 RUN mkdir -p /sofa/build
 # COPY . /sofa
 

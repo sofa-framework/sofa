@@ -4,9 +4,6 @@
 [submodule "applications/plugins/SoftRobots"]
 	path = applications/plugins/SoftRobots
 	url = https://github.com/faichele/SoftRobots.git
-[submodule "applications/plugins/SofaROSConnector"]
-	path = applications/plugins/SofaROSConnector
-	url = https://github.com/faichele/SofaROSConnector.git
 [submodule "v19.06/applications/plugins/SofaROSConnector"]
-	path = v19.06/applications/plugins/SofaROSConnector
+	path = applications/plugins/SofaROSConnector
 	url = https://github.com/lakehanne/SofaROSConnector.git
