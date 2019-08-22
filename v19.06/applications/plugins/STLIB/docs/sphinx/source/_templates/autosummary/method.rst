@@ -1,6 +1,0 @@
-{{ fullname }}
-{{ underline }}
-
-METHOD 
-
-

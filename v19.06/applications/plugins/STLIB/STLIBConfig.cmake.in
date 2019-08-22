@@ -1,7 +1,0 @@
-# CMake package configuration file for the @PROJET_NAME@ plugin
-
-@PACKAGE_INIT@
-
-set(@PROJECT_NAME@_INCLUDE_DIRS  @CMAKE_CURRENT_SOURCE_DIR@/../)
-
-check_required_components(@PROJECT_NAME@)
