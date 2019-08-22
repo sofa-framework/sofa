@@ -1,4 +1,4 @@
-FROM osrf/ros2:devel  
+FROM osrf/ros2:devel
 
 # this is already set in ros2 anyway
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
@@ -62,9 +62,9 @@ RUN wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -
     # && ./qt.run && rm qt.run
 
 # git clone sofa
-# RUN "$(git clone https://github.com/lakehanne/sofa -b v19.06)"
+RUN "$(git clone --recursive https://github.com/lakehanne/sofa -b v19.06 /sofa)"
 RUN mkdir -p /sofa/build
-COPY . /sofa
+# COPY . /sofa
 
 RUN cd /sofa/build \
     && cmake -DPLUGIN_IMAGE=ON \
@@ -92,10 +92,8 @@ RUN cd /sofa/build \
 # cleanup
 RUN apt-get update && \
     apt-get purge -y --auto-remove wget \
-    && apt-get clean 
+    && apt-get clean
 
 # RUN wget https://raw.githubusercontent.com/lakehanne/Shells/master/bash_aliases_docker_ros -O ~/.bash_aliases
 # RUN echo "source ~/.bash_aliases" >> ~/.zshrc
 # ENTRYPOINT ["/usr/bin/zsh"]
-
-
