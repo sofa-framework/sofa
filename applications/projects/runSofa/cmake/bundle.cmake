@@ -55,7 +55,7 @@ sofa_set_python_bundle(SofaPython ${CMAKE_SOURCE_DIR}/applications/plugins/SofaP
 
 
 # Own way to get plugins dir
-find_package(Qt5 COMPONENTS Core Gui Widgets) # to get SOFA_HAVE_GLUT
+find_package(Qt5 COMPONENTS Core Gui Widgets)
 get_target_property(QJpegPlugin_PATH Qt5::QJpegPlugin LOCATION_release)
 get_filename_component(QJpegPlugin_DIR ${QJpegPlugin_PATH} DIRECTORY)
 get_filename_component(QT_PLUGINS_DIR ${QJpegPlugin_DIR} DIRECTORY)

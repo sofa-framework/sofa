@@ -74,12 +74,6 @@ const char* getModuleComponentList()
     return classes.c_str();
 }
 
-#ifdef SOFA_HAVE_CSPARSE
-#endif
-
-#ifdef SOFA_HAVE_METIS
-#endif
-
 } /// component
 
 } /// sofa
