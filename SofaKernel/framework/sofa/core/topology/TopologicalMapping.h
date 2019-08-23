@@ -230,11 +230,6 @@ public:
     }
 
 protected:
-    /// Input Model, also called parent
-    //State< In >* fromModel;
-    /// Output Model, also called child
-    //State< Out >* toModel;
-
     /// Input source BaseTopology
     SingleLink<TopologicalMapping, In, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> fromModel;
     //In* fromModel;
