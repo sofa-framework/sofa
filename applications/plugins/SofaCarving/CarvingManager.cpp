@@ -76,14 +76,18 @@ void CarvingManager::init()
 {
     // Search for collision model corresponding to the tool.
     if (d_toolModelPath.getValue().empty())
+    {
         m_toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchDown);
+    }
     else
+    {
         m_toolCollisionModel = getContext()->get<core::CollisionModel>(d_toolModelPath.getValue());
+    }
 
     // Search for the surface collision model.
     if (d_surfaceModelPath.getValue().empty())
     {
-        // we look for a CollisionModel relying on a TetrahedronSetTopology.
+        // We look for a CollisionModel identified with the CarvingSurface Tag.
         std::vector<core::CollisionModel*> models;
         getContext()->get<core::CollisionModel>(&models, core::objectmodel::Tag("CarvingSurface"), core::objectmodel::BaseContext::SearchRoot);
     
@@ -121,8 +125,7 @@ void CarvingManager::init()
     if (m_intersectionMethod == nullptr) { msg_error() << "m_intersectionMethod not found. Add an Intersection method in your scene."; m_carvingReady = false; }
     if (m_detectionNP == nullptr) { msg_error() << "NarrowPhaseDetection not found. Add a NarrowPhaseDetection method in your scene."; m_carvingReady = false; }
     
-    if (m_carvingReady)
-        msg_info() << "CarvingManager: init OK.";
+    if (m_carvingReady) { msg_info() << "CarvingManager: init OK."; }
 }
 
 
@@ -152,23 +155,29 @@ void CarvingManager::doCarve()
         sofa::core::CollisionModel* collMod2 = it->first.second;
         sofa::core::CollisionModel* targetModel = nullptr;
 
-        if (collMod1 == m_toolCollisionModel && collMod2->hasTag(sofa::core::objectmodel::Tag("CarvingSurface")))
+        if (collMod1 == m_toolCollisionModel && collMod2->hasTag(sofa::core::objectmodel::Tag("CarvingSurface"))) {
             targetModel = collMod2;
-        else if (collMod2 == m_toolCollisionModel && collMod1->hasTag(sofa::core::objectmodel::Tag("CarvingSurface")))
+        }
+        else if (collMod2 == m_toolCollisionModel && collMod1->hasTag(sofa::core::objectmodel::Tag("CarvingSurface"))) {
             targetModel = collMod1;
-        else
+        }
+        else {
             continue;
+        }
 
         contacts = dynamic_cast<const ContactVector*>(it->second);
-        if (contacts == nullptr || contacts->size() == 0)
-            continue;
+        if (contacts == nullptr || contacts->size() == 0) { 
+            continue; 
+        }
 
         size_t ncontacts = 0;
-        if (contacts != NULL)
+        if (contacts != NULL) {
             ncontacts = contacts->size();
+        }
 
-        if (ncontacts == 0)
+        if (ncontacts == 0) {
             continue;
+        }
 
         int nbelems = 0;
         helper::vector<int> elemsToRemove;
@@ -194,8 +203,9 @@ void CarvingManager::doCarve()
 
 void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (!m_carvingReady)
+    if (!m_carvingReady) {
         return;
+    }
 
     if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
@@ -222,29 +232,32 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
         {
             d_active.setValue(true);
         }
-        else
-        if ((ev->getState() == sofa::core::objectmodel::MouseEvent::MiddleReleased) && (d_mouseEvent.getValue()))
+        else if ((ev->getState() == sofa::core::objectmodel::MouseEvent::MiddleReleased) && (d_mouseEvent.getValue()))
         {
             d_active.setValue(false);
         }
     }
     else if (sofa::core::objectmodel::HapticDeviceEvent * ev = dynamic_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event))
     {
-        if (ev->getButtonState()==1) d_active.setValue(true);
-        else if (ev->getButtonState()==0) d_active.setValue(false);
+        if (ev->getButtonState() == 1) { d_active.setValue(true); }
+        else if (ev->getButtonState() == 0) { d_active.setValue(false); }
     }
     else if (sofa::core::objectmodel::ScriptEvent *ev = dynamic_cast<sofa::core::objectmodel::ScriptEvent *>(event))
     {
         const std::string& eventS = ev->getEventName();
-        if (eventS.find(d_activatorName.getValue()) != std::string::npos && eventS.find("pressed") != std::string::npos)
+        if (eventS.find(d_activatorName.getValue()) != std::string::npos && eventS.find("pressed") != std::string::npos) {
             d_active.setValue(true);
-        if (eventS.find(d_activatorName.getValue()) != std::string::npos && eventS.find("released") != std::string::npos)
+        }
+
+        if (eventS.find(d_activatorName.getValue()) != std::string::npos && eventS.find("released") != std::string::npos) {
             d_active.setValue(false);
+        }
     }
     else if (simulation::CollisionEndEvent::checkEventType(event))
     {
-        if (d_active.getValue())
+        if (d_active.getValue()) {
             doCarve();
+        }
     }
 
 
