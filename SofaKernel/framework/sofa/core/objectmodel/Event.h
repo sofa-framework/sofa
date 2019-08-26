@@ -40,7 +40,8 @@ namespace objectmodel
     static const size_t s_eventTypeIndex; \
     public:\
     virtual size_t getEventTypeIndex() const override { return T::s_eventTypeIndex; } \
-    static bool checkEventType( const Event* event ) { return event->getEventTypeIndex() == T::s_eventTypeIndex; }
+    static bool checkEventType( const Event* event ) { return event->getEventTypeIndex() == T::s_eventTypeIndex; } \
+    virtual const char* getClassName() const override { return T::GetClassName(); }
 
 
 /// this has to be added in the Event implementation file
@@ -68,8 +69,15 @@ public:
     /// Returns true of the event has been handled
     bool isHandled() const;
 
-    virtual const char* getClassName() const { return "Event"; }
 
+    /// \returns the class name from an instance.
+    /// Do not override directly. Instead, add the SOFA_EVENT_H in your class definition
+    virtual const char* getClassName() const { return Event::GetClassName(); }
+
+    /// \returns the name of the event type.
+    /// As the method is static the name can be retrieved without instantiation.
+    /// Must be reimplemented in each subclasse
+    inline static const char* GetClassName() { return "Event"; }
 
     /// \returns unique type index
     /// for fast Event type comparison with unique indices (see function 'checkEventType')

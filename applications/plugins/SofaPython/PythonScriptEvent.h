@@ -61,7 +61,7 @@ public:
      */
     PyObject* getUserData(void) const {return m_userData;}
 
-    const char* getClassName() const override { return "PythonScriptEvent"; }
+    static inline const char* GetClassName() { return "PythonScriptEvent"; }
 private:
 
     PyObject* m_userData;

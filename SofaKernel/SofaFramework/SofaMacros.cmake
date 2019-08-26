@@ -485,8 +485,17 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
         install(FILES "${CMAKE_BINARY_DIR}/include/${package_name}/config.h" DESTINATION "include/${include_install_dir}")
     endif()
 
-    # non-flat headers install (if no PUBLIC_HEADER and include_install_dir specified)
     foreach(target ${the_targets})
+        set(version ${${target}_VERSION})
+        string(TOUPPER "${package_name}" package_name_upper)
+        if(version VERSION_GREATER "0.0")
+            set_target_properties(${target} PROPERTIES VERSION "${version}")
+        elseif(target MATCHES "^Sofa" AND NOT PLUGIN_${package_name_upper} AND Sofa_VERSION)
+            # Default to Sofa_VERSION for all SOFA modules
+            set_target_properties(${target} PROPERTIES VERSION "${Sofa_VERSION}")
+        endif()
+
+        # non-flat headers install (if no PUBLIC_HEADER and include_install_dir specified)
         get_target_property(public_header ${target} PUBLIC_HEADER)
         if("${public_header}" STREQUAL "public_header-NOTFOUND" AND NOT "${include_install_dir}" STREQUAL "")
             set(optional_argv3 "${ARGV3}")

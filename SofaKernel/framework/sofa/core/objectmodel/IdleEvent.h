@@ -44,7 +44,7 @@ public:
     ~IdleEvent() override;
     SOFA_EVENT_H( IdleEvent )
 
-    const char* getClassName() const override;
+    inline static const char* GetClassName() { return "IdleEvent"; }
 protected:
 };
 

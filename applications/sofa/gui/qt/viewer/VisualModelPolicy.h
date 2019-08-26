@@ -25,7 +25,6 @@
 #include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/visual/DrawToolGL.h>
 
 namespace sofa
 {
@@ -39,10 +38,8 @@ namespace viewer
 class SOFA_SOFAGUIQT_API VisualModelPolicy
 {
 public:
-    VisualModelPolicy(core::visual::VisualParams* vparams = core::visual::VisualParams::defaultInstance())
-        :vparams(vparams)
-    {}
-    virtual ~VisualModelPolicy() {}
+	VisualModelPolicy(core::visual::VisualParams* vparams = core::visual::VisualParams::defaultInstance());
+	virtual ~VisualModelPolicy();
     virtual void load() = 0;
     virtual void unload() = 0;
 protected:
@@ -51,31 +48,10 @@ protected:
 };
 
 
-class OglModelPolicy : public VisualModelPolicy
-{
-protected:
-    sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
-    sofa::core::visual::DrawToolGL drawTool;
-public:
-    void load() override
-    {
-        // Replace generic visual models with OglModel
-        sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
-                &classVisualModel);
-        vparams->drawTool() = &drawTool;
-        vparams->setSupported(sofa::core::visual::API_OpenGL);
-    }
-    void unload() override
-    {
-        sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
-        vparams->drawTool() = nullptr;
-    }
-};
-
-}
-}
-}
-}
+} // namespace viewer
+} // namespace qt
+} // namespace gui
+} // namespace sofa
 
 
 

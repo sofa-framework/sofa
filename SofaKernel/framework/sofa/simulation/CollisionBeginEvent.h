@@ -40,7 +40,7 @@ public:
 
     SOFA_EVENT_H( CollisionBeginEvent )
 
-    const char* getClassName() const override { return "CollisionBeginEvent"; }
+    inline static const char* GetClassName() { return "CollisionBeginEvent"; }
 };
 
 } // namespace simulation

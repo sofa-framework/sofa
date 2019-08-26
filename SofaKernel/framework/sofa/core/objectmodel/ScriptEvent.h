@@ -63,9 +63,9 @@ public:
     /**
      * @brief Get the event name
      */
-    const std::string getEventName(void) const {return m_eventName;}
+    const std::string& getEventName(void) const { return m_eventName; }
 
-    const char* getClassName() const override { return "ScriptEvent"; }
+    inline static const char* GetClassName() { return "ScriptEvent"; }
 private:
 
     sofa::simulation::Node::SPtr m_sender;

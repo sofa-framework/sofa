@@ -50,7 +50,7 @@ public:
     /// Return the key pressed
     char getKey() const;
 
-    const char* getClassName() const override { return "KeypressedEvent"; }
+    inline static const char* GetClassName() { return "KeypressedEvent"; }
 protected:
     /// Store the key
     char m_char;

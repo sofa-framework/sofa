@@ -85,6 +85,10 @@ public:
             const std::vector<Vector3>  &normal,
             const Vec4f& color) override;
     virtual void drawTriangles(const std::vector<Vector3> &points,
+            const std::vector< Vec3i > &index,
+            const std::vector<Vector3>  &normal,
+            const std::vector<Vec4f>& color) override;
+    virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
             const std::vector< Vec4f > &color) override;
 
@@ -143,6 +147,7 @@ public:
     virtual void drawScaledHexahedra(const std::vector<Vector3> &points, const Vec4f& color, const float scale) override;
 
     void drawSphere( const Vector3 &p, float radius) override;
+    void drawSphere(const Vector3 &p, float radius, const Vec4f &color) override;
     void drawEllipsoid(const Vector3 &p, const Vector3 &radii) override;
 
     void drawBoundingBox( const Vector3 &min, const Vector3 &max, float size = 1.0) override;

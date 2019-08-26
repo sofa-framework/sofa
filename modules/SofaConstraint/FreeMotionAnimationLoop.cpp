@@ -147,8 +147,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         gnode->execute ( act );
     }
 
-    BehaviorUpdatePositionVisitor beh(params , dt);
-
     double time = 0.0;
     double timeScale = 1000.0 / (double)CTime::getTicksPerSec();
 
@@ -163,6 +161,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     {
         ScopedAdvancedTimer timer("UpdatePosition");
+        BehaviorUpdatePositionVisitor beh(params, dt);        
         gnode->execute(&beh);
     }
 
@@ -174,11 +173,18 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
 
     // Mapping geometric stiffness coming from previous lambda.
-    simulation::MechanicalVOpVisitor lambdaMultInvDt(params, cparams.lambda(), sofa::core::ConstMultiVecId::null(), cparams.lambda(), 1.0 / dt);
-    lambdaMultInvDt.setMapped(true);
-    getContext()->executeVisitor(&lambdaMultInvDt);
-    simulation::MechanicalComputeGeometricStiffness geometricStiffnessVisitor(&mop.mparams, cparams.lambda());
-    getContext()->executeVisitor(&geometricStiffnessVisitor);
+    {
+        ScopedAdvancedTimer timer("lambdaMultInvDt");
+        simulation::MechanicalVOpVisitor lambdaMultInvDt(params, cparams.lambda(), sofa::core::ConstMultiVecId::null(), cparams.lambda(), 1.0 / dt);
+        lambdaMultInvDt.setMapped(true);
+        getContext()->executeVisitor(&lambdaMultInvDt);
+    }
+
+    {
+        ScopedAdvancedTimer timer("MechanicalComputeGeometricStiffness");
+        simulation::MechanicalComputeGeometricStiffness geometricStiffnessVisitor(&mop.mparams, cparams.lambda());
+        getContext()->executeVisitor(&geometricStiffnessVisitor);
+    }
 
     // Free Motion
     {
@@ -194,6 +200,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     if (cparams.constOrder() == core::ConstraintParams::POS ||
         cparams.constOrder() == core::ConstraintParams::POS_AND_VEL)
     {
+        ScopedAdvancedTimer timer("freePosEqPosPlusFreeVelDt");
         simulation::MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(params, freePos, pos, freeVel, dt);
         freePosEqPosPlusFreeVelDt.setMapped(true);
         getContext()->executeVisitor(&freePosEqPosPlusFreeVelDt);

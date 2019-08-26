@@ -40,7 +40,7 @@ public:
 
     SOFA_EVENT_H( IntegrateBeginEvent )
 
-    const char* getClassName() const override { return "IntegrateBeginEvent"; }
+    inline static const char* GetClassName() { return "IntegrateBeginEvent"; }
 };
 
 } // namespace simulation

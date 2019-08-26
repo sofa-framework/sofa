@@ -143,22 +143,12 @@ TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromPythonExcept
 }
 
 
-TEST_P(PythonScriptController_test, checkErrorMessageFromCPPBinding)
+TEST_F(PythonScriptController_test, checkErrorMessageFromCPPBinding)
 {
-    checkErrorMessage(GetParam());
+    checkErrorMessage("self.anInvalidFunction()");
+    checkErrorMessage("self.name = 5");
+    checkErrorMessage("Sofa.BaseContext.getObject(1234, 'WillNotWork')");
+    checkErrorMessage("Sofa.Topology.setNbPoints(1234)");
+    checkErrorMessage("Sofa.BaseContext.getObject(self.findData('name'), 'WillNotWork')");
+    checkErrorMessage("Sofa.BaseContext.getObject(None, 'WillNotWork')");
 }
-
-std::vector<std::string> testvalues = {
-    "self.anInvalidFunction()",
-    "self.name = 5",
-    "Sofa.BaseContext.getObject(1234, 'WillNotWork')",
-    "Sofa.Topology.setNbPoints(1234)",
-    "Sofa.BaseContext.getObject(self.findData('name'), 'WillNotWork')",
-    "Sofa.BaseContext.getObject(None, 'WillNotWork')"
-};
-
-INSTANTIATE_TEST_CASE_P(checkErrorMesageFromCPPBinding,
-                        PythonScriptController_test,
-                        ::testing::ValuesIn(testvalues));
-
-
