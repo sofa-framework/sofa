@@ -48,6 +48,7 @@ set(HEADER_FILES
     TopologyChangeVisitor.h
     UpdateBoundingBoxVisitor.h
     UpdateContextVisitor.h
+    UpdateInternalDataVisitor.h
     UpdateLinksVisitor.h
     UpdateMappingEndEvent.h
     UpdateMappingVisitor.h
@@ -112,6 +113,7 @@ set(SOURCE_FILES
     TopologyChangeVisitor.cpp
     UpdateBoundingBoxVisitor.cpp
     UpdateContextVisitor.cpp
+    UpdateInternalDataVisitor.cpp
     UpdateLinksVisitor.cpp
     UpdateMappingEndEvent.cpp
     UpdateMappingVisitor.cpp
