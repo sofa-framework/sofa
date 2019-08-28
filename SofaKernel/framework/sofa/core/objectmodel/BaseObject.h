@@ -23,6 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
 
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -111,6 +112,9 @@ public:
 
     /// Update method called when variables used in precomputation are modified.
     virtual void reinit();
+
+    /// Update method called when variables (used to compute other internal variables) are modified
+    void updateInternal();
 
     /// Save the initial state for later uses in reset()
     virtual void storeResetState();
@@ -450,24 +454,37 @@ public:
     /// Return the full path name of this object
     virtual std::string getPathName() const;
 
+    /// @name componentstate
+    ///   Methods related to component state
+    /// @{
+
     ComponentState getComponentState() const { return m_componentstate ; }
     bool isComponentStateValid() const { return m_componentstate != ComponentState::Invalid; }
 
+    ///@}
+
 protected:
+    /// Tracker for all component data linked to internal data
+    sofa::core::DataTracker m_internalDataTracker;
+
+    /// Enum defining the state of the component
     ComponentState m_componentstate { ComponentState::Undefined } ;
 
     SingleLink<BaseObject, BaseContext, BaseLink::FLAG_DOUBLELINK> l_context;
     LinkSlaves l_slaves;
     SingleLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK> l_master;
 
-    // This method insures that context is never NULL (using BaseContext::getDefault() instead)
-    // and that all slaves of an object share its context
+    /// Implementation of the internal update
+    virtual void doUpdateInternal();
+
+    /// This method insures that context is never NULL (using BaseContext::getDefault() instead)
+    /// and that all slaves of an object share its context
     void changeContextLink(BaseContext* before, BaseContext*& after);
 
     /// This method insures that slaves objects have master and context links set correctly
     void changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add);
 
-    // BaseNode can set the context of its own objects
+    /// BaseNode can set the context of its own objects
     friend class BaseNode;
 
 
