@@ -80,6 +80,9 @@ protected:
     /// Where you put your engine's impl
     virtual void doUpdate() = 0;
 
+    /// Prevent engines to use the internalUpdate mechanism, so that only update/doUpdate is used
+    virtual void doInternalUpdate() final {}
+
 public:
     /// Updates your inputs and calls cleanDirty() for you.
     /// User implementation moved to doUpdate()
