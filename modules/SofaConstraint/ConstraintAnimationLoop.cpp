@@ -30,7 +30,7 @@
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
-#include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
@@ -501,6 +501,9 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     BehaviorUpdatePositionVisitor beh(params , this->gnode->getDt());
     this->gnode->execute ( beh );
+
+    UpdateInternalDataVisitor uid(params);
+    this->gnode->execute ( uid );
 
 
     if (simulationTime>0.1)
