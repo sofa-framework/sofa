@@ -60,8 +60,8 @@ void StiffSpringForceField<DataTypes>::init()
 {
     if (d_indices1.isSet() && d_indices2.isSet())
     {        
-        m_dataTrackerIndices.trackData(d_indices1);
-        m_dataTrackerIndices.trackData(d_indices2);
+        m_internalDataTracker.trackData(d_indices1);
+        m_internalDataTracker.trackData(d_indices2);
 
         createSpringsFromInputs();
     }
@@ -70,7 +70,7 @@ void StiffSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::updateSpringsIfChanged()
+void StiffSpringForceField<DataTypes>::doUpdateInternal()
 {
     if (!d_indices1.isSet() && !d_indices2.isSet()) // nothing to do in this case
         return;
@@ -79,7 +79,7 @@ void StiffSpringForceField<DataTypes>::updateSpringsIfChanged()
     d_indices1.updateIfDirty();
     d_indices2.updateIfDirty();
 
-    if (m_dataTrackerIndices.hasChanged())
+    if (m_internalDataTracker.hasChanged())
         createSpringsFromInputs();
 }
 
@@ -107,8 +107,6 @@ void StiffSpringForceField<DataTypes>::createSpringsFromInputs()
     const SReal& _length = d_length.getValue();
     for (unsigned int i = 0; i<indices1.size(); ++i)
         _springs.push_back(Spring(indices1[i], indices2[i], _ks, _kd, _length));
-
-    m_dataTrackerIndices.clean();
 
     this->springs.endEdit();
 }
@@ -195,8 +193,6 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecD
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
 {
-    updateSpringsIfChanged();
-
     VecDeriv&       f1 = *data_f1.beginEdit();
     const VecCoord& x1 =  data_x1.getValue();
     const VecDeriv& v1 =  data_v1.getValue();
@@ -220,8 +216,6 @@ void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
 {
-    updateSpringsIfChanged();
-
     VecDeriv&        df1 = *data_df1.beginEdit();
     VecDeriv&        df2 = *data_df2.beginEdit();
     const VecDeriv&  dx1 =  data_dx1.getValue();
@@ -248,8 +242,6 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    updateSpringsIfChanged();
-
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     if (this->mstate1 == this->mstate2)
     {
