@@ -456,6 +456,54 @@ function(sofa_add_python_module)
 endfunction()
 
 
+# sofa_set_int
+#
+# Defines a variable to
+#   1 if the constant is 1, ON, YES, TRUE, Y, or a non-zero number.
+#   0 if the constant is 0, OFF, NO, FALSE, N, IGNORE, NOTFOUND, the empty string, or ends in the suffix -NOTFOUND.
+# This macro is used to quickly define variables for "#define SOMETHING ${SOMETHING}" in config.h.in files.
+macro(sofa_set_int name constant)
+    if(${constant})
+        set(${name} 1)
+    else()
+        set(${name} 0)
+    endif()
+endmacro()
+
+
+# sofa_extlib_find_package
+#
+# Defines a PROJECTNAME_HAVE_PACKAGENAME variable to be used in:
+#  - XXXConfig.cmake.in to decide if find_dependency must be done
+#  - config.h.in as a #cmakedefine
+#  - config.h.in as a #define SOMETHING ${SOMETHING}
+macro(sofa_extlib_find_package name)
+    set(optionArgs QUIET REQUIRED)
+    set(oneValueArgs)
+    set(multiValueArgs COMPONENTS OPTIONAL_COMPONENTS)
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    find_package(${name} ${ARGN})
+    string(TOUPPER ${name} name_upper)
+    string(TOUPPER ${PROJECT_NAME} project_upper)
+    if(ARG_COMPONENTS OR ARG_OPTIONAL_COMPONENTS)
+        foreach(component ${ARG_COMPONENTS} ${ARG_OPTIONAL_COMPONENTS})
+            string(TOUPPER ${component} component_upper)
+            if(TARGET ${name}::${component})
+                sofa_set_int(${project_upper}_HAVE_${name_upper}_${component_upper} TRUE)
+            else()
+                sofa_set_int(${project_upper}_HAVE_${name_upper}_${component_upper} FALSE)
+            endif()
+        endforeach()
+    else()
+        if(${name}_FOUND OR ${name_upper}_FOUND)
+            sofa_set_int(${project_upper}_HAVE_${name_upper} TRUE)
+        else()
+            sofa_set_int(${project_upper}_HAVE_${name_upper} FALSE)
+        endif()
+    endif()
+endmacro()
+
+
 
 ##########################################################
 #################### INSTALL MACROS ######################
