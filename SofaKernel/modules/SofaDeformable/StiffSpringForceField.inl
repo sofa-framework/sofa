@@ -75,12 +75,7 @@ void StiffSpringForceField<DataTypes>::doUpdateInternal()
     if (!d_indices1.isSet() && !d_indices2.isSet()) // nothing to do in this case
         return;
 
-    // force update
-    d_indices1.updateIfDirty();
-    d_indices2.updateIfDirty();
-
-    if (m_internalDataTracker.hasChanged())
-        createSpringsFromInputs();
+    createSpringsFromInputs();
 }
 
 
