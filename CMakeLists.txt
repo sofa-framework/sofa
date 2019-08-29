@@ -227,7 +227,7 @@ add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
 
 # SofaTest, modules depend on SofaPython, so we add SofaPython before.
-sofa_add_plugin( applications/plugins/SofaPython SofaPython )
+sofa_add_plugin(applications/plugins/SofaPython SofaPython)
 
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
@@ -248,13 +248,13 @@ endif()
 
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
 if(SOFA_BUILD_SCENECREATOR)
-    add_subdirectory(applications/plugins/SceneCreator SceneCreator)
+    add_subdirectory(applications/plugins/SceneCreator)
 endif()
 
 # Tests : define subdirectories
 if(SOFA_BUILD_TESTS)
     # Library used to write high level tests involving many components.
-    add_subdirectory(applications/plugins/SofaTest SofaTest)
+    add_subdirectory(applications/plugins/SofaTest)
     # Tests for all the modules, written using SofaTest.
     add_subdirectory(modules/tests)
     # SofaPython_test is a special case, because it depends on
