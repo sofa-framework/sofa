@@ -132,7 +132,7 @@ if(SOFAGUI_ENABLE_QWT)
          GraphDataWidget.cpp
          QGraphStatWidget.cpp
          QEnergyStatWidget.cpp
-         QMomentumStatWidget.cpp∫
+         QMomentumStatWidget.cpp
          )
 endif()
 
