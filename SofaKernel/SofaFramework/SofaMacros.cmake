@@ -487,20 +487,22 @@ macro(sofa_set_int name constant)
 endmacro()
 
 
-# sofa_extlib_find_package
+# sofa_find_package
 #
 # Defines a PROJECTNAME_HAVE_PACKAGENAME variable to be used in:
 #  - XXXConfig.cmake.in to decide if find_dependency must be done
 #  - config.h.in as a #cmakedefine
 #  - config.h.in as a #define SOMETHING ${SOMETHING}
 # BOTH_SCOPES (option): set the variable in current AND parent scopes
-macro(sofa_extlib_find_package name)
+macro(sofa_find_package name)
     set(optionArgs QUIET REQUIRED BOTH_SCOPES)
     set(oneValueArgs)
     set(multiValueArgs COMPONENTS OPTIONAL_COMPONENTS)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
     set(find_package_args ${ARGN})
-    list(REMOVE_ITEM find_package_args "BOTH_SCOPES")
+    if(find_package_args)
+        list(REMOVE_ITEM find_package_args "BOTH_SCOPES")
+    endif()
     find_package(${name} ${find_package_args})
     string(TOUPPER ${name} name_upper)
     string(TOUPPER ${PROJECT_NAME} project_upper)
