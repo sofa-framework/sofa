@@ -277,9 +277,9 @@ void BaseObject::reinit()
 void BaseObject::updateInternal()
 {
     const auto& mapTrackedData = m_internalDataTracker.getMapTrackedData();
-    for( auto const& [key, val] : mapTrackedData )
+    for( auto const& it : mapTrackedData )
     {
-        key->updateIfDirty();
+        it.first->updateIfDirty();
     }
 
     if(m_internalDataTracker.hasChanged())
