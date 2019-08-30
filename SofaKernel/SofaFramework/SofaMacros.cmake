@@ -107,7 +107,7 @@ macro(sofa_add_generic directory name type)
         option(${option} "Build the ${name} ${type}." ${active})
         if(${option})
             message("Adding ${type} ${name}")
-            add_subdirectory(${directory} ${name})
+            add_subdirectory(${directory})
             #Check if the target has been successfully added
             if(TARGET ${name})
                 set_target_properties(${name} PROPERTIES FOLDER ${type}s) # IDE folder
