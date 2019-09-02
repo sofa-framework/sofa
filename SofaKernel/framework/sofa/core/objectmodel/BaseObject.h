@@ -464,7 +464,7 @@ public:
     ///@}
 
 protected:
-    /// Tracker for all component data linked to internal data
+    /// Tracker for all component Data linked to internal variables
     sofa::core::DataTracker m_internalDataTracker;
 
     /// Enum defining the state of the component
