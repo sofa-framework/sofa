@@ -24,6 +24,9 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaMeshCollision/SofaMeshCol
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaRigid/SofaRigid_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaRigid/SofaRigid_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimpleFem/SofaSimpleFem_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaSimpleFem/SofaSimpleFem_test)
 
+# SofaSimulation tests
+add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimulationGraph/SofaSimulationGraph_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/SofaSimulationGraph/SofaSimulationGraph_test)
+
 # SofaFramework tests
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/sofa/simulation/simulation_test  ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/simulation_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/sofa/frameworkextra/frameworkextra_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaFramework/frameworkextra_test)
