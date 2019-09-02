@@ -23,8 +23,6 @@
 #ifndef SOFA_HELPER_SYSTEM_THREAD_TIMEOUTWATCHDOG
 #define SOFA_HELPER_SYSTEM_THREAD_TIMEOUTWATCHDOG
 
-#ifdef SOFA_HAVE_BOOST
-
 #include <sofa/helper/helper.h>
 #include <boost/thread/thread.hpp>
 
@@ -67,7 +65,5 @@ private:
 }
 }
 }
-
-#endif // SOFA_HAVE_BOOST
 
 #endif // SOFA_HELPER_SYSTEM_THREAD_TIMEOUTWATCHDOG
