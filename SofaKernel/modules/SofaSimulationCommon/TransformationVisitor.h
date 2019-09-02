@@ -23,7 +23,7 @@
 #define SOFA_SIMULATION_INSTRUMENTACTION_H
 
 
-
+#include <SofaSimulationCommon/common.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>

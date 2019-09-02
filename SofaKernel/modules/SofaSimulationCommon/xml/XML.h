@@ -26,11 +26,10 @@
 #include <SofaSimulationCommon/xml/Element.h>
 
 #ifdef SOFA_XML_PARSER_TINYXML
-#include <tinyxml.h>
+class TiXmlDocument;
 #endif
 #ifdef SOFA_XML_PARSER_LIBXML
-#include <libxml/parser.h>
-#include <libxml/tree.h>
+class xmlDocPtr;
 #endif
 
 

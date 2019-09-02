@@ -32,6 +32,14 @@
 
 #include <sofa/helper/logging/Message.h>
 
+#ifdef SOFA_XML_PARSER_TINYXML
+#include <tinyxml.h>
+#endif
+#ifdef SOFA_XML_PARSER_LIBXML
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#endif
+
 /* For loading the scene */
 
 
