@@ -8,22 +8,11 @@ include(SofaMacros)
 set_property(GLOBAL PROPERTY __GlobalTargetList__ "")
 set_property(GLOBAL PROPERTY __GlobalTargetNameList__ "")
 
-### Options
-
-option(SOFA_DETECTIONOUTPUT_FREEMOTION
-"Compile Sofa with the DETECTIONOUTPUT_FREEMOTION macro defined." OFF)
-set(DETECTIONOUTPUT_FREEMOTION ${SOFA_DETECTIONOUTPUT_FREEMOTION}) # Used in sofa/config.h.in
-
-option(SOFA_NO_OPENGL
-"Compile Sofa with no OpenGL support. (This will define the SOFA_NO_OPENGL
-macro.)" OFF)
-
-option(SOFA_NO_UPDATE_BBOX
-"Compile Sofa with the SOFA_NO_UPDATE_BBOX macro defined." OFF)
-
-option(SOFA_DUMP_VISITOR_INFO
-"Compile Sofa with the SOFA_DUMP_VISITOR_INFO macro defined." OFF)
-
+# Options
+option(SOFA_DETECTIONOUTPUT_FREEMOTION "Compile Sofa with the DETECTIONOUTPUT_FREEMOTION macro defined." OFF)
+option(SOFA_NO_OPENGL "Compile Sofa with no OpenGL support. (This will define the SOFA_NO_OPENGL macro.)" OFF)
+option(SOFA_NO_UPDATE_BBOX "Compile Sofa with the SOFA_NO_UPDATE_BBOX macro defined." OFF)
+option(SOFA_DUMP_VISITOR_INFO "Compile Sofa with the SOFA_DUMP_VISITOR_INFO macro defined." OFF)
 if(MSVC)
     option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
 endif()

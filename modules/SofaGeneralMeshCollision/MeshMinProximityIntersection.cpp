@@ -169,7 +169,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree,ABfree,CDfree;
@@ -295,7 +295,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree,ABfree,ACfree;
@@ -402,7 +402,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 ABfree = e2.p2Free()-e2.p1Free();
@@ -462,7 +462,7 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree, Qfree;

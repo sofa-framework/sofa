@@ -49,7 +49,7 @@
 
 #cmakedefine SOFA_HAVE_TINYXML
 
-#cmakedefine DETECTIONOUTPUT_FREEMOTION
+#cmakedefine SOFA_DETECTIONOUTPUT_FREEMOTION
 
 #cmakedefine SOFA_FLOAT
 

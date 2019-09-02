@@ -87,7 +87,7 @@ public:
     ContactId id;
     /// Contact points on the surface of each model. They are expressed in the local coordinate system of the model if any is defined..
     Vector3 point[2];
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     Vector3 freePoint[2]; ///< free Point in contact on each element
 #endif
 
