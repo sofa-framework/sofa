@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.1)
+project(SofaSimulationGraph_test)
 
-project (SofaSimulationGraph_test)
+find_package(SofaGTestMain REQUIRED)
+find_package(SofaTest REQUIRED)
 
-set (SOURCE_FILES
-  MutationListener_test.cpp
-  DAGNode_test.cpp
-  )
+set(SOURCE_FILES
+    MutationListener_test.cpp
+    )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
