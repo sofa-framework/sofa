@@ -285,8 +285,8 @@ void BaseObject::updateInternal()
     if(m_internalDataTracker.hasChanged())
     {
         doUpdateInternal();
+        m_internalDataTracker.clean();
     }
-    m_internalDataTracker.clean();
 }
 
 void BaseObject::doUpdateInternal()
