@@ -7,13 +7,7 @@ find_package(SofaGeneral REQUIRED)
 ## Version
 set(SOFAMISC_VERSION ${SofaFramework_VERSION})
 
-## SofaMisc/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
-
-
-### Subdirectories
-
+## Subdirectories
 set(SOFAMISC_TARGETS
     SofaMisc
     SofaMiscEngine
@@ -34,6 +28,9 @@ foreach(TARGET ${SOFAMISC_TARGETS} SofaComponentMisc)
     set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFAMISC_VERSION})
 endforeach()
 
+## SofaMisc/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
 
 ## CMake package configurations files
 sofa_write_package_config_files(SofaMisc ${SOFAMISC_VERSION})

@@ -12,12 +12,7 @@ set(SOFA_HAVE_NEWMAT ${Newmat_FOUND})
 ## Version
 set(SOFAGENERAL_VERSION ${SofaFramework_VERSION})
 
-## SofaGeneral/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
-
-### Subdirectories
-
+# Subdirectories
 set(SOFAGENERAL_TARGETS
     SofaGeneralAnimationLoop
     SofaGeneralDeformable
@@ -54,6 +49,9 @@ foreach(TARGET ${SOFAGENERAL_TARGETS} SofaComponentGeneral)
     set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFAGENERAL_VERSION})
 endforeach()
 
+# SofaGeneral/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
 
-## CMake package configurations files
+# CMake package configurations files
 sofa_write_package_config_files(SofaGeneral ${SOFAGENERAL_VERSION})

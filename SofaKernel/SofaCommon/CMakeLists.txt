@@ -7,13 +7,7 @@ find_package(SofaBase REQUIRED)
 ## Version
 set(SOFACOMMON_VERSION ${SofaFramework_VERSION})
 
-## SofaCommon/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
-
-
-### Subdirectories
-
+## Subdirectories
 set(SOFACOMMON_TARGETS
     SofaDeformable
     SofaEngine
@@ -37,6 +31,9 @@ foreach(TARGET ${SOFACOMMON_TARGETS} SofaComponentCommon)
     set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFACOMMON_VERSION})
 endforeach()
 
+## SofaCommon/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
 
 ## CMake package configurations files
 sofa_write_package_config_files(SofaCommon ${SOFACOMMON_VERSION})
