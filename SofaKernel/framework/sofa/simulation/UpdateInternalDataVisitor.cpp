@@ -34,9 +34,9 @@ Visitor::Result UpdateInternalDataVisitor::processNodeTopDown(simulation::Node* 
     return RESULT_CONTINUE;
 }
 
-void UpdateInternalDataVisitor::processUpdateInternalData(simulation::Node* , sofa::core::objectmodel::BaseObject* b)
+void UpdateInternalDataVisitor::processUpdateInternalData(simulation::Node* , sofa::core::objectmodel::BaseObject* baseObj)
 {
-    b->updateInternal();
+    baseObj->updateInternal();
 }
 
 
