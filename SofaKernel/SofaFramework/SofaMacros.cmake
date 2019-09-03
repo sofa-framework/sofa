@@ -553,13 +553,28 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             BUNDLE DESTINATION "../../.." COMPONENT applications
             )
 
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in")
-        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_BINARY_DIR}/include/${package_name}/config.h")
-        install(FILES "${CMAKE_BINARY_DIR}/include/${package_name}/config.h" DESTINATION "include/${include_install_dir}")
-    endif()
-
     # non-flat headers install (if no PUBLIC_HEADER and include_install_dir specified)
     foreach(target ${the_targets})
+        get_target_property(target_sources ${target} SOURCES)
+        #list(FILTER ${target_sources} INCLUDE REGEX ".*\.h\.in$") # CMake >= 3.6
+        foreach(filepath ${target_sources})
+            if(${filepath} MATCHES ".*\.h\.in$")
+                get_filename_component(filename ${filepath} NAME_WE)
+
+                set(configure_dir "${CMAKE_BINARY_DIR}/include/${include_install_dir}")
+                if("${package_name}" STREQUAL "${target}")
+                    # target is a plugin
+                    string(REPLACE "${target}/${target}" "${target}" configure_dir "${configure_dir}")
+                else()
+                    # target is an old module
+                    string(REPLACE "include/${package_name}" "include" configure_dir "${configure_dir}")
+                endif()
+
+                configure_file("${filepath}" "${configure_dir}/${filename}.h")
+                install(FILES "${configure_dir}/${filename}.h" DESTINATION "include/${include_install_dir}")
+            endif()
+        endforeach()
+
         get_target_property(public_header ${target} PUBLIC_HEADER)
         if("${public_header}" STREQUAL "public_header-NOTFOUND" AND NOT "${include_install_dir}" STREQUAL "")
             set(optional_argv3 "${ARGV3}")
@@ -568,7 +583,9 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
                 # TODO: add a real argument "include_source_dir" to this macro
                 set(include_source_dir "${ARGV3}")
             endif()
-            if(NOT EXISTS "${include_source_dir}" AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${include_source_dir}")
+            if(NOT include_source_dir)
+                set(include_source_dir "${CMAKE_CURRENT_SOURCE_DIR}")
+            elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${include_source_dir}")
                 # will be true if include_source_dir is empty
                 set(include_source_dir "${CMAKE_CURRENT_SOURCE_DIR}/${include_source_dir}")
             endif()
