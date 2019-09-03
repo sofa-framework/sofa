@@ -40,14 +40,9 @@ using namespace sofa::defaulttype;
 int SPHFluidSurfaceMappingClass = core::RegisterObject("TODO-SPHFluidSurfaceMappingClass")
         .addAlias("MarchingCubeMapping")
         .add< SPHFluidSurfaceMapping< Vec3dTypes, Vec3dTypes > >()
-        .add< SPHFluidSurfaceMapping< Vec3dTypes, ExtVec3Types > >()
-
-
-
         ;
 
 template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< Vec3dTypes, ExtVec3Types >;
 
 
 
