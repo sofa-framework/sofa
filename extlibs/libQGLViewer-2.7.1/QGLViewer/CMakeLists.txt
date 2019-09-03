@@ -44,12 +44,12 @@ set(UI_FILES
     VRenderInterface.ui
 )
 
-find_package(OpenGL REQUIRED)
-find_package(Qt5 COMPONENTS Core QUIET)
+sofa_find_package(OpenGL REQUIRED)
+sofa_find_package(Qt5 COMPONENTS Core QUIET)
 
 if(Qt5Core_FOUND)
     message("QGLViewer: Using Qt5")
-    find_package(Qt5 COMPONENTS Gui Xml OpenGL Widgets REQUIRED)
+    sofa_find_package(Qt5 COMPONENTS Gui Xml OpenGL Widgets REQUIRED)
 
     set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
     set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Xml_INCLUDE_DIRS})
