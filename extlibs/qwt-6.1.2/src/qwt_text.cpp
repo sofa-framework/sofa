@@ -61,8 +61,8 @@ QwtTextEngineDict::QwtTextEngineDict()
 
 QwtTextEngineDict::~QwtTextEngineDict()
 {
-    for ( EngineMap::const_iterator it = d_map.begin();
-        it != d_map.end(); ++it )
+    for ( EngineMap::const_iterator it = d_map.constBegin();
+        it != d_map.constEnd(); ++it )
     {
         const QwtTextEngine *textEngine = engine( it );
         delete textEngine;
@@ -107,13 +107,10 @@ void QwtTextEngineDict::setTextEngine( QwtText::TextFormat format,
     if ( format == QwtText::PlainText && engine == NULL )
         return;
 
-    EngineMap::const_iterator it = d_map.find( format );
-    if ( it != d_map.end() )
+    EngineMap::const_iterator it = d_map.constFind( format );
+    if ( it != d_map.constEnd() )
     {
-        const QwtTextEngine *e = this->engine( it );
-        if ( e )
-            delete e;
-
+        delete this->engine( it );
         d_map.remove( format );
     }
 
@@ -518,18 +515,10 @@ double QwtText::heightForWidth( double width, const QFont &defaultFont ) const
 }
 
 /*!
-   Find the height for a given width
-
-   \param defaultFont Font, used for the calculation if the text has no font
-
-   \return Calculated height
-*/
-
-/*!
    Returns the size, that is needed to render text
 
    \param defaultFont Font of the text
-   \return Caluclated size
+   \return Calculated size
 */
 QSizeF QwtText::textSize( const QFont &defaultFont ) const
 {

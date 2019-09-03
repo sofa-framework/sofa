@@ -18,7 +18,7 @@ class QwtPlot;
 
 /*!
   \brief An alternative canvas for a QwtPlot derived from QGLWidget
-  
+
   QwtPlotGLCanvas implements the very basics to act as canvas
   inside of a QwtPlot widget. It might be extended to a full
   featured alternative to QwtPlotCanvas in a future version of Qwt.
@@ -29,16 +29,10 @@ class QwtPlot;
 
   \sa QwtPlot::setCanvas(), QwtPlotCanvas
 
-  \note You might want to use the QPaintEngine::OpenGL paint engine
-        ( see QGL::setPreferredPaintEngine() ). On a Linux test system 
-        QPaintEngine::OpenGL2 shows very basic problems ( wrong
-        geometries of rectangles ) but also more advanced stuff
-        like antialiasing doesn't work.
-
-  \note Another way to introduce OpenGL rendering to Qwt
-        is to use QGLPixelBuffer or QGLFramebufferObject. Both
-        type of buffers can be converted into a QImage and 
-        used in combination with a regular QwtPlotCanvas.
+  \note With Qt4 you might want to use the QPaintEngine::OpenGL paint engine
+        ( see QGL::setPreferredPaintEngine() ). On a Linux test system
+        QPaintEngine::OpenGL2 shows very basic problems like translated
+        geometries.
 */
 class QWT_EXPORT QwtPlotGLCanvas: public QGLWidget
 {
@@ -82,7 +76,7 @@ public:
         The following enum is made for the designer only. It is safe
         to use QFrame::Shadow instead.
 
-        \note QFrame::StyledPanel and QFrame::WinPanel are unsuported 
+        \note QFrame::StyledPanel and QFrame::WinPanel are unsupported
               and will be displayed as QFrame::Panel.
      */
     enum Shape

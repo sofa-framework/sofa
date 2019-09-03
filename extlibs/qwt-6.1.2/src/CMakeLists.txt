@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(qwt)
 
  
-set(QWT_VERSION 6.1.2)
+set(QWT_VERSION 6.1.4)
 
 file(GLOB HEADER_FILES qwt_*.h)
 
