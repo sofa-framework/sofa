@@ -7,6 +7,7 @@ find_package(SofaDistanceGrid REQUIRED)
 find_package(SofaImplicitField REQUIRED)
 
 set(HEADER_FILES
+    config.h.in
     initVolumetricData.h
     DistanceGrid.h
     FFDDistanceGridDiscreteIntersection.h
@@ -30,13 +31,6 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision ${SOFAADVANCED_DEPENDENCY_LINK})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
-
-if(SOFA_HAVE_MINIFLOWVR)
-    target_link_libraries(${PROJECT_NAME} PUBLIC miniFlowVR)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_VOLUMETRIC_DATA -DSOFA_HAVE_MINIFLOWVR")
-else()
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_VOLUMETRIC_DATA")
-endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
