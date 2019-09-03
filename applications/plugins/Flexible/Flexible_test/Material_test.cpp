@@ -81,30 +81,29 @@ struct Material_test : public Sofa_test<typename Vec3Types::Real>
     { 
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-		size_t resolutionCircumferential=7;
-		size_t  resolutionRadial=3;
-		size_t  resolutionHeight=7;
-//		size_t maxIteration=3000; // maximum iteration for the CG.
+        size_t resolutionCircumferential=7;
+        size_t  resolutionRadial=3;
+        size_t  resolutionHeight=7;
       
-       vIndex=(resolutionCircumferential*(resolutionRadial-1)+1)*resolutionHeight/2;
-    
-       //Load the scene
-       std::string sceneName = (DataTypes::sceneName);
-       std::string fileName = std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + sceneName;
-       tractionStruct.root = simulation->createNewGraph("root");
-       tractionStruct.root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
+        vIndex=(resolutionCircumferential*(resolutionRadial-1)+1)*resolutionHeight/2;
 
-       // Get force field
-       typedef component::forcefield::TrianglePressureForceField<Vec3Types> TrianglePressureForceField;
-       tractionStruct.forceField = tractionStruct.root->get<TrianglePressureForceField>( tractionStruct.root->SearchDown);
+        //Load the scene
+        std::string sceneName = (DataTypes::sceneName);
+        std::string fileName = std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + sceneName;
+        tractionStruct.root = simulation->createNewGraph("root");
+        tractionStruct.root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
 
-       // Get mechanical object
-       typedef component::container::MechanicalObject<Vec3Types> MechanicalObject;
-       tractionStruct.dofs = tractionStruct.root->get<MechanicalObject>( tractionStruct.root->SearchDown);
+        // Get force field
+        typedef component::forcefield::TrianglePressureForceField<Vec3Types> TrianglePressureForceField;
+        tractionStruct.forceField = tractionStruct.root->get<TrianglePressureForceField>( tractionStruct.root->SearchDown);
 
-       // Get child nodes
-       simulation::Node::SPtr behaviorNode = tractionStruct.root->getChild("behavior");
-       strainNode = behaviorNode->getChild("Strain");
+        // Get mechanical object
+        typedef component::container::MechanicalObject<Vec3Types> MechanicalObject;
+        tractionStruct.dofs = tractionStruct.root->get<MechanicalObject>( tractionStruct.root->SearchDown);
+
+        // Get child nodes
+        simulation::Node::SPtr behaviorNode = tractionStruct.root->getChild("behavior");
+        strainNode = behaviorNode->getChild("Strain");
     }
 
 	HookeForceFieldSPtr addHookeForceField(simulation::Node::SPtr node,
