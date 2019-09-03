@@ -870,12 +870,17 @@ function(sofa_copy_libraries)
                 "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}"
                 "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
+            set(runtime_output_dir ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+            if(NOT runtime_output_dir)
+                set(runtime_output_dir ${CMAKE_BINARY_DIR}) # fallback
+            endif()
+
             if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
                 foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                    file(COPY ${SHARED_LIB} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+                    file(COPY ${SHARED_LIB} DESTINATION "${runtime_output_dir}/${CONFIG}")
                 endforeach()
             else()                      # Single-config generator (nmake)
-                file(COPY ${SHARED_LIB} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+                file(COPY ${SHARED_LIB} DESTINATION "${runtime_output_dir}")
             endif()
         endif()
     endforeach()
