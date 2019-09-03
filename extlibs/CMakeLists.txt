@@ -39,7 +39,7 @@ endif()
 
 if(SOFAGUI_ENABLE_QWT)
     message("Qwt activated")
-    add_subdirectory(qwt-6.1.2/src qwt)
+    add_subdirectory(qwt-6.1.4/src qwt)
     list(APPEND EXTLIBS_TARGETS qwt)
 endif()
 
