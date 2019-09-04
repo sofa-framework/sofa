@@ -39,7 +39,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#ifdef SOFA_HAVE_ZLIB
+#if IMAGE_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -108,7 +108,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
         typename ImageContainerT::waTransform wtransform(container->transform);
 
         // read image
-#ifdef SOFA_HAVE_ZLIB
+#if IMAGE_HAVE_ZLIB
         //Load .inr.gz using ZLib
         if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
         {
@@ -134,7 +134,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
 
         }
         else
-#endif // SOFA_HAVE_ZLIB
+#endif // IMAGE_HAVE_ZLIB
             if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
                     || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
             {
