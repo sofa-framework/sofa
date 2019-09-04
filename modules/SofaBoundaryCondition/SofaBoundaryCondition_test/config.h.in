@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_HELPER_H
-#define SOFA_HELPER_HELPER_H
+#ifndef SOFABOUNDARYCONDITION_TEST_CONFIG_H
+#define SOFABOUNDARYCONDITION_TEST_CONFIG_H
 
-#include <sofa/config.h>
+#define SOFABOUNDARYCONDITION_TEST_HAVE_SOFASPARSESOLVER ${SOFABOUNDARYCONDITION_TEST_HAVE_SOFASPARSESOLVER}
 
 #endif
