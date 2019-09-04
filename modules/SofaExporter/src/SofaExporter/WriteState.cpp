@@ -41,7 +41,7 @@ int WriteStateClass = core::RegisterObject("Write State vectors to file at each 
 WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
     :simulation::Visitor(params)
     , sceneName("")
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -56,7 +56,7 @@ WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
 WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _recordF, bool _createInMapping, int c)
     :simulation::Visitor(params)
     , sceneName(n)
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")

@@ -24,7 +24,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#if SOFA_HAVE_SOFAPYTHON
+#if SOFAEXPORTER_HAVE_SOFAPYTHON
 #include <SofaPython/PythonEnvironment.h>
 #include <SofaPython/PythonFactory.h>
 
@@ -34,7 +34,7 @@ using sofa::PythonFactory ;
 #include <SofaExporter/bindings/Binding_OBJExporter.h>
 #include <SofaExporter/bindings/Binding_STLExporter.h>
 
-#endif // SOFA_HAVE_SOFAPYTHON
+#endif // SOFAEXPORTER_HAVE_SOFAPYTHON
 
 
 using sofa::core::ObjectFactory;
@@ -60,12 +60,11 @@ void initExternalModule()
     if (first)
     {
         first = false;
-#ifdef SOFA_HAVE_SOFAPYTHON
+        if(SOFAEXPORTER_HAVE_SOFAPYTHON)
         {
             SP_ADD_CLASS_IN_FACTORY(OBJExporter,sofa::component::misc::OBJExporter)
             SP_ADD_CLASS_IN_FACTORY(STLExporter,sofa::component::misc::STLExporter)
         }
-#endif
     }
 }
 
