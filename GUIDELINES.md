@@ -122,7 +122,7 @@ More info about Doxygen here: https://www.stack.nl/~dimitri/doxygen/manual/index
 ## SOFA specific rules
 - Tricky code should not be commented but rewritten! In general, the use of comments should be minimized by making the code self-documenting by appropriate name choices and an explicit logical structure.
 - The use of magic numbers in the code should be avoided. Numbers other than 0 and 1 should be declared as named constants instead.
-- The definition of ε-definition of limit ('epsilon', an arbitrarily small positive quantity) should not be code specific but rather use the class template {std::numeric_limits](https://en.cppreference.com/w/cpp/types/numeric_limits/epsilon). Here is an example: `const DataTypes::Real EPSILON = std::numeric_limits<DataTypes::Real>::epsilon();`
+- The definition of ε-definition of limit ('epsilon', an arbitrarily small positive quantity) should not be code specific but rather use the class template [`std::numeric_limits`](https://en.cppreference.com/w/cpp/types/numeric_limits/epsilon). Here is an example: `const DataTypes::Real EPSILON = std::numeric_limits<DataTypes::Real>::epsilon();`
 `const DataTypes::Real EPSILON = std::numeric_limits<DataTypes::Real>::epsilon();`
 - All internal data, needed by your component, and that can’t be recomputed must be put inside a `Data` or a `DataPtr`. This way, your component can be saved. Also, this `Data` will be automatically displayed inside the GUI.
 - For messaging in SOFA components, the [dedicated Messaging API](https://www.sofa-framework.org/community/doc/programming-with-sofa/start-coding/message-api/) must be used.
@@ -131,4 +131,4 @@ More info about Doxygen here: https://www.stack.nl/~dimitri/doxygen/manual/index
     - `msg_error()` will display the message in the console with an error message.
 - Use `sofa::helper::vector`  instead of `std::vector`
 - Only use `sofa::simulation::tree::GNode` when you need to directly use access to the children or the parent of the node. If not, use the more generic `sofa::simulation::Node`
-- When an information, a function or an internal variable from an external component is needed in a component, prefer an explicit Link to connect both components instead of implicitly browing the graph using `getContext`
+- When an information, a function or an internal variable from an external component is needed in a component, prefer an explicit Link to connect both components instead of implicitly browsing the graph using `getContext`
