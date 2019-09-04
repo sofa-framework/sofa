@@ -33,7 +33,7 @@ using std::vector;
 
 #include "SimpleGUI.h"
 
-#ifdef SOFA_HAVE_BOOST
+#if SOFAHELPER_HAVE_BOOST // TODO: SOFAGUIGLUT_HAVE_BOOST_THREAD
 #include "MultithreadGUI.h"
 #endif
 

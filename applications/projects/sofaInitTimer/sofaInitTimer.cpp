@@ -136,7 +136,7 @@ int main(int argc, char** argv)
     .option(&lifetime,   'l', "lifetime",  "Maximum execution time in seconds (default: 0 -> no limit")
     (argc, argv);
 
-#ifdef SOFA_HAVE_BOOST
+#if SOFAHELPER_HAVE_BOOST_THREAD // TODO: SOFAINITTIMER_HAVE_BOOST_THREAD
     sofa::helper::system::thread::TimeoutWatchdog watchdog;
     if(lifetime > 0)
     {
