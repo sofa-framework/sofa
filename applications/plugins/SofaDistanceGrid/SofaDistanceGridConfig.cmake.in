@@ -5,17 +5,9 @@
 find_package(SofaFramework REQUIRED)
 find_package(SofaMiscCollision REQUIRED)
 
-set(SOFADISTANCEGRID_WITH_MINIFLOWVR @SOFADISTANCEGRID_WITH_MINIFLOWVR@)
-
-if(SOFADISTANCEGRID_WITH_MINIFLOWVR)
-    find_package(MiniFlowVR REQUIRED)
-endif()
-
 if(NOT TARGET SofaDistanceGrid)
-        include("${CMAKE_CURRENT_LIST_DIR}/SofaDistanceGridTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/SofaDistanceGridTargets.cmake")
 endif()
-
-set(SOFA_HAVE_SOFADISTANCEGRID "@SOFA_HAVE_SOFADISTANCEGRID@")
 
 check_required_components(SofaDistanceGrid)
 set(SofaDistanceGrid_LIBRARIES SOFADISTANCEGRID)
