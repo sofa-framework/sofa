@@ -29,11 +29,6 @@
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
-#ifdef SOFA_HAVE_SOFAPYTHON
-#define DO_SOFAPYTHON_FEATURES true
-#else
-#define DO_SOFAPYTHON_FEATURES false
-#endif
 namespace sofa
 {
 
@@ -56,7 +51,7 @@ void initExternalModule()
         first = false;
     }
 
-    if(DO_SOFAPYTHON_FEATURES)
+    if(SOFAIMPLICITFIELD_HAVE_SOFAPYTHON)
         PluginManager::getInstance().loadPlugin("SofaPython") ;
 }
 

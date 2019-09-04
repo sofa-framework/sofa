@@ -1,12 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaImplicitField VERSION 1.0)
 
-set(SOFA_HAVE_SOFAIMPLICITFIELD 1)
-
-find_package(SofaDistanceGrid REQUIRED)
+sofa_find_package(SofaDistanceGrid REQUIRED)
+sofa_find_package(SofaPython QUIET)
 
 set(HEADER_FILES
-    config.h
+    config.h.in
     initSofaImplicitField.h
 
     # This is backward compatibility
@@ -45,7 +44,7 @@ if(SofaTest_FOUND)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_HAVE_SOFAIMPLICITFIELD")
+target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAIMPLICITFIELD")
 target_link_libraries(${PROJECT_NAME} PRIVATE SofaDistanceGrid)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
