@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_TOPOLOGICALCHANGEPROCESSOR_H
 #define SOFA_COMPONENT_MISC_TOPOLOGICALCHANGEPROCESSOR_H
-#include "config.h"
+#include <SofaMiscTopology/config.h>
 
 
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -30,7 +30,7 @@
 
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -91,7 +91,7 @@ protected:
     core::topology::BaseMeshTopology* m_topology;
 
     std::ifstream* infile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     gzFile gzfile;
 #endif
     double nextTime;

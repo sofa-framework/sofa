@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaMiscFem)
 
 # Dependencies
-find_package(Newmat)
-set(SOFA_HAVE_NEWMAT ${Newmat_FOUND})
+sofa_find_package(Newmat BOTH_SCOPES)
 
 set(HEADER_FILES
     config.h
@@ -45,7 +44,7 @@ list(APPEND SOURCE_FILES
     TriangleFEMForceField.cpp
     )
 
-if(SOFA_HAVE_NEWMAT)
+if(Newmat_FOUND)
     list(APPEND HEADER_FILES
         PlasticMaterial.h
         TriangularAnisotropicFEMForceField.h
@@ -62,8 +61,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem)
-
-if(SOFA_HAVE_NEWMAT)
+if(Newmat_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")

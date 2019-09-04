@@ -82,7 +82,7 @@ TopologicalChangeProcessor::TopologicalChangeProcessor()
     , m_draw( initData(&m_draw, false, "draw", "draw information"))
     , m_topology(nullptr)
     , infile(NULL)
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
     , nextTime(0)
@@ -97,7 +97,7 @@ TopologicalChangeProcessor::~TopologicalChangeProcessor()
 {
     if (infile)
         delete infile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -127,7 +127,7 @@ void TopologicalChangeProcessor::readDataFile()
         delete infile;
         infile = NULL;
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     if (gzfile)
     {
         gzclose(gzfile);
@@ -140,7 +140,7 @@ void TopologicalChangeProcessor::readDataFile()
     {
         serr << "TopologicalChangeProcessor: ERROR: empty filename"<<sendl;
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
         gzfile = gzopen(filename.c_str(),"rb");
@@ -297,7 +297,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
 {
     if (!m_topology) return false;
     if (!infile
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
         && !gzfile
 #endif
        )
@@ -308,7 +308,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
     const SReal epsilon = std::numeric_limits<SReal>::epsilon();
     while (nextTime < time || fabs(nextTime - time) < epsilon )
     {
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
         if (gzfile)
         {
             if (gzeof(gzfile))
