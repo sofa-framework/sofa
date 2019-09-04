@@ -59,7 +59,9 @@ if (ZLIB_FOUND)
     link_directories(${ZLIB_LIB_DIRS})
     include_directories(${ZLIB_INCLUDE_DIR})
     SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${ZLIB_LIBRARIES})
-    sofa_install_libraries(TARGETS ZLIB::ZLIB)
+    if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+        sofa_install_libraries(TARGETS ZLIB::ZLIB)
+    endif()
 
     # PNG requires ZLIB
     if(PNG_FOUND)

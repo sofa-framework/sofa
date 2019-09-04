@@ -130,7 +130,9 @@ endif()
 
 if(ZLIB_FOUND)
     target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
-    sofa_install_libraries(TARGETS ZLIB::ZLIB)
+    if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+        sofa_install_libraries(TARGETS ZLIB::ZLIB)
+    endif()
 endif()
 
 if(SofaPython_FOUND)
