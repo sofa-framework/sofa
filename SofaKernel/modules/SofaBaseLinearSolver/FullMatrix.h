@@ -287,8 +287,6 @@ public:
 
     void clear() override
     {
-        if (data == nullptr)
-            return;
         if (pitch == nCol)
             std::fill(data, data+nRow*pitch, (Real)0);
         else
