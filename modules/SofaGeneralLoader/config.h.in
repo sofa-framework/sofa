@@ -24,4 +24,6 @@
 
 #include <SofaGeneral/config.h>
 
+#define SOFAGENERALLOADER_HAVE_ZLIB ${SOFAGENERALLOADER_HAVE_ZLIB}
+
 #endif

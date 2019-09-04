@@ -42,7 +42,7 @@
 #include <SofaUserInteraction/initUserInteraction.h>
 #include <SofaConstraint/initConstraint.h>
 
-#ifdef SOFA_HAVE_NEWMAT
+#if SOFAGENERAL_HAVE_SOFADENSESOLVER
 #include <SofaDenseSolver/initDenseSolver.h>
 #endif
 
@@ -83,7 +83,7 @@ void initComponentGeneral()
     initBoundaryCondition();
     initUserInteraction();
     initConstraint();
-#ifdef SOFA_HAVE_NEWMAT
+#if SOFAGENERAL_HAVE_SOFADENSESOLVER
     initDenseSolver();
 #endif
 }

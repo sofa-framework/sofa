@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_VOXELGRIDLOADER
 #define SOFA_COMPONENT_LOADER_VOXELGRIDLOADER
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/VoxelLoader.h>
 

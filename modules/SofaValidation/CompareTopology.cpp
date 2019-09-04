@@ -306,7 +306,7 @@ void CompareTopology::processCompareTopology()
 CompareTopologyCreator::CompareTopologyCreator(const core::ExecParams* params)
     :Visitor(params)
     , sceneName("")
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -320,7 +320,7 @@ CompareTopologyCreator::CompareTopologyCreator(const core::ExecParams* params)
 CompareTopologyCreator::CompareTopologyCreator(const std::string &n, const core::ExecParams* params, bool i, int c)
     :Visitor(params)
     , sceneName(n)
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")

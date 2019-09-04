@@ -39,7 +39,7 @@ int ReadTopologyClass = core::RegisterObject("Read topology containers informati
 ReadTopologyCreator::ReadTopologyCreator(const core::ExecParams* params)
     :Visitor(params)
     , sceneName("")
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -53,7 +53,7 @@ ReadTopologyCreator::ReadTopologyCreator(const core::ExecParams* params)
 ReadTopologyCreator::ReadTopologyCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i, int c)
     :Visitor(params)
     , sceneName(n)
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
