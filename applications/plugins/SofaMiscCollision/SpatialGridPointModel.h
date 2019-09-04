@@ -21,10 +21,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_SPATIALGRIDPOINTMODEL_H
 #define SOFA_COMPONENT_COLLISION_SPATIALGRIDPOINTMODEL_H
-#include "config.h"
+#include <SofaMiscCollision/config.h>
 
 #include <SofaMeshCollision/PointModel.h>
+#if SOFAMISCCOLLISION_HAVE_SOFASPHFLUID
 #include <SofaSphFluid/SpatialGridContainer.h>
+#endif // SOFAMISCCOLLISION_HAVE_SOFASPHFLUID
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 

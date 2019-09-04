@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICSTICKCONTACT_H
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICSTICKCONTACT_H
-#include "config.h"
+#include <SofaMiscCollision/config.h>
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>

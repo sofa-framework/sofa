@@ -22,9 +22,9 @@
 #include <sofa/helper/system/config.h>
 #include <SofaMiscCollision/initMiscCollision.h>
 
-#ifdef SOFA_HAVE_SOFASPHFLUID
+#if SOFAMISCCOLLISION_HAVE_SOFASPHFLUID
 #include "SpatialGridPointModel.h"
-#endif // SOFA_HAVE_SOFASPHFLUID
+#endif // SOFAMISCCOLLISION_HAVE_SOFASPHFLUID
 
 namespace sofa
 {
