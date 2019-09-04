@@ -60,8 +60,8 @@ void StiffSpringForceField<DataTypes>::init()
 {
     if (d_indices1.isSet() && d_indices2.isSet())
     {        
-        this->m_internalDataTracker.trackData(d_indices1);
-        this->m_internalDataTracker.trackData(d_indices2);
+        this->trackInternalData(d_indices1);
+        this->trackInternalData(d_indices2);
 
         createSpringsFromInputs();
     }
