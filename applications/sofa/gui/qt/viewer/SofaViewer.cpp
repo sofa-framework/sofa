@@ -23,6 +23,8 @@
 #include <sofa/helper/Factory.inl>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/gui/qt/PickHandlerCallBacks.h>
+#include <sofa/gui/BaseGUI.h>
 
 namespace sofa
 {
@@ -72,8 +74,9 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Shift:
     {
         if (!getPickHandler()) break;
-        GLint viewport[4];
-        glGetIntegerv(GL_VIEWPORT,viewport);
+        int viewport[4];
+        //todo
+//        glGetIntegerv(GL_VIEWPORT,viewport);
         getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
         break;
     }
@@ -86,12 +89,12 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_R:
         // --- draw axis
     {
-        _axis = !_axis;
+        m_bShowAxis = !m_bShowAxis;
         break;
     }
     case Qt::Key_S:
     {
-        screenshot(capture.findFilename());
+        m_backend->screenshot(m_backend->screenshotName());
         break;
     }
     case Qt::Key_V:
@@ -114,12 +117,9 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
                     unsigned int bitrate = videoManager->getBitrate();
                     unsigned int framerate = videoManager->getFramerate();
 
-#if SOFAHELPER_HAVE_FFMPEG_EXEC
-                    std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, videoManager->getCodecExtension());
                     int width = getQWidget()->width();
                     int height = getQWidget()->height();
-                    m_videoRecorderFFMPEG.init(videoFilename, width, height, framerate, bitrate, videoManager->getCodecName());
-#endif // SOFAHELPER_HAVE_FFMPEG_EXEC
+                    m_backend->initRecorder(width, height, framerate, bitrate, videoManager->getCodecName());
 
                     break;
                 }
@@ -147,9 +147,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
                     break;
                 case SofaVideoRecorderManager::MOVIE:
                 {
-#if SOFAHELPER_HAVE_FFMPEG_EXEC
-                    m_videoRecorderFFMPEG.finishVideo();
-#endif //SOFAHELPER_HAVE_FFMPEG_EXEC
+                    m_backend->endRecorder();
                     break;
                 }
                 default:
@@ -242,7 +240,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Control:
     {
         m_isControlPressed = true;
-        msg_info("SofaViewer")<<"QtViewer::keyPressEvent, CONTROL pressed";
+        dmsg_info("SofaViewer")<<"QtViewer::keyPressEvent, CONTROL pressed";
         break;
     }
     default:
@@ -375,19 +373,19 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
 {
     if (!currentCamera) return true;
 
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT,viewport);
+    const int w = this->getWidth();
+    const int h = this->getHeight();
 
     MousePosition mousepos;
-    mousepos.screenWidth  = viewport[2];
-    mousepos.screenHeight = viewport[3];
+    mousepos.screenWidth  = w;
+    mousepos.screenHeight = h;
     mousepos.x      = e->x();
     mousepos.y      = e->y();
 
     if (e->modifiers() & Qt::ShiftModifier)
     {
 
-        getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+        getPickHandler()->activateRay(w,h, groot.get());
         getPickHandler()->updateMouse2D( mousepos );
 
         //_sceneTransform.ApplyInverse();
@@ -433,7 +431,7 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
     }
     else
     {
-        getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+        getPickHandler()->activateRay(w,h, groot.get());
     }
     return true;
 }
@@ -463,18 +461,72 @@ void SofaViewer::captureEvent()
             switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
             {
             case SofaVideoRecorderManager::SCREENSHOTS :
-                screenshot(capture.findFilename(), 1);
+                screenshot(screenshotName(), 1);
                 break;
             case SofaVideoRecorderManager::MOVIE :
-#if SOFAHELPER_HAVE_FFMPEG_EXEC
-                m_videoRecorderFFMPEG.addFrame();
-#endif //SOFAHELPER_HAVE_FFMPEG_EXEC
+                m_backend->addFrameRecorder();
+
                 break;
             default :
                 break;
             }
         }
     }
+}
+
+
+void SofaViewer::configure(sofa::component::configurationsetting::ViewerSetting* viewerConf)
+{
+    BaseViewer::configure(viewerConf);
+
+    m_backend->setPickingMethod(pick, viewerConf);
+
+}
+
+//Fonctions needed to take a screenshot
+const std::string SofaViewer::screenshotName()
+{
+    return m_backend->screenshotName();
+
+}
+
+void SofaViewer::setPrefix(const std::string& prefix, bool prependDirectory)
+{
+    const std::string fullPrefix = (prependDirectory) ? sofa::gui::BaseGUI::getScreenshotDirectoryPath() + "/" + prefix
+                                                      : prefix;
+
+    m_backend->setPrefix(fullPrefix);
+}
+
+void SofaViewer::screenshot(const std::string& filename, int compression_level)
+{
+    m_backend->screenshot(filename, compression_level);
+}
+
+void SofaViewer::setBackgroundImage(std::string imageFileName)
+{
+    _background = 0;
+    if( sofa::helper::system::DataRepository.findFile(imageFileName) )
+    {
+        backgroundImageFile = sofa::helper::system::DataRepository.getFile(imageFileName);
+
+        std::string extension = sofa::helper::system::SetDirectory::GetExtension(imageFileName.c_str());
+        std::transform(extension.begin(),extension.end(),extension.begin(),::tolower );
+
+        helper::io::Image* image =  helper::io::Image::FactoryImage::getInstance()->createObject(extension,backgroundImageFile);
+        if( !image )
+        {
+            helper::vector<std::string> validExtensions;
+            helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
+            msg_warning("SofaViewer") << "Could not create file '" << imageFileName <<"'" << msgendl
+                    << "  Valid extensions: " << validExtensions;
+        }
+        else
+        {
+            m_backend->setBackgroundImage(image);
+        }
+    }
+
 }
 
 

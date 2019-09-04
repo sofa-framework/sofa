@@ -30,6 +30,9 @@
 #if SOFAGUI_HAVE_SOFAHEADLESSRECORDER
 #include "headlessRecorder/HeadlessRecorder.h"
 #endif
+#ifdef SOFA_GUI_QT_OPENGL
+#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
+#endif
 
 namespace sofa
 {
@@ -45,6 +48,10 @@ void initMain()
     {
         first = false;
     }
+#ifdef SOFA_GUI_QT_OPENGL
+	// Force Windows to pull the dll while loading SofaGUI (Unix does not need it)
+	initSofaGUIQtOpenGL();
+#endif // SOFA_GUI_QT_OPENGL
 }
 
 int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);

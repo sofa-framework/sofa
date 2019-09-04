@@ -28,4 +28,6 @@
 
 #define SOFAGUI_HAVE_SOFAGUIQT ${SOFAGUI_HAVE_SOFAGUIQT}
 
+#cmakedefine SOFA_GUI_QT_OPENGL
+
 #endif

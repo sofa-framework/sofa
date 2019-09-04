@@ -40,13 +40,14 @@
 #include <sofa/helper/system/glu.h>
 #include <sofa/gui/BaseGUI.h>
 #include <qevent.h>
-#include <sofa/gui/qt/GenGraphForm.h>
 
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/gui/qt/GLPickHandler.h>
+#include <sofa/gui/qt/viewer/GLBackend.h>
 
 namespace sofa
 {
@@ -99,6 +100,9 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
 {
     this->setObjectName(name);
 
+    m_backend.reset(new GLBackend());
+    pick = new GLPickHandler();
+
     groot = NULL;
     initTexturesDone = false;
 
@@ -116,7 +120,7 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
     // 	_zoomSpeed = 250.0;
     // 	_panSpeed = 25.0;
     _video = false;
-    _axis = false;
+    m_bShowAxis = false;
     _background = 0;
     _numOBJmodels = 0;
     _materialMode = 0;
@@ -564,53 +568,7 @@ void QtGLViewer::drawColourPicking(ColourPickingVisitor::ColourCode code)
 // -------------------------------------------------------------------
 void QtGLViewer::DrawLogo()
 {
-    glPushMatrix();
-
-    int w = 0;
-    int h = 0;
-
-    if (texLogo && texLogo->getImage())
-    {
-        h = texLogo->getImage()->getHeight();
-        w = texLogo->getImage()->getWidth();
-//        h = _H;
-//        w = _W;
-    }
-    else return;
-
-    Enable <GL_TEXTURE_2D> tex;
-    glDisable(GL_DEPTH_TEST);
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(-0.5, _W, -0.5, _H, -1.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    if (texLogo)
-        texLogo->bind();
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_QUADS);
-    glTexCoord2d(0.0, 0.0);
-    glVertex3d((_W-w)/2, (_H-h)/2, 0.0);
-
-    glTexCoord2d(1.0, 0.0);
-    glVertex3d( _W-(_W-w)/2, (_H-h)/2, 0.0);
-
-    glTexCoord2d(1.0, 1.0);
-    glVertex3d( _W-(_W-w)/2, _H-(_H-h)/2, 0.0);
-
-    glTexCoord2d(0.0, 1.0);
-    glVertex3d((_W-w)/2, _H-(_H-h)/2, 0.0);
-    glEnd();
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
+    m_backend->drawBackgroundImage(_W, _H);
 }
 
 // -------------------------------------------------------------------
@@ -664,7 +622,7 @@ void QtGLViewer::DisplayOBJs()
     {
         //Draw Debug information of the components
         simulation::getSimulation()->draw(vparams,groot.get());
-        if (_axis)
+        if (m_bShowAxis)
         {
             this->setSceneBoundingBox(qglviewer::Vec(vparams->sceneBBox().minBBoxPtr()),
                     qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()) );
@@ -1061,6 +1019,7 @@ void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
     direction = transform*Vec4d(0,0,1,0);
     direction.normalize();
     pick->updateRay(position, direction);
+
 }
 
 // -------------------------------------------------------------------

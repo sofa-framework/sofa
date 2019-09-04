@@ -104,7 +104,7 @@ public:
     State getState(void) const {return m_state;}
     //}@
 
-    const char* getClassName() const override { return "MouseEvent"; }
+    inline static const char* GetClassName() { return "MouseEvent"; }
 private:
 
     State m_state; ///< Mouse State on the event propagation.

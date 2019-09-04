@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(newmat)
+project(newmat VERSION 0.1)
 
 set(HEADER_FILES
     newmat/boolean.h
@@ -56,4 +56,4 @@ endif()
 
 
 include(../../SofaFramework/SofaMacros.cmake)
-sofa_generate_package(NAME Newmat VERSION 0.1 TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "extlibs/Newmat/newmat")
+sofa_generate_package(NAME Newmat VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "extlibs/Newmat/newmat")

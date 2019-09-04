@@ -105,7 +105,7 @@ public:
      */
     unsigned int getDeviceId() const {return m_deviceId;}
 
-    const char* getClassName() const override { return "HapticDeviceEvent"; }
+    inline static const char* GetClassName() { return "HapticDeviceEvent"; }
 private:
 
     unsigned int	m_deviceId;

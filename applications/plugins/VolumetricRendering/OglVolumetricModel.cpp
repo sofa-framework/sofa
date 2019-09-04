@@ -445,14 +445,14 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     {
         glBindTexture(GL_TEXTURE_BUFFER, m_tetraBarycentersTboTexture);
         glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, m_tetraBarycentersTbo);
-        glDrawElements(GL_LINES_ADJACENCY_EXT, tetrahedra.size() * 4, GL_UNSIGNED_INT, tetrahedra.begin());
+        glDrawElements(GL_LINES_ADJACENCY_EXT, tetrahedra.size() * 4, GL_UNSIGNED_INT, tetrahedra.data());
         glBindTexture(GL_TEXTURE_BUFFER, 0);
     }
     if(m_hexaToTetrahedra.size() > 0)
     {
         glBindTexture(GL_TEXTURE_BUFFER, m_hexaBarycentersTboTexture);
         glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, m_hexaBarycentersTbo);
-        glDrawElements(GL_LINES_ADJACENCY_EXT, m_hexaToTetrahedra.size() * 4, GL_UNSIGNED_INT, m_hexaToTetrahedra.begin());
+        glDrawElements(GL_LINES_ADJACENCY_EXT, m_hexaToTetrahedra.size() * 4, GL_UNSIGNED_INT, m_hexaToTetrahedra.data());
         glBindTexture(GL_TEXTURE_BUFFER, 0);
     }
     //glDisable(GL_CLIP_DISTANCE0);
@@ -511,7 +511,7 @@ void OglVolumetricModel::updateVertexBuffer()
     glBufferSubDataARB(GL_ARRAY_BUFFER,
         0,
         positionsBufferSize,
-        positions.getData());
+        positions.data());
 
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 

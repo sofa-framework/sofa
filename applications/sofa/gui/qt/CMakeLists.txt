@@ -81,6 +81,7 @@ set(HEADER_FILES
     StructDataWidget.h
     TableDataWidget.h
     viewer/SofaViewer.h
+    viewer/EngineBackend.h
     viewer/VisualModelPolicy.h
     GenericWidget.h
 )
@@ -120,6 +121,7 @@ set(SOURCE_FILES
     TableDataWidget.cpp
     WDoubleLineEdit.cpp
     viewer/SofaViewer.cpp
+    viewer/VisualModelPolicy.cpp
     panels/QDocBrowser.cpp
 )
 
@@ -205,16 +207,15 @@ if(Qt5Core_FOUND)
 
     set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL)
     set(EXT_QT_INCLUDES ${EXT_QT_INCLUDES} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
-    set(EXT_QT_LIBRARIES ${EXT_QT_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
+    set(EXT_QT_LIBRARIES ${EXT_QT_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} )
 
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     set(MOC_FILES_GROUP "Generated")
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
     set(FORM_FILES_GROUP "Generated")
 
-    sofa_install_libraries(TARGETS ${QT_TARGETS})
-
     # QT INSTALL (dirty)
+    sofa_install_libraries(TARGETS ${QT_TARGETS})
     # Get Qt libraries dir
     get_target_property(QtCore_location Qt5::Core LOCATION)
     get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
@@ -248,19 +249,9 @@ if(Qt5Core_FOUND)
     if(EXISTS "${QT_PLUGINS_DIR}/styles")
         install(DIRECTORY "${QT_PLUGINS_DIR}/styles" DESTINATION "bin" COMPONENT applications)
     endif()
-    # Install Qt XCB libraries
-    file(GLOB QT_XCB_LIBRARIES
-        "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5XcbQpa${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-    sofa_install_libraries(LIBRARIES ${QT_XCB_LIBRARIES})
-    # Install Qt ICU libraries
-    file(GLOB QT_ICU_LIBRARIES
-        "${QT_LIBRARIES_DIR}/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-    sofa_install_libraries(LIBRARIES ${QT_ICU_LIBRARIES})
+    if(EXISTS "${QT_PLUGINS_DIR}/xcbglintegrations")
+        install(DIRECTORY "${QT_PLUGINS_DIR}/xcbglintegrations" DESTINATION "bin" COMPONENT applications)
+    endif()
     # Install Apple Qt frameworks
     if(APPLE)
         if(EXISTS "${QT_LIBRARIES_DIR}/QtDBus.framework")
@@ -281,9 +272,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaLo
 target_link_libraries(${PROJECT_NAME} PUBLIC ${EXT_QT_LIBRARIES})
 if(SOFAGUI_ENABLE_QWT)
     target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
-endif()
-if(SOFAGUI_QGLVIEWER)
-    target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")

@@ -227,14 +227,19 @@ public:
     virtual std::string name() const = 0;
 
     /// True iff the TypeInfo for this type contains valid information.
+    /// A Type is considered "Valid" if there's at least one specialization of the ValueType
     virtual bool ValidInfo() const = 0;
+
     /// True iff this type has a fixed size.
+    ///  (It cannot be resized)
     virtual bool FixedSize() const = 0;
     /// True iff the default constructor of this type is equivalent to setting the memory to 0.
     virtual bool ZeroConstructor() const = 0;
     /// True iff copying the data can be done with a memcpy().
     virtual bool SimpleCopy() const = 0;
     /// True iff the layout in memory is simply N values of the same base type.
+    /// It means that you can use the abstract index system to iterate over the elements of the type.
+    /// (It doesn't mean that the BaseType is of a fixed size)
     virtual bool SimpleLayout() const = 0;
     /// True iff this type uses integer values.
     virtual bool Integer() const = 0;
@@ -251,14 +256,19 @@ public:
     virtual bool Container() const = 0;
 
     /// The size of this type, in number of elements.
-    /// For example, the size of a `fixed_array<fixed_array<int, 2> 3>` is 6,
+    /// For example, the size of a `fixed_array<fixed_array<int, 2>, 3>` is 6,
     /// and those six elements are conceptually numbered from 0 to 5.  This is
-    /// relevant only if FixedSize() is true.
+    /// relevant only if FixedSize() is true. I FixedSize() is false,
+    /// the return value will be equivalent to the one of byteSize()
     virtual size_t size() const = 0;
     /// The size in bytes of the ValueType
+    /// For example, the size of a fixed_array<fixed_array<int, 2>, 3>` is 4 on most systems,
+    /// as it is the byte size of the smallest dimension in the array (int -> 32bit)
     virtual size_t byteSize() const = 0;
 
-    /// The size of \a data, in number of elements.
+    /// The size of \a data, in number of iterable elements
+    /// (For containers, that'll be the number of elements in the 1st dimension).
+    /// For example, with type == `
     virtual size_t size(const void* data) const = 0;
     /// Resize \a data to \a size elements, if relevant.
 
@@ -1282,6 +1292,39 @@ struct DataTypeInfo< sofa::helper::vector<bool,Alloc> > : public VectorTypeInfo<
 
     static const void* getValuePtr(const sofa::helper::vector<bool,Alloc>& /*data*/) { return NULL; }
     static void* getValuePtr(sofa::helper::vector<bool,Alloc>& /*data*/) { return NULL; }
+};
+
+// Cannot use default impl of VectorTypeInfo for non-fixed size BaseTypes
+template<class Alloc>
+struct DataTypeInfo< sofa::helper::vector<std::string,Alloc> > : public VectorTypeInfo<sofa::helper::vector<std::string,Alloc> >
+{
+    static std::string name() { return "vector<string>"; }
+
+    // BaseType size is not fixed. Returning 1
+    static size_t size() { return 1; }
+
+    // Total number of elements in the vector
+    static size_t size(const sofa::helper::vector<std::string,Alloc>& data) { return data.size(); }
+
+    // Resizes the vector
+    static bool setSize(sofa::helper::vector<std::string,Alloc>& data, size_t size) { data.resize(size); return true; }
+
+    // Sets the value for element at index `index`
+    static void setValueString(sofa::helper::vector<std::string,Alloc>& data, size_t index, const std::string& value)
+    {
+        if (data.size() <= index)
+            data.resize(index + 1);
+        data[index] = value;
+    }
+
+    // Gets the value for element at index `index`
+    static void getValueString(const sofa::helper::vector<std::string,Alloc>& data, size_t index, std::string& value)
+    {
+        if (data.size() <= index)
+            msg_error("DataTypeInfo<helper::vector<std::string>") << "Index out of bounds for getValueString";
+        else
+            value = data[index];
+    }
 };
 
 template<class T, class Compare, class Alloc>

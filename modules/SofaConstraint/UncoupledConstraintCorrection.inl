@@ -30,7 +30,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
-
+#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {
@@ -109,11 +109,10 @@ inline sofa::defaulttype::RigidDeriv<3, Real> UncoupledConstraintCorrection_comp
 
 template<class DataTypes>
 UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
-    : Inherit(mm)
-    , compliance(initData(&compliance, "compliance", "compliance value on each dof"))
+    : Inherit(mm)    
+    , compliance(initData(&compliance, "compliance", "compliance value on each dof. If Rigid compliance (7 values): 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix"))
     , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
-    , d_handleTopologyChange(initData(&d_handleTopologyChange, true, "handleTopologyChange", "Enable support of topological changes for compliance vector (disable if another component takes care of this)"))
     , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
     , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
     , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, false, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
@@ -146,9 +145,10 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         if (!defaultCompliance.isSet() && !comp.empty())
             defaultCompliance.setValue(comp[0]); // set default compliance to first one in case it was given in the compliance vector
         if (comp.size() > 1)
-            serr << "Warning compliance size ( " << comp.size() << " is not equal to the size of the mstate (" << x.size() << ")" << sendl;
+            msg_warning() << "Compliance size ( " << comp.size() << " is not equal to the size of the mstate (" << x.size() << ")";
         Real comp0 = (!comp.empty()) ? comp[0] : defaultCompliance.getValue();
-        sout << "Using " << comp0 << " as initial compliance" << sendl;
+        msg_warning() << "Using " << comp0 << " as initial compliance";
+
         VecReal UsedComp;
         for (unsigned int i=0; i<x.size(); i++)
         {
@@ -158,15 +158,23 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         if (!UsedComp.empty())
         {
             compliance.setValue(UsedComp);
+
+            // If compliance is a vector of value per dof, need to register it as a PointData to the current topology
+            sofa::core::topology::BaseMeshTopology* _topology = this->getContext()->getMeshTopology();
+            if (_topology != nullptr)
+            {
+                compliance.createTopologicalEngine(_topology);
+                compliance.registerTopologicalData();
+            }
         }
     }
-
+   
     this->getContext()->get(m_pOdeSolver);
     if (!m_pOdeSolver)
     {
         if (d_useOdeSolverIntegrationFactors.getValue() == true)
         {
-            serr << "Can't find any odeSolver" << sendl;
+            msg_error() << "Can't find any odeSolver";
             d_useOdeSolverIntegrationFactors.setValue(false);
         }
         d_useOdeSolverIntegrationFactors.setReadOnly(true);
@@ -178,76 +186,6 @@ void UncoupledConstraintCorrection<DataTypes>::reinit()
 {
     Inherit::reinit();
 }
-
-template< class DataTypes >
-void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
-{
-    using sofa::core::topology::TopologyChange;
-    using sofa::core::topology::TopologyChangeType;
-    using sofa::core::topology::BaseMeshTopology;
-
-    if (!d_handleTopologyChange.getValue())
-        return; // another component takes care of updating compliance vector
-
-    BaseMeshTopology *topology = this->getContext()->getMeshTopology();
-    if (!topology)
-        return;
-    if (defaultCompliance.isSet() && compliance.getValue().empty())
-        return; // uniform compliance, no need to update it
-
-    std::list< const TopologyChange * >::const_iterator itBegin = topology->beginChange();
-    std::list< const TopologyChange * >::const_iterator itEnd = topology->endChange();
-
-    VecReal& comp = *(compliance.beginEdit());
-    const Real comp0 = defaultCompliance.getValue();
-
-    for (std::list< const TopologyChange * >::const_iterator changeIt = itBegin; changeIt != itEnd; ++changeIt)
-    {
-        const TopologyChangeType changeType = (*changeIt)->getChangeType();
-
-        switch ( changeType )
-        {
-        case core::topology::POINTSADDED :
-        {
-            unsigned int nbPoints = (static_cast< const sofa::core::topology::PointsAdded *> (*changeIt))->getNbAddedVertices();
-
-            VecReal addedCompliance;
-
-            for (unsigned int i = 0; i < nbPoints; i++)
-            {
-                addedCompliance.push_back(comp0);
-            }
-
-            comp.insert(comp.end(), addedCompliance.begin(), addedCompliance.end());
-
-            break;
-        }
-        case core::topology::POINTSREMOVED :
-        {
-            using sofa::helper::vector;
-
-            const vector< unsigned int > &pts = (static_cast< const sofa::core::topology::PointsRemoved * >(*changeIt))->getArray();
-
-            unsigned int lastIndexVec = comp.size() - 1;
-
-            for (unsigned int i = 0; i < pts.size(); i++)
-            {
-                comp[pts[i]] = comp[lastIndexVec];
-                lastIndexVec--;
-            }
-
-            comp.resize(comp.size() - pts.size());
-
-            break;
-        }
-        default:
-            break;
-        }
-    }
-
-    compliance.endEdit();
-}
-
 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
@@ -359,7 +297,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 
         if (verbose)
         {
-            sout << "C[" << indexCurRowConst << "]";
+            dmsg_info() << "C[" << indexCurRowConst << "]";
         }
 
         const MatrixDerivColConstIterator colItBegin = rowIt.begin();
@@ -376,7 +314,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 
                 if (verbose)
                 {
-                    sout << " dof[" << dof << "]=" << n;
+                    dmsg_info() << " dof[" << dof << "]=" << n;
                 }
 
                 //w += (n * n) * (dof < comp.size() ? comp[dof] : comp0);

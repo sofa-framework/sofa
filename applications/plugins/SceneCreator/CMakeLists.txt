@@ -6,27 +6,25 @@ sofa_find_package(Metis QUIET)
 
 set(HEADER_FILES
     config.h.in
-    GetAssembledSizeVisitor.h
-    GetVectorVisitor.h
-    SceneCreator.h
-    SceneUtils.h
+    src/SceneCreator/GetAssembledSizeVisitor.h
+    src/SceneCreator/GetVectorVisitor.h
+    src/SceneCreator/SceneCreator.h
+    src/SceneCreator/SceneUtils.h
     )
 set(SOURCE_FILES
-    GetAssembledSizeVisitor.cpp
-    GetVectorVisitor.cpp
-    SceneCreator.cpp
-    SceneUtils.cpp
-    initSceneCreator.cpp
+    src/SceneCreator/GetAssembledSizeVisitor.cpp
+    src/SceneCreator/GetVectorVisitor.cpp
+    src/SceneCreator/SceneCreator.cpp
+    src/SceneCreator/SceneUtils.cpp
+    src/SceneCreator/initSceneCreator.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SCENECREATOR")
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SCENECREATOR")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 
 ## Install rules for the library; CMake package configurations files
 sofa_generate_package(
@@ -34,6 +32,8 @@ sofa_generate_package(
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
     RELOCATABLE "plugins"
+    INCLUDE_SOURCE_DIR "src/SceneCreator"
+    INCLUDE_INSTALL_DIR "SceneCreator"
     )
 
 ## Add example project to use sceneCreator
