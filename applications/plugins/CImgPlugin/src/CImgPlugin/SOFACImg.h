@@ -31,6 +31,7 @@
 /// with
 /// #include <CImgPlugin/SOFACImg.h> to avoid crash.
 
+#include <CImgPlugin/CImgPlugin.h>
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -55,7 +56,7 @@
 #undef cimg_module
 #undef cimg_main
 
-#ifdef SOFA_HAVE_ZLIB
+#if CIMGPLUGIN_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -326,7 +327,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
 
 
 
-#ifdef SOFA_HAVE_ZLIB
+#if CIMGPLUGIN_HAVE_ZLIB
 
 static inline void _load_gz_inr_header(gzFile file, int out[8], float *const voxsize, float *const translation=nullptr, float *const rotation=nullptr)
 {
@@ -445,7 +446,7 @@ CImg<T>& _load_gz_inr(gzFile file, const char *const filename, float *const voxs
 	return *newImage;
 }
 
-#endif // SOFA_HAVE_ZLIB
+#endif // CIMGPLUGIN_HAVE_ZLIB
 
 /// Copy subImage in largeImage at the given pixel position (in the large image pixel coordinates)
 /// @warning for now both image must have the same type and same spectrum size @todo: improve this
