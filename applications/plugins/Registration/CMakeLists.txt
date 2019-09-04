@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 project(Registration VERSION 0.1)
 
+find_package(SofaGui REQUIRED)
+sofa_find_package(SofaMiscCollision REQUIRED)
+sofa_find_package(SofaDistanceGrid QUIET)
+sofa_find_package(image QUIET)
 
 set(HEADER_FILES
+    config.h.in
     ClosestPointRegistrationForceField.h
     ClosestPointRegistrationForceField.inl
     GroupwiseRegistrationEngine.h
@@ -33,11 +38,6 @@ set(PYTHON_FILES
 
 set(README_FILES README.txt)
 
-find_package(SofaGui REQUIRED)
-find_package(SofaMiscCollision REQUIRED)
-find_package(SofaOpenglVisual REQUIRED)
-find_package(image QUIET)
-
 if(image_FOUND)
     list(APPEND HEADER_FILES IntensityProfileRegistrationForceField.h)
     list(APPEND HEADER_FILES IntensityProfileRegistrationForceField.inl)
@@ -55,10 +55,13 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaOpenglVisual SofaLoader SofaMiscForceField SofaGeneralEngine)
 
 if(image_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE image)
+    target_link_libraries(${PROJECT_NAME} PUBLIC image)
 endif()
-if(NOT ${SOFA_NO_OPENGL})
-    target_link_libraries(${PROJECT_NAME} PRIVATE SofaOpenglVisual)
+
+if(SofaDistanceGrid_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaDistanceGrid)
+else()
+    message(STATUS "Registration: could not find SofaDistanceGrid, won't build RegistrationContact for RigidDistanceGridCollisionModel.")
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
@@ -69,14 +72,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 find_package(SofaTest QUIET)
 if(SofaTest_FOUND)
     add_subdirectory(Registration_test)
-endif()
-
-find_package(SofaDistanceGrid QUIET)
-if(SofaDistanceGrid_FOUND)
-    add_definitions("-DSOFA_HAVE_SOFADISTANCEGRID")
-    target_link_libraries(${PROJECT_NAME} PRIVATE SofaDistanceGrid)
-else()
-    message(STATUS "Registration: could not find SOFADISTANCEGRID, won't build RegistrationContact for RigidDistanceGridCollisionModel.")
 endif()
 
 ## Install rules for the library; CMake package configurations files

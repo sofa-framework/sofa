@@ -27,7 +27,7 @@
 #include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaMiscCollision/TetrahedronModel.h>
 
-#ifdef SOFA_HAVE_SOFADISTANCEGRID
+#if REGISTRATION_HAVE_SOFADISTANCEGRID
 #include <SofaDistanceGrid/components/collision/DistanceGridCollisionModel.h>
 #endif
 
@@ -62,7 +62,7 @@ Creator<Contact::Factory, RegistrationContact<TetrahedronModel, LineModel> > Tet
 Creator<Contact::Factory, RegistrationContact<TetrahedronModel, TriangleModel> > TetrahedronTriangleRegistrationContactClass("registration",true);
 Creator<Contact::Factory, RegistrationContact<TetrahedronModel, TetrahedronModel> > TetrahedronTetrahedronRegistrationContactClass("registration",true);
 
-#ifdef SOFA_HAVE_SOFADISTANCEGRID
+#if REGISTRATION_HAVE_SOFADISTANCEGRID
 Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridRegistrationContactClass("registration", true);
 Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointRegistrationContactClass("registration", true);
 Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, SphereModel> > DistanceGridSphereRegistrationContactClass("registration", true);
