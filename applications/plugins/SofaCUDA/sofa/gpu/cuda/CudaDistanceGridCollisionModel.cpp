@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <GL/glew.h>
-#ifdef SOFA_HAVE_MINIFLOWVR
+#if SOFACUDA_HAVE_MINIFLOWVR
     #include <flowvr/render/mesh.h>
-#endif // SOFA_HAVE_MINIFLOWVR
+#endif // SOFACUDA_HAVE_MINIFLOWVR
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -135,7 +135,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
             grid->sampleSurface(sampling);
         return grid;
     }
-#ifdef SOFA_HAVE_MINIFLOWVR
+#if SOFACUDA_HAVE_MINIFLOWVR
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
         flowvr::render::Mesh mesh;
@@ -195,7 +195,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         std::cout << "Distance grid creation DONE."<<std::endl;
         return grid;
     }
-#endif // SOFA_HAVE_MINIFLOWVR
+#endif // SOFACUDA_HAVE_MINIFLOWVR
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
