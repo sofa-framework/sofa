@@ -229,11 +229,6 @@ add_subdirectory(SofaGui)
 # SofaTest, modules depend on SofaPython, so we add SofaPython before.
 sofa_add_plugin(applications/plugins/SofaPython SofaPython)
 
-## Modules
-## in the consortium convention a module is a similar to a plugin the difference is that
-## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
-add_subdirectory(modules)
-
 ## Scene creator option
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
 
@@ -263,6 +258,11 @@ if(SOFA_BUILD_TESTS)
         add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
     endif()
 endif()
+
+## Modules
+## in the consortium convention a module is a similar to a plugin the difference is that
+## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(modules)
 
 ## Plugins
 add_subdirectory(applications/plugins)
