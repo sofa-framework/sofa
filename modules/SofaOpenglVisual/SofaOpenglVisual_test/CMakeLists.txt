@@ -3,8 +3,7 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaOpenglVisual_test)
 
 find_package(SofaOpenglVisual REQUIRED)
-
-set(HEADER_FILES)
+find_package(SofaTest REQUIRED)
 
 set(SOURCE_FILES
     OglLabel_test.cpp
