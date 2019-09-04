@@ -463,9 +463,22 @@ public:
 
     ///@}
 
-protected:
+
+    /// @name internalupdate
+    ///   Methods related to tracking of data and the internal update
+    /// @{
+private:
     /// Tracker for all component Data linked to internal variables
     sofa::core::DataTracker m_internalDataTracker;
+
+protected:
+    /// Method called to add the Data to the DataTracker (listing the Data to track)
+    void trackInternalData(const BaseData &data);
+
+    /// Method called to know if a tracked Data has changed
+    bool hasDataChanged(const BaseData &data);
+    ///@}
+    ///
 
     /// Enum defining the state of the component
     ComponentState m_componentstate { ComponentState::Undefined } ;
