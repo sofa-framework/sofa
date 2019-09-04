@@ -27,7 +27,7 @@
 
 #include <SofaGui/config.h>
 #include <ui_GUI.h>
-#include <sofa/gui/qt/SofaGUIQt.h>
+#include <sofa/gui/qt/SofaGuiQt.h>
 #include "GraphListenerQListView.h"
 #include "QMenuFilesRecentlyOpened.h"
 #include "PickHandlerCallBacks.h"
@@ -97,7 +97,7 @@ class GraphVisitor;
 
 class SofaMouseManager;
 
-#ifdef SOFAGUIQT_HAS_QTCHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
 class SofaWindowProfiler;
 #endif
 
@@ -166,7 +166,7 @@ private:
     GraphVisitor* handleTraceVisitor;
 #endif
     SofaMouseManager* m_sofaMouseManager;
-#ifdef SOFAGUIQT_HAS_QTCHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
     SofaWindowProfiler* m_windowTimerProfiler;
 #endif
 //-----------------OPTIONS DEFINITIONS------------------------}

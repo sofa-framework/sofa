@@ -25,7 +25,7 @@
 #include "VisualModelPolicy.h"
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/qt/PickHandlerCallBacks.h>
-#include <sofa/gui/qt/SofaGUIQt.h>
+#include <sofa/gui/qt/SofaGuiQt.h>
 #include <sofa/gui/qt/SofaVideoRecorderManager.h>
 
 #include <QString>

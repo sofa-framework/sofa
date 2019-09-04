@@ -25,7 +25,7 @@
 *******************************************************************************/
 
 #include <QDialog>
-#include "../SofaGUIQt.h"
+#include <sofa/gui/qt/SofaGuiQt.h>
 
 ////////////////////////////// FORWARD DECLARATION ////////////////////////////
 class QLineEdit ;

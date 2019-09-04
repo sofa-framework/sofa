@@ -29,7 +29,7 @@
 #include <QDesktopServices>
 #include <QTimer>
 #include <sofa/gui/qt/QTransformationWidget.h>
-#ifdef SOFA_HAVE_QWT
+#if SOFAGUIQT_HAVE_QWT
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <sofa/gui/qt/QMomentumStatWidget.h>
 #endif
@@ -77,7 +77,7 @@ ModifyObject::ModifyObject(void *Id,
       messageTab(nullptr),
       messageEdit(nullptr),
       transformation(nullptr)
-    #ifdef SOFA_HAVE_QWT
+    #if SOFAGUIQT_HAVE_QWT
     ,energy(NULL)
     ,momentum(NULL)
     #endif
@@ -564,7 +564,7 @@ void ModifyObject::updateTables()
 #ifdef DEBUG_GUI
     std::cout << "GUI<emit updateDataWidgets()" << std::endl;
 #endif
-#ifdef SOFA_HAVE_QWT
+#if SOFAGUIQT_HAVE_QWT
     if (energy)
     {
         energy->step();

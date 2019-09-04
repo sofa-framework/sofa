@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
 #define SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
 
-#include <sofa/gui/qt/SofaGUIQt.h>
+#include <sofa/gui/qt/SofaGuiQt.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>

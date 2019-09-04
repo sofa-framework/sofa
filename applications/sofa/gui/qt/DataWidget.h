@@ -24,7 +24,7 @@
 #define SOFA_GUI_QT_DATAWIDGET_H
 
 
-#include "SofaGUIQt.h"
+#include <sofa/gui/qt/SofaGuiQt.h>
 #include "ModifyObject.h"
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Base.h>

@@ -37,12 +37,6 @@ if(NOT CSparse_FOUND)
     add_subdirectory(csparse)
 endif()
 
-if(SOFAGUI_ENABLE_QWT)
-    message("Qwt activated")
-    add_subdirectory(qwt-6.1.2/src qwt)
-    list(APPEND EXTLIBS_TARGETS qwt)
-endif()
-
 option(SOFA_BUILD_MINIFLOWVR "Build the miniFlowVR library distributed in the extlibs/ directory." OFF)
 if(SOFA_BUILD_MINIFLOWVR)
     add_subdirectory(miniFlowVR)
