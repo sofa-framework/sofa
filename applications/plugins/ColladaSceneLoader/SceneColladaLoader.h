@@ -148,10 +148,10 @@ private:
 	Data<float> animationSpeed; ///< animation speed
 	Data<bool> generateCollisionModels; ///< generate point/line/triangle collision models for imported meshes
 
-#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+#if COLLADASCENELOADER_HAVE_FLEXIBLE
 	Data<bool> useFlexible; ///< Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)
 #endif
-#ifdef SOFA_HAVE_PLUGIN_IMAGE
+#if COLLADASCENELOADER_HAVE_IMAGE
     Data<bool> generateShapeFunction; ///< Generate a shape function that could be used in another simulation
     Data<SReal> voxelSize; ///< voxelSize used for shape function generation
 #endif

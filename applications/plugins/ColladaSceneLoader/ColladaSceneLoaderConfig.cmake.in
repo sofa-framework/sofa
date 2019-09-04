@@ -1,0 +1,26 @@
+# CMake package configuration file for the ColladaSceneLoader plugin
+
+@PACKAGE_INIT@
+
+set(COLLADASCENELOADER_HAVE_ASSIMP @COLLADASCENELOADER_HAVE_ASSIMP@)
+set(COLLADASCENELOADER_HAVE_FLEXIBLE @COLLADASCENELOADER_HAVE_FLEXIBLE@)
+set(COLLADASCENELOADER_HAVE_IMAGE @COLLADASCENELOADER_HAVE_IMAGE@)
+
+find_package(SofaBase REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
+if(COLLADASCENELOADER_HAVE_ASSIMP)
+    find_package(Assimp QUIET REQUIRED)
+endif()
+if(COLLADASCENELOADER_HAVE_FLEXIBLE)
+    find_package(Flexible QUIET REQUIRED)
+endif()
+if(COLLADASCENELOADER_HAVE_IMAGE)
+    find_package(image QUIET REQUIRED)
+endif()
+
+if(NOT TARGET ColladaSceneLoader)
+	include("${CMAKE_CURRENT_LIST_DIR}/ColladaSceneLoaderTargets.cmake")
+endif()
+
+check_required_components(ColladaSceneLoader)
