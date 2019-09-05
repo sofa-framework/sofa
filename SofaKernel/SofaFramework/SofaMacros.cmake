@@ -459,17 +459,17 @@ endfunction()
 # sofa_set_bool
 #
 # Defines a variable to
-#   - true if the constant is 1, ON, YES, TRUE, Y, or a non-zero number.
-#   - false if the constant is 0, OFF, NO, FALSE, N, IGNORE, NOTFOUND, the empty string, or ends in the suffix -NOTFOUND.
+#   - true if VALUE is 1, ON, YES, TRUE, Y, or a non-zero number.
+#   - false if VALUE is 0, OFF, NO, FALSE, N, IGNORE, NOTFOUND, the empty string, or ends in the suffix -NOTFOUND.
 # This macro is used to quickly define variables for "#define SOMETHING ${SOMETHING}" in config.h.in files.
 # PARENT_SCOPE (option): set the variable only in parent scope
 # BOTH_SCOPES (option): set the variable in current AND parent scopes
-macro(sofa_set_bool name constant)
+macro(sofa_set_bool name)
     set(optionArgs PARENT_SCOPE BOTH_SCOPES)
-    set(oneValueArgs)
+    set(oneValueArgs VALUE)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-    if(${constant})
+    if(ARG_VALUE)
         if(ARG_BOTH_SCOPES OR NOT ARG_PARENT_SCOPE)
             set(${name} true)
         endif()

@@ -37,7 +37,7 @@ find_package(Newmat QUIET)
 if(Newmat_FOUND)
     list(APPEND SOFAGENERAL_TARGETS SofaDenseSolver)
 endif()
-sofa_set_bool(SOFAGENERAL_HAVE_SOFADENSESOLVER ${Newmat_FOUND})
+sofa_set_bool(SOFAGENERAL_HAVE_SOFADENSESOLVER VALUE ${Newmat_FOUND})
 
 foreach(TARGET ${SOFAGENERAL_TARGETS} SofaComponentGeneral)
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})

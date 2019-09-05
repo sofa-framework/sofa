@@ -17,9 +17,9 @@ if(MSVC)
 endif()
 
 # Variables to expose in configured files
-sofa_set_bool(SOFA_WITH_THREADING_ ${SOFA_WITH_THREADING}) # build_option_threading.h.in
-sofa_set_bool(SOFA_WITH_DEPRECATED_COMPONENTS_ ${SOFA_WITH_DEPRECATED_COMPONENTS}) # build_option_deprecated_components.h.in
-sofa_set_bool(SOFA_NO_UPDATE_BBOX_ ${SOFA_NO_UPDATE_BBOX}) # build_option_bbox.h.in
+sofa_set_bool(SOFA_WITH_THREADING_ VALUE ${SOFA_WITH_THREADING}) # build_option_threading.h.in
+sofa_set_bool(SOFA_WITH_DEPRECATED_COMPONENTS_ VALUE ${SOFA_WITH_DEPRECATED_COMPONENTS}) # build_option_deprecated_components.h.in
+sofa_set_bool(SOFA_NO_UPDATE_BBOX_ VALUE ${SOFA_NO_UPDATE_BBOX}) # build_option_bbox.h.in
 
 # Subdirectories
 add_subdirectory(../framework/sofa/helper ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper)
