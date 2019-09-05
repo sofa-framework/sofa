@@ -26,12 +26,18 @@ add_subdirectory(../applications/sofa/gui/SofaGuiCommon ${CMAKE_CURRENT_BINARY_D
 list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 
 ## SofaGuiQt
-option(SOFAGUI_QT "Compile the Qt GUI" ON)
-if(SOFAGUI_QT)
-    list(APPEND SOFAGUI_TARGETS SofaGuiQt)
-    add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
+# Check if Qt is present ; if not, disable ability to compile Qt things
+find_package(Qt5 COMPONENTS Core QUIET)
+if(Qt5Core_FOUND)
+    option(SOFAGUI_QT "Compile the Qt GUI" ON)
+    if(SOFAGUI_QT)
+        list(APPEND SOFAGUI_TARGETS SofaGuiQt)
+        add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
+    endif()
+    sofa_set_bool(SOFAGUI_HAVE_SOFAGUIQT ${SOFAGUI_QT}) # see config.h.in
+else()
+    message("Cannot find Qt libraries on your system, please add Qt directory to CMAKE_PREFIX_PATH if you want to compile GUIs using Qt.")
 endif()
-sofa_set_bool(SOFAGUI_HAVE_SOFAGUIQT ${SOFAGUI_QT}) # see config.h.in
 
 ## OpenGL-based GUIs
 if(NOT SOFA_NO_OPENGL)
@@ -42,10 +48,6 @@ if(NOT SOFA_NO_OPENGL)
         add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
     endif()
     sofa_set_bool(SOFAGUI_HAVE_SOFAHEADLESSRECORDER ${SOFAGUI_HEADLESS_RECORDER}) # see config.h.in
-
-    set(SOFA_GUI_QT_OPENGL 1) # cmakedefine
-    list(APPEND SOFAGUI_TARGETS SofaGuiQtOpenGL)
-    add_subdirectory(../applications/sofa/gui/qt/gl ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQtOpenGL)
 endif()
 
 ## SofaGuiMain

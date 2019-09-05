@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_QT_VIEWER_OGLMODELPOLICY_H
 #define SOFA_GUI_QT_VIEWER_OGLMODELPOLICY_H
 
-#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
+#include <sofa/gui/qt/SofaGuiQt.h>
 
 #include <sofa/gui/qt/viewer/SofaViewer.h>
 #include <sofa/gui/qt/viewer/VisualModelPolicy.h>
@@ -36,7 +36,7 @@ namespace qt
 namespace viewer
 {
 	
-class SOFA_SOFAGUIQTOPENGL_API OglModelPolicy : public VisualModelPolicy
+class SOFA_SOFAGUIQT_API OglModelPolicy : public VisualModelPolicy
 {
 protected:
     sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
@@ -48,7 +48,7 @@ public:
 
 
 template < typename VisualModelPolicyType >
-class SOFA_SOFAGUIQTOPENGL_API CustomPolicySofaViewer : public VisualModelPolicyType, public sofa::gui::qt::viewer::SofaViewer
+class SOFA_SOFAGUIQT_API CustomPolicySofaViewer : public VisualModelPolicyType, public sofa::gui::qt::viewer::SofaViewer
 {
 public:
     using VisualModelPolicyType::load;
@@ -58,7 +58,7 @@ public:
 protected:
 };
 
-typedef SOFA_SOFAGUIQTOPENGL_API CustomPolicySofaViewer< OglModelPolicy > OglModelSofaViewer;
+typedef SOFA_SOFAGUIQT_API CustomPolicySofaViewer< OglModelPolicy > OglModelSofaViewer;
 
 } // namespace viewer
 } // namespace qt
