@@ -39,6 +39,7 @@
 #include <sofa/simulation/XMLPrintVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
@@ -222,6 +223,10 @@ void SMPSimulation::animate ( Node* root, double dt )
     BehaviorUpdatePositionVisitor beh(params /* PARAMS FIRST */, _root->getDt());
     _root->execute ( beh );
 
+    UpdateInternalDataVisitor uid(params /* PARAMS FIRST */);
+    _root->execute ( uid );
+
+
     if (changeListener->changed()||nbSteps.getValue()<2)
     {
 
@@ -277,10 +282,13 @@ void SMPSimulation::generateTasks ( Node* root, double dt )
     AnimateVisitor act( params );
     act.setDt ( mechanicalDt );
     BehaviorUpdatePositionVisitor beh(params /* PARAMS FIRST */, root->getDt());
+    UpdateInternalDataVisitor uid(params /* PARAMS FIRST */);
+
     for ( unsigned i=0; i<numMechSteps.getValue(); i++ )
     {
         root->execute ( act );
         root->execute ( beh );
+        root->execute ( uid );
         root->setTime ( startTime + (i+1)* act.getDt() );
         root->execute<UpdateSimulationContextVisitor>(params);
     }

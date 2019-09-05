@@ -270,31 +270,68 @@ void BaseObject::bwdInit()
 {
 }
 
-/// Update method called when variables used in precomputation are modified.
 void BaseObject::reinit()
 {
 }
 
-/// Save the initial state for later uses in reset()
+void BaseObject::updateInternal()
+{
+    const auto& mapTrackedData = m_internalDataTracker.getMapTrackedData();
+    for( auto const& it : mapTrackedData )
+    {
+        it.first->updateIfDirty();
+    }
+
+    if(m_internalDataTracker.hasChanged())
+    {
+        doUpdateInternal();
+        m_internalDataTracker.clean();
+    }
+}
+
+void BaseObject::trackInternalData(const objectmodel::BaseData& data)
+{
+    m_internalDataTracker.trackData(data);
+}
+
+bool BaseObject::hasDataChanged(const objectmodel::BaseData& data)
+{
+    bool dataFoundinTracker = false;
+    const auto& mapTrackedData = m_internalDataTracker.getMapTrackedData();
+    const std::string & dataName = data.getName();
+
+    for( auto const& it : mapTrackedData )
+    {
+        if(it.first->getName()==dataName)
+        {
+            dataFoundinTracker=true;
+            break;
+        }
+    }
+    if(!dataFoundinTracker)
+    {
+        msg_error()<< "Data " << dataName << " is not tracked";
+        return false;
+    }
+
+    return m_internalDataTracker.hasChanged(data);
+}
+
+void BaseObject::doUpdateInternal()
+{ }
+
 void BaseObject::storeResetState()
 { }
 
-/// Reset to initial state
 void BaseObject::reset()
 { }
 
-/// Called just before deleting this object
-/// Any object in the tree bellow this object that are to be removed will be removed only after this call,
-/// so any references this object holds should still be valid.
 void BaseObject::cleanup()
 { }
 
-/// Handle an event
 void BaseObject::handleEvent( Event* /*e*/ )
-{
-}
+{ }
 
-/// Handle topological Changes from a given Topology
 void BaseObject::handleTopologyChange(core::topology::Topology* t)
 {
     if (t == this->getContext()->getTopology())
