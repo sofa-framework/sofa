@@ -12,10 +12,10 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon)
-if(SOFAGUI_QT)
+if(SOFAGUI_HAVE_SOFAGUIQT)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiQt)
 endif()
-if(SOFAGUI_HEADLESS_RECORDER)
+if(SOFAGUI_HAVE_SOFAHEADLESSRECORDER)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaHeadlessRecorder)
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_GUIMAIN")
