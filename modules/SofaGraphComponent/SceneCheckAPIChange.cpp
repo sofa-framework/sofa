@@ -118,6 +118,8 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
 void SceneCheckAPIChange::installDefaultChangeSets()
 {
     // Template of addHookInChangeSet
+    // addHookInChangeSet warns the user about changes that occured within a component
+    // (change in API, behavior, default values, etc.)
     /*
     addHookInChangeSet("17.06", [this](Base* o){
         if(o->getClassName() == "BoxStiffSpringForceField" )
