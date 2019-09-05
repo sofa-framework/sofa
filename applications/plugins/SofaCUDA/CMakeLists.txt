@@ -314,30 +314,30 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SofaOpenglVisual SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaComponentAdvanced SofaComponentMisc)
 
 if(SofaDistanceGrid_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC SofaDistanceGrid)
+    target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
 endif()
 
 if(MiniFlowVR_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE miniFlowVR) # Private because not exported in API
+    target_link_libraries(${PROJECT_NAME} miniFlowVR)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 if(SOFACUDA_CUBLAS)
     cuda_add_cublas_to_target(${PROJECT_NAME})
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${CUDA_SPARSE_LIBRARY})
+    target_link_libraries(${PROJECT_NAME} ${CUDA_SPARSE_LIBRARY})
 endif()
 if(SOFACUDA_CUDPP)
-    target_link_libraries(${PROJECT_NAME} PUBLIC cudpp)
+    target_link_libraries(${PROJECT_NAME} cudpp)
 endif()
 if(VolumetricRendering_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC VolumetricRendering)
+    target_link_libraries(${PROJECT_NAME} VolumetricRendering)
 endif()
 if(SofaSphFluid_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC SofaSphFluid)
+    target_link_libraries(${PROJECT_NAME} SofaSphFluid)
 endif()
 
 ## SofaCUDANvccFlags.cmake
