@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGuiQtOpenGL)
 
+find_package(FFMPEGexec QUIET)
+
 set(HEADER_FILES
     ../GLPickHandler.h
     ../viewer/GLBackend.h

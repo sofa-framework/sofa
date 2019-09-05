@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGuiQt)
 
+find_package(FFMPEGexec QUIET)
+
 set(MOC_HEADER_FILES
     AddObject.h
     DataFilenameWidget.h
