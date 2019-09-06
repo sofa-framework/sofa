@@ -16,6 +16,7 @@ if(${SOFA_NO_OPENGL})
 endif()
 
 set(HEADER_FILES
+    config.h.in
     sofa/gpu/cuda/CudaBarycentricMapping.h
     sofa/gpu/cuda/CudaBarycentricMapping.inl
     sofa/gpu/cuda/CudaBarycentricMappingRigid.h
