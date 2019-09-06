@@ -255,6 +255,14 @@ endif()
 if(SOFA_BUILD_TESTS)
     # Library used to write high level tests involving many components.
     add_subdirectory(applications/plugins/SofaTest)
+endif()
+
+## Modules
+## in the consortium convention a module is a similar to a plugin the difference is that
+## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(modules)
+
+if(SOFA_BUILD_TESTS)
     # Tests for all the modules, written using SofaTest.
     add_subdirectory(modules/tests)
     # SofaPython_test is a special case, because it depends on
@@ -263,11 +271,6 @@ if(SOFA_BUILD_TESTS)
         add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
     endif()
 endif()
-
-## Modules
-## in the consortium convention a module is a similar to a plugin the difference is that
-## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
-add_subdirectory(modules)
 
 ## Plugins
 add_subdirectory(applications/plugins)
