@@ -196,9 +196,9 @@ public:
     }
 };
 
-template <class TCoord, class TDeriv, class TReal> using ExtVectorTypes
-[[deprecated("since 19.06, ExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
-= StdVectorTypes<TCoord, TDeriv, TReal>;
+template <class TCoord, class TDeriv, class TReal>
+struct [[deprecated("since 19.06, ExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
+    ExtVectorTypes : public StdVectorTypes<TCoord, TDeriv, TReal> {};
 
 
 /// 3D DOFs, double precision
@@ -270,13 +270,13 @@ typedef ExtVectorTypes<Vec1,Vec1,Vec1::value_type> ExtVec1Types;
 
 
 
-template <class T> using ExtVector
-[[deprecated("since 19.06, ExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
-= helper::vector<T>;
+template <class T>
+struct [[deprecated("since 19.06, ExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
+    ExtVector : public helper::vector<T> {};
 
-template <class T> using ResizableExtVector
-[[deprecated("since 19.06, ResizableExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
-  = helper::vector<T>;
+template <class T>
+struct [[deprecated("since 19.06, ResizableExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
+    ResizableExtVector : public helper::vector<T> {};
 
 
 } // namespace defaulttype
