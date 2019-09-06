@@ -5,6 +5,7 @@ find_package(SofaGTestMain REQUIRED)
 find_package(SofaTest REQUIRED)
 
 set(SOURCE_FILES
+    DAGNode_test.cpp
     MutationListener_test.cpp
     )
 
