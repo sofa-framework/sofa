@@ -53,7 +53,7 @@ void GLBackend::setPrefix(const std::string& prefix)
 {
     m_capture.setPrefix(prefix);
 
-#ifdef SOFAHELPER_HAVE_FFMPEG_EXEC
+#if SOFAHELPER_HAVE_FFMPEG_EXEC
     m_videoRecorderFFMPEG.setPrefix(prefix);
 #endif // SOFAHELPER_HAVE_FFMPEG_EXEC
 }
@@ -83,7 +83,7 @@ void GLBackend::setBackgroundImage(helper::io::Image* image)
 bool GLBackend::initRecorder( int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec)
 {
     bool res = true;
-#ifdef SOFAHELPER_HAVE_FFMPEG_EXEC
+#if SOFAHELPER_HAVE_FFMPEG_EXEC
     std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, codec);
 
     res = m_videoRecorderFFMPEG.init(videoFilename, width, height, framerate, bitrate, codec);
@@ -94,14 +94,14 @@ bool GLBackend::initRecorder( int width, int height, unsigned int framerate, uns
 
 void GLBackend::endRecorder()
 {
-#ifdef SOFAHELPER_HAVE_FFMPEG_EXEC
+#if SOFAHELPER_HAVE_FFMPEG_EXEC
     m_videoRecorderFFMPEG.finishVideo();
 #endif //SOFAHELPER_HAVE_FFMPEG_EXEC
 }
 
 void GLBackend::addFrameRecorder()
 {
-#ifdef SOFAHELPER_HAVE_FFMPEG_EXEC
+#if SOFAHELPER_HAVE_FFMPEG_EXEC
     m_videoRecorderFFMPEG.addFrame();
 #endif //SOFAHELPER_HAVE_FFMPEG_EXEC
 }
