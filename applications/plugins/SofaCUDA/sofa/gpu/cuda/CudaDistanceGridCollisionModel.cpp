@@ -19,17 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <GL/glew.h>
-#if SOFACUDA_HAVE_MINIFLOWVR
-    #include <flowvr/render/mesh.h>
-#endif // SOFACUDA_HAVE_MINIFLOWVR
+
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <fstream>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/rmath.h>
+#include <SofaBaseCollision/CubeModel.h>
+#if SOFACUDA_HAVE_MINIFLOWVR
+    #include <flowvr/render/mesh.h>
+#endif // SOFACUDA_HAVE_MINIFLOWVR
+#include <GL/glew.h>
+#include <fstream>
 
 namespace sofa
 {
