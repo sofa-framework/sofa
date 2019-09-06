@@ -6,6 +6,7 @@ set(CGALPLUGIN_MINOR_VERSION 1)
 set(CGALPLUGIN_VERSION ${CGALPLUGIN_MAJOR_VERSION}.${CGALPLUGIN_MINOR_VERSION})
 
 set(HEADER_FILES
+    config.h.in
     DecimateMesh.h
     DecimateMesh.inl
     MeshGenerationFromPolyhedron.h
