@@ -46,7 +46,7 @@ It is possible to use lumped matrices.
 */
 
 template <class DataTypes, class MassType>
-class MatrixMass : public core::behavior::Mass<DataTypes>
+class [[deprecated("Class MatrixMass is deprecated and will be removed after 19.12")]] MatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(MatrixMass,DataTypes,MassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
