@@ -51,7 +51,7 @@ public:
     virtual void setBackgroundImage(helper::io::Image* image) =0;
     virtual void drawBackgroundImage(const int screenWidth, const int screenHeight)=0;
 
-    virtual bool initRecorder(int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec="")  =0;
+    virtual bool initRecorder(int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codecExtension="", const std::string& codecName="")  =0;
     virtual void endRecorder() =0;
     virtual void addFrameRecorder() =0;
 
