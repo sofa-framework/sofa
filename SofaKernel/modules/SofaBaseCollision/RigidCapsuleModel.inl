@@ -107,7 +107,7 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::init()
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
     if (_mstate==NULL)
     {
-        msg_warning()<<"TCapsuleModel requires a Rigid Mechanical Model" << msgendl;
+        msg_error() << "TCapsuleModel requires a Rigid Mechanical Model";
         return;
     }
 

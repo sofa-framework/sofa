@@ -375,7 +375,7 @@ void FastTriangularBendingSprings<DataTypes>::init()
 
     if (_topology->getNbTriangles()==0)
     {
-        msg_error() << "ERROR(FastTriangularBendingSprings): object must have a Triangular Set Topology."<<msgendl;
+        msg_error() << "Object must have a Triangular Set Topology.";
         return;
     }
     d_edgeSprings.createTopologicalEngine(_topology,d_edgeHandler);

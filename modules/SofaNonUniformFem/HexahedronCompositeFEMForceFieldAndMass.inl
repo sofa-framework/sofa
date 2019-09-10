@@ -454,7 +454,7 @@ void HexahedronCompositeFEMForceFieldAndMass<DataTypes>::init()
 template <class DataTypes>
 void HexahedronCompositeFEMForceFieldAndMass<DataTypes>::reinit()
 {
-    msg_warning()<<"WARNING : composite mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<msgendl;
+    msg_warning() << "Composite mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account.";
     if(d_drawSize.getValue()==-1)
         d_drawSize.setValue( (float)((this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004f) );
 }
