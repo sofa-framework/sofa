@@ -80,13 +80,13 @@ void GLBackend::setBackgroundImage(helper::io::Image* image)
     m_texLogo->init();
 }
 
-bool GLBackend::initRecorder( int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec)
+bool GLBackend::initRecorder( int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codecExtension, const std::string& codecName)
 {
     bool res = true;
 #if SOFAHELPER_HAVE_FFMPEG_EXEC
-    std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, codec);
+    std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, codecExtension);
 
-    res = m_videoRecorderFFMPEG.init(videoFilename, width, height, framerate, bitrate, codec);
+    res = m_videoRecorderFFMPEG.init(videoFilename, width, height, framerate, bitrate, codecName);
 #endif // SOFAHELPER_HAVE_FFMPEG_EXEC
 
     return res;

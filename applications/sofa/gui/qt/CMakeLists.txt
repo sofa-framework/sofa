@@ -46,7 +46,7 @@ if(SOFAGUI_ENABLE_QWT)
     message("Qwt activated")
     find_package(Qwt QUIET)
     if(NOT QWT_FOUND)
-        add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/qwt-6.1.2/src ${CMAKE_BINARY_DIR}/extlibs/qwt)
+        add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/qwt-6.1.4/src ${CMAKE_BINARY_DIR}/extlibs/qwt)
     endif()
 endif()
 

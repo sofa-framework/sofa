@@ -119,7 +119,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
 
                     int width = getQWidget()->width();
                     int height = getQWidget()->height();
-                    m_backend->initRecorder(width, height, framerate, bitrate, videoManager->getCodecName());
+                    m_backend->initRecorder(width, height, framerate, bitrate, videoManager->getCodecExtension(), videoManager->getCodecName());
 
                     break;
                 }

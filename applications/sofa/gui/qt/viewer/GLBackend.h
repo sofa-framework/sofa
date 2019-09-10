@@ -61,7 +61,7 @@ public:
     void setBackgroundImage(helper::io::Image* image);
     void drawBackgroundImage(const int screenWidth, const int screenHeight);
 
-    bool initRecorder(int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec="");
+    bool initRecorder(int width, int height, unsigned int framerate, unsigned int bitrate,const std::string& codecExtension="",  const std::string& codecName="");
     void endRecorder();
     void addFrameRecorder();
 

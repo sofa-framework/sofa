@@ -82,39 +82,30 @@ protected:
 
     HexahedronCompositeFEMForceFieldAndMass()
         : HexahedronFEMForceFieldAndMassT()
-        , _finestToCoarse(initData(&_finestToCoarse,false,"finestToCoarse","Does the homogenization is done directly from the finest level to the coarse one?"))
-        , _homogenizationMethod(initData(&_homogenizationMethod,0,"homogenizationMethod","0->static, 1->constrained static, 2->modal analysis"))
-        , _completeInterpolation(initData(&_completeInterpolation,false,"completeInterpolation","Is the non-linear, complete interpolation used?"))
-        , _useRamification(initData(&_useRamification,true,"useRamification","If SparseGridRamification, are ramifications taken into account?"))
-        , _drawType(initData(&_drawType,0,"drawType",""))
-        , _drawColor(initData(&_drawColor,0,"drawColor",""))
-        , _drawSize(initData(&_drawSize,(float)-1.0,"drawSize",""))
+        , d_finestToCoarse(initData(&d_finestToCoarse,false,"finestToCoarse","Does the homogenization is done directly from the finest level to the coarse one?"))
+        , d_homogenizationMethod(initData(&d_homogenizationMethod,0,"homogenizationMethod","0->static, 1->constrained static, 2->modal analysis"))
+        , d_completeInterpolation(initData(&d_completeInterpolation,false,"completeInterpolation","Is the non-linear, complete interpolation used?"))
+        , d_useRamification(initData(&d_useRamification,true,"useRamification","If SparseGridRamification, are ramifications taken into account?"))
+        , d_drawType(initData(&d_drawType,0,"drawType",""))
+        , d_drawColor(initData(&d_drawColor,0,"drawColor",""))
+        , d_drawSize(initData(&d_drawSize,(float)-1.0,"drawSize",""))
     {
     }
 
 public:
 
     void init() override;
-    void reinit() override
-    {
-        serr<<"WARNING : composite mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl;
-        if(_drawSize.getValue()==-1)
-            _drawSize.setValue( (float)((this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004f) );
-    }
-
+    void reinit() override;
     void draw(const core::visual::VisualParams* vparams) override;
 
 
-    Data<bool> _finestToCoarse; ///< Does the homogenization is done directly from the finest level to the coarse one?
-    Data<int> _homogenizationMethod; ///< 0->static, 1->constrained static, 2->modal analysis
-    Data<bool> _completeInterpolation; ///< Is the non-linear, complete interpolation used?
-    Data<bool> _useRamification; ///< If SparseGridRamification, are ramifications taken into account?
-    Data<int> _drawType;
-    Data<int> _drawColor;
-    Data<float> _drawSize;
-
-
-//       protected:
+    Data<bool> d_finestToCoarse; ///< Does the homogenization is done directly from the finest level to the coarse one?
+    Data<int> d_homogenizationMethod; ///< 0->static, 1->constrained static, 2->modal analysis
+    Data<bool> d_completeInterpolation; ///< Is the non-linear, complete interpolation used?
+    Data<bool> d_useRamification; ///< If SparseGridRamification, are ramifications taken into account?
+    Data<int> d_drawType;
+    Data<int> d_drawColor;
+    Data<float> d_drawSize;
 
 
     void findFinestChildren( helper::vector<int>& finestChildren, const int elementIndice,  int level=0);
@@ -128,7 +119,6 @@ public:
 
 
     // surcharge NonUniformHexahedronFEMForceFieldAndMass::computeMechanicalMatricesByCondensation
-//         virtual void computeMechanicalMatricesByCondensation( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
     void computeMechanicalMatricesByCondensation( ) override;
 
 
