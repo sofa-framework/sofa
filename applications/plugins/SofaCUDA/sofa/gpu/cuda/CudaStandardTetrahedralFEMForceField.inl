@@ -112,7 +112,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce(cons
 
     unsigned int nbTetrahedra=_topology->getNbTetrahedra();
 
-	edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
+    edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
 	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
 	EdgeInformation *einfo;
@@ -150,7 +150,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce(cons
 		df[v0] += dv1 * kFactor;
 		df[v1] -= dv0 * kFactor;
 	}
-	edgeInfo.endEdit();
+    edgeInfo.endEdit();
 	tetrahedronInfo.endEdit();
 	d_df.beginEdit();
 
@@ -285,7 +285,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::addDForce(cons
 
     unsigned int nbTetrahedra=_topology->getNbTetrahedra();
 
-	edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
+    edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
 	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     EdgeInformation *einfo;
@@ -326,7 +326,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::addDForce(cons
 		df[v0] += dv1 * kFactor;
 		df[v1] -= dv0 * kFactor;
 	}
-	edgeInfo.endEdit();
+    edgeInfo.endEdit();
 	tetrahedronInfo.endEdit();
 	d_df.beginEdit();
 }

@@ -69,13 +69,13 @@ public:
 
 public :
     /// indices of the DOFs the constraint is applied to
-    SetIndex m_indices;
+    SetIndex d_indices;
     /// the key frames when the motion is defined by the user
-    Data<helper::vector<Real> > m_keyTimes;
+    Data<helper::vector<Real> > d_keyTimes;
     /// the motions corresponding to the key frames
-    Data<VecDeriv > m_keyVelocities;
+    Data<VecDeriv > d_keyVelocities;
     /// the coordinates on which to applay velocities
-    SetIndex m_coordinates;
+    SetIndex d_coordinates;
 
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
