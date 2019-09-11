@@ -233,7 +233,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const auto & quadArray=fromModel->getQuads();
 
-            const auto & tab = ( static_cast< const QuadsAdded *>( *itBegin ) )->getArray();
+            const Topology::SetIndices & tab = ( static_cast< const QuadsAdded *>( *itBegin ) )->getArray();
 
             sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
             sofa::helper::vector< unsigned int > trianglesIndexList;
@@ -247,12 +247,12 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 const auto & p1 = quadArray[k][1];
                 const auto & p2 = quadArray[k][2];
                 const auto & p3 = quadArray[k][3];
-                const auto t1 = core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p1, (unsigned int) p2);
-                const auto t2 = core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p2, (unsigned int) p3);
+                const auto tri1 = core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p1, (unsigned int) p2);
+                const auto tri2 = core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p2, (unsigned int) p3);
 
-                triangles_to_create.push_back(t1);
+                triangles_to_create.push_back(tri1);
                 trianglesIndexList.push_back(nb_elems);
-                triangles_to_create.push_back(t2);
+                triangles_to_create.push_back(tri2);
                 trianglesIndexList.push_back(nb_elems+1);
                 nb_elems+=2;
 
@@ -272,7 +272,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         }
         case core::topology::QUADSREMOVED:
         {
-            const auto & tab = ( static_cast< const QuadsRemoved *>( *itBegin ) )->getArray();
+            const Topology::SetIndices & tab = ( static_cast< const QuadsRemoved *>( *itBegin ) )->getArray();
 
             unsigned int last = (unsigned int)fromModel->getNbQuads() - 1;
 
@@ -383,7 +383,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSREMOVED:
         {
-            const auto & tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+            const Topology::SetIndices & tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
             sofa::helper::vector<unsigned int> indices;
 
@@ -404,8 +404,8 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSRENUMBERING:
         {
-            const auto & tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
-            const auto & inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+            const Topology::SetIndices & tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+            const Topology::SetIndices & inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
             sofa::helper::vector<unsigned int> indices;
             sofa::helper::vector<unsigned int> inv_indices;
@@ -416,8 +416,8 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 inv_indices.push_back(inv_tab[i]);
             }
 
-            sofa::helper::vector<unsigned int>& tab_indices = indices;
-            sofa::helper::vector<unsigned int>& inv_tab_indices = inv_indices;
+            Topology::SetIndices& tab_indices = indices;
+            Topology::SetIndices& inv_tab_indices = inv_indices;
 
             to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
             to_tstm->propagateTopologicalChanges();

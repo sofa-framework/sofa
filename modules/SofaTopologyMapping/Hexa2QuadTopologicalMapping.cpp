@@ -169,7 +169,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     auto itBegin=fromModel->beginChange();
     auto itEnd=fromModel->endChange();
 
-    auto & Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    Topology::SetIndices & Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     while( itBegin != itEnd )
     {
@@ -193,7 +193,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
             auto last = (unsigned int)fromModel->getNbQuads() - 1;
             auto ind_last = (unsigned int)toModel->getNbQuads();
 
-            const auto & tab = ( static_cast< const QuadsRemoved *>( *itBegin ) )->getArray();
+            const Topology::SetIndices & tab = ( static_cast< const QuadsRemoved *>( *itBegin ) )->getArray();
 
             unsigned int ind_tmp;
 
@@ -271,7 +271,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const sofa::helper::vector<core::topology::BaseMeshTopology::Hexahedron> &hexahedronArray=fromModel->getHexahedra();
 
-            const auto & tab = ( static_cast< const HexahedraRemoved *>( *itBegin ) )->getArray();
+            const Topology::SetIndices & tab = ( static_cast< const HexahedraRemoved *>( *itBegin ) )->getArray();
 
             sofa::helper::vector< core::topology::BaseMeshTopology::Quad > quads_to_create;
             sofa::helper::vector< unsigned int > quadsIndexList;
@@ -364,16 +364,16 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSREMOVED:
         {
-            const auto & tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+            const Topology::SetIndices & tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-            sofa::helper::vector<unsigned int> indices;
+            Topology::SetIndices indices;
 
             for(unsigned int i = 0; i < tab.size(); ++i)
             {
                 indices.push_back(tab[i]);
             }
 
-            auto & tab_indices = indices;
+            Topology::SetIndices & tab_indices = indices;
 
             to_tstm->removePointsWarning(tab_indices, false);
             to_tstm->propagateTopologicalChanges();
@@ -384,8 +384,8 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSRENUMBERING:
         {
-            const auto & tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
-            const auto & inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+            const Topology::SetIndices & tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+            const Topology::SetIndices & inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
             sofa::helper::vector<unsigned int> indices;
             sofa::helper::vector<unsigned int> inv_indices;
@@ -396,8 +396,8 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 inv_indices.push_back(inv_tab[i]);
             }
 
-            auto & tab_indices = indices;
-            auto & inv_tab_indices = inv_indices;
+            Topology::SetIndices & tab_indices = indices;
+            Topology::SetIndices & inv_tab_indices = inv_indices;
 
             to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
             to_tstm->propagateTopologicalChanges();

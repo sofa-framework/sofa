@@ -130,7 +130,7 @@ void Tetra2TriangleTopologicalMapping::init()
     const auto & triangleArray = fromModel->getTriangles();
     const bool flipN = flipNormals.getValue();
 
-    auto & Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    Topology::SetIndices & Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
@@ -352,7 +352,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 break;
 
             const auto & tetrahedronArray=fromModel->getTetrahedra();
-            const auto & tetra2Remove = ( static_cast< const TetrahedraRemoved *>( *itBegin ) )->getArray();
+            const auto & tetraIds2Remove = ( static_cast< const TetrahedraRemoved *>( *itBegin ) )->getArray();
 
             sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
             sofa::helper::vector< unsigned int > trianglesIndexList;
@@ -362,9 +362,9 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             // For each tetrahedron removed inside the tetra2Remove array. Will look for each face if it shared with another tetrahedron.
             // If none, it means it will be added to the triangle border topoloy.
             // NB: doesn't check if triangle is inbetween 2 tetrahedra removed. This will be handle in TriangleRemoved event.
-            for (Topology::TetrahedronID i = 0; i < tetra2Remove.size(); ++i)
+            for (Topology::TetrahedronID i = 0; i < tetraIds2Remove.size(); ++i)
             {
-                Topology::TetrahedronID tetraId = tetra2Remove[i];
+                Topology::TetrahedronID tetraId = tetraIds2Remove[i];
                 const auto & triInTetra = fromModel->getTrianglesInTetrahedron(tetraId);
 
                 // get each triangle of the tetrahedron involved
@@ -385,7 +385,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     // check if tetrahedron already processed in a previous iteration
                     bool is_present = false;
                     for (unsigned int k=0; k<i; ++k)
-                        if (idOtherTetra == tetra2Remove[k])
+                        if (idOtherTetra == tetraIds2Remove[k])
                         {
                             is_present = true;
                             break;
@@ -441,9 +441,9 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::EDGESADDED:
         {
-            const auto * ea=static_cast< const EdgesAdded * >( *itBegin );
-            m_outTopoModifier->addEdgesProcess(ea->edgeArray);
-            m_outTopoModifier->addEdgesWarning(ea->nEdges,ea->edgeArray,ea->edgeIndexArray);
+            const auto * edgeAdded=static_cast< const EdgesAdded * >( *itBegin );
+            m_outTopoModifier->addEdgesProcess(edgeAdded->edgeArray);
+            m_outTopoModifier->addEdgesWarning(edgeAdded->nEdges, edgeAdded->edgeArray, edgeAdded->edgeIndexArray);
             m_outTopoModifier->propagateTopologicalChanges();
             break;
         }
@@ -459,17 +459,17 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSREMOVED:
         {
-            const auto tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+            const auto pointRemoved = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
             sofa::helper::vector<unsigned int> indices;
 
-            for(unsigned int i = 0; i < tab.size(); ++i)
+            for(unsigned int i = 0; i < pointRemoved.size(); ++i)
             {
 
-                indices.push_back(tab[i]);
+                indices.push_back(pointRemoved[i]);
             }
 
-            auto & tab_indices = indices;
+            Topology::SetIndices & tab_indices = indices;
 
             m_outTopoModifier->removePointsWarning(tab_indices, false);
 
@@ -480,11 +480,11 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSRENUMBERING:
         {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
-            const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+            const Topology::SetIndices &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+            const Topology::SetIndices &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
-            sofa::helper::vector<unsigned int> indices;
-            sofa::helper::vector<unsigned int> inv_indices;
+            Topology::SetIndices indices;
+            Topology::SetIndices inv_indices;
 
 
             for(unsigned int i = 0; i < tab.size(); ++i)
@@ -493,8 +493,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 inv_indices.push_back(inv_tab[i]);
             }
 
-            auto & tab_indices = indices;
-            auto & inv_tab_indices = inv_indices;
+            Topology::SetIndices & tab_indices = indices;
+            Topology::SetIndices & inv_tab_indices = inv_indices;
 
             m_outTopoModifier->renumberPointsWarning(tab_indices, inv_tab_indices, false);
             m_outTopoModifier->propagateTopologicalChanges();
