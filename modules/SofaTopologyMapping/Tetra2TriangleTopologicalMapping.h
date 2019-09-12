@@ -64,7 +64,7 @@ protected:
      *
      * Does nothing.
      */
-    ~Tetra2TriangleTopologicalMapping() override;
+    ~Tetra2TriangleTopologicalMapping() override = default;
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
