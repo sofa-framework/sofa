@@ -141,7 +141,7 @@ struct ConstantForceField_test : public Sofa_test<>
                                                                   scene.str().c_str(),
                                                                   scene.str().size()) ;
                 ASSERT_NE(root.get(), nullptr) << "Problem to load scene: " << scene.str() ;
-                root->init(ExecParams::defaultInstance()) ;
+                root->init(ExecParams::defaultInstance());
 
                 sofa::core::objectmodel::BaseObject* constantff = root->getObject("myForceField") ;
                 ASSERT_NE( constantff, nullptr) ;
@@ -185,7 +185,7 @@ struct ConstantForceField_test : public Sofa_test<>
         /// List of the supported attributes the user expect to find
         /// This list needs to be updated if you add an attribute.
         vector<string> attrnames = {
-            "points","forces","force","totalForce","arrowSizeCoef","showColor","indexFromEnd"
+            "indices","forces","force","totalForce","arrowSizeCoef","showColor","indexFromEnd"
         };
 
         for(auto& attrname : attrnames)
