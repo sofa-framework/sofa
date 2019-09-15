@@ -141,6 +141,7 @@ struct ConstantForceField_test : public Sofa_test<>
                                                                   scene.str().c_str(),
                                                                   scene.str().size()) ;
                 ASSERT_NE(root.get(), nullptr) << "Problem to load scene: " << scene.str() ;
+                EXPECT_MSG_EMIT(Error) ;
                 root->init(ExecParams::defaultInstance());
 
                 sofa::core::objectmodel::BaseObject* constantff = root->getObject("myForceField") ;
