@@ -270,7 +270,7 @@ bool ConstantForceField<DataTypes>::checkForce(Deriv force)
 
     for (size_t i=0; i<size; i++)
     {
-        if( isnan(force[i]) )
+        if( std::isnan(force[i]) )
             return false;
     }
     return true;
