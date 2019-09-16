@@ -197,7 +197,7 @@ public:
 };
 
 template <class TCoord, class TDeriv, class TReal> using ExtVectorTypes
-[[deprecated("since 19.06, ExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
+//[[deprecated("since 19.06, ExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
 = StdVectorTypes<TCoord, TDeriv, TReal>;
 
 

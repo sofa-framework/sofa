@@ -128,7 +128,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
         const Edge& edge = edges[edgeId];
         // adding edge in the edge shell of both points
         
-        if (edge[0] >= nbPoints || edge[1] >= nbPoints)
+        if ((int) edge[0] >= nbPoints || edge[1] >= nbPoints)
         {
             msg_warning() << "EdgesAroundVertex creation failed, Edge buffer is not concistent with number of points: Edge: " << edge << " for: " << nbPoints << " points.";
             continue;
