@@ -68,6 +68,107 @@ protected:
     void computeDistance(double& d, const Vector3& v) override;
     void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
 
+    //handle topology changes depending on the topology
+    void processTopologicalChanges(const typename Out::VecCoord& out, const typename In::VecCoord& in, core::topology::Topology* t) {
+        using sofa::core::behavior::MechanicalState;
+
+        if (t != this->m_toTopology) return;
+
+        if ( this->m_toTopology->beginChange() == this->m_toTopology->endChange() )
+            return;
+
+        std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_toTopology->beginChange();
+        std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_toTopology->endChange();
+
+        helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+        vectorData.resize (out.size());
+
+        for (auto changeIt = itBegin; changeIt != itEnd; ++changeIt ) {
+            const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
+            switch ( changeType )
+            {
+            //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
+            case core::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
+            {
+                const core::topology::PointsIndicesSwap * ps = static_cast<const core::topology::PointsIndicesSwap*>(*changeIt);
+                MappingData copy = vectorData[ps->index[0]];
+                vectorData[ps->index[0]] = vectorData[ps->index[1]];
+                vectorData[ps->index[1]] = copy;
+                break;
+            }
+            case core::topology::POINTSADDED:        ///< For PointsAdded.
+            {
+                const core::topology::PointsAdded * pa = static_cast<const core::topology::PointsAdded*>(*changeIt);
+                auto& array = pa->getElementArray();
+
+                for (unsigned i=0;i<array.size();i++) {
+                    unsigned pid = array[i];
+                    processAddPoint(Out::getCPos(out[pid]),
+                                    in,
+                                    vectorData[pid]);
+                }
+
+                break;
+            }
+            case core::topology::POINTSREMOVED:      ///< For PointsRemoved.
+            {
+                // nothing to do
+                break;
+            }
+            case core::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
+            {
+                const core::topology::PointsRenumbering * pr = static_cast<const core::topology::PointsRenumbering*>(*changeIt);
+                auto& array = pr->getIndexArray();
+                auto& inv_array = pr->getinv_IndexArray();
+                for (unsigned i=0;i<array.size();i++) {
+                    MappingData copy = vectorData[array[i]];
+                    vectorData[inv_array[i]] = vectorData[array[i]];
+                    vectorData[array[i]] = copy;
+                }
+                break;
+            }
+            default:
+            {
+                break;
+            }
+            }
+        }
+
+        d_map.endEdit();
+    }
+
+    void processAddPoint(const sofa::defaulttype::Vec3d & pos, const typename In::VecCoord& in, MappingData & vectorData){
+        const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
+
+        sofa::defaulttype::Vector3 coefs;
+        int index = -1;
+        double distance = std::numeric_limits<double>::max();
+        for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
+        {
+            sofa::defaulttype::Mat3x3d base;
+            sofa::defaulttype::Vector3 center;
+            computeBase(base,in,tetrahedra[t]);
+            computeCenter(center,in,tetrahedra[t]);
+
+            sofa::defaulttype::Vec3d v = base * ( pos - in[tetrahedra[t][0]] );
+            double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
+
+            if ( d>0 ) d = ( pos-center ).norm2();
+
+            if ( d<distance )
+            {
+                coefs = v;
+                distance = d;
+                index = t;
+            }
+        }
+
+        vectorData.in_index = index;
+        vectorData.baryCoords[0] = ( Real ) coefs[0];
+        vectorData.baryCoords[1] = ( Real ) coefs[1];
+        vectorData.baryCoords[2] = ( Real ) coefs[2];
+    }
+
     topology::TetrahedronSetTopologyContainer*      m_fromContainer {nullptr};
     topology::TetrahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};
 
