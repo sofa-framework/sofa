@@ -24,6 +24,6 @@
 
 #include <SofaMisc/config.h>
 
-#define SOFAMISCTOPOLOGY_HAVE_ZLIB ${SOFAMISCTOPOLOGY_HAVE_ZLIB}
+#cmakedefine01 SOFAMISCTOPOLOGY_HAVE_ZLIB
 
 #endif
