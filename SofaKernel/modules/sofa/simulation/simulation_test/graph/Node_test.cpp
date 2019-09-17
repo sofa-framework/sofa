@@ -35,28 +35,25 @@ struct Node_test : public BaseSimulationTest
     {
         /* create trivial DAG :
          *
-         * R
-         * |
          * A
+         * |\
+         * B C
          * |
-         * B
+         * D
          *
          */
         EXPECT_MSG_NOEMIT(Error, Warning);
 
-        SceneInstance si("R") ;
-        Node::SPtr A = createChild(si.root, "A");
-        Node::SPtr B = createChild(A, "B");
+        SceneInstance si("A") ;
+        Node::SPtr B = createChild(si.root, "B");
+        Node::SPtr D = createChild(B, "D");
         BaseObject::SPtr C = core::objectmodel::New<Dummy>("C");
-        A->addObject(C);
+        si.root->addObject(C);
 
-
-        EXPECT_STREQ(A->getPathName().c_str(), "@/");
-        EXPECT_STREQ(A->findData("name")->getLinkPath().c_str(), "@/.name");
+        EXPECT_STREQ(si.root->getPathName().c_str(), "/");
         EXPECT_STREQ(B->getPathName().c_str(), "/B");
-        EXPECT_STREQ(B->findData("name")->getLinkPath().c_str(), "@/B.name");
         EXPECT_STREQ(C->getPathName().c_str(), "/C");
-        EXPECT_STREQ(C->findData("name")->getLinkPath().c_str(), "@/C.name");
+        EXPECT_STREQ(D->getPathName().c_str(), "/B/D");
     }
 };
 
