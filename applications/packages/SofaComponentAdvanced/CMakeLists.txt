@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaComponentAdvanced)
 
+find_package(SofaAdvanced REQUIRED)
+
 set(HEADER_FILES
     config.h
     initComponentAdvanced.h

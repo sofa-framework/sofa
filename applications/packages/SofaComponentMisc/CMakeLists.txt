@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaComponentMisc)
 
+find_package(SofaMisc REQUIRED)
+
 set(HEADER_FILES
     config.h
     initComponentMisc.h
