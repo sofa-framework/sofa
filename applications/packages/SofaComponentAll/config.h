@@ -19,73 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaAllCommonComponents/initAllCommonComponents.h>
+#ifndef SOFA_PACKAGE_ALLCOMMONCOMPONENTS_CONFIG_H
+#define SOFA_PACKAGE_ALLCOMMONCOMPONENTS_CONFIG_H
 
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#ifdef SOFA_BUILD_MISC_COLLISION
+#  define SOFA_SOFACOMPONENTALL_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFACOMPONENTALL_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace sofa
-{
-
-namespace component
-{
-
-/// Convenient functions to help user to know what contains the plugin
-extern "C" {
-    SOFA_SOFAALLCOMMONCOMPONENTS_API void initExternalModule();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleName();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleVersion();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleLicense();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleDescription();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
-}
-
-const char* getModuleName()
-{
-    return "SofaAllCommonComponents";
-}
-
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "This package expose all the common sofa component.";
-}
-
-const char* getModuleComponentList()
-{
-    return "";
-}
-
-
-} /// namespace component
-
-} /// namespace sofa
+#endif

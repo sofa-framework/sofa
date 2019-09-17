@@ -10,6 +10,6 @@ foreach(TARGET SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaCo
     # set_target_properties(${TARGET} PROPERTIES VERSION  ${SofaFramework_VERSION})
 endforeach()
 
-sofa_add_plugin(SofaAllCommonComponents SofaAllCommonComponents ON)
+sofa_add_plugin(SofaComponentAll SofaComponentAll ON)
 
 
