@@ -148,6 +148,9 @@ public:
     virtual core::collision::Pipeline* getCollisionPipeline() const;
     virtual core::visual::VisualLoop* getVisualLoop() const;
 
+private:
+    virtual std::string _getPathName() const;
+
     /// @}
 protected:
     /// Set the context of an object to this
