@@ -17,7 +17,7 @@
             <MechanicalObject src="@loader" />
             <HexahedronCompositeFEMMapping/>
             <Node name="f1">
-                <ConstantForceField points="340" forces="1000 8000 0" arrowSizeCoef=".001" />
+                <ConstantForceField indices="340" forces="1000 8000 0" arrowSizeCoef=".001" />
             </Node>
             <Node name="Visu2">
                 <MeshObjLoader name="meshLoader_3" filename="mesh/grape_out.obj" handleSeams="1" />
