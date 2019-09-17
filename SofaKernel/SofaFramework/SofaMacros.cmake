@@ -456,32 +456,32 @@ function(sofa_add_python_module)
 endfunction()
 
 
-# sofa_set_bool
+# sofa_set_01
 #
 # Defines a variable to
-#   - true if VALUE is 1, ON, YES, TRUE, Y, or a non-zero number.
-#   - false if VALUE is 0, OFF, NO, FALSE, N, IGNORE, NOTFOUND, the empty string, or ends in the suffix -NOTFOUND.
+#   - 1 if VALUE is 1, ON, YES, TRUE, Y, or a non-zero number.
+#   - 0 if VALUE is 0, OFF, NO, FALSE, N, IGNORE, NOTFOUND, the empty string, or ends in the suffix -NOTFOUND.
 # This macro is used to quickly define variables for "#define SOMETHING ${SOMETHING}" in config.h.in files.
 # PARENT_SCOPE (option): set the variable only in parent scope
 # BOTH_SCOPES (option): set the variable in current AND parent scopes
-macro(sofa_set_bool name)
+macro(sofa_set_01 name)
     set(optionArgs PARENT_SCOPE BOTH_SCOPES)
     set(oneValueArgs VALUE)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
     if(ARG_VALUE)
         if(ARG_BOTH_SCOPES OR NOT ARG_PARENT_SCOPE)
-            set(${name} true)
+            set(${name} 1)
         endif()
         if(ARG_BOTH_SCOPES OR ARG_PARENT_SCOPE)
-            set(${name} true PARENT_SCOPE)
+            set(${name} 1 PARENT_SCOPE)
         endif()
     else()
         if(ARG_BOTH_SCOPES OR NOT ARG_PARENT_SCOPE)
-            set(${name} false)
+            set(${name} 0)
         endif()
         if(ARG_BOTH_SCOPES OR ARG_PARENT_SCOPE)
-            set(${name} false PARENT_SCOPE)
+            set(${name} 0 PARENT_SCOPE)
         endif()
     endif()
 endmacro()
@@ -514,16 +514,16 @@ macro(sofa_find_package name)
         foreach(component ${ARG_COMPONENTS} ${ARG_OPTIONAL_COMPONENTS})
             string(TOUPPER ${component} component_upper)
             if(TARGET ${name}::${component})
-                sofa_set_bool(${project_upper}_HAVE_${name_upper}_${component_upper} VALUE TRUE ${scopes})
+                sofa_set_01(${project_upper}_HAVE_${name_upper}_${component_upper} VALUE TRUE ${scopes})
             else()
-                sofa_set_bool(${project_upper}_HAVE_${name_upper}_${component_upper} VALUE FALSE ${scopes})
+                sofa_set_01(${project_upper}_HAVE_${name_upper}_${component_upper} VALUE FALSE ${scopes})
             endif()
         endforeach()
     else()
         if(${name}_FOUND OR ${name_upper}_FOUND)
-            sofa_set_bool(${project_upper}_HAVE_${name_upper} VALUE TRUE ${scopes})
+            sofa_set_01(${project_upper}_HAVE_${name_upper} VALUE TRUE ${scopes})
         else()
-            sofa_set_bool(${project_upper}_HAVE_${name_upper} VALUE FALSE ${scopes})
+            sofa_set_01(${project_upper}_HAVE_${name_upper} VALUE FALSE ${scopes})
         endif()
     endif()
 endmacro()

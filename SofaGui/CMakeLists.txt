@@ -31,7 +31,7 @@ if(SOFAGUI_QT)
     list(APPEND SOFAGUI_TARGETS SofaGuiQt)
     add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
 endif()
-sofa_set_bool(SOFAGUI_HAVE_SOFAGUIQT VALUE ${SOFAGUI_QT}) # see config.h.in
+sofa_set_01(SOFAGUI_HAVE_SOFAGUIQT VALUE ${SOFAGUI_QT}) # see config.h.in
 
 ## OpenGL-based GUIs
 if(NOT SOFA_NO_OPENGL)
@@ -41,7 +41,7 @@ if(NOT SOFA_NO_OPENGL)
         list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
         add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
     endif()
-    sofa_set_bool(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${SOFAGUI_HEADLESS_RECORDER}) # see config.h.in
+    sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${SOFAGUI_HEADLESS_RECORDER}) # see config.h.in
 endif()
 
 ## SofaGuiMain

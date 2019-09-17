@@ -16,7 +16,7 @@ if(FFMPEG_FOUND)
 else()
     message(SEND_ERROR "Can't find libavcodec, libavformat or libavutil.")
 endif()
-sofa_set_bool(SOFAHEADLESSRECORDER_HAVE_AVCODEC VALUE ${AVCODEC_FOUND}) # see config.h.in
+sofa_set_01(SOFAHEADLESSRECORDER_HAVE_AVCODEC VALUE ${AVCODEC_FOUND}) # see config.h.in
 
 # X11
 sofa_find_package(X11 QUIET)
