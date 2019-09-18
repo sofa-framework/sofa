@@ -124,13 +124,13 @@ protected:
     sofa::core::topology::BaseMeshTopology* m_topology;
 
     /// Functions checking inputs before update
-    bool checkForce(Deriv force);
-    bool checkForces(VecDeriv forces);
+    bool checkForce(const Deriv&  force);
+    bool checkForces(const VecDeriv& forces);
 
     /// Functions computing and updating the constant force vector
-    void computeForceFromSingleForce(Deriv force);
-    void computeForceFromForceVector(VecDeriv forces);
-    void computeForceFromTotalForce(Deriv totalForce);
+    void computeForceFromSingleForce(const Deriv& force);
+    void computeForceFromForceVector(const VecDeriv& forces);
+    void computeForceFromTotalForce(const Deriv& totalForce);
 
     /// Save system size for update of indices (doUpdateInternal)
     size_t m_systemSize;

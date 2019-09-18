@@ -268,7 +268,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
 
 
 template<class DataTypes>
-bool ConstantForceField<DataTypes>::checkForce(Deriv force)
+bool ConstantForceField<DataTypes>::checkForce(const Deriv& force)
 {
     size_t size = Deriv::spatial_dimensions;
 
@@ -283,7 +283,7 @@ bool ConstantForceField<DataTypes>::checkForce(Deriv force)
 }
 
 template<class DataTypes>
-bool ConstantForceField<DataTypes>::checkForces(VecDeriv forces)
+bool ConstantForceField<DataTypes>::checkForces(const VecDeriv& forces)
 {
     for (auto&& i : forces)
     {
@@ -296,7 +296,7 @@ bool ConstantForceField<DataTypes>::checkForces(VecDeriv forces)
 }
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::computeForceFromForceVector(VecDeriv forces)
+void ConstantForceField<DataTypes>::computeForceFromForceVector(const VecDeriv& forces)
 {
     Deriv& totalForce = *d_totalForce.beginEdit();
     const size_t indicesSize = d_indices.getValue().size();
@@ -318,7 +318,7 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector(VecDeriv forces)
 }
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::computeForceFromSingleForce(Deriv singleForce)
+void ConstantForceField<DataTypes>::computeForceFromSingleForce(const Deriv& singleForce)
 {
     VecDeriv& forces = *d_forces.beginEdit();
     const VecIndex & indices = d_indices.getValue();
@@ -336,7 +336,7 @@ void ConstantForceField<DataTypes>::computeForceFromSingleForce(Deriv singleForc
 }
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::computeForceFromTotalForce(Deriv totalForce)
+void ConstantForceField<DataTypes>::computeForceFromTotalForce(const Deriv& totalForce)
 {
     const size_t indicesSize = d_indices.getValue().size();
     Deriv singleForce;
@@ -462,7 +462,7 @@ void ConstantForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::Mul
 template<class DataTypes>
 void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    SReal aSC = d_arrowSizeCoef.getValue();
+    const SReal aSC = d_arrowSizeCoef.getValue();
 
     if ((!vparams->displayFlags().getShowForceFields() && (aSC==0.0)) || (aSC < 0.0)) return;
 
