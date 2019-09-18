@@ -6,10 +6,7 @@ foreach(TARGET SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaCo
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/SofaKernel/modules>")
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
     target_include_directories(${TARGET} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
-    # set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
-    # set_target_properties(${TARGET} PROPERTIES VERSION  ${SofaFramework_VERSION})
+    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
 endforeach()
 
 sofa_add_plugin(SofaComponentAll SofaComponentAll ON)
-
-
