@@ -60,13 +60,18 @@ endif()
 if(WIN32)
     #add library dir as it is not added automatically on Windows (?)
     link_directories(${CGAL_LIBRARIES_DIR})
-    # # Copy CGAL dlls
-    # file(GLOB sharedObjects "${CGAL_INSTALL_PREFIX}/bin/*.dll")
-    # foreach(sharedObject ${sharedObjects})
-    #     file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-    # endforeach()
+	
+	if(NOT EXISTS ${CGAL_INSTALL_PREFIX})
+		set(CGAL_INSTALL_PREFIX CACHE PATH "Set path to CGAL Install dir root.")
+	endif()
 
+    # Gather all CGAL dlls into var CGAL_DLLS
     file(GLOB CGAL_DLLS "${CGAL_INSTALL_PREFIX}/bin/*.dll")
+	
+	if ("${CGAL_DLLS}" STREQUAL "")
+		MESSAGE(FATAL_ERROR "No CGAL_DLLS found at location: {CGAL_INSTALL_PREFIX}/bin/ equal to: ${CGAL_INSTALL_PREFIX}/bin/" )
+	endif()
+	
     # We suppose that the auxiliary DLLS for CGAL are always used from the CGAL package
     file(GLOB CGAL_AUX_DLLS "${GMP_INCLUDE_DIR}/../lib/*.dll")
     ## Copy DLLs to the build tree
