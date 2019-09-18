@@ -75,7 +75,9 @@ void ConstantForceField<DataTypes>::init()
         m_systemSize = state->getSize();
     }
     else
+    {
          m_systemSize = m_topology->getNbPoints();
+    }
 
 
     // Initialize functions and parameters for topology data and handler
@@ -197,7 +199,9 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
             this->m_componentstate = core::objectmodel::ComponentState::Invalid;
         }
         else if( indicesSize==0 )
+        {
             msg_warning() << "Size of vector indices is zero";
+        }
 
         // check each indice of the vector
         for(size_t i=0; i<indicesSize; i++)
@@ -271,7 +275,9 @@ bool ConstantForceField<DataTypes>::checkForce(Deriv force)
     for (size_t i=0; i<size; i++)
     {
         if( std::isnan(force[i]) )
+        {
             return false;
+        }
     }
     return true;
 }
@@ -279,11 +285,12 @@ bool ConstantForceField<DataTypes>::checkForce(Deriv force)
 template<class DataTypes>
 bool ConstantForceField<DataTypes>::checkForces(VecDeriv forces)
 {
-    const auto& force_vector = forces;
-    for (auto&& i : force_vector)
+    for (auto&& i : forces)
     {
         if(! checkForce(i) )
+        {
             return false;
+        }
     }
     return true;
 }
