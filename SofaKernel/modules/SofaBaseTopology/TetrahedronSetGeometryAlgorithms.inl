@@ -37,6 +37,7 @@ namespace topology
 {
 
 using sofa::core::objectmodel::ComponentState;
+using namespace sofa::core::topology;
 
 const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 
@@ -835,8 +836,14 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::computeIntersectionEdgeWithPla
         return false;
 }
 
+template< class DataTypes>
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkNodeSequence(const TetraID tetraId) const
+{
+    return checkNodeSequence(this->m_topology->getTetrahedron(tetraId));
+}
+
 template <typename DataTypes>
-bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(Tetra& tetra)
+bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(const Tetrahedron& tetra) const
 {
     const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     sofa::defaulttype::Vec<3,Real> vec[3];

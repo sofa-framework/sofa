@@ -131,8 +131,10 @@ public:
                                           sofa::defaulttype::Vec<3,Real>& c,
                                           sofa::defaulttype::Vec<3,Real>& normal,
                                           sofa::defaulttype::Vec<3,Real>& intersection);
+    
+    bool checkNodeSequence(const TetraID tetraId) const;
+    bool checkNodeSequence(const Tetrahedron& tetra) const;
 
-    bool checkNodeSequence(Tetra& tetra);
 
     /// return a pointer to the container of cubature points
     NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();
