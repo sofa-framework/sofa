@@ -248,10 +248,10 @@ public:
         static_assert( vtype2 == vtype, "" );
         if (mv.hasIdMap())
         {
-			// When we assign a V_WRITE version to a V_READ version of the same type, which are binary compatible,
-			// share the maps like with a copy constructor, because otherwise a simple operation like passing a
-			// MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
-			// will cause a temporary copy of the map, which this define was meant to avoid!
+            // When we assign a V_WRITE version to a V_READ version of the same type, which are binary compatible,
+            // share the maps like with a copy constructor, because otherwise a simple operation like passing a
+            // MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
+            // will cause a temporary copy of the map, which this define was meant to avoid!
             idMap_ptr = *reinterpret_cast<const std::shared_ptr< IdMap > * >(&mv.idMap_ptr);
         }
     }
