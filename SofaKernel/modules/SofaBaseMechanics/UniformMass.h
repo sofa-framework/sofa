@@ -121,7 +121,7 @@ public:
     void reinit() override;
     void init() override;
     void initDefaultImpl() ;
-    bool update();
+    void doUpdateInternal() override;
     void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
 
     /// @name Check and standard initialization functions from mass information
