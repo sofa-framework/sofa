@@ -128,9 +128,9 @@ protected:
     bool checkForces(const VecDeriv& forces);
 
     /// Functions computing and updating the constant force vector
-    void computeForceFromSingleForce(const Deriv& force);
-    void computeForceFromForceVector(const VecDeriv& forces);
-    void computeForceFromTotalForce(const Deriv& totalForce);
+    void computeForceFromSingleForce();
+    void computeForceFromForceVector();
+    void computeForceFromTotalForce();
 
     /// Save system size for update of indices (doUpdateInternal)
     size_t m_systemSize;

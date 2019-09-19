@@ -120,7 +120,7 @@ void ConstantForceField<DataTypes>::init()
         const VecDeriv &forces = d_forces.getValue();
         if( checkForces(forces) )
         {
-            computeForceFromForceVector(forces);
+            computeForceFromForceVector();
         }
         else
         {
@@ -134,7 +134,7 @@ void ConstantForceField<DataTypes>::init()
         const Deriv &force = d_force.getValue();
         if( checkForce(force) )
         {
-            computeForceFromSingleForce(force);
+            computeForceFromSingleForce();
         }
         else
         {
@@ -148,7 +148,7 @@ void ConstantForceField<DataTypes>::init()
         const Deriv &totalForce = d_totalForce.getValue();
         if( checkForce(totalForce) )
         {
-            computeForceFromTotalForce(totalForce);
+            computeForceFromTotalForce();
         }
         else
         {
@@ -221,7 +221,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         const VecDeriv &forces = d_forces.getValue();
         if( checkForces(forces) )
         {
-            computeForceFromForceVector(forces);
+            computeForceFromForceVector();
             this->m_componentstate = core::objectmodel::ComponentState::Valid;
         }
         else
@@ -238,7 +238,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         const Deriv &force = d_force.getValue();
         if( checkForce(force) )
         {
-            computeForceFromSingleForce(force);
+            computeForceFromSingleForce();
             this->m_componentstate = core::objectmodel::ComponentState::Valid;
         }
         else
@@ -255,7 +255,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         const Deriv &totalForce = d_totalForce.getValue();
         if( checkForce(totalForce) )
         {
-            computeForceFromTotalForce(totalForce);
+            computeForceFromTotalForce();
             this->m_componentstate = core::objectmodel::ComponentState::Valid;
         }
         else
@@ -296,10 +296,11 @@ bool ConstantForceField<DataTypes>::checkForces(const VecDeriv& forces)
 }
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::computeForceFromForceVector(const VecDeriv& forces)
+void ConstantForceField<DataTypes>::computeForceFromForceVector()
 {
-    Deriv& totalForce = *d_totalForce.beginEdit();
+    const VecDeriv& forces = d_forces.getValue();
     const size_t indicesSize = d_indices.getValue().size();
+    Deriv& totalForce = *d_totalForce.beginEdit();
     totalForce.clear();
     if( indicesSize!=forces.size() )
     {
@@ -318,10 +319,11 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector(const VecDeriv& 
 }
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::computeForceFromSingleForce(const Deriv& singleForce)
+void ConstantForceField<DataTypes>::computeForceFromSingleForce()
 {
-    VecDeriv& forces = *d_forces.beginEdit();
+    const Deriv& singleForce = d_force.getValue();
     const VecIndex & indices = d_indices.getValue();
+    VecDeriv& forces = *d_forces.beginEdit();
     size_t indicesSize = indices.size();
     forces.clear();
     forces.resize(indicesSize);
@@ -336,15 +338,16 @@ void ConstantForceField<DataTypes>::computeForceFromSingleForce(const Deriv& sin
 }
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::computeForceFromTotalForce(const Deriv& totalForce)
+void ConstantForceField<DataTypes>::computeForceFromTotalForce()
 {
+    const Deriv& totalForce = d_totalForce.getValue();
     const size_t indicesSize = d_indices.getValue().size();
     Deriv singleForce;
     if( indicesSize!=0 )
     {
         singleForce = totalForce / (static_cast<Real>(indicesSize));
         d_force.setValue(singleForce);
-        computeForceFromSingleForce(singleForce);
+        computeForceFromSingleForce();
     }
     else
     {
