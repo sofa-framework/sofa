@@ -135,17 +135,18 @@ macro(sofa_add_generic directory name type)
     endif()
 endmacro()
 
+macro(sofa_add_collection directory name)
+    sofa_add_generic( ${directory} ${name} "Collection" ${ARGV2} )
+endmacro()
 
 macro(sofa_add_plugin directory plugin_name)
     sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
 endmacro()
 
-
 macro(sofa_add_plugin_experimental directory plugin_name)
     sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
     message("-- ${plugin_name} is an experimental feature, use it at your own risk.")
 endmacro()
-
 
 macro(sofa_add_module directory module_name)
     sofa_add_generic( ${directory} ${module_name} "Module" ${ARGV2} )
