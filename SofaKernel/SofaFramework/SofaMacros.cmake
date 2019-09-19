@@ -94,6 +94,7 @@ endmacro()
 macro(sofa_add_generic directory name type)
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
         string(TOUPPER ${type}_${name} option)
+        string(TOLOWER ${type} type_lower)
 
         # optional parameter to activate/desactivate the option
         #  e.g.  sofa_add_application( path/MYAPP MYAPP APPLICATION ON)
@@ -104,9 +105,9 @@ macro(sofa_add_generic directory name type)
             endif()
         endif()
 
-        option(${option} "Build the ${name} ${type}." ${active})
+        option(${option} "Build the ${name} ${type_lower}." ${active})
         if(${option})
-            message("Adding ${type} ${name}")
+            message("Adding ${type_lower} ${name}")
             add_subdirectory(${directory})
             #Check if the target has been successfully added
             if(TARGET ${name})
@@ -131,7 +132,7 @@ macro(sofa_add_generic directory name type)
             set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
         endif()
     else()
-        message("${type} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
+        message("The ${type_lower} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
     endif()
 endmacro()
 
@@ -181,6 +182,7 @@ macro(sofa_add_generic_external directory name type)
     set(location "${CMAKE_CURRENT_LIST_DIR}/${directory}")
 
     string(TOUPPER ${type}_${name} option)
+    string(TOLOWER ${type} type_lower)
 
     # optional parameter to activate/desactivate the option
     set(active OFF)
@@ -201,7 +203,7 @@ macro(sofa_add_generic_external directory name type)
         endif()
         option(${option} "Fetch ${name} repository." ${active})
     else()
-        option(${option} "Fetch and build the ${name} ${type}." ${active})
+        option(${option} "Fetch and build the ${name} ${type_lower}." ${active})
     endif()
 
     # Setup temporary directory
@@ -209,7 +211,7 @@ macro(sofa_add_generic_external directory name type)
 
     # Fetch
     if(${option})
-        message("Fetching ${type} ${name}")
+        message("Fetching ${type_lower} ${name}")
 
         message("Checking for ${${name}_TEMP_DIR}")
         if(NOT EXISTS ${${name}_TEMP_DIR})
