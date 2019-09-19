@@ -139,6 +139,7 @@ public:
     bool checkTetrahedronDihedralAngles(const TetraID tetraId) const;
 
     bool isTetrahedronElongated(const TetraID tetraId) const;
+    bool checkTetrahedronValidity(const TetraID tetraId) const;
 
     /// return a pointer to the container of cubature points
     NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();

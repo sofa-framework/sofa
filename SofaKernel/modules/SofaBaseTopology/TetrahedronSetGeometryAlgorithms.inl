@@ -980,6 +980,32 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkTetrahedronDihedralAngl
     return !badAngle;
 }
 
+
+template< class DataTypes>
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkTetrahedronValidity(const TetraID tetraId) const
+{
+    // test orientation first
+    if (checkNodeSequence(tetraId) == false) {
+        std::cout << "!checkNodeSequence: " << tetraId << std::endl;
+        return false;
+    }
+
+    // test elongated shape
+    if (isTetrahedronElongated(tetraId) == true) {
+        std::cout << "!isTetrahedronElongated: " << tetraId << std::endl;
+        return false;
+    }
+
+    // test dihedral angles
+    if (checkTetrahedronDihedralAngles(tetraId) == false)
+    {
+        std::cout << "!bad dihedral angle: " << tetraId << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
 /// Write the current mesh into a msh file
 template <typename DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
