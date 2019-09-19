@@ -107,7 +107,8 @@ public:
 
     /// computes the tetrahedron volume  of tetrahedron no i and returns it
     Real computeRestTetrahedronVolume(const TetraID i) const;
-    Real computeRestTetrahedronVolume(const Tetrahedron t) const;
+    Real computeRestTetrahedronVolume(const Tetrahedron& t) const;
+
 
     Real computeDihedralAngle(const TetraID tetraId, const EdgeID edgeId) const;
 

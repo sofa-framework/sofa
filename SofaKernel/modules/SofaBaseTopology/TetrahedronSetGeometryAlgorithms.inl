@@ -531,16 +531,11 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeT
 template< class DataTypes>
 typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const TetraID i) const
 {
-    const Tetrahedron t=this->m_topology->getTetrahedron(i);
-    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
-    Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
-    if(volume<0)
-        volume=-volume;
-    return volume;
+    return computeRestTetrahedronVolume(this->m_topology->getTetrahedron(i));
 }
 
 template< class DataTypes>
-typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const Tetrahedron t) const
+typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const Tetrahedron& t) const
 {
     const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
@@ -903,7 +898,7 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkNodeSequence(const Tetr
 template <typename DataTypes>
 bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(const Tetrahedron& tetra) const
 {
-    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::position())->getValue());
     sofa::defaulttype::Vec<3,Real> vec[3];
     for(int i=1; i<4; i++)
     {
