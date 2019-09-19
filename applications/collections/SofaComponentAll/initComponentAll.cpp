@@ -74,10 +74,9 @@ const char* getModuleLicense()
     return "LGPL";
 }
 
-
 const char* getModuleDescription()
 {
-    return "This package expose all the common sofa component.";
+    return "This package exposes all SOFA components.";
 }
 
 const char* getModuleComponentList()

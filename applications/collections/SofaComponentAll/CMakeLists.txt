@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaComponentAll VERSION 1.0)
 
+find_package(SofaComponentBase REQUIRED)
+find_package(SofaComponentCommon REQUIRED)
+find_package(SofaComponentGeneral REQUIRED)
+find_package(SofaComponentAdvanced REQUIRED)
+find_package(SofaComponentMisc REQUIRED)
+
 set(HEADER_FILES
     config.h
     initComponentAll.h
@@ -17,7 +23,6 @@ target_link_libraries(${PROJECT_NAME} SofaComponentBase SofaComponentCommon Sofa
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFACOMPONENTALL -DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 find_package(SofaOpenglVisual QUIET)
 if(SofaOpenglVisual_FOUND)
