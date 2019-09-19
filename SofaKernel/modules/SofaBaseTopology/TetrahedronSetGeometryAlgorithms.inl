@@ -1006,6 +1006,47 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkTetrahedronValidity(con
     return true;
 }
 
+
+template <typename DataTypes>
+const sofa::helper::vector <BaseMeshTopology::TetraID>& TetrahedronSetGeometryAlgorithms<DataTypes>::computeBadTetrahedron()
+{
+    m_badTetraIds.clear();
+    for (size_t i = 0; i < this->m_topology->getNbTetrahedra(); ++i)
+    {
+        // test orientation first
+        if (checkNodeSequence(i) == false)
+        {
+            m_badTetraIds.push_back(i);
+            std::cout << "!checkNodeSequence: " << i << std::endl;
+            continue;
+        }
+
+        // test elongated shape
+        if (isTetrahedronElongated(i) == true)
+        {
+            m_badTetraIds.push_back(i);
+            std::cout << "!isTetrahedronElongated: " << i << std::endl;
+            continue;
+        }
+
+        // test dihedral angles
+        if (checkTetrahedronDihedralAngles(i) == false)
+        {
+            m_badTetraIds.push_back(i);
+            continue;
+        }        
+    }
+
+    return m_badTetraIds;
+}
+
+template <typename DataTypes>
+const sofa::helper::vector <BaseMeshTopology::TetraID>& TetrahedronSetGeometryAlgorithms<DataTypes>::getBadTetrahedronIds()
+{
+    return m_badTetraIds;
+}
+
+
 /// Write the current mesh into a msh file
 template <typename DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
@@ -1128,6 +1169,29 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
             //vparams->drawTool()->disablePolygonOffset();
             vparams->drawTool()->setPolygonMode(0, false);
         }
+
+        // Draw bad tetra
+        if (!m_badTetraIds.empty())
+        {
+            std::vector<defaulttype::Vector3> posBad;
+            posBad.reserve(m_badTetraIds.size() * 4u);
+
+            for (size_t i = 0; i < m_badTetraIds.size(); ++i)
+            {
+                const Tetrahedron& tet = tetraArray[m_badTetraIds[i]];
+                for (unsigned int j = 0u; j < 4u; ++j)
+                {
+                    posBad.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[tet[j]])));
+                }
+            }
+
+            const float& scale = d_drawScaleTetrahedra.getValue();
+
+            if (scale >= 1.0 || scale < 0.001)
+                vparams->drawTool()->drawTetrahedra(posBad, sofa::helper::types::RGBAColor::red());
+            else
+                vparams->drawTool()->drawScaledTetrahedra(posBad, sofa::helper::types::RGBAColor::red(), scale);
+        }        
        
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, false);

@@ -141,6 +141,9 @@ public:
     bool isTetrahedronElongated(const TetraID tetraId) const;
     bool checkTetrahedronValidity(const TetraID tetraId) const;
 
+    const sofa::helper::vector <TetraID>& computeBadTetrahedron();
+    const sofa::helper::vector <TetraID>& getBadTetrahedronIds();
+    
     /// return a pointer to the container of cubature points
     NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();
 
@@ -151,6 +154,8 @@ protected:
     Data<sofa::helper::types::RGBAColor> d_drawColorTetrahedra; ///< RGBA code color used to draw tetrahedra.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,4> tetrahedronNumericalIntegration;
+
+    sofa::helper::vector <TetraID> m_badTetraIds;
 };
 
 #if !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
