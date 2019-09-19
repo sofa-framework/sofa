@@ -49,11 +49,11 @@ namespace forcefield
 template<class DataTypes>
 ConstantForceField<DataTypes>::ConstantForceField()
     : d_indices(initData(&d_indices, "indices", "indices where the forces are applied"))
-    , d_indexFromEnd(initData(&d_indexFromEnd,(bool)false,"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector. (default=false)"))
+    , d_indexFromEnd(initData(&d_indexFromEnd,bool(false),"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector. (default=false)"))
     , d_forces(initData(&d_forces, "forces", "applied forces at each point"))
     , d_force(initData(&d_force, "force", "applied force to all points if forces attribute is not specified"))
     , d_totalForce(initData(&d_totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
-    , d_arrowSizeCoef(initData(&d_arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
+    , d_arrowSizeCoef(initData(&d_arrowSizeCoef,SReal(0.0), "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
     , d_color(initData(&d_color, defaulttype::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display (default: [0.2,0.9,0.3,1.0])"))
 {
     d_arrowSizeCoef.setGroup("Visualization");
@@ -94,6 +94,7 @@ void ConstantForceField<DataTypes>::init()
         {
             msg_error() << "Size mismatch: indices > system size";
             this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            return;
         }
         // check each indice of the vector
         for(size_t i=0; i<indicesSize; i++)
@@ -102,6 +103,7 @@ void ConstantForceField<DataTypes>::init()
             {
                 msg_error() << "Indices incorrect: indice["<< i <<"] = "<< indices[i] <<" exceeds system size";
                 this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+                return;
             }
         }
     }
@@ -126,6 +128,7 @@ void ConstantForceField<DataTypes>::init()
         {
             msg_error() << " Invalid given vector forces";
             this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            return;
         }
         msg_info() << "Input vector forces is used for initialization";
     }
@@ -140,6 +143,7 @@ void ConstantForceField<DataTypes>::init()
         {
             msg_error() << " Invalid given force";
             this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            return;
         }
         msg_info() << "Input force is used for initialization";
     }
@@ -154,6 +158,7 @@ void ConstantForceField<DataTypes>::init()
         {
             msg_error() << " Invalid given totalForce";
             this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            return;
         }
         msg_info() << "Input totalForce is used for initialization";
     }
@@ -197,6 +202,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         {
             msg_error() << "Size mismatch: indices > system size";
             this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            return;
         }
         else if( indicesSize==0 )
         {
@@ -210,6 +216,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
             {
                 msg_error() << "Indices incorrect: indice["<< i <<"] = "<< indices[i] <<" exceeds system size";
                 this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+                return;
             }
         }
     }
@@ -228,6 +235,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         {
             msg_error() << " Invalid given vector forces";
             this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            return;
         }
     }
 
@@ -245,6 +253,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         {
             msg_error() << " Invalid given force";
             this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            return;
         }
     }
 
@@ -262,6 +271,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         {
             msg_error() << " Invalid given totalForce";
             this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            return;
         }
     }
 }
@@ -306,6 +316,7 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector()
     {
         msg_error() << "Impossible to use the vector forces since its size mismatches with indices size";
         this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+        return;
     }
     else
     {
@@ -353,6 +364,7 @@ void ConstantForceField<DataTypes>::computeForceFromTotalForce()
     {
         msg_error() << "Impossible to compute force from totalForce since vector indices size is zero";
         this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+        return;
     }
 }
 
