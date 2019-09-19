@@ -24,6 +24,8 @@
 
 #include <sofa/config/sharedlibrary_defines.h>
 
+#cmakedefine01 SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER
+
 #ifdef SOFA_BUILD_SOFAPRECONDITIONER
 #  define SOFA_TARGET SofaPreconditioner
 #  define SOFA_PRECONDITIONER_API SOFA_EXPORT_DYNAMIC_LIBRARY
