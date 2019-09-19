@@ -135,6 +135,7 @@ public:
     bool checkNodeSequence(const TetraID tetraId) const;
     bool checkNodeSequence(const Tetrahedron& tetra) const;
 
+    bool isTetrahedronElongated(const TetraID tetraId) const;
 
     /// return a pointer to the container of cubature points
     NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();

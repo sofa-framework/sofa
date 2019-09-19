@@ -859,6 +859,46 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(const Tetrah
         return false;
 }
 
+
+template< class DataTypes>
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::isTetrahedronElongated(const TetraID tetraId) const
+{
+    const VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const Tetrahedron& tetra = m_topology->getTetrahedron(tetraId);    
+
+    VecCoord points;
+    points.resize(4);
+    for (unsigned int i = 0; i < 4; i++) {
+        points[i] = coords[ tetra[i] ];
+    }
+
+    Real minLength = std::numeric_limits<Real>::max();
+    Real maxLength = std::numeric_limits<Real>::min();
+    
+    for (unsigned int i = 0; i < 4; i++)
+    {
+        for (unsigned int j = i + 1; j < 4; j++)
+        {
+            Real length = (points[j] - points[i]).norm2();
+            if (length < minLength) {
+                minLength = length;
+            }
+                
+            if (length > maxLength) {
+                maxLength = length;
+            }            
+        }
+    }
+
+    //std::cout << "minLength: " << minLength << " | maxLength: " << maxLength << std::endl;
+    if (minLength*10 < maxLength) {
+        std::cout << "minLength: " << minLength << " | maxLength: " << maxLength << std::endl;
+        return true;
+    }
+    else
+        return false;
+}
+
 /// Write the current mesh into a msh file
 template <typename DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
