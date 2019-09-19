@@ -109,6 +109,8 @@ public:
     Real computeRestTetrahedronVolume(const TetraID i) const;
     Real computeRestTetrahedronVolume(const Tetrahedron t) const;
 
+    Real computeDihedralAngle(const TetraID tetraId, const EdgeID edgeId) const;
+
     /// finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
     void getTetraInBall(const TetraID ind_ta, const TetraID ind_tb,
             sofa::helper::vector<TetrahedronID> &indices) const;
@@ -134,6 +136,7 @@ public:
     
     bool checkNodeSequence(const TetraID tetraId) const;
     bool checkNodeSequence(const Tetrahedron& tetra) const;
+    bool checkTetrahedronDihedralAngles(const TetraID tetraId) const;
 
     bool isTetrahedronElongated(const TetraID tetraId) const;
 

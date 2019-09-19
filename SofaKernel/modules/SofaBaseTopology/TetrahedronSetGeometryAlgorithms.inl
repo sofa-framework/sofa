@@ -562,6 +562,64 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronVolume( Basi
     }
 }
 
+template<class DataTypes>
+typename DataTypes::Real TetrahedronSetGeometryAlgorithms<DataTypes>::computeDihedralAngle(const TetraID tetraId, const EdgeID edgeId) const
+{
+    Real angle = 0.0;
+    const DataTypes::VecCoord& positions = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const Tetrahedron& tetra = m_topology->getTetrahedron(tetraId);
+    const EdgesInTetrahedron& edgeIds = m_topology->getEdgesInTetrahedron(tetraId);
+    const Edge& edge = m_topology->getEdge(edgeIds[edgeId]);
+
+    unsigned int idA = edge[0];
+    unsigned int idB = edge[1];
+
+    unsigned int idC = InvalidID, idD = InvalidID;
+    for (unsigned int i = 0; i < 4; i++)
+    {
+        if (tetra[i] != idA && tetra[i] != idB)
+        {
+            if (idC == InvalidID)
+                idC = tetra[i];
+            else
+                idD = tetra[i];
+        }
+    }
+
+    //std::cout << "idA: " << idA << " | idB: " << idB << " | idC: " << idC << " | idD: " << idD << std::endl;
+    DataTypes::Coord pAB = positions[idB] - positions[idA];
+    DataTypes::Coord pAC = positions[idC] - positions[idA];
+    DataTypes::Coord pAD = positions[idD] - positions[idA];
+
+    sofa::defaulttype::Vec<3, Real> AB = sofa::defaulttype::Vec<3, Real>(pAB);
+    sofa::defaulttype::Vec<3, Real> AC = sofa::defaulttype::Vec<3, Real>(pAC);
+    sofa::defaulttype::Vec<3, Real> AD = sofa::defaulttype::Vec<3, Real>(pAD);
+    
+    sofa::defaulttype::Vec<3, Real> nF1 = AB.cross(AC);
+    sofa::defaulttype::Vec<3, Real> nF2 = AB.cross(AD);
+
+    nF1.normalize();
+    nF2.normalize();
+    Real cosTheta = nF1 * nF2;
+    angle = std::acos(cosTheta) * (180 / M_PI);
+
+    AB.normalize();
+    AC.normalize();
+    AD.normalize();
+
+    Real uu = AB * AB;
+    Real vw = AC * AD;
+    Real uw = AB * AD;
+    Real vu = AC * AB;
+
+    Real cosTheta2 = (uu*vw) - (uw*vu);
+    Real angle2 = std::acos(cosTheta2) * (180 / M_PI);
+    //std::cout << "theta: " << angle << " | theta: " << angle2 << std::endl;
+
+    return angle;
+}
+
+
 /// Finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID ind_ta, const TetraID ind_tb,
@@ -897,6 +955,29 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::isTetrahedronElongated(const
     }
     else
         return false;
+}
+
+
+template< class DataTypes>
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkTetrahedronDihedralAngles(const TetraID tetraId) const
+{
+    bool badAngle = false;
+    for (unsigned int eId = 0; eId < 6; eId++)
+    {
+        Real angle = computeDihedralAngle(tetraId, eId);
+        if (angle < 20) {
+            badAngle = true;
+            std::cout << "!badAngle small: " << angle << " for tri : " << tetraId << " | edge: " << eId << std::endl;
+            break;
+        }
+        else if (angle > 160) {
+            badAngle = true;
+            std::cout << "!badAngle bog: " << angle << " for tri : " << tetraId << " | edge: " << eId << std::endl;
+            break;
+        }
+    }
+
+    return !badAngle;
 }
 
 /// Write the current mesh into a msh file
