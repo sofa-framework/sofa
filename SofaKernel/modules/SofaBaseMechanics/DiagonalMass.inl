@@ -657,6 +657,8 @@ void DiagonalMass<DataTypes, MassType>::init()
 {
     m_componentstate = ComponentState::Valid;
 
+    this->f_listening.setValue(false);
+
     if (!d_fileMass.getValue().empty())
     {
         if(!load(d_fileMass.getFullPath().c_str())){
@@ -666,7 +668,6 @@ void DiagonalMass<DataTypes, MassType>::init()
         msg_warning() << "File given as input for DiagonalMass, in this a case:" << msgendl
                       << "the topology won't be used to compute the mass" << msgendl
                       << "the update, the coherency and the tracking of mass information data are disable (listening = false)";
-        this->f_listening.setValue(false);
         Inherited::init();
     }
     else
@@ -1353,10 +1354,7 @@ bool DiagonalMass<DataTypes, MassType>::load(const char *filename)
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::Event *event)
 {
-    if (sofa::simulation::AnimateEndEvent::checkEventType(event))
-    {
-        update();
-    }
+     SOFA_UNUSED(event);
 }
 
 
