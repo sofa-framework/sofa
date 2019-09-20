@@ -61,6 +61,8 @@ public:
     virtual void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition);
     virtual bool isEnabled();
 
+    virtual void setLock(bool value) {}
+
 protected:
     ForceFeedback();
 };
