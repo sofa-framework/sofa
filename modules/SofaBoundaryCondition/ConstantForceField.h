@@ -27,7 +27,6 @@
 
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/defaulttype/RGBAColor.h>
-#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
