@@ -266,4 +266,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CORE")
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/core")
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/core" ${SRC_ROOT})

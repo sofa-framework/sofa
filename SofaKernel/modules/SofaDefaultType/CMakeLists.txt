@@ -58,4 +58,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DEF
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/defaulttype")
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/defaulttype" ${SRC_ROOT})

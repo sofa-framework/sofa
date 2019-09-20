@@ -25,7 +25,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/map.h>
-#include <../extlibs/json/json.h>
+#include "../../extlibs/json/json.h"
 
 
 #include <cmath>

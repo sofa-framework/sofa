@@ -5,10 +5,15 @@ find_package(SofaGTestMain REQUIRED)
 find_package(SofaTest REQUIRED)
 
 set(SOURCE_FILES
+    DAG_test.cpp
     DAGNode_test.cpp
     MutationListener_test.cpp
+    Node_test.cpp
+    SimpleApi_test.cpp
+    Simulation_test.cpp
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../../SofaSimulationCore/SofaSimulationCore_test>")
 add_test(Name ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

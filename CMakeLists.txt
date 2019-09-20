@@ -8,12 +8,9 @@ set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
 set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
-
-if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
-    set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel")
-    if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
-        message( FATAL_ERROR "SofaKernel is not present or is inaccessible. Check if ${SOFA_KERNEL_SOURCE_DIR} exists or is accessible.")
-    endif()
+if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR})
+    message(WARNING "SofaKernel is not present or is inaccessible. Check if ${SOFA_KERNEL_SOURCE_DIR} exists or is accessible. Backing up to default value.")
+    set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel" FORCE)
 endif()
 
 ## Default build type

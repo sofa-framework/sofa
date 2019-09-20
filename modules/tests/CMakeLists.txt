@@ -6,6 +6,18 @@ set(SOFA_KERNEL_MODULES_BINARY_DIR ${CMAKE_BINARY_DIR}/SofaKernel)
 set(SOFA_EXT_MODULES_SOURCE_DIR ..)
 set(SOFA_EXT_MODULES_BINARY_DIR ${CMAKE_BINARY_DIR})
 
+# SofaFramework tests
+add_definitions("-DFRAMEWORK_TEST_RESOURCES_DIR=\"${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/resources/tests\"")
+add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaHelper/SofaHelper_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaFramework/SofaHelper/SofaHelper_test)
+add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaDefaultType/SofaDefaultType_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaFramework/SofaDefaultType/SofaDefaultType_test)
+add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaCore/SofaCore_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaFramework/SofaCore/SofaCore_test)
+add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimulationCore/SofaSimulationCore_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaFramework/SofaSimulationCore/SofaSimulationCore_test)
+
+# SofaSimulation tests
+add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimulationGraph/SofaSimulationGraph_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/SofaSimulationGraph/SofaSimulationGraph_test)
+add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimulationTree/SofaSimulationTree_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/SofaSimulationTree/SofaSimulationTree_test)
+#add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimulationCommon/SofaSimulationCommon_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/SofaSimulationCommon/SofaSimulationCommon_test)
+
 # SofaBase tests
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseCollision/SofaBaseCollision_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseCollision/SofaBaseCollision_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseLinearSolver/SofaBaseLinearSolver_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseLinearSolver/SofaBaseLinearSolver_test)
@@ -22,13 +34,6 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaLoader/SofaLoader_test ${
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaMeshCollision/SofaMeshCollision_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaMeshCollision/SofaMeshCollision_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaRigid/SofaRigid_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaRigid/SofaRigid_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimpleFem/SofaSimpleFem_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaSimpleFem/SofaSimpleFem_test)
-
-# SofaSimulation tests
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimulationGraph/SofaSimulationGraph_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/SofaSimulationGraph/SofaSimulationGraph_test)
-
-# SofaFramework tests
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/sofa/simulation/simulation_test  ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/simulation_test)
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/sofa/frameworkextra/frameworkextra_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaFramework/frameworkextra_test)
 
 # SofaGeneral tests
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaBoundaryCondition/SofaBoundaryCondition_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaBoundaryCondition/SofaBoundaryCondition_test)

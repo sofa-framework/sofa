@@ -26,9 +26,9 @@ add_subdirectory(../modules/SofaHelper ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper)
 add_subdirectory(../modules/SofaDefaultType ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType)
 add_subdirectory(../modules/SofaCore ${CMAKE_CURRENT_BINARY_DIR}/SofaCore)
 add_subdirectory(../modules/SofaSimulationCore ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCore)
-if(SOFA_BUILD_TESTS)
-    add_subdirectory(../framework/framework_test ${CMAKE_CURRENT_BINARY_DIR}/framework_test)
-endif()
+#if(SOFA_BUILD_TESTS)
+#    add_subdirectory(../framework/framework_test ${CMAKE_CURRENT_BINARY_DIR}/framework_test)
+#endif()
 
 # Generate & install the different files that contains the defines associated with
 # the state of the build option.
