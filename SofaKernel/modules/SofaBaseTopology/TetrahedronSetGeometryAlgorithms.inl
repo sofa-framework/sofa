@@ -595,19 +595,7 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms<DataTypes>::computeDih
     nF1.normalize();
     nF2.normalize();
     Real cosTheta = nF1 * nF2;
-    angle = std::acos(cosTheta) * (180 / M_PI);
-
-    AB.normalize();
-    AC.normalize();
-    AD.normalize();
-
-    Real uu = AB * AB;
-    Real vw = AC * AD;
-    Real uw = AB * AD;
-    Real vu = AC * AB;
-
-    Real cosTheta2 = (uu*vw) - (uw*vu);
-    Real angle2 = std::acos(cosTheta2) * (180 / M_PI);
+    angle = std::acos(cosTheta) * (180 / M_PI);    
 
     return angle;
 }
