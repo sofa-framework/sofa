@@ -314,6 +314,17 @@ if(NOT SOFA_NO_OPENGL)
     endif()
 endif()
 
+# Create build and install versions of etc/sofa.ini:
+#   - In build dir, sofa.ini contains absolute paths to distant (in source) share/ and examples/ dirs
+#   - In install dir, sofa.ini (generated later via installedSofa.ini) contains relative paths to local share/ and examples/ dirs
+set(SHARE_DIR "${CMAKE_SOURCE_DIR}/share")
+set(EXAMPLES_DIR "${CMAKE_SOURCE_DIR}/examples")
+configure_file("etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/sofa.ini")
+set(SHARE_DIR "../share/sofa")
+set(EXAMPLES_DIR "../share/sofa/examples")
+configure_file("etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
+
 # LIBRARY
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
