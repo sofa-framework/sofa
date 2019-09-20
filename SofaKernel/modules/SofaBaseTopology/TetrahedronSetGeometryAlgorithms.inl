@@ -581,7 +581,6 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms<DataTypes>::computeDih
         }
     }
 
-    //std::cout << "idA: " << idA << " | idB: " << idB << " | idC: " << idC << " | idD: " << idD << std::endl;
     DataTypes::Coord pAB = positions[idB] - positions[idA];
     DataTypes::Coord pAC = positions[idC] - positions[idA];
     DataTypes::Coord pAD = positions[idD] - positions[idA];
@@ -609,7 +608,6 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms<DataTypes>::computeDih
 
     Real cosTheta2 = (uu*vw) - (uw*vu);
     Real angle2 = std::acos(cosTheta2) * (180 / M_PI);
-    //std::cout << "theta: " << angle << " | theta: " << angle2 << std::endl;
 
     return angle;
 }
@@ -747,7 +745,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
         }
     }
     if(ind_ta == core::topology::BaseMeshTopology::InvalidID)
-        std::cout << "ERROR: Can't find the seed" << std::endl;
+        msg_error() << "getTetraInBall, Can't find the seed.";
     Real d = r;
 //      const Tetrahedron &ta=this->m_topology->getTetrahedron(ind_ta);
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
@@ -943,9 +941,7 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::isTetrahedronElongated(const
         }
     }
 
-    //std::cout << "minLength: " << minLength << " | maxLength: " << maxLength << std::endl;
     if (minLength*10 < maxLength) {
-        std::cout << "minLength: " << minLength << " | maxLength: " << maxLength << std::endl;
         return true;
     }
     else
@@ -962,12 +958,10 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkTetrahedronDihedralAngl
         Real angle = computeDihedralAngle(tetraId, eId);
         if (angle < 20) {
             badAngle = true;
-            std::cout << "!badAngle small: " << angle << " for tri : " << tetraId << " | edge: " << eId << std::endl;
             break;
         }
         else if (angle > 160) {
             badAngle = true;
-            std::cout << "!badAngle bog: " << angle << " for tri : " << tetraId << " | edge: " << eId << std::endl;
             break;
         }
     }
@@ -981,20 +975,17 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkTetrahedronValidity(con
 {
     // test orientation first
     if (checkNodeSequence(tetraId) == false) {
-        std::cout << "!checkNodeSequence: " << tetraId << std::endl;
         return false;
     }
 
     // test elongated shape
     if (isTetrahedronElongated(tetraId) == true) {
-        std::cout << "!isTetrahedronElongated: " << tetraId << std::endl;
         return false;
     }
 
     // test dihedral angles
     if (checkTetrahedronDihedralAngles(tetraId) == false)
     {
-        std::cout << "!bad dihedral angle: " << tetraId << std::endl;
         return false;
     }
 
@@ -1012,7 +1003,6 @@ const sofa::helper::vector <BaseMeshTopology::TetraID>& TetrahedronSetGeometryAl
         if (checkNodeSequence(i) == false)
         {
             m_badTetraIds.push_back(i);
-            std::cout << "!checkNodeSequence: " << i << std::endl;
             continue;
         }
 
@@ -1020,7 +1010,6 @@ const sofa::helper::vector <BaseMeshTopology::TetraID>& TetrahedronSetGeometryAl
         if (isTetrahedronElongated(i) == true)
         {
             m_badTetraIds.push_back(i);
-            std::cout << "!isTetrahedronElongated: " << i << std::endl;
             continue;
         }
 
