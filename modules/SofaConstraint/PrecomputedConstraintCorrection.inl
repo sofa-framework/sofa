@@ -413,13 +413,13 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
     //  Print 400 first row and column of the matrix
     if (this->notMuted())
     {
-        msg_error(this) << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
+        msg_info(this) << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
 
         for (unsigned int i = 0; i < 20 && i < nbCols; i++)
         {
             for (unsigned int j = 0; j < 20 && j < nbCols; j++)
             {
-                msg_error(this) << " \t " << appCompliance[j*nbCols + i];
+                msg_info(this) << " \t " << appCompliance[j*nbCols + i];
             }
         }
 
