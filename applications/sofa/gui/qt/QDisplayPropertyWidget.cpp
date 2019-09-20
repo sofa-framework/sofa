@@ -161,7 +161,7 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
             continue;
 
         // for each data of the current object we determine where it belongs
-        QString group = data->getGroup();
+        QString group = data->getGroup().c_str();
 
         // use the default group if data does not belong to any group
         if(group.isEmpty())
@@ -272,7 +272,7 @@ void QDisplayPropertyWidget::addData(const QString& component, const QString& gr
     QHBoxLayout *layout = new QHBoxLayout(widget);
 
     dataItem->setText(0, data->getName().c_str());
-    dataItem->setToolTip(0, data->getHelp());
+    dataItem->setToolTip(0, data->getHelp().c_str());
     QDisplayDataWidget *displayDataWidget = new QDisplayDataWidget(widget, data, modifyObjectFlags);
     layout->addWidget(displayDataWidget);
 
@@ -286,7 +286,7 @@ void QDisplayPropertyWidget::addData(const QString& component, const QString& gr
         widget->layout()->setSpacing(0);
     }
     setItemWidget(dataItem, 1, widget);
-    dataItem->setToolTip(1, data->getHelp());
+    dataItem->setToolTip(1, data->getHelp().c_str());
 }
 
 void QDisplayPropertyWidget::addLink(const QString& component, const QString& group, sofa::core::objectmodel::BaseLink *link)
@@ -317,7 +317,7 @@ void QDisplayPropertyWidget::addLink(const QString& component, const QString& gr
     linkFlags.READONLY_FLAG = true;
 
     linkItem->setText(0, link->getName().c_str());
-    linkItem->setToolTip(0, link->getHelp());
+    linkItem->setToolTip(0, link->getHelp().c_str());
     QDisplayLinkWidget *displayLinkWidget = new QDisplayLinkWidget(widget, link, linkFlags);
     layout->addWidget(displayLinkWidget);
 
@@ -331,7 +331,7 @@ void QDisplayPropertyWidget::addLink(const QString& component, const QString& gr
         widget->layout()->setSpacing(0);
     }
     setItemWidget(linkItem, 1, widget);
-    linkItem->setToolTip(1, link->getHelp());
+    linkItem->setToolTip(1, link->getHelp().c_str());
 }
 
 void QDisplayPropertyWidget::setDescription(const QString& component, const QString& group, sofa::core::objectmodel::Base *base)

@@ -168,7 +168,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
             if (data->getName().empty()) continue; // ignore unnamed data
 
-            if (!data->getGroup())
+            if (data->getGroup().empty())
             {
                 dmsg_error("ModifyObject") << "NULL group for Data (" << data->getName() << "() in (" << node->getName() << "'";
                 continue;

@@ -78,13 +78,13 @@ public:
     public:
         BaseInitData() : data(nullptr), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(nullptr), name(""), ownerClass(""), group(""), widget("") {}
         BaseData* data;
-        const char* helpMsg;
+        std::string helpMsg;
         DataFlags dataFlags;
         Base* owner;
-        const char* name;
-        const char* ownerClass;
-        const char* group;
-        const char* widget;
+        std::string name;
+        std::string ownerClass;
+        std::string group;
+        std::string widget;
     };
 
     virtual BaseData* getNewInstance() { return nullptr; }
@@ -96,14 +96,14 @@ public:
      *  \param helpMsg A help message that describes this %Data.
      *  \param flags The flags for this %Data (see \ref DataFlagsEnum).
      */
-    BaseData(const char* helpMsg, DataFlags flags = FLAG_DEFAULT);
+    BaseData(const std::string& helpMsg, DataFlags flags = FLAG_DEFAULT);
 
     /** Constructor.
      *  \param helpMsg A help message that describes this %Data.
      *  \param isDisplayed Whether this %Data should be displayed in GUIs.
      *  \param isReadOnly Whether this %Data should be modifiable in GUIs.
      */
-    BaseData(const char* helpMsg, bool isDisplayed=true, bool isReadOnly=false);
+    BaseData(const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false);
 
     /// Destructor.
     ~BaseData() override;
@@ -157,25 +157,25 @@ public:
     virtual void releaseAspect(int aspect) = 0;
 
     /// Get a help message that describes this %Data.
-    const char* getHelp() const { return help; }
+    const std::string& getHelp() const { return help; }
 
     /// Set the help message.
-    void setHelp(const char* val) { help = val; }
+    void setHelp(const std::string& val) { help = val; }
 
     /// Get owner class
-    const char* getOwnerClass() const { return ownerClass; }
+    const std::string& getOwnerClass() const { return ownerClass; }
 
     /// Set owner class
     void setOwnerClass(const char* val) { ownerClass = val; }
 
     /// Get group
-    const char* getGroup() const { return group; }
+    const std::string& getGroup() const { return group; }
 
     /// Set group
-    void setGroup(const char* val) { group = val; }
+    void setGroup(const std::string& val) { group = val; }
 
     /// Get widget
-    const char* getWidget() const { return widget; }
+    const std::string& getWidget() const { return widget; }
 
     /// Set widget
     void setWidget(const char* val) { widget = val; }
@@ -301,7 +301,7 @@ public:
 protected:
 
     BaseLink::InitLink<BaseData>
-    initLink(const char* name, const char* help)
+    initLink(const std::string& name, const std::string& help)
     {
         return BaseLink::InitLink<BaseData>(this, name, help);
     }
@@ -319,13 +319,13 @@ protected:
     virtual bool updateFromParentValue(const BaseData* parent);
 
     /// Help message
-    const char* help {nullptr} ;
+    std::string help {nullptr} ;
     /// Owner class
-    const char* ownerClass {nullptr} ;
+    std::string ownerClass {nullptr} ;
     /// group
-    const char* group {nullptr};
+    std::string group {nullptr};
     /// widget
-    const char* widget {nullptr};
+    std::string widget {nullptr};
     /// Number of changes since creation
     helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
     /// True if this %Data is set, i.e. its value is different from the default value

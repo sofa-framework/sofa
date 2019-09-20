@@ -62,7 +62,7 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
     parent->layout()->addWidget(this);
     parent->setContentsMargins(0,0,0,0);
 
-    setToolTip(link->getHelp());
+    setToolTip(link->getHelp().c_str());
 
     LinkWidget::CreatorArgument dwarg;
     dwarg.name =  link_->getName();

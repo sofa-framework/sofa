@@ -35,7 +35,7 @@ namespace objectmodel
 
 //#define SOFA_DDG_TRACE
 
-BaseData::BaseData(const char* h, DataFlags dataflags)
+BaseData::BaseData(const std::string& h, DataFlags dataflags)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counters(), m_isSets(), m_dataFlags(dataflags)
     , m_owner(nullptr), m_name("")
@@ -47,7 +47,7 @@ BaseData::BaseData(const char* h, DataFlags dataflags)
     m_isSets.assign(false);
 }
 
-BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly)
+BaseData::BaseData( const std::string& h, bool isDisplayed, bool isReadOnly)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(nullptr), m_name("")
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
