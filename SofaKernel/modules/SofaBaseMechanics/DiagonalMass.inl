@@ -51,9 +51,9 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
                                                           "If unspecified or wrongly set, the massDensity or totalMass information is used.") )
     , d_massDensity( initData(&d_massDensity, Real(1.0),"massDensity","Specify one single real and positive value for the mass density. \n"
                                                                       "If unspecified or wrongly set, the totalMass information is used.") )
-    , d_computeMassOnRest(initData(&d_computeMassOnRest, false, "computeMassOnRest", "If true, the mass of every element is computed based on the rest position rather than the position"))
     , d_totalMass(initData(&d_totalMass, Real(1.0), "totalMass", "Specify the total mass resulting from all particles. \n"
-                                                                  "If unspecified or wrongly set, the default value is used: totalMass = 1.0"))
+                                                                 "If unspecified or wrongly set, the default value is used: totalMass = 1.0"))
+    , d_computeMassOnRest(initData(&d_computeMassOnRest, false, "computeMassOnRest", "If true, the mass of every element is computed based on the rest position rather than the position"))
     , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "Display the center of gravity of the system" ) )
     , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
     , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
@@ -538,10 +538,8 @@ void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defau
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::reinit()
 {
-    if (m_dataTrackerTotal.hasChanged() || m_dataTrackerDensity.hasChanged() || m_dataTrackerVertex.hasChanged())
-    {
-        update();
-    }
+    // Now update is handled through the doUpdateInternal mechanism
+    // called at each begin of step through the UpdateInternalDataVisitor
 }
 
 template <class DataTypes, class MassType>
@@ -657,6 +655,8 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::init()
 {
+    m_componentstate = ComponentState::Valid;
+
     if (!d_fileMass.getValue().empty())
     {
         if(!load(d_fileMass.getFullPath().c_str())){
@@ -671,10 +671,6 @@ void DiagonalMass<DataTypes, MassType>::init()
     }
     else
     {
-        m_dataTrackerVertex.trackData(d_vertexMass);
-        m_dataTrackerDensity.trackData(d_massDensity);
-        m_dataTrackerTotal.trackData(d_totalMass);
-
         if(!checkTopology())
         {
             m_componentstate = ComponentState::Invalid;
@@ -696,6 +692,10 @@ void DiagonalMass<DataTypes, MassType>::init()
         }
 
         massInitialization();
+
+        this->trackInternalData(d_vertexMass);
+        this->trackInternalData(d_massDensity);
+        this->trackInternalData(d_totalMass);
     }
      m_componentstate = ComponentState::Valid;
 }
@@ -1004,8 +1004,9 @@ void DiagonalMass<DataTypes, MassType>::checkTotalMassInit()
     //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
     if(!checkTotalMass())
     {
-        msg_warning() << "Switching back to default values: totalMass = 1.0\n";
         d_totalMass.setValue(1.0) ;
+        msg_warning() << "Switching back to default values: totalMass = 1.0\n";
+        m_componentstate = ComponentState::Invalid;
     }
 }
 
@@ -1190,46 +1191,51 @@ const typename DiagonalMass<DataTypes, MassType>::Real &DiagonalMass<DataTypes, 
 
 
 template <class DataTypes, class MassType>
-bool DiagonalMass<DataTypes, MassType>::update()
+void DiagonalMass<DataTypes, MassType>::doUpdateInternal()
 {
-    bool update = false;
-
-    if (m_dataTrackerTotal.hasChanged())
+    if (this->hasDataChanged(d_totalMass))
     {
         if(checkTotalMass())
         {
             initFromTotalMass();
-            update = true;
+            m_componentstate = ComponentState::Valid;
         }
-        m_dataTrackerTotal.clean();
+        else
+        {
+            msg_error() << "doUpdateInternal: incorrect update from totalMass";
+            m_componentstate = ComponentState::Invalid;
+        }
     }
-    else if(m_dataTrackerDensity.hasChanged())
+    else if(this->hasDataChanged(d_massDensity))
     {
         if(checkMassDensity())
         {
             initFromMassDensity();
-            update = true;
+            m_componentstate = ComponentState::Valid;
         }
-        m_dataTrackerDensity.clean();
+        else
+        {
+            msg_error() << "doUpdateInternal: incorrect update from massDensity";
+            m_componentstate = ComponentState::Invalid;
+        }
     }
-    else if(m_dataTrackerVertex.hasChanged())
+    else if(this->hasDataChanged(d_vertexMass))
     {
         if(checkVertexMass())
         {
             initFromVertexMass();
-            update = true;
+            m_componentstate = ComponentState::Valid;
         }
-        m_dataTrackerVertex.clean();
+        else
+        {
+            msg_error() << "doUpdateInternal: incorrect update from vertexMass";
+            m_componentstate = ComponentState::Invalid;
+        }
     }
 
-    if(update)
-    {
-        //Info post-init
-        msg_info() << "mass information updated";
-        printMass();
-    }
-
-    return update;
+    //Info post-init
+    msg_info() << "mass information updated";
+    printMass();
 }
 
 
