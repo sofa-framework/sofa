@@ -657,8 +657,6 @@ void DiagonalMass<DataTypes, MassType>::init()
 {
     m_componentstate = ComponentState::Valid;
 
-    this->f_listening.setValue(false);
-
     if (!d_fileMass.getValue().empty())
     {
         if(!load(d_fileMass.getFullPath().c_str())){
