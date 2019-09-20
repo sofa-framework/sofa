@@ -142,6 +142,8 @@ void UniformMass<DataTypes, MassType>::init()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::initDefaultImpl()
 {
+    this->m_componentstate = core::objectmodel::ComponentState::Valid;
+
     Mass<DataTypes>::init();
 
     WriteAccessor<Data<vector<int> > > indices = d_indices;
@@ -324,6 +326,7 @@ void UniformMass<DataTypes, MassType>::checkTotalMassInit()
     {
         msg_warning(this) << "Switching back to default values: totalMass = 1.0\n";
         d_totalMass.setValue(1.0) ;
+        this->m_componentstate = core::objectmodel::ComponentState::Invalid;
     }
 }
 
