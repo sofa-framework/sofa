@@ -9,7 +9,8 @@
 
   <Node 	name="ref_highresFEM"   >
     <VisualStyle displayFlags="hideWireframe" />
-    <OglModel template="ExtVec3f" name="Visual" fileMesh="refBeam_Flex.obj" color="0.5 0.5 0.5" translation="-0.5 0 0"/>
+    <MeshObjLoader name="meshLoader_0" filename="refBeam_Flex.obj" translation="-0.5 0 0" handleSeams="1" />
+    <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.5 0.5 0.5"/>
   </Node>
 
 
@@ -59,7 +60,8 @@
     </Node>
 
     <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="1 0.8 0.8"/>
+      <MeshObjLoader name="meshLoader_1" filename="beam.obj" handleSeams="1" />
+      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="1 0.8 0.8"/>
       <LinearMapping template="Quadratic,ExtVec3f"/>
     </Node>
   </Node>

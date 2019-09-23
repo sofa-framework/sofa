@@ -129,6 +129,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     vecBox.push_back(entireBoxRoi);
     typename BoxRoi::SPtr boxRoi = modeling::addNew<BoxRoi>(SquareNode,"boxRoi");
     boxRoi->d_alignedBoxes.setValue(vecBox);
+    boxRoi->d_strict.setValue(false);
 
     //PairBoxRoi to define the constrained points = points of the border
     typename PairBoxRoi::SPtr pairBoxRoi = modeling::addNew<PairBoxRoi>(SquareNode,"pairBoxRoi");
@@ -210,6 +211,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     vecBox.push_back(box);
     typename BoxRoi::SPtr boxRoi1 = modeling::addNew<BoxRoi>(root,"boxRoiFix");
     boxRoi1->d_alignedBoxes.setValue(vecBox);
+    boxRoi1->d_strict.setValue(false);
     // FixedConstraint
     typename component::projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fc=
         modeling::addNew<typename component::projectiveconstraintset::FixedConstraint<DataTypes> >(root);
@@ -226,6 +228,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     typename BoxRoi::SPtr boxRoi2 = modeling::addNew<BoxRoi>(root,"boxRoiPressure");
     boxRoi2->d_alignedBoxes.setValue(vecBox);
     boxRoi2->d_computeTriangles=true;
+    boxRoi2->d_strict.setValue(false);
     /// TrianglePressureForceField
     typename component::forcefield::TrianglePressureForceField<DataTypes>::SPtr tpff=
             modeling::addNew<typename component::forcefield::TrianglePressureForceField<DataTypes> >(root);

@@ -39,7 +39,8 @@
         </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.2 1 0.2 1" />
+		<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.2 1 0.2 1" />
 	    	<LinearMapping template="Vec3d,ExtVec3f"  />
 	    </Node>
     </Node>

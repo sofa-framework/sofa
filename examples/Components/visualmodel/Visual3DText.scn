@@ -4,5 +4,6 @@
 	<VisualStyle displayFlags="showVisualModels"/>
         <Visual3DText text="hello world!" position="1 1 1" color="red" scale="2" depthTest="false"/>
         
-        <OglModel fileMesh="mesh/dragon.obj"/>
+        <MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
+        <OglModel src="@meshLoader_0"/>
 </Node>

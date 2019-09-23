@@ -63,7 +63,7 @@ protected:
     *
     * Does nothing.
     */
-    ~Hexa2QuadTopologicalMapping() override;
+    ~Hexa2QuadTopologicalMapping() override = default;
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
     */

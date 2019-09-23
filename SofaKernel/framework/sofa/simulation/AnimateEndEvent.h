@@ -59,7 +59,7 @@ public:
 
     SReal getDt() const { return dt; }
 
-    const char* getClassName() const override { return "AnimateEndEvent"; }
+    inline static const char* GetClassName() { return "AnimateEndEvent"; }
 protected:
     SReal dt;
 };

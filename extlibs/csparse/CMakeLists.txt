@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(csparse)
+project(csparse VERSION 1.2.0)
 
 set(HEADER_FILES
     csparse.h
@@ -21,4 +21,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/e
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_generate_package(NAME CSparse VERSION 0.0 TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "extlibs/CSparse")
+sofa_generate_package(NAME CSparse VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "extlibs/CSparse")

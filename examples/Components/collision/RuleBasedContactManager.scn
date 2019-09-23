@@ -19,7 +19,8 @@
         <TriangleCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
         <LineCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
         <PointCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
-        <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="0.5 0.5 0.5 1.0" scale="5.0" />
+        <MeshObjLoader name="meshLoader_2" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
+        <OglModel name="Visual" src="@meshLoader_2" color="0.5 0.5 0.5 1.0" />
     </Node>
 	
     <Node name="Torus2">
@@ -29,7 +30,8 @@
         <UniformMass filename="BehaviorModels/torus.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus.obj" color="0.0 0.5 0.5 1.0" scale="5.0" />
+            <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_3" color="0.0 0.5 0.5 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
@@ -50,7 +52,8 @@
         <UniformMass filename="BehaviorModels/torus2.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="1.0 0.5 0.25 1.0" scale="5.0" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="1.0 0.5 0.25 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
@@ -71,7 +74,8 @@
         <UniformMass filename="BehaviorModels/torus.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus.obj" color="0.0 0.5 0.5 1.0" scale="5.0" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="0.0 0.5 0.5 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">

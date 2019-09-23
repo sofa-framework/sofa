@@ -80,6 +80,10 @@ public:
             const std::vector<Vector3>  &normal,
             const Vec4f& colour) = 0 ;
     virtual void drawTriangles(const std::vector<Vector3> &points,
+        const std::vector< Vec3i > &index,
+        const std::vector<Vector3>  &normal,
+        const std::vector<Vec4f>& colour) = 0;
+    virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector< Vec4f > &colour) = 0 ;
     virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
@@ -158,6 +162,7 @@ public:
     virtual void drawScaledHexahedra(const std::vector<Vector3> &points, const Vec4f& colour, const float scale) = 0;
 
     virtual void drawSphere( const Vector3 &p, float radius) = 0 ;
+    virtual void drawSphere(const Vector3 &p, float radius, const Vec4f& colour) = 0;
     virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii) = 0;
 
     virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max, float size = 1.0 ) = 0;

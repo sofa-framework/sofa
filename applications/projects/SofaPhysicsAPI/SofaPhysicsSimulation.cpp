@@ -46,7 +46,7 @@
 #include <cmath>
 #include <iostream>
 
-#include "../plugins/SceneCreator/SceneCreator.h"
+#include <SceneCreator/SceneCreator.h>
 
 SofaPhysicsAPI::SofaPhysicsAPI(bool useGUI, int GUIFramerate)
     : impl(new SofaPhysicsSimulation(useGUI, GUIFramerate))

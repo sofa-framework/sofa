@@ -17,7 +17,8 @@
 
 	<Node name="Tooth" >
 		<Node name="VisualModel" >
-			<OglModel name="ToothVisualModel" fileMesh="Demos/Dentistry/data/mesh/tooth-closed.obj" color="white" />
+			<MeshObjLoader name="meshLoader_0" filename="Demos/Dentistry/data/mesh/tooth-closed.obj" handleSeams="1" />
+			<OglModel name="ToothVisualModel" src="@meshLoader_0" color="white" />
 		</Node>
 		<Node name="CollisionModel" >
 			<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
@@ -29,7 +30,8 @@
 		<MechanicalObject template="Rigid" name="DOFs" position="0 0 0  0 0 0 1"/>
 		<MechanicalStateController template="Rigid" listening="true"  mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
 		<Node name="VisuAvatar" activated="false">
-			<OglModel name="Visual" fileMesh="mesh/sphere.obj" color="gray" scale="0.1"/>
+			<MeshObjLoader name="meshLoader_2" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
+			<OglModel name="Visual" src="@meshLoader_2" color="gray"/>
 			<RigidMapping input="@.." output="@Visual" index="0"/>
 		</Node>
 		<Node name="RefModel">
@@ -59,7 +61,8 @@
 		<UniformMass name="mass" totalmass="0.05" />
 		<EnslavementForceFeedback activate="true" stiffness="3.0"/> <!-- ADDED : Compute a force-feedback for the device -->
 		<Node name="VisualModel" >
-			<OglModel name="InstrumentVisualModel" fileMesh="Demos/Dentistry/data/mesh/dental_instrument.obj" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
+			<MeshObjLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
+			<OglModel name="InstrumentVisualModel" src="@meshLoader_1" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
 			<RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
 		</Node>
 		<Node name="CollisionModel" >

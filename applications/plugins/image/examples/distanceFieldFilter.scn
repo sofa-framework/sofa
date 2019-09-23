@@ -11,5 +11,6 @@
   <ImageFilter template="ImageB,ImageD" filter="16"  param="1"  name="engine" src="@imageBool"/>
   <ImageContainer template="ImageD" name="imageDouble" inputImage="@engine.outputImage" inputTransform="@engine.outputTransform"/>
   <ImageViewer template="ImageD" name="viewerD" src="@imageDouble"  plane="30 53 15"/>
-  <OglModel fileMesh="data/pelvis_f.obj"  color="1 0.8 0.8 1"/>
+  <MeshObjLoader name="meshLoader_0" filename="data/pelvis_f.obj" handleSeams="1" />
+  <OglModel src="@meshLoader_0"  color="1 0.8 0.8 1"/>
 </Node>

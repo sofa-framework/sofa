@@ -28,7 +28,8 @@
 	     <TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="svd"/>  
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
+		<MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="1 .4 0.5 1"/>
 	    	<BarycentricMapping template="Vec3d,ExtVec3f"/>
 	    </Node>
     </Node>
@@ -84,7 +85,8 @@
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
+		<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="1 0.8 0.8 "/>
 	    	<MLSMapping template="Vec3d,ExtVec3f"/>
 	    </Node>
 

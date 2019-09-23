@@ -39,7 +39,7 @@ namespace mapping
 {
 
 
-static const SReal s_null_distance_epsilon = 1e-8;
+static const SReal s_null_distance_epsilon = std::numeric_limits<SReal>::epsilon();
 
 
 template <class TIn, class TOut>

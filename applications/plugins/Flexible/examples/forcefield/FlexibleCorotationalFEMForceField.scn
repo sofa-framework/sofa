@@ -24,7 +24,8 @@
         <FlexibleCorotationalMeshFEMForceField youngModulus="2000.0" poissonRatio="0.2" viscosity="0" order="1"/>
 
 	<Node name="Visual"  >
-	     <OglModel  fileMesh="mesh/torus.obj" color="yellow"/>
+	     <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_0" color="yellow"/>
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
 	
@@ -72,7 +73,8 @@
         </Node>
 
 	<Node name="Visual"  >
-	     <OglModel  fileMesh="mesh/torus.obj" color="1 0 0"/>
+	     <MeshObjLoader name="meshLoader_2" filename="mesh/torus.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_2" color="1 0 0"/>
              <LinearMapping template="Vec3d,ExtVec3f" assemble="0"/>
 	</Node>
 
@@ -96,7 +98,8 @@
         <FlexibleCorotationalFEMForceField youngModulus="2000.0" poissonRatio="0.2" viscosity="0" order="1" method="polar" geometricStiffness="true"/>
 
 	<Node name="Visual"  >
-	     <OglModel  fileMesh="mesh/torus.obj" />
+	     <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_1" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
 	
@@ -131,7 +134,8 @@
         </Node>
 
 	<Node name="Visual"  >
-	     <OglModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1" />
+	     <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_3" color="1 .4 0.5 1" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
 	

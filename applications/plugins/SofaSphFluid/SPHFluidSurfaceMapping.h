@@ -265,7 +265,7 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
-extern template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 
 
 

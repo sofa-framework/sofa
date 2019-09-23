@@ -23,7 +23,8 @@
         <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
         <FFDDistanceGrid fileFFDDistanceGrid="mesh/liver-smooth.obj" scale="1.0" usePoints="0" proximity="0.1" contactStiffness="500.0" contactFriction="0.0" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/liver-smooth.obj" color="red" translation="0 0 0" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" translation="0 0 0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="red" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
     </Node>

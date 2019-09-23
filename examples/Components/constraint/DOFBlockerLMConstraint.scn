@@ -9,7 +9,8 @@
         <UncoupledConstraintCorrection template="Rigid" name="default67" />
         <UniformMass template="Rigid" name="default17" vertexMass="10 1 [1 0 0,0 1 0,0 0 1]" totalMass="2" />
         <Node name="Visu" gravity="0 -9.81 0">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/cube.obj" material="Default Diffuse 1 1 0.5 0.25 1 Ambient 1 0.2 0.1 0.05 1 Specular 0 1 0.5 0.25 1 Emissive 0 1 0.5 0.25 1 Shininess 0 45" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" material="Default Diffuse 1 1 0.5 0.25 1 Ambient 1 0.2 0.1 0.05 1 Specular 0 1 0.5 0.25 1 Emissive 0 1 0.5 0.25 1 Shininess 0 45" />
             <RigidMapping template="Rigid,ExtVec3f" name="default19" input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2" gravity="0 -9.81 0">
@@ -25,7 +26,8 @@
         <UncoupledConstraintCorrection template="Rigid" name="default67" />
         <UniformMass template="Rigid" name="default17" vertexMass="10 1 [1 0 0,0 1 0,0 0 1]" totalMass="2" />
         <Node name="Visu" gravity="0 -9.81 0">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/cube.obj" material="Default Diffuse 1 1 0.5 0.25 1 Ambient 1 0.2 0.1 0.05 1 Specular 0 1 0.5 0.25 1 Emissive 0 1 0.5 0.25 1 Shininess 0 45" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" material="Default Diffuse 1 1 0.5 0.25 1 Ambient 1 0.2 0.1 0.05 1 Specular 0 1 0.5 0.25 1 Emissive 0 1 0.5 0.25 1 Shininess 0 45" />
             <RigidMapping template="Rigid,ExtVec3f" name="default19" input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2" gravity="0 -9.81 0">

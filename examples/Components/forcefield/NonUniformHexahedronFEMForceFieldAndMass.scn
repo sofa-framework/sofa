@@ -14,7 +14,8 @@
         <MechanicalObject dx="70" ry="25" />
         <HexahedronFEMForceFieldAndMass youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0" />
         <Node name="Visuunif">
-            <OglModel name="Visual" fileMesh="mesh/Armadillo_simplified.obj" color="1 .4 0 1" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="1 .4 0 1" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Colliunif">
@@ -34,7 +35,8 @@
         <MechanicalObject ry="25" />
         <NonUniformHexahedronFEMForceFieldAndMass nbVirtualFinerLevels="2" youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0" />
         <Node name="Visunonunif">
-            <OglModel name="Visual" fileMesh="mesh/Armadillo_simplified.obj" color="0.4 0.6 1.0" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="0.4 0.6 1.0" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Collinonunif">

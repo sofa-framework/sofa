@@ -91,6 +91,7 @@ if(UNIX)
 
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
     set(CMAKE_INSTALL_RPATH
+        "../lib"
         "$ORIGIN/../lib"
         "$$ORIGIN/../lib"
         )
@@ -129,6 +130,10 @@ if(MSVC)
 
     # WinDepPack
     set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
+    if(NOT EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
+        # force back to default value
+        set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack" FORCE)
+    endif()
     list(APPEND CMAKE_INCLUDE_PATH ${SOFA_DEPENDENCY_PACK_DIR}/include)
     if(CMAKE_CL_64)
         list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win64)
@@ -222,17 +227,17 @@ add_subdirectory(SofaGeneral)
 add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 
-## Modules
-## in the consortium convention a module is a similar to a plugin the difference is that
-## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
-add_subdirectory(modules)
-
 # This is all the applications GUI stuff. As there is a dependency to this one
 # In scene creator and SofaPython...it is located here.
 add_subdirectory(SofaGui)
 
-# SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
+# SofaTest, modules depend on SofaPython, so we add SofaPython before.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
+
+## Modules
+## in the consortium convention a module is a similar to a plugin the difference is that
+## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(modules)
 
 ## Scene creator option
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
@@ -504,25 +509,18 @@ if(CPACK_BINARY_NSIS)
 endif()
 #######################
 
-if(APPLE)
-    list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/icu4c")
-    find_package(ICU COMPONENTS data i18n uc)
-    sofa_install_libraries(LIBRARIES ${ICU_LIBRARIES})
-    message("ICU_LIBRARIES = ${ICU_LIBRARIES}")
+if(APPLE AND SOFA_BUILD_APP_BUNDLE)
+    set(CPACK_BINARY_DRAGNDROP ON)
+    set(CPACK_GENERATOR DragNDrop)
 
-    if(SOFA_BUILD_APP_BUNDLE)
-        set(CPACK_BINARY_DRAGNDROP ON)
-        set(CPACK_GENERATOR DragNDrop)
+    # Monolithic install containing everything
+    unset(CPACK_COMPONENTS_ALL)
+    set(CPACK_MONOLITHIC_INSTALL ON)
 
-        # Monolithic install containing everything
-        unset(CPACK_COMPONENTS_ALL)
-        set(CPACK_MONOLITHIC_INSTALL ON)
-
-        # Force CPack install dir to $ENV{DESTDIR}/runSofa.app/Contents/MacOS
-        # CPack always adds "$ENV{DESTDIR}/" before CPACK_INSTALL_PREFIX
-        set(CPACK_SET_DESTDIR TRUE)
-        set(CPACK_INSTALL_PREFIX "/runSofa.app/Contents/MacOS")
-    endif()
+    # Force CPack install dir to $ENV{DESTDIR}/runSofa.app/Contents/MacOS
+    # CPack always adds "$ENV{DESTDIR}" before CPACK_INSTALL_PREFIX
+    set(CPACK_SET_DESTDIR TRUE)
+    set(CPACK_INSTALL_PREFIX "/runSofa.app/Contents/MacOS")
 endif()
 
 include(CPack)

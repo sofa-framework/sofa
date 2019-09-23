@@ -62,13 +62,13 @@ namespace core
         /// comparison point is cleaned for all tracked Data
         void clean();
 
+        /// Provide the map of tracked Data
+        const std::map<const objectmodel::BaseData*,int>&  getMapTrackedData() {return m_dataTrackers;}
 
     protected:
-
         /// map a tracked Data to a DataTracker (storing its call-counter at each 'clean')
         typedef std::map<const objectmodel::BaseData*,int> DataTrackers;
         DataTrackers m_dataTrackers;
-
     };
 
 

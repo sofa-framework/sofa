@@ -13,7 +13,8 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
+            <MeshObjLoader name="meshLoader_3" filename="mesh/torus2.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_3" color="gray" />
         </Node>
         <Node name="TorusFEM_LARGE">
             <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -24,7 +25,8 @@
             <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="2.5" />
+                <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_0" color="red" dx="2.5" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -44,7 +46,8 @@
             <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="blue" dx="5" />
+                <MeshObjLoader name="meshLoader_2" filename="mesh/torus2.obj" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_2" color="blue" dx="5" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -64,7 +67,8 @@
             <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="svd" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" dx="7.5" />
+                <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_1" color="yellow" dx="7.5" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">

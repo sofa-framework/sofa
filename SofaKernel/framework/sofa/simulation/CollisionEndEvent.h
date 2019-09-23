@@ -42,7 +42,7 @@ public:
 
     SOFA_EVENT_H( CollisionEndEvent )
 
-    const char* getClassName() const override { return "CollisionEndEvent"; }
+    static const char* GetClassName() { return "CollisionEndEvent"; }
 };
 
 } // namespace simulation

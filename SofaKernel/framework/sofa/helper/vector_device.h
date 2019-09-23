@@ -296,7 +296,7 @@ public:
         if (s <= 2*allocSize && 2*allocSize <= s+SOFA_VECTOR_HOST_STEP_SIZE)
             allocSize *= 2;
         else
-            allocSize = s;
+            allocSize = s+SOFA_VECTOR_HOST_STEP_SIZE;
         // always allocate multiples of WARP_SIZE values
         allocSize = ((allocSize+WARP_SIZE-1 ) / WARP_SIZE) * WARP_SIZE;
 

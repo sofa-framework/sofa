@@ -10,9 +10,11 @@
     <!-- <InteractiveCamera name="cam" position="0 0 0" lookAt="0 -1 1"/> -->
     <RecordedCamera name="cam" position="0 10 0" rotationLookAt="0 30 0" rotationStartPoint="0 100 100" rotationCenter="0 100 0" listening="true" endTime="1000" drawRotation="1" rotationMode="1" />
     <Node name="Model 3D">
-        <OglModel name="VisualModel" texturename="textures/RustySteel.bmp" scaleTex="1 1" scale="10" translation="10 15 0" fileMesh="mesh/liver-smoothUV.obj" />
+        <MeshObjLoader name="meshLoader_0"  scaleTex="1 1" scale="10" translation="10 15 0"filename="mesh/liver-smoothUV.obj" handleSeams="1" />
+        <OglModel name="VisualModel" texturename="textures/RustySteel.bmp" src="@meshLoader_0" />
     </Node>
     <Node name="floor">
-        <OglModel name="VisualModel" fileMesh="mesh/floor.obj" scaleTex="0.05 0.05" scale3d="1 1 1" translation="0 0 0" texturename="textures/ice_chess.bmp" />
+        <MeshObjLoader name="meshLoader_1" filename="mesh/floor.obj" scaleTex="0.05 0.05" scale3d="1 1 1" translation="0 0 0" handleSeams="1" />
+        <OglModel name="VisualModel" src="@meshLoader_1" texturename="textures/ice_chess.bmp" />
     </Node>
 </Node>

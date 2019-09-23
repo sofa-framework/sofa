@@ -17,7 +17,8 @@
             <UniformMass totalMass="40.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="1.0 0.5 0.25 1.0" scale="1.0" />
+                <MeshObjLoader name="meshLoader_2" filename="mesh/torus.obj" scale="1.0" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_2" color="1.0 0.5 0.25 1.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -37,7 +38,8 @@
 			<UniformMass totalmass="100.0"/>
 			<UncoupledConstraintCorrection/>
 			<Node name="Visu">
-				<OglModel name="Visual" fileMesh="mesh/man.obj" color="0.8 0.8 0.8 1.0" scale="10" dy="-3.0"/>
+				<MeshObjLoader name="meshLoader_4" filename="mesh/man.obj" scale="10" handleSeams="1" />
+				<OglModel name="Visual" src="@meshLoader_4" color="0.8 0.8 0.8 1.0" dy="-3.0"/>
 				<RigidMapping input="@.." output="@Visual" />
 			</Node>
 			<Node name="Surf2">
@@ -56,7 +58,8 @@
             <UniformMass totalMass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.5 1.0" scale="0.3" />
+                <MeshObjLoader name="meshLoader_1" filename="mesh/smCube27.obj" scale="0.3" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_1" color="0.0 0.5 0.5 1.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -76,7 +79,8 @@
 			<UniformMass totalmass="100.0"/>
 			<UncoupledConstraintCorrection/>
 			<Node name="Visu">
-				<OglModel name="Visual" fileMesh="mesh/dragon_clean.obj" color="0.8 0.8 0.8 1.0" scale="0.25"/>
+				<MeshObjLoader name="meshLoader_3" filename="mesh/dragon_clean.obj" scale="0.25" handleSeams="1" />
+				<OglModel name="Visual" src="@meshLoader_3" color="0.8 0.8 0.8 1.0"/>
 				<RigidMapping input="@.." output="@Visual" />
 			</Node>
 			<Node name="Surf2">
@@ -97,7 +101,8 @@
             <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
             <PointCollisionModel simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="1 0 0 0.3" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/box_outside.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="1 0 0 0.3" />
         </Node>
     </Node>
 </Node>

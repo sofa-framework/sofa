@@ -16,7 +16,8 @@
         <FixedPlaneConstraint direction="0 0 1" dmin="-3" dmax="1" />
         <BoxConstraint box="-5 4.8 -.2 5 6 1" />
         <Node name="Visu">
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel name="VisualModel" src="@meshLoader_0" color="red" />
             <BarycentricMapping input="@.." output="@VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf">

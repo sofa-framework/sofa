@@ -2,7 +2,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <Node name="Reference">
-        <OglModel fileMesh="mesh/truthcylinder1-bent.obj" scale="0.95" dx="20" dy="17" dz="0" color="green" />
+        <MeshObjLoader name="meshLoader_0" filename="mesh/truthcylinder1-bent.obj" scale="0.95" handleSeams="1" />
+        <OglModel src="@meshLoader_0" dx="20" dy="17" dz="0" color="green" />
     </Node>
     <Node name="CylinderFEMTetra">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />

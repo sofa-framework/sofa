@@ -35,6 +35,7 @@
 #include <sofa/simulation/XMLPrintVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
@@ -140,7 +141,7 @@ void Simulation::exportGraph ( Node* root, const char* filename )
     else
     {
         // unable to write the file
-        serr << "exportGraph: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export" << sendl;
+        msg_error() << "exportGraph: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export";
     }
 }
 
@@ -222,7 +223,7 @@ void Simulation::animate ( Node* root, SReal dt )
     sofa::helper::AdvancedTimer::stepBegin("Simulation::animate");
 
     if ( !root ) {
-        serr<<"Simulation::animate, no root found"<<sendl;
+        msg_error() << "Simulation::animate, no root found";
         return;
     }
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
@@ -234,7 +235,7 @@ void Simulation::animate ( Node* root, SReal dt )
     }
     else
     {
-        serr<<"ERROR in Simulation::animate(): AnimationLoop expected at the root node"<<sendl;
+        msg_error() << "Simulation::animate: AnimationLoop expected at the root node";
         return;
     }
 
@@ -254,7 +255,7 @@ void Simulation::updateVisual ( Node* root)
     }
     else
     {
-        serr<<"ERROR in updateVisual(): VisualLoop expected at the root node"<<sendl;
+        msg_error() << "Simulation::updateVisual: VisualLoop expected at the root node";
         return;
     }
 
@@ -299,7 +300,7 @@ void Simulation::initTextures ( Node* root )
     }
     else
     {
-        serr<<"ERROR in initTextures() : VisualLoop expected at the root node"<<sendl;
+        msg_error() << "Simulation::initTextures() : VisualLoop expected at the root node";
         return;
     }
 }
@@ -317,7 +318,7 @@ void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool 
     }
     else
     {
-        serr<<"ERROR in computeBBox() : VisualLoop expected at the root node"<<sendl;
+        msg_error() << "Simulation::computeBBox() : VisualLoop expected at the root node";
         return;
     }
 }
@@ -356,7 +357,7 @@ void Simulation::updateVisualContext (Node* root)
     }
     else
     {
-        serr<<"ERROR in updateVisualContext() : VisualLoop expected at the root node"<<sendl;
+        msg_error() << "Simulation::updateVisualContext() : VisualLoop expected at the root node";
         return;
     }
 }
@@ -375,7 +376,7 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
     }
     else
     {
-        serr<<"ERROR in draw() : VisualLoop expected at the root node"<<sendl;
+        msg_error() <<"Simulation::draw(): VisualLoop expected at the root node";
         return;
     }
 
@@ -429,18 +430,18 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 
 
 /// Load a scene from a file
-Node::SPtr Simulation::load ( const char *filename, bool reload )
+Node::SPtr Simulation::load ( const std::string& filename, bool reload, const std::vector<std::string>& sceneArgs )
 {
-    if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() || // no filename
-            sofa::helper::system::SetDirectory::GetExtension(filename).empty() ) // filename with no extension
+    if( sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).empty() || // no filename
+            sofa::helper::system::SetDirectory::GetExtension(filename.c_str()).empty() ) // filename with no extension
         return NULL;
 
     SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
 
-    if (loader) return loader->load(filename, reload);
+    if (loader) return loader->load(filename, reload, sceneArgs);
 
     // unable to load file
-    serr << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << sendl;
+    msg_error() << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename.c_str())<<") not handled";
     return NULL;
 }
 

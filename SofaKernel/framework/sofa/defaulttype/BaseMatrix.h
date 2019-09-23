@@ -25,6 +25,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/defaulttype.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <utility> // for std::pair
 #include <cstddef> // for NULL and std::size_t
@@ -72,6 +73,35 @@ public:
     virtual void set(Index i, Index j, double v) = 0;
     /// Add v to the existing value of the element at row i, column j (using 0-based indices)
     virtual void add(Index i, Index j, double v) = 0;
+
+    ///Adding values from a 3x3d matrix this function may be overload to obtain better performances
+    virtual void add(Index _i, Index _j, const defaulttype::Mat3x3d & _M) {
+        for (unsigned i=0;i<3;i++)
+            for (unsigned j=0;j<3;j++)
+                add(_i+i,_j+j,_M[i][j]);
+    }
+
+    ///Adding values from a 3x3f matrix this function may be overload to obtain better performances
+    virtual void add(Index _i, Index _j, const defaulttype::Mat3x3f & _M) {
+        for (unsigned i=0;i<3;i++)
+            for (unsigned j=0;j<3;j++)
+                add(_i+i,_j+j,_M[i][j]);
+    }
+
+    ///Adding values from a 2x2d matrix this function may be overload to obtain better performances
+    virtual void add(Index _i, Index _j, const defaulttype::Mat2x2d & _M) {
+        for (unsigned i=0;i<2;i++)
+            for (unsigned j=0;j<2;j++)
+                add(_i+i,_j+j,_M[i][j]);
+    }
+
+    ///Adding values from a 2x2f matrix this function may be overload to obtain better performances
+    virtual void add(Index _i, Index _j, const defaulttype::Mat2x2f & _M) {
+        for (unsigned i=0;i<2;i++)
+            for (unsigned j=0;j<2;j++)
+                add(_i+i,_j+j,_M[i][j]);
+    }
+
     /*    /// Write the value of the element at row i, column j (using 0-based indices)
         virtual void set(Index i, Index j, float v) { set(i,j,(double)v); }
         /// Add v to the existing value of the element at row i, column j (using 0-based indices)

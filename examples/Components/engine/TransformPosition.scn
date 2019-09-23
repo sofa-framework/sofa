@@ -15,7 +15,8 @@
         <PlaneForceField  name="Plane" normal="0 0 1" d="-10" />
         <HexahedronFEMForceField  name="FEM" youngModulus="200" poissonRatio="0.45"/>
         <Node name="VisualNode" gravity="0 -9.81 0">
-            <OglModel name="Objective" fileMesh="mesh/dragon.obj" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
+            <OglModel name="Objective" src="@meshLoader_0" />
             <BarycentricMapping  name="Visual Mapping" output="@Objective"  />
         </Node>
     </Node>

@@ -60,26 +60,32 @@ install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ 
 
 sofa_install_targets(SofaGui runSofa runSofa)
 
-if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
-    if(SOFA_BUILD_APP_BUNDLE)
-        install(CODE "file(WRITE \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/../Resources/qt.conf\" \"[Paths]\\n  Plugins = MacOS/bin\")" COMPONENT applications)
+# Post-install scripts
+if(SOFA_BUILD_RELEASE_PACKAGE)
+    if(UNIX AND NOT APPLE) # Linux
+        install(CODE "file(WRITE
+            \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
+            \"[Paths]\\n  Prefix = ..\\n  LibraryExecutables = bin\"
+            )"
+            COMPONENT applications)
+        install(CODE "execute_process(COMMAND /bin/bash
+            \"${CMAKE_SOURCE_DIR}/scripts/linux-postinstall-fixup.sh\"
+            \"${CMAKE_BINARY_DIR}\"
+            \"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
+            )"
+            COMPONENT applications)
+    elseif(APPLE) # MacOS
+        if(SOFA_BUILD_APP_BUNDLE)
+            install(CODE "file(WRITE
+                \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/../Resources/qt.conf\"
+                \"[Paths]\\n  Plugins = MacOS/bin\"
+                )"
+                COMPONENT applications)
+        endif()
+        install(CODE "execute_process(COMMAND /bin/bash
+            \"${CMAKE_SOURCE_DIR}/scripts/macos-postinstall-fixup.sh\"
+            \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}\"
+            )"
+            COMPONENT applications)
     endif()
-
-    # postInstall.cmake will be executed at the end of install
-    file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch")
-    add_custom_target(post_install ALL
-        COMMENT "${PROJECT_NAME}: Patching cmake_install.cmake (to run post install script)."
-        COMMAND
-            test ! -e ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
-            && cat ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmake > ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
-            
-            && printf \"\\n\" >> ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
-            && printf \"execute_process ( \" >> ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
-            && printf 'COMMAND' >> ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
-            && printf \" /bin/bash \\\"${CMAKE_SOURCE_DIR}/scripts/macos-postinstall-fixup.sh\\\" \\\"\\\$$ENV\{DESTDIR\}\\\$$\{CMAKE_INSTALL_PREFIX\}\\\" ) \" >> ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
-            && printf \"\\n\" >> ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
-            
-            && ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmake
-            || true
-        )
 endif()

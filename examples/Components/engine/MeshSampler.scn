@@ -4,7 +4,8 @@
     <VisualStyle displayFlags="showWireframe" />
 
 <Node name="using Geodesic Distances (red)" >
-    <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="red" dz="0" />
+    <MeshObjLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />
+    <OglModel name="Visual" src="@meshLoader_1" color="red" dz="0" />
     <Mesh name="topo" src="@Visual" />
 
     <MeshSampler name="sampler1" position="@topo.position" edges="@topo.edges"  number="10" maxIter="100" printLog="1"/>
@@ -12,7 +13,8 @@
 </Node>
 
 <Node name="using Euclidean Distances (blue)" >
-    <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="blue" dy="20" />
+    <MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
+    <OglModel name="Visual" src="@meshLoader_0" color="blue" dy="20" />
 
     <MeshSampler name="sampler2" position="@Visual.position"  number="10" maxIter="100" printLog="1"/>
     <MechanicalObject template="Vec3d" position="@sampler2.outputPosition" showObject="1" showObjectScale="10" />

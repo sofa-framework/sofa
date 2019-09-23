@@ -15,7 +15,8 @@
 
   <Node 	name="ref_highresFEM"   >
     <VisualStyle displayFlags="hideWireframe" />
-    <OglModel template="ExtVec3f" name="Visual" fileMesh="../beam/refBeam_Flex.obj" color="0.5 0.5 0.5" translation="-0.5 0 0"/>
+    <MeshObjLoader name="meshLoader_0" filename="../beam/refBeam_Flex.obj" translation="-0.5 0 0" handleSeams="1" />
+    <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.5 0.5 0.5"/>
   </Node>
 
 
@@ -100,7 +101,8 @@
 
 
         <Node name="Visual"  >
-                <OglModel name="mesh" fileMesh="../beam/beam.obj" translation="-1 0 0" color="blue" />
+                <MeshObjLoader name="meshLoader_1" filename="../beam/beam.obj" translation="-1 0 0" handleSeams="1" />
+                <OglModel name="mesh" src="@meshLoader_1" color="blue" />
                 <BarycentricMapping input="@.." output="@." />
                 
                 <TransformPosition name="ref_position" input_position="@../../AffineFrames/collision/pts.position"  translation="-1 0 0" method="translation" />

@@ -39,7 +39,7 @@ UpdateBoundingBoxVisitor::UpdateBoundingBoxVisitor(const sofa::core::ExecParams*
 Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
 {
     std::string msg = "BoundingBoxVisitor - ProcessTopDown: " + node->getName();
-    sofa:helper::ScopedAdvancedTimer timer(msg.c_str());
+    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
     using namespace sofa::core::objectmodel;
     helper::vector<BaseObject*> objectList;
     helper::vector<BaseObject*>::iterator object;
@@ -70,7 +70,7 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
 void UpdateBoundingBoxVisitor::processNodeBottomUp(simulation::Node* node)
 {   
     std::string msg = "BoundingBoxVisitor - ProcessBottomUp: " + node->getName();
-    sofa:helper::ScopedAdvancedTimer timer(msg.c_str());
+    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
 
     sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
     Node::ChildIterator childNode;

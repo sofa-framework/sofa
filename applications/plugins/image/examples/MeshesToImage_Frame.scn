@@ -51,17 +51,20 @@
       </Node>
 
       <Node name="Gelatin-Visu">
-        <OglModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .6" />
+        <MeshObjLoader name="meshLoader_1" filename="mesh/bubille_8x8x16.obj" handleSeams="1" />
+        <OglModel name="Gelatin" src="@meshLoader_1" color="0.1 .8 .3 .6" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball1-Visu">
-        <OglModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 1" />
+        <MeshObjLoader name="meshLoader_3" filename="mesh/bubille_in1.obj" handleSeams="1" />
+        <OglModel name="Ball1" src="@meshLoader_3" color="1 0 0 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball2-Visu">
-        <OglModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 1" />
+        <MeshObjLoader name="meshLoader_5" filename="mesh/bubille_in2.obj" handleSeams="1" />
+        <OglModel name="Ball2" src="@meshLoader_5" color="0 0 1 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
       <Node name="Collision">
@@ -111,17 +114,20 @@
       </Node>
 
       <Node name="Gelatin-Visu">
-        <OglModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .6" />
+        <MeshObjLoader name="meshLoader_0" filename="mesh/bubille_8x8x16.obj" handleSeams="1" />
+        <OglModel name="Gelatin" src="@meshLoader_0" color="0.1 .8 .3 .6" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball1-Visu">
-        <OglModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 1" />
+        <MeshObjLoader name="meshLoader_2" filename="mesh/bubille_in1.obj" handleSeams="1" />
+        <OglModel name="Ball1" src="@meshLoader_2" color="1 0 0 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball2-Visu">
-        <OglModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 1" />
+        <MeshObjLoader name="meshLoader_4" filename="mesh/bubille_in2.obj" handleSeams="1" />
+        <OglModel name="Ball2" src="@meshLoader_4" color="0 0 1 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
       <Node name="Collision">

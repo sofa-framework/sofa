@@ -196,33 +196,45 @@ public:
     }
 };
 
-template <class TCoord, class TDeriv, class TReal> using ExtVectorTypes
-[[deprecated("since 19.06, ExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
-= StdVectorTypes<TCoord, TDeriv, TReal>;
+#define EXTVEC_DEPRECATED_MSG(classname) \
+    #classname " has been DEPRECATED since SOFA v19.06 " \
+    "and will be REMOVED in SOFA v19.12. " \
+    "Use helper::vector instead."
 
+template <class TCoord, class TDeriv, class TReal> using ExtVectorTypes
+#if !defined(__GNUG__) || defined(__clang__)
+// Do not set deprecated with GCC because it will trigger warnings
+// everytime VecTypes.h is included (because of the typedefs below).
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVectorTypes))]]
+#endif
+= StdVectorTypes<TCoord, TDeriv, TReal>;
 
 /// 3D DOFs, double precision
 typedef StdVectorTypes<Vec3d,Vec3d,double> Vec3dTypes;
 template<> inline const char* Vec3dTypes::Name() { return "Vec3d"; }
 /// 3D external DOFs, double precision
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVec3dTypes))]]
 typedef ExtVectorTypes<Vec3d,Vec3d,double> ExtVec3dTypes;
 
 /// 2D DOFs, double precision
 typedef StdVectorTypes<Vec2d,Vec2d,double> Vec2dTypes;
 template<> inline const char* Vec2dTypes::Name() { return "Vec2d"; }
 /// 2D external DOFs, double precision
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVec2dTypes))]]
 typedef ExtVectorTypes<Vec2d,Vec2d,double> ExtVec2dTypes;
 
 /// 1D DOFs, double precision
 typedef StdVectorTypes<Vec1d,Vec1d,double> Vec1dTypes;
 template<> inline const char* Vec1dTypes::Name() { return "Vec1d"; }
 /// 1D external DOFs, double precision
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVec1dTypes))]]
 typedef ExtVectorTypes<Vec1d,Vec1d,double> ExtVec1dTypes;
 
 /// 6D DOFs, double precision
 typedef StdVectorTypes<Vec6d,Vec6d,double> Vec6dTypes;
 template<> inline const char* Vec6dTypes::Name() { return "Vec6d"; }
 /// 6D external DOFs, double precision
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVec6dTypes))]]
 typedef ExtVectorTypes<Vec6d,Vec6d,double> ExtVec6dTypes;
 
 
@@ -230,24 +242,28 @@ typedef ExtVectorTypes<Vec6d,Vec6d,double> ExtVec6dTypes;
 typedef StdVectorTypes<Vec3f,Vec3f,float> Vec3fTypes;
 template<> inline const char* Vec3fTypes::Name() { return "Vec3f"; }
 /// 3f external DOFs, single precision
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVec3fTypes))]]
 typedef ExtVectorTypes<Vec3f,Vec3f,float> ExtVec3fTypes;
 
 /// 2f DOFs, single precision
 typedef StdVectorTypes<Vec2f,Vec2f,float> Vec2fTypes;
 template<> inline const char* Vec2fTypes::Name() { return "Vec2f"; }
 /// 2f external DOFs, single precision
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVec2fTypes))]]
 typedef ExtVectorTypes<Vec2f,Vec2f,float> ExtVec2fTypes;
 
 /// 1f DOFs, single precision
 typedef StdVectorTypes<Vec1f,Vec1f,float> Vec1fTypes;
 template<> inline const char* Vec1fTypes::Name() { return "Vec1f"; }
 /// 1f external DOFs, single precision
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVec1fTypes))]]
 typedef ExtVectorTypes<Vec1f,Vec1f,float> ExtVec1fTypes;
 
 /// 6f DOFs, single precision
 typedef StdVectorTypes<Vec6f,Vec6f,float> Vec6fTypes;
 template<> inline const char* Vec6fTypes::Name() { return "Vec6f"; }
 /// 6f external DOFs, single precision
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVec6fTypes))]]
 typedef ExtVectorTypes<Vec6f,Vec6f,float> ExtVec6fTypes;
 
 /// 6D DOFs, double precision (default)
@@ -259,25 +275,30 @@ typedef StdVectorTypes<Vec2,Vec2,Vec2::value_type> Vec2Types;
 /// 1D DOFs, double precision (default)
 typedef StdVectorTypes<Vec1,Vec1,Vec1::value_type> Vec1Types;
 /// 6D external DOFs, double precision (default)
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVectorTypes))]]
 typedef ExtVectorTypes<Vec6,Vec6,Vec6::value_type> ExtVec6Types;
 /// 3D external DOFs, double precision (default)
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVectorTypes))]]
 typedef ExtVectorTypes<Vec3,Vec3,Vec3::value_type> ExtVec3Types;
 /// 2D external DOFs, double precision (default)
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVectorTypes))]]
 typedef ExtVectorTypes<Vec2,Vec2,Vec2::value_type> ExtVec2Types;
 /// 1D external DOFs, double precision (default)
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVectorTypes))]]
 typedef ExtVectorTypes<Vec1,Vec1,Vec1::value_type> ExtVec1Types;
 // Specialization of the defaulttype::DataTypeInfo type traits template
 
 
 
 template <class T> using ExtVector
-[[deprecated("since 19.06, ExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
+[[deprecated(EXTVEC_DEPRECATED_MSG(ExtVector))]]
 = helper::vector<T>;
 
 template <class T> using ResizableExtVector
-[[deprecated("since 19.06, ResizableExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
-  = helper::vector<T>;
+[[deprecated(EXTVEC_DEPRECATED_MSG(ResizableExtVector))]]
+= helper::vector<T>;
 
+#undef EXTVEC_DEPRECATED_MSG
 
 } // namespace defaulttype
 

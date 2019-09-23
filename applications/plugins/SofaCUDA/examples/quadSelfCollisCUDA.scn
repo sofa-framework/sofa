@@ -70,7 +70,8 @@
 		-->
 	</Node>
 	<Node name="Sphere">
-		<OglModel name="Visual" fileMesh="mesh/sphere.obj" scale="3.95" dx="0" dy="1" dz="3" color="blue"/>
+		<MeshObjLoader name="meshLoader_0" filename="mesh/sphere.obj" scale="3.95" handleSeams="1" />
+		<OglModel name="Visual" src="@meshLoader_0" dx="0" dy="1" dz="3" color="blue"/>
 	</Node>
 </Node>
 

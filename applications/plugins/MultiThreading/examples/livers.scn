@@ -24,7 +24,8 @@
       <FixedConstraint  name="FixedConstraint" indices="39" />
 	  <UncoupledConstraintCorrection name="liver1_ConstraintCorrection"/>	
       <Node name="Visu1" tags="Visual" gravity="0 -9.81 0">
-        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj"  translation="10 0 0"/>
+        <MeshObjLoader name="meshLoader_1" filename="mesh/liver-smooth.obj"  translation="10 0 0" handleSeams="1" />
+        <OglModel  name="VisualModel" src="@meshLoader_1"/>
         <BarycentricMapping name="visual mapping" input="@../dofs1" output="@VisualModel" />
       </Node>
       <Node name="Surf1" gravity="0 -9.81 0">
@@ -54,7 +55,8 @@
       <FixedConstraint  name="FixedConstraint" indices="64" />
 	    <UncoupledConstraintCorrection name="liver2_ConstraintCorrection"/>
       <Node name="Visu2" tags="Visual" gravity="0 -9.81 0">
-        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="-10 0 0"/>
+        <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" translation="-10 0 0" handleSeams="1" />
+        <OglModel  name="VisualModel" src="@meshLoader_0"/>
         <BarycentricMapping name="visual mapping" input="@../dofs2" output="@VisualModel" />
       </Node>
       <Node name="Surf2" gravity="0 -9.81 0">
@@ -84,7 +86,8 @@
       <FixedConstraint  name="FixedConstraint" indices="72" />
 	  <UncoupledConstraintCorrection name="liver3_ConstraintCorrection"/>
       <Node name="Visu3" tags="Visual" gravity="0 -9.81 0">
-        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="10 10 0"/>
+        <MeshObjLoader name="meshLoader_3" filename="mesh/liver-smooth.obj" translation="10 10 0" handleSeams="1" />
+        <OglModel  name="VisualModel" src="@meshLoader_3"/>
         <BarycentricMapping name="visual mapping" input="@../dofs3" output="@VisualModel" />
       </Node>
       <Node name="Surf3" gravity="0 -9.81 0">
@@ -115,7 +118,8 @@
       <FixedConstraint  name="FixedConstraint" indices="96" />
 	  <UncoupledConstraintCorrection name="liver4_ConstraintCorrection"/>
       <Node name="Visu4" tags="Visual" gravity="0 -9.81 0">
-        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="-10 10 0"/>
+        <MeshObjLoader name="meshLoader_2" filename="mesh/liver-smooth.obj" translation="-10 10 0" handleSeams="1" />
+        <OglModel  name="VisualModel" src="@meshLoader_2"/>
         <BarycentricMapping name="visual mapping" input="@../dofs4" output="@VisualModel" />
       </Node>
       <Node name="Surf4" gravity="0 -9.81 0">

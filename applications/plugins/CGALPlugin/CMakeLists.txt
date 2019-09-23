@@ -31,16 +31,19 @@ set(README_FILES CGALPlugin.txt)
 
 
 find_package(SofaFramework REQUIRED)
-find_package(image QUIET)
-if(image_FOUND)
+find_package(CImgPlugin QUIET)
+
+if(CImgPlugin_FOUND)
     list(APPEND HEADER_FILES MeshGenerationFromImage.h)
     list(APPEND HEADER_FILES MeshGenerationFromImage.inl)
     list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
     find_package(CGAL REQUIRED COMPONENTS ImageIO)
-else()
-    message(STATUS "CGALPlugin: could not find image, won't build MeshGenerationFromImage")
+else ()
+    message (STATUS "CImgPlugin not found, won't build MeshGenerationFromImage")
     find_package(CGAL REQUIRED)
 endif()
+
+
 ## CGAL dependencies
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package(MPFR REQUIRED)
@@ -57,13 +60,18 @@ endif()
 if(WIN32)
     #add library dir as it is not added automatically on Windows (?)
     link_directories(${CGAL_LIBRARIES_DIR})
-    # # Copy CGAL dlls
-    # file(GLOB sharedObjects "${CGAL_INSTALL_PREFIX}/bin/*.dll")
-    # foreach(sharedObject ${sharedObjects})
-    #     file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-    # endforeach()
+	
+	if(NOT EXISTS ${CGAL_INSTALL_PREFIX})
+		set(CGAL_INSTALL_PREFIX CACHE PATH "Set path to CGAL Install dir root.")
+	endif()
 
+    # Gather all CGAL dlls into var CGAL_DLLS
     file(GLOB CGAL_DLLS "${CGAL_INSTALL_PREFIX}/bin/*.dll")
+	
+	if ("${CGAL_DLLS}" STREQUAL "")
+		MESSAGE(FATAL_ERROR "No CGAL_DLLS found at location: {CGAL_INSTALL_PREFIX}/bin/ equal to: ${CGAL_INSTALL_PREFIX}/bin/" )
+	endif()
+	
     # We suppose that the auxiliary DLLS for CGAL are always used from the CGAL package
     file(GLOB CGAL_AUX_DLLS "${GMP_INCLUDE_DIR}/../lib/*.dll")
     ## Copy DLLs to the build tree
@@ -93,13 +101,17 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CGALPLUGIN_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CGALPLUGIN")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationCommon ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARY})
-if(image_FOUND)
-    target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY} image)
+
+
+if(CImgPlugin_FOUND)
+    target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY} CImgPlugin)
+else()
+    target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY})
 endif()
 
 if(SOFA_BUILD_TESTS)
-   find_package(SofaTest QUIET)
-   add_subdirectory(CGALPlugin_test)
+    find_package(SofaTest QUIET)
+    add_subdirectory(CGALPlugin_test)
 endif()
 
 ## Install rules for the library and the headers; CMake package configurations files

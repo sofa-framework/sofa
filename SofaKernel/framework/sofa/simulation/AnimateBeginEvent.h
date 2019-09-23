@@ -57,7 +57,7 @@ public:
     ~AnimateBeginEvent() override;
 
     SReal getDt() const { return dt; }
-    const char* getClassName() const override { return "AnimateBeginEvent"; }
+    inline static const char* GetClassName() { return "AnimateBeginEvent"; }
 protected:
     SReal dt;
 };

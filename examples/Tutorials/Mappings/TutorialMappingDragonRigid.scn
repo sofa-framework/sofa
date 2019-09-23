@@ -8,7 +8,8 @@
     <MechanicalObject name="RigidDOF" template="Rigid" dz="1" rotation="90 0 -90" />
     <UniformMass name="Mass" filename="BehaviorModels/dragon.rigid" />
     <Node name="DragonVisual">
-        <OglModel name="DragonVisualParticles" fileMesh="mesh/dragon.obj" scale="0.1" />
+        <MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" scale="0.1" handleSeams="1" />
+        <OglModel name="DragonVisualParticles" src="@meshLoader_0" />
         <RigidMapping name="RigidMapping1" input="@../RigidDOF" output="@DragonVisualParticles" />
     </Node>
     <Node name="Dragon">

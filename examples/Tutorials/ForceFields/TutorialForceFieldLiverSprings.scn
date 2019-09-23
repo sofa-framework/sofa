@@ -17,7 +17,8 @@
         <UniformMass template="Vec3d" name="mass" />
         <FixedConstraint template="Vec3d" name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" gravity="0 -9.81 0">
-            <OglModel template="ExtVec3f" name="VisualModel" fileMesh="mesh/liver-smooth.obj" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel template="ExtVec3f" name="VisualModel" src="@meshLoader_0" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
             <BarycentricMapping template="Vec3d,ExtVec3f" name="visual mapping" input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">

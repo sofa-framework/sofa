@@ -15,7 +15,8 @@
 		<PlaneForceField template="Vec3d" name="Plane"  normal="0 0 1"  d="-10" />
 		<HexahedronFEMForceField template="Vec3d" name="FEM" poissonRatio="0.45" youngModulus="200"  gatherPt=" "  gatherBsize=" " />
 		<Node 	 name="VisualNode"  gravity="0 -9.81 0"  >
-			<OglModel template="ExtVec3f" name="Objective"  fileMesh="mesh/dragon.obj"  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
+			<OglModel template="ExtVec3f" name="Objective" src="@meshLoader_0"  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 			<BarycentricMapping template="Vec3d,ExtVec3f" name="Visual Mapping"  input="@../"  output="@Objective" />
 		</Node>
 	</Node>

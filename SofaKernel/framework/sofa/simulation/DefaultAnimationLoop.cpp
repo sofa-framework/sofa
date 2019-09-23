@@ -27,6 +27,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
@@ -102,6 +103,12 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     BehaviorUpdatePositionVisitor beh(params , dt);
     gnode->execute ( beh );
     sofa::helper::AdvancedTimer::stepEnd("BehaviorUpdatePositionVisitor");
+
+
+    sofa::helper::AdvancedTimer::stepBegin("UpdateInternalDataVisitor");
+    UpdateInternalDataVisitor uid(params);
+    gnode->execute ( uid );
+    sofa::helper::AdvancedTimer::stepEnd("UpdateInternalDataVisitor");
 
 
     sofa::helper::AdvancedTimer::stepBegin("AnimateVisitor");

@@ -46,7 +46,7 @@ namespace gui
 /*STATIC FIELD DEFINITIONS */
 BaseGUI* GUIManager::currentGUI = nullptr;
 std::list<GUIManager::GUICreator> GUIManager::guiCreators;
-const char* GUIManager::valid_guiname = nullptr;
+std::string GUIManager::valid_guiname = "";
 ArgumentParser* GUIManager::currentArgumentParser = nullptr;
 
 
@@ -234,12 +234,12 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
 {
     if (!currentGUI)
     {
-        GUICreator* creator = GetGUICreator(valid_guiname);
+        GUICreator* creator = GetGUICreator(valid_guiname.c_str());
         if (!creator)
         {
             return 1;
         }
-        currentGUI = (*creator->creator)(valid_guiname, groot, filename);
+        currentGUI = (*creator->creator)(valid_guiname.c_str(), groot, filename);
         if (!currentGUI)
         {
             msg_error("GUIManager") << "GUI '"<<valid_guiname<<"' creation failed." ;

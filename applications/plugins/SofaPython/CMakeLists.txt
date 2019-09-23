@@ -38,8 +38,6 @@ set(HEADER_FILES
     Binding_MeshTopology.h
     Binding_MultiMapping.h
     Binding_Node.h
-    Binding_OBJExporter.h
-    Binding_STLExporter.h
     Binding_PythonScriptController.h
     Binding_PythonScriptDataEngine.h
     Binding_RegularGridTopology.h
@@ -100,8 +98,6 @@ set(SOURCE_FILES
     Binding_MeshTopology.cpp
     Binding_MultiMapping.cpp
     Binding_Node.cpp
-    Binding_OBJExporter.cpp
-    Binding_STLExporter.cpp
     Binding_PythonScriptController.cpp
     Binding_PythonScriptDataEngine.cpp
     Binding_RegularGridTopology.cpp
@@ -151,19 +147,6 @@ find_package(PythonLibs 2.7 REQUIRED)
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
-find_package(SofaExporter)
-
-if(SofaExporter_FOUND)
-    list(APPEND SOURCE_FILES
-        Binding_OBJExporter.cpp
-        Binding_STLExporter.cpp
-        )
-
-    list(APPEND HEADER_FILES
-        Binding_OBJExporter.h
-        Binding_STLExporter.h
-        )
-endif()
 
 GET_FILENAME_COMPONENT(LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} NAME_WE)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -187,6 +170,8 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAPYTHON")
+
 target_include_directories(${PROJECT_NAME}
     PUBLIC ${PYTHON_INCLUDE_DIRS}
     PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/>"
@@ -194,7 +179,7 @@ target_include_directories(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PRIVATE SofaExporter)
+
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)

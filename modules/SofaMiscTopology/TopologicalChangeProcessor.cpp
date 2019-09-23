@@ -305,7 +305,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
     lastTime = time;
     validLines.clear();
     std::string line, cmd;
-    double epsilon = 1e-10;
+    const SReal epsilon = std::numeric_limits<SReal>::epsilon();
     while (nextTime < time || fabs(nextTime - time) < epsilon )
     {
 #ifdef SOFA_HAVE_ZLIB

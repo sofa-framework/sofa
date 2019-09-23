@@ -328,7 +328,6 @@ public:
     template<class Dest>
     void addTo(Dest* d) const
     {
-        std::cout << "EXPR using transposed computation: " << expr() << std::endl;
         MyDest<Dest> myd(d);
         m1.addTo(&myd);
     }

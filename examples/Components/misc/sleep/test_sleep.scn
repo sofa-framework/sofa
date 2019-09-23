@@ -35,7 +35,8 @@
 			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 0 1  0.5 0.5 0.5" indices="@Cube1.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Colli">
@@ -60,7 +61,8 @@
 			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 1 0  0.5 0.5 0.5" indices="@Cube2.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Colli">

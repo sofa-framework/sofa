@@ -52,7 +52,7 @@ class PatchTestMovementConstraintInternalData
 };
 
 /** 
-    Impose a motion to all the boundary points of a mesh. The motion of the 4 corners are given in the data m_cornerMovements and the movements of the edge points are computed by linear interpolation. 
+    Impose a motion to all the boundary points of a mesh. The motion of the 4 corners are given in the data d_cornerMovements and the movements of the edge points are computed by linear interpolation.
 */
 template <class TDataTypes>
 class PatchTestMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
@@ -82,21 +82,21 @@ protected:
 
 public :
     /// indices of the DOFs of the mesh
-    SetIndex m_meshIndices;
+    SetIndex d_meshIndices;
      /// indices of the DOFs the constraint is applied to
-    SetIndex m_indices;
+    SetIndex d_indices;
     /// data begin time when the constraint is applied
-    Data <double> m_beginConstraintTime;
+    Data <double> d_beginConstraintTime;
     /// data end time when the constraint is applied
-    Data <double> m_endConstraintTime;
+    Data <double> d_endConstraintTime;
     /// coordinates of the DOFs the constraint is applied to
-    Data<VecCoord> m_constrainedPoints;
+    Data<VecCoord> d_constrainedPoints;
     /// the movements of the corner points (this is the difference between initial and final positions of the 4 corners)
-    Data<VecDeriv> m_cornerMovements;
+    Data<VecDeriv> d_cornerMovements;
     /// the coordinates of the corner points
-    Data<VecCoord> m_cornerPoints;
+    Data<VecCoord> d_cornerPoints;
     /// Draw constrained points
-    Data <bool> m_drawConstrainedPoints;
+    Data <bool> d_drawConstrainedPoints;
     /// initial constrained DOFs position
     VecCoord x0;
     /// final constrained DOFs position
@@ -131,7 +131,7 @@ public:
 
     void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */) override
     {
-        serr << "projectJacobianMatrix not implemented" << sendl;
+        msg_error() <<"projectJacobianMatrix not implemented";
     }
 
     /// Compute the theoretical final positions
