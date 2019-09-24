@@ -24,7 +24,7 @@ void IncompleteCholeskyPreconditioner::reinit()
 {
     BasePreconditioner::reinit();
     m_factorized = false;
-    preconditioner.setShift( d_shift.getValue() );
+    preconditioner.setInitialShift( d_shift.getValue() );
 }
 
 void IncompleteCholeskyPreconditioner::compute( const rmat& H )
@@ -44,7 +44,8 @@ void IncompleteCholeskyPreconditioner::compute( const rmat& H )
         // if singular, try to regularize by adding a tiny diagonal matrix
         rmat identity(H.rows(),H.cols());
         identity.setIdentity();
-        preconditioner.compute( H + identity * std::numeric_limits<SReal>::epsilon() );
+        rmat regmat = H + identity * std::numeric_limits<real>::epsilon();
+        preconditioner.compute( regmat );
 
         if( preconditioner.info() != Eigen::Success )
         {

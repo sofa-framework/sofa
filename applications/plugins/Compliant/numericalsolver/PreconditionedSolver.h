@@ -39,7 +39,7 @@ class SOFA_Compliant_API PreconditionedSolver {
                 p->compute(sys.H);
             else
             {
-                AssembledSystem::cmat identity(sys.H.rows(),sys.H.cols());
+                AssembledSystem::rmat identity(sys.H.rows(),sys.H.cols());
                 identity.setIdentity();
                 p->compute( sys.P.transpose()*sys.H*sys.P + identity * std::numeric_limits<SReal>::epsilon() );
             }
