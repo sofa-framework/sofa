@@ -94,7 +94,12 @@ sofa_generate_package(
     )
 
 # Tests
-option(SOFAOPENGLVISUAL_BUILD_TESTS "Compile the automatic tests" ON)
+if (SOFA_BUILD_TESTS)
+    option(SOFAOPENGLVISUAL_BUILD_TESTS "Compile the automatic tests" ON)
+else()
+    set(SOFAOPENGLVISUAL_BUILD_TESTS FALSE)
+endif()
+
 if(SOFAOPENGLVISUAL_BUILD_TESTS)
     enable_testing()
     add_subdirectory(SofaOpenglVisual_test)

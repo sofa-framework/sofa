@@ -81,6 +81,13 @@ sofa_generate_package(
     )
 
 # Tests
+
+if (SOFA_BUILD_TESTS)
+    option(SOFAEXPORTER_BUILD_TESTS "Compile the automatic tests" ON)
+else()
+    set(SOFAEXPORTER_BUILD_TESTS FALSE)
+endif()
+
 option(SOFAEXPORTER_BUILD_TESTS "Compile the automatic tests" ON)
 if(SOFAEXPORTER_BUILD_TESTS)
     enable_testing()
