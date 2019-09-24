@@ -81,11 +81,10 @@ sofa_generate_package(
     )
 
 # Tests
-
-if (SOFA_BUILD_TESTS)
-    option(SOFAEXPORTER_BUILD_TESTS "Compile the automatic tests" ON)
-else()
-    set(SOFAEXPORTER_BUILD_TESTS FALSE)
+find_package(SofaTest QUIET)
+if (NOT SofaTest_FOUND)
+    message(STATUS "- SofaTest not found. SofaExporter_test will not be built." )
+    return()
 endif()
 
 option(SOFAEXPORTER_BUILD_TESTS "Compile the automatic tests" ON)

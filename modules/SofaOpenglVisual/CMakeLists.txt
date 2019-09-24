@@ -94,10 +94,10 @@ sofa_generate_package(
     )
 
 # Tests
-if (SOFA_BUILD_TESTS)
-    option(SOFAOPENGLVISUAL_BUILD_TESTS "Compile the automatic tests" ON)
-else()
-    set(SOFAOPENGLVISUAL_BUILD_TESTS FALSE)
+find_package(SofaTest QUIET)
+if (NOT SofaTest_FOUND)
+    message(STATUS "- SofaTest not found. SofaOpenglVisual_test will not be built." )
+    return()
 endif()
 
 if(SOFAOPENGLVISUAL_BUILD_TESTS)
