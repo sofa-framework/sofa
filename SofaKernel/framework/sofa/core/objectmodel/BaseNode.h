@@ -149,7 +149,7 @@ public:
     virtual core::visual::VisualLoop* getVisualLoop() const;
 
 private:
-    virtual std::string _getPathName() const;
+    virtual std::string internalGetPathName() const;
 
     /// @}
 protected:
