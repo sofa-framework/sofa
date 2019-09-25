@@ -89,7 +89,7 @@ QDisplayPropertyWidget::QDisplayPropertyWidget(const ModifyObjectFlags& modifyFl
 
     std::string filename = "textures/pin.png";
     sofa::helper::system::DataRepository.findFile(filename);
-    pinIcon = QIcon(filename.c_str());
+    pinIcon = QIcon(QString::fromStdString(filename));
 
     setColumnCount(2);
     //setIndentation(10);
@@ -161,7 +161,7 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
             continue;
 
         // for each data of the current object we determine where it belongs
-        QString group = data->getGroup().c_str();
+        QString group = QString::fromStdString(data->getGroup());
 
         // use the default group if data does not belong to any group
         if(group.isEmpty())
@@ -271,8 +271,8 @@ void QDisplayPropertyWidget::addData(const QString& component, const QString& gr
     QDisplayTreeItemWidget *widget = new QDisplayTreeItemWidget(this, dataItem);
     QHBoxLayout *layout = new QHBoxLayout(widget);
 
-    dataItem->setText(0, data->getName().c_str());
-    dataItem->setToolTip(0, data->getHelp().c_str());
+    dataItem->setText(0, QString::fromStdString(data->getName()));
+    dataItem->setToolTip(0, QString::fromStdString(data->getHelp()));
     QDisplayDataWidget *displayDataWidget = new QDisplayDataWidget(widget, data, modifyObjectFlags);
     layout->addWidget(displayDataWidget);
 
@@ -286,7 +286,7 @@ void QDisplayPropertyWidget::addData(const QString& component, const QString& gr
         widget->layout()->setSpacing(0);
     }
     setItemWidget(dataItem, 1, widget);
-    dataItem->setToolTip(1, data->getHelp().c_str());
+    dataItem->setToolTip(1, QString::fromStdString(data->getHelp()));
 }
 
 void QDisplayPropertyWidget::addLink(const QString& component, const QString& group, sofa::core::objectmodel::BaseLink *link)
@@ -316,8 +316,8 @@ void QDisplayPropertyWidget::addLink(const QString& component, const QString& gr
     ModifyObjectFlags linkFlags = modifyObjectFlags;
     linkFlags.READONLY_FLAG = true;
 
-    linkItem->setText(0, link->getName().c_str());
-    linkItem->setToolTip(0, link->getHelp().c_str());
+    linkItem->setText(0, QString::fromStdString(link->getName()));
+    linkItem->setToolTip(0, QString::fromStdString(link->getHelp()));
     QDisplayLinkWidget *displayLinkWidget = new QDisplayLinkWidget(widget, link, linkFlags);
     layout->addWidget(displayLinkWidget);
 
@@ -331,7 +331,7 @@ void QDisplayPropertyWidget::addLink(const QString& component, const QString& gr
         widget->layout()->setSpacing(0);
     }
     setItemWidget(linkItem, 1, widget);
-    linkItem->setToolTip(1, link->getHelp().c_str());
+    linkItem->setToolTip(1, QString::fromStdString(link->getHelp()));
 }
 
 void QDisplayPropertyWidget::setDescription(const QString& component, const QString& group, sofa::core::objectmodel::Base *base)
@@ -364,16 +364,16 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
     instanceItem->setFont(0, categoryFont);
 
     {
-        addDescriptionItem(groupItem, "Name", QString(base->getName().c_str()));
+        addDescriptionItem(groupItem, "Name", QString::fromStdString(base->getName())));
 
-        addDescriptionItem(groupItem, "Class", QString(base->getClassName().c_str()));
+        addDescriptionItem(groupItem, "Class", QString::fromStdString(base->getClassName())));
 
         std::string namespacename = core::objectmodel::BaseClass::decodeNamespaceName(typeid(*base));
         if (!namespacename.empty())
-            addDescriptionItem(groupItem, "Namespace", QString(namespacename.c_str()));
+            addDescriptionItem(groupItem, "Namespace", QString::fromStdString(namespacename));
 
         if (!base->getTemplateName().empty())
-            addDescriptionItem(groupItem, "Template", QString(base->getTemplateName().c_str()));
+            addDescriptionItem(groupItem, "Template", QString::fromStdString(base->getTemplateName())));
     }
 
     // Class
@@ -393,17 +393,17 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
         classItem->setFont(0, categoryFont);
 
         if(!entry.description.empty() && std::string("TODO") != entry.description)
-            addDescriptionItem(groupItem, "Description", QString(entry.description.c_str()));
+            addDescriptionItem(groupItem, "Description", QString::fromStdString(entry.description)));
 
         core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(base->getTemplateName());
         if(entry.creatorMap.end() != it && *it->second->getTarget())
             addDescriptionItem(groupItem, "Provided by", QString(it->second->getTarget()));
 
         if(!entry.authors.empty() && std::string("TODO") != entry.authors)
-            addDescriptionItem(groupItem, "Authors", QString(entry.authors.c_str()));
+            addDescriptionItem(groupItem, "Authors", QString::fromStdString(entry.authors)));
 
         if(!entry.license.empty() && std::string("TODO") != entry.license)
-            addDescriptionItem(groupItem, "License", QString(entry.license.c_str()));
+            addDescriptionItem(groupItem, "License", QString::fromStdString(entry.license)));
     }
 }
 
@@ -478,8 +478,8 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
         QDisplayTreeItemWidget *logWidget = new QDisplayTreeItemWidget(this, consoleItem);
         QVBoxLayout *logLayout = new QVBoxLayout(logWidget);
 
-        QTextEdit* textEdit = new QTextEdit(infos.c_str(), logWidget);
-        textEdit->setText(infos.c_str());
+        QTextEdit* textEdit = new QTextEdit(QString::fromStdString(infos), logWidget);
+        textEdit->setText(QString::fromStdString(infos));
         textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         textEdit->setFixedHeight(200);
         textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
@@ -526,7 +526,7 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
         QVBoxLayout *logLayout = new QVBoxLayout(logWidget);
 
         QTextEdit* textEdit = new QTextEdit(logWidget);
-        textEdit->setText(warnings.c_str());
+        textEdit->setText(QString::fromStdString(warnings));
         textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         textEdit->setFixedHeight(200);
         textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
@@ -577,7 +577,7 @@ void QDisplayPropertyWidget::updateListViewItem()
 
         if (/*simulation::Node *node=*/dynamic_cast< simulation::Node *>(object))
         {
-            item->setText(0,object->getName().c_str());
+            item->setText(0, QString::fromStdString(object->getName()));
             //emit nodeNameModification(node);
         }
         else
@@ -590,7 +590,7 @@ void QDisplayPropertyWidget::updateListViewItem()
                 name = name.substr(0,pos);
             name += "  ";
             name += object->getName();
-            QString newName(name.c_str());
+            QString newName = QString::fromStdString(name));
             if(newName != currentName)
                 item->setText(0,newName);
         }
