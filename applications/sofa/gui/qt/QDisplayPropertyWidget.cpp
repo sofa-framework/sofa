@@ -364,16 +364,16 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
     instanceItem->setFont(0, categoryFont);
 
     {
-        addDescriptionItem(groupItem, "Name", QString::fromStdString(base->getName())));
+        addDescriptionItem(groupItem, "Name", QString::fromStdString(base->getName()));
 
-        addDescriptionItem(groupItem, "Class", QString::fromStdString(base->getClassName())));
+        addDescriptionItem(groupItem, "Class", QString::fromStdString(base->getClassName()));
 
         std::string namespacename = core::objectmodel::BaseClass::decodeNamespaceName(typeid(*base));
         if (!namespacename.empty())
             addDescriptionItem(groupItem, "Namespace", QString::fromStdString(namespacename));
 
         if (!base->getTemplateName().empty())
-            addDescriptionItem(groupItem, "Template", QString::fromStdString(base->getTemplateName())));
+            addDescriptionItem(groupItem, "Template", QString::fromStdString(base->getTemplateName()));
     }
 
     // Class
@@ -393,17 +393,17 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
         classItem->setFont(0, categoryFont);
 
         if(!entry.description.empty() && std::string("TODO") != entry.description)
-            addDescriptionItem(groupItem, "Description", QString::fromStdString(entry.description)));
+            addDescriptionItem(groupItem, "Description", QString::fromStdString(entry.description));
 
         core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(base->getTemplateName());
         if(entry.creatorMap.end() != it && *it->second->getTarget())
             addDescriptionItem(groupItem, "Provided by", QString(it->second->getTarget()));
 
         if(!entry.authors.empty() && std::string("TODO") != entry.authors)
-            addDescriptionItem(groupItem, "Authors", QString::fromStdString(entry.authors)));
+            addDescriptionItem(groupItem, "Authors", QString::fromStdString(entry.authors));
 
         if(!entry.license.empty() && std::string("TODO") != entry.license)
-            addDescriptionItem(groupItem, "License", QString::fromStdString(entry.license)));
+            addDescriptionItem(groupItem, "License", QString::fromStdString(entry.license));
     }
 }
 
@@ -590,7 +590,7 @@ void QDisplayPropertyWidget::updateListViewItem()
                 name = name.substr(0,pos);
             name += "  ";
             name += object->getName();
-            QString newName = QString::fromStdString(name));
+            QString newName = QString::fromStdString(name);
             if(newName != currentName)
                 item->setText(0,newName);
         }
