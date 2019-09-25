@@ -146,7 +146,7 @@ QLinkSimpleEdit::QLinkSimpleEdit(QWidget* parent, const char* name, BaseLink* li
 
 bool QLinkSimpleEdit::createWidgets()
 {
-    QString str  = QString::fromStdString(getBaseLink()->getValueString()) );
+    QString str  = QString::fromStdString(getBaseLink()->getValueString());
     QLayout* layout = new QHBoxLayout(this);
     if( str.length() > TEXTSIZE_THRESHOLD )
     {
@@ -179,7 +179,7 @@ bool QLinkSimpleEdit::createWidgets()
 
 void QLinkSimpleEdit::readFromLink()
 {
-    QString str = QString::fromStdString(getBaseLink()->getValueString()) );
+    QString str = QString::fromStdString(getBaseLink()->getValueString());
     if(innerWidget_.type == TEXTEDIT)
     {
         innerWidget_.widget.textEdit->setText(str);
