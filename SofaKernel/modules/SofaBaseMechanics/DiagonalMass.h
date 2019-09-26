@@ -42,7 +42,6 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -179,11 +178,11 @@ public:
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > d_massDensity;
 
-    /// if true, the mass of every element is computed based on the rest position rather than the position
-    Data< bool > d_computeMassOnRest;
-
     /// total mass of the object
     Data< Real > d_totalMass;
+
+    /// if true, the mass of every element is computed based on the rest position rather than the position
+    Data< bool > d_computeMassOnRest;
 
     /// to display the center of gravity of the system
     Data< bool > d_showCenterOfGravity;
@@ -195,11 +194,6 @@ public:
 
     /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
     int m_initializationProcess;
-
-    /// Data tracker
-    sofa::core::DataTracker m_dataTrackerVertex;
-    sofa::core::DataTracker m_dataTrackerDensity;
-    sofa::core::DataTracker m_dataTrackerTotal;
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -240,7 +234,7 @@ public:
     void init() override;
     void handleEvent(sofa::core::objectmodel::Event* ) override;
 
-    bool update();
+    void doUpdateInternal() override;
 
     TopologyType getMassTopologyType() const
     {
