@@ -112,6 +112,9 @@ public:
     /// Set a force to a given particle
     void setForce( unsigned i, const Deriv& f );
 
+    /// Parse function (to be removed after v19.12)
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+
     using Inherit::addAlias ;
     using Inherit::addKToMatrix;
 

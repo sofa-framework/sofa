@@ -62,6 +62,22 @@ ConstantForceField<DataTypes>::ConstantForceField()
 
 
 template<class DataTypes>
+void ConstantForceField<DataTypes>::parse(BaseObjectDescription* arg)
+{
+    /// Now warning the user when using old API
+    /// point is deprecated since '17.06'
+    const char* val=arg->getAttribute("points",nullptr) ;
+    if(val)
+    {
+        msg_error() << "The attribute 'points' is no longer valid."
+                    << "It has been converted into 'indices since Sofa 17.06 '" ;
+
+    }
+    Inherit::parse(arg) ;
+}
+
+
+template<class DataTypes>
 void ConstantForceField<DataTypes>::init()
 {
     this->m_componentstate = core::objectmodel::ComponentState::Invalid;
