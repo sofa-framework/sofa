@@ -122,6 +122,7 @@ public:
         return DataTypes::Name();
     }
 
+    /// Overide method to lock or unlock the force feedback computation. According to parameter, value == true (resp. false) will lock (resp. unlock) mutex @sa lockForce
     void setLock(bool value) override;
 
 protected:
@@ -143,6 +144,8 @@ protected:
     int timer_iterations;
     double haptic_freq;
     unsigned int num_constraints;
+
+    /// mutex used in method @doComputeForce which can be touched from outside using method @sa setLock if components are modified in another thread.
     std::mutex lockForce;
 };
 
