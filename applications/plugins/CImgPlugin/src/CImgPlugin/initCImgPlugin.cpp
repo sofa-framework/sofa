@@ -1,4 +1,4 @@
-#include "CImgPlugin.h"
+#include <CImgPlugin/CImgPlugin.h>
 
 #include "ImageCImg.h"
 

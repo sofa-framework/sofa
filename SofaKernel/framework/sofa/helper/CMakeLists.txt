@@ -1,7 +1,37 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaHelper)
 
+# DEPENDENCIES
+# Boost
+sofa_find_package(Boost REQUIRED
+    COMPONENTS system filesystem program_options
+    OPTIONAL_COMPONENTS thread
+    BOTH_SCOPES)
+if(SOFAHELPER_HAVE_BOOST_SYSTEM
+   AND SOFAHELPER_HAVE_BOOST_FILESYSTEM
+   AND SOFAHELPER_HAVE_BOOST_PROGRAM_OPTIONS
+   AND SOFAHELPER_HAVE_BOOST_THREAD)
+    sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE TRUE BOTH_SCOPES)
+endif()
+# OpenGL (gl, glu) + GLEW
+if(NOT SOFA_NO_OPENGL)
+    sofa_find_package(OpenGL REQUIRED BOTH_SCOPES)
+    sofa_find_package(GLEW BOTH_SCOPES)
+endif()
+# GTest
+if(SOFA_BUILD_TESTS)
+    sofa_find_package(GTest CONFIG BOTH_SCOPES)
+endif()
+# Eigen (header only)
+sofa_find_package(Eigen3 REQUIRED BOTH_SCOPES)
+# Json (header only) needed by AdvancedTimer
+sofa_find_package(Json 3.1.2 REQUIRED BOTH_SCOPES)
+# FFMPEG_exec
+sofa_find_package(FFMPEG_exec BOTH_SCOPES)
+
+# HEADERS + SOURCES
 set(HEADER_FILES
+    helper.h.in # = config.h.in
     AdvancedTimer.h
     ArgumentParser.h
     BackTrace.h
@@ -46,7 +76,6 @@ set(HEADER_FILES
     hash.h
     gl/Trackball.h
     gl/Transformation.h
-    helper.h
     init.h
     integer_id.h
     io/BaseFileAccess.h
@@ -127,7 +156,6 @@ set(HEADER_FILES
     logging/ExceptionMessageHandler.h
     messaging/FileMessage.h
 )
-
 set(SOURCE_FILES
     AdvancedTimer.cpp
     ArgumentParser.cpp
@@ -205,43 +233,34 @@ set(SOURCE_FILES
     logging/ExceptionMessageHandler.cpp
     messaging/FileMessage.cpp
 )
-
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     list(APPEND SOURCE_FILES  system/FileMonitor_linux.cpp)
-endif()
-
-if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     list(APPEND SOURCE_FILES  system/FileMonitor_macosx.cpp)
-endif()
-
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  system/FileMonitor_windows.cpp)
 endif()
-
 if(SOFA_BUILD_TESTS)
-
-    list(APPEND HEADER_FILES testing/BaseTest.h
-                             testing/NumericTest.h
-                             testing/TestMessageHandler.h
+    list(APPEND HEADER_FILES
+        testing/BaseTest.h
+        testing/NumericTest.h
+        testing/TestMessageHandler.h
         )
-    list(APPEND SOURCE_FILES testing/BaseTest.cpp
-                             testing/NumericTest.cpp
-                             testing/TestMessageHandler.cpp
+    list(APPEND SOURCE_FILES
+        testing/BaseTest.cpp
+        testing/NumericTest.cpp
+        testing/TestMessageHandler.cpp
         )
 endif()
-
-if(Boost_thread_FOUND)
+if(Boost_THREAD_FOUND)
     list(APPEND HEADER_FILES system/thread/TimeoutWatchdog.h)
     list(APPEND SOURCE_FILES system/thread/TimeoutWatchdog.cpp)
 endif()
-
 if(Boost_FILESYSTEM_FOUND)
     list(APPEND HEADER_FILES system/FileRepository.h)
     list(APPEND SOURCE_FILES system/FileRepository.cpp)
 endif()
-
 set(SHADER_FILES "")
-
 if(NOT SOFA_NO_OPENGL)
     list(APPEND HEADER_FILES
         gl/Capture.h
@@ -273,12 +292,10 @@ if(NOT SOFA_NO_OPENGL)
         gl/glfont.cpp
         system/gl.cpp
     )
-
-    if(SOFA_HAVE_GLEW)
+    if(GLEW_FOUND)
         list(APPEND HEADER_FILES
             gl/FrameBufferObject.h
             gl/GLSLShader.h
-            gl/Texture.h
         )
         list(APPEND SOURCE_FILES
             gl/FrameBufferObject.cpp
@@ -288,78 +305,134 @@ if(NOT SOFA_NO_OPENGL)
             gl/shaders/generateSphere.cppglsl
         )
     endif()
-
+    if (FFMPEG_EXEC_FOUND)
+        list(APPEND HEADER_FILES gl/VideoRecorderFFMPEG.h)
+        list(APPEND SOURCE_FILES gl/VideoRecorderFFMPEG.cpp)
+    endif()
 endif()
 
-find_package(FFMPEGexec QUIET)
-
-if (FFMPEG_EXEC_FOUND AND NOT SOFA_NO_OPENGL)
-	list(APPEND HEADER_FILES gl/VideoRecorderFFMPEG.h)
-    list(APPEND SOURCE_FILES gl/VideoRecorderFFMPEG.cpp)
-endif()
-
-
+# LIBRARY
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
-if(WIN32)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
+endif()
+# The default binary suffix for libraries/plugins is "_d" when using a debug build.
+# since this is configuration specific it is a bit more convenient to put it as a debug compile definition for
+# PluginManager.cpp, at the expense of being much less visible compare to having it in the generated
+# SofaFramework/config.h
+set_property(SOURCE system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
+
+# Compile options
+if(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC "NDEBUG")
+    # On Windows and MacOS, NDEBUG and _DEBUG are automatically
+    # set in the default c/cxx flags of the right configurations
+endif()
+if(MSVC)
+    # Increase Number of Sections in .Obj file
+    target_compile_options(${PROJECT_NAME} PUBLIC "/bigobj")
+    if(SOFA_VECTORIZE)
+        # SSE2 flags
+        target_compile_options(${PROJECT_NAME} PUBLIC "/arch:SSE2 /fp:fast")
+    endif()
+endif()
+
+# DEPENDENCY LINKS AND INCLUDE DIRS
+# System libs
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
+    # X11 functions are used in glfont.cpp
+    sofa_find_package(X11 REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_X11_LIB})
+    target_include_directories(${PROJECT_NAME} PUBLIC
+        "$<BUILD_INTERFACE:${X11_X11_INCLUDE_PATH}>"
+        # No INSTALL_INTERFACE include dir => dev user will need to find_package this dependency
+        )
+elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
+    find_library(ICONV iconv)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${ICONV})
+    # on macOS, -framework CoreServices is needed for FileMonitor
+    target_link_libraries(${PROJECT_NAME} PRIVATE "-framework CoreServices")
+elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     # Windows library, used in system::FileSystem
     target_link_libraries(${PROJECT_NAME} PRIVATE Shlwapi)
 endif()
-if(UNIX)
-    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
-endif()
-if(CMAKE_SYSTEM_NAME STREQUAL Linux)
-    # X11 functions are used in glfont.cpp
-    find_package(X11 REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_X11_LIB})
-    target_include_directories(${PROJECT_NAME} PRIVATE ${X11_X11_INCLUDE_PATH})
+
+# OpenGL (gl, glu) + GLEW
+if(NOT SOFA_NO_OPENGL)
+    if(TARGET OpenGL::GL AND TARGET OpenGL::GLU) # Imported targets defined since CMake 3.8
+        target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL OpenGL::GLU)
+    else()
+        target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_LIBRARIES})
+        target_include_directories(${PROJECT_NAME} PUBLIC ${OPENGL_INCLUDE_DIR})
+    endif()
+    if(CMAKE_SYSTEM_NAME STREQUAL Linux AND SOFA_BUILD_RELEASE_PACKAGE AND OPENGL_GLU_FOUND)
+        # Add GLU to Linux binaries
+        sofa_install_libraries(LIBRARIES ${OPENGL_glu_LIBRARY})
+    endif()
+
+    if(GLEW_FOUND)
+        target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW)
+        sofa_install_libraries(TARGETS GLEW::GLEW)
+    else()
+        message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
+    endif()
 endif()
 
-if(APPLE)
-    find_library(ICONV iconv)
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${ICONV})
-    # on macOS, -framework CoreServices is needed for FileMonitor
-    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
+# Boost
+if(Boost_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::system Boost::filesystem Boost::program_options Boost::thread)
+    if(Boost_THREAD_FOUND)
+        target_link_libraries(${PROJECT_NAME} PUBLIC Boost::thread)
+    endif()
+    sofa_install_libraries(LIBRARIES ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
 endif()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK})
-if(SOFA_BUILD_TESTS)
+# GTest
+if(SOFA_BUILD_TESTS AND GTest_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
 endif()
 
-# Json (header only) dependency for AdvancedTimer
-find_package(Json 3.1.2 REQUIRED)
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
-install(DIRECTORY ${JSON_INCLUDE_DIR}
-    COMPONENT headers
-    DESTINATION "include/extlibs"
-    PATTERN "*.in" EXCLUDE
-    PATTERN "*.txt" EXCLUDE
-    PATTERN "*.cpp" EXCLUDE
-    )
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>"
-    "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
-target_include_directories(${PROJECT_NAME} SYSTEM
-    PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>"
-    PUBLIC "$<INSTALL_INTERFACE:include/extlibs/Eigen>"
-    PUBLIC "$<INSTALL_INTERFACE:include/extlibs/json>"
-    )
-if(MSVC)
-    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
+# Eigen (header only)
+if(EIGEN3_FOUND)
+    install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen
+        COMPONENT headers
+        DESTINATION "include/extlibs/Eigen"
+        PATTERN "*.in" EXCLUDE
+        PATTERN "*.txt" EXCLUDE
+        PATTERN "*.cpp" EXCLUDE
+        )
+    install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/unsupported/Eigen
+        COMPONENT headers
+        DESTINATION "include/extlibs/Eigen"
+        PATTERN "*.in" EXCLUDE
+        PATTERN "*.txt" EXCLUDE
+        PATTERN "*.cpp" EXCLUDE
+        )
+    target_include_directories(${PROJECT_NAME} PUBLIC
+        "$<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>"
+        "$<INSTALL_INTERFACE:include/extlibs/Eigen>"
+        )
 endif()
 
-set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
-
-# The default binary suffix for libraries/plugins is "_d" when using a debug build.
-# since this is configuration specific it is a bit more convenient to put it as a debug compile definition for 
-# PluginManager.cpp, at the expense of being much less visible compare to having it in the generated 
-# SofaFramework/config.h
-set_property(SOURCE system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
-
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAHELPER_COMPILE_FLAGS}")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
+# Json (header only) needed by AdvancedTimer
+if(JSON_FOUND)
+    install(DIRECTORY "${JSON_INCLUDE_DIR}/"
+        COMPONENT headers
+        DESTINATION "include/extlibs/json"
+        PATTERN "*.in" EXCLUDE
+        PATTERN "*.txt" EXCLUDE
+        PATTERN "*.cpp" EXCLUDE
+        )
+    target_include_directories(${PROJECT_NAME} PUBLIC
+        "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>"
+        "$<INSTALL_INTERFACE:include/extlibs/json>"
+        )
+endif()
 
 sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/helper")

@@ -42,7 +42,7 @@ list(APPEND SOURCE_FILES
     SparseGridRamificationTopology.cpp
     )
 
-if(SOFA_HAVE_NEWMAT)
+if(SOFAGENERAL_HAVE_SOFADENSESOLVER)
     list(APPEND HEADER_FILES
         HexahedronCompositeFEMForceFieldAndMass.h
         HexahedronCompositeFEMForceFieldAndMass.inl
@@ -54,7 +54,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaGeneralSimpleFem SofaBaseTopology SofaBaseMechanics)
-if(SOFA_HAVE_NEWMAT)
+if(SOFAGENERAL_HAVE_SOFADENSESOLVER)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaDenseSolver)
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_NON_UNIFORM_FEM")

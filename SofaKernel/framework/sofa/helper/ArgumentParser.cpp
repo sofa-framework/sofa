@@ -34,12 +34,12 @@ ArgumentParser::ArgumentParser(int argc, char **argv){
     m_argc = argc;
     m_argv = argv;
     positional_option.add("input-file", -1);
-    desc.add_options()("input-file", po::value<std::vector<std::string> >(), "input file");
+    desc.add_options()("input-file", boost::program_options::value<std::vector<std::string> >(), "input file");
 }
 
 ArgumentParser::~ArgumentParser(){}
 
-void ArgumentParser::addArgument(const po::value_semantic* s, const std::string name, const std::string help)
+void ArgumentParser::addArgument(const boost::program_options::value_semantic* s, const std::string name, const std::string help)
 {
     desc.add_options()(name.c_str(), s, help.c_str());
 }
@@ -58,22 +58,22 @@ void ArgumentParser::showHelp()
 void ArgumentParser::parse()
 {
     try {
-        po::store(po::command_line_parser(m_argc, m_argv).options(desc).positional(positional_option).run(), vm);
+        boost::program_options::store(boost::program_options::command_line_parser(m_argc, m_argv).options(desc).positional(positional_option).run(), vm);
 
         if (vm.find("argv") != vm.end())
             extra = vm.at("argv").as<std::vector<std::string> >();
     }
-    catch (po::error const& e) {
+    catch (boost::program_options::error const& e) {
         std::cerr << e.what() << '\n';
         exit( EXIT_FAILURE );
     }
-    po::notify(vm);
+    boost::program_options::notify(vm);
 
 }
 
 void ArgumentParser::showArgs()
 {
-    for (po::variables_map::iterator it = vm.begin(); it != vm.end(); it++) {
+    for (boost::program_options::variables_map::iterator it = vm.begin(); it != vm.end(); it++) {
         std::cout << "> " << it->first;
         if (((boost::any)it->second.value()).empty()) {
             std::cout << "(empty)";
@@ -137,7 +137,7 @@ std::vector<std::string> ArgumentParser::getInputFileList()
     return std::vector<std::string>();
 }
 
-po::variables_map ArgumentParser::getVariableMap()
+boost::program_options::variables_map ArgumentParser::getVariableMap()
 {
     return vm;
 }

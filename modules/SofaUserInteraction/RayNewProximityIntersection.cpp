@@ -112,7 +112,7 @@ int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Outp
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
     detection->point[1]=P;
     detection->point[0]=Q;
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     detection->freePoint[1] = P;
     detection->freePoint[0] = Q;
 #endif

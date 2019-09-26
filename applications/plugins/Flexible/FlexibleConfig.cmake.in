@@ -2,9 +2,21 @@
 
 @PACKAGE_INIT@
 
+set(FLEXIBLE_HAVE_SOFAPYTHON @FLEXIBLE_HAVE_SOFAPYTHON@)
+set(FLEXIBLE_HAVE_IMAGE @FLEXIBLE_HAVE_IMAGE@)
+set(FLEXIBLE_HAVE_SOFAHIGHORDERTOPOLOGY @FLEXIBLE_HAVE_SOFAHIGHORDERTOPOLOGY@)
+
 find_package(SofaMisc REQUIRED)
-find_package(SofaPython QUIET)
-find_package(image QUIET)
+
+if(FLEXIBLE_HAVE_SOFAPYTHON)
+    find_package(SofaPython QUIET REQUIRED)
+endif()
+if(FLEXIBLE_HAVE_IMAGE)
+    find_package(image QUIET REQUIRED)
+endif()
+if(FLEXIBLE_HAVE_SOFAHIGHORDERTOPOLOGY)
+    find_package(SofaHighOrderTopology QUIET REQUIRED)
+endif()
 
 if(NOT TARGET Flexible)
 	include("${CMAKE_CURRENT_LIST_DIR}/FlexibleTargets.cmake")

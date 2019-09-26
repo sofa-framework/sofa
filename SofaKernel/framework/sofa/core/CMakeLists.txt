@@ -248,11 +248,6 @@ if(NOT SOFA_NO_OPENGL)
     list(APPEND SOURCE_FILES visual/DrawToolGL.cpp)
 endif()
 
-if(Boost_thread_FOUND)
-    list(APPEND HEADER_FILES objectmodel/AspectPool.h)
-    list(APPEND SOURCE_FILES objectmodel/AspectPool.cpp)
-endif()
-
 
 
 # # TODO?

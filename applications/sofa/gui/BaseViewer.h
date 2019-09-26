@@ -39,10 +39,6 @@
 //#include <sofa/helper/gl/Capture.h>
 //#include <sofa/helper/gl/Texture.h>
 
-//#ifdef SOFA_HAVE_FFMPEG_EXEC
-//#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
-//#endif // SOFA_HAVE_FFMPEG_EXEC
-
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>

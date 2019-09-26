@@ -7,10 +7,6 @@ find_package(SofaFramework REQUIRED)
 ## Version
 set(SOFASIMULATION_VERSION ${SofaFramework_VERSION})
 
-## sofa/simulation/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h" DESTINATION include/${PROJECT_NAME}/sofa/simulation COMPONENT headers)
-
 ## Subdirectories
 add_subdirectory(../modules/SofaSimulationCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon)
 add_subdirectory(../modules/SofaSimulationTree ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree)
@@ -30,6 +26,10 @@ foreach(TARGET ${SOFASIMULATION_TARGETS})
     set_target_properties(${TARGET} PROPERTIES FOLDER SofaSimulation) # IDE folder
     set_target_properties(${TARGET} PROPERTIES VERSION ${SOFASIMULATION_VERSION})
 endforeach()
+
+## sofa/simulation/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h" DESTINATION include/${PROJECT_NAME}/sofa/simulation COMPONENT headers)
 
 ## CMake package configurations files
 sofa_write_package_config_files(SofaSimulation ${SOFASIMULATION_VERSION})

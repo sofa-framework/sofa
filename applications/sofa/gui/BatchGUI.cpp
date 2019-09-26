@@ -28,6 +28,8 @@
 #include <sstream>
 #include <string>
 
+#include <boost/program_options.hpp>
+
 namespace sofa
 {
 
@@ -166,7 +168,12 @@ BaseGUI* BatchGUI::CreateGUI(const char* name, sofa::simulation::Node::SPtr groo
 
 int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
 {
-    argumentParser->addArgument(po::value<std::string>()->notifier(setNumIterations), "nbIter,n", "(only batch) Number of iterations of the simulation");
+    argumentParser->addArgument(
+                boost::program_options::value<std::string>()
+                ->notifier(setNumIterations),
+                "nbIter,n",
+                "(only batch) Number of iterations of the simulation"
+                );
     //Parses the string and passes it to setNumIterations as argument
     return 0;
 }

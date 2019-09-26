@@ -24,15 +24,10 @@
 
 #include <sofa/config.h>
 
-#cmakedefine SOFA_GUI_HEADLESS_RECORDER
-// Qt GUI
-#cmakedefine SOFA_GUI_QT
-#cmakedefine SOFA_GUI_QGLVIEWER
-#cmakedefine SOFA_GUI_QTVIEWER
-#cmakedefine SOFA_GUI_NATIVE_MENU
-#cmakedefine SOFA_HAVE_QWT
-#cmakedefine SOFA_GUI_QT_OPENGL
+#cmakedefine01 SOFAGUI_HAVE_SOFAHEADLESSRECORDER
 
-#define SOFA_GUI_VSYNC ${SOFA_GUI_VSYNC_}
+#cmakedefine01 SOFAGUI_HAVE_SOFAGUIQT
+
+#cmakedefine SOFA_GUI_QT_OPENGL
 
 #endif

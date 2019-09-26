@@ -252,7 +252,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     contacts->resize(contacts->size() + 1);
     DetectionOutput *detection = &*(contacts->end() - 1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
 
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
@@ -409,7 +409,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree,ABfree,ACfree;
@@ -562,7 +562,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree,ABfree,ACfree;
@@ -690,7 +690,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 ABfree = e2.p2Free() - e2.p1Free();
@@ -815,7 +815,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 ABfree = e2.p2Free() - e2.p1Free();
@@ -907,7 +907,7 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree;
@@ -992,7 +992,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree;
@@ -1077,7 +1077,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree;
@@ -1155,7 +1155,7 @@ int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* c
     detection->id = t1.getIndex();
     detection->point[1]=P;
     detection->point[0]=Q;
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     detection->freePoint[1] = P;
     detection->freePoint[0] = Q;
 #endif

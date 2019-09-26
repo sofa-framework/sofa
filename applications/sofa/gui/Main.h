@@ -30,7 +30,6 @@
 #	define SOFA_GUIMAIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-
 namespace sofa
 {
 

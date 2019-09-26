@@ -19,16 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAEXPORTER_CONFIG_H
-#define SOFAEXPORTER_CONFIG_H
+#ifndef SOFASPARSESOLVER_CONFIG_H
+#define SOFASPARSESOLVER_CONFIG_H
 
 #include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_EXPORTER
-#  define SOFA_TARGET SofaExporter
-#  define SOFA_SOFAEXPORTER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#cmakedefine01 SOFASPARSESOLVER_HAVE_METIS
+#cmakedefine01 SOFASPARSESOLVER_HAVE_CSPARSE
+
+#ifdef SOFA_BUILD_SOFASPARSESOLVER
+#  define SOFA_TARGET SofaSparseSolver
+#  define SOFA_SOFASPARSESOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_SOFAEXPORTER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_SOFASPARSESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #endif

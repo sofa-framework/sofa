@@ -56,9 +56,9 @@ protected:
     sofa::helper::gl::Capture m_capture;
     sofa::helper::gl::Texture* m_texLogo;
 
-#ifdef SOFA_HAVE_FFMPEG_EXEC
+#if SOFAHELPER_HAVE_FFMPEG_EXEC
     sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
-#endif // SOFA_HAVE_FFMPEG_EXEC
+#endif // SOFAHELPER_HAVE_FFMPEG_EXEC
 };
 
 }

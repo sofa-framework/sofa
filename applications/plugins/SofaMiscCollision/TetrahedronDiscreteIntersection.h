@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_TETRAHEDRONDISCRETEINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_TETRAHEDRONDISCRETEINTERSECTION_H
-#include "config.h"
+#include <SofaMiscCollision/config.h>
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>

@@ -24,14 +24,11 @@
 #include "GUIManager.h"
 
 #include "BatchGUI.h"
-#ifdef SOFA_GUI_QT
+#if SOFAGUI_HAVE_SOFAGUIQT
 #include "qt/RealGUI.h"
 #endif
-#ifdef SOFA_GUI_HEADLESS_RECORDER
+#if SOFAGUI_HAVE_SOFAHEADLESSRECORDER
 #include "headlessRecorder/HeadlessRecorder.h"
-#endif
-#ifdef SOFA_GUI_QT_OPENGL
-#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
 #endif
 
 namespace sofa
@@ -48,23 +45,19 @@ void initMain()
     {
         first = false;
     }
-#ifdef SOFA_GUI_QT_OPENGL
-	// Force Windows to pull the dll while loading SofaGUI (Unix does not need it)
-	initSofaGUIQtOpenGL();
-#endif // SOFA_GUI_QT_OPENGL
 }
 
 int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
 
-#ifdef SOFA_GUI_HEADLESS_RECORDER
+#if SOFAGUI_HAVE_SOFAHEADLESSRECORDER
 int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2 );
 #endif
   
-#ifdef SOFA_GUI_QGLVIEWER
+#if SOFAGUIQT_HAVE_QGLVIEWER
 int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
 #endif
 
-#ifdef SOFA_GUI_QTVIEWER
+#if SOFAGUIQT_HAVE_QTVIEWER
 int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, NULL, 2 );
 #endif
 

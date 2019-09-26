@@ -38,12 +38,6 @@ using sofa::simpleapi::str ;
 using sofa::simpleapi::createObject ;
 using sofa::simpleapi::createChild ;
 
-#ifdef SOFA_HAVE_METIS
-#define ARE_METIS_FEATURE_ENABLED true
-#else
-#define ARE_METIS_FEATURE_ENABLED false
-#endif //
-
 namespace sofa
 {
 namespace modeling {
@@ -113,7 +107,7 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Implicit_SparseLDL")
     {
-        if(ARE_METIS_FEATURE_ENABLED)
+        if(SCENECREATOR_HAVE_METIS)
         {
             simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
                                                                   {"rayleighStiffness","0.01"},

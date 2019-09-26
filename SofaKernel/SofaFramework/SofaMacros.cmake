@@ -107,7 +107,7 @@ macro(sofa_add_generic directory name type)
         option(${option} "Build the ${name} ${type}." ${active})
         if(${option})
             message("Adding ${type} ${name}")
-            add_subdirectory(${directory} ${name})
+            add_subdirectory(${directory})
             #Check if the target has been successfully added
             if(TARGET ${name})
                 set_target_properties(${name} PROPERTIES FOLDER ${type}s) # IDE folder
@@ -456,6 +456,79 @@ function(sofa_add_python_module)
 endfunction()
 
 
+# sofa_set_01
+#
+# Defines a variable to
+#   - 1 if VALUE is 1, ON, YES, TRUE, Y, or a non-zero number.
+#   - 0 if VALUE is 0, OFF, NO, FALSE, N, IGNORE, NOTFOUND, the empty string, or ends in the suffix -NOTFOUND.
+# This macro is used to quickly define variables for "#define SOMETHING ${SOMETHING}" in config.h.in files.
+# PARENT_SCOPE (option): set the variable only in parent scope
+# BOTH_SCOPES (option): set the variable in current AND parent scopes
+macro(sofa_set_01 name)
+    set(optionArgs PARENT_SCOPE BOTH_SCOPES)
+    set(oneValueArgs VALUE)
+    set(multiValueArgs)
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    if(ARG_VALUE)
+        if(ARG_BOTH_SCOPES OR NOT ARG_PARENT_SCOPE)
+            set(${name} 1)
+        endif()
+        if(ARG_BOTH_SCOPES OR ARG_PARENT_SCOPE)
+            set(${name} 1 PARENT_SCOPE)
+        endif()
+    else()
+        if(ARG_BOTH_SCOPES OR NOT ARG_PARENT_SCOPE)
+            set(${name} 0)
+        endif()
+        if(ARG_BOTH_SCOPES OR ARG_PARENT_SCOPE)
+            set(${name} 0 PARENT_SCOPE)
+        endif()
+    endif()
+endmacro()
+
+
+# sofa_find_package
+#
+# Defines a PROJECTNAME_HAVE_PACKAGENAME variable to be used in:
+#  - XXXConfig.cmake.in to decide if find_dependency must be done
+#  - config.h.in as a #cmakedefine
+#  - config.h.in as a #define SOMETHING ${SOMETHING}
+# BOTH_SCOPES (option): set the variable in current AND parent scopes
+macro(sofa_find_package name)
+    set(optionArgs QUIET REQUIRED BOTH_SCOPES)
+    set(oneValueArgs)
+    set(multiValueArgs COMPONENTS OPTIONAL_COMPONENTS)
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    set(find_package_args ${ARGN})
+    if(find_package_args)
+        list(REMOVE_ITEM find_package_args "BOTH_SCOPES")
+    endif()
+    find_package(${name} ${find_package_args})
+    string(TOUPPER ${name} name_upper)
+    string(TOUPPER ${PROJECT_NAME} project_upper)
+    set(scopes "") # nothing = current scope only
+    if(ARG_BOTH_SCOPES)
+        set(scopes "BOTH_SCOPES")
+    endif()
+    if(ARG_COMPONENTS OR ARG_OPTIONAL_COMPONENTS)
+        foreach(component ${ARG_COMPONENTS} ${ARG_OPTIONAL_COMPONENTS})
+            string(TOUPPER ${component} component_upper)
+            if(TARGET ${name}::${component})
+                sofa_set_01(${project_upper}_HAVE_${name_upper}_${component_upper} VALUE TRUE ${scopes})
+            else()
+                sofa_set_01(${project_upper}_HAVE_${name_upper}_${component_upper} VALUE FALSE ${scopes})
+            endif()
+        endforeach()
+    else()
+        if(${name}_FOUND OR ${name_upper}_FOUND)
+            sofa_set_01(${project_upper}_HAVE_${name_upper} VALUE TRUE ${scopes})
+        else()
+            sofa_set_01(${project_upper}_HAVE_${name_upper} VALUE FALSE ${scopes})
+        endif()
+    endif()
+endmacro()
+
+
 
 ##########################################################
 #################### INSTALL MACROS ######################
@@ -480,11 +553,7 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             BUNDLE DESTINATION "../../.." COMPONENT applications
             )
 
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in")
-        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_BINARY_DIR}/include/${package_name}/config.h")
-        install(FILES "${CMAKE_BINARY_DIR}/include/${package_name}/config.h" DESTINATION "include/${include_install_dir}")
-    endif()
-
+    # non-flat headers install (if no PUBLIC_HEADER and include_install_dir specified)
     foreach(target ${the_targets})
         set(version ${${target}_VERSION})
         string(TOUPPER "${package_name}" package_name_upper)
@@ -495,7 +564,26 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             set_target_properties(${target} PROPERTIES VERSION "${Sofa_VERSION}")
         endif()
 
-        # non-flat headers install (if no PUBLIC_HEADER and include_install_dir specified)
+        get_target_property(target_sources ${target} SOURCES)
+        #list(FILTER ${target_sources} INCLUDE REGEX ".*\.h\.in$") # CMake >= 3.6
+        foreach(filepath ${target_sources})
+            if(${filepath} MATCHES ".*\.h\.in$")
+                get_filename_component(filename ${filepath} NAME_WE)
+
+                set(configure_dir "${CMAKE_BINARY_DIR}/include/${include_install_dir}")
+                if("${package_name}" STREQUAL "${target}")
+                    # target is a plugin
+                    string(REPLACE "${target}/${target}" "${target}" configure_dir "${configure_dir}")
+                else()
+                    # target is an old module
+                    string(REPLACE "include/${package_name}" "include" configure_dir "${configure_dir}")
+                endif()
+
+                configure_file("${filepath}" "${configure_dir}/${filename}.h")
+                install(FILES "${configure_dir}/${filename}.h" DESTINATION "include/${include_install_dir}")
+            endif()
+        endforeach()
+
         get_target_property(public_header ${target} PUBLIC_HEADER)
         if("${public_header}" STREQUAL "public_header-NOTFOUND" AND NOT "${include_install_dir}" STREQUAL "")
             set(optional_argv3 "${ARGV3}")
@@ -504,7 +592,9 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
                 # TODO: add a real argument "include_source_dir" to this macro
                 set(include_source_dir "${ARGV3}")
             endif()
-            if(NOT EXISTS "${include_source_dir}" AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${include_source_dir}")
+            if(NOT include_source_dir)
+                set(include_source_dir "${CMAKE_CURRENT_SOURCE_DIR}")
+            elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${include_source_dir}")
                 # will be true if include_source_dir is empty
                 set(include_source_dir "${CMAKE_CURRENT_SOURCE_DIR}/${include_source_dir}")
             endif()
@@ -806,12 +896,17 @@ function(sofa_copy_libraries)
                 "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}"
                 "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
+            set(runtime_output_dir ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+            if(NOT runtime_output_dir)
+                set(runtime_output_dir ${CMAKE_BINARY_DIR}) # fallback
+            endif()
+
             if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
                 foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                    file(COPY ${SHARED_LIB} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+                    file(COPY ${SHARED_LIB} DESTINATION "${runtime_output_dir}/${CONFIG}")
                 endforeach()
             else()                      # Single-config generator (nmake)
-                file(COPY ${SHARED_LIB} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+                file(COPY ${SHARED_LIB} DESTINATION "${runtime_output_dir}")
             endif()
         endif()
     endforeach()
@@ -856,3 +951,31 @@ INSTALL( CODE
 "
 )
 endmacro()
+
+
+function(debug_print_target_properties tgt)
+    execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
+
+    # Convert command output into a CMake list
+    STRING(REGEX REPLACE ";" "\\\\;" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+    STRING(REGEX REPLACE "\n" ";" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+
+    if(NOT TARGET ${tgt})
+      message("There is no target named '${tgt}'")
+      return()
+    endif()
+
+    foreach(prop ${CMAKE_PROPERTY_LIST})
+        string(REPLACE "<CONFIG>" "${CMAKE_BUILD_TYPE}" prop ${prop})
+        # Fix https://stackoverflow.com/questions/32197663/how-can-i-remove-the-the-location-property-may-not-be-read-from-target-error-i
+        if(prop STREQUAL "LOCATION" OR prop MATCHES "^LOCATION_" OR prop MATCHES "_LOCATION$")
+            continue()
+        endif()
+        # message ("Checking ${prop}")
+        get_property(propval TARGET ${tgt} PROPERTY ${prop} SET)
+        if (propval)
+            get_target_property(propval ${tgt} ${prop})
+            message ("${tgt} ${prop} = ${propval}")
+        endif()
+    endforeach(prop)
+endfunction()

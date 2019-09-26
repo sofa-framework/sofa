@@ -130,11 +130,6 @@ namespace gpu
 namespace cuda
 {
 
-#ifdef SOFA_HAVE_MINIFLOWVR
-#endif
-#ifdef SOFACUDA_ENABLE_VOLUMETRICRENDERING
-#endif // SOFACUDA_ENABLE_VOLUMETRICRENDERING
-
 extern "C"
 {
     MycudaVerboseLevel mycudaVerboseLevel = LOG_ERR;

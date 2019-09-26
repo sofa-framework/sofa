@@ -1,35 +1,30 @@
 cmake_minimum_required(VERSION 3.1)
 project(SceneCreator VERSION 0.1)
 
+find_package(SofaSimulation REQUIRED)
+sofa_find_package(Metis QUIET)
+
 set(HEADER_FILES
+    config.h.in
     src/SceneCreator/GetAssembledSizeVisitor.h
     src/SceneCreator/GetVectorVisitor.h
     src/SceneCreator/SceneCreator.h
     src/SceneCreator/SceneUtils.h
-)
-
+    )
 set(SOURCE_FILES
     src/SceneCreator/GetAssembledSizeVisitor.cpp
     src/SceneCreator/GetVectorVisitor.cpp
     src/SceneCreator/SceneCreator.cpp
     src/SceneCreator/SceneUtils.cpp
     src/SceneCreator/initSceneCreator.cpp
-)
-
-find_package(SofaSimulation REQUIRED)
-find_package(Metis QUIET)
+    )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
-target_compile_definitions(${PROJECT_NAME} PRIVATE  "-DSOFA_BUILD_SCENECREATOR")
-target_compile_definitions(${PROJECT_NAME} PUBLIC  "-DSOFA_HAVE_SCENECREATOR")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SCENECREATOR")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-
-if(Metis_FOUND)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_HAVE_METIS")
-endif()
 
 ## Install rules for the library; CMake package configurations files
 sofa_generate_package(

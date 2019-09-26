@@ -22,7 +22,7 @@
 #ifndef SOFA_GLBACKEND_H
 #define SOFA_GLBACKEND_H
 
-#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
+#include <sofa/gui/qt/SofaGuiQt.h>
 
 #include <sofa/gui/qt/viewer/EngineBackend.h>
 #include <sofa/gui/PickHandler.h>
@@ -31,9 +31,9 @@
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/helper/gl/Texture.h>
 
-#ifdef SOFA_HAVE_FFMPEG_EXEC
+#if SOFAHELPER_HAVE_FFMPEG_EXEC
 #include <sofa/helper/gl/VideoRecorderFFMPEG.h>
-#endif // SOFA_HAVE_FFMPEG_EXEC
+#endif // SOFAHELPER_HAVE_FFMPEG_EXEC
 
 
 namespace sofa
@@ -48,7 +48,7 @@ namespace qt
 namespace viewer
 {
 
-class SOFA_SOFAGUIQTOPENGL_API GLBackend : public EngineBackend
+class SOFA_SOFAGUIQT_API GLBackend : public EngineBackend
 {
 public:
     GLBackend();
@@ -68,9 +68,9 @@ public:
 private:
     sofa::helper::gl::Capture m_capture;
     sofa::helper::gl::Texture* m_texLogo;
-#ifdef SOFA_HAVE_FFMPEG_EXEC
+#if SOFAHELPER_HAVE_FFMPEG_EXEC
     sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
-#endif // SOFA_HAVE_FFMPEG_EXEC
+#endif // SOFAHELPER_HAVE_FFMPEG_EXEC
 
 };
 

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_WRITETOPOLOGY_H
 #define SOFA_COMPONENT_MISC_WRITETOPOLOGY_H
-#include "config.h"
+#include <SofaExporter/config.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -33,7 +33,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/Visitor.h>
 
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -72,7 +72,7 @@ public:
 protected:
     core::topology::BaseMeshTopology* m_topology;
     std::ofstream* outfile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     gzFile gzfile;
 #endif
     unsigned int nextTime;

@@ -23,7 +23,7 @@
 #define SOFA_PLUGINMANAGER_H
 
 #include <ui_PluginManager.h>
-#include "SofaGUIQt.h"
+#include <sofa/gui/qt/SofaGuiQt.h>
 #include <QTreeWidgetItem>
 
 #include <set>

@@ -46,7 +46,7 @@ ReadTopology::ReadTopology()
     , f_loop( initData(&f_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , m_topology(nullptr)
     , infile(NULL)
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
     , nextTime(0.0)
@@ -60,7 +60,7 @@ ReadTopology::~ReadTopology()
 {
     if (infile)
         delete infile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -80,7 +80,7 @@ void ReadTopology::reset()
         delete infile;
         infile = NULL;
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     if (gzfile)
     {
         gzclose(gzfile);
@@ -93,7 +93,7 @@ void ReadTopology::reset()
     {
         serr << "ERROR: empty filename"<<sendl;
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
         gzfile = gzopen(filename.c_str(),"rb");
@@ -146,7 +146,7 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
 {
     if (!m_topology) return false;
     if (!infile
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
         && !gzfile
 #endif
        )
@@ -161,7 +161,7 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
     while ((double)nextTime <= (time + epsilon))
     {
 
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
         if (gzfile)
         {
 

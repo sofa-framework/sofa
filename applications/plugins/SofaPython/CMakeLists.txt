@@ -5,9 +5,8 @@ if(UNIX)
   list(APPEND PYTHON_LIBRARIES dl)
 endif()
 
-set(SOFA_HAVE_PYTHON 1)
-
 set(HEADER_FILES
+    config.h.in
     Binding.h
     Binding_Base.h
     Binding_BaseContext.h
@@ -169,8 +168,6 @@ if(${CMAKE_COMPILER_IS_GNUCC})
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
-
-target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAPYTHON")
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC ${PYTHON_INCLUDE_DIRS}

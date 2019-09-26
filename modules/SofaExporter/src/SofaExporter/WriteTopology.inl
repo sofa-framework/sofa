@@ -50,7 +50,7 @@ WriteTopology::WriteTopology()
     , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
     , m_topology(nullptr)
     , outfile(nullptr)
-    #ifdef SOFA_HAVE_ZLIB
+    #if SOFAEXPORTER_HAVE_ZLIB
     , gzfile(nullptr)
     #endif
     , nextTime(0)
@@ -64,7 +64,7 @@ WriteTopology::~WriteTopology()
 {
     if (outfile)
         delete outfile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -80,7 +80,7 @@ void WriteTopology::init()
     if (filename.empty())
         return;
 
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
         gzfile = gzopen(filename.c_str(),"wb");
@@ -115,7 +115,7 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
     {
         if (!m_topology) return;
         if (!outfile
-        #ifdef SOFA_HAVE_ZLIB
+        #if SOFAEXPORTER_HAVE_ZLIB
                 && !gzfile
         #endif
                 )
@@ -147,7 +147,7 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
 
         if (writeCurrent)
         {
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
             if (gzfile)
             {
                 std::ostringstream str;

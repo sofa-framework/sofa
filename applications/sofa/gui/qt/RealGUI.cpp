@@ -35,7 +35,7 @@
 #include "GraphVisitor.h"
 #endif
 
-#ifdef SOFAGUIQT_HAS_QTCHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
 #include "SofaWindowProfiler.h"
 #endif
 
@@ -129,6 +129,9 @@ using sofa::core::ObjectFactory;
 using sofa::gui::qt::DocBrowser;
 
 using sofa::core::ExecParams;
+
+#include <boost/program_options.hpp>
+
 
 namespace sofa
 {
@@ -277,14 +280,16 @@ void RealGUI::InitApplication( RealGUI* _gui)
     QString pathIcon=(DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
     application->setWindowIcon(QIcon(pathIcon));
 
-#ifdef SOFA_GUI_NATIVE_MENU
-    // Use the OS'native menu instead of the Qt one
-    _gui->menubar->setNativeMenuBar(true);
-#else
-    // Use the qt menu instead of the native one in order to standardize the way the menu is showed on every OS
-    _gui->menubar->setNativeMenuBar(false);
-#endif
-
+    if(SOFAGUI_ENABLE_NATIVE_MENU)
+    {
+        // Use the OS'native menu instead of the Qt one
+        _gui->menubar->setNativeMenuBar(true);
+    }
+    else
+    {
+        // Use the qt menu instead of the native one in order to standardize the way the menu is showed on every OS
+        _gui->menubar->setNativeMenuBar(false);
+    }
     // show the gui
     _gui->show(); // adding extra line in the console?
 }
@@ -322,7 +327,7 @@ RealGUI::RealGUI ( const char* viewername)
       #endif
 
       m_sofaMouseManager(nullptr),
-      #ifdef SOFAGUIQT_HAS_QTCHARTS
+      #if SOFAGUIQT_HAVE_QT5_CHARTS
       m_windowTimerProfiler(nullptr),
       #endif
       simulationGraph(nullptr),
@@ -820,7 +825,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
         simulationGraph->expandPathFrom(expandedNodes);
     }
 
-#ifdef SOFAGUIQT_HAS_QTCHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
     if (m_windowTimerProfiler)
         m_windowTimerProfiler->resetGraph();
 #endif
@@ -1734,7 +1739,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 void RealGUI::parseOptions()
 {
     if (mArgumentParser) {
-        po::variables_map vm = mArgumentParser->getVariableMap();
+        boost::program_options::variables_map vm = mArgumentParser->getVariableMap();
         if(vm.find("interactive") != vm.end())
             m_enableInteraction = vm["interactive"].as<bool>();
         if(vm.find("msaa") != vm.end())
@@ -1871,7 +1876,7 @@ void RealGUI::createWindowVisitor()
 
 void RealGUI::createAdvanceTimerProfilerWindow()
 {
-#ifdef SOFAGUIQT_HAS_QTCHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
     m_windowTimerProfiler = new SofaWindowProfiler(this);
     m_windowTimerProfiler->hide();
     connect( displayTimeProfiler, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayProflierWindow ( bool ) ) );
@@ -2106,7 +2111,7 @@ void RealGUI::step()
     if ( !currentSimulation()->getContext()->getAnimate() )
         startButton->setChecked ( false );
 
-#ifdef SOFAGUIQT_HAS_QTCHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
     if (displayTimeProfiler->isChecked())
     {
         m_windowTimerProfiler->pushStepData();
@@ -2362,7 +2367,7 @@ void RealGUI::setExportVisitor ( bool )
 
 void RealGUI::displayProflierWindow (bool value)
 {
-#ifdef SOFAGUIQT_HAS_QTCHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
     if (m_windowTimerProfiler == nullptr)
         return;
 

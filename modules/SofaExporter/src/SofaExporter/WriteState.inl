@@ -54,7 +54,7 @@ WriteState::WriteState()
     , d_keperiod( initData(&d_keperiod, 0.0, "keperiod", "set the period to measure the kinetic energy increase"))
     , mmodel(nullptr)
     , outfile(nullptr)
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
     , nextIteration(0)
@@ -71,7 +71,7 @@ WriteState::~WriteState()
 {
     if (outfile)
         delete outfile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -94,7 +94,7 @@ void WriteState::init()
     const std::string& filename = d_filename.getFullPath();
     if (!filename.empty())
     {
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
         if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
         {
             gzfile = gzopen(filename.c_str(),"wb");
@@ -229,7 +229,7 @@ void WriteState::init()
 void WriteState::reinit(){
 if (outfile)
     delete outfile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
 if (gzfile)
     gzclose(gzfile);
 #endif
@@ -254,7 +254,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
     {
         if (!mmodel) return;
         if (!outfile
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
             && !gzfile
 #endif
            )
@@ -325,7 +325,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
         }
         if (writeCurrent)
         {
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
             if (gzfile)
             {
                 // write the X state

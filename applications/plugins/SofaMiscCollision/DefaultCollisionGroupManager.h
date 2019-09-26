@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
 #define SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
-#include "config.h"
+#include <SofaMiscCollision/config.h>
 
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/simulation/Node.h>

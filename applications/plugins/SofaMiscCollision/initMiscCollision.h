@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
 #define SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#include "config.h"
+#include <SofaMiscCollision/config.h>
 
 namespace sofa
 {

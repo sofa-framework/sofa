@@ -19,16 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISCCOLLISION_CONFIG_H
-#define SOFAMISCCOLLISION_CONFIG_H
+#ifndef SOFA_SOFAIMPLICITFIELD_CONFIG_H
+#define SOFA_SOFAIMPLICITFIELD_CONFIG_H
 
 #include <SofaBase/config.h>
 
-#ifdef SOFA_BUILD_MISC_COLLISION
-#  define SOFA_TARGET SofaMiscCollision
-#  define SOFA_MISC_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#cmakedefine01 SOFAIMPLICITFIELD_HAVE_SOFAPYTHON
+
+#ifdef SOFA_BUILD_SOFAIMPLICITFIELD
+#  define SOFA_TARGET SofaImplicitField
+#  define SOFA_SOFAIMPLICITFIELD_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MISC_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_SOFAIMPLICITFIELD_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #endif

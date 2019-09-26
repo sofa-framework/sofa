@@ -23,6 +23,8 @@
 #include "VideoRecorderFFMpeg.h"
 #include <sofa/helper/AdvancedTimer.h>
 
+#include <boost/program_options.hpp>
+
 namespace sofa
 {
 
@@ -106,15 +108,24 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
     std::stringstream ss;
     ss << std::put_time(std::localtime(&in_time_t), "%F-%X");
 
-    argumentParser->addArgument(po::value<bool>(&saveAsScreenShot)->default_value(false)->implicit_value(true),         "picture", "enable picture mode (save as png)");
-    argumentParser->addArgument(po::value<bool>(&saveAsVideo)->default_value(false)->implicit_value(true),         "video", "enable video mode (save as avi, x264)");
-    argumentParser->addArgument(po::value<std::string>(&fileName)->default_value(ss.str()), "filename", "(only HeadLessRecorder) name of the file");
-    argumentParser->addArgument(po::value<int>(&recordTimeInSeconds)->default_value(5), "recordTime", "(only HeadLessRecorder) seconds of recording, video or pictures of the simulation");
-    argumentParser->addArgument(po::value<int>(&width)->default_value(1920), "width", "(only HeadLessRecorder) video or picture width");
-    argumentParser->addArgument(po::value<int>(&height)->default_value(1080), "height", "(only HeadLessRecorder) video or picture height");
-    argumentParser->addArgument(po::value<int>(&fps)->default_value(60), "fps", "(only HeadLessRecorder) define how many frame per second HeadlessRecorder will generate");
-    argumentParser->addArgument(po::value<bool>(&recordUntilStopAnimate)->default_value(false)->implicit_value(true),         "recordUntilEndAnimate", "(only HeadLessRecorder) recording until the end of animation does not care how many seconds have been set");
-    argumentParser->addArgument(po::value<std::string>(&recordTypeRaw)->default_value("wallclocktime"), "recordingmode", "(only HeadLessRecorder) define how the recording should be made; either \"simulationtime\" (records as if it was simulating in real time and skips frames accordingly), \"wallclocktime\" (records a frame for each time step) or an arbitrary interval time between each frame as a float.");
+    argumentParser->addArgument(boost::program_options::value<bool>(&saveAsScreenShot)->default_value(false)->implicit_value(true),
+                                "picture", "enable picture mode (save as png)");
+    argumentParser->addArgument(boost::program_options::value<bool>(&saveAsVideo)->default_value(false)->implicit_value(true),
+                                "video", "enable video mode (save as avi, x264)");
+    argumentParser->addArgument(boost::program_options::value<std::string>(&fileName)->default_value(ss.str()),
+                                "filename", "(only HeadLessRecorder) name of the file");
+    argumentParser->addArgument(boost::program_options::value<int>(&recordTimeInSeconds)->default_value(5),
+                                "recordTime", "(only HeadLessRecorder) seconds of recording, video or pictures of the simulation");
+    argumentParser->addArgument(boost::program_options::value<int>(&width)->default_value(1920),
+                                "width", "(only HeadLessRecorder) video or picture width");
+    argumentParser->addArgument(boost::program_options::value<int>(&height)->default_value(1080),
+                                "height", "(only HeadLessRecorder) video or picture height");
+    argumentParser->addArgument(boost::program_options::value<int>(&fps)->default_value(60),
+                                "fps", "(only HeadLessRecorder) define how many frame per second HeadlessRecorder will generate");
+    argumentParser->addArgument(boost::program_options::value<bool>(&recordUntilStopAnimate)->default_value(false)->implicit_value(true),
+                                "recordUntilEndAnimate", "(only HeadLessRecorder) recording until the end of animation does not care how many seconds have been set");
+    argumentParser->addArgument(boost::program_options::value<std::string>(&recordTypeRaw)->default_value("wallclocktime"),
+                                "recordingmode", "(only HeadLessRecorder) define how the recording should be made; either \"simulationtime\" (records as if it was simulating in real time and skips frames accordingly), \"wallclocktime\" (records a frame for each time step) or an arbitrary interval time between each frame as a float.");
     return 0;
 }
 

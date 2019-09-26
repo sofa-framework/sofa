@@ -19,9 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERALLOADER_CONFIG_H
-#define SOFAGENERALLOADER_CONFIG_H
+#ifndef SOFA_HELPER_HELPER_H
+#define SOFA_HELPER_HELPER_H
 
-#include <SofaGeneral/config.h>
+#include <sofa/config.h>
+
+#cmakedefine01 SOFAHELPER_HAVE_BOOST
+#cmakedefine01 SOFAHELPER_HAVE_BOOST_THREAD
+#cmakedefine01 SOFAHELPER_HAVE_BOOST_SYSTEM
+#cmakedefine01 SOFAHELPER_HAVE_BOOST_FILESYSTEM
+#cmakedefine01 SOFAHELPER_HAVE_BOOST_PROGRAM_OPTIONS
+
+#cmakedefine01 SOFAHELPER_HAVE_OPENGL
+
+#cmakedefine01 SOFAHELPER_HAVE_GLEW
+
+#cmakedefine01 SOFAHELPER_HAVE_GTEST
+
+#cmakedefine01 SOFAHELPER_HAVE_FFMPEG_EXEC
 
 #endif

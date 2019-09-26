@@ -28,7 +28,7 @@
 
 #include <sofa/helper/io/Mesh.h>
 
-#ifdef SOFA_HAVE_MINIFLOWVR
+#if SOFADISTANCEGRID_HAVE_MINIFLOWVR
 #include <flowvr/render/mesh.h>
 #endif
 
@@ -173,7 +173,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
     }
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
-#ifdef SOFA_HAVE_MINIFLOWVR
+#if SOFADISTANCEGRID_HAVE_MINIFLOWVR
         flowvr::render::Mesh mesh;
         if (!mesh.load(filename.c_str()))
         {
@@ -231,9 +231,9 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
             grid->computeBBox();
         return grid;
 #else
-        msg_error("DistanceGrid")<<"Loading a .fmesh file requires the FlowVR library (activatable with the CMake option 'SOFA_BUILD_MINIFLOWVR')";
+        msg_error("DistanceGrid")<<"Loading a .fmesh file requires the FlowVR library";
         return NULL;
-#endif
+#endif // SOFADISTANCEGRID_HAVE_MINIFLOWVR
     }
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {

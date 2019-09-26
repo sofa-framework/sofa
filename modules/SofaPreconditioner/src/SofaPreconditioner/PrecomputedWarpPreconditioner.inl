@@ -49,7 +49,7 @@
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
-#ifdef SOFA_HAVE_CSPARSE
+#if SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER
 #include <SofaSparseSolver/SparseCholeskySolver.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #else
@@ -211,7 +211,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
     }
 }
 
-#ifdef SOFA_HAVE_CSPARSE
+#if SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M)
 {

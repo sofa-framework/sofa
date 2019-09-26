@@ -19,9 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISCTOPOLOGY_CONFIG_H
-#define SOFAMISCTOPOLOGY_CONFIG_H
+#ifndef SOFAMISCCOLLISION_CONFIG_H
+#define SOFAMISCCOLLISION_CONFIG_H
 
-#include <SofaMisc/config.h>
+#include <SofaBase/config.h>
+
+#cmakedefine01 SOFAMISCCOLLISION_HAVE_SOFASPHFLUID
+#cmakedefine01 SOFAMISCCOLLISION_HAVE_SOFADISTANCEGRID
+
+#ifdef SOFA_BUILD_MISC_COLLISION
+#  define SOFA_TARGET SofaMiscCollision
+#  define SOFA_MISC_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_MISC_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

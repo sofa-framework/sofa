@@ -23,7 +23,7 @@
 #include "misc/CompliantSolverMerger.h"
 #include "contact/CompliantContact.h"
 
-#ifdef SOFA_HAVE_SOFAPYTHON
+#if COMPLIANT_HAVE_SOFAPYTHON
 #include <SofaPython/PythonCommon.h>
 #include <SofaPython/PythonMacros.h>
 #include <SofaPython/PythonFactory.h>
@@ -62,7 +62,7 @@ void initExternalModule()
         // previous Eigen versions have a critical bug (v.noalias()+=w does not work in some situations)
         static_assert( EIGEN_WORLD_VERSION>=3 && EIGEN_MAJOR_VERSION>=2 && EIGEN_MINOR_VERSION>=5, "" );
 
-#ifdef SOFA_HAVE_SOFAPYTHON
+#if COMPLIANT_HAVE_SOFAPYTHON
         static std::string docstring=R"(
                 Compliant module.
 

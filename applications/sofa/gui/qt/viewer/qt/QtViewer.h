@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_QT_QTVIEWER_H
 #define SOFA_GUI_QT_QTVIEWER_H
 
-#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
+#include <sofa/gui/qt/SofaGuiQt.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
@@ -87,7 +87,7 @@ typedef QOpenGLWidget QOpenGLWidget;
 typedef QGLWidget QOpenGLWidget;
 #endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 
-class SOFA_SOFAGUIQTOPENGL_API QtViewer
+class SOFA_SOFAGUIQT_API QtViewer
         : public QOpenGLWidget
         , public sofa::gui::qt::viewer::OglModelSofaViewer
 {
