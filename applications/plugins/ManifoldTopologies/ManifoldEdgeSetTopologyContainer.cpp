@@ -127,73 +127,6 @@ int ManifoldEdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper:
     return m_ConnectedComponentArray.size();
 }
 
-void ManifoldEdgeSetTopologyContainer::computeConnectedComponent()
-{
-    using namespace boost;
-    typedef adjacency_list <vecS, vecS, undirectedS> Graph;
-
-    if(isvoid_ConnectedComponent())
-    {
-
-        Graph G;
-
-        const sofa::helper::vector<Edge> &ea=getEdgeArray();
-        for (unsigned int k=0; k<ea.size(); ++k)
-        {
-            add_edge(ea[k][0], ea[k][1], G);
-        }
-
-        m_ComponentVertexArray.resize(num_vertices(G));
-        int num = connected_components(G, &m_ComponentVertexArray[0]);
-
-        std::vector< std::vector<int> > components(num);
-        for(int i=0; i<num; i++)
-        {
-            components[i].resize(4);
-            components[i][0]=0;
-            components[i][1]=-1;
-            components[i][2]=-1;
-            components[i][3]=-1;
-        }
-
-        for(unsigned int j=0; j<m_ComponentVertexArray.size(); j++)
-        {
-
-            components[m_ComponentVertexArray[j]][0]+=1;
-            components[m_ComponentVertexArray[j]][1]=j;
-
-            if((getEdgesAroundVertex(j)).size()==1)
-            {
-
-                if((getEdge((getEdgesAroundVertex(j))[0]))[0]==j)
-                {
-                    components[m_ComponentVertexArray[j]][2]=j;
-                }
-                else   // (getEdge((getEdgesAroundVertex(j))[0]))[1]==j
-                {
-                    components[m_ComponentVertexArray[j]][3]=j;
-                }
-            }
-        }
-
-        for(int i=0; i<num; i++)
-        {
-
-            bool is_closed = (components[i][2]==-1 && components[i][3]==-1);
-            if(is_closed)
-            {
-                components[i][2]=components[i][1];
-            }
-            ConnectedComponent cc= ConnectedComponent(components[i][2], components[i][3], components[i][0], i);
-            m_ConnectedComponentArray.push_back(cc);
-        }
-
-    }
-    else
-    {
-        return;
-    }
-}
 
 bool ManifoldEdgeSetTopologyContainer::checkTopology() const
 {
@@ -226,6 +159,203 @@ void ManifoldEdgeSetTopologyContainer::clear()
 
     EdgeSetTopologyContainer::clear();
 }
+
+
+
+void ManifoldEdgeSetTopologyContainer::resetConnectedComponent()
+{
+    m_ComponentVertexArray.clear();
+    m_ConnectedComponentArray.clear();
+}
+
+
+bool ManifoldEdgeSetTopologyContainer::isvoid_ConnectedComponent()
+{
+    return m_ConnectedComponentArray.size() == 0;
+}
+
+
+void ManifoldEdgeSetTopologyContainer::computeConnectedComponent()
+{
+    using namespace boost;
+    typedef adjacency_list <vecS, vecS, undirectedS> Graph;
+
+    if (isvoid_ConnectedComponent())
+    {
+
+        Graph G;
+
+        const sofa::helper::vector<Edge> &ea = getEdgeArray();
+        for (unsigned int k = 0; k<ea.size(); ++k)
+        {
+            add_edge(ea[k][0], ea[k][1], G);
+        }
+
+        m_ComponentVertexArray.resize(num_vertices(G));
+        int num = connected_components(G, &m_ComponentVertexArray[0]);
+
+        std::vector< std::vector<int> > components(num);
+        for (int i = 0; i<num; i++)
+        {
+            components[i].resize(4);
+            components[i][0] = 0;
+            components[i][1] = -1;
+            components[i][2] = -1;
+            components[i][3] = -1;
+        }
+
+        for (unsigned int j = 0; j<m_ComponentVertexArray.size(); j++)
+        {
+
+            components[m_ComponentVertexArray[j]][0] += 1;
+            components[m_ComponentVertexArray[j]][1] = j;
+
+            if ((getEdgesAroundVertex(j)).size() == 1)
+            {
+
+                if ((getEdge((getEdgesAroundVertex(j))[0]))[0] == j)
+                {
+                    components[m_ComponentVertexArray[j]][2] = j;
+                }
+                else   // (getEdge((getEdgesAroundVertex(j))[0]))[1]==j
+                {
+                    components[m_ComponentVertexArray[j]][3] = j;
+                }
+            }
+        }
+
+        for (int i = 0; i<num; i++)
+        {
+
+            bool is_closed = (components[i][2] == -1 && components[i][3] == -1);
+            if (is_closed)
+            {
+                components[i][2] = components[i][1];
+            }
+            ConnectedComponent cc = ConnectedComponent(components[i][2], components[i][3], components[i][0], i);
+            m_ConnectedComponentArray.push_back(cc);
+        }
+
+    }
+    else
+    {
+        return;
+    }
+}
+
+
+int ManifoldEdgeSetTopologyContainer::getNumberOfConnectedComponents()
+{
+    computeConnectedComponent();
+    return m_ConnectedComponentArray.size();
+}
+
+
+int ManifoldEdgeSetTopologyContainer::getFirstVertexIndex(unsigned int i)
+{
+    computeConnectedComponent();
+    assert(i<m_ConnectedComponentArray.size());
+    return m_ConnectedComponentArray[i].FirstVertexIndex;
+}
+
+
+int ManifoldEdgeSetTopologyContainer::getLastVertexIndex(unsigned int i)
+{
+    computeConnectedComponent();
+    assert(i<m_ConnectedComponentArray.size());
+    return m_ConnectedComponentArray[i].LastVertexIndex;
+}
+
+
+int ManifoldEdgeSetTopologyContainer::getComponentSize(unsigned int i)
+{
+    computeConnectedComponent();
+    assert(i<m_ConnectedComponentArray.size());
+    return m_ConnectedComponentArray[i].size;
+}
+
+
+int ManifoldEdgeSetTopologyContainer::getComponentIndex(unsigned int i)
+{
+    computeConnectedComponent();
+    assert(i<m_ConnectedComponentArray.size());
+    return m_ConnectedComponentArray[i].ccIndex;
+}
+
+
+bool ManifoldEdgeSetTopologyContainer::isComponentClosed(unsigned int i)
+{
+    computeConnectedComponent();
+    assert(i<m_ConnectedComponentArray.size());
+    return (m_ConnectedComponentArray[i].FirstVertexIndex == m_ConnectedComponentArray[i].LastVertexIndex);
+}
+
+
+int ManifoldEdgeSetTopologyContainer::getNextVertex(const unsigned int i)
+{
+    assert(getEdgesAroundVertex(i).size()>0);
+    if ((getEdgesAroundVertex(i)).size() == 1 && (getEdge((getEdgesAroundVertex(i))[0]))[1] == i)
+    {
+        return -1;
+    }
+    else
+    {
+        return (getEdge((getEdgesAroundVertex(i))[0]))[1];
+    }
+}
+
+
+int ManifoldEdgeSetTopologyContainer::getPreviousVertex(const unsigned int i)
+{
+    assert(getEdgesAroundVertex(i).size()>0);
+    if ((getEdgesAroundVertex(i)).size() == 1 && (getEdge((getEdgesAroundVertex(i))[0]))[0] == i)
+    {
+        return -1;
+    }
+    else
+    {
+        return (getEdge((getEdgesAroundVertex(i))[0]))[0];
+    }
+}
+
+
+int ManifoldEdgeSetTopologyContainer::getNextEdge(const unsigned int i)
+{
+    if ((getEdgesAroundVertex(getEdge(i)[1])).size() == 1)
+    {
+        return -1;
+    }
+    else
+    {
+        return (getEdgesAroundVertex(getEdge(i)[1]))[1];
+    }
+}
+
+
+int ManifoldEdgeSetTopologyContainer::getPreviousEdge(const unsigned int i)
+{
+    if ((getEdgesAroundVertex(getEdge(i)[0])).size() == 1)
+    {
+        return -1;
+    }
+    else
+    {
+        return (getEdgesAroundVertex(getEdge(i)[0]))[0];
+    }
+}
+
+
+const sofa::helper::vector< unsigned int > &ManifoldEdgeSetTopologyContainer::getComponentVertexArray() const
+{
+    return m_ComponentVertexArray;
+}
+
+
+const sofa::helper::vector< sofa::component::topology::ManifoldEdgeSetTopologyContainer::ConnectedComponent > &ManifoldEdgeSetTopologyContainer::getConnectedComponentArray() const
+{
+    return m_ConnectedComponentArray;
+}
+
 
 } // namespace topology
 
