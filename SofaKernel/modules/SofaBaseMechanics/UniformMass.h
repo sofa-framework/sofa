@@ -28,7 +28,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -97,10 +96,6 @@ protected:
     /// @internal fonction called in the constructor that can be specialized
     void constructor_message() ;
 
-    /// Data tracker
-    sofa::core::DataTracker m_dataTrackerVertex;
-    sofa::core::DataTracker m_dataTrackerTotal;
-
 public:
 
     /// @name Read and write access functions in mass information
@@ -121,7 +116,7 @@ public:
     void reinit() override;
     void init() override;
     void initDefaultImpl() ;
-    bool update();
+    void doUpdateInternal() override;
     void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
 
     /// @name Check and standard initialization functions from mass information
