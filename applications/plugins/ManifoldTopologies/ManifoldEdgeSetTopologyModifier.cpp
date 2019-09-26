@@ -101,17 +101,17 @@ void ManifoldEdgeSetTopologyModifier::renumberPoints( const sofa::helper::vector
 
 void ManifoldEdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges)
 {
-    unsigned int nEdges = m_container->getNumberOfEdges();
+    const size_t nEdges = m_container->getNumberOfEdges();
 
     /// actually add edges in the topology container
     addEdgesProcess(edges);
 
-    sofa::helper::vector<unsigned int> edgesIndex;
+    sofa::helper::vector<EdgeID> edgesIndex;
     edgesIndex.reserve(edges.size());
 
     for (unsigned int i=0; i<edges.size(); ++i)
     {
-        edgesIndex.push_back(nEdges+i);
+        edgesIndex.push_back(EdgeID(nEdges+i));
     }
 
     // add topology event in the stack of topological events
@@ -125,16 +125,16 @@ void ManifoldEdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge 
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors ,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
-    unsigned int nEdges = m_container->getNumberOfEdges();
+    const size_t nEdges = m_container->getNumberOfEdges();
 
     /// actually add edges in the topology container
     addEdgesProcess(edges);
 
-    sofa::helper::vector<unsigned int> edgesIndex;
+    sofa::helper::vector<EdgeID> edgesIndex;
 
     for (unsigned int i=0; i<edges.size(); ++i)
     {
-        edgesIndex[i]=nEdges+i;
+        edgesIndex[i] = EdgeID(nEdges + i);
     }
 
     // add topology event in the stack of topological events

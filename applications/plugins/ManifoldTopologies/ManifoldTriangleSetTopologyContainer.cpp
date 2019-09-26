@@ -62,8 +62,8 @@ bool ManifoldTriangleSetTopologyContainer::checkTopology() const
     if(hasTrianglesAroundVertex())
     {
         //Number of different elements needed for this function
-        const unsigned int nbrVertices = getNbPoints();
-        const unsigned int nbrTriangles = getNumberOfTriangles();
+        const size_t nbrVertices = getNbPoints();
+        const size_t nbrTriangles = getNumberOfTriangles();
 
         //Temporary objects
         Triangle vertexTriangle;
@@ -136,12 +136,12 @@ bool ManifoldTriangleSetTopologyContainer::checkTopology() const
     {
 
         //Number of different elements needed for this function
-        const unsigned int nbrEdges = getNumberOfEdges();
-        const unsigned int nbrTriangles = getNumberOfTriangles();
+        const size_t nbrEdges = getNumberOfEdges();
+        const size_t nbrTriangles = getNumberOfTriangles();
 
         //Temporary objects
         Triangle vertexTriangle;
-        unsigned int nbrEdgesInTriangle;
+        size_t nbrEdgesInTriangle;
         unsigned int vertexInTriangle;
 
         //Temporary containers
@@ -280,7 +280,7 @@ void ManifoldTriangleSetTopologyContainer::createEdgeSetArray()
             if(edgeMap.find(e) == edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                const int edgeIndex = edgeMap.size();
+                const EdgeID edgeIndex = EdgeID(edgeMap.size());
                 edgeMap[e] = edgeIndex;
                 m_edge.push_back(real_e);
             }
@@ -310,9 +310,9 @@ void ManifoldTriangleSetTopologyContainer::createEdgesAroundVertexArray()
 
 
     //Number of different elements needed for this function
-    const unsigned int nbrVertices = getNbPoints();
-    const unsigned int nbrEdges = getNumberOfEdges();
-    const unsigned int nbrTriangles = getNumberOfTriangles();
+    const size_t nbrVertices = getNbPoints();
+    const size_t nbrEdges = getNumberOfEdges();
+    const size_t nbrTriangles = getNumberOfTriangles();
 
     //Temporary objects
     Triangle vertexTriangle;
@@ -433,8 +433,8 @@ void ManifoldTriangleSetTopologyContainer::createTrianglesAroundVertexArray ()
     }
 
     //Number of different elements needed for this function
-    const unsigned int nbrVertices = getNbPoints();
-    const unsigned int nbrTriangles = getNumberOfTriangles();
+    const size_t nbrVertices = getNbPoints();
+    const size_t nbrTriangles = getNumberOfTriangles();
 
     //Temporary objects
     Triangle vertexTriangle;
@@ -548,12 +548,12 @@ void ManifoldTriangleSetTopologyContainer::createTrianglesAroundEdgeArray()
 
 
     //Number of different elements needed for this function
-    const unsigned int nbrEdges = getNumberOfEdges();
-    const unsigned int nbrTriangles = getNumberOfTriangles();
+    const size_t nbrEdges = getNumberOfEdges();
+    const size_t nbrTriangles = getNumberOfTriangles();
 
     //Temporary objects
     Triangle vertexTriangle;
-    int cpt;
+    size_t cpt;
     int firstVertex;
     int vertexInTriangle;
 
@@ -659,7 +659,7 @@ int ManifoldTriangleSetTopologyContainer::getNextTrianglesAroundVertex(PointID v
     }
 
 
-    unsigned int nbrTriangle = m_trianglesAroundVertex[vertexIndex].size();
+    size_t nbrTriangle = m_trianglesAroundVertex[vertexIndex].size();
 
     for (unsigned int i = 0; i < nbrTriangle; ++i)
     {
@@ -730,7 +730,7 @@ int ManifoldTriangleSetTopologyContainer::getPreviousTrianglesAroundVertex(Point
     }
 
 
-    unsigned int nbrTriangle = m_trianglesAroundVertex[vertexIndex].size();
+    size_t nbrTriangle = m_trianglesAroundVertex[vertexIndex].size();
 
     for (unsigned int i = 0; i < nbrTriangle; ++i)
     {
@@ -881,7 +881,7 @@ int ManifoldTriangleSetTopologyContainer::getNextEdgesAroundVertex(PointID verte
     }
 
 
-    unsigned int nbrEdge = m_edgesAroundVertex[vertexIndex].size();
+    size_t nbrEdge = m_edgesAroundVertex[vertexIndex].size();
 
     for (unsigned int i = 0; i < nbrEdge; ++i)
     {
@@ -978,7 +978,7 @@ int ManifoldTriangleSetTopologyContainer::getPreviousEdgesAroundVertex(PointID v
     }
 
 
-    unsigned int nbrEdge = m_edgesAroundVertex[vertexIndex].size();
+    size_t nbrEdge = m_edgesAroundVertex[vertexIndex].size();
 
     for (unsigned int i = 0; i < nbrEdge; ++i)
     {

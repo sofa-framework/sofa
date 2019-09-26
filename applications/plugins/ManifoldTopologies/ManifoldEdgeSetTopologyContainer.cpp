@@ -82,7 +82,7 @@ void ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray()
     for (unsigned int edge = 0; edge < m_edge.size(); ++edge)
     {
         // check to how many edges is the end vertex of each edge connnected to
-        unsigned int size1 = m_edgesAroundVertex[ m_edge[edge][1] ].size();
+        size_t size1 = m_edgesAroundVertex[ m_edge[edge][1] ].size();
 
         // adding edge i in the edge shell of both points, while respecting the manifold orientation
         // (ie : the edge will be added in second position for its first extremity point, and in first position for its second extremity point)
@@ -115,7 +115,7 @@ int ManifoldEdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper:
     computeConnectedComponent();
 
     components = m_ComponentVertexArray;
-    return m_ConnectedComponentArray.size();
+    return int(m_ConnectedComponentArray.size());
 }
 
 
@@ -238,7 +238,7 @@ void ManifoldEdgeSetTopologyContainer::computeConnectedComponent()
 int ManifoldEdgeSetTopologyContainer::getNumberOfConnectedComponents()
 {
     computeConnectedComponent();
-    return m_ConnectedComponentArray.size();
+    return int(m_ConnectedComponentArray.size());
 }
 
 

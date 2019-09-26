@@ -190,10 +190,10 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& 
         ancestors[i].push_back (trianglesIndex2remove[0]); baryCoefs[i].push_back (0.5);
         ancestors[i].push_back (trianglesIndex2remove[1]); baryCoefs[i].push_back (0.5);
     }
-    triToAddID[0] = m_container->getNbTriangles();
-    triToAddID[1] = m_container->getNbTriangles()+1;
+    triToAddID[0] = TriangleID(m_container->getNbTriangles());
+    triToAddID[1] = TriangleID(m_container->getNbTriangles()+1);
 
-    m_modifier->addRemoveTriangles (triToAdd.size(), triToAdd, triToAddID, ancestors, baryCoefs, trianglesIndex2remove);
+    m_modifier->addRemoveTriangles (unsigned int(triToAdd.size()), triToAdd, triToAddID, ancestors, baryCoefs, trianglesIndex2remove);
 
     return true;
 }
@@ -250,10 +250,10 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing(sofa::hel
 
                 int sum = 0;
 
-                sum = (m_container->getTrianglesAroundVertexArray()[ listVertex[0] ]).size();
-                sum += (m_container->getTrianglesAroundVertexArray()[ listVertex[1] ]).size();
-                sum -= (m_container->getTrianglesAroundVertexArray()[ listVertex[2] ]).size();
-                sum -= (m_container->getTrianglesAroundVertexArray()[ listVertex[3] ]).size();
+                sum = int((m_container->getTrianglesAroundVertexArray()[ listVertex[0] ]).size());
+                sum += int((m_container->getTrianglesAroundVertexArray()[ listVertex[1] ]).size());
+                sum -= int((m_container->getTrianglesAroundVertexArray()[ listVertex[2] ]).size());
+                sum -= int((m_container->getTrianglesAroundVertexArray()[ listVertex[3] ]).size());
 
                 for (unsigned int i = 0; i <2; i++)
                 {
