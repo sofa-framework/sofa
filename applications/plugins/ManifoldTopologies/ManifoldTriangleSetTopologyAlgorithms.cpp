@@ -21,11 +21,9 @@
 ******************************************************************************/
 #define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP
 
-#include "ManifoldTriangleSetTopologyAlgorithms.inl"
-
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <ManifoldTopologies/ManifoldTriangleSetTopologyAlgorithms.inl>
 #include <sofa/core/ObjectFactory.h>
+
 namespace sofa
 {
 

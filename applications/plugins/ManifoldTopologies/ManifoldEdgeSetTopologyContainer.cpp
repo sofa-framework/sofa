@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <ManifoldTopologies/ManifoldEdgeSetTopologyContainer.h>
 
+#include <ManifoldTopologies/ManifoldEdgeSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 // Use BOOST GRAPH LIBRARY :
 
 #include <boost/config.hpp>
-#include <iostream>
-#include <vector>
-#include <utility>
-
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/connected_components.hpp>
-
-#include <boost/graph/cuthill_mckee_ordering.hpp>
-#include <boost/graph/bandwidth.hpp>
 
 namespace sofa
 {

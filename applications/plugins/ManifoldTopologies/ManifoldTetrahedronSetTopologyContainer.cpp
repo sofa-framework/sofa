@@ -19,15 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ManifoldTetrahedronSetTopologyContainer.h"
 
+#include <ManifoldTopologies/ManifoldTetrahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
-
-
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/template.h>
-
-#include <sofa/helper/gl/glText.inl>
 
 namespace sofa
 {

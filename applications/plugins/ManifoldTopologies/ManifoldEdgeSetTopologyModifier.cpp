@@ -19,13 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ManifoldEdgeSetTopologyModifier.h"
 
-#include <sofa/core/visual/VisualParams.h>
-#include "ManifoldEdgeSetTopologyContainer.h"
-#include <algorithm>
-#include <functional>
-#include <iostream>
+#include <ManifoldTopologies/ManifoldEdgeSetTopologyModifier.h>
+#include <ManifoldTopologies/ManifoldEdgeSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

@@ -22,7 +22,7 @@
 #ifndef SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 #define SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 
-#include "ManifoldEdgeSetGeometryAlgorithms.h"
+#include <ManifoldTopologies/ManifoldEdgeSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa

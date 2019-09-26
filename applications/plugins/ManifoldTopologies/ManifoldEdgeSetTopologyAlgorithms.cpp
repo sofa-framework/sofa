@@ -20,11 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_CPP
-#include "ManifoldEdgeSetTopologyAlgorithms.inl"
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <ManifoldTopologies/ManifoldEdgeSetTopologyAlgorithms.inl>
 #include <sofa/core/ObjectFactory.h>
+
 namespace sofa
 {
 

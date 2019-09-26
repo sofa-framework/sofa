@@ -21,11 +21,9 @@
 ******************************************************************************/
 #define SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP
 
-#include "ManifoldEdgeSetGeometryAlgorithms.inl"
-
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <ManifoldTopologies/ManifoldEdgeSetGeometryAlgorithms.inl>
 #include <sofa/core/ObjectFactory.h>
+
 namespace sofa
 {
 
@@ -41,7 +39,6 @@ int ManifoldEdgeSetGeometryAlgorithmsClass = core::RegisterObject("ManifoldEdge 
         .add< ManifoldEdgeSetGeometryAlgorithms<Vec1Types> >()
         .add< ManifoldEdgeSetGeometryAlgorithms<Rigid3Types> >()
         .add< ManifoldEdgeSetGeometryAlgorithms<Rigid2Types> >()
-
         ;
 
 template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>;

@@ -21,14 +21,11 @@
 ******************************************************************************/
 #ifndef SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_INL
 #define SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_INL
-#include "ManifoldEdgeSetTopologyAlgorithms.h"
 
-#include "ManifoldEdgeSetTopologyContainer.h"
-#include "ManifoldEdgeSetTopologyModifier.h"
-#include <sofa/core/visual/VisualParams.h>
-#include "ManifoldEdgeSetGeometryAlgorithms.h"
-#include <algorithm>
-#include <functional>
+#include <ManifoldTopologies/ManifoldEdgeSetTopologyAlgorithms.h>
+#include <ManifoldTopologies/ManifoldEdgeSetTopologyContainer.h>
+#include <ManifoldTopologies/ManifoldEdgeSetTopologyModifier.h>
+#include <ManifoldTopologies/ManifoldEdgeSetGeometryAlgorithms.h>
 
 namespace sofa
 {

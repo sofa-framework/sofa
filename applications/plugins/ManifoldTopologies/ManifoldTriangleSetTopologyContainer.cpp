@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ManifoldTriangleSetTopologyContainer.h"
 
+#include <ManifoldTopologies/ManifoldTriangleSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

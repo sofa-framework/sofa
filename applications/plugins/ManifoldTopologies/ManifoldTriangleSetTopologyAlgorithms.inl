@@ -22,15 +22,10 @@
 #ifndef SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_INL
 #define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_INL
 
-#include "ManifoldTriangleSetTopologyAlgorithms.h"
-
-#include "ManifoldTriangleSetTopologyContainer.h"
-#include "ManifoldTriangleSetTopologyModifier.h"
-#include <sofa/core/visual/VisualParams.h>
+#include <ManifoldTopologies/ManifoldTriangleSetTopologyAlgorithms.h>
+#include <ManifoldTopologies/ManifoldTriangleSetTopologyContainer.h>
+#include <ManifoldTopologies/ManifoldTriangleSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-
-#include <algorithm>
-#include <functional>
 
 namespace sofa
 {
