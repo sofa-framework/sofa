@@ -135,14 +135,25 @@ public:
                                           sofa::defaulttype::Vec<3,Real>& normal,
                                           sofa::defaulttype::Vec<3,Real>& intersection);
     
+    /// Method to check if points stored inside the Tetrahedron, given by the tetrahedron id, are in the right order (by checking the cross products between edges).
     bool checkNodeSequence(const TetraID tetraId) const;
+    
+    /// Method to check if points stored inside the Tetrahedron, given as parameter, are in the right order (by checking the cross products between edges).
     bool checkNodeSequence(const Tetrahedron& tetra) const;
+
+    /// Method to check if the dihedral angles of the tetrahedron have correct values (between 20 and 160 degrees).
     bool checkTetrahedronDihedralAngles(const TetraID tetraId) const;
 
+    /// Method to check if Tetrahedron is elongated, meaning the longest edge > 10x min edge
     bool isTetrahedronElongated(const TetraID tetraId) const;
+
+    /// Return false if one of the test method: @sa isTetrahedronElongated, @sa checkTetrahedronDihedralAngles and @sa checkNodeSequence return false for the given Tetrahedron Id.
     bool checkTetrahedronValidity(const TetraID tetraId) const;
 
+    /// Will call @sa checkTetrahedronValidity for each Tetrahedron of the mesh and store the bad tetrahedron ID in @sa m_badTetraIds
     const sofa::helper::vector <TetraID>& computeBadTetrahedron();
+
+    /// Return bad tetrahedron ID: @sa m_badTetraIds
     const sofa::helper::vector <TetraID>& getBadTetrahedronIds();
     
     /// return a pointer to the container of cubature points
@@ -156,6 +167,7 @@ protected:
     /// include cubature points
     NumericalIntegrationDescriptor<Real,4> tetrahedronNumericalIntegration;
 
+    /// vector of Tetrahedron ID which do not respect @sa checkTetrahedronValidity . buffer updated only by method @sa computeBadTetrahedron
     sofa::helper::vector <TetraID> m_badTetraIds;
 };
 
