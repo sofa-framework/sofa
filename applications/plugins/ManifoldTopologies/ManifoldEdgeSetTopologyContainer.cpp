@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ManifoldEdgeSetTopologyContainer.h"
-
-#include <sofa/core/visual/VisualParams.h>
+#include <ManifoldTopologies/ManifoldEdgeSetTopologyContainer.h>
 
 #include <sofa/core/ObjectFactory.h>
 // Use BOOST GRAPH LIBRARY :

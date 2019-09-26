@@ -19,10 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_H
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_H
-#include <ManifoldTopologies/config.h>
-
+#ifndef SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
+#define SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
 #include <ManifoldTopologies/config.h>
 
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
@@ -61,10 +59,18 @@ public:
     virtual ~ManifoldEdgeSetGeometryAlgorithms() {}
 };
 
+#if !defined(SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)
+extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Rigid3Types>;
+extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Rigid2Types>;
+#endif
+
 } // namespace topology
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H

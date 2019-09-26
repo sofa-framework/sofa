@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP
+
 #include "ManifoldTriangleSetTopologyAlgorithms.inl"
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -39,9 +41,10 @@ int ManifoldTriangleSetTopologyAlgorithmsClass = core::RegisterObject("ManifoldT
         .add< ManifoldTriangleSetTopologyAlgorithms<Vec2Types> >()
         .add< ManifoldTriangleSetTopologyAlgorithms<Vec1Types> >()
         ;
-template class ManifoldTriangleSetTopologyAlgorithms<Vec3Types>;
-template class ManifoldTriangleSetTopologyAlgorithms<Vec2Types>;
-template class ManifoldTriangleSetTopologyAlgorithms<Vec1Types>;
+
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<Vec3Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<Vec2Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<Vec1Types>;
 
 } // namespace topology
 
