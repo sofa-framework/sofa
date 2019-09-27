@@ -561,29 +561,29 @@ template<class DataTypes>
 typename DataTypes::Real TetrahedronSetGeometryAlgorithms<DataTypes>::computeDihedralAngle(const TetraID tetraId, const EdgeID edgeId) const
 {
     Real angle = 0.0;
-    const DataTypes::VecCoord& positions = (this->object->read(core::ConstVecCoordId::position())->getValue());
-    const Tetrahedron& tetra = m_topology->getTetrahedron(tetraId);
-    const EdgesInTetrahedron& edgeIds = m_topology->getEdgesInTetrahedron(tetraId);
-    const Edge& edge = m_topology->getEdge(edgeIds[edgeId]);
+    const typename DataTypes::VecCoord& positions = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const Tetrahedron& tetra = this->m_topology->getTetrahedron(tetraId);
+    const EdgesInTetrahedron& edgeIds = this->m_topology->getEdgesInTetrahedron(tetraId);
+    const Edge& edge = this->m_topology->getEdge(edgeIds[edgeId]);
 
     unsigned int idA = edge[0];
     unsigned int idB = edge[1];
 
-    unsigned int idC = InvalidID, idD = InvalidID;
+    unsigned int idC = sofa::defaulttype::InvalidID, idD = sofa::defaulttype::InvalidID;
     for (unsigned int i = 0; i < 4; i++)
     {
         if (tetra[i] != idA && tetra[i] != idB)
         {
-            if (idC == InvalidID)
+            if (idC == sofa::defaulttype::InvalidID)
                 idC = tetra[i];
             else
                 idD = tetra[i];
         }
     }
 
-    DataTypes::Coord pAB = positions[idB] - positions[idA];
-    DataTypes::Coord pAC = positions[idC] - positions[idA];
-    DataTypes::Coord pAD = positions[idD] - positions[idA];
+    typename DataTypes::Coord pAB = positions[idB] - positions[idA];
+    typename DataTypes::Coord pAC = positions[idC] - positions[idA];
+    typename DataTypes::Coord pAD = positions[idD] - positions[idA];
 
     sofa::defaulttype::Vec<3, Real> AB = sofa::defaulttype::Vec<3, Real>(pAB);
     sofa::defaulttype::Vec<3, Real> AC = sofa::defaulttype::Vec<3, Real>(pAC);
@@ -902,10 +902,10 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(const Tetrah
 template< class DataTypes>
 bool TetrahedronSetGeometryAlgorithms< DataTypes >::isTetrahedronElongated(const TetraID tetraId) const
 {
-    const VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
-    const Tetrahedron& tetra = m_topology->getTetrahedron(tetraId);    
+    const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const Tetrahedron& tetra = this->m_topology->getTetrahedron(tetraId);    
 
-    VecCoord points;
+    typename DataTypes::VecCoord points;
     points.resize(4);
     for (unsigned int i = 0; i < 4; i++) {
         points[i] = coords[ tetra[i] ];
