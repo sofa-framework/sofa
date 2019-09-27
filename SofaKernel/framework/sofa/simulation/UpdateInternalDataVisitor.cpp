@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/UpdateInternalDataVisitor.h>
+#include <sofa/simulation/InternalUpdateDataVisitor.h>
 
 namespace sofa
 {
@@ -28,15 +28,15 @@ namespace simulation
 {
 
 
-Visitor::Result UpdateInternalDataVisitor::processNodeTopDown(simulation::Node* node)
+Visitor::Result InternalUpdateDataVisitor::processNodeTopDown(simulation::Node* node)
 {
-    for_each(this, node, node->object, &UpdateInternalDataVisitor::processUpdateInternalData);
+    for_each(this, node, node->object, &InternalUpdateDataVisitor::processInternalUpdateData);
     return RESULT_CONTINUE;
 }
 
-void UpdateInternalDataVisitor::processUpdateInternalData(simulation::Node* , sofa::core::objectmodel::BaseObject* baseObj)
+void InternalUpdateDataVisitor::processInternalUpdateData(simulation::Node* , sofa::core::objectmodel::BaseObject* baseObj)
 {
-    baseObj->updateInternal();
+    baseObj->internalUpdate();
 }
 
 

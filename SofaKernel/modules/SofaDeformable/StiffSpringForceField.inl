@@ -60,8 +60,8 @@ void StiffSpringForceField<DataTypes>::init()
 {
     if (d_indices1.isSet() && d_indices2.isSet())
     {        
-        this->trackInternalData(d_indices1);
-        this->trackInternalData(d_indices2);
+        this->trackData(d_indices1);
+        this->trackData(d_indices2);
 
         createSpringsFromInputs();
     }
@@ -70,7 +70,7 @@ void StiffSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::doUpdateInternal()
+void StiffSpringForceField<DataTypes>::doInternalUpdate()
 {
     if (!d_indices1.isSet() && !d_indices2.isSet()) // nothing to do in this case
         return;

@@ -27,7 +27,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/UpdateInternalDataVisitor.h>
+#include <sofa/simulation/InternalUpdateDataVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
@@ -90,7 +90,7 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
     BehaviorUpdatePositionVisitor beh(params , dt);
     this->gnode->execute ( beh );
 
-    UpdateInternalDataVisitor uid(params);
+    InternalUpdateDataVisitor uid(params);
     gnode->execute ( uid );
 
     sofa::core::objectmodel::TagSet::iterator it;

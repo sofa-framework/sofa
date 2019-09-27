@@ -274,30 +274,30 @@ void BaseObject::reinit()
 {
 }
 
-void BaseObject::updateInternal()
+void BaseObject::internalUpdate()
 {
-    const auto& mapTrackedData = m_internalDataTracker.getMapTrackedData();
+    const auto& mapTrackedData = m_dataTracker.getMapTrackedData();
     for( auto const& it : mapTrackedData )
     {
         it.first->updateIfDirty();
     }
 
-    if(m_internalDataTracker.hasChanged())
+    if(m_dataTracker.hasChanged())
     {
-        doUpdateInternal();
-        m_internalDataTracker.clean();
+        doInternalUpdate();
+        m_dataTracker.clean();
     }
 }
 
-void BaseObject::trackInternalData(const objectmodel::BaseData& data)
+void BaseObject::trackData(const objectmodel::BaseData& data)
 {
-    m_internalDataTracker.trackData(data);
+    m_dataTracker.trackData(data);
 }
 
 bool BaseObject::hasDataChanged(const objectmodel::BaseData& data)
 {
     bool dataFoundinTracker = false;
-    const auto& mapTrackedData = m_internalDataTracker.getMapTrackedData();
+    const auto& mapTrackedData = m_dataTracker.getMapTrackedData();
     const std::string & dataName = data.getName();
 
     for( auto const& it : mapTrackedData )
@@ -314,10 +314,10 @@ bool BaseObject::hasDataChanged(const objectmodel::BaseData& data)
         return false;
     }
 
-    return m_internalDataTracker.hasChanged(data);
+    return m_dataTracker.hasChanged(data);
 }
 
-void BaseObject::doUpdateInternal()
+void BaseObject::doInternalUpdate()
 { }
 
 void BaseObject::storeResetState()
