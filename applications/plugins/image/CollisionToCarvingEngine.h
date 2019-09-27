@@ -139,8 +139,8 @@ protected:
 	
     void doUpdate() override
     {
-        bool updateImage = m_dataTracker.hasChanged(this->inputImage);	// change of input image -> update output image
-        bool updateTransform = m_dataTracker.hasChanged(this->inputTransform);	// change of input transform -> update output transform
+        bool updateImage = hasInputDataChanged(this->inputImage);	// change of input image -> update output image
+        bool updateTransform = hasInputDataChanged(this->inputTransform);	// change of input transform -> update output transform
 		
 		if(in==NULL){in = new raImagei(this->inputImage);}
 		if(inT==NULL){inT = new raTransform(this->inputTransform);}
