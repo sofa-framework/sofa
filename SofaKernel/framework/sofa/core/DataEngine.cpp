@@ -42,7 +42,7 @@ DataEngine::~DataEngine()
 /// Add a new input to this engine
 void DataEngine::addInput(objectmodel::BaseData* n)
 {
-    m_dataTracker.trackData(*n);
+    trackInputData(*n);
     if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
         n->setGroup("Inputs"); // set the group of input Datas if not yet set
     core::objectmodel::DDGNode::addInput(n);
@@ -72,7 +72,7 @@ void DataEngine::update()
     updateAllInputs();
     DDGNode::cleanDirty();
     doUpdate();
-    m_dataTracker.clean();
+    cleanInputTracker();
 }
 
 

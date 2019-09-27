@@ -72,7 +72,7 @@ namespace core
     };
 
 
-//////////////////////////////
+/////////////////////////
 
 
     /// A DDGNode with trackable input Data (containing a DataTracker)
@@ -96,28 +96,39 @@ namespace core
         virtual void cleanDirty(const core::ExecParams* params = nullptr);
 
 
-        /// utility function to ensure all inputs are up-to-date
+        /// Utility function to ensure all inputs are up-to-date
         /// can be useful for particulary complex DDGNode
         /// with a lot input/output imbricated access
         void updateAllInputsIfDirty();
 
     protected:
+        /// Function adding the data to the DataTracker for inputs
+        void trackInputData(const objectmodel::BaseData &data);
 
+        /// Function checking if a specific input data changed
+        bool hasInputDataChanged(const objectmodel::BaseData &data);
+
+        /// Function checking if one or several inputs did changed
+        bool haveInputsDataChanged();
+
+        /// Function cleaning the DataTracker for inputs
+        void cleanInputTracker();
+
+    private:
         /// @name Tracking Data mechanism
         /// each Data added to the DataTracker
         /// is tracked to be able to check if its value changed
         /// since their last clean, called by default
         /// in DataEngine::cleanDirty().
         /// @{
-
-        DataTracker m_dataTracker;
-
+        DataTracker m_inputDataTracker;
         ///@}
 
     };
 
 
- ///////////////////
+/////////////////////////
+
 
     /// a DDGNode that automatically triggers its update function
     /// when asking for an output and any input changed.
