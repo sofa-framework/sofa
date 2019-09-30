@@ -567,7 +567,7 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
         get_target_property(target_sources ${target} SOURCES)
         #list(FILTER ${target_sources} INCLUDE REGEX ".*\.h\.in$") # CMake >= 3.6
         foreach(filepath ${target_sources})
-            if(${filepath} MATCHES ".*\.h\.in$")
+            if("${filepath}" MATCHES "\\.*\\.h\\.in$")
                 get_filename_component(filename ${filepath} NAME_WE)
 
                 set(configure_dir "${CMAKE_BINARY_DIR}/include/${include_install_dir}")
