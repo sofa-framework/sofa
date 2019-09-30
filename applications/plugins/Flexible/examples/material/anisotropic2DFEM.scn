@@ -19,10 +19,10 @@
 
         <UniformMass  totalMass="100"/>
 
-	<BoxROI box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="0 -10 0" arrowSizeCoef="0.02"/>
-	<BoxROI box="-0.005 0.995 -0.005    1.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="0 10 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
-	<BoxROI box="-0.005 -0.005 -0.005    0.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="-10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
-	<BoxROI box="0.995 -0.005 -0.005    1.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " /> <ConstantForceField indices="@[-1].indices" force="0 -10 0" arrowSizeCoef="0.02"/>
+	<BoxROI box="-0.005 0.995 -0.005    1.005 1.005 0.005  " /> <ConstantForceField indices="@[-1].indices" force="0 10 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="-0.005 -0.005 -0.005    0.005 1.005 0.005  " /> <ConstantForceField indices="@[-1].indices" force="-10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="0.995 -0.005 -0.005    1.005 1.005 0.005  " /> <ConstantForceField indices="@[-1].indices" force="10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
 
         <Node name="deformationNode" >
             <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" method="0" order="1" orientation="0 0 25" useLocalOrientation="0"/>
@@ -60,10 +60,10 @@
 
         <UniformMass totalMass="100"/>
 
-	<BoxROI box="1.995 -0.005 -0.005    3.005 0.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="0 -10 0" arrowSizeCoef="0.02"/>
-	<BoxROI box="1.995 0.995 -0.005    3.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="0 10 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
-	<BoxROI box="1.995 -0.005 -0.005    2.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="-10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
-	<BoxROI box="2.995 -0.005 -0.005    3.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="1.995 -0.005 -0.005    3.005 0.005 0.005  " /> <ConstantForceField indices="@[-1].indices" force="0 -10 0" arrowSizeCoef="0.02"/>
+	<BoxROI box="1.995 0.995 -0.005    3.005 1.005 0.005  " /> <ConstantForceField indices="@[-1].indices" force="0 10 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="1.995 -0.005 -0.005    2.005 1.005 0.005  " /> <ConstantForceField indices="@[-1].indices" force="-10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="2.995 -0.005 -0.005    3.005 1.005 0.005  " /> <ConstantForceField indices="@[-1].indices" force="10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
 
         <Node name="deformationNode" >
             <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" method="0" order="2" orientation="0 0 25" useLocalOrientation="0"/>

@@ -21,7 +21,7 @@
         <FixedConstraint indices="@[-1].indices" />
 
        <BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1 "  drawBoxes="0" /> 
-       <ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
+       <ConstantForceField template="Vec3d" indices="@[-1].indices" totalForce="0 -1 0"/> 
 
 	<UniformMass totalMass="10" />
 
