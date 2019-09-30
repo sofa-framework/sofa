@@ -172,7 +172,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
         graph_error.clear();
         sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel Unbuild");
         gaussseidel_unbuilt(_dFree->ptr(), _result->ptr(), &graph_error);
-        sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel Unbuild");
+        sofa::helper::AdvancedTimer::stepEnd("NLCP GaussSeidel Unbuild");
 
         if (displayDebug.getValue())
         {
