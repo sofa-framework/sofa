@@ -183,10 +183,10 @@ void ConstantForceField<DataTypes>::init()
     Inherit::init();
 
     // add to tracker
-    this->trackInternalData(d_indices);
-    this->trackInternalData(d_forces);
-    this->trackInternalData(d_force);
-    this->trackInternalData(d_totalForce);
+    this->trackData(d_indices);
+    this->trackData(d_forces);
+    this->trackData(d_force);
+    this->trackData(d_totalForce);
 
     // if all init passes, component is valid
     this->m_componentstate = core::objectmodel::ComponentState::Valid;
@@ -196,17 +196,17 @@ void ConstantForceField<DataTypes>::init()
 template<class DataTypes>
 void ConstantForceField<DataTypes>::reinit()
 {
-    // Now update is handled through the doUpdateInternal mechanism
-    // called at each begin of step through the UpdateInternalDataVisitor
+    // Now update is handled through the doInternalUpdate mechanism
+    // called at each begin of step through the InternalUpdateDataVisitor
 }
 
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::doUpdateInternal()
+void ConstantForceField<DataTypes>::doInternalUpdate()
 {
     if (this->hasDataChanged(d_indices))
     {
-        msg_info() << "doUpdateInternal: data indices has changed";
+        msg_info() << "doInternalUpdate: data indices has changed";
 
         const VecIndex & indices = d_indices.getValue();
         size_t indicesSize = indices.size();
@@ -239,7 +239,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
 
     if (this->hasDataChanged(d_forces))
     {
-        msg_info() << "doUpdateInternal: data forces has changed";
+        msg_info() << "doInternalUpdate: data forces has changed";
 
         const VecDeriv &forces = d_forces.getValue();
         if( checkForces(forces) )
@@ -257,7 +257,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
 
     if (this->hasDataChanged(d_force))
     {
-        msg_info() << "doUpdateInternal: data force has changed";
+        msg_info() << "doInternalUpdate: data force has changed";
 
         const Deriv &force = d_force.getValue();
         if( checkForce(force) )
@@ -275,7 +275,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
 
     if (this->hasDataChanged(d_totalForce))
     {
-        msg_info() << "doUpdateInternal: data totalForce has changed";
+        msg_info() << "doInternalUpdate: data totalForce has changed";
 
         const Deriv &totalForce = d_totalForce.getValue();
         if( checkForce(totalForce) )

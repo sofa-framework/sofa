@@ -107,7 +107,7 @@ public:
     void updateForceMask() override;
 
     /// Update data and internal vectors
-    void doUpdateInternal() override;
+    void doInternalUpdate() override;
 
     /// Set a force to a given particle
     void setForce( unsigned i, const Deriv& f );
