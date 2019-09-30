@@ -50,7 +50,7 @@ static void add(LValue& lval, const RValue& rval) {
         lval = rval;
     } else {
         // paranoia, i has it
-        lval += LValue(rval);
+        lval += rval;
     }
 }
 

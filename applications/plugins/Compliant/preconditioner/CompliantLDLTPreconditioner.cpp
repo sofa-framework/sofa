@@ -30,8 +30,7 @@ void CompliantLDLTPreconditioner::compute( const AssembledSystem::rmat& H )
             // if singular, try to regularize by adding a tiny diagonal matrix
             AssembledSystem::rmat identity(H.rows(),H.cols());
             identity.setIdentity();
-            AssembledSystem::rmat regmat = H + identity * std::numeric_limits<SReal>::epsilon();
-            preconditioner.compute( regmat.selfadjointView<Eigen::Lower>() );
+            preconditioner.compute( (H + identity * std::numeric_limits<SReal>::epsilon()).selfadjointView<Eigen::Lower>() );
 
             if( preconditioner.info() != Eigen::Success )
             {
