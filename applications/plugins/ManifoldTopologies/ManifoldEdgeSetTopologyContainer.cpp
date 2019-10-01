@@ -65,8 +65,7 @@ void ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray()
 {
     if(!hasEdges())	//  this method should only be called when edges exist
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "Edge array is empty.";
+        msg_warning_when(CHECK_TOPOLOGY) << "Edge array is empty.";
 
         createEdgeSetArray();
     }

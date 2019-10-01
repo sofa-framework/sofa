@@ -328,9 +328,7 @@ int ManifoldTetrahedronSetTopologyContainer::getTetrahedronOrientation (const Te
         it = mapPosition.find (t_test[i]);
         if (it == mapPosition.end())
         {
-            if (CHECK_TOPOLOGY)
-                msg_error() <<"GetTetrahedronOrientation: reference and testing tetrahedrons are not composed by the same vertices.";
-
+            msg_error_when(CHECK_TOPOLOGY) << "GetTetrahedronOrientation: reference and testing tetrahedrons are not composed by the same vertices.";
             return -1;
         }
         positionsChange[(*it).second] = i;
@@ -394,9 +392,7 @@ int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (
         it = mapPosition.find (tri[i]);
         if (it == mapPosition.end())
         {
-            if (CHECK_TOPOLOGY)
-                msg_error() << "GetTriangleTetrahedronOrientation: tetrahedrons and triangle are not composed by the same vertices.";
-
+            msg_error_when(CHECK_TOPOLOGY) << "GetTriangleTetrahedronOrientation: tetrahedrons and triangle are not composed by the same vertices.";
             return -1;
         }
         positionsChange[i] = (*it).second;
