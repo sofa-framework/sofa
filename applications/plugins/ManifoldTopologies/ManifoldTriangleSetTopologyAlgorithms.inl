@@ -193,7 +193,7 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& 
     triToAddID[0] = TriangleID(m_container->getNbTriangles());
     triToAddID[1] = TriangleID(m_container->getNbTriangles()+1);
 
-    m_modifier->addRemoveTriangles (unsigned int(triToAdd.size()), triToAdd, triToAddID, ancestors, baryCoefs, trianglesIndex2remove);
+    m_modifier->addRemoveTriangles (triToAdd.size(), triToAdd, triToAddID, ancestors, baryCoefs, trianglesIndex2remove);
 
     return true;
 }

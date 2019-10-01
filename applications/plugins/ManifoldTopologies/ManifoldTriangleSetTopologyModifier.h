@@ -78,7 +78,7 @@ public:
      * @param baryCoefs - their barycoefs related to these ancestors.
      * @param trianglesIndex2remove - List of triangle indices to remove.
      */
-    virtual void addRemoveTriangles (const unsigned int nTri2Add,
+    virtual void addRemoveTriangles (const size_t nTri2Add,
             const sofa::helper::vector< Triangle >& triangles2Add,
             const sofa::helper::vector< unsigned int >& trianglesIndex2Add,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,

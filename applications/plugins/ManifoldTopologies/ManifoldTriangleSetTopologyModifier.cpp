@@ -660,7 +660,7 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
 }
 
 
-void ManifoldTriangleSetTopologyModifier::addRemoveTriangles (const unsigned int nTri2Add,
+void ManifoldTriangleSetTopologyModifier::addRemoveTriangles (const size_t nTri2Add,
         const sofa::helper::vector< Triangle >& triangles2Add,
         const sofa::helper::vector< unsigned int >& trianglesIndex2Add,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
