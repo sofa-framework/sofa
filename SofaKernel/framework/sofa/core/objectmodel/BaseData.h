@@ -97,6 +97,7 @@ public:
      *  \param flags The flags for this %Data (see \ref DataFlagsEnum).
      */
     BaseData(const std::string& helpMsg, DataFlags flags = FLAG_DEFAULT);
+    BaseData(const char* helpMsg=nullptr, DataFlags flags = FLAG_DEFAULT);
 
     /** Constructor.
      *  \param helpMsg A help message that describes this %Data.
@@ -104,6 +105,7 @@ public:
      *  \param isReadOnly Whether this %Data should be modifiable in GUIs.
      */
     BaseData(const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false);
+    BaseData(const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false);
 
     /// Destructor.
     ~BaseData() override;
@@ -319,13 +321,13 @@ protected:
     virtual bool updateFromParentValue(const BaseData* parent);
 
     /// Help message
-    std::string help {nullptr} ;
+    std::string help {""};
     /// Owner class
-    std::string ownerClass {nullptr} ;
+    std::string ownerClass {""} ;
     /// group
-    std::string group {nullptr};
+    std::string group {""};
     /// widget
-    std::string widget {nullptr};
+    std::string widget {""};
     /// Number of changes since creation
     helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
     /// True if this %Data is set, i.e. its value is different from the default value

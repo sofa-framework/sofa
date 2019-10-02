@@ -24,6 +24,7 @@
 
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/helper/StringUtils.h>
 #include <sofa/helper/accessor.h>
 namespace sofa
 {
@@ -60,10 +61,14 @@ public:
     {
     }
 
-    TData( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false)
+    TData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false) :
+        TData( sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
+
+    TData( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
         : BaseData(helpMsg, isDisplayed, isReadOnly), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
     {
     }
+
 
     ~TData() override
     {}
@@ -333,7 +338,11 @@ public:
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
-    Data( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false)
+    Data( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
+        : Data(sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
+
+    /** \copydoc BaseData(const char*, bool, bool) */
+    Data( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_values()
         , shared(nullptr)
@@ -342,10 +351,18 @@ public:
         m_values.assign(val);
     }
 
+
     /** \copydoc BaseData(const char*, bool, bool)
      *  \param value The default value.
      */
-    Data( const T& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false)
+    Data( const T& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false) :
+        Data(value, sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly)
+    {}
+
+    /** \copydoc BaseData(const char*, bool, bool)
+     *  \param value The default value.
+     */
+    Data( const T& value, const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_values()
         , shared(nullptr)
