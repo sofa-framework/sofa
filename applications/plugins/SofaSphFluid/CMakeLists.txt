@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaSphFluid VERSION 1.0)
 
-find_package(SofaBase REQUIRED) # Dependency to SofaGuiQt
+find_package(SofaBase REQUIRED)
  
 set(PLUGIN_SPH_SRC_DIR src/SofaSphFluid)
 set(HEADER_FILES
