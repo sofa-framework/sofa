@@ -90,7 +90,8 @@ PickHandler::~PickHandler()
 
 void PickHandler::allocateSelectionBuffer(int width, int height)
 {
-
+    SOFA_UNUSED(width);
+    SOFA_UNUSED(height);
 }
 
 void PickHandler::destroySelectionBuffer()
@@ -471,6 +472,9 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
 component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(const defaulttype::Vector3& origin,
         const defaulttype::Vector3& direction)
 {
+    SOFA_UNUSED(origin);
+    SOFA_UNUSED(direction);
+
     BodyPicked result;
 
     msg_error("PickHandler") << "findCollisionUsingColourCoding not implemented!";

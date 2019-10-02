@@ -108,12 +108,14 @@ const std::string BaseViewer::screenshotName()
 
 void BaseViewer::setPrefix(const std::string& prefix, bool prependDirectory)
 {
-
+    SOFA_UNUSED(prefix);
+    SOFA_UNUSED(prependDirectory);
 }
 
 void BaseViewer::screenshot(const std::string& filename, int compression_level)
 {
-
+    SOFA_UNUSED(filename);
+    SOFA_UNUSED(compression_level);
 }
 
 void BaseViewer::getView(defaulttype::Vector3& pos, defaulttype::Quat& ori) const
@@ -184,7 +186,7 @@ void BaseViewer::setBackgroundColour(float r, float g, float b)
 
 void BaseViewer::setBackgroundImage(std::string imageFileName)
 {
-
+    SOFA_UNUSED(imageFileName);
 }
 
 std::string BaseViewer::getBackgroundImage()

@@ -48,7 +48,7 @@ public:
     {}
 
 
-    void doUpdate()
+    void doUpdate() override
     {
         Inherit1::doUpdate();
         ++m_counter;

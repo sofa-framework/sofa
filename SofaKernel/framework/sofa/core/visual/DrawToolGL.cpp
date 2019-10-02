@@ -280,10 +280,14 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const std::ve
 
 void DrawToolGL::drawTriangles(const std::vector<Vector3> &points,
     const std::vector< Vec3i > &index,
-    const std::vector<Vector3>  &normal,
+    const std::vector<Vector3> &normal,
     const std::vector<Vec4f>& colour)
 {
     //todo !
+    SOFA_UNUSED(points);
+    SOFA_UNUSED(index);
+    SOFA_UNUSED(normal);
+    SOFA_UNUSED(colour);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

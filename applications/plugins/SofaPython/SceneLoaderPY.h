@@ -61,7 +61,7 @@ public:
     void write(Node* node, const char *filename) override;
 
     /// get the file type description
-    virtual std::string getFileTypeDesc();
+    virtual std::string getFileTypeDesc() override;
 
     /// get the list of file extensions
     void getExtensionList(ExtensionList* list) override;

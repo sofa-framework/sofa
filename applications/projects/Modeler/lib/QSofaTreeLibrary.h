@@ -54,7 +54,7 @@ public:
     QSofaTreeLibrary(QWidget *parent);
 
 
-    void build(const std::vector< std::string >& examples=std::vector< std::string >());
+    void build(const std::vector< std::string >& examples=std::vector< std::string >()) override;
     void filter(const FilterQuery &f);
     void clear() override {QTreeWidget::clear(); SofaLibrary::clear();}
 
@@ -62,7 +62,7 @@ public:
 
     QWidget *getQWidget() {return this;};
 protected:
-    CategoryLibrary *createCategory(const std::string &category, unsigned int numComponent);
+    CategoryLibrary *createCategory(const std::string &category, unsigned int numComponent) override;
     void addCategory(CategoryLibrary *category) override;
 
 

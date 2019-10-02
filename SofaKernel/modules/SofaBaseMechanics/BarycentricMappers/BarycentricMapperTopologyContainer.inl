@@ -175,7 +175,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
             }
             addPointInElement(nearestParams.elementId, nearestParams.baryCoords.ptr());
         }
-        else if(abs(nearestParams.distance)>m_gridCellSize/2.) // Nearest element in grid cell may not be optimal, check neighbors
+        else if(fabs(nearestParams.distance)>m_gridCellSize/2.) // Nearest element in grid cell may not be optimal, check neighbors
         {
             Vec3i centerGridIds = gridIds;
             for(int xId=-1; xId<=1; xId++)

@@ -46,9 +46,9 @@ int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file
 
 MeshObjLoader::MeshObjLoader()
     : MeshLoader()
+    , faceType(MeshObjLoader::TRIANGLE)
     , d_handleSeams(initData(&d_handleSeams, (bool)false, "handleSeams", "Preserve UV and normal seams information (vertices with multiple UV and/or normals)"))
     , d_loadMaterial(initData(&d_loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))
-    , faceType(MeshObjLoader::TRIANGLE)
     , d_material(initData(&d_material,"defaultMaterial","Default material") )
     , d_materials(initData(&d_materials,"materials","List of materials") )
     , d_faceList(initData(&d_faceList,"faceList","List of face definitions.") )

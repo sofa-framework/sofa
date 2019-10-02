@@ -110,9 +110,9 @@ public:
 
 protected :
     const Real getConstraintFactor(const int index);
-    void projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor);
-    void projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor);
-    void projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor);
+    void projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor) override;
+    void projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor) override;
+    void projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor) override;
 
     void calcRestRotations();
     static unsigned int DerivConstrainedSize(bool freeRotations);

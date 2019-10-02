@@ -164,7 +164,7 @@ public:
         data[i] = (Real)v;
     }
 
-    void add(Index i, double v)
+    void add(Index i, double v) override
     {
         data[i] += (Real)v;
     }
