@@ -96,7 +96,9 @@ public:
      *  \param helpMsg A help message that describes this %Data.
      *  \param flags The flags for this %Data (see \ref DataFlagsEnum).
      */
-    BaseData(const std::string& helpMsg, DataFlags flags = FLAG_DEFAULT);
+    BaseData(const std::string& helpMsg="", DataFlags flags = FLAG_DEFAULT);
+
+    [[deprecated("Replaced with one with std::string instead of char* version")]]
     BaseData(const char* helpMsg=nullptr, DataFlags flags = FLAG_DEFAULT);
 
     /** Constructor.
@@ -104,7 +106,9 @@ public:
      *  \param isDisplayed Whether this %Data should be displayed in GUIs.
      *  \param isReadOnly Whether this %Data should be modifiable in GUIs.
      */
-    BaseData(const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false);
+    BaseData(const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false);
+
+    [[deprecated("Replaced with one with std::string instead of char* version")]]
     BaseData(const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false);
 
     /// Destructor.
