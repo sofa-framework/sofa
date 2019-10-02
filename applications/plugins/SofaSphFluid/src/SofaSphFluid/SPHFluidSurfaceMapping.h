@@ -21,9 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_H
 #define SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_H
-#include "config.h"
-
-
+#include <SofaSphFluid/config.h>
 
 #include <SofaSphFluid/SPHFluidForceField.h>
 #include <SofaBaseTopology/MeshTopology.h>

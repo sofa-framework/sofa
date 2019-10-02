@@ -32,7 +32,7 @@
 //
 #ifndef SOFA_COMPONENT_MISC_PARTICLESINK_H
 #define SOFA_COMPONENT_MISC_PARTICLESINK_H
-#include "config.h"
+#include <SofaSphFluid/config.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/core/visual/VisualParams.h>

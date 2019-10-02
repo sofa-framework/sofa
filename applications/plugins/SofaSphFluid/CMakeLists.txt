@@ -5,6 +5,7 @@ find_package(SofaBase REQUIRED) # Dependency to SofaGuiQt
  
 set(PLUGIN_SPH_SRC_DIR src/SofaSphFluid)
 set(HEADER_FILES
+    ${PLUGIN_SPH_SRC_DIR}/config.h.in
     ${PLUGIN_SPH_SRC_DIR}/ParticleSink.h
     ${PLUGIN_SPH_SRC_DIR}/ParticleSource.h
     ${PLUGIN_SPH_SRC_DIR}/ParticlesRepulsionForceField.h
@@ -14,19 +15,17 @@ set(HEADER_FILES
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidSurfaceMapping.h
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidSurfaceMapping.inl
     ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.h
-    ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.inl
-    ${PLUGIN_SPH_SRC_DIR}/config.h
-    ${PLUGIN_SPH_SRC_DIR}/initSPHFluid.h
+    ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.inl    
 )
 
 set(SOURCE_FILES
+    ${PLUGIN_SPH_SRC_DIR}/initSPHFluid.cpp
     ${PLUGIN_SPH_SRC_DIR}/ParticleSink.cpp
     ${PLUGIN_SPH_SRC_DIR}/ParticleSource.cpp
     ${PLUGIN_SPH_SRC_DIR}/ParticlesRepulsionForceField.cpp
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidForceField.cpp
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidSurfaceMapping.cpp
     ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.cpp
-    ${PLUGIN_SPH_SRC_DIR}/initSPHFluid.cpp
 )
 
 set(README_FILES
