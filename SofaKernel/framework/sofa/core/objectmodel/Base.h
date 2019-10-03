@@ -488,7 +488,11 @@ public:
 
     Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
 
-    Data< ComponentState > m_componentstate; ///< the object state
+    Data< ComponentState >  d_componentstate; ///< the object state
+
+    [[deprecated("m_componentstate was renamed to d_componentstate. Please upgrade your code")]]
+    Data< ComponentState >& m_componentstate{d_componentstate}; ///< the object state
+
 
     std::string m_definitionSourceFileName        {""};
     int         m_definitionSourceFilePos         {-1};
