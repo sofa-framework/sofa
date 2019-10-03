@@ -56,10 +56,13 @@ Base::Base()
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
+    , m_componentstate(initData(&m_componentstate, ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
 {
     name.setOwnerClass("Base");
     name.setAutoLink(false);
     name.setReadOnly(true);
+    m_componentstate.setAutoLink(false);
+    m_componentstate.setReadOnly(true);
     f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
     f_tags.setOwnerClass("Base");
@@ -154,8 +157,8 @@ void Base::addLink(BaseLink* l)
     const std::string& name = l->getName();
     if (name.size() > 0 && (findData(name) || findLink(name)))
     {
-        msg_warning() << "Link name " << name
-                << " already used in this class or in a parent class !";
+        msg_warning() << "Link name '" << name
+                << "' already used in this class or in a parent class !";
     }
     m_vecLink.push_back(l);
     m_aliasLink.insert(std::make_pair(name, l));

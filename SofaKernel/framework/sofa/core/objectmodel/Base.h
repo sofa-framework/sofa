@@ -32,6 +32,7 @@
 
 #include <deque>
 
+#include <sofa/core/objectmodel/ComponentState.h>
 
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
@@ -486,6 +487,8 @@ public:
     Data< sofa::core::objectmodel::TagSet > f_tags; ///< list of the subsets the objet belongs to
 
     Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
+
+    Data< ComponentState > m_componentstate; ///< the object state
 
     std::string m_definitionSourceFileName        {""};
     int         m_definitionSourceFilePos         {-1};
