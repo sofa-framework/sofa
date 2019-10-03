@@ -63,6 +63,7 @@ Base::Base()
     name.setReadOnly(true);
     d_componentstate.setAutoLink(false);
     d_componentstate.setReadOnly(true);
+    d_componentstate.setOwnerClass("Base");
     f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
     f_tags.setOwnerClass("Base");
