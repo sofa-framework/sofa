@@ -39,6 +39,8 @@
 #include "SofaWindowProfiler.h"
 #endif
 
+#include "SofaWindowDataGraph.h"
+
 
 #ifdef SOFA_PML
 #include <sofa/simulation/Node.h>
@@ -330,6 +332,7 @@ RealGUI::RealGUI ( const char* viewername)
       #if SOFAGUIQT_HAVE_QT5_CHARTS
       m_windowTimerProfiler(nullptr),
       #endif
+      m_sofaWindowDataGraph(nullptr),
       simulationGraph(nullptr),
       mCreateViewersOpt(true),
       mIsEmbeddedViewer(true),
@@ -1178,6 +1181,20 @@ void RealGUI::showVideoRecorderManager()
 
 //------------------------------------
 
+void RealGUI::showWindowDataGraph()
+{
+
+    std::cout << "RealGUI::showWindowDataGraph()" << std::endl;
+    //m_sofaMouseManager->createGraph();
+    if (m_sofaWindowDataGraph == nullptr)
+    {
+        createSofaWindowDataGraph();
+    }
+    m_sofaWindowDataGraph->show(); 
+}
+
+//------------------------------------
+
 void RealGUI::setViewerResolution ( int w, int h )
 {
     if( isEmbeddedViewer() )
@@ -1759,6 +1776,12 @@ void RealGUI::createPluginManager()
     pluginManager_dialog->hide();
     this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
     this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
+}
+
+void RealGUI::createSofaWindowDataGraph()
+{
+    m_sofaWindowDataGraph = new SofaWindowDataGraph(this);
+    m_sofaWindowDataGraph->hide();
 }
 
 //------------------------------------

@@ -224,6 +224,9 @@ else()
     message(STATUS "SofaGuiQt: QtCharts not found, SofaWindowProfiler will not be built.")
 endif()
 
+list(APPEND MOC_HEADER_FILES SofaWindowDataGraph.h)
+list(APPEND SOURCE_FILES SofaWindowDataGraph.cpp)
+
 qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
 set(MOC_FILES_GROUP "Generated")
 qt5_wrap_ui(FORM_FILES ${UI_FILES})

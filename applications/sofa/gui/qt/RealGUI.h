@@ -101,6 +101,8 @@ class SofaMouseManager;
 class SofaWindowProfiler;
 #endif
 
+class SofaWindowDataGraph;
+
 namespace viewer
 {
 class SofaViewer;
@@ -169,6 +171,8 @@ private:
 #if SOFAGUIQT_HAVE_QT5_CHARTS
     SofaWindowProfiler* m_windowTimerProfiler;
 #endif
+
+    SofaWindowDataGraph* m_sofaWindowDataGraph;
 //-----------------OPTIONS DEFINITIONS------------------------}
 
 
@@ -333,6 +337,7 @@ private:
     void parseOptions();
 
     void createPluginManager();
+    void createSofaWindowDataGraph();
 
     /// configure Recently Opened Menu
     void createRecentFilesMenu();
@@ -397,6 +402,7 @@ public slots:
     virtual void showPluginManager();
     virtual void showMouseManager();
     virtual void showVideoRecorderManager();
+    virtual void showWindowDataGraph();
     virtual void toolsDockMoved();
 
 protected slots:
