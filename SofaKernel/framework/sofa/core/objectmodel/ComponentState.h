@@ -23,7 +23,11 @@
 
 #include <iostream>
 
-namespace sofa::core::objectmodel
+namespace sofa
+{
+namespace core
+{
+namespace objectmodel
 {
 
 /// enum class is a C++ x11 feature (http://en.cppreference.com/w/cpp/language/enum),
@@ -41,4 +45,6 @@ enum class ComponentState {
 std::ostream& operator<<(std::ostream& o, const ComponentState& s);
 std::istream& operator>>(std::istream& i, ComponentState& s);
 
-} /// sofa::core::objectmodel
+}  // namespace objectmodel
+}  // namespace core
+}  // namespace sofa
