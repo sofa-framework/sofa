@@ -43,12 +43,12 @@ class SOFA_CORE_API DataFileName : public sofa::core::objectmodel::Data<std::str
 public:
     typedef sofa::core::objectmodel::Data<std::string> Inherit;
 
-    DataFileName( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
+    DataFileName( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(helpMsg, isDisplayed, isReadOnly)
     {
     }
 
-    DataFileName( const std::string& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
+    DataFileName( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(value, helpMsg, isDisplayed, isReadOnly)
     {
         updatePath();

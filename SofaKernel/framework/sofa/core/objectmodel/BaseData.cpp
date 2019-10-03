@@ -22,6 +22,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/BackTrace.h>
+#include <sofa/helper/StringUtils.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
@@ -35,6 +36,10 @@ namespace objectmodel
 
 //#define SOFA_DDG_TRACE
 
+BaseData::BaseData(const char* h, DataFlags dataflags) : BaseData(sofa::helper::safeCharToString(h), dataflags)
+{
+}
+
 BaseData::BaseData(const std::string& h, DataFlags dataflags)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counters(), m_isSets(), m_dataFlags(dataflags)
@@ -46,6 +51,11 @@ BaseData::BaseData(const std::string& h, DataFlags dataflags)
     m_counters.assign(0);
     m_isSets.assign(false);
 }
+
+BaseData::BaseData( const char* helpMsg, bool isDisplayed, bool isReadOnly) : BaseData(sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly)
+{
+}
+
 
 BaseData::BaseData( const std::string& h, bool isDisplayed, bool isReadOnly)
     : help(h), ownerClass(""), group(""), widget("")
