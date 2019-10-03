@@ -39,7 +39,7 @@ namespace component
 namespace visualmodel
 {
 
-static int OglColorMapClass = core::RegisterObject("Provides color palette and support for conversion of numbers to colors.")
+int OglColorMapClass = core::RegisterObject("Provides color palette and support for conversion of numbers to colors.")
         .add< OglColorMap >()
         .addAlias("ColorMap")
         ;

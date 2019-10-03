@@ -34,7 +34,7 @@ namespace component
 namespace projectiveconstraintset
 {
 
-static int ParabolicConstraintClass = core::RegisterObject("Apply a parabolic trajectory to given points")
+int ParabolicConstraintClass = core::RegisterObject("Apply a parabolic trajectory to given points")
         .add< ParabolicConstraint<defaulttype::Vec3Types> >()
         .add< ParabolicConstraint<defaulttype::Rigid3Types> >();
 
