@@ -446,16 +446,6 @@ public:
     /// Return the full path name of this object
     virtual std::string getPathName() const;
 
-    /// @name componentstate
-    ///   Methods related to component state
-    /// @{
-
-    ComponentState getComponentState() const { return m_componentstate.getValue() ; }
-    bool isComponentStateValid() const { return m_componentstate != ComponentState::Invalid; }
-
-    ///@}
-
-
     /// @name internalupdate
     ///   Methods related to tracking of data and the internal update
     /// @{

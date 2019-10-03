@@ -466,6 +466,16 @@ public:
         return shortname;
     }
 
+    /// @name componentstate
+    ///   Methods related to component state
+    /// @{
+
+    ComponentState getComponentState() const { return d_componentstate.getValue() ; }
+    bool isComponentStateValid() const { return d_componentstate == ComponentState::Valid; }
+
+    ///@}
+
+
 protected:
     /// List of fields (Data instances)
     VecData m_vecData;
