@@ -19,12 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYMODIFIER_H
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYMODIFIER_H
-#include <ManifoldTopologies/config.h>
+#ifndef SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYMODIFIER_H
+#define SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYMODIFIER_H
 
 #include <ManifoldTopologies/config.h>
-
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 
 namespace sofa
@@ -155,4 +153,4 @@ private:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYMODIFIER_H
