@@ -19,12 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDTETRAHEDRONSETTOPOLOGYCONTAINER_H
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDTETRAHEDRONSETTOPOLOGYCONTAINER_H
-#include <ManifoldTopologies/config.h>
+#ifndef SOFA_MANIFOLD_TOPOLOGY_TETRAHEDRONSETTOPOLOGYCONTAINER_H
+#define SOFA_MANIFOLD_TOPOLOGY_TETRAHEDRONSETTOPOLOGYCONTAINER_H
 
 #include <ManifoldTopologies/config.h>
-
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 
 namespace sofa
@@ -152,4 +150,4 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_MANIFOLD_TOPOLOGY_TETRAHEDRONSETTOPOLOGYCONTAINER_H
