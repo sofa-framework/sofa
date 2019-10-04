@@ -36,7 +36,7 @@ set(SOURCE_FILES
     HeadlessRecorder.cpp
     VideoRecorderFFMpeg.cpp)
 
-if(SOFAGUI_BUILD_TESTS)
+if(SOFA_BUILD_TESTS)
     configure_file(headlessRecorder_test ${CMAKE_BINARY_DIR}/bin/headlessRecorder_test COPYONLY)
 endif()
 

@@ -21,6 +21,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+include(CMakeDependentOption)
 
 # Enable the organisation in folders for generators that support
 # it. (E.g. some versions of Visual Studio have 'solution folders')
