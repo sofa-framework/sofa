@@ -66,11 +66,17 @@ public:
 protected:
     void createComponentsNode();
 
+    void parseSimulationNode(sofa::simulation::Node* node, int posX, int posY);
+
+    void addSimulationObject(sofa::core::objectmodel::BaseObject* bObject, int posX, int posY);
+
 protected:
     QtNodes::FlowScene* m_graphScene;
     QtNodes::FlowView* m_graphView;
 
     sofa::simulation::Node* m_rootNode;
+    SReal m_scaleX;
+    SReal m_scaleY;
 };
 
 } // namespace qt
