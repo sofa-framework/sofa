@@ -117,6 +117,12 @@ public:
 
         using topology::TopologyDataHandler<Point,MassVector>::ApplyTopologyChange;
 
+        ///////////////////////// Functions on Points //////////////////////////////////////
+        /// Apply removing points.
+        void applyPointDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
+        /// Callback to remove points.
+        virtual void ApplyTopologyChange(const core::topology::PointsRemoved* /*event*/);
+
         ///////////////////////// Functions on Edges //////////////////////////////////////
         /// Apply adding edges elements.
         void applyEdgeCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
