@@ -1780,7 +1780,7 @@ void RealGUI::createPluginManager()
 
 void RealGUI::createSofaWindowDataGraph()
 {
-    m_sofaWindowDataGraph = new SofaWindowDataGraph(this);
+    m_sofaWindowDataGraph = new SofaWindowDataGraph(this, currentSimulation());
     m_sofaWindowDataGraph->hide();
 }
 

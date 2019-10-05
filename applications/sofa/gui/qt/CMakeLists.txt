@@ -231,10 +231,12 @@ set(NodeEditor_DIR CACHE PATH "Set path to NodeEditor Install dir root.")
     
 list(APPEND MOC_HEADER_FILES 
     SofaWindowDataGraph.h
+    dataGraph/models.hpp
     )
 
 list(APPEND SOURCE_FILES 
     SofaWindowDataGraph.cpp
+    #dataGraph/models.cpp
     )
 
 qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
@@ -248,7 +250,7 @@ add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${MOC_FIL
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaLoader SofaMiscForceField)
-target_link_libraries(${PROJECT_NAME} PUBLIC ${QT_TARGETS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${QT_TARGETS} ${NodeEditor_LIBRARY})
 if(SOFAGUI_ENABLE_QWT)
     target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
 endif()

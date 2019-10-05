@@ -38,6 +38,12 @@
 
 #include <iostream>
 #include <deque>
+#include <sofa/simulation/Node.h>
+
+
+#define NODE_EDITOR_SHARED
+
+#include <nodes/FlowView>
 
 namespace sofa
 {
@@ -48,15 +54,23 @@ namespace gui
 namespace qt
 {
 
+class QtNodes::FlowScene;
 
 class SofaWindowDataGraph : public QDialog
 {
     Q_OBJECT
 public:
-    SofaWindowDataGraph(QWidget *parent);
+    SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node* scene);
 
    
+protected:
+    void createComponentsNode();
 
+protected:
+    QtNodes::FlowScene* m_graphScene;
+    QtNodes::FlowView* m_graphView;
+
+    sofa::simulation::Node* m_rootNode;
 };
 
 } // namespace qt
