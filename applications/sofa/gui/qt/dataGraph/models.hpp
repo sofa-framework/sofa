@@ -6,7 +6,7 @@
 
 #include <nodes/NodeData>
 #include <nodes/NodeDataModel>
-
+#include <iostream>
 #include <memory>
 
 using QtNodes::NodeData;
@@ -43,97 +43,75 @@ public:
 
 //------------------------------------------------------------------------------
 
-/// The model dictates the number of inputs and outputs for the Node.
-/// In this example it has no logic.
-class NaiveDataModel : public NodeDataModel
+class DefaultObjectModel : public NodeDataModel
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
+    DefaultObjectModel()
+        : NodeDataModel()
+        , m_nbrData(2)
+    {}
 
-  virtual
-  ~NaiveDataModel() {}
+    DefaultObjectModel(std::vector < std::pair < std::string, std::string> > _data)
+        : NodeDataModel()
+        , m_data(_data)
+    {
+        m_nbrData = m_data.size();
+    }
 
-public:
+    virtual ~DefaultObjectModel() {}
 
-  QString
-  caption() const override
-  {
-    return m_caption;
-  }
+    QString caption() const override
+    {
+        return m_caption;
+    }
 
-  void setCaption(std::string str)
-  {
-      m_caption = QString::fromStdString(str);
-  }
+    void setCaption(std::string str)
+    {
+        m_caption = QString::fromStdString(str);
+    }
 
-  QString
-  name() const override
-  { return QString("NaiveDataModel"); }
+    QString name() const override
+    {
+        return QString("DefaultObjectModel");
+    }
+
+    void setNbrData(unsigned int nbr)
+    {
+        m_nbrData = nbr;
+    }
 
 public:
 
   unsigned int
   nPorts(PortType portType) const override
   {
-    unsigned int result = 1;
-
-    switch (portType)
-    {
-      case PortType::In:
-        result = 2;
-        break;
-
-      case PortType::Out:
-        result = 2;
-        break;
-      case PortType::None:
-        break;
-    }
-
-    return result;
+      return m_nbrData;
   }
 
   NodeDataType
   dataType(PortType portType,
            PortIndex portIndex) const override
   {
-    switch (portType)
-    {
-      case PortType::In:
-        switch (portIndex)
-        {
-          case 0:
-            return MyNodeData().type();
-          case 1:
-            return SimpleNodeData().type();
-        }
-        break;
-
-      case PortType::Out:
-        switch (portIndex)
-        {
-          case 0:
-            return MyNodeData().type();
-          case 1:
-            return SimpleNodeData().type();
-        }
-        break;
-
-      case PortType::None:
-        break;
-    }
-    // FIXME: control may reach end of non-void function [-Wreturn-type]
-    return NodeDataType();
+      if (portIndex >= 0 && portIndex < m_data.size())
+      {
+          QString name = QString::fromStdString(m_data[portIndex].first);
+          QString type = QString::fromStdString(m_data[portIndex].second);
+          NodeDataType NType;
+          NType.id = name;
+          NType.name = name;
+          return NType;
+      }
+          
+      return MyNodeData().type();
   }
 
   std::shared_ptr<NodeData>
   outData(PortIndex port) override
   {
-    if (port < 1)
+    
       return std::make_shared<MyNodeData>();
-
-    return std::make_shared<SimpleNodeData>();
   }
 
   void
@@ -147,5 +125,6 @@ public:
 
 protected: 
     QString m_caption;
-
+    unsigned int m_nbrData;
+    std::vector < std::pair < std::string, std::string> > m_data;
 };

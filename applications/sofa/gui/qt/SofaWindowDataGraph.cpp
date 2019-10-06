@@ -58,7 +58,7 @@ registerDataModels()
 {
     auto ret = std::make_shared<DataModelRegistry>();
 
-    ret->registerModel<NaiveDataModel>();
+    ret->registerModel<DefaultObjectModel>();
 
     /*
     We could have more models registered.
