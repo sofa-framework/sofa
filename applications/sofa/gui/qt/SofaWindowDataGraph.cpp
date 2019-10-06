@@ -101,8 +101,9 @@ SofaWindowDataGraph::SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node
 
     setConnecStyle();
     m_graphScene = new FlowScene(registerDataModels());
-   // FlowScene scene(registerDataModels());
-
+   
+    m_exceptions = { "RequiredPlugin", "VisualStyle", "DefaultVisualManagerLoop", "InteractiveCamera" };
+    
     QVBoxLayout* layout = new QVBoxLayout(this);
     m_graphView = new FlowView(m_graphScene, this);
     layout->addWidget(m_graphView);
@@ -133,8 +134,21 @@ void SofaWindowDataGraph::parseSimulationNode(sofa::simulation::Node* node, int 
     std::vector<sofa::core::objectmodel::BaseObject*> bObjects = node->getNodeObjects();
     int localPosX = posX;
     for (auto bObject : bObjects)
-    {        
-        std::cout << localPosX << " -> " << bObject->getClassName() << "   " << std::endl;
+    {       
+        bool skip = false;
+        for (auto except : m_exceptions)
+        {
+            if (except == bObject->getClassName())
+            {
+                std::cout << "skip: " << except << std::endl;
+                skip = true;
+                break;
+            }
+        }
+        
+        if (skip)
+            continue;
+    
         addSimulationObject(bObject, localPosX, posY);
         localPosX++;
     }

@@ -77,6 +77,8 @@ protected:
     sofa::simulation::Node* m_rootNode;
     SReal m_scaleX;
     SReal m_scaleY;
+
+    std::vector<std::string> m_exceptions;
 };
 
 } // namespace qt
