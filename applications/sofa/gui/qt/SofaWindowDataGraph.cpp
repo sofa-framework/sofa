@@ -164,15 +164,42 @@ void SofaWindowDataGraph::parseSimulationNode(sofa::simulation::Node* node, int 
 
 void SofaWindowDataGraph::addSimulationObject(sofa::core::objectmodel::BaseObject* bObject , int posX, int posY)
 {
-    const std::string& name = bObject->getClassName() + "::" + bObject->getName();
+    const std::string& name = bObject->getClassName() + " - " + bObject->getName();
     std::cout << "addSimulationObject: " << name << std::endl;
-    QtNodes::Node& fromNode = m_graphScene->createNode(std::make_unique<NaiveDataModel>());
     
-    NaiveDataModel* model = dynamic_cast<NaiveDataModel*>(fromNode.nodeDataModel());
+    std::vector < std::pair < std::string, std::string> > data = filterUnnecessaryData(bObject);
+    QtNodes::Node& fromNode = m_graphScene->createNode(std::make_unique<DefaultObjectModel>(data));
+    
+    DefaultObjectModel* model = dynamic_cast<DefaultObjectModel*>(fromNode.nodeDataModel());
     model->setCaption(name);
-
+  
     auto& fromNgo = fromNode.nodeGraphicsObject();
-   fromNgo.setPos(posX*m_scaleX, posY*m_scaleY);
+    fromNgo.setPos(posX*m_scaleX, posY*m_scaleY);
+}
+
+
+std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filterUnnecessaryData(sofa::core::objectmodel::BaseObject* bObject)
+{
+    helper::vector<sofa::core::objectmodel::BaseData*> allData = bObject->getDataFields();
+    std::vector < std::pair < std::string, std::string> > filterData;
+    for (auto data : allData)
+    {
+        const std::string& name = data->getName();
+        const std::string& group = std::string(data->getGroup());
+
+        if (name == "name" || name == "printLog" || name == "tags"
+            || name == "bbox" || name == "listening")
+            continue;
+
+        if (group == "Visualization")
+            continue;
+
+        std::cout << name << " -> " << data->getGroup() << std::endl;
+        filterData.push_back(std::pair<std::string, std::string>(name, data->getValueTypeString()));
+    }
+    std::cout << "## old Data: " << allData.size() << " - " << filterData.size() << std::endl;
+
+    return filterData;
 }
 
 
