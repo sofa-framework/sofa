@@ -116,14 +116,16 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
     if(!dm->d_computeMassOnRest.getValue())
         msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-    msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesRemoved";
-
     const sofa::helper::vector<unsigned int> & pointsRemoved = e->getArray();
     applyPointDestruction(pointsRemoved);
     dm->cleanTracker();
     dm->printMass();
 
-    msg_info("DiagonalMassPointHandler")<<"Size of vertexMass: "<< dm->d_vertexMass.getValue().size();
+    if(dm->f_printLog.getValue())
+    {
+        msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesRemoved";
+        msg_info("DiagonalMassPointHandler")<<"Size of vertexMass: "<< dm->d_vertexMass.getValue().size();
+    }
 }
 
 template <class DataTypes, class MassType>
@@ -202,7 +204,9 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
         if(!dm->d_computeMassOnRest.getValue())
             msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesAdded";
+        if(dm->f_printLog.getValue())
+            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesAdded";
+
         applyEdgeCreation(edgeIndex, edges, ancestors, coeffs);
         dm->cleanTracker();
         dm->printMass();
@@ -219,7 +223,9 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
         if(!dm->d_computeMassOnRest.getValue())
             msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesRemoved";
+        if(dm->f_printLog.getValue())
+            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesRemoved";
+
         applyEdgeDestruction(edgeRemoved);
         dm->cleanTracker();
         dm->printMass();
@@ -307,7 +313,9 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
         if(!dm->d_computeMassOnRest.getValue())
             msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TrianglesAdded";
+        if(dm->f_printLog.getValue())
+            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TrianglesAdded";
+
         applyTriangleCreation(triangleAdded,elems,ancestors,coefs);
         dm->cleanTracker();
         dm->printMass();
@@ -324,7 +332,9 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
         if(!dm->d_computeMassOnRest.getValue())
             msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TrianglesRemoved";
+        if(dm->f_printLog.getValue())
+            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TrianglesRemoved";
+
         applyTriangleDestruction(triangleRemoved);
         dm->cleanTracker();
         dm->printMass();
@@ -415,7 +425,9 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
         if(!dm->d_computeMassOnRest.getValue())
             msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TetrahedraAdded";
+        if(dm->f_printLog.getValue())
+            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TetrahedraAdded";
+
         applyTetrahedronCreation(tetrahedronAdded, elems, ancestors, coefs);
         dm->cleanTracker();
         dm->printMass();
@@ -432,7 +444,9 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
         if(!dm->d_computeMassOnRest.getValue())
             msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TetrahedraRemoved";
+        if(dm->f_printLog.getValue())
+            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TetrahedraRemoved";
+
         applyTetrahedronDestruction(tetrahedronRemoved);
         dm->cleanTracker();
         dm->printMass();
@@ -516,7 +530,9 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
         if(!dm->d_computeMassOnRest.getValue())
             msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: HexahedraAdded";
+        if(dm->f_printLog.getValue())
+            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: HexahedraAdded";
+
         applyHexahedronCreation(hexahedronAdded,elems,ancestors,coefs);
         dm->cleanTracker();
         dm->printMass();
@@ -533,7 +549,9 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
         if(!dm->d_computeMassOnRest.getValue())
             msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: HexahedraRemoved";
+        if(dm->f_printLog.getValue())
+            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: HexahedraRemoved";
+
         applyHexahedronDestruction(hexahedronRemoved);
         dm->cleanTracker();
         dm->printMass();
