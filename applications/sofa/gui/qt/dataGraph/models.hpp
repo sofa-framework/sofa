@@ -8,6 +8,7 @@
 #include <nodes/NodeDataModel>
 #include <iostream>
 #include <memory>
+#include <climits>
 
 using QtNodes::NodeData;
 using QtNodes::NodeDataType;
@@ -80,6 +81,20 @@ public:
     void setNbrData(unsigned int nbr)
     {
         m_nbrData = nbr;
+    }
+
+    QtNodes::PortIndex getDataInputId(const std::string& dataName)
+    {
+        int cpt = 0;
+        for (auto data : m_data)
+        {
+            if (data.first == dataName)
+                return cpt;
+
+            cpt++;
+        }
+
+        return QtNodes::INVALID;
     }
 
 public:

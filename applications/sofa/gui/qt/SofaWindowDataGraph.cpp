@@ -215,6 +215,55 @@ std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filte
 }
 
 
+void SofaWindowDataGraph::connectNodeData()
+{
+    if (m_connections.empty())
+        return;
+
+    std::vector <QtNodes::Node*> nodes = m_graphScene->allNodes();
+
+    for (auto connection : m_connections)
+    {
+        QtNodes::Node* parentNode = nullptr;
+        QtNodes::Node* childNode = nullptr;
+        int cpt = 0;
+
+        for (unsigned int i = 0; i < nodes.size(); ++i)
+        {
+            std::string objName = nodes[i]->objectName().toStdString();
+            if (parentNode == nullptr && objName == connection.m_parentObjName)
+            {
+                parentNode = nodes[i];
+                cpt++;
+            }
+
+            if (childNode == nullptr && objName == connection.m_childObjName)
+            {
+                childNode = nodes[i];
+                cpt++;
+            }
+
+            if (cpt == 2)
+                break;
+        }
+
+        if (cpt != 2)
+        {
+            msg_error("SofaWindowDataGraph") << "Object not found while creating connection between " << connection.m_parentObjName << " and child: " << connection.m_childObjName;
+            continue;
+        }
+
+        
+        DefaultObjectModel* modelP = dynamic_cast<DefaultObjectModel*>(parentNode->nodeDataModel());
+        DefaultObjectModel* modelC = dynamic_cast<DefaultObjectModel*>(childNode->nodeDataModel());
+        QtNodes::PortIndex parentId = modelP->getDataInputId(connection.m_parentDataName);
+        QtNodes::PortIndex childId = modelC->getDataInputId(connection.m_childDataName);
+        
+        m_graphScene->createConnection(*childNode, childId, *parentNode, parentId);
+    }
+}
+
+
 } // namespace qt
 
 } // namespace gui

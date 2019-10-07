@@ -83,6 +83,8 @@ public:
 protected:
     void createComponentsNode();
 
+    void connectNodeData();
+
     void parseSimulationNode(sofa::simulation::Node* node, int posX, int posY);
 
     void addSimulationObject(sofa::core::objectmodel::BaseObject* bObject, int posX, int posY);
