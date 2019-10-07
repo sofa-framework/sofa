@@ -96,16 +96,17 @@ void CubeModel::setLeafCube(int cubeIndex, std::pair<core::CollisionElementItera
 
 int CubeModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
 {
-    int i = size;
-    this->core::CollisionModel::resize(size+1);
-    elems.resize(size+1);
-    //elems[i].subcells = std::make_pair(subcellsBegin, subcellsEnd);
-    elems[i].subcells.first = subcellsBegin;
-    elems[i].subcells.second = subcellsEnd;
-    elems[i].children.first = core::CollisionElementIterator();
-    elems[i].children.second = core::CollisionElementIterator();
-    updateCube(i);
-    return i;
+    int index = size;
+
+    this->core::CollisionModel::resize(index + 1);
+    elems.resize(index + 1);
+    
+    elems[index].subcells.first = subcellsBegin;
+    elems[index].subcells.second = subcellsEnd;
+    elems[index].children.first = core::CollisionElementIterator();
+    elems[index].children.second = core::CollisionElementIterator();
+    updateCube(index);
+    return index;
 }
 
 void CubeModel::updateCube(int index)
