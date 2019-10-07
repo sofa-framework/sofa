@@ -197,7 +197,6 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
             ++index;
         }
     }
-    updateFlags();
     updateNormals();
 
     // topology has changed, force boudingTree recomputation
