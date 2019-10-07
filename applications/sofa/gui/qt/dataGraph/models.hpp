@@ -99,7 +99,7 @@ public:
           QString name = QString::fromStdString(m_data[portIndex].first);
           QString type = QString::fromStdString(m_data[portIndex].second);
           NodeDataType NType;
-          NType.id = name;
+          NType.id = type;
           NType.name = name;
           return NType;
       }
