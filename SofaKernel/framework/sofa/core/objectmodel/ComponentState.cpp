@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <map>
+#include <iostream>
+#include <string>
 #include <sofa/core/objectmodel/ComponentState.h>
 
 namespace sofa
@@ -28,6 +30,7 @@ namespace core
 {
 namespace objectmodel
 {
+
 
 std::ostream& operator<<(std::ostream& o, const ComponentState& s)
 {
@@ -60,6 +63,8 @@ std::istream& operator>>(std::istream& i, ComponentState& s)
     return i;
 }
 
-}  // namespace objectmodel
-}  // namespace core
-}  // namespace sofa
+}  /// namespace objectmodel
+}  /// namespace core
+}  /// namespace sofa
+
+
