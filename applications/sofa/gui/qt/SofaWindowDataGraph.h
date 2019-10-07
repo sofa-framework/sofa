@@ -56,6 +56,23 @@ namespace qt
 
 class QtNodes::FlowScene;
 
+class DataGraphConnection 
+{
+public:
+    DataGraphConnection(const std::string& _pObjN, const std::string& _pDataN, 
+        const std::string& _cObjN, const std::string& _cDataName)
+        : m_parentObjName(_pObjN)
+        , m_parentDataName(_pDataN)
+        , m_childObjName(_cObjN)
+        , m_childDataName(_cDataName)
+    {}
+
+    std::string m_parentObjName;
+    std::string m_parentDataName;
+    std::string m_childObjName;
+    std::string m_childDataName;
+};
+
 class SofaWindowDataGraph : public QDialog
 {
     Q_OBJECT
@@ -80,6 +97,7 @@ protected:
     SReal m_scaleY;
 
     std::vector<std::string> m_exceptions;
+    std::vector<DataGraphConnection> m_connections;
 };
 
 } // namespace qt

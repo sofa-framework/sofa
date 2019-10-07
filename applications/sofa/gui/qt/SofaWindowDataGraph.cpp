@@ -169,10 +169,11 @@ void SofaWindowDataGraph::addSimulationObject(sofa::core::objectmodel::BaseObjec
     
     std::vector < std::pair < std::string, std::string> > data = filterUnnecessaryData(bObject);
     QtNodes::Node& fromNode = m_graphScene->createNode(std::make_unique<DefaultObjectModel>(data));
+    fromNode.setObjectName(QString::fromStdString(bObject->getName()));
     
     DefaultObjectModel* model = dynamic_cast<DefaultObjectModel*>(fromNode.nodeDataModel());
     model->setCaption(name);
-  
+
     auto& fromNgo = fromNode.nodeGraphicsObject();
     fromNgo.setPos(posX*m_scaleX, posY*m_scaleY);
 }
@@ -187,6 +188,14 @@ std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filte
         const std::string& name = data->getName();
         const std::string& group = std::string(data->getGroup());
 
+        if (data->getParent())
+        { 
+            sofa::core::objectmodel::BaseData* pData = data->getParent();
+            std::cout << "- Parent: " << pData->getName() << " owwner: " << pData->getOwner()->getName() << std::endl;
+            m_connections.push_back(DataGraphConnection(pData->getOwner()->getName(), pData->getName(), bObject->getName(), name));
+        }
+        
+
         if (name == "name" || name == "printLog" || name == "tags"
             || name == "bbox" || name == "listening")
             continue;
@@ -194,7 +203,10 @@ std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filte
         if (group == "Visualization")
             continue;
 
-        std::cout << name << " -> " << data->getGroup() << std::endl;
+        if (!group.empty())
+        {
+            std::cout << name << " -> " << data->getGroup() << std::endl;
+        }
         filterData.push_back(std::pair<std::string, std::string>(name, data->getValueTypeString()));
     }
     std::cout << "## old Data: " << allData.size() << " - " << filterData.size() << std::endl;
