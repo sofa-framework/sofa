@@ -61,7 +61,8 @@ public:
     {
     }
 
-    [[deprecated("Replaced with one with std::string instead of char* version")]]
+    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped. 
+    //[[deprecated("Replaced with one with std::string instead of char* version")]]
     TData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false) :
         TData( sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
 
@@ -339,7 +340,8 @@ public:
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
-    [[deprecated("Replaced with one with std::string instead of char* version")]]
+    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped. 
+    //[[deprecated("Replaced with one with std::string instead of char* version")]]
     Data( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : Data(sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
 
