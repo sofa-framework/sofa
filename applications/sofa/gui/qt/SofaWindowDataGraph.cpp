@@ -94,11 +94,11 @@ setConnecStyle()
 SofaWindowDataGraph::SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node* scene)
     : QDialog(parent)
     , m_rootNode(scene)
-    , m_scaleX(250)
-    , m_scaleY(200)
+    , m_scaleX(10)
+    , m_scaleY(30)
+    , m_posX(0)
+    , m_posY(0)
 {
-
-
     setConnecStyle();
     m_graphScene = new FlowScene(registerDataModels());
    
@@ -112,6 +112,10 @@ SofaWindowDataGraph::SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node
     resize(1000, 800);
     
     createComponentsNode();
+
+    connectNodeData();
+    std::cout << "final m_posX: " << m_posX << " | m_posY: " << m_posY << std::endl;
+    resize(m_posX, m_posY);
 }
 
 
@@ -122,17 +126,18 @@ void SofaWindowDataGraph::createComponentsNode()
     std::cout << "SofaWindowDataGraph::createComponentsNode()" << std::endl;
     std::cout << "root: " << m_rootNode->getName() << std::endl;
 
-    parseSimulationNode(m_rootNode, 0, 0);
+    parseSimulationNode(m_rootNode);
     
 }
 
 
-void SofaWindowDataGraph::parseSimulationNode(sofa::simulation::Node* node, int posX, int posY)
+void SofaWindowDataGraph::parseSimulationNode(sofa::simulation::Node* node, int posX)
 {
-    std::cout << posY << " ### Child Name: " << node->getName() << std::endl;
+    std::cout << m_posY << " ### Child Name: " << node->getName() << std::endl;
     // first parse the list BaseObject inside this node
     std::vector<sofa::core::objectmodel::BaseObject*> bObjects = node->getNodeObjects();
-    int localPosX = posX;
+    m_posX = posX;
+    int maxData = 0;
     for (auto bObject : bObjects)
     {       
         bool skip = false;
@@ -149,20 +154,27 @@ void SofaWindowDataGraph::parseSimulationNode(sofa::simulation::Node* node, int 
         if (skip)
             continue;
     
-        addSimulationObject(bObject, localPosX, posY);
-        localPosX++;
+        size_t nbrData = addSimulationObject(bObject);
+        if (nbrData > maxData)
+            maxData = nbrData;
+
+        // space between cells
+        m_posX += 10 * m_scaleX;
+    }
+
+    if (bObjects.size() >= 4) {
+        m_posY += (maxData + 10) * m_scaleY;
+        m_posX = posX + 30 * m_scaleX;
     }
 
     // second move to child nodes
     for (auto simuNode : node->getChildren())
     {
-        posY++;
-        posX++;
-        parseSimulationNode(dynamic_cast<sofa::simulation::Node*>(simuNode), posX, posY);
+        parseSimulationNode(dynamic_cast<sofa::simulation::Node*>(simuNode), m_posX);
     }
 }
 
-void SofaWindowDataGraph::addSimulationObject(sofa::core::objectmodel::BaseObject* bObject , int posX, int posY)
+size_t SofaWindowDataGraph::addSimulationObject(sofa::core::objectmodel::BaseObject* bObject)
 {
     const std::string& name = bObject->getClassName() + " - " + bObject->getName();
     std::cout << "addSimulationObject: " << name << std::endl;
@@ -174,8 +186,11 @@ void SofaWindowDataGraph::addSimulationObject(sofa::core::objectmodel::BaseObjec
     DefaultObjectModel* model = dynamic_cast<DefaultObjectModel*>(fromNode.nodeDataModel());
     model->setCaption(name);
 
-    auto& fromNgo = fromNode.nodeGraphicsObject();
-    fromNgo.setPos(posX*m_scaleX, posY*m_scaleY);
+    auto& fromNgo = fromNode.nodeGraphicsObject();    
+    fromNgo.setPos(m_posX, m_posY);
+    m_posX += name.length() * m_scaleX;
+
+    return data.size();
 }
 
 

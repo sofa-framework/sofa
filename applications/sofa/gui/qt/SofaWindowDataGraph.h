@@ -85,9 +85,9 @@ protected:
 
     void connectNodeData();
 
-    void parseSimulationNode(sofa::simulation::Node* node, int posX, int posY);
+    void parseSimulationNode(sofa::simulation::Node* node, int posX = 0);
 
-    void addSimulationObject(sofa::core::objectmodel::BaseObject* bObject, int posX, int posY);
+    size_t addSimulationObject(sofa::core::objectmodel::BaseObject* bObject);
 
     std::vector < std::pair < std::string, std::string> > filterUnnecessaryData(sofa::core::objectmodel::BaseObject* bObject);
 protected:
@@ -100,6 +100,9 @@ protected:
 
     std::vector<std::string> m_exceptions;
     std::vector<DataGraphConnection> m_connections;
+
+    int m_posX;
+    int m_posY;
 };
 
 } // namespace qt
