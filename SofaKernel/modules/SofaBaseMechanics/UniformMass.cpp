@@ -80,7 +80,7 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
         {
             char	cmd[64];
             FILE*	file;
-            if ((file = fopen(filename.c_str(), "r")) == NULL)
+            if ((file = fopen(filename.c_str(), "r")) == nullptr)
             {
                 msg_error(this) << "cannot open file '" << filename << "'.\n" ;
             }
@@ -204,7 +204,7 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
         }
         setMass(m);
     }
-    else if (d_totalMass.getValue()>0 && mstate!=NULL) d_vertexMass.setValue((Real)d_totalMass.getValue() / mstate->getSize());
+    else if (d_totalMass.getValue()>0 && mstate!=nullptr) d_vertexMass.setValue((Real)d_totalMass.getValue() / mstate->getSize());
 }
 
 
@@ -417,7 +417,7 @@ void UniformMass<VecTypes, MassType>::addMDxToVectorVecImpl(defaulttype::BaseVec
     for (unsigned int i=0; i<indices.size(); i++)
         for (unsigned int j=0; j<derivDim; j++)
         {
-            if (dx != NULL)
+            if (dx != nullptr)
                 resVect->add(offset + indices[i] * derivDim + j, mFact * m * g[j] * (*dx)[indices[i]][0]);
             else
                 resVect->add(offset + indices[i] * derivDim + j, mFact * m * g[j]);

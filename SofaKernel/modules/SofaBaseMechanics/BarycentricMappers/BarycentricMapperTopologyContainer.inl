@@ -46,7 +46,7 @@ BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::BarycentricM
                                                                                                        topology::PointSetTopologyContainer* toTopology)
      : Inherit1(fromTopology, toTopology),
        d_map(initData(&d_map,"map", "mapper data")),
-       m_matrixJ(NULL),
+       m_matrixJ(nullptr),
        m_updateJ(true)
  {}
 

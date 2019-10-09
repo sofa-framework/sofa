@@ -80,10 +80,10 @@ TriangleLocalMinDistanceFilter::TriangleLocalMinDistanceFilter()
     : m_pointInfo(initData(&m_pointInfo, "pointInfo", "point filter data"))
     , m_lineInfo(initData(&m_lineInfo, "lineInfo", "line filter data"))
     , m_triangleInfo(initData(&m_triangleInfo, "triangleInfo", "triangle filter data"))
-    , pointInfoHandler(NULL)
-    , lineInfoHandler(NULL)
-    , triangleInfoHandler(NULL)
-    , bmt(NULL)
+    , pointInfoHandler(nullptr)
+    , lineInfoHandler(nullptr)
+    , triangleInfoHandler(nullptr)
+    , bmt(nullptr)
 {
 }
 
@@ -101,7 +101,7 @@ void TriangleLocalMinDistanceFilter::init()
     component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(getContext()->getMechanicalState());
 
 
-    if(mstateVec3d == NULL)
+    if(mstateVec3d == nullptr)
     {
         msg_error() << "Init failed for TriangleLocalMinDistanceFilter no mstateVec3d found.";
         this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
@@ -214,7 +214,7 @@ void TriangleLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsig
     if(tLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             pInfo.setPositionFiltering(&(mstateVec3d->read(core::ConstVecCoordId::restPosition())->getValue()));
         }
@@ -223,7 +223,7 @@ void TriangleLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsig
     else
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             pInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
         }
@@ -244,7 +244,7 @@ void TriangleLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsign
     if(tLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             lInfo.setPositionFiltering(&(mstateVec3d->read(core::ConstVecCoordId::restPosition())->getValue()));
         }
@@ -253,7 +253,7 @@ void TriangleLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsign
     else
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             lInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
         }
@@ -273,7 +273,7 @@ void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(un
     if(tLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             tInfo.setPositionFiltering(&(mstateVec3d->read(core::ConstVecCoordId::restPosition())->getValue()));
         }
@@ -282,7 +282,7 @@ void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(un
     else
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             tInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
         }

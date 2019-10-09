@@ -42,7 +42,7 @@ BarycentricMapperRegularGridTopology<In,Out>::BarycentricMapperRegularGridTopolo
                                                                                    PointSetTopologyContainer* toTopology)
     : Inherit1(fromTopology, toTopology)
     , m_fromTopology(fromTopology)
-    , m_matrixJ(NULL), m_updateJ(true)
+    , m_matrixJ(nullptr), m_updateJ(true)
 {
 }
 

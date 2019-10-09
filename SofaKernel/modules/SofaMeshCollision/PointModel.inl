@@ -53,10 +53,10 @@ namespace collision
 template<class DataTypes>
 PointCollisionModel<DataTypes>::PointCollisionModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
-    , mstate(NULL)
+    , mstate(nullptr)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
     , PointActiverPath(initData(&PointActiverPath,"PointActiverPath", "path of a component PointActiver that activate or deactivate collision point during execution") )
-    , m_lmdFilter( NULL )
+    , m_lmdFilter( nullptr )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
 {
     enum_type = POINT_TYPE;
@@ -74,7 +74,7 @@ void PointCollisionModel<DataTypes>::init()
     this->CollisionModel::init();
     mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
 
-    if (mstate==NULL)
+    if (mstate==nullptr)
     {
         msg_error() << "PointModel requires a Vec3 Mechanical Model";
         return;
@@ -102,10 +102,10 @@ void PointCollisionModel<DataTypes>::init()
     else
     {
 
-        core::objectmodel::BaseObject *activer=NULL;
+        core::objectmodel::BaseObject *activer=nullptr;
         this->getContext()->get(activer ,path  );
 
-        if (activer != NULL) {
+        if (activer != nullptr) {
             msg_info() << " Activer named" << activer->getName() << " found";
         }
         else {
@@ -117,7 +117,7 @@ void PointCollisionModel<DataTypes>::init()
 
 
 
-        if (myActiver == NULL)
+        if (myActiver == nullptr)
         {
             myActiver = PointActiver::getDefaultActiver();
             msg_error() << "no dynamic cast possible for Point Activer for PointModel " << this->getName();
@@ -513,7 +513,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
             vparams->drawTool()->setPolygonMode(0, false);
     }
 
-    if (getPrevious() != NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious() != nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

@@ -98,7 +98,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
         stiffness.setValue(stiffs);
     }
 
-    if (restMState.get() == NULL)
+    if (restMState.get() == nullptr)
     {
         useRestMState = false;
         msg_info() << "no external rest shape used";
