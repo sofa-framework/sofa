@@ -67,7 +67,7 @@ public:
     typedef core::objectmodel::Data< VecDeriv2 >		DataVecDeriv2;
     typedef core::objectmodel::Data< MatrixDeriv2 >		DataMatrixDeriv2;
 protected:
-    MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1 = NULL, MechanicalState<DataTypes2> *mm2 = NULL);
+    MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1 = nullptr, MechanicalState<DataTypes2> *mm2 = nullptr);
 
     ~MixedInteractionConstraint() override;
 public:
@@ -146,7 +146,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const MixedInteractionConstraint<DataTypes1,DataTypes2>* = NULL)
+    static std::string templateName(const MixedInteractionConstraint<DataTypes1,DataTypes2>* = nullptr)
     {
         return DataTypes1::Name();
     }

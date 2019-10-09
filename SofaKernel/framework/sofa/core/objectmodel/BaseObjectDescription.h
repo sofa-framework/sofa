@@ -70,7 +70,7 @@ public:
 
     virtual ~BaseObjectDescription();
 
-    /// Get the associated object (or NULL if it is not created yet)
+    /// Get the associated object (or nullptr if it is not created yet)
     virtual Base* getObject();
 
     /// Get the object instance name

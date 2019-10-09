@@ -322,7 +322,7 @@ void Base::removeData(BaseData* d)
 }
 
 /// Find a data field given its name.
-/// Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
+/// Return nullptr if not found. If more than one field is found (due to aliases), only the first is returned.
 BaseData* Base::findData( const std::string &name ) const
 {
     //Search in the aliases
@@ -352,7 +352,7 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 
 
 /// Find a link given its name.
-/// Return NULL if not found. If more than one link is found (due to aliases), only the first is returned.
+/// Return nullptr if not found. If more than one link is found (due to aliases), only the first is returned.
 BaseLink* Base::findLink( const std::string &name ) const
 {
     //Search in the aliases

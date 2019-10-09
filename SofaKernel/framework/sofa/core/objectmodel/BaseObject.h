@@ -490,7 +490,7 @@ protected:
     /// Implementation of the internal update
     virtual void doUpdateInternal();
 
-    /// This method insures that context is never NULL (using BaseContext::getDefault() instead)
+    /// This method insures that context is never nullptr (using BaseContext::getDefault() instead)
     /// and that all slaves of an object share its context
     void changeContextLink(BaseContext* before, BaseContext*& after);
 

@@ -57,7 +57,7 @@ public:
     typedef objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef typename DataTypes::Real Real;
 protected:
-    PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
+    PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
 
     ~PairInteractionProjectiveConstraintSet() override;
 public:
@@ -136,14 +136,14 @@ public:
     template<class T>
     static bool canCreate(T* obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        MechanicalState<DataTypes>* mstate1 = NULL;
-        MechanicalState<DataTypes>* mstate2 = NULL;
+        MechanicalState<DataTypes>* mstate1 = nullptr;
+        MechanicalState<DataTypes>* mstate2 = nullptr;
         std::string object1 = arg->getAttribute("object1","@./");
         std::string object2 = arg->getAttribute("object2","@./");
         if (object1.empty()) object1 = "@./";
         if (object2.empty()) object2 = "@./";
-        context->findLinkDest(mstate1, object1, NULL);
-        context->findLinkDest(mstate2, object2, NULL);
+        context->findLinkDest(mstate1, object1, nullptr);
+        context->findLinkDest(mstate2, object2, nullptr);
 
         if (!mstate1 || !mstate2)
             return false;
@@ -182,7 +182,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const PairInteractionProjectiveConstraintSet<DataTypes>* = NULL)
+    static std::string templateName(const PairInteractionProjectiveConstraintSet<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

@@ -246,7 +246,7 @@ public:
     /// separated with the given separator (" " used by default for XML)
     void writeDatas (std::ostream& out, const std::string& separator = " ");
 
-    /// Find a data field given its name. Return NULL if not found.
+    /// Find a data field given its name. Return nullptr if not found.
     /// If more than one field is found (due to aliases), only the first is returned.
     BaseData* findData( const std::string &name ) const;
 
@@ -255,7 +255,7 @@ public:
     /// Find data fields given a name: several can be found as we look into the alias map
     std::vector< BaseData* > findGlobalField( const std::string &name ) const;
 
-    /// Find a link given its name. Return NULL if not found.
+    /// Find a link given its name. Return nullptr if not found.
     /// If more than one link is found (due to aliases), only the first is returned.
     BaseLink* findLink( const std::string &name ) const;
 
@@ -407,7 +407,7 @@ public:
     /// Helper method to get the type name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::typeName(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
     static std::string typeName(const T* ptr= nullptr)
@@ -418,7 +418,7 @@ public:
     /// Helper method to get the class name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::className(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::className(ptr); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
     static std::string className(const T* ptr= nullptr)
@@ -429,7 +429,7 @@ public:
     /// Helper method to get the namespace name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::namespaceName(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::namespaceName(ptr); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
     static std::string namespaceName(const T* ptr= nullptr)
@@ -440,7 +440,7 @@ public:
     /// Helper method to get the template name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::templateName(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::templateName(ptr); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
     static std::string templateName(const T* ptr= nullptr)
@@ -452,7 +452,7 @@ public:
     /// The default implementation return the class name.
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::shortName(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::shortName(ptr); \endcode
     /// This way derived classes can redefine the shortName method
     template< class T>
     static std::string shortName( const T* ptr = nullptr, BaseObjectDescription* = nullptr )
@@ -495,7 +495,7 @@ public:
     /// @name casting
     ///   trivial cast to a few base components
     ///   through virtual functions
-    ///   returns NULL by default
+    ///   returns nullptr by default
     ///   must be specialized in each type implementation to return a pointer of this type
     /// @{
     ///

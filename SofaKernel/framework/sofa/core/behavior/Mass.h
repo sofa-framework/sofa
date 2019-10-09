@@ -60,7 +60,7 @@ public:
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
 
 protected:
-    Mass(MechanicalState<DataTypes> *mm = NULL);
+    Mass(MechanicalState<DataTypes> *mm = nullptr);
 
     ~Mass() override;
 public:

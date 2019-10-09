@@ -231,7 +231,7 @@ void FlagTreeItem::write_recursive(const FlagTreeItem* root, std::string& str )
 }
 
 DisplayFlags::DisplayFlags():
-    m_root(FlagTreeItem("showRoot","hideRoot",NULL)),
+    m_root(FlagTreeItem("showRoot","hideRoot",nullptr)),
     m_showAll(FlagTreeItem("showAll","hideAll",&m_root)),
     m_showVisual(FlagTreeItem("showVisual","hideVisual",&m_showAll)),
     m_showVisualModels(FlagTreeItem("showVisualModels","hideVisualModels",&m_showVisual)),
@@ -267,7 +267,7 @@ DisplayFlags::DisplayFlags():
 }
 
 DisplayFlags::DisplayFlags(const DisplayFlags & other):
-    m_root(FlagTreeItem("showRoot","hideRoot",NULL)),
+    m_root(FlagTreeItem("showRoot","hideRoot",nullptr)),
     m_showAll(FlagTreeItem("showAll","hideAll",&m_root)),
     m_showVisual(FlagTreeItem("showVisual","hideVisual",&m_showAll)),
     m_showVisualModels(FlagTreeItem("showVisualModels","hideVisualModels",&m_showVisual)),

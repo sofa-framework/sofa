@@ -67,7 +67,7 @@ public:
     {}
 
     /// Refers to a not yet allocated state vector
-    TMultiVec() : vop(NULL), v(MyMultiVecId::null()), dynamic(false)
+    TMultiVec() : vop(nullptr), v(MyMultiVecId::null()), dynamic(false)
     {}
 
     /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
