@@ -115,6 +115,12 @@ using sofa::simulation::SceneLoaderFactory;
 #include <sofa/core/objectmodel/IdleEvent.h>
 using sofa::core::objectmodel::IdleEvent;
 
+#include <sofa/simulation/events/SimulationStartEvent.h>
+using sofa::simulation::SimulationStartEvent;
+
+#include <sofa/simulation/events/SimulationStopEvent.h>
+using sofa::simulation::SimulationStopEvent;
+
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileMonitor;
 
@@ -1724,7 +1730,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
         qtViewer->getPickHandler()->addCallBack(&informationOnPickCallBack );
     }
 
-   m_sofaMouseManager->setPickHandler(_viewer->getPickHandler());
+    m_sofaMouseManager->setPickHandler(_viewer->getPickHandler());
 
     connect ( ResetViewButton, SIGNAL ( clicked() ), this, SLOT ( resetView() ) );
     connect ( SaveViewButton, SIGNAL ( clicked() ), this, SLOT ( saveView() ) );
@@ -2033,14 +2039,28 @@ void RealGUI::playpauseGUI ( bool value )
     startButton->setChecked ( value );
     if ( currentSimulation() )
         currentSimulation()->getContext()->setAnimate ( value );
-    if(value)
+
+    Node* root = currentSimulation();
+    if(!value)
     {
-        m_clockBeforeLastStep = 0;
-        frameCounter=0;
-        timerStep->start(0);
-    }
-    else
+        if ( root != nullptr )
+        {
+            SimulationStartEvent startEvt;
+            root->propagateEvent(core::ExecParams::defaultInstance(), &startEvt);
+        }
+
         timerStep->stop();
+        return;
+    }
+
+    if ( root != nullptr )
+    {
+        SimulationStopEvent stopEvt;
+        root->propagateEvent(core::ExecParams::defaultInstance(), &stopEvt);
+    }
+
+    timerStep->start(0);
+    return;
 }
 
 //------------------------------------
