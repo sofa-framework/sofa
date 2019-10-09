@@ -54,29 +54,29 @@ PipelineImpl::~PipelineImpl()
 void PipelineImpl::init()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
-    if(root == NULL) return;
+    if(root == nullptr) return;
 
     intersectionMethods.clear();
     root->getTreeObjects<Intersection>(&intersectionMethods);
-    intersectionMethod = (intersectionMethods.empty() ? NULL : intersectionMethods[0]);
+    intersectionMethod = (intersectionMethods.empty() ? nullptr : intersectionMethods[0]);
 
     broadPhaseDetections.clear();
     root->getTreeObjects<BroadPhaseDetection>(&broadPhaseDetections);
-    broadPhaseDetection = (broadPhaseDetections.empty() ? NULL : broadPhaseDetections[0]);
+    broadPhaseDetection = (broadPhaseDetections.empty() ? nullptr : broadPhaseDetections[0]);
 
     narrowPhaseDetections.clear();
     root->getTreeObjects<NarrowPhaseDetection>(&narrowPhaseDetections);
-    narrowPhaseDetection = (narrowPhaseDetections.empty() ? NULL : narrowPhaseDetections[0]);
+    narrowPhaseDetection = (narrowPhaseDetections.empty() ? nullptr : narrowPhaseDetections[0]);
 
     contactManagers.clear();
     root->getTreeObjects<ContactManager>(&contactManagers);
-    contactManager = (contactManagers.empty() ? NULL : contactManagers[0]);
+    contactManager = (contactManagers.empty() ? nullptr : contactManagers[0]);
 
     groupManagers.clear();
     root->getTreeObjects<CollisionGroupManager>(&groupManagers);
-    groupManager = (groupManagers.empty() ? NULL : groupManagers[0]);
+    groupManager = (groupManagers.empty() ? nullptr : groupManagers[0]);
 
-    if (intersectionMethod==NULL)
+    if (intersectionMethod==nullptr)
     {
         msg_warning(this) <<"no intersection component defined. Switching to the DiscreteIntersection component. " << msgendl
                             "To remove this warning, you can add an intersection component to your scene. " << msgendl
@@ -96,12 +96,12 @@ void PipelineImpl::reset()
 void PipelineImpl::computeCollisionReset()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
-    if(root == NULL) return;
-    if (broadPhaseDetection!=NULL && broadPhaseDetection->getIntersectionMethod()!=intersectionMethod)
+    if(root == nullptr) return;
+    if (broadPhaseDetection!=nullptr && broadPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         broadPhaseDetection->setIntersectionMethod(intersectionMethod);
-    if (narrowPhaseDetection!=NULL && narrowPhaseDetection->getIntersectionMethod()!=intersectionMethod)
+    if (narrowPhaseDetection!=nullptr && narrowPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         narrowPhaseDetection->setIntersectionMethod(intersectionMethod);
-    if (contactManager!=NULL && contactManager->getIntersectionMethod()!=intersectionMethod)
+    if (contactManager!=nullptr && contactManager->getIntersectionMethod()!=intersectionMethod)
         contactManager->setIntersectionMethod(intersectionMethod);
     sofa::helper::AdvancedTimer::stepBegin("CollisionReset");
     doCollisionReset();
@@ -111,7 +111,7 @@ void PipelineImpl::computeCollisionReset()
 void PipelineImpl::computeCollisionDetection()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
-    if(root == NULL) return;
+    if(root == nullptr) return;
     std::vector<CollisionModel*> collisionModels;
     root->getTreeObjects<CollisionModel>(&collisionModels);
     doCollisionDetection(collisionModels);
@@ -120,7 +120,7 @@ void PipelineImpl::computeCollisionDetection()
 void PipelineImpl::computeCollisionResponse()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
-    if(root == NULL) return;
+    if(root == nullptr) return;
     sofa::helper::AdvancedTimer::stepBegin("CollisionResponse");
     doCollisionResponse();
     sofa::helper::AdvancedTimer::stepEnd("CollisionResponse");

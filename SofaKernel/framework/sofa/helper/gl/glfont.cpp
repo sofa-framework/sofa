@@ -111,10 +111,10 @@ void glfntInit(void)
 #else
     dpy=glXGetCurrentDisplay();
 #endif
-    if (dpy==NULL) return;
+    if (dpy==nullptr) return;
     fontInfo = XLoadQueryFont(dpy,
             "-adobe-times-medium-r-normal--17-120-100-100-p-88-iso8859-1");
-    if (fontInfo == NULL) return;
+    if (fontInfo == nullptr) return;
 
     id = fontInfo->fid;
     first = fontInfo->min_char_or_byte2;

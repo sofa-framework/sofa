@@ -40,7 +40,7 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 {
     // NB: hasShader is only used when there are visual models and getShader does a graph search when there is no shader,
     // which will most probably be the case when there are no visual models, so we skip the search unless we have visual models.
-    hasShader = !node->visualModel.empty() && (node->getShader()!=NULL);
+    hasShader = !node->visualModel.empty() && (node->getShader()!=nullptr);
 
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::fwdVisualModel);
     this->VisualVisitor::processNodeTopDown(node);
@@ -85,7 +85,7 @@ void VisualDrawVisitor::bwdVisualModel(simulation::Node* /*node*/,core::visual::
 
 void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual::VisualModel* vm)
 {
-    sofa::core::visual::Shader* shader = NULL;
+    sofa::core::visual::Shader* shader = nullptr;
     if (hasShader)
         shader = node->getShader(subsetsToManage);
 

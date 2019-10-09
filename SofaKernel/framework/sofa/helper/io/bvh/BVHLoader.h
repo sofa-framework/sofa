@@ -52,7 +52,7 @@ public:
     BVHJoint *load(const char *filename);
 
 private:
-    BVHJoint *parseJoint(FILE *f, bool isEndSite=false, BVHJoint *parent=NULL);
+    BVHJoint *parseJoint(FILE *f, bool isEndSite=false, BVHJoint *parent=nullptr);
     BVHOffset *parseOffset(FILE *f);
     BVHChannels *parseChannels(FILE *f);
 

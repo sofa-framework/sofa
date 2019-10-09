@@ -37,7 +37,7 @@ namespace io
 class SOFA_HELPER_API MeshTopologyLoader
 {
 public:
-    MeshTopologyLoader():m_mesh(NULL) {}
+    MeshTopologyLoader():m_mesh(nullptr) {}
     virtual ~MeshTopologyLoader() {}
     bool load(const char *filename);
     virtual void setNbPoints(int /*n*/) {}

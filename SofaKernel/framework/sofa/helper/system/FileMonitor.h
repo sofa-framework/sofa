@@ -87,7 +87,7 @@ public:
 
     /// @brief remove the provided listener.
     /// If the listener is not existing, do nothing
-    /// If the listener is NULL, do nothing
+    /// If the listener is nullptr, do nothing
     /// If the listener is associated with one or more file...remove all
     /// the associations.
     /// Keep in mind that the file are still monitored.
@@ -95,7 +95,7 @@ public:
 
     /// @brief remove the provided listener for a given file
     /// If the listener is not existing, do nothing
-    /// If the listener is NULL, do nothing
+    /// If the listener is nullptr, do nothing
     /// If the listener is associated with one or more file...remove all
     /// the associations.
     /// Keep in mind that the file are still monitored.

@@ -37,7 +37,7 @@ Visitor::Visitor(const core::ExecParams* p)
 {
     //params = core::MechanicalParams::defaultInstance();
 #ifdef SOFA_DUMP_VISITOR_INFO
-    enteringBase=NULL; infoPrinted=false;
+    enteringBase=nullptr; infoPrinted=false;
 #endif
 }
 
@@ -58,7 +58,7 @@ bool Visitor::outputStateVector=false;
 unsigned int Visitor::firstIndexStateVector=0;
 int Visitor::rangeStateVector=1;
 
-std::ostream *Visitor::outputVisitor=NULL;
+std::ostream *Visitor::outputVisitor=nullptr;
 
 void Visitor::setNode(core::objectmodel::Base* c)
 {
@@ -110,7 +110,7 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
             printCloseNode(this->getClassName());
         }
         //Reinit the Visitor debug variables
-        enteringBase=NULL;
+        enteringBase=nullptr;
         infoPrinted=false;
     }
 

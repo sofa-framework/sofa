@@ -78,7 +78,7 @@ public :
     bool operator ==(const Monomial_LD<Real,N> & b) const ;
     bool operator !=(const Monomial_LD<Real,N> & b) const {return !(*this == b);}
     bool isSamePowers(const Monomial_LD<Real,N> & b) const;
-    bool isNULL() const {return (coef == (Real) 0.);}
+    bool isnullptr() const {return (coef == (Real) 0.);}
 
     ///Mathematical operators
     Monomial_LD<Real,N> & operator*=(const Real & alpha) {this->coef*=alpha; return *this;}

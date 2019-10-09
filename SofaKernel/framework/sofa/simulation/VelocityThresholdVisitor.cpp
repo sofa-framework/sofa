@@ -41,7 +41,7 @@ Visitor::Result VelocityThresholdVisitor::processNodeTopDown(simulation::Node* n
 {
     sofa::core::behavior::BaseMechanicalState* state = node->mechanicalState;
 
-    if (state != NULL)
+    if (state != nullptr)
     {
         state->vThreshold(vid.getId(state),threshold);
     }

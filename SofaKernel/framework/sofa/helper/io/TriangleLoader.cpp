@@ -73,7 +73,7 @@ void TriangleLoader::loadTriangles(FILE *file)
     // Make sure that fscanf() uses a dot '.' as the decimal separator.
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
-    assert (file != NULL);
+    assert (file != nullptr);
 
     char buf[128];
 
@@ -92,7 +92,7 @@ void TriangleLoader::loadTriangles(FILE *file)
         case '#':
             /* comment */
             /* eat up rest of line */
-            if ( fgets(buf, sizeof(buf), file) == NULL)
+            if ( fgets(buf, sizeof(buf), file) == nullptr)
             {
                 if (feof (file) ){
                     msg_error() << "fgets function has encountered end of file." ;
@@ -116,7 +116,7 @@ void TriangleLoader::loadTriangles(FILE *file)
             case 'n':
                 /* normal */
                 /* eat up rest of line */
-                if ( fgets(buf, sizeof(buf), file) == NULL)
+                if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) ){
                         msg_error() << "fgets function has encountered end of file." ;
@@ -128,7 +128,7 @@ void TriangleLoader::loadTriangles(FILE *file)
             case 't':
                 /* texcoord */
                 /* eat up rest of line */
-                if ( fgets(buf, sizeof(buf), file) == NULL)
+                if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) ){
                         msg_error() << "fgets function has encountered end of file." ;
@@ -145,7 +145,7 @@ void TriangleLoader::loadTriangles(FILE *file)
             break;
         case 'm':
             /* eat up rest of line */
-            if ( fgets(buf, sizeof(buf), file) == NULL)
+            if ( fgets(buf, sizeof(buf), file) == nullptr)
             {
                 if (feof (file) ){
                     msg_error() << "fgets function has encountered end of file."  ;
@@ -156,7 +156,7 @@ void TriangleLoader::loadTriangles(FILE *file)
             break;
         case 'u':
             /* eat up rest of line */
-            if ( fgets(buf, sizeof(buf), file) == NULL)
+            if ( fgets(buf, sizeof(buf), file) == nullptr)
             {
                 if (feof (file)){
                     msg_error() << "fgets function has encountered end of file." ;
@@ -167,7 +167,7 @@ void TriangleLoader::loadTriangles(FILE *file)
             break;
         case 'g':
             /* eat up rest of line */
-            if ( fgets(buf, sizeof(buf), file) == NULL)
+            if ( fgets(buf, sizeof(buf), file) == nullptr)
             {
                 if (feof (file) ){
                     msg_error() << "fgets function has encountered end of file." ;
@@ -231,7 +231,7 @@ void TriangleLoader::loadTriangles(FILE *file)
 
         default:
             /* eat up rest of line */
-            if ( fgets(buf, sizeof(buf), file) == NULL)
+            if ( fgets(buf, sizeof(buf), file) == nullptr)
             {
                 if (feof (file) ){
                     msg_error() <<  "fgets function has encountered end of file." ;

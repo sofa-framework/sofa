@@ -57,7 +57,7 @@ void BackTrace::dump()
     if (size > 0)
     {
         char** symbols = backtrace_symbols(array, size);
-        if (symbols != NULL)
+        if (symbols != nullptr)
         {
             for (int i = 0; i < size; ++i)
             {
@@ -65,11 +65,11 @@ void BackTrace::dump()
 
                 // Decode the method's name to a more readable form if possible
                 char *beginmangled = strrchr(symbol,'(');
-                if (beginmangled != NULL)
+                if (beginmangled != nullptr)
                 {
                     ++beginmangled;
                     char *endmangled = strrchr(beginmangled ,')');
-                    if (endmangled != NULL)
+                    if (endmangled != nullptr)
                     {
                         // remove +0x[0-9a-fA-f]* suffix
                         char* savedend = endmangled;
@@ -86,7 +86,7 @@ void BackTrace::dump()
                         name[endmangled-beginmangled] = '\0';
                         int status;
                         char* realname = abi::__cxa_demangle(name, 0, 0, &status);
-                        if (realname != NULL)
+                        if (realname != nullptr)
                         {
                             free(name);
                             name = realname;
@@ -116,9 +116,9 @@ void BackTrace::dump()
 
     process = GetCurrentProcess();
 
-    SymInitialize(process, NULL, TRUE);
+    SymInitialize(process, nullptr, TRUE);
 
-    frames = CaptureStackBackTrace(0, 100, stack, NULL);
+    frames = CaptureStackBackTrace(0, 100, stack, nullptr);
     symbol = (SYMBOL_INFO *)calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
     symbol->MaxNameLen = 255;
     symbol->SizeOfStruct = sizeof(SYMBOL_INFO);

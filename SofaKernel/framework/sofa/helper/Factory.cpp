@@ -37,10 +37,10 @@ std::string SOFA_HELPER_API gettypename(const std::type_info& t)
 {
     std::string name;
 #ifdef __GNUC__
-    char* realname = NULL;
+    char* realname = nullptr;
     int status;
     realname = abi::__cxa_demangle(t.name(), 0, 0, &status);
-    if (realname!=NULL)
+    if (realname!=nullptr)
     {
         int length = 0;
         while(realname[length] != '\0')

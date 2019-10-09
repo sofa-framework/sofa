@@ -47,13 +47,13 @@ TPtr Factory<TKey, TObject, TArgument, TPtr>::createObject(Key key, Argument arg
     {
         creator = (*it).second;
         object = creator->createInstance(arg);
-        if (object != NULL)
+        if (object != nullptr)
         {
             return object;
         }
         ++it;
     }
-    return NULL;
+    return nullptr;
 }
 
 template <typename TKey, class TObject, typename TArgument, typename TPtr>
@@ -67,13 +67,13 @@ TPtr Factory<TKey, TObject, TArgument, TPtr>::createAnyObject(Argument arg)
     {
         creator = (*it).second;
         object = creator->createInstance(arg);
-        if (object != NULL)
+        if (object != nullptr)
         {
             return object;
         }
         ++it;
     }
-    return NULL;
+    return nullptr;
 }
 
 
@@ -84,7 +84,7 @@ void Factory<TKey, TObject, TArgument, TPtr>::uniqueKeys(OutIterator out)
 
     typename std::multimap<Key, Creator*>::iterator it;
 
-    const Key* p_key = NULL;
+    const Key* p_key = nullptr;
     for ( it = registry.begin(); it != registry.end(); ++it)
     {
 
