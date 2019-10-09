@@ -77,7 +77,7 @@ void TriangleModelInRegularGrid::init()
     if (!m_topology) { serr << "TriangleModelInRegularGrid requires a BaseMeshTopology" << sendl; return;}
 
     // Test if _topology depend on an higher topology (to compute Bounding Tree faster) and get it
-    TopologicalMapping* _topoMapping = NULL;
+    TopologicalMapping* _topoMapping = nullptr;
     vector<TopologicalMapping*> topoVec;
     getContext()->get<TopologicalMapping> ( &topoVec, core::objectmodel::BaseContext::SearchRoot );
     _higher_topo = m_topology;
@@ -99,7 +99,7 @@ void TriangleModelInRegularGrid::init()
             }
         }
     }
-    if ( _topoMapping && !_higher_topo ) { serr << "Topological Mapping " << _topoMapping->getName() << " returns a from topology pointer equal to NULL." << sendl; return;}
+    if ( _topoMapping && !_higher_topo ) { serr << "Topological Mapping " << _topoMapping->getName() << " returns a from topology pointer equal to nullptr." << sendl; return;}
     else if ( _higher_topo != _topology ) sout << "Using the " << _higher_topo->getClassName() << " \"" << _higher_topo->getName() << "\" to compute the bounding trees." << sendl;
     else sout << "Keeping the TriangleModel to compute the bounding trees." << sendl;
 }
