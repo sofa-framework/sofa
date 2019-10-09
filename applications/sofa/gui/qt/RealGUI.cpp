@@ -2060,7 +2060,6 @@ void RealGUI::playpauseGUI ( bool value )
     }
 
     timerStep->start(0);
-    return;
 }
 
 //------------------------------------
