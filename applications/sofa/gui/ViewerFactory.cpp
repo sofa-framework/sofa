@@ -53,14 +53,14 @@ const char* SofaViewerFactory::getViewerName(Key key)
     {
         creator = (*it).second;
         const char* viewerName = creator->viewerName();
-        if(viewerName != NULL )
+        if(viewerName != nullptr )
         {
             return viewerName;
         }
         ++it;
     }
     //	msg_info()<<"Object type "<<key<<" creation failed."<<std::endl;
-    return NULL;
+    return nullptr;
 }
 
 const char* SofaViewerFactory::getAcceleratedViewerName(Key key)
@@ -73,14 +73,14 @@ const char* SofaViewerFactory::getAcceleratedViewerName(Key key)
     {
         creator = (*it).second;
         const char* acceleratedName = creator->acceleratedName();
-        if(acceleratedName != NULL )
+        if(acceleratedName != nullptr )
         {
             return acceleratedName;
         }
         ++it;
     }
     //	msg_info()<<"Object type "<<key<<" creation failed."<<std::endl;
-    return NULL;
+    return nullptr;
 
 }
 }

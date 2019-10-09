@@ -40,7 +40,7 @@ const signed int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
 signed int BatchGUI::nbIter = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
 std::string BatchGUI::nbIterInp="";
 BatchGUI::BatchGUI()
-    : groot(NULL)
+    : groot(nullptr)
 {
 }
 
