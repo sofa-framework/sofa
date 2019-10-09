@@ -96,22 +96,22 @@ public:
      *  \param helpMsg A help message that describes this %Data.
      *  \param flags The flags for this %Data (see \ref DataFlagsEnum).
      */
-    BaseData(const std::string& helpMsg="", DataFlags flags = FLAG_DEFAULT);
+    BaseData(const std::string& helpMsg, DataFlags flags = FLAG_DEFAULT);
 
     //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped. 
     //[[deprecated("Replaced with one with std::string instead of char* version")]]
-    BaseData(const char* helpMsg=nullptr, DataFlags flags = FLAG_DEFAULT);
+    BaseData(const char* helpMsg, DataFlags flags = FLAG_DEFAULT);
 
     /** Constructor.
      *  \param helpMsg A help message that describes this %Data.
      *  \param isDisplayed Whether this %Data should be displayed in GUIs.
      *  \param isReadOnly Whether this %Data should be modifiable in GUIs.
      */
-    BaseData(const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false);
+    BaseData(const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false);
 
     //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped. 
     //[[deprecated("Replaced with one with std::string instead of char* version")]]
-    BaseData(const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false);
+    BaseData(const char* helpMsg, bool isDisplayed=true, bool isReadOnly=false);
 
     /// Destructor.
     ~BaseData() override;
