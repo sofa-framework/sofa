@@ -159,7 +159,7 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
             }
         }
         msg_error("Node::createChild()") << "Empty string given to property 'name': Forcefully setting an empty name is forbidden.\n"
-                                            "Renaming to " + newName + " to avoid unexpected behaviors.";
+                                        "Renaming to " + newName + " to avoid unexpected behaviors.";
         newchild = sofa::core::objectmodel::New<DAGNode>(newName);
     }
     else
