@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaOpenglVisual/OglShader.h>
-
+#include <SofaBaseTopology/TopologyData.h>
 
 namespace sofa
 {
@@ -70,9 +70,6 @@ public:
 
     void setUsage(unsigned int usage) { _usage = usage; }
 
-    // handle topological changes
-    void handleTopologyChange() override;
-
     /// Returns the type of shader element (texture, macro, variable, or attribute)
     ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_ATTRIBUTE; }
     // Returns the value of the shader element
@@ -96,7 +93,7 @@ protected:
 
     unsigned int _usage;
 
-    Data<helper::vector<TDataTypes> > value; ///< internal Data
+    topology::PointData<helper::vector<TDataTypes> > value; ///< internal Data
     Data<bool> handleDynamicTopology;
 
     sofa::core::topology::BaseMeshTopology* _topology;

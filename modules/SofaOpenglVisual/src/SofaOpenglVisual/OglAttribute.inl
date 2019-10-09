@@ -26,6 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
+#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {
@@ -69,6 +70,12 @@ void OglAttribute< size, type, DataTypes>::init()
     OglShaderElement::init();
     getContext()->get( _topology);
     value.getValue(); // make sure the data is updated
+
+    if (_topology!= nullptr && handleDynamicTopology.getValue())
+    {
+        value.createTopologicalEngine(_topology);
+        value.registerTopologicalData();
+    }
 }
 
 template < int size, unsigned int type, class DataTypes>
@@ -229,101 +236,6 @@ template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::reinit()
 {
     _needUpdate = true;
-}
-
-// Only resizing and renumbering is done. 'value' has to be set by external components.
-template < int size, unsigned int type, class DataTypes>
-void OglAttribute< size, type, DataTypes>::handleTopologyChange()
-{
-    if( _topology && handleDynamicTopology.getValue())
-    {
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-        while( itBegin != itEnd )
-        {
-            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-
-            switch( changeType )
-            {
-            case core::topology::ENDING_EVENT:
-            {
-                //sout << "INFO_print : Vis - ENDING_EVENT" << sendl;
-                _needUpdate = true;
-                break;
-            }
-
-            case core::topology::TRIANGLESADDED:
-            {
-               break;
-            }
-
-            case core::topology::QUADSADDED:
-            {
-                break;
-            }
-
-            case core::topology::TRIANGLESREMOVED:
-            {
-                break;
-            }
-
-            case core::topology::QUADSREMOVED:
-            {
-                break;
-            }
-
-            case core::topology::POINTSADDED:
-            {
-                unsigned int nbPoints = ( static_cast< const sofa::core::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
-                helper::vector<DataTypes>& data = *value.beginEdit();
-                data.resize( data.size() + nbPoints);
-                value.endEdit();
-                break;
-            }
-
-            case core::topology::POINTSREMOVED:
-            {
-                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
-                helper::vector<DataTypes>& data = *value.beginEdit();
-                unsigned int last = data.size();
-
-                for ( unsigned int i = 0; i < tab.size(); ++i)
-                {
-                    last--;
-                    data[tab[i]] = data[last];
-                }
-                data.resize( last);
-                value.endEdit();
-
-                break;
-            }
-
-            case core::topology::POINTSRENUMBERING:
-            {
-                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
-                helper::vector<DataTypes>& data = *value.beginEdit();
-                helper::vector<DataTypes> tmp;
-                for ( unsigned int i = 0; i < tab.size(); ++i)
-                {
-                    tmp.push_back( data[tab[i]]);
-                }
-                for ( unsigned int i = 0; i < tab.size(); ++i)
-                {
-                    data[i] = tmp[i];
-                }
-                value.endEdit();
-
-                break;
-            }
-
-            default:
-                // Ignore events that are not Triangle  related.
-                break;
-            };
-            ++itBegin;
-        }
-    }
 }
 
 } // namespace visual
