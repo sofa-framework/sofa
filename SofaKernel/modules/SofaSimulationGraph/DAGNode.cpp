@@ -250,28 +250,28 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     {
         switch(dir)
         {
-        case Local:
-            break;
-        case SearchParents:
-        case SearchUp:
-        {
-            const LinkParents::Container& parents = l_parents.getValue();
-            for ( unsigned int i = 0; i < parents.size() ; ++i){
-                result = parents[i]->getObject(class_info, tags, SearchUp);
-                if (result != nullptr) break;
-            }
-        }
-            break;
-        case SearchDown:
-            for(ChildIterator it = child.begin(); it != child.end(); ++it)
+            case Local:
+                break;
+            case SearchParents:
+            case SearchUp:
             {
-                result = (*it)->getObject(class_info, tags, dir);
-                if (result != nullptr) break;
+                const LinkParents::Container& parents = l_parents.getValue();
+                for ( unsigned int i = 0; i < parents.size() ; ++i){
+                    result = parents[i]->getObject(class_info, tags, SearchUp);
+                    if (result != nullptr) break;
+                }
             }
-            break;
-        case SearchRoot:
-            dmsg_error("DAGNode") << "SearchRoot SHOULD NOT BE POSSIBLE HERE.";
-            break;
+                break;
+            case SearchDown:
+                for(ChildIterator it = child.begin(); it != child.end(); ++it)
+                {
+                    result = (*it)->getObject(class_info, tags, dir);
+                    if (result != nullptr) break;
+                }
+                break;
+            case SearchRoot:
+                dmsg_error("DAGNode") << "SearchRoot SHOULD NOT BE POSSIBLE HERE.";
+                break;
         }
     }
 
@@ -379,30 +379,30 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
 
     switch( dir )
     {
-    case Local:
-        this->getLocalObjects( class_info, container, tags );
-        break;
+        case Local:
+            this->getLocalObjects( class_info, container, tags );
+            break;
 
-    case SearchUp:
-        this->getLocalObjects( class_info, container, tags ); // add locals then SearchParents
-        // no break here, we want to execute the SearchParents code.
-    case SearchParents:
-    {
-        // a visitor executed from top but only run for this' parents will enforce the selected object unicity due even with diamond graph setups
-        GetUpObjectsVisitor vis( const_cast<DAGNode*>(this), class_info, container, tags);
-        getRootContext()->executeVisitor(&vis);
-    }
-        break;
+        case SearchUp:
+            this->getLocalObjects( class_info, container, tags ); // add locals then SearchParents
+            // no break here, we want to execute the SearchParents code.
+        case SearchParents:
+        {
+            // a visitor executed from top but only run for this' parents will enforce the selected object unicity due even with diamond graph setups
+            GetUpObjectsVisitor vis( const_cast<DAGNode*>(this), class_info, container, tags);
+            getRootContext()->executeVisitor(&vis);
+        }
+            break;
 
-    case SearchDown:
-    {
-        // a regular visitor is enforcing the selected object unicity
-        GetDownObjectsVisitor vis(class_info, container, tags);
-        (const_cast<DAGNode*>(this))->executeVisitor(&vis);
-        break;
-    }
-    default:
-        break;
+        case SearchDown:
+        {
+            // a regular visitor is enforcing the selected object unicity
+            GetDownObjectsVisitor vis(class_info, container, tags);
+            (const_cast<DAGNode*>(this))->executeVisitor(&vis);
+            break;
+        }
+        default:
+            break;
     }
 }
 
