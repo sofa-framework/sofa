@@ -5,7 +5,7 @@
 # to require version 3.1.2 or newer of Eigen3.
 #
 # This module reads hints about search locations from variables:
-#  EIGEN_ROOT - Preferred installation prefix
+#  EIGEN3_ROOT - Preferred installation prefix
 #
 # Once done this will define
 #
@@ -65,8 +65,9 @@ if (EIGEN3_INCLUDE_DIR)
 else (EIGEN3_INCLUDE_DIR)
 
   find_path(EIGEN3_INCLUDE_DIR NAMES signature_of_eigen3_matrix_library
+      HINTS
+      ${EIGEN3_ROOT}
       PATHS
-      ${EIGEN_ROOT}
       ${CMAKE_INSTALL_PREFIX}/include
       ${KDE4_INCLUDE_DIR}
       PATH_SUFFIXES eigen3 eigen
