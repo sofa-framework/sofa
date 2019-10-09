@@ -41,8 +41,8 @@ SuturePointPerformer<DataTypes>::SuturePointPerformer(BaseMouseInteractor *i)
     :TInteractionPerformer<DataTypes>(i)
     , first(1)
     , fixedIndex(0)
-    , SpringObject(NULL)
-    ,FixObject(NULL) {}
+    , SpringObject(nullptr)
+    ,FixObject(nullptr) {}
 
 
 template <class DataTypes>
@@ -53,7 +53,7 @@ void SuturePointPerformer<DataTypes>::start()
         BodyPicked picked = this->interactor->getBodyPicked();
         TriangleModel* CollisionModel = dynamic_cast< TriangleModel* >(picked.body);
 
-        if (picked.body == NULL || CollisionModel == NULL)
+        if (picked.body == nullptr || CollisionModel == nullptr)
         {
             this->interactor->serr << "Error: SuturePointPerformer no picked body in first clic." << this->interactor->sendl;
             return;
@@ -67,7 +67,7 @@ void SuturePointPerformer<DataTypes>::start()
         BodyPicked picked = this->interactor->getBodyPicked();
         TriangleModel* CollisionModel = dynamic_cast< TriangleModel* >(picked.body);
 
-        if (picked.body == NULL || CollisionModel == NULL)
+        if (picked.body == nullptr || CollisionModel == nullptr)
         {
             this->interactor->serr << "Error: SuturePointPerformer no picked body in second clic." << this->interactor->sendl;
             return;

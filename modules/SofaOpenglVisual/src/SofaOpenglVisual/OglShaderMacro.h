@@ -57,9 +57,9 @@ public:
     /// Returns the type of shader element (texture, macro, variable, or attribute)
     ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_MACRO; }
     // Returns the value of the shader element
-    const core::objectmodel::BaseData* getSEValue() const override { return NULL; }
+    const core::objectmodel::BaseData* getSEValue() const override { return nullptr; }
     // Returns the value of the shader element
-    core::objectmodel::BaseData* getSEValue() override { return NULL; }
+    core::objectmodel::BaseData* getSEValue() override { return nullptr; }
 };
 
 

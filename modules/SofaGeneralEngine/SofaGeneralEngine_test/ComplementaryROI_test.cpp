@@ -71,10 +71,10 @@ struct ComplementaryROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->setName("myname") ;
         EXPECT_TRUE(m_thisObject->getName() == "myname") ;
 
-        EXPECT_TRUE( m_thisObject->findData("position") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("nbSet") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("indices") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("pointsInROI") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("position") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("nbSet") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("indices") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("pointsInROI") != nullptr ) ;
 
         EXPECT_NO_THROW( m_thisObject->init() ) ;
         EXPECT_NO_THROW( m_thisObject->bwdInit() ) ;
@@ -84,9 +84,9 @@ struct ComplementaryROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->findData("nbSet")->read("3");
         m_thisObject->init();
 
-        EXPECT_TRUE( m_thisObject->findData("setIndices1") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("setIndices2") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("setIndices3") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("setIndices1") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("setIndices2") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("setIndices3") != nullptr ) ;
 
         return ;
     }

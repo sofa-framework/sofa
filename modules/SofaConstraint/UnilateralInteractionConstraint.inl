@@ -42,7 +42,7 @@ UnilateralInteractionConstraint<DataTypes>::UnilateralInteractionConstraint(Mech
     , epsilon(Real(0.001))
     , yetIntegrated(false)
     , customTolerance(0.0)
-    , contactsStatus(NULL)
+    , contactsStatus(nullptr)
 {
 }
 
@@ -359,7 +359,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(const c
     if(contactsStatus)
     {
         delete[] contactsStatus;
-        contactsStatus = NULL;
+        contactsStatus = nullptr;
     }
 
     if (contacts.size() > 0)
@@ -373,7 +373,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(const c
         Contact& c = contacts[i];
         if(c.mu > 0.0)
         {
-            UnilateralConstraintResolutionWithFriction* ucrwf = new UnilateralConstraintResolutionWithFriction(c.mu, NULL, &contactsStatus[i]);
+            UnilateralConstraintResolutionWithFriction* ucrwf = new UnilateralConstraintResolutionWithFriction(c.mu, nullptr, &contactsStatus[i]);
             ucrwf->setTolerance(customTolerance);
             resTab[offset] = ucrwf;
 

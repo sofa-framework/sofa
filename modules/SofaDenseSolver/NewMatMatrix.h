@@ -229,7 +229,7 @@ public:
         NewMatVector *rv = dynamic_cast<NewMatVector *>(res);
         NewMatVector *ov = dynamic_cast<NewMatVector *>(op);
 
-        assert((ov!=NULL) && (rv!=NULL));
+        assert((ov!=nullptr) && (rv!=nullptr));
         solve(rv,ov);
     }
 

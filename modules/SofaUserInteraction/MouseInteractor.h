@@ -115,7 +115,7 @@ public:
     typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
     typedef typename DataTypes::Coord Coord;
 public:
-    MouseInteractor():mouseInSofa(NULL) {}
+    MouseInteractor():mouseInSofa(nullptr) {}
     ~MouseInteractor() override {}
 
     void init() override;
@@ -127,7 +127,7 @@ public:
     {
         return templateName(this);
     }
-    static std::string templateName(const MouseInteractor<DataTypes>* = NULL)
+    static std::string templateName(const MouseInteractor<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

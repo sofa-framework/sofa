@@ -65,8 +65,8 @@ Monitor<DataTypes>::Monitor()
     ,d_trajectoriesColor(initData (&d_trajectoriesColor, "TrajectoriesColor", "define the color of the trajectories"))
     ,d_showSizeFactor(initData (&d_showSizeFactor, 1.0, "sizeFactor", "factor to multiply to arrows"))
     ,d_fileName(initData (&d_fileName, "fileName", "name of the plot files to be generated"))
-    ,m_saveGnuplotX ( NULL ), m_saveGnuplotV ( NULL ), m_saveGnuplotF ( NULL )
-    ,m_X (NULL), m_V(NULL), m_F(NULL)
+    ,m_saveGnuplotX ( nullptr ), m_saveGnuplotV ( nullptr ), m_saveGnuplotF ( nullptr )
+    ,m_X (nullptr), m_V(nullptr), m_F(nullptr)
     ,m_internalDt(0.0)
 {
     if (!f_listening.isSet()) f_listening.setValue(true);
@@ -248,7 +248,7 @@ void Monitor<DataTypes>::initGnuplot ( const std::string path )
     {
         if ( d_saveXToGnuplot.getValue() )
         {
-            if ( m_saveGnuplotX != NULL ) delete m_saveGnuplotX;
+            if ( m_saveGnuplotX != nullptr ) delete m_saveGnuplotX;
             m_saveGnuplotX = new std::ofstream ( ( path + "_x.txt" ).c_str() );
             ( *m_saveGnuplotX ) << "# Gnuplot File : positions of "
                                 << d_indices.getValue().size() << " particle(s) Monitored"
@@ -263,7 +263,7 @@ void Monitor<DataTypes>::initGnuplot ( const std::string path )
 
         if ( d_saveVToGnuplot.getValue() )
         {
-            if ( m_saveGnuplotV != NULL ) delete m_saveGnuplotV;
+            if ( m_saveGnuplotV != nullptr ) delete m_saveGnuplotV;
 
             m_saveGnuplotV = new std::ofstream ( ( path + "_v.txt" ).c_str() );
             ( *m_saveGnuplotV ) << "# Gnuplot File : velocities of "
@@ -280,7 +280,7 @@ void Monitor<DataTypes>::initGnuplot ( const std::string path )
 
         if ( d_saveFToGnuplot.getValue() )
         {
-            if ( m_saveGnuplotF != NULL ) delete m_saveGnuplotF;
+            if ( m_saveGnuplotF != nullptr ) delete m_saveGnuplotF;
             m_saveGnuplotF = new std::ofstream ( ( path + "_f.txt" ).c_str() );
             ( *m_saveGnuplotF ) << "# Gnuplot File : forces of "
                                 << d_indices.getValue().size() << " particle(s) Monitored"

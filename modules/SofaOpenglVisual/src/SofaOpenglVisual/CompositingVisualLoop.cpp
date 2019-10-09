@@ -84,7 +84,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
 
     sofa::core::visual::tristate renderingState;
     //vparams->displayFlags().setShowRendering(false);
-    component::visualmodel::VisualStyle::SPtr visualStyle = NULL;
+    component::visualmodel::VisualStyle::SPtr visualStyle = nullptr;
     gRoot->get(visualStyle);
     const sofa::core::visual::DisplayFlags &backupFlags = vparams->displayFlags();
     const sofa::core::visual::DisplayFlags &currentFlags = visualStyle->displayFlags.getValue();
@@ -120,7 +120,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
         {
             (*it)->preDrawScene(vparams);
             VisualManagerPass* currentVMP=dynamic_cast<VisualManagerPass*>(*it);
-            if( currentVMP!=NULL && !currentVMP->isPrerendered())
+            if( currentVMP!=nullptr && !currentVMP->isPrerendered())
             {
                 msg_info() << "final pass is "<<currentVMP->getName()<< "end of predraw loop"  ;
                 break;

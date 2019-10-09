@@ -121,7 +121,7 @@ void OglColorMap::reinit()
 OglColorMap* OglColorMap::getDefault()
 {
     static OglColorMap::SPtr defaultOglColorMap;
-    if (defaultOglColorMap == NULL) {
+    if (defaultOglColorMap == nullptr) {
         defaultOglColorMap = sofa::core::objectmodel::New< OglColorMap >();
         std::string tmp("");
         //defaultOglColorMap->initOld(tmp); // TODO: replace initOld() with init()

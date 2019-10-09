@@ -73,7 +73,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const MergeVectors<VecT>* = NULL)
+    static std::string templateName(const MergeVectors<VecT>* = nullptr)
     {
         return Data<Value>::templateName();
     }

@@ -158,10 +158,10 @@ ConstraintProblem::~ConstraintProblem()
     // if not null delete the old constraintProblem
     for(int i=0; i<_dim; i++)
     {
-        if (_constraintsResolutions[i] != NULL)
+        if (_constraintsResolutions[i] != nullptr)
         {
             delete _constraintsResolutions[i];
-            _constraintsResolutions[i] = NULL;
+            _constraintsResolutions[i] = nullptr;
         }
     }
     _constraintsResolutions.clear(); // _constraintsResolutions.clear();
@@ -173,10 +173,10 @@ void ConstraintProblem::clear(int dim, const double &tol)
     // if not null delete the old constraintProblem
     for(int i=0; i<_dim; i++)
     {
-        if (_constraintsResolutions[i] != NULL)
+        if (_constraintsResolutions[i] != nullptr)
         {
             delete _constraintsResolutions[i];
-            _constraintsResolutions[i] = NULL;
+            _constraintsResolutions[i] = nullptr;
         }
     }
     _dFree.clear();
@@ -770,7 +770,7 @@ void ConstraintAnimationLoop::computePredictiveForce(int dim, double* force, std
 }
 
 void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, double** w, double* force,
-        double* d, std::vector<ConstraintResolution*>& res, double* df=NULL)
+        double* d, std::vector<ConstraintResolution*>& res, double* df=nullptr)
 {
     if(!dim)
         return;

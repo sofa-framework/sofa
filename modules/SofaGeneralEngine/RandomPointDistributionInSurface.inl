@@ -68,7 +68,7 @@ void RandomPointDistributionInSurface<DataTypes>::init()
     // initialize random seed
     if (randomSeed.getValue() == 0)
     {
-        randomSeed.setValue((unsigned int)time(NULL));
+        randomSeed.setValue((unsigned int)time(nullptr));
     }
 
     //srand(randomSeed.getValue());

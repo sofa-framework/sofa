@@ -56,7 +56,7 @@ int Triangle2EdgeTopologicalMappingClass = core::RegisterObject("Special case of
 
 Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
-    , m_outTopoModifier(NULL)
+    , m_outTopoModifier(nullptr)
 {
 }
 

@@ -68,7 +68,7 @@ private:
     void defaultRendering(sofa::core::visual::VisualParams* vparams);
 
 protected:
-    CompositingVisualLoop(simulation::Node* gnode = NULL);
+    CompositingVisualLoop(simulation::Node* gnode = nullptr);
 
     ~CompositingVisualLoop() override;
 
