@@ -950,7 +950,7 @@ namespace std
 
 // template <>
 template<int N, class T>
-struct less< sofa::defaulttype::Vec<N,T> > : public binary_function< sofa::defaulttype::Vec<N,T>,  sofa::defaulttype::Vec<N,T>, bool>
+struct less< sofa::defaulttype::Vec<N,T> >
 {
     bool operator()(const  sofa::defaulttype::Vec<N,T>& x, const  sofa::defaulttype::Vec<N,T>& y) const
     {
