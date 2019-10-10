@@ -33,7 +33,7 @@
 
 #ifndef SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_H
 #define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_H
-#include "config.h"
+#include <SofaSphFluid/config.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/VecTypes.h>

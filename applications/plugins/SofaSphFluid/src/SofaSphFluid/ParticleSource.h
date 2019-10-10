@@ -32,7 +32,7 @@
 //
 #ifndef SOFA_COMPONENT_MISC_PARTICLESOURCE_H
 #define SOFA_COMPONENT_MISC_PARTICLESOURCE_H
-#include "config.h"
+#include <SofaSphFluid/config.h>
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
