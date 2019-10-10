@@ -199,7 +199,7 @@ void StandardTetrahedralFEMForceField<CudaVec3fTypes>::initNeighbourhoodEdges()
 {
     StandardTetrahedralFEMForceField_nbMaxTetraPerEdge() = 0;
 
-    for(int i=0; i<_topology->getNbEdges(); ++i)
+    for(int i=0; i<int(_topology->getNbEdges()); ++i)
     {
         if( (int)_topology->getTetrahedraAroundEdge(i).size() > StandardTetrahedralFEMForceField_nbMaxTetraPerEdge())
             StandardTetrahedralFEMForceField_nbMaxTetraPerEdge() = _topology->getTetrahedraAroundEdge(i).size();
@@ -207,7 +207,7 @@ void StandardTetrahedralFEMForceField<CudaVec3fTypes>::initNeighbourhoodEdges()
 
     StandardTetrahedralFEMForceField_neighbourhoodEdges().resize((_topology->getNbEdges())*StandardTetrahedralFEMForceField_nbMaxTetraPerEdge());
 
-    for(int i=0; i<_topology->getNbEdges(); ++i)
+    for(int i=0; i<int(_topology->getNbEdges()); ++i)
     {
         for(int j=0; j<StandardTetrahedralFEMForceField_nbMaxTetraPerEdge(); ++j)
         {

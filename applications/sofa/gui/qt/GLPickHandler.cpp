@@ -49,8 +49,8 @@ namespace gui
 
 GLPickHandler::GLPickHandler(double defaultLength)
     : Inherit(defaultLength)
-    , _fbo(true,true,true,false,0)
     , _fboAllocated(false)
+    , _fbo(true,true,true,false,0)
 {
 
 }

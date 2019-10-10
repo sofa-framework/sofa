@@ -48,7 +48,7 @@ namespace visualmodel
 using namespace sofa::core::topology;
 using namespace sofa::core::behavior;
 
-static int OglShaderVisualModelClass = core::RegisterObject("Visual model for OpenGL display using Glew extensions")
+int OglShaderVisualModelClass = core::RegisterObject("Visual model for OpenGL display using Glew extensions")
         .add< OglShaderVisualModel >()
         ;
 

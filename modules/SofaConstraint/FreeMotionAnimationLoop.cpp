@@ -305,7 +305,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
 }
 
-static int FreeMotionAnimationLoopClass = core::RegisterObject(R"(
+int FreeMotionAnimationLoopClass = core::RegisterObject(R"(
 The animation loop to use with constraints.
 You must add this loop at the beginning of the scene if you are using constraints.")")
         .add< FreeMotionAnimationLoop >()

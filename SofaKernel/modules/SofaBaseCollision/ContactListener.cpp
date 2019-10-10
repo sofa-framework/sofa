@@ -39,7 +39,7 @@ namespace core
 namespace collision
 {
 
-static int ContactListenerClass = core::RegisterObject("ContactListener .. ").add< ContactListener >();
+int ContactListenerClass = core::RegisterObject("ContactListener .. ").add< ContactListener >();
 
 
 

@@ -31,7 +31,7 @@ namespace component
 namespace visualmodel
 {
 
-static  int MergeVisualModelsClass = core::RegisterObject("Merge several visual models")
+int MergeVisualModelsClass = core::RegisterObject("Merge several visual models")
         .add< MergeVisualModels >(true);
 
 

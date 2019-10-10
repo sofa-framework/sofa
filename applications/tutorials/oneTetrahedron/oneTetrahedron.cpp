@@ -43,7 +43,7 @@ using VecCoord3 = sofa::helper::vector<Coord3>;
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 using CGLinearSolver = sofa::component::linearsolver::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector>;
 #include <SofaBaseMechanics/BarycentricMapping.h>
-using BarycentricMapping3_to_Ext3 = sofa::component::mapping::BarycentricMapping<Vec3Types, ExtVec3Types>;
+using BarycentricMapping3 = sofa::component::mapping::BarycentricMapping<Vec3Types, Vec3Types>;
 #include <SofaBaseMechanics/MechanicalObject.h>
 using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types>;
 #include <SofaBaseMechanics/UniformMass.h>
@@ -162,7 +162,7 @@ int main(int argc, char** argv)
     skin->addObject(visual);
 
     // The mapping between the tetrahedron (DOF) and the liver (visual)
-    BarycentricMapping3_to_Ext3::SPtr mapping = sofa::core::objectmodel::New<BarycentricMapping3_to_Ext3>();
+    BarycentricMapping3::SPtr mapping = sofa::core::objectmodel::New<BarycentricMapping3>();
     mapping->setModels(DOF.get(), visual.get());
     mapping->setName( "mapping" );
     skin->addObject(mapping);

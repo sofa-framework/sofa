@@ -33,132 +33,132 @@ namespace visualmodel
 
 /** SINGLE INT VARIABLE **/
 //Register OglIntVariable in the Object Factory
-static int OglIntVariableClass = core::RegisterObject("OglIntVariable")
+int OglIntVariableClass = core::RegisterObject("OglIntVariable")
         .add< OglIntVariable >()
         ;
 //Register OglInt2Variable in the Object Factory
-static int OglInt2VariableClass = core::RegisterObject("OglInt2Variable")
+int OglInt2VariableClass = core::RegisterObject("OglInt2Variable")
         .add< OglInt2Variable >()
         ;
 //Register OglInt3Variable in the Object Factory
-static int OglInt3VariableClass = core::RegisterObject("OglInt3Variable")
+int OglInt3VariableClass = core::RegisterObject("OglInt3Variable")
         .add< OglInt3Variable >()
         ;
 //Register OglInt4Variable in the Object Factory
-static int OglInt4VariableClass = core::RegisterObject("OglInt4Variable")
+int OglInt4VariableClass = core::RegisterObject("OglInt4Variable")
         .add< OglInt4Variable >()
         ;
 
 /** SINGLE FLOAT VARIABLE **/
 
 //Register OglFloatVariable in the Object Factory
-static int OglFloatVariableClass = core::RegisterObject("OglFloatVariable")
+int OglFloatVariableClass = core::RegisterObject("OglFloatVariable")
         .add< OglFloatVariable >()
         ;
 //Register OglFloat2Variable in the Object Factory
-static int OglFloat2VariableClass = core::RegisterObject("OglFloat2Variable")
+int OglFloat2VariableClass = core::RegisterObject("OglFloat2Variable")
         .add< OglFloat2Variable >()
         ;
 //Register OglFloat3Variable in the Object Factory
-static int OglFloat3VariableClass = core::RegisterObject("OglFloat3Variable")
+int OglFloat3VariableClass = core::RegisterObject("OglFloat3Variable")
         .add< OglFloat3Variable >()
         ;
 //Register OglFloat4Variable in the Object Factory
-static int OglFloat4VariableClass = core::RegisterObject("OglFloat4Variable")
+int OglFloat4VariableClass = core::RegisterObject("OglFloat4Variable")
         .add< OglFloat4Variable >()
         ;
 
 /** INT VECTOR VARIABLE **/
 //Register OglIntVectorVariable in the Object Factory
-static int OglIntVectorVariableClass = core::RegisterObject("OglIntVectorVariable")
+int OglIntVectorVariableClass = core::RegisterObject("OglIntVectorVariable")
         .add< OglIntVectorVariable >()
         ;
 
 //Register OglIntVector2Variable in the Object Factory
-static int OglIntVector2VariableClass = core::RegisterObject("OglIntVector2Variable")
+int OglIntVector2VariableClass = core::RegisterObject("OglIntVector2Variable")
         .add< OglIntVector2Variable >()
         ;
 
 //Register OglIntVector3Variable in the Object Factory
-static int OglIntVector3VariableClass = core::RegisterObject("OglIntVector3Variable")
+int OglIntVector3VariableClass = core::RegisterObject("OglIntVector3Variable")
         .add< OglIntVector3Variable >()
         ;
 
 //Register OglIntVector4Variable in the Object Factory
-static int OglIntVector4VariableClass = core::RegisterObject("OglIntVector4Variable")
+int OglIntVector4VariableClass = core::RegisterObject("OglIntVector4Variable")
         .add< OglIntVector4Variable >()
         ;
 
 
 /** FLOAT VECTOR VARIABLE **/
 //Register OglFloatVectorVariable in the Object Factory
-static int OglFloatVectorVariableClass = core::RegisterObject("OglFloatVectorVariable")
+int OglFloatVectorVariableClass = core::RegisterObject("OglFloatVectorVariable")
         .add< OglFloatVectorVariable >()
         ;
 
 //Register OglFloatVector2Variable in the Object Factory
-static int OglFloatVector2VariableClass = core::RegisterObject("OglFloatVector2Variable")
+int OglFloatVector2VariableClass = core::RegisterObject("OglFloatVector2Variable")
         .add< OglFloatVector2Variable >()
         ;
 
 //Register OglFloatVector3Variable in the Object Factory
-static int OglFloatVector3VariableClass = core::RegisterObject("OglFloatVector3Variable")
+int OglFloatVector3VariableClass = core::RegisterObject("OglFloatVector3Variable")
         .add< OglFloatVector3Variable >()
         ;
 //Register OglFloatVector4Variable in the Object Factory
-static int OglFloatVector4VariableClass = core::RegisterObject("OglFloatVector4Variable")
+int OglFloatVector4VariableClass = core::RegisterObject("OglFloatVector4Variable")
         .add< OglFloatVector4Variable >()
         ;
 
 /** Matrix VARIABLE **/
 //Register OglMatrix2Variable in the Object Factory
-static int OglMatrix2VariableClass = core::RegisterObject("OglMatrix2Variable")
+int OglMatrix2VariableClass = core::RegisterObject("OglMatrix2Variable")
         .add< OglMatrix2Variable >()
         ;
 
 //Register OglMatrix3Variable in the Object Factory
-static int OglMatrix3VariableClass = core::RegisterObject("OglMatrix3Variable")
+int OglMatrix3VariableClass = core::RegisterObject("OglMatrix3Variable")
         .add< OglMatrix3Variable >()
         ;
 
 //Register OglMatrix4Variable in the Object Factory
-static int OglMatrix4VariableClass = core::RegisterObject("OglMatrix4Variable")
+int OglMatrix4VariableClass = core::RegisterObject("OglMatrix4Variable")
         .add< OglMatrix4Variable >()
         ;
 
 //Register OglMatrix2x3Variable in the Object Factory
-static int OglMatrix2x3VariableClass = core::RegisterObject("OglMatrix2x3Variable")
+int OglMatrix2x3VariableClass = core::RegisterObject("OglMatrix2x3Variable")
         .add< OglMatrix2x3Variable >()
         ;
 
 //Register OglMatrix3x2Variable in the Object Factory
-static int OglMatrix3x2VariableClass = core::RegisterObject("OglMatrix3x2Variable")
+int OglMatrix3x2VariableClass = core::RegisterObject("OglMatrix3x2Variable")
         .add< OglMatrix3x2Variable >()
         ;
 
 //Register OglMatrix2x4Variable in the Object Factory
-static int OglMatrix2x4VariableClass = core::RegisterObject("OglMatrix2x4Variable")
+int OglMatrix2x4VariableClass = core::RegisterObject("OglMatrix2x4Variable")
         .add< OglMatrix2x4Variable >()
         ;
 
 //Register OglMatrix4x2Variable in the Object Factory
-static int OglMatrix4x2VariableClass = core::RegisterObject("OglMatrix4x2Variable")
+int OglMatrix4x2VariableClass = core::RegisterObject("OglMatrix4x2Variable")
         .add< OglMatrix4x2Variable >()
         ;
 
 //Register OglMatrix2x4Variable in the Object Factory
-static int OglMatrix3x4VariableClass = core::RegisterObject("OglMatrix3x4Variable")
+int OglMatrix3x4VariableClass = core::RegisterObject("OglMatrix3x4Variable")
         .add< OglMatrix3x4Variable >()
         ;
 
 //Register OglMatrix4x3Variable in the Object Factory
-static int OglMatrix4x3VariableClass = core::RegisterObject("OglMatrix4x3Variable")
+int OglMatrix4x3VariableClass = core::RegisterObject("OglMatrix4x3Variable")
         .add< OglMatrix4x3Variable >()
         ;
 
 /** Matrix vector VARIABLE **/
 //Register OglMatrix4VectorVariable in the Object Factory
-static int OglMatrix4VectorVariableClass = core::RegisterObject("OglMatrix4VectorVariable")
+int OglMatrix4VectorVariableClass = core::RegisterObject("OglMatrix4VectorVariable")
         .add< OglMatrix4VectorVariable >()
         ;
 
