@@ -28,6 +28,9 @@
 #include <cstdio>		// sprintf and friends
 #include <sstream>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
+#include <sofa/helper/Utils.h>
 
 namespace sofa
 {
@@ -93,17 +96,29 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
 
     m_FrameCount = 0;
 
+    std::string ffmpeg_exec_path = "NO_FFMPEG_EXECUTABLE";
+    const std::string ffmpegIniFilePath = Utils::getSofaPathTo("etc/FFMPEG_exec.ini");
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(ffmpegIniFilePath);
+    if (iniFileValues.find("FFMPEG_EXEC_PATH") != iniFileValues.end())
+    {
+        ffmpeg_exec_path = iniFileValues["FFMPEG_EXEC_PATH"];
+        if (!FileSystem::isAbsolute(ffmpeg_exec_path))
+        {
+            ffmpeg_exec_path = Utils::getSofaPathTo(ffmpeg_exec_path);
+        }
+    }
+
     std::stringstream ss;
-    ss << FFMPEG_EXEC_FILE
+    ss << ffmpeg_exec_path
        << " -r " << m_framerate
-        << " -f rawvideo -pix_fmt rgba "
-        << " -s " << m_ffmpegWidth << "x" << m_ffmpegHeight
-        << " -i - -threads 0  -y"
-        << " -preset fast "
-        << " -pix_fmt " << codec // yuv420p " // " yuv444p "
-        << " -crf 17 "
-        << " -vf vflip "
-        << "\"" << m_filename << "\""; // @TODO C++14 : replace with std::quoted
+       << " -f rawvideo -pix_fmt rgba "
+       << " -s " << m_ffmpegWidth << "x" << m_ffmpegHeight
+       << " -i - -threads 0  -y"
+       << " -preset fast "
+       << " -pix_fmt " << codec // yuv420p " // " yuv444p "
+       << " -crf 17 "
+       << " -vf vflip "
+       << "\"" << m_filename << "\""; // @TODO C++14 : replace with std::quoted
 
     const std::string& command_line = ss.str();
 
@@ -119,7 +134,8 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
     msg_info("VideoRecorderFFMPEG") << "Start recording to " << filename
         << " ( " <<  codec << ", "
         << framerate << " FPS, "
-        << bitrate << " b/s)";
+        << bitrate << " b/s)"
+        << " using " << ffmpeg_exec_path;
     return true;
 }
 

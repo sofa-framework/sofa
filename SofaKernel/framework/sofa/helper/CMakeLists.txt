@@ -435,4 +435,17 @@ if(JSON_FOUND)
         )
 endif()
 
+# FFMPEG_exec
+if(FFMPEG_EXEC_FOUND AND EXISTS "${FFMPEG_EXEC_FILE}")
+    # Install the executable
+    install(PROGRAMS "${FFMPEG_EXEC_FILE}" DESTINATION bin COMPONENT applications)
+    # Setup .ini files to find the executable from build and install dirs
+    set(FFMPEG_EXEC_PATH "${FFMPEG_EXEC_FILE}") # absolute path for build dir, see .ini file
+    configure_file("FFMPEG_exec.ini.in" "${CMAKE_BINARY_DIR}/etc/FFMPEG_exec.ini")
+    get_filename_component(FFMPEG_EXEC_FILENAME "${FFMPEG_EXEC_FILE}" NAME)
+    set(FFMPEG_EXEC_PATH "bin/${FFMPEG_EXEC_FILENAME}") # relative path for install dir, see .ini file
+    configure_file("FFMPEG_exec.ini.in" "${CMAKE_BINARY_DIR}/etc/installedFFMPEG_exec.ini")
+    install(FILES "${CMAKE_BINARY_DIR}/etc/installedFFMPEG_exec.ini" DESTINATION etc RENAME FFMPEG_exec.ini COMPONENT applications)
+endif()
+
 sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/helper")
