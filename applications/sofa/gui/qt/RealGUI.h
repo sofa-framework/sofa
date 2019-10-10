@@ -101,7 +101,9 @@ class SofaMouseManager;
 class SofaWindowProfiler;
 #endif
 
+#if SOFAGUIQT_HAVE_NODEEDITOR
 class SofaWindowDataGraph;
+#endif
 
 namespace viewer
 {
@@ -172,7 +174,9 @@ private:
     SofaWindowProfiler* m_windowTimerProfiler;
 #endif
 
+#if SOFAGUIQT_HAVE_NODEEDITOR
     SofaWindowDataGraph* m_sofaWindowDataGraph;
+#endif
 //-----------------OPTIONS DEFINITIONS------------------------}
 
 

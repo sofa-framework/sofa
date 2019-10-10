@@ -224,6 +224,7 @@ else()
     message(STATUS "SofaGuiQt: QtCharts not found, SofaWindowProfiler will not be built.")
 endif()
 
+if(NodeEditor_FOUND)
 set(NodeEditor_DIR CACHE PATH "Set path to NodeEditor Install dir root.")
     message(STATUS "Wouhou !!!!!!!!")
     include_directories( ${NodeEditor_DIR}/include)
@@ -238,6 +239,7 @@ list(APPEND SOURCE_FILES
     SofaWindowDataGraph.cpp
     #dataGraph/models.cpp
     )
+endif()
 
 qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
 set(MOC_FILES_GROUP "Generated")
