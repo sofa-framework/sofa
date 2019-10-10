@@ -43,7 +43,16 @@ public:
     void checkConstructors() ;
     void checkStreamingOperator(const std::vector<std::string>&) ;
     void checkDoubleStreamingOperator(const std::vector<std::string>&) ;
+    void testEnlight();
 };
+
+void Color_Test::testEnlight()
+{
+    EXPECT_EQ( RGBAColor::lighten(RGBAColor::black(), 1.0), RGBAColor(1.0,1.0,1.0,1.0) ) ;
+    EXPECT_EQ( RGBAColor::lighten(RGBAColor::black(), 2.0), RGBAColor(1.0,1.0,1.0,1.0) ) ;
+    EXPECT_EQ( RGBAColor::lighten(RGBAColor::red(), 1.0), RGBAColor(1.0,1.0,1.0,1.0) ) ;
+    EXPECT_EQ( RGBAColor::lighten(RGBAColor::red(), 0.5), RGBAColor(1.0,0.5,0.5,1.0) ) ;
+}
 
 void Color_Test::checkCreateFromString()
 {
@@ -244,6 +253,11 @@ TEST_F(Color_Test, checkCreateFromDouble)
 TEST_F(Color_Test, checkEquality)
 {
     this->checkEquality() ;
+}
+
+TEST_F(Color_Test, checkEnlight)
+{
+    this->testEnlight() ;
 }
 
 std::vector<std::vector<std::string>> testvalues =
