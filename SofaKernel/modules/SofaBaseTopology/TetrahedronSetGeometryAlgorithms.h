@@ -144,16 +144,16 @@ public:
     bool checkNodeSequence(const Tetrahedron& tetra) const;
 
     /// Method to check if the dihedral angles of the tetrahedron have correct values (between 20 and 160 degrees).
-    bool checkTetrahedronDihedralAngles(const TetraID tetraId) const;
+    bool checkTetrahedronDihedralAngles(const TetraID tetraId, SReal minAngle = 20, SReal maxAngle = 160) const;
 
     /// Method to check if Tetrahedron is elongated, meaning the longest edge > 10x min edge
-    bool isTetrahedronElongated(const TetraID tetraId) const;
+    bool isTetrahedronElongated(const TetraID tetraId, SReal factorLength = 10) const;
 
     /// Return false if one of the test method: @sa isTetrahedronElongated, @sa checkTetrahedronDihedralAngles and @sa checkNodeSequence return false for the given Tetrahedron Id.
-    bool checkTetrahedronValidity(const TetraID tetraId) const;
+    bool checkTetrahedronValidity(const TetraID tetraId, SReal minAngle = 20, SReal maxAnglemaxAngle = 160, SReal factorLength = 10) const;
 
     /// Will call @sa checkTetrahedronValidity for each Tetrahedron of the mesh and store the bad tetrahedron ID in @sa m_badTetraIds
-    const sofa::helper::vector <TetraID>& computeBadTetrahedron();
+    const sofa::helper::vector <TetraID>& computeBadTetrahedron(SReal minAngle = 20, SReal maxAngle = 160, SReal factorLength = 10);
 
     /// Return bad tetrahedron ID: @sa m_badTetraIds
     const sofa::helper::vector <TetraID>& getBadTetrahedronIds();
