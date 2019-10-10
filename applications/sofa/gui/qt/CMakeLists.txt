@@ -224,11 +224,14 @@ else()
     message(STATUS "SofaGuiQt: QtCharts not found, SofaWindowProfiler will not be built.")
 endif()
 
+#find_package(NodeEditor)
+set (NodeEditor_FOUND TRUE)
 if(NodeEditor_FOUND)
 set(NodeEditor_DIR CACHE PATH "Set path to NodeEditor Install dir root.")
     message(STATUS "Wouhou !!!!!!!!")
     include_directories( ${NodeEditor_DIR}/include)
     set(NodeEditor_LIBRARY ${NodeEditor_DIR}/lib/nodes.lib)
+	sofa_set_01(SOFAGUIQT_HAVE_NODEEDITOR VALUE {NodeEditor_FOUND} BOTH_SCOPES)
     
 list(APPEND MOC_HEADER_FILES 
     SofaWindowDataGraph.h
