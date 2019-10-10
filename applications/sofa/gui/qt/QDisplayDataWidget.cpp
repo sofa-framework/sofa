@@ -247,7 +247,6 @@ void QDataSimpleEdit::writeToData()
     {
         value = innerWidget_.widget.lineEdit->text().toStdString();
     }
-    getBaseData()->read(value);
 }
 
 /* QPoissonRatioWidget */
