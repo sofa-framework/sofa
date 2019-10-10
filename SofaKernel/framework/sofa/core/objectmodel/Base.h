@@ -32,6 +32,7 @@
 
 #include <deque>
 
+#include <sofa/core/objectmodel/ComponentState.h>
 
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
@@ -465,6 +466,16 @@ public:
         return shortname;
     }
 
+    /// @name componentstate
+    ///   Methods related to component state
+    /// @{
+
+    ComponentState getComponentState() const { return d_componentstate.getValue() ; }
+    bool isComponentStateValid() const { return d_componentstate == ComponentState::Valid; }
+
+    ///@}
+
+
 protected:
     /// List of fields (Data instances)
     VecData m_vecData;
@@ -486,6 +497,13 @@ public:
     Data< sofa::core::objectmodel::TagSet > f_tags; ///< list of the subsets the objet belongs to
 
     Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
+
+    Data< ComponentState >  d_componentstate; ///< the object state
+
+    /// TODO @marques bruno: uncomment once c++17 is enabled in SOFA 
+    // [[deprecated("m_componentstate was renamed to d_componentstate. Please upgrade your code")]]
+    Data< ComponentState >& m_componentstate{d_componentstate}; ///< the object state
+
 
     std::string m_definitionSourceFileName        {""};
     int         m_definitionSourceFilePos         {-1};
