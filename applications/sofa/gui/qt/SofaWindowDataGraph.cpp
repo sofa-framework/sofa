@@ -47,7 +47,6 @@ namespace qt
 using namespace sofa::helper;
 
 
-
 using QtNodes::DataModelRegistry;
 using QtNodes::FlowScene;
 using QtNodes::FlowView;
@@ -81,6 +80,7 @@ setConnecStyle()
         R"(
   {
     "ConnectionStyle": {
+      "LineWidth": 3.0,
       "UseDataDefinedColors": true
     }
   }
@@ -100,6 +100,11 @@ SofaWindowDataGraph::SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node
     , m_posY(0)
 {
     setConnecStyle();
+    Qt::WindowFlags flags = windowFlags();
+    flags |= Qt::WindowMaximizeButtonHint;
+    flags |= Qt::WindowContextHelpButtonHint;
+    setWindowFlags(flags);
+
     m_graphScene = new FlowScene(registerDataModels());
    
     m_exceptions = { "RequiredPlugin", "VisualStyle", "DefaultVisualManagerLoop", "InteractiveCamera" };
@@ -115,17 +120,13 @@ SofaWindowDataGraph::SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node
 
     connectNodeData();
     std::cout << "final m_posX: " << m_posX << " | m_posY: " << m_posY << std::endl;
-    resize(m_posX, m_posY);
+    m_graphView->scaleDown();
 }
 
 
 void SofaWindowDataGraph::createComponentsNode()
 {
- 
-    //parseChildrenNode(m_rootNode);
-    std::cout << "SofaWindowDataGraph::createComponentsNode()" << std::endl;
-    std::cout << "root: " << m_rootNode->getName() << std::endl;
-
+    //parse Children Node starting from root
     parseSimulationNode(m_rootNode);
     
 }
@@ -159,7 +160,7 @@ void SofaWindowDataGraph::parseSimulationNode(sofa::simulation::Node* node, int 
             maxData = nbrData;
 
         // space between cells
-        m_posX += 10 * m_scaleX;
+        m_posX += 14 * m_scaleX;
     }
 
     if (bObjects.size() >= 4) {
@@ -195,9 +196,44 @@ size_t SofaWindowDataGraph::addSimulationObject(sofa::core::objectmodel::BaseObj
 
 
 std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filterUnnecessaryData(sofa::core::objectmodel::BaseObject* bObject)
-{
-    helper::vector<sofa::core::objectmodel::BaseData*> allData = bObject->getDataFields();
+{    
     std::vector < std::pair < std::string, std::string> > filterData;
+    // first add this object name as first Data (to be used for the links representation)
+    filterData.push_back(std::pair<std::string, std::string>(bObject->getName(), "name"));
+
+    // parse links
+    const sofa::core::objectmodel::Base::VecLink& links = bObject->getLinks();
+    for (auto link : links)
+    {
+        const std::string& name = link->getName();
+        // ignore unnamed link
+        if (link->getName().empty())
+            continue;
+
+        // ignore link to context
+        if (link->getName() == "context")
+            continue;
+
+        if (!link->storePath() && 0 == link->getSize())
+            continue;
+
+        const std::string valuetype = link->getValueTypeString();
+
+        std::cout << "## link: " << name << " | link->getSize(): " << link->getSize() << " | valuetype: " << valuetype << " | path: " << link->storePath() << std::endl;
+        
+
+        std::string linkPath = link->getLinkedPath();
+        linkPath.erase(0, 1); // remove @
+        std::size_t found = linkPath.find_last_of("/");
+        if (found != std::string::npos) // remove path
+            linkPath.erase(0, found);
+
+        std::cout << "  # baselink: " << linkPath << std::endl;
+        m_dataLinks.push_back(DataGraphConnection(linkPath, linkPath, bObject->getName(), bObject->getName()));
+    }
+
+    // parse all Data
+    helper::vector<sofa::core::objectmodel::BaseData*> allData = bObject->getDataFields();    
     for (auto data : allData)
     {
         const std::string& name = data->getName();
@@ -207,7 +243,7 @@ std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filte
         { 
             sofa::core::objectmodel::BaseData* pData = data->getParent();
             std::cout << "- Parent: " << pData->getName() << " owwner: " << pData->getOwner()->getName() << std::endl;
-            m_connections.push_back(DataGraphConnection(pData->getOwner()->getName(), pData->getName(), bObject->getName(), name));
+            m_dataLinks.push_back(DataGraphConnection(pData->getOwner()->getName(), pData->getName(), bObject->getName(), name));
         }
         
 
@@ -224,7 +260,8 @@ std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filte
         }
         filterData.push_back(std::pair<std::string, std::string>(name, data->getValueTypeString()));
     }
-    std::cout << "## old Data: " << allData.size() << " - " << filterData.size() << std::endl;
+
+    //std::cout << "## old Data: " << allData.size() << " - " << filterData.size() << std::endl;
 
     return filterData;
 }
@@ -232,12 +269,12 @@ std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filte
 
 void SofaWindowDataGraph::connectNodeData()
 {
-    if (m_connections.empty())
+    if (m_dataLinks.empty())
         return;
 
     std::vector <QtNodes::Node*> nodes = m_graphScene->allNodes();
 
-    for (auto connection : m_connections)
+    for (auto connection : m_dataLinks)
     {
         QtNodes::Node* parentNode = nullptr;
         QtNodes::Node* childNode = nullptr;
@@ -276,6 +313,11 @@ void SofaWindowDataGraph::connectNodeData()
         
         m_graphScene->createConnection(*childNode, childId, *parentNode, parentId);
     }
+}
+
+void SofaWindowDataGraph::connectNodeLinks()
+{
+
 }
 
 

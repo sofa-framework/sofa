@@ -85,6 +85,8 @@ protected:
 
     void connectNodeData();
 
+    void connectNodeLinks();
+
     void parseSimulationNode(sofa::simulation::Node* node, int posX = 0);
 
     size_t addSimulationObject(sofa::core::objectmodel::BaseObject* bObject);
@@ -99,7 +101,7 @@ protected:
     SReal m_scaleY;
 
     std::vector<std::string> m_exceptions;
-    std::vector<DataGraphConnection> m_connections;
+    std::vector<DataGraphConnection> m_dataLinks;
 
     int m_posX;
     int m_posY;
