@@ -424,7 +424,7 @@ public:
         if(displayDataWidget)
             propertyWidgetFlagOn = displayDataWidget->flag().PROPERTY_WIDGET_FLAG;
 
-        fillTable(d);
+        parent->setFilled(false);
         rows = dataRows;
 
         wSize->setValue(dataRows);
@@ -454,7 +454,7 @@ public:
         }
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wTableView,   SLOT(setDisplayed(bool)));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
-        parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent, SLOT( updateWidgetValue() ));
+        parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent, SLOT(fillFromData() ));
         
         if (!propertyWidgetFlagOn)
             wDisplay->setChecked(dataRows < MAX_NUM_ELEM && dataRows != 0);
