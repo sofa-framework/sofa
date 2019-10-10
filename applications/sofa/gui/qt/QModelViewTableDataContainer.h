@@ -424,13 +424,8 @@ public:
         if(displayDataWidget)
             propertyWidgetFlagOn = displayDataWidget->flag().PROPERTY_WIDGET_FLAG;
 
-        processTableModifications(d);
         fillTable(d);
         rows = dataRows;
-
-        if(!propertyWidgetFlagOn)
-            wDisplay->setChecked(dataRows < MAX_NUM_ELEM && dataRows != 0 );
-        wDisplay->setAutoDefault(false);
 
         wSize->setValue(dataRows);
 
@@ -460,12 +455,13 @@ public:
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wTableView,   SLOT(setDisplayed(bool)));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent, SLOT( updateWidgetValue() ));
-
-        wDisplay->toggle();
-        if(propertyWidgetFlagOn)
-            wDisplay->setChecked(false);
+        
+        if (!propertyWidgetFlagOn)
+            wDisplay->setChecked(dataRows < MAX_NUM_ELEM && dataRows != 0);
         else
-            wDisplay->toggle();
+            wDisplay->setChecked(false);
+
+        wDisplay->setAutoDefault(false);
 
         return true;
     }
