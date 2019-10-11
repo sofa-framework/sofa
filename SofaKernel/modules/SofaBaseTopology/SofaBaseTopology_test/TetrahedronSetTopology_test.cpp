@@ -169,9 +169,9 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
 
     // check triangle created element
     TetrahedronSetTopologyContainer::Triangle triangle = topoCon->getTriangle(0);
-    EXPECT_EQ(triangle[0], 2);
+    EXPECT_EQ(triangle[0], 22);
     EXPECT_EQ(triangle[1], 11);
-    EXPECT_EQ(triangle[2], 25);    
+    EXPECT_EQ(triangle[2], 2);    
 
     // check TetrahedraAroundTriangle buffer access
     EXPECT_EQ(elemAroundTriangles.size(), nbrTriangle);
@@ -184,7 +184,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
 
     // check TetrahedraAroundTriangle buffer element for this file
     EXPECT_EQ(elemATriangle[0], 0);
-    EXPECT_EQ(elemATriangle[1], 3);
+    EXPECT_EQ(elemATriangle[1], 1);
 
 
     // check TrianglesInTetrahedron buffer acces
@@ -198,7 +198,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     for (size_t i = 0; i < triangleInElem.size(); i++)
         EXPECT_EQ(triangleInElem[i], triangleInElemM[i]);
 
-    sofa::helper::fixed_array<int, 4> triangleInElemTruth(0, 1, 2, 3);
+    sofa::helper::fixed_array<int, 4> triangleInElemTruth(3, 2, 1, 0);
     for (size_t i = 0; i<triangleInElemTruth.size(); ++i)
         EXPECT_EQ(triangleInElem[i], triangleInElemTruth[i]);
 
@@ -264,8 +264,8 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
 
     // check edge created element
     TetrahedronSetTopologyContainer::Edge edge = topoCon->getEdge(0);
-    EXPECT_EQ(edge[0], 2);
-    EXPECT_EQ(edge[1], 22);
+    EXPECT_EQ(edge[0], 11);
+    EXPECT_EQ(edge[1], 2);
 
 
     // check TetrahedronAroundEdge buffer access
@@ -280,8 +280,8 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
     // check TetrahedronAroundEdge buffer element for this file
     EXPECT_EQ(elemAEdge[0], 0);
     EXPECT_EQ(elemAEdge[1], 1);
-    EXPECT_EQ(elemAEdge[2], 11);
-    EXPECT_EQ(elemAEdge[3], 20);
+    EXPECT_EQ(elemAEdge[2], 2);
+    EXPECT_EQ(elemAEdge[3], 3);
 
 
     // check EdgesInTetrahedron buffer acces
@@ -295,7 +295,7 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
     for (size_t i = 0; i < edgeInElem.size(); i++)
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
     
-    sofa::helper::fixed_array<int, 6> edgeInElemTruth(7, 9, 8, 10, 3, 11);
+    sofa::helper::fixed_array<int, 6> edgeInElemTruth(6, 10, 8, 9, 0, 11);
     for (size_t i = 0; i<edgeInElemTruth.size(); ++i)
         EXPECT_EQ(edgeInElem[i], edgeInElemTruth[i]);
     
