@@ -57,8 +57,8 @@ ExtraMonitor<DataTypes>::ExtraMonitor()
     , maxX( initData( &maxX, -1, "maxCoord", "export minimum displacement on the given coordinate as gnuplot file instead of positions of all dofs" ) )
     , disp( initData( &disp, -1, "dispCoord", "export displacement on the given coordinate as gnuplot file" ) )
 {
-    saveGnuplotWcin = NULL;
-    saveGnuplotWext = NULL;
+    saveGnuplotWcin = nullptr;
+    saveGnuplotWext = nullptr;
 }
 /////////////////////////// end Monitor ///////////////////////////////////
 
@@ -96,7 +96,7 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
     {
         if ( this->d_saveXToGnuplot.getValue() )
         {
-            if ( this->m_saveGnuplotX != NULL ) delete this->m_saveGnuplotX;
+            if ( this->m_saveGnuplotX != nullptr ) delete this->m_saveGnuplotX;
             this->m_saveGnuplotX = new std::ofstream ( ( path +"_x.txt" ).c_str() );
             if (minX.getValue() == -1 && maxX.getValue() == -1)
             {
@@ -136,7 +136,7 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
 
         if ( this->d_saveVToGnuplot.getValue() )
         {
-            if ( this->m_saveGnuplotV != NULL ) delete this->m_saveGnuplotV;
+            if ( this->m_saveGnuplotV != nullptr ) delete this->m_saveGnuplotV;
 
             this->m_saveGnuplotV = new std::ofstream ( ( path +"_v.txt" ).c_str() );
             ( *this->m_saveGnuplotV ) << "# Gnuplot File : velocities of "
@@ -151,7 +151,7 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
 
         if ( this->d_saveFToGnuplot.getValue() )
         {
-            if ( this->m_saveGnuplotF != NULL ) delete this->m_saveGnuplotF;
+            if ( this->m_saveGnuplotF != nullptr ) delete this->m_saveGnuplotF;
             this->m_saveGnuplotF = new std::ofstream ( ( path +"_f.txt" ).c_str() );
             if (!resultantF.getValue())
             {
@@ -176,7 +176,7 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
 
         if ( this->saveWcinToGnuplot.getValue() )
         {
-            if ( this->saveGnuplotWcin != NULL ) delete this->saveGnuplotWcin;
+            if ( this->saveGnuplotWcin != nullptr ) delete this->saveGnuplotWcin;
             this->saveGnuplotWcin = new std::ofstream ( ( path + "_wcin.txt" ).c_str() );
             ( *this->saveGnuplotWcin ) << "# Gnuplot File : kinetic energy of the system "<<std::endl;
             ( *this->saveGnuplotWcin ) << "# 1st Column : time, 2nd : kinetic energy"<< std::endl;
@@ -184,7 +184,7 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
 
         if ( this->saveWextToGnuplot.getValue() )
         {
-            if ( this->saveGnuplotWext != NULL ) delete this->saveGnuplotWext;
+            if ( this->saveGnuplotWext != nullptr ) delete this->saveGnuplotWext;
             this->saveGnuplotWext = new std::ofstream ( ( path + "_wext.txt" ).c_str() );
             ( *this->saveGnuplotWext ) << "# Gnuplot File : external energy of the system "<<std::endl;
             ( *this->saveGnuplotWext ) << "# 1st Column : time, 2nd : external energy"<< std::endl;

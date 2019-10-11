@@ -147,12 +147,12 @@ struct DefaultDataTypeInfo
     // mtournier: wtf is this not returning &type?
     static const void* getValuePtr(const DataType& /*type*/)
     {
-        return NULL;
+        return nullptr;
     }
 
     static void* getValuePtr(DataType& /*type*/)
     {
-        return NULL;
+        return nullptr;
     }
 
     static const char* name() { return "unknown"; }
@@ -681,12 +681,12 @@ struct TextTypeInfo
 
     static const void* getValuePtr(const DataType& /*data*/)
     {
-        return NULL;
+        return nullptr;
     }
 
     static void* getValuePtr(DataType& /*data*/)
     {
-        return NULL;
+        return nullptr;
     }
 };
 
@@ -1168,12 +1168,12 @@ struct SetTypeInfo
 
     static const void* getValuePtr(const DataType& /*data*/)
     {
-        return NULL;
+        return nullptr;
     }
 
     static void* getValuePtr(DataType& /*data*/)
     {
-    return NULL;
+    return nullptr;
     }
 };
 
@@ -1290,8 +1290,8 @@ struct DataTypeInfo< sofa::helper::vector<bool,Alloc> > : public VectorTypeInfo<
 
     static std::string name() { std::ostringstream o; o << "vector<bool>"; return o.str(); }
 
-    static const void* getValuePtr(const sofa::helper::vector<bool,Alloc>& /*data*/) { return NULL; }
-    static void* getValuePtr(sofa::helper::vector<bool,Alloc>& /*data*/) { return NULL; }
+    static const void* getValuePtr(const sofa::helper::vector<bool,Alloc>& /*data*/) { return nullptr; }
+    static void* getValuePtr(sofa::helper::vector<bool,Alloc>& /*data*/) { return nullptr; }
 };
 
 // Cannot use default impl of VectorTypeInfo for non-fixed size BaseTypes

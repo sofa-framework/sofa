@@ -51,7 +51,7 @@ TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsuleModel():
       d_capsule_heights(initData(&d_capsule_heights,"heights","The capsule heights")),
       d_default_radius(initData(&d_default_radius,(Real)0.5,"defaultRadius","The default radius")),
       d_default_height(initData(&d_default_height,(Real)2,"dafaultHeight","The default height")),
-      _mstate(NULL)
+      _mstate(nullptr)
 {
     enum_type = CAPSULE_TYPE;
 }
@@ -105,7 +105,7 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::init()
 {
     this->CollisionModel::init();
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (_mstate==NULL)
+    if (_mstate==nullptr)
     {
         msg_error() << "TCapsuleModel requires a Rigid Mechanical Model";
         return;
@@ -194,7 +194,7 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
     }
 
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 
     vparams->drawTool()->setPolygonMode(0,false);

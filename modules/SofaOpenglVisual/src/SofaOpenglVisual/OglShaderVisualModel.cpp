@@ -53,11 +53,11 @@ int OglShaderVisualModelClass = core::RegisterObject("Visual model for OpenGL di
         ;
 
 OglShaderVisualModel::OglShaderVisualModel()
-    : shader(NULL)
+    : shader(nullptr)
     , restPosition_lastUpdate(-1)
-    , vrestpositions(NULL)
-    , vrestnormals(NULL)
-    , modelMatrixUniform(NULL)
+    , vrestpositions(nullptr)
+    , vrestnormals(nullptr)
+    , modelMatrixUniform(nullptr)
 {
 }
 

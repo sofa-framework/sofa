@@ -116,7 +116,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
         // init scene and compute force
         sofa::simulation::getSimulation()->init(this->node.get());
 
-        Inherited::force->computeBBox(NULL, true);
+        Inherited::force->computeBBox(nullptr, true);
 
         EXPECT_EQ(Inherited::force->f_bbox.getValue().minBBox(), Vec3(0,0,0));
         EXPECT_EQ(Inherited::force->f_bbox.getValue().maxBBox(), Vec3(1,1,1.1));

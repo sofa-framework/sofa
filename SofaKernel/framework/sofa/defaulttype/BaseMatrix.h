@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <utility> // for std::pair
-#include <cstddef> // for NULL and std::size_t
+#include <cstddef> // for nullptr and std::size_t
 #include <iostream>
 #include <vector>
 #include <cassert>

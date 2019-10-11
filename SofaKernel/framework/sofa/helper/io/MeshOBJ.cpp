@@ -233,7 +233,7 @@ void MeshOBJ::readMTL(const char* filename)
     bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
 
     file = fopen(filename, "r");
-    Material *mat = NULL;
+    Material *mat = nullptr;
     if (file)
     {
         /* now, read in the data */
@@ -245,7 +245,7 @@ void MeshOBJ::readMTL(const char* filename)
             case '#':
                 /* comment */
                 /* eat up rest of line */
-                if ( fgets(buf, sizeof(buf), file) == NULL)
+                if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) )
                         msg_error("MeshOBJ") << " fgets function has encountered end of file." ;
@@ -255,14 +255,14 @@ void MeshOBJ::readMTL(const char* filename)
                 break;
             case 'n':
                 /* newmtl */
-                if (mat != NULL)
+                if (mat != nullptr)
                 {
                     materials.push_back(*mat);
                     delete mat;
-                    mat = NULL;
+                    mat = nullptr;
                 }
                 mat = new Material();
-                if ( fgets(buf, sizeof(buf), file) == NULL)
+                if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) )
                         msg_error("MeshOBJ") << "fgets function has encountered end of file." ;
@@ -295,7 +295,7 @@ void MeshOBJ::readMTL(const char* filename)
                     break;
                 default:
                     /* eat up rest of line */
-                    if ( fgets(buf, sizeof(buf), file) == NULL)
+                    if ( fgets(buf, sizeof(buf), file) == nullptr)
                     {
                         if (feof (file) )
                             msg_error("MeshOBJ") << "Error: MeshOBJ: fgets function has encountered end of file.";
@@ -340,7 +340,7 @@ void MeshOBJ::readMTL(const char* filename)
                     break;
                 default:
                     /* eat up rest of line */
-                    if (fgets(buf, sizeof(buf), file) == NULL)
+                    if (fgets(buf, sizeof(buf), file) == nullptr)
                     {
                         if (feof (file) )
                             msg_error("MeshOBJ") << "fgets function has encountered end of file." ;
@@ -372,7 +372,7 @@ void MeshOBJ::readMTL(const char* filename)
                 }
                 //texture map
                 char charFilename[128] = {0};
-                if (fgets(charFilename, sizeof(charFilename), file)==NULL)
+                if (fgets(charFilename, sizeof(charFilename), file)==nullptr)
                 {
                     msg_error("MeshOBJ") << "fgets has encountered an error" ;
                 }
@@ -400,7 +400,7 @@ void MeshOBJ::readMTL(const char* filename)
                 }
                 //bump mapping texture map
                 char charFilename[128] = {0};
-                if (fgets(charFilename, sizeof(charFilename), file)==NULL)
+                if (fgets(charFilename, sizeof(charFilename), file)==nullptr)
                 {
                     msg_error("MeshOBJ") << "fgets has encountered an error" ;
                 }
@@ -421,7 +421,7 @@ void MeshOBJ::readMTL(const char* filename)
             }            
             default:
                 /* eat up rest of line */
-                if ( fgets(buf, sizeof(buf), file) == NULL)
+                if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) )
                         msg_error("MeshOBJ") << "fgets function has encountered end of file.";
@@ -435,11 +435,11 @@ void MeshOBJ::readMTL(const char* filename)
         fclose(file);
     }
 
-    if (mat != NULL)
+    if (mat != nullptr)
     {
         materials.push_back(*mat);
         delete mat;
-        mat = NULL;
+        mat = nullptr;
     }
 }
 

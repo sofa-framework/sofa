@@ -97,14 +97,14 @@ public:
     {
         if (arg->getAttribute("object1") || arg->getAttribute("object2"))
         {
-            if (dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
+            if (dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1",".."))) == nullptr)
                 return false;
-            if (dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+            if (dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2",".."))) == nullptr)
                 return false;
         }
         else
         {
-            if (dynamic_cast<MechanicalState<DataTypes1>*>(context->getMechanicalState()) == NULL)
+            if (dynamic_cast<MechanicalState<DataTypes1>*>(context->getMechanicalState()) == nullptr)
                 return false;
         }
         return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
@@ -136,7 +136,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const LMConstraint<DataTypes1,DataTypes2>* = NULL)
+    static std::string templateName(const LMConstraint<DataTypes1,DataTypes2>* = nullptr)
     {
         return DataTypes1::Name() + std::string(",") + DataTypes2::Name();
     }

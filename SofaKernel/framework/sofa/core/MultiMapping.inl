@@ -55,7 +55,7 @@ void MultiMapping<In,Out>::addOutputModel(BaseState* toModel, const std::string&
     this->toModels.add(to, path);
     if (isMechanical())
     {
-        if(to != NULL && !testMechanicalState(to))
+        if(to != nullptr && !testMechanicalState(to))
             setNonMechanical();
     }
 }

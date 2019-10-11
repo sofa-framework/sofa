@@ -231,7 +231,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
 
             if (found == false)
             {
-                if (scene != NULL)
+                if (scene != nullptr)
                     delete scene;
                 return false;
             }
@@ -328,7 +328,7 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
 
             if (found == false)
             {
-                if (scene != NULL)
+                if (scene != nullptr)
                     delete scene;
                 return false;
             }

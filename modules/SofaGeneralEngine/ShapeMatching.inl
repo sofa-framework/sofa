@@ -75,7 +75,7 @@ ShapeMatching<DataTypes>::ShapeMatching()
     , position(initData(&position,"position","Input positions."))
     , cluster(initData(&cluster,"cluster","Input clusters."))
     , targetPosition(initData(&targetPosition,"targetPosition","Computed target positions."))
-    , topo(NULL)
+    , topo(nullptr)
     , oldRestPositionSize(0)
     , oldfixedweight(0)
 {

@@ -50,7 +50,7 @@ LinearSolverConstraintCorrection<DataTypes>::LinearSolverConstraintCorrection(so
 : Inherit(mm)
 , wire_optimization(initData(&wire_optimization, false, "wire_optimization", "constraints are reordered along a wire-like topology (from tip to base)"))
 , solverName( initData(&solverName, "solverName", "search for the following names upward the scene graph") )
-, odesolver(NULL)
+, odesolver(nullptr)
 {
 }
 
@@ -88,14 +88,14 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     {
         for (unsigned int i=0; i<solverNames.size(); ++i)
         {
-            sofa::core::behavior::LinearSolver* s = NULL;
+            sofa::core::behavior::LinearSolver* s = nullptr;
             c->get(s, solverNames[i]);
             if (s) linearsolvers.push_back(s);
             else tmp << "- searching for solver \'" << solverNames[i] << "\' but cannot find it upward in the scene graph." << msgendl ;
         }
     }
 
-    if (odesolver == NULL)
+    if (odesolver == nullptr)
     {
         msg_error() << "No OdeSolver found (component is disabled)." ;
         m_componentstate = ComponentState::Invalid ;

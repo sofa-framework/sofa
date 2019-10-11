@@ -55,7 +55,7 @@ bool ImageRAW::load(std::string filename)
     }
     FILE *file;
     /* make sure the file is there and open it read-only (binary) */
-    if ((file = fopen(filename.c_str(), "rb")) == NULL)
+    if ((file = fopen(filename.c_str(), "rb")) == nullptr)
     {
         msg_error("ImageRAW") << "File not found : '" << filename << "'";
         return false;
@@ -104,7 +104,7 @@ bool ImageRAW::save(std::string filename, int)
     msg_info("ImageRAW") << "Writing RAW file " << filename ;
 #endif
     /* make sure the file is there and open it read-only (binary) */
-    if ((file = fopen(filename.c_str(), "wb")) == NULL)
+    if ((file = fopen(filename.c_str(), "wb")) == nullptr)
     {
         msg_error("ImageRAW") << "File write access failed : '" << filename << "'";
         return false;

@@ -92,7 +92,7 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
         sofa::component::misc::WriteTopology::SPtr wt;
         context->get(wt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
 
-        if (wt.get() == NULL)
+        if (wt.get() == nullptr)
         {
             wt = sofa::core::objectmodel::New<WriteTopology>();
             gnode->addObject(wt);

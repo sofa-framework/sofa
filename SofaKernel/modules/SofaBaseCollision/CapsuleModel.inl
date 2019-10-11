@@ -47,7 +47,7 @@ template<class DataTypes>
 TCapsuleModel<DataTypes>::TCapsuleModel():
       _capsule_radii(initData(&_capsule_radii, "listCapsuleRadii","Radius of each capsule")),
       _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
-      _mstate(NULL)
+      _mstate(nullptr)
 {
     enum_type = CAPSULE_TYPE;
 }
@@ -88,7 +88,7 @@ void TCapsuleModel<DataTypes>::init()
 {
     this->CollisionModel::init();
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (_mstate==NULL)
+    if (_mstate==nullptr)
     {
         msg_error()<<"TCapsuleModel requires a Vec3 Mechanical Model";
         return;
@@ -195,7 +195,7 @@ void TCapsuleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
     }
 
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 
     vparams->drawTool()->setPolygonMode(0,false);

@@ -65,7 +65,7 @@ void AverageCoord<DataTypes>::reinit()
 template <class DataTypes>
 void AverageCoord<DataTypes>::doUpdate()
 {
-    if(mstate==NULL)
+    if(mstate==nullptr)
     {
         msg_info(this) << "This component requires a mechanical state in its context.";
         return;

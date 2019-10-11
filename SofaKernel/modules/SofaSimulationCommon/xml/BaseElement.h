@@ -122,7 +122,7 @@ public:
     //std::map<std::string,std::string*>& getAttributeMap();
 
     ///// Get an attribute given its name (return defaultVal if not present)
-    //const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
+    //const char* getAttribute(const std::string& attr, const char* defaultVal=nullptr);
 
 
     /// Verify the presence of an attribute
@@ -147,7 +147,7 @@ public:
     void pushObjects(Sequence& result)
     {
         typename Sequence::value_type obj = dynamic_cast<typename Sequence::value_type>(getObject());
-        if (obj!=NULL) result.push_back(obj);
+        if (obj!=nullptr) result.push_back(obj);
 
         for (child_iterator<> it = begin(); it != end(); ++it)
             it->pushObjects<Sequence>(result);
@@ -160,7 +160,7 @@ public:
         typedef typename Map::value_type V;
         typedef typename V::second_type OPtr;
         OPtr obj = dynamic_cast<OPtr>(getObject());
-        if (obj!=NULL) result.insert(std::make_pair(getFullName(),obj));
+        if (obj!=nullptr) result.insert(std::make_pair(getFullName(),obj));
 
         for (child_iterator<> it = begin(); it != end(); ++it)
             it->pushNamedObjects<Map>(result);

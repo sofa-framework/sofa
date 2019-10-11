@@ -118,7 +118,7 @@ public:
     static ContactMapper<TCollisionModel, DataTypes>* create( ContactMapper<TCollisionModel, DataTypes>*, core::CollisionModel* arg)
     {
         TCollisionModel* model = dynamic_cast<TCollisionModel*>(arg);
-        if (model == NULL) return NULL;
+        if (model == nullptr) return nullptr;
         ContactMapper<TCollisionModel, DataTypes>* obj = new ContactMapper<TCollisionModel, DataTypes>;
         obj->setCollisionModel(model);
         return obj;

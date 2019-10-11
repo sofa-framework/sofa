@@ -78,7 +78,7 @@ void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::ve
         this->applyCreateFunction(i0+i, t, elems[i],
             (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
             (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
-            (ancestorElems.empty()             ) ? NULL : &ancestorElems[i]);
+            (ancestorElems.empty()             ) ? nullptr : &ancestorElems[i]);
     }
     m_topologyData->endEdit();
 }

@@ -67,8 +67,8 @@ MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
     , d_printMass( initData(&d_printMass, false, "printMass","boolean if you want to check the mass conservation") )
     , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
     , m_topologyType(TOPOLOGY_UNKNOWN)
-    , m_vertexMassHandler(NULL)
-    , m_edgeMassHandler(NULL)
+    , m_vertexMassHandler(nullptr)
+    , m_edgeMassHandler(nullptr)
 {
     f_graph.setWidget("graph");
 

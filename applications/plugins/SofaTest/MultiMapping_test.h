@@ -269,7 +269,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         for( Index p=0; p<Np.size(); p++ ){
             //cout<<"J["<< p <<"] = "<< endl << *(*J)[p] << endl;
             EigenSparseMatrix* JJ = dynamic_cast<EigenSparseMatrix*>((*J)[p]);
-            assert(JJ!=NULL);
+            assert(JJ!=nullptr);
             JJ->addMult(Jv,vp[p]);
         }
 
@@ -379,11 +379,11 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         const defaulttype::BaseMatrix* bk = mapping->getK();
         // K can be null or empty for linear mappings
         // still performing the test with a null Kv vector to check if the mapping is really linear
-        if( bk != NULL ){
+        if( bk != nullptr ){
 
             typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
             const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
-            if( K == NULL ){
+            if( K == nullptr ){
                 succeed = false;
                 ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
                 // TODO perform a slow conversion with a big warning rather than a failure?
@@ -440,7 +440,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
     virtual ~MultiMapping_test()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
     }
 

@@ -66,27 +66,27 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
 
     BaseLMConstraint::init();
 
-    if (constrainedObject1 != NULL && constrainedObject2 != NULL)
+    if (constrainedObject1 != nullptr && constrainedObject2 != nullptr)
     {
         //Constraint created by passing Mechanical State directly, need to find the name of the path to be able to save the scene eventually
 
         if (constrainedObject1->getContext() != getContext())
         {
-            BaseContext *context = NULL;
+            BaseContext *context = nullptr;
             BaseNode *currentNode = constrainedObject1->getContext()->toBaseNode();
 
             std::string constrainedObject_name = currentNode->getPathName();
-            if (context != NULL)
+            if (context != nullptr)
                 this->pathObject1.setValue(constrainedObject_name);
         }
 
         if (constrainedObject2->getContext() != getContext())
         {
-            BaseContext *context = NULL;
+            BaseContext *context = nullptr;
             BaseNode *currentNode = constrainedObject2->getContext()->toBaseNode();
 
             std::string constrainedObject_name = currentNode->getPathName();
-            if (context != NULL)
+            if (context != nullptr)
                 this->pathObject2.setValue(constrainedObject_name);
         }
 

@@ -64,7 +64,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const DifferenceEngine<TDataType>* = NULL)
+    static std::string templateName(const DifferenceEngine<TDataType>* = nullptr)
     {
         return defaulttype::DataTypeInfo<TDataType>::name();
     }

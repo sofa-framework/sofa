@@ -78,9 +78,9 @@ protected:
     /// Constructor, taking input and output models as parameters.
     ///
     /// Note that if you do not specify these models here, you must call
-    /// setModels with non-NULL value before the intialization (i.e. before
+    /// setModels with non-nullptr value before the intialization (i.e. before
     /// init() is called).
-    Mapping(State< In >* from=NULL, State< Out >* to=NULL);
+    Mapping(State< In >* from=nullptr, State< Out >* to=nullptr);
     /// Destructor
     ~Mapping() override;
 public:
@@ -196,8 +196,8 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        State<In>* stin = NULL;
-        State<Out>* stout = NULL;
+        State<In>* stin = nullptr;
+        State<Out>* stout = nullptr;
 
         std::string inPath, outPath;
 
@@ -206,21 +206,21 @@ public:
         else
             inPath = "@../";
 
-        context->findLinkDest(stin, inPath, NULL);
+        context->findLinkDest(stin, inPath, nullptr);
 
         if (arg->getAttribute("output"))
             outPath = arg->getAttribute("output");
         else
             outPath = "@./";
 
-        context->findLinkDest(stout, outPath, NULL);
+        context->findLinkDest(stout, outPath, nullptr);
 
-        if (stin == NULL)
+        if (stin == nullptr)
         {
             return false;
         }
 
-        if (stout == NULL)
+        if (stout == nullptr)
         {
             return false;
         }
@@ -275,11 +275,11 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const Mapping<TIn, TOut>* = NULL);
+    static std::string templateName(const Mapping<TIn, TOut>* = nullptr);
 
 
     template<class T>
-    static std::string shortName(const T* ptr = NULL, objectmodel::BaseObjectDescription* arg = NULL)
+    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
     {
         std::string name = Inherit1::shortName(ptr, arg);
         sofa::helper::replaceAll(name, "Mapping", "Map");

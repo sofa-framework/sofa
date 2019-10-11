@@ -121,7 +121,7 @@ protected:
 	mutable ptr_stable_id<T>* m_ids;
 
 private:
-    ptr_stable_compare():m_ids(NULL){}
+    ptr_stable_compare():m_ids(nullptr){}
 };
 
 /// A map container that order pointers in a stable way, i.e. in the order pointers are presented

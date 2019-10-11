@@ -200,7 +200,7 @@ public:
     static PyObject* toPython(sofa::core::DataEngine* obj) ;
 
     /// to convert a sofa::core::objectmodel::BaseData to its corresponding pyObject
-    /// returns NULL if the data does not correpond to any special type
+    /// returns nullptr if the data does not correpond to any special type
     static PyObject* toPython(sofa::core::objectmodel::BaseData* data)  ;
 
 private:

@@ -72,10 +72,10 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::cleanup()
     sout << "CLEANUP" << sendl;
     if (m_constraint)
     {
-        if (parent != NULL)
+        if (parent != nullptr)
             parent->removeObject(m_constraint);
 
-        parent = NULL;
+        parent = nullptr;
         //delete m_constraint;
         intrusive_ptr_add_ref(m_constraint.get()); // HACK: keep created constraints to avoid crash
         m_constraint.reset();
@@ -93,7 +93,7 @@ template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
 {
     this->f_printLog.setValue(true);
-    sout << "setDetectionOutputs(" << (o == NULL ? -1 : (int)static_cast<TOutputVector*>(o)->size()) << ")" << sendl;
+    sout << "setDetectionOutputs(" << (o == nullptr ? -1 : (int)static_cast<TOutputVector*>(o)->size()) << ")" << sendl;
     contacts.clear();
     if (!o) return;
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
@@ -211,15 +211,15 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
         }
     }
 
-    if (m_constraint!=NULL)
+    if (m_constraint!=nullptr)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(m_constraint);
         }
         parent = group;
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->addObject(this);
             parent->addObject(m_constraint);
@@ -233,12 +233,12 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::removeResponse()
     sout << "->removeResponse()" << sendl;
     if (m_constraint)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(m_constraint);
         }
-        parent = NULL;
+        parent = nullptr;
     }
 }
 

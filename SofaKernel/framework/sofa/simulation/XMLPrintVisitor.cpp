@@ -107,10 +107,10 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::objectmodel::BaseObject* obj = it->get();
-        if (    obj->toBaseInteractionForceField() == NULL
-            &&  obj->toBaseInteractionConstraint() == NULL
-            &&  obj->toBaseInteractionProjectiveConstraintSet() == NULL
-            &&  obj->toBaseLMConstraint() == NULL
+        if (    obj->toBaseInteractionForceField() == nullptr
+            &&  obj->toBaseInteractionConstraint() == nullptr
+            &&  obj->toBaseInteractionProjectiveConstraintSet() == nullptr
+            &&  obj->toBaseLMConstraint() == nullptr
            )
             this->processObject(obj);
     }
@@ -123,10 +123,10 @@ void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::objectmodel::BaseObject* obj = it->get();
-        if (    obj->toBaseInteractionForceField() != NULL
-            ||  obj->toBaseInteractionConstraint() != NULL
-            ||  obj->toBaseInteractionProjectiveConstraintSet() != NULL
-            ||  obj->toBaseLMConstraint() != NULL
+        if (    obj->toBaseInteractionForceField() != nullptr
+            ||  obj->toBaseInteractionConstraint() != nullptr
+            ||  obj->toBaseInteractionProjectiveConstraintSet() != nullptr
+            ||  obj->toBaseLMConstraint() != nullptr
            )
             this->processObject(obj);
     }

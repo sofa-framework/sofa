@@ -34,7 +34,7 @@ namespace helper
 namespace io
 {
 
-BaseFileAccessCreator* BaseFileAccess::OurCreator = NULL;
+BaseFileAccessCreator* BaseFileAccess::OurCreator = nullptr;
 
 void BaseFileAccess::SetDefaultCreator()
 {
@@ -53,7 +53,7 @@ void BaseFileAccess::SetCreator(BaseFileAccessCreator* creator)
 
 BaseFileAccess* BaseFileAccess::Create()
 {
-    if(NULL == OurCreator)
+    if(nullptr == OurCreator)
         SetDefaultCreator();
 
     return OurCreator->create();

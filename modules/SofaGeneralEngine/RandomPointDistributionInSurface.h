@@ -75,7 +75,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const RandomPointDistributionInSurface<DataTypes>* = NULL)
+    static std::string templateName(const RandomPointDistributionInSurface<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

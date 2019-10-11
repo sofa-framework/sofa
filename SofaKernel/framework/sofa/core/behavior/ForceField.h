@@ -60,7 +60,7 @@ public:
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
 protected:
-    ForceField(MechanicalState<DataTypes> *mm = NULL);
+    ForceField(MechanicalState<DataTypes> *mm = nullptr);
 
     ~ForceField() override;
 public:
@@ -201,7 +201,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -211,13 +211,13 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const ForceField<DataTypes>* = NULL)
+    static std::string templateName(const ForceField<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }
 
     template<class T>
-    static std::string shortName(const T* ptr = NULL, objectmodel::BaseObjectDescription* arg = NULL)
+    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
     {
         std::string name = Inherit1::shortName(ptr, arg);
         sofa::helper::replaceAll(name, "ForceField", "FF");

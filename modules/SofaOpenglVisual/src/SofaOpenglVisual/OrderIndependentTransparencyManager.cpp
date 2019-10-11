@@ -426,7 +426,7 @@ void VisualOITDrawVisitor::processVisualModel(simulation::Node* node, core::visu
 
     GLSLShader* oitShader = nullptr;
 
-    sofa::core::visual::Shader* nodeShader = NULL;
+    sofa::core::visual::Shader* nodeShader = nullptr;
     if(hasShader) // has custom oit shader
     {
         nodeShader = node->getShader(subsetsToManage);

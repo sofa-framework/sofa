@@ -73,8 +73,8 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     , f_drawPercentageOffset(initData(&f_drawPercentageOffset,(Real)0.15,"drawPercentageOffset","size of the hexa"))
     , needUpdateTopology(false)
     , _elementStiffnesses(initData(&_elementStiffnesses,"stiffnessMatrices", "Stiffness matrices per element (K_i)"))
-    , _mesh(NULL)
-    , _sparseGrid(NULL)
+    , _mesh(nullptr)
+    , _sparseGrid(nullptr)
     , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
     , data(new HexahedronFEMForceFieldInternalData<DataTypes>())
 {
@@ -118,14 +118,14 @@ void HexahedronFEMForceField<DataTypes>::init()
     else _alreadyInit=true;
 
     this->core::behavior::ForceField<DataTypes>::init();
-    if( this->getContext()->getMeshTopology()==NULL )
+    if( this->getContext()->getMeshTopology()==nullptr )
     {
         msg_error() << "Object must have a Topology." ;
         return;
     }
 
     _mesh = dynamic_cast<sofa::core::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
-    if ( _mesh==NULL)
+    if ( _mesh==nullptr)
     {
         msg_error() << "Object must have a MeshTopology." ;
         return;

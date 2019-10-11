@@ -85,7 +85,7 @@ CollisionModel::CollisionModel()
     , numberOfContacts(0)
     , previous(initLink("previous", "Previous (coarser / upper / parent level) CollisionModel in the hierarchy."))
     , next(initLink("next", "Next (finer / lower / child level) CollisionModel in the hierarchy."))
-    , userData(NULL)
+    , userData(nullptr)
 {
 }
 
@@ -97,11 +97,11 @@ void CollisionModel::setPrevious(CollisionModel::SPtr val)
     if (p)
     {
         if (p->next.get()) p->next.get()->previous.reset();
-        p->next.set(NULL);
+        p->next.set(nullptr);
     }
     if (val)
     {
-        if (val->next.get()) val->next.get()->previous.set(NULL);
+        if (val->next.get()) val->next.get()->previous.set(nullptr);
     }
     previous.set(val);
     if (val)
@@ -113,7 +113,7 @@ CollisionModel* CollisionModel::getFirst()
 {
     CollisionModel *cm = this;
     CollisionModel *cm2;
-    while ((cm2 = cm->getPrevious())!=NULL)
+    while ((cm2 = cm->getPrevious())!=nullptr)
         cm = cm2;
     return cm;
 }
@@ -123,7 +123,7 @@ CollisionModel* CollisionModel::getLast()
 {
     CollisionModel *cm = this;
     CollisionModel *cm2;
-    while ((cm2 = cm->getNext())!=NULL)
+    while ((cm2 = cm->getNext())!=nullptr)
         cm = cm2;
     return cm;
 }

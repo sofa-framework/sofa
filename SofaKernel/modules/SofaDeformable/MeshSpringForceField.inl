@@ -108,7 +108,7 @@ void MeshSpringForceField<DataTypes>::init()
     {
         sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
 
-        if (topology != NULL)
+        if (topology != nullptr)
         {
             std::set< std::pair<int,int> > sset;
             size_t n;

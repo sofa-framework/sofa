@@ -200,7 +200,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
                 char *l = new char[line.size()];
                 strcpy(l, line.c_str());
                 char* p;
-                for (p = strtok(l, " "); p; p = strtok(NULL, " "))
+                for (p = strtok(l, " "); p; p = strtok(nullptr, " "))
                     vLine.push_back(std::string(p));
                 delete [] l;
 
@@ -271,7 +271,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
             char *l = new char[line.size()];
             strcpy(l, line.c_str());
             char* p;
-            for (p = strtok(l, " "); p; p = strtok(NULL, " "))
+            for (p = strtok(l, " "); p; p = strtok(nullptr, " "))
                 vLine.push_back(std::string(p));
             delete [] l;
 
@@ -349,7 +349,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
             char *l = new char[line.size()];
             strcpy(l, line.c_str());
             char* p;
-            for (p = strtok(l, " "); p; p = strtok(NULL, " "))
+            for (p = strtok(l, " "); p; p = strtok(nullptr, " "))
                 vLine.push_back(std::string(p));
             delete [] l;
 

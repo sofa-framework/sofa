@@ -47,7 +47,7 @@ using sofa::helper::system::thread::ctime_t;
 template<class TMatrix, class TVector>
 SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , S(NULL), N(NULL)
+    , S(nullptr), N(nullptr)
 {
 }
 

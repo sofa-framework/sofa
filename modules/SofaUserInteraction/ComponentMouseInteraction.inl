@@ -80,7 +80,7 @@ void TComponentMouseInteraction<DataTypes>::createInteractionComponents( sofa::s
 template <class DataTypes>
 bool TComponentMouseInteraction<DataTypes>::isCompatible( core::objectmodel::BaseContext *context) const
 {
-    return (dynamic_cast<MouseContainer*>(context->getMechanicalState()) != NULL);
+    return (dynamic_cast<MouseContainer*>(context->getMechanicalState()) != nullptr);
 }
 }
 }

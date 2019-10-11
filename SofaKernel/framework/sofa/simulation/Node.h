@@ -407,7 +407,7 @@ public:
         return tmp;
     }
 
-    /// Return an object of this node deriving from a given class, or NULL if not found.
+    /// Return an object of this node deriving from a given class, or nullptr if not found.
     /// Note that only the first object is returned.
     template<class Object>
     void getNodeObject(Object*& result)
@@ -458,7 +458,7 @@ public:
 
 
 
-    /// Return an object of this node and sub-nodes deriving from a given class, or NULL if not found.
+    /// Return an object of this node and sub-nodes deriving from a given class, or nullptr if not found.
     /// Note that only the first object is returned.
     template<class Object>
     void getTreeObject(Object*& result)
@@ -560,7 +560,7 @@ public:
 
     static Node::SPtr create( const std::string& name );
 
-    /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
+    /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
     virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
 
     /// override context setSleeping to add notification.

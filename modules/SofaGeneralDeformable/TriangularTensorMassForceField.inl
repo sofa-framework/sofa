@@ -270,7 +270,7 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::Triangular
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , lambda(0)
     , mu(0)
-    , edgeHandler(NULL)
+    , edgeHandler(nullptr)
 {
     edgeHandler = new TriangularTMEdgeHandler(this,&edgeInfo);
 }

@@ -54,7 +54,7 @@ public:
     typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
     SOFA_CLASS(DefaultVisualManagerLoop,sofa::core::visual::VisualLoop);
 protected:
-    DefaultVisualManagerLoop(simulation::Node* gnode = NULL);
+    DefaultVisualManagerLoop(simulation::Node* gnode = nullptr);
 
     ~DefaultVisualManagerLoop() override;
 public:

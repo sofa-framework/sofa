@@ -111,7 +111,7 @@ public:
         RealCollisionModel1* model1 = dynamic_cast<RealCollisionModel1*>(arg.first.first);
         RealCollisionModel2* model2 = dynamic_cast<RealCollisionModel2*>(arg.first.second);
         RealIntersection* inter  = dynamic_cast<RealIntersection*>(arg.second);
-        if (model1==NULL || model2==NULL || inter==NULL) return typename RealContact::SPtr();
+        if (model1==nullptr || model2==nullptr || inter==nullptr) return typename RealContact::SPtr();
         return sofa::core::objectmodel::New<RealContact>(model1, model2, inter);
     }
 

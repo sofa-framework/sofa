@@ -74,7 +74,7 @@ public:
     /// returns number of parents
     size_t getNbParents() const override;
 
-    /// return the first parent (returns NULL if no parent)
+    /// return the first parent (returns nullptr if no parent)
     BaseNode* getFirstParent() const override;
 
     /// Test if the given node is a parent of this node.
@@ -140,7 +140,7 @@ public:
     }
 
 
-    /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
+    /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
     Node* findCommonParent( simulation::Node* node2 ) override;
 
 protected:

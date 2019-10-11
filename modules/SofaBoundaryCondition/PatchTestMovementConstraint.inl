@@ -61,7 +61,7 @@ void PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunctio
 
 template <class DataTypes>
 PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , data(new PatchTestMovementConstraintInternalData<DataTypes>)
     , d_meshIndices( initData(&d_meshIndices,"meshIndices","Indices of the mesh") )
     , d_indices( initData(&d_indices,"indices","Indices of the constrained points") )

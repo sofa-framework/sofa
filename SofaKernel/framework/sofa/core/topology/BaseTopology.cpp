@@ -175,7 +175,7 @@ void TopologyContainer::resetTopologyEngineList()
             it!=m_topologyEngineList.end(); ++it)
     {
         //delete (*it);
-        *it = NULL;
+        *it = nullptr;
     }
 
     m_topologyEngineList.clear();

@@ -128,7 +128,7 @@ static std::string DefaultColorSchemes[NDefaultColorMapSchemes] =
 ColorMap* ColorMap::getDefault()
 {
     static ColorMap* defaultColorMap;
-    if (defaultColorMap == NULL) {
+    if (defaultColorMap == nullptr) {
         defaultColorMap = new ColorMap();
         std::string tmp("");
         //defaultOglColorMap->initOld(tmp); // TODO: replace initOld() with init()

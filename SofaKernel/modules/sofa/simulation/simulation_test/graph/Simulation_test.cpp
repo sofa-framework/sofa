@@ -132,18 +132,18 @@ struct Scene_test: public NumericTest<SReal>
         Component::SPtr toto = core::objectmodel::New<Component>();
     }
 
-    /// create a component and set it to NULL
+    /// create a component and set it to nullptr
     void objectDestruction_setNull()
     {
         typedef InstrumentedObject<component::mass::UniformMass<defaulttype::Vec3Types, SReal> > Component;
 
         objectCounter = 0;
         Component::SPtr toto = core::objectmodel::New<Component>();
-        toto = NULL;
+        toto = nullptr;
         checkDeletions();
     }
 
-    /// create a component and set it to NULL
+    /// create a component and set it to nullptr
     void objectDestruction_reset()
     {
         typedef InstrumentedObject<component::mass::UniformMass<defaulttype::Vec3Types, SReal> > Component;
@@ -209,11 +209,11 @@ struct Scene_test: public NumericTest<SReal>
         checkDeletions();
     }
 
-    /// create a new scene and set the root to NULL
+    /// create a new scene and set the root to nullptr
     void sceneDestruction_setNull()
     {
         createScene();
-        root = NULL;
+        root = nullptr;
         checkDeletions();
     }
 

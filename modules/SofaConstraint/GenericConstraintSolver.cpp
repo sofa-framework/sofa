@@ -78,7 +78,7 @@ GenericConstraintSolver::GenericConstraintSolver()
                                         "computeConstraintForces",
                                         "enable the storage of the constraintForces (default = False)."))
     , current_cp(&m_cpBuffer[0])
-    , last_cp(NULL)
+    , last_cp(nullptr)
 {
     addAlias(&maxIt, "maxIt");
 
@@ -254,7 +254,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         current_cp->cclist_elems.resize(numConstraints);
         int nbCC = constraintCorrections.size();
         for (unsigned int i = 0; i < numConstraints; i++)
-            current_cp->cclist_elems[i].resize(nbCC, NULL);
+            current_cp->cclist_elems[i].resize(nbCC, nullptr);
 
         unsigned int nbObjects = 0;
         for (unsigned int c_id = 0; c_id < numConstraints;)
@@ -552,7 +552,7 @@ void GenericConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::Bas
         }
     }
     // All constraint problems are locked
-    msg_error() << "All constraint problems are locked, request from " << (from ? from->getName() : "NULL") << " ignored";
+    msg_error() << "All constraint problems are locked, request from " << (from ? from->getName() : "nullptr") << " ignored";
 }
 
 void GenericConstraintProblem::clear(int nbC)
@@ -568,10 +568,10 @@ void GenericConstraintProblem::freeConstraintResolutions()
 {
     for(unsigned int i=0; i<constraintsResolutions.size(); i++)
     {
-        if (constraintsResolutions[i] != NULL)
+        if (constraintsResolutions[i] != nullptr)
         {
             delete constraintsResolutions[i];
-            constraintsResolutions[i] = NULL;
+            constraintsResolutions[i] = nullptr;
         }
     }
 }
@@ -657,8 +657,8 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     }
 
     bool showGraphs = false;
-    sofa::helper::vector<double>* graph_residuals = NULL;
-    std::map < std::string, sofa::helper::vector<double> > *graph_forces = NULL, *graph_violations = NULL;
+    sofa::helper::vector<double>* graph_residuals = nullptr;
+    std::map < std::string, sofa::helper::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
     sofa::helper::vector<double> tabErrors;
 
     if(solver)
@@ -889,8 +889,8 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
     }
 
     bool showGraphs = false;
-    sofa::helper::vector<double>* graph_residuals = NULL;
-    std::map < std::string, sofa::helper::vector<double> > *graph_forces = NULL, *graph_violations = NULL;
+    sofa::helper::vector<double>* graph_residuals = nullptr;
+    std::map < std::string, sofa::helper::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
     sofa::helper::vector<double> tabErrors;
 
     if(solver)

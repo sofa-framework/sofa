@@ -469,7 +469,7 @@ public:
             stepBegin(idStr, objStr);
         }
         template<class T>
-        StepVar(IdStep id, T* obj) : id(id), idStr(NULL), obj(IdObj(obj->getName())), objStr(NULL)
+        StepVar(IdStep id, T* obj) : id(id), idStr(nullptr), obj(IdObj(obj->getName())), objStr(nullptr)
         {
             stepBegin(id, obj);
         }

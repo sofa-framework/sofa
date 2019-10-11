@@ -86,7 +86,7 @@ DiscreteIntersection::DiscreteIntersection()
 	IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
-/// Return the intersector class handling the given pair of collision models, or NULL if not supported.
+/// Return the intersector class handling the given pair of collision models, or nullptr if not supported.
 ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels)
 {
     return intersectors.get(object1, object2, swapModels);

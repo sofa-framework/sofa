@@ -46,7 +46,7 @@ ReadState::ReadState()
     , d_loop( initData(&d_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , d_scalePos( initData(&d_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
     , mmodel(nullptr)
-    , infile(NULL)
+    , infile(nullptr)
 #if SOFAGENERALLOADER_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
@@ -78,7 +78,7 @@ void ReadState::reset()
     if (infile)
     {
         delete infile;
-        infile = NULL;
+        infile = nullptr;
     }
 #if SOFAGENERALLOADER_HAVE_ZLIB
     if (gzfile)
@@ -110,7 +110,7 @@ void ReadState::reset()
         {
             msg_error() << "Error opening file "<<filename;
             delete infile;
-            infile = NULL;
+            infile = nullptr;
         }
     }
     nextTime = 0;

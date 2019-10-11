@@ -69,9 +69,9 @@ struct DifferenceEngine_test : public Sofa_test<typename _DataTypes::value_type>
         m_thisObject->setName("myname") ;
         EXPECT_TRUE(m_thisObject->getName() == "myname") ;
 
-        EXPECT_TRUE( m_thisObject->findData("input") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("substractor") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("output") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("input") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("substractor") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("output") != nullptr ) ;
 
         EXPECT_NO_THROW( m_thisObject->init() ) ;
         EXPECT_NO_THROW( m_thisObject->bwdInit() ) ;
