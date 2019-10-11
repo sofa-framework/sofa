@@ -149,10 +149,17 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
         //return;
     }
 
-    _topology = this->getContext()->getMeshTopology();
 
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    _topology = l_topology.get();
+    
     if(_topology){
-        msg_warning(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
+        msg_error(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
                              "The component cannot be initialized and thus is de-activated. \n "
                              "To supress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
         m_componentstate = ComponentState::Invalid ;
