@@ -46,7 +46,6 @@ SPHFluidForceField<DataTypes>::SPHFluidForceField()
     , density0 (initData(&density0, Real(1), "density", "Density"))
     , viscosity (initData(&viscosity, Real(0.001f), "viscosity", "Viscosity"))
     , surfaceTension (initData(&surfaceTension, Real(0), "surfaceTension", "Surface Tension"))
-    // pressureExponent (initData(&pressureExponent  ,1    , "pressureExponent", "Exponent of density variation in pressure expression")),
     , kernelType(initData(&kernelType, 0, "kernelType", "0 = default kernels, 1 = cubic spline"))
     , pressureType(initData(&pressureType, 1, "pressureType", "0 = none, 1 = default pressure"))
     , viscosityType(initData(&viscosityType, 1, "viscosityType", "0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity"))
@@ -136,14 +135,11 @@ template<class DataTypes>
 void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParams* /*mparams*/, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
 {
     helper::ReadAccessor<DataVecCoord> x = d_x;
-    //helper::ReadAccessor<DataVecDeriv> v = d_v;
 
     const Real h = particleRadius.getValue();
     const Real h2 = h*h;
 
     const int n = x.size();
-
-    //int n0 = particles.size();
     particles.resize(n);
     for (int i=0; i<n; i++) {
         particles[i].neighbors.clear();
@@ -174,9 +170,9 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
         grid->updateGrid(x.ref());
         grid->findNeighbors(this, h);
 
+
         if (!d_debugGrid.getValue())
             return;
-        
 
         for (int i = 0; i < n; i++) {
             particles[i].neighbors2.clear();
@@ -230,6 +226,7 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
     }
 }
 
+
 template<class DataTypes> template<class TKd, class TKp, class TKv, class TKc>
 void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
@@ -242,8 +239,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     const Real m = particleMass.getValue();
     const Real m2 = m*m;
     const Real d0 = density0.getValue();
-    //const int pE = pressureExponent.getValue();
-    const Real k = pressureStiffness.getValue(); // /(pE); //*(Real)pow(d0,pE-1));
+    const Real k = pressureStiffness.getValue();
     const Real time = (Real)this->getContext()->getTime();
     const Real viscosity = this->viscosity.getValue();
     const int viscosityT = (viscosity == 0) ? 0 : viscosityType.getValue();
@@ -273,29 +269,25 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     TKc Kc(h);
 
     // Compute density and pressure
+    for (int i=0; i<n; i++)
     {
+        Particle& Pi = particles[i];
+        Real density = Pi.density;
+
+        density += m*Kd.W(0); // density from current particle
+
+        for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
         {
-            for (int i=0; i<n; i++)
-            {
-                Particle& Pi = particles[i];
-                Real density = Pi.density;
+            const int j = it->first;
+            const Real r_h = it->second;
+            Particle& Pj = particles[j];
+            Real d = m*Kd.W(r_h);
+            density += d;
+            Pj.density += d;
 
-                density += m*Kd.W(0); // density from current particle
-
-                for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
-                {
-                    const int j = it->first;
-                    const Real r_h = it->second;
-                    Particle& Pj = particles[j];
-                    Real d = m*Kd.W(r_h);
-                    density += d;
-                    Pj.density += d;
-
-                }
-                Pi.density = density;
-                Pi.pressure = k*(density - d0);
-            }
         }
+        Pi.density = density;
+        Pi.pressure = k*(density - d0);
     }
 
     // Compute surface normal and curvature
@@ -319,76 +311,76 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
         }
     }
 
+    
+    // Compute the forces
+    for (int i=0; i<n; i++)
     {
-        // Compute the forces
-        for (int i=0; i<n; i++)
+        Particle& Pi = particles[i];
+        // Gravity
+        //f[i] += g*(m*Pi.density);
+
+        for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
         {
-            Particle& Pi = particles[i];
-            // Gravity
-            //f[i] += g*(m*Pi.density);
+            const int j = it->first;
+            const Real r_h = it->second;
+            Particle& Pj = particles[j];
+            // Pressure
 
-            for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
-            {
-                const int j = it->first;
-                const Real r_h = it->second;
-                Particle& Pj = particles[j];
-                // Pressure
+            Real pressureFV = ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
 
-                Real pressureFV = ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
-
-                // Viscosity
-                switch(viscosityT)
-                {
-                case 0: break;
-                case 1:
-                {
-                    Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity / (Pi.density * Pj.density) * Kv.laplacianW(r_h) );
-                    f[i] += fviscosity;
-                    f[j] -= fviscosity;
-                    break;
-                }
-                case 2:
-                {
-                    Real vx = dot(v[i]-v[j],x[i]-x[j]);
-                    if (vx < 0)
-                    {
-                        pressureFV += (vx * viscosity * h * m / ((r_h*r_h + 0.01f*h2)*(Pi.density+Pj.density)*0.5f));
-                    }
-                    break;
-                }
-                default:
-                    break;
-                }
-
-                Deriv fpressure = Kp.gradW(x[i]-x[j],r_h) * pressureFV;
-                f[i] += fpressure;
-                f[j] -= fpressure;
-
-            }
-
-            switch(surfaceTensionT)
+            // Viscosity
+            switch(viscosityT)
             {
             case 0: break;
             case 1:
             {
-                Real n = Pi.normal.norm();
-                if (n > 0.000001)
-                {
-                    Deriv fsurface = Pi.normal * ( - m * surfaceTension * Pi.curvature / n );
-                    f[i] += fsurface;
-                }
+                Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity / (Pi.density * Pj.density) * Kv.laplacianW(r_h) );
+                f[i] += fviscosity;
+                f[j] -= fviscosity;
                 break;
             }
             case 2:
             {
+                Real vx = dot(v[i]-v[j],x[i]-x[j]);
+                if (vx < 0)
+                {
+                    pressureFV += (vx * viscosity * h * m / ((r_h*r_h + 0.01f*h2)*(Pi.density+Pj.density)*0.5f));
+                }
                 break;
             }
             default:
                 break;
             }
+
+            Deriv fpressure = Kp.gradW(x[i]-x[j],r_h) * pressureFV;
+            f[i] += fpressure;
+            f[j] -= fpressure;
+
+        }
+
+        switch(surfaceTensionT)
+        {
+        case 0: break;
+        case 1:
+        {
+            Real n = Pi.normal.norm();
+            if (n > 0.000001)
+            {
+                Deriv fsurface = Pi.normal * ( - m * surfaceTension * Pi.curvature / n );
+                f[i] += fsurface;
+            }
+            break;
+        }
+        case 2:
+        {
+            break;
+        }
+        default:
+            break;
         }
     }
 }
+
 
 template<class DataTypes>
 void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
