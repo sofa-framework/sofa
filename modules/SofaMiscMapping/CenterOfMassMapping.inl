@@ -73,7 +73,7 @@ void CenterOfMassMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* 
     OutVecCoord& childPositions = *outData.beginEdit(mparams);
     const InVecCoord& parentPositions = inData.getValue();
 
-    if(!l_mass || totalMass==0.0)
+    if(!l_mass.get() || totalMass==0.0)
     {
         serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
         return;
@@ -100,7 +100,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams*
     OutVecDeriv& childForces = *outData.beginEdit(mparams);
     const InVecDeriv& parentForces = inData.getValue();
 
-    if(!l_mass || totalMass==0.0)
+    if(!l_mass.get() || totalMass==0.0)
     {
         serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
         return;
@@ -127,7 +127,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams
     InVecDeriv& parentForces = *outData.beginEdit(mparams);
     const OutVecDeriv& childForces = inData.getValue();
 
-    if(!l_mass || totalMass==0.0)
+    if(!l_mass.get() || totalMass==0.0)
     {
         serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
         return;
