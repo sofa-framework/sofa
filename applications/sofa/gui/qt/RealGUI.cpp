@@ -2034,32 +2034,33 @@ void RealGUI::fileRecentlyOpened(QAction *action)
 
 //------------------------------------
 
-void RealGUI::playpauseGUI ( bool value )
+void RealGUI::playpauseGUI ( bool startSimulation )
 {
-    startButton->setChecked ( value );
-    if ( currentSimulation() )
-        currentSimulation()->getContext()->setAnimate ( value );
+    startButton->setChecked ( startSimulation );
 
+    /// If there is no root node we do nothing.
     Node* root = currentSimulation();
-    if(!value)
-    {
-        if ( root != nullptr )
-        {
-            SimulationStartEvent startEvt;
-            root->propagateEvent(core::ExecParams::defaultInstance(), &startEvt);
-        }
+    if (root==nullptr)
+        return;
 
-        timerStep->stop();
+    /// Set the animation 'on' in the getContext()
+    currentSimulation()->getContext()->setAnimate ( startSimulation );
+
+    if(startSimulation)
+    {
+        SimulationStopEvent startEvt;
+        root->propagateEvent(core::ExecParams::defaultInstance(), &startEvt);
+        m_clockBeforeLastStep = 0;
+        frameCounter=0;
+        timerStep->start(0);
         return;
     }
 
-    if ( root != nullptr )
-    {
-        SimulationStopEvent stopEvt;
-        root->propagateEvent(core::ExecParams::defaultInstance(), &stopEvt);
-    }
+    SimulationStartEvent stopEvt;
+    root->propagateEvent(core::ExecParams::defaultInstance(), &stopEvt);
 
-    timerStep->start(0);
+    timerStep->stop();
+    return;
 }
 
 //------------------------------------
