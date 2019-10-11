@@ -51,6 +51,7 @@ SPHFluidForceField<DataTypes>::SPHFluidForceField()
     , pressureType(initData(&pressureType, 1, "pressureType", "0 = none, 1 = default pressure"))
     , viscosityType(initData(&viscosityType, 1, "viscosityType", "0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity"))
     , surfaceTensionType(initData(&surfaceTensionType, 1, "surfaceTensionType", "0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007"))
+    , d_debugGrid(initData(&d_debugGrid, false, "debugGrid", "If true will store additionnal information on the grid to check neighbors and draw them"))
     , grid(NULL)
 {
 
@@ -212,13 +213,18 @@ void SPHFluidForceField<DataTypes>::init()
     for (unsigned i=0u; i<n; i++)
     {
         particles[i].neighbors.clear();
-#ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
-        particles[i].neighbors2.clear();
-#endif
         particles[i].density = density0.getValue();
         particles[i].pressure = 0;
         particles[i].normal.clear();
         particles[i].curvature = 0;
+    }
+
+    if (d_debugGrid.getValue())
+    {
+        for (unsigned i = 0u; i < n; i++)
+        {
+            particles[i].neighbors2.clear();
+        }
     }
 
     lastTime = (Real)this->getContext()->getTime();
@@ -271,12 +277,8 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
 
     //int n0 = particles.size();
     particles.resize(n);
-    for (int i=0; i<n; i++)
-    {
+    for (int i=0; i<n; i++) {
         particles[i].neighbors.clear();
-#ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
-        particles[i].neighbors2.clear();
-#endif
     }
 
     // First compute the neighbors
@@ -303,8 +305,16 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
     {
         grid->updateGrid(x.ref());
         grid->findNeighbors(this, h);
-#ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
-        // Check grid
+
+        if (!d_debugGrid.getValue())
+            return;
+        
+
+        for (int i = 0; i < n; i++) {
+            particles[i].neighbors2.clear();
+        }
+
+        // Check grid info
         for (int i=0; i<n; i++)
         {
             const Coord& ri = x[i];
@@ -348,7 +358,7 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
                 msg_error() << "";
             }
         }
-#endif
+
     }
 }
 
@@ -539,7 +549,7 @@ void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mpar
 template <class DataTypes>
 SReal SPHFluidForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
 {
-    serr<<"getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error() << "getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 
@@ -557,75 +567,76 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glDepthMask(0);
-
     std::vector<sofa::defaulttype::Vec4f> colorVector;
     std::vector<sofa::defaulttype::Vector3> vertices;
-
-    for (unsigned int i=0; i<particles.size(); i++)
+    if (d_debugGrid.getValue())
     {
-        Particle& Pi = particles[i];
-#ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
-        // Check grid
-        if (Pi.neighbors.size() != Pi.neighbors2.size())
+        for (unsigned int i = 0; i < particles.size(); i++)
         {
-            colorVector.push_back(sofa::defaulttype::Vec4f(1,0,0,1));
-            for (unsigned int j=0; j<Pi.neighbors.size(); j++)
+            Particle& Pi = particles[i];
+            if (Pi.neighbors.size() != Pi.neighbors2.size())
             {
-                int index = Pi.neighbors[j].first;
-                unsigned int j2 = 0;
-                while (j2 < Pi.neighbors2.size() && Pi.neighbors2[j2].first != index)
-                    ++j2;
-                if (j2 == Pi.neighbors2.size())
+                colorVector.push_back(sofa::defaulttype::Vec4f(1, 0, 0, 1));
+                for (unsigned int j = 0; j < Pi.neighbors.size(); j++)
                 {
-                    vertices.push_back(sofa::defaulttype::Vector3(x[i]));
-                    vertices.push_back(sofa::defaulttype::Vector3(x[index]));
+                    int index = Pi.neighbors[j].first;
+                    unsigned int j2 = 0;
+                    while (j2 < Pi.neighbors2.size() && Pi.neighbors2[j2].first != index)
+                        ++j2;
+                    if (j2 == Pi.neighbors2.size())
+                    {
+                        vertices.push_back(sofa::defaulttype::Vector3(x[i]));
+                        vertices.push_back(sofa::defaulttype::Vector3(x[index]));
+                    }
                 }
-            }
-            vparams->drawTool()->drawLines(vertices,1,colorVector[0]);
-            vertices.clear();
-            colorVector.clear();
+                vparams->drawTool()->drawLines(vertices, 1, colorVector[0]);
+                vertices.clear();
+                colorVector.clear();
 
-            colorVector.push_back(sofa::defaulttype::Vec4f(1,0,1,1));
-            for (unsigned int j=0; j<Pi.neighbors2.size(); j++)
-            {
-                int index = Pi.neighbors2[j].first;
-                unsigned int j2 = 0;
-                while (j2 < Pi.neighbors.size() && Pi.neighbors[j2].first != index)
-                    ++j2;
-                if (j2 == Pi.neighbors.size())
+                colorVector.push_back(sofa::defaulttype::Vec4f(1, 0, 1, 1));
+                for (unsigned int j = 0; j < Pi.neighbors2.size(); j++)
                 {
-                    vertices.push_back(sofa::defaulttype::Vector3(x[i]));
-                    vertices.push_back(sofa::defaulttype::Vector3(x[index]));
+                    int index = Pi.neighbors2[j].first;
+                    unsigned int j2 = 0;
+                    while (j2 < Pi.neighbors.size() && Pi.neighbors[j2].first != index)
+                        ++j2;
+                    if (j2 == Pi.neighbors.size())
+                    {
+                        vertices.push_back(sofa::defaulttype::Vector3(x[i]));
+                        vertices.push_back(sofa::defaulttype::Vector3(x[index]));
+                    }
                 }
+                vparams->drawTool()->drawLines(vertices, 1, colorVector[0]);
+                vertices.clear();
+                colorVector.clear();
             }
-            vparams->drawTool()->drawLines(vertices,1,colorVector[0]);
+        }
+    }
+    else
+    {
+        for (unsigned int i = 0; i < particles.size(); i++)
+        {
+            Particle& Pi = particles[i];
+            for (typename std::vector< std::pair<int, Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
+            {
+                const int j = it->first;
+                const float r_h = (float)it->second;
+                float f = r_h * 2;
+                if (f < 1)
+                {
+                    colorVector.push_back(sofa::defaulttype::Vec4f(0, 1 - f, f, 1 - r_h));
+                }
+                else
+                {
+                    colorVector.push_back(sofa::defaulttype::Vec4f(f - 1, 0, 2 - f, 1 - r_h));
+                }
+                vertices.push_back(sofa::defaulttype::Vector3(x[i]));
+                vertices.push_back(sofa::defaulttype::Vector3(x[j]));
+            }
+            vparams->drawTool()->drawLines(vertices, 1, colorVector);
             vertices.clear();
             colorVector.clear();
         }
-#else
-        for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
-        {
-            const int j = it->first;
-            const float r_h = (float)it->second;
-            float f = r_h*2;
-            if (f < 1)
-            {
-                colorVector.push_back(sofa::defaulttype::Vec4f(0,1-f,f,1-r_h));
-            }
-            else
-            {
-                colorVector.push_back(sofa::defaulttype::Vec4f(f-1,0,2-f,1-r_h));
-            }
-            vertices.push_back(sofa::defaulttype::Vector3(x[i]));
-            vertices.push_back(sofa::defaulttype::Vector3(x[j]));
-        }
-        vparams->drawTool()->drawLines(vertices,1,colorVector);
-        vertices.clear();
-        colorVector.clear();
-#endif
     }
 
     vparams->drawTool()->disableBlending();
@@ -646,6 +657,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         }
         vertices.push_back(sofa::defaulttype::Vector3(x[i]));
     }
+
     vparams->drawTool()->drawPoints(vertices,5,colorVector);
     vertices.clear();
     colorVector.clear();

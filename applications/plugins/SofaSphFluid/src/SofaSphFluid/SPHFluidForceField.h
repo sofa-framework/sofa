@@ -459,7 +459,7 @@ public:
     Data< int > pressureType; ///< 0 = none, 1 = default pressure
     Data< int > viscosityType; ///< 0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity
     Data< int > surfaceTensionType; ///< 0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007
-
+    Data< bool > d_debugGrid;
 protected:
     struct Particle
     {
@@ -468,9 +468,7 @@ protected:
         Deriv normal;
         Real curvature;
         sofa::helper::vector< std::pair<int,Real> > neighbors; ///< indice + r/h
-#ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
         sofa::helper::vector< std::pair<int,Real> > neighbors2; ///< indice + r/h
-#endif
     };
 
     Real lastTime;
