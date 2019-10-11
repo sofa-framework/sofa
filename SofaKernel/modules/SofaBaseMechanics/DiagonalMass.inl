@@ -88,10 +88,13 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyPointDestruction(
     size_t newSize = masses.size()-numberPointsRemoved;
     size_t counter = 0;
 
+    // Remove the mass of the removed points from totalMass
     for(size_t i=0; i<numberPointsRemoved; i++)
     {
         totalMass -= masses[pointsRemoved[i]];
     }
+
+    // Resize the vertexMass vector and remove removed indices
     bool removedPointFound;
     for(size_t i=0; i<newSize; i++)
     {
