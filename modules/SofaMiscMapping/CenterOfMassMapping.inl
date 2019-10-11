@@ -46,15 +46,22 @@ template <class TIn, class TOut>
 void CenterOfMassMapping<TIn, TOut>::init()
 {
     //get the pointer on the input dofs mass
-    masses = this->fromModel->getContext()->getMass();
-    if(!masses)
+    if (!l_mass)
+    {
+        l_mass.set(this->fromModel->getContext()->getMass());
+        if(!l_mass.get())
+            msg_error(this) << "Could not retrieve mass from context.";
+    }
+    else if(!l_mass.get())
+    {
+        msg_error(this) << "Could not retrieve mass from link. Check link path";
         return;
-
+    }
     totalMass = 0.0;
 
     //compute the total mass of the object
     for (unsigned int i=0, size = this->fromModel->getSize() ; i< size; i++)
-        totalMass += masses->getElementMass(i);
+        totalMass += l_mass->getElementMass(i);
 
     Inherit::init();
 }
@@ -66,7 +73,7 @@ void CenterOfMassMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* 
     OutVecCoord& childPositions = *outData.beginEdit(mparams);
     const InVecCoord& parentPositions = inData.getValue();
 
-    if(!masses || totalMass==0.0)
+    if(!l_mass || totalMass==0.0)
     {
         serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
         return;
@@ -78,7 +85,7 @@ void CenterOfMassMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* 
     //with Xi: position of the dof i, Mi: mass of the dof i, and Mt : total mass of the object
     for (unsigned int i=0 ; i<parentPositions.size() ; i++)
     {
-        outX += parentPositions[i].getCenter() * masses->getElementMass(i);
+        outX += parentPositions[i].getCenter() * l_mass->getElementMass(i);
     }
 
     childPositions[0] = outX / totalMass;
@@ -93,7 +100,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams*
     OutVecDeriv& childForces = *outData.beginEdit(mparams);
     const InVecDeriv& parentForces = inData.getValue();
 
-    if(!masses || totalMass==0.0)
+    if(!l_mass || totalMass==0.0)
     {
         serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
         return;
@@ -105,7 +112,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams*
     //with Fi: force of the dof i, Mi: mass of the dof i, and Mt : total mass of the object
     for (unsigned int i=0 ; i<parentForces.size() ; i++)
     {
-        outF += getVCenter(parentForces[i]) * masses->getElementMass(i);
+        outF += getVCenter(parentForces[i]) * l_mass->getElementMass(i);
     }
 
     childForces[0] = outF / totalMass;
@@ -120,7 +127,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams
     InVecDeriv& parentForces = *outData.beginEdit(mparams);
     const OutVecDeriv& childForces = inData.getValue();
 
-    if(!masses || totalMass==0.0)
+    if(!l_mass || totalMass==0.0)
     {
         serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
         return;
@@ -130,7 +137,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams
     //the force on a dof is proportional to its mass
     //relation is Fi = Fc * (Mi/Mt), with Fc: force of center of mass, Mi: dof mass, Mt: total mass
     for (unsigned int i=0 ; i<parentForces.size() ; i++)
-        getVCenter(parentForces[i]) += childForces[0] * (masses->getElementMass(i) / totalMass);
+        getVCenter(parentForces[i]) += childForces[0] * (l_mass->getElementMass(i) / totalMass);
 
     outData.endEdit(mparams);
 }

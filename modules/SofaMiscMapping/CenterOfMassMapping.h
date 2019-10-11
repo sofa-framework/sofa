@@ -100,14 +100,16 @@ public:
 
 protected :
     CenterOfMassMapping ( )
-        : Inherit ()
+        : l_mass(initLink("mass", "link to the mass associated with the parent model")),
+          Inherit ()
     {}
 
     virtual ~CenterOfMassMapping()
     {}
 
     ///pointer on the input DOFs mass
-    sofa::core::behavior::BaseMass * masses;
+//    sofa::core::behavior::BaseMass * masses;
+    SingleLink<CenterOfMassMapping<TIn,TOut>, sofa::core::behavior::BaseMass, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_mass;
 
     /// the total mass of the input object
     double totalMass;
