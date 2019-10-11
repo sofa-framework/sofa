@@ -1,0 +1,58 @@
+<Node dt="0.01" gravity="0 -10 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaSphFluid"/>
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
+    <Node name="Less_pressure">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        
+        <MechanicalObject name="Model" />
+        <RegularGrid nx="5" ny="40" nz="5" xmin="-1.5" xmax="0" ymin="0" ymax="15" zmin="10" zmax="11.5"/>
+        <UniformMass name="M1" vertexMass="1" />
+        <SpatialGridContainer cellWidth="0.75"/>
+        <SPHFluidForceField radius="0.745" density="15" kernelType="1" viscosityType="2" viscosity="10" pressure="10" surfaceTension="-1000" printLog="0" />
+
+        <PlaneForceField normal="1 0 0" d="-4" showPlane="0"/>
+        <PlaneForceField normal="-1 0 0" d="-14" showPlane="0"/>
+        <PlaneForceField normal="0.3 1 0" d="-4" showPlane="1"/>
+        <PlaneForceField normal="0 0 1" d="6" showPlane="1"/>
+        <PlaneForceField normal="0 0 -1" d="-14" showPlane="1"/>
+    </Node> 
+    
+    <Node name="Normal">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        
+        <MechanicalObject name="MModel" />
+        <RegularGrid nx="5" ny="40" nz="5" xmin="-1.5" xmax="0" ymin="0" ymax="15" zmin="-1.5" zmax="0"/>
+        <UniformMass name="M1" vertexMass="1" />
+        <SpatialGridContainer cellWidth="0.75"/>
+        <SPHFluidForceField radius="0.745" density="15" kernelType="1" viscosityType="2" viscosity="10" pressure="1000" surfaceTension="-1000" printLog="0" />
+        
+        <PlaneForceField normal="1 0 0" d="-4" showPlane="0"/>
+        <PlaneForceField normal="-1 0 0" d="-14" showPlane="0"/>
+        <PlaneForceField normal="0.3 1 0" d="-4" showPlane="1"/>
+        <PlaneForceField normal="0 0 1" d="-4" showPlane="1"/>
+        <PlaneForceField normal="0 0 -1" d="-4" showPlane="1"/>
+    </Node>
+    
+    
+    <Node name="Double">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        
+        <MechanicalObject name="MModel" />
+        <RegularGrid nx="5" ny="80" nz="5" xmin="-1.5" xmax="0" ymin="0" ymax="15" zmin="-11.5" zmax="-10"/>
+        <UniformMass name="M1" vertexMass="1" />
+        <SpatialGridContainer cellWidth="0.75"/>
+        <SPHFluidForceField radius="0.745" density="30" kernelType="1" viscosityType="2" viscosity="10" pressure="1000" surfaceTension="-1000" printLog="0" />
+        
+        <PlaneForceField normal="1 0 0" d="-4" showPlane="0"/>
+        <PlaneForceField normal="-1 0 0" d="-14" showPlane="0"/>
+        <PlaneForceField normal="0.3 1 0" d="-4" showPlane="1"/>
+        <PlaneForceField normal="0 0 1" d="-14" showPlane="1"/>
+        <PlaneForceField normal="0 0 -1" d="6" showPlane="1"/>
+    </Node>
+    
+</Node>
