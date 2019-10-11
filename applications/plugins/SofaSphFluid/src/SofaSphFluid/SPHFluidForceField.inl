@@ -40,19 +40,20 @@ namespace forcefield
 
 template<class DataTypes>
 SPHFluidForceField<DataTypes>::SPHFluidForceField()
-    : particleRadius	(initData(&particleRadius		,Real(1)		, "radius", "Radius of a Particle")),
-                    particleMass		(initData(&particleMass			,Real(1)		, "mass", "Mass of a Particle")),
-                    pressureStiffness	(initData(&pressureStiffness	,Real(100)		, "pressure", "Pressure")),
-                    density0			(initData(&density0				,Real(1)		, "density", "Density")),
-                    viscosity			(initData(&viscosity			,Real(0.001f)	, "viscosity", "Viscosity")),
-                    surfaceTension	(initData(&surfaceTension		,Real(0)		, "surfaceTension", "Surface Tension")),
-//	pressureExponent	(initData(&pressureExponent		,1				, "pressureExponent", "Exponent of density variation in pressure expression")),
-                    kernelType(initData(&kernelType, 0, "kernelType", "0 = default kernels, 1 = cubic spline")),
-                    pressureType(initData(&pressureType, 1, "pressureType", "0 = none, 1 = default pressure")),
-                    viscosityType(initData(&viscosityType, 1, "viscosityType", "0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity")),
-                    surfaceTensionType(initData(&surfaceTensionType, 1, "surfaceTensionType", "0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007")),
-                    grid(NULL)
+    : particleRadius (initData(&particleRadius, Real(1), "radius", "Radius of a Particle"))
+    , particleMass (initData(&particleMass, Real(1), "mass", "Mass of a Particle"))
+    , pressureStiffness (initData(&pressureStiffness, Real(100), "pressure", "Pressure"))
+    , density0 (initData(&density0, Real(1), "density", "Density"))
+    , viscosity (initData(&viscosity, Real(0.001f), "viscosity", "Viscosity"))
+    , surfaceTension (initData(&surfaceTension, Real(0), "surfaceTension", "Surface Tension"))
+    // pressureExponent (initData(&pressureExponent  ,1    , "pressureExponent", "Exponent of density variation in pressure expression")),
+    , kernelType(initData(&kernelType, 0, "kernelType", "0 = default kernels, 1 = cubic spline"))
+    , pressureType(initData(&pressureType, 1, "pressureType", "0 = none, 1 = default pressure"))
+    , viscosityType(initData(&viscosityType, 1, "viscosityType", "0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity"))
+    , surfaceTensionType(initData(&surfaceTensionType, 1, "surfaceTensionType", "0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007"))
+    , grid(NULL)
 {
+
 }
 
 template<SPHKernels KT, class Deriv>
@@ -204,7 +205,8 @@ void SPHFluidForceField<DataTypes>::init()
 
     this->getContext()->get(grid); //new Grid(particleRadius.getValue());
     if (grid==NULL)
-        serr<<"SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!" << sendl;
+        msg_error() << "SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!";
+
     const unsigned n = this->mstate->getSize();
     particles.resize(n);
     for (unsigned i=0u; i<n; i++)
@@ -231,7 +233,7 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* mpara
     switch(kernelType.getValue())
     {
     default:
-        serr << "Unsupported kernelType " << kernelType.getValue() << sendl;
+        msg_error() << "Unsupported kernelType " << kernelType.getValue();
         // fallthrough
     case 0: // default
     {
@@ -321,8 +323,8 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
         {
             if (particles[i].neighbors.size() != particles[i].neighbors2.size())
             {
-                serr << "particle "<<i<<" "<< x[i] <<" : "<<particles[i].neighbors.size()<<" neighbors on grid, "<< particles[i].neighbors2.size() << " neighbors on bruteforce."<<sendl;
-                serr << "grid-only neighbors:";
+                msg_error() << "particle "<<i<<" "<< x[i] <<" : "<<particles[i].neighbors.size()<<" neighbors on grid, "<< particles[i].neighbors2.size() << " neighbors on bruteforce.";
+                msg_error() << "grid-only neighbors:";
                 for (unsigned int j=0; j<particles[i].neighbors.size(); j++)
                 {
                     int index = particles[i].neighbors[j].first;
@@ -330,10 +332,10 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
                     while (j2 < particles[i].neighbors2.size() && particles[i].neighbors2[j2].first != index)
                         ++j2;
                     if (j2 == particles[i].neighbors2.size())
-                        serr << " "<< x[index] << "<"<< particles[i].neighbors[j].first<<","<<particles[i].neighbors[j].second<<">";
+                        msg_error() << " "<< x[index] << "<"<< particles[i].neighbors[j].first<<","<<particles[i].neighbors[j].second<<">";
                 }
-                serr << ""<<sendl;
-                serr << "bruteforce-only neighbors:";
+                msg_error() << "";
+                msg_error() << "bruteforce-only neighbors:";
                 for (unsigned int j=0; j<particles[i].neighbors2.size(); j++)
                 {
                     int index = particles[i].neighbors2[j].first;
@@ -341,9 +343,9 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
                     while (j2 < particles[i].neighbors.size() && particles[i].neighbors[j2].first != index)
                         ++j2;
                     if (j2 == particles[i].neighbors.size())
-                        serr << " "<< x[index] << "<"<< particles[i].neighbors2[j].first<<","<<particles[i].neighbors2[j].second<<">";
+                        msg_error() << " "<< x[index] << "<"<< particles[i].neighbors2[j].first<<","<<particles[i].neighbors2[j].second<<">";
                 }
-                serr << ""<<sendl;
+                msg_error() << "";
             }
         }
 #endif
