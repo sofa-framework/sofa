@@ -23,6 +23,7 @@
 #include <SofaBaseTopology/SofaBaseTopology_test/fake_TopologyScene.h>
 #include <sofa/helper/testing/BaseTest.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/helper/system/FileRepository.h>
 
 using namespace sofa::component::topology;
@@ -38,6 +39,7 @@ public:
     bool testEdgeBuffers();
     bool testVertexBuffers();
     bool checkTopology();
+    bool testTetrahedronGeometry();
 
     // ground truth from obj file;
     int nbrTetrahedron = 44;
@@ -408,6 +410,37 @@ bool TetrahedronSetTopology_test::checkTopology()
     return res;
 }
 
+bool TetrahedronSetTopology_test::testTetrahedronGeometry()
+{
+    typedef sofa::component::topology::TetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3Types> TetraAlgo3;
+
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/6_tetra_bad.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
+
+    std::vector<TetraAlgo3*> algos;
+    scene->getNode()->get<TetraAlgo3>(&algos, sofa::core::objectmodel::BaseContext::SearchRoot);
+
+    if (algos.empty() || algos.size() > 1)
+    {
+        if (scene != nullptr)
+            delete scene;
+        return false;
+    }
+
+    TetraAlgo3* tetraAlgo = algos[0];
+    if (tetraAlgo == nullptr)
+    {
+        if (scene != nullptr)
+            delete scene;
+        return false;
+    }
+    
+    const sofa::helper::vector <sofa::core::topology::BaseMeshTopology::TetraID>& badTetra = tetraAlgo->computeBadTetrahedron();
+
+    EXPECT_EQ(badTetra.size(), 4);
+
+    return true;
+}
+
 
 
 TEST_F(TetrahedronSetTopology_test, testEmptyContainer)
@@ -439,6 +472,12 @@ TEST_F(TetrahedronSetTopology_test, checkTopology)
 {
     ASSERT_TRUE(checkTopology());
 }
+
+TEST_F(TetrahedronSetTopology_test, testTetrahedronGeometry)
+{
+    ASSERT_TRUE(testTetrahedronGeometry());
+}
+
 
 
 // TODO epernod 2018-07-05: test element on Border
