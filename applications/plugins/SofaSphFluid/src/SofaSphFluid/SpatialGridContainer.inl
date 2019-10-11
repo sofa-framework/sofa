@@ -19,18 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: SpatialGridContainer
-//
-// Description:
-//
-//
-// Author: The SOFA team <http://www.sofa-framework.org>, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
 #ifndef SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_INL
 #define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_INL
 
@@ -675,7 +663,7 @@ void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
 template<class DataTypes>
 SpatialGridContainer<DataTypes>::SpatialGridContainer()
     : grid(NULL)
-    , d_cellWidth(initData(&d_cellWidth, (Real)1.0, "cellWidth", "Width each cell in the grid. If it is used to compute neighboors, it should be greater that the max radius considered."))
+    , d_cellWidth(initData(&d_cellWidth, (Real)1.0, "cellWidth", "Width each cell in the grid. If it is used to compute neighboors, it should be greater than the max radius considered."))
     , d_showGrid(initData(&d_showGrid, false, "showGrid", "activate rendering of the grid"))
     , d_autoUpdate(initData(&d_autoUpdate, false, "autoUpdate", "Automatically update the grid at each iteration."))
     , d_sortPoints(initData(&d_sortPoints, false, "sortPoints", "Sort points depending on which cell they are in the grid. This is required for efficient collision detection."))
