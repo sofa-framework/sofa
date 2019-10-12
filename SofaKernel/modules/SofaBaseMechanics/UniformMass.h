@@ -55,12 +55,12 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef TMassType MassType;
 
-    Data<MassType>                        d_vertexMass;   ///< single value defining the mass of each particle
-    Data<SReal>                           d_totalMass;    ///< if >0 : total mass of this body
+    Data<MassType> d_vertexMass;   ///< single value defining the mass of each particle
+    Data<SReal> d_totalMass;    ///< if >0 : total mass of this body
     sofa::core::objectmodel::DataFileName d_filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
 
-    Data<bool>                            d_showCenterOfGravity; ///< to display the center of gravity of the system
-    Data<float>                           d_showAxisSize;        ///< to display the center of gravity of the system
+    Data<bool>  d_showCenterOfGravity; ///< to display the center of gravity of the system
+    Data<float> d_showAxisSize;        ///< to display the center of gravity of the system
 
     Data<bool>  d_computeMappingInertia; ///< to be used if the mass is placed under a mapping
     Data<bool>  d_showInitialCenterOfGravity; ///< display the initial center of gravity of the system
@@ -84,9 +84,6 @@ public:
     using core::behavior::ForceField<DataTypes>::mstate ;
     using core::objectmodel::BaseObject::getContext;
     ////////////////////////////////////////////////////////////////////////////
-
-    bool m_doesTopoChangeAffect;
-
 
 protected:
     UniformMass();
@@ -153,7 +150,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
 
-    //Temporary function to warn the user when old attribute names are used
+    //Temporary function to warn the user when old attribute names are used until v19.12
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         if (arg->getAttribute("mass"))
