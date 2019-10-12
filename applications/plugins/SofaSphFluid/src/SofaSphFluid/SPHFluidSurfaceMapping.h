@@ -138,9 +138,9 @@ public:
 
 
 protected:
-    Data< double > mStep; ///< Step
-    Data< double > mRadius; ///< Radius
-    Data< double > mIsoValue; ///< Iso Value
+    Data< double > d_mStep; ///< Step
+    Data< double > d_mRadius; ///< Radius
+    Data< double > d_mIsoValue; ///< Iso Value
 
 
     typedef forcefield::SPHFluidForceField<In> SPHForceField;
@@ -180,7 +180,7 @@ protected:
         OutReal interp = (iso-v0)/(v1-v0);
         pos[C] += interp;
         out.resize(p+1);
-        out[p] = pos * mStep.getValue();
+        out[p] = pos * d_mStep.getValue();
         if (normals)
         {
             normals->resize(p+1);

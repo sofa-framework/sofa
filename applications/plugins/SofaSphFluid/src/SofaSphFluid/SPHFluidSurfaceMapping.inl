@@ -49,9 +49,9 @@ namespace mapping
 template <class In, class Out>
 SPHFluidSurfaceMapping<In, Out>::SPHFluidSurfaceMapping()
     : Inherit()
-    , mStep(initData(&mStep, 0.5, "step", "Step"))
-    , mRadius(initData(&mRadius, 2.0, "radius", "Radius"))
-    , mIsoValue(initData(&mIsoValue, 0.5, "isoValue", "Iso Value"))
+    , d_mStep(initData(&d_mStep, 0.5, "step", "Step"))
+    , d_mRadius(initData(&d_mRadius, 2.0, "radius", "Radius"))
+    , d_mIsoValue(initData(&d_mIsoValue, 0.5, "isoValue", "Iso Value"))
     , sph(NULL)
     , grid(NULL)
     , firstApply(true)
@@ -62,37 +62,37 @@ SPHFluidSurfaceMapping<In, Out>::SPHFluidSurfaceMapping()
 template <class In, class Out>
 double SPHFluidSurfaceMapping<In, Out>::getStep() const
 {
-    return mStep.getValue();
+    return d_mStep.getValue();
 }
 
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In, Out>::setStep(double val)
 {
-    mStep.setValue(val);
+    d_mStep.setValue(val);
 }
 
 template <class In, class Out>
 double SPHFluidSurfaceMapping<In, Out>::getRadius() const
 {
-    return mRadius.getValue();
+    return d_mRadius.getValue();
 }
 
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In, Out>::setRadius(double val)
 {
-    mRadius.setValue(val);
+    d_mRadius.setValue(val);
 }
 
 template <class In, class Out>
 double SPHFluidSurfaceMapping<In, Out>::getIsoValue() const
 {
-    return mIsoValue.getValue();
+    return d_mIsoValue.getValue();
 }
 
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In, Out>::setIsoValue(double val)
 {
-    mIsoValue.setValue(val);
+    d_mIsoValue.setValue(val);
 }
 
 
@@ -109,12 +109,12 @@ void SPHFluidSurfaceMapping<In,Out>::init()
     }
     if (sph)
     {
-        //mRadius.getValue() = sph->getParticleRadius();
-        if (mIsoValue.getValue() == 0.5)
-            mIsoValue.setValue( mIsoValue.getValue()/ sph->getParticleFieldConstant((InReal)mRadius.getValue()));
+        //d_mRadius.getValue() = sph->getParticleRadius();
+        if (d_mIsoValue.getValue() == 0.5)
+            d_mIsoValue.setValue( d_mIsoValue.getValue()/ sph->getParticleFieldConstant((InReal)d_mRadius.getValue()));
     }
 
-    grid = new Grid((InReal)mStep.getValue());
+    grid = new Grid((InReal)d_mStep.getValue());
 }
 
 template <class In, class Out>
@@ -251,7 +251,7 @@ void SPHFluidSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
 
     //if (!sph) return;
     if (!grid) return;
-    //const InReal invStep = (InReal)(1/mStep.getValue());
+    //const InReal invStep = (InReal)(1/d_mStep.getValue());
     Data< OutVecDeriv > *normals_data = this->toModel->write(core::VecDerivId::normal());
     OutVecDeriv *normals;
     //if toModel is not a VisualModelImpl
@@ -274,7 +274,7 @@ void SPHFluidSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
     if (in.size()==0)
         return;
 
-    const InReal r = (InReal)(getRadius()); // / mStep.getValue());
+    const InReal r = (InReal)(getRadius()); // / d_mStep.getValue());
     grid->begin();
     for (unsigned int ip=0; ip<in.size(); ip++)
     {
@@ -485,14 +485,14 @@ void SPHFluidSurfaceMapping<In,Out>::applyJT(const core::MechanicalParams * /*mp
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vparams)
 {
-   /* if (!vparams->displayFlags().getShowMappings())
+    if (!vparams->displayFlags().getShowMappings())
         return;
     if (!grid)
         return;
 
     grid->draw(vparams);
 
-    float scale = (float)mStep.getValue();
+    float scale = (float)d_mStep.getValue();
     typename Grid::iterator end = grid->gridEnd();
     typename Grid::iterator it;
 
@@ -512,7 +512,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
             {
                 for (x=0; x<GRIDDIM; x++)
                 {
-                    if (c->data.val > mIsoValue.getValue())
+                    if (c->data.val > d_mIsoValue.getValue())
                         points1.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
                     c+=DX;
                 }
@@ -567,7 +567,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
             }
         }
     }
-    vparams->drawTool()->drawLines(points3, 1, sofa::defaulttype::Vec<4,float>(0,1,0,1));*/
+    vparams->drawTool()->drawLines(points3, 1, sofa::defaulttype::Vec<4,float>(0,1,0,1));
 }
 
 } // namespace mapping
