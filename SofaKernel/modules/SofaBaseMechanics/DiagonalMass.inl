@@ -59,7 +59,7 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
     , m_pointHandler(NULL)
     , m_topologyType(TOPOLOGY_UNKNOWN)
-    , l_topology(initLink("topology", "link to the topology container"))
+    , l_topologyLink(initLink("topology", "link to the topology container"))
 {
     this->addAlias(&d_fileMass,"fileMass");
 }
@@ -565,16 +565,16 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 template <class DataTypes, class MassType>
 bool DiagonalMass<DataTypes, MassType>::checkTopology()
 {
-    if (l_topology.empty())
+    if (l_topologyLink.empty())
     {
         msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopology());
+        l_topologyLink.set(this->getContext()->getMeshTopology());
     }
 
-    _topology = l_topology.get();
+    _topology = l_topologyLink.get();
     if (_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath();
         return false;
     }
 

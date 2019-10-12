@@ -211,12 +211,12 @@ protected:
     /// The type of topology to build the mass from the topology
     TopologyType m_topologyType;
 
-    /// Pointer to the topology container. Will be set by link @sa l_topology
+    /// Pointer to the topology container. Will be set by link @sa l_topologyLink
     sofa::core::topology::BaseMeshTopology* _topology;
 
 public:
     /// Link to be set to the topology container in the component graph. 
-    SingleLink<DiagonalMass<DataTypes, TMassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<DiagonalMass<DataTypes, TMassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topologyLink;
 
     sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
     sofa::component::topology::TriangleSetGeometryAlgorithms<GeometricalTypes>* triangleGeo;
