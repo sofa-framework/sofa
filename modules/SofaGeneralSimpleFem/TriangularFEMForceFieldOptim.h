@@ -277,7 +277,6 @@ public:
         TriangularFEMForceFieldOptim<DataTypes>* ff;
     };
 
-    sofa::core::topology::BaseMeshTopology* _topology;
     template<class MatrixWriter>
     void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
 
@@ -301,9 +300,14 @@ public:
     TFEMFFOTriangleInfoHandler* triangleInfoHandler;
     TFEMFFOTriangleStateHandler* triangleStateHandler;
 
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<TriangularFEMForceFieldOptim<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topologyLink;
+
 protected:
     Real drawPrevMaxStress;
 
+    /// Pointer to the topology container. Will be set by link @sa l_topologyLink
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 

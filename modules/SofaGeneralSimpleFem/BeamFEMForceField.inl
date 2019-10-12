@@ -88,6 +88,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , d_radiusInner(initData(&d_radiusInner,(Real)radiusInner,"radiusInner","inner radius of the section for hollow beams"))
     , d_listSegment(initData(&d_listSegment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
     , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
+    , l_topologyLink(initLink("topology", "link to the topology container"))
     , m_partialListSegment(false)
     , m_updateStiffnessMatrix(true)
     , m_assembling(false)
@@ -120,45 +121,50 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::init()
 {
     Inherit1::init();
+    
+    if (l_topologyLink.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topologyLink.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topologyLink.get();
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath() << ". Object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)";
+        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
+    }
+
     BaseContext* context = this->getContext();
-
-    m_topology = context->getMeshTopology();
-
-
     m_stiffnessContainer = context->BaseContext::get<container::StiffnessContainer>();
     m_poissonContainer = context->BaseContext::get<container::PoissonContainer>();
 
-    if (m_topology==NULL)
+
+    if(m_topology->getNbEdges()==0)
     {
-        msg_error() << "Object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)";
+        msg_error() << "Topology is empty.";
         return;
+    }
+    m_indexedElements = &m_topology->getEdges();
+    if (d_listSegment.getValue().size() == 0)
+    {
+        msg_info() <<"Forcefield named "<<this->getName()<<" applies to the wholo topo.";
+        m_partialListSegment = false;
     }
     else
     {
-        if(m_topology->getNbEdges()==0)
-        {
-            msg_error() << "Topology is empty.";
-            return;
-        }
-        m_indexedElements = &m_topology->getEdges();
-        if (d_listSegment.getValue().size() == 0)
-        {
-            msg_info() <<"Forcefield named "<<this->getName()<<" applies to the wholo topo.";
-            m_partialListSegment = false;
-        }
-        else
-        {
-            msg_info() <<"Forcefield named "<<this->getName()<<" applies to a subset of edges.";
-            m_partialListSegment = true;
+        msg_info() <<"Forcefield named "<<this->getName()<<" applies to a subset of edges.";
+        m_partialListSegment = true;
 
-            for (unsigned int j=0; j<d_listSegment.getValue().size(); j++)
+        for (unsigned int j=0; j<d_listSegment.getValue().size(); j++)
+        {
+            unsigned int i = d_listSegment.getValue()[j];
+            if (i>=m_indexedElements->size())
             {
-                unsigned int i = d_listSegment.getValue()[j];
-                if (i>=m_indexedElements->size())
-                {
-                    msg_warning() <<"Defined listSegment is not compatible with topology";
-                    m_partialListSegment = false;
-                }
+                msg_warning() <<"Defined listSegment is not compatible with topology";
+                m_partialListSegment = false;
             }
         }
     }
