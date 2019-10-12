@@ -40,18 +40,18 @@ namespace forcefield
 
 template<class DataTypes>
 SPHFluidForceField<DataTypes>::SPHFluidForceField()
-    : particleRadius (initData(&particleRadius, Real(1), "radius", "Radius of a Particle"))
-    , particleMass (initData(&particleMass, Real(1), "mass", "Mass of a Particle"))
-    , pressureStiffness (initData(&pressureStiffness, Real(100), "pressure", "Pressure"))
-    , density0 (initData(&density0, Real(1), "density", "Density"))
-    , viscosity (initData(&viscosity, Real(0.001f), "viscosity", "Viscosity"))
-    , surfaceTension (initData(&surfaceTension, Real(0), "surfaceTension", "Surface Tension"))
-    , kernelType(initData(&kernelType, 0, "kernelType", "0 = default kernels, 1 = cubic spline"))
-    , pressureType(initData(&pressureType, 1, "pressureType", "0 = none, 1 = default pressure"))
-    , viscosityType(initData(&viscosityType, 1, "viscosityType", "0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity"))
-    , surfaceTensionType(initData(&surfaceTensionType, 1, "surfaceTensionType", "0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007"))
+    : d_particleRadius (initData(&d_particleRadius, Real(1), "radius", "Radius of a Particle"))
+    , d_particleMass (initData(&d_particleMass, Real(1), "mass", "Mass of a Particle"))
+    , d_pressureStiffness (initData(&d_pressureStiffness, Real(100), "pressure", "Pressure"))
+    , d_density0 (initData(&d_density0, Real(1), "density", "Density"))
+    , d_viscosity (initData(&d_viscosity, Real(0.001f), "viscosity", "Viscosity"))
+    , d_surfaceTension (initData(&d_surfaceTension, Real(0), "d_surfaceTension", "Surface Tension"))
+    , d_kernelType(initData(&d_kernelType, 0, "kernelType", "0 = default kernels, 1 = cubic spline"))
+    , d_pressureType(initData(&d_pressureType, 1, "pressureType", "0 = none, 1 = default pressure"))
+    , d_viscosityType(initData(&d_viscosityType, 1, "viscosityType", "0 = none, 1 = default d_viscosity using kernel Laplacian, 2 = artificial d_viscosity"))
+    , d_surfaceTensionType(initData(&d_surfaceTensionType, 1, "d_surfaceTensionType", "0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007"))
     , d_debugGrid(initData(&d_debugGrid, false, "debugGrid", "If true will store additionnal information on the grid to check neighbors and draw them"))
-    , grid(NULL)
+    , m_grid(NULL)
 {
 
 }
@@ -71,30 +71,30 @@ void SPHFluidForceField<DataTypes>::init()
     if (!Kv.CheckAll(2, sout.ostringstream(), serr.ostringstream())) serr << sendl;
     sout << sendl;
 
-    this->getContext()->get(grid); //new Grid(particleRadius.getValue());
-    if (grid==NULL)
+    this->getContext()->get(m_grid); //new Grid(d_particleRadius.getValue());
+    if (m_grid==NULL)
         msg_error() << "SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!";
 
     const unsigned n = this->mstate->getSize();
-    particles.resize(n);
+    m_particles.resize(n);
     for (unsigned i=0u; i<n; i++)
     {
-        particles[i].neighbors.clear();
-        particles[i].density = density0.getValue();
-        particles[i].pressure = 0;
-        particles[i].normal.clear();
-        particles[i].curvature = 0;
+        m_particles[i].neighbors.clear();
+        m_particles[i].density = d_density0.getValue();
+        m_particles[i].pressure = 0;
+        m_particles[i].normal.clear();
+        m_particles[i].curvature = 0;
     }
 
     if (d_debugGrid.getValue())
     {
         for (unsigned i = 0u; i < n; i++)
         {
-            particles[i].neighbors2.clear();
+            m_particles[i].neighbors2.clear();
         }
     }
 
-    lastTime = (Real)this->getContext()->getTime();
+    m_lastTime = (Real)this->getContext()->getTime();
 }
 
 
@@ -103,10 +103,10 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* mpara
 {
     computeNeighbors(mparams, d_x, d_v);
 
-    switch(kernelType.getValue())
+    switch(d_kernelType.getValue())
     {
     default:
-        msg_error() << "Unsupported kernelType " << kernelType.getValue();
+        msg_error() << "Unsupported d_kernelType " << d_kernelType.getValue();
         // fallthrough
     case 0: // default
     {
@@ -126,8 +126,8 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* mpara
     }
     }
 
-    msg_info() << "density[" << 0 << "] = " << particles[0].density  << "(" << particles[0].neighbors.size() << " neighbors)"
-               << "density[" << particles.size()/2 << "] = " << particles[particles.size()/2].density ;
+    msg_info() << "density[" << 0 << "] = " << m_particles[0].density  << "(" << m_particles[0].neighbors.size() << " neighbors)"
+               << "density[" << m_particles.size()/2 << "] = " << m_particles[m_particles.size()/2].density ;
 }
 
 
@@ -136,18 +136,18 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
 {
     helper::ReadAccessor<DataVecCoord> x = d_x;
 
-    const Real h = particleRadius.getValue();
+    const Real h = d_particleRadius.getValue();
     const Real h2 = h*h;
 
     const int n = x.size();
-    particles.resize(n);
+    m_particles.resize(n);
     for (int i=0; i<n; i++) {
-        particles[i].neighbors.clear();
+        m_particles[i].neighbors.clear();
     }
 
     // First compute the neighbors
     // This is an O(n2) step, except if a hash-grid is used to optimize it
-    if (grid == NULL)
+    if (m_grid == NULL)
     {
         for (int i=0; i<n; i++)
         {
@@ -159,23 +159,23 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
                 if (r2 < h2)
                 {
                     Real r_h = (Real)sqrt(r2/h2);
-                    particles[i].neighbors.push_back(std::make_pair(j,r_h));
-                    //particles[j].neighbors.push_back(std::make_pair(i,r_h));
+                    m_particles[i].neighbors.push_back(std::make_pair(j,r_h));
+                    //m_particles[j].neighbors.push_back(std::make_pair(i,r_h));
                 }
             }
         }
     }
     else
     {
-        grid->updateGrid(x.ref());
-        grid->findNeighbors(this, h);
+        m_grid->updateGrid(x.ref());
+        m_grid->findNeighbors(this, h);
 
 
         if (!d_debugGrid.getValue())
             return;
 
         for (int i = 0; i < n; i++) {
-            particles[i].neighbors2.clear();
+            m_particles[i].neighbors2.clear();
         }
 
         // Check grid info
@@ -189,35 +189,35 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
                 if (r2 < h2)
                 {
                     Real r_h = (Real)sqrt(r2/h2);
-                    particles[i].neighbors2.push_back(std::make_pair(j,r_h));
+                    m_particles[i].neighbors2.push_back(std::make_pair(j,r_h));
                 }
             }
         }
         for (int i=0; i<n; i++)
         {
-            if (particles[i].neighbors.size() != particles[i].neighbors2.size())
+            if (m_particles[i].neighbors.size() != m_particles[i].neighbors2.size())
             {
-                msg_error() << "particle "<<i<<" "<< x[i] <<" : "<<particles[i].neighbors.size()<<" neighbors on grid, "<< particles[i].neighbors2.size() << " neighbors on bruteforce.";
+                msg_error() << "particle "<<i<<" "<< x[i] <<" : "<<m_particles[i].neighbors.size()<<" neighbors on grid, "<< m_particles[i].neighbors2.size() << " neighbors on bruteforce.";
                 msg_error() << "grid-only neighbors:";
-                for (unsigned int j=0; j<particles[i].neighbors.size(); j++)
+                for (unsigned int j=0; j<m_particles[i].neighbors.size(); j++)
                 {
-                    int index = particles[i].neighbors[j].first;
+                    int index = m_particles[i].neighbors[j].first;
                     unsigned int j2 = 0;
-                    while (j2 < particles[i].neighbors2.size() && particles[i].neighbors2[j2].first != index)
+                    while (j2 < m_particles[i].neighbors2.size() && m_particles[i].neighbors2[j2].first != index)
                         ++j2;
-                    if (j2 == particles[i].neighbors2.size())
-                        msg_error() << " "<< x[index] << "<"<< particles[i].neighbors[j].first<<","<<particles[i].neighbors[j].second<<">";
+                    if (j2 == m_particles[i].neighbors2.size())
+                        msg_error() << " "<< x[index] << "<"<< m_particles[i].neighbors[j].first<<","<<m_particles[i].neighbors[j].second<<">";
                 }
                 msg_error() << "";
                 msg_error() << "bruteforce-only neighbors:";
-                for (unsigned int j=0; j<particles[i].neighbors2.size(); j++)
+                for (unsigned int j=0; j<m_particles[i].neighbors2.size(); j++)
                 {
-                    int index = particles[i].neighbors2[j].first;
+                    int index = m_particles[i].neighbors2[j].first;
                     unsigned int j2 = 0;
-                    while (j2 < particles[i].neighbors.size() && particles[i].neighbors[j2].first != index)
+                    while (j2 < m_particles[i].neighbors.size() && m_particles[i].neighbors[j2].first != index)
                         ++j2;
-                    if (j2 == particles[i].neighbors.size())
-                        msg_error() << " "<< x[index] << "<"<< particles[i].neighbors2[j].first<<","<<particles[i].neighbors2[j].second<<">";
+                    if (j2 == m_particles[i].neighbors.size())
+                        msg_error() << " "<< x[index] << "<"<< m_particles[i].neighbors2[j].first<<","<<m_particles[i].neighbors2[j].second<<">";
                 }
                 msg_error() << "";
             }
@@ -234,33 +234,33 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     helper::ReadAccessor<DataVecCoord> x = d_x;
     helper::ReadAccessor<DataVecDeriv> v = d_v;
 
-    const Real h = particleRadius.getValue();
+    const Real h = d_particleRadius.getValue();
     const Real h2 = h*h;
-    const Real m = particleMass.getValue();
+    const Real m = d_particleMass.getValue();
     const Real m2 = m*m;
-    const Real d0 = density0.getValue();
-    const Real k = pressureStiffness.getValue();
+    const Real d0 = d_density0.getValue();
+    const Real k = d_pressureStiffness.getValue();
     const Real time = (Real)this->getContext()->getTime();
-    const Real viscosity = this->viscosity.getValue();
-    const int viscosityT = (viscosity == 0) ? 0 : viscosityType.getValue();
-    const Real surfaceTension = this->surfaceTension.getValue();
-    const int surfaceTensionT = (surfaceTension <= 0) ? 0 : surfaceTensionType.getValue();
+    const Real d_viscosity = this->d_viscosity.getValue();
+    const int d_viscosityT = (d_viscosity == 0) ? 0 : d_viscosityType.getValue();
+    const Real d_surfaceTension = this->d_surfaceTension.getValue();
+    const int d_surfaceTensionT = (d_surfaceTension <= 0) ? 0 : d_surfaceTensionType.getValue();
     //const Real dt = (Real)this->getContext()->getDt();
-    lastTime = time;
+    m_lastTime = time;
 
     const int n = x.size();
 
     // Initialization
     f.resize(n);
     dforces.clear();
-    //int n0 = particles.size();
-    particles.resize(n);
+    //int n0 = m_particles.size();
+    m_particles.resize(n);
     for (int i=0; i<n; i++)
     {
-        particles[i].density = 0;
-        particles[i].pressure = 0;
-        particles[i].normal.clear();
-        particles[i].curvature = 0;
+        m_particles[i].density = 0;
+        m_particles[i].pressure = 0;
+        m_particles[i].normal.clear();
+        m_particles[i].curvature = 0;
     }
 
     TKd Kd(h);
@@ -271,7 +271,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     // Compute density and pressure
     for (int i=0; i<n; i++)
     {
-        Particle& Pi = particles[i];
+        Particle& Pi = m_particles[i];
         Real density = Pi.density;
 
         density += m*Kd.W(0); // density from current particle
@@ -280,7 +280,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
         {
             const int j = it->first;
             const Real r_h = it->second;
-            Particle& Pj = particles[j];
+            Particle& Pj = m_particles[j];
             Real d = m*Kd.W(r_h);
             density += d;
             Pj.density += d;
@@ -291,16 +291,16 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     }
 
     // Compute surface normal and curvature
-    if (surfaceTensionType == 1)
+    if (d_surfaceTensionType == 1)
     {
         for (int i=0; i<n; i++)
         {
-            Particle& Pi = particles[i];
+            Particle& Pi = m_particles[i];
             for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
             {
                 const int j = it->first;
                 const Real r_h = it->second;
-                Particle& Pj = particles[j];
+                Particle& Pj = m_particles[j];
                 Deriv n = Kc.gradW(x[i]-x[j],r_h) * (m / Pj.density - m / Pi.density);
                 Pi.normal += n;
                 Pj.normal -= n;
@@ -315,7 +315,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     // Compute the forces
     for (int i=0; i<n; i++)
     {
-        Particle& Pi = particles[i];
+        Particle& Pi = m_particles[i];
         // Gravity
         //f[i] += g*(m*Pi.density);
 
@@ -323,20 +323,20 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
         {
             const int j = it->first;
             const Real r_h = it->second;
-            Particle& Pj = particles[j];
+            Particle& Pj = m_particles[j];
             // Pressure
 
             Real pressureFV = ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
 
             // Viscosity
-            switch(viscosityT)
+            switch(d_viscosityT)
             {
             case 0: break;
             case 1:
             {
-                Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity / (Pi.density * Pj.density) * Kv.laplacianW(r_h) );
-                f[i] += fviscosity;
-                f[j] -= fviscosity;
+                Deriv fd_viscosity = ( v[j] - v[i] ) * ( m2 * d_viscosity / (Pi.density * Pj.density) * Kv.laplacianW(r_h) );
+                f[i] += fd_viscosity;
+                f[j] -= fd_viscosity;
                 break;
             }
             case 2:
@@ -344,7 +344,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
                 Real vx = dot(v[i]-v[j],x[i]-x[j]);
                 if (vx < 0)
                 {
-                    pressureFV += (vx * viscosity * h * m / ((r_h*r_h + 0.01f*h2)*(Pi.density+Pj.density)*0.5f));
+                    pressureFV += (vx * d_viscosity * h * m / ((r_h*r_h + 0.01f*h2)*(Pi.density+Pj.density)*0.5f));
                 }
                 break;
             }
@@ -358,7 +358,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
 
         }
 
-        switch(surfaceTensionT)
+        switch(d_surfaceTensionT)
         {
         case 0: break;
         case 1:
@@ -366,7 +366,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
             Real n = Pi.normal.norm();
             if (n > 0.000001)
             {
-                Deriv fsurface = Pi.normal * ( - m * surfaceTension * Pi.curvature / n );
+                Deriv fsurface = Pi.normal * ( - m * d_surfaceTension * Pi.curvature / n );
                 f[i] += fsurface;
             }
             break;
@@ -431,9 +431,9 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     std::vector<sofa::defaulttype::Vector3> vertices;
     if (d_debugGrid.getValue())
     {
-        for (unsigned int i = 0; i < particles.size(); i++)
+        for (unsigned int i = 0; i < m_particles.size(); i++)
         {
-            Particle& Pi = particles[i];
+            Particle& Pi = m_particles[i];
             if (Pi.neighbors.size() != Pi.neighbors2.size())
             {
                 colorVector.push_back(sofa::defaulttype::Vec4f(1, 0, 0, 1));
@@ -474,9 +474,9 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     }
     else
     {
-        for (unsigned int i = 0; i < particles.size(); i++)
+        for (unsigned int i = 0; i < m_particles.size(); i++)
         {
-            Particle& Pi = particles[i];
+            Particle& Pi = m_particles[i];
             for (typename std::vector< std::pair<int, Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
             {
                 const int j = it->first;
@@ -502,10 +502,10 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     vparams->drawTool()->disableBlending();
     vparams->drawTool()->enableDepthTest();
 
-    for (unsigned int i=0; i<particles.size(); i++)
+    for (unsigned int i=0; i<m_particles.size(); i++)
     {
-        Particle& Pi = particles[i];
-        float f = (float)(Pi.density / density0.getValue());
+        Particle& Pi = m_particles[i];
+        float f = (float)(Pi.density / d_density0.getValue());
         f = 1+10*(f-1);
         if (f < 1)
         {

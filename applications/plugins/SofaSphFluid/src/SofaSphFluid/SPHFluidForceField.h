@@ -66,17 +66,17 @@ public:
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 public:
-    Data< Real > particleRadius; ///< Radius of a Particle
-    Data< Real > particleMass; ///< Mass of a Particle
-    Data< Real > pressureStiffness; ///< 100 - 1000 m2/s2
-    Data< Real > density0; ///< 1000 kg/m3 for water
-    Data< Real > viscosity; ///< Viscosity
-    Data< Real > surfaceTension; ///< Surface Tension
+    Data< Real > d_particleRadius; ///< Radius of a Particle
+    Data< Real > d_particleMass; ///< Mass of a Particle
+    Data< Real > d_pressureStiffness; ///< 100 - 1000 m2/s2
+    Data< Real > d_density0; ///< 1000 kg/m3 for water
+    Data< Real > d_viscosity; ///< Viscosity
+    Data< Real > d_surfaceTension; ///< Surface Tension
     //Data< int  > pressureExponent;
-    Data< int > kernelType; ///< 0 = default kernels, 1 = cubic spline
-    Data< int > pressureType; ///< 0 = none, 1 = default pressure
-    Data< int > viscosityType; ///< 0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity
-    Data< int > surfaceTensionType; ///< 0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007
+    Data< int > d_kernelType; ///< 0 = default kernels, 1 = cubic spline
+    Data< int > d_pressureType; ///< 0 = none, 1 = default pressure
+    Data< int > d_viscosityType; ///< 0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity
+    Data< int > d_surfaceTensionType; ///< 0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007
     Data< bool > d_debugGrid;
 protected:
     struct Particle
@@ -89,12 +89,12 @@ protected:
         sofa::helper::vector< std::pair<int,Real> > neighbors2; ///< indice + r/h
     };
 
-    Real lastTime;
-    sofa::helper::vector<Particle> particles;
+    Real m_lastTime;
+    sofa::helper::vector<Particle> m_particles;
 
     typedef sofa::component::container::SpatialGridContainer<DataTypes> Grid;
 
-    Grid* grid;
+    Grid* m_grid;
 
     SPHFluidForceFieldInternalData<DataTypes> data;
     friend class SPHFluidForceFieldInternalData<DataTypes>;
@@ -105,9 +105,9 @@ public:
     {
         Real r_h = (Real)sqrt(r2/h2);
         if (i1<i2)
-            particles[i1].neighbors.push_back(std::make_pair(i2,r_h));
+            m_particles[i1].neighbors.push_back(std::make_pair(i2,r_h));
         else
-            particles[i2].neighbors.push_back(std::make_pair(i1,r_h));
+            m_particles[i2].neighbors.push_back(std::make_pair(i1,r_h));
     }
 
 protected:
@@ -153,28 +153,28 @@ protected:
 
     SPHFluidForceField();
 public:
-    Real getParticleRadius() const { return particleRadius.getValue(); }
-    void setParticleRadius(Real v) { particleRadius.setValue(v);    }
-    Real getParticleMass() const { return particleMass.getValue(); }
-    void setParticleMass(Real v) { particleMass.setValue(v);    }
-    Real getPressureStiffness() const { return pressureStiffness.getValue(); }
-    void setPressureStiffness(Real v) { pressureStiffness.setValue(v);    }
-    Real getDensity0() const { return density0.getValue(); }
-    void setDensity0(Real v) { density0.setValue(v);    }
-    Real getViscosity() const { return viscosity.getValue(); }
-    void setViscosity(Real v) { viscosity.setValue(v);    }
-    Real getSurfaceTension() const { return surfaceTension.getValue(); }
-    void setSurfaceTension(Real v) { surfaceTension.setValue(v);    }
+    Real getParticleRadius() const { return d_particleRadius.getValue(); }
+    void setParticleRadius(Real v) { d_particleRadius.setValue(v);    }
+    Real getParticleMass() const { return d_particleMass.getValue(); }
+    void setParticleMass(Real v) { d_particleMass.setValue(v);    }
+    Real getPressureStiffness() const { return d_pressureStiffness.getValue(); }
+    void setPressureStiffness(Real v) { d_pressureStiffness.setValue(v);    }
+    Real getDensity0() const { return d_density0.getValue(); }
+    void setDensity0(Real v) { d_density0.setValue(v);    }
+    Real getViscosity() const { return d_viscosity.getValue(); }
+    void setViscosity(Real v) { d_viscosity.setValue(v);    }
+    Real getSurfaceTension() const { return d_surfaceTension.getValue(); }
+    void setSurfaceTension(Real v) { d_surfaceTension.setValue(v);    }
 
     Real getParticleField(int i, Real r2_h2)
     {
         Real a = 1-r2_h2;
-        return (a*a*a)/particles[i].density;
+        return (a*a*a)/m_particles[i].density;
     }
 
     Real getParticleFieldConstant(Real h)
     {
-        return constWc(h)*particleMass.getValue();
+        return constWc(h)*d_particleMass.getValue();
     }
 
     void init() override;
@@ -195,7 +195,7 @@ protected:
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
 extern template class SOFA_SPH_FLUID_API SPHFluidForceField<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_SPH_FLUID_API SPHFluidForceField<sofa::defaulttype::Vec2Types>;
-#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
+#endif // !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
 
 } // namespace forcefield
 
