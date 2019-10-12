@@ -46,6 +46,55 @@ namespace mapping
 {
 
 
+template <class In, class Out>
+SPHFluidSurfaceMapping<In, Out>::SPHFluidSurfaceMapping()
+    : Inherit()
+    , mStep(initData(&mStep, 0.5, "step", "Step"))
+    , mRadius(initData(&mRadius, 2.0, "radius", "Radius"))
+    , mIsoValue(initData(&mIsoValue, 0.5, "isoValue", "Iso Value"))
+    , sph(NULL)
+    , grid(NULL)
+    , firstApply(true)
+{
+
+}
+
+template <class In, class Out>
+double SPHFluidSurfaceMapping<In, Out>::getStep() const
+{
+    return mStep.getValue();
+}
+
+template <class In, class Out>
+void SPHFluidSurfaceMapping<In, Out>::setStep(double val)
+{
+    mStep.setValue(val);
+}
+
+template <class In, class Out>
+double SPHFluidSurfaceMapping<In, Out>::getRadius() const
+{
+    return mRadius.getValue();
+}
+
+template <class In, class Out>
+void SPHFluidSurfaceMapping<In, Out>::setRadius(double val)
+{
+    mRadius.setValue(val);
+}
+
+template <class In, class Out>
+double SPHFluidSurfaceMapping<In, Out>::getIsoValue() const
+{
+    return mIsoValue.getValue();
+}
+
+template <class In, class Out>
+void SPHFluidSurfaceMapping<In, Out>::setIsoValue(double val)
+{
+    mIsoValue.setValue(val);
+}
+
 
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::init()
@@ -137,13 +186,62 @@ void SPHFluidSurfaceMapping<In,Out>::createFaces(OutVecCoord& out, OutVecDeriv* 
                 cells[edgecell[tri[1]]]->data.p[edgepts[tri[1]]],
                 cells[edgecell[tri[2]]]->data.p[edgepts[tri[2]]], out.size())<0)
         {
-            serr << "  mk=0x"<<std::hex<<mk<<std::dec<<" p1="<<tri[0]<<" p2="<<tri[1]<<" p3="<<tri[2]<<sendl;
-            for (int e=0; e<12; e++) serr << "  e"<<e<<"="<<cells[edgecell[e]]->data.p[edgepts[e]];
-            serr<<sendl;
+            msg_error() << "  mk=0x" << std::hex << mk << std::dec << " p1=" << tri[0] << " p2=" << tri[1] << " p3=" << tri[2];
+            for (int e = 0; e < 12; e++)
+                msg_error() << "  e" << e << "=" << cells[edgecell[e]]->data.p[edgepts[e]];
         }
         tri+=3;
     }
 }
+
+
+template <class In, class Out>
+typename SPHFluidSurfaceMapping<In, Out>::OutReal SPHFluidSurfaceMapping<In, Out>::getValue(const SubGrid* g, int cx, int cy, int cz)
+{
+    if (cx < 0) { g = g->neighbors[0]; cx += GRIDDIM; }
+    else if (cx >= GRIDDIM) { g = g->neighbors[1]; cx -= GRIDDIM; }
+    if (cy < 0) { g = g->neighbors[2]; cy += GRIDDIM; }
+    else if (cy >= GRIDDIM) { g = g->neighbors[3]; cy -= GRIDDIM; }
+    if (cz < 0) { g = g->neighbors[4]; cz += GRIDDIM; }
+    else if (cz >= GRIDDIM) { g = g->neighbors[5]; cz -= GRIDDIM; }
+    return g->cell[(cz*GRIDDIM + cy)*GRIDDIM + cx].data.val;
+}
+
+
+template <class In, class Out>
+typename SPHFluidSurfaceMapping<In, Out>::OutDeriv SPHFluidSurfaceMapping<In, Out>::calcGrad(const GridEntry& g, int x, int y, int z)
+{
+    x -= g.first[0] * GRIDDIM;
+    y -= g.first[1] * GRIDDIM;
+    z -= g.first[2] * GRIDDIM;
+    OutDeriv n;
+    n[0] = getValue(g.second, x + 1, y, z) - getValue(g.second, x - 1, y, z);
+    n[1] = getValue(g.second, x, y + 1, z) - getValue(g.second, x, y - 1, z);
+    n[2] = getValue(g.second, x, y, z + 1) - getValue(g.second, x, y, z - 1);
+    return n;
+}
+
+
+template <class In, class Out>
+int SPHFluidSurfaceMapping<In, Out>::addFace(int p1, int p2, int p3, int nbp)
+{
+    if ((unsigned)p1<(unsigned)nbp &&
+        (unsigned)p2<(unsigned)nbp &&
+        (unsigned)p3<(unsigned)nbp)
+    {
+        SeqTriangles& triangles = *seqTriangles.beginEdit();
+        int f = triangles.size();
+        triangles.push_back(Triangle(p1, p3, p2));
+        seqTriangles.endEdit();
+        return f;
+    }
+    else
+    {
+        msg_error() << "Invalid face " << p1 << " " << p2 << " " << p3;
+        return -1;
+    }
+}
+
 
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
@@ -361,10 +459,15 @@ void SPHFluidSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
         }
     }
 
-    if(normals_data == NULL)
+    if (normals_data == NULL)
+    {
+        std::cout << "no Normal data" << std::endl;
         delete normals;
+    }
     else
+    {
         normals_data->endEdit();
+    }
 
     dOut.endEdit();
 }
@@ -382,7 +485,7 @@ void SPHFluidSurfaceMapping<In,Out>::applyJT(const core::MechanicalParams * /*mp
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowMappings())
+   /* if (!vparams->displayFlags().getShowMappings())
         return;
     if (!grid)
         return;
@@ -464,7 +567,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
             }
         }
     }
-    vparams->drawTool()->drawLines(points3, 1, sofa::defaulttype::Vec<4,float>(0,1,0,1));
+    vparams->drawTool()->drawLines(points3, 1, sofa::defaulttype::Vec<4,float>(0,1,0,1));*/
 }
 
 } // namespace mapping

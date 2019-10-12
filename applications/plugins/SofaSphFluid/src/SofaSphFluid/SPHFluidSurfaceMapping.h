@@ -112,44 +112,19 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type InReal;
 protected:
-    SPHFluidSurfaceMapping()
-        : Inherit(),
-          mStep(initData(&mStep,0.5,"step","Step")),
-          mRadius(initData(&mRadius,2.0,"radius","Radius")),
-          mIsoValue(initData(&mIsoValue,0.5,"isoValue", "Iso Value")),
-          sph(NULL), grid(NULL), firstApply(true)
-    {
-    }
+    SPHFluidSurfaceMapping();
 
     ~SPHFluidSurfaceMapping() override
     {}
 public:
-    double getStep() const
-    {
-        return mStep.getValue();
-    }
-    void setStep(double val)
-    {
-        mStep.setValue(val);
-    }
+    double getStep() const;
+    void setStep(double val);
 
-    double getRadius() const
-    {
-        return mRadius.getValue();
-    }
-    void setRadius(double val)
-    {
-        mRadius.setValue(val);
-    }
+    double getRadius() const;
+    void setRadius(double val);
 
-    double getIsoValue() const
-    {
-        return mIsoValue.getValue();
-    }
-    void setIsoValue(double val)
-    {
-        mIsoValue.setValue(val);
-    }
+    double getIsoValue() const;
+    void setIsoValue(double val);
 
     void init() override;
 
@@ -193,28 +168,9 @@ protected:
 
     void createFaces(OutVecCoord& out, OutVecDeriv* normals, const Cell** cells, const OutReal isoval);
 
-    OutReal getValue(const SubGrid* g, int cx, int cy, int cz)
-    {
-        if (cx < 0) { g = g->neighbors[0]; cx+=GRIDDIM; }
-        else if (cx >= GRIDDIM) { g = g->neighbors[1]; cx-=GRIDDIM; }
-        if (cy < 0) { g = g->neighbors[2]; cy+=GRIDDIM; }
-        else if (cy >= GRIDDIM) { g = g->neighbors[3]; cy-=GRIDDIM; }
-        if (cz < 0) { g = g->neighbors[4]; cz+=GRIDDIM; }
-        else if (cz >= GRIDDIM) { g = g->neighbors[5]; cz-=GRIDDIM; }
-        return g->cell[(cz*GRIDDIM+cy)*GRIDDIM+cx].data.val;
-    }
+    OutReal getValue(const SubGrid* g, int cx, int cy, int cz);
 
-    OutDeriv calcGrad(const GridEntry& g, int x, int y, int z)
-    {
-        x-=g.first[0]*GRIDDIM;
-        y-=g.first[1]*GRIDDIM;
-        z-=g.first[2]*GRIDDIM;
-        OutDeriv n;
-        n[0] = getValue(g.second, x+1,y,z) - getValue(g.second, x-1,y,z);
-        n[1] = getValue(g.second, x,y+1,z) - getValue(g.second, x,y-1,z);
-        n[2] = getValue(g.second, x,y,z+1) - getValue(g.second, x,y,z-1);
-        return n;
-    }
+    OutDeriv calcGrad(const GridEntry& g, int x, int y, int z);
 
     template<int C>
     int addPoint(OutVecCoord& out, OutVecDeriv* normals, const GridEntry& g, int x,int y,int z, OutReal v0, OutReal v1, OutReal iso)
@@ -237,24 +193,7 @@ protected:
         return p;
     }
 
-    int addFace(int p1, int p2, int p3, int nbp)
-    {
-        if ((unsigned)p1<(unsigned)nbp &&
-            (unsigned)p2<(unsigned)nbp &&
-            (unsigned)p3<(unsigned)nbp)
-        {
-            SeqTriangles& triangles = *seqTriangles.beginEdit();
-            int f = triangles.size();
-            triangles.push_back(Triangle(p1, p3, p2));
-            seqTriangles.endEdit();
-            return f;
-        }
-        else
-        {
-            serr << "ERROR: Invalid face "<<p1<<" "<<p2<<" "<<p3<<sendl;
-            return -1;
-        }
-    }
+    int addFace(int p1, int p2, int p3, int nbp);
 
 public:
     bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
