@@ -72,8 +72,9 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
     , f_drawPercentageOffset(initData(&f_drawPercentageOffset,(Real)0.15,"drawPercentageOffset","size of the hexa"))
     , needUpdateTopology(false)
+    , l_topologyLink(initLink("topology", "link to the topology container"))
     , _elementStiffnesses(initData(&_elementStiffnesses,"stiffnessMatrices", "Stiffness matrices per element (K_i)"))
-    , _mesh(NULL)
+    , m_topology(NULL)
     , _sparseGrid(NULL)
     , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
     , data(new HexahedronFEMForceFieldInternalData<DataTypes>())
@@ -118,27 +119,32 @@ void HexahedronFEMForceField<DataTypes>::init()
     else _alreadyInit=true;
 
     this->core::behavior::ForceField<DataTypes>::init();
-    if( this->getContext()->getMeshTopology()==NULL )
+
+    if (l_topologyLink.empty())
     {
-        msg_error() << "Object must have a Topology." ;
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topologyLink.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topologyLink.get();
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath() << ". Object must have a MeshTopology.";
+        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 
-    _mesh = dynamic_cast<sofa::core::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
-    if ( _mesh==NULL)
-    {
-        msg_error() << "Object must have a MeshTopology." ;
-        return;
-    }
-    else if( _mesh->getNbHexahedra()<=0 )
+
+    if( m_topology->getNbHexahedra()<=0 )
     {
         msg_error() << "Object must have a hexahedric MeshTopology." << msgendl
-                    << " name: " << _mesh->getName() << msgendl
-                    << " typename: " << _mesh->getTypeName()<< msgendl
-                    << " nbPoints:" << _mesh->getNbPoints()<< msgendl;
+                    << " name: " << m_topology->getName() << msgendl
+                    << " typename: " << m_topology->getTypeName()<< msgendl
+                    << " nbPoints:" << m_topology->getNbPoints()<< msgendl;
         return;
     }
-    _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_mesh);
+    _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(m_topology);
     m_potentialEnergy = 0;
 
     reinit();
@@ -957,7 +963,7 @@ void HexahedronFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::getNodeRotation(Transformation& R, unsigned int nodeIdx)
 {
-    core::topology::BaseMeshTopology::HexahedraAroundVertex liste_hexa = _mesh->getHexahedraAroundVertex(nodeIdx);
+    core::topology::BaseMeshTopology::HexahedraAroundVertex liste_hexa = m_topology->getHexahedraAroundVertex(nodeIdx);
 
     R[0][0] = R[1][1] = R[2][2] = 1.0 ;
     R[0][1] = R[0][2] = R[1][0] = R[1][2] = R[2][0] = R[2][1] = 0.0 ;

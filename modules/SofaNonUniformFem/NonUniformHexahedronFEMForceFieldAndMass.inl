@@ -45,6 +45,7 @@ NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::NonUniformHexahedronFEMForc
     , d_nbVirtualFinerLevels(initData(&d_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness"))
     , d_useMass(initData(&d_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)"))
     , d_totalMass(initData(&d_totalMass,(Real)0.0,"totalMass",""))
+    , l_topologyLink(initLink("topology", "link to the topology container"))
 {
 }
 
@@ -57,29 +58,32 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
     this->core::behavior::ForceField<DataTypes>::init();
 
-
-    if( this->getContext()->getMeshTopology()==NULL )
+    if (l_topologyLink.empty())
     {
-        msg_error() << "NonUniformHexahedronFEMForceFieldDensity: object must have a Topology.";
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topologyLink.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topologyLink.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath();
+        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 
-    this->_mesh = this->getContext()->getMeshTopology();
-    if ( this->_mesh==NULL)
-    {
-        msg_error() << "NonUniformHexahedronFEMForceFieldDensity: object must have a MeshTopology.";
-        return;
-    }
-    else if( this->_mesh->getNbHexahedra()<=0 )
+
+    if( m_topology->getNbHexahedra()<=0 )
     {
         msg_error() << "NonUniformHexahedronFEMForceFieldDensity: object must have a hexahedric MeshTopology.\n"
-                    << this->_mesh->getName() << "\n"
-                    << this->_mesh->getTypeName() << "\n"
-                    <<this->_mesh->getNbPoints() << "\n";
+                    << m_topology->getName() << "\n"
+                    << m_topology->getTypeName() << "\n"
+                    <<m_topology->getNbPoints() << "\n";
+        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 
-    this->_sparseGrid = dynamic_cast<topology::SparseGridTopology*>(this->_mesh);
+    this->_sparseGrid = dynamic_cast<topology::SparseGridTopology*>(m_topology);
 
 
 

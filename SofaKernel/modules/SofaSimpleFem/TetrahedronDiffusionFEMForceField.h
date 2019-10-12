@@ -144,6 +144,8 @@ public:
       /// Boolean enabling to visualize the different diffusion coefficient
       Data <bool> d_drawConduc;
 
+      /// Link to be set to the topology container in the component graph. 
+      SingleLink<TetrahedronDiffusionFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topologyLink;
 
 
 protected:
@@ -155,7 +157,7 @@ protected:
       /// Pointer to mechanical mechanicalObject
       typename MechObject::SPtr mechanicalObject;
       /// Pointer to topology
-      sofa::core::topology::BaseMeshTopology::SPtr topology;
+      sofa::core::topology::BaseMeshTopology::SPtr m_topology;
       /// Saving the number of edges
       size_t nbEdges;
 

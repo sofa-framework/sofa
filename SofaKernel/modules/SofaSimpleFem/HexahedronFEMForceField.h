@@ -133,6 +133,8 @@ public:
     Data<Real> f_drawPercentageOffset; ///< size of the hexa
     bool needUpdateTopology;
 
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<HexahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topologyLink;
 public:
     void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
     void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
@@ -186,7 +188,7 @@ protected:
     CompressedMatrix _stiffnesses;
     SReal m_potentialEnergy;
 
-    sofa::core::topology::BaseMeshTopology* _mesh;
+    sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the topology container. Will be set by link @sa l_topologyLink
     topology::SparseGridTopology* _sparseGrid;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
@@ -198,7 +200,7 @@ protected:
 protected:
     HexahedronFEMForceField();
 
-    inline const VecElement *getIndexedElements(){ return & (_mesh->getHexahedra()); }
+    inline const VecElement *getIndexedElements(){ return & (m_topology->getHexahedra()); }
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M,
                                           const helper::fixed_array<Coord,8> &nodes, const int elementIndice,
