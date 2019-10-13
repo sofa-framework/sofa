@@ -55,7 +55,7 @@ EdgePressureForceField<DataTypes>::EdgePressureForceField()
     , p_binormal(initData(&p_binormal,"binormal", "Binormal of the 2D plane"))
     , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw arrows of edge pressures"))
 {
-    _completeTopology = NULL;
+    _completeTopology = nullptr;
 }
 
 template <class DataTypes> EdgePressureForceField<DataTypes>::~EdgePressureForceField()
@@ -68,7 +68,7 @@ void EdgePressureForceField<DataTypes>::init()
     this->core::behavior::ForceField<DataTypes>::init();
 
     _topology = this->getContext()->getMeshTopology();
-    if(_topology == NULL)
+    if(_topology == nullptr)
     {
         msg_error() << " No base topology available." ;
         return;
@@ -77,17 +77,17 @@ void EdgePressureForceField<DataTypes>::init()
     this->getContext()->get(edgeGeo);
     assert(edgeGeo!=0);
 
-    if (edgeGeo==NULL)
+    if (edgeGeo==nullptr)
     {
         msg_error() << " object must have an EdgeSetTopology.";
         return;
     }
 
 
-    _completeTopology = NULL;
+    _completeTopology = nullptr;
     this->getContext()->get(_completeTopology, core::objectmodel::BaseContext::SearchUp);
 
-    if(_completeTopology == NULL && edgeIndices.getValue().empty() && edges.getValue().empty())
+    if(_completeTopology == nullptr && edgeIndices.getValue().empty() && edges.getValue().empty())
     {
         msg_error() << "Either a pressure vector or a TriangleSetTopology is required.";
     }

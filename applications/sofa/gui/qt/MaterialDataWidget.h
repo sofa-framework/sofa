@@ -95,9 +95,9 @@ public:
                              const char* name,
                              Data< helper::vector<Material> >* data):
         TDataWidget< helper::vector<Material> >(parent,name,data),
-        _materialDataWidget(NULL),
+        _materialDataWidget(nullptr),
         _currentMaterial(0,data->isDisplayed(),data->isReadOnly()),
-        _comboBox(NULL)
+        _comboBox(nullptr)
     {
 
     }

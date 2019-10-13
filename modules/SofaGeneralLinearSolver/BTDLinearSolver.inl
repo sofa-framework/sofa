@@ -94,7 +94,7 @@ typename BlocFullMatrix<N,T>::Index  BlocFullMatrix<N, T>::getSubMatrixDim(Index
 
 template<int N, typename T>
 BlocFullMatrix<N, T>::BlocFullMatrix()
-    : data(NULL), nTRow(0), nTCol(0), nBRow(0), nBCol(0), allocsize(0)
+    : data(nullptr), nTRow(0), nTCol(0), nBRow(0), nBCol(0), allocsize(0)
 {
 }
 
@@ -319,7 +319,7 @@ typename BlockVector<N, T>::Bloc& BlockVector<N, T>::asub(Index bi, Index)
 
 template<int N, typename T>
 BTDMatrix<N, T>::BTDMatrix()
-    : data(NULL), nTRow(0), nTCol(0), nBRow(0), nBCol(0), allocsize(0)
+    : data(nullptr), nTRow(0), nTCol(0), nBRow(0), nBCol(0), allocsize(0)
 {
 }
 

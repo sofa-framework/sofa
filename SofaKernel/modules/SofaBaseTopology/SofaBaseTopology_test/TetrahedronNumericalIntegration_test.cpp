@@ -134,7 +134,7 @@ struct TetrahedronNumericalIntegration_test : public Sofa_test<typename _DataTyp
 
     void TearDown()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
     }
 

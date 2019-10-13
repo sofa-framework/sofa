@@ -130,7 +130,7 @@ void RigidRigidMapping<TIn, TOut>::init()
     if (!fileRigidRigidMapping.getValue().empty())
         this->load(fileRigidRigidMapping.getFullPath().c_str());
 
-    if (this->points.getValue().empty() && this->toModel!=NULL)
+    if (this->points.getValue().empty() && this->toModel!=nullptr)
     {
         const OutVecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
         OutVecCoord& pts = *points.beginEdit();

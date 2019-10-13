@@ -56,7 +56,7 @@ public:
         return out;
     }
 
-    SofaEndl(): parent(NULL)
+    SofaEndl(): parent(nullptr)
     {
     }
 

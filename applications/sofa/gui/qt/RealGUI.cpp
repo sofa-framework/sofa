@@ -302,14 +302,14 @@ void RealGUI::InitApplication( RealGUI* _gui)
 RealGUI::RealGUI ( const char* viewername)
     :
       #ifdef SOFA_GUI_INTERACTION
-      interactionButton( NULL ),
+      interactionButton( nullptr ),
       #endif
 
       #ifndef SOFA_GUI_QT_NO_RECORDER
-      recorder(NULL),
+      recorder(nullptr),
       #else
-      fpsLabel(NULL),
-      timeLabel(NULL),
+      fpsLabel(nullptr),
+      timeLabel(nullptr),
       #endif
 
       #ifdef SOFA_GUI_INTERACTION
@@ -317,13 +317,13 @@ RealGUI::RealGUI ( const char* viewername)
       #endif
 
       #ifdef SOFA_PML
-      pmlreader(NULL),
-      lmlreader(NULL),
+      pmlreader(nullptr),
+      lmlreader(nullptr),
       #endif
 
       #ifdef SOFA_DUMP_VISITOR_INFO
-      windowTraceVisitor(NULL),
-      handleTraceVisitor(NULL),
+      windowTraceVisitor(nullptr),
+      handleTraceVisitor(nullptr),
       #endif
 
       m_sofaMouseManager(nullptr),
@@ -499,12 +499,12 @@ RealGUI::~RealGUI()
     if ( pmlreader )
     {
         delete pmlreader;
-        pmlreader = NULL;
+        pmlreader = nullptr;
     }
     if ( lmlreader )
     {
         delete lmlreader;
-        lmlreader = NULL;
+        lmlreader = nullptr;
     }
 #endif
 
@@ -696,7 +696,7 @@ void RealGUI::lmlOpen ( const char* filename )
     if ( pmlreader )
     {
         Node* root;
-        if ( lmlreader != NULL ) delete lmlreader;
+        if ( lmlreader != nullptr ) delete lmlreader;
         lmlreader = new LMLReader; std::cout <<"New lml reader\n";
         lmlreader->BuildStructure ( filename, pmlreader );
         root = getScene();
@@ -804,7 +804,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     mSimulation = simulation::getSimulation()->load ( filename, reload, sceneArgs );
 
     simulation::getSimulation()->init ( mSimulation.get() );
-    if ( mSimulation == NULL )
+    if ( mSimulation == nullptr )
     {
         msg_warning("RealGUI")<<"Failed to load "<<filename.c_str();
         return;
@@ -891,7 +891,7 @@ void RealGUI::popupOpenFileSelector()
 
     QString selectedFilter( tr(allKnownFilters.c_str()) ); // this does not select the desired filter
 
-    QString s = getOpenFileName ( this, filename.empty() ?NULL:filename.c_str(),
+    QString s = getOpenFileName ( this, filename.empty() ?nullptr:filename.c_str(),
                                   filter.c_str(),
                                   "open file dialog",  "Choose a file to open", &selectedFilter
                                   );
@@ -1023,7 +1023,7 @@ void RealGUI::unloadScene(bool _withViewer)
     simulation::getSimulation()->unload ( currentSimulation() );
 
     if(_withViewer && getViewer())
-        getViewer()->setScene(NULL);
+        getViewer()->setScene(nullptr);
 }
 
 //------------------------------------
@@ -1120,7 +1120,7 @@ void RealGUI::editRecordDirectory()
 {
     std::string filename(this->windowFilePath().toStdString());
     std::string record_directory;
-    QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
+    QString s = getExistingDirectory ( this, filename.empty() ?nullptr:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
         record_directory = s.toStdString();
@@ -1138,7 +1138,7 @@ void RealGUI::editRecordDirectory()
 void RealGUI::editGnuplotDirectory()
 {
     std::string filename(this->windowFilePath().toStdString());
-    QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
+    QString s = getExistingDirectory ( this, filename.empty() ?nullptr:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
         gnuplot_directory = s.toStdString();
@@ -1346,7 +1346,7 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
     {
         this->updateViewerList();
         // the viewer with the key viewerName is already created
-        if( mViewer != NULL && !viewerMap.begin()->first.compare( std::string(_viewerName) ) )
+        if( mViewer != nullptr && !viewerMap.begin()->first.compare( std::string(_viewerName) ) )
             return;
     }
 
@@ -1379,7 +1379,7 @@ void RealGUI::registerViewer(BaseViewer* _viewer)
     if(mViewer != nullptr)
         delete old;
     else
-        msg_error("RealGUI")<<"when registerViewer, the viewer is NULL";
+        msg_error("RealGUI")<<"when registerViewer, the viewer is nullptr";
 }
 
 //------------------------------------
@@ -1674,7 +1674,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 {
     if(_viewer == nullptr)
     {
-        msg_error("RealGUI")<<"when initViewer, the viewer is NULL";
+        msg_error("RealGUI")<<"when initViewer, the viewer is nullptr";
         return;
     }
     init(); //init data member from RealGUI for the viewer initialisation in the GUI
@@ -1992,7 +1992,7 @@ void RealGUI::fileSaveAs(Node *node)
 
 
 
-    QString s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), filter, "save file dialog", "Choose where the scene will be saved" );
+    QString s = getSaveFileName ( this, filename.empty() ?nullptr:filename.c_str(), filter, "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
 #ifdef SOFA_PML
         if ( pmlreader && s.endsWith ( ".pml" ) )
@@ -2306,7 +2306,7 @@ void RealGUI::dumpState ( bool value )
     {
         m_dumpStateStream = new std::ofstream ( "dumpState.data" );
     }
-    else if ( m_dumpStateStream!=NULL )
+    else if ( m_dumpStateStream!=nullptr )
     {
         delete m_dumpStateStream;
         m_dumpStateStream = 0;
@@ -2542,7 +2542,7 @@ std::string getFormattedLocalTimeFromTimestamp(time_t timestamp)
 
 std::string getFormattedLocalTime()
 {
-    return getFormattedLocalTimeFromTimestamp( time( NULL ) );
+    return getFormattedLocalTimeFromTimestamp( time( nullptr ) );
 }
 
 } // namespace

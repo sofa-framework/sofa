@@ -59,7 +59,7 @@ public:
     Data<helper::vector<helper::SVector<Index> > > d_outputIndices; ///< Vector of ROIs
 
     virtual std::string getTemplateName() const    override {        return templateName(this);    }
-    static std::string templateName(const MergeROIs* = NULL)    {        return std::string();    }
+    static std::string templateName(const MergeROIs* = nullptr)    {        return std::string();    }
 
     void init() override;
 

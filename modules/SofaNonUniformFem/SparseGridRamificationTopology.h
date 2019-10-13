@@ -93,7 +93,7 @@ public:
     /// a connexion corresponds to a connexe component in each regular hexa (each non-void hexa has at less one connexion)
     struct Connexion
     {
-        Connexion():_parent(NULL), _coarsestParent(0), _hexaIdx(0), _nonRamifiedHexaIdx(0), _tmp(0) {};
+        Connexion():_parent(nullptr), _coarsestParent(0), _hexaIdx(0), _nonRamifiedHexaIdx(0), _tmp(0) {};
 
         helper::fixed_array< std::set<Connexion*>,NUM_CONNECTED_NODES >	_neighbors;	// the connexion graph at a given level (it can have several neighbors in each direction)
 

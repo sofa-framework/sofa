@@ -78,7 +78,7 @@ struct vectorData_test: public ::testing::Test
     helper::vectorData<int> vDataInt;
 
     vectorData_test()
-        : vDataInt(NULL,"","")
+        : vDataInt(nullptr,"","")
     { }
 
     void SetUp() override

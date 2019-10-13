@@ -19,19 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_SPH_FLUID_INIT_H
-#define SOFA_COMPONENT_SPH_FLUID_INIT_H
-#include "config.h"
+#pragma once
+
+#include <sofa/config.h>
+#include <iostream>
 
 namespace sofa
 {
-
-namespace component
+namespace core
+{
+namespace objectmodel
 {
 
-} // namespace component
+/// enum class is a C++ x11 feature (http://en.cppreference.com/w/cpp/language/enum),
+/// Indicate the state of a sofa object.
+enum class ComponentState {
+    Undefined,                        ///< component that does not make use of this field have this one
+    Loading,                          ///< the component is loading but never passed successfully its init() function
+    Valid,                            ///< the component has passed successfully its init function
+    Dirty,                            ///< the component is ready to be used but requires a call to reinit
+    Busy,                             ///< the component is doing "something", don't trust its values for doing your computation
+    Invalid                           ///< the component reached an error and is thus unable to behave normally.
+};
 
-} // namespace sofa
+/// Defining the in/ou operator for use of component status with Data<>
+SOFA_CORE_API std::ostream& operator<<(std::ostream& o, const ComponentState& s);
+SOFA_CORE_API std::istream& operator>>(std::istream& i, ComponentState& s);
 
-#endif
+
+}  /// namespace objectmodel
+}  /// namespace core
+}  /// namespace sofa
+
+
 

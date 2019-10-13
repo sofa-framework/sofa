@@ -215,7 +215,7 @@ int GUIManager::Init(const char* argv0, const char* name)
         return 1;
     }
 
-    if( name == NULL || strcmp(name,"") == 0 )
+    if( name == nullptr || strcmp(name,"") == 0 )
     {
         name = GetValidGUIName(); // get the default gui name
     }
@@ -272,7 +272,7 @@ sofa::simulation::Node* GUIManager::CurrentSimulation()
         return nullptr;
 }
 
-void GUIManager::SetScene(sofa::simulation::Node::SPtr groot, const char* filename /*=NULL*/, bool temporaryFile /*=false*/ )
+void GUIManager::SetScene(sofa::simulation::Node::SPtr groot, const char* filename /*=nullptr*/, bool temporaryFile /*=false*/ )
 {
     if (currentGUI)
     {

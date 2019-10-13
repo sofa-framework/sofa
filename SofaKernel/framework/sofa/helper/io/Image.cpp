@@ -146,7 +146,7 @@ static unsigned tableBytes[Image::COUNT_OF_DATA_TYPES][Image::COUNT_OF_CHANNEL_F
 };
 
 Image::Image()
-    : m_bLoaded(0), data(NULL)
+    : m_bLoaded(0), data(nullptr)
 {
 }
 
@@ -156,7 +156,7 @@ Image::~Image()
 }
 
 Image::Image(const Image& rhs)
-    :data(NULL)
+    :data(nullptr)
 {
     init(rhs.width,rhs.height,rhs.depth,rhs.mipmaps,rhs.dataType,rhs.channelFormat);
     memcpy(data,rhs.data,getImageSize());
@@ -321,7 +321,7 @@ unsigned char *Image::get3DSliceMipmapPixels(unsigned slice, unsigned mipmap)
 void Image::clear()
 {
     if (data) free(data);
-    data = NULL;
+    data = nullptr;
     m_bLoaded = 0;
 }
 

@@ -87,8 +87,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
         Contact* contact = cit->get();
         simulation::Node* group1 = getIntegrationNode(contact->getCollisionModels().first);
         simulation::Node* group2 = getIntegrationNode(contact->getCollisionModels().second);
-        simulation::Node::SPtr collGroup = NULL;
-        if (group1==NULL || group2==NULL)
+        simulation::Node::SPtr collGroup = nullptr;
+        if (group1==nullptr || group2==nullptr)
         {
         }
         else if (group1 == group2)
@@ -106,7 +106,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                 solver = SolverMerger::merge(group1->solver[0], group2->solver[0]);
 
 
-            if (!mergeSolvers || solver.odeSolver!=NULL)
+            if (!mergeSolvers || solver.odeSolver!=nullptr)
             {
                 auto group1Iter = groupMap.find(group1);
                 auto group2Iter = groupMap.find(group2);
@@ -233,9 +233,9 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     {
         Contact* contact = contacts[i].get();
         simulation::Node::SPtr group = contactGroup[i];
-        while (group!=NULL && mergedGroups.find(group.get())!=mergedGroups.end())
+        while (group!=nullptr && mergedGroups.find(group.get())!=mergedGroups.end())
             group = mergedGroups[group.get()];
-        if (group!=NULL)
+        if (group!=nullptr)
             contact->createResponse(group.get());
         else
             contact->createResponse(scene);
@@ -280,7 +280,7 @@ simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::Collisi
     node->get< core::behavior::OdeSolver >(&listSolver);
 
     if (listSolver.empty())
-        return NULL;
+        return nullptr;
 
     simulation::Node* solvernode = static_cast<simulation::Node*>(listSolver.back()->getContext());
     return solvernode;

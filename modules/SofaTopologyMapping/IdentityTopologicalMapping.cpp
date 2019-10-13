@@ -97,15 +97,15 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
 
     if (itBegin == itEnd) return;
 
-    PointSetTopologyModifier *toPointMod = NULL;
-    EdgeSetTopologyModifier *toEdgeMod = NULL;
-    TriangleSetTopologyModifier *toTriangleMod = NULL;
+    PointSetTopologyModifier *toPointMod = nullptr;
+    EdgeSetTopologyModifier *toEdgeMod = nullptr;
+    TriangleSetTopologyModifier *toTriangleMod = nullptr;
 
-    TriangleSetTopologyContainer *fromTriangleCon = NULL;
+    TriangleSetTopologyContainer *fromTriangleCon = nullptr;
     fromModel->getContext()->get(fromTriangleCon);
 
 
-    TriangleSetTopologyContainer *toTriangleCon = NULL;
+    TriangleSetTopologyContainer *toTriangleCon = nullptr;
     toModel->getContext()->get(toTriangleCon);
 
     msg_info() << "Begin: " << msgendl

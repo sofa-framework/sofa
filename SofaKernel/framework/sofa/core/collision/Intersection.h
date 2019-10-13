@@ -78,7 +78,7 @@ public:
     virtual bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) = 0;
 
     /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
-    /// If the given contacts vector is NULL, then this method should allocate it.
+    /// If the given contacts vector is nullptr, then this method should allocate it.
     virtual int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector*& contacts) = 0;
 
     /// Compute the intersection between 2 elements. Return the number of contacts written in the contacts vector.
@@ -143,7 +143,7 @@ private:
 	Intersection& operator=(const Intersection& n) ;
 	
 public:
-    /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
+    /// Return the intersector class handling the given pair of collision models, or nullptr if not supported.
     /// @param swapModels output value set to true if the collision models must be swapped before calling the intersector.
     virtual ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) = 0;
 

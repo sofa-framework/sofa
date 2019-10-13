@@ -87,7 +87,7 @@ public:
     Data< VecCoord > targetPosition;       ///< result
 
     virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ShapeMatching<DataTypes>* = NULL)    {    return DataTypes::Name();    }
+    static std::string templateName(const ShapeMatching<DataTypes>* = nullptr)    {    return DataTypes::Name();    }
 
 private:
     sofa::core::behavior::MechanicalState<DataTypes>* mstate;

@@ -86,7 +86,7 @@ void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *m
     {
         sofa::component::misc::ReadState::SPtr rs;
         context->get(rs, this->subsetsToManage, core::objectmodel::BaseContext::Local);
-        if (rs == NULL)
+        if (rs == nullptr)
         {
             rs = sofa::core::objectmodel::New<ReadState>();
             gnode->addObject(rs);

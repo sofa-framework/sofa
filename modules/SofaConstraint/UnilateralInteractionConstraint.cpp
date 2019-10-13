@@ -109,7 +109,7 @@ void UnilateralConstraintResolutionWithFriction::store(int line, double* force, 
     if(_active)
     {
         *_active = (force[line] != 0);
-        _active = NULL; // Won't be used in the haptic thread
+        _active = nullptr; // Won't be used in the haptic thread
     }
 }
 

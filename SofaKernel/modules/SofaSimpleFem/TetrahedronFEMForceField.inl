@@ -48,8 +48,8 @@ using sofa::core::objectmodel::ComponentState ;
 
 template<class DataTypes>
 TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
-    : m_topology(NULL)
-    , _indexedElements(NULL)
+    : m_topology(nullptr)
+    , _indexedElements(nullptr)
     , needUpdateTopology(false)
     , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
     , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR), \"polar\" or \"svd\" displacements"))
@@ -1322,7 +1322,7 @@ template <class DataTypes>
 TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
 {
     // Need to unaffect a vector to the pointer
-    if (m_topology == NULL && _indexedElements != NULL)
+    if (m_topology == nullptr && _indexedElements != nullptr)
         delete _indexedElements;
 }
 
@@ -1368,7 +1368,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
 
         // Need to affect a vector to the pointer even if it is empty.
-        if (_indexedElements == NULL)
+        if (_indexedElements == nullptr)
             _indexedElements = new VecElement();
 
         return;
@@ -1381,7 +1381,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
                            "To remove this error message please add a tetrahedric topology component to your scene.";
 
         // Need to affect a vector to the pointer even if it is empty.
-        if (_indexedElements == NULL)
+        if (_indexedElements == nullptr)
             _indexedElements = new VecElement();
 
         m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
@@ -1403,7 +1403,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         int ny = 1;
         {
             topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(m_topology);
-            if (grid != NULL)
+            if (grid != nullptr)
             {
                 nx = grid->getNx()-1;
                 ny = grid->getNy()-1;
@@ -1476,7 +1476,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
 
     if (!this->mstate || !m_topology){
         // Need to affect a vector to the pointer even if it is empty.
-        if (_indexedElements == NULL)
+        if (_indexedElements == nullptr)
             _indexedElements = new VecElement();
 
         return;

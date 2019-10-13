@@ -81,7 +81,7 @@ TopologicalChangeProcessor::TopologicalChangeProcessor()
     , m_epsilonSnapBorder( initData(&m_epsilonSnapBorder, (SReal)0.25, "epsilonSnapBorder", "epsilon snap path"))
     , m_draw( initData(&m_draw, false, "draw", "draw information"))
     , m_topology(nullptr)
-    , infile(NULL)
+    , infile(nullptr)
 #if SOFAMISCTOPOLOGY_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
@@ -125,7 +125,7 @@ void TopologicalChangeProcessor::readDataFile()
     if (infile)
     {
         delete infile;
-        infile = NULL;
+        infile = nullptr;
     }
 #if SOFAMISCTOPOLOGY_HAVE_ZLIB
     if (gzfile)
@@ -157,7 +157,7 @@ void TopologicalChangeProcessor::readDataFile()
         {
             serr << "TopologicalChangeProcessor: Error opening file "<<filename<<sendl;
             delete infile;
-            infile = NULL;
+            infile = nullptr;
         }
     }
     nextTime = 0;
@@ -321,7 +321,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
             line.clear();
             char buf[4097];
             buf[0] = '\0';
-            while (gzgets(gzfile,buf,sizeof(buf))!=NULL && buf[0])
+            while (gzgets(gzfile,buf,sizeof(buf))!=nullptr && buf[0])
             {
                 size_t l = strlen(buf);
                 if (buf[l-1] == '\n')
@@ -1427,7 +1427,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     {
         trianglesToDraw.clear();
         /* initialize random seed: */
-        srand ( (unsigned int)time(NULL) );
+        srand ( (unsigned int)time(nullptr) );
 
         for (size_t i = 0 ; i < errorTrianglesIndices.size() ; i++)
         {

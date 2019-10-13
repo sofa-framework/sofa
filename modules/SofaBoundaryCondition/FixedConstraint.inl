@@ -70,7 +70,7 @@ void FixedConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned i
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , d_indices( initData(&d_indices,"indices","Indices of the fixed points") )
     , d_fixAll( initData(&d_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , d_showObject(initData(&d_showObject,true,"showObject","draw or not the fixed constraints"))

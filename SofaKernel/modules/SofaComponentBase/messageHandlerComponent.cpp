@@ -75,7 +75,7 @@ void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* 
     BaseObject::parse(arg) ;
 
     const char* type=arg->getAttribute("handler") ;
-    if(type==NULL){
+    if(type==nullptr){
         msg_info(this) << "The 'handler' attribute is missing. The default sofa style will be used. "
                           "To suppress this message you need to specify the 'handler' attribute. "
                           "eg: handler='silent' ";
@@ -133,7 +133,7 @@ void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescripti
     BaseObject::parse(arg) ;
 
     const char* type=arg->getAttribute("filename") ;
-    if(type==NULL){
+    if(type==nullptr){
         msg_warning(this) << "Name of the log file is missing. "
                              "To suppress this message you need to add the specify the filename eg:"
                              "  filename='nameOfTheLogFile.log' ";
@@ -141,7 +141,7 @@ void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescripti
     }
 
     FileMessageHandler *handler = new FileMessageHandler(type, &DefaultStyleMessageFormatter::getInstance()) ;
-    if(handler==NULL){
+    if(handler==nullptr){
         msg_fatal(this) << "Unable to allocate memory. This is a fatal error. To fix"
                            "this you may free more RAM before running Sofa." ;
         return ;

@@ -33,8 +33,8 @@ namespace visualmodel
 {
 
 // Register the OglTexture* objects in the Object Factory
-static int OglTextureClass = core::RegisterObject("OglTexture").add< OglTexture >();
-static int OglTexture2DClass = core::RegisterObject("OglTexture2D").add< OglTexture2D >();
+int OglTextureClass = core::RegisterObject("OglTexture").add< OglTexture >();
+int OglTexture2DClass = core::RegisterObject("OglTexture2D").add< OglTexture2D >();
 
 GLint OglTexture::MAX_NUMBER_OF_TEXTURE_UNIT = 1;
 

@@ -57,7 +57,7 @@ template<class DataTypes>
 class MechanicalObjectInternalData
 {
 public:
-    MechanicalObjectInternalData(MechanicalObject<DataTypes>* = NULL) {}
+    MechanicalObjectInternalData(MechanicalObject<DataTypes>* = nullptr) {}
 };
 
 /**

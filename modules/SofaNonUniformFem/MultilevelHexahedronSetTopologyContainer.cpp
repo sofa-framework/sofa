@@ -63,7 +63,7 @@ void MultilevelHexahedronSetTopologyContainer::init()
 {
     const Vec3i& _fineResolution = fineResolution.getValue();
 
-    _fineComponentInRegularGrid.resize(_fineResolution[0] * _fineResolution[1] * _fineResolution[2], NULL);
+    _fineComponentInRegularGrid.resize(_fineResolution[0] * _fineResolution[1] * _fineResolution[2], nullptr);
 
     const size_t numVoxels = d_hexahedron.getValue().size();
 
@@ -242,7 +242,7 @@ int MultilevelHexahedronSetTopologyContainer::getHexaInFineRegularGrid(const Vec
 {
     const Vec3i& _fineResolution = fineResolution.getValue();
     Component* comp = _fineComponentInRegularGrid[voxelId[0] + _fineResolution[0] * (voxelId[1]  + voxelId[2] * _fineResolution[1])];
-    if(comp != NULL)
+    if(comp != nullptr)
     {
         for(unsigned int i=0; i<_fineComponents.getValue().size(); ++i)
         {
@@ -296,7 +296,7 @@ int MultilevelHexahedronSetTopologyContainer::getHexaParent(const unsigned int h
 {
     Component* comp = _fineComponents.getValue()[hexaId];
 
-    while( comp->_parent != NULL)
+    while( comp->_parent != nullptr)
         comp = comp->_parent;
 
     for(unsigned int i=0; i<_coarseComponents.getValue().size(); ++i)
@@ -439,12 +439,12 @@ void MultilevelHexahedronSetTopologyContainer::connectionToNodeAdjacency(const V
 }
 
 MultilevelHexahedronSetTopologyContainer::Component::Component(const Vec3i& id)
-    : _parent(NULL), _id(id)
+    : _parent(nullptr), _id(id)
 {
 }
 
 MultilevelHexahedronSetTopologyContainer::Component::Component(const Vec3i& id, const std::set<Vec3i>& voxels)
-    : _parent(NULL), _id(id)
+    : _parent(nullptr), _id(id)
 {
     // copy the voxels
     this->_voxels.insert(voxels.begin(), voxels.end());
@@ -464,7 +464,7 @@ void MultilevelHexahedronSetTopologyContainer::Component::clear()
     voxels.insert(this->_voxels.begin(), this->_voxels.end());
     this->_voxels.clear();
 
-    if(_parent != NULL)
+    if(_parent != nullptr)
     {
         _parent->removeVoxels(voxels);
     }
@@ -492,7 +492,7 @@ void MultilevelHexahedronSetTopologyContainer::Component::removeVoxels(const std
             ++iter;
     }
 
-    if(_parent != NULL)
+    if(_parent != nullptr)
         _parent->removeVoxels(voxels);
 }
 

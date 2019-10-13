@@ -327,7 +327,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const DiagonalMass<DataTypes, TMassType>* = NULL)
+    static std::string templateName(const DiagonalMass<DataTypes, TMassType>* = nullptr)
     {
         return DataTypes::Name();
     }

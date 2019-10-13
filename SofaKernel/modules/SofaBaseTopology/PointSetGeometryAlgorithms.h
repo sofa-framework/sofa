@@ -97,7 +97,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -107,7 +107,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const PointSetGeometryAlgorithms<DataTypes>* = NULL)
+    static std::string templateName(const PointSetGeometryAlgorithms<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

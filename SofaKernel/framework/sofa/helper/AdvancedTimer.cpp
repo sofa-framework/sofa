@@ -129,7 +129,7 @@ std::stack<AdvancedTimer::IdTimer>& getCurTimer()
 
 helper::vector<Record>* getCurRecords()
 {
-    if (!activeTimers) return NULL;
+    if (!activeTimers) return nullptr;
     return curRecordsThread;
 }
 
@@ -141,8 +141,8 @@ void setCurRecords(helper::vector<Record>* ptr)
     else if (!ptr && prev) --activeTimers;
 }
 
-AdvancedTimer::SyncCallBack syncCallBack = NULL;
-void* syncCallBackData = NULL;
+AdvancedTimer::SyncCallBack syncCallBack = nullptr;
+void* syncCallBackData = nullptr;
 
 std::pair<AdvancedTimer::SyncCallBack,void*> AdvancedTimer::setSyncCallBack(SyncCallBack cb, void* userData)
 {
@@ -156,7 +156,7 @@ std::pair<AdvancedTimer::SyncCallBack,void*> AdvancedTimer::setSyncCallBack(Sync
 
 void AdvancedTimer::clear()
 {
-    setCurRecords(NULL);
+    setCurRecords(nullptr);
     std::stack<AdvancedTimer::IdTimer>* ptr = curTimerThread;
     if (ptr)
         while (!ptr->empty())
@@ -220,7 +220,7 @@ void AdvancedTimer::begin(IdTimer id)
     }
     if (data.interval == 0)
     {
-        setCurRecords(NULL);
+        setCurRecords(nullptr);
         return;
     }
     helper::vector<Record>* curRecords = &(data.records);
@@ -269,12 +269,12 @@ void AdvancedTimer::end(IdTimer id, std::ostream& result)
     curTimer.pop();
     if (curTimer.empty())
     {
-        setCurRecords(NULL);
+        setCurRecords(nullptr);
     }
     else
     {
         TimerData& data = timers[curTimer.top()];
-        setCurRecords((data.interval == 0) ? NULL : &(data.records));
+        setCurRecords((data.interval == 0) ? nullptr : &(data.records));
     }
 }
 
@@ -321,12 +321,12 @@ void AdvancedTimer::end(IdTimer id)
     curTimer.pop();
     if (curTimer.empty())
     {
-        setCurRecords(NULL);
+        setCurRecords(nullptr);
     }
     else
     {
         TimerData& data = timers[curTimer.top()];
-        setCurRecords((data.interval == 0) ? NULL : &(data.records));
+        setCurRecords((data.interval == 0) ? nullptr : &(data.records));
     }
 }
 
@@ -1437,12 +1437,12 @@ std::string AdvancedTimer::getTimeAnalysis(IdTimer id, simulation::Node* node)
     if (curTimer.empty())
     {
         msg_error("AdvancedTimer::end") << "timer[" << id << "] called while begin was not" ;
-        return NULL;
+        return nullptr;
     }
     if (id != curTimer.top())
     {
         msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
-        return NULL;
+        return nullptr;
     }
     helper::vector<Record>* curRecords = getCurRecords();
     if (curRecords)
@@ -1473,12 +1473,12 @@ std::string AdvancedTimer::getTimeAnalysis(IdTimer id, simulation::Node* node)
     curTimer.pop();
     if (curTimer.empty())
     {
-        setCurRecords(NULL);
+        setCurRecords(nullptr);
     }
     else
     {
         TimerData& data = timers[curTimer.top()];
-        setCurRecords((data.interval == 0) ? NULL : &(data.records));
+        setCurRecords((data.interval == 0) ? nullptr : &(data.records));
     }
 
     outputStr = outputJson.dump(4);

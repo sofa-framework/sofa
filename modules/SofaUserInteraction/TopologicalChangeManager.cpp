@@ -71,7 +71,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getContext()->getMeshTopology();
 
-    if(topo_curr == NULL)
+    if(topo_curr == nullptr)
         return 0;
 
     std::set< unsigned int > items;
@@ -118,7 +118,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
         for(unsigned int i=0; i<listObject.size(); ++i)
         {
             sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
-            if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
+            if(topoMap != nullptr && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
                 //unsigned int ind_glob = topoMap->getGlobIndex(ind_curr);
@@ -179,7 +179,7 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getContext()->getMeshTopology();
 
-    if (topo_curr == NULL)
+    if (topo_curr == nullptr)
         return 0;
 
     sofa::helper::vector<unsigned int> tItems;
@@ -247,7 +247,7 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
         for (unsigned int i = 0; i<listObject.size(); ++i)
         {
             sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
-            if (topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
+            if (topoMap != nullptr && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
                 std::set< unsigned int > loc_items = items;
@@ -303,7 +303,7 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getContext()->getMeshTopology();
 
-    if(dynamic_cast<PointSetTopologyContainer*>(topo_curr) == NULL)
+    if(dynamic_cast<PointSetTopologyContainer*>(topo_curr) == nullptr)
         return 0;
 
     std::set< unsigned int > items;
@@ -324,7 +324,7 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
         for(unsigned int i=0; i<listObject.size(); ++i)
         {
             sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
-            if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
+            if(topoMap != nullptr && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
                 std::set< unsigned int > loc_items = items;
@@ -394,15 +394,15 @@ int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisio
 
 int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<int>& indices) const
 {
-    if(dynamic_cast<TriangleModel*>(model)!= NULL)
+    if(dynamic_cast<TriangleModel*>(model)!= nullptr)
     {
         return removeItemsFromTriangleModel(static_cast<TriangleModel*>(model), indices);
     }
-    if (dynamic_cast<PointModel*>(model) != NULL)
+    if (dynamic_cast<PointModel*>(model) != nullptr)
     {
         return removeItemsFromPointModel(static_cast<PointModel*>(model), indices);
     }
-    else if(dynamic_cast<SphereModel*>(model)!= NULL)
+    else if(dynamic_cast<SphereModel*>(model)!= nullptr)
     {
         return removeItemsFromSphereModel(static_cast<SphereModel*>(model), indices);
     }
@@ -418,7 +418,7 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionEleme
     Triangle triangle(elem);
     TriangleModel* model = triangle.getCollisionModel();
 
-    if (model != NULL)
+    if (model != nullptr)
     {
 
         if (firstInput) // initialise first point of contact from the incisionCollisionModel

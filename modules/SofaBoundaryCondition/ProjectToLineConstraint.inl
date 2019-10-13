@@ -63,7 +63,7 @@ void ProjectToLineConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(un
 
 template <class DataTypes>
 ProjectToLineConstraint<DataTypes>::ProjectToLineConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , f_origin( initData(&f_origin,CPos(),"origin","A point in the line"))

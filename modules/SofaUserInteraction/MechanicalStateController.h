@@ -152,7 +152,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const MechanicalStateController<DataTypes>* = NULL)
+    static std::string templateName(const MechanicalStateController<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

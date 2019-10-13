@@ -40,17 +40,17 @@ TopologyEngineImpl< VecT>::TopologyEngineImpl(t_topologicalData *_topologicalDat
         sofa::core::topology::BaseMeshTopology *_topology,
         sofa::core::topology::TopologyHandler *_topoHandler) :
     m_topologicalData(_topologicalData),
-    m_topology(NULL),
+    m_topology(nullptr),
     m_topoHandler(_topoHandler),
     m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false),
     m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
     m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 
-    if (m_topology == NULL)
+    if (m_topology == nullptr)
         msg_error() << "Topology is not dynamic";
 
-    if (m_topoHandler == NULL)
+    if (m_topoHandler == nullptr)
         msg_error() << "Topology Handler not available";
 }
 
@@ -96,7 +96,7 @@ void TopologyEngineImpl< VecT>::registerTopology(sofa::core::topology::BaseMeshT
 {
     m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 
-    if (m_topology == NULL)
+    if (m_topology == nullptr)
     {
         if (CHECK_TOPOLOGY)
             msg_error() <<"Topology is not dynamic";
@@ -111,7 +111,7 @@ void TopologyEngineImpl< VecT>::registerTopology(sofa::core::topology::BaseMeshT
 template <typename VecT>
 void TopologyEngineImpl< VecT>::registerTopology()
 {
-    if (m_topology == NULL)
+    if (m_topology == nullptr)
     {
         if (CHECK_TOPOLOGY)
             msg_error() <<"Topology is not dynamic";
@@ -145,7 +145,7 @@ void TopologyEngineImpl< VecT>::linkToPointDataArray()
 
     sofa::component::topology::PointSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::PointSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
         if(CHECK_TOPOLOGY)
             msg_error() <<"Can't dynamic cast topology as PointSetTopologyContainer";
@@ -166,7 +166,7 @@ void TopologyEngineImpl< VecT>::linkToEdgeDataArray()
 
     sofa::component::topology::EdgeSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::EdgeSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
         if(CHECK_TOPOLOGY)
             msg_error() <<"Can't dynamic cast topology as EdgeSetTopologyContainer";
@@ -187,7 +187,7 @@ void TopologyEngineImpl< VecT>::linkToTriangleDataArray()
 
     sofa::component::topology::TriangleSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
         if(CHECK_TOPOLOGY)
             msg_error() <<"Can't dynamic cast topology as TriangleSetTopologyContainer";
@@ -208,7 +208,7 @@ void TopologyEngineImpl< VecT>::linkToQuadDataArray()
 
     sofa::component::topology::QuadSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::QuadSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
         if(CHECK_TOPOLOGY)
             msg_error() <<"Can't dynamic cast topology as QuadSetTopologyContainer";
@@ -229,7 +229,7 @@ void TopologyEngineImpl< VecT>::linkToTetrahedronDataArray()
 
     sofa::component::topology::TetrahedronSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TetrahedronSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
         if(CHECK_TOPOLOGY)
             msg_error() <<"Can't dynamic cast topology as TetrahedronSetTopologyContainer";
@@ -250,7 +250,7 @@ void TopologyEngineImpl< VecT>::linkToHexahedronDataArray()
 
     sofa::component::topology::HexahedronSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::HexahedronSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
         if(CHECK_TOPOLOGY)
             msg_error() <<"Can't dynamic cast topology as HexahedronSetTopologyContainer";

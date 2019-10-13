@@ -86,9 +86,9 @@ VisualManagerPass::~VisualManagerPass()
 
 bool VisualManagerPass::checkMultipass(sofa::core::objectmodel::BaseContext* con)
 {
-    sofa::component::visualmodel::CompositingVisualLoop* isMultipass=NULL;
+    sofa::component::visualmodel::CompositingVisualLoop* isMultipass=nullptr;
     isMultipass= con->core::objectmodel::BaseContext::get<sofa::component::visualmodel::CompositingVisualLoop>();
-    return (isMultipass!=NULL);
+    return (isMultipass!=nullptr);
 }
 
 void VisualManagerPass::init()

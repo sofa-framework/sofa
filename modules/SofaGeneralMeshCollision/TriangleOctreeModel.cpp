@@ -88,7 +88,7 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     if(octreeRoot)
     {
         delete octreeRoot;
-        octreeRoot=NULL;
+        octreeRoot=nullptr;
     }
 
     CubeModel* cubeModel = createPrevious<CubeModel>();

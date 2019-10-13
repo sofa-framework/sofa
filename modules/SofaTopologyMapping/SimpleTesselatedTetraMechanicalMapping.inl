@@ -37,9 +37,9 @@ namespace mapping
 template <class TIn, class TOut>
 SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::SimpleTesselatedTetraMechanicalMapping()
     : Inherit()
-    , topoMap(NULL)
-    , inputTopo(NULL)
-    , outputTopo(NULL)
+    , topoMap(nullptr)
+    , inputTopo(nullptr)
+    , outputTopo(nullptr)
 {
 }
 

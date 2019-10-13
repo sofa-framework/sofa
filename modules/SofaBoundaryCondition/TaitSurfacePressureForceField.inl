@@ -62,7 +62,7 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_drawForceColor(initData(&m_drawForceColor, defaulttype::Vec4f(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
     m_volumeAfterTC(initData(&m_volumeAfterTC, "volumeAfterTC", "OUT: Volume after a topology change")),
     m_surfaceAreaAfterTC(initData(&m_surfaceAreaAfterTC, (Real)0.0, "surfaceAreaAfterTC", "OUT: Surface area after a topology change")),
-    m_topology(NULL),
+    m_topology(nullptr),
     lastTopologyRevision(-1)
 {
     m_p0.setGroup("Controls");

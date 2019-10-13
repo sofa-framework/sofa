@@ -225,7 +225,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     /// Get the mechanical object containing the mesh position in 3D
     Tag mechanicalTag(d_tagMeshMechanics.getValue());
     this->getContext()->get(mechanicalObject, mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
-    if (mechanicalObject==NULL)
+    if (mechanicalObject==nullptr)
     {
         msg_error() << "cannot find the mechanical object named '" << mechanicalObject << msgendl;
         return;

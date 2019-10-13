@@ -54,11 +54,11 @@ int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::H
 #endif
   
 #if SOFAGUIQT_HAVE_QGLVIEWER
-int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
+int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, nullptr, 3 );
 #endif
 
 #if SOFAGUIQT_HAVE_QTVIEWER
-int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, NULL, 2 );
+int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, nullptr, 2 );
 #endif
 
 } // namespace gui

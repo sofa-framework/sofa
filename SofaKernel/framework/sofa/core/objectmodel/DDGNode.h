@@ -83,7 +83,7 @@ public:
     /// Helper method to get the type name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::typeName(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
     static std::string typeName(const T* ptr= nullptr)
@@ -94,7 +94,7 @@ public:
     /// Helper method to get the class name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::className(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::className(ptr); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
     static std::string className(const T* ptr= nullptr)
@@ -105,7 +105,7 @@ public:
     /// Helper method to get the namespace name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::namespaceName(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::namespaceName(ptr); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
     static std::string namespaceName(const T* ptr= nullptr)
@@ -116,7 +116,7 @@ public:
     /// Helper method to get the template name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::templateName(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::templateName(ptr); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
     static std::string templateName(const T* ptr= nullptr)
@@ -128,7 +128,7 @@ public:
     /// The default implementation return the class name.
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::shortName(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::shortName(ptr); \endcode
     /// This way derived classes can redefine the shortName method
     template< class T>
     static std::string shortName( const T* ptr = nullptr, BaseObjectDescription* = nullptr )

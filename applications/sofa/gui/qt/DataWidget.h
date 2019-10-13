@@ -89,12 +89,12 @@ public:
     static T* create(T*, const CreatorArgument& arg)
     {
         typename T::MyData* data = dynamic_cast<typename T::MyData*>(arg.data);
-        if(!data) return NULL;
+        if(!data) return nullptr;
         T* instance = new T(arg.parent, arg.name.c_str(), data);
         if ( !instance->createWidgets() )
         {
             delete instance;
-            instance = NULL;
+            instance = nullptr;
         }
         if (instance)
         {
@@ -189,14 +189,14 @@ public:
     static RealObject* create( RealObject*, CreatorArgument& arg)
     {
         typename RealObject::MyTData* realData = dynamic_cast< typename RealObject::MyTData* >(arg.data);
-        if (!realData) return NULL;
+        if (!realData) return nullptr;
         else
         {
             RealObject* obj = new RealObject(arg.parent,arg.name.c_str(), realData);
             if( !obj->createWidgets() )
             {
                 delete obj;
-                obj = NULL;
+                obj = nullptr;
             }
             if (obj)
             {

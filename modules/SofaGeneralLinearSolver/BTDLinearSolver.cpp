@@ -37,7 +37,7 @@ namespace component
 namespace linearsolver
 {
 
-static int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
+int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
     .add< BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> > >(true)
 ;
 

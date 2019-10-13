@@ -49,8 +49,8 @@ namespace forcefield
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::
 TriangleFEMForceField()
-    : _mesh(NULL)
-    , _indexedElements(NULL)
+    : _mesh(nullptr)
+    , _indexedElements(nullptr)
     , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
     , method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
@@ -84,7 +84,7 @@ void TriangleFEMForceField<DataTypes>::init()
     if( _mesh )
         sout<<"TriangleFEMForceField<DataTypes>::init, mesh has " <<_mesh->getTriangles().size() <<" triangles and " << _mesh->getQuads().size() << " quads" << sendl;
 
-    if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
+    if (_mesh==nullptr || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
     {
         serr << "ERROR(TriangleFEMForceField): Need a MeshTopology with triangles or quads."<<sendl;
         return;

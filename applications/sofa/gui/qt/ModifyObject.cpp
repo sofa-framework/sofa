@@ -78,8 +78,8 @@ ModifyObject::ModifyObject(void *Id,
       messageEdit(nullptr),
       transformation(nullptr)
     #if SOFAGUIQT_HAVE_QWT
-    ,energy(NULL)
-    ,momentum(NULL)
+    ,energy(nullptr)
+    ,momentum(nullptr)
     #endif
 {
     setWindowTitle(name);
@@ -162,7 +162,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             core::objectmodel::BaseData* data=*it;
             if (!data)
             {
-                dmsg_error("ModifyObject") << "NULL Data in '" << node->getName() << "'" ;
+                dmsg_error("ModifyObject") << "nullptr Data in '" << node->getName() << "'" ;
                 continue;
             }
 
@@ -170,7 +170,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
             if (!data->getGroup())
             {
-                dmsg_error("ModifyObject") << "NULL group for Data (" << data->getName() << "() in (" << node->getName() << "'";
+                dmsg_error("ModifyObject") << "nullptr group for Data (" << data->getName() << "() in (" << node->getName() << "'";
                 continue;
             }
 
@@ -188,7 +188,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 #ifdef DEBUG_GUI
             std::cout << "GUI: add Data " << data->getName() << " in " << currentGroup << std::endl;
 #endif
-            QTabulationModifyObject* currentTab=NULL;
+            QTabulationModifyObject* currentTab=nullptr;
 
             std::vector<QTabulationModifyObject* > &tabs=groupTabulation[currentGroup];
             bool newTab = false;
@@ -240,7 +240,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             std::cout << "GUI: add Link " << link->getName() << " in " << currentGroup << std::endl;
 #endif
 
-            QTabulationModifyObject* currentTab=NULL;
+            QTabulationModifyObject* currentTab=nullptr;
 
             std::vector<QTabulationModifyObject* > &tabs=groupTabulation[currentGroup];
             if (tabs.empty()) tabNames.push_back(currentGroup);

@@ -671,7 +671,7 @@ public:
             }
             return &btemp.back().value;
         }
-        return NULL;
+        return nullptr;
     }
 
     ///< Mathematical size of the matrix

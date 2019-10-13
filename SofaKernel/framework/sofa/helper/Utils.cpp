@@ -60,7 +60,7 @@ std::wstring Utils::widenString(const std::string& s)
 
     const char * src = s.c_str();
     // Call mbsrtowcs() once to find out the length of the converted string.
-    size_t length = mbsrtowcs(NULL, &src, 0, NULL);
+    size_t length = mbsrtowcs(nullptr, &src, 0, nullptr);
     if (length == size_t(-1)) {
         int error = errno;
         msg_warning("Utils::widenString()") << strerror(error);
@@ -69,7 +69,7 @@ std::wstring Utils::widenString(const std::string& s)
 
     // Call mbsrtowcs() again with a correctly sized buffer to actually do the conversion.
     wchar_t * buffer = new wchar_t[length + 1];
-    length = mbsrtowcs(buffer, &src, length + 1, NULL);
+    length = mbsrtowcs(buffer, &src, length + 1, nullptr);
     if (length == size_t(-1)) {
         int error = errno;
         msg_warning("Utils::widenString()") << strerror(error);
@@ -77,7 +77,7 @@ std::wstring Utils::widenString(const std::string& s)
         return L"";
     }
 
-    if (src != NULL) {
+    if (src != nullptr) {
         msg_warning("Utils::widenString()") << "Conversion failed (\"" << s << "\")";
         delete[] buffer;
         return L"";
@@ -96,7 +96,7 @@ std::string Utils::narrowString(const std::wstring& ws)
 
     const wchar_t * src = ws.c_str();
     // Call wcstombs() once to find out the length of the converted string.
-    size_t length = wcstombs(NULL, src, 0);
+    size_t length = wcstombs(nullptr, src, 0);
     if (length == size_t(-1)) {
         msg_warning("Utils::narrowString()") << "Conversion failed";
         return "";
@@ -143,12 +143,12 @@ std::string Utils::GetLastError() {
     FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER
                   | FORMAT_MESSAGE_FROM_SYSTEM
                   | FORMAT_MESSAGE_IGNORE_INSERTS,
-                  NULL,
+                  nullptr,
                   dwErrorCode,
                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                   (LPTSTR)&lpErrMsgBuf,
                   0,
-                  NULL);
+                  nullptr);
     // Allocate a bigger buffer
     lpMessageBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
                                       (lstrlen((LPCTSTR)lpErrMsgBuf)+40)*sizeof(TCHAR));
@@ -171,7 +171,7 @@ static std::string computeExecutablePath()
 
 #if defined(WIN32)
     std::vector<TCHAR> lpFilename(MAX_PATH);
-    int ret = GetModuleFileName(NULL, /* NULL --> executable of the current process */
+    int ret = GetModuleFileName(nullptr, /* nullptr --> executable of the current process */
         &lpFilename[0],
         MAX_PATH);
     if (ret == 0 || ret == MAX_PATH) {
@@ -220,7 +220,7 @@ const std::string& Utils::getExecutableDirectory()
 static std::string computeSofaPathPrefix()
 {
     char* pathVar = getenv("SOFA_ROOT");
-    if (pathVar != NULL && FileSystem::exists(pathVar))
+    if (pathVar != nullptr && FileSystem::exists(pathVar))
     {
         return std::string(pathVar);
     }

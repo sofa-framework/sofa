@@ -198,7 +198,7 @@ bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFil
                   )
 {
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
-    if (mesh == NULL)
+    if (mesh == nullptr)
     {
         msg_error("GenerateRigid") << "unable to loading mesh from file '"<<meshFilename<<"'" ;
         return false;
@@ -218,7 +218,7 @@ bool generateRigid(GenerateRigidInfo& res
                                   , const Vector3 &rotation)
 {
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
-    if (mesh == NULL)
+    if (mesh == nullptr)
     {
         msg_info("GenerateRigid") << "unable to loade mesh from file '"<<meshFilename<<"'" ;
         return false;

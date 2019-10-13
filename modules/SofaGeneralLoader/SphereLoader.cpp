@@ -65,7 +65,7 @@ bool SphereLoader::load()
 
     static const char* SPH_FORMAT = "sph 1.0";
 
-    if ((file = fopen(fname.c_str(), "r")) == NULL)
+    if ((file = fopen(fname.c_str(), "r")) == nullptr)
     {
         msg_error("SphereLoader") << "cannot read file '" << filename << "'. ";
         return false;
@@ -77,7 +77,7 @@ bool SphereLoader::load()
     int totalNumSpheres=0;
 
     // Check first line
-    if (fgets(cmd, 7, file) == NULL || !strcmp(cmd,SPH_FORMAT))
+    if (fgets(cmd, 7, file) == nullptr || !strcmp(cmd,SPH_FORMAT))
     {
         fclose(file);
         return false;

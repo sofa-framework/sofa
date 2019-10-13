@@ -292,9 +292,9 @@ public:
     virtual const BaseClass* getClass() const
     { return GetClass(); }
 
-    static std::string templateName(const Data<T>* = NULL)
+    static std::string templateName(const Data<T>* = nullptr)
     {
-        T* ptr = NULL;
+        T* ptr = nullptr;
         return BaseData::typeName(ptr);
     }
     /// @}

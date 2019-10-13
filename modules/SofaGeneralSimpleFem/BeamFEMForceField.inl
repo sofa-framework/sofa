@@ -60,7 +60,7 @@ using defaulttype::Quat;
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField()
     : m_beamsData(initData(&m_beamsData, "beamsData", "Internal element data"))
-    , m_indexedElements(NULL)
+    , m_indexedElements(nullptr)
     , d_poissonRatio(initData(&d_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
     , d_youngModulus(initData(&d_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
     , d_radius(initData(&d_radius,(Real)0.1,"radius","radius of the section"))
@@ -70,7 +70,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField()
     , m_partialListSegment(false)
     , m_updateStiffnessMatrix(true)
     , m_assembling(false)
-    , m_edgeHandler(NULL)
+    , m_edgeHandler(nullptr)
 {
     m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
 
@@ -81,7 +81,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField()
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner)
     : m_beamsData(initData(&m_beamsData, "beamsData", "Internal element data"))
-    , m_indexedElements(NULL)
+    , m_indexedElements(nullptr)
     , d_poissonRatio(initData(&d_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
     , d_youngModulus(initData(&d_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
     , d_radius(initData(&d_radius,(Real)radius,"radius","radius of the section"))
@@ -92,7 +92,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , m_partialListSegment(false)
     , m_updateStiffnessMatrix(true)
     , m_assembling(false)
-    , m_edgeHandler(NULL)
+    , m_edgeHandler(nullptr)
 {
     m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
 
@@ -140,7 +140,6 @@ void BeamFEMForceField<DataTypes>::init()
     BaseContext* context = this->getContext();
     m_stiffnessContainer = context->BaseContext::get<container::StiffnessContainer>();
     m_poissonContainer = context->BaseContext::get<container::PoissonContainer>();
-
 
     if(m_topology->getNbEdges()==0)
     {

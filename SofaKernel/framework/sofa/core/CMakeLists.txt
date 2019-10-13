@@ -102,6 +102,7 @@ set(HEADER_FILES
     objectmodel/BaseObject.h
     objectmodel/BaseObjectDescription.h
     objectmodel/ClassInfo.h
+    objectmodel/ComponentState.h
     objectmodel/ConfigurationSetting.h
     objectmodel/Context.h
     objectmodel/ContextObject.h
@@ -208,6 +209,7 @@ set(SOURCE_FILES
     objectmodel/BaseObject.cpp
     objectmodel/BaseObjectDescription.cpp
     objectmodel/ClassInfo.cpp
+    objectmodel/ComponentState.cpp
     objectmodel/ConfigurationSetting.cpp
     objectmodel/ContextObject.cpp
     objectmodel/Context.cpp

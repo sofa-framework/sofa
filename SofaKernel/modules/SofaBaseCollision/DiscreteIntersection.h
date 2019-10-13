@@ -44,7 +44,7 @@ protected:
 	~DiscreteIntersection() override { }
 	
 public:
-    /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
+    /// Return the intersector class handling the given pair of collision models, or nullptr if not supported.
     /// @param swapModel output value set to true if the collision models must be swapped before calling the intersector.
     core::collision::ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) override;
 

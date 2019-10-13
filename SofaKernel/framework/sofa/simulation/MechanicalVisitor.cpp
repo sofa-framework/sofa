@@ -51,9 +51,9 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
     if (res != RESULT_PRUNE)
     {
 
-        if (node->mechanicalState != NULL)
+        if (node->mechanicalState != nullptr)
         {
-            if (node->mechanicalMapping != NULL)
+            if (node->mechanicalMapping != nullptr)
             {
                 if (stopAtMechanicalMapping(node, node->mechanicalMapping))
                 {
@@ -95,7 +95,7 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
                 }
             }
         }
-        else if (node->mechanicalMapping != NULL) // rare case of a mechanical mapping which controls a state located elsewhere.
+        else if (node->mechanicalMapping != nullptr) // rare case of a mechanical mapping which controls a state located elsewhere.
         {
             if (stopAtMechanicalMapping(node, node->mechanicalMapping))
             {
@@ -120,7 +120,7 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
 
     if (res != RESULT_PRUNE)
     {
-        if (node->mass != NULL)
+        if (node->mass != nullptr)
         {
             if(testTags(node->mass))
             {
@@ -170,9 +170,9 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorC
     for_each<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseConstraintSet>,core::behavior::BaseConstraintSet>(this, ctx, node->constraintSet, &MechanicalVisitor::bwdConstraintSet);
     for_each<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::ConstraintSolver>,core::behavior::ConstraintSolver>(this, ctx, node->constraintSolver, &MechanicalVisitor::bwdConstraintSolver);
 
-    if (node->mechanicalState != NULL)
+    if (node->mechanicalState != nullptr)
     {
-        if (node->mechanicalMapping != NULL)
+        if (node->mechanicalMapping != nullptr)
         {
             if (!stopAtMechanicalMapping(node, node->mechanicalMapping))
             {
@@ -211,14 +211,14 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorC
 
     if (node == root)
     {
-        root = NULL;
+        root = nullptr;
     }
 }
 
 
 Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node)
 {
-    if (root == NULL)
+    if (root == nullptr)
     {
         root = node;
     }
@@ -243,7 +243,7 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node)
 
 Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node, LocalStorage* stack)
 {
-    if (root == NULL)
+    if (root == nullptr)
     {
         root = node;
     }
@@ -404,7 +404,7 @@ void BaseMechanicalVisitor::printWriteVectors(simulation::Node* node, core::obje
         }else
         {
             BaseMechanicalState* dof = node->mechanicalState;
-            if (dof == NULL)
+            if (dof == nullptr)
                 node->getContext()->get(dof);
             printWriteVectors(dof);
             return;
@@ -1239,7 +1239,7 @@ Visitor::Result MechanicalApplyConstraintsVisitor::fwdMappedMechanicalState(simu
 void MechanicalApplyConstraintsVisitor::bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 {
     c->projectResponse(mparams, res);
-    if (W != NULL)
+    if (W != nullptr)
     {
         c->projectResponse(mparams, W);
     }
@@ -1349,7 +1349,7 @@ Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalMapping(simulation:
 /// get the closest pickable particle
 void MechanicalPickParticlesVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength )
 {
-    mstate = NULL;
+    mstate = nullptr;
 
     if( particles.empty() ) return;
 
@@ -1451,7 +1451,7 @@ bool MechanicalPickParticlesWithTagsVisitor::isComponentTagIncluded(const behavi
 /// get the closest pickable particle
 void MechanicalPickParticlesWithTagsVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength )
 {
-    mstate = NULL;
+    mstate = nullptr;
 
     if( particles.empty() ) return;
 

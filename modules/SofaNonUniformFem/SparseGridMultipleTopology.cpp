@@ -110,7 +110,7 @@ void SparseGridMultipleTopology::buildAsFinest()
         {
             meshes[i] = helper::io::Mesh::Create(filename.c_str());
 
-            if(meshes[i] == NULL)
+            if(meshes[i] == nullptr)
             {
                 serr << "SparseGridTopology: loading mesh " << filename << " failed." <<sendl;
                 return;

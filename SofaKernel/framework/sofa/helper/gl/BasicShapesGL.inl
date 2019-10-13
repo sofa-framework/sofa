@@ -361,7 +361,7 @@ void BasicShapesGL_FakeSphere<VertexType>::generateBuffer(const std::vector<Vert
     glBindBuffer(GL_ARRAY_BUFFER, m_buffer.VBO);
     glBufferData(GL_ARRAY_BUFFER,
         m_buffer.totalSize,
-        NULL,
+        nullptr,
         GL_DYNAMIC_DRAW);
     glBufferSubDataARB(GL_ARRAY_BUFFER,
         0,
@@ -378,7 +378,7 @@ void BasicShapesGL_FakeSphere<VertexType>::generateBuffer(const std::vector<Vert
     glBindBuffer(GL_ARRAY_BUFFER, m_radiusBuffer.VBO);
     glBufferData(GL_ARRAY_BUFFER,
         m_radiusBuffer.bufferSize,
-        NULL,
+        nullptr,
         GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER,
         0,

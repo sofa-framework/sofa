@@ -53,7 +53,7 @@ void GetAssembledSizeVisitor::setIndependentOnly(bool b){ independentOnly=b; }
 
 Visitor::Result GetAssembledSizeVisitor::processNodeTopDown( simulation::Node* gnode )
 {
-    if (gnode->mechanicalState != NULL && ( gnode->mechanicalMapping ==NULL || independentOnly==false) )
+    if (gnode->mechanicalState != nullptr && ( gnode->mechanicalMapping ==nullptr || independentOnly==false) )
     {
         xsize += gnode->mechanicalState->getSize() * gnode->mechanicalState->getCoordDimension();
         vsize += gnode->mechanicalState->getMatrixSize();

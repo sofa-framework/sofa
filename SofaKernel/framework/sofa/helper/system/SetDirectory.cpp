@@ -86,7 +86,7 @@ std::string SetDirectory::GetCurrentDir()
 {
     char dir[1024];
     memset(dir,0,sizeof(dir));
-    if (getcwd(dir, sizeof(dir)) == NULL)
+    if (getcwd(dir, sizeof(dir)) == nullptr)
         msg_error("SetDirectory") << "can't get current directory.";
     return dir;
 }
@@ -175,7 +175,7 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         //    if (path[0]) return path;
         //   }
         TCHAR tpath[1024];
-        GetModuleFileName(NULL,tpath,1024);
+        GetModuleFileName(nullptr,tpath,1024);
         std::wstring wprocessPath = tpath;
         std::string processPath;
         processPath.assign(wprocessPath.begin(), wprocessPath.end() );

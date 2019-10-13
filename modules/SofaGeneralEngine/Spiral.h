@@ -72,7 +72,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const Spiral<DataTypes>* = NULL)
+    static std::string templateName(const Spiral<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

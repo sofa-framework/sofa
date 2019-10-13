@@ -62,12 +62,12 @@ public:
     {
         if (arg->getAttribute("object"))
         {
-            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object",".."))) == NULL)
+            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object",".."))) == nullptr)
                 return false;
         }
         else
         {
-            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
                 return false;
         }
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
@@ -92,7 +92,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const DevTensionMonitor<TDataTypes>* = NULL)
+    static std::string templateName(const DevTensionMonitor<TDataTypes>* = nullptr)
     {
         return TDataTypes::Name();
     }

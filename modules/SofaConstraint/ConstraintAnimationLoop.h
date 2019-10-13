@@ -183,7 +183,7 @@ public:
 
     SOFA_CLASS(ConstraintAnimationLoop, sofa::simulation::CollisionAnimationLoop);
 protected:
-    ConstraintAnimationLoop(simulation::Node* gnode = NULL);
+    ConstraintAnimationLoop(simulation::Node* gnode = nullptr);
     ~ConstraintAnimationLoop() override;
 public:
 

@@ -85,13 +85,13 @@ FileRepository DataRepository( "SOFA_DATA_PATH", 0, Utils::getSofaPathTo("etc/so
 
 FileRepository::FileRepository(const char* envVar, const char* relativePath, const char *iniFilePath)
 {
-    if (envVar != NULL && envVar[0]!='\0')
+    if (envVar != nullptr && envVar[0]!='\0')
     {
         const char* envpath = getenv(envVar);
-        if (envpath != NULL && envpath[0]!='\0')
+        if (envpath != nullptr && envpath[0]!='\0')
             addFirstPath(envpath);
     }
-    if (relativePath != NULL && relativePath[0]!='\0')
+    if (relativePath != nullptr && relativePath[0]!='\0')
     {
         std::string path = relativePath;
         size_t p0 = 0;
@@ -107,7 +107,7 @@ FileRepository::FileRepository(const char* envVar, const char* relativePath, con
             p0 = p1+1;
         }
     }
-    if ( iniFilePath != NULL && iniFilePath[0] != '\0' )
+    if ( iniFilePath != nullptr && iniFilePath[0] != '\0' )
     {
         std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(iniFilePath);
         for ( const auto &iniFileValue : iniFileValues )

@@ -298,7 +298,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
     {
         core::topology::BaseMeshTopology*	_topology = topo->toBaseMeshTopology();
 
-        if(_topology != NULL)
+        if(_topology != nullptr)
         {
             std::list<const core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
             std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
@@ -328,7 +328,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
     {
         core::topology::BaseMeshTopology*	_topology = topo->toBaseMeshTopology();
 
-        if(_topology != NULL)
+        if(_topology != nullptr)
         {
             std::list<const core::topology::TopologyChange *>::const_iterator changeIt=_topology->beginChange();
             std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
@@ -403,7 +403,7 @@ void SpringForceField<DataTypes>::initGnuplot(const std::string path)
 {
     if (!this->getName().empty())
     {
-        if (m_gnuplotFileEnergy != NULL)
+        if (m_gnuplotFileEnergy != nullptr)
         {
             m_gnuplotFileEnergy->close();
             delete m_gnuplotFileEnergy;
@@ -415,7 +415,7 @@ void SpringForceField<DataTypes>::initGnuplot(const std::string path)
 template<class DataTypes>
 void SpringForceField<DataTypes>::exportGnuplot(SReal time)
 {
-    if (m_gnuplotFileEnergy!=NULL)
+    if (m_gnuplotFileEnergy!=nullptr)
     {
         (*m_gnuplotFileEnergy) << time <<"\t"<< this->m_potentialEnergy << std::endl;
     }

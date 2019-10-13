@@ -170,19 +170,19 @@ public:
         return false;
     }
 
-    /// Get the linear system matrix, or NULL if this solver does not build it
+    /// Get the linear system matrix, or nullptr if this solver does not build it
     virtual defaulttype::BaseMatrix* getSystemBaseMatrix() { return nullptr; }
 
-    /// Get the MultiMatrix view of the linear system, or NULL if this solved does not build it
+    /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
     virtual const behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const { return nullptr; }
 
-    /// Get the linear system right-hand term vector, or NULL if this solver does not build it
+    /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
     virtual defaulttype::BaseVector* getSystemRHBaseVector() { return nullptr; }
 
-    /// Get the linear system left-hand term vector, or NULL if this solver does not build it
+    /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
     virtual defaulttype::BaseVector* getSystemLHBaseVector() { return nullptr; }
 
-    /// Get the linear system inverse matrix, or NULL if this solver does not build it
+    /// Get the linear system inverse matrix, or nullptr if this solver does not build it
     virtual defaulttype::BaseMatrix* getSystemInverseBaseMatrix() { return nullptr; }
 
     /// Read the Matrix solver from a file

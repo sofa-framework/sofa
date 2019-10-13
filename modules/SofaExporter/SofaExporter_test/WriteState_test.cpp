@@ -56,11 +56,11 @@ namespace sofa {
         typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
         /// Root of the scene graph
-        simulation::Node::SPtr root=NULL;
+        simulation::Node::SPtr root=nullptr;
         /// Simulation
         simulation::Simulation* simulation=nullptr;
         /// MechanicalObject
-        typename MechanicalObject::SPtr mecaObj=NULL;
+        typename MechanicalObject::SPtr mecaObj=nullptr;
         /// Time step
         double timeStep=0.01;
         /// Gravity
@@ -219,7 +219,7 @@ namespace sofa {
         /// Unload the scene
         void TearDown()
         {
-            if (root!=NULL)
+            if (root!=nullptr)
                 sofa::simulation::getSimulation()->unload(root);
         }
 

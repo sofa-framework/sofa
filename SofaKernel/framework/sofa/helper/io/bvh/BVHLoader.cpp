@@ -49,7 +49,7 @@ BVHJoint *BVHLoader::load(const char *filename)
     if (file)
     {
         BVHJoint::lastId = 0;
-        BVHJoint *retBVHJoint = NULL;
+        BVHJoint *retBVHJoint = nullptr;
         char buf[256];
 
         std::ostringstream bufScanFormat;
@@ -67,7 +67,7 @@ BVHJoint *BVHLoader::load(const char *filename)
     }
 
     msg_info() << "File '" << filename << "' not found.";
-    return NULL;
+    return nullptr;
 }
 
 
@@ -145,7 +145,7 @@ BVHChannels *BVHLoader::parseChannels(FILE *f)
         msg_error() << "fscanf function has encountered an error." ;
 
     if (cSize <= 0)
-        return NULL;
+        return nullptr;
 
     BVHChannels *c = new BVHChannels(cSize);
     char buf[256];
@@ -180,7 +180,7 @@ BVHChannels *BVHLoader::parseChannels(FILE *f)
 
 void BVHLoader::parseMotion(FILE *f, BVHJoint *j)
 {
-    if (j == NULL)
+    if (j == nullptr)
         return;
 
     char buf[256];
@@ -220,7 +220,7 @@ void BVHLoader::parseMotion(FILE *f, BVHJoint *j)
 
 void BVHLoader::parseFrames(BVHJoint *joint, unsigned int frameIndex, FILE *f)
 {
-    if (joint->getChannels() != NULL)
+    if (joint->getChannels() != nullptr)
         for (unsigned int i=0; i < joint->getChannels()->size; i++)
         {
             if (fscanf(f,"%lf",&joint->getMotion()->frames[frameIndex][i]) == EOF)

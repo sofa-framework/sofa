@@ -148,7 +148,7 @@ public:
     }
     ObjectPtr createInstance(Argument arg)
     {
-        RealObject* instance = NULL;
+        RealObject* instance = nullptr;
         return RealObject::create(instance, arg);
     }
     const std::type_info& type()
@@ -183,7 +183,7 @@ public:
 
     ObjectPtr createInstance(Argument arg)
     {
-        RealObject* instance = NULL;
+        RealObject* instance = nullptr;
         return (*constructor)(instance, arg);
     }
     const std::type_info& type()

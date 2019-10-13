@@ -90,7 +90,7 @@ void AttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vpar
 template <class DataTypes>
 AttachBodyPerformer<DataTypes>::AttachBodyPerformer(BaseMouseInteractor *i):
     TInteractionPerformer<DataTypes>(i),
-    mapper(NULL)
+    mapper(nullptr)
 {
     flags.setShowVisualModels(false);
     flags.setShowInteractionForceFields(true);
@@ -109,7 +109,7 @@ void AttachBodyPerformer<DataTypes>::clear()
     if (mapper)
     {
         mapper->cleanup();
-        delete mapper; mapper=NULL;
+        delete mapper; mapper=nullptr;
     }
 
     this->interactor->setDistanceFromMouse(0);
@@ -127,7 +127,7 @@ template <class DataTypes>
 bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
 {
 
-    core::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
+    core::behavior::MechanicalState<DataTypes>* mstateCollision=nullptr;
     int index;
     if (picked.body)
     {

@@ -339,7 +339,7 @@ public:
                     prev = it->second;
                 }
                 else out << ',';
-                if (it->first == NULL) out << "NULL";
+                if (it->first == nullptr) out << "nullptr";
                 else
                     out << it->first->getName();
             }
@@ -524,7 +524,7 @@ public:
                     prev = it->second;
                 }
                 else out << ',';
-                if (it->first == NULL) out << "NULL";
+                if (it->first == nullptr) out << "nullptr";
                 else
                     out << it->first->getName();
             }

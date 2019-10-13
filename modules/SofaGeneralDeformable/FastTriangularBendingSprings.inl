@@ -353,7 +353,7 @@ FastTriangularBendingSprings<DataTypes>::FastTriangularBendingSprings(/*double _
     : d_bendingStiffness(initData(&d_bendingStiffness,(SReal) 1.0,"bendingStiffness","bending stiffness of the material"))
     , d_minDistValidity(initData(&d_minDistValidity,(SReal) 0.000001,"minDistValidity","Distance under which a spring is not valid"))
     , d_edgeSprings(initData(&d_edgeSprings, "edgeInfo", "Internal edge data"))
-    , d_edgeHandler(NULL)
+    , d_edgeHandler(nullptr)
 {
     // Create specific handler for EdgeData
     d_edgeHandler = new TriangularBSEdgeHandler(this, &d_edgeSprings);

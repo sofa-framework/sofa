@@ -60,7 +60,7 @@ void LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyDestroyFunction(
 
 template <class TDataTypes>
 LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
-    : core::behavior::ProjectiveConstraintSet<TDataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<TDataTypes>(nullptr)
     , d_indices( initData(&d_indices,"indices","Indices of the constrained points") )
     , d_keyTimes(  initData(&d_keyTimes,"keyTimes","key times for the movements") )
     , d_keyVelocities(  initData(&d_keyVelocities,"velocities","velocities corresponding to the key times") )
