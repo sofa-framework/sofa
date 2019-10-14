@@ -57,7 +57,7 @@ registerDataModels()
 {
     auto ret = std::make_shared<DataModelRegistry>();
 
-    ret->registerModel<DefaultObjectModel>();
+    ret->registerModel<SofaComponentNodeModel>();
 
     /*
     We could have more models registered.
@@ -217,10 +217,10 @@ size_t SofaWindowDataGraph::addSimulationObject(sofa::core::objectmodel::BaseObj
     msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "addSimulationObject: " << name;
     
     std::vector < std::pair < std::string, std::string> > data = filterUnnecessaryData(bObject);
-    QtNodes::Node& fromNode = m_graphScene->createNode(std::make_unique<DefaultObjectModel>(data));
+    QtNodes::Node& fromNode = m_graphScene->createNode(std::make_unique<SofaComponentNodeModel>(data));
     fromNode.setObjectName(QString::fromStdString(bObject->getName()));
     
-    DefaultObjectModel* model = dynamic_cast<DefaultObjectModel*>(fromNode.nodeDataModel());
+    SofaComponentNodeModel* model = dynamic_cast<SofaComponentNodeModel*>(fromNode.nodeDataModel());
     model->setCaption(name);
 
     auto& fromNgo = fromNode.nodeGraphicsObject();    
@@ -342,8 +342,8 @@ void SofaWindowDataGraph::connectNodeData()
         }
 
         
-        DefaultObjectModel* modelP = dynamic_cast<DefaultObjectModel*>(parentNode->nodeDataModel());
-        DefaultObjectModel* modelC = dynamic_cast<DefaultObjectModel*>(childNode->nodeDataModel());
+        SofaComponentNodeModel* modelP = dynamic_cast<SofaComponentNodeModel*>(parentNode->nodeDataModel());
+        SofaComponentNodeModel* modelC = dynamic_cast<SofaComponentNodeModel*>(childNode->nodeDataModel());
         QtNodes::PortIndex parentId = modelP->getDataInputId(connection.m_parentDataName);
         QtNodes::PortIndex childId = modelC->getDataInputId(connection.m_childDataName);
         

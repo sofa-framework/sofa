@@ -245,7 +245,7 @@ if (SOFA_BUILD_NODEGRAPH)
 
         list(APPEND SOURCE_FILES 
             SofaWindowDataGraph.cpp
-            #dataGraph/models.cpp
+            dataGraph/models.cpp
             )
     endif()
 endif()
