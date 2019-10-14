@@ -144,9 +144,9 @@ using namespace gpu::cuda;
 template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::reinit(Main* m)
 {
-    if (!m->_mesh->getTetrahedra().empty())
+    if (!m->m_topology->getTetrahedra().empty())
     {
-        m->_indexedElements = & (m->_mesh->getTetrahedra());
+        m->_indexedElements = & (m->m_topology->getTetrahedra());
     }
 
     Data& data = m->data;
