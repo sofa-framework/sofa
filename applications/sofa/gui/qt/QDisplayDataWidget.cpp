@@ -107,7 +107,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         datawidget_ = new QDataSimpleEdit(this,dwarg.data->getName().c_str(), dwarg.data);
         datawidget_->createWidgets();
         datawidget_->setDataReadOnly(dwarg.readOnly);
-        assert(datawidget_ != NULL);
+        assert(datawidget_ != nullptr);
     }
 
     if(datawidget_->layout())

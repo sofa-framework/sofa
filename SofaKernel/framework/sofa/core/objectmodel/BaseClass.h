@@ -115,28 +115,28 @@ public:
 
     /// Helper method to get the type name
     template<class T>
-    static std::string defaultTypeName(const T* = NULL)
+    static std::string defaultTypeName(const T* = nullptr)
     {
         return decodeTypeName(typeid(T));
     }
 
     /// Helper method to get the class name
     template<class T>
-    static std::string defaultClassName(const T* = NULL)
+    static std::string defaultClassName(const T* = nullptr)
     {
         return decodeClassName(typeid(T));
     }
 
     /// Helper method to get the namespace name
     template<class T>
-    static std::string defaultNamespaceName(const T* = NULL)
+    static std::string defaultNamespaceName(const T* = nullptr)
     {
         return decodeNamespaceName(typeid(T));
     }
 
     /// Helper method to get the template name
     template<class T>
-    static std::string defaultTemplateName(const T* = NULL)
+    static std::string defaultTemplateName(const T* = nullptr)
     {
         return decodeTemplateName(typeid(T));
     }
@@ -371,7 +371,7 @@ class TClass : public BaseClass
 protected:
     TClass()
     {
-        T* ptr = NULL;
+        T* ptr = nullptr;
         namespaceName = T::namespaceName(ptr);
         className = T::className(ptr);
         templateName = T::templateName(ptr);
@@ -387,14 +387,14 @@ protected:
 
     void* dynamicCast(Base* obj) const override
     {
-        T* ptr = NULL;
+        T* ptr = nullptr;
         T::dynamicCast(ptr, obj);
         return ptr;
     }
 
     bool isInstance(Base* obj) const override
     {
-        return dynamicCast(obj) != NULL;
+        return dynamicCast(obj) != nullptr;
     }
 
 public:

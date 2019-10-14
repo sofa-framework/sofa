@@ -57,7 +57,7 @@ void CenterPointTopologicalMapping::init()
     {
         toModel->setNbPoints(fromModel->getNbHexahedra());
 
-        PointSetGeometryAlgorithms<Vec3Types> *geomAlgo = NULL;
+        PointSetGeometryAlgorithms<Vec3Types> *geomAlgo = nullptr;
         toModel->getContext()->get(geomAlgo);
 
         geomAlgo->getDOF()->resize(fromModel->getNbHexahedra());

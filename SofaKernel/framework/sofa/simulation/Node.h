@@ -407,7 +407,7 @@ public:
         return tmp;
     }
 
-    /// Return an object of this node deriving from a given class, or NULL if not found.
+    /// Return an object of this node deriving from a given class, or nullptr if not found.
     /// Note that only the first object is returned.
     template<class Object>
     void getNodeObject(Object*& result)
@@ -458,7 +458,7 @@ public:
 
 
 
-    /// Return an object of this node and sub-nodes deriving from a given class, or NULL if not found.
+    /// Return an object of this node and sub-nodes deriving from a given class, or nullptr if not found.
     /// Note that only the first object is returned.
     template<class Object>
     void getTreeObject(Object*& result)
@@ -509,6 +509,7 @@ public:
 
     /// Get a descendant node given its name
     Node* getTreeNode(const std::string& name) const;
+    /// Get a node in the scene graph matching the given absolute path
     Node* getNodeInGraph(const std::string& absolutePath) const;
 
     /// Get children nodes
@@ -559,7 +560,7 @@ public:
 
     static Node::SPtr create( const std::string& name );
 
-    /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
+    /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
     virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
 
     /// override context setSleeping to add notification.
@@ -576,25 +577,25 @@ protected:
 
     std::stack<Visitor*> actionStack;
 private:    
-    virtual void notifyBeginAddChild(Node::SPtr parent, Node::SPtr child);
-    virtual void notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyBeginAddChild(Node::SPtr parent, Node::SPtr child) const;
+    virtual void notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child) const;
 
-    virtual void notifyBeginAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyBeginRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyBeginAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
+    virtual void notifyBeginRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
 
-    virtual void notifyEndAddChild(Node::SPtr parent, Node::SPtr child);
-    virtual void notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyEndAddChild(Node::SPtr parent, Node::SPtr child) const;
+    virtual void notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child) const;
 
-    virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
+    virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
 
-    virtual void notifySleepChanged(Node* node);
+    virtual void notifySleepChanged(Node* node) const;
 
-    virtual void notifyBeginAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
-    virtual void notifyBeginRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    virtual void notifyBeginAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
+    virtual void notifyBeginRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
 
-    virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
-    virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
+    virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
 
 
 protected:

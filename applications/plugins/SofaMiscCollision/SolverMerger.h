@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
 #define SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
-#include "config.h"
+#include <SofaMiscCollision/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -39,7 +39,7 @@ namespace collision
 {
 struct SolverSet
 {
-    SolverSet(core::behavior::OdeSolver::SPtr o=NULL,core::behavior::BaseLinearSolver::SPtr l=NULL,core::behavior::ConstraintSolver::SPtr c=NULL):
+    SolverSet(core::behavior::OdeSolver::SPtr o=nullptr,core::behavior::BaseLinearSolver::SPtr l=nullptr,core::behavior::ConstraintSolver::SPtr c=nullptr):
         odeSolver(o),linearSolver(l),constraintSolver(c)
     {}
 

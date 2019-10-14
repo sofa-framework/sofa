@@ -21,6 +21,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+include(CMakeDependentOption)
 
 # Enable the organisation in folders for generators that support
 # it. (E.g. some versions of Visual Studio have 'solution folders')
@@ -78,6 +79,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
 list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
+
+include(SofaMacros)
 
 ## RPATH
 if(UNIX)
@@ -232,12 +235,7 @@ add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
 
 # SofaTest, modules depend on SofaPython, so we add SofaPython before.
-sofa_add_plugin( applications/plugins/SofaPython SofaPython )
-
-## Modules
-## in the consortium convention a module is a similar to a plugin the difference is that
-## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
-add_subdirectory(modules)
+sofa_add_plugin(applications/plugins/SofaPython SofaPython)
 
 ## Scene creator option
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
@@ -253,13 +251,21 @@ endif()
 
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
 if(SOFA_BUILD_SCENECREATOR)
-    add_subdirectory(applications/plugins/SceneCreator SceneCreator)
+    add_subdirectory(applications/plugins/SceneCreator)
 endif()
 
 # Tests : define subdirectories
 if(SOFA_BUILD_TESTS)
     # Library used to write high level tests involving many components.
-    add_subdirectory(applications/plugins/SofaTest SofaTest)
+    add_subdirectory(applications/plugins/SofaTest)
+endif()
+
+## Modules
+## in the consortium convention a module is a similar to a plugin the difference is that
+## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(modules)
+
+if(SOFA_BUILD_TESTS)
     # Tests for all the modules, written using SofaTest.
     add_subdirectory(modules/tests)
     # SofaPython_test is a special case, because it depends on
@@ -267,9 +273,6 @@ if(SOFA_BUILD_TESTS)
     if(PLUGIN_SOFAPYTHON)
         add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
     endif()
-
-    # Not sure what is it
-    add_subdirectory(applications/plugins/SofaTest/SofaTest_test)
 endif()
 
 ## Plugins

@@ -26,6 +26,7 @@
 #include <SofaHaptics/MechanicalStateForceFeedback.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/system/thread/CTime.h>
+#include <mutex>
 
 namespace sofa
 {
@@ -106,7 +107,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast< core::behavior::MechanicalState<DataTypes>* >(context->getMechanicalState()) == NULL)
+        if (dynamic_cast< core::behavior::MechanicalState<DataTypes>* >(context->getMechanicalState()) == nullptr)
             return false;
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
@@ -116,10 +117,13 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const LCPForceFeedback<DataTypes>* = NULL)
+    static std::string templateName(const LCPForceFeedback<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }
+
+    /// Overide method to lock or unlock the force feedback computation. According to parameter, value == true (resp. false) will lock (resp. unlock) mutex @sa lockForce
+    void setLock(bool value) override;
 
 protected:
     core::behavior::MechanicalState<DataTypes> *mState; ///< The device try to follow this mechanical state.
@@ -140,6 +144,9 @@ protected:
     int timer_iterations;
     double haptic_freq;
     unsigned int num_constraints;
+
+    /// mutex used in method @doComputeForce which can be touched from outside using method @sa setLock if components are modified in another thread.
+    std::mutex lockForce;
 };
 
 #if  !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)

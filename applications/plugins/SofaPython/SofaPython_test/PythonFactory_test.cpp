@@ -173,7 +173,7 @@ std::vector<std::vector<std::string>> dataconversionvalues =
      {"'XX_'+first.findData('name').getLinkPath()", "XX_@/theFirst.name"},
      {"first.findData('name').getLinkPath()", "theFirst"},
      {"first.findData('name')", "theFirst"},
-     {"'XX_'+rootNode.getAsACreateObjectParameter()", "XX_@"},
+     {"'XX_'+rootNode.getAsACreateObjectParameter()", "XX_@/"},
      {"CustomObject()", "custom value"}
     } ;
 

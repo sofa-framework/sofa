@@ -102,6 +102,7 @@ set(HEADER_FILES
     objectmodel/BaseObject.h
     objectmodel/BaseObjectDescription.h
     objectmodel/ClassInfo.h
+    objectmodel/ComponentState.h
     objectmodel/ConfigurationSetting.h
     objectmodel/Context.h
     objectmodel/ContextObject.h
@@ -208,6 +209,7 @@ set(SOURCE_FILES
     objectmodel/BaseObject.cpp
     objectmodel/BaseObjectDescription.cpp
     objectmodel/ClassInfo.cpp
+    objectmodel/ComponentState.cpp
     objectmodel/ConfigurationSetting.cpp
     objectmodel/ContextObject.cpp
     objectmodel/Context.cpp
@@ -246,11 +248,6 @@ set(SOURCE_FILES
 if(NOT SOFA_NO_OPENGL)
     list(APPEND HEADER_FILES visual/DrawToolGL.h)
     list(APPEND SOURCE_FILES visual/DrawToolGL.cpp)
-endif()
-
-if(Boost_thread_FOUND)
-    list(APPEND HEADER_FILES objectmodel/AspectPool.h)
-    list(APPEND SOURCE_FILES objectmodel/AspectPool.cpp)
 endif()
 
 

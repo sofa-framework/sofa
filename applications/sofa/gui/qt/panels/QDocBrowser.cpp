@@ -184,7 +184,7 @@ void DocBrowser::loadHtml(const std::string& filename)
 
     /// Check if there exists an .html  file associated with the provided file.
     /// If nor and the history is empty we load a default document from the share repository.
-    if (!DataRepository.findFile(htmlfile, "", NULL))
+    if (!DataRepository.findFile(htmlfile, "", nullptr))
     {
         if( m_browserhistory->size() == 0 )
         {
@@ -203,7 +203,7 @@ void DocBrowser::loadHtml(const std::string& filename)
 
     /// Check if either the scene specific html or default provided can be loaded.
     /// If so...load the page and add the entry into the history.
-    if (DataRepository.findFile(htmlfile, "", NULL))
+    if (DataRepository.findFile(htmlfile, "", nullptr))
     {
         m_htmlPage->setSearchPaths(QStringList(QString(rootdir.c_str())));
         m_htmlPage->setSource(QUrl::fromLocalFile(QString(htmlfile.c_str())) );

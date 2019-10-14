@@ -67,7 +67,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const MergePoints<DataTypes>* = NULL)
+    static std::string templateName(const MergePoints<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

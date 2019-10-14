@@ -264,7 +264,7 @@ void CompareState::draw(const core::visual::VisualParams* vparams)
 CompareStateCreator::CompareStateCreator(const core::ExecParams* params)
     : Visitor(params)
     , sceneName("")
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -278,7 +278,7 @@ CompareStateCreator::CompareStateCreator(const core::ExecParams* params)
 CompareStateCreator::CompareStateCreator(const std::string &n, const core::ExecParams* params, bool i, int c)
     : Visitor(params)
     , sceneName(n)
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -313,7 +313,7 @@ void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalSt
     if (createInMapping || mapping== nullptr)
     {
         sofa::component::misc::CompareState::SPtr rs; context->get(rs, core::objectmodel::BaseContext::Local);
-        if (  rs == NULL )
+        if (  rs == nullptr )
         {
             rs = sofa::core::objectmodel::New<sofa::component::misc::CompareState>(); gnode->addObject(rs);
         }

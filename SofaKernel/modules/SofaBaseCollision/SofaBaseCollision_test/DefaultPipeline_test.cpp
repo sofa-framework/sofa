@@ -126,7 +126,7 @@ int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
     Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
-    //EXPECT_NE( (root.get()), NULL) ;
+    //EXPECT_NE( (root.get()), nullptr) ;
     root->init(ExecParams::defaultInstance()) ;
 
     DefaultPipeline* clp = dynamic_cast<DefaultPipeline*>(root->getObject("pipeline")) ;

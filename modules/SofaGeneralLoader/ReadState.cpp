@@ -39,7 +39,7 @@ int ReadStateClass = core::RegisterObject("Read State vectors from file at each 
 ReadStateCreator::ReadStateCreator(const core::ExecParams* params)
     : Visitor(params)
     , sceneName("")
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -53,7 +53,7 @@ ReadStateCreator::ReadStateCreator(const core::ExecParams* params)
 ReadStateCreator::ReadStateCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i, int c)
     : Visitor(params)
     , sceneName(n)
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -86,7 +86,7 @@ void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *m
     {
         sofa::component::misc::ReadState::SPtr rs;
         context->get(rs, this->subsetsToManage, core::objectmodel::BaseContext::Local);
-        if (rs == NULL)
+        if (rs == nullptr)
         {
             rs = sofa::core::objectmodel::New<ReadState>();
             gnode->addObject(rs);

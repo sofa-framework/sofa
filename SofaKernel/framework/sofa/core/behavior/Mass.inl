@@ -40,7 +40,7 @@ namespace behavior
 template<class DataTypes>
 Mass<DataTypes>::Mass(MechanicalState<DataTypes> *mm)
     : ForceField<DataTypes>(mm)
-    , m_gnuplotFileEnergy(NULL)
+    , m_gnuplotFileEnergy(nullptr)
 {
 }
 
@@ -220,7 +220,7 @@ void Mass<DataTypes>::initGnuplot(const std::string path)
 {
     if (!this->getName().empty())
     {
-        if (m_gnuplotFileEnergy != NULL)
+        if (m_gnuplotFileEnergy != nullptr)
             delete m_gnuplotFileEnergy;
 
         m_gnuplotFileEnergy = new std::ofstream( (path+this->getName()+"_Energy.txt").c_str() );
@@ -230,7 +230,7 @@ void Mass<DataTypes>::initGnuplot(const std::string path)
 template<class DataTypes>
 void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
 {
-    if (m_gnuplotFileEnergy!=NULL)
+    if (m_gnuplotFileEnergy!=nullptr)
     {
         (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy(mparams)
                                <<"\t"<< this->getPotentialEnergy(mparams)

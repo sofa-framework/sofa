@@ -36,7 +36,7 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-
+#include <sofa/helper/AdvancedTimer.h>
 
 #include <cstdlib>
 #include <cmath>
@@ -63,16 +63,21 @@ void CollisionAnimationLoop::computeCollision(const core::ExecParams* params)
     dmsg_info() <<"CollisionAnimationLoop::computeCollision()" ;
 
     {
+        sofa::helper::ScopedAdvancedTimer timer("CollisionBeginEvent");
         CollisionBeginEvent evBegin;
         PropagateEventVisitor eventPropagation( params, &evBegin);
         eventPropagation.execute(getContext());
     }
 
-    CollisionVisitor act(params);
-    act.setTags(this->getTags());
-    act.execute( getContext() );
+    {
+        sofa::helper::ScopedAdvancedTimer timer("CollisionVisitor");
+        CollisionVisitor act(params);
+        act.setTags(this->getTags());
+        act.execute(getContext());
+    }
 
     {
+        sofa::helper::ScopedAdvancedTimer timer("CollisionEndEvent");
         CollisionEndEvent evEnd;
         PropagateEventVisitor eventPropagation( params, &evEnd);
         eventPropagation.execute(getContext());

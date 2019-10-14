@@ -61,6 +61,12 @@ public:
     virtual void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition);
     virtual bool isEnabled();
 
+    /// Abstract method to lock or unlock the force feedback computation. To be implemented by child class if needed
+    virtual void setLock(bool value)
+    {
+        SOFA_UNUSED(value);
+    }
+
 protected:
     ForceFeedback();
 };

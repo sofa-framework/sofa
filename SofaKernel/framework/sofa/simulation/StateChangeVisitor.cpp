@@ -62,7 +62,7 @@ Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::BaseMapping* obj = dynamic_cast<sofa::core::BaseMapping*>(it->get());
-        if (obj != NULL)
+        if (obj != nullptr)
         {
             ctime_t t0=begin(node,obj);
             obj->handleTopologyChange(); // update the specific TopologicalMapping

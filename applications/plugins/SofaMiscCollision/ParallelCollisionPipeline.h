@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_PARALLELCOLLISIONPIPELINE_H
 #define SOFA_COMPONENT_COLLISION_PARALLELCOLLISIONPIPELINE_H
-#include "config.h"
+#include <SofaMiscCollision/config.h>
 
 #include <sofa/core/collision/ParallelPipeline.h>
 #include <sofa/simulation/PipelineImpl.h>

@@ -9,12 +9,13 @@ set(EXTLIBS_TARGETS
 ######## SofaKernel/extlibs ########
 
 # Eigen (header-only): see SofaKernel/cmake/Modules/FindEigen3.cmake
-set(EIGEN_ROOT "${SOFA_KERNEL_SOURCE_DIR}/extlibs/eigen-3.2.7" CACHE PATH "Eigen directory (containing Eigen/src/...)")
-mark_as_advanced(EIGEN_ROOT)
+set(EIGEN3_ROOT "${SOFA_KERNEL_SOURCE_DIR}/extlibs/eigen" CACHE PATH "Eigen directory (containing Eigen/src/...)")
+# Clone eigen repository into extlibs
+# This eigen will be used by default. Change EIGEN3_ROOT to use another eigen.
+sofa_add_subdirectory_external(${SOFA_KERNEL_SOURCE_DIR}/extlibs/eigen eigen3 ON FETCH_ONLY)
 
 # Nlohmann JSON (header-only): see SofaKernel/cmake/Modules/FindJson.cmake
 set(JSON_ROOT "${SOFA_KERNEL_SOURCE_DIR}/extlibs/json" CACHE PATH "Nlohmann JSON directory")
-mark_as_advanced(JSON_ROOT)
 
 # Newmat
 find_package(Newmat QUIET)
@@ -35,12 +36,6 @@ endif()
 find_package(CSparse QUIET)
 if(NOT CSparse_FOUND)
     add_subdirectory(csparse)
-endif()
-
-if(SOFAGUI_ENABLE_QWT)
-    message("Qwt activated")
-    add_subdirectory(qwt-6.1.4/src qwt)
-    list(APPEND EXTLIBS_TARGETS qwt)
 endif()
 
 option(SOFA_BUILD_MINIFLOWVR "Build the miniFlowVR library distributed in the extlibs/ directory." OFF)

@@ -23,8 +23,6 @@
 #include "TimeoutWatchdog.h"
 #include <iostream>
 
-#ifdef SOFA_HAVE_BOOST
-
 namespace sofa
 {
 namespace helper
@@ -80,5 +78,3 @@ void TimeoutWatchdog::threadProc()
 }
 }
 }
-
-#endif

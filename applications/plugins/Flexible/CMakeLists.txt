@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 project(Flexible VERSION 0.1)
 
+find_package(SofaMisc REQUIRED)
+sofa_find_package(SofaPython REQUIRED)
+sofa_find_package(image QUIET)
+sofa_find_package(SofaHighOrderTopology QUIET)
+
 set(HEADER_FILES
+    config.h.in
     BaseJacobian.h
     deformationMapping/BaseDeformationImpl.inl
     deformationMapping/BaseDeformationMapping.h
@@ -103,8 +109,7 @@ set(HEADER_FILES
     types/QuadraticTypes.h
     types/RigidConstraint.h
     types/StrainTypes.h
-)
-
+    )
 set(SOURCE_FILES
     deformationMapping/BaseDeformationMapping.cpp
     deformationMapping/BaseDeformationMultiMapping.cpp
@@ -164,26 +169,21 @@ set(SOURCE_FILES
     types/QuadraticComponents.cpp
     types/RigidConstraint.cpp
     types/StrainTypes.cpp
-)
-
+    )
+set(README_FILES
+    README_Flexible.txt
+    )
 set(PYTHON_FILES
     python/Flexible/__init__.py
     python/Flexible/IO.py
     python/Flexible/StressVisu.py
     python/Flexible/API.py
     python/Flexible/sml.py
-)
+    )
+# Config files and install rules for pythons scripts
+sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 
-
-find_package(SofaMisc REQUIRED)
-
-
-
-set(FLEXIBLE_COMPILER_FLAGS "-DSOFA_BUILD_FLEXIBLE")
-
-find_package(image QUIET)
 if(image_FOUND)
-    set(FLEXIBLE_COMPILER_FLAGS "${FLEXIBLE_COMPILER_FLAGS} -DSOFA_HAVE_IMAGE")
     list(APPEND HEADER_FILES
         deformationMapping/ImageDeformation.h
         mass/ImageDensityMass.h
@@ -196,8 +196,8 @@ if(image_FOUND)
         shapeFunction/ImageShapeFunctionSelectNode.h
         shapeFunction/ImageShapeFunctionContainer.h
         shapeFunction/ShapeFunctionDiscretizer.h
-        shapeFunction/VoronoiShapeFunction.h)
-
+        shapeFunction/VoronoiShapeFunction.h
+        )
     list(APPEND SOURCE_FILES
         deformationMapping/ImageDeformation.cpp
         mass/ImageDensityMass.cpp
@@ -206,44 +206,33 @@ if(image_FOUND)
         shapeFunction/ImageShapeFunctionContainer.cpp
         shapeFunction/ImageShapeFunctionSelectNode.cpp
         shapeFunction/ShapeFunctionDiscretizer.cpp
-        shapeFunction/VoronoiShapeFunction.cpp)
+        shapeFunction/VoronoiShapeFunction.cpp
+        )
 else()
     message(STATUS "Flexible: could not find image")
 endif()
 
-
-
-#find_package(SofaHighOrderTopology QUIET)
-#if(SofaHighOrderTopology_FOUND)
 # @warning SofaHighOrderTopology is an external plugin that cannot be defined previously to Flexible that is an interal plugin
 # so it must require to run cmake two times
-if(${PLUGIN_SOFAHIGHORDERTOPOLOGY})
-    set(FLEXIBLE_COMPILER_FLAGS "${FLEXIBLE_COMPILER_FLAGS} -DSOFA_HAVE_SofaHighOrderTopology")
+if(SofaHighOrderTopology_FOUND)
     list(APPEND HEADER_FILES shapeFunction/BezierShapeFunction.h)
     list(APPEND SOURCE_FILES shapeFunction/BezierShapeFunction.cpp)
 else()
     message(STATUS "Flexible: could not find SofaHighOrderTopology")
 endif()
 
-
-
-set(README_FILES README_Flexible.txt)
-
-
-# Config files and install rules for pythons scripts
-sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${README_FILES})
-target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
 
+target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
 endif()
 
+# TODO: Clean this. We should find_package(MGDiffusion) somehow.
 set(SOFA-EXTERNAL_MGDIFFUSI0N_PATH "" CACHE PATH "Path to the MGDIFFUSI0N library")
 if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
-    set(FLEXIBLE_COMPILER_FLAGS "${FLEXIBLE_COMPILER_FLAGS} -DSOFA_HAVE_MGDIFFUSI0N")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_HAVE_MGDIFFUSI0N")
     target_include_directories(${PROJECT_NAME} "${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/")
 
     # link_directories(${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/)
@@ -261,7 +250,7 @@ if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
         ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/libThreading_Tools.so)
 endif()
 
-if (SOFA_NINJA_BUILD_POOLS)
+if(SOFA_NINJA_BUILD_POOLS)
     set(NINJA_BUILD_POOL_FLEXIBLE "1" CACHE STRING "Cores used to build Flexible with ninja")
     set_property(GLOBAL APPEND PROPERTY JOB_POOLS flexible_pool=${NINJA_BUILD_POOL_FLEXIBLE})
     set_property(TARGET ${PROJECT_NAME} PROPERTY JOB_POOL_COMPILE flexible_pool)
@@ -273,17 +262,12 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${FLEXIBLE_COMPILER_FLAGS}")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_FLEXIBLE")
 
-
-
-
-#if(SofaHighOrderTopology_FOUND)
-if(${PLUGIN_SOFAHIGHORDERTOPOLOGY})
+if(SofaHighOrderTopology_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaHighOrderTopology)
     target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SofaHighOrderTopology_SOURCE_DIR}/..>")
 endif()
-
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)

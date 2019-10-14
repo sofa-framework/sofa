@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/gui/qt/SofaGuiQt.h>
 #include <sofa/gui/qt/viewer/qt/QtViewer.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/thread/CTime.h>
@@ -100,7 +101,7 @@ QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
         f.setSamples(nbMSAASamples);
     }
 
-    if(!SOFA_GUI_VSYNC)
+    if(!SOFAGUIQT_ENABLE_VSYNC)
     {
         f.setSwapInterval(0); // disable vertical refresh sync
     }
@@ -165,7 +166,7 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     this->setFormat(setupGLFormat(nbMSAASamples));
 #endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 
-    groot = NULL;
+    groot = nullptr;
     initTexturesDone = false;
     backgroundColour[0] = 1.0f;
     backgroundColour[1] = 1.0f;

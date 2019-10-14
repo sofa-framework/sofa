@@ -95,7 +95,7 @@ struct TopologicalChangeProcessor_test: public Sofa_test<>
    /// Unload the scene
    void TearDown()
    {
-       if (root!=NULL)
+       if (root!=nullptr)
            sofa::simulation::getSimulation()->unload(root);
    }
 

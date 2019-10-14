@@ -43,7 +43,7 @@ struct SmoothMeshEngine_test : public Sofa_test<typename _DataTypes::Real>,
 	{
 		m_thisObject->findData("input_position")->read("0. 0. 0.  1. 0. 0.  0. 1. 0.");
 
-		m_thisObject->computeBBox(NULL, true);
+		m_thisObject->computeBBox(nullptr, true);
 
 		EXPECT_EQ(m_thisObject->f_bbox.getValue().minBBox(), Vec3(0,0,0));
 		EXPECT_EQ(m_thisObject->f_bbox.getValue().maxBBox(), Vec3(1,1,0));

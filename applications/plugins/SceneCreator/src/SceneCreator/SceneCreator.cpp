@@ -38,12 +38,6 @@ using sofa::simpleapi::str ;
 using sofa::simpleapi::createObject ;
 using sofa::simpleapi::createChild ;
 
-#ifdef SOFA_HAVE_METIS
-#define ARE_METIS_FEATURE_ENABLED true
-#else
-#define ARE_METIS_FEATURE_ENABLED false
-#endif //
-
 namespace sofa
 {
 namespace modeling {
@@ -65,7 +59,7 @@ using sofa::core::objectmodel::New ;
 
 using sofa::helper::system::DataRepository ;
 
-static sofa::simulation::Node::SPtr root = NULL;
+static sofa::simulation::Node::SPtr root = nullptr;
 
 using sofa::core::objectmodel::BaseObject ;
 
@@ -113,7 +107,7 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Implicit_SparseLDL")
     {
-        if(ARE_METIS_FEATURE_ENABLED)
+        if(SCENECREATOR_HAVE_METIS)
         {
             simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
                                                                   {"rayleighStiffness","0.01"},
@@ -386,15 +380,15 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
 {
     //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
     // or dmsg_ for developpers.
-    if (parent == NULL){
-        msg_warning("SceneCreator") << "Parent node is NULL. Returning Null Pointer." ;
-        return NULL;
+    if (parent == nullptr){
+        msg_warning("SceneCreator") << "Parent node is nullptr. Returning Null Pointer." ;
+        return nullptr;
     }
 
     // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
     if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
         msg_warning("SceneCreator") << "Grid Size has a non positive value. Returning Null Pointer." ;
-        return NULL;
+        return nullptr;
     }
 
     // Check rigid
@@ -459,15 +453,15 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
 {
     //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
     // or dmsg_ for developpers.
-    if (parent == NULL){
-        msg_warning("SceneCreator") << "Warning: parent node is NULL. Returning Null Pointer." ;
-        return NULL;
+    if (parent == nullptr){
+        msg_warning("SceneCreator") << "Warning: parent node is nullptr. Returning Null Pointer." ;
+        return nullptr;
     }
 
     // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
     if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
         msg_warning("SceneCreator") << "Warning: Grid Size has a non positive value. Returning Null Pointer." ;
-        return NULL;
+        return nullptr;
     }
 
     // Check rigid
@@ -523,15 +517,15 @@ simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::strin
 {
     //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
     // or dmsg_ for developpers.
-    if (parent == NULL){
-        msg_warning("SceneCreator") << "Warning: parent node is NULL. Returning Null Pointer." ;
-        return NULL;
+    if (parent == nullptr){
+        msg_warning("SceneCreator") << "Warning: parent node is nullptr. Returning Null Pointer." ;
+        return nullptr;
     }
 
     // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
     if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
         msg_warning("SceneCreator") << "Warning: Grid Size has a non positive value. Returning Null Pointer." ;
-        return NULL;
+        return nullptr;
     }
 
     // Check rigid
@@ -583,15 +577,15 @@ simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string
 {
     //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
     // or dmsg_ for developpers.
-    if (parent == NULL){
-        msg_warning("SceneCreator") << " Parent node is NULL. Returning Null Pointer." ;
-        return NULL;
+    if (parent == nullptr){
+        msg_warning("SceneCreator") << " Parent node is nullptr. Returning Null Pointer." ;
+        return nullptr;
     }
 
     // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
     if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
         msg_warning("SceneCreator") << " Grid Size has a non positive value. Returning Null Pointer." ;
-        return NULL;
+        return nullptr;
     }
 
     // Check rigid

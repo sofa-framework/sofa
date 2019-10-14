@@ -101,7 +101,7 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
         // self collision
         bool swapModels = false;
         core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm, swapModels);
-        if (intersector != NULL)
+        if (intersector != nullptr)
             if (intersector->canIntersect(cm->begin(), cm->begin()))
             {
                 cmPairs.push_back(std::make_pair(cm, cm));
@@ -122,7 +122,7 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
 
         bool swapModels = false;
         core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
-        if (intersector == NULL)
+        if (intersector == nullptr)
             continue;
 
         core::CollisionModel* cm1 = (swapModels?cm2:cm);
@@ -192,7 +192,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     
     bool swapModels = false;
     core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2, swapModels);//find the method for the finnest CollisionModels
-    if (finalintersector == NULL)
+    if (finalintersector == nullptr)
         return;
     if (swapModels)
     {
@@ -212,9 +212,9 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     if (finalcm1 == cm1 || finalcm2 == cm2)
     {
         // The last model also contains the root element -> it does not only contains the final level of the tree
-        finalcm1 = NULL;
-        finalcm2 = NULL;
-        finalintersector = NULL;
+        finalcm1 = nullptr;
+        finalcm2 = nullptr;
+        finalintersector = nullptr;
     }
 
     std::queue< TestPair > externalCells;
@@ -240,10 +240,10 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     //externalCells.push(std::make_pair(std::make_pair(cm1->begin(),cm1->end()),std::make_pair(cm2->begin(),cm2->end())));
 
     //core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm1, cm2);
-    core::collision::ElementIntersector* intersector = NULL;
+    core::collision::ElementIntersector* intersector = nullptr;
     MirrorIntersector mirror;
-    cm1 = NULL; // force later init of intersector
-    cm2 = NULL;
+    cm1 = nullptr; // force later init of intersector
+    cm2 = nullptr;
 
     while (!externalCells.empty())
     {
@@ -257,7 +257,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
             if (!cm1 || !cm2) continue;
             intersector = intersectionMethod->findIntersector(cm1, cm2, swapModels);
 
-            if (intersector == NULL)
+            if (intersector == nullptr)
             {
                 msg_error() << "BruteForceDetection: Error finding intersector " << intersectionMethod->getName() << " for "<<cm1->getClassName()<<" - "<<cm2->getClassName()<<sendl;
             }
@@ -267,7 +267,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
                 mirror.intersector = intersector; intersector = &mirror;
             }
         }
-        if (intersector == NULL)
+        if (intersector == nullptr)
             continue;
         std::stack< TestPair > internalCells;
         internalCells.push(root);

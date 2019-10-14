@@ -24,6 +24,9 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaMeshCollision/SofaMeshCol
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaRigid/SofaRigid_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaRigid/SofaRigid_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimpleFem/SofaSimpleFem_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaSimpleFem/SofaSimpleFem_test)
 
+# SofaSimulation tests
+add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimulationGraph/SofaSimulationGraph_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/SofaSimulationGraph/SofaSimulationGraph_test)
+
 # SofaFramework tests
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/sofa/simulation/simulation_test  ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/simulation_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/sofa/frameworkextra/frameworkextra_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaFramework/frameworkextra_test)
@@ -50,7 +53,3 @@ add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscMapping/SofaMiscMapping_
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscSolver/SofaMiscSolver_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscSolver/SofaMiscSolver_test)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscTopology/SofaMiscTopology_test)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscForceField/SofaMiscForceField_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscForceField/SofaMiscForceField_test)
-
-# Module tests
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaExporter/SofaExporter_test ${SOFA_EXT_MODULES_BINARY_DIR}/modules/SofaExporter/SofaExporter_test)
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaOpenglVisual/SofaOpenglVisual_test ${SOFA_EXT_MODULES_BINARY_DIR}/modules/SofaOpenglVisual/SofaOpenglVisual_test)

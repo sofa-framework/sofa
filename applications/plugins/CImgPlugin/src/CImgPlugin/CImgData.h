@@ -85,14 +85,14 @@ public:
 
     cimg_library::CImg<T>& getCImg(const unsigned int t=0) {
         if (t>=img.size())   {
-            assert(img._data != NULL);
+            assert(img._data != nullptr);
             return *img._data;
         }
         return img(t);
     }
     const cimg_library::CImg<T>& getCImg(const unsigned int t=0) const {
         if (t>=img.size())   {
-            assert(img._data != NULL);
+            assert(img._data != nullptr);
             return *img._data;
         }
         return img(t);
@@ -622,12 +622,12 @@ struct ImageTypeInfo
 
     static const void* getValuePtr(const DataType&)
     {
-        return NULL;
+        return nullptr;
     }
 
     static void* getValuePtr(DataType&)
     {
-        return NULL;
+        return nullptr;
     }
 };
 

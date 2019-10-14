@@ -1,12 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscCollision VERSION 1.0)
 
-set(SOFA_HAVE_SOFAMISCCOLLISION 1)
-
-find_package(SofaSphFluid QUIET)
+sofa_find_package(SofaSphFluid QUIET)
+sofa_find_package(SofaDistanceGrid QUIET)
 
 set(HEADER_FILES
-    config.h
+    config.h.in
     initMiscCollision.h
     )
 
@@ -22,6 +21,7 @@ list(APPEND HEADER_FILES
     BarycentricStickContact.h
     BarycentricStickContact.inl
     DefaultCollisionGroupManager.h
+    RayTriangleVisitor.h
     RuleBasedContactManager.h
     SolverMerger.h
     TetrahedronDiscreteIntersection.h
@@ -32,6 +32,7 @@ list(APPEND HEADER_FILES
 list(APPEND SOURCE_FILES
     BarycentricStickContact.cpp
     DefaultCollisionGroupManager.cpp
+    RayTriangleVisitor.cpp
     RuleBasedContactManager.cpp
     SolverMerger.cpp
     TetrahedronBarycentricPenalityContact.cpp
@@ -44,7 +45,7 @@ list(APPEND SOURCE_FILES
     )
 message(STATUS "SofaMiscModule: build all maintained sofa components.")
 
-if(PLUGIN_SOFASPHFLUID AND SofaSphFluid_FOUND)
+if(SofaSphFluid_FOUND)
     list(APPEND HEADER_FILES SpatialGridPointModel.h)
     list(APPEND SOURCE_FILES SpatialGridPointModel.cpp)
     message(STATUS "SofaMiscCollision: optional dependency SofaSphFluid found activing: <SpatialGridPointModel>")
@@ -57,22 +58,19 @@ if(SOFA_HAVE_SMP)
     list(APPEND SOURCE_FILES ParallelCollisionPipeline.cpp)
 endif()
 
-if(SOFA_HAVE_MINIFLOWVR)
+if(SofaDistanceGrid_FOUND)
     list(APPEND SOURCE_FILES FrictionContact_DistanceGrid.cpp)
     list(APPEND SOURCE_FILES BarycentricDistanceLMConstraintContact_DistanceGrid.cpp)
-endif()
-
-if(NOT SOFA_NO_OPENGL)
-    list(APPEND HEADER_FILES RayTriangleVisitor.h)
-    list(APPEND SOURCE_FILES RayTriangleVisitor.cpp)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaGeneralMeshCollision SofaGeneralDeformable SofaConstraint SofaExplicitOdeSolver SofaGeneralExplicitOdeSolver SofaImplicitOdeSolver SofaBaseCollision)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
-
-if(PLUGIN_SOFASPHFLUID AND SofaSphFluid_FOUND)
+if(SofaSphFluid_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaSphFluid)
+endif()
+if(SofaDistanceGrid_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaDistanceGrid)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_COLLISION")

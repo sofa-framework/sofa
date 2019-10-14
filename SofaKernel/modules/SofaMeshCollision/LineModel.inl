@@ -48,7 +48,7 @@ using core::topology::BaseMeshTopology;
 template<class DataTypes>
 LineCollisionModel<DataTypes>::LineCollisionModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
-    , mstate(NULL), topology(NULL), meshRevision(-1), m_lmdFilter(NULL)
+    , mstate(nullptr), topology(nullptr), meshRevision(-1), m_lmdFilter(nullptr)
     , LineActiverPath(initData(&LineActiverPath,"LineActiverPath", "path of a component LineActiver that activates or deactivates collision line during execution") )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
 {
@@ -70,7 +70,7 @@ void LineCollisionModel<DataTypes>::init()
     mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
     this->getContext()->get(mpoints);
 
-    if (mstate==NULL)
+    if (mstate==nullptr)
     {
         msg_error() << "LineModel requires a Vec3 Mechanical Model";
         return;
@@ -110,10 +110,10 @@ void LineCollisionModel<DataTypes>::init()
     else
     {
 
-        core::objectmodel::BaseObject *activer=NULL;
+        core::objectmodel::BaseObject *activer=nullptr;
         this->getContext()->get(activer ,path  );
 
-        if (activer != NULL)
+        if (activer != nullptr)
             sout<<" Activer named"<<activer->getName()<<" found"<<sendl;
         else
             msg_error()<<"wrong path for Line Activer";
@@ -123,7 +123,7 @@ void LineCollisionModel<DataTypes>::init()
 
 
 
-        if (myActiver==NULL)
+        if (myActiver==nullptr)
         {
             myActiver = LineActiver::getDefaultActiver();
 
@@ -392,7 +392,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,false);
     }
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

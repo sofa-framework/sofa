@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_FILEMANAGEMENT_H
 #define SOFA_GUI_FILEMANAGEMENT_H
 
-#include "SofaGUIQt.h"
+#include <sofa/gui/qt/SofaGuiQt.h>
 #include <vector>
 
 #include <QFileDialog>

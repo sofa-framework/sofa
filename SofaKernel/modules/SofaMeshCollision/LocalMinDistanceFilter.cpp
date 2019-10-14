@@ -60,10 +60,10 @@ void LocalMinDistanceFilter::bwdInit()
 {
     if(this->isRigid())
     {
-        RigidMapping< Rigid3Types, Vec3Types > *r_mapping= NULL;
+        RigidMapping< Rigid3Types, Vec3Types > *r_mapping= nullptr;
         r_mapping = this->getContext()->get< RigidMapping< Rigid3Types, Vec3Types > >();
 
-        if(r_mapping==NULL)
+        if(r_mapping==nullptr)
         {
             serr<<"No RigidMapping were found in the same or child node: maybe a template problem (only works for double)"<<sendl;
             this->setRigid(false);
@@ -94,7 +94,7 @@ void LocalMinDistanceFilter::invalidate()
 bool InfoFilter::isValid(void)
 {
     assert(m_lmdFilters != 0);
-    if (m_lmdFilters==NULL)
+    if (m_lmdFilters==nullptr)
     {
         msg_error("InfoFilter")<<"pointer m_lmdFilters is null";
         return false;

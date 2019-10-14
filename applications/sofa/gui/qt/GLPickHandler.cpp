@@ -49,8 +49,8 @@ namespace gui
 
 GLPickHandler::GLPickHandler(double defaultLength)
     : Inherit(defaultLength)
-    , _fbo(true,true,true,false,0)
     , _fboAllocated(false)
+    , _fbo(true,true,true,false,0)
 {
 
 }
@@ -123,11 +123,11 @@ component::collision::BodyPicked GLPickHandler::findCollisionUsingColourCoding(c
         decodeCollisionElement(color,result);
         renderCallback->render(ColourPickingVisitor::ENCODE_RELATIVEPOSITION );
         glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType,color.elems);
-        if( ( tmodel = dynamic_cast<TriangleModel*>(result.body) ) != NULL )
+        if( ( tmodel = dynamic_cast<TriangleModel*>(result.body) ) != nullptr )
         {
             decodePosition(result,color,tmodel,result.indexCollisionElement);
         }
-        if( ( smodel = dynamic_cast<SphereModel*>(result.body)) != NULL)
+        if( ( smodel = dynamic_cast<SphereModel*>(result.body)) != nullptr)
         {
             decodePosition(result, color,smodel,result.indexCollisionElement);
         }

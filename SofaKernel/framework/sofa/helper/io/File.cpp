@@ -77,7 +77,7 @@ void File::close()
 std::streambuf* File::streambuf() const
 {
     if(!checkFileAccess())
-        return NULL;
+        return nullptr;
 
     return myFileAccess->streambuf();
 }

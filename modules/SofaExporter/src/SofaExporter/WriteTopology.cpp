@@ -43,7 +43,7 @@ int WriteTopologyClass = core::RegisterObject("Write topology containers informa
 WriteTopologyCreator::WriteTopologyCreator(const core::ExecParams* params)
     :Visitor(params)
     ,sceneName("")
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -58,7 +58,7 @@ WriteTopologyCreator::WriteTopologyCreator(const core::ExecParams* params)
 WriteTopologyCreator::WriteTopologyCreator(const std::string &n, bool _writeContainers, bool _writeShellContainers, bool _createInMapping, const core::ExecParams* params, int c)
     :Visitor(params)
     , sceneName(n)
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -92,7 +92,7 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
         sofa::component::misc::WriteTopology::SPtr wt;
         context->get(wt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
 
-        if (wt.get() == NULL)
+        if (wt.get() == nullptr)
         {
             wt = sofa::core::objectmodel::New<WriteTopology>();
             gnode->addObject(wt);

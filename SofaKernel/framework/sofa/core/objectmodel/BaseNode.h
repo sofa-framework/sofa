@@ -87,7 +87,7 @@ public:
     /// returns number of parents
     virtual size_t getNbParents() const = 0;
 
-    /// return the first parent (returns NULL if no parent)
+    /// return the first parent (returns nullptr if no parent)
     virtual BaseNode* getFirstParent() const = 0;
 
     /// returns the root by following up the first parent for multinodes
@@ -147,6 +147,9 @@ public:
     virtual core::behavior::OdeSolver* getOdeSolver() const;
     virtual core::collision::Pipeline* getCollisionPipeline() const;
     virtual core::visual::VisualLoop* getVisualLoop() const;
+
+private:
+    virtual std::string internalGetPathName() const;
 
     /// @}
 protected:

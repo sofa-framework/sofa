@@ -154,8 +154,8 @@ public:
     template<class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        In* stin = NULL;
-        Out* stout = NULL;
+        In* stin = nullptr;
+        Out* stout = nullptr;
 
         std::string inPath, outPath;
 
@@ -164,22 +164,22 @@ public:
         else
             inPath = "@../";
 
-        context->findLinkDest(stin, inPath, NULL);
+        context->findLinkDest(stin, inPath, nullptr);
 
         if (arg->getAttribute("output"))
             outPath = arg->getAttribute("output");
         else
             outPath = "@./";
 
-        context->findLinkDest(stout, outPath, NULL);
+        context->findLinkDest(stout, outPath, nullptr);
 
-        if (stin == NULL)
+        if (stin == nullptr)
         {
             context->serr << "Creation of " << className(obj) << " topology mapping failed as input topology model is missing or invalid." << context->sendl;
             return false;
         }
 
-        if (stout == NULL)
+        if (stout == nullptr)
         {
             context->serr << "Creation of " << className(obj) <<" topology mapping failed as output topology model is missing or invalid." << context->sendl;
             return false;

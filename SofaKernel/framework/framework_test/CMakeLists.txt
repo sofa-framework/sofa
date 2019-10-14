@@ -46,12 +46,12 @@ endif(NOT SOFA_NO_OPENGL)
 #add_subdirectory(plugin-system) ## TODO: check if deprecated or... ?
 add_subdirectory(plugins)
 
-include_directories(${gtest_SOURCE_DIR}/include)
 
 add_definitions("-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources\"")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} gtest SofaHelper SofaCore SofaDefaultType SofaSimulationCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaCore SofaDefaultType SofaSimulationCore)
+target_link_libraries(${PROJECT_NAME} PRIVATE gtest) # Private because not exported in API
 #add_dependencies(${PROJECT_NAME} PluginA PluginB PluginC PluginD PluginE PluginF)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

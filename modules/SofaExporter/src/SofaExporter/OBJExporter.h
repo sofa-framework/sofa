@@ -31,7 +31,7 @@
 
 #ifndef OBJEXPORTER_H_
 #define OBJEXPORTER_H_
-#include "config.h"
+#include <SofaExporter/config.h>
 
 #include <sofa/simulation/BaseSimulationExporter.h>
 

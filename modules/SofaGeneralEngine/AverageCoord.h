@@ -78,7 +78,7 @@ public:
     }
 
 
-    static std::string templateName(const AverageCoord<DataTypes>* = NULL)
+    static std::string templateName(const AverageCoord<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

@@ -48,7 +48,7 @@ namespace visualmodel
 
 
 //Register OglShader in the Object Factory
-static int OglShaderClass = core::RegisterObject("OglShader")
+int OglShaderClass = core::RegisterObject("OglShader")
         .add< OglShader >()
         ;
 
@@ -568,9 +568,9 @@ void OglShaderElement::init()
         id.setValue(this->getName());
 
     /*when no multipass is active */
-    sofa::component::visualmodel::CompositingVisualLoop* isMultipass=NULL;
+    sofa::component::visualmodel::CompositingVisualLoop* isMultipass=nullptr;
     isMultipass= mycontext->core::objectmodel::BaseContext::get<sofa::component::visualmodel::CompositingVisualLoop>();
-    if(isMultipass==NULL)
+    if(isMultipass==nullptr)
     {
         if ( OglShader* shader = mycontext->core::objectmodel::BaseContext::get<OglShader>(this->getTags()) )
         {

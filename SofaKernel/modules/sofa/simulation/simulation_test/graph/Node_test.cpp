@@ -25,6 +25,8 @@ using sofa::helper::testing::BaseSimulationTest ;
 #include <SofaSimulationGraph/SimpleApi.h>
 using namespace sofa::simpleapi ;
 
+#include "../Node_test.h"
+
 namespace sofa {
 
 struct Node_test : public BaseSimulationTest
@@ -33,21 +35,25 @@ struct Node_test : public BaseSimulationTest
     {
         /* create trivial DAG :
          *
-         * R
-         * |
          * A
+         * |\
+         * B C
          * |
-         * B
+         * D
          *
          */
         EXPECT_MSG_NOEMIT(Error, Warning);
 
-        SceneInstance si("R") ;
-        Node::SPtr A = createChild(si.root, "A");
-        Node::SPtr B = createChild(A, "B");
+        SceneInstance si("A") ;
+        Node::SPtr B = createChild(si.root, "B");
+        Node::SPtr D = createChild(B, "D");
+        BaseObject::SPtr C = core::objectmodel::New<Dummy>("C");
+        si.root->addObject(C);
 
-        EXPECT_EQ("", si.root->getPathName());
-        EXPECT_EQ("/A/B", B->getPathName());
+        EXPECT_STREQ(si.root->getPathName().c_str(), "/");
+        EXPECT_STREQ(B->getPathName().c_str(), "/B");
+        EXPECT_STREQ(C->getPathName().c_str(), "/C");
+        EXPECT_STREQ(D->getPathName().c_str(), "/B/D");
     }
 };
 

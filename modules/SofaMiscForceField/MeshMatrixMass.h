@@ -35,7 +35,6 @@
 #include <sofa/helper/map.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -137,7 +136,7 @@ protected:
     Real m_massLumpingCoeff;
 
     MeshMatrixMass();
-    ~MeshMatrixMass();
+    ~MeshMatrixMass() override;
 
     bool checkTopology();
     void initTopologyHandlers();
@@ -146,12 +145,6 @@ protected:
     /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)
     MeshMatrixMassInternalData<DataTypes, MassType> data;
     friend class MeshMatrixMassInternalData<DataTypes, MassType>;
-
-    /// Data tracker
-    sofa::core::DataTracker m_dataTrackerVertex;
-    sofa::core::DataTracker m_dataTrackerEdge;
-    sofa::core::DataTracker m_dataTrackerDensity;
-    sofa::core::DataTracker m_dataTrackerTotal;
 
 
 public:
@@ -170,7 +163,7 @@ public:
     void reinit() override;
     void init() override;
     void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
-    bool update();
+    void doUpdateInternal() override;
 
     TopologyType getMassTopologyType() const
     {

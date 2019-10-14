@@ -40,12 +40,12 @@
 #include <stack>
 #include <algorithm>
 
-#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+#if COLLADASCENELOADER_HAVE_FLEXIBLE
 #include <Flexible/deformationMapping/LinearMapping.h>
 #endif
 
 
-#ifdef SOFA_HAVE_PLUGIN_IMAGE
+#if COLLADASCENELOADER_HAVE_IMAGE
 #include <image/ImageContainer.h>
 #include <image/MeshToImageEngine.h>
 #include <image/ImageFilter.h>
@@ -81,10 +81,10 @@ SceneColladaLoader::SceneColladaLoader() : SceneLoader()
   , importer()
   , animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
   , generateCollisionModels(initData(&generateCollisionModels, true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
-  #ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+  #if COLLADASCENELOADER_HAVE_FLEXIBLE
   , useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)"))
   #endif
-  #ifdef SOFA_HAVE_PLUGIN_IMAGE
+  #if COLLADASCENELOADER_HAVE_IMAGE
   , generateShapeFunction(initData(&generateShapeFunction, false, "generateShapeFunction", "Generate a shape function that could be used in another simulation"))
   , voxelSize(initData(&voxelSize, (SReal)0.02, "voxelSize", "voxelSize used for shape function generation"))
   #endif
@@ -476,7 +476,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
 
                         helper::vector<core::topology::BaseMeshTopology::Triangle>& seqTriangles = *currentMeshTopology->seqTriangles.beginEdit();
-#ifdef SOFA_HAVE_PLUGIN_IMAGE
+#if COLLADASCENELOADER_HAVE_IMAGE
                         if( generateShapeFunction.getValue() )
                         {
                             if( numTriangles || numQuads ) seqTriangles.reserve(numTriangles+numQuads*2);
@@ -607,7 +607,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                     if(currentAiMesh->HasBones())
                     {
-#ifdef SOFA_HAVE_PLUGIN_IMAGE
+#if COLLADASCENELOADER_HAVE_IMAGE
                         if( generateShapeFunction.getValue() )
                         {
                             SReal vsize = this->voxelSize.getValue();
@@ -726,7 +726,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             }
                         } else
 #endif
-#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+#if COLLADASCENELOADER_HAVE_FLEXIBLE
                             if(useFlexible.getValue())
                             {
                                 LinearMapping<Rigid3Types, Vec3Types>::SPtr currentLinearMapping = sofa::core::objectmodel::New<LinearMapping<Rigid3Types, Vec3Types> >();

@@ -356,7 +356,7 @@ public:
 
     /// Helper method to get the type name of type T
     template<class T>
-    static std::string typeName(const T* = NULL)
+    static std::string typeName(const T* = nullptr)
     {
         if (defaulttype::DataTypeInfo<T>::ValidInfo)
             return defaulttype::DataTypeName<T>::name();

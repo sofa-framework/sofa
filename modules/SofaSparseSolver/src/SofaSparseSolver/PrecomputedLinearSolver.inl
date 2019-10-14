@@ -44,7 +44,7 @@
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
-#ifdef SOFA_HAVE_CSPARSE
+#if SOFASPARSESOLVER_HAVE_CSPARSE
 #include <SofaSparseSolver/SparseCholeskySolver.h>
 #endif
 
@@ -104,7 +104,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
     if(! use_file.getValue() || ! internalData.readFile(ss.str().c_str(),systemSize) )
     {
-#ifdef SOFA_HAVE_CSPARSE
+#if SOFASPARSESOLVER_HAVE_CSPARSE
         loadMatrixWithCSparse(M);
         if (use_file.getValue()) internalData.writeFile(ss.str().c_str(),systemSize);
 #else
@@ -121,7 +121,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     }
 }
 
-#ifdef SOFA_HAVE_CSPARSE
+#if SOFASPARSESOLVER_HAVE_CSPARSE
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
 {

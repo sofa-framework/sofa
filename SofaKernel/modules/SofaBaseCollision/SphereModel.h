@@ -134,7 +134,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == nullptr && context->getMechanicalState() != nullptr)
             return false;
 
         return BaseObject::canCreate(obj, context, arg);
@@ -144,7 +144,7 @@ public:
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         typename T::SPtr obj;
-        core::behavior::MechanicalState<TDataTypes>* _mstate = NULL;
+        core::behavior::MechanicalState<TDataTypes>* _mstate = nullptr;
 
         if( context)
         {
@@ -168,7 +168,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const SphereCollisionModel<DataTypes>* = NULL)
+    static std::string templateName(const SphereCollisionModel<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

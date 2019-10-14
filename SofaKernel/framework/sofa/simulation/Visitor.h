@@ -54,7 +54,7 @@ public:
     public:
         simulation::Node* root; ///< root node from which the visitor was executed
         simulation::Node* node; ///< current node
-        SReal* nodeData;       ///< SReal value associated with this subtree. Set to NULL if node-specific data is not in use
+        SReal* nodeData;       ///< SReal value associated with this subtree. Set to nullptr if node-specific data is not in use
     };
     typedef helper::system::thread::ctime_t ctime_t;
 #ifdef SOFA_DUMP_VISITOR_INFO

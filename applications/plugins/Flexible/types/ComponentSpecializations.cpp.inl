@@ -42,7 +42,7 @@
 #include <SofaBoundaryCondition/UniformVelocityDampingForceField.inl>
 
 
-#ifdef SOFA_HAVE_IMAGE
+#if FLEXIBLE_HAVE_IMAGE
 #include "../mass/ImageDensityMass.inl"
 #endif
 
@@ -323,7 +323,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRAC
             ;
 
 
-#ifdef SOFA_HAVE_IMAGE
+#if FLEXIBLE_HAVE_IMAGE
 
     int EVALUATOR(TYPEABSTRACTNAME,ImageDensityMassClass) = core::RegisterObject ( "Define a global mass matrix including non diagonal terms" )
     .add< ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,TYPEABSTRACTNAME3dMass> >()

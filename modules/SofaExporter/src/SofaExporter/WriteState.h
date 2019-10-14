@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_WRITESTATE_H
 #define SOFA_COMPONENT_MISC_WRITESTATE_H
-#include "config.h"
+#include <SofaExporter/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/Visitor.h>
 
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -73,7 +73,7 @@ public:
 protected:
     core::behavior::BaseMechanicalState* mmodel;
     std::ofstream* outfile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     gzFile gzfile;
 #endif
     unsigned int nextIteration;
@@ -104,7 +104,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMechanicalState() == NULL)
+        if (context->getMechanicalState() == nullptr)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }

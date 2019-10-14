@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_GLPICKHANDLER_H
 #define SOFA_GUI_GLPICKHANDLER_H
 
-#include <sofa/gui/qt/gl/SofaGUIQtOpenGL.h>
+#include <sofa/gui/qt/SofaGuiQt.h>
 #include <sofa/gui/OperationFactory.h>
 
 #include <sofa/gui/PickHandler.h>
@@ -50,7 +50,7 @@ namespace configurationsetting
 namespace gui
 {
 
-class SOFA_SOFAGUIQTOPENGL_API GLPickHandler : public PickHandler
+class SOFA_SOFAGUIQT_API GLPickHandler : public PickHandler
 {
     typedef PickHandler Inherit;
     typedef sofa::component::collision::RayModel MouseCollisionModel;

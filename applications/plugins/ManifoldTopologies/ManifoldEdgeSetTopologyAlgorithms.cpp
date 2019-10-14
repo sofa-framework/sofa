@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ManifoldEdgeSetTopologyAlgorithms.inl"
+#define SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_CPP
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <ManifoldTopologies/ManifoldEdgeSetTopologyAlgorithms.inl>
 #include <sofa/core/ObjectFactory.h>
+
 namespace sofa
 {
 
@@ -42,11 +42,11 @@ int ManifoldEdgeSetTopologyAlgorithmsClass = core::RegisterObject("ManifoldEdge 
         .add< ManifoldEdgeSetTopologyAlgorithms<Rigid2Types> >()
 
         ;
-template class ManifoldEdgeSetTopologyAlgorithms<Vec3Types>;
-template class ManifoldEdgeSetTopologyAlgorithms<Vec2Types>;
-template class ManifoldEdgeSetTopologyAlgorithms<Vec1Types>;
-template class ManifoldEdgeSetTopologyAlgorithms<Rigid3Types>;
-template class ManifoldEdgeSetTopologyAlgorithms<Rigid2Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetTopologyAlgorithms<Vec3Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetTopologyAlgorithms<Vec2Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetTopologyAlgorithms<Vec1Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetTopologyAlgorithms<Rigid3Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetTopologyAlgorithms<Rigid2Types>;
 
 
 } // namespace topology

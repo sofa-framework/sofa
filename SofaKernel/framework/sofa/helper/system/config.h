@@ -24,7 +24,7 @@
 
 #include <sofa/helper/helper.h>
 
-#include <cstddef>              // For NULL
+#include <cstddef>              // For nullptr
 
 #if defined(_WIN32)
 #  ifndef NOMINMAX

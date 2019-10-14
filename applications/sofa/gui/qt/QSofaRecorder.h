@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_QT_QSOFARECORDER_H
 #define SOFA_GUI_QT_QSOFARECORDER_H
 
-#include "SofaGUIQt.h"
+#include <sofa/gui/qt/SofaGuiQt.h>
 
 #include <cmath>
 #include <cstdio>

@@ -51,7 +51,7 @@ namespace bvh
 class SOFA_HELPER_API BVHJoint
 {
 public:
-    BVHJoint(const char *_name, bool _endSite=false, BVHJoint *_parent=NULL);
+    BVHJoint(const char *_name, bool _endSite=false, BVHJoint *_parent=nullptr);
     virtual ~BVHJoint();
 
     void addChild(BVHJoint *j) {children.push_back(j);}
@@ -69,7 +69,7 @@ public:
     void setMotion(BVHMotion *m) {motion = m;}
     BVHMotion *getMotion(void)
     {
-        if (motion == NULL)
+        if (motion == nullptr)
             motion = new BVHMotion();
         return motion;
     }
@@ -83,21 +83,21 @@ public:
 
     // .dat File creation for each frame
     // Christian Duriez PHD Articulated Rigids File Format
-    void dump(char *fName, char *rootJointName=NULL);
-    void dumpPosition(FILE *f, char *s=NULL);
-    void dumpSegment(FILE *f, char *s=NULL);
-    void dumpRotation(FILE *f, char *s=NULL);
-    void dumpRotationLimit(FILE *f, char *s=NULL);
-    void dumpRotationStiffness(FILE *f, char *s=NULL);
+    void dump(char *fName, char *rootJointName=nullptr);
+    void dumpPosition(FILE *f, char *s=nullptr);
+    void dumpSegment(FILE *f, char *s=nullptr);
+    void dumpRotation(FILE *f, char *s=nullptr);
+    void dumpRotationLimit(FILE *f, char *s=nullptr);
+    void dumpRotationStiffness(FILE *f, char *s=nullptr);
     void dumpPosition(FILE *f, int beginIndex);
     void dumpSegment(FILE *f, int &cpt, int beginIndex);
     void dumpRotation(FILE *f, int &cpt, int beginIndex);
     void dumpRotationLimit(FILE *f, int &cpt);
     void dumpRotationStiffness(FILE *f, int &cpt);
 
-    int getNumJoints(char *s=NULL);
+    int getNumJoints(char *s=nullptr);
     int accumulateNumJoints(void);
-    int getNumSegments(char *s=NULL);
+    int getNumSegments(char *s=nullptr);
     int getId();
     char* getName();
     BVHOffset* getOffset();

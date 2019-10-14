@@ -74,7 +74,7 @@ public:
     {
         return templateName(this);
     }
-    static std::string templateName(const IndicesFromValues<T>* = NULL)
+    static std::string templateName(const IndicesFromValues<T>* = nullptr)
     {
         return sofa::defaulttype::DataTypeName<T>::name();
     }

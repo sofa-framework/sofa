@@ -46,8 +46,8 @@ ReadState::ReadState()
     , d_loop( initData(&d_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , d_scalePos( initData(&d_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
     , mmodel(nullptr)
-    , infile(NULL)
-#ifdef SOFA_HAVE_ZLIB
+    , infile(nullptr)
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
     , nextTime(0)
@@ -61,7 +61,7 @@ ReadState::~ReadState()
 {
     if (infile)
         delete infile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -78,9 +78,9 @@ void ReadState::reset()
     if (infile)
     {
         delete infile;
-        infile = NULL;
+        infile = nullptr;
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     if (gzfile)
     {
         gzclose(gzfile);
@@ -93,7 +93,7 @@ void ReadState::reset()
     {
         msg_error() << "ERROR: empty filename";
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
         gzfile = gzopen(filename.c_str(),"rb");
@@ -110,7 +110,7 @@ void ReadState::reset()
         {
             msg_error() << "Error opening file "<<filename;
             delete infile;
-            infile = NULL;
+            infile = nullptr;
         }
     }
     nextTime = 0;
@@ -148,7 +148,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
 {
     if (!mmodel) return false;
     if (!infile
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
         && !gzfile
 #endif
        )
@@ -158,7 +158,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
     std::string line, cmd;
     while (nextTime <= time)
     {
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
         if (gzfile)
         {
             if (gzeof(gzfile))

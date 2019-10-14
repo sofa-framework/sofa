@@ -39,7 +39,7 @@ RemovePrimitivePerformer<DataTypes>::RemovePrimitivePerformer(BaseMouseInteracto
     ,firstClick (0)
     ,surfaceOnVolume(false)
     ,volumeOnSurface(false)
-    ,topo_curr(NULL)
+    ,topo_curr(nullptr)
 {}
 
 
@@ -86,7 +86,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
         if(topologyModifier)
             topologyChangeManager.removeItemsFromCollisionModel(model, (int)picked.indexCollisionElement);
 
-        picked.body=NULL;
+        picked.body=nullptr;
         this->interactor->setBodyPicked(picked);
     }
     else // second case remove a zone of element
@@ -129,7 +129,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
 
             // Handle Removing of topological element (from any type of topology)
             if(topologyModifier) topologyChangeManager.removeItemsFromCollisionModel(model.get(),ElemList_int );
-            picked.body=NULL;
+            picked.body=nullptr;
             this->interactor->setBodyPicked(picked);
 
             if (surfaceOnVolume) // In the case of deleting a volume from a surface an volumique collision model is needed (only tetra available for the moment)
@@ -649,9 +649,9 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElem
 template <class DataTypes>
 void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (picked.body == NULL) return;
+    if (picked.body == nullptr) return;
 
-    if (mstateCollision == NULL) return;
+    if (mstateCollision == nullptr) return;
 
 
     const VecCoord& X = mstateCollision->read(core::ConstVecCoordId::position())->getValue();

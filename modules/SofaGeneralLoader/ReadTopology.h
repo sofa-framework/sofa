@@ -21,13 +21,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_READTOPOLOGY_H
 #define SOFA_COMPONENT_MISC_READTOPOLOGY_H
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
 
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -57,7 +57,7 @@ public:
 protected:
     core::topology::BaseMeshTopology* m_topology;
     std::ifstream* infile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     gzFile gzfile;
 #endif
     double nextTime;
@@ -87,7 +87,7 @@ public:
     template<class T>
     static bool canCreate(T* obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMeshTopology() == NULL)
+        if (context->getMeshTopology() == nullptr)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }

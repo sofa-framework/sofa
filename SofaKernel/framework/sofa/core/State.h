@@ -150,7 +150,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const State<DataTypes>* = NULL)
+    static std::string templateName(const State<DataTypes>* = nullptr)
     {
         return TDataTypes::Name();
     }

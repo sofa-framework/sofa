@@ -49,7 +49,7 @@ BaseObjectDescription::~BaseObjectDescription()
     attributes.clear();
 }
 
-/// Get the associated object (or NULL if it is not created yet)
+/// Get the associated object (or nullptr if it is not created yet)
 Base* BaseObjectDescription::getObject()
 {
     return nullptr;
@@ -87,7 +87,7 @@ const BaseObjectDescription::AttributeMap& BaseObjectDescription::getAttributeMa
 /// Find an object description given its name (relative to this object)
 BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, bool /*absolute*/)
 {
-    return NULL;
+    return nullptr;
 }
 
 /// Remove an attribute given its name, returns false if the attribute was not there.
@@ -178,7 +178,7 @@ void BaseObjectDescription::setAttribute(const std::string& attr, const std::str
 std::string BaseObjectDescription::getFullName()
 {
     BaseObjectDescription* parent = getParent();
-    if (parent==NULL) return "/";
+    if (parent==nullptr) return "/";
     std::string pname = parent->getFullName();
     pname += "/";
     pname += getName();
@@ -189,12 +189,12 @@ std::string BaseObjectDescription::getFullName()
 Base* BaseObjectDescription::findObject(const char* nodeName)
 {
     BaseObjectDescription* node = find(nodeName);
-    if (node!=NULL)
+    if (node!=nullptr)
     {
         //sout << "Found node "<<nodeName<<": "<<node->getName()<<sendl;
         Base* obj = node->getObject();
         BaseContext* ctx = obj->toBaseContext();
-        if (ctx != NULL)
+        if (ctx != nullptr)
         {
             //sout << "Node "<<nodeName<<" is a context, returning MechanicalState."<<sendl;
             obj = ctx->getMechanicalState();
@@ -204,7 +204,7 @@ Base* BaseObjectDescription::findObject(const char* nodeName)
     else
     {
         msg_error("BaseObjectDescription") << "findObject: Node "<<nodeName<<" NOT FOUND.";
-        return NULL;
+        return nullptr;
     }
 }
 

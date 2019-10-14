@@ -596,7 +596,7 @@ void MeshTopology::init()
 
     if(seqEdges.getValue().empty() )
     {
-        if(seqEdges.getParent() != NULL )
+        if(seqEdges.getParent() != nullptr )
         {
             seqEdges.delInput(seqEdges.getParent());
         }
@@ -606,7 +606,7 @@ void MeshTopology::init()
     }
     if(seqTriangles.getValue().empty() )
     {
-        if(seqTriangles.getParent() != NULL)
+        if(seqTriangles.getParent() != nullptr)
         {
             seqTriangles.delInput(seqTriangles.getParent());
         }
@@ -616,7 +616,7 @@ void MeshTopology::init()
     }
     if(seqQuads.getValue().empty() )
     {
-        if(seqQuads.getParent() != NULL )
+        if(seqQuads.getParent() != nullptr )
         {
             seqQuads.delInput(seqQuads.getParent());
         }

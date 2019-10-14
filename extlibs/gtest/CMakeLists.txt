@@ -15,8 +15,6 @@ mark_as_advanced(gtest_disable_pthreads)
 include(cmake/internal_utils.cmake)
 config_compiler_and_linker()  # Defined in internal_utils.cmake.
 
-include_directories(include "${CMAKE_CURRENT_SOURCE_DIR}")
-
 # The code must be relocatable if we want to link a shared library against it.
 if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
     add_compile_options(-fPIC)
@@ -60,7 +58,10 @@ else()
     target_compile_options(gtest PRIVATE "-Wno-missing-field-initializers")
 endif()
 
-target_include_directories(gtest PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
+target_include_directories(gtest
+    PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" # for src/gtest.cc -> src/gtest-internal-inl.h
+    )
 target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include/extlibs/GTest/include>")
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)

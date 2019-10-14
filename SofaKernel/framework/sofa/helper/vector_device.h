@@ -96,7 +96,7 @@ protected:
 public:
 
     vector()
-        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( NULL ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
+        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
 #ifndef SOFA_NO_OPENGL
     , bufferObject(0)
 #endif // SOFA_NO_OPENGL
@@ -116,7 +116,7 @@ public:
         clearSize = 0;
     }
     vector ( size_type n )
-        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( NULL ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
+        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
 #ifndef SOFA_NO_OPENGL
         , bufferObject(0)
 #endif // SOFA_NO_OPENGL
@@ -137,7 +137,7 @@ public:
         resize ( n );
     }
     vector ( const vector<T,MemoryManager >& v )
-        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( NULL ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
+        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
 #ifndef SOFA_NO_OPENGL
         , bufferObject(0)
 #endif // SOFA_NO_OPENGL
@@ -240,7 +240,7 @@ public:
 
     ~vector()
     {
-        if ( hostPointer!=NULL ) MemoryManager::hostFree ( hostPointer );
+        if ( hostPointer!=nullptr ) MemoryManager::hostFree ( hostPointer );
 #ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject )
         {
@@ -296,7 +296,7 @@ public:
         if (s <= 2*allocSize && 2*allocSize <= s+SOFA_VECTOR_HOST_STEP_SIZE)
             allocSize *= 2;
         else
-            allocSize = s;
+            allocSize = s+SOFA_VECTOR_HOST_STEP_SIZE;
         // always allocate multiples of WARP_SIZE values
         allocSize = ((allocSize+WARP_SIZE-1 ) / WARP_SIZE) * WARP_SIZE;
 
@@ -304,7 +304,7 @@ public:
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject)
         {
             DEBUG_OUT_V(SPACEN << "BUFFEROBJ " << std::endl);
-            //COMM : if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)NULL)<<"> : GL reserve("<<s<<")"<<std::endl;
+            //COMM : if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)nullptr)<<"> : GL reserve("<<s<<")"<<std::endl;
             hostRead(); // make sure the host copy is valid
             unregisterBuffer();
             //COMM fct opengl
@@ -315,12 +315,12 @@ public:
         }
 #endif // SOFA_NO_OPENGL
         T* prevHostPointer = hostPointer;
-        void* newHostPointer = NULL;
+        void* newHostPointer = nullptr;
         DEBUG_OUT_V(SPACEN<< "MemoryManager::hostAlloc " << allocSize << std::endl);
         MemoryManager::hostAlloc( &newHostPointer, allocSize*sizeof ( T ) );
         hostPointer = (T*)newHostPointer;
         if ( vectorSize!=0 && hostIsValid ) std::copy ( prevHostPointer, prevHostPointer+vectorSize, hostPointer );
-        if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
+        if ( prevHostPointer != nullptr ) MemoryManager::hostFree( prevHostPointer );
         DEBUG_OUT_V(SPACEM << "reserve " << " (alloc=" << allocSize << ")" << std::endl);
     }
 
@@ -728,7 +728,7 @@ protected:
         {
             DEBUG_OUT_V(SPACEP << "allocate device=" << d << " " << deviceAllocSize[d] << "->" << alloc << std::endl);
             device_pointer prevDevicePointer = devicePointer[d];
-            //COMM : if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)NULL)<<"> : reserve("<<s<<")"<<std::endl;
+            //COMM : if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)nullptr)<<"> : reserve("<<s<<")"<<std::endl;
             MemoryManager::deviceAlloc(d, &devicePointer[d], alloc*sizeof ( T ) );
             deviceAllocSize[d] = alloc;
             if (isDeviceValid(d))
@@ -928,7 +928,7 @@ protected:
 
                 MemoryManager::bufferAlloc(&bufferObject,allocSize*sizeof(T));
                 void* prevDevicePointer = devicePointer[dev];
-                devicePointer[dev] = NULL;
+                devicePointer[dev] = nullptr;
                 if (vectorSize>0 && isDeviceValid(dev))
                 {
                     mapBuffer();

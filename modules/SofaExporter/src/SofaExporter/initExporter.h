@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_EXPORTER_INIT_H
 #define SOFA_COMPONENT_EXPORTER_INIT_H
-#include "config.h"
+#include <SofaExporter/config.h>
 
 #endif
 

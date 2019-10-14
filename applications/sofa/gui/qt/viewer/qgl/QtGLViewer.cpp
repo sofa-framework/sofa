@@ -85,7 +85,7 @@ QGLFormat QtGLViewer::setupGLFormat(const unsigned int nbMSAASamples)
         f.setSamples(nbMSAASamples);
     }
 
-    if(!SOFA_GUI_VSYNC)
+    if(!SOFAGUIQT_ENABLE_VSYNC)
     {
         QSurfaceFormat format;
         format.setSwapInterval(0);
@@ -103,7 +103,7 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
     m_backend.reset(new GLBackend());
     pick = new GLPickHandler();
 
-    groot = NULL;
+    groot = nullptr;
     initTexturesDone = false;
 
     backgroundColour[0]=1.0f;
@@ -1157,20 +1157,6 @@ QString QtGLViewer::helpString() const
                 <li><b>V</b>: TO SAVE A VIDEO<br>\
                 Each time the frame is updated a screenshot is saved<br></li>\
                 <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>"
-#ifdef SOFA_HAVE_SENSABLE
-        +(QString)"<H1>Sensable</H1>\
-                <ul>\
-                <li><b>Ctrl + index interface</b>: TO DRAW AXIS<br></li>\
-                <li><b>Option OmniVisu</b>: TO DRAW INTERFACE<br></li>\
-                <li>If <b>OmniVisu</b> and <b>axis</b> are active:<br></li>\
-                <ul>\
-                <li><b>Ctrl + Axis: x, y or z + arrow left or right</b>: TO MOVE THE INTERFACE ON THE AXIS<br></li>\
-                <li><b>Ctrl + Axis: x, y or z + arrow up or down</b>: TO ROTATE THE INTERFACE ON THE AXIS<br></li>\
-                <li><b>Ctrl + Q + arrow left or right</b>: TO CHANGE THE SCALE OF THE INTERFACE<br></li>\
-                <li><b>Ctrl + E </b>: TO RESET THE POSITION OF THE INTERFACE<br></li>\
-                </ul>\
-                </ul>"
-#endif
     );
 
     return text;

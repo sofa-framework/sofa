@@ -8,10 +8,9 @@ find_package(GTest CONFIG REQUIRED)
 ## Version
 set(SOFAGTESTMAIN_VERSION ${SofaSimulation_VERSION})
 
-add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")
-
-add_library(SofaGTestMain SofaGTestMain.cpp)
-target_link_libraries(SofaGTestMain SofaHelper SofaSimulationTree SofaSimulationGraph)
+add_library(${PROJECT_NAME} SofaGTestMain.cpp)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationTree SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
 
 ## Install rules for the library; CMake package configurations files
 sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${SOFAGTESTMAIN_VERSION} TARGETS ${PROJECT_NAME})

@@ -87,7 +87,7 @@ public:
     ContactId id;
     /// Contact points on the surface of each model. They are expressed in the local coordinate system of the model if any is defined..
     Vector3 point[2];
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     Vector3 freePoint[2]; ///< free Point in contact on each element
 #endif
 
@@ -101,8 +101,8 @@ public:
     /// If using a continuous collision detection, estimated of time of contact.
     double deltaT;
     DetectionOutput()
-        : elem( (sofa::core::CollisionModel* )NULL,
-                (sofa::core::CollisionModel* ) NULL), id(0), value(0.0), deltaT(0.0)
+        : elem( (sofa::core::CollisionModel* )nullptr,
+                (sofa::core::CollisionModel* ) nullptr), id(0), value(0.0), deltaT(0.0)
     {
     }
 };

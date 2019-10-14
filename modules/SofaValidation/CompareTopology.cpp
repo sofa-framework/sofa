@@ -306,7 +306,7 @@ void CompareTopology::processCompareTopology()
 CompareTopologyCreator::CompareTopologyCreator(const core::ExecParams* params)
     :Visitor(params)
     , sceneName("")
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -320,7 +320,7 @@ CompareTopologyCreator::CompareTopologyCreator(const core::ExecParams* params)
 CompareTopologyCreator::CompareTopologyCreator(const std::string &n, const core::ExecParams* params, bool i, int c)
     :Visitor(params)
     , sceneName(n)
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -355,7 +355,7 @@ void CompareTopologyCreator::addCompareTopology(sofa::core::topology::BaseMeshTo
     if (createInMapping || mapping== nullptr)
     {
         sofa::component::misc::CompareTopology::SPtr ct; context->get(ct, core::objectmodel::BaseContext::Local);
-        if (  ct == NULL )
+        if (  ct == nullptr )
         {
             ct = sofa::core::objectmodel::New<sofa::component::misc::CompareTopology>(); gnode->addObject(ct);
         }

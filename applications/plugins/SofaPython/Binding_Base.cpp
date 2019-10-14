@@ -515,6 +515,35 @@ static PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name) {
     return PyObject_GenericGetAttr(o,attr_name);
 }
 
+static PyObject* Base_setInstanciationSourceFilePos(PyObject *self, PyObject *args)
+{
+        Base* obj = get_base(self);
+        const char *fileName="";
+        int filePos=-1;
+        if (!PyArg_ParseTuple(args, "si", &fileName, &filePos))
+        {
+            return nullptr;
+        }
+        obj->setInstanciationSourceFileName(fileName);
+        obj->setInstanciationSourceFilePos(filePos);
+        Py_RETURN_NONE;
+}
+
+static PyObject* Base_setDefinitionSourceFilePos(PyObject *self, PyObject *args)
+{
+        Base* obj = get_base(self);
+        const char *fileName="";
+        int filePos=-1;
+        if (!PyArg_ParseTuple(args, "si", &fileName, &filePos))
+        {
+            return nullptr;
+        }
+        obj->setDefinitionSourceFileName(fileName);
+        obj->setDefinitionSourceFilePos(filePos);
+        Py_RETURN_NONE;
+}
+
+
 static int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v) {
     /// attribute does not exist: see if a Data field has this name...
     Base* obj = get_base(o);
@@ -692,6 +721,8 @@ SP_CLASS_METHOD_DOC(Base,getLink, "Returns the link field if there is one associ
                                   "Returns None is there is no field with this name.")
 SP_CLASS_METHOD(Base,getClassName)
 SP_CLASS_METHOD(Base,getTemplateName)
+SP_CLASS_METHOD_DOC(Base,setDefinitionSourceFilePos, "Set the filename & line number where the object has been defined.")
+SP_CLASS_METHOD_DOC(Base,setInstanciationSourceFilePos, "Set the filename & line number where the object has been defined.")
 SP_CLASS_METHOD(Base,getName)
 SP_CLASS_METHOD(Base,__dir__)
 SP_CLASS_METHOD_DOC(Base,getDataFields, "Returns a list with the *content* of all the data fields converted in python"

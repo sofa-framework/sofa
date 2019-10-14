@@ -61,7 +61,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
 protected:
-    ProjectiveConstraintSet(MechanicalState<DataTypes> *mm = NULL);
+    ProjectiveConstraintSet(MechanicalState<DataTypes> *mm = nullptr);
 
     ~ProjectiveConstraintSet() override;
 public:
@@ -164,7 +164,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -174,7 +174,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const ProjectiveConstraintSet<DataTypes>* = NULL)
+    static std::string templateName(const ProjectiveConstraintSet<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

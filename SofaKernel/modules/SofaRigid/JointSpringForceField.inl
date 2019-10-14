@@ -82,7 +82,7 @@ void JointSpringForceField<DataTypes>::init()
         {
             msg_error() << " creating file "<<outfilename;
             delete m_outfile;
-            m_outfile = NULL;
+            m_outfile = nullptr;
         }
     }
 
@@ -94,7 +94,7 @@ void JointSpringForceField<DataTypes>::init()
         {
             msg_error() << "Error opening file "<<infilename;
             delete m_infile;
-            m_infile = NULL;
+            m_infile = nullptr;
         }
     }
 }

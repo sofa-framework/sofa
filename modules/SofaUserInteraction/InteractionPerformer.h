@@ -80,7 +80,7 @@ public:
     template <class RealObject>
     static RealObject* create( RealObject*, BaseMouseInteractor* interactor)
     {
-        if (!dynamic_cast< MouseInteractor<DataTypes>* >(interactor)) return NULL;
+        if (!dynamic_cast< MouseInteractor<DataTypes>* >(interactor)) return nullptr;
         else return new RealObject(interactor);
     }
 

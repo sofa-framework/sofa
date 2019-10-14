@@ -56,10 +56,14 @@ Base::Base()
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
+    , d_componentstate(initData(&d_componentstate, ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
 {
     name.setOwnerClass("Base");
     name.setAutoLink(false);
     name.setReadOnly(true);
+    d_componentstate.setAutoLink(false);
+    d_componentstate.setReadOnly(true);
+    d_componentstate.setOwnerClass("Base");
     f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
     f_tags.setOwnerClass("Base");
@@ -154,8 +158,8 @@ void Base::addLink(BaseLink* l)
     const std::string& name = l->getName();
     if (name.size() > 0 && (findData(name) || findLink(name)))
     {
-        msg_warning() << "Link name " << name
-                << " already used in this class or in a parent class !";
+        msg_warning() << "Link name '" << name
+                << "' already used in this class or in a parent class !";
     }
     m_vecLink.push_back(l);
     m_aliasLink.insert(std::make_pair(name, l));
@@ -322,7 +326,7 @@ void Base::removeData(BaseData* d)
 }
 
 /// Find a data field given its name.
-/// Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
+/// Return nullptr if not found. If more than one field is found (due to aliases), only the first is returned.
 BaseData* Base::findData( const std::string &name ) const
 {
     //Search in the aliases
@@ -352,7 +356,7 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 
 
 /// Find a link given its name.
-/// Return NULL if not found. If more than one link is found (due to aliases), only the first is returned.
+/// Return nullptr if not found. If more than one link is found (due to aliases), only the first is returned.
 BaseLink* Base::findLink( const std::string &name ) const
 {
     //Search in the aliases

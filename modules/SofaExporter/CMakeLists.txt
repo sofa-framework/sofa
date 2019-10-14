@@ -2,9 +2,11 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaExporter VERSION 1.0 LANGUAGES CXX)
 
 find_package(SofaSimulation REQUIRED)
+sofa_find_package(ZLIB REQUIRED)
+sofa_find_package(SofaPython QUIET)
 
 set(HEADER_FILES
-    src/SofaExporter/config.h
+    src/SofaExporter/config.h.in
     src/SofaExporter/initExporter.h
     )
 
@@ -42,7 +44,6 @@ list(APPEND SOURCE_FILES
     src/SofaExporter/WriteTopology.cpp
     )
 
-find_package(SofaPython QUIET)
 if(SofaPython_FOUND)
     list(APPEND HEADER_FILES
         src/SofaExporter/bindings/Binding_OBJExporter.h
@@ -58,26 +59,31 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
+target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    sofa_install_libraries(TARGETS ZLIB::ZLIB)
+endif()
 if(SofaPython_FOUND)
-target_link_libraries(${PROJECT_NAME} PRIVATE SofaPython)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaPython)
 endif()
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_EXPORTER")
-target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAEXPORTER")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 sofa_generate_package(
     NAME SofaExporter
     VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
     INCLUDE_SOURCE_DIR "src/SofaExporter"
-    INCLUDE_INSTALL_DIR "SofaExporter/SofaExporter"
+    INCLUDE_INSTALL_DIR "SofaExporter"
+    RELOCATABLE "plugins"
     )
 
-# Enable tests if SofaTest found
-# Will pass only in out-of-SOFA builds
-# See modules/tests/CMakeLists.txt if building through SOFA
-find_package(SofaTest QUIET)
-if(SofaTest_FOUND)
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAEXPORTER_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAEXPORTER_BUILD_TESTS)
+    enable_testing()
     add_subdirectory(SofaExporter_test)
 endif()

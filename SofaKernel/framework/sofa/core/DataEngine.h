@@ -102,7 +102,7 @@ public:
     /// @{
 
     template<class T>
-    static std::string typeName(const T* ptr= NULL)
+    static std::string typeName(const T* ptr= nullptr)
     {
         return core::objectmodel::BaseObject::typeName(ptr);
     }
@@ -110,10 +110,10 @@ public:
     /// Helper method to get the class name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::className(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::className(ptr); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
-    static std::string className(const T* ptr= NULL)
+    static std::string className(const T* ptr= nullptr)
     {
         return core::objectmodel::BaseObject::className(ptr);
     }
@@ -121,10 +121,10 @@ public:
     /// Helper method to get the namespace name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::namespaceName(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::namespaceName(ptr); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
-    static std::string namespaceName(const T* ptr= NULL)
+    static std::string namespaceName(const T* ptr= nullptr)
     {
         return core::objectmodel::BaseObject::namespaceName(ptr);
     }
@@ -132,10 +132,10 @@ public:
     /// Helper method to get the template name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::templateName(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::templateName(ptr); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
-    static std::string templateName(const T* ptr= NULL)
+    static std::string templateName(const T* ptr= nullptr)
     {
         return core::objectmodel::BaseObject::templateName(ptr);
     }
@@ -144,10 +144,10 @@ public:
     /// The default implementation return the class name.
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::shortName(ptr); \endcode
+    /// \code  T* ptr = nullptr; std::string type = T::shortName(ptr); \endcode
     /// This way derived classes can redefine the shortName method
     template< class T>
-    static std::string shortName( const T* ptr = NULL, core::objectmodel::BaseObjectDescription* desc = NULL )
+    static std::string shortName( const T* ptr = nullptr, core::objectmodel::BaseObjectDescription* desc = nullptr )
     {
         return core::objectmodel::BaseObject::shortName(ptr,desc);
     }
