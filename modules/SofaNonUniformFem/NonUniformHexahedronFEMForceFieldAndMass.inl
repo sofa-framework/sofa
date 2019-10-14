@@ -64,26 +64,26 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         l_topologyLink.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topologyLink.get();
-    if (m_topology == nullptr)
+    this->m_topology = l_topologyLink.get();
+    if (this->m_topology == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath();
-        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 
 
-    if( m_topology->getNbHexahedra()<=0 )
+    if(this->m_topology->getNbHexahedra()<=0 )
     {
         msg_error() << "NonUniformHexahedronFEMForceFieldDensity: object must have a hexahedric MeshTopology.\n"
-                    << m_topology->getName() << "\n"
-                    << m_topology->getTypeName() << "\n"
-                    <<m_topology->getNbPoints() << "\n";
-        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+                    << this->m_topology->getName() << "\n"
+                    << this->m_topology->getTypeName() << "\n"
+                    << this->m_topology->getNbPoints() << "\n";
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 
-    this->_sparseGrid = dynamic_cast<topology::SparseGridTopology*>(m_topology);
+    this->_sparseGrid = dynamic_cast<topology::SparseGridTopology*>(this->m_topology);
 
 
 
