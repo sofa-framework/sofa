@@ -79,6 +79,8 @@ class SofaWindowDataGraph : public QDialog
 public:
     SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node* scene);
 
+    ~SofaWindowDataGraph();
+    void resetNodeGraph(sofa::simulation::Node* scene);
    
 protected:
     void createComponentsNode();
@@ -86,6 +88,8 @@ protected:
     void connectNodeData();
 
     void connectNodeLinks();
+
+    void clearNodeData();
 
     void parseSimulationNode(sofa::simulation::Node* node, int posX = 0);
 

@@ -835,6 +835,11 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if (m_windowTimerProfiler)
         m_windowTimerProfiler->resetGraph();
 #endif
+
+#if SOFAGUIQT_HAVE_NODEEDITOR
+    if (m_sofaWindowDataGraph)
+        m_sofaWindowDataGraph->resetNodeGraph(currentSimulation());
+#endif
 }
 
 

@@ -124,6 +124,41 @@ SofaWindowDataGraph::SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node
 }
 
 
+SofaWindowDataGraph::~SofaWindowDataGraph()
+{
+    clearNodeData();
+    // todo check if m_graphView need to be deleted. Normally no as child of QtWidget RealGui.
+    //delete m_graphView;
+}
+
+void SofaWindowDataGraph::clearNodeData()
+{
+    m_dataLinks.clear();
+
+    if (m_graphScene != nullptr)
+    {
+        std::cout << "clear before: " << m_graphScene->allNodes().size() << std::endl;
+        //m_graphScene->clear();
+        delete m_graphScene;
+        m_graphScene = new FlowScene(registerDataModels());
+        m_graphView->setScene(m_graphScene);
+        
+        std::cout << "clear after: " << m_graphScene->allNodes().size() << std::endl;
+    }
+    m_posX = 0;
+    m_posY = 0;
+}
+
+void SofaWindowDataGraph::resetNodeGraph(sofa::simulation::Node* scene)
+{
+    m_rootNode = scene;
+    clearNodeData();
+
+    createComponentsNode();
+
+    connectNodeData();
+}
+
 void SofaWindowDataGraph::createComponentsNode()
 {
     //parse Children Node starting from root
