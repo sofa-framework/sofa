@@ -131,7 +131,7 @@ void HexahedronFEMForceField<DataTypes>::init()
     if (m_topology == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath() << ". Object must have a MeshTopology.";
-        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 

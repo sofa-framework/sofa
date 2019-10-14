@@ -182,7 +182,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     if (m_topology == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath();
-        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 
@@ -193,7 +193,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     if (m_topology->getNbTetrahedra()==0)
     {
         msg_error() << "Object must have a Tetrahedral Set Topology.";
-        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 

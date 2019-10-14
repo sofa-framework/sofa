@@ -133,7 +133,7 @@ void BeamFEMForceField<DataTypes>::init()
     if (m_topology == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath() << ". Object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)";
-        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 
