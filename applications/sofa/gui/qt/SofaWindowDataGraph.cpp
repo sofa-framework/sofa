@@ -98,6 +98,7 @@ SofaWindowDataGraph::SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node
     , m_scaleY(30)
     , m_posX(0)
     , m_posY(0)
+    , debugNodeGraph(false)
 {
     setConnecStyle();
     Qt::WindowFlags flags = windowFlags();
@@ -119,7 +120,7 @@ SofaWindowDataGraph::SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node
     createComponentsNode();
 
     connectNodeData();
-    std::cout << "final m_posX: " << m_posX << " | m_posY: " << m_posY << std::endl;
+
     m_graphView->scaleDown();
 }
 
@@ -137,13 +138,13 @@ void SofaWindowDataGraph::clearNodeData()
 
     if (m_graphScene != nullptr)
     {
-        std::cout << "clear before: " << m_graphScene->allNodes().size() << std::endl;
+        msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "clear before: " << m_graphScene->allNodes().size();
         //m_graphScene->clear();
         delete m_graphScene;
         m_graphScene = new FlowScene(registerDataModels());
         m_graphView->setScene(m_graphScene);
         
-        std::cout << "clear after: " << m_graphScene->allNodes().size() << std::endl;
+        msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "clear after: " << m_graphScene->allNodes().size();
     }
     m_posX = 0;
     m_posY = 0;
@@ -169,7 +170,7 @@ void SofaWindowDataGraph::createComponentsNode()
 
 void SofaWindowDataGraph::parseSimulationNode(sofa::simulation::Node* node, int posX)
 {
-    std::cout << m_posY << " ### Child Name: " << node->getName() << std::endl;
+    msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << m_posY << " ### Child Name: " << node->getName();
     // first parse the list BaseObject inside this node
     std::vector<sofa::core::objectmodel::BaseObject*> bObjects = node->getNodeObjects();
     m_posX = posX;
@@ -181,7 +182,7 @@ void SofaWindowDataGraph::parseSimulationNode(sofa::simulation::Node* node, int 
         {
             if (except == bObject->getClassName())
             {
-                std::cout << "skip: " << except << std::endl;
+                msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "skip: " << except;
                 skip = true;
                 break;
             }
@@ -213,7 +214,7 @@ void SofaWindowDataGraph::parseSimulationNode(sofa::simulation::Node* node, int 
 size_t SofaWindowDataGraph::addSimulationObject(sofa::core::objectmodel::BaseObject* bObject)
 {
     const std::string& name = bObject->getClassName() + " - " + bObject->getName();
-    std::cout << "addSimulationObject: " << name << std::endl;
+    msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "addSimulationObject: " << name;
     
     std::vector < std::pair < std::string, std::string> > data = filterUnnecessaryData(bObject);
     QtNodes::Node& fromNode = m_graphScene->createNode(std::make_unique<DefaultObjectModel>(data));
@@ -254,7 +255,7 @@ std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filte
 
         const std::string valuetype = link->getValueTypeString();
 
-        std::cout << "## link: " << name << " | link->getSize(): " << link->getSize() << " | valuetype: " << valuetype << " | path: " << link->storePath() << std::endl;
+        msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "## link: " << name << " | link->getSize(): " << link->getSize() << " | valuetype: " << valuetype << " | path: " << link->storePath();
         
 
         std::string linkPath = link->getLinkedPath();
@@ -263,7 +264,7 @@ std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filte
         if (found != std::string::npos) // remove path
             linkPath.erase(0, found);
 
-        std::cout << "  # baselink: " << linkPath << std::endl;
+        msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "  # baselink: " << linkPath;
         m_dataLinks.push_back(DataGraphConnection(linkPath, linkPath, bObject->getName(), bObject->getName()));
     }
 
@@ -277,7 +278,7 @@ std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filte
         if (data->getParent())
         { 
             sofa::core::objectmodel::BaseData* pData = data->getParent();
-            std::cout << "- Parent: " << pData->getName() << " owwner: " << pData->getOwner()->getName() << std::endl;
+            msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "- Parent: " << pData->getName() << " owwner: " << pData->getOwner()->getName();
             m_dataLinks.push_back(DataGraphConnection(pData->getOwner()->getName(), pData->getName(), bObject->getName(), name));
         }
         
@@ -291,12 +292,12 @@ std::vector < std::pair < std::string, std::string> > SofaWindowDataGraph::filte
 
         if (!group.empty())
         {
-            std::cout << name << " -> " << data->getGroup() << std::endl;
+            msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << name << " -> " << data->getGroup();
         }
         filterData.push_back(std::pair<std::string, std::string>(name, data->getValueTypeString()));
     }
 
-    //std::cout << "## old Data: " << allData.size() << " - " << filterData.size() << std::endl;
+    //msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "## old Data: " << allData.size() << " - " << filterData.size();
 
     return filterData;
 }

@@ -109,6 +109,8 @@ protected:
 
     int m_posX;
     int m_posY;
+
+    bool debugNodeGraph;
 };
 
 } // namespace qt
