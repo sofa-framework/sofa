@@ -88,7 +88,7 @@ bool ObjectFactory::addAlias(std::string name, std::string target, bool force,
     ClassEntry::SPtr& aliasEntry = registry[name];
 
     // Check that the alias does not already exist, unless 'force' is true
-    if (aliasEntry.get()!=NULL && !force)
+    if (aliasEntry.get()!=nullptr && !force)
     {
         msg_error("ObjectFactory::addAlias()") << "Name already exists: " << name;
         return false;

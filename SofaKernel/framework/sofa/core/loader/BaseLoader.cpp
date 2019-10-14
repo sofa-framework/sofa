@@ -122,7 +122,7 @@ void BaseLoader::skipToEOL(FILE* f)
 bool BaseLoader::readLine(char* buf, int size, FILE* f)
 {
     buf[0] = '\0';
-    if (fgets(buf, size, f) == NULL)
+    if (fgets(buf, size, f) == nullptr)
         return false;
     if ((int)strlen(buf)==size-1 && buf[size-1] != '\n')
         skipToEOL(f);

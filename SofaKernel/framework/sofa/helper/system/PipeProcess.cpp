@@ -90,7 +90,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
     cargs[0] = (char*)command.c_str();
     for (unsigned int i=1 ; i< args.size() + 1 ; ++i)
         cargs[i] = (char*)args[i-1].c_str();
-    cargs[args.size() + 1] = NULL;
+    cargs[args.size() + 1] = nullptr;
 
     fd_t fdin;
 //    fd_t fdout;
@@ -122,7 +122,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
     // Set the bInheritHandle flag so pipe handles are inherited.
     saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
     saAttr.bInheritHandle = TRUE;
-    saAttr.lpSecurityDescriptor = NULL;
+    saAttr.lpSecurityDescriptor = nullptr;
     if (!CreatePipe(&fds[0][0],&fds[0][1],&saAttr,0) || !CreatePipe(&fds[1][0],&fds[1][1],&saAttr,0))
 #else
     if (pipe(fds[0]) || pipe(fds[1]))
@@ -138,10 +138,10 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         hFile = CreateFileA( (fileIN.c_str()),
                 GENERIC_READ,
                 FILE_SHARE_READ,
-                NULL,
+                nullptr,
                 OPEN_EXISTING,
                 FILE_ATTRIBUTE_NORMAL,
-                NULL);
+                nullptr);
 
     if (hFile == INVALID_HANDLE_VALUE)
     {
@@ -164,14 +164,14 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
     siStartInfo.hStdOutput = fds[0][1];
     siStartInfo.hStdError = fds[1][1];
     siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
-    if (!CreateProcessA(NULL,
+    if (!CreateProcessA(nullptr,
             (char*)newCommand.c_str(),       // command line
-            NULL,          // process security attributes
-            NULL,          // primary thread security attributes
+            nullptr,          // process security attributes
+            nullptr,          // primary thread security attributes
             TRUE,          // handles are inherited
             0,             // creation flags
-            NULL,          // use parent's environment
-            NULL,          // use parent's current directory
+            nullptr,          // use parent's environment
+            nullptr,          // use parent's current directory
             &siStartInfo,  // STARTUPINFO pointer
             &piProcInfo))  // receives PROCESS_INFORMATION
     {
@@ -203,12 +203,12 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
                 if (n > STEPSIZE) n = STEPSIZE;
                 DWORD bread = 0;
                 DWORD avail = 0;
-                PeekNamedPipe(fds[i][0],buf[i]+nfill[i],n,&bread,&avail,NULL);
+                PeekNamedPipe(fds[i][0],buf[i]+nfill[i],n,&bread,&avail,nullptr);
 
                 if (bread>0)
                 {
                     busy = true;
-                    ReadFile(fds[i][0], buf[i]+nfill[i], n, &n, NULL);
+                    ReadFile(fds[i][0], buf[i]+nfill[i], n, &n, nullptr);
                     nfill[i] += n;
                     {
                         // write line
@@ -291,7 +291,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         }
         fd_set ready;
         ready = rfds;
-        while (nopen> 0 && select(nfd, &ready, NULL, NULL, NULL)> 0)
+        while (nopen> 0 && select(nfd, &ready, nullptr, nullptr, nullptr)> 0)
         {
             //read stdin
 //			if (FD_ISSET(fdin, &ready))

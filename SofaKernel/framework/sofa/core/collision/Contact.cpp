@@ -58,7 +58,7 @@ Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* mod
 
         Contact::SPtr c = Factory::CreateObject(otype,std::make_pair(std::make_pair(model1,model2),intersectionMethod));
 
-        if( c == NULL ) return c;
+        if( c == nullptr ) return c;
 
         while (args != std::string::npos)
         {

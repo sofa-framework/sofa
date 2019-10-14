@@ -53,7 +53,7 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel()
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
-    , mstate(NULL)
+    , mstate(nullptr)
 {
     enum_type = SPHERE_TYPE;
 }
@@ -171,7 +171,7 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
     // restore current polygon mode
     vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
 
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

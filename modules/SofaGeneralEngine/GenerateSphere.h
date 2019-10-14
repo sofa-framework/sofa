@@ -83,7 +83,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const GenerateSphere<DataTypes>* = NULL)
+    static std::string templateName(const GenerateSphere<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

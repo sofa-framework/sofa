@@ -606,7 +606,7 @@ int main(int argc, char** argv)
         sofa::simulation::getSimulation()->exportXML(groot.get(), xmlname.c_str());
     }
 
-    if (groot!=NULL)
+    if (groot!=nullptr)
         sofa::simulation::getSimulation()->unload(groot);
 
 

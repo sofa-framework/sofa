@@ -71,7 +71,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const PointSetTopologyAlgorithms<DataTypes>* = NULL)
+    static std::string templateName(const PointSetTopologyAlgorithms<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

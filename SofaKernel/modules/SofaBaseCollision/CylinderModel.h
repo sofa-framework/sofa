@@ -148,7 +148,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const TCylinderModel<DataTypes>* = NULL)
+    static std::string templateName(const TCylinderModel<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

@@ -61,7 +61,7 @@ void LinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(u
 
 template <class DataTypes>
 LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , data(new LinearMovementConstraintInternalData<DataTypes>)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )

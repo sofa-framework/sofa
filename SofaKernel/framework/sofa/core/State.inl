@@ -35,12 +35,12 @@ objectmodel::BaseData* State<DataTypes>::baseWrite(VecId v)
 {
     switch (v.getType())
     {
-    case V_ALL: return NULL;
+    case V_ALL: return nullptr;
     case V_COORD: return write(VecCoordId(v));
     case V_DERIV: return write(VecDerivId(v));
     case V_MATDERIV: return write(MatrixDerivId(v));
     }
-    return NULL;
+    return nullptr;
 }
 
 template<class DataTypes>
@@ -48,12 +48,12 @@ const objectmodel::BaseData* State<DataTypes>::baseRead(ConstVecId v) const
 {
     switch (v.getType())
     {
-    case V_ALL: return NULL;
+    case V_ALL: return nullptr;
     case V_COORD: return read(ConstVecCoordId(v));
     case V_DERIV: return read(ConstVecDerivId(v));
     case V_MATDERIV: return read(ConstMatrixDerivId(v));
     }
-    return NULL;
+    return nullptr;
 }
 
 template<class DataTypes>

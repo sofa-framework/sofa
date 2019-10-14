@@ -224,7 +224,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
                 //sout << "(*pointMappedFromPointData) = " << (*pointMappedFromPointData)<<sendl;
                 //sout << "pointMappedFromEdge = " << pointMappedFromEdge<<sendl;
                 //sout << "(*pointSourceData) = " << pointMappedFromEdge<<sendl;
-                if (from_tstm != NULL && !tetrahedraToRemove.empty())
+                if (from_tstm != nullptr && !tetrahedraToRemove.empty())
                 {
                     sofa::helper::vector<unsigned int> vitems;
                     vitems.reserve(tetrahedraToRemove.size());

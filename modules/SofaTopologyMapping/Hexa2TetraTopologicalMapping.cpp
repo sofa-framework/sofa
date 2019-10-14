@@ -124,7 +124,7 @@ void Hexa2TetraTopologicalMapping::init()
     //int nz = 1;
     {
         topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel.get());
-        if (grid != NULL)
+        if (grid != nullptr)
         {
             nx = grid->getNx()-1;
             ny = grid->getNy()-1;

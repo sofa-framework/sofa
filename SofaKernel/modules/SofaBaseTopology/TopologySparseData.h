@@ -66,9 +66,9 @@ public:
     /// Constructor
     TopologySparseDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : sofa::core::topology::BaseTopologyData< VecT >(data),
-          m_topologicalEngine(NULL),
-          m_topology(NULL),
-          m_topologyHandler(NULL),
+          m_topologicalEngine(nullptr),
+          m_topology(nullptr),
+          m_topologyHandler(nullptr),
           m_isConcerned(false)
     {}
 

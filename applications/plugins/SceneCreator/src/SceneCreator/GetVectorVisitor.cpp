@@ -53,7 +53,7 @@ void GetVectorVisitor::setIndependentOnly(bool b){ independentOnly=b; }
 Visitor::Result GetVectorVisitor::processNodeTopDown( simulation::Node* gnode )
 {
 //    cerr << "GetVectorVisitor::processNodeTopDown, node "<< gnode->getName() << endl;
-    if (gnode->mechanicalState != NULL && ( gnode->mechanicalMapping ==NULL || independentOnly==false) )
+    if (gnode->mechanicalState != nullptr && ( gnode->mechanicalMapping ==nullptr || independentOnly==false) )
     {
 //        cerr << "GetVectorVisitor::processNodeTopDown, node has mechanical state "<< endl;
         gnode->mechanicalState->copyToBaseVector(vec,src,offset);

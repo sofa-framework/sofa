@@ -73,12 +73,12 @@ TEST(MessageHandlerComponent, simpleInit)
     Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
                                                        scene.c_str(),
                                                        scene.size() ) ;
-    EXPECT_TRUE(root!=NULL) ;
+    EXPECT_TRUE(root!=nullptr) ;
 
     MessageHandlerComponent* component = nullptr;
 
     root->getTreeObject(component) ;
-    EXPECT_TRUE(component!=NULL) ;
+    EXPECT_TRUE(component!=nullptr) ;
 }
 
 
@@ -98,7 +98,7 @@ TEST(MessageHandlerComponent, missingHandler)
 
     MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
-    EXPECT_TRUE(component!=NULL) ;
+    EXPECT_TRUE(component!=nullptr) ;
     EXPECT_FALSE(component->isValid()) ;
 }
 
@@ -118,7 +118,7 @@ TEST(MessageHandlerComponent, invalidHandler)
 
     MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
-    EXPECT_TRUE(component!=NULL) ;
+    EXPECT_TRUE(component!=nullptr) ;
     EXPECT_FALSE(component->isValid()) ;
 }
 
@@ -138,6 +138,6 @@ TEST(MessageHandlerComponent, clangHandler)
 
     MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
-    EXPECT_TRUE(component!=NULL) ;
+    EXPECT_TRUE(component!=nullptr) ;
     EXPECT_TRUE(component->isValid()) ;
 }

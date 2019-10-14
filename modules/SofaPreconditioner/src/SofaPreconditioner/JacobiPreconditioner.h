@@ -70,7 +70,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const JacobiPreconditioner<TMatrix,TVector>* = NULL)
+    static std::string templateName(const JacobiPreconditioner<TMatrix,TVector>* = nullptr)
     {
         return TMatrix::Name();
     }

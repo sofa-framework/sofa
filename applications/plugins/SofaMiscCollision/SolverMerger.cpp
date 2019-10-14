@@ -64,10 +64,10 @@ typename T::SPtr copySolver(const T& s)
 
 ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* solver2)
 {
-    ConstraintSolver* csolver1 = NULL; if (solver1!=NULL) solver1->getContext()->get(csolver1, core::objectmodel::BaseContext::SearchDown);
-    ConstraintSolver* csolver2 = NULL; if (solver2!=NULL) solver2->getContext()->get(csolver2, core::objectmodel::BaseContext::SearchDown);
+    ConstraintSolver* csolver1 = nullptr; if (solver1!=nullptr) solver1->getContext()->get(csolver1, core::objectmodel::BaseContext::SearchDown);
+    ConstraintSolver* csolver2 = nullptr; if (solver2!=nullptr) solver2->getContext()->get(csolver2, core::objectmodel::BaseContext::SearchDown);
 
-    if (!csolver1 && !csolver2) return NULL;
+    if (!csolver1 && !csolver2) return nullptr;
     if (!csolver1)
     {
         if (constraintset::LCPConstraintSolver* cs=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver2))
@@ -112,7 +112,7 @@ ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* sol
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 
@@ -120,12 +120,12 @@ ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* sol
 
 SolverSet createSolverEulerEuler(odesolver::EulerSolver& solver1, odesolver::EulerSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::EulerSolver>(solver1), NULL,createConstraintSolver(&solver1, &solver2));
+    return SolverSet(copySolver<odesolver::EulerSolver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
 }
 
 SolverSet createSolverRungeKutta4RungeKutta4(odesolver::RungeKutta4Solver& solver1, odesolver::RungeKutta4Solver& solver2)
 {
-    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), NULL,createConstraintSolver(&solver1, &solver2));
+    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
 }
 
 typedef linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> DefaultCGLinearSolver;
@@ -133,8 +133,8 @@ typedef linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatr
 BaseLinearSolver::SPtr createLinearSolver(OdeSolver* solver1, OdeSolver* solver2)
 {
     DefaultCGLinearSolver::SPtr lsolver = sofa::core::objectmodel::New<DefaultCGLinearSolver>();
-    DefaultCGLinearSolver* lsolver1 = NULL; if (solver1!=NULL) solver1->getContext()->get(lsolver1, core::objectmodel::BaseContext::SearchDown);
-    DefaultCGLinearSolver* lsolver2 = NULL; if (solver2!=NULL) solver2->getContext()->get(lsolver2, core::objectmodel::BaseContext::SearchDown);
+    DefaultCGLinearSolver* lsolver1 = nullptr; if (solver1!=nullptr) solver1->getContext()->get(lsolver1, core::objectmodel::BaseContext::SearchDown);
+    DefaultCGLinearSolver* lsolver2 = nullptr; if (solver2!=nullptr) solver2->getContext()->get(lsolver2, core::objectmodel::BaseContext::SearchDown);
     unsigned int maxIter = 0;
     double tolerance = 1.0e10;
     double smallDenominatorThreshold = 1.0e10;
@@ -178,20 +178,20 @@ SolverSet createSolverStaticSolver(odesolver::StaticSolver& solver1, odesolver::
 
 SolverSet createSolverRungeKutta4Euler(odesolver::RungeKutta4Solver& solver1, odesolver::EulerSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), NULL,createConstraintSolver(&solver1, &solver2));
+    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
 }
 
 SolverSet createSolverEulerImplicitEuler(odesolver::EulerImplicitSolver& solver1, odesolver::EulerSolver& solver2)
 {
     return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1),
-            createLinearSolver(&solver1, NULL),
+            createLinearSolver(&solver1, nullptr),
             createConstraintSolver(&solver1, &solver2));
 }
 
 SolverSet createSolverEulerImplicitRungeKutta4(odesolver::EulerImplicitSolver& solver1, odesolver::RungeKutta4Solver& solver2)
 {
     return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1),
-            createLinearSolver(&solver1, NULL),
+            createLinearSolver(&solver1, nullptr),
             createConstraintSolver(&solver1, &solver2));
 }
 

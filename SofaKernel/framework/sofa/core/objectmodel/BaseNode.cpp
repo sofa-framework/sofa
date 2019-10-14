@@ -81,19 +81,26 @@ void BaseNode::clearObjectContext(BaseObject::SPtr obj)
         obj->l_context.reset();
 }
 
-std::string BaseNode::getPathName() const {
+std::string BaseNode::internalGetPathName() const {
     std::string str;
     Parents parents = getParents();
     if (!parents.empty())
     {
         // for the full path name, we arbitrarily take the first parent of the list...
         // no smarter choice without breaking the "Node" heritage
-        str = parents[0]->getPathName();
+        str = parents[0]->internalGetPathName();
         str += '/';
         str += getName();
     }
-
     return str;
+}
+
+// path name representation of root as "/", as it is done for filesystems
+std::string BaseNode::getPathName() const {
+    Parents parents = getParents();
+    if (parents.empty())
+        return "/";
+    return internalGetPathName();
 }
 
 std::string BaseNode::getRootPath() const {

@@ -68,7 +68,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
     /// Create the context for the matrix tests.
     void SetUp()
     {
-//        if( sofa::simulation::getSimulation()==NULL )
+//        if( sofa::simulation::getSimulation()==nullptr )
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Create the scene
@@ -202,7 +202,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     void TearDown()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
     }
 

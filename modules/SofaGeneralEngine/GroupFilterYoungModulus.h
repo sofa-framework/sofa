@@ -76,7 +76,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const GroupFilterYoungModulus<DataTypes>* = NULL)
+    static std::string templateName(const GroupFilterYoungModulus<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

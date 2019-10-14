@@ -152,7 +152,7 @@ public:
     /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
-    TCollisionElementIterator(Model* model=NULL, int index=0)
+    TCollisionElementIterator(Model* model=nullptr, int index=0)
         : BaseCollisionElementIterator(index), model(model)
     {
     }
@@ -194,7 +194,7 @@ public:
     /// Note that it does not test if the referenced element inside the CollisionModel is valid.
     bool valid() const
     {
-        return model!=NULL;
+        return model!=nullptr;
     }
 
     /// Return the CollisionModel containing the referenced element.

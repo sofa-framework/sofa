@@ -26,8 +26,6 @@
 #include "FileSystem.h"
 using sofa::helper::system::FileSystem;
 
-using namespace std;
-
 #include <sofa/helper/system/thread/CTime.h>
 using sofa::helper::system::thread::CTime ;
 using sofa::helper::system::thread::ctime_t ;
@@ -40,6 +38,10 @@ using sofa::helper::system::thread::ctime_t ;
 //////////////////// Windows Header ///////////////////////////////////////////////
 #include <windows.h>
 #include <FileAPI.h>
+
+using namespace std; 
+// needs to be declared AFTER windows header file 
+//(https://developercommunity.visualstudio.com/content/problem/93889/error-c2872-byte-ambiguous-symbol.html)
 
 namespace sofa
 {

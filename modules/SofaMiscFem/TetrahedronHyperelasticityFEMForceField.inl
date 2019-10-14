@@ -119,7 +119,7 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::T
     , d_anisotropySet(initData(&d_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
     , m_tetrahedronInfo(initData(&m_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , m_edgeInfo(initData(&m_edgeInfo, "edgeInfo", "Internal edge data"))
-    , m_tetrahedronHandler(NULL)
+    , m_tetrahedronHandler(nullptr)
 {
     m_tetrahedronHandler = new TetrahedronHandler(this,&m_tetrahedronInfo);
 }

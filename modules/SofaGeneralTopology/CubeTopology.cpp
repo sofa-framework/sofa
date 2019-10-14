@@ -40,17 +40,17 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->MeshTopology::parse(arg);
     float scale=1.0f;
-    if (arg->getAttribute("scale")!=NULL)
+    if (arg->getAttribute("scale")!=nullptr)
     {
         scale = arg->getAttributeAsFloat("scale",1.0);
     }
     this->setSize();
-    if (arg->getAttribute("xmin") != NULL &&
-        arg->getAttribute("ymin") != NULL &&
-        arg->getAttribute("zmin") != NULL &&
-        arg->getAttribute("xmax") != NULL &&
-        arg->getAttribute("ymax") != NULL &&
-        arg->getAttribute("zmax") != NULL )
+    if (arg->getAttribute("xmin") != nullptr &&
+        arg->getAttribute("ymin") != nullptr &&
+        arg->getAttribute("zmin") != nullptr &&
+        arg->getAttribute("xmax") != nullptr &&
+        arg->getAttribute("ymax") != nullptr &&
+        arg->getAttribute("zmax") != nullptr )
     {
         float xmin = arg->getAttributeAsFloat("xmin",0);
         float ymin = arg->getAttributeAsFloat("ymin",0);

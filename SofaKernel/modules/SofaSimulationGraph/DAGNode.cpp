@@ -434,7 +434,7 @@ size_t DAGNode::getNbParents() const
     return l_parents.getValue().size();
 }
 
-/// return the first parent (returns NULL if no parent)
+/// return the first parent (returns nullptr if no parent)
 core::objectmodel::BaseNode* DAGNode::getFirstParent() const
 {
     const LinkParents::Container& parents = l_parents.getValue();

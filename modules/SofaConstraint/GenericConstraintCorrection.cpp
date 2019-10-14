@@ -293,7 +293,7 @@ void GenericConstraintCorrection::applyPredictiveConstraintForce(const Constrain
 
 void GenericConstraintCorrection::resetContactForce(){}
 
-static int GenericConstraintCorrectionClass = RegisterObject("")
+int GenericConstraintCorrectionClass = RegisterObject("")
     .add< GenericConstraintCorrection >();
 
 } // namespace constraintset

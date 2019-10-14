@@ -131,7 +131,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     if (dt == 0) setDt(node->getDt());
     else node->setDt(dt);
 
-    if (node->collisionPipeline != NULL)
+    if (node->collisionPipeline != nullptr)
     {
         processCollisionPipeline(node, node->collisionPipeline);
     }

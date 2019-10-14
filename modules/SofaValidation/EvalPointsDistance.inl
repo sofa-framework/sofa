@@ -60,7 +60,7 @@ EvalPointsDistance<DataTypes>::EvalPointsDistance()
     , rdistDev( initData(&rdistDev, 1.0, "rdistDev", "relative distance standard deviation (OUTPUT)"))
     , mstate1(initLink("object1", "Mechanical state 1"))
     , mstate2(initLink("object2", "Mechanical state 2"))
-    , outfile(NULL)
+    , outfile(nullptr)
     , lastTime(0)
 {
 
@@ -121,7 +121,7 @@ void EvalPointsDistance<DataTypes>::reinit()
         {
             msg_error() << "Error creating file "<<filename;
             delete outfile;
-            outfile = NULL;
+            outfile = nullptr;
         }
         else
         {
@@ -131,7 +131,7 @@ void EvalPointsDistance<DataTypes>::reinit()
     }
     else
     {
-        outfile = NULL;
+        outfile = nullptr;
     }
 
     if(f_period.getValue() == 0.0)
@@ -275,7 +275,7 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
         {
 
             eval();
-            if (outfile==NULL)
+            if (outfile==nullptr)
             {
                 msg_info() << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)";
                 msg_info() << this->getName() << "\t" << time

@@ -64,7 +64,7 @@ void ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(u
 
 template <class DataTypes>
 ProjectToPlaneConstraint<DataTypes>::ProjectToPlaneConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_origin( initData(&f_origin,CPos(),"origin","A point in the plane"))
     , f_normal( initData(&f_normal,CPos(),"normal","Normal vector to the plane"))

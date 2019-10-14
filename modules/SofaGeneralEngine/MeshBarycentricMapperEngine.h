@@ -85,7 +85,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const MeshBarycentricMapperEngine<DataTypes>* = NULL)
+    static std::string templateName(const MeshBarycentricMapperEngine<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

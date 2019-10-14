@@ -77,7 +77,7 @@ public:
 
     /// Get the ABSOLUTE path of a file relative to current process path
     /// i.e. if given "../e" and "a/b/c", return "a/e".
-    static std::string GetRelativeFromProcess(const char* filename, const char* basename=NULL);
+    static std::string GetRelativeFromProcess(const char* filename, const char* basename=nullptr);
 
 };
 

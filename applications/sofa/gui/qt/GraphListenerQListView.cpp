@@ -322,9 +322,9 @@ void setMessageIconFrom(QTreeWidgetItem* item, Base* object)
 QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
 {
     //    QTreeWidgetItem* last = parent->firstChild();
-    //    if (last == NULL)
+    //    if (last == nullptr)
     //        return new QTreeWidgetItem(parent);
-    //    while (last->nextSibling()!=NULL)
+    //    while (last->nextSibling()!=nullptr)
     //        last = last->nextSibling();
     //    return new QTreeWidgetItem(parent, last);
     if(parent->childCount() == 0)
@@ -626,7 +626,7 @@ core::objectmodel::Base* GraphListenerQListView::findObject(const QTreeWidgetIte
 
 /*****************************************************************************************************************/
 core::objectmodel::BaseData* GraphListenerQListView::findData(const QTreeWidgetItem* item)
-// returns NULL if nothing is found.
+// returns nullptr if nothing is found.
 {
     BaseData* data = nullptr;
     if(item)

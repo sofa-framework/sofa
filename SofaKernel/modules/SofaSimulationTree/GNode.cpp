@@ -330,7 +330,7 @@ size_t GNode::getNbParents() const
     return parent() ? 1 : 0;
 }
 
-/// return the first parent (returns NULL if no parent)
+/// return the first parent (returns nullptr if no parent)
 core::objectmodel::BaseNode* GNode::getFirstParent() const
 {
     return parent();

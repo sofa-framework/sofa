@@ -296,11 +296,11 @@ public:
 
             const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
 
-            ResizableExtVector<Coord> tposition; tposition.resize(verts.size());
-            unsigned int ind;
+            ResizableExtVector<Coord> tposition;
+            tposition.resize(verts.size());
             for(unsigned int i=0; i<tposition.size(); i++)
             {
-                tposition[i]=transform->toImage(Coord((Real)verts[ind][0],(Real)verts[ind][1],(Real)verts[ind][2]));
+                tposition[i]=transform->toImage(Coord((Real)verts[i][0],(Real)verts[i][1],(Real)verts[i][2]));
             }
             helper::ReadAccessor<Data< core::loader::Material > > mat(visualModels[m]->material);
             const unsigned char color[3]= {(unsigned char)helper::round(mat->diffuse[0]*255.),(unsigned char)helper::round(mat->diffuse[1]*255.),(unsigned char)helper::round(mat->diffuse[2]*255.)};

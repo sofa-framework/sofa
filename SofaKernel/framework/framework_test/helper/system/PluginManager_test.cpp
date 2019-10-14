@@ -142,12 +142,12 @@ TEST_F(PluginManager_test, pluginEntries)
     const std::string pluginPath = pm.findPlugin(pluginName);
     sofa::helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
 
-    EXPECT_TRUE(p.initExternalModule.func != NULL);
-    EXPECT_TRUE(p.getModuleName.func != NULL);
-    EXPECT_TRUE(p.getModuleVersion.func != NULL);
-    EXPECT_TRUE(p.getModuleLicense.func != NULL);
-    EXPECT_TRUE(p.getModuleDescription.func != NULL);
-    EXPECT_TRUE(p.getModuleComponentList.func != NULL);
+    EXPECT_TRUE(p.initExternalModule.func != nullptr);
+    EXPECT_TRUE(p.getModuleName.func != nullptr);
+    EXPECT_TRUE(p.getModuleVersion.func != nullptr);
+    EXPECT_TRUE(p.getModuleLicense.func != nullptr);
+    EXPECT_TRUE(p.getModuleDescription.func != nullptr);
+    EXPECT_TRUE(p.getModuleComponentList.func != nullptr);
 
 }
 

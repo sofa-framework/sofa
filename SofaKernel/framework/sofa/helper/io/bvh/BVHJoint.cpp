@@ -48,10 +48,10 @@ int BVHJoint::lastId = 0;
 BVHJoint::BVHJoint(const char *_name, bool _endSite, BVHJoint *_parent)
     :parent(_parent),endSite(_endSite)
 {
-    offset = NULL;
-    channels = NULL;
-    motion = NULL;
-    parent = NULL ;
+    offset = nullptr;
+    channels = nullptr;
+    motion = nullptr;
+    parent = nullptr ;
 
     if(_parent)
         parent = _parent ;
@@ -75,7 +75,7 @@ BVHJoint::~BVHJoint()
 
 void BVHJoint::initMotion(double fTime, unsigned int fCount)
 {
-    if (channels != NULL)
+    if (channels != nullptr)
         this->getMotion()->init(fTime, fCount, channels->size);
 
     for (unsigned int i=0; i < children.size(); i++)
@@ -96,7 +96,7 @@ void BVHJoint::display(int frameNum)
 
     glGetDoublev(GL_MODELVIEW_MATRIX,matrix);
 
-    if (channels != NULL)
+    if (channels != nullptr)
     {
         for (unsigned int i=0; i<channels->size; i++)
         {
@@ -167,7 +167,7 @@ int BVHJoint::getNumJoints(char *s)
 {
     int tmp(0);
 
-    if (s!=NULL)
+    if (s!=nullptr)
     {
         if (strcmp(name,s) == 0)
             return accumulateNumJoints();
@@ -240,7 +240,7 @@ void BVHJoint::dump(char *fName, char *rootJointName)
 
 void BVHJoint::dumpPosition(FILE *f, char *s)
 {
-    if (s!=NULL)
+    if (s!=nullptr)
     {
         if (strcmp(name,s) == 0)
             dumpPosition(f, id);
@@ -265,7 +265,7 @@ void BVHJoint::dumpSegment(FILE *f, char *s)
 {
     int cpt = 0;
 
-    if (s!=NULL)
+    if (s!=nullptr)
     {
         if (strcmp(name,s) == 0)
             dumpSegment(f, cpt, id);
@@ -292,7 +292,7 @@ void BVHJoint::dumpRotation(FILE *f, char *s)
 {
     int cpt = 0;
 
-    if (s!=NULL)
+    if (s!=nullptr)
     {
         if (strcmp(name,s) == 0)
             dumpRotation(f, cpt, id);
@@ -320,7 +320,7 @@ void BVHJoint::dumpRotationLimit(FILE *f, char *s)
 {
     int cpt = 0;
 
-    if (s!=NULL)
+    if (s!=nullptr)
     {
         if (strcmp(name,s) == 0)
             dumpRotationLimit(f, cpt);
@@ -348,7 +348,7 @@ void BVHJoint::dumpRotationStiffness(FILE *f, char *s)
 {
     int cpt = 0;
 
-    if (s!=NULL)
+    if (s!=nullptr)
     {
         if (strcmp(name,s) == 0)
             dumpRotationStiffness(f, cpt);
@@ -379,14 +379,14 @@ void BVHJoint::debug(int tab)
 
     tmpmsg << name << msgendl ;
 
-    if (offset != NULL)
+    if (offset != nullptr)
     {
         for (int i=0; i<tab; i++)
             tmpmsg << "\t";
         tmpmsg << "offset " << offset->x << " " << offset->y << " " << offset->z << msgendl;
     }
 
-    if (channels != NULL)
+    if (channels != nullptr)
     {
         for (int i=0; i<tab; i++)
             tmpmsg << "\t";

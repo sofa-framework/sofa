@@ -70,7 +70,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
         msg_warning() << "Calling an already fully initialized component. You should use reinit instead." ;
     }
 
-    if(l_nodeToParse.get() == NULL)
+    if(l_nodeToParse.get() == nullptr)
     {
         msg_error() << " failed to initialized -> missing/wrong link " << l_nodeToParse.getName() << " : " << l_nodeToParse.getLinkedPath() << sendl;
         m_componentstate = ComponentState::Invalid ;
@@ -79,7 +79,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
 
     sofa::core::behavior::BaseInteractionForceField::init();
 
-    if (mstate1.get() == NULL || mstate2.get() == NULL)
+    if (mstate1.get() == nullptr || mstate2.get() == nullptr)
     {
         msg_error() << " failed to initialized -> missing/wrong link " << mstate1.getName() << " or " << mstate2.getName() << sendl;
         m_componentstate = ComponentState::Invalid ;
@@ -259,7 +259,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::optimizeAndCopyMappingJacob
 template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addMassToSystem(const MechanicalParams* mparams, const DefaultMultiMatrixAccessor* KAccessor)
 {
-    if (l_mappedMass != NULL)
+    if (l_mappedMass != nullptr)
     {
         l_mappedMass->addMToMatrix(mparams, KAccessor);
     }

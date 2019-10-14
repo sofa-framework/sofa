@@ -73,7 +73,7 @@ public:
 
     virtual std::string getTemplateName() const override;
 
-    static std::string templateName(const ComplementaryROI<DataTypes>* = NULL);
+    static std::string templateName(const ComplementaryROI<DataTypes>* = nullptr);
 
 protected:
 

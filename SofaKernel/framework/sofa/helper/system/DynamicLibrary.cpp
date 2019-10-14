@@ -47,13 +47,13 @@ DynamicLibrary::Handle::Handle(const Handle& that)
 {
 }
 
-DynamicLibrary::Handle::Handle(): m_realHandle(NULL)
+DynamicLibrary::Handle::Handle(): m_realHandle(nullptr)
 {
 }
 
 bool DynamicLibrary::Handle::isValid() const
 {
-    return m_realHandle != NULL;
+    return m_realHandle != nullptr;
 }
 
 const std::string& DynamicLibrary::Handle::filename() const
@@ -97,7 +97,7 @@ void * DynamicLibrary::getSymbolAddress(Handle handle,
 {
     if (!handle.isValid()) {
         m_lastError = "DynamicLibrary::getSymbolAddress(): invalid handle";
-        return NULL;
+        return nullptr;
     }
 # if defined(WIN32)
     void *symbolAddress = ::GetProcAddress((HMODULE)handle.m_realHandle,
@@ -105,7 +105,7 @@ void * DynamicLibrary::getSymbolAddress(Handle handle,
 # else
     void *symbolAddress = ::dlsym(handle.m_realHandle, symbol.c_str());
 # endif
-    if(symbolAddress == NULL)
+    if(symbolAddress == nullptr)
         fetchLastError();
     return symbolAddress;
 }
@@ -124,9 +124,9 @@ void DynamicLibrary::fetchLastError()
     FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER
                   | FORMAT_MESSAGE_FROM_SYSTEM
                   | FORMAT_MESSAGE_IGNORE_INSERTS,
-                  NULL, ::GetLastError(),
+                  nullptr, ::GetLastError(),
                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                  (LPTSTR)&pMsgBuf, 0, NULL);
+                  (LPTSTR)&pMsgBuf, 0, nullptr);
 # ifndef UNICODE
     m_lastError = std::string(pMsgBuf);
 # else

@@ -77,7 +77,7 @@ void PairBoxROI<DataTypes>::init()
         }
         else
         {
-            core::loader::MeshLoader* loader = NULL;
+            core::loader::MeshLoader* loader = nullptr;
             this->getContext()->get(loader,BaseContext::Local);
             if (loader)
             {
