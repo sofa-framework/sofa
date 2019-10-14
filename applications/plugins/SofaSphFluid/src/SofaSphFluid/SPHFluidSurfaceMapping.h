@@ -189,6 +189,9 @@ protected:
             OutDeriv n1 = calcGrad(g, (C==0)?x+1:x,(C==1)?y+1:y,(C==2)?z+1:z);
             n = n0 + (n1-n0) * interp;
             n.normalize();
+            
+            // TODO epernod 2019-10-14: remove this HACK: normals are going inside the model, certainly due to recent changes in cube orientation.
+            n *= -1;
         }
         return p;
     }
