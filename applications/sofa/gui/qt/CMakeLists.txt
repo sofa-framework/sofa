@@ -224,24 +224,30 @@ else()
     message(STATUS "SofaGuiQt: QtCharts not found, SofaWindowProfiler will not be built.")
 endif()
 
-#find_package(NodeEditor)
-set (NodeEditor_FOUND TRUE)
-if(NodeEditor_FOUND)
-set(NodeEditor_DIR CACHE PATH "Set path to NodeEditor Install dir root.")
-    message(STATUS "Wouhou !!!!!!!!")
-    include_directories( ${NodeEditor_DIR}/include)
-    set(NodeEditor_LIBRARY ${NodeEditor_DIR}/lib/nodes.lib)
-	sofa_set_01(SOFAGUIQT_HAVE_NODEEDITOR VALUE {NodeEditor_FOUND} BOTH_SCOPES)
-    
-list(APPEND MOC_HEADER_FILES 
-    SofaWindowDataGraph.h
-    dataGraph/models.hpp
-    )
 
-list(APPEND SOURCE_FILES 
-    SofaWindowDataGraph.cpp
-    #dataGraph/models.cpp
-    )
+#NODEGRAPH
+option(SOFA_BUILD_NODEGRAPH "Build the Node graph representation. NodeEditor library is needed." OFF)
+
+if (SOFA_BUILD_NODEGRAPH)
+    find_package(NodeEditor REQUIRED)
+
+    if(NODEEDITOR_FOUND)
+        #message(STATUS "NODEEDITOR_INCLUDE_PATH ${NODEEDITOR_INCLUDE_PATH}")
+        #message(STATUS "NODEEDITOR_LIBRARY ${NODEEDITOR_LIBRARY}")
+        include_directories(${NODEEDITOR_INCLUDE_PATH})
+
+        sofa_set_01(SOFAGUIQT_HAVE_NODEEDITOR VALUE {NodeEditor_FOUND} BOTH_SCOPES)
+            
+        list(APPEND MOC_HEADER_FILES 
+            SofaWindowDataGraph.h
+            dataGraph/models.hpp
+            )
+
+        list(APPEND SOURCE_FILES 
+            SofaWindowDataGraph.cpp
+            #dataGraph/models.cpp
+            )
+    endif()
 endif()
 
 qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
@@ -255,7 +261,8 @@ add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${MOC_FIL
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaLoader SofaMiscForceField)
-target_link_libraries(${PROJECT_NAME} PUBLIC ${QT_TARGETS} ${NodeEditor_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${QT_TARGETS})
+
 if(SOFAGUI_ENABLE_QWT)
     target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
 endif()
@@ -263,6 +270,10 @@ if(NOT SOFA_NO_OPENGL)
     if(SOFAGUI_QGLVIEWER)
         target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
     endif()
+endif()
+
+if(NODEEDITOR_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${NODEEDITOR_LIBRARY})
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
