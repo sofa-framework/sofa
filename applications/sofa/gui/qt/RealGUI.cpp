@@ -115,6 +115,12 @@ using sofa::simulation::SceneLoaderFactory;
 #include <sofa/core/objectmodel/IdleEvent.h>
 using sofa::core::objectmodel::IdleEvent;
 
+#include <sofa/simulation/events/SimulationStartEvent.h>
+using sofa::simulation::SimulationStartEvent;
+
+#include <sofa/simulation/events/SimulationStopEvent.h>
+using sofa::simulation::SimulationStopEvent;
+
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileMonitor;
 
@@ -1724,7 +1730,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
         qtViewer->getPickHandler()->addCallBack(&informationOnPickCallBack );
     }
 
-   m_sofaMouseManager->setPickHandler(_viewer->getPickHandler());
+    m_sofaMouseManager->setPickHandler(_viewer->getPickHandler());
 
     connect ( ResetViewButton, SIGNAL ( clicked() ), this, SLOT ( resetView() ) );
     connect ( SaveViewButton, SIGNAL ( clicked() ), this, SLOT ( saveView() ) );
@@ -2028,19 +2034,33 @@ void RealGUI::fileRecentlyOpened(QAction *action)
 
 //------------------------------------
 
-void RealGUI::playpauseGUI ( bool value )
+void RealGUI::playpauseGUI ( bool startSimulation )
 {
-    startButton->setChecked ( value );
-    if ( currentSimulation() )
-        currentSimulation()->getContext()->setAnimate ( value );
-    if(value)
+    startButton->setChecked ( startSimulation );
+
+    /// If there is no root node we do nothing.
+    Node* root = currentSimulation();
+    if (root==nullptr)
+        return;
+
+    /// Set the animation 'on' in the getContext()
+    currentSimulation()->getContext()->setAnimate ( startSimulation );
+
+    if(startSimulation)
     {
+        SimulationStopEvent startEvt;
+        root->propagateEvent(core::ExecParams::defaultInstance(), &startEvt);
         m_clockBeforeLastStep = 0;
         frameCounter=0;
         timerStep->start(0);
+        return;
     }
-    else
-        timerStep->stop();
+
+    SimulationStartEvent stopEvt;
+    root->propagateEvent(core::ExecParams::defaultInstance(), &stopEvt);
+
+    timerStep->stop();
+    return;
 }
 
 //------------------------------------
