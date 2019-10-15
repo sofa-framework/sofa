@@ -119,7 +119,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
     if (m_topology == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath();
-        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
