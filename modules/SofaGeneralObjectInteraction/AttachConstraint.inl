@@ -41,7 +41,7 @@ namespace projectiveconstraintset
 using sofa::simulation::Node ;
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3Types>::projectPositionImpl(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor)
+inline void AttachConstraint<defaulttype::Rigid3Types>::doProjectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor)
 {
     SOFA_UNUSED(positionFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -76,7 +76,7 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectPositionImpl(Coor
 
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2Types>::projectPositionImpl(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor)
+inline void AttachConstraint<defaulttype::Rigid2Types>::doProjectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor)
 {
     SOFA_UNUSED(positionFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -95,7 +95,7 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectPositionImpl(Coor
 
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3Types>::projectVelocityImpl(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor)
+inline void AttachConstraint<defaulttype::Rigid3Types>::doProjectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor)
 {
     SOFA_UNUSED(velocityFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -109,7 +109,7 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectVelocityImpl(Deri
 
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2Types>::projectVelocityImpl(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor)
+inline void AttachConstraint<defaulttype::Rigid2Types>::doProjectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor)
 {
     SOFA_UNUSED(velocityFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -121,7 +121,7 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectVelocityImpl(Deri
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3Types>::projectResponseImpl(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor)
+inline void AttachConstraint<defaulttype::Rigid3Types>::doProjectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor)
 {
     SOFA_UNUSED(responseFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -151,7 +151,7 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectResponseImpl(Deri
 
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2Types>::projectResponseImpl(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor)
+inline void AttachConstraint<defaulttype::Rigid2Types>::doProjectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor)
 {
     SOFA_UNUSED(responseFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -350,7 +350,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
         {
             msg_info() << "AttachConstraint: x2["<<indices2[i]<<"] = x1["<<indices1[i]<<"]";
 
-            projectPositionImpl(p, res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i, positionFactor);
+            doProjectPosition(p, res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i, positionFactor);
         }
         else if (clamp)
         {
@@ -358,7 +358,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
 
             msg_info() << "AttachConstraint: x2["<<indices2[i]<<"] = lastPos";
 
-            projectPositionImpl(p, res2[indices2[i]], freeRotations, i, positionFactor);
+            doProjectPosition(p, res2[indices2[i]], freeRotations, i, positionFactor);
         }
     }
 
@@ -392,14 +392,14 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
         {
             msg_info() << "AttachConstraint: v2["<<indices2[i]<<"] = v1["<<indices1[i]<<"]" ;
 
-            projectVelocityImpl(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i, velocityFactor);
+            doProjectVelocity(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i, velocityFactor);
         }
         else if (clamp)
         {
             msg_info() << "AttachConstraint: v2["<<indices2[i]<<"] = 0" ;
 
             Deriv v = Deriv();
-            projectVelocityImpl(v, res2[indices2[i]], freeRotations, i, velocityFactor);
+            doProjectVelocity(v, res2[indices2[i]], freeRotations, i, velocityFactor);
         }
     }
 
@@ -438,7 +438,7 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
                 msg_info() << " r2["<<indices2[i]<<"] = 0";
             }
 
-            projectResponseImpl(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), twoway, i, responseFactor);
+            doProjectResponse(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), twoway, i, responseFactor);
 
             msg_info() << " final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<"";
         }
@@ -447,7 +447,7 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
             msg_info() << " r2["<<indices2[i]<<"] = 0";
 
             Deriv v = Deriv();
-            projectResponseImpl(v, res2[indices2[i]], freeRotations, false, i, responseFactor);
+            doProjectResponse(v, res2[indices2[i]], freeRotations, false, i, responseFactor);
 
             msg_info() << " final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<"";
         }
@@ -559,7 +559,7 @@ const typename DataTypes::Real AttachConstraint<DataTypes>::getConstraintFactor(
 }
 
 template<class DataTypes>
-void AttachConstraint<DataTypes>::projectPositionImpl(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor)
+void AttachConstraint<DataTypes>::doProjectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor)
 {
     SOFA_UNUSED(freeRotations);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -578,7 +578,7 @@ void AttachConstraint<DataTypes>::projectPositionImpl(Coord& x1, Coord& x2, bool
 }
 
 template<class DataTypes>
-void AttachConstraint<DataTypes>::projectVelocityImpl(Deriv &x1, Deriv &x2, bool freeRotations, unsigned index, Real velocityFactor)
+void AttachConstraint<DataTypes>::doProjectVelocity(Deriv &x1, Deriv &x2, bool freeRotations, unsigned index, Real velocityFactor)
 {
     SOFA_UNUSED(freeRotations);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -591,7 +591,7 @@ void AttachConstraint<DataTypes>::projectVelocityImpl(Deriv &x1, Deriv &x2, bool
 }
 
 template<class DataTypes>
-void AttachConstraint<DataTypes>::projectResponseImpl(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor)
+void AttachConstraint<DataTypes>::doProjectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor)
 {
     SOFA_UNUSED(freeRotations);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
