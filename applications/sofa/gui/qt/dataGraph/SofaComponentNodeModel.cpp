@@ -1,4 +1,4 @@
-#include "models.hpp"
+#include "SofaComponentNodeModel.h"
 
 NodeDataType SofaComponentNodeData::type() const
 {
@@ -18,7 +18,6 @@ SofaComponentNodeModel::SofaComponentNodeModel(std::vector < std::pair < std::st
 {
     m_nbrData = m_data.size();
 }
-
 
 QtNodes::PortIndex SofaComponentNodeModel::getDataInputId(const std::string& dataName)
 {

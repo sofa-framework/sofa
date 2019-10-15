@@ -25,6 +25,16 @@ public:
   
 };
 
+namespace sofa
+{
+namespace core
+{
+namespace objectmodel
+{
+    class BaseObject;
+}
+}
+}
 
 //------------------------------------------------------------------------------
 
@@ -36,27 +46,22 @@ public:
     SofaComponentNodeModel();
         
     SofaComponentNodeModel(std::vector < std::pair < std::string, std::string> > _data);
-
+    
     virtual ~SofaComponentNodeModel() {}
 
-    QString caption() const override
-    {
-        return m_caption;
-    }
+    /// Interface for caption
+    QString caption() const override {return m_caption;}
+    void setCaption(std::string str) {m_caption = QString::fromStdString(str);}
 
-    void setCaption(std::string str)
-    {
-        m_caption = QString::fromStdString(str);
-    }
+    /// Interface for name
+    QString name() const override { return m_uniqName; }
 
-    QString name() const override
-    {
-        return QString("SofaComponentNodeModel");
-    }
 
     void setNbrData(unsigned int nbr) {m_nbrData = nbr;}
 
     QtNodes::PortIndex getDataInputId(const std::string& dataName);
+
+    void parseSofaObjectData();
     
 
 public:
@@ -72,6 +77,7 @@ public:
 
 protected: 
     QString m_caption;
+    QString m_uniqName;
     unsigned int m_nbrData;
     std::vector < std::pair < std::string, std::string> > m_data;
 };

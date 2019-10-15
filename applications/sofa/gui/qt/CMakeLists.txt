@@ -240,12 +240,12 @@ if (SOFA_BUILD_NODEGRAPH)
             
         list(APPEND MOC_HEADER_FILES 
             SofaWindowDataGraph.h
-            dataGraph/models.hpp
+            dataGraph/SofaComponentNodeModel.h
             )
 
         list(APPEND SOURCE_FILES 
             SofaWindowDataGraph.cpp
-            dataGraph/models.cpp
+            dataGraph/SofaComponentNodeModel.cpp
             )
     endif()
 endif()

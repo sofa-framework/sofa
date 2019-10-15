@@ -34,7 +34,7 @@
 #include <nodes/DataModelRegistry>
 #include <nodes/ConnectionStyle>
 #include <nodes/Node>
-#include "dataGraph/models.hpp"
+#include "dataGraph/SofaComponentNodeModel.h"
 
 namespace sofa
 {
