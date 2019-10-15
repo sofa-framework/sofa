@@ -10,7 +10,7 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/UpdateInternalDataVisitor.h>
+#include <sofa/simulation/InternalUpdateDataVisitor.h>
 
 using namespace sofa::core::objectmodel;
 using namespace sofa::core::behavior;
@@ -89,7 +89,7 @@ void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams*
     BehaviorUpdatePositionVisitor beh(params , dt);
     this->gnode->execute(&beh);
 
-    UpdateInternalDataVisitor uid(params);
+    InternalUpdateDataVisitor uid(params);
     this->gnode->execute(&uid);
 
     // compute collision using selected method (eg with friction) Holonomic contact should logically be used

@@ -929,10 +929,10 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     f_graph.endEdit();
 
     // add data to tracker
-    this->trackInternalData(d_vertexMass);
-    this->trackInternalData(d_edgeMass);
-    this->trackInternalData(d_massDensity);
-    this->trackInternalData(d_totalMass);
+    this->trackData(d_vertexMass);
+    this->trackData(d_edgeMass);
+    this->trackData(d_massDensity);
+    this->trackData(d_totalMass);
 
     //Function for GPU-CUDA version only
     this->copyVertexMass();
@@ -1290,13 +1290,13 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::reinit()
 {
-    // Now update is handled through the doUpdateInternal mechanism
-    // called at each begin of step through the UpdateInternalDataVisitor
+    // Now update is handled through the doInternalUpdate mechanism
+    // called at each begin of step through the InternalUpdateDataVisitor
 }
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
+void MeshMatrixMass<DataTypes, MassType>::doInternalUpdate()
 {
     if (this->hasDataChanged(d_totalMass))
     {
@@ -1307,7 +1307,7 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
         }
         else
         {
-            msg_error() << "doUpdateInternal: incorrect update from totalMass";
+            msg_error() << "doInternalUpdate: incorrect update from totalMass";
             this->m_componentstate = core::objectmodel::ComponentState::Invalid;
         }
     }
@@ -1320,7 +1320,7 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
         }
         else
         {
-            msg_error() << "doUpdateInternal: incorrect update from massDensity";
+            msg_error() << "doInternalUpdate: incorrect update from massDensity";
             this->m_componentstate = core::objectmodel::ComponentState::Invalid;
         }
     }
@@ -1335,7 +1335,7 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
             }
             else
             {
-                msg_error() << "doUpdateInternal: incorrect update from vertex and edgeMass";
+                msg_error() << "doInternalUpdate: incorrect update from vertex and edgeMass";
                 this->m_componentstate = core::objectmodel::ComponentState::Invalid;
             }
         }
@@ -1348,7 +1348,7 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
             }
             else
             {
-                msg_error() << "doUpdateInternal: incorrect update from vertexMass (lumping)";
+                msg_error() << "doInternalUpdate: incorrect update from vertexMass (lumping)";
                 this->m_componentstate = core::objectmodel::ComponentState::Invalid;
             }
         }

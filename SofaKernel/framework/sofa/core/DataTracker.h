@@ -72,7 +72,7 @@ namespace core
     };
 
 
-//////////////////////////////
+/////////////////////////
 
 
     /// A DDGNode with trackable input Data (containing a DataTracker)
@@ -96,28 +96,39 @@ namespace core
         virtual void cleanDirty(const core::ExecParams* params = nullptr);
 
 
-        /// utility function to ensure all inputs are up-to-date
+        /// Utility function to ensure all inputs are up-to-date
         /// can be useful for particulary complex DDGNode
         /// with a lot input/output imbricated access
         void updateAllInputsIfDirty();
 
     protected:
+        /// Function adding the data to the DataTracker for inputs
+        void trackInputData(const objectmodel::BaseData &data);
 
+        /// Function checking if a specific input data changed
+        bool hasInputDataChanged(const objectmodel::BaseData &data);
+
+        /// Function checking if one or several inputs did changed
+        bool haveInputsDataChanged();
+
+        /// Function cleaning the DataTracker for inputs
+        void cleanInputTracker();
+
+    private:
         /// @name Tracking Data mechanism
         /// each Data added to the DataTracker
         /// is tracked to be able to check if its value changed
         /// since their last clean, called by default
         /// in DataEngine::cleanDirty().
         /// @{
-
-        DataTracker m_dataTracker;
-
+        DataTracker m_inputDataTracker;
         ///@}
 
     };
 
 
- ///////////////////
+/////////////////////////
+
 
     /// a DDGNode that automatically triggers its update function
     /// when asking for an output and any input changed.
@@ -188,56 +199,6 @@ namespace core
 
     protected:
         std::vector<std::function<void(DataTrackerEngine*)>> m_callbacks;
-    };
-
-
-/////////////////////////
-
-
-
-    /// A DDGNode that will call a given Functor as soon as one of its input changes
-    /// (a pointer to this DataTrackerFunctor is passed as parameter in the functor)
-    template <typename FunctorType>
-    class DataTrackerFunctor : public core::objectmodel::DDGNode
-    {
-    public:
-
-        DataTrackerFunctor( FunctorType& functor )
-            : core::objectmodel::DDGNode()
-            , m_functor( functor )
-        {}
-
-        /// The trick is here, this function is called as soon as the input data changes
-        /// and can then trigger the callback
-        void setDirtyValue(const core::ExecParams* params = nullptr) override
-        {
-            m_functor( this );
-
-            // the input needs to be inform their output (including this DataTrackerFunctor)
-            // are not dirty, to be sure they will call setDirtyValue when they are modified
-            cleanDirtyOutputsOfInputs(params);
-        }
-
-
-        /// This method is needed by DDGNode
-        void update() override{}
-        /// This method is needed by DDGNode
-        const std::string& getName() const override
-        {
-            static const std::string emptyName ="";
-            return emptyName;
-        }
-        /// This method is needed by DDGNode
-        objectmodel::Base* getOwner() const override { return nullptr; }
-        /// This method is needed by DDGNode
-        objectmodel::BaseData* getData() const override { return nullptr; }
-
-    private:
-
-        DataTrackerFunctor(const DataTrackerFunctor&);
-        void operator=(const DataTrackerFunctor&);
-        FunctorType& m_functor; ///< the functor to call when the input data changed
-
     };
 
 } // namespace core

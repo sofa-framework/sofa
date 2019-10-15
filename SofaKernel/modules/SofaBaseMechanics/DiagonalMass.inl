@@ -538,8 +538,8 @@ void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defau
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::reinit()
 {
-    // Now update is handled through the doUpdateInternal mechanism
-    // called at each begin of step through the UpdateInternalDataVisitor
+    // Now update is handled through the doInternalUpdate mechanism
+    // called at each begin of step through the InternalUpdateDataVisitor
 }
 
 template <class DataTypes, class MassType>
@@ -692,9 +692,9 @@ void DiagonalMass<DataTypes, MassType>::init()
 
         massInitialization();
 
-        this->trackInternalData(d_vertexMass);
-        this->trackInternalData(d_massDensity);
-        this->trackInternalData(d_totalMass);
+        this->trackData(d_vertexMass);
+        this->trackData(d_massDensity);
+        this->trackData(d_totalMass);
     }
      m_componentstate = ComponentState::Valid;
 }
@@ -1190,7 +1190,7 @@ const typename DiagonalMass<DataTypes, MassType>::Real &DiagonalMass<DataTypes, 
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::doUpdateInternal()
+void DiagonalMass<DataTypes, MassType>::doInternalUpdate()
 {
     if (this->hasDataChanged(d_totalMass))
     {
@@ -1201,7 +1201,7 @@ void DiagonalMass<DataTypes, MassType>::doUpdateInternal()
         }
         else
         {
-            msg_error() << "doUpdateInternal: incorrect update from totalMass";
+            msg_error() << "doInternalUpdate: incorrect update from totalMass";
             m_componentstate = ComponentState::Invalid;
         }
     }
@@ -1214,7 +1214,7 @@ void DiagonalMass<DataTypes, MassType>::doUpdateInternal()
         }
         else
         {
-            msg_error() << "doUpdateInternal: incorrect update from massDensity";
+            msg_error() << "doInternalUpdate: incorrect update from massDensity";
             m_componentstate = ComponentState::Invalid;
         }
     }
@@ -1227,7 +1227,7 @@ void DiagonalMass<DataTypes, MassType>::doUpdateInternal()
         }
         else
         {
-            msg_error() << "doUpdateInternal: incorrect update from vertexMass";
+            msg_error() << "doInternalUpdate: incorrect update from vertexMass";
             m_componentstate = ComponentState::Invalid;
         }
     }

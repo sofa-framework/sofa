@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_UPDATEINTERNALDATAVISITOR_H
-#define SOFA_SIMULATION_UPDATEINTERNALDATAVISITOR_H
+#ifndef SOFA_SIMULATION_INTERNALUPDATEDATAVISITOR_H
+#define SOFA_SIMULATION_INTERNALUPDATEDATAVISITOR_H
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/Visitor.h>
@@ -32,16 +32,16 @@ namespace sofa
 namespace simulation
 {
 
-/** Triggers the updateInternal() function to update method called
- * when variables (used to compute other internal variables) are modified
+/** Triggers the internalUpdate() function to update method called
+ * when Data (used to compute other internal variables) are modified
  */
-class SOFA_SIMULATION_CORE_API UpdateInternalDataVisitor : public Visitor
+class SOFA_SIMULATION_CORE_API InternalUpdateDataVisitor : public Visitor
 {
 
 public:
-    UpdateInternalDataVisitor(const core::ExecParams* params): Visitor(params) {}
+    InternalUpdateDataVisitor(const core::ExecParams* params): Visitor(params) {}
 
-    void processUpdateInternalData(simulation::Node* node, sofa::core::objectmodel::BaseObject* baseObj);
+    void processInternalUpdateData(simulation::Node* node, sofa::core::objectmodel::BaseObject* baseObj);
     Result processNodeTopDown(simulation::Node* node) override;
 
     /// Specify whether this action can be parallelized.
@@ -49,8 +49,8 @@ public:
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    const char* getCategoryName() const override { return "internal data update"; }
-    const char* getClassName() const override { return "UpdateInternalDataVisitor"; }
+    const char* getCategoryName() const override { return "internal update of data"; }
+    const char* getClassName() const override { return "InternalUpdateDataVisitor"; }
 };
 
 } // namespace simulation

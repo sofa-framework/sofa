@@ -80,7 +80,7 @@ void DataTrackerDDGNode::cleanDirty(const core::ExecParams* params)
     core::objectmodel::DDGNode::cleanDirty(params);
 
     /// it is also time to clean the tracked Data
-    m_dataTracker.clean();
+    m_inputDataTracker.clean();
 }
 
 void DataTrackerDDGNode::updateAllInputsIfDirty()
@@ -90,6 +90,44 @@ void DataTrackerDDGNode::updateAllInputsIfDirty()
     {
         static_cast<core::objectmodel::BaseData*>(inputs[i])->updateIfDirty();
     }
+}
+
+void DataTrackerDDGNode::trackInputData(const objectmodel::BaseData &data)
+{
+    m_inputDataTracker.trackData(data);
+}
+
+bool DataTrackerDDGNode::hasInputDataChanged(const objectmodel::BaseData &data)
+{
+    bool dataFoundinTracker = false;
+    const auto& mapTrackedData = m_inputDataTracker.getMapTrackedData();
+    const std::string & dataName = data.getName();
+
+    for( auto const& it : mapTrackedData )
+    {
+        if(it.first->getName()==dataName)
+        {
+            dataFoundinTracker=true;
+            break;
+        }
+    }
+    if(!dataFoundinTracker)
+    {
+        msg_error("DataTrackerDDGNode") << "Data " << dataName << " is not a tracked input";
+        return false;
+    }
+
+    return m_inputDataTracker.hasChanged(data);
+}
+
+bool DataTrackerDDGNode::haveInputsDataChanged()
+{
+    return m_inputDataTracker.hasChanged();
+}
+
+void DataTrackerDDGNode::cleanInputTracker()
+{
+    m_inputDataTracker.clean();
 }
 ///////////////////////
 void DataTrackerEngine::addCallback( std::function<void(DataTrackerEngine*)> f)
