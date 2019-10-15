@@ -95,7 +95,6 @@ protected:
 
     size_t addSimulationObject(sofa::core::objectmodel::BaseObject* bObject);
 
-    std::vector < std::pair < std::string, std::string> > filterUnnecessaryData(sofa::core::objectmodel::BaseObject* bObject);
 protected:
     QtNodes::FlowScene* m_graphScene;
     QtNodes::FlowView* m_graphView;

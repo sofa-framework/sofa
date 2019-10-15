@@ -9,6 +9,7 @@
 #include <iostream>
 #include <memory>
 #include <climits>
+#include <map>
 
 using QtNodes::NodeData;
 using QtNodes::NodeDataType;
@@ -24,6 +25,9 @@ public:
     NodeDataType type() const override;
   
 };
+
+
+static const char* ignoredData[] = { "name", "printLog", "tags", "bbox", "listening", "componentState" };
 
 namespace sofa
 {
@@ -44,9 +48,9 @@ class SofaComponentNodeModel : public NodeDataModel
 
 public:
     SofaComponentNodeModel();
-        
-    SofaComponentNodeModel(std::vector < std::pair < std::string, std::string> > _data);
-    
+            
+    SofaComponentNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject);
+
     virtual ~SofaComponentNodeModel() {}
 
     /// Interface for caption
@@ -57,12 +61,16 @@ public:
     QString name() const override { return m_uniqName; }
 
 
-    void setNbrData(unsigned int nbr) {m_nbrData = nbr;}
+    size_t getNbrData() {return m_data.size();}
 
-    QtNodes::PortIndex getDataInputId(const std::string& dataName);
+    QtNodes::PortIndex getDataInputId(const QString& dataName);
 
     void parseSofaObjectData();
-    
+
+    size_t getNbrConnections() { return m_dataConnections.size(); }
+    const std::map <QString, std::pair < QString, QString> >& getDataConnections() {
+        return m_dataConnections;
+    }
 
 public:
     unsigned int nPorts(PortType portType) const override;
@@ -78,6 +86,10 @@ public:
 protected: 
     QString m_caption;
     QString m_uniqName;
-    unsigned int m_nbrData;
-    std::vector < std::pair < std::string, std::string> > m_data;
+
+    bool debugNodeGraph;
+    std::vector < std::pair < QString, QString> > m_data;
+    std::map <QString, std::pair < QString, QString> > m_dataConnections;
+
+    sofa::core::objectmodel::BaseObject* m_SofaObject;
 };
