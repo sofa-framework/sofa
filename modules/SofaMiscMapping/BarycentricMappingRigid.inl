@@ -339,7 +339,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigi
     if (outSize > 0 && map.getValue().size() == 0)
     {
         msg_error() << "Maps not created yet" ;
-        return NULL; // error: maps not yet created ?
+        return nullptr; // error: maps not yet created ?
     }
     if (!matrixJ)
     {

@@ -78,6 +78,14 @@ bool starts_with(const std::string& prefix, const std::string& full)
     return (0 == full.compare(0, lp, prefix));
 }
 
+std::string safeCharToString(const char* c)
+{
+    if(c==nullptr)
+        return std::string("");
+    return std::string(c);
+}
+
+
 } // namespace helper
 
 } // namespace sofa

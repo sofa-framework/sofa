@@ -76,9 +76,9 @@ bool ObjectElement::initNode()
 
     core::objectmodel::BaseObject::SPtr obj = core::ObjectFactory::CreateObject(ctx, this);
 
-    if (obj == NULL)
+    if (obj == nullptr)
         obj = Factory::CreateObject(this->getType(), this);
-    if (obj == NULL)
+    if (obj == nullptr)
     {
         BaseObjectDescription desc("InfoComponent", "InfoComponent") ;
         desc.setAttribute("name", ("Not created ("+getType()+")"));

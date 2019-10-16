@@ -277,7 +277,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
     msg_info("PrecomputedWarpPreconditioner") << "Compute the initial invert matrix with solver" ;
 
-    if (mstate==NULL)
+    if (mstate==nullptr)
     {
         serr << "PrecomputedWarpPreconditioner can't find Mstate" << sendl;
         return;
@@ -306,7 +306,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     }
     else
     {
-        core::objectmodel::BaseObject* ptr = NULL;
+        core::objectmodel::BaseObject* ptr = nullptr;
         this->getContext()->get(ptr, solverName.getValue());
         CGlinearSolver = dynamic_cast<CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
         linearSolver = ptr->toLinearSolver();
@@ -477,23 +477,23 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
     if (! use_rotations.getValue()) return;
 
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
-    sofa::component::forcefield::TetrahedronFEMForceField<TDataTypes>* forceField = NULL;
-    sofa::core::behavior::RotationFinder<TDataTypes>* rotationFinder = NULL;
+    sofa::component::forcefield::TetrahedronFEMForceField<TDataTypes>* forceField = nullptr;
+    sofa::core::behavior::RotationFinder<TDataTypes>* rotationFinder = nullptr;
 
-    if (node != NULL)
+    if (node != nullptr)
     {
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<TDataTypes> > ();
-        if (forceField == NULL)
+        if (forceField == nullptr)
         {
             rotationFinder = node->get< sofa::core::behavior::RotationFinder<TDataTypes> > ();
-            if (rotationFinder == NULL)
+            if (rotationFinder == nullptr)
                 sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
 
         }
     }
 
     Transformation Rotation;
-    if (forceField != NULL)
+    if (forceField != nullptr)
     {
         for(unsigned int k = 0; k < nb_dofs; k++)
         {
@@ -510,7 +510,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
             }
         }
     }
-    else if (rotationFinder != NULL)
+    else if (rotationFinder != nullptr)
     {
         const helper::vector<defaulttype::Mat<3,3,Real> > & rotations = rotationFinder->getRotations();
         for(unsigned int k = 0; k < nb_dofs; k++)
@@ -678,7 +678,7 @@ template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::init()
 {
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
-    if (node != NULL) mstate = node->get<MState> ();
+    if (node != nullptr) mstate = node->get<MState> ();
 }
 
 template<class TDataTypes>
@@ -687,7 +687,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
     if (! use_rotations.getValue()) return;
     if (draw_rotations_scale.getValue() <= 0.0) return;
     if (! vparams->displayFlags().getShowBehaviorModels()) return;
-    if (mstate==NULL) return;
+    if (mstate==nullptr) return;
 
     vparams->drawTool()->saveLastState();
 

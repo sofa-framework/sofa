@@ -39,7 +39,7 @@ namespace gl
 
 static const int quadricDiscretisation = 16;
 //GLuint Axis::displayList;
-//GLUquadricObj *Axis::quadratic = NULL;
+//GLUquadricObj *Axis::quadratic = nullptr;
 std::map < std::pair<std::pair<float,float>,float>, Axis* > Axis::axisMap; // great idea but no more valid when creating a new opengl context when switching sofa viewer
 
 void Axis::initDraw()
@@ -62,7 +62,7 @@ void Axis::initDraw()
     Vector3 Lc = lc;
 
 
-	if(quadratic==NULL)
+	if(quadratic==nullptr)
 
     quadratic=gluNewQuadric();
     
@@ -201,69 +201,69 @@ void Axis::update(const Vector3& center, const Quaternion& orient)
 
 Axis::Axis(SReal len)
 {
-    quadratic = NULL;
+    quadratic = nullptr;
     length = Vector3(len,len,len);
     update(Vector3(0,0,0),  Quaternion(1,0,0,0));
 }
 
 Axis::Axis(const Vector3& len)
 {
-    quadratic = NULL;
+    quadratic = nullptr;
     length = len;
     update(Vector3(0,0,0),  Quaternion(1,0,0,0));
 }
 
 Axis::Axis(const Vector3& center, const Quaternion& orient, const Vector3& len)
 {
-    quadratic = NULL;
+    quadratic = nullptr;
     length = len;
     update(center, orient);
 }
 
 Axis::Axis(const Vector3& center, const double orient[4][4], const Vector3& len)
 {
-    quadratic = NULL;
+    quadratic = nullptr;
     length = len;
     update(center, orient);
 }
 
 Axis::Axis(const double *mat, const Vector3& len)
 {
-    quadratic = NULL;
+    quadratic = nullptr;
     length = len;
     update(mat);
 }
 
 Axis::Axis(const Vector3& center, const Quaternion& orient, SReal len)
 {
-    quadratic = NULL;
+    quadratic = nullptr;
     length = Vector3(len,len,len);
     update(center, orient);
 }
 Axis::Axis(const Vector3& center, const double orient[4][4], SReal len)
 {
-    quadratic = NULL;
+    quadratic = nullptr;
     length = Vector3(len,len,len);
     update(center, orient);
 }
 
 Axis::Axis(const double *mat, SReal len)
 {
-    quadratic = NULL;
+    quadratic = nullptr;
     length = Vector3(len,len,len);
     update(mat);
 }
 
 Axis::~Axis()
 {
-    if (quadratic != NULL)
+    if (quadratic != nullptr)
         gluDeleteQuadric(quadratic);
 }
 
 Axis* Axis::get(const Vector3& len)
 {
     Axis*& a = axisMap[std::make_pair(std::make_pair((float)len[0],(float)len[1]),(float)len[2])];
-    if (a==NULL)
+    if (a==nullptr)
         a = new Axis(len);
     return a;
 }

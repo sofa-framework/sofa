@@ -77,7 +77,7 @@ public:
 
     // To simplify the template name in the xml file
     virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const DisplacementTransformEngine<DataTypes,OutputType>* = NULL) { return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name(); }
+    static std::string templateName(const DisplacementTransformEngine<DataTypes,OutputType>* = nullptr) { return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name(); }
 
 protected:
     helper::vector<OutputType> inverses;  ///< inverse initial positions
@@ -127,7 +127,7 @@ public:
 
     // To simplify the template name in the xml file
     virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = NULL) { return DataTypes::Name(); }
+    static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = nullptr) { return DataTypes::Name(); }
 
     // inputs
     Data< helper::vector< sofa::defaulttype::Vec<3,Real> > > d_scales; ///< scale matrices

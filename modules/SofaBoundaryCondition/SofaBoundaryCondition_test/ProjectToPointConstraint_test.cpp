@@ -209,7 +209,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     void TearDown()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
     }
 

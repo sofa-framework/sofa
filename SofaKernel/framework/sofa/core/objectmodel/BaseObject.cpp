@@ -43,7 +43,7 @@ BaseObject::BaseObject()
     , f_listening(initData( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
     , l_context(initLink("context","Graph Node containing this object (or BaseContext::getDefault() if no graph is used"))
     , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
-    , l_master(initLink("master","NULL for regular objects, or master object for which this object is one sub-objects"))
+    , l_master(initLink("master","nullptr for regular objects, or master object for which this object is one sub-objects"))
 {
     l_context.setValidator(&sofa::core::objectmodel::BaseObject::changeContextLink);
     l_context.set(BaseContext::getDefault());
@@ -53,14 +53,14 @@ BaseObject::BaseObject()
 
 BaseObject::~BaseObject()
 {
-    assert(l_master.get() == NULL); // an object that is still a slave should not be able to be deleted, as at least one smart pointer points to it
+    assert(l_master.get() == nullptr); // an object that is still a slave should not be able to be deleted, as at least one smart pointer points to it
     for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
     {
         (*iSlaves)->l_master.reset();
     }
 }
 
-// This method insures that context is never NULL (using BaseContext::getDefault() instead)
+// This method insures that context is never nullptr (using BaseContext::getDefault() instead)
 // and that all slaves of an object share its context
 void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 {

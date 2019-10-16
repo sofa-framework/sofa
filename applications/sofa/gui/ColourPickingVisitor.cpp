@@ -60,7 +60,7 @@ void decodeCollisionElement(const sofa::defaulttype::Vec4f colour,  sofa::compon
     }
     else
     {
-        body.body = NULL;
+        body.body = nullptr;
         body.indexCollisionElement= 0;
     }
 
@@ -96,11 +96,11 @@ simulation::Visitor::Result ColourPickingVisitor::processNodeTopDown(simulation:
 void ColourPickingVisitor::processCollisionModel(simulation::Node*  node , core::CollisionModel* o)
 {
     using namespace core::objectmodel;
-    TriangleModel* tmodel = NULL;
-    SphereModel*   smodel = NULL;
-    if((tmodel = dynamic_cast<TriangleModel*>(o)) != NULL )
+    TriangleModel* tmodel = nullptr;
+    SphereModel*   smodel = nullptr;
+    if((tmodel = dynamic_cast<TriangleModel*>(o)) != nullptr )
         processTriangleModel(node,tmodel);
-    if( (smodel = dynamic_cast<SphereModel*>(o) ) != NULL )
+    if( (smodel = dynamic_cast<SphereModel*>(o) ) != nullptr )
         processSphereModel(node,smodel);
 }
 

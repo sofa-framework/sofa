@@ -148,7 +148,7 @@ public:
 
     ObjectPtr createInstance(ArgumentRef arg)
     {
-        RealObject* instance = NULL;
+        RealObject* instance = nullptr;
         return RealObject::create(instance, arg);
     }
 

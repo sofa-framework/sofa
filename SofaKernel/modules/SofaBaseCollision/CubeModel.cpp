@@ -54,7 +54,7 @@ void CubeModel::resize(int size)
     if (size == size0) return;
     // reset parent
     CollisionModel* parent = getPrevious();
-    while(parent != NULL)
+    while(parent != nullptr)
     {
         parent->resize(0);
         parent = parent->getPrevious();
@@ -141,12 +141,12 @@ void CubeModel::updateCubes()
 
 void CubeModel::draw(const core::visual::VisualParams* vparams)
 {
-    if (!isActive() || !((getNext()==NULL)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
+    if (!isActive() || !((getNext()==nullptr)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
 
     int level=0;
     CollisionModel* m = getPrevious();
     float color = 1.0f;
-    while (m!=NULL)
+    while (m!=nullptr)
     {
         m = m->getPrevious();
         ++level;
@@ -195,7 +195,7 @@ void CubeModel::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->drawLines(points, 1, Vec<4,float>(c));
 
 
-    if (getPrevious()!=NULL)
+    if (getPrevious()!=nullptr)
         getPrevious()->draw(vparams);
 }
 
@@ -237,14 +237,14 @@ void CubeModel::computeBoundingTree(int maxDepth)
     for (int i=0; i<maxDepth; i++)
         levels.push_front(levels.front()->createPrevious<CubeModel>());
     CubeModel* root = levels.front();
-    //if (isStatic() && root->getPrevious() == NULL && !root->empty()) return; // No need to recompute BBox if immobile
+    //if (isStatic() && root->getPrevious() == nullptr && !root->empty()) return; // No need to recompute BBox if immobile
 
-    if (root->empty() || root->getPrevious() != NULL)
+    if (root->empty() || root->getPrevious() != nullptr)
     {
         // Tree must be reconstructed
         //sout << "Building Tree with depth "<<maxDepth<<" from "<<size<<" elements."<<sendl;
         // First remove extra levels
-        while(root->getPrevious()!=NULL)
+        while(root->getPrevious()!=nullptr)
         {
             core::CollisionModel::SPtr m = root->getPrevious();
             root->setPrevious(m->getPrevious());

@@ -124,7 +124,7 @@ public:
     void run ( unsigned char *data, const float isolevel,
             sofa::helper::vector< PointID > &triangles,
             sofa::helper::vector< Vector3>  &vertices,
-            helper::vector< helper::vector<unsigned int> > *triangleIndexInRegularGrid = NULL ) const;
+            helper::vector< helper::vector<unsigned int> > *triangleIndexInRegularGrid = nullptr ) const;
 
     /// Same as the previous function but the surfaces are constructed by propagating from seeds.
     /// Faster than previous but it need the precomputation of the seeds.
@@ -142,7 +142,7 @@ public:
             const float isolevel,
             sofa::helper::vector< PointID > &triangles,
             sofa::helper::vector< Vector3>  &vertices,
-            helper::vector< helper::vector<unsigned int> > *triangleIndexInRegularGrid = NULL,
+            helper::vector< helper::vector<unsigned int> > *triangleIndexInRegularGrid = nullptr,
             bool propagate = true ) const;
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
@@ -212,7 +212,7 @@ private:
             sofa::helper::vector< Vector3 >& vertices,
             std::set<Vec3i>& generatedCubes,
             std::map< Vector3, PointID>& map_vertices,
-            helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid = NULL,
+            helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid = nullptr,
             bool propagate = true ) const;
 
 private:

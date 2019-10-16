@@ -83,7 +83,7 @@ void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topo
     {
         sofa::component::misc::ReadTopology::SPtr rt;
         context->get(rt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
-        if (rt == NULL)
+        if (rt == nullptr)
         {
             rt = sofa::core::objectmodel::New<ReadTopology>();
             gnode->addObject(rt);

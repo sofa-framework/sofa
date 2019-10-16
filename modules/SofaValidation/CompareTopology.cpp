@@ -355,7 +355,7 @@ void CompareTopologyCreator::addCompareTopology(sofa::core::topology::BaseMeshTo
     if (createInMapping || mapping== nullptr)
     {
         sofa::component::misc::CompareTopology::SPtr ct; context->get(ct, core::objectmodel::BaseContext::Local);
-        if (  ct == NULL )
+        if (  ct == nullptr )
         {
             ct = sofa::core::objectmodel::New<sofa::component::misc::CompareTopology>(); gnode->addObject(ct);
         }

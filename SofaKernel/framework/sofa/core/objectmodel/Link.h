@@ -279,8 +279,8 @@ public:
     template<class TContext>
     static bool checkPath(const std::string& path, TContext* context)
     {
-        DestType* ptr = NULL;
-        return context->findLinkDest(ptr, path, NULL);
+        DestType* ptr = nullptr;
+        return context->findLinkDest(ptr, path, nullptr);
     }
 };
 
@@ -295,8 +295,8 @@ public:
     template<class TContext>
     static bool checkPath(const std::string& path, TContext* context)
     {
-        DestType* ptr = NULL;
-        return context->findDataLinkDest(ptr, path, NULL);
+        DestType* ptr = nullptr;
+        return context->findDataLinkDest(ptr, path, nullptr);
     }
 };
 
@@ -402,7 +402,7 @@ public:
     bool addPath(const std::string& path)
     {
         if (path.empty()) return false;
-        DestType* ptr = NULL;
+        DestType* ptr = nullptr;
         if (m_owner)
             TraitsFindDest::findLinkDest(m_owner, ptr, path, this);
         return add(ptr, path);
@@ -512,7 +512,7 @@ public:
         // Allows spaces in links values for single links
         if (!getFlag(BaseLink::FLAG_MULTILINK))
         {
-            DestType* ptr = NULL;
+            DestType* ptr = nullptr;
 
             if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, str, this))
             {
@@ -539,7 +539,7 @@ public:
             PairVector newList;
             while (istr >> path)
             {
-                DestType *ptr = NULL;
+                DestType *ptr = nullptr;
                 if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, path, this))
                 {
                     // This is not an error, as the destination can be added later in the graph
@@ -646,7 +646,7 @@ protected:
         if (index < m_value[aspect].size())
             return TraitsDestPtr::get(TraitsValueType::get(m_value[aspect][index]));
         else
-            return NULL;
+            return nullptr;
     }
 
     virtual void added(DestPtr ptr, unsigned int index) = 0;
@@ -677,12 +677,12 @@ public:
     typedef void (OwnerType::*ValidatorFn)(DestPtr v, unsigned int index, bool add);
 
     MultiLink(const BaseLink::InitLink<OwnerType>& init)
-        : Inherit(init), m_validator(NULL)
+        : Inherit(init), m_validator(nullptr)
     {
     }
 
     MultiLink(const BaseLink::InitLink<OwnerType>& init, DestPtr val)
-        : Inherit(init), m_validator(NULL)
+        : Inherit(init), m_validator(nullptr)
     {
         if (val) this->add(val);
     }
@@ -753,7 +753,7 @@ public:
         if (index < this->m_value[aspect].size())
             return TraitsDestPtr::get(TraitsValueType::get(this->m_value[aspect][index]));
         else
-            return NULL;
+            return nullptr;
     }
 
     DestType* operator[](unsigned int index) const

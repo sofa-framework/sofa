@@ -126,7 +126,7 @@ const CategoryLibrary *SofaLibrary::getCategory( const std::string &categoryName
         if ((*it)->getName().find(categoryName) != std::string::npos)
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 const ComponentLibrary *SofaLibrary::getComponent( const std::string &componentName ) const
@@ -141,7 +141,7 @@ const ComponentLibrary *SofaLibrary::getComponent( const std::string &componentN
             if (componentName == components[comp]->getName()) return components[comp];
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void SofaLibrary::clear()

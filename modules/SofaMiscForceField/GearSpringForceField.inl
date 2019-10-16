@@ -113,7 +113,7 @@ void GearSpringForceField<DataTypes>::init()
         {
             serr << "Error creating file "<<filename<<sendl;
             delete outfile;
-            outfile = NULL;
+            outfile = nullptr;
         }
     }
 

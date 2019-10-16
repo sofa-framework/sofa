@@ -87,7 +87,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const DevMonitor<TDataTypes>* = NULL)
+    static std::string templateName(const DevMonitor<TDataTypes>* = nullptr)
     {
         return TDataTypes::Name();
     }

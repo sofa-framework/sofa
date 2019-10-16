@@ -46,7 +46,7 @@ StateTester<DataTypes>::~StateTester()
 template <class DataTypes>
 bool StateTester<DataTypes>::canConvert(core::behavior::BaseMechanicalState* baseState)
 {
-    return dynamic_cast< core::behavior::MechanicalState<DataTypes>* >(baseState) != NULL;
+    return dynamic_cast< core::behavior::MechanicalState<DataTypes>* >(baseState) != nullptr;
 }
 
 template <class DataTypes>
@@ -328,7 +328,7 @@ void SleepController::addWakeupPair(std::vector<BaseContexts>& wakeupPairs, core
 
     context1 = getParentContextThatCanSleep(context1);
     context2 = getParentContextThatCanSleep(context2);
-    if (context1 == NULL || context2 == NULL)
+    if (context1 == nullptr || context2 == nullptr)
         return;
 
     BaseContexts::const_iterator contextsBegin = m_contextsThatCanSleep.begin();
@@ -395,7 +395,7 @@ GetStatesThatCanSleep::GetStatesThatCanSleep(const core::ExecParams* params, std
 
 void GetStatesThatCanSleep::processNodeBottomUp(simulation::Node* node)
 {
-    if (node->canChangeSleepingState() && node->mechanicalState != NULL)
+    if (node->canChangeSleepingState() && node->mechanicalState != nullptr)
         m_states.push_back(node->mechanicalState.get());
 }
 

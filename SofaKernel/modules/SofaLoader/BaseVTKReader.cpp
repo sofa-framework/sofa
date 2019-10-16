@@ -43,8 +43,8 @@ namespace basevtkreader
 {
 
 
-BaseVTKReader::BaseVTKReader(): inputPoints (NULL), inputNormals (NULL), inputPolygons(NULL), inputCells(NULL),
-    inputCellOffsets(NULL), inputCellTypes(NULL),
+BaseVTKReader::BaseVTKReader(): inputPoints (nullptr), inputNormals (nullptr), inputPolygons(nullptr), inputCells(nullptr),
+    inputCellOffsets(nullptr), inputCellTypes(nullptr),
     numberOfPoints(0), numberOfCells(0)
 {}
 
@@ -92,13 +92,13 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr)
     }
     else
     {
-        return NULL;
+        return nullptr;
     }
 }
 
 BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr, int num)
 {
-    BaseVTKDataIO* result = NULL;
+    BaseVTKDataIO* result = nullptr;
 
     if (num == 1)
     {
@@ -120,7 +120,7 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
                     result = new VTKDataIO<Vec<4, char> >;
                     break;
                 default:
-                    return NULL;
+                    return nullptr;
             }
         }
 
@@ -138,7 +138,7 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
                     result = new VTKDataIO<Vec<4, std::uint8_t> >;
                     break;
                 default:
-                    return NULL;
+                    return nullptr;
             }
         }
 
@@ -156,7 +156,7 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
                     result = new VTKDataIO<Vec<4, std::int16_t> >;
                     break;
                 default:
-                    return NULL;
+                    return nullptr;
             }
         }
 
@@ -174,7 +174,7 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
                     result = new VTKDataIO<Vec<4, std::uint16_t> >;
                     break;
                 default:
-                    return NULL;
+                    return nullptr;
             }
         }
 
@@ -192,7 +192,7 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
                     result = new VTKDataIO<Vec<4, std::int32_t> >;
                     break;
                 default:
-                    return NULL;
+                    return nullptr;
             }
         }
 
@@ -210,7 +210,7 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
                     result = new VTKDataIO<Vec<4, std::uint32_t> >;
                     break;
                 default:
-                    return NULL;
+                    return nullptr;
             }
         }
 
@@ -228,7 +228,7 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
                     result = new VTKDataIO<Vec<4, std::int64_t> >;
                     break;
                 default:
-                    return NULL;
+                    return nullptr;
             }
         }
 
@@ -246,7 +246,7 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
                     result = new VTKDataIO<Vec<4, std::uint64_t> >;
                     break;
                 default:
-                    return NULL;
+                    return nullptr;
             }
         }
 
@@ -264,7 +264,7 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
                     result = new VTKDataIO<Vec<4, float> >;
                     break;
                 default:
-                    return NULL;
+                    return nullptr;
             }
         }
         if (!strcasecmp(typestr.c_str(), "double") || !strcasecmp(typestr.c_str(), "Float64"))
@@ -281,7 +281,7 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
                     result = new VTKDataIO<Vec<4, double> >;
                     break;
                 default:
-                    return NULL;
+                    return nullptr;
             }
         }
     }

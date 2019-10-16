@@ -51,14 +51,14 @@ PickHandler::PickHandler(double defaultLength):
     interactorInUse(false),
     mouseStatus(DEACTIVATED),
     mouseButton(NONE),
-    mouseNode(NULL),
-    mouseContainer(NULL),
-    mouseCollision(NULL),
-    renderCallback(NULL),
+    mouseNode(nullptr),
+    mouseContainer(nullptr),
+    mouseCollision(nullptr),
+    renderCallback(nullptr),
     pickingMethod(RAY_CASTING),
     m_defaultLength(defaultLength)
 {
-    operations[LEFT] = operations[MIDDLE] = operations[RIGHT] = NULL;
+    operations[LEFT] = operations[MIDDLE] = operations[RIGHT] = nullptr;
 }
 
 
@@ -69,7 +69,7 @@ PickHandler::~PickHandler()
         if (operations[i])
         {
             delete operations[i];
-            operations[i] = NULL;
+            operations[i] = nullptr;
         }
     }
     if(mouseNode)
@@ -81,7 +81,7 @@ PickHandler::~PickHandler()
     std::vector< ComponentMouseInteraction *>::iterator it;
     for( it = instanceComponents.begin(); it != instanceComponents.end(); ++it)
     {
-        if(*it != NULL ) delete *it;
+        if(*it != nullptr ) delete *it;
     }
     instanceComponents.clear();
 
@@ -127,7 +127,7 @@ void PickHandler::init(core::objectmodel::BaseNode* root)
     const MouseFactory *factory = MouseFactory::getInstance();
     for (MouseFactory::const_iterator it = factory->begin(); it != factory->end(); ++it)
     {
-        instanceComponents.push_back(it->second->createInstance(NULL));
+        instanceComponents.push_back(it->second->createInstance(nullptr));
     }
     interaction = instanceComponents.back();
 
@@ -137,7 +137,7 @@ void PickHandler::init(core::objectmodel::BaseNode* root)
     core::collision::Pipeline *pipeline;
     root->getContext()->get(pipeline, core::objectmodel::BaseContext::SearchRoot);
 
-    useCollisions = (pipeline != NULL);
+    useCollisions = (pipeline != nullptr);
 }
 
 void PickHandler::reset()
@@ -157,7 +157,7 @@ void PickHandler::unload()
     std::vector< ComponentMouseInteraction *>::iterator it;
     for( it = instanceComponents.begin(); it != instanceComponents.end(); ++it)
     {
-        if(*it != NULL ) delete *it;
+        if(*it != nullptr ) delete *it;
     }
     instanceComponents.clear();
 
@@ -168,7 +168,7 @@ Operation *PickHandler::changeOperation(sofa::component::configurationsetting::M
     if (operations[setting->button.getValue().getSelectedId()])
     {
         delete operations[setting->button.getValue().getSelectedId()];
-        operations[setting->button.getValue().getSelectedId()] = NULL;
+        operations[setting->button.getValue().getSelectedId()] = nullptr;
     }
     Operation *mouseOp=OperationFactory::Instanciate(setting->getOperationType());
     mouseOp->configure(this,setting);
@@ -181,7 +181,7 @@ Operation *PickHandler::changeOperation(MOUSE_BUTTON button, const std::string &
     if (operations[button])
     {
         delete operations[button];
-        operations[button] = NULL;
+        operations[button] = nullptr;
     }
     Operation *mouseOp=OperationFactory::Instanciate(op);
     mouseOp->configure(this,button);
@@ -401,7 +401,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
 
                 const double d = (output[i]->point[1]-origin)*direction;
                 if (d<0.0 || d>maxLength) continue;
-                if (result.body == NULL || d < result.rayLength)
+                if (result.body == nullptr || d < result.rayLength)
                 {
                     result.body=modelInCollision;
                     result.indexCollisionElement = output[i]->elem.second.getIndex();
@@ -417,7 +417,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
 
                 const double d = (output[i]->point[0]-origin)*direction;
                 if (d<0.0 || d>maxLength) continue;
-                if (result.body == NULL || d < result.rayLength)
+                if (result.body == nullptr || d < result.rayLength)
                 {
                     result.body=modelInCollision;
                     result.indexCollisionElement = output[i]->elem.first.getIndex();

@@ -82,13 +82,13 @@ void TriangleCollisionModel<DataTypes>::init()
 
     // Check object pointer access
     bool modelsOk = true;
-    if (m_mstate == NULL)
+    if (m_mstate == nullptr)
     {
         msg_error() << "No MechanicalObject found. TriangleModel requires a Vec3 Mechanical Model in the same Node.";
         modelsOk = false;
     }
 
-    if (m_topology == NULL)
+    if (m_topology == nullptr)
     {
         msg_error() << "No Topology found. TriangleModel requires a Triangular Topology in the same Node.";
         modelsOk = false;
@@ -556,7 +556,7 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
 
         }
     }
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

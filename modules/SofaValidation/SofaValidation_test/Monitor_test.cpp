@@ -156,9 +156,9 @@ struct Monitor_test : public sofa::Sofa_test<>
         root->init(sofa::core::ExecParams::defaultInstance());
 
         std::string s = "/node/monitor";
-        Monitor<Rigid3Types>* ptr = NULL;
+        Monitor<Rigid3Types>* ptr = nullptr;
         ptr = root->get<Monitor<Rigid3Types> >(s);
-        EXPECT_FALSE(ptr == NULL);
+        EXPECT_FALSE(ptr == nullptr);
 
         monitor = reinterpret_cast<MonitorTest*>(ptr);
         EXPECT_FALSE(monitor == 0);

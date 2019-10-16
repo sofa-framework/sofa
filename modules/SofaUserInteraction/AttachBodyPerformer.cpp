@@ -53,7 +53,7 @@ static helper::Creator<InteractionPerformer::InteractionPerformerFactory, Attach
 template <>
 bool AttachBodyPerformer<defaulttype::Rigid3Types>::start_partial(const BodyPicked& picked)
 {
-    core::behavior::MechanicalState<defaulttype::Rigid3Types>* mstateCollision=NULL;
+    core::behavior::MechanicalState<defaulttype::Rigid3Types>* mstateCollision=nullptr;
 
     double restLength = picked.dist;
     mstateCollision = static_cast< core::behavior::MechanicalState<defaulttype::Rigid3Types>*  >(picked.mstate);

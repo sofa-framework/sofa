@@ -91,7 +91,7 @@ bool RegularGridTopology_test::regularGridSize(const std::vector<int>& p)
         }
         else
         {
-            EXPECT_EQ(regGrid->getDimensions(), Grid_dimension::GRID_NULL) ;
+            EXPECT_EQ(regGrid->getDimensions(), Grid_dimension::GRID_nullptr) ;
         }
     }
     EXPECT_EQ(regGrid->getNbHexahedra(), nbHexa);

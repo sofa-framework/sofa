@@ -75,7 +75,7 @@ void RayModel::init()
     this->CollisionModel::init();
 
     mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
-    if (mstate==NULL)
+    if (mstate==nullptr)
     {
         serr<<"RayModel requires a Vec3 Mechanical Model" << sendl;
         return;
@@ -123,7 +123,7 @@ void RayModel::draw(const core::visual::VisualParams* vparams)
             draw(vparams,i);
         }
     }
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
     {
         getPrevious()->draw(vparams);
     }

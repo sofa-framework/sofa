@@ -48,8 +48,8 @@ using sofa::core::objectmodel::ComponentState ;
 
 template<class DataTypes>
 TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
-    : _mesh(NULL)
-    , _indexedElements(NULL)
+    : _mesh(nullptr)
+    , _indexedElements(nullptr)
     , needUpdateTopology(false)
     , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
     , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR), \"polar\" or \"svd\" displacements"))
@@ -1322,7 +1322,7 @@ template <class DataTypes>
 TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
 {
     // Need to unaffect a vector to the pointer
-    if (_mesh == NULL && _indexedElements != NULL)
+    if (_mesh == nullptr && _indexedElements != nullptr)
         delete _indexedElements;
 }
 
@@ -1358,24 +1358,24 @@ void TetrahedronFEMForceField<DataTypes>::init()
     if(_mesh == nullptr)
         _mesh = this->getContext()->getMeshTopology();
 
-    if (_mesh==NULL)
+    if (_mesh==nullptr)
     {
         msg_error()     << " object must have a mesh topology. The component is inactivated.  "
                            "To remove this error message please add a topology component to your scene.";
 
         // Need to affect a vector to the pointer even if it is empty.
-        if (_indexedElements == NULL)
+        if (_indexedElements == nullptr)
             _indexedElements = new VecElement();
 
         return;
     }
-    if (_mesh==NULL || (_mesh->getNbTetrahedra()<=0 && _mesh->getNbHexahedra()<=0))
+    if (_mesh==nullptr || (_mesh->getNbTetrahedra()<=0 && _mesh->getNbHexahedra()<=0))
     {
         msg_error()     << " object must have a tetrahedric topology. The component is inactivated.  "
                            "To remove this error message please add a tetrahedric topology component to your scene.";
 
         // Need to affect a vector to the pointer even if it is empty.
-        if (_indexedElements == NULL)
+        if (_indexedElements == nullptr)
             _indexedElements = new VecElement();
 
         return;
@@ -1395,7 +1395,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         int ny = 1;
         {
             topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(_mesh);
-            if (grid != NULL)
+            if (grid != nullptr)
             {
                 nx = grid->getNx()-1;
                 ny = grid->getNy()-1;
@@ -1468,7 +1468,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
 
     if (!this->mstate || !_mesh){
         // Need to affect a vector to the pointer even if it is empty.
-        if (_indexedElements == NULL)
+        if (_indexedElements == nullptr)
             _indexedElements = new VecElement();
 
         return;

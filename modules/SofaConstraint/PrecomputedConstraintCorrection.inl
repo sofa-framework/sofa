@@ -69,8 +69,8 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
     , debugViewFrameScale(initData(&debugViewFrameScale, 1.0, "debugViewFrameScale", "Scale on computed node's frame"))
     , f_fileCompliance(initData(&f_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , fileDir(initData(&fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
-    , invM(NULL)
-    , appCompliance(NULL)
+    , invM(nullptr)
+    , appCompliance(nullptr)
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
 {
     this->addAlias(&f_fileCompliance, "filePrefix");
@@ -100,7 +100,7 @@ typename PrecomputedConstraintCorrection<DataTypes>::InverseStorage* Precomputed
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::releaseInverse(std::string name, InverseStorage* inv)
 {
-    if (inv == NULL) return;
+    if (inv == nullptr) return;
     std::map< std::string, InverseStorage >& registry = getInverseMap();
     if (--inv->nbref == 0)
     {
@@ -136,7 +136,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
     invM = getInverse(fileName);
     dimensionAppCompliance = nbRows;
 
-    if (invM->data == NULL)
+    if (invM->data == nullptr)
     {
         // Try to load from file
         msg_info() << "Try to load compliance from : " << fileName ;
@@ -248,7 +248,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         this->getContext()->get(cgLinearSolver);
         this->getContext()->get(linearSolver);
 
-        simulation::Node *solvernode = NULL;
+        simulation::Node *solvernode = nullptr;
 
         if (eulerSolver && cgLinearSolver)
         {
@@ -835,16 +835,16 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
 
     simulation::Node *node = dynamic_cast< simulation::Node* >(this->getContext());
 
-    TetrahedronFEMForceField< DataTypes >* forceField = NULL;
-    RotationFinder< DataTypes > * rotationFinder = NULL;
+    TetrahedronFEMForceField< DataTypes >* forceField = nullptr;
+    RotationFinder< DataTypes > * rotationFinder = nullptr;
 
-    if (node != NULL)
+    if (node != nullptr)
     {
         forceField = node->get< TetrahedronFEMForceField< DataTypes > > ();
-        if (forceField == NULL)
+        if (forceField == nullptr)
         {
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
-            if (rotationFinder == NULL)
+            if (rotationFinder == nullptr)
             {
                 msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
@@ -856,7 +856,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
     for (unsigned int i=0; i< x.size(); i++)
     {
         Transformation Ri;
-        if (forceField != NULL)
+        if (forceField != nullptr)
         {
             forceField->getRotation(Ri, i);
         }
@@ -896,16 +896,16 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
 
     simulation::Node *node = dynamic_cast< simulation::Node * >(this->getContext());
 
-    TetrahedronFEMForceField< DataTypes >* forceField = NULL;
-    RotationFinder< DataTypes >* rotationFinder = NULL;
+    TetrahedronFEMForceField< DataTypes >* forceField = nullptr;
+    RotationFinder< DataTypes >* rotationFinder = nullptr;
 
-    if (node != NULL)
+    if (node != nullptr)
     {
         forceField = node->get< TetrahedronFEMForceField< DataTypes > > ();
-        if (forceField == NULL)
+        if (forceField == nullptr)
         {
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
-            if (rotationFinder == NULL)
+            if (rotationFinder == nullptr)
             {
                 msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
@@ -931,7 +931,7 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
             const int localRowNodeIdx = colIt.index();
             Transformation Ri;
 
-            if (forceField != NULL)
+            if (forceField != nullptr)
             {
                 forceField->getRotation(Ri, localRowNodeIdx);
             }
@@ -960,16 +960,16 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 
     using sofa::core::behavior::RotationFinder;
 
-    sofa::component::forcefield::TetrahedronFEMForceField<DataTypes>* forceField = NULL;
-    RotationFinder< DataTypes >* rotationFinder = NULL;
+    sofa::component::forcefield::TetrahedronFEMForceField<DataTypes>* forceField = nullptr;
+    RotationFinder< DataTypes >* rotationFinder = nullptr;
 
-    if (node != NULL)
+    if (node != nullptr)
     {
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<DataTypes> > ();
-        if (forceField == NULL)
+        if (forceField == nullptr)
         {
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
-            if (rotationFinder == NULL)
+            if (rotationFinder == nullptr)
             {
                 msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
@@ -987,7 +987,7 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         Transformation Rj;
-        if (forceField != NULL)
+        if (forceField != nullptr)
         {
             forceField->getRotation(Rj, j);
         }

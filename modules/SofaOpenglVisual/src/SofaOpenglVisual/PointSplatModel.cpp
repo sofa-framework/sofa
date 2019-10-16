@@ -60,16 +60,16 @@ PointSplatModel::PointSplatModel() //const std::string &name, std::string filena
       textureSize(initData(&textureSize, 32, "textureSize", "Size of the billboard texture.")),
       alpha(initData(&alpha, 1.0f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
       color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=[1.0,1.0,1.0,1.0])")),
-      _topology(NULL),
-      _mstate(NULL),
-      texture_data(NULL),
+      _topology(nullptr),
+      _mstate(nullptr),
+      texture_data(nullptr),
       pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
 }
 
 PointSplatModel::~PointSplatModel()
 {
-    if(texture_data != NULL)
+    if(texture_data != nullptr)
         delete [] texture_data;
 }
 
@@ -110,7 +110,7 @@ void PointSplatModel::init()
 
 void PointSplatModel::reinit()
 {
-    if(texture_data != NULL)
+    if(texture_data != nullptr)
         delete [] texture_data;
 
     unsigned int texture_size = textureSize.getValue();

@@ -64,7 +64,7 @@ void initializeOnce()
     }
 }
 
-int BaseTest::seed = (unsigned int)time(NULL);
+int BaseTest::seed = (unsigned int)time(nullptr);
 
 BaseTest::BaseTest() :
    m_fatal(sofa::helper::logging::Message::Fatal, __FILE__, __LINE__ ),

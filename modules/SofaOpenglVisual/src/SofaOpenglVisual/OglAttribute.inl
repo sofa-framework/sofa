@@ -46,7 +46,7 @@ OglAttribute< size, type, DataTypes>::OglAttribute() :
     , handleDynamicTopology( initData(&handleDynamicTopology, true, "handleDynamicTopology",
         "Activate handling of topological changes on the values of this attribute (resizes only)"))
 {
-    _topology = NULL;
+    _topology = nullptr;
 }
 
 template < int size, unsigned int type, class DataTypes>
@@ -88,7 +88,7 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
     glBindBufferARB ( GL_ARRAY_BUFFER, _abo );
     glBufferDataARB ( GL_ARRAY_BUFFER,
             totalSize,
-            NULL,
+            nullptr,
             _usage );
     // Fill the buffer
     glBufferSubDataARB ( GL_ARRAY_BUFFER,
@@ -129,7 +129,7 @@ void OglAttribute< size, type, DataTypes>::updateVisual()
     {
         glBufferDataARB ( GL_ARRAY_BUFFER,
                 totalSize,
-                NULL,
+                nullptr,
                 _usage );
         _aboSize = totalSize;
     }
@@ -193,17 +193,17 @@ void OglAttribute< size, type, DataTypes>::enable()
     case GL_UNSIGNED_BYTE:
     case GL_SHORT:
     case GL_UNSIGNED_SHORT:
-        glVertexAttribIPointer(_index, size, type, 0, (char*)NULL + 0);
+        glVertexAttribIPointer(_index, size, type, 0, (char*)nullptr + 0);
         break;
     case GL_DOUBLE:
-        glVertexAttribLPointer(_index, size, type, 0, (char*)NULL + 0);
+        glVertexAttribLPointer(_index, size, type, 0, (char*)nullptr + 0);
         break;
     default:
-        glVertexAttribPointer(_index, size, type, GL_FALSE, 0, (char*)NULL + 0);
+        glVertexAttribPointer(_index, size, type, GL_FALSE, 0, (char*)nullptr + 0);
     }
 #else
 
-    glVertexAttribPointerARB(_index, size, type, GL_FALSE, 0, (char*)NULL + 0);
+    glVertexAttribPointerARB(_index, size, type, GL_FALSE, 0, (char*)nullptr + 0);
 
 #endif // __APPLE__
 

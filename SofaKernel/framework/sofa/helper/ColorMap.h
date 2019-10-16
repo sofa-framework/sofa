@@ -54,7 +54,7 @@ public:
     {
     public:
         evaluator()
-            : map(NULL), vmin(0), vmax(0), vscale(0)
+            : map(nullptr), vmin(0), vmax(0), vscale(0)
         {}
 
         evaluator(const ColorMap* map, Real vmin, Real vmax)

@@ -44,7 +44,7 @@ using namespace sofa::defaulttype;
 
 bool MeshTopologyLoader::addMeshtoTopology()
 {
-    if (m_mesh == NULL)
+    if (m_mesh == nullptr)
         return false;
 
     setNbPoints((int)m_mesh->getVertices().size());
@@ -81,7 +81,7 @@ bool MeshTopologyLoader::addMeshtoTopology()
 bool MeshTopologyLoader::loadObj(const char *filename)
 {
     m_mesh = helper::io::Mesh::Create(filename);
-    if (m_mesh ==NULL)
+    if (m_mesh ==nullptr)
         return false;
 
     setNbPoints((int)m_mesh->getVertices().size());

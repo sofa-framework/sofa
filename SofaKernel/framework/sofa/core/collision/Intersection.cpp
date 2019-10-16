@@ -92,7 +92,7 @@ ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::Coll
                 << gettypename(t2);
         ElementIntersector* i = it->second;
         if (!i)
-            tmp << "  NULL";
+            tmp << "  nullptr";
         else
             tmp << "  " << i->name();
         tmp << msgendl;
@@ -148,7 +148,7 @@ bool Intersection::isSupported(core::CollisionElementIterator elem1, core::Colli
 {
     bool swap;
     ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel(), swap);
-    return i != NULL;
+    return i != nullptr;
 }
 
 } // namespace collision

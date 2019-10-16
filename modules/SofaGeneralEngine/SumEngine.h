@@ -63,7 +63,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const SumEngine<TDataType>* = NULL)
+    static std::string templateName(const SumEngine<TDataType>* = nullptr)
     {
         return defaulttype::DataTypeInfo<TDataType>::name();
     }

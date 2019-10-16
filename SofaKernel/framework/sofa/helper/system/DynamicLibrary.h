@@ -77,7 +77,7 @@ public:
     ///
     /// @param handle The handle of a library.
     /// @param symbol The symbol to look for.
-    /// @return A pointer to the symbol if it was found, or NULL on error.
+    /// @return A pointer to the symbol if it was found, or nullptr on error.
     static void * getSymbolAddress(Handle handle, const std::string& symbol);
 
     /// @brief Get the message for the most recent error that occurred from load(), unload() or getSymbolAddress().

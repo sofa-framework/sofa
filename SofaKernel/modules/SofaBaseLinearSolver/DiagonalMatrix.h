@@ -403,7 +403,7 @@ public:
     Bloc* wbloc(Index i, Index j)
     {
         if (i != j)
-            return NULL;
+            return nullptr;
         else
             return wbloc(i);
     }

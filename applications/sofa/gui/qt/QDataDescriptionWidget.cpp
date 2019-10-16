@@ -141,7 +141,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
     std::vector<sofa::core::objectmodel::BaseData*> selecteddatum ;
     for(sofa::core::objectmodel::BaseData* datafield : object->getDataFields())
     {
-        if( !strcmp(datafield->getGroup(), "Infos" ) )
+        if( datafield->getGroup() == "Infos" )
             selecteddatum.push_back(datafield) ;
     }
 

@@ -89,9 +89,9 @@ void STLExporter::doReInit()
     // Test if the position has not been modified
     if(!d_position.isSet())
     {
-        BaseData* pos = NULL;
-        BaseData* tri = NULL;
-        BaseData* qua = NULL;
+        BaseData* pos = nullptr;
+        BaseData* tri = nullptr;
+        BaseData* qua = nullptr;
         if(m_inputvmodel)
         {
             pos = m_inputvmodel->findData("position");

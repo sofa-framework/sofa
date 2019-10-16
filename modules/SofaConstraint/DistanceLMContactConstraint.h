@@ -96,7 +96,7 @@ public:
     {
         return templateName(this);
     }
-    static std::string templateName(const DistanceLMContactConstraint<DataTypes>* = NULL)
+    static std::string templateName(const DistanceLMContactConstraint<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

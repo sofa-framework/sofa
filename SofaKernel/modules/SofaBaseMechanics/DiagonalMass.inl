@@ -57,7 +57,7 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "Display the center of gravity of the system" ) )
     , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
     , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
-    , m_pointHandler(NULL)
+    , m_pointHandler(nullptr)
     , m_topologyType(TOPOLOGY_UNKNOWN)
 {
     this->addAlias(&d_fileMass,"fileMass");

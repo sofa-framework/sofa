@@ -56,8 +56,8 @@ VoxelGridLoader::VoxelGridLoader()
       backgroundValue ( initData ( &backgroundValue, "bgValue", "Background values (to be ignored)" ) ),
       activeValue ( initData ( &activeValue, "dataValue", "Active data values" ) ),
       generateHexa( initData ( &generateHexa, true, "generateHexa", "Interpret voxel as either hexa or points")),
-      image(NULL),
-      segmentation(NULL),
+      image(nullptr),
+      segmentation(nullptr),
       bpp(8) // bits per pixel
 {
     addAlias(&m_filename,"segmentationFile");
@@ -67,13 +67,13 @@ VoxelGridLoader::~VoxelGridLoader()
 {
     clear();
 
-    if(image != NULL)
+    if(image != nullptr)
         delete image;
-    image = NULL;
+    image = nullptr;
 
-    if(segmentation != NULL)
+    if(segmentation != nullptr)
         delete segmentation;
-    segmentation = NULL;
+    segmentation = nullptr;
 }
 
 void VoxelGridLoader::init()
@@ -93,7 +93,7 @@ void VoxelGridLoader::init()
     if(ROI[2] > ROI[5]) ROI[5] = ROI[2];
     roi.endEdit();
 
-    if ( image == NULL )
+    if ( image == nullptr )
     {
         serr << "Error while loading the file " << m_filename.getValue() << this->sendl;
         return;
@@ -250,7 +250,7 @@ bool VoxelGridLoader::load ()
 
     image = loadImage(m_filename.getValue(), dataResolution.getValue(), headerSize.getValue());
 
-    if(image != NULL)
+    if(image != nullptr)
     {
         return true;
     }
@@ -260,7 +260,7 @@ bool VoxelGridLoader::load ()
 
 helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, const Vec3i& res, const int hsize ) const
 {
-    helper::io::Image* image = NULL;
+    helper::io::Image* image = nullptr;
 
     std::string _filename ( filename );
 
@@ -295,7 +295,7 @@ helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, con
         }
     }
 
-    if(image == NULL)
+    if(image == nullptr)
     {
         msg_warning("VoxelGridLoader") << "Unable to load file " <<  _filename ;
     }
@@ -380,7 +380,7 @@ unsigned char * VoxelGridLoader::getSegmentID()
     if( segmentation)
         return segmentation->getPixels();
     else
-        return NULL;
+        return nullptr;
 }
 
 
@@ -398,7 +398,7 @@ bool VoxelGridLoader::isActive(const unsigned int idx) const
     if(activeVal.empty() && bgVal.empty())
         return true;
 
-    helper::io::Image* img = (segmentation == NULL) ? image : segmentation;
+    helper::io::Image* img = (segmentation == nullptr) ? image : segmentation;
     const unsigned char value = img->getPixels()[idx];
 
     if(!activeVal.empty()) // active values were specified

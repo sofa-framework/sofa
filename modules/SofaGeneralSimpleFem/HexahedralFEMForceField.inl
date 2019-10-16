@@ -85,7 +85,7 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
     , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
     , hexahedronInfo(initData(&hexahedronInfo, "hexahedronInfo", "Internal hexahedron data"))
-    , hexahedronHandler(NULL)
+    , hexahedronHandler(nullptr)
 {
 
     _coef[0][0]= -1;		_coef[0][1]= -1;		_coef[0][2]= -1;
@@ -117,7 +117,7 @@ void HexahedralFEMForceField<DataTypes>::init()
 
     this->getContext()->get(_topology);
 
-    if (_topology==NULL)
+    if (_topology==nullptr)
     {
         serr << "ERROR(HexahedralFEMForceField): object must have a HexahedronSetTopology."<<sendl;
         return;

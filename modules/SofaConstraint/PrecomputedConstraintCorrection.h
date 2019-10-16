@@ -128,7 +128,7 @@ public:
     {
         Real* data;
         int nbref;
-        InverseStorage() : data(NULL), nbref(0) {}
+        InverseStorage() : data(nullptr), nbref(0) {}
     };
 
     std::string invName;
@@ -171,7 +171,7 @@ public:
             return invM->data;
         else
             serr<<"Inverse is not computed yet"<<sendl;
-        return NULL;
+        return nullptr;
     }
 
 protected:

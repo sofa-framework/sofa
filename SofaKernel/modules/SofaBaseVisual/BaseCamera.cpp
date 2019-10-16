@@ -335,7 +335,7 @@ BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
     this->getProjectionMatrix(projection);
 
     float fwinZ = 0.0;
-    vp->drawTool()->readPixels(x, int(winY), 1, 1, NULL, &fwinZ);
+    vp->drawTool()->readPixels(x, int(winY), 1, 1, nullptr, &fwinZ);
 
     double winZ = (double)fwinZ;
     glhUnProjectf<double>(winX, winY, winZ, modelview, projection, viewport, pos);
