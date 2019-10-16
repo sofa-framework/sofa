@@ -82,6 +82,8 @@ set(SOFAHAPI_DEPENDENCY_INCLUDE_DIR ${HAPI_INCLUDE_DIR}
 
 # endif()
 
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaHAPI/config.h")
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction SofaHaptics ${HAPI_LIBRARIES} ${H3DUTIL_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
