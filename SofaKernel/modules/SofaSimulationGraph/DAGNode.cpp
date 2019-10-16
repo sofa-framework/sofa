@@ -159,7 +159,7 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
             }
         }
         msg_error("Node::createChild()") << "Empty string given to property 'name': Forcefully setting an empty name is forbidden.\n"
-                                      "Renaming to " + newName + " to avoid unexpected behaviors.";
+                                        "Renaming to " + newName + " to avoid unexpected behaviors.";
         newchild = sofa::core::objectmodel::New<DAGNode>(newName);
     }
     else
@@ -229,29 +229,18 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         else dir = SearchDown; // we are the root, search down from here.
     }
     void *result = nullptr;
-#ifdef DEBUG_GETOBJECT
-    std::string cname = class_info.name();
-    if (cname != std::string("N4sofa4core6ShaderE"))
-        std::cout << "DAGNode: search for object of type " << class_info.name() ;
-    std::string gname = "N4sofa9component8topology32TetrahedronSetGeometryAlgorithms";
-    bool isg = cname.length() >= gname.length() && std::string(cname, 0, gname.length()) == gname;
-#endif
+
     if (dir != SearchParents)
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             core::objectmodel::BaseObject* obj = it->get();
             if (tags.empty() || (obj)->getTags().includes(tags))
             {
-#ifdef DEBUG_GETOBJECT
-                if (isg)
-                    std::cout << "DAGNode: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() ;
-#endif
+
                 result = class_info.dynamicCast(obj);
                 if (result != nullptr)
                 {
-#ifdef DEBUG_GETOBJECT
-                    std::cout << "DAGNode: found object " << (obj)->getName() << " of type " << (obj)->getClassName() ;
-#endif
+
                     break;
                 }
             }
@@ -261,26 +250,28 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     {
         switch(dir)
         {
-        case Local:
-            break;
-        case SearchParents:
-        case SearchUp:
-        {
-            const LinkParents::Container& parents = l_parents.getValue();
-            for ( unsigned int i = 0; i < parents.size() ; ++i)
-                result = parents[i]->getObject(class_info, tags, SearchUp);
-        }
-        break;
-        case SearchDown:
-            for(ChildIterator it = child.begin(); it != child.end(); ++it)
+            case Local:
+                break;
+            case SearchParents:
+            case SearchUp:
             {
-                result = (*it)->getObject(class_info, tags, dir);
-                if (result != nullptr) break;
+                const LinkParents::Container& parents = l_parents.getValue();
+                for ( unsigned int i = 0; i < parents.size() ; ++i){
+                    result = parents[i]->getObject(class_info, tags, SearchUp);
+                    if (result != nullptr) break;
+                }
             }
-            break;
-        case SearchRoot:
-            dmsg_error("DAGNode") << "SearchRoot SHOULD NOT BE POSSIBLE HERE.";
-            break;
+                break;
+            case SearchDown:
+                for(ChildIterator it = child.begin(); it != child.end(); ++it)
+                {
+                    result = (*it)->getObject(class_info, tags, dir);
+                    if (result != nullptr) break;
+                }
+                break;
+            case SearchRoot:
+                dmsg_error("DAGNode") << "SearchRoot SHOULD NOT BE POSSIBLE HERE.";
+                break;
         }
     }
 
@@ -401,7 +392,7 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
             GetUpObjectsVisitor vis( const_cast<DAGNode*>(this), class_info, container, tags);
             getRootContext()->executeVisitor(&vis);
         }
-        break;
+            break;
 
         case SearchDown:
         {
@@ -475,7 +466,7 @@ bool DAGNode::hasAncestor(const BaseContext* context) const
     const LinkParents::Container& parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; ++i)
         if (context == parents[i]->getContext()
-            || parents[i]->hasAncestor(context))
+                || parents[i]->hasAncestor(context))
             return true;
     return false;
 }
