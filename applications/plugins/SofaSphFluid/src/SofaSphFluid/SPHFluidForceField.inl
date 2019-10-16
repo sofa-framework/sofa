@@ -45,11 +45,11 @@ SPHFluidForceField<DataTypes>::SPHFluidForceField()
     , d_pressureStiffness (initData(&d_pressureStiffness, Real(100), "pressure", "Pressure"))
     , d_density0 (initData(&d_density0, Real(1), "density", "Density"))
     , d_viscosity (initData(&d_viscosity, Real(0.001f), "viscosity", "Viscosity"))
-    , d_surfaceTension (initData(&d_surfaceTension, Real(0), "d_surfaceTension", "Surface Tension"))
+    , d_surfaceTension (initData(&d_surfaceTension, Real(0), "surfaceTension", "Surface Tension"))
     , d_kernelType(initData(&d_kernelType, 0, "kernelType", "0 = default kernels, 1 = cubic spline"))
     , d_pressureType(initData(&d_pressureType, 1, "pressureType", "0 = none, 1 = default pressure"))
     , d_viscosityType(initData(&d_viscosityType, 1, "viscosityType", "0 = none, 1 = default d_viscosity using kernel Laplacian, 2 = artificial d_viscosity"))
-    , d_surfaceTensionType(initData(&d_surfaceTensionType, 1, "d_surfaceTensionType", "0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007"))
+    , d_surfaceTensionType(initData(&d_surfaceTensionType, 1, "surfaceTensionType", "0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007"))
     , d_debugGrid(initData(&d_debugGrid, false, "debugGrid", "If true will store additionnal information on the grid to check neighbors and draw them"))
     , m_grid(NULL)
 {
@@ -241,10 +241,10 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     const Real d0 = d_density0.getValue();
     const Real k = d_pressureStiffness.getValue();
     const Real time = (Real)this->getContext()->getTime();
-    const Real d_viscosity = this->d_viscosity.getValue();
-    const int d_viscosityT = (d_viscosity == 0) ? 0 : d_viscosityType.getValue();
-    const Real d_surfaceTension = this->d_surfaceTension.getValue();
-    const int d_surfaceTensionT = (d_surfaceTension <= 0) ? 0 : d_surfaceTensionType.getValue();
+    const Real viscosity = d_viscosity.getValue();
+    const int viscosityT = (viscosity == 0) ? 0 : d_viscosityType.getValue();
+    const Real surfaceTension = d_surfaceTension.getValue();
+    const int surfaceTensionT = (surfaceTension <= 0) ? 0 : d_surfaceTensionType.getValue();
     //const Real dt = (Real)this->getContext()->getDt();
     m_lastTime = time;
 
@@ -291,7 +291,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     }
 
     // Compute surface normal and curvature
-    if (d_surfaceTensionType == 1)
+    if (surfaceTensionT == 1)
     {
         for (int i=0; i<n; i++)
         {
@@ -329,12 +329,12 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
             Real pressureFV = ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
 
             // Viscosity
-            switch(d_viscosityT)
+            switch(viscosityT)
             {
             case 0: break;
             case 1:
             {
-                Deriv fd_viscosity = ( v[j] - v[i] ) * ( m2 * d_viscosity / (Pi.density * Pj.density) * Kv.laplacianW(r_h) );
+                Deriv fd_viscosity = ( v[j] - v[i] ) * ( m2 * viscosity / (Pi.density * Pj.density) * Kv.laplacianW(r_h) );
                 f[i] += fd_viscosity;
                 f[j] -= fd_viscosity;
                 break;
@@ -344,7 +344,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
                 Real vx = dot(v[i]-v[j],x[i]-x[j]);
                 if (vx < 0)
                 {
-                    pressureFV += (vx * d_viscosity * h * m / ((r_h*r_h + 0.01f*h2)*(Pi.density+Pj.density)*0.5f));
+                    pressureFV += (vx * viscosity * h * m / ((r_h*r_h + 0.01f*h2)*(Pi.density+Pj.density)*0.5f));
                 }
                 break;
             }
@@ -358,7 +358,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
 
         }
 
-        switch(d_surfaceTensionT)
+        switch(surfaceTensionT)
         {
         case 0: break;
         case 1:
@@ -366,7 +366,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
             Real n = Pi.normal.norm();
             if (n > 0.000001)
             {
-                Deriv fsurface = Pi.normal * ( - m * d_surfaceTension * Pi.curvature / n );
+                Deriv fsurface = Pi.normal * ( - m * surfaceTension * Pi.curvature / n );
                 f[i] += fsurface;
             }
             break;
