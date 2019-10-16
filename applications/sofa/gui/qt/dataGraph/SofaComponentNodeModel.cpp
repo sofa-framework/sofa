@@ -173,10 +173,41 @@ NodeDataType SofaComponentNodeModel::dataType(PortType portType, PortIndex portI
 
 std::shared_ptr<NodeData> SofaComponentNodeModel::outData(PortIndex port)
 {
-    return std::make_shared<SofaComponentNodeData>();
+    // because the first port is the name of the component not stored in m_Nodedata:
+    port--;
+
+    if (port>0 && port < m_Nodedata.size())
+        return m_Nodedata[port];
+    else {
+        msg_warning(m_caption.toStdString()) << "Method SofaComponentNodeModel::outData port: " << port << " out of bounds: " << m_Nodedata.size();
+        return nullptr;
+    }
 }
 
-void SofaComponentNodeModel::setInData(std::shared_ptr<NodeData>, int)
+void SofaComponentNodeModel::setInData(std::shared_ptr<NodeData> data, int port)
 {
-    msg_warning("SofaComponentNodeModel") << "Method SofaComponentNodeModel::setInData not yet implemented";
+    auto parentNodeData = std::dynamic_pointer_cast<SofaComponentNodeData>(data);
+    if (parentNodeData == nullptr)
+    {
+        msg_warning(m_caption.toStdString()) << "Method SofaComponentNodeModel::setInData SofaComponentNodeData cast failed.";
+        return;
+    }
+
+    // because the first port is the name of the component not stored in m_Nodedata:
+    port--;
+
+    if (port < 0 || port >= m_Nodedata.size())
+    {
+        msg_warning(m_caption.toStdString()) << "Method SofaComponentNodeModel::setInData port: "<< port << " out of bounds: " << m_Nodedata.size();
+        return;
+    }
+
+    // here you will implement the Data setParent in SOFA!
+    std::shared_ptr<SofaComponentNodeData> childNodeData = this->m_Nodedata[port];
+    sofa::core::objectmodel::BaseData* childData = childNodeData->getData();
+    sofa::core::objectmodel::BaseData* parentData = parentNodeData->getData();
+
+    msg_info_when(debugNodeGraph, m_caption.toStdString()) << "Here connect: {" << parentData->getOwner()->getName() << ", " << parentData->getName() << "} -> {"
+        << childData->getOwner()->getName() << ", " << childData->getName() << "}";
+    
 }

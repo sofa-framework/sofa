@@ -82,8 +82,7 @@ public:
 
     /// Return the PortIndex of a Data given its Name.
     QtNodes::PortIndex getDataInputId(const QString& dataName);
-
-    
+   
     ///Interface for QtNodes
     ///{
     /// Override method to return the number of ports
@@ -96,7 +95,7 @@ public:
     std::shared_ptr<NodeData> outData(PortIndex port) override;
 
     /// Override method to set input Data
-    void setInData(std::shared_ptr<NodeData>, int) override;
+    void setInData(std::shared_ptr<NodeData> data, int port) override;
 
     /// Override method for more advance node gui. Not yet used.
     QWidget * embeddedWidget() override { return nullptr; }
