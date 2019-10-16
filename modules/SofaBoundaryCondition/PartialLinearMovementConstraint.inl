@@ -62,7 +62,7 @@ void PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFun
 
 template <class DataTypes>
 PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , data(new PartialLinearMovementConstraintInternalData<DataTypes>)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )

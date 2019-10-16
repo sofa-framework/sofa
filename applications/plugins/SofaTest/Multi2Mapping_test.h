@@ -123,7 +123,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
 
     virtual ~Multi2Mapping_test()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
     }
 
@@ -318,7 +318,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         SparseJMatrixEigen1* J1 = dynamic_cast<SparseJMatrixEigen1*>((*J)[0]);
         SparseJMatrixEigen2* J2 = dynamic_cast<SparseJMatrixEigen2*>((*J)[1]);
         OutVecDeriv Jv(Nc);
-        assert(J1 != NULL && J2 != NULL);
+        assert(J1 != nullptr && J2 != nullptr);
         J1->addMult(Jv, vIn1p[0]);
         J2->addMult(Jv, vIn2p[0]);
 

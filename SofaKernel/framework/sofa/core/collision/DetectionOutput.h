@@ -101,8 +101,8 @@ public:
     /// If using a continuous collision detection, estimated of time of contact.
     double deltaT;
     DetectionOutput()
-        : elem( (sofa::core::CollisionModel* )NULL,
-                (sofa::core::CollisionModel* ) NULL), id(0), value(0.0), deltaT(0.0)
+        : elem( (sofa::core::CollisionModel* )nullptr,
+                (sofa::core::CollisionModel* ) nullptr), id(0), value(0.0), deltaT(0.0)
     {
     }
 };

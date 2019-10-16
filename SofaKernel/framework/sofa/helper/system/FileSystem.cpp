@@ -110,7 +110,7 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
     return errorOccured;
 #else
     DIR *dp = opendir(directoryPath.c_str());
-    if (dp == NULL) {
+    if (dp == nullptr) {
         msg_error("FileSystem::listDirectory()") << directoryPath << ": " << strerror(errno);
         return true;
     }
@@ -130,7 +130,7 @@ bool FileSystem::createDirectory(const std::string& path)
 {
     std::string error;
 #ifdef WIN32
-    if (CreateDirectory(Utils::widenString(path).c_str(), NULL) == 0)
+    if (CreateDirectory(Utils::widenString(path).c_str(), nullptr) == 0)
     {
         DWORD errorCode = ::GetLastError();
         msg_error("FileSystem::createdirectory()") << path << ": " << Utils::GetLastError();

@@ -219,7 +219,7 @@ bool QuadSetTopology_test::testEdgeBuffers()
 
             if (found == false)
             {
-                if (scene != NULL)
+                if (scene != nullptr)
                     delete scene;
                 return false;
             }

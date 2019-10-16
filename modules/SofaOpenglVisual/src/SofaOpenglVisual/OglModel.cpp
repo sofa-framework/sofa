@@ -44,7 +44,7 @@ namespace visualmodel
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
-static int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
+int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
     .add< sofa::component::visualmodel::OglModel >();
 
 template<class T>

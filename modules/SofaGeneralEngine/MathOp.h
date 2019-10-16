@@ -72,7 +72,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const MathOp<VecT>* = NULL)
+    static std::string templateName(const MathOp<VecT>* = nullptr)
     {
         return Data<Value>::templateName();
     }

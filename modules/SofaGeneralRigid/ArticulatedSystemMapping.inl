@@ -42,8 +42,8 @@ namespace mapping
 
 template <class TIn, class TInRoot, class TOut>
 ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping ()
-    : ahc(NULL)
-    , m_fromModel(NULL), m_toModel(NULL), m_fromRootModel(NULL)
+    : ahc(nullptr)
+    , m_fromModel(nullptr), m_toModel(nullptr), m_fromRootModel(nullptr)
 {
 
 }
@@ -91,7 +91,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     helper::WriteAccessor<Data<OutVecCoord> > xtoData = *m_toModel->write(core::VecCoordId::position());
     apply(xtoData.wref(),
             xfrom,
-            m_fromRootModel == NULL ? NULL : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue());
+            m_fromRootModel == nullptr ? nullptr : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue());
     Inherit::init();
     /*
     OutVecDeriv& vto = m_toModel->read(core::ConstVecDerivId::velocity())->getValue();

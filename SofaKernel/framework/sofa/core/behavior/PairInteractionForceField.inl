@@ -59,7 +59,7 @@ void PairInteractionForceField<DataTypes>::init()
 
     BaseInteractionForceField::init();
 
-    if (mstate1.get() == NULL || mstate2.get() == NULL)
+    if (mstate1.get() == nullptr || mstate2.get() == nullptr)
     {
         serr<< "Init of PairInteractionForceField " << getContext()->getName() << " failed!" << sendl;
         //getContext()->removeObject(this);

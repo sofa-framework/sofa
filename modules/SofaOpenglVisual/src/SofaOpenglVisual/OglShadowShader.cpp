@@ -48,7 +48,7 @@ namespace visualmodel
 
 
 //Register OglShader in the Object Factory
-static int OglShadowShaderClass = core::RegisterObject("This component sets the shader system responsible of the shadowing.")
+int OglShadowShaderClass = core::RegisterObject("This component sets the shader system responsible of the shadowing.")
         .add< OglShadowShader >()
         ;
 

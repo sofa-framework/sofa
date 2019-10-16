@@ -34,11 +34,11 @@ namespace collision
 //using namespace core::behavior;
 
 Pipeline::Pipeline()
-    : intersectionMethod(NULL),
-      broadPhaseDetection(NULL),
-      narrowPhaseDetection(NULL),
-      contactManager(NULL),
-      groupManager(NULL)
+    : intersectionMethod(nullptr),
+      broadPhaseDetection(nullptr),
+      narrowPhaseDetection(nullptr),
+      contactManager(nullptr),
+      groupManager(nullptr)
 {
 }
 
@@ -63,24 +63,24 @@ const NarrowPhaseDetection *Pipeline::getNarrowPhaseDetection() const
 void Pipeline::init()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
-    if(root == NULL) return;
+    if(root == nullptr) return;
     intersectionMethods.clear();
     root->getTreeObjects<Intersection>(&intersectionMethods);
-    intersectionMethod = (intersectionMethods.empty() ? NULL : intersectionMethods[0]);
+    intersectionMethod = (intersectionMethods.empty() ? nullptr : intersectionMethods[0]);
     broadPhaseDetections.clear();
     root->getTreeObjects<BroadPhaseDetection>(&broadPhaseDetections);
-    broadPhaseDetection = (broadPhaseDetections.empty() ? NULL : broadPhaseDetections[0]);
+    broadPhaseDetection = (broadPhaseDetections.empty() ? nullptr : broadPhaseDetections[0]);
     narrowPhaseDetections.clear();
     root->getTreeObjects<NarrowPhaseDetection>(&narrowPhaseDetections);
-    narrowPhaseDetection = (narrowPhaseDetections.empty() ? NULL : narrowPhaseDetections[0]);
+    narrowPhaseDetection = (narrowPhaseDetections.empty() ? nullptr : narrowPhaseDetections[0]);
     contactManagers.clear();
     root->getTreeObjects<ContactManager>(&contactManagers);
-    contactManager = (contactManagers.empty() ? NULL : contactManagers[0]);
+    contactManager = (contactManagers.empty() ? nullptr : contactManagers[0]);
     groupManagers.clear();
     root->getTreeObjects<CollisionGroupManager>(&groupManagers);
-    groupManager = (groupManagers.empty() ? NULL : groupManagers[0]);
+    groupManager = (groupManagers.empty() ? nullptr : groupManagers[0]);
 
-    if (intersectionMethod==NULL)
+    if (intersectionMethod==nullptr)
         intersectionMethod = new sofa::component::collision::DiscreteIntersection;
 }
 
@@ -92,12 +92,12 @@ void Pipeline::reset()
 void Pipeline::computeCollisionReset()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
-    if(root == NULL) return;
-    if (broadPhaseDetection!=NULL && broadPhaseDetection->getIntersectionMethod()!=intersectionMethod)
+    if(root == nullptr) return;
+    if (broadPhaseDetection!=nullptr && broadPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         broadPhaseDetection->setIntersectionMethod(intersectionMethod);
-    if (narrowPhaseDetection!=NULL && narrowPhaseDetection->getIntersectionMethod()!=intersectionMethod)
+    if (narrowPhaseDetection!=nullptr && narrowPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         narrowPhaseDetection->setIntersectionMethod(intersectionMethod);
-    if (contactManager!=NULL && contactManager->getIntersectionMethod()!=intersectionMethod)
+    if (contactManager!=nullptr && contactManager->getIntersectionMethod()!=intersectionMethod)
         contactManager->setIntersectionMethod(intersectionMethod);
     doCollisionReset();
 }
@@ -105,7 +105,7 @@ void Pipeline::computeCollisionReset()
 void Pipeline::computeCollisionDetection()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
-    if(root == NULL) return;
+    if(root == nullptr) return;
     sofa::helper::vector<CollisionModel*> collisionModels;
     root->getTreeObjects<CollisionModel>(&collisionModels);
     doCollisionDetection(collisionModels);
@@ -114,7 +114,7 @@ void Pipeline::computeCollisionDetection()
 void Pipeline::computeCollisionResponse()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
-    if(root == NULL) return;
+    if(root == nullptr) return;
     doCollisionResponse();
 }
 

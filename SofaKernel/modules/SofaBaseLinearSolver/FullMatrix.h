@@ -84,7 +84,7 @@ protected:
 public:
 
     FullMatrix()
-        : data(NULL), nRow(0), nCol(0), pitch(0), allocsize(0)
+        : data(nullptr), nRow(0), nCol(0), pitch(0), allocsize(0)
     {
     }
 
@@ -425,7 +425,7 @@ protected:
     Index lallocsize;
 public:
     LPtrFullMatrix()
-        : ldata(NULL), lallocsize(0)
+        : ldata(nullptr), lallocsize(0)
     {
     }
 

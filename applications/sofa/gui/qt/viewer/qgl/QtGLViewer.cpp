@@ -103,7 +103,7 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
     m_backend.reset(new GLBackend());
     pick = new GLPickHandler();
 
-    groot = NULL;
+    groot = nullptr;
     initTexturesDone = false;
 
     backgroundColour[0]=1.0f;

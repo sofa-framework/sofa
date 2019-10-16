@@ -120,7 +120,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
-        /*if (getOdeSolver(context) == NULL)
+        /*if (getOdeSolver(context) == nullptr)
             return false;
         */
         return Inherit::canCreate(obj, context, arg);

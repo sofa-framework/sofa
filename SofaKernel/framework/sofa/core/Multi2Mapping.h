@@ -223,7 +223,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const Multi2Mapping<TIn1,TIn2, TOut>* = NULL);
+    static std::string templateName(const Multi2Mapping<TIn1,TIn2, TOut>* = nullptr);
 
     /// Pre-construction check method called by ObjectFactory.
     ///

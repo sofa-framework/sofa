@@ -198,7 +198,7 @@ void VectorSpringForceField<DataTypes>::bwdInit()
             return;
         }
 
-        if (_topology != NULL)
+        if (_topology != nullptr)
         {
             // create springs based on the mesh topology
             useTopology = true;

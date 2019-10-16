@@ -39,7 +39,7 @@ namespace topology
 
 enum class Grid_dimension
 {
-    GRID_NULL = 0,
+    GRID_nullptr = 0,
     GRID_1D,
     GRID_2D,
     GRID_3D

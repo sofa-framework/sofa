@@ -94,12 +94,8 @@ sofa_generate_package(
     )
 
 # Tests
-find_package(SofaTest QUIET)
-if (NOT SofaTest_FOUND)
-    message(STATUS "- SofaTest not found. SofaOpenglVisual_test will not be built." )
-    return()
-endif()
-
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAOPENGLVISUAL_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
 if(SOFAOPENGLVISUAL_BUILD_TESTS)
     enable_testing()
     add_subdirectory(SofaOpenglVisual_test)

@@ -181,6 +181,13 @@ void LCPForceFeedback<DataTypes>::init()
     }
 }
 
+template <class DataTypes>
+void LCPForceFeedback<DataTypes>::setLock(bool value)
+{
+    value == true ? lockForce.lock() : lockForce.unlock();
+}
+
+
 static std::mutex s_mtx;
 
 template <class DataTypes>
@@ -191,8 +198,11 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
         return;
     }
     updateStats();
+    
+    lockForce.lock(); // check if computation has not been locked using setLock method.
     updateConstraintProblem();
-    doComputeForce(state, forces);
+    doComputeForce(state, forces);    
+    lockForce.unlock();
 }
 template <class DataTypes>
 void LCPForceFeedback<DataTypes>::updateStats()

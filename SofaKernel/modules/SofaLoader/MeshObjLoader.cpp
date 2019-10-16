@@ -46,9 +46,9 @@ int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file
 
 MeshObjLoader::MeshObjLoader()
     : MeshLoader()
+    , faceType(MeshObjLoader::TRIANGLE)
     , d_handleSeams(initData(&d_handleSeams, (bool)false, "handleSeams", "Preserve UV and normal seams information (vertices with multiple UV and/or normals)"))
     , d_loadMaterial(initData(&d_loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))
-    , faceType(MeshObjLoader::TRIANGLE)
     , d_material(initData(&d_material,"defaultMaterial","Default material") )
     , d_materials(initData(&d_materials,"materials","List of materials") )
     , d_faceList(initData(&d_faceList,"faceList","List of face definitions.") )
@@ -640,7 +640,7 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
     const char *double_string_format = "%127s %127s"; // Better than "%s %s"
 
     file = fopen(filename, "r");
-    Material *mat = NULL;
+    Material *mat = nullptr;
     if (!file);//serr << "readMTL() failed: can't open material file " << filename << sendl;
     else
     {
@@ -653,7 +653,7 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
             case '#':
                 /* comment */
                 /* eat up rest of line */
-                if ( fgets(buf, sizeof(buf), file) == NULL)
+                if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
 					if (feof(file))
 						msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case #.";
@@ -663,14 +663,14 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                 break;
             case 'n':
                 /* newmtl */
-                if (mat != NULL)
+                if (mat != nullptr)
                 {
                     materials.push_back(*mat);
                     delete mat;
-                    mat = NULL;
+                    mat = nullptr;
                 }
                 mat = new Material();
-                if ( fgets(buf, sizeof(buf), file) == NULL)
+                if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) )
                         msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case n.";
@@ -698,7 +698,7 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                     break;
                 default:
                     /* eat up rest of line */
-                    if ( fgets(buf, sizeof(buf), file) == NULL)
+                    if ( fgets(buf, sizeof(buf), file) == nullptr)
                     {
                         if (feof (file) )
                             msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case N.";
@@ -728,7 +728,7 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                     break;
                 default:
                     /* eat up rest of line */
-                    if ( fgets(buf, sizeof(buf), file) == NULL)
+                    if ( fgets(buf, sizeof(buf), file) == nullptr)
                     {
                         if (feof (file) )
                             msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case K.";
@@ -759,7 +759,7 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
 				}
 				//texture map
 				char charFilename[128] = { 0 };
-				if (fgets(charFilename, sizeof(charFilename), file) == NULL)
+				if (fgets(charFilename, sizeof(charFilename), file) == nullptr)
 				{
 					msg_error("MeshOBJ") << "fgets has encountered an error";
 				}
@@ -787,7 +787,7 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
 				}
 				//bump mapping texture map
 				char charFilename[128] = { 0 };
-				if (fgets(charFilename, sizeof(charFilename), file) == NULL)
+				if (fgets(charFilename, sizeof(charFilename), file) == nullptr)
 				{
 					msg_error("MeshOBJ") << "fgets has encountered an error";
 				}
@@ -808,7 +808,7 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
 			}
             default:
                 /* eat up rest of line */
-                if ( fgets(buf, sizeof(buf), file) == NULL)
+                if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) )
                         msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case default.";
@@ -821,11 +821,11 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
         }
         fclose(file);
     }
-    if (mat != NULL)
+    if (mat != nullptr)
     {
         materials.push_back(*mat);
         delete mat;
-        mat = NULL;
+        mat = nullptr;
     }
 
     return true;

@@ -65,6 +65,9 @@ SOFA_HELPER_API bool starts_with(const std::string& prefix, const std::string& f
 ///@brief returns true if the suffix if located at the end of the "full" string.
 SOFA_HELPER_API bool ends_with(const std::string& suffix, const std::string& full);
 
+///@brief converts a char* string into a c++ string. The special case with nullptr is coerced to an empty string.
+SOFA_HELPER_API std::string safeCharToString(const char* c);
+
 } // namespace helper
 
 } // namespace sofa

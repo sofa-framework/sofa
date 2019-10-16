@@ -92,9 +92,9 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
 {
     loadSucceed = true;
 
-    if ( xml==NULL )
+    if ( xml==nullptr )
     {
-        return NULL;
+        return nullptr;
     }
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
@@ -107,7 +107,7 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
     sofa::simulation::xml::NodeElement* nodeElt = dynamic_cast<sofa::simulation::xml::NodeElement *>(xml);
-    if( nodeElt==NULL )
+    if( nodeElt==nullptr )
     {
         msg_fatal_withfile("SceneLoaderXML", xml->getSrcFile(), xml->getSrcLine()) << "XML Root Node is not an Element. \n" ;
         loadSucceed = false;
@@ -120,11 +120,11 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     }
 
     core::objectmodel::BaseNode* baseroot = xml->getObject()->toBaseNode();
-    if ( baseroot == NULL )
+    if ( baseroot == nullptr )
     {
         msg_error_withfile("SceneLoaderXML", xml->getSrcFile(), xml->getSrcLine()) << "Objects initialization failed." ;
         loadSucceed = false;
-        return NULL;
+        return nullptr;
     }
 
     Node::SPtr root = down_cast<Node> ( baseroot );

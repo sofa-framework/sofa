@@ -6,6 +6,7 @@ find_package(SofaComponentBase REQUIRED)
 
 set(SOURCE_FILES
     core/TrackedData_test.cpp
+    core/objectmodel/Base_test.cpp
     core/objectmodel/BaseContext_test.cpp
     defaulttype/TemplateAliases_test.cpp
     helper/AdvancedTimer_test.cpp

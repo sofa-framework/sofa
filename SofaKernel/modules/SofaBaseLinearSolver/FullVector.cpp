@@ -33,7 +33,7 @@ namespace linearsolver
 {
 /*
 template<> FullVector<bool>::FullVector()
-: data(NULL), cursize(0), allocsize(0)
+: data(nullptr), cursize(0), allocsize(0)
 {
 }
 */

@@ -111,11 +111,11 @@ public:
     typedef QHBoxLayout Layout;
     Widget* w;
     Layout* container_layout;
-    data_widget_container() : w(NULL),container_layout(NULL) {  }
+    data_widget_container() : w(nullptr),container_layout(nullptr) {  }
 
     bool createLayout(DataWidget* parent)
     {
-        if(parent->layout() != NULL) return false;
+        if(parent->layout() != nullptr) return false;
         container_layout = new QHBoxLayout(parent);
         //parent->setLayout(container_layout);
         return true;
@@ -132,7 +132,7 @@ public:
     bool createWidgets(DataWidget* parent, const data_type& d, bool readOnly)
     {
         w = helper::create(parent,d);
-        if (w == NULL) return false;
+        if (w == nullptr) return false;
 
         helper::readFromData(w, d);
         if (readOnly)
@@ -405,15 +405,15 @@ public:
     enum { SIZE = 1 };
     /// Get the number of rows
     static int size(const data_type&) { return SIZE; }
-    /// Get the name of a row, or NULL if the index should be used instead
+    /// Get the name of a row, or nullptr if the index should be used instead
     static const char* header(const data_type& /*d*/, int /*i*/ = 0)
     {
-        return NULL;
+        return nullptr;
     }
     /// Get a row
     static const value_type* get(const data_type& d, int i = 0)
     {
-        return (i == 0) ? &d : NULL;
+        return (i == 0) ? &d : nullptr;
     }
     /// Set a row
     static void set( const value_type& v, data_type& d, int i = 0)
@@ -440,11 +440,11 @@ public:
     Container w[N];
     Layout* container_layout;
 
-    fixed_vector_data_widget_container():container_layout(NULL) {}
+    fixed_vector_data_widget_container():container_layout(nullptr) {}
 
     bool createLayout(DataWidget* parent)
     {
-        if(parent->layout() != NULL) return false;
+        if(parent->layout() != nullptr) return false;
         container_layout = new QHBoxLayout(parent);
         return true;
     }
@@ -490,7 +490,7 @@ public:
     {
         for (int i=0; i<N; ++i)
         {
-            assert(w[i].w != NULL);
+            assert(w[i].w != nullptr);
             container_layout->addWidget(w[i].w);
         }
     }
@@ -511,17 +511,17 @@ public:
     typedef QGridLayout Layout;
     Container w[L][C];
     Layout* container_layout;
-    fixed_grid_data_widget_container():container_layout(NULL) {}
+    fixed_grid_data_widget_container():container_layout(nullptr) {}
 
     bool createLayout(QWidget* parent)
     {
-        if( parent->layout() != NULL ) return false;
+        if( parent->layout() != nullptr ) return false;
         container_layout = new Layout(parent /*,L,C */);
         return true;
     }
     bool createLayout(QLayout* layout)
     {
-        if(container_layout != NULL ) return false;
+        if(container_layout != nullptr ) return false;
         container_layout = new Layout( /*,L,C */);
         layout->addItem(container_layout);
         return true;
@@ -590,11 +590,11 @@ public:
     static int size(const data_type&) { return SIZE; }
     static const char* header(const data_type& /*d*/, int /*i*/ = 0)
     {
-        return NULL;
+        return nullptr;
     }
     static const value_type* get(const data_type& d, int i = 0)
     {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
     static void set( const value_type& v, data_type& d, int i = 0)
     {
@@ -681,11 +681,11 @@ public:
     static int size(const data_type&) { return SIZE; }
     static const char* header(const data_type& /*d*/, int /*i*/ = 0)
     {
-        return NULL;
+        return nullptr;
     }
     static const value_type* get(const data_type& d, int i = 0)
     {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
     static void set( const value_type& v, data_type& d, int i = 0)
     {
@@ -705,7 +705,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::heade
     case 0: return "X";
     case 1: return "Y";
     }
-    return NULL;
+    return nullptr;
 }
 
 template<>
@@ -716,7 +716,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::head
     case 0: return "X";
     case 1: return "Y";
     }
-    return NULL;
+    return nullptr;
 }
 
 template<>
@@ -728,7 +728,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::heade
     case 1: return "Y";
     case 2: return "Z";
     }
-    return NULL;
+    return nullptr;
 }
 
 template<>
@@ -740,7 +740,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<3, double> >::head
     case 1: return "Y";
     case 2: return "Z";
     }
-    return NULL;
+    return nullptr;
 }
 
 template<int N, class T>
@@ -769,11 +769,11 @@ public:
         case 2: return "qZ";
         case 3: return "qW";
         }
-        return NULL;
+        return nullptr;
     }
     static const value_type* get(const data_type& d, int i = 0)
     {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
     static void set( const value_type& v, data_type& d, int i = 0)
     {
@@ -891,7 +891,7 @@ public:
     }
     static const value_type* get(const data_type& d, int i = 0)
     {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
     static void set( const value_type& v, data_type& d, int i = 0)
     {
@@ -919,11 +919,11 @@ public:
     static int size(const data_type&) { return SIZE; }
     static const char* header(const data_type& /*d*/, int /*i*/ = 0)
     {
-        return NULL;
+        return nullptr;
     }
     static const value_type* get(const data_type& d, int i = 0)
     {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
     static void set( const value_type& v, data_type& d, int i = 0)
     {

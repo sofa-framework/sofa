@@ -50,7 +50,7 @@ public:
     defaulttype::Vec3d origin;    ///< Ray starting point
     defaulttype::Vec3d direction; ///< Ray direction
 
-    /// Return the embedding model. In case of nested hierarchy, return the smallest (deepest). NULL if no embedding model.
+    /// Return the embedding model. In case of nested hierarchy, return the smallest (deepest). nullptr if no embedding model.
     core::objectmodel::BaseObject* embeddingModel();
 
     // generic

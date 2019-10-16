@@ -100,7 +100,7 @@ public:
 
     void TearDown() override
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             simulation::getSimulation()->unload(root);
     }
 

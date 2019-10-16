@@ -55,7 +55,7 @@ TriangleOctree::~TriangleOctree()
         if(childVec[i])
         {
             delete childVec[i];
-            childVec[i]=NULL;
+            childVec[i]=nullptr;
         }
     }
 }
@@ -840,9 +840,9 @@ void TriangleOctree::bboxAllCandidates(defaulttype::Vector3 bbmin, defaulttype::
 
 TriangleOctreeRoot::TriangleOctreeRoot()
 {
-    octreeRoot = NULL;
-    octreeTriangles = NULL;
-    octreePos = NULL;
+    octreeRoot = nullptr;
+    octreeTriangles = nullptr;
+    octreePos = nullptr;
     cubeSize = CUBE_SIZE;
 }
 

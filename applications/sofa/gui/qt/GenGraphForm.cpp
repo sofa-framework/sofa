@@ -345,7 +345,7 @@ void GenGraphForm::doDisplay()
     std::cout << "OPEN " << exportedFile.toStdString() << std::endl;
 
 #ifdef WIN32
-    ShellExecuteA(NULL, "open", exportedFile.toStdString().c_str(), NULL, NULL, SW_SHOWNORMAL);
+    ShellExecuteA(nullptr, "open", exportedFile.toStdString().c_str(), nullptr, nullptr, SW_SHOWNORMAL);
 #else
     QStringList argv;
     argv << "display" << exportedFile;

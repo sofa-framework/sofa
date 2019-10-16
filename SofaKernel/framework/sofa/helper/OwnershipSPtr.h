@@ -46,7 +46,7 @@ class OwnershipSPtr
 public:
 
     /// default constructor: no pointed data, no ownership
-    OwnershipSPtr() : t(NULL), ownership(false) {}
+    OwnershipSPtr() : t(nullptr), ownership(false) {}
 
     /// point to a data, manually set ownership
     OwnershipSPtr( const T* t, bool ownership ) : t(t), ownership(ownership) {}

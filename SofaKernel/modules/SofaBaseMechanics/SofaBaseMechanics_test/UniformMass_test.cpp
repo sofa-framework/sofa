@@ -94,7 +94,7 @@ struct UniformMassTest :  public BaseTest
 
     void TearDown()
     {
-        if (m_root != NULL){
+        if (m_root != nullptr){
             m_simu->unload(m_root);
         }
     }

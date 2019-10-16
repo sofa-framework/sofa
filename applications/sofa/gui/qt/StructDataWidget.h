@@ -65,7 +65,7 @@ class struct_data_trait_var
 public:
     typedef T data_type;
     typedef T value_type;
-    static const char* name() { return NULL; }
+    static const char* name() { return nullptr; }
     static const value_type* get(const data_type& d) { return &d; }
     static void set( const value_type& v, data_type& d) { d = v; }
     static bool readOnly() { return false; }
@@ -92,7 +92,7 @@ public:
     QLabel* label;
     Layout* container_layout;
     MasterLayout* master_layout;
-    struct_data_widget_container() : check(NULL),label(NULL),container_layout(NULL),master_layout(NULL) {}
+    struct_data_widget_container() : check(nullptr),label(nullptr),container_layout(nullptr),master_layout(nullptr) {}
 
     void setMasterLayout(MasterLayout* layout)
     {
@@ -102,7 +102,7 @@ public:
 
     bool createLayout( DataWidget* parent )
     {
-        if( parent->layout() != NULL )
+        if( parent->layout() != nullptr )
         {
             return false;
         }
@@ -242,7 +242,7 @@ public:
     typedef QHBoxLayout Layout ;
     MasterLayout* master_layout;
     Layout* container_layout;
-    struct_data_widget_container():master_layout(NULL),container_layout(NULL) {}
+    struct_data_widget_container():master_layout(nullptr),container_layout(nullptr) {}
 
     void setMasterLayout(MasterLayout* /*layout*/)
     {
@@ -286,8 +286,8 @@ class default_struct_data_trait_var
 {
 public:
     typedef T data_type;
-    static const char* name() { return NULL; }
-    static const char* shortname() { return NULL; }
+    static const char* name() { return nullptr; }
+    static const char* shortname() { return nullptr; }
     static bool readOnly() { return false; }
     static bool isCheckable() { return false; }
     static bool isChecked(const data_type& /*d*/) { return true; }

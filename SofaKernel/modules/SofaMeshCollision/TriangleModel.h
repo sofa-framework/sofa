@@ -208,7 +208,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -218,7 +218,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const TriangleCollisionModel<DataTypes>* = NULL)
+    static std::string templateName(const TriangleCollisionModel<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

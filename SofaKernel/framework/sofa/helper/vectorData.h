@@ -114,12 +114,12 @@ public:
 
     void resize(const unsigned int size)
     {
-        core::DataEngine* componentAsDataEngine = m_dataEngineDataType!=DataEngineNothing ? m_component->toDataEngine() : NULL;
+        core::DataEngine* componentAsDataEngine = m_dataEngineDataType!=DataEngineNothing ? m_component->toDataEngine() : nullptr;
 
         if (size < this->size()) {
             // removing some data if size is inferior than current size
             for (unsigned int i=size; i<this->size(); ++i) {
-                if (componentAsDataEngine!=NULL)
+                if (componentAsDataEngine!=nullptr)
                 {
                     if(m_dataEngineDataType==DataEngineInput) componentAsDataEngine->delInput((*this)[i]);
                     else if(m_dataEngineDataType==DataEngineOutput) componentAsDataEngine->delOutput((*this)[i]);
@@ -139,9 +139,9 @@ public:
                 Data< T >* d = new Data< T >(m_defaultValue, getAStringCopy(ohelp.str().c_str()), true, false);
                 d->setName(oname.str());
                 this->push_back(d);
-                if (m_component!=NULL)
+                if (m_component!=nullptr)
                     m_component->addData(d);
-                if (componentAsDataEngine!=NULL)
+                if (componentAsDataEngine!=nullptr)
                 {
                     if(m_dataEngineDataType==DataEngineInput) componentAsDataEngine->addInput(d);
                     else if(m_dataEngineDataType==DataEngineOutput) componentAsDataEngine->addOutput(d);

@@ -562,10 +562,10 @@ void Polynomial_LD<Real,N>::setnbOfMonomial(int m_nbofmonomial)
 {
     listOfMonoMial.clear();
     nbOfMonomial=m_nbofmonomial;
-    Monomial_LD<Real,N> monomialNULL;
+    Monomial_LD<Real,N> monomialnullptr;
     for(unsigned int i=0; i<nbOfMonomial; i++)
     {
-        listOfMonoMial.push_back(monomialNULL);
+        listOfMonoMial.push_back(monomialnullptr);
     }
 }
 ////////////////////////////////

@@ -233,7 +233,7 @@ bool HexahedronSetTopology_test::testQuadBuffers()
 
             if (found == false)
             {
-                if (scene != NULL)
+                if (scene != nullptr)
                     delete scene;
                 return false;
             }
@@ -328,7 +328,7 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
 
             if (found == false)
             {
-                if (scene != NULL)
+                if (scene != nullptr)
                     delete scene;
                 return false;
             }

@@ -281,7 +281,7 @@ public:
 	{
 		CollisionModel::SPtr prev = previous.get();
 		typename DerivedModel::SPtr pmodel = sofa::core::objectmodel::SPtr_dynamic_cast<DerivedModel>(prev);
-		if (pmodel.get() == NULL)
+		if (pmodel.get() == nullptr)
 		{
 			int level = 0;
 			CollisionModel *cm = getNext();

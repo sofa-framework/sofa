@@ -37,7 +37,7 @@ using sofa::component::loader::BaseVTKReader ;
 
 //XML VTK Loader
 #define checkError(A) if (!A) { return false; }
-#define checkErrorPtr(A) if (!A) { return NULL; }
+#define checkErrorPtr(A) if (!A) { return nullptr; }
 #define checkErrorMsg(A, B) if (!A) { msg_error("MeshVTKLoader") << B << "\n" ; return false; }
 
 namespace sofa
@@ -85,7 +85,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////// MeshVTKLoader IMPLEMENTATION //////////////////////////////////
 MeshVTKLoader::MeshVTKLoader() : MeshLoader()
-    , reader(NULL)
+    , reader(nullptr)
 {
 }
 
@@ -150,7 +150,7 @@ bool MeshVTKLoader::load()
         case NONE:
         default:
             msg_error() << "Header not recognized" ;
-            reader = NULL;
+            reader = nullptr;
             break;
     }
 
@@ -331,7 +331,7 @@ bool MeshVTKLoader::setInputsMesh()
     {
         const int* inFP = (const int*) reader->inputCells->getData();
         //offsets are not used if we have parsed with the legacy method
-        const int* offsets = (reader->inputCellOffsets == NULL) ? NULL : (const int*) reader->inputCellOffsets->getData();
+        const int* offsets = (reader->inputCellOffsets == nullptr) ? nullptr : (const int*) reader->inputCellOffsets->getData();
 
         const int* dataT = (int*)(reader->inputCellTypes->getData());
 
@@ -495,7 +495,7 @@ bool MeshVTKLoader::setInputsMesh()
 
             BaseVTKReader::VTKDataIO<int>* cellData = dynamic_cast<BaseVTKReader::VTKDataIO<int>* > (reader->inputCellDataVector[sz]);
 
-            if (cellData == NULL)
+            if (cellData == nullptr)
             {
                 return false;
             }
@@ -628,10 +628,10 @@ bool LegacyVTKReader::readFile(const char* filename)
     }
 
     msg_info() << (binary == 0 ? "Text" : (binary == 1) ? "Binary" : "Swapped Binary") << " VTK File (version " << version << "): " << header ;
-    VTKDataIO<int>* inputPolygonsInt = NULL;
-    VTKDataIO<int>* inputCellsInt = NULL;
-    VTKDataIO<int>* inputCellTypesInt = NULL;
-    inputCellOffsets = NULL;
+    VTKDataIO<int>* inputPolygonsInt = nullptr;
+    VTKDataIO<int>* inputCellsInt = nullptr;
+    VTKDataIO<int>* inputCellTypesInt = nullptr;
+    inputCellOffsets = nullptr;
 
     while(!inVTKFile.eof())
     {
@@ -651,7 +651,7 @@ bool LegacyVTKReader::readFile(const char* filename)
             ln >> n >> typestr;
             msg_info() << "Found " << n << " " << typestr << " points" << sendl;
             inputPoints = newVTKDataIO(typestr);
-            if (inputPoints == NULL)
+            if (inputPoints == nullptr)
             {
                 return false;
             }
@@ -749,7 +749,7 @@ bool LegacyVTKReader::readFile(const char* filename)
                     string dataName, dataType;
                     lnData >> dataName >> dataType;
                     BaseVTKDataIO*  data = newVTKDataIO(dataType);
-                    if (data != NULL)
+                    if (data != nullptr)
                     {
                         {
                             // skip lookup_table if present
@@ -794,7 +794,7 @@ bool LegacyVTKReader::readFile(const char* filename)
                     lnData >> dataName >> dataType;
                     msg_info() << "Reading normals named \"" << dataName << "\" of type \"" << dataType << "\".";
                     inputNormals = newVTKDataIO(dataType);
-                    if (inputNormals == NULL)
+                    if (inputNormals == nullptr)
                     {
                         return false;
                     }
@@ -808,7 +808,7 @@ bool LegacyVTKReader::readFile(const char* filename)
                     string dataName, dataType;
                     lnData >> dataName >> dataType;
                     BaseVTKDataIO*  data = newVTKDataIO(dataType, 3);
-                    if (data != NULL)
+                    if (data != nullptr)
                     {
                         if (data->read(inVTKFile, nb_ele, binary))
                         {
@@ -850,7 +850,7 @@ bool LegacyVTKReader::readFile(const char* filename)
                         lnData >> dataName >> nbComponents >> nbData >> dataType;
                         msg_info() << "Reading field data named \"" << dataName << "\" of type \"" << dataType << "\" with " << nbComponents << " components.";
                         BaseVTKDataIO*  data = newVTKDataIO(dataType, nbComponents);
-                        if (data != NULL)
+                        if (data != nullptr)
                         {
                             if (data->read(inVTKFile, nbData, binary))
                             {
@@ -1070,7 +1070,7 @@ BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(TiXmlElement* dataArra
     //Format
     const char* formatStrTemp = dataArrayElement->Attribute("format");
 
-    if (formatStrTemp == NULL)
+    if (formatStrTemp == nullptr)
     {
         formatStrTemp = dataArrayElement->Attribute("Format");
     }
@@ -1105,18 +1105,18 @@ BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(TiXmlElement* dataArra
 
     if (!listValuesStrTemp)
     {
-        return NULL;
+        return nullptr;
     }
     if (string(listValuesStrTemp).size() < 1)
     {
-        return NULL;
+        return nullptr;
     }
 
     BaseVTKDataIO* d = BaseVTKReader::newVTKDataIO(string(typeStrTemp));
 
     if (!d)
     {
-        return NULL;
+        return nullptr;
     }
 
     if (size > 0)

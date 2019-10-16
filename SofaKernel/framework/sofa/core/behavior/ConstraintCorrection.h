@@ -59,7 +59,7 @@ public:
 
 protected:
     /// Default Constructor
-    ConstraintCorrection(MechanicalState< DataTypes > *ms = NULL)
+    ConstraintCorrection(MechanicalState< DataTypes > *ms = nullptr)
         : mstate(ms)
     {
     };
@@ -149,7 +149,7 @@ public:
     template< class T >
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast< MechanicalState<DataTypes>* >(context->getMechanicalState()) == NULL)
+        if (dynamic_cast< MechanicalState<DataTypes>* >(context->getMechanicalState()) == nullptr)
             return false;
 
         return BaseObject::canCreate(obj, context, arg);
@@ -160,7 +160,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const ConstraintCorrection<DataTypes>* = NULL)
+    static std::string templateName(const ConstraintCorrection<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

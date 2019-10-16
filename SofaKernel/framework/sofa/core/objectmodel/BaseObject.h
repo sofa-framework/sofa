@@ -50,14 +50,6 @@ namespace objectmodel
 class Event;
 class BaseNode;
 
-/// enum class is a C++ x11 feature (http://en.cppreference.com/w/cpp/language/enum),
-/// Indicate the state of an object.
-enum class ComponentState {
-    Undefined,
-    Valid,
-    Invalid
-};
-
 /**
  *  \brief Base class for simulation components.
  *
@@ -454,16 +446,6 @@ public:
     /// Return the full path name of this object
     virtual std::string getPathName() const;
 
-    /// @name componentstate
-    ///   Methods related to component state
-    /// @{
-
-    ComponentState getComponentState() const { return m_componentstate ; }
-    bool isComponentStateValid() const { return m_componentstate != ComponentState::Invalid; }
-
-    ///@}
-
-
     /// @name internalupdate
     ///   Methods related to tracking of data and the internal update
     /// @{
@@ -480,9 +462,6 @@ protected:
     ///@}
     ///
 
-    /// Enum defining the state of the component
-    ComponentState m_componentstate { ComponentState::Undefined } ;
-
     SingleLink<BaseObject, BaseContext, BaseLink::FLAG_DOUBLELINK> l_context;
     LinkSlaves l_slaves;
     SingleLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK> l_master;
@@ -490,7 +469,7 @@ protected:
     /// Implementation of the internal update
     virtual void doUpdateInternal();
 
-    /// This method insures that context is never NULL (using BaseContext::getDefault() instead)
+    /// This method insures that context is never nullptr (using BaseContext::getDefault() instead)
     /// and that all slaves of an object share its context
     void changeContextLink(BaseContext* before, BaseContext*& after);
 

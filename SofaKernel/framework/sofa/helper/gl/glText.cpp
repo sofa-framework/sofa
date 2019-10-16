@@ -33,16 +33,16 @@ using namespace sofa::defaulttype;
 using std::string;
 
 SOFA_HELPER_API const std::string GlText::ASCII_TEXTURE_PATH("textures/texture_ascii_smooth.png");
-SOFA_HELPER_API sofa::helper::io::Image *GlText::s_asciiImage = NULL;
-SOFA_HELPER_API sofa::helper::gl::Texture* GlText::s_asciiTexture = NULL;
+SOFA_HELPER_API sofa::helper::io::Image *GlText::s_asciiImage = nullptr;
+SOFA_HELPER_API sofa::helper::gl::Texture* GlText::s_asciiTexture = nullptr;
 
 void GlText::initTexture()
 {
-    if (s_asciiImage == NULL)
+    if (s_asciiImage == nullptr)
     {
         s_asciiImage = helper::io::Image::Create(ASCII_TEXTURE_PATH);
     }
-    if (s_asciiTexture == NULL && s_asciiImage != NULL)
+    if (s_asciiTexture == nullptr && s_asciiImage != nullptr)
     {
         s_asciiTexture = new sofa::helper::gl::Texture(s_asciiImage, false, true, false );
     }

@@ -69,6 +69,10 @@ set(HEADER_FILES
     InitTasks.h
     Locks.h
     VisitorAsync.h
+    events/SimulationInitDoneEvent.h
+    events/SimulationInitStartEvent.h
+    events/SimulationStartEvent.h
+    events/SimulationStopEvent.h
 )
 
 set(SOURCE_FILES
@@ -131,6 +135,10 @@ set(SOURCE_FILES
     DefaultTaskScheduler.cpp
     Task.cpp
     InitTasks.cpp
+    events/SimulationInitDoneEvent.cpp
+    events/SimulationInitStartEvent.cpp
+    events/SimulationStartEvent.cpp
+    events/SimulationStopEvent.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

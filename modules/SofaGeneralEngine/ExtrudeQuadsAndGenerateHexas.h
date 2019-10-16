@@ -74,7 +74,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const ExtrudeQuadsAndGenerateHexas<DataTypes>* = NULL)
+    static std::string templateName(const ExtrudeQuadsAndGenerateHexas<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

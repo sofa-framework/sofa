@@ -73,7 +73,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const ExtrudeSurface<DataTypes>* = NULL)
+    static std::string templateName(const ExtrudeSurface<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

@@ -73,6 +73,7 @@ set(HEADER_FILES
     decompose.inl
     deque.h
     fixed_array.h
+    fixed_array_algorithms.h
     hash.h
     gl/Trackball.h
     gl/Transformation.h

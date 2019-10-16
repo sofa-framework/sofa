@@ -38,7 +38,7 @@ namespace projectiveconstraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-static int OscillatorConstraintClass = core::RegisterObject("Apply a sinusoidal trajectory to given points")
+int OscillatorConstraintClass = core::RegisterObject("Apply a sinusoidal trajectory to given points")
         .add< OscillatorConstraint<Vec3Types> >()
         .add< OscillatorConstraint<Rigid3Types> >();
 

@@ -40,7 +40,9 @@ Context::Context()
 	, d_isSleeping(initData(&d_isSleeping, false, "sleeping", "The node is sleeping, and thus ignored by visitors."))
 	, d_canChangeSleepingState(initData(&d_canChangeSleepingState, false, "canChangeSleepingState", "The node can change its sleeping state."))
 {
-
+    animate_.setReadOnly(true);
+    dt_.setReadOnly(true);
+    time_.setReadOnly(true);
 }
 
 /// The Context is active

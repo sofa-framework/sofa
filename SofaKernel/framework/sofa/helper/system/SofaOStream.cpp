@@ -38,7 +38,7 @@ SofaOStreamContainer::~SofaOStreamContainer()
 }
 
 SofaOStream::SofaOStream()
-    : parent(NULL)
+    : parent(nullptr)
 {
 }
 

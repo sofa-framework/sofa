@@ -84,7 +84,7 @@ helper::vector<ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantLi
 ArticulatedHierarchyContainer::ArticulatedHierarchyContainer():
     filename(initData(&filename, "filename", "BVH File to load the articulation", false))
 {
-    joint = NULL;
+    joint = nullptr;
     id = 0;
     chargedFromFile = false;
     numOfFrames = 0;
@@ -218,7 +218,7 @@ void ArticulatedHierarchyContainer::init ()
         dtbvh = joint->getMotion()->frameTime;
     }
 
-    if (joint != NULL)
+    if (joint != nullptr)
     {
         simulation::Node::SPtr articulationCenters = context->createChild("ArticulationCenters");
 

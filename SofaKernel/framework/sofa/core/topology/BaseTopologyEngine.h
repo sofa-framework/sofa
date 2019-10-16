@@ -44,11 +44,11 @@ public:
     //typedef sofa::core::objectmodel::Data< sofa::helper::vector <void*> > t_topologicalData;
 
 protected:
-    TopologyEngine() {}//m_topologicalData(NULL)  {}
+    TopologyEngine() {}//m_topologicalData(nullptr)  {}
 
     ~TopologyEngine() override
     {
-        //if (this->m_topologicalData != NULL)
+        //if (this->m_topologicalData != nullptr)
         //    this->removeTopologicalData();
     }
 

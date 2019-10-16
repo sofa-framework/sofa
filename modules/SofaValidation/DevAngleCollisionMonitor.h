@@ -78,14 +78,14 @@ public:
     {
         if (arg->getAttribute("object1") || arg->getAttribute("object2"))
         {
-            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
+            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == nullptr)
                 return false;
-            if (dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec3Types>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+            if (dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec3Types>*>(arg->findObject(arg->getAttribute("object2",".."))) == nullptr)
                 return false;
         }
         else
         {
-            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
                 return false;
         }
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
@@ -111,7 +111,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const DevAngleCollisionMonitor<DataTypes>* = NULL)
+    static std::string templateName(const DevAngleCollisionMonitor<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

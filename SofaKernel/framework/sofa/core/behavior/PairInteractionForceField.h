@@ -176,15 +176,15 @@ public:
     template<class T>
     static bool canCreate(T* obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        MechanicalState<DataTypes>* mstate1 = NULL;
-        MechanicalState<DataTypes>* mstate2 = NULL;
+        MechanicalState<DataTypes>* mstate1 = nullptr;
+        MechanicalState<DataTypes>* mstate2 = nullptr;
         std::string object1 = arg->getAttribute("object1","@./");
         std::string object2 = arg->getAttribute("object2","@./");
         if (object1.empty()) object1 = "@./";
         if (object2.empty()) object2 = "@./";
 
-        context->findLinkDest(mstate1, object1, NULL);
-        context->findLinkDest(mstate2, object2, NULL);
+        context->findLinkDest(mstate1, object1, nullptr);
+        context->findLinkDest(mstate2, object2, nullptr);
 
         if (!mstate1 || !mstate2)
         {
@@ -226,13 +226,13 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const PairInteractionForceField<DataTypes>* = NULL)
+    static std::string templateName(const PairInteractionForceField<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }
 
     template<class T>
-    static std::string shortName(const T* ptr = NULL, objectmodel::BaseObjectDescription* arg = NULL)
+    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
     {
         std::string name = Inherit1::shortName(ptr, arg);
         sofa::helper::replaceAll(name, "InteractionForceField", "IFF");

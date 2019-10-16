@@ -50,7 +50,7 @@ bool DetachNodeEvent::contains(BaseNode* n) const
 {
 // Modified by FlorentF: A BaseNode is not always a Node from a Tree structure and can have more than one parent.
 // This event should be specific to the GNodes and placed in modules and not framework
-//     while (n != node && n != NULL)
+//     while (n != node && n != nullptr)
 //         n = n->getParent();
     return n == node;
 }

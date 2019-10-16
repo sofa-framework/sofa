@@ -59,7 +59,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::init( )
 
     this->getContext()->get(this->_topology);
 
-    if(this->_topology == NULL)
+    if(this->_topology == nullptr)
     {
         serr << "ERROR(HexahedralFEMForceField): object must have a HexahedronSetTopology."<<sendl;
         return;

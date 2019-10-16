@@ -198,10 +198,10 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const MultiMapping<TIn, TOut>* = NULL);
+    static std::string templateName(const MultiMapping<TIn, TOut>* = nullptr);
 
     template<class T>
-    static std::string shortName(const T* ptr = NULL, objectmodel::BaseObjectDescription* arg = NULL)
+    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
     {
         std::string name = Inherit1::shortName(ptr, arg);
         sofa::helper::replaceAll(name, "Mapping", "Map");

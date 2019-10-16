@@ -92,7 +92,7 @@ void RegularGridSpringForceField<DataTypes>::addForce(const core::MechanicalPara
     const helper::vector<Spring>& springs = this->springs.getValue();
     if (this->mstate1==this->mstate2)
     {
-        if (topology != NULL)
+        if (topology != nullptr)
         {
             const int nx = topology->getNx();
             const int ny = topology->getNy();
@@ -276,7 +276,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalPar
     const helper::vector<Spring>& springs = this->springs.getValue();
     if (this->mstate1==this->mstate2)
     {
-        if (topology != NULL)
+        if (topology != nullptr)
         {
             const int nx = topology->getNx();
             const int ny = topology->getNy();
@@ -457,7 +457,7 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
     Vector3 point1,point2;
     if (this->mstate1==this->mstate2)
     {
-        if (topology != NULL)
+        if (topology != nullptr)
         {
             const int nx = topology->getNx();
             const int ny = topology->getNy();

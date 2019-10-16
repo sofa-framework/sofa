@@ -50,7 +50,7 @@ namespace sofa
             void BlenderExporter<T>::init()
             {
                 mmodel = Inherit::searchLocal<DataType>();
-                if(mmodel == NULL)
+                if(mmodel == nullptr)
                     msg_error()<<"Initialization failed!";
                 Inherit::init();
                 // if hair type simulation, create an additional information frame 

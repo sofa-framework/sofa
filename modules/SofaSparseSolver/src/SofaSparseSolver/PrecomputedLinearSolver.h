@@ -118,7 +118,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const PrecomputedLinearSolver<TMatrix,TVector>* = NULL)
+    static std::string templateName(const PrecomputedLinearSolver<TMatrix,TVector>* = nullptr)
     {
         return TVector::Name();
     }

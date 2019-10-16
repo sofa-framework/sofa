@@ -63,7 +63,7 @@ public:
     typedef core::objectmodel::Data<VecCoord2>    DataVecCoord2;
     typedef core::objectmodel::Data<VecDeriv2>    DataVecDeriv2;
 protected:
-    MixedInteractionForceField(MechanicalState<DataTypes1> *mm1 = NULL, MechanicalState<DataTypes2> *mm2 = NULL);
+    MixedInteractionForceField(MechanicalState<DataTypes1> *mm1 = nullptr, MechanicalState<DataTypes2> *mm2 = nullptr);
 
     ~MixedInteractionForceField() override;
 public:
@@ -184,13 +184,13 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const MixedInteractionForceField<DataTypes1,DataTypes2>* = NULL)
+    static std::string templateName(const MixedInteractionForceField<DataTypes1,DataTypes2>* = nullptr)
     {
         return DataTypes1::Name()+std::string(",")+DataTypes2::Name();
     }
 
     template<class T>
-    static std::string shortName(const T* ptr = NULL, objectmodel::BaseObjectDescription* arg = NULL)
+    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
     {
         std::string name = Inherit1::shortName(ptr, arg);
         sofa::helper::replaceAll(name, "InteractionForceField", "IFF");

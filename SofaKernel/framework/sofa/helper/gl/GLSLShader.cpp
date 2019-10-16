@@ -282,7 +282,7 @@ bool GLSLShader::CompileShader(GLint target, const ShaderContents& shaderContent
 
     const char* src = source.c_str();
 
-    glShaderSourceARB(shader, 1, &src, NULL);
+    glShaderSourceARB(shader, 1, &src, nullptr);
 
     glCompileShaderARB(shader);
 
