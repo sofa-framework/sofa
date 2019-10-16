@@ -104,7 +104,7 @@ SofaWindowDataGraph::SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node
     , m_scaleY(30)
     , m_posX(0)
     , m_posY(0)
-    , debugNodeGraph(true)
+    , debugNodeGraph(false)
 {
     setConnecStyle();
     Qt::WindowFlags flags = windowFlags();
@@ -128,7 +128,6 @@ SofaWindowDataGraph::SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node
 
     // then connect all data
     connectNodeData();
-
 }
 
 
@@ -218,7 +217,7 @@ size_t SofaWindowDataGraph::addSimulationObject(sofa::core::objectmodel::BaseObj
     const std::string& name = bObject->getClassName() + " - " + bObject->getName();
     msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "addSimulationObject: " << name;
     
-    QtNodes::Node& fromNode = m_graphScene->createNode(std::make_unique<SofaComponentNodeModel>(bObject));
+    QtNodes::Node& fromNode = m_graphScene->createNode(std::make_unique<SofaComponentNodeModel>(bObject, debugNodeGraph));
     fromNode.setObjectName(QString::fromStdString(bObject->getName()));
     
     SofaComponentNodeModel* model = dynamic_cast<SofaComponentNodeModel*>(fromNode.nodeDataModel());

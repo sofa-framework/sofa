@@ -52,7 +52,7 @@ public:
     SofaComponentNodeModel(std::string name = "EmptyNode");
 
     /// constructor with a Sofa BaseObject as target
-    SofaComponentNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject);
+    SofaComponentNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject, bool debugMode = false);
 
     virtual ~SofaComponentNodeModel() {}
 

@@ -17,9 +17,9 @@ SofaComponentNodeModel::SofaComponentNodeModel(std::string name)
     m_caption = m_uniqName;
 }
 
-SofaComponentNodeModel::SofaComponentNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject)
+SofaComponentNodeModel::SofaComponentNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject, bool debugMode)
     : NodeDataModel()
-    , debugNodeGraph(true)
+    , debugNodeGraph(debugMode)
     , m_SofaObject(_sofaObject)
 {    
     if (m_SofaObject == nullptr)
@@ -36,7 +36,6 @@ SofaComponentNodeModel::SofaComponentNodeModel(sofa::core::objectmodel::BaseObje
 
 void SofaComponentNodeModel::parseSofaObjectData()
 {
-    std::cout << "parseSofaObjectData" << std::endl;
     if (m_SofaObject == nullptr)
     {
         msg_error("SofaComponentNodeModel") << "Sofa BaseObject is null, Node graph parseSofaObjectData failed.";
@@ -117,8 +116,6 @@ void SofaComponentNodeModel::parseSofaObjectData()
         }
         m_data.push_back(std::pair<QString, QString>(name, QString::fromStdString(data->getValueTypeString())));
     }
-
-    std::cout << "parseSofaObjectData end" << std::endl;
 }
 
 
