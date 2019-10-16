@@ -76,9 +76,9 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
         for (unsigned int i=0; i<triangleAdded.size(); ++i)
         {
             /// edges of the new triangle
-            EdgesInTriangle te2 = ff->_topology->getEdgesInTriangle(triangleAdded[i]);
+            EdgesInTriangle te2 = ff->m_topology->getEdgesInTriangle(triangleAdded[i]);
             /// vertices of the new triangle
-            core::topology::BaseMeshTopology::Triangle t2 = ff->_topology->getTriangle(triangleAdded[i]);
+            core::topology::BaseMeshTopology::Triangle t2 = ff->m_topology->getTriangle(triangleAdded[i]);
 
 			double epsilonSq = ff->d_minDistValidity.getValue();
 			epsilonSq *= epsilonSq;
@@ -89,7 +89,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
                 EdgeSpring &ei = edgeData[te2[j]]; // edge spring
                 unsigned int edgeIndex = te2[j];
 
-                const sofa::helper::vector< unsigned int > shell = ff->_topology->getTrianglesAroundEdge(edgeIndex);
+                const sofa::helper::vector< unsigned int > shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
                     
                 if (shell.size()==2)   // there is another triangle attached to this edge, so a spring is needed
                 {
@@ -99,20 +99,20 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
                     if(shell[0] == triangleAdded[i])
                     {
 
-                        te1 = ff->_topology->getEdgesInTriangle(shell[1]);
-                        t1 = ff->_topology->getTriangle(shell[1]);
+                        te1 = ff->m_topology->getEdgesInTriangle(shell[1]);
+                        t1 = ff->m_topology->getTriangle(shell[1]);
 
                     }
                     else
                     {
 
-                        te1 = ff->_topology->getEdgesInTriangle(shell[0]);
-                        t1 = ff->_topology->getTriangle(shell[0]);
+                        te1 = ff->m_topology->getEdgesInTriangle(shell[0]);
+                        t1 = ff->m_topology->getTriangle(shell[0]);
                     }
 
-                    int i1 = ff->_topology->getEdgeIndexInTriangle(te1, edgeIndex); // index of the vertex opposed to the current edge in the other triangle (?)
-                    int i2 = ff->_topology->getEdgeIndexInTriangle(te2, edgeIndex); // index of the vertex opposed to the current edge in the new triangle (?)
-                    core::topology::BaseMeshTopology::Edge edge = ff->_topology->getEdge(edgeIndex);                  // indices of the vertices of the current edge
+                    int i1 = ff->m_topology->getEdgeIndexInTriangle(te1, edgeIndex); // index of the vertex opposed to the current edge in the other triangle (?)
+                    int i2 = ff->m_topology->getEdgeIndexInTriangle(te2, edgeIndex); // index of the vertex opposed to the current edge in the new triangle (?)
+                    core::topology::BaseMeshTopology::Edge edge = ff->m_topology->getEdge(edgeIndex);                  // indices of the vertices of the current edge
 
                     const core::topology::BaseMeshTopology::PointID& v1 = t1[i1];
                     const core::topology::BaseMeshTopology::PointID& v2 = t2[i2];
@@ -146,7 +146,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
         for (unsigned int i=0; i<triangleRemoved.size(); ++i)
         {
             /// describe the jth edge index of triangle no i
-            EdgesInTriangle te = ff->_topology->getEdgesInTriangle(triangleRemoved[i]);
+            EdgesInTriangle te = ff->m_topology->getEdgesInTriangle(triangleRemoved[i]);
             /// describe the jth vertex index of triangle no i
 			double epsilonSq = ff->d_minDistValidity.getValue();
 			epsilonSq *= epsilonSq;
@@ -156,7 +156,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
                 EdgeSpring &ei = edgeData[te[j]];
                 unsigned int edgeIndex = te[j];
 
-                const sofa::helper::vector< unsigned int > shell = ff->_topology->getTrianglesAroundEdge(edgeIndex);
+                const sofa::helper::vector< unsigned int > shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
 
                 //check if there is going to be only 2 triangles after modification
                 bool valid=false;
@@ -202,15 +202,15 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
                     EdgesInTriangle te2;
                     core::topology::BaseMeshTopology::Triangle t2;
 
-                    te1 = ff->_topology->getEdgesInTriangle(keepingTri[0]);
-                    t1 = ff->_topology->getTriangle(keepingTri[0]);
-                    te2 = ff->_topology->getEdgesInTriangle(keepingTri[1]);
-                    t2 = ff->_topology->getTriangle(keepingTri[1]);
+                    te1 = ff->m_topology->getEdgesInTriangle(keepingTri[0]);
+                    t1 = ff->m_topology->getTriangle(keepingTri[0]);
+                    te2 = ff->m_topology->getEdgesInTriangle(keepingTri[1]);
+                    t2 = ff->m_topology->getTriangle(keepingTri[1]);
 
-                    int i1 = ff->_topology->getEdgeIndexInTriangle(te1, edgeIndex);
-                    int i2 = ff->_topology->getEdgeIndexInTriangle(te2, edgeIndex);
+                    int i1 = ff->m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
+                    int i2 = ff->m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
 
-                    core::topology::BaseMeshTopology::Edge edge = ff->_topology->getEdge(edgeIndex);
+                    core::topology::BaseMeshTopology::Edge edge = ff->m_topology->getEdge(edgeIndex);
 
                     const core::topology::BaseMeshTopology::PointID& v1 = t1[i1];
                     const core::topology::BaseMeshTopology::PointID& v2 = t2[i2];
@@ -266,7 +266,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
     {
         bool debug_mode = false;
 
-        unsigned int last = ff->_topology->getNbPoints() -1;
+        unsigned int last = ff->m_topology->getNbPoints() -1;
         unsigned int i,j;
 
         helper::vector<EdgeSpring>& edgeInf = *(ff->d_edgeSprings.beginEdit());
@@ -290,10 +290,10 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
             if(is_reached)
                 lastIndexVec[i_next] = lastIndexVec[i];
 
-            const sofa::helper::vector<unsigned int> &shell= ff->_topology->getTrianglesAroundVertex(lastIndexVec[i]);
+            const sofa::helper::vector<unsigned int> &shell= ff->m_topology->getTrianglesAroundVertex(lastIndexVec[i]);
             for (j=0; j<shell.size(); ++j)
             {
-                core::topology::BaseMeshTopology::EdgesInTriangle tej = ff->_topology->getEdgesInTriangle(shell[j]);
+                core::topology::BaseMeshTopology::EdgesInTriangle tej = ff->m_topology->getEdgesInTriangle(shell[j]);
                 for(unsigned int k=0; k < 3 ; ++k)
                 {
                     unsigned int ind_j = tej[k];
@@ -323,7 +323,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
     if(ff)
     {
         helper::vector<EdgeSpring>& edgeInf = *(ff->d_edgeSprings.beginEdit());
-        for (unsigned int i = 0; i < ff->_topology->getNbEdges(); ++i)
+        for (unsigned int i = 0; i < ff->m_topology->getNbEdges(); ++i)
         {
             if(edgeInf[i].is_activated)
             {
@@ -353,6 +353,7 @@ FastTriangularBendingSprings<DataTypes>::FastTriangularBendingSprings(/*double _
     : d_bendingStiffness(initData(&d_bendingStiffness,(SReal) 1.0,"bendingStiffness","bending stiffness of the material"))
     , d_minDistValidity(initData(&d_minDistValidity,(SReal) 0.000001,"minDistValidity","Distance under which a spring is not valid"))
     , d_edgeSprings(initData(&d_edgeSprings, "edgeInfo", "Internal edge data"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , d_edgeHandler(nullptr)
 {
     // Create specific handler for EdgeData
@@ -371,14 +372,28 @@ void FastTriangularBendingSprings<DataTypes>::init()
 {
     this->Inherited::init();
 
-    _topology = this->getContext()->getMeshTopology();
-
-    if (_topology->getNbTriangles()==0)
+    if (l_topology.empty())
     {
-        msg_error() << "Object must have a Triangular Set Topology.";
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    d_edgeSprings.createTopologicalEngine(_topology,d_edgeHandler);
+
+
+    if (m_topology->getNbTriangles()==0)
+    {
+        msg_error() << "Object must have a Triangular Set Topology.";
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+    d_edgeSprings.createTopologicalEngine(m_topology,d_edgeHandler);
     d_edgeSprings.linkToPointDataArray();
     d_edgeSprings.linkToTriangleDataArray();
     d_edgeSprings.registerTopologicalData();
@@ -393,20 +408,20 @@ void FastTriangularBendingSprings<DataTypes>::reinit()
     using namespace sofa::component::topology;
     /// prepare to store info in the edge array
     helper::vector<EdgeSpring>& edgeInf = *(d_edgeSprings.beginEdit());
-    edgeInf.resize(_topology->getNbEdges());
+    edgeInf.resize(m_topology->getNbEdges());
 
     // set edge tensor to 0
-    for (unsigned int i=0; i<_topology->getNbEdges(); ++i)
+    for (unsigned int i=0; i<m_topology->getNbEdges(); ++i)
     {
 
         d_edgeHandler->applyCreateFunction(i, edgeInf[i],
-                _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
+                m_topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
 
     // create edge tensor by calling the triangle creation function
     sofa::helper::vector<unsigned int> triangleAdded;
-    for (unsigned int i=0; i<_topology->getNbTriangles(); ++i)
+    for (unsigned int i=0; i<m_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
 
     d_edgeHandler->applyTriangleCreation(triangleAdded,
