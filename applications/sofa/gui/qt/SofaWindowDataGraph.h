@@ -22,28 +22,17 @@
 #ifndef SOFA_WINDOW_DATAGRAPH
 #define SOFA_WINDOW_DATAGRAPH
 
-#include "PieWidget.h"
-#include "QVisitorControlPanel.h"
-
-#include <QTreeWidgetItem>
-#include <QDrag>
-#include <QPixmap>
-#include <QTableWidget>
-#include <QComboBox>
-#include <sofa/gui/qt/SofaGuiQt.h>
-
 #include <QDialog>
-#include <QPainter>
-#include <QTableWidget>
-
-#include <iostream>
-#include <deque>
 #include <sofa/simulation/Node.h>
-
 
 #define NODE_EDITOR_SHARED
 
-#include <nodes/FlowView>
+namespace QtNodes
+{
+    class FlowScene;
+    class FlowView;
+}
+
 
 namespace sofa
 {
@@ -53,63 +42,54 @@ namespace gui
 
 namespace qt
 {
-
-class QtNodes::FlowScene;
-
-class DataGraphConnection 
-{
-public:
-    DataGraphConnection(const std::string& _pObjN, const std::string& _pDataN, 
-        const std::string& _cObjN, const std::string& _cDataName)
-        : m_parentObjName(_pObjN)
-        , m_parentDataName(_pDataN)
-        , m_childObjName(_cObjN)
-        , m_childDataName(_cDataName)
-    {}
-
-    std::string m_parentObjName;
-    std::string m_parentDataName;
-    std::string m_childObjName;
-    std::string m_childDataName;
-};
-
+ /**
+ * This Class provide an interface with the library QtNodes to display Data Graph connection inside a QDialog.
+ * It will take a SOFA simulation scene and create Graph nodes for each Sofa component and display connections between Data.
+ */   
 class SofaWindowDataGraph : public QDialog
 {
     Q_OBJECT
 public:
+    /// Default constructor of the Widget, given a QWidget as parent and a pointer to the current simulation scene.
     SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node* scene);
 
     ~SofaWindowDataGraph();
+
+    /// Method to be called when graph need to be recomputed (like reloading scene). Take a pointer to the root node of the scene.
     void resetNodeGraph(sofa::simulation::Node* scene);
    
 protected:
-    void createComponentsNode();
-
-    void connectNodeData();
-
-    void connectNodeLinks();
-
-    void clearNodeData();
-
+    /// Internal method to parse all Sofa component inside a Sofa simulation Node. Will call @sa addSimulationObject for each compoenent then will iterate on children nodes.
     void parseSimulationNode(sofa::simulation::Node* node, int posX = 0);
 
+    /// Internal method to create a Node for this sofa BaseObject.
     size_t addSimulationObject(sofa::core::objectmodel::BaseObject* bObject);
 
+    /// Internal method to create all connection between component on the graph.
+    void connectNodeData();
+
+    /// Internal method to clear the graph structures
+    void clearNodeData();       
+
 protected:
+    /// Pointer to the graphScene used to store nodes.
     QtNodes::FlowScene* m_graphScene;
+    /// Pointer to the view of the graph.
     QtNodes::FlowView* m_graphView;
 
+    /// Point to the root node of the current simulation.
     sofa::simulation::Node* m_rootNode;
-    SReal m_scaleX;
-    SReal m_scaleY;
-
+    
+    /// List of component name not to be display in the graph.
     std::vector<std::string> m_exceptions;
-    std::vector<DataGraphConnection> m_dataLinks;
 
-    int m_posX;
-    int m_posY;
+    SReal m_scaleX; ///< Scale paramater to apply between nodes for display in abscissa.    
+    SReal m_scaleY; ///< Scale paramater to apply between nodes for display in ordinate.
 
-    bool debugNodeGraph;
+    int m_posX; ///< Increment position counter on abscissa for Node display.
+    int m_posY; ///< Increment position counter on ordinate for Node display.
+
+    bool debugNodeGraph; ///< parameter to activate graph logs. False by default.
 };
 
 } // namespace qt

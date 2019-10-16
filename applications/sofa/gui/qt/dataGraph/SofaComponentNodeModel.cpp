@@ -12,7 +12,9 @@ SofaComponentNodeModel::SofaComponentNodeModel()
     : NodeDataModel()
     , debugNodeGraph(true)
     , m_SofaObject(nullptr)    
-{}
+{
+    m_uniqName = "EmptyNode";
+}
 
 SofaComponentNodeModel::SofaComponentNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject)
     : NodeDataModel()
@@ -22,7 +24,7 @@ SofaComponentNodeModel::SofaComponentNodeModel(sofa::core::objectmodel::BaseObje
     if (m_SofaObject == nullptr)
     {
         msg_error("SofaComponentNodeModel") << "Sofa BaseObject is null, Node graph initialisation failed.";
-        m_uniqName = "NodeError";
+        m_uniqName = "ErrorNode";
     }
     else
     {
@@ -110,7 +112,7 @@ void SofaComponentNodeModel::parseSofaObjectData()
 
         if (!group.isEmpty())
         {
-            msg_info_when(debugNodeGraph, "SofaComponentNodeModel") << name.toStdString() << " -> " << data->getGroup();           
+            msg_info_when(debugNodeGraph, "SofaComponentNodeModel") << name.toStdString() << " -> " << data->getGroup();
         }
         m_data.push_back(std::pair<QString, QString>(name, QString::fromStdString(data->getValueTypeString())));
     }
@@ -159,5 +161,5 @@ std::shared_ptr<NodeData> SofaComponentNodeModel::outData(PortIndex port)
 
 void SofaComponentNodeModel::setInData(std::shared_ptr<NodeData>, int)
 {
-    //
+    msg_warning("SofaComponentNodeModel") << "Method SofaComponentNodeModel::setInData not yet implemented";
 }

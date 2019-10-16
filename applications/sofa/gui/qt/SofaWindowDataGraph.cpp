@@ -20,21 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SofaWindowDataGraph.h"
-
-#include <QHeaderView>
-#include <QMenu>
-#include <QMessageBox>
+#include "dataGraph/SofaComponentNodeModel.h"
 
 #include <QGridLayout>
-#include <QDebug>
 
-
-#include <nodes/NodeData>
+#include <nodes/FlowView>
 #include <nodes/FlowScene>
 #include <nodes/DataModelRegistry>
 #include <nodes/ConnectionStyle>
 #include <nodes/Node>
-#include "dataGraph/SofaComponentNodeModel.h"
 
 namespace sofa
 {
@@ -117,16 +111,18 @@ SofaWindowDataGraph::SofaWindowDataGraph(QWidget *parent, sofa::simulation::Node
     
     resize(1000, 800);
     
-    createComponentsNode();
+    // start from parsing root node
+    parseSimulationNode(m_rootNode);
 
+    // then connect all data
     connectNodeData();
 
-    m_graphView->scaleDown();
 }
 
 
 SofaWindowDataGraph::~SofaWindowDataGraph()
 {
+    std::cout << "SofaWindowDataGraph::~SofaWindowDataGraph()" << std::endl;
     clearNodeData();
     // todo check if m_graphView need to be deleted. Normally no as child of QtWidget RealGui.
     //delete m_graphView;
@@ -134,8 +130,6 @@ SofaWindowDataGraph::~SofaWindowDataGraph()
 
 void SofaWindowDataGraph::clearNodeData()
 {
-    m_dataLinks.clear();
-
     if (m_graphScene != nullptr)
     {
         msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "clear before: " << m_graphScene->allNodes().size();
@@ -155,16 +149,11 @@ void SofaWindowDataGraph::resetNodeGraph(sofa::simulation::Node* scene)
     m_rootNode = scene;
     clearNodeData();
 
-    createComponentsNode();
-
-    connectNodeData();
-}
-
-void SofaWindowDataGraph::createComponentsNode()
-{
-    //parse Children Node starting from root
+    // start from parsing root node
     parseSimulationNode(m_rootNode);
-    
+
+    // then connect all data
+    connectNodeData();
 }
 
 
@@ -210,6 +199,7 @@ void SofaWindowDataGraph::parseSimulationNode(sofa::simulation::Node* node, int 
         parseSimulationNode(dynamic_cast<sofa::simulation::Node*>(simuNode), m_posX);
     }
 }
+
 
 size_t SofaWindowDataGraph::addSimulationObject(sofa::core::objectmodel::BaseObject* bObject)
 {
@@ -271,12 +261,6 @@ void SofaWindowDataGraph::connectNodeData()
         }        
     }    
 }
-
-void SofaWindowDataGraph::connectNodeLinks()
-{
-
-}
-
 
 } // namespace qt
 
