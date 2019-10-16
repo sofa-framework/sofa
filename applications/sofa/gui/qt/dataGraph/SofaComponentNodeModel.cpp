@@ -8,12 +8,13 @@ NodeDataType SofaComponentNodeData::type() const
 }
 
 
-SofaComponentNodeModel::SofaComponentNodeModel()
+SofaComponentNodeModel::SofaComponentNodeModel(std::string name)
     : NodeDataModel()
     , debugNodeGraph(true)
     , m_SofaObject(nullptr)    
 {
-    m_uniqName = "EmptyNode";
+    m_uniqName = QString::fromStdString(name);
+    m_caption = m_uniqName;
 }
 
 SofaComponentNodeModel::SofaComponentNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject)

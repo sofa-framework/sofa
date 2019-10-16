@@ -49,7 +49,7 @@ class SofaComponentNodeModel : public NodeDataModel
 
 public:
     /// Default empty Object constructor with 0 Data
-    SofaComponentNodeModel();
+    SofaComponentNodeModel(std::string name = "EmptyNode");
 
     /// constructor with a Sofa BaseObject as target
     SofaComponentNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject);

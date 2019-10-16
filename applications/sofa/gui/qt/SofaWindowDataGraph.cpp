@@ -30,6 +30,10 @@
 #include <nodes/ConnectionStyle>
 #include <nodes/Node>
 
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ComponentLibrary.h>
+
+
 namespace sofa
 {
 
@@ -46,12 +50,20 @@ using QtNodes::FlowScene;
 using QtNodes::FlowView;
 using QtNodes::ConnectionStyle;
 
-static std::shared_ptr<DataModelRegistry>
-registerDataModels()
+static std::shared_ptr<DataModelRegistry> registerDataModels()
 {
     auto ret = std::make_shared<DataModelRegistry>();
 
+    std::vector<sofa::core::ClassEntry::SPtr> results;
+    sofa::core::ObjectFactory::getInstance()->getAllEntries(results);
+
     ret->registerModel<SofaComponentNodeModel>();
+    //for (auto compo : results)
+    //{
+    //    std::cout << compo->className << std::endl;
+    //    ret->registerModel<SofaComponentNodeModel>(QString::fromStdString(compo->className));
+    //}
+ 
 
     /*
     We could have more models registered.
