@@ -73,7 +73,7 @@ public:
     Data< Deriv > d_totalForce;
 
     /// S for drawing. The sign changes the direction, 0 doesn't draw arrow
-    Data< SReal > d_arrowSizeCoef;
+    Data< SReal > d_showArrowSize;
 
     /// display color
     Data< defaulttype::RGBAColor > d_color;

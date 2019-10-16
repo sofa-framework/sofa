@@ -53,10 +53,10 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , d_forces(initData(&d_forces, "forces", "applied forces at each point"))
     , d_force(initData(&d_force, "force", "applied force to all points if forces attribute is not specified"))
     , d_totalForce(initData(&d_totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
-    , d_arrowSizeCoef(initData(&d_arrowSizeCoef,SReal(0.0), "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
+    , d_showArrowSize(initData(&d_showArrowSize,SReal(0.0), "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
     , d_color(initData(&d_color, defaulttype::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display (default: [0.2,0.9,0.3,1.0])"))
 {
-    d_arrowSizeCoef.setGroup("Visualization");
+    d_showArrowSize.setGroup("Visualization");
     d_color.setGroup("Visualization");
 }
 
@@ -493,7 +493,7 @@ void ConstantForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::Mul
 template<class DataTypes>
 void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SReal aSC = d_arrowSizeCoef.getValue();
+    const SReal aSC = d_showArrowSize.getValue();
 
     if ((!vparams->displayFlags().getShowForceFields() && (aSC==0.0)) || (aSC < 0.0)) return;
 
