@@ -15,28 +15,36 @@ using QtNodes::NodeDataModel;
 using QtNodes::PortType;
 using QtNodes::PortIndex;
 
+namespace sofa
+{
+    namespace core
+    {
+        namespace objectmodel
+        {
+            class BaseObject;
+            class BaseData;
+        }
+    }
+}
+
 /// The class can potentially incapsulate any user data which
 /// need to be transferred within the Node Editor graph
 class SofaComponentNodeData : public NodeData
 {
 public:
+    SofaComponentNodeData();
+    SofaComponentNodeData(sofa::core::objectmodel::BaseData* bData);
+
     NodeDataType type() const override;
   
+    sofa::core::objectmodel::BaseData* getData();
+
+protected:
+    sofa::core::objectmodel::BaseData* m_bData;
 };
 
 
 static const char* ignoredData[] = { "name", "printLog", "tags", "bbox", "listening", "componentState" };
-
-namespace sofa
-{
-namespace core
-{
-namespace objectmodel
-{
-    class BaseObject;
-}
-}
-}
 
 //------------------------------------------------------------------------------
 /**
@@ -105,7 +113,11 @@ protected:
     bool debugNodeGraph; ///< parameter to activate graph logs. False by default.
 
     /// Vector of Data/port hold by this component/Node. vector of pair{DataName, DataType}
-    std::vector < std::pair < QString, QString> > m_data; 
+    std::vector < std::pair < QString, QString> > m_data;
+
+    /// vector of SofaComponentNodeData class holding pointer to the Data. To replace @sa m_data when api is validated.
+    std::vector < std::shared_ptr<SofaComponentNodeData> > m_Nodedata;
+
     /// Map to store all connection between this node and other. map.key = this data name, map.value = pair{ComponentName, DataName}
     std::map <QString, std::pair < QString, QString> > m_dataConnections;
 

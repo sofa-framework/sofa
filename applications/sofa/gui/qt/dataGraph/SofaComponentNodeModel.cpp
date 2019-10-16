@@ -1,6 +1,24 @@
 #include "SofaComponentNodeModel.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 
+SofaComponentNodeData::SofaComponentNodeData()
+    : m_bData(nullptr)
+{
+
+}
+
+SofaComponentNodeData::SofaComponentNodeData(sofa::core::objectmodel::BaseData* bData)
+    : m_bData(bData)
+{
+
+}
+
+sofa::core::objectmodel::BaseData* SofaComponentNodeData::getData()
+{
+    //m_bData->updateIfDirty(); ??
+    return m_bData;
+}
+
 NodeDataType SofaComponentNodeData::type() const
 {
     return NodeDataType{ "SofaComponentNodeData",
@@ -115,6 +133,7 @@ void SofaComponentNodeModel::parseSofaObjectData()
             msg_info_when(debugNodeGraph, "SofaComponentNodeModel") << name.toStdString() << " -> " << data->getGroup();
         }
         m_data.push_back(std::pair<QString, QString>(name, QString::fromStdString(data->getValueTypeString())));
+        m_Nodedata.push_back(std::make_shared<SofaComponentNodeData>(data));
     }
 }
 
