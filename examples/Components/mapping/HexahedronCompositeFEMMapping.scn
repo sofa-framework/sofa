@@ -17,7 +17,7 @@
             <MechanicalObject src="@loader" />
             <HexahedronCompositeFEMMapping/>
             <Node name="f1">
-                <ConstantForceField indices="340" forces="1000 8000 0" arrowSizeCoef=".001" />
+                <ConstantForceField indices="340" forces="1000 8000 0" showArrowSize=".001" />
             </Node>
             <Node name="Visu2">
                 <MeshObjLoader name="meshLoader_3" filename="mesh/grape_out.obj" handleSeams="1" />
@@ -44,7 +44,7 @@
             <MechanicalObject src="@loader"/>
             <BarycentricMapping/>
             <Node name="f2">
-                <ConstantForceField indices="340" forces="1000 8000 0" arrowSizeCoef=".001" />
+                <ConstantForceField indices="340" forces="1000 8000 0" showArrowSize=".001" />
             </Node>
             <Node name="Visu2">
                 <MeshObjLoader name="meshLoader_4" filename="mesh/grape_out.obj" handleSeams="1" />

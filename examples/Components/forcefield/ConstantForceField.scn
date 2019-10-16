@@ -10,7 +10,7 @@
         <MeshTopology triangles="0 1 2  0 2 3" />
         <!--		<FixedConstraint indices="2 3"/>-->
         <TriangleFEMForceField name="FEM0" youngModulus="100" poissonRatio="0.3" method="large" />
-        <ConstantForceField indices="0 1 2 3" forces="-1 -1 0  1 -1 0  1 1 0  -1 1 0" arrowSizeCoef="1" printLog="1"/>
+        <ConstantForceField indices="0 1 2 3" forces="-1 -1 0  1 -1 0  1 1 0  -1 1 0" showArrowSize="0.5" printLog="1"/>
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
             <IdentityMapping input="@.." output="@Visual" />
