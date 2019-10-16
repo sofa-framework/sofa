@@ -150,7 +150,7 @@ TetrahedronDiffusionFEMForceField<DataTypes>::TetrahedronDiffusionFEMForceField(
       d_transverseAnisotropyDirectionArray(initData(&d_transverseAnisotropyDirectionArray, "transverseAnisotropyArray","Data to handle topology on tetrahedra")),
       d_tagMeshMechanics(initData(&d_tagMeshMechanics, std::string("meca"),"tagMechanics","Tag of the Mechanical Object.")),
       d_drawConduc( initData(&d_drawConduc, (bool)false, "drawConduc","To display conductivity map."))
-    , l_topologyLink(initLink("topology", "link to the topology container"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {
     this->f_listening.setValue(true);
@@ -171,17 +171,17 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
 {
     this->Inherited::init();
 
-    if (l_topologyLink.empty())
+    if (l_topology.empty())
     {
         msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topologyLink.set(this->getContext()->getMeshTopology());
+        l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topologyLink.get();
+    m_topology = l_topology.get();
 
     if (m_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath();
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
         this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }

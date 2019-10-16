@@ -150,13 +150,13 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
     }
 
 
-    if (l_topologyLink.empty())
+    if (l_topology.empty())
     {
         msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topologyLink.set(this->getContext()->getMeshTopology());
+        l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    _topology = l_topologyLink.get();
+    _topology = l_topology.get();
     
     if(_topology){
         msg_error(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"

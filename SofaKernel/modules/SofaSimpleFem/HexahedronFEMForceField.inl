@@ -72,7 +72,7 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
     , f_drawPercentageOffset(initData(&f_drawPercentageOffset,(Real)0.15,"drawPercentageOffset","size of the hexa"))
     , needUpdateTopology(false)
-    , l_topologyLink(initLink("topology", "link to the topology container"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , _elementStiffnesses(initData(&_elementStiffnesses,"stiffnessMatrices", "Stiffness matrices per element (K_i)"))
     , m_topology(nullptr)
     , _sparseGrid(nullptr)
@@ -120,17 +120,17 @@ void HexahedronFEMForceField<DataTypes>::init()
 
     this->core::behavior::ForceField<DataTypes>::init();
 
-    if (l_topologyLink.empty())
+    if (l_topology.empty())
     {
         msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topologyLink.set(this->getContext()->getMeshTopology());
+        l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topologyLink.get();
+    m_topology = l_topology.get();
 
     if (m_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath() << ". Object must have a MeshTopology.";
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ". Object must have a MeshTopology.";
         this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }

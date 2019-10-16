@@ -182,7 +182,7 @@ public:
     Data< bool> d_useSymmetricAssembly; ///< use symmetric assembly of the matrix K
 
     /// Link to be set to the topology container in the component graph.
-    SingleLink<BeamFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topologyLink;
+    SingleLink<BeamFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
  protected:
     bool m_partialListSegment;

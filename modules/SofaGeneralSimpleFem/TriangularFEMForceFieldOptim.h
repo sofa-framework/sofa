@@ -301,12 +301,12 @@ public:
     TFEMFFOTriangleStateHandler* triangleStateHandler;
 
     /// Link to be set to the topology container in the component graph. 
-    SingleLink<TriangularFEMForceFieldOptim<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topologyLink;
+    SingleLink<TriangularFEMForceFieldOptim<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     Real drawPrevMaxStress;
 
-    /// Pointer to the topology container. Will be set by link @sa l_topologyLink
+    /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
 };
 

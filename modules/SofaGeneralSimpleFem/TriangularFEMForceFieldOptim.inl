@@ -83,7 +83,7 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , d_showStressVector(initData(&d_showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
     , d_showStressMaxValue(initData(&d_showStressMaxValue,(Real)0.0,"showStressMaxValue","Max value for rendering of stress values"))
     , drawPrevMaxStress((Real)-1.0)
-    , l_topologyLink(initLink("topology", "link to the topology container"))
+    , l_topology(initLink("topology", "link to the topology container"))
 {
     triangleInfoHandler = new TFEMFFOTriangleInfoHandler(this, &d_triangleInfo);
     triangleStateHandler = new TFEMFFOTriangleStateHandler(this, &d_triangleState);
@@ -109,16 +109,16 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
 {
     this->Inherited::init();
 
-    if (l_topologyLink.empty())
+    if (l_topology.empty())
     {
         msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topologyLink.set(this->getContext()->getMeshTopology());
+        l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topologyLink.get();
+    m_topology = l_topology.get();
     if (m_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath();
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
         sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }

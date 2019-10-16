@@ -182,12 +182,12 @@ public:
     Data<std::map < std::string, sofa::helper::vector<double> > > _volumeGraph;
 
     /// Link to be set to the topology container in the component graph. 
-    SingleLink<TetrahedralCorotationalFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topologyLink;
+    SingleLink<TetrahedralCorotationalFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     TetrahedralCorotationalFEMForceField();
     TetrahedronHandler* tetrahedronHandler;
 
-    /// Pointer to the topology container. Will be set by link @sa l_topologyLink
+    /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
 public:
 

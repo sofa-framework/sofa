@@ -145,7 +145,7 @@ public:
       Data <bool> d_drawConduc;
 
       /// Link to be set to the topology container in the component graph. 
-      SingleLink<TetrahedronDiffusionFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topologyLink;
+      SingleLink<TetrahedronDiffusionFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 
 protected:

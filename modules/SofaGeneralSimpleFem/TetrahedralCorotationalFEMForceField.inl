@@ -95,7 +95,7 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , drawColor2(initData(&drawColor2,defaulttype::Vec4f(0.0f,0.5f,1.0f,1.0f),"drawColor2"," draw color for faces 2"))
     , drawColor3(initData(&drawColor3,defaulttype::Vec4f(0.0f,1.0f,1.0f,1.0f),"drawColor3"," draw color for faces 3"))
     , drawColor4(initData(&drawColor4,defaulttype::Vec4f(0.5f,1.0f,1.0f,1.0f),"drawColor4"," draw color for faces 4"))
-    , l_topologyLink(initLink("topology", "link to the topology container"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , tetrahedronHandler(nullptr)
 {
     this->addAlias(&_assembling, "assembling");
@@ -111,17 +111,17 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 {
     this->core::behavior::ForceField<DataTypes>::init();
 
-    if (l_topologyLink.empty())
+    if (l_topology.empty())
     {
         msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topologyLink.set(this->getContext()->getMeshTopology());
+        l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topologyLink.get();
+    m_topology = l_topology.get();
 
     if (m_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath() << ". This FEM needs to rely on a Tetrahedral Topology.";
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ". This FEM needs to rely on a Tetrahedral Topology.";
         this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }

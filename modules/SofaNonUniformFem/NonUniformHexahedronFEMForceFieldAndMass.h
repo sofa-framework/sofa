@@ -84,7 +84,7 @@ public:
     Data<Real> d_totalMass;
 
     /// Link to be set to the topology container in the component graph. 
-    SingleLink<NonUniformHexahedronFEMForceFieldAndMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topologyLink;
+    SingleLink<NonUniformHexahedronFEMForceFieldAndMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     NonUniformHexahedronFEMForceFieldAndMass();
 

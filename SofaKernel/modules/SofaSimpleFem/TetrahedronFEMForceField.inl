@@ -74,7 +74,7 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
     , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
     , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
-    , l_topologyLink(initLink("topology", "link to the tetrahedron topology container"))
+    , l_topology(initLink("topology", "link to the tetrahedron topology container"))
 {
     _poissonRatio.setRequired(true);
     _youngModulus.setRequired(true);
@@ -1352,18 +1352,18 @@ void TetrahedronFEMForceField<DataTypes>::init()
     this->core::behavior::ForceField<DataTypes>::init();
 
     /// Take the user provide topology.
-    if (l_topologyLink.empty())
+    if (l_topology.empty())
     {
         msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topologyLink.set(this->getContext()->getMeshTopology());
+        l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topologyLink.get();
+    m_topology = l_topology.get();
 
     /// If not possible try to find one in the current context.
     if (m_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath() << " object must have a mesh topology. The component is inactivated.  "
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << " object must have a mesh topology. The component is inactivated.  "
             "To remove this error message please add a topology component to your scene.";
         this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
 

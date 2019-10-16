@@ -61,7 +61,7 @@ public:
     void reinit(Main* m)
     {
 
-        const Main::VecElement& triangles = m->l_topologyLink.get()->getTriangles();
+        const Main::VecElement& triangles = m->l_topology.get()->getTriangles();
         helper::WriteAccessor< VecGPUTriangleInfo > gpuTriangleInfo = this->gpuTriangleInfo;
 
         gpuTriangleInfo.resize(triangles.size());

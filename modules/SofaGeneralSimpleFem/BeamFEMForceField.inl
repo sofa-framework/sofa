@@ -88,7 +88,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , d_radiusInner(initData(&d_radiusInner,(Real)radiusInner,"radiusInner","inner radius of the section for hollow beams"))
     , d_listSegment(initData(&d_listSegment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
     , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
-    , l_topologyLink(initLink("topology", "link to the topology container"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , m_partialListSegment(false)
     , m_updateStiffnessMatrix(true)
     , m_assembling(false)
@@ -122,17 +122,17 @@ void BeamFEMForceField<DataTypes>::init()
 {
     Inherit1::init();
     
-    if (l_topologyLink.empty())
+    if (l_topology.empty())
     {
         msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topologyLink.set(this->getContext()->getMeshTopology());
+        l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topologyLink.get();
+    m_topology = l_topology.get();
 
     if (m_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topologyLink.getLinkedPath() << ". Object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)";
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ". Object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)";
         this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }

@@ -134,7 +134,7 @@ public:
     bool needUpdateTopology;
 
     /// Link to be set to the topology container in the component graph. 
-    SingleLink<HexahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topologyLink;
+    SingleLink<HexahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 public:
     void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
     void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
@@ -188,7 +188,7 @@ protected:
     CompressedMatrix _stiffnesses;
     SReal m_potentialEnergy;
 
-    sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the topology container. Will be set by link @sa l_topologyLink
+    sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the topology container. Will be set by link @sa l_topology
     topology::SparseGridTopology* _sparseGrid;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
