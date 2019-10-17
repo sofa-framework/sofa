@@ -49,21 +49,20 @@ extern "C" {
 void initExternalModule()
 {
     static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    if(!first) return;
+    first = false;
+
+/// TODO: remove SofaAllCommonComponents backward compatibility at SOFA v20.06
+#ifdef SOFACOMPONENTALL_USING_DEPRECATED_NAME
+    msg_deprecated("SofaAllCommonComponents") << "This plugin was renamed into SofaComponentAll. Backward compatiblity will be stopped at SOFA v20.06";
+    return;
+#endif
 
     sofa::component::initComponentBase();
     sofa::component::initComponentCommon();
     sofa::component::initComponentGeneral();
     sofa::component::initComponentAdvanced();
     sofa::component::initComponentMisc();
-
-/// TODO: remove SofaAllCommonComponents backward compatibility at SOFA v20.06
-#ifdef SOFACOMPONENTALL_USING_DEPRECATED_NAME
-    msg_deprecated("SofaAllCommonComponents") << "This plugin was renamed into SofaComponentAll. Backward compatiblity will be stopped at SOFA v20.06";
-#endif
 }
 
 const char* getModuleName()
