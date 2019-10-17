@@ -23,6 +23,8 @@
 #define SOFA_COMPONENT_MISC_PARTICLESOURCE_INL
 #include <SofaSphFluid/config.h>
 #include <SofaSphFluid/ParticleSource.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
 
 namespace sofa
 {
@@ -46,11 +48,10 @@ ParticleSource<DataTypes>::ParticleSource()
     , d_canHaveEmptyVector(initData(&d_canHaveEmptyVector, (bool)false, "canHaveEmptyVector", ""))
     , m_numberParticles(0)
     , m_lastparticles(initData(&m_lastparticles, "lastparticles", "lastparticles indices"))
+    , m_pointHandler(nullptr)
 {
     this->f_listening.setValue(true);
-    d_center.beginEdit()->push_back(Coord()); d_center.endEdit();
-
-    m_pointHandler = new PSPointHandler(this, &m_lastparticles);
+    d_center.beginEdit()->push_back(Coord()); d_center.endEdit();    
 }
 
 
@@ -74,40 +75,19 @@ void ParticleSource<DataTypes>::init()
     m_numberParticles = d_center.getValue().size();
     m_lastTime = d_start.getValue() - d_delay.getValue();
     m_maxdist = 0;
-    //lastparticle = -1;
     m_lastpos.resize(m_numberParticles);
 
     sofa::core::topology::BaseMeshTopology* _topology = this->getContext()->getMeshTopology();
     if (_topology != nullptr)
     {
+        m_pointHandler = new PSPointHandler(this, &m_lastparticles);
         m_lastparticles.createTopologicalEngine(_topology, m_pointHandler);
         m_lastparticles.registerTopologicalData();
     }
 
-    msg_info() << "ParticleSource: center = " << d_center.getValue()
-        << " radius = " << d_radius.getValue() << " delay = " << d_delay.getValue()
-        << " start = " << d_start.getValue() << " stop = " << d_stop.getValue();
-    /*
-    int i0 = mstate->getSize();
-
-    if (!d_canHaveEmptyVector.getValue())
-    {
-    // ignore the first point if it is the only one
-    if (i0 == 1)
-    i0 = 0;
-    }
-
-    int ntotal = i0 + ((int)((d_stop.getValue() - d_start.getValue() - d_delay.getValue()) / d_delay.getValue())) * N;
-
-    if (ntotal > 0)
-    {
-    this->mstate->resize(ntotal);
-    if (!d_canHaveEmptyVector.getValue())
-    this->mstate->resize((i0==0) ? 1 : i0);
-    else
-    this->mstate->resize(i0);
-    }
-    */
+    msg_info() << "ParticleSource: center = " << d_center.getValue();
+    msg_info() << " radius = " << d_radius.getValue() << " m_numberParticles = " << m_numberParticles;
+    msg_info() << " start = " << d_start.getValue() << " stop = " << d_stop.getValue() << " delay = " << d_delay.getValue();
 }
 
 
@@ -118,7 +98,7 @@ void ParticleSource<DataTypes>::reset()
     m_lastTime = d_start.getValue() - d_delay.getValue();
     m_maxdist = 0;
 
-    helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles; ///< lastparticles indices
+    helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;
     _lastparticles.clear();
     m_lastpos.clear();
 }
@@ -184,8 +164,7 @@ void ParticleSource<DataTypes>::projectVelocity(const sofa::core::MechanicalPara
 
 template<class DataTypes>
 void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
-{
-    //msg_info() << "ParticleSource: animate begin time="<<time<<sendl;
+{    
     if (!this->mstate)
         return;
 
@@ -198,7 +177,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         return;
     }
 
-    int i0 = this->mstate->getSize();
+    int i0 = this->mstate->getSize();    
 
     if (!d_canHaveEmptyVector.getValue())
     {
@@ -207,10 +186,11 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
             i0 = 0;
     }
 
-    int nbParticlesToCreate = (int)((time - m_lastTime) / d_delay.getValue());
-
+    int nbParticlesToCreate = (int)((time - m_lastTime) / d_delay.getValue());    
     if (nbParticlesToCreate > 0)
     {
+        msg_info() << "ParticleSource: animate begin time= " << time << " | size: " << i0 << sendl;
+        msg_info() << "nbParticlesToCreate: " << nbParticlesToCreate << " m_maxdist: " << m_maxdist;
         helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles; ///< lastparticles indices
 
         helper::vector< Coord > newX;
@@ -275,7 +255,6 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
             this->mstate->resize(i0 + nbParticlesToCreate);
         }
 
-        //VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         helper::WriteAccessor< Data<VecCoord> > x = *this->mstate->write(core::VecCoordId::position());
         helper::WriteAccessor< Data<VecDeriv> > v = *this->mstate->write(core::VecDerivId::velocity());
         for (int s = 0; s < nbParticlesToCreate; ++s)
@@ -301,11 +280,16 @@ void ParticleSource<DataTypes>::handleEvent(sofa::core::objectmodel::Event* even
 template<class DataTypes>
 void ParticleSource<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    if (!this->mstate) return;
-    if (m_lastparticles.getValue().empty()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels())
+        return;
+
+    if (!this->mstate || m_lastparticles.getValue().empty())
+        return;
+
     double time = this->getContext()->getTime();
-    if (time < d_start.getValue() || time > d_stop.getValue()) return;
+    if (time < d_start.getValue() || time > d_stop.getValue()) 
+        return;
+
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
 
     std::vector< sofa::defaulttype::Vector3 > points;

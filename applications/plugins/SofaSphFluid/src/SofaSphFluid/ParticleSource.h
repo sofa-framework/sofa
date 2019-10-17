@@ -24,19 +24,9 @@
 #include <SofaSphFluid/config.h>
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
-#include <sofa/core/topology/TopologyChange.h>
-#include <vector>
-#include <iterator>
-#include <iostream>
-#include <ostream>
-#include <algorithm>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
