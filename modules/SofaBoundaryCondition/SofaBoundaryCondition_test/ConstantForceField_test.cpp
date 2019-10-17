@@ -186,7 +186,7 @@ struct ConstantForceField_test : public Sofa_test<>
         /// List of the supported attributes the user expect to find
         /// This list needs to be updated if you add an attribute.
         vector<string> attrnames = {
-            "indices","forces","force","totalForce","arrowSizeCoef","showColor","indexFromEnd"
+            "indices","forces","force","totalForce","showArrowSize","showColor","indexFromEnd"
         };
 
         for(auto& attrname : attrnames)
