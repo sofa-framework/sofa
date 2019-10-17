@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <Node dt="0.01" gravity="0 -10 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="SofaSphFluid"/>
@@ -7,7 +8,7 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         
-        <RegularGrid nx="5" ny="40" nz="5" xmin="-1.5" xmax="0" ymin="-3" ymax="12" zmin="-1.5" zmax="0" drawEdges="0"/>
+        <RegularGridTopology nx="5" ny="40" nz="5" xmin="-1.5" xmax="0" ymin="-3" ymax="12" zmin="-1.5" zmax="0" drawEdges="0"/>
         <MechanicalObject name="MModel" />
         <UniformMass name="M1" vertexMass="1" />
         <SpatialGridContainer cellWidth="0.75"/>
