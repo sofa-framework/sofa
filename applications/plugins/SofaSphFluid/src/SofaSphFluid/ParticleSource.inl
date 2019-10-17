@@ -107,8 +107,25 @@ void ParticleSource<DataTypes>::reset()
 template<class DataTypes>
 void ParticleSource<DataTypes>::projectResponse(const sofa::core::MechanicalParams* mparams, DataVecDeriv& dxData)
 {
+    if (!this->mstate || m_lastparticles.getValue().empty()) {
+        return;
+    }
+    
+    double time = this->getContext()->getTime(); // nothing to do yet or anymore
+    if (time < d_start.getValue() || time > d_stop.getValue()) {
+        return;
+    }
+
     VecDeriv& dx = *dxData.beginEdit(mparams);
-    projectResponseT(dx);
+    helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;
+    for (unsigned int s = 0; s<_lastparticles.size(); s++)
+    {
+        //HACK: TODO understand why these conditions can be reached
+        if (_lastparticles[s] >= (unsigned int)this->mstate->getSize()) 
+            continue;
+
+        dx[_lastparticles[s]] = Deriv();
+    }    
     dxData.endEdit(mparams);
 }
 
@@ -116,21 +133,25 @@ void ParticleSource<DataTypes>::projectResponse(const sofa::core::MechanicalPara
 template<class DataTypes>
 void ParticleSource<DataTypes>::projectPosition(const sofa::core::MechanicalParams* mparams, DataVecCoord& xData)
 {
-    if (!this->mstate) return;
-    if (m_lastparticles.getValue().empty()) return;
+    if (!this->mstate || m_lastparticles.getValue().empty()) {
+        return;
+    }
+    
+    double time = this->getContext()->getTime(); // nothing to do yet or anymore
+    if (time < d_start.getValue() || time > d_stop.getValue()) {
+        return;
+    }
 
-    VecCoord& x = *xData.beginEdit(mparams);
-
-    double time = this->getContext()->getTime();
-    if (time < d_start.getValue() || time > d_stop.getValue()) return;
+    // constraint the most recent particles
+    VecCoord& x = *xData.beginEdit(mparams);       
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
-
-    helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles; ///< lastparticles indices
-                                                                                // constraint the most recent particles
+    helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;                                                                                
     for (unsigned int s = 0; s < _lastparticles.size(); s++)
     {
         //HACK: TODO understand why these conditions can be reached
-        if (s >= m_lastpos.size() || _lastparticles[s] >= x.size()) continue;
+        if (s >= m_lastpos.size() || _lastparticles[s] >= x.size()) 
+            continue;
+
         x[_lastparticles[s]] = m_lastpos[s];
         x[_lastparticles[s]] += dpos; // account for particle initial motion
     }
@@ -140,22 +161,25 @@ void ParticleSource<DataTypes>::projectPosition(const sofa::core::MechanicalPara
 
 template<class DataTypes>
 void ParticleSource<DataTypes>::projectVelocity(const sofa::core::MechanicalParams* mparams, DataVecDeriv&  vData)
-{
-    if (!this->mstate) return;
-    if (m_lastparticles.getValue().empty()) return;
+{    
+    if (!this->mstate || m_lastparticles.getValue().empty()) {
+        return;
+    }
 
-    VecDeriv& res = *vData.beginEdit(mparams);
-
-    double time = this->getContext()->getTime();
-    if (time < d_start.getValue() || time > d_stop.getValue()) return;
-    // constraint the most recent particles
+    double time = this->getContext()->getTime(); // nothing to do yet or anymore
+    if (time < d_start.getValue() || time > d_stop.getValue()) {
+        return;
+    }
+    
+    // constraint the most recent particles with the initial Velocity
+    VecDeriv& res = *vData.beginEdit(mparams);    
     Deriv v0 = d_velocity.getValue();
-
-    helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles; ///< lastparticles indices
+    helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;
     for (unsigned int s = 0; s<_lastparticles.size(); s++)
     {
         //HACK: TODO understand why these conditions can be reached
-        if (_lastparticles[s] >= res.size()) continue;
+        if (_lastparticles[s] >= res.size()) 
+            continue;
         res[_lastparticles[s]] = v0;
     }
     vData.endEdit(mparams);

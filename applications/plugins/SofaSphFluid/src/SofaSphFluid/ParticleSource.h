@@ -129,31 +129,32 @@ public:
 
     virtual void animateBegin(double /*dt*/, double time);
     
-    template <class DataDeriv>
-    void projectResponseT(DataDeriv& res) ///< project dx to constrained space
-    {
-        if (!this->mstate) return;
-        if (m_lastparticles.getValue().empty()) return;
-        //msg_info() << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<sendl;
-        double time = this->getContext()->getTime();
-        if (time < d_start.getValue() || time > d_stop.getValue()) return;
+    //template <class DataDeriv>
+    //void projectResponseT(DataDeriv& res) ///< project dx to constrained space
+    //{
+    //    msg_info() << "ParticleSource<DataTypes>::projectResponseT()";
+    //    if (!this->mstate) return;
+    //    if (m_lastparticles.getValue().empty()) return;
+    //    //msg_info() << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<sendl;
+    //    double time = this->getContext()->getTime();
+    //    if (time < d_start.getValue() || time > d_stop.getValue()) return;
 
-        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles; ///< lastparticles indices
-        // constraint the last value
-        for (unsigned int s=0; s<_lastparticles.size(); s++)
-        {
-            //HACK: TODO understand why these conditions can be reached
-            if (_lastparticles[s] >= (unsigned int) this->mstate->getSize()) continue;
+    //    helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles; ///< lastparticles indices
+    //    // constraint the last value
+    //    for (unsigned int s=0; s<_lastparticles.size(); s++)
+    //    {
+    //        //HACK: TODO understand why these conditions can be reached
+    //        if (_lastparticles[s] >= (unsigned int) this->mstate->getSize()) continue;
 
-            res[_lastparticles[s]] = Deriv();
-        }
-    }
+    //        res[_lastparticles[s]] = Deriv();
+    //    }
+    //}
 
-    using core::behavior::ProjectiveConstraintSet<DataTypes>::projectResponse;
-    void projectResponse(VecDeriv& dx)
-    {
-        projectResponseT(dx);
-    }
+    //using core::behavior::ProjectiveConstraintSet<DataTypes>::projectResponse;
+    //void projectResponse(VecDeriv& dx)
+    //{
+    //    projectResponseT(dx);
+    //}
 
     void projectResponse(const sofa::core::MechanicalParams* mparams, DataVecDeriv& dxData) override; ///< project dx to constrained space
         
