@@ -65,27 +65,24 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
+    //int lastparticle;
+    typedef typename VecCoord::template rebind<unsigned int>::other VecIndex;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
-
-
 
     ParticleSource();
 
     virtual ~ParticleSource();
 
+    void init() override;
+
+    void reset() override;
+
+
     Real rrand()
     {
         return (Real)(rand()*1.0 / RAND_MAX);
     }
-
-    int N;
-    Real lasttime;
-    Real maxdist;
-    //int lastparticle;
-    typedef typename VecCoord::template rebind<unsigned int>::other VecIndex;
-    sofa::component::topology::PointSubsetData< VecIndex > lastparticles; ///< lastparticles indices
-    VecCoord lastpos;
 
     class PSPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, VecIndex >
     {
@@ -109,7 +106,7 @@ public:
                     //ps->lastparticles.getArray().erase(it);
                      helper::removeValue(ps->lastparticles,(unsigned int)index);
                  }*/
-                VecIndex& _lastparticles = *ps->lastparticles.beginEdit();
+                VecIndex& _lastparticles = *ps->m_lastparticles.beginEdit();
 
                 unsigned int size = _lastparticles.size();
                 for (unsigned int i = 0; i < size; ++i)
@@ -119,14 +116,14 @@ public:
                         if (i < size-1)
                         {
                             _lastparticles[i] = _lastparticles[size-1];
-                            ps->lastpos[i] = ps->lastpos[size-1];
+                            ps->m_lastpos[i] = ps->m_lastpos[size-1];
                         }
                         _lastparticles.pop_back();
-                        ps->lastpos.pop_back();
+                        ps->m_lastpos.pop_back();
                         return;
                     }
                 }
-                ps->lastparticles.endEdit();
+                ps->m_lastparticles.endEdit();
             }
         }
 
@@ -140,24 +137,18 @@ public:
     };
 
 
-    void init() override;
-        
-    void reset() override;
-   
     virtual void animateBegin(double /*dt*/, double time);
     
-    
-
     template <class DataDeriv>
     void projectResponseT(DataDeriv& res) ///< project dx to constrained space
     {
         if (!this->mstate) return;
-        if (lastparticles.getValue().empty()) return;
+        if (m_lastparticles.getValue().empty()) return;
         //msg_info() << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<sendl;
         double time = this->getContext()->getTime();
-        if (time < f_start.getValue() || time > f_stop.getValue()) return;
+        if (time < d_start.getValue() || time > d_stop.getValue()) return;
 
-        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->lastparticles; ///< lastparticles indices
+        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles; ///< lastparticles indices
         // constraint the last value
         for (unsigned int s=0; s<_lastparticles.size(); s++)
         {
@@ -186,35 +177,36 @@ public:
 
     }
 
-    virtual void animateEnd(double /*dt*/, double /*time*/)
-    {
-
-    }
-
     void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
 public:
-    Data< Coord > f_translation; ///< translation applied to center(s)
-    Data< Real > f_scale; ///< scale applied to center(s)
-    Data< helper::vector<Coord> > f_center; ///< Source center(s)
-    Data< Coord > f_radius; ///< Source radius
-    Data< Deriv > f_velocity; ///< Particle initial velocity
-    Data< Real > f_delay; ///< Delay between particles creation
-    Data< Real > f_start; ///< Source starting time
-    Data< Real > f_stop; ///< Source stopping time
-    Data< bool > f_canHaveEmptyVector;
+    Data< Coord > d_translation; ///< translation applied to center(s)
+    Data< Real > d_scale; ///< scale applied to center(s)
+    Data< helper::vector<Coord> > d_center; ///< Source center(s)
+    Data< Coord > d_radius; ///< Source radius
+    Data< Deriv > d_velocity; ///< Particle initial velocity
+    Data< Real > d_delay; ///< Delay between particles creation
+    Data< Real > d_start; ///< Source starting time
+    Data< Real > d_stop; ///< Source stopping time
+    Data< bool > d_canHaveEmptyVector;
 
-protected:
-    PSPointHandler* pointHandler;
+protected:    
+    int m_numberParticles; ///< Number particles given by the initial particles size
+    Real m_lastTime; ///< Last time particle have been computed
+    Real m_maxdist;
+
+    sofa::component::topology::PointSubsetData< VecIndex > m_lastparticles; ///< lastparticles indices
+    VecCoord m_lastpos;
+
+    PSPointHandler* m_pointHandler;
 
 };
 
 #if !defined(SOFA_COMPONENT_MISC_PARTICLESOURCE_CPP)
 extern template class SOFA_SPH_FLUID_API ParticleSource<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_SPH_FLUID_API ParticleSource<sofa::defaulttype::Vec2Types>;
-
 #endif
 
 } // namespace misc
