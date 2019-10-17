@@ -28,6 +28,8 @@
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaComponentMisc/initComponentMisc.h>
 
+#include <sofa/helper/logging/Messaging.h>
+
 namespace sofa
 {
 
@@ -57,6 +59,11 @@ void initExternalModule()
     sofa::component::initComponentGeneral();
     sofa::component::initComponentAdvanced();
     sofa::component::initComponentMisc();
+
+/// TODO: remove SofaAllCommonComponents backward compatibility at SOFA v20.06
+#ifdef SOFACOMPONENTALL_USING_DEPRECATED_NAME
+    msg_deprecated("SofaAllCommonComponents") << "This plugin was renamed into SofaComponentAll. Backward compatiblity will be stopped at SOFA v20.06";
+#endif
 }
 
 const char* getModuleName()
