@@ -313,7 +313,7 @@ public:
             this->getContext()->get(pointMod);
 
             // Particles creation.
-            if (pointMod != NULL)
+            if (pointMod != nullptr)
             {
                 int n = i0 + nbParticlesToCreate - this->mstate->getSize();
 

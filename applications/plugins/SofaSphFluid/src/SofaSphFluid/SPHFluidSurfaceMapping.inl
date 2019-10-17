@@ -52,8 +52,8 @@ SPHFluidSurfaceMapping<In, Out>::SPHFluidSurfaceMapping()
     , d_mStep(initData(&d_mStep, 0.5, "step", "Step"))
     , d_mRadius(initData(&d_mRadius, 2.0, "radius", "Radius"))
     , d_mIsoValue(initData(&d_mIsoValue, 0.5, "isoValue", "Iso Value"))
-    , sph(NULL)
-    , grid(NULL)
+    , sph(nullptr)
+    , grid(nullptr)
     , firstApply(true)
 {
 
@@ -257,7 +257,7 @@ void SPHFluidSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
     //if toModel is not a VisualModelImpl
     //(consequently, it does not have any normal vector)
 
-    if(normals_data == NULL)
+    if(normals_data == nullptr)
     {
         normals = new OutVecDeriv();
     }
@@ -459,7 +459,7 @@ void SPHFluidSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
         }
     }
 
-    if (normals_data == NULL)
+    if (normals_data == nullptr)
     {
         std::cout << "no Normal data" << std::endl;
         delete normals;

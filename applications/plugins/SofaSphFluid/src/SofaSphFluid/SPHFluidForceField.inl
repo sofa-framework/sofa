@@ -51,7 +51,7 @@ SPHFluidForceField<DataTypes>::SPHFluidForceField()
     , d_viscosityType(initData(&d_viscosityType, 1, "viscosityType", "0 = none, 1 = default d_viscosity using kernel Laplacian, 2 = artificial d_viscosity"))
     , d_surfaceTensionType(initData(&d_surfaceTensionType, 1, "surfaceTensionType", "0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007"))
     , d_debugGrid(initData(&d_debugGrid, false, "debugGrid", "If true will store additionnal information on the grid to check neighbors and draw them"))
-    , m_grid(NULL)
+    , m_grid(nullptr)
 {
 
 }
@@ -72,7 +72,7 @@ void SPHFluidForceField<DataTypes>::init()
     sout << sendl;
 
     this->getContext()->get(m_grid); //new Grid(d_particleRadius.getValue());
-    if (m_grid==NULL)
+    if (m_grid==nullptr)
         msg_error() << "SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!";
 
     const unsigned n = this->mstate->getSize();
@@ -147,7 +147,7 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
 
     // First compute the neighbors
     // This is an O(n2) step, except if a hash-grid is used to optimize it
-    if (m_grid == NULL)
+    if (m_grid == nullptr)
     {
         for (int i=0; i<n; i++)
         {

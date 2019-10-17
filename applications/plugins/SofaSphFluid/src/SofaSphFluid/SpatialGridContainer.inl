@@ -66,7 +66,7 @@ template<class DataTypes>
 typename SpatialGrid<DataTypes>::Grid* SpatialGrid<DataTypes>::getGrid(const Key& k)
 {
     Grid* & g = map[k];
-    if (g == NULL)
+    if (g == nullptr)
     {
         g = new Grid;
         Grid* g2;
@@ -525,12 +525,12 @@ void SpatialGrid<DataTypes>::reorderIndices(helper::vector<unsigned int>* old2ne
             for (typename std::list<Entry>::iterator it = c->plist.begin(), itend = c->plist.end(); it != itend; ++it)
             {
                 unsigned int old = it->index;
-                if (old2new != NULL)
+                if (old2new != nullptr)
                 {
                     if (old >= old2new->size()) old2new->resize(old+1);
                     (*old2new)[old] = next;
                 }
-                if (new2old != NULL)
+                if (new2old != nullptr)
                 {
                     if (next >= new2old->size()) new2old->resize(next+1);
                     (*new2old)[next] = old;
@@ -662,12 +662,12 @@ void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
 
 template<class DataTypes>
 SpatialGridContainer<DataTypes>::SpatialGridContainer()
-    : grid(NULL)
+    : grid(nullptr)
     , d_cellWidth(initData(&d_cellWidth, (Real)1.0, "cellWidth", "Width each cell in the grid. If it is used to compute neighboors, it should be greater than the max radius considered."))
     , d_showGrid(initData(&d_showGrid, false, "showGrid", "activate rendering of the grid"))
     , d_autoUpdate(initData(&d_autoUpdate, false, "autoUpdate", "Automatically update the grid at each iteration."))
     , d_sortPoints(initData(&d_sortPoints, false, "sortPoints", "Sort points depending on which cell they are in the grid. This is required for efficient collision detection."))
-    , mstate(NULL)
+    , mstate(nullptr)
 {
     this->f_listening.setValue(true);
 }
@@ -675,7 +675,7 @@ SpatialGridContainer<DataTypes>::SpatialGridContainer()
 template<class DataTypes>
 SpatialGridContainer<DataTypes>::~SpatialGridContainer()
 {
-    if (grid != NULL)
+    if (grid != nullptr)
         delete grid;
 }
 
@@ -689,9 +689,9 @@ void SpatialGridContainer<DataTypes>::init()
 template<class DataTypes>
 void SpatialGridContainer<DataTypes>::reinit()
 {
-    if (grid == NULL || grid->getCellWidth() != d_cellWidth.getValue())
+    if (grid == nullptr || grid->getCellWidth() != d_cellWidth.getValue())
     {
-        if (grid != NULL)
+        if (grid != nullptr)
             delete grid;
         grid = new Grid(d_cellWidth.getValue());
     }
@@ -748,7 +748,7 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
     else
     {
         MechanicalObject<DataTypes>* object = dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate);
-        if (object != NULL)
+        if (object != nullptr)
         {
             msg_info() << "sortPoints(): renumber using MechanicalObject." ;
             object->renumberValues(new2old);
@@ -783,7 +783,7 @@ void SpatialGridContainer<DataTypes>::draw(const core::visual::VisualParams* vpa
 {
     if (!d_showGrid.getValue())
         return;
-    if (grid != NULL)
+    if (grid != nullptr)
         grid->draw(vparams);
 }
 
