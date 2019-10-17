@@ -11,6 +11,7 @@ set(SOFAHAPI_VERSION ${SOFAHAPI_MAJOR_VERSION}.${SOFAHAPI_MINOR_VERSION})
 set(HEADER_FILES
     SofaHAPIForceFeedbackEffect.h
     SofaHAPIHapticsDevice.h
+    config.h.in
 )
 
 set(SOURCE_FILES
@@ -63,9 +64,6 @@ endif()
 set(SOFAHAPI_DEPENDENCY_INCLUDE_DIR ${HAPI_INCLUDE_DIR}
                                     ${H3DUTIL_INCLUDE_DIR})
 
-
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaHAPI/config.h")
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction SofaHaptics ${HAPI_LIBRARIES} ${H3DUTIL_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
@@ -78,7 +76,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOF
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 ## Install rules for the library and the header; CMake package configurations files
-sofa_create_package(SofaHAPI ${SOFAHAPI_VERSION} SofaHAPI SofaHAPI)
+sofa_generate_package(NAME SofaHAPI VERSION ${SOFAHAPI_VERSION} TARGETS SofaHAPI INCLUDE_INSTALL_DIR SofaHAPI)
 
 ## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
