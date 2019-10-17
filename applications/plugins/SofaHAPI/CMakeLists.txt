@@ -63,24 +63,6 @@ endif()
 set(SOFAHAPI_DEPENDENCY_INCLUDE_DIR ${HAPI_INCLUDE_DIR}
                                     ${H3DUTIL_INCLUDE_DIR})
 
-# if(H3D_USE_DEPENDENCIES_ONLY)
-#     # The variables set here must be set by the CMakeLists.txt that sets H3D_USE_DEPENDENCIES_ONLY to true.
-#     list(APPEND SOFAHAPI_DEPENDENCY_INCLUDE_DIR ${EXTERNAL_INCLUDE_DIR})
-# endif()
-
-#     foreach(sharedObject ${sharedObjects})
-#         file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-#     endforeach()
-
-#     file(COPY "${HAPI_DIR}/External/bin/pthreadVC2.dll" DESTINATION "${SOFA_BIN_DIR}")
-#     file(COPY "${HAPI_DIR}/External/bin/FreeImage.dll" DESTINATION "${SOFA_BIN_DIR}")
-
-#     # file(COPY "${HAPI_DIR}/bin/HAPI_*.dll" DESTINATION ${SOFA_BIN_DIR})
-#     # file(COPY "${HAPI_DIR}/bin/H3DUtil_*.dll" DESTINATION ${SOFA_BIN_DIR})
-#     # file(COPY "${HAPI_DIR}/External/bin/pthreadVC2.dll" DESTINATION ${SOFA_BIN_DIR})
-#     # file(COPY "${HAPI_DIR}/External/bin/FreeImage.dll" DESTINATION ${SOFA_BIN_DIR})
-
-# endif()
 
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaHAPI/config.h")
 
