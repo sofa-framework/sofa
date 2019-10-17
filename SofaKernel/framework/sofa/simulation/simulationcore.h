@@ -22,6 +22,6 @@
 #ifndef SOFA_SIMULATION_CORE_H
 #define SOFA_SIMULATION_CORE_H
 
-#include <sofa/simulation/config.h>
+#include <sofa/config.h>
 
 #endif
