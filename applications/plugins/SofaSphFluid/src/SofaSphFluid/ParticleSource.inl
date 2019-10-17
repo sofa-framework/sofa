@@ -45,7 +45,6 @@ ParticleSource<DataTypes>::ParticleSource()
     , d_delay(initData(&d_delay, (Real)0.01, "delay", "Delay between particles creation"))
     , d_start(initData(&d_start, (Real)0, "start", "Source starting time"))
     , d_stop(initData(&d_stop, (Real)1e10, "stop", "Source stopping time"))
-    , d_canHaveEmptyVector(initData(&d_canHaveEmptyVector, (bool)false, "canHaveEmptyVector", ""))
     , m_numberParticles(0)
     , m_lastparticles(initData(&m_lastparticles, "lastparticles", "lastparticles indices"))
     , m_pointHandler(nullptr)
@@ -120,10 +119,6 @@ void ParticleSource<DataTypes>::projectResponse(const sofa::core::MechanicalPara
     helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;
     for (unsigned int s = 0; s<_lastparticles.size(); s++)
     {
-        //HACK: TODO understand why these conditions can be reached
-        if (_lastparticles[s] >= (unsigned int)this->mstate->getSize()) 
-            continue;
-
         dx[_lastparticles[s]] = Deriv();
     }    
     dxData.endEdit(mparams);
@@ -145,13 +140,10 @@ void ParticleSource<DataTypes>::projectPosition(const sofa::core::MechanicalPara
     // constraint the most recent particles
     VecCoord& x = *xData.beginEdit(mparams);       
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
-    helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;                                                                                
+    helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;    
+    msg_info() << "projectPosition: " << _lastparticles;
     for (unsigned int s = 0; s < _lastparticles.size(); s++)
     {
-        //HACK: TODO understand why these conditions can be reached
-        if (s >= m_lastpos.size() || _lastparticles[s] >= x.size()) 
-            continue;
-
         x[_lastparticles[s]] = m_lastpos[s];
         x[_lastparticles[s]] += dpos; // account for particle initial motion
     }
@@ -177,9 +169,6 @@ void ParticleSource<DataTypes>::projectVelocity(const sofa::core::MechanicalPara
     helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;
     for (unsigned int s = 0; s<_lastparticles.size(); s++)
     {
-        //HACK: TODO understand why these conditions can be reached
-        if (_lastparticles[s] >= res.size()) 
-            continue;
         res[_lastparticles[s]] = v0;
     }
     vData.endEdit(mparams);
@@ -202,13 +191,8 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
     }
 
     int i0 = this->mstate->getSize();    
-
-    if (!d_canHaveEmptyVector.getValue())
-    {
-        // ignore the first point if it is the only one
-        if (i0 == 1)
-            i0 = 0;
-    }
+    if (i0 == 1) // ignore the first point if it is the only one
+        i0 = 0;
 
     int nbParticlesToCreate = (int)((time - m_lastTime) / d_delay.getValue());    
     if (nbParticlesToCreate > 0)
@@ -316,14 +300,14 @@ void ParticleSource<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
 
-    std::vector< sofa::defaulttype::Vector3 > points;
+    std::vector< sofa::defaulttype::Vector3 > pointsInit;
     for (unsigned int s = 0; s < m_lastpos.size(); s++)
     {
         sofa::defaulttype::Vector3 point;
         point = DataTypes::getCPos(m_lastpos[s] + dpos);
-        points.push_back(point);
+        pointsInit.push_back(point);
     }
-    vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4, float>(1, 0.5, 0.5, 1));
+    vparams->drawTool()->drawPoints(pointsInit, 10, sofa::defaulttype::Vec<4, float>(1, 0.5, 0.5, 1));
 }
 
 } // namespace misc
