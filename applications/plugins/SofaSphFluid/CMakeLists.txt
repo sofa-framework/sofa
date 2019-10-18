@@ -10,6 +10,7 @@ set(HEADER_FILES
     ${PLUGIN_SPH_SRC_DIR}/ParticleSource.h
     ${PLUGIN_SPH_SRC_DIR}/ParticlesRepulsionForceField.h
     ${PLUGIN_SPH_SRC_DIR}/ParticlesRepulsionForceField.inl
+    ${PLUGIN_SPH_SRC_DIR}/SPHKernel.h
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidForceField.h
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidForceField.inl
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidSurfaceMapping.h
