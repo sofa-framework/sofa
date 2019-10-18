@@ -65,12 +65,21 @@ template<class DataTypes>
 void ConstantForceField<DataTypes>::parse(BaseObjectDescription* arg)
 {
     /// Now warning the user when using old API
-    /// point is deprecated since '17.06'
+    /// TODO: remove for 20.06
     const char* val=arg->getAttribute("points",nullptr) ;
     if(val)
     {
         msg_error() << "The attribute 'points' is no longer valid."
-                    << "It has been converted into 'indices since Sofa 17.06 '" ;
+                    << "It has been converted into 'indices' since Sofa 17.06 '" ;
+
+    }
+    /// Now warning the user when using old API
+    /// TODO: remove for 20.06
+    const char* val=arg->getAttribute("arrowSizeCoef",nullptr) ;
+    if(val)
+    {
+        msg_error() << "The attribute 'arrowSizeCoef' is no longer valid."
+                    << "It has been converted into 'showArrowSize' since Sofa 19.12 '" ;
 
     }
     Inherit::parse(arg) ;
