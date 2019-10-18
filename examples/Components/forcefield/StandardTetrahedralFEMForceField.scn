@@ -21,7 +21,7 @@
 			<BoxROI box="-1.2 -1.2 -0.01 1.2 1.2 0.01" drawBoxes="1" name="fixedPlane2"  />
 			<FixedConstraint indices="@fixedPlane2.indices" />
 			<BoxROI box="-1.2 -1.2 0.99 1.2 1.2 1.01" drawBoxes="0" name="pressurePlane2"  />
-			<ConstantForceField points="@pressurePlane2.indices" totalForce="0.001 0 -0.01" />
+			<ConstantForceField indices="@pressurePlane2.indices" totalForce="0.001 0 -0.01" />
 			<StandardTetrahedralFEMForceField materialName="NeoHookean" ParameterSet="0.454545 0.4166667"  /> 
 		 </Node>
       
