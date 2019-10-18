@@ -45,6 +45,7 @@ BaseData::BaseData(const char* h, DataFlags dataflags)
     addLink(&outputs);
     m_counters.assign(0);
     m_isSets.assign(false);
+    setFlag(FLAG_PERSISTENT, false);
 }
 
 BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly)
@@ -58,6 +59,7 @@ BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly)
     m_isSets.assign(false);
     setFlag(FLAG_DISPLAYED,isDisplayed);
     setFlag(FLAG_READONLY,isReadOnly);
+    setFlag(FLAG_PERSISTENT, false);
 }
 
 BaseData::BaseData( const BaseInitData& init)
@@ -70,6 +72,7 @@ BaseData::BaseData( const BaseInitData& init)
     addLink(&outputs);
     m_counters.assign(0);
     m_isSets.assign(false);
+
     if (init.data && init.data != this)
     {
         {
@@ -82,6 +85,7 @@ BaseData::BaseData( const BaseInitData& init)
         exit( EXIT_FAILURE );
     }
     if (m_owner) m_owner->addData(this, m_name);
+    setFlag(FLAG_PERSISTENT, false);
 }
 
 BaseData::~BaseData()
