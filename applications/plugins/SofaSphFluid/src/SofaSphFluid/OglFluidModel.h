@@ -1,15 +1,14 @@
-#ifndef OglFluidModel_H_
-#define OglFluidModel_H_
+#pragma once
+
+#include <SofaSphFluid/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/gl/FrameBufferObject.h>
-#include <SofaOpenglVisual/OglModel.h>
+#include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec3Types.h>
 #include <SofaBaseTopology//TopologyData.inl>
-#include <SofaOpenglVisual/OglVariable.h>
 
 namespace sofa
 {
@@ -26,19 +25,20 @@ using namespace sofa::defaulttype;
 // http://developer.download.nvidia.com/presentations/2010/gdc/Direct3D_Effects.pdf
 
 template<class DataTypes>
-class OglFluidModel : public core::visual::VisualModel
+class SOFA_SPH_FLUID_API OglFluidModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(OglFluidModel, core::visual::VisualModel);
     //typedef ExtVec3fTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
+	typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Real Real;
 
 private:
-    topology::PointData< ResizableExtVector<Coord> > m_positions;
-    ResizableExtVector<Coord> m_previousPositions;
+    topology::PointData< VecCoord > m_positions;
+	VecCoord m_previousPositions;
 
     GLuint m_posVBO;
     helper::gl::FrameBufferObject* m_spriteDepthFBO;
@@ -68,7 +68,7 @@ public:
     Data<unsigned int> d_spriteBlurRadius;
     Data<float> d_spriteBlurScale;
     Data<float> d_spriteBlurDepthFalloff;
-    Data<Vec4f> d_spriteDiffuseColor;
+    Data<sofa::defaulttype::RGBAColor> d_spriteDiffuseColor;
 
 
     void init();
@@ -98,4 +98,3 @@ public:
 
 }
 
-#endif /*OglFluidModel_H_*/

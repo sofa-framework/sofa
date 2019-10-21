@@ -1,10 +1,8 @@
-#ifndef OglFluidModel_INL_
-#define OglFluidModel_INL_
+#pragma once
 
 #include "OglFluidModel.h"
 
 #include <sstream>
-#include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <limits>
 
@@ -26,13 +24,13 @@ const float SPRITE_SCALE_DIV = tanf(65.0f * (0.5f * 3.1415926535f / 180.0f));
 template<class DataTypes>
 OglFluidModel<DataTypes>::OglFluidModel()
     : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
-    , d_debugFBO(initData(&d_debugFBO,  (unsigned int) 9,"debugFBO", "DEBUG FBO"))
-    , d_spriteRadius(initData(&d_spriteRadius,  (float) 1.0,"spriteRadius", "Radius of sprites"))
-    , d_spriteThickness(initData(&d_spriteThickness,  (float) 0.01,"spriteThickness", "Thickness of sprites"))
-    , d_spriteBlurRadius(initData(&d_spriteBlurRadius,  (unsigned int) 10, "spriteBlurRadius", "Blur radius"))
-    , d_spriteBlurScale(initData(&d_spriteBlurScale,  (float) 0.1, "spriteBlurScale", "Blur scale"))
-    , d_spriteBlurDepthFalloff(initData(&d_spriteBlurDepthFalloff,  (float) 1000,"spriteBlurDepthFalloff", "Blur Depth Falloff"))
-    , d_spriteDiffuseColor(initData(&d_spriteDiffuseColor, Vec4f(0.0,0.0,1.0,1.0),"spriteDiffuseColor", "Diffuse Color"))
+    , d_debugFBO(initData(&d_debugFBO, unsigned(9), "debugFBO", "DEBUG FBO"))
+    , d_spriteRadius(initData(&d_spriteRadius, 1.0f,"spriteRadius", "Radius of sprites"))
+    , d_spriteThickness(initData(&d_spriteThickness, 0.01f,"spriteThickness", "Thickness of sprites"))
+    , d_spriteBlurRadius(initData(&d_spriteBlurRadius,  unsigned(10), "spriteBlurRadius", "Blur radius (in pixels)"))
+    , d_spriteBlurScale(initData(&d_spriteBlurScale, 0.1f, "spriteBlurScale", "Blur scale"))
+    , d_spriteBlurDepthFalloff(initData(&d_spriteBlurDepthFalloff, 1.0f,"spriteBlurDepthFalloff", "Blur Depth Falloff"))
+    , d_spriteDiffuseColor(initData(&d_spriteDiffuseColor, sofa::defaulttype::RGBAColor::blue(),"spriteDiffuseColor", "Diffuse Color"))
 {
 }
 
@@ -59,13 +57,7 @@ void OglFluidModel<DataTypes>::initVisual()
 	m_spriteBlurThicknessVFBO = new helper::gl::FrameBufferObject(true, true, true);
     m_spriteShadeFBO = new helper::gl::FrameBufferObject(true, true, true);
 
-    const ResizableExtVector<Coord> tmpvertices = m_positions.getValue();
-    ResizableExtVector<Vec3f> vertices;
-
-    for(unsigned int i=0 ; i<tmpvertices.size() ; i++)
-    {
-        vertices.push_back(Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
-    }
+    const VecCoord& vertices = m_positions.getValue();
 
 	// should set a fixed size, or update FBO size if the window is resized
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
@@ -109,9 +101,7 @@ void OglFluidModel<DataTypes>::initVisual()
 
     //Generate PositionVBO
     glGenBuffers(1, &m_posVBO);
-    unsigned positionsBufferSize;
-    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
-    unsigned int totalSize = positionsBufferSize;
+    unsigned int totalSize = (vertices.size() * sizeof(vertices[0]));
     glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
     glBufferData(GL_ARRAY_BUFFER,
             totalSize,
@@ -146,23 +136,18 @@ void OglFluidModel<DataTypes>::bwdDraw(core::visual::VisualParams*)
 template<class DataTypes>
 void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vparams)
 {
-    if (m_positions.getValue().size() < 1)
+	const VecCoord& positions = m_positions.getValue();
+
+    if (positions.size() < 1)
         return;
 	
-    const ResizableExtVector<Coord>& position = m_positions.getValue();
-
 	const float zNear = vparams->zNear();
 	const float zFar = vparams->zFar();
 
 	const int width = vparams->viewport()[2];
 	const int height = vparams->viewport()[3];
 
-	//std::cout << zNear << " x " << zFar;
-	//std::cout << std::endl;
-	//std::cout << width << " x " << height;
-	//std::cout << std::endl;
-
-    float clearColor[4] = { 1.0f,1.0f,1.0f, 1.0f };
+    const float clearColor[4] = { 1.0f,1.0f,1.0f, 1.0f };
 
     ///////////////////////////////////////////////
     /// Sprites - Thickness
@@ -176,7 +161,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     std::vector<unsigned int> indices;
-    for (unsigned int i = 0; i<position.size(); i++)
+    for (unsigned int i = 0; i<positions.size(); i++)
         indices.push_back(i);
     ////// Compute sphere and depth
     double projMat[16];
@@ -201,7 +186,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_spriteScale"), (width / SPRITE_SCALE_DIV));
 
     glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
-    glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
+    glVertexPointer(3, GL_DOUBLE, 0, (char*)NULL + 0);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     glEnable(GL_POINT_SPRITE);
@@ -210,7 +195,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glBlendFunc(GL_ONE, GL_ONE);
     glDisable(GL_DEPTH_TEST);
 	
-    glDrawElements(GL_POINTS, position.size(), GL_UNSIGNED_INT, &indices[0]);
+    glDrawElements(GL_POINTS, positions.size(), GL_UNSIGNED_INT, &indices[0]);
 
     glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -244,12 +229,12 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_spriteScale"), (width / SPRITE_SCALE_DIV));
 
     glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
-    glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
+    glVertexPointer(3, GL_DOUBLE, 0, (char*)NULL + 0);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     glEnable(GL_POINT_SPRITE);
     glEnable(GL_DEPTH_TEST);
-    glDrawElements(GL_POINTS, position.size(), GL_UNSIGNED_INT, &indices[0]);
+    glDrawElements(GL_POINTS, positions.size(), GL_UNSIGNED_INT, &indices[0]);
 
     glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -546,7 +531,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
-    const Vec4f& diffuse = d_spriteDiffuseColor.getValue();
+    const sofa::defaulttype::RGBAColor& diffuse = d_spriteDiffuseColor.getValue();
 
 	m_spriteShadeShader.TurnOn();
 
@@ -657,11 +642,6 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
 			break;
 
     }
-    //glBindTexture(GL_TEXTURE_2D, m_spriteBlurDepthHFBO->getColorTexture());
-    //glBindTexture(GL_TEXTURE_2D, m_spriteNormalFBO->getColorTexture());
-    //glBindTexture(GL_TEXTURE_2D, m_spriteShadeFBO->getColorTexture());
-    //glBindTexture(GL_TEXTURE_2D, m_spriteBlurDepthVFBO->getColorTexture());
-
 
     glBegin(GL_QUADS);
     {
@@ -689,8 +669,7 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
 template<class DataTypes>
 void OglFluidModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
-
-    const ResizableExtVector<Coord>& position = m_positions.getValue();
+    const VecCoord& position = m_positions.getValue();
     const SReal max_real = std::numeric_limits<SReal>::max();
     const SReal min_real = std::numeric_limits<SReal>::lowest();
 
@@ -716,18 +695,10 @@ void OglFluidModel<DataTypes>::computeBBox(const core::ExecParams* params, bool 
 template<class DataTypes>
 void OglFluidModel<DataTypes>::updateVertexBuffer()
 {
-    const ResizableExtVector<Coord>& tmpvertices = m_positions.getValue();
-    ResizableExtVector<Vec3f> vertices;
-
-    for(unsigned int i=0 ; i<tmpvertices.size() ; i++)
-    {
-        vertices.push_back(Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
-    }
+    const VecCoord& vertices = m_positions.getValue();
 
     //Positions
-    unsigned positionsBufferSize;
-    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
-    unsigned int totalSize = positionsBufferSize;
+    unsigned int totalSize = (vertices.size() * sizeof(vertices[0]));
     glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
     glBufferData(GL_ARRAY_BUFFER,
             totalSize,
@@ -736,8 +707,8 @@ void OglFluidModel<DataTypes>::updateVertexBuffer()
 
     glBufferSubData(GL_ARRAY_BUFFER,
             0,
-            positionsBufferSize,
-            vertices.data());
+			totalSize,
+			vertices.data());
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -747,4 +718,3 @@ void OglFluidModel<DataTypes>::updateVertexBuffer()
 }
 }
 
-#endif //OglFluidModel_INL_
