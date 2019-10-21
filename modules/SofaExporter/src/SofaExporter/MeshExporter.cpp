@@ -47,7 +47,7 @@ namespace component
 namespace _meshexporter_
 {
 
-static int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
+int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
                                              "Supported format are: " msgendl
                                              "- vtkxml" msgendl
                                              "- vtk" msgendl
@@ -91,7 +91,7 @@ void MeshExporter::doReInit()
 
     if (!d_position.isSet() && m_inputmstate)
     {
-        sofa::core::objectmodel::BaseData* parent = NULL;
+        sofa::core::objectmodel::BaseData* parent = nullptr;
         if (!parent && m_inputmstate) parent = m_inputmstate->findData("position");
         if (!parent && m_inputtopology) parent = m_inputmstate->findData("topology");
         if (parent)

@@ -19,21 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: SpatialGridContainer
-//
-// Description:
-//
-//
-// Author: The SOFA team <http://www.sofa-framework.org>, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
 #ifndef SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_H
 #define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_H
-#include "config.h"
+#include <SofaSphFluid/config.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -131,14 +119,6 @@ public:
         {
         }
     };
-
-//	class NeighborListener
-//	{
-//		public:
-//			void addNeighbor(int /*i1*/, int /*i2*/, Real /*r2*/, Real /*h2*/)
-//			{
-//			}
-//	};
 
     enum { GRIDDIM_LOG2 = 3 };
 };
@@ -239,6 +219,7 @@ public:
             return (*this)[0] == a[0] && (*this)[1] == a[1] && (*this)[2] == a[2];
         }
     };
+
 
     static std::size_t hash(const Key& x)
     {
@@ -344,7 +325,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
             return false;
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
@@ -377,7 +358,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const SpatialGridContainer<DataTypes>* = NULL)
+    static std::string templateName(const SpatialGridContainer<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }
@@ -386,7 +367,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP)
-extern template class SpatialGridContainer< defaulttype::Vec3Types >;
+extern template class SOFA_SPH_FLUID_API SpatialGridContainer< sofa::defaulttype::Vec3Types >;
 extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< sofa::defaulttype::Vec3Types > >;
 
 #endif

@@ -756,7 +756,7 @@ Node* Node::getNodeInGraph(const std::string& absolutePath) const
     return ret;
 }
 
-/// Get parent node (or NULL if no hierarchy or for root node)
+/// Get parent node (or nullptr if no hierarchy or for root node)
 sofa::core::objectmodel::BaseNode::Children Node::getChildren() const
 {
     Children list_children;

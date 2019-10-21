@@ -107,7 +107,7 @@ ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName
     if (!componentCreationPossible)
     {
         delete component;
-        component=NULL;
+        component=nullptr;
     }
     else
         components.push_back(component);
@@ -127,7 +127,7 @@ const ComponentLibrary *CategoryLibrary::getComponent( const std::string &catego
         if ((*it)->getName().find(categoryName) != std::string::npos)
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 

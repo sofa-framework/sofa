@@ -151,7 +151,7 @@ void MeshROI<DataTypes>::checkInputData()
         }
         else
         {
-            MeshLoader* loader = NULL;
+            MeshLoader* loader = nullptr;
             this->getContext()->get(loader,BaseContext::Local); // perso
             if (loader)
             {
@@ -220,7 +220,7 @@ void MeshROI<DataTypes>::checkInputData()
         }
         else
         {
-            MeshLoader* loader = NULL;
+            MeshLoader* loader = nullptr;
             this->getContext()->get(loader,BaseContext::Local); // perso
             if (loader)
             {

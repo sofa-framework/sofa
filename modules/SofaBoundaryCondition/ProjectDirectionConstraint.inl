@@ -64,7 +64,7 @@ void ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyDestroyFunction
 
 template <class DataTypes>
 ProjectDirectionConstraint<DataTypes>::ProjectDirectionConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))

@@ -69,7 +69,7 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::topology::TopologicalMapping*>(it->get());
-        if (obj != NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
+        if (obj != nullptr)  // find a TopologicalMapping node among the brothers (it must be the first one written)
         {
             if(obj->propagateFromInputToOutputModel() && obj->getFrom() == m_source)  //node != root){ // the propagation of topological changes comes (at least) from a father node, not from a brother
             {
@@ -92,7 +92,7 @@ void TopologyChangeVisitor::processNodeBottomUp(simulation::Node* node)
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::topology::TopologicalMapping*>(it->get());
-        if (obj != NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
+        if (obj != nullptr)  // find a TopologicalMapping node among the brothers (it must be the first one written)
         {
             if(obj->propagateFromOutputToInputModel() && obj->getTo() == m_source)  //node == root){
             {

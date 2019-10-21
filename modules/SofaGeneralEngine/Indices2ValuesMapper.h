@@ -65,7 +65,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const Indices2ValuesMapper<DataTypes>* = NULL)
+    static std::string templateName(const Indices2ValuesMapper<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

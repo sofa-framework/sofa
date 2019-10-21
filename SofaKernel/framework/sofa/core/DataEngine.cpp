@@ -43,7 +43,7 @@ DataEngine::~DataEngine()
 void DataEngine::addInput(objectmodel::BaseData* n)
 {
     m_dataTracker.trackData(*n);
-    if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
+    if (n->getOwner() == this && n->getGroup().empty())
         n->setGroup("Inputs"); // set the group of input Datas if not yet set
     core::objectmodel::DDGNode::addInput(n);
     setDirtyValue();
@@ -52,7 +52,7 @@ void DataEngine::addInput(objectmodel::BaseData* n)
 /// Add a new output to this engine
 void DataEngine::addOutput(objectmodel::BaseData* n)
 {
-    if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
+    if (n->getOwner() == this && n->getGroup().empty())
         n->setGroup("Outputs"); // set the group of output Datas if not yet set
     core::objectmodel::DDGNode::addOutput(n);
     setDirtyValue();

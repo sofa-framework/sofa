@@ -52,7 +52,7 @@ public:
     }
 
     /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
-    /// If the given contacts vector is NULL, then this method should allocate it.
+    /// If the given contacts vector is nullptr, then this method should allocate it.
     int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::DetectionOutputVector*& contacts) override
     {
         return intersector->beginIntersect(model2, model1, contacts);

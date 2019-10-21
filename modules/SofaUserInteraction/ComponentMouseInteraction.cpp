@@ -45,9 +45,9 @@ namespace collision
 
 
 ComponentMouseInteraction::ComponentMouseInteraction():
-    nodeRayPick(NULL),
-    mouseInSofa(NULL),
-    mouseInteractor(NULL)
+    nodeRayPick(nullptr),
+    mouseInSofa(nullptr),
+    mouseInteractor(nullptr)
 {
 }
 

@@ -55,7 +55,7 @@ void MeshBarycentricMapperEngine<DataTypes>::init()
 
     this->update();
 
-    if (TopoInput==NULL)
+    if (TopoInput==nullptr)
     {
         msg_error() <<"Can not work with no input topology.";
         return;
@@ -94,9 +94,9 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
 
     }
     else
-        TopoInput = NULL;
+        TopoInput = nullptr;
 
-    if(TopoInput==NULL)
+    if(TopoInput==nullptr)
     {
         serr<<"no TopoInput found !!"<<sendl;
         return;
@@ -334,7 +334,7 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInLine(const int /*lineInde
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const int triangleIndex, const SReal* baryCoords,  const unsigned int pointIndex)
 {
-    if(tableElts==NULL|| baryPos==NULL)
+    if(tableElts==nullptr|| baryPos==nullptr)
         return;
     (*tableElts)[pointIndex] = triangleIndex;
     (*baryPos)[pointIndex][0] =( Real ) baryCoords[0];
@@ -345,7 +345,7 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const int triang
     {
         const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = TopoInput->getTriangles();
 
-        if(linearInterpolIndices==NULL|| linearInterpolIndices==NULL || triangles.size()==0 )
+        if(linearInterpolIndices==nullptr|| linearInterpolIndices==nullptr || triangles.size()==0 )
             return;
 
         // node0
@@ -377,7 +377,7 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInQuad(const int /*quadInde
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const int tetraIndex, const SReal* baryCoords, const unsigned int pointIndex)
 {
-    if(tableElts==NULL|| baryPos==NULL)
+    if(tableElts==nullptr|| baryPos==nullptr)
         return;
     (*tableElts)[pointIndex] = tetraIndex;
     (*baryPos)[pointIndex][0] =( Real ) baryCoords[0];
@@ -388,7 +388,7 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const int tetraInde
     {
         const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = TopoInput->getTetrahedra();
 
-        if(linearInterpolIndices==NULL|| linearInterpolIndices==NULL || tetrahedra.size()==0 )
+        if(linearInterpolIndices==nullptr|| linearInterpolIndices==nullptr || tetrahedra.size()==0 )
             return;
 
         // node0

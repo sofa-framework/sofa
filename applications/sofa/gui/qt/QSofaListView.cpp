@@ -598,7 +598,7 @@ void QSofaListView::Modify()
         {
             current_Id_modifyDialog = object_.ptr.Object;
         }
-        assert(current_Id_modifyDialog != NULL);
+        assert(current_Id_modifyDialog != nullptr);
 
         //Opening of a dialog window automatically created
 

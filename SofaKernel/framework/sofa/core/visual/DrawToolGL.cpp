@@ -280,10 +280,14 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const std::ve
 
 void DrawToolGL::drawTriangles(const std::vector<Vector3> &points,
     const std::vector< Vec3i > &index,
-    const std::vector<Vector3>  &normal,
+    const std::vector<Vector3> &normal,
     const std::vector<Vec4f>& colour)
 {
     //todo !
+    SOFA_UNUSED(points);
+    SOFA_UNUSED(index);
+    SOFA_UNUSED(normal);
+    SOFA_UNUSED(colour);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1341,10 +1345,10 @@ void DrawToolGL::restoreLastState()
 
 void DrawToolGL::readPixels(int x, int y, int w, int h, float* rgb, float* z)
 {
-    if(rgb != NULL && sizeof(*rgb) == 3 * sizeof(float) * w * h)
+    if(rgb != nullptr && sizeof(*rgb) == 3 * sizeof(float) * w * h)
         glReadPixels(x, y, w, h, GL_RGB, GL_FLOAT, rgb);
 
-    if(z != NULL && sizeof(*z) == sizeof(float) * w * h)
+    if(z != nullptr && sizeof(*z) == sizeof(float) * w * h)
         glReadPixels(x, y, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, z);
 }
 

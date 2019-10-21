@@ -94,7 +94,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
     {
         sofa::component::misc::WriteState::SPtr ws;
         context->get(ws, this->subsetsToManage, core::objectmodel::BaseContext::Local);
-        if ( ws == NULL )
+        if ( ws == nullptr )
         {
             ws = sofa::core::objectmodel::New<WriteState>();
             gnode->addObject(ws);

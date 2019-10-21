@@ -86,7 +86,7 @@ public:
     {
     public:
         T* data;
-        VTKDataIO() : data(NULL) {}
+        VTKDataIO() : data(nullptr) {}
         ~VTKDataIO() override
         {
             if (data)

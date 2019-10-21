@@ -57,6 +57,10 @@
 #include <sofa/simulation/SceneLoaderFactory.h>
 
 
+#include <sofa/simulation/events/SimulationInitStartEvent.h>
+#include <sofa/simulation/events/SimulationInitDoneEvent.h>
+
+
 #include <fstream>
 #include <cstring>
 
@@ -112,7 +116,7 @@ void Simulation::exportXML ( Node* root, const char* fileName )
 {
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    if ( fileName!=NULL )
+    if ( fileName!=nullptr )
     {
         std::ofstream out ( fileName );
         out << "<?xml version=\"1.0\"?>\n";
@@ -144,7 +148,6 @@ void Simulation::exportGraph ( Node* root, const char* filename )
         msg_error() << "exportGraph: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export";
     }
 }
-
 
 /// Initialize the scene.
 void Simulation::init ( Node* root )
@@ -178,18 +181,7 @@ void Simulation::init ( Node* root )
     // all the objects have now been created, update the links
     root->execute<UpdateLinksVisitor>(params);
 
-    // apply the init() and bwdInit() methods to all the components.
-    // and put the VisualModels in a separate graph, rooted at getVisualRoot()
-    root->execute<InitVisitor>(params);
-
-    // Save reset state for later uses in reset()
-    root->execute<StoreResetStateVisitor>(params);
-    {
-        // Why do we need  a copy of the params here ?
-        sofa::core::MechanicalParams mparams(*params);
-        root->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
-        root->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
-    }
+    initNode(root);
 
     root->execute<UpdateBoundingBoxVisitor>(params);
 
@@ -206,7 +198,18 @@ void Simulation::initNode( Node* node)
         return;
     }
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+
+    SimulationInitStartEvent beginInit;
+    PropagateEventVisitor pb {params, &beginInit};
+    node->execute(pb);
+
+    // apply the init() and bwdInit() methods to all the components.
+    // and put the VisualModels in a separate graph, rooted at getVisualRoot()
     node->execute<InitVisitor>(params);
+
+    SimulationInitDoneEvent endInit;
+    PropagateEventVisitor pe {params, &endInit};
+    node->execute(pe);
 
     {
         sofa::core::MechanicalParams mparams(*params);
@@ -326,7 +329,7 @@ void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool 
 /// Compute the bounding box of the scene.
 void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
 {
-    assert ( root!=NULL );
+    assert ( root!=nullptr );
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     root->execute<UpdateBoundingBoxVisitor>( params );
     defaulttype::BoundingBox bb = root->f_bbox.getValue();
@@ -401,7 +404,7 @@ void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
     {
         const char *path1 = strrchr ( filename, '/' );
         const char *path2 = strrchr ( filename, '\\' );
-        const char* path = ( path1==NULL ) ? ( ( path2==NULL ) ?filename : path2+1 ) : ( path2==NULL ) ? path1+1 : ( ( path1-filename ) > ( path2-filename ) ) ? path1+1 : path2+1;
+        const char* path = ( path1==nullptr ) ? ( ( path2==nullptr ) ?filename : path2+1 ) : ( path2==nullptr ) ? path1+1 : ( ( path1-filename ) > ( path2-filename ) ) ? path1+1 : path2+1;
 
         const char *ext = strrchr ( path, '.' );
 
@@ -434,7 +437,7 @@ Node::SPtr Simulation::load ( const std::string& filename, bool reload, const st
 {
     if( sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).empty() || // no filename
             sofa::helper::system::SetDirectory::GetExtension(filename.c_str()).empty() ) // filename with no extension
-        return NULL;
+        return nullptr;
 
     SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
 
@@ -442,7 +445,7 @@ Node::SPtr Simulation::load ( const std::string& filename, bool reload, const st
 
     // unable to load file
     msg_error() << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename.c_str())<<") not handled";
-    return NULL;
+    return nullptr;
 }
 
 /// Delete a scene from memory. After this call the pointer is invalid

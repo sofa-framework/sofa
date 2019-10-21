@@ -99,8 +99,8 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
 {
     isVirtual = _isVirtual;
     _alreadyInit = false;
-    _finerSparseGrid = NULL;
-    _coarserSparseGrid = NULL;
+    _finerSparseGrid = nullptr;
+    _coarserSparseGrid = nullptr;
     _usingMC = false;
 
     _regularGrid = sofa::core::objectmodel::New<RegularGridTopology>();
@@ -132,7 +132,7 @@ void SparseGridTopology::init()
         buildVirtualFinerLevels();
 
 
-    if( _finerSparseGrid != NULL )
+    if( _finerSparseGrid != nullptr )
         buildFromFiner();
     else
         buildAsFinest();
@@ -569,17 +569,17 @@ void SparseGridTopology::updateMesh()
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology* > m_temp;
     this->getContext()->get< sofa::core::topology::BaseMeshTopology >(&m_temp, sofa::core::objectmodel::BaseContext::SearchDown);
 
-    sofa::core::topology::BaseMeshTopology* collisionTopology=NULL;
+    sofa::core::topology::BaseMeshTopology* collisionTopology=nullptr;
     for (unsigned int i=0; i<m_temp.size(); ++i)
     {
         if (m_temp[i] != this) {collisionTopology = m_temp[i]; break;}
     }
 
-    if ( collisionTopology != NULL && collisionTopology->getNbTriangles() == 0)
+    if ( collisionTopology != nullptr && collisionTopology->getNbTriangles() == 0)
     {
         core::behavior::MechanicalState< sofa::defaulttype::Vec3Types > *mecha_temp =
                 collisionTopology->getContext()->get< core::behavior::MechanicalState< sofa::defaulttype::Vec3Types > >();
-        if (mecha_temp != NULL && mecha_temp->getSize() < 2) //a triangle mesh has minimum 3elements
+        if (mecha_temp != nullptr && mecha_temp->getSize() < 2) //a triangle mesh has minimum 3elements
         {
             list_mesh.push_back(collisionTopology);
             list_X.push_back(mecha_temp->write(core::VecCoordId::position()));
@@ -653,7 +653,7 @@ void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< so
 
 void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
 {
-    helper::io::Mesh* mesh = NULL;
+    helper::io::Mesh* mesh = nullptr;
 
     if (filename.empty())
     {
@@ -689,7 +689,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
         mesh = helper::io::Mesh::Create(filename.c_str());
     }
 
-    if(mesh == NULL)
+    if(mesh == nullptr)
     {
         msg_error() << "SparseGridTopology: loading mesh " << filename << " failed." ;
         return;

@@ -47,13 +47,13 @@ Creator<core::collision::Contact::Factory, RayContact<OBBModel> > RayRigidBoxCon
 BaseRayContact::BaseRayContact(CollisionModel1* model1, core::collision::Intersection* /*instersectionMethod*/)
     : model1(model1)
 {
-    if (model1!=NULL)
+    if (model1!=nullptr)
         model1->addContact(this);
 }
 
 BaseRayContact::~BaseRayContact()
 {
-    if (model1!=NULL)
+    if (model1!=nullptr)
         model1->removeContact(this);
 }
 

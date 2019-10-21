@@ -19,36 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP
-#include <SofaSphFluid/SpatialGridContainer.inl>
-#include <sofa/core/ObjectFactory.h>
+#ifndef SOFASPHFLUID_CONFIG_H
+#define SOFASPHFLUID_CONFIG_H
 
+#include <sofa/helper/system/config.h>
 
-namespace sofa
-{
+#ifdef SOFA_BUILD_SPH_FLUID
+#  define SOFA_TARGET SofaSphFluid
+#  define SOFA_SPH_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SPH_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace component
-{
-
-namespace container
-{
-
-using namespace sofa::defaulttype;
-using namespace core::behavior;
-
-
-int SpatialGridContainerClass = core::RegisterObject("Hashing spatial grid container, used for SPH fluids for instance.")
-        .add< SpatialGridContainer<Vec3Types> >()
-
-        ;
-
-template class SpatialGridContainer< Vec3Types >;
-template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3Types > >;
-
-
-} // namespace container
-
-} // namespace component
-
-} // namespace sofa
-
+#endif

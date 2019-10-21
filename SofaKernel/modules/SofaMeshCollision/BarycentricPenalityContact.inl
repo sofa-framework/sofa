@@ -56,13 +56,13 @@ BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>:
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::cleanup()
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
         ff->cleanup();
-        if (parent!=NULL) parent->removeObject(ff);
+        if (parent!=nullptr) parent->removeObject(ff);
         //delete ff;
-        parent = NULL;
-        ff = NULL;
+        parent = nullptr;
+        ff = nullptr;
         mapper1.cleanup();
         mapper2.cleanup();
     }
@@ -72,7 +72,7 @@ template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTyp
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
-    if (ff==NULL)
+    if (ff==nullptr)
     {
         MechanicalState1* mstate1 = mapper1.createMapping(GenerateStringID::generate().c_str());
         MechanicalState2* mstate2 = mapper2.createMapping(GenerateStringID::generate().c_str());
@@ -193,15 +193,15 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::createResponse(core::objectmodel::BaseContext* group)
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(ff);
         }
         parent = group;
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->addObject(this);
             parent->addObject(ff);
@@ -212,14 +212,14 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::removeResponse()
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(ff);
         }
-        parent = NULL;
+        parent = nullptr;
     }
 }
 

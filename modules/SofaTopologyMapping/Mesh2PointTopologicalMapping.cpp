@@ -80,17 +80,17 @@ void Mesh2PointTopologicalMapping::init()
             int toModelLastPointIndex = 0;
             toModel->clear();
 
-            PointSetTopologyModifier *toPointMod = NULL;
+            PointSetTopologyModifier *toPointMod = nullptr;
             toModel->getContext()->get(toPointMod, sofa::core::objectmodel::BaseContext::Local);
-            EdgeSetTopologyModifier *toEdgeMod = NULL;
+            EdgeSetTopologyModifier *toEdgeMod = nullptr;
             toModel->getContext()->get(toEdgeMod, sofa::core::objectmodel::BaseContext::Local);
-            TriangleSetTopologyModifier *toTriangleMod = NULL;
+            TriangleSetTopologyModifier *toTriangleMod = nullptr;
             toModel->getContext()->get(toTriangleMod, sofa::core::objectmodel::BaseContext::Local);
-			TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
+			TetrahedronSetTopologyModifier *toTetrahedronMod = nullptr;
             toModel->getContext()->get(toTetrahedronMod, sofa::core::objectmodel::BaseContext::Local);
-            //QuadSetTopologyModifier *toQuadMod = NULL;
-            //TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
-            //HexahedronSetTopologyModifier *toHexahedronMod = NULL;
+            //QuadSetTopologyModifier *toQuadMod = nullptr;
+            //TetrahedronSetTopologyModifier *toTetrahedronMod = nullptr;
+            //HexahedronSetTopologyModifier *toHexahedronMod = nullptr;
 
 
             if (copyEdges.getValue() && pointBaryCoords.getValue().empty())
@@ -126,7 +126,7 @@ void Mesh2PointTopologicalMapping::init()
                 pointsMappedFrom[EDGE].resize(fromModel->getNbEdges());
                 for (unsigned int i=0; i<fromModel->getNbEdges(); i++)
                 {
-                    addInputEdge(i, NULL);
+                    addInputEdge(i, nullptr);
                 }
             }
 
@@ -152,7 +152,7 @@ void Mesh2PointTopologicalMapping::init()
                 pointsMappedFrom[TRIANGLE].resize(fromModel->getNbTriangles());
                 for (unsigned int i=0; i<fromModel->getNbTriangles(); i++)
                 {
-                    addInputTriangle(i, NULL);
+                    addInputTriangle(i, nullptr);
                 }
             }
 
@@ -210,7 +210,7 @@ void Mesh2PointTopologicalMapping::init()
                 pointsMappedFrom[TETRA].resize(fromModel->getNbTetrahedra());
                 for (unsigned int i=0; i<fromModel->getNbTetrahedra(); i++)
                 {
-					addInputTetrahedron(i, NULL);
+					addInputTetrahedron(i, nullptr);
                 }
             }
 			// triangle to triangle identity mapping
@@ -566,12 +566,12 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
         std::list<const TopologyChange *>::const_iterator changeIt=fromModel->beginChange();
         std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
-        PointSetTopologyModifier *toPointMod = NULL;
-        EdgeSetTopologyModifier *toEdgeMod = NULL;
-        TriangleSetTopologyModifier *toTriangleMod = NULL;
-        TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
-        //QuadSetTopologyModifier *toQuadMod = NULL;
-        //HexahedronSetTopologyModifier *toHexahedronMod = NULL;
+        PointSetTopologyModifier *toPointMod = nullptr;
+        EdgeSetTopologyModifier *toEdgeMod = nullptr;
+        TriangleSetTopologyModifier *toTriangleMod = nullptr;
+        TetrahedronSetTopologyModifier *toTetrahedronMod = nullptr;
+        //QuadSetTopologyModifier *toQuadMod = nullptr;
+        //HexahedronSetTopologyModifier *toHexahedronMod = nullptr;
         toModel->getContext()->get(toPointMod, sofa::core::objectmodel::BaseContext::Local);
         bool check = false;
         helper::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
@@ -811,7 +811,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             {
 //			    sout << "ENDING EVENT" << sendl;
                 pointsToRemove.erase(BaseMeshTopology::InvalidID);
-                if (toPointMod != NULL && !pointsToRemove.empty())
+                if (toPointMod != nullptr && !pointsToRemove.empty())
                 {
                     // TODO: This will fail to work if add and
                     // remove changes are combined and removes are

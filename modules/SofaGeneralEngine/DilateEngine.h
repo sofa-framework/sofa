@@ -74,7 +74,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const DilateEngine<DataTypes>* = NULL)
+    static std::string templateName(const DilateEngine<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

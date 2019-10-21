@@ -39,6 +39,7 @@ namespace types
 
 using sofa::helper::fixed_array ;
 
+
 #define RGBACOLOR_EQUALITY_THRESHOLD 1e-6
 
 /**
@@ -67,6 +68,9 @@ public:
     static RGBAColor gray()    { return RGBAColor(0.5,0.5,0.5,1.0); }
     static RGBAColor lightgray() { return RGBAColor(0.25,0.25,0.25,1.0); }
     static RGBAColor darkgray()  { return RGBAColor(0.75,0.75,0.75,1.0); }
+
+    /// @brief enlight a color by a given factor.
+    static RGBAColor lighten(const RGBAColor& in, const SReal factor);
 
     inline float& r(){ return this->elems[0] ; }
     inline float& g(){ return this->elems[1] ; }

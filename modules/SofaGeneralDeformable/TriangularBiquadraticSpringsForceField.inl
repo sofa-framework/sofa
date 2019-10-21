@@ -167,8 +167,8 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::Tr
     , f_stiffnessMatrixRegularizationWeight(initData(&f_stiffnessMatrixRegularizationWeight,(Real)0.4,"matrixRegularization","Regularization of the Stiffnes Matrix (between 0 and 1)"))
     , lambda(0)
     , mu(0)
-    , edgeHandler(NULL)
-    , triangleHandler(NULL)
+    , edgeHandler(nullptr)
+    , triangleHandler(nullptr)
 {
     edgeHandler = new TRBSEdgeHandler(this,&edgeInfo);
     triangleHandler = new TRBSTriangleHandler(this,&triangleInfo);

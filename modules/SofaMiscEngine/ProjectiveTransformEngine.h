@@ -73,7 +73,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const ProjectiveTransformEngine<DataTypes>* = NULL)
+    static std::string templateName(const ProjectiveTransformEngine<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

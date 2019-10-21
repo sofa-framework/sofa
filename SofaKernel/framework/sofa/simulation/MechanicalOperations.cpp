@@ -503,7 +503,7 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     mparams.setMFactor(mFact);
     mparams.setBFactor(bFact);
     mparams.setKFactor(kFact);
-    if (matrix != NULL)
+    if (matrix != nullptr)
     {
         executeVisitor( MechanicalAddMBK_ToMatrixVisitor(&mparams, matrix) );
     }
@@ -514,7 +514,7 @@ void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiM
     mparams.setMFactor(mFact);
     mparams.setBFactor(bFact);
     mparams.setKFactor(kFact);
-    if (matrix != NULL)
+    if (matrix != nullptr)
     {
         executeVisitor( MechanicalAddSubMBK_ToMatrixVisitor(&mparams, matrix, subMatrixIndex) );
     }
@@ -524,7 +524,7 @@ void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiM
 
 void MechanicalOperations::multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    if (dest != NULL)
+    if (dest != nullptr)
     {
         executeVisitor( MechanicalMultiVectorToBaseVectorVisitor(&mparams, src, dest, matrix) );
     }
@@ -533,7 +533,7 @@ void MechanicalOperations::multiVector2BaseVector(core::ConstMultiVecId src, def
 
 void MechanicalOperations::multiVectorPeqBaseVector(core::MultiVecDerivId dest, defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    if (src != NULL)
+    if (src != nullptr)
     {
         executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(&mparams, dest, src, matrix) );
     }

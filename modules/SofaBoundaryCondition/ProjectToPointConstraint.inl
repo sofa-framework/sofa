@@ -64,7 +64,7 @@ void ProjectToPointConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(u
 
 template <class DataTypes>
 ProjectToPointConstraint<DataTypes>::ProjectToPointConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the points to project") )
     , f_point( initData(&f_point,"point","Target of the projection") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )

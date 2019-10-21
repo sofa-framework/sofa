@@ -24,7 +24,7 @@
 
 #include <sofa/core/objectmodel/JoystickEvent.h>
 #include <cassert>
-#include <cstring> // for NULL
+#include <cstring> // for nullptr
 
 namespace sofa
 {

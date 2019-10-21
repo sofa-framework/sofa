@@ -74,7 +74,7 @@ template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::init()
 {
     bool local = localCoord.getValue();
-    if (this->points.empty() && this->toModel!=NULL)
+    if (this->points.empty() && this->toModel!=nullptr)
     {
         const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
         beamLength.resize(xfrom.size());

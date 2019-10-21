@@ -101,8 +101,9 @@ void NearestPointROI<DataTypes>::doUpdate()
     indices2->clear();
 
     const Real maxR = f_radius.getValue();
-    const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    
+    const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::restPosition())->getValue();
 
     for (unsigned int i2=0; i2<x2.size(); ++i2)
     {

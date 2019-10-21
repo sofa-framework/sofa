@@ -24,6 +24,12 @@
 #include <sstream>
 #include <locale>         // std::locale, std::isalnum
 
+
+#include <sofa/helper/rmath.h>
+
+#include <sofa/helper/fixed_array_algorithms.h>
+using namespace sofa::helper::pairwise;
+
 namespace sofa
 {
 namespace helper
@@ -267,6 +273,15 @@ SOFA_HELPER_API std::ostream& operator << ( std::ostream& out, const RGBAColor& 
         out<<v[i]<<" ";
     out<<v[3];
     return out;
+}
+
+
+/// @brief enlight a color by a given factor.
+RGBAColor RGBAColor::lighten(const RGBAColor& in, const SReal factor)
+{
+    RGBAColor c = in + ((RGBAColor::white() - clamp(in, 0.0f, 1.0f)) * rclamp(factor, 0.0, 1.0));
+    c.a()=1.0;
+    return c ;
 }
 
 

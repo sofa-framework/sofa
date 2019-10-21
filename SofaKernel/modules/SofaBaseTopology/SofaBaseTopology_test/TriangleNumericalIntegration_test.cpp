@@ -130,7 +130,7 @@ struct TriangleNumericalIntegration_test : public Sofa_test<typename _DataTypes:
 
     void TearDown()
     {
-        if (root != NULL)
+        if (root != nullptr)
             sofa::simulation::getSimulation()->unload(root);
         //        cerr<<"tearing down"<<endl;
     }

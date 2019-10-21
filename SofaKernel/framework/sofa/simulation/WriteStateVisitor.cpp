@@ -49,7 +49,7 @@ WriteStateVisitor::~WriteStateVisitor()
 
 Visitor::Result WriteStateVisitor::processNodeTopDown( simulation::Node* gnode )
 {
-    if (gnode->mechanicalState != NULL)
+    if (gnode->mechanicalState != nullptr)
     {
         gnode->mechanicalState->writeState(m_out);
     }

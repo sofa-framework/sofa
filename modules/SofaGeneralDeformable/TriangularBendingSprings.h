@@ -171,7 +171,7 @@ protected:
 
 
     TriangularBendingSprings(/*double _ks, double _kd*/);
-    //TriangularBendingSprings(); //MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
+    //TriangularBendingSprings(); //MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
 
     virtual ~TriangularBendingSprings();
 public:

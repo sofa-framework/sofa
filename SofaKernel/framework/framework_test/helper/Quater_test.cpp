@@ -32,7 +32,7 @@ TEST(QuaterTest, EulerAngles)
 {
     // Try to tranform a Quater (q0) to Euler angles and then back to a Quater (q1)
     // Compare the result of a rotation defined by q0 and q1 on a vector
-    srand (time(NULL));
+    srand (time(nullptr));
     for (int i = 0; i < 100; ++i)
     {
         // Generate random Quater and avoid singular values

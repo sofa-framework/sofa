@@ -39,7 +39,7 @@ namespace projectiveconstraintset
 
 template <class DataTypes>
 PositionBasedDynamicsConstraint<DataTypes>::PositionBasedDynamicsConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , stiffness(initData(&stiffness,(Real)1.0,"stiffness","Blending between current pos and target pos."))
     , position(initData(&position,"position","Target positions."))
     , velocity(initData(&velocity,"velocity","Velocities."))

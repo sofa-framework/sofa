@@ -49,7 +49,7 @@ void MakeAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
     BaseObject::parse(arg) ;
 
     const char* target=arg->getAttribute("targetcomponent") ;
-    if(target==NULL)
+    if(target==nullptr)
     {
         msg_error(this) << "The mandatory 'targetcomponent' attribute is missing.  "
                            "The component is disabled.  "
@@ -59,7 +59,7 @@ void MakeAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
     string starget(target) ;
 
     const char* alias=arg->getAttribute("alias") ;
-    if(alias==NULL)
+    if(alias==nullptr)
     {
         msg_error(this) << "The mandatory 'alias' attribute is missing.  "
                            "The component is disabled.  "

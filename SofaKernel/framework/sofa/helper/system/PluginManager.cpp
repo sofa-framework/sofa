@@ -245,7 +245,7 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
     else
     {
         msg_info("PluginManager") << "Plugin not found in loaded plugins: " << plugin << msgendl;
-        return NULL;
+        return nullptr;
     }
 }
 

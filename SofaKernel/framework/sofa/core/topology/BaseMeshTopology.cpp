@@ -56,9 +56,6 @@ int initStaticStructures()
     return 0;
 }
 
-static int _init_  = initStaticStructures();
-
-
 BaseMeshTopology::BaseMeshTopology()
     : fileTopology(initData(&fileTopology,"filename","Filename of the mesh"))
 {

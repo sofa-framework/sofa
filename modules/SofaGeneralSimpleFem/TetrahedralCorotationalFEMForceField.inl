@@ -95,7 +95,7 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , drawColor2(initData(&drawColor2,defaulttype::Vec4f(0.0f,0.5f,1.0f,1.0f),"drawColor2"," draw color for faces 2"))
     , drawColor3(initData(&drawColor3,defaulttype::Vec4f(0.0f,1.0f,1.0f,1.0f),"drawColor3"," draw color for faces 3"))
     , drawColor4(initData(&drawColor4,defaulttype::Vec4f(0.5f,1.0f,1.0f,1.0f),"drawColor4"," draw color for faces 4"))
-    , tetrahedronHandler(NULL)
+    , tetrahedronHandler(nullptr)
 {
     this->addAlias(&_assembling, "assembling");
     _poissonRatio.setWidget("poissonRatio");
@@ -112,7 +112,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 
     _topology = this->getContext()->getMeshTopology();
 
-    if (_topology == NULL)
+    if (_topology == nullptr)
     {
         msg_error() << "No topology component found. This FEM needs to rely on a Tetrahedral Topology.";
         this->m_componentstate = core::objectmodel::ComponentState::Invalid;

@@ -59,8 +59,6 @@
 
 #include <sofa/helper/rmath.h>
 
-static double prevTime = -1.0;
-
 namespace sofa
 {
 

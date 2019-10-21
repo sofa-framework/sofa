@@ -34,10 +34,10 @@ namespace misc
 template <class DataTypes>
 DevAngleCollisionMonitor<DataTypes>::DevAngleCollisionMonitor()
     : maxDist( initData(&maxDist, (Real)1.0, "maxDist", "alarm distance for proximity detection"))
-    , pointsCM(NULL)
-    , surfaceCM(NULL)
-    , intersection(NULL)
-    , detection(NULL)
+    , pointsCM(nullptr)
+    , surfaceCM(nullptr)
+    , intersection(nullptr)
+    , detection(nullptr)
 {
 }
 
@@ -52,14 +52,14 @@ void DevAngleCollisionMonitor<DataTypes>::init()
 
     sofa::core::objectmodel::BaseContext* c1 = this->mstate1->getContext();
     c1->get(pointsCM, core::objectmodel::BaseContext::SearchDown);
-    if (pointsCM == NULL)
+    if (pointsCM == nullptr)
     {
         serr << "DevAngleCollisionMonitor ERROR: object1 PointModel not found."<<sendl;
         return;
     }
     sofa::core::objectmodel::BaseContext* c2 = this->mstate2->getContext();
     c2->get(surfaceCM, core::objectmodel::BaseContext::SearchDown);
-    if (surfaceCM == NULL)
+    if (surfaceCM == nullptr)
     {
         serr << "DevAngleCollisionMonitor ERROR: object2 TriangleModel not found."<<sendl;
         return;
@@ -105,7 +105,7 @@ void DevAngleCollisionMonitor<DataTypes>::eval()
 
         const ContactVector* contacts = dynamic_cast<const ContactVector*>(it->second);
 
-        if (contacts != NULL)
+        if (contacts != nullptr)
         {
             core::collision::DetectionOutput c;
 

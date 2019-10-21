@@ -46,7 +46,12 @@ namespace qt
 using namespace core::objectmodel;
 
 DataWidget::DataWidget(QWidget* parent,const char* name, MyData* d)
-:QWidget(parent /*,name */), baseData(d), dirty(false), counter(-1)
+    : QWidget(parent /*,name */)
+    , baseData(d)
+    , dirty(false)
+    , counter(-1)
+    , m_isFilled(true)
+    , m_toFill(false)
 {
     this->setObjectName(name);
 }
@@ -129,15 +134,33 @@ DataWidget::updateDataValue()
 
 }
 
+void DataWidget::fillFromData()
+{
+    if (!m_isFilled) // only activate toFill if only is not already filled
+    {
+        m_toFill = true;
+    }
+    else
+    {
+        m_toFill = false;
+    }
+}
+
 void
 DataWidget::updateWidgetValue()
 {
     if(!dirty)
     {
-        if(counter != baseData->getCounter())
+        if(m_toFill || counter != baseData->getCounter())
         {
             readFromData();
             this->update();
+
+            if (m_toFill) // update parameters to avoid other force fill
+            {
+                m_toFill = false;
+                m_isFilled = true;
+            }
         }
     }
 }

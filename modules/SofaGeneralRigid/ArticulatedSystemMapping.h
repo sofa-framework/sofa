@@ -108,7 +108,7 @@ public:
         if(dataVecOutPos.empty() || dataVecInPos.empty())
             return;
 
-        const InRootVecCoord* inroot = NULL;
+        const InRootVecCoord* inroot = nullptr;
 
         //We need only one input In model and input Root model (if present)
         OutVecCoord& out = *dataVecOutPos[0]->beginEdit();
@@ -132,7 +132,7 @@ public:
         if(dataVecOutVel.empty() || dataVecInVel.empty())
             return;
 
-        const InRootVecDeriv* inroot = NULL;
+        const InRootVecDeriv* inroot = nullptr;
 
         //We need only one input In model and input Root model (if present)
         OutVecDeriv& out = *dataVecOutVel[0]->beginEdit();
@@ -156,7 +156,7 @@ public:
         if(dataVecOutForce.empty() || dataVecInForce.empty())
             return;
 
-        InRootVecDeriv* outroot = NULL;
+        InRootVecDeriv* outroot = nullptr;
 
         //We need only one input In model and input Root model (if present)
         InVecDeriv& out = *dataVecOutForce[0]->beginEdit();
@@ -168,7 +168,7 @@ public:
         applyJT(out,in, outroot);
 
         dataVecOutForce[0]->endEdit();
-        if (outroot != NULL)
+        if (outroot != nullptr)
             dataVecOutRootForce[0]->endEdit();
     }
 
@@ -189,7 +189,7 @@ public:
         if(dataMatOutConst.empty() || dataMatInConst.empty())
             return;
 
-        InRootMatrixDeriv* outroot = NULL;
+        InRootMatrixDeriv* outroot = nullptr;
 
         //We need only one input In model and input Root model (if present)
         InMatrixDeriv& out = *dataMatOutConst[0]->beginEdit();
@@ -201,11 +201,11 @@ public:
         applyJT(out,in, outroot);
 
         dataMatOutConst[0]->endEdit();
-        if (outroot != NULL)
+        if (outroot != nullptr)
             dataMatOutRootConst[0]->endEdit();
     }
 
-    const sofa::defaulttype::BaseMatrix* getJ() override { return NULL; }
+    const sofa::defaulttype::BaseMatrix* getJ() override { return nullptr; }
 
     void draw(const core::visual::VisualParams* vparams) override;
 

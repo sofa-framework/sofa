@@ -58,14 +58,14 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     this->core::behavior::ForceField<DataTypes>::init();
 
 
-    if( this->getContext()->getMeshTopology()==NULL )
+    if( this->getContext()->getMeshTopology()==nullptr )
     {
         msg_error() << "NonUniformHexahedronFEMForceFieldDensity: object must have a Topology.";
         return;
     }
 
     this->_mesh = this->getContext()->getMeshTopology();
-    if ( this->_mesh==NULL)
+    if ( this->_mesh==nullptr)
     {
         msg_error() << "NonUniformHexahedronFEMForceFieldDensity: object must have a MeshTopology.";
         return;

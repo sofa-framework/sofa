@@ -19,19 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_SPH_FLUID_INIT_H
-#define SOFA_COMPONENT_SPH_FLUID_INIT_H
-#include "config.h"
+#pragma once
+
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/simulationcore.h>
 
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-} // namespace component
+/**
+  Event fired when needed to stop the animation.
+*/
+class SOFA_SIMULATION_CORE_API SimulationInitDoneEvent : public sofa::core::objectmodel::Event
+{
+public:
+
+    SOFA_EVENT_H( SimulationInitDoneEvent )
+
+    SimulationInitDoneEvent();
+    ~SimulationInitDoneEvent() override;
+
+    inline static const char* GetClassName() { return "SimulationInitDoneEvent"; }
+
+};
+
+} // namespace simulation
 
 } // namespace sofa
-
-#endif
 

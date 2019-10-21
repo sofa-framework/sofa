@@ -41,7 +41,7 @@ BarycentricMapperSparseGridTopology<In, Out>::BarycentricMapperSparseGridTopolog
         topology::PointSetTopologyContainer* _toTopology)
     : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
       m_fromTopology(fromTopology),
-      m_matrixJ(NULL), m_updateJ(true)
+      m_matrixJ(nullptr), m_updateJ(true)
 {
 }
 

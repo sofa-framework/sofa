@@ -60,7 +60,7 @@ public:
     Data<helper::vector<Index> > d_indices; ///< selected point/cell indices
 
     virtual std::string getTemplateName() const    override {        return templateName(this);    }
-    static std::string templateName(const SelectLabelROI* = NULL)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
+    static std::string templateName(const SelectLabelROI* = nullptr)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
 
     void init() override
     {

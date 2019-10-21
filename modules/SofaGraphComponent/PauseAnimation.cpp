@@ -32,7 +32,7 @@ namespace misc
 {
 
 PauseAnimation::PauseAnimation()
-    : root(NULL)
+    : root(nullptr)
 {
 }
 

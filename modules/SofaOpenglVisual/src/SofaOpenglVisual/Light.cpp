@@ -48,18 +48,18 @@ namespace visualmodel
 {
 
 //Register DirectionalLight in the Object Factory
-static  int DirectionalLightClass = core::RegisterObject("A directional light illuminating the scene with parallel rays of light (can cast shadows).")
+int DirectionalLightClass = core::RegisterObject("A directional light illuminating the scene with parallel rays of light (can cast shadows).")
         .add< DirectionalLight >()
         ;
 
 //Register PositionalLight in the Object Factory
-static  int PositionalLightClass = core::RegisterObject("A positional light illuminating the scene."
+int PositionalLightClass = core::RegisterObject("A positional light illuminating the scene."
                                                 "The light has a location from which the ray are starting in all direction  (cannot cast shadows for now)")
         .add< PositionalLight >()
         ;
 
 //Register SpotLight in the Object Factory
-static int SpotLightClass = core::RegisterObject("A spot light illuminating the scene."
+int SpotLightClass = core::RegisterObject("A spot light illuminating the scene."
                                           "The light has a location and a illumination cone restricting the directions"
                                           "taken by the rays of light  (can cast shadows).")
         .add< SpotLight >()

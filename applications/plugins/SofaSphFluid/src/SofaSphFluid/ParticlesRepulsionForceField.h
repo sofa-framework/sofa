@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_H
-#include "config.h"
+#include <SofaSphFluid/config.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -111,8 +111,8 @@ using sofa::defaulttype::Vec2dTypes;
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)
 
-extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3Types>;
-extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2Types>;
+extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<sofa::defaulttype::Vec2Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)

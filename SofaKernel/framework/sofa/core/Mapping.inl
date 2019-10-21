@@ -38,7 +38,7 @@ Mapping<In,Out>::Mapping(State<In>* from, State<Out>* to)
     , toModel(initLink("output", "Output object to map"), to)
     , f_applyRestPosition( initData( &f_applyRestPosition, false, "applyRestPosition", "set to true to apply this mapping to restPosition at init"))
 {
-    if(to != NULL && !testMechanicalState(to))
+    if(to != nullptr && !testMechanicalState(to))
         setNonMechanical();
 }
 
@@ -103,8 +103,8 @@ void Mapping<In,Out>::init()
     if(toModel && !testMechanicalState(toModel.get()))
     {
         setNonMechanical();
-        maskFrom = NULL;
-        maskTo = NULL;
+        maskFrom = nullptr;
+        maskTo = nullptr;
     }
     else
     {
@@ -128,7 +128,7 @@ sofa::defaulttype::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavio
     if( !this->areMatricesMapped() )
     {
         msg_warning() << "Mapping::createMappedMatrix() this mapping do not support matrices building. Set mapMatrices to true" << getClassName();
-        return NULL;
+        return nullptr;
     }
 
     result = (*m_createMappedMatrix)(state1,state2);
@@ -253,7 +253,7 @@ void Mapping<In,Out>::setModels(State<In>* from, State<Out>* to)
 {
     this->fromModel.set( from );
     this->toModel.set( to );
-    if(to != NULL && !testMechanicalState(to))
+    if(to != nullptr && !testMechanicalState(to))
         setNonMechanical();
 }
 

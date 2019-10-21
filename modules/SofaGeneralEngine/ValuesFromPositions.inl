@@ -86,7 +86,7 @@ void ValuesFromPositions<DataTypes>::init()
         }
         else
         {
-            core::loader::MeshLoader* loader = NULL;
+            core::loader::MeshLoader* loader = nullptr;
             this->getContext()->get(loader);
             if (loader)
             {

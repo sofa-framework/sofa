@@ -99,7 +99,7 @@ public:
     static int size(const data_type&) { return size(); }
     static const char* header(const data_type& /*d*/, int /*i*/ = 0)
     {
-        return NULL;
+        return nullptr;
     }
     static const value_type* get(const data_type& d, int /*i*/ = 0) { return &d; }
     static void set(const value_type& v, data_type& d, int /*i*/ = 0) { d = v; }
@@ -136,8 +136,8 @@ public:
         {
             const char* h1 = vhelper::shortname();
             const char* h2 = vtrait::header(*vhelper::get(d), i-s);
-            if (h2 == NULL) return h1;
-            else if (h1 == NULL) return h2;
+            if (h2 == nullptr) return h1;
+            else if (h1 == nullptr) return h2;
             else
             {
                 static std::string t;
@@ -193,11 +193,11 @@ public:
     static int size(const data_type&) { return size(); }
     static const char* header(const data_type& /*d*/, int /*i*/ = 0)
     {
-        return NULL;
+        return nullptr;
     }
     static value_type* get(const data_type& /*d*/, int /*i*/ = 0)
     {
-        return NULL;
+        return nullptr;
     }
     static void setS(const std::string& /*v*/, data_type& /*d*/, int /*i*/ = 0)
     {
@@ -234,8 +234,8 @@ public:
         i = i % s;
         const char* h1 = vhelper::header(d, j);
         const char* h2 = vtrait::header(*vhelper::get(d, j), i);
-        if (h2 == NULL) return h1;
-        else if (h1 == NULL) return h2;
+        if (h2 == nullptr) return h1;
+        else if (h1 == nullptr) return h2;
         else
         {
             static std::string t;
@@ -307,18 +307,18 @@ public:
     int rows;
     int cols;
 
-    table_data_widget_container() : wSize(NULL), wTableView(NULL), wDisplay(NULL), widget(NULL), container_layout(NULL) {}
+    table_data_widget_container() : wSize(nullptr), wTableView(nullptr), wDisplay(nullptr), widget(nullptr), container_layout(nullptr) {}
 
     bool createLayout( DataWidget* parent )
     {
-        if( parent->layout() != NULL || container_layout != NULL) return false;
+        if( parent->layout() != nullptr || container_layout != nullptr) return false;
         container_layout = new Layout(parent);
         return true;
     }
 
     bool createLayout( QLayout* layout)
     {
-        if ( container_layout != NULL ) return false;
+        if ( container_layout != nullptr ) return false;
         container_layout = new Layout();
         layout->addItem(container_layout);
         return true;
@@ -424,13 +424,8 @@ public:
         if(displayDataWidget)
             propertyWidgetFlagOn = displayDataWidget->flag().PROPERTY_WIDGET_FLAG;
 
-        processTableModifications(d);
-        fillTable(d);
+        parent->setFilled(false);
         rows = dataRows;
-
-        if(!propertyWidgetFlagOn)
-            wDisplay->setChecked(dataRows < MAX_NUM_ELEM && dataRows != 0 );
-        wDisplay->setAutoDefault(false);
 
         wSize->setValue(dataRows);
 
@@ -459,13 +454,14 @@ public:
         }
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wTableView,   SLOT(setDisplayed(bool)));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
-        parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent, SLOT( updateWidgetValue() ));
-
-        wDisplay->toggle();
-        if(propertyWidgetFlagOn)
-            wDisplay->setChecked(false);
+        parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent, SLOT(fillFromData() ));
+        
+        if (!propertyWidgetFlagOn)
+            wDisplay->setChecked(dataRows < MAX_NUM_ELEM && dataRows != 0);
         else
-            wDisplay->toggle();
+            wDisplay->setChecked(false);
+
+        wDisplay->setAutoDefault(false);
 
         return true;
     }
@@ -652,11 +648,11 @@ public:
     static int size(const data_type& d) { return d.size(); }
     static const char* header(const data_type& /*d*/, int /*i*/ = 0)
     {
-        return NULL;
+        return nullptr;
     }
     static const value_type* get(const data_type& d, int i = 0)
     {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
     static void set( const value_type& v, data_type& d, int i = 0)
     {
@@ -691,11 +687,11 @@ public:
     static int size(const data_type& d) { return d.size(); }
     static const char* header(const data_type& /*d*/, int /*i*/ = 0)
     {
-        return NULL;
+        return nullptr;
     }
     static const value_type* get(const data_type& d, int i = 0)
     {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
     static void set( const value_type& v, data_type& d, int i = 0)
     {
@@ -729,7 +725,7 @@ public:
             --i;
         }
         if (i == 0) return it->first.c_str();
-        else return NULL;
+        else return nullptr;
     }
     static const value_type* get(const data_type& d, int i = 0)
     {
@@ -740,7 +736,7 @@ public:
             --i;
         }
         if (i == 0) return &(it->second);
-        else return NULL;
+        else return nullptr;
     }
     static void set( const value_type& v, data_type& d, int i = 0)
     {
@@ -774,11 +770,11 @@ public:
     static int size(const data_type& d) { return d.size(); }
     static const char* header(const data_type& /*d*/, int /*i*/ = 0)
     {
-        return NULL;
+        return nullptr;
     }
     static const value_type* get(const data_type& d, int i = 0)
     {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
     static void set( const value_type& v, data_type& d, int i = 0)
     {

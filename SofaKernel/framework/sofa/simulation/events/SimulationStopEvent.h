@@ -19,61 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaSphFluid/initSPHFluid.h>
+#pragma once
 
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/simulationcore.h>
 
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-extern "C" {
-SOFA_SPH_FLUID_API void initExternalModule();
-SOFA_SPH_FLUID_API const char* getModuleName();
-SOFA_SPH_FLUID_API const char* getModuleVersion();
-SOFA_SPH_FLUID_API const char* getModuleLicense();
-SOFA_SPH_FLUID_API const char* getModuleDescription();
-SOFA_SPH_FLUID_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+/**
+  Event fired when needed to stop the animation.
+*/
+class SOFA_SIMULATION_CORE_API SimulationStopEvent : public sofa::core::objectmodel::Event
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+public:
 
-const char* getModuleName()
-{
-    return "SofaSphFluid";
-}
+    SOFA_EVENT_H( SimulationStopEvent )
 
-const char* getModuleVersion()
-{
-    return "1.0";
-}
+    SimulationStopEvent() ;
+    ~SimulationStopEvent() override ;
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+    inline static const char* GetClassName() { return "SimulationStopEvent"; }
+};
 
-const char* getModuleDescription()
-{
-    return "This plugin contains fluids simulation based on the SPH method.";
-}
-
-const char* getModuleComponentList()
-{
-    return "SpatialGridContainer SPHFluidForceField SPHFluidSurfaceMapping"
-           " ParticleSink ParticuleSource ParticlesRepulsionForceField";
-}
-
-
-} // namespace component
+} // namespace simulation
 
 } // namespace sofa
+

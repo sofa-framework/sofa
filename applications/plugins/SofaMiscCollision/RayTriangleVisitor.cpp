@@ -64,7 +64,7 @@ core::objectmodel::BaseObject* RayTriangleVisitor::embeddingModel()
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void RayTriangleVisitor::processTriangleModel(simulation::Node* /*node*/, component::collision::TriangleModel* tm)

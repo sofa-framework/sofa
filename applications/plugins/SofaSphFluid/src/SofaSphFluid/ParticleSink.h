@@ -32,7 +32,7 @@
 //
 #ifndef SOFA_COMPONENT_MISC_PARTICLESINK_H
 #define SOFA_COMPONENT_MISC_PARTICLESINK_H
-#include "config.h"
+#include <SofaSphFluid/config.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -154,7 +154,7 @@ public:
             sofa::component::topology::PointSetTopologyModifier* pointMod;
             this->getContext()->get(pointMod);
 
-            if (pointMod != NULL)
+            if (pointMod != nullptr)
             {
                 msg_info() << "ParticleSink: remove "<<remove.size()<<" particles using PointSetTopologyModifier.";
                 pointMod->removePointsWarning(remove);
