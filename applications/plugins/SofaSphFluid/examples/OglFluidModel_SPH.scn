@@ -1,16 +1,14 @@
-<Node dt="0.01" gravity="0 -20 0.0">
+<Node dt="0.01" gravity="0 -20 0.0" >
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="SofaSphFluid"/>
 
-    <AddResourceRepository path="../data" />
-    <!-- <BackgroundSetting color="1 1 1" /> -->
     <VisualStyle displayFlags="hideBehaviorModels hideForceFields hideCollisionModels" />
         
 
-    <EulerExplicit symplectic="1" />
     <Node name="SPH" >
 
-        <RegularGrid nx="5" ny="400" nz="5" xmin="-1.5" xmax="0" ymin="-3" ymax="36" zmin="-1.5" zmax="0" />
+        <EulerExplicit symplectic="1" />
+        <RegularGrid nx="5" ny="400" nz="5" xmin="-3.0" xmax="0" ymin="-3" ymax="36" zmin="-3.0" zmax="0" />
         <MechanicalObject name="MModel" />
         <!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
         <UniformMass name="M1" vertexMass="1" />
@@ -25,7 +23,7 @@
     </Node>
     <Node name="Fluid" >            
         <OglFluidModel template="Vec3d" position="@../SPH/MModel.position" 
-            debugFBO="6"
-            spriteRadius="0.5" spriteBlurRadius="10" spriteBlurScale="10" spriteBlurDepthFalloff="1"  />
+            debugFBO="9"
+            spriteRadius="0.5" spriteThickness="0.015" spriteBlurRadius="10" spriteBlurScale="10" spriteBlurDepthFalloff="1"  />
     </Node>
 </Node>

@@ -1,3 +1,38 @@
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace visualmodel
+{
+
+namespace shader
+{
+
+const std::string pointToSpriteVS = R"SHADER_DELIM(
+#version 120
+
+uniform mat4 u_projectionMatrix;
+uniform float u_spriteRadius;
+uniform float u_spriteScale;
+
+varying vec4 eyeSpacePos;
+
+void main(void)
+{
+    eyeSpacePos = gl_ModelViewMatrix * gl_Vertex;
+    float dist = length(eyeSpacePos);
+    gl_PointSize = u_spriteRadius * (u_spriteScale / dist);
+
+    gl_Position = ftransform();
+}
+
+)SHADER_DELIM";
+
+//////////////////////
+const std::string pointToSpriteFS = R"SHADER_DELIM(
 #version 120
 
 uniform mat4 u_projectionMatrix;
@@ -59,3 +94,13 @@ void main(void)
     //Better to put in another color_attachmentX = gl_FragData[X]
 	gl_FragColor = thickness;
 }
+
+)SHADER_DELIM";
+
+} //shader
+
+} //visualmodel
+
+} //component
+
+} //sofa

@@ -8,6 +8,12 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <limits>
 
+#include <SofaSphFluid/shaders/pointToSprite.cppglsl>
+#include <SofaSphFluid/shaders/spriteToSpriteNormal.cppglsl>
+#include <SofaSphFluid/shaders/spriteBlurDepth.cppglsl>
+#include <SofaSphFluid/shaders/spriteBlurThickness.cppglsl>
+#include <SofaSphFluid/shaders/spriteShade.cppglsl>
+
 namespace sofa
 {
 namespace component
@@ -16,27 +22,6 @@ namespace visualmodel
 {
 
 const float SPRITE_SCALE_DIV = tanf(65.0f * (0.5f * 3.1415926535f / 180.0f));
-
-template<class DataTypes>
-const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITE_VERTEX_SHADER = "shaders/pointToSprite.vert";
-template<class DataTypes>
-const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITE_FRAGMENT_SHADER = "shaders/pointToSprite.frag";
-template<class DataTypes>
-const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITENORMAL_VERTEX_SHADER = "shaders/spriteToSpriteNormal.vert";
-template<class DataTypes>
-const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITENORMAL_FRAGMENT_SHADER = "shaders/spriteToSpriteNormal.frag";
-template<class DataTypes>
-const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITEBLURDEPTH_VERTEX_SHADER = "shaders/spriteBlurDepth.vert";
-template<class DataTypes>
-const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITEBLURDEPTH_FRAGMENT_SHADER = "shaders/spriteBlurDepth.frag";
-template<class DataTypes>
-const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITEBLURTHICKNESS_VERTEX_SHADER = "shaders/spriteBlurThickness.vert";
-template<class DataTypes>
-const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITEBLURTHICKNESS_FRAGMENT_SHADER = "shaders/spriteBlurThickness.frag";
-template<class DataTypes>
-const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITESHADE_VERTEX_SHADER = "shaders/spriteShade.vert";
-template<class DataTypes>
-const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITESHADE_FRAGMENT_SHADER = "shaders/spriteShade.frag";
 
 template<class DataTypes>
 OglFluidModel<DataTypes>::OglFluidModel()
@@ -48,12 +33,6 @@ OglFluidModel<DataTypes>::OglFluidModel()
     , d_spriteBlurScale(initData(&d_spriteBlurScale,  (float) 0.1, "spriteBlurScale", "Blur scale"))
     , d_spriteBlurDepthFalloff(initData(&d_spriteBlurDepthFalloff,  (float) 1000,"spriteBlurDepthFalloff", "Blur Depth Falloff"))
     , d_spriteDiffuseColor(initData(&d_spriteDiffuseColor, Vec4f(0.0,0.0,1.0,1.0),"spriteDiffuseColor", "Diffuse Color"))
-    , m_spriteShader(sofa::core::objectmodel::New<OglShader>())
-    , m_spriteNormalShader(sofa::core::objectmodel::New<OglShader>())
-    , m_spriteBlurDepthShader(sofa::core::objectmodel::New<OglShader>())
-	, m_spriteBlurThicknessShader(sofa::core::objectmodel::New<OglShader>())
-    , m_spriteShadeShader(sofa::core::objectmodel::New<OglShader>())
-
 {
 }
 
@@ -88,37 +67,45 @@ void OglFluidModel<DataTypes>::initVisual()
         vertices.push_back(Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
     }
 
+	// should set a fixed size, or update FBO size if the window is resized
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
-    m_spriteDepthFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
-    m_spriteThicknessFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
-    m_spriteNormalFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
-    m_spriteBlurDepthHFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
-    m_spriteBlurDepthVFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
-	m_spriteBlurThicknessHFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
-	m_spriteBlurThicknessVFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
-    m_spriteShadeFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
-    //m_spriteFBO->init(512,512);
+	const int width = vparams->viewport()[2];
+	const int height = vparams->viewport()[3];
 
-    m_spriteShader->vertFilename.addPath(PATH_TO_SPRITE_VERTEX_SHADER, true);
-    m_spriteShader->fragFilename.addPath(PATH_TO_SPRITE_FRAGMENT_SHADER, true);
-    m_spriteShader->init();
-    m_spriteShader->initVisual();
-    m_spriteNormalShader->vertFilename.addPath(PATH_TO_SPRITENORMAL_VERTEX_SHADER, true);
-    m_spriteNormalShader->fragFilename.addPath(PATH_TO_SPRITENORMAL_FRAGMENT_SHADER, true);
-    m_spriteNormalShader->init();
-    m_spriteNormalShader->initVisual();
-    m_spriteBlurDepthShader->vertFilename.addPath(PATH_TO_SPRITEBLURDEPTH_VERTEX_SHADER, true);
-    m_spriteBlurDepthShader->fragFilename.addPath(PATH_TO_SPRITEBLURDEPTH_FRAGMENT_SHADER, true);
-    m_spriteBlurDepthShader->init();
-    m_spriteBlurDepthShader->initVisual();
-	m_spriteBlurThicknessShader->vertFilename.addPath(PATH_TO_SPRITEBLURTHICKNESS_VERTEX_SHADER, true);
-	m_spriteBlurThicknessShader->fragFilename.addPath(PATH_TO_SPRITEBLURTHICKNESS_FRAGMENT_SHADER, true);
-	m_spriteBlurThicknessShader->init();
-	m_spriteBlurThicknessShader->initVisual();
-    m_spriteShadeShader->vertFilename.addPath(PATH_TO_SPRITESHADE_VERTEX_SHADER, true);
-    m_spriteShadeShader->fragFilename.addPath(PATH_TO_SPRITESHADE_FRAGMENT_SHADER, true);
-    m_spriteShadeShader->init();
-    m_spriteShadeShader->initVisual();
+	m_spriteDepthFBO->init(width, height);
+    m_spriteThicknessFBO->init(width, height);
+    m_spriteNormalFBO->init(width, height);
+    m_spriteBlurDepthHFBO->init(width, height);
+    m_spriteBlurDepthVFBO->init(width, height);
+	m_spriteBlurThicknessHFBO->init(width, height);
+	m_spriteBlurThicknessVFBO->init(width, height);
+    m_spriteShadeFBO->init(width, height);
+	   
+	if (!sofa::helper::gl::GLSLShader::InitGLSL())
+	{
+		msg_error() << "InitGLSL failed, check your GPU setup (driver, etc)";
+		return;
+	}
+	m_spriteShader.SetVertexShaderFromString(shader::pointToSpriteVS);
+	m_spriteShader.SetFragmentShaderFromString(shader::pointToSpriteFS);
+	m_spriteShader.InitShaders();
+
+	m_spriteNormalShader.SetVertexShaderFromString(shader::spriteToSpriteNormalVS);
+	m_spriteNormalShader.SetFragmentShaderFromString(shader::spriteToSpriteNormalFS);
+	m_spriteNormalShader.InitShaders();
+
+	m_spriteBlurDepthShader.SetVertexShaderFromString(shader::spriteBlurDepthVS);
+	m_spriteBlurDepthShader.SetFragmentShaderFromString(shader::spriteBlurDepthFS);
+	m_spriteBlurDepthShader.InitShaders();
+
+	m_spriteBlurThicknessShader.SetVertexShaderFromString(shader::spriteBlurThicknessVS);
+	m_spriteBlurThicknessShader.SetFragmentShaderFromString(shader::spriteBlurThicknessFS);
+	m_spriteBlurThicknessShader.InitShaders();
+
+	m_spriteShadeShader.SetVertexShaderFromString(shader::spriteShadeVS);
+	m_spriteShadeShader.SetFragmentShaderFromString(shader::spriteShadeFS);
+	m_spriteShadeShader.InitShaders();
+
 
     //Generate PositionVBO
     glGenBuffers(1, &m_posVBO);
@@ -161,11 +148,19 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 {
     if (m_positions.getValue().size() < 1)
         return;
-
+	
     const ResizableExtVector<Coord>& position = m_positions.getValue();
 
-    float zNear = vparams->zNear();
-    float zFar = vparams->zFar();
+	const float zNear = vparams->zNear();
+	const float zFar = vparams->zFar();
+
+	const int width = vparams->viewport()[2];
+	const int height = vparams->viewport()[3];
+
+	//std::cout << zNear << " x " << zFar;
+	//std::cout << std::endl;
+	//std::cout << width << " x " << height;
+	//std::cout << std::endl;
 
     float clearColor[4] = { 1.0f,1.0f,1.0f, 1.0f };
 
@@ -196,15 +191,15 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     for (unsigned int i = 0; i < 16; i++)
         fModelMat[i] = modelMat[i];
 
-    m_spriteShader->setMatrix4(0, "u_projectionMatrix", 1, false, fProjMat);
-    //m_spriteShader->setMatrix4(0, "u_modelviewMatrix", 1, false, fModelMat);
-    m_spriteShader->setFloat(0, "u_zNear", zNear);
-    m_spriteShader->setFloat(0, "u_zFar",  zFar);
-    m_spriteShader->setFloat(0, "u_spriteRadius",  d_spriteRadius.getValue());
-    m_spriteShader->setFloat(0, "u_spriteThickness",  d_spriteThickness.getValue());
-    m_spriteShader->setFloat(0, "u_spriteScale",  ( float(vparams->viewport()[2]) / SPRITE_SCALE_DIV));
+	m_spriteShader.TurnOn();
 
-    m_spriteShader->start();
+	m_spriteShader.SetMatrix4(m_spriteShader.GetVariable("u_projectionMatrix"), 1, false, fProjMat);
+    m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_zNear"), zNear);
+	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_zFar"), zFar);
+	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_spriteRadius"), d_spriteRadius.getValue());
+	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_spriteThickness"), d_spriteThickness.getValue());
+	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_spriteScale"), (width / SPRITE_SCALE_DIV));
+
     glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
     glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -214,12 +209,12 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
     glDisable(GL_DEPTH_TEST);
-
+	
     glDrawElements(GL_POINTS, position.size(), GL_UNSIGNED_INT, &indices[0]);
 
     glDisableClientState(GL_VERTEX_ARRAY);
 
-    m_spriteShader->stop();
+	m_spriteShader.TurnOff();
 
     m_spriteThicknessFBO->stop();
     glMatrixMode(GL_PROJECTION);
@@ -239,14 +234,15 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glClearColor(1, 1, 1, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    m_spriteShader->setMatrix4(0, "u_projectionMatrix", 1, false, fProjMat);
-    m_spriteShader->setFloat(0, "u_zNear", zNear);
-    m_spriteShader->setFloat(0, "u_zFar",  zFar);
-    m_spriteShader->setFloat(0, "u_spriteRadius",  d_spriteRadius.getValue());
-	m_spriteShader->setFloat(0, "u_spriteThickness", d_spriteThickness.getValue());
-    m_spriteShader->setFloat(0, "u_spriteScale",  float(vparams->viewport()[2]) / SPRITE_SCALE_DIV );
+	m_spriteShader.TurnOn();
 
-    m_spriteShader->start();
+	m_spriteShader.SetMatrix4(m_spriteShader.GetVariable("u_projectionMatrix"), 1, false, fProjMat);
+	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_zNear"), zNear);
+	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_zFar"), zFar);
+	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_spriteRadius"), d_spriteRadius.getValue());
+	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_spriteThickness"), d_spriteThickness.getValue());
+	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_spriteScale"), (width / SPRITE_SCALE_DIV));
+
     glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
     glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -257,7 +253,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 
     glDisableClientState(GL_VERTEX_ARRAY);
 
-    m_spriteShader->stop();
+	m_spriteShader.TurnOff();
 
     m_spriteDepthFBO->stop();
     glMatrixMode(GL_PROJECTION);
@@ -281,19 +277,18 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glPushMatrix();
     glLoadIdentity();
 
-    m_spriteBlurDepthShader->setInt(0, "u_depthTexture", 0);
-    m_spriteBlurDepthShader->setFloat(0, "u_width", vparams->viewport()[2]);
-    m_spriteBlurDepthShader->setFloat(0, "u_height", vparams->viewport()[3]);
-    m_spriteBlurDepthShader->setFloat2(0, "u_direction", 1, 0);
-    m_spriteBlurDepthShader->setFloat(0, "u_spriteBlurRadius", d_spriteBlurRadius.getValue());
-    m_spriteBlurDepthShader->setFloat(0, "u_spriteBlurScale", d_spriteBlurScale.getValue());
-    m_spriteBlurDepthShader->setFloat(0, "u_spriteBlurDepthFalloff", d_spriteBlurDepthFalloff.getValue());
-    m_spriteBlurDepthShader->setFloat(0, "u_zNear", zNear);
-    m_spriteBlurDepthShader->setFloat(0, "u_zFar",  zFar);
+	m_spriteBlurDepthShader.TurnOn();
 
-    //std::cout <<  vparams->zNear() << " " <<  vparams->zFar() << std::endl;
+	m_spriteBlurDepthShader.SetInt(m_spriteBlurDepthShader.GetVariable("u_depthTexture"), 0);
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_width"), width);
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_height"), height);
+	m_spriteBlurDepthShader.SetFloat2(m_spriteBlurDepthShader.GetVariable("u_direction"), 1, 0);
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_spriteBlurRadius"), d_spriteBlurRadius.getValue());
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_spriteBlurScale"), d_spriteBlurScale.getValue());
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_spriteBlurDepthFalloff"), d_spriteBlurDepthFalloff.getValue());
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_zNear"), zNear);
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_zFar"), zFar);
 
-    m_spriteBlurDepthShader->start();
     float vxmax, vymax;
     float vxmin, vymin;
     float txmax, tymax;
@@ -318,7 +313,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    m_spriteBlurDepthShader->stop();
+	m_spriteBlurDepthShader.TurnOff();
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
@@ -340,18 +335,18 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glPushMatrix();
     glLoadIdentity();
 
-    m_spriteBlurDepthShader->setInt(0, "u_depthTexture", 0);
-    m_spriteBlurDepthShader->setFloat(0, "u_width", vparams->viewport()[2]);
-    m_spriteBlurDepthShader->setFloat(0, "u_height", vparams->viewport()[3]);
-    m_spriteBlurDepthShader->setFloat2(0, "u_direction", 0, 1);
-    m_spriteBlurDepthShader->setFloat(0, "u_spriteBlurRadius", d_spriteBlurRadius.getValue());
-    m_spriteBlurDepthShader->setFloat(0, "u_spriteBlurScale", d_spriteBlurScale.getValue());
-    m_spriteBlurDepthShader->setFloat(0, "u_spriteBlurDepthFalloff", d_spriteBlurDepthFalloff.getValue());
-    m_spriteBlurDepthShader->setFloat(0, "u_zNear", zNear);
-    m_spriteBlurDepthShader->setFloat(0, "u_zFar",  zFar);
+	m_spriteBlurDepthShader.TurnOn();
 
-    m_spriteBlurDepthShader->start();
-
+	m_spriteBlurDepthShader.SetInt(m_spriteBlurDepthShader.GetVariable("u_depthTexture"), 0);
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_width"), width);
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_height"), height);
+	m_spriteBlurDepthShader.SetFloat2(m_spriteBlurDepthShader.GetVariable("u_direction"), 0, 1);
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_spriteBlurRadius"), d_spriteBlurRadius.getValue());
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_spriteBlurScale"), d_spriteBlurScale.getValue());
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_spriteBlurDepthFalloff"), d_spriteBlurDepthFalloff.getValue());
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_zNear"), zNear);
+	m_spriteBlurDepthShader.SetFloat(m_spriteBlurDepthShader.GetVariable("u_zFar"), zFar);
+	
     txmin = tymin = 0.0;
     vxmin = vymin = -1.0;
     vxmax = vymax = txmax = tymax = 1.0;
@@ -371,7 +366,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    m_spriteBlurDepthShader->stop();
+	m_spriteBlurDepthShader.TurnOff();
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
@@ -397,15 +392,15 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     Mat4x4f invmatProj;
     invmatProj.invert(matProj);
 
-    m_spriteNormalShader->setMatrix4(0, "u_InvProjectionMatrix", 1, false, invmatProj.ptr());
-    m_spriteNormalShader->setInt(0, "u_depthTexture", 0);
-    m_spriteNormalShader->setFloat(0, "u_width", vparams->viewport()[2]);
-    m_spriteNormalShader->setFloat(0, "u_height", vparams->viewport()[3]);
-    m_spriteNormalShader->setFloat(0, "u_zNear", zNear);
-    m_spriteNormalShader->setFloat(0, "u_zFar",  zFar);
+	m_spriteNormalShader.TurnOn();
 
-    m_spriteNormalShader->start();
-
+	m_spriteNormalShader.SetMatrix4(m_spriteNormalShader.GetVariable("u_InvProjectionMatrix"), 1, false, invmatProj.ptr());
+	m_spriteNormalShader.SetInt(m_spriteNormalShader.GetVariable("u_depthTexture"), 0);
+	m_spriteNormalShader.SetFloat(m_spriteNormalShader.GetVariable("u_width"), width);
+	m_spriteNormalShader.SetFloat(m_spriteNormalShader.GetVariable("u_height"), height);
+	m_spriteNormalShader.SetFloat(m_spriteNormalShader.GetVariable("u_zNear"), zNear);
+	m_spriteNormalShader.SetFloat(m_spriteNormalShader.GetVariable("u_zFar"), zFar);
+	
     txmin = tymin = 0.0;
     vxmin = vymin = -1.0;
     vxmax = vymax = txmax = tymax = 1.0;
@@ -413,7 +408,6 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, m_spriteBlurDepthVFBO->getDepthTexture());
-    //glBindTexture(GL_TEXTURE_2D, m_spriteFBO->getColorTexture());
 
     glBegin(GL_QUADS);
     {
@@ -426,7 +420,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    m_spriteNormalShader->stop();
+	m_spriteNormalShader.TurnOff();
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
@@ -449,18 +443,18 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 	glPushMatrix();
 	glLoadIdentity();
 
-	m_spriteBlurThicknessShader->setInt(0, "u_thicknessTexture", 0);
-	m_spriteBlurThicknessShader->setFloat(0, "u_width", vparams->viewport()[2]);
-	m_spriteBlurThicknessShader->setFloat(0, "u_height", vparams->viewport()[3]);
-	m_spriteBlurThicknessShader->setFloat2(0, "u_direction", 1, 0);
-	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurRadius", d_spriteBlurRadius.getValue());
-	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurScale", d_spriteBlurScale.getValue());
-	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurDepthFalloff", d_spriteBlurDepthFalloff.getValue());
-	m_spriteBlurThicknessShader->setFloat(0, "u_zNear", zNear);
-	m_spriteBlurThicknessShader->setFloat(0, "u_zFar", zFar);
+	m_spriteBlurThicknessShader.TurnOn();
 
-	m_spriteBlurThicknessShader->start();
-
+	m_spriteBlurThicknessShader.SetInt(m_spriteBlurThicknessShader.GetVariable("u_depthTexture"), 0);
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_width"), width);
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_height"), height);
+	m_spriteBlurThicknessShader.SetFloat2(m_spriteBlurThicknessShader.GetVariable("u_direction"), 1, 0);
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_spriteBlurRadius"), d_spriteBlurRadius.getValue());
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_spriteBlurScale"), d_spriteBlurScale.getValue());
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_spriteBlurDepthFalloff"), d_spriteBlurDepthFalloff.getValue());
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_zNear"), zNear);
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_zFar"), zFar);
+	
 	txmin = tymin = 0.0;
 	vxmin = vymin = -1.0;
 	vxmax = vymax = txmax = tymax = 1.0;
@@ -480,7 +474,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	m_spriteBlurThicknessShader->stop();
+	m_spriteBlurThicknessShader.TurnOff();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
@@ -501,17 +495,17 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 	glPushMatrix();
 	glLoadIdentity();
 
-	m_spriteBlurThicknessShader->setInt(0, "u_thicknessTexture", 0);
-	m_spriteBlurThicknessShader->setFloat(0, "u_width", vparams->viewport()[2]);
-	m_spriteBlurThicknessShader->setFloat(0, "u_height", vparams->viewport()[3]);
-	m_spriteBlurThicknessShader->setFloat2(0, "u_direction", 0, 1);
-	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurRadius", d_spriteBlurRadius.getValue());
-	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurScale", d_spriteBlurScale.getValue());
-	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurDepthFalloff", d_spriteBlurDepthFalloff.getValue());
-	m_spriteBlurThicknessShader->setFloat(0, "u_zNear", zNear);
-	m_spriteBlurThicknessShader->setFloat(0, "u_zFar", zFar);
+	m_spriteBlurThicknessShader.TurnOn();
 
-	m_spriteBlurThicknessShader->start();
+	m_spriteBlurThicknessShader.SetInt(m_spriteBlurThicknessShader.GetVariable("u_depthTexture"), 0);
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_width"), width);
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_height"), height);
+	m_spriteBlurThicknessShader.SetFloat2(m_spriteBlurThicknessShader.GetVariable("u_direction"), 0, 1);
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_spriteBlurRadius"), d_spriteBlurRadius.getValue());
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_spriteBlurScale"), d_spriteBlurScale.getValue());
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_spriteBlurDepthFalloff"), d_spriteBlurDepthFalloff.getValue());
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_zNear"), zNear);
+	m_spriteBlurThicknessShader.SetFloat(m_spriteBlurThicknessShader.GetVariable("u_zFar"), zFar);
 
 	txmin = tymin = 0.0;
 	vxmin = vymin = -1.0;
@@ -532,7 +526,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	m_spriteBlurThicknessShader->stop();
+	m_spriteBlurThicknessShader.TurnOff();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
@@ -552,15 +546,17 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
-    const Vec4f diffuse = d_spriteDiffuseColor.getValue();
-    m_spriteShadeShader->setMatrix4(0, "u_InvProjectionMatrix", 1, true, invmatProj.ptr());
-    m_spriteShadeShader->setInt(0, "u_normalTexture", 0);
-    m_spriteShadeShader->setInt(0, "u_depthTexture", 1);
-    m_spriteShadeShader->setInt(0, "u_thicknessTexture", 2);
-    m_spriteShadeShader->setFloat(0, "u_width", vparams->viewport()[2]);
-    m_spriteShadeShader->setFloat(0, "u_height", vparams->viewport()[3]);
-    m_spriteShadeShader->setFloat4(0, "u_diffuseColor", diffuse[0], diffuse[1], diffuse[2], diffuse[3]);
-    m_spriteShadeShader->start();
+    const Vec4f& diffuse = d_spriteDiffuseColor.getValue();
+
+	m_spriteShadeShader.TurnOn();
+
+	m_spriteShadeShader.SetMatrix4(m_spriteShadeShader.GetVariable("u_InvProjectionMatrix"), 1, true, invmatProj.ptr());
+	m_spriteShadeShader.SetInt(m_spriteShadeShader.GetVariable("u_normalTexture"), 0);
+	m_spriteShadeShader.SetInt(m_spriteShadeShader.GetVariable("u_depthTexture"), 1);
+	m_spriteShadeShader.SetInt(m_spriteShadeShader.GetVariable("u_thicknessTexture"), 2);
+	m_spriteShadeShader.SetFloat(m_spriteShadeShader.GetVariable("u_width"), width);
+	m_spriteShadeShader.SetFloat(m_spriteShadeShader.GetVariable("u_height"), height);
+	m_spriteShadeShader.SetFloat4(m_spriteShadeShader.GetVariable("u_diffuseColor"), diffuse[0], diffuse[1], diffuse[2], diffuse[3]);
 
     txmin = tymin = 0.0;
     vxmin = vymin = -1.0;
@@ -592,7 +588,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    m_spriteShadeShader->stop();
+	m_spriteShadeShader.TurnOff();
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
@@ -605,6 +601,8 @@ template<class DataTypes>
 void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowVisualModels()) return;
+
+	vparams->drawTool()->saveLastState();
 
     float vxmax, vymax;
     float vxmin, vymin;
@@ -683,6 +681,8 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
 
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
+
+	vparams->drawTool()->restoreLastState();
 
 }
 

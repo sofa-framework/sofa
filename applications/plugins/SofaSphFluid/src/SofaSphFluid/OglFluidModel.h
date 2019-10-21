@@ -50,25 +50,14 @@ private:
 	helper::gl::FrameBufferObject* m_spriteBlurThicknessVFBO;
     helper::gl::FrameBufferObject* m_spriteShadeFBO;
 
-    OglShader::SPtr m_spriteShader;
-    OglShader::SPtr m_spriteNormalShader;
-    OglShader::SPtr m_spriteBlurDepthShader;
-	OglShader::SPtr m_spriteBlurThicknessShader;
-    OglShader::SPtr m_spriteShadeShader;
+    helper::gl::GLSLShader m_spriteShader;
+	helper::gl::GLSLShader m_spriteNormalShader;
+	helper::gl::GLSLShader m_spriteBlurDepthShader;
+	helper::gl::GLSLShader m_spriteBlurThicknessShader;
+	helper::gl::GLSLShader m_spriteShadeShader;
 
     void drawSprites(const core::visual::VisualParams* vparams);
     void updateVertexBuffer();
-
-    static const std::string PATH_TO_SPRITE_VERTEX_SHADER;
-    static const std::string PATH_TO_SPRITE_FRAGMENT_SHADER;
-    static const std::string PATH_TO_SPRITENORMAL_VERTEX_SHADER;
-    static const std::string PATH_TO_SPRITENORMAL_FRAGMENT_SHADER;
-    static const std::string PATH_TO_SPRITEBLURDEPTH_VERTEX_SHADER;
-    static const std::string PATH_TO_SPRITEBLURDEPTH_FRAGMENT_SHADER;
-	static const std::string PATH_TO_SPRITEBLURTHICKNESS_VERTEX_SHADER;
-	static const std::string PATH_TO_SPRITEBLURTHICKNESS_FRAGMENT_SHADER;
-    static const std::string PATH_TO_SPRITESHADE_VERTEX_SHADER;
-    static const std::string PATH_TO_SPRITESHADE_FRAGMENT_SHADER;
 protected:
     OglFluidModel();
     virtual ~OglFluidModel();

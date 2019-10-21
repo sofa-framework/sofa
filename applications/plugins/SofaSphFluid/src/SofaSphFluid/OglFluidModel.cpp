@@ -15,7 +15,7 @@ namespace visualmodel
 
 SOFA_DECL_CLASS(OglFluidModel)
 
-int OglFluidModelClass = sofa::core::RegisterObject("Particle model for OpenGL display - NG")
+int OglFluidModelClass = sofa::core::RegisterObject("Particle model for OpenGL display")
 #ifndef SOFA_FLOAT
         .add< OglFluidModel<sofa::defaulttype::Vec3dTypes> >()
 #endif

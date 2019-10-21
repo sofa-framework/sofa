@@ -1,3 +1,31 @@
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace visualmodel
+{
+
+namespace shader
+{
+
+const std::string spriteToSpriteNormalVS = R"SHADER_DELIM(
+#version 120
+
+varying vec2 v_texcoord;
+
+void main(void)
+{
+	v_texcoord = (gl_Vertex.xy + 1.0) / 2.0;
+    gl_Position = ftransform();
+}
+
+)SHADER_DELIM";
+
+//////////////////////
+const std::string spriteToSpriteNormalFS = R"SHADER_DELIM(
 #version 120
 
 uniform sampler2D u_depthTexture;
@@ -63,3 +91,13 @@ void main(void)
 
     gl_FragColor = vec4(n.xyz, 1.0);
 }
+
+)SHADER_DELIM";
+
+} //shader
+
+} //visualmodel
+
+} //component
+
+} //sofa

@@ -1,6 +1,34 @@
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace visualmodel
+{
+
+namespace shader
+{
+
+const std::string spriteBlurThicknessVS = R"SHADER_DELIM(
 #version 120
 
-uniform sampler2D u_depthTexture;
+varying vec2 v_texcoord;
+
+void main(void)
+{
+	v_texcoord = (gl_Vertex.xy + 1.0) / 2.0;
+    gl_Position = ftransform();
+}
+
+)SHADER_DELIM";
+
+//////////////////////
+const std::string spriteBlurThicknessFS = R"SHADER_DELIM(
+#version 120
+
+uniform sampler2D u_thicknessTexture;
 uniform float u_width;
 uniform float u_height;
 uniform vec2 u_direction;
@@ -12,24 +40,9 @@ uniform float u_zFar;
 
 varying vec2 v_texcoord;
 
-vec3 linearDepth(float depth)
-{
-	float z = depth;      // fetch the z-value from our depth texture
-	float n = u_zNear;                                // the near plane
-	float f = u_zFar;                               // the far plane
-	float c = (2.0 * n) / (f + n - z * (f - n));  // convert to linear values 
-	 
-	return vec3(c);                      // linear
-}
-
-
 void main(void)
 {
-	float depth = texture2D(u_depthTexture, v_texcoord).x;
-
-	if (depth > 0.999f) {
-       discard;
-    }
+	float thickness = texture2D(u_thicknessTexture, v_texcoord).x;
 
 	vec2 blurDir = u_direction;
 	float sum = 0;
@@ -45,12 +58,12 @@ void main(void)
 
 	for(float x=-filterRadius; x<=filterRadius; x+=texelSize) 
 	{
-		float sample = texture2D(u_depthTexture, v_texcoord + x*blurDir).x;
+		float sample = texture2D(u_thicknessTexture, v_texcoord + x*blurDir).x;
 		// spatial domain
 		float r = x * u_spriteBlurScale;
 		float w = exp(-r*r);
 		// range domain
-		float r2 = (sample - depth) * u_spriteBlurDepthFalloff; 
+		float r2 = (sample - thickness) * u_spriteBlurDepthFalloff; 
 		float g = exp(-r2*r2);
 		sum += sample * w * g; wsum += w * g;
 	}
@@ -60,8 +73,15 @@ void main(void)
 		sum /= wsum; 
 	} 
 	
-	gl_FragDepth = sum;
-	sum  = linearDepth(sum).x;
-
 	gl_FragColor = vec4(sum,sum,sum,1.0);
 }
+
+)SHADER_DELIM";
+
+} //shader
+
+} //visualmodel
+
+} //component
+
+} //sofa
