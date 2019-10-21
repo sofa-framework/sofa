@@ -1,4 +1,4 @@
-<Node dt="0.01" gravity="0 -20 0.0" >
+<Node dt="0.01" gravity="0 -20 0.0" bbox="-10 -10 -10 10 10 10">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="SofaSphFluid"/>
 

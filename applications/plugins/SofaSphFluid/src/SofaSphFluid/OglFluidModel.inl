@@ -146,17 +146,12 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 
 	const int width = vparams->viewport()[2];
 	const int height = vparams->viewport()[3];
-
+	
     const float clearColor[4] = { 1.0f,1.0f,1.0f, 1.0f };
-
     ///////////////////////////////////////////////
     /// Sprites - Thickness
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
 
-    m_spriteThicknessFBO->start();
+	m_spriteThicknessFBO->start();
     glClearColor(0.0, clearColor[1], clearColor[2], clearColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -166,19 +161,21 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     ////// Compute sphere and depth
     double projMat[16];
     double modelMat[16];
-
-    vparams->getProjectionMatrix(projMat);
+	   
+	vparams->getProjectionMatrix(projMat);
     float fProjMat[16];
     for (unsigned int i = 0; i < 16; i++)
         fProjMat[i] = projMat[i];
+
     vparams->getModelViewMatrix(modelMat);
     float fModelMat[16];
     for (unsigned int i = 0; i < 16; i++)
         fModelMat[i] = modelMat[i];
-
+	
 	m_spriteShader.TurnOn();
 
 	m_spriteShader.SetMatrix4(m_spriteShader.GetVariable("u_projectionMatrix"), 1, false, fProjMat);
+	m_spriteShader.SetMatrix4(m_spriteShader.GetVariable("u_modelviewMatrix"), 1, false, fModelMat);
     m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_zNear"), zNear);
 	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_zFar"), zFar);
 	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_spriteRadius"), d_spriteRadius.getValue());
@@ -202,18 +199,10 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 	m_spriteShader.TurnOff();
 
     m_spriteThicknessFBO->stop();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
 
     glDisable(GL_BLEND);
     ///////////////////////////////////////////////
     /// Sprites - Depth
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
 
     m_spriteDepthFBO->start();
     glClearColor(1, 1, 1, 1);
@@ -222,6 +211,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 	m_spriteShader.TurnOn();
 
 	m_spriteShader.SetMatrix4(m_spriteShader.GetVariable("u_projectionMatrix"), 1, false, fProjMat);
+	m_spriteShader.SetMatrix4(m_spriteShader.GetVariable("u_modelviewMatrix"), 1, false, fModelMat);
 	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_zNear"), zNear);
 	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_zFar"), zFar);
 	m_spriteShader.SetFloat(m_spriteShader.GetVariable("u_spriteRadius"), d_spriteRadius.getValue());
@@ -241,10 +231,6 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 	m_spriteShader.TurnOff();
 
     m_spriteDepthFBO->stop();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
 
     glEnable(GL_DEPTH_TEST);
 
@@ -670,8 +656,8 @@ template<class DataTypes>
 void OglFluidModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     const VecCoord& position = m_positions.getValue();
-    const SReal max_real = std::numeric_limits<SReal>::max();
-    const SReal min_real = std::numeric_limits<SReal>::lowest();
+	constexpr const SReal max_real { std::numeric_limits<SReal>::max() };
+	constexpr const SReal min_real { std::numeric_limits<SReal>::lowest() };
 
     SReal maxBBox[3] = {min_real,min_real,min_real};
     SReal minBBox[3] = {max_real,max_real,max_real};
@@ -679,13 +665,11 @@ void OglFluidModel<DataTypes>::computeBBox(const core::ExecParams* params, bool 
     for(unsigned int i=0 ; i<position.size() ; i++)
     {
         const Coord& v = position[i];
-
-        if (minBBox[0] > v[0]) minBBox[0] = v[0];
-        if (minBBox[1] > v[1]) minBBox[1] = v[1];
-        if (minBBox[2] > v[2]) minBBox[2] = v[2];
-        if (maxBBox[0] < v[0]) maxBBox[0] = v[0];
-        if (maxBBox[1] < v[1]) maxBBox[1] = v[1];
-        if (maxBBox[2] < v[2]) maxBBox[2] = v[2];
+		for (unsigned j = 0; j < 3; j++)
+		{
+			if (minBBox[j] > v[j]) minBBox[j] = v[j];
+			if (maxBBox[j] < v[j]) maxBBox[j] = v[j];
+		}
     }
 
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));

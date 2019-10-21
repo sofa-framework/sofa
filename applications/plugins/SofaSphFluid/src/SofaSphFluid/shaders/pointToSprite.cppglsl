@@ -15,6 +15,7 @@ const std::string pointToSpriteVS = R"SHADER_DELIM(
 #version 120
 
 uniform mat4 u_projectionMatrix;
+uniform mat4 u_modelviewMatrix;
 uniform float u_spriteRadius;
 uniform float u_spriteScale;
 
@@ -22,7 +23,7 @@ varying vec4 eyeSpacePos;
 
 void main(void)
 {
-    eyeSpacePos = gl_ModelViewMatrix * gl_Vertex;
+    eyeSpacePos = u_modelviewMatrix * gl_Vertex;
     float dist = length(eyeSpacePos);
     gl_PointSize = u_spriteRadius * (u_spriteScale / dist);
 
@@ -42,31 +43,6 @@ uniform float u_spriteRadius;
 uniform float u_spriteThickness;
 
 varying vec4 eyeSpacePos;
-
-vec3 linearDepth(float depth)
-{
-	float z = depth;      // fetch the z-value from our depth texture
-	float n = u_zNear;                                // the near plane
-	float f = u_zFar;                               // the far plane
-	float c = (2.0 * n) / (f + n - z * (f - n));  // convert to linear values 
-	 
-	return vec3(c);                      // linear
-}
-
-// result suitable for assigning to gl_FragDepth
-float depthSample(float linearDepth)
-{
-    float nonLinearDepth = (u_zFar + u_zNear - 2.0 * u_zNear * u_zFar / linearDepth) / (u_zFar - u_zNear);
-    nonLinearDepth = (nonLinearDepth + 1.0) / 2.0;
-    return nonLinearDepth;
-}
-
-float projectZ(float z)
-{
-	float near = u_zNear;                                // the near plane
-	float far = u_zFar;                               // the far plane
-	return far*(z+near)/(z*(far-near));
-}
 
 void main(void)
 {
@@ -88,9 +64,6 @@ void main(void)
     float thickCoeff= u_spriteThickness;
 	vec4 thickness = vec4(thickCoeff,thickCoeff,thickCoeff, 1);
 
-    //float diffuse = max(0.0, dot(lightDir, N));
-    //gl_FragColor = vec4(Color,1) * diffuse;
-    //gl_FragColor = vec4(linearDepth(normDepth), 1.0);
     //Better to put in another color_attachmentX = gl_FragData[X]
 	gl_FragColor = thickness;
 }
