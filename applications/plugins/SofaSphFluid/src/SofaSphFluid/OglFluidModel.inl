@@ -15,6 +15,8 @@ namespace component
 namespace visualmodel
 {
 
+const float SPRITE_SCALE_DIV = tanf(65.0f * (0.5f * 3.1415926535f / 180.0f));
+
 template<class DataTypes>
 const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITE_VERTEX_SHADER = "shaders/pointToSprite.vert";
 template<class DataTypes>
@@ -28,6 +30,10 @@ const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITEBLURDEPTH_VERTEX_SHADE
 template<class DataTypes>
 const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITEBLURDEPTH_FRAGMENT_SHADER = "shaders/spriteBlurDepth.frag";
 template<class DataTypes>
+const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITEBLURTHICKNESS_VERTEX_SHADER = "shaders/spriteBlurThickness.vert";
+template<class DataTypes>
+const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITEBLURTHICKNESS_FRAGMENT_SHADER = "shaders/spriteBlurThickness.frag";
+template<class DataTypes>
 const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITESHADE_VERTEX_SHADER = "shaders/spriteShade.vert";
 template<class DataTypes>
 const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITESHADE_FRAGMENT_SHADER = "shaders/spriteShade.frag";
@@ -35,7 +41,7 @@ const std::string OglFluidModel<DataTypes>::PATH_TO_SPRITESHADE_FRAGMENT_SHADER 
 template<class DataTypes>
 OglFluidModel<DataTypes>::OglFluidModel()
     : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
-    , d_debugFBO(initData(&d_debugFBO,  (unsigned int) 0,"debugFBO", "DEBUG FBO"))
+    , d_debugFBO(initData(&d_debugFBO,  (unsigned int) 9,"debugFBO", "DEBUG FBO"))
     , d_spriteRadius(initData(&d_spriteRadius,  (float) 1.0,"spriteRadius", "Radius of sprites"))
     , d_spriteThickness(initData(&d_spriteThickness,  (float) 0.01,"spriteThickness", "Thickness of sprites"))
     , d_spriteBlurRadius(initData(&d_spriteBlurRadius,  (unsigned int) 10, "spriteBlurRadius", "Blur radius"))
@@ -45,6 +51,7 @@ OglFluidModel<DataTypes>::OglFluidModel()
     , m_spriteShader(sofa::core::objectmodel::New<OglShader>())
     , m_spriteNormalShader(sofa::core::objectmodel::New<OglShader>())
     , m_spriteBlurDepthShader(sofa::core::objectmodel::New<OglShader>())
+	, m_spriteBlurThicknessShader(sofa::core::objectmodel::New<OglShader>())
     , m_spriteShadeShader(sofa::core::objectmodel::New<OglShader>())
 
 {
@@ -69,6 +76,8 @@ void OglFluidModel<DataTypes>::initVisual()
     m_spriteNormalFBO = new helper::gl::FrameBufferObject(true, true, true);
     m_spriteBlurDepthHFBO = new helper::gl::FrameBufferObject(true, true, true);
     m_spriteBlurDepthVFBO = new helper::gl::FrameBufferObject(true, true, true);
+	m_spriteBlurThicknessHFBO = new helper::gl::FrameBufferObject(true, true, true);
+	m_spriteBlurThicknessVFBO = new helper::gl::FrameBufferObject(true, true, true);
     m_spriteShadeFBO = new helper::gl::FrameBufferObject(true, true, true);
 
     const ResizableExtVector<Coord> tmpvertices = m_positions.getValue();
@@ -85,23 +94,29 @@ void OglFluidModel<DataTypes>::initVisual()
     m_spriteNormalFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
     m_spriteBlurDepthHFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
     m_spriteBlurDepthVFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
+	m_spriteBlurThicknessHFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
+	m_spriteBlurThicknessVFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
     m_spriteShadeFBO->init(vparams->viewport()[2], vparams->viewport()[3]);
     //m_spriteFBO->init(512,512);
 
-    m_spriteShader->vertFilename.addPath(PATH_TO_SPRITE_VERTEX_SHADER);
-    m_spriteShader->fragFilename.addPath(PATH_TO_SPRITE_FRAGMENT_SHADER);
+    m_spriteShader->vertFilename.addPath(PATH_TO_SPRITE_VERTEX_SHADER, true);
+    m_spriteShader->fragFilename.addPath(PATH_TO_SPRITE_FRAGMENT_SHADER, true);
     m_spriteShader->init();
     m_spriteShader->initVisual();
-    m_spriteNormalShader->vertFilename.addPath(PATH_TO_SPRITENORMAL_VERTEX_SHADER);
-    m_spriteNormalShader->fragFilename.addPath(PATH_TO_SPRITENORMAL_FRAGMENT_SHADER);
+    m_spriteNormalShader->vertFilename.addPath(PATH_TO_SPRITENORMAL_VERTEX_SHADER, true);
+    m_spriteNormalShader->fragFilename.addPath(PATH_TO_SPRITENORMAL_FRAGMENT_SHADER, true);
     m_spriteNormalShader->init();
     m_spriteNormalShader->initVisual();
-    m_spriteBlurDepthShader->vertFilename.addPath(PATH_TO_SPRITEBLURDEPTH_VERTEX_SHADER);
-    m_spriteBlurDepthShader->fragFilename.addPath(PATH_TO_SPRITEBLURDEPTH_FRAGMENT_SHADER);
+    m_spriteBlurDepthShader->vertFilename.addPath(PATH_TO_SPRITEBLURDEPTH_VERTEX_SHADER, true);
+    m_spriteBlurDepthShader->fragFilename.addPath(PATH_TO_SPRITEBLURDEPTH_FRAGMENT_SHADER, true);
     m_spriteBlurDepthShader->init();
     m_spriteBlurDepthShader->initVisual();
-    m_spriteShadeShader->vertFilename.addPath(PATH_TO_SPRITESHADE_VERTEX_SHADER);
-    m_spriteShadeShader->fragFilename.addPath(PATH_TO_SPRITESHADE_FRAGMENT_SHADER);
+	m_spriteBlurThicknessShader->vertFilename.addPath(PATH_TO_SPRITEBLURTHICKNESS_VERTEX_SHADER, true);
+	m_spriteBlurThicknessShader->fragFilename.addPath(PATH_TO_SPRITEBLURTHICKNESS_FRAGMENT_SHADER, true);
+	m_spriteBlurThicknessShader->init();
+	m_spriteBlurThicknessShader->initVisual();
+    m_spriteShadeShader->vertFilename.addPath(PATH_TO_SPRITESHADE_VERTEX_SHADER, true);
+    m_spriteShadeShader->fragFilename.addPath(PATH_TO_SPRITESHADE_FRAGMENT_SHADER, true);
     m_spriteShadeShader->init();
     m_spriteShadeShader->initVisual();
 
@@ -151,8 +166,8 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 
     float zNear = vparams->zNear();
     float zFar = vparams->zFar();
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    float clearColor[4] = { 1.0f,1.0f,1.0f, 1.0f };
 
     ///////////////////////////////////////////////
     /// Sprites - Thickness
@@ -162,7 +177,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glPushMatrix();
 
     m_spriteThicknessFBO->start();
-    glClearColor(0.5, 1, 1, 1);
+    glClearColor(0.0, clearColor[1], clearColor[2], clearColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     std::vector<unsigned int> indices;
@@ -182,12 +197,12 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
         fModelMat[i] = modelMat[i];
 
     m_spriteShader->setMatrix4(0, "u_projectionMatrix", 1, false, fProjMat);
-    m_spriteShader->setMatrix4(0, "u_modelviewMatrix", 1, false, fModelMat);
+    //m_spriteShader->setMatrix4(0, "u_modelviewMatrix", 1, false, fModelMat);
     m_spriteShader->setFloat(0, "u_zNear", zNear);
     m_spriteShader->setFloat(0, "u_zFar",  zFar);
     m_spriteShader->setFloat(0, "u_spriteRadius",  d_spriteRadius.getValue());
     m_spriteShader->setFloat(0, "u_spriteThickness",  d_spriteThickness.getValue());
-    m_spriteShader->setFloat(0, "u_spriteScale",  ( float(vparams->viewport()[2]) / tanf(65. * (0.5f * 3.1415926535f/180.0f))));
+    m_spriteShader->setFloat(0, "u_spriteScale",  ( float(vparams->viewport()[2]) / SPRITE_SCALE_DIV));
 
     m_spriteShader->start();
     glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
@@ -228,7 +243,8 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     m_spriteShader->setFloat(0, "u_zNear", zNear);
     m_spriteShader->setFloat(0, "u_zFar",  zFar);
     m_spriteShader->setFloat(0, "u_spriteRadius",  d_spriteRadius.getValue());
-    m_spriteShader->setFloat(0, "u_spriteScale",  ((float)vparams->viewport()[2]) / tanf(65. * (0.5f * 3.1415926535f/180.0f)));
+	m_spriteShader->setFloat(0, "u_spriteThickness", d_spriteThickness.getValue());
+    m_spriteShader->setFloat(0, "u_spriteScale",  float(vparams->viewport()[2]) / SPRITE_SCALE_DIV );
 
     m_spriteShader->start();
     glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
@@ -254,7 +270,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     ///////////////////////////////////////////////
     ////// Blur Depth texture (Horizontal)
     m_spriteBlurDepthHFBO->start();
-    glClearColor(1, 1, 1, 1);
+    glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
@@ -313,7 +329,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     ///////////////////////////////////////////////
     ////// Blur Depth texture (Vertical)
     m_spriteBlurDepthVFBO->start();
-    glClearColor(1, 1, 1, 1);
+    glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
@@ -366,7 +382,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     ///////////////////////////////////////////////
     ////// Compute Normals
     m_spriteNormalFBO->start();
-    glClearColor(1, 1, 1, 1);
+    glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
@@ -418,10 +434,115 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 
     m_spriteNormalFBO->stop();
 
+
+	///////////////////////////////////////////////
+	////// Blur Thickness texture (Horizontal)
+	m_spriteBlurThicknessHFBO->start();
+	glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	m_spriteBlurThicknessShader->setInt(0, "u_thicknessTexture", 0);
+	m_spriteBlurThicknessShader->setFloat(0, "u_width", vparams->viewport()[2]);
+	m_spriteBlurThicknessShader->setFloat(0, "u_height", vparams->viewport()[3]);
+	m_spriteBlurThicknessShader->setFloat2(0, "u_direction", 1, 0);
+	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurRadius", d_spriteBlurRadius.getValue());
+	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurScale", d_spriteBlurScale.getValue());
+	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurDepthFalloff", d_spriteBlurDepthFalloff.getValue());
+	m_spriteBlurThicknessShader->setFloat(0, "u_zNear", zNear);
+	m_spriteBlurThicknessShader->setFloat(0, "u_zFar", zFar);
+
+	m_spriteBlurThicknessShader->start();
+
+	txmin = tymin = 0.0;
+	vxmin = vymin = -1.0;
+	vxmax = vymax = txmax = tymax = 1.0;
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, m_spriteThicknessFBO->getColorTexture());
+
+	glBegin(GL_QUADS);
+	{
+		glTexCoord3f(txmin, tymax, 0.0); glVertex3f(vxmin, vymax, 0.0);
+		glTexCoord3f(txmax, tymax, 0.0); glVertex3f(vxmax, vymax, 0.0);
+		glTexCoord3f(txmax, tymin, 0.0); glVertex3f(vxmax, vymin, 0.0);
+		glTexCoord3f(txmin, tymin, 0.0); glVertex3f(vxmin, vymin, 0.0);
+	}
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	m_spriteBlurThicknessShader->stop();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+	m_spriteBlurThicknessHFBO->stop();
+	///////////////////////////////////////////////
+	////// Blur Thickness texture (Vertical)
+	m_spriteBlurThicknessVFBO->start();
+	glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	m_spriteBlurThicknessShader->setInt(0, "u_thicknessTexture", 0);
+	m_spriteBlurThicknessShader->setFloat(0, "u_width", vparams->viewport()[2]);
+	m_spriteBlurThicknessShader->setFloat(0, "u_height", vparams->viewport()[3]);
+	m_spriteBlurThicknessShader->setFloat2(0, "u_direction", 0, 1);
+	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurRadius", d_spriteBlurRadius.getValue());
+	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurScale", d_spriteBlurScale.getValue());
+	m_spriteBlurThicknessShader->setFloat(0, "u_spriteBlurDepthFalloff", d_spriteBlurDepthFalloff.getValue());
+	m_spriteBlurThicknessShader->setFloat(0, "u_zNear", zNear);
+	m_spriteBlurThicknessShader->setFloat(0, "u_zFar", zFar);
+
+	m_spriteBlurThicknessShader->start();
+
+	txmin = tymin = 0.0;
+	vxmin = vymin = -1.0;
+	vxmax = vymax = txmax = tymax = 1.0;
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, m_spriteBlurThicknessHFBO->getColorTexture());
+
+	glBegin(GL_QUADS);
+	{
+		glTexCoord3f(txmin, tymax, 0.0); glVertex3f(vxmin, vymax, 0.0);
+		glTexCoord3f(txmax, tymax, 0.0); glVertex3f(vxmax, vymax, 0.0);
+		glTexCoord3f(txmax, tymin, 0.0); glVertex3f(vxmax, vymin, 0.0);
+		glTexCoord3f(txmin, tymin, 0.0); glVertex3f(vxmin, vymin, 0.0);
+	}
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	m_spriteBlurThicknessShader->stop();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+	m_spriteBlurThicknessVFBO->stop();
     ///////////////////////////////////////////////
     ////// Shade sprites
     m_spriteShadeFBO->start();
-    glClearColor(1, 1, 1, 1);
+    glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
@@ -453,7 +574,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glBindTexture(GL_TEXTURE_2D, m_spriteBlurDepthVFBO->getDepthTexture());
     glActiveTexture(GL_TEXTURE2);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, m_spriteThicknessFBO->getColorTexture());
+    glBindTexture(GL_TEXTURE_2D, m_spriteBlurThicknessVFBO->getColorTexture());
     //glBindTexture(GL_TEXTURE_2D, m_spriteFBO->getColorTexture());
 
     glBegin(GL_QUADS);
@@ -511,9 +632,12 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
     glEnable(GL_TEXTURE_2D);
     switch(d_debugFBO.getValue())
     {
-        case 1:
-            glBindTexture(GL_TEXTURE_2D, m_spriteThicknessFBO->getColorTexture());
-            break;
+		case 0:
+			glBindTexture(GL_TEXTURE_2D, m_spriteThicknessFBO->getColorTexture());
+			break;
+		case 1:
+			glBindTexture(GL_TEXTURE_2D, m_spriteDepthFBO->getDepthTexture());
+		break;
         case 2:
             glBindTexture(GL_TEXTURE_2D, m_spriteBlurDepthHFBO->getColorTexture());
             break;
@@ -523,13 +647,16 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
         case 4:
             glBindTexture(GL_TEXTURE_2D, m_spriteNormalFBO->getColorTexture());
             break;
-        case 5:
-            glBindTexture(GL_TEXTURE_2D, m_spriteShadeFBO->getColorTexture());
-            break;
-        case 0:
-        default:
-            glBindTexture(GL_TEXTURE_2D, m_spriteDepthFBO->getDepthTexture());
-            break;
+		case 5:
+			glBindTexture(GL_TEXTURE_2D, m_spriteBlurThicknessHFBO->getColorTexture());
+			break;
+		case 6:
+			glBindTexture(GL_TEXTURE_2D, m_spriteBlurThicknessVFBO->getColorTexture());
+			break;
+		case 9:
+		default:
+			glBindTexture(GL_TEXTURE_2D, m_spriteShadeFBO->getColorTexture());
+			break;
 
     }
     //glBindTexture(GL_TEXTURE_2D, m_spriteBlurDepthHFBO->getColorTexture());

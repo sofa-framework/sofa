@@ -10,7 +10,7 @@
     <EulerExplicit symplectic="1" />
     <Node name="SPH" >
 
-        <RegularGrid nx="5" ny="40" nz="5" xmin="-1.5" xmax="0" ymin="-3" ymax="12" zmin="-1.5" zmax="0" />
+        <RegularGrid nx="5" ny="400" nz="5" xmin="-1.5" xmax="0" ymin="-3" ymax="36" zmin="-1.5" zmax="0" />
         <MechanicalObject name="MModel" />
         <!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
         <UniformMass name="M1" vertexMass="1" />
@@ -20,12 +20,12 @@
         <PlaneForceField normal="1 0 0" d="-4" />
         <PlaneForceField normal="-1 0 0" d="-4" />
         <PlaneForceField normal="0.5 1 0.1" d="-4" />
-        <PlaneForceField normal="0 0 1" d="-4" />
-        <PlaneForceField normal="0 0 -1" d="-4" />
+        <PlaneForceField normal="0 0 1" d="-10" />
+        <PlaneForceField normal="0 0 -1" d="-10" />
     </Node>
     <Node name="Fluid" >            
         <OglFluidModel template="Vec3d" position="@../SPH/MModel.position" 
-            debugFBO="1"
+            debugFBO="6"
             spriteRadius="0.5" spriteBlurRadius="10" spriteBlurScale="10" spriteBlurDepthFalloff="1"  />
     </Node>
 </Node>

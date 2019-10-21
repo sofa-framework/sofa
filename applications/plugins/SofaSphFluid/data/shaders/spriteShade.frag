@@ -22,11 +22,11 @@ vec3 uvToEye(vec2 texcoord, float depth)
 
 void main(void)
 {
-	const vec3 lightDir = vec3(0,0,1);
+	const vec3 lightDir = vec3(0,0,1); //TODO: uniform parameter
 	vec4 diffuseColor = u_diffuseColor;
 
 	float depth = texture2D(u_depthTexture, v_texcoord).x;
-	if(depth > 0.999f)
+	if(depth > 0.99999f)
 		discard;
 
 	vec3 normal = texture2D(u_normalTexture, v_texcoord).xyz;
