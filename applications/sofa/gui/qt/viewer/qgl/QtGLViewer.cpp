@@ -138,8 +138,8 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
 
     setManipulatedFrame( new qglviewer::ManipulatedFrame() );
     //near and far plane are better placed
-    camera()->setZNearCoefficient(0.001);
-    camera()->setZClippingCoefficient(5);
+    camera()->setZNearCoefficient(0.005);
+    camera()->setZClippingCoefficient(2);
 
     vparams->zNear() = camera()->zNear();
     vparams->zFar()  = camera()->zFar();
@@ -620,13 +620,13 @@ void QtGLViewer::DisplayOBJs()
 
 
     {
+		this->setSceneBoundingBox(qglviewer::Vec(vparams->sceneBBox().minBBoxPtr()),
+			qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()));
+
         //Draw Debug information of the components
         simulation::getSimulation()->draw(vparams,groot.get());
         if (m_bShowAxis)
         {
-            this->setSceneBoundingBox(qglviewer::Vec(vparams->sceneBBox().minBBoxPtr()),
-                    qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()) );
-
             //DrawAxis(0.0, 0.0, 0.0, 10.0);
             DrawAxis(0.0, 0.0, 0.0, this->sceneRadius());
 
