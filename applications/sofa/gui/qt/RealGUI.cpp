@@ -261,18 +261,6 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
     argv[1]=nullptr;
     application = new QSOFAApplication ( *argc,argv );
 
-    // Add resources dir to GuiDataRepository
-    const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
-    const std::string sofaIniFilePath = etcDir + "/SofaGuiQt.ini";
-    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
-    if (iniFileValues.find("RESOURCES_DIR") != iniFileValues.end())
-    {
-        std::string iniFileValue = iniFileValues["RESOURCES_DIR"];
-        if (!FileSystem::isAbsolute(iniFileValue))
-            iniFileValue = etcDir + "/" + iniFileValue;
-        sofa::gui::GuiDataRepository.addFirstPath(iniFileValue);
-    }
-
     //force locale to Standard C
     //(must be done immediatly after the QApplication has been created)
     QLocale locale(QLocale::C);

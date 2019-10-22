@@ -36,6 +36,4 @@
 
 #cmakedefine01 SOFAHELPER_HAVE_GTEST
 
-#cmakedefine01 SOFAHELPER_HAVE_FFMPEG_EXEC
-
 #endif

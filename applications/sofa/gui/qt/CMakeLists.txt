@@ -63,6 +63,9 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
 
+# FFMPEG_exec
+sofa_find_package(FFMPEG_exec BOTH_SCOPES)
+
 set(MOC_HEADER_FILES
     AddObject.h
     DataFilenameWidget.h
@@ -247,10 +250,18 @@ endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
 
+# FFMPEG
+if(FFMPEG_EXEC_FOUND)
+    install(PROGRAMS "${FFMPEG_EXEC_FILE}" DESTINATION bin COMPONENT applications)
+endif()
+
 # Create build and install versions of .ini file for resources finding
 set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+set(FFMPEG_EXEC_PATH "${FFMPEG_EXEC_FILE}") # absolute path for build dir, see .ini file
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/${PROJECT_NAME}.ini")
 set(RESOURCES_DIR "../share/sofa/gui/qt")
+get_filename_component(FFMPEG_EXEC_FILENAME "${FFMPEG_EXEC_FILE}" NAME)
+set(FFMPEG_EXEC_PATH "../bin/${FFMPEG_EXEC_FILENAME}") # relative path for install dir, see .ini file
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
 

@@ -50,7 +50,6 @@ VideoRecorderFFMPEG::VideoRecorderFFMPEG()
     , m_ffmpegBuffer(nullptr)
     , m_pixelFormatSize(4)
 {
-
 }
 
 VideoRecorderFFMPEG::~VideoRecorderFFMPEG()
@@ -59,7 +58,7 @@ VideoRecorderFFMPEG::~VideoRecorderFFMPEG()
 }
 
 
-bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec)
+bool VideoRecorderFFMPEG::init(const std::string& ffmpeg_exec_filepath, const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec)
 {
     msg_error_when(codec.empty(), "VideoRecorderFFMPEG") << "No codec specified";
     if ( codec.empty() )
@@ -96,20 +95,23 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
 
     m_FrameCount = 0;
 
-    std::string ffmpeg_exec_path = "NO_FFMPEG_EXECUTABLE";
-    const std::string ffmpegIniFilePath = Utils::getSofaPathTo("etc/FFMPEG_exec.ini");
-    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(ffmpegIniFilePath);
-    if (iniFileValues.find("FFMPEG_EXEC_PATH") != iniFileValues.end())
+    m_ffmpegExecPath = ffmpeg_exec_filepath;
+    if(m_ffmpegExecPath.empty())
     {
-        ffmpeg_exec_path = iniFileValues["FFMPEG_EXEC_PATH"];
-        if (!FileSystem::isAbsolute(ffmpeg_exec_path))
+        std::string extension;
+#ifdef WIN32
+        extension = ".exe";
+#endif
+        m_ffmpegExecPath = Utils::getExecutablePath() + "/ffmpeg" + extension;
+        if(!FileSystem::isFile(m_ffmpegExecPath))
         {
-            ffmpeg_exec_path = Utils::getSofaPathTo(ffmpeg_exec_path);
+            // Fallback to a relative FFMPEG (may be in system or exposed in PATH)
+            m_ffmpegExecPath = "ffmpeg" + extension;
         }
     }
 
     std::stringstream ss;
-    ss << ffmpeg_exec_path
+    ss << m_ffmpegExecPath
        << " -r " << m_framerate
        << " -f rawvideo -pix_fmt rgba "
        << " -s " << m_ffmpegWidth << "x" << m_ffmpegHeight
@@ -135,7 +137,7 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
         << " ( " <<  codec << ", "
         << framerate << " FPS, "
         << bitrate << " b/s)"
-        << " using " << ffmpeg_exec_path;
+        << " using " << m_ffmpegExecPath;
     return true;
 }
 

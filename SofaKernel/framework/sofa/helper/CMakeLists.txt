@@ -26,8 +26,6 @@ endif()
 sofa_find_package(Eigen3 REQUIRED BOTH_SCOPES)
 # Json (header only) needed by AdvancedTimer
 sofa_find_package(Json 3.1.2 REQUIRED BOTH_SCOPES)
-# FFMPEG_exec
-sofa_find_package(FFMPEG_exec BOTH_SCOPES)
 
 # HEADERS + SOURCES
 set(HEADER_FILES
@@ -279,6 +277,7 @@ if(NOT SOFA_NO_OPENGL)
         gl/Texture.h
         gl/Trackball.h
         gl/Transformation.h
+        gl/VideoRecorderFFMPEG.h
         gl/glText.h
         gl/glText.inl
     )
@@ -289,6 +288,7 @@ if(NOT SOFA_NO_OPENGL)
         gl/glText.cpp
         gl/Capture.cpp
         gl/Texture.cpp
+        gl/VideoRecorderFFMPEG.cpp
         gl/Color.cpp
         gl/glfont.cpp
         system/gl.cpp
@@ -305,10 +305,6 @@ if(NOT SOFA_NO_OPENGL)
         list(APPEND SHADER_FILES
             gl/shaders/generateSphere.cppglsl
         )
-    endif()
-    if (FFMPEG_EXEC_FOUND)
-        list(APPEND HEADER_FILES gl/VideoRecorderFFMPEG.h)
-        list(APPEND SOURCE_FILES gl/VideoRecorderFFMPEG.cpp)
     endif()
 endif()
 
@@ -434,19 +430,6 @@ if(JSON_FOUND)
         "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>"
         "$<INSTALL_INTERFACE:include/extlibs/json>"
         )
-endif()
-
-# FFMPEG_exec
-if(FFMPEG_EXEC_FOUND AND EXISTS "${FFMPEG_EXEC_FILE}")
-    # Install the executable
-    install(PROGRAMS "${FFMPEG_EXEC_FILE}" DESTINATION bin COMPONENT applications)
-    # Setup .ini files to find the executable from build and install dirs
-    set(FFMPEG_EXEC_PATH "${FFMPEG_EXEC_FILE}") # absolute path for build dir, see .ini file
-    configure_file("FFMPEG_exec.ini.in" "${CMAKE_BINARY_DIR}/etc/FFMPEG_exec.ini")
-    get_filename_component(FFMPEG_EXEC_FILENAME "${FFMPEG_EXEC_FILE}" NAME)
-    set(FFMPEG_EXEC_PATH "bin/${FFMPEG_EXEC_FILENAME}") # relative path for install dir, see .ini file
-    configure_file("FFMPEG_exec.ini.in" "${CMAKE_BINARY_DIR}/etc/installedFFMPEG_exec.ini")
-    install(FILES "${CMAKE_BINARY_DIR}/etc/installedFFMPEG_exec.ini" DESTINATION etc RENAME FFMPEG_exec.ini COMPONENT applications)
 endif()
 
 sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/helper")
