@@ -80,10 +80,12 @@ FileRepository PluginRepository( "SOFA_PLUGIN_PATH", Utils::getExecutableDirecto
 #else
 FileRepository PluginRepository( "SOFA_PLUGIN_PATH", Utils::getSofaPathTo("lib").c_str() );
 #endif
-FileRepository DataRepository( "SOFA_DATA_PATH", 0, Utils::getSofaPathTo("etc/sofa.ini").c_str() );
+FileRepository DataRepository( "SOFA_DATA_PATH", 0, {
+                                   { Utils::getSofaPathTo("etc/sofa.ini"), {"SHARE_DIR", "EXAMPLES_DIR"} }
+                               });
 
 
-FileRepository::FileRepository(const char* envVar, const char* relativePath, const char *iniFilePath)
+FileRepository::FileRepository(const char* envVar, const char* relativePath, const fileKeysMap& iniFilesAndKeys)
 {
     if (envVar != nullptr && envVar[0]!='\0')
     {
@@ -107,16 +109,30 @@ FileRepository::FileRepository(const char* envVar, const char* relativePath, con
             p0 = p1+1;
         }
     }
-    if ( iniFilePath != nullptr && iniFilePath[0] != '\0' )
+    if ( !iniFilesAndKeys.empty() )
     {
-        std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(iniFilePath);
-        for ( const auto &iniFileValue : iniFileValues )
+        for ( const auto &iniFileAndKeys : iniFilesAndKeys )
         {
-            std::string dir = iniFileValue.second;
-            dir = SetDirectory::GetRelativeFromProcess(dir.c_str());
-            if(FileSystem::isDirectory(dir))
+            const std::string& file = iniFileAndKeys.first;
+            const std::list<std::string>& keys = iniFileAndKeys.second;
+
+            std::map<std::string, std::string> iniFileLines = Utils::readBasicIniFile(file);
+            for ( const auto &iniFileLine : iniFileLines )
             {
-                addFirstPath(dir);
+                const std::string& lineKey = iniFileLine.first;
+                const std::string& lineDir = iniFileLine.second;
+
+                if ( std::find(keys.begin(), keys.end(), lineKey) == keys.end() )
+                {
+                    // The key on this line is not one of the keys searched in this file
+                    continue;
+                }
+
+                const std::string& absoluteDir = SetDirectory::GetRelativeFromProcess(lineDir.c_str());
+                if ( FileSystem::isDirectory(absoluteDir) )
+                {
+                    addFirstPath(absoluteDir);
+                }
             }
         }
     }
