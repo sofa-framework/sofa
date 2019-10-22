@@ -1,4 +1,4 @@
-#include "OglFluidModel.inl"
+#include <SofaSphFluid/OglFluidModel.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

@@ -5,10 +5,8 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/gl/FrameBufferObject.h>
 #include <sofa/helper/gl/GLSLShader.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseTopology//TopologyData.inl>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -37,7 +35,7 @@ public:
     typedef typename DataTypes::Real Real;
 
 private:
-    topology::PointData< VecCoord > m_positions;
+    Data< VecCoord > m_positions;
 	VecCoord m_previousPositions;
 
     GLuint m_posVBO;

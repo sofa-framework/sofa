@@ -1,6 +1,6 @@
 #pragma once
 
-#include "OglFluidModel.h"
+#include <SofaSphFluid/OglFluidModel.h>
 
 #include <sstream>
 #include <sofa/core/visual/VisualParams.h>
