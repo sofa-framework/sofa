@@ -177,7 +177,7 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 
 }
 
-void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& positions, const double& scale)
+void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& positions, const float& scale)
 {
     if (!s_asciiTexture)
     {
@@ -220,13 +220,13 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
         glGetFloatv(GL_MODELVIEW_MATRIX, modelviewM.ptr());
         modelviewM.transpose();
 
-        defaulttype::Vec3d temp(positions[i][0], positions[i][1], positions[i][2]);
+        defaulttype::Vec3f temp(positions[i][0], positions[i][1], positions[i][2]);
         temp = modelviewM.transform(temp);
 
         glLoadIdentity();
         //translate a little bit to center the text on the position (instead of starting from a top-left position)
-        glTranslatef((float)temp[0] - (worldWidth*length*scale)*0.5, (float)temp[1] + worldHeight*scale*0.5, (float)temp[2]);
-        glScalef((float)scale, (float)scale, (float)scale);
+        glTranslatef(temp[0] - (worldWidth*length*scale)*0.5, temp[1] + worldHeight*scale*0.5, temp[2]);
+        glScalef(scale, scale, scale);
         glRotatef(180.0, 1, 0, 0);
         for (unsigned int j = 0; j < length; j++)
         {
