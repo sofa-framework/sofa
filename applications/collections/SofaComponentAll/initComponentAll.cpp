@@ -20,13 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <SofaAllCommonComponents/initAllCommonComponents.h>
+#include <SofaComponentAll/initComponentAll.h>
 
 #include <SofaComponentBase/initComponentBase.h>
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentGeneral/initComponentGeneral.h>
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaComponentMisc/initComponentMisc.h>
+
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -36,21 +38,25 @@ namespace component
 
 /// Convenient functions to help user to know what contains the plugin
 extern "C" {
-    SOFA_SOFAALLCOMMONCOMPONENTS_API void initExternalModule();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleName();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleVersion();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleLicense();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleDescription();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleComponentList();
+    SOFA_SOFACOMPONENTALL_API void initExternalModule();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleName();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleVersion();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleLicense();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleDescription();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
 {
     static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    if(!first) return;
+    first = false;
+
+/// TODO: remove SofaAllCommonComponents backward compatibility at SOFA v20.06
+#ifdef SOFACOMPONENTALL_USING_DEPRECATED_NAME
+    msg_deprecated("SofaAllCommonComponents") << "This plugin was renamed into SofaComponentAll. Backward compatiblity will be stopped at SOFA v20.06";
+    return;
+#endif
 
     sofa::component::initComponentBase();
     sofa::component::initComponentCommon();
@@ -61,7 +67,7 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "SofaAllCommonComponents";
+    return "SofaComponentAll";
 }
 
 const char* getModuleVersion()
@@ -74,10 +80,9 @@ const char* getModuleLicense()
     return "LGPL";
 }
 
-
 const char* getModuleDescription()
 {
-    return "This package expose all the common sofa component.";
+    return "This package exposes all SOFA components.";
 }
 
 const char* getModuleComponentList()

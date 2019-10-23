@@ -19,9 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFACOMPONENTMAIN_CONFIG_H
-#define SOFACOMPONENTMAIN_CONFIG_H
+#ifndef SOFACOMPONENTMISC_CONFIG_H
+#define SOFACOMPONENTMISC_CONFIG_H
 
-@THERE@
+#include <SofaMisc/config.h>
+
+#ifdef SOFA_BUILD_COMPONENT_MISC
+#  define SOFA_TARGET SofaComponentMisc
+#  define SOFA_COMPONENT_MISC_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_MISC_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

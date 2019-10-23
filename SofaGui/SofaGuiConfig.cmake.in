@@ -2,6 +2,8 @@
 
 @PACKAGE_INIT@
 
+set(SOFAGUI_TARGETS @SOFAGUI_TARGETS@)
+
 set(SOFAGUI_HAVE_SOFAHEADLESSRECORDER @SOFAGUI_HAVE_SOFAHEADLESSRECORDER@)
 set(SOFAGUI_HAVE_SOFAGUIQT @SOFAGUI_HAVE_SOFAGUIQT@)
 set(SOFAGUIQT_HAVE_QTVIEWER @SOFAGUIQT_HAVE_QTVIEWER@)
@@ -29,11 +31,11 @@ if(SOFAGUI_HAVE_SOFAGUIQT)
     endif()
 endif()
 
-foreach(target @SOFAGUI_TARGETS@)
+foreach(target ${SOFAGUI_TARGETS})
     if(NOT TARGET ${target})
         include("${CMAKE_CURRENT_LIST_DIR}/SofaGuiTargets.cmake")
         break()
     endif()
 endforeach()
 
-check_required_components(@SOFAGUI_TARGETS@)
+check_required_components(${SOFAGUI_TARGETS})

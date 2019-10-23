@@ -2,13 +2,15 @@
 
 @PACKAGE_INIT@
 
+set(SOFABASE_TARGETS @SOFABASE_TARGETS@)
+
 find_package(SofaSimulation REQUIRED)
 
-foreach(target @SOFABASE_TARGETS@ SofaComponentBase)
+foreach(target ${SOFABASE_TARGETS})
     if(NOT TARGET ${target})
         include("${CMAKE_CURRENT_LIST_DIR}/SofaBaseTargets.cmake")
         break()
     endif()
 endforeach()
 
-check_required_components(@SOFABASE_TARGETS@)
+check_required_components(${SOFABASE_TARGETS})

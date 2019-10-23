@@ -58,7 +58,7 @@ setSofaOption(MODULE_SOFAOPENGLVISUAL ON)
 
 message("-------- Setting some plugins ON --------")
 
-setSofaOption(PLUGIN_SOFAALLCOMMONCOMPONENTS ON)
+setSofaOption(PLUGIN_SOFACOMPONENTALL ON)
 setSofaOption(PLUGIN_CIMGPLUGIN ON)
 setSofaOption(PLUGIN_COMPLIANT ON)
 setSofaOption(PLUGIN_DIFFUSIONSOLVER ON)

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1)
 
 project(SofaFrameworkExtra_test)
 
+find_package(SofaComponentBase REQUIRED)
+
 set(SOURCE_FILES
     core/TrackedData_test.cpp
     core/objectmodel/Base_test.cpp
@@ -14,6 +16,6 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 add_definitions("-DSOFAFRAMEWORKEXTRA_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaHelper)
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaHelper SofaComponentBase)
 
 add_test(NAME SofaFrameworkExtra_test COMMAND SofaFrameworkExtra_test)

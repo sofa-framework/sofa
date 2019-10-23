@@ -19,13 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_PACKAGE_ALLCOMMONCOMPONENTS_CONFIG_H
-#define SOFA_PACKAGE_ALLCOMMONCOMPONENTS_CONFIG_H
+#ifndef SOFAPRECONDITIONER_CONFIG_H
+#define SOFAPRECONDITIONER_CONFIG_H
 
-#ifdef SOFA_BUILD_MISC_COLLISION
-#  define SOFA_SOFAALLCOMMONCOMPONENTS_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#include <sofa/config/sharedlibrary_defines.h>
+
+#cmakedefine01 SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER
+
+#ifdef SOFA_BUILD_SOFAPRECONDITIONER
+#  define SOFA_TARGET SofaPreconditioner
+#  define SOFA_PRECONDITIONER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_SOFAALLCOMMONCOMPONENTS_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_PRECONDITIONER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #endif

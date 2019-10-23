@@ -1,6 +1,8 @@
 # CMake package configuration file for SofaMisc
 @PACKAGE_INIT@
 
+set(SOFAMISC_TARGETS @SOFAMISC_TARGETS@)
+
 set(SOFAMISCTOPOLOGY_HAVE_ZLIB @SOFAMISCTOPOLOGY_HAVE_ZLIB@)
 set(SOFAMISCFEM_HAVE_NEWMAT @SOFAMISCFEM_HAVE_NEWMAT@)
 
@@ -14,11 +16,11 @@ if(SOFAMISCFEM_HAVE_NEWMAT)
     find_package(Newmat QUIET REQUIRED)
 endif()
 
-foreach(target @SOFAMISC_TARGETS@ SofaComponentMisc)
+foreach(target ${SOFAMISC_TARGETS})
     if(NOT TARGET ${target})
         include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscTargets.cmake")
         break()
     endif()
 endforeach()
 
-check_required_components(@SOFAMISC_TARGETS@)
+check_required_components(${SOFAMISC_TARGETS})
