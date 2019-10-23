@@ -9,9 +9,9 @@ def createScene(rootNode):
     ASSERT_NEQ(field, None)
 
     ### Check isPersistant/setPersistant
-    ASSERT_TRUE( field.isPersistant() )
-    field.setPersistant(False)
     ASSERT_FALSE( field.isPersistant() )
+    field.setPersistant(True)
+    ASSERT_TRUE( field.isPersistant() )
 
     ### Check isSet/unset
     ASSERT_TRUE( field.isSet() )
