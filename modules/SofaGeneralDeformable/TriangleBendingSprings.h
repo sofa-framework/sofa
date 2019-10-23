@@ -73,6 +73,9 @@ public:
     //{
     //}
 
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<TriangleBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     typedef std::pair<unsigned,unsigned> IndexPair;
     void addSpring( unsigned, unsigned );
