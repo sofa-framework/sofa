@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaHAPI)
 
+if(${CMAKE_VERSION} VERSION_GREATER "3.11.4")
+    message(STATUS "policy")
+    cmake_policy(SET CMP0074 NEW)
+endif()
+
 find_package(SofaHaptics REQUIRED)
 
 set(SOFAHAPI_MAJOR_VERSION 0)
