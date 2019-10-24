@@ -73,6 +73,9 @@ void ParticleSource<DataTypes>::init()
 
     m_numberParticles = d_center.getValue().size();
     m_lastTime = d_start.getValue() - d_delay.getValue();
+    if (m_lastTime < 0.0)
+        m_lastTime = 0.0;
+
     m_maxdist = 0;
     m_lastpos.resize(m_numberParticles);
 
@@ -95,6 +98,8 @@ void ParticleSource<DataTypes>::reset()
 {
     this->mstate->resize(1);
     m_lastTime = d_start.getValue() - d_delay.getValue();
+    if (m_lastTime < 0.0)
+        m_lastTime = 0.0;
     m_maxdist = 0;
 
     helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;
@@ -240,7 +245,6 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
 
             for (int s = 0; s < m_numberParticles; s++)
             {
-                if (d_center.getValue()[s].norm() > m_maxdist) continue;
                 Coord p = d_center.getValue()[s] * d_scale.getValue() + d_translation.getValue();
 
                 for (unsigned int c = 0; c < p.size(); c++)
