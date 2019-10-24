@@ -338,7 +338,7 @@ void UniformMass<DataTypes, MassType>::initFromTotalMass()
     if(d_indices.getValue().size() > 0)
     {
         MassType *m = d_vertexMass.beginEdit();
-        *m = SReal(d_totalMass.getValue()) / SReal(d_indices.getValue().size());
+        *m = d_totalMass.getValue() / Real(d_indices.getValue().size());
         d_vertexMass.endEdit();
 
         msg_info() << "totalMass information is used";
