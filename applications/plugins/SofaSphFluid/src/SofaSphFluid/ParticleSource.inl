@@ -255,17 +255,17 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         nbParticlesToCreate = newX.size();
         msg_info() << "ParticleSource: Creating " << nbParticlesToCreate << " particles, total " << i0 + nbParticlesToCreate << " particles.";
 
+        if (nbParticlesToCreate <= 0)
+            return;
+
         sofa::component::topology::PointSetTopologyModifier* pointMod;
         this->getContext()->get(pointMod);
-
+        
         // Particles creation.
         if (pointMod != nullptr)
         {
             int n = i0 + nbParticlesToCreate - this->mstate->getSize();
-
-            pointMod->addPointsWarning(n);
-            pointMod->addPointsProcess(n);
-            pointMod->propagateTopologicalChanges();
+            pointMod->addPoints(n);
         }
         else
         {
