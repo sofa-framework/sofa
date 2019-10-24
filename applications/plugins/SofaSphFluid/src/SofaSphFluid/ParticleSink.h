@@ -93,18 +93,6 @@ public:
     
     virtual void animateBegin(double /*dt*/, double time);
     
-    template <class DataDeriv>
-    void projectResponseT(DataDeriv& res) ///< project dx to constrained space
-    {
-        if (!this->mstate) return;
-        if (fixed.getValue().empty()) return;
-
-        const SetIndexArray& _fixed = fixed.getValue();
-        // constraint the last value
-        for (unsigned int s=0; s<_fixed.size(); s++)
-            res[_fixed[s]] = Deriv();
-    }
-
     void projectResponse(const sofa::core::MechanicalParams* mparams, DataVecDeriv& dx) override; ///< project dx to constrained space
    
     void projectVelocity(const sofa::core::MechanicalParams* mparams, DataVecDeriv& v) override; ///< project dx to constrained space (dx models a velocity) override

@@ -127,16 +127,26 @@ void ParticleSink<DataTypes>::animateBegin(double /*dt*/, double time)
 template<class DataTypes>
 void ParticleSink<DataTypes>::projectResponse(const sofa::core::MechanicalParams* mparams, DataVecDeriv& dx)
 {
-    VecDeriv& res = *dx.beginEdit(mparams);
-    projectResponseT(res);
-    dx.endEdit(mparams);
+    // Fixed points are directly done in projectVelocity
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(dx);
 }
 
 template<class DataTypes>
-void ParticleSink<DataTypes>::projectVelocity(const sofa::core::MechanicalParams* /* mparams */, DataVecDeriv& /* v */)
+void ParticleSink<DataTypes>::projectVelocity(const sofa::core::MechanicalParams* mparams, DataVecDeriv&  v )
 {
+    if (!this->mstate) return;
 
+    VecDeriv& vel = *v.beginEdit(mparams);
+    helper::ReadAccessor< Data<SetIndexArray> > _fixed = this->fixed;
+    Deriv v0 = Deriv();
+    for (unsigned int s = 0; s<_fixed.size(); s++)
+    {
+        vel[_fixed[s]] = v0;
+    }    
+    v.endEdit(mparams);
 }
+
 
 template<class DataTypes>
 void ParticleSink<DataTypes>::projectPosition(const sofa::core::MechanicalParams* mparams, DataVecCoord& xData)
