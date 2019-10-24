@@ -83,7 +83,6 @@ public:
     Data<bool> showPlane; ///< enable/disable drawing of plane
 
     sofa::component::topology::PointSubsetData< SetIndexArray > fixed; ///< indices of fixed particles
-    //Data< SetIndexArray > fixed; ///< indices of fixed particles
 protected:
     ParticleSink();
 
@@ -108,13 +107,11 @@ public:
 
     void projectResponse(const sofa::core::MechanicalParams* mparams, DataVecDeriv& dx) override; ///< project dx to constrained space
    
-    void projectVelocity(const sofa::core::MechanicalParams* /* mparams */, DataVecDeriv& /* v */) override; ///< project dx to constrained space (dx models a velocity) override
+    void projectVelocity(const sofa::core::MechanicalParams* mparams, DataVecDeriv& v) override; ///< project dx to constrained space (dx models a velocity) override
   
     void projectPosition(const sofa::core::MechanicalParams* mparams, DataVecCoord& xData) override; ///< project x to constrained space (x models a position) override
    
-    void projectJacobianMatrix(const sofa::core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */) override;
-
-    virtual void animateEnd(double /*dt*/, double /*time*/);
+    void projectJacobianMatrix(const sofa::core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
     void handleEvent(sofa::core::objectmodel::Event* event) override;
 

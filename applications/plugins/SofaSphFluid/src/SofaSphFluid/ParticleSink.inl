@@ -63,7 +63,7 @@ void ParticleSink<DataTypes>::init()
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
     if (!this->mstate) return;
 
-    sout << "ParticleSink: normal="<<planeNormal.getValue()<<" d0="<<planeD0.getValue()<<" d1="<<planeD1.getValue()<<sendl;
+    msg_info() << "Normal=" << planeNormal.getValue() << " d0=" << planeD0.getValue() << " d1=" << planeD1.getValue();
 
     sofa::core::topology::BaseMeshTopology* _topology;
     _topology = this->getContext()->getMeshTopology();
@@ -71,15 +71,15 @@ void ParticleSink<DataTypes>::init()
     // Initialize functions and parameters for topology data and handler
     fixed.createTopologicalEngine(_topology);
     fixed.registerTopologicalData();
-
 }
 
 
 template<class DataTypes>
 void ParticleSink<DataTypes>::animateBegin(double /*dt*/, double time)
 {
-    //sout << "ParticleSink: animate begin time="<<time<<sendl;
-    if (!this->mstate) return;
+    if (!this->mstate) 
+        return;
+    
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     int n = x.size();
@@ -95,22 +95,19 @@ void ParticleSink<DataTypes>::animateBegin(double /*dt*/, double time)
     }
     if (!remove.empty())
     {
-        //sofa::core::topology::BaseMeshTopology* _topology;
-        //_topology = this->getContext()->getMeshTopology();
-
         sofa::component::topology::PointSetTopologyModifier* pointMod;
         this->getContext()->get(pointMod);
 
         if (pointMod != nullptr)
         {
-            msg_info() << "ParticleSink: remove "<<remove.size()<<" particles using PointSetTopologyModifier.";
+            msg_info() << "Remove: " << remove.size() << " out of: " << n <<" particles using PointSetTopologyModifier.";
             pointMod->removePointsWarning(remove);
             pointMod->propagateTopologicalChanges();
             pointMod->removePointsProcess(remove);
         }
         else if(container::MechanicalObject<DataTypes>* object = dynamic_cast<container::MechanicalObject<DataTypes>*>(this->mstate.get()))
         {
-            msg_info() << "ParticleSink: remove "<<remove.size()<<" particles using MechanicalObject.";
+            msg_info() << "Remove "<<remove.size()<<" particles using MechanicalObject.";
             // deleting the vertices
             for (unsigned int i = 0; i < remove.size(); ++i)
             {
@@ -122,7 +119,7 @@ void ParticleSink<DataTypes>::animateBegin(double /*dt*/, double time)
         }
         else
         {
-            msg_info() << "ERROR(ParticleSink): no external object supporting removing points!";
+            msg_error() << "No external object supporting removing points!";
         }
     }
 }
@@ -164,17 +161,14 @@ void ParticleSink<DataTypes>::projectPosition(const sofa::core::MechanicalParams
     xData.endEdit(mparams);
 }
 
-template<class DataTypes>
-void ParticleSink<DataTypes>::projectJacobianMatrix(const sofa::core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */)
-{
-
-}
 
 template<class DataTypes>
-void ParticleSink<DataTypes>::animateEnd(double /*dt*/, double /*time*/)
+void ParticleSink<DataTypes>::projectJacobianMatrix(const sofa::core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
-
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(cData);
 }
+
 
 template<class DataTypes>
 void ParticleSink<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
@@ -183,11 +177,6 @@ void ParticleSink<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
     {
         simulation::AnimateBeginEvent* ev = static_cast<simulation::AnimateBeginEvent*>(event);
         animateBegin(ev->getDt(), this->getContext()->getTime());
-    }
-    else if(simulation::AnimateEndEvent::checkEventType(event) )
-    {
-        simulation::AnimateEndEvent* ev = static_cast<simulation::AnimateEndEvent*>(event);
-        animateEnd(ev->getDt(), this->getContext()->getTime());
     }
 }
 
