@@ -141,7 +141,7 @@ RGBAColor RGBAColor::fromVec4(const fixed_array<float, 4>& color)
 
 RGBAColor RGBAColor::fromVec4(const fixed_array<double, 4>& color)
 {
-    return RGBAColor(color[0], color[1], color[2], color[3]) ;
+    return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
 }
 
 
@@ -279,7 +279,7 @@ SOFA_HELPER_API std::ostream& operator << ( std::ostream& out, const RGBAColor& 
 /// @brief enlight a color by a given factor.
 RGBAColor RGBAColor::lighten(const RGBAColor& in, const SReal factor)
 {
-    RGBAColor c = in + ((RGBAColor::white() - clamp(in, 0.0f, 1.0f)) * rclamp(factor, 0.0, 1.0));
+    RGBAColor c = in + ((RGBAColor::white() - clamp(in, 0.0f, 1.0f)) * rclamp(float(factor), 0.0f, 1.0f));
     c.a()=1.0;
     return c ;
 }
