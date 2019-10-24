@@ -269,10 +269,9 @@ if(NOT SOFA_NO_OPENGL)
 endif()
 
 if(NODEEDITOR_FOUND)
-    include_directories(${NODEEDITOR_INCLUDE_PATH})     
     target_link_libraries(${PROJECT_NAME} PUBLIC ${NODEEDITOR_LIBRARY})
     sofa_install_libraries(LIBRARIES ${NODEEDITOR_LIBRARY})
-    target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${NODEEDITOR_INCLUDES}>")
+    target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${NODEEDITOR_INCLUDE_PATH}>")
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
