@@ -63,6 +63,14 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
 
+#NodeEditor
+option(SOFAGUIQT_ENABLE_NODEGRAPH "Build the Node graph representation. NodeEditor library is needed." OFF)
+if (SOFAGUIQT_ENABLE_NODEGRAPH)
+    find_package(NodeEditor REQUIRED)
+endif()
+sofa_set_01(SOFAGUIQT_HAVE_NODEEDITOR VALUE ${SOFAGUIQT_ENABLE_NODEGRAPH} BOTH_SCOPES)
+    
+
 set(MOC_HEADER_FILES
     AddObject.h
     DataFilenameWidget.h
@@ -225,29 +233,17 @@ else()
 endif()
 
 
-#NODEGRAPH
-option(SOFA_BUILD_NODEGRAPH "Build the Node graph representation. NodeEditor library is needed." OFF)
+#NodeEditor
+if (SOFAGUIQT_ENABLE_NODEGRAPH)
+    list(APPEND MOC_HEADER_FILES 
+        SofaWindowDataGraph.h
+        dataGraph/SofaComponentNodeModel.h
+        )
 
-if (SOFA_BUILD_NODEGRAPH)
-    find_package(NodeEditor REQUIRED)
-
-    if(NODEEDITOR_FOUND)
-        #message(STATUS "NODEEDITOR_INCLUDE_PATH ${NODEEDITOR_INCLUDE_PATH}")
-        #message(STATUS "NODEEDITOR_LIBRARY ${NODEEDITOR_LIBRARY}")
-        include_directories(${NODEEDITOR_INCLUDE_PATH})
-
-        sofa_set_01(SOFAGUIQT_HAVE_NODEEDITOR VALUE {NodeEditor_FOUND} BOTH_SCOPES)
-            
-        list(APPEND MOC_HEADER_FILES 
-            SofaWindowDataGraph.h
-            dataGraph/SofaComponentNodeModel.h
-            )
-
-        list(APPEND SOURCE_FILES 
-            SofaWindowDataGraph.cpp
-            dataGraph/SofaComponentNodeModel.cpp
-            )
-    endif()
+    list(APPEND SOURCE_FILES 
+        SofaWindowDataGraph.cpp
+        dataGraph/SofaComponentNodeModel.cpp
+        )
 endif()
 
 qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
@@ -273,7 +269,10 @@ if(NOT SOFA_NO_OPENGL)
 endif()
 
 if(NODEEDITOR_FOUND)
+    include_directories(${NODEEDITOR_INCLUDE_PATH})     
     target_link_libraries(${PROJECT_NAME} PUBLIC ${NODEEDITOR_LIBRARY})
+    sofa_install_libraries(LIBRARIES ${NODEEDITOR_LIBRARY})
+    target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${NODEEDITOR_INCLUDES}>")
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
