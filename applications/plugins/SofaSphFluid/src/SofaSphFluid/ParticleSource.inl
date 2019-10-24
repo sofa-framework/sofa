@@ -192,7 +192,16 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
 
     int i0 = this->mstate->getSize();    
     if (i0 == 1) // ignore the first point if it is the only one
+    {
         i0 = 0;
+        sofa::component::topology::PointSetTopologyContainer* pointCon;
+        this->getContext()->get(pointCon);
+        if (pointCon != nullptr) 
+        {
+            // TODO: epernod.... why why why.... still a diff between meca->getSize and topo->GetNbrPoints...
+            pointCon->setNbPoints(1);
+        }
+    }
 
     int nbParticlesToCreate = (int)((time - m_lastTime) / d_delay.getValue());    
     if (nbParticlesToCreate > 0)
