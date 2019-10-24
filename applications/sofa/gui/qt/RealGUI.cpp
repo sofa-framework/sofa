@@ -308,12 +308,12 @@ RealGUI::RealGUI ( const char* viewername)
       interactionButton( nullptr ),
       #endif
 
-      #ifndef SOFA_GUI_QT_NO_RECORDER
+#ifndef SOFA_GUI_QT_NO_RECORDER
       recorder(nullptr),
-      #else
+#else
       fpsLabel(nullptr),
       timeLabel(nullptr),
-      #endif
+#endif
 
       #ifdef SOFA_GUI_INTERACTION
       m_interactionActived(false),
@@ -330,12 +330,12 @@ RealGUI::RealGUI ( const char* viewername)
       #endif
 
       m_sofaMouseManager(nullptr),
-      #if SOFAGUIQT_HAVE_QT5_CHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
       m_windowTimerProfiler(nullptr),
-      #endif
-      #if SOFAGUIQT_HAVE_NODEEDITOR
+#endif
+#if SOFAGUIQT_HAVE_NODEEDITOR
       m_sofaWindowDataGraph(nullptr),
-      #endif
+#endif
       simulationGraph(nullptr),
       mCreateViewersOpt(true),
       mIsEmbeddedViewer(true),
