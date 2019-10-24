@@ -1,57 +1,59 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaDefaultType)
 
+set(SRC_ROOT "src/sofa/defaulttype")
+
 set(HEADER_FILES
-    BaseMatrix.h
-    BaseVector.h
-    BoundingBox.h
-    DataTypeInfo.h
-    Frame.h
-    MapMapSparseMatrix.h
-    Mat.h
-    MatSym.h
-    Mat_solve_Cholesky.h
-    Mat_solve_LU.h
-    Mat_solve_SVD.h
-    Quat.h
-    Quat.inl
-    # RigidInertia.h
-    # RigidInertia.inl
-    RigidTypes.h
-    RigidVec6Types.h
-    SolidTypes.h
-    SolidTypes.inl
-    # SparseConstraintTypes.h
-    TemplatesAliases.h
-    TopologyTypes.h
-    Vec.h
-    Vec3Types.h
-    VecTypes.h
-    defaulttype.h
-    init.h
-    Color.h
+    ${SRC_ROOT}/BaseMatrix.h
+    ${SRC_ROOT}/BaseVector.h
+    ${SRC_ROOT}/BoundingBox.h
+    ${SRC_ROOT}/DataTypeInfo.h
+    ${SRC_ROOT}/Frame.h
+    ${SRC_ROOT}/MapMapSparseMatrix.h
+    ${SRC_ROOT}/Mat.h
+    ${SRC_ROOT}/MatSym.h
+    ${SRC_ROOT}/Mat_solve_Cholesky.h
+    ${SRC_ROOT}/Mat_solve_LU.h
+    ${SRC_ROOT}/Mat_solve_SVD.h
+    ${SRC_ROOT}/Quat.h
+    ${SRC_ROOT}/Quat.inl
+    # ${SRC_ROOT}/RigidInertia.h
+    # ${SRC_ROOT}/RigidInertia.inl
+    ${SRC_ROOT}/RigidTypes.h
+    ${SRC_ROOT}/RigidVec6Types.h
+    ${SRC_ROOT}/SolidTypes.h
+    ${SRC_ROOT}/SolidTypes.inl
+    # ${SRC_ROOT}/SparseConstraintTypes.h
+    ${SRC_ROOT}/TemplatesAliases.h
+    ${SRC_ROOT}/TopologyTypes.h
+    ${SRC_ROOT}/Vec.h
+    ${SRC_ROOT}/Vec3Types.h
+    ${SRC_ROOT}/VecTypes.h
+    ${SRC_ROOT}/defaulttype.h
+    ${SRC_ROOT}/init.h
+    ${SRC_ROOT}/Color.h
 )
 
 if(EIGEN3_FOUND OR Eigen3_FOUND)
     list(APPEND HEADER_FILES 
-         MapMapSparseMatrixEigenUtils.h
+         ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
         )
 endif()
 
 set(SOURCE_FILES
-    BaseMatrix.cpp
-    BoundingBox.cpp
-    Frame.cpp
-    # RigidInertia.cpp
-    SolidTypes.cpp
-    TemplatesAliases.cpp
-    init.cpp
+    ${SRC_ROOT}/BaseMatrix.cpp
+    ${SRC_ROOT}/BoundingBox.cpp
+    ${SRC_ROOT}/Frame.cpp
+    # ${SRC_ROOT}/RigidInertia.cpp
+    ${SRC_ROOT}/SolidTypes.cpp
+    ${SRC_ROOT}/TemplatesAliases.cpp
+    ${SRC_ROOT}/init.cpp
 )
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DEFAULTTYPE")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
