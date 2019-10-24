@@ -19,19 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: ParticleSink
-//
-// Description:
-//
-//
-// Author: Jeremie Allard, (C) 2008
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_COMPONENT_MISC_PARTICLESINK_H
 #define SOFA_COMPONENT_MISC_PARTICLESINK_H
+
 #include <SofaSphFluid/config.h>
 
 #include <sofa/helper/system/config.h>
@@ -131,11 +121,16 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-}
+#if !defined(SOFA_COMPONENT_MISC_PARTICLESINK_CPP)
+extern template class SOFA_SPH_FLUID_API ParticleSink<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SPH_FLUID_API ParticleSink<sofa::defaulttype::Vec2Types>;
+#endif
+
+} // namespace misc
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_MISC_PARTICLESINK_H
 

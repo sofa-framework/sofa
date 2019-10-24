@@ -234,11 +234,11 @@ void ParticleSink<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-}
+} // namespace misc
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_MISC_PARTICLESINK_INL
 
