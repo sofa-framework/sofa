@@ -37,17 +37,16 @@ namespace misc
 
 template<class DataTypes>
 ParticleSink<DataTypes>::ParticleSink()
-    : planeNormal(initData(&planeNormal, "normal", "plane normal"))
-    , planeD0(initData(&planeD0, (Real)0, "d0", "plane d coef at which particles acceleration is constrained to 0"))
-    , planeD1(initData(&planeD1, (Real)0, "d1", "plane d coef at which particles are removed"))
-    , color(initData(&color, defaulttype::RGBAColor(0.0f,0.5f,0.2f,1.0f), "color", "plane color. (default=[0.0,0.5,0.2,1.0])"))
-    , showPlane(initData(&showPlane, false, "showPlane", "enable/disable drawing of plane"))
-    , fixed(initData(&fixed, "fixed", "indices of fixed particles"))
+    : d_planeNormal(initData(&d_planeNormal, "normal", "plane normal"))
+    , d_planeD0(initData(&d_planeD0, (Real)0, "d0", "plane d coef at which particles acceleration is constrained to 0"))
+    , d_planeD1(initData(&d_planeD1, (Real)0, "d1", "plane d coef at which particles are removed"))
+    , d_showPlane(initData(&d_showPlane, false, "showPlane", "enable/disable drawing of plane"))
+    , d_fixed(initData(&d_fixed, "fixed", "indices of fixed particles"))
 {
     this->f_listening.setValue(true);
     Deriv n;
     DataTypes::set(n, 0, 1, 0);
-    planeNormal.setValue(n);
+    d_planeNormal.setValue(n);
 }
 
 template<class DataTypes>
@@ -63,14 +62,14 @@ void ParticleSink<DataTypes>::init()
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
     if (!this->mstate) return;
 
-    msg_info() << "Normal=" << planeNormal.getValue() << " d0=" << planeD0.getValue() << " d1=" << planeD1.getValue();
+    msg_info() << "Normal=" << d_planeNormal.getValue() << " d0=" << d_planeD0.getValue() << " d1=" << d_planeD1.getValue();
 
     sofa::core::topology::BaseMeshTopology* _topology;
     _topology = this->getContext()->getMeshTopology();
 
     // Initialize functions and parameters for topology data and handler
-    fixed.createTopologicalEngine(_topology);
-    fixed.registerTopologicalData();
+    d_fixed.createTopologicalEngine(_topology);
+    d_fixed.registerTopologicalData();
 }
 
 
@@ -86,7 +85,7 @@ void ParticleSink<DataTypes>::animateBegin(double /*dt*/, double time)
     helper::vector<unsigned int> remove;
     for (int i=n-1; i>=0; --i) // always remove points in reverse order
     {
-        Real d = x[i]*planeNormal.getValue()-planeD1.getValue();
+        Real d = x[i]*d_planeNormal.getValue()-d_planeD1.getValue();
         if (d<0)
         {
             msg_info() << "SINK particle "<<i<<" time "<<time<<" position "<<x[i]<<" velocity "<<v[i] ;
@@ -138,7 +137,7 @@ void ParticleSink<DataTypes>::projectVelocity(const sofa::core::MechanicalParams
     if (!this->mstate) return;
 
     VecDeriv& vel = *v.beginEdit(mparams);
-    helper::ReadAccessor< Data<SetIndexArray> > _fixed = this->fixed;
+    helper::ReadAccessor< Data<SetIndexArray> > _fixed = this->d_fixed;
     Deriv v0 = Deriv();
     for (unsigned int s = 0; s<_fixed.size(); s++)
     {
@@ -155,13 +154,13 @@ void ParticleSink<DataTypes>::projectPosition(const sofa::core::MechanicalParams
 
     VecCoord& x = *xData.beginEdit(mparams);
 
-    helper::WriteAccessor< Data< SetIndexArray > > _fixed = fixed;
+    helper::WriteAccessor< Data< SetIndexArray > > _fixed = d_fixed;
 
     _fixed.clear();
     // constraint the last value
     for (unsigned int i=0; i<x.size(); i++)
     {
-        Real d = x[i]*planeNormal.getValue()-planeD0.getValue();
+        Real d = x[i]*d_planeNormal.getValue()-d_planeD0.getValue();
         if (d<0)
         {
             _fixed.push_back(i);
@@ -193,12 +192,12 @@ void ParticleSink<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 template<class DataTypes>
 void ParticleSink<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!showPlane.getValue())
+    if (!d_showPlane.getValue())
         return;
 
     vparams->drawTool()->saveLastState();
 
-    defaulttype::Vec3d normal; normal = planeNormal.getValue();
+    defaulttype::Vec3d normal; normal = d_planeNormal.getValue();
 
     // find a first vector inside the plane
     defaulttype::Vec3d v1;
@@ -211,7 +210,7 @@ void ParticleSink<DataTypes>::draw(const core::visual::VisualParams* vparams)
     v2 = v1.cross(normal);
     v2.normalize();
     const float size=1.0f;
-    defaulttype::Vec3d center = normal*planeD0.getValue();
+    defaulttype::Vec3d center = normal*d_planeD0.getValue();
     defaulttype::Vec3d corners[4];
     corners[0] = center-v1*size-v2*size;
     corners[1] = center+v1*size-v2*size;
@@ -221,14 +220,13 @@ void ParticleSink<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->disableLighting();
     vparams->drawTool()->setPolygonMode(0, true);
 
-    sofa::defaulttype::RGBAColor _color(color.getValue()[0],color.getValue()[1],color.getValue()[2],1.0);
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     vertices.push_back(sofa::defaulttype::Vector3(corners[0]));
     vertices.push_back(sofa::defaulttype::Vector3(corners[1]));
     vertices.push_back(sofa::defaulttype::Vector3(corners[2]));
     vertices.push_back(sofa::defaulttype::Vector3(corners[3]));
-    vparams->drawTool()->drawQuad(vertices[0],vertices[1],vertices[2],vertices[3], cross((vertices[1] - vertices[0]), (vertices[2] - vertices[0])), _color);
+    vparams->drawTool()->drawQuad(vertices[0],vertices[1],vertices[2],vertices[3], cross((vertices[1] - vertices[0]), (vertices[2] - vertices[0])), defaulttype::RGBAColor(0.0f, 0.5f, 0.2f, 1.0f));
 
     vparams->drawTool()->restoreLastState();
 }

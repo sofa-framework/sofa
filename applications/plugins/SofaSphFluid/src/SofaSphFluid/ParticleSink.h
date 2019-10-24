@@ -76,13 +76,12 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
 
-    Data<Deriv> planeNormal; ///< plane normal
-    Data<Real> planeD0; ///< plane d coef at which particles acceleration is constrained to 0
-    Data<Real> planeD1; ///< plane d coef at which particles are removed
-    Data<defaulttype::RGBAColor> color; ///< plane color. (default=[0.0,0.5,0.2,1.0])
-    Data<bool> showPlane; ///< enable/disable drawing of plane
+    Data<Deriv> d_planeNormal; ///< plane normal
+    Data<Real> d_planeD0; ///< plane d coef at which particles acceleration is constrained to 0
+    Data<Real> d_planeD1; ///< plane d coef at which particles are removed
+    Data<bool> d_showPlane; ///< enable/disable drawing of plane
 
-    sofa::component::topology::PointSubsetData< SetIndexArray > fixed; ///< indices of fixed particles
+    sofa::component::topology::PointSubsetData< SetIndexArray > d_fixed; ///< indices of fixed particles
 protected:
     ParticleSink();
 
