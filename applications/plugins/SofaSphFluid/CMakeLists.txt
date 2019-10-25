@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaSphFluid VERSION 1.0)
 
 find_package(SofaBase REQUIRED)
+sofa_find_package(SofaOpenglVisual QUIET)
  
 set(PLUGIN_SPH_SRC_DIR src/SofaSphFluid)
 set(HEADER_FILES
@@ -17,7 +18,9 @@ set(HEADER_FILES
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidSurfaceMapping.h
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidSurfaceMapping.inl
     ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.h
-    ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.inl    
+    ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.inl
+    ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.h
+    ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.inl
 )
 
 set(SOURCE_FILES
@@ -28,6 +31,7 @@ set(SOURCE_FILES
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidForceField.cpp
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidSurfaceMapping.cpp
     ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.cpp
+    ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.cpp
 )
 
 set(README_FILES
@@ -43,6 +47,9 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SPH_FLUID")
 # Link the plugin library to its dependencies (other libraries).
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseMechanics)
 
+if(SofaOpenglVisual_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
