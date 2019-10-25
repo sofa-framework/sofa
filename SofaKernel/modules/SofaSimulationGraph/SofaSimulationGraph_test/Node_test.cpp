@@ -25,7 +25,7 @@ using sofa::helper::testing::BaseSimulationTest ;
 #include <SofaSimulationGraph/SimpleApi.h>
 using namespace sofa::simpleapi ;
 
-#include "../Node_test.h"
+#include <sofa/simulation/testing/Node_test.h>
 
 namespace sofa {
 

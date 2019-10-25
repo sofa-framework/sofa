@@ -142,6 +142,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
 )
+if(SOFA_BUILD_TESTS)
+    list(APPEND HEADER_FILES
+        ${SRC_ROOT}/testing/Node_test.h
+        )
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
@@ -157,3 +162,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
 endif()
 
 sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/simulation" ${SRC_ROOT})
+
+if(SOFA_BUILD_TESTS)
+    add_subdirectory(SofaSimulationCore_test)
+endif()

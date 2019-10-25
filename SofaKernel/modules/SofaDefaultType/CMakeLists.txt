@@ -59,3 +59,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
 sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/defaulttype" ${SRC_ROOT})
+
+if(SOFA_BUILD_TESTS)
+    add_subdirectory(SofaDefaultType_test)
+endif()

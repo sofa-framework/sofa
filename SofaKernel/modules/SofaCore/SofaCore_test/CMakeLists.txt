@@ -6,7 +6,6 @@ set(SOURCE_FILES
     loader/MeshLoader_test.cpp
     objectmodel/AspectPool_test.cpp
     objectmodel/Data_test.cpp
-    objectmodel/BaseContext_test.cpp
     objectmodel/BaseLink_test.cpp
     objectmodel/BaseObjectDescription_test.cpp
     objectmodel/DataFileName_test.cpp
@@ -16,6 +15,6 @@ set(SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaHelper)
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaCore)
 
 add_test(NAME SofaCore_test COMMAND SofaCore_test)

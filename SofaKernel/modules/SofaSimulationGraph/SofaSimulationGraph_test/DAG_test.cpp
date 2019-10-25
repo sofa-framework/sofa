@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "../../SofaSimulationCore/SofaSimulationCore_test/Node_test.h"
+#include <sofa/simulation/testing/Node_test.h>
 
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;

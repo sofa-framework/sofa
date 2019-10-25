@@ -5,7 +5,6 @@ project(SofaHelper_test)
 set(SOURCE_FILES
     types/Color_test.cpp
     types/Material_test.cpp
-    AdvancedTimer_test.cpp
     KdTree_test.cpp
     Utils_test.cpp
     Quater_test.cpp

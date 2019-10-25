@@ -453,3 +453,7 @@ if(JSON_FOUND)
 endif()
 
 sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/helper" ${SRC_ROOT})
+
+if(SOFA_BUILD_TESTS)
+    add_subdirectory(SofaHelper_test)
+endif()

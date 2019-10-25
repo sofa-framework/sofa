@@ -15,5 +15,5 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../../SofaSimulationCore/SofaSimulationCore_test>")
+
 add_test(Name ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

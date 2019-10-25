@@ -267,3 +267,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSIO
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CORE")
 
 sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/core" ${SRC_ROOT})
+
+if(SOFA_BUILD_TESTS)
+    add_subdirectory(SofaCore_test)
+endif()
