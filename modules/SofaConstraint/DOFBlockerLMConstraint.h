@@ -81,7 +81,7 @@ protected:
         , BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain"))
         , factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis"))
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
+        , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis, 1.0f,"showSizeAxis","size of the vector used to display the constrained axis") )
     {
         pointHandler = new FCTPointHandler(this, &f_indices);
     }
@@ -126,7 +126,7 @@ public:
     Data<helper::vector<Deriv> > BlockedAxis; ///< List of rotation axis to constrain
     Data<helper::vector<SReal> > factorAxis; ///< Factor to apply in order to block only a certain amount of rotation along the axis
     SetIndex f_indices; ///< List of the index of particles to be fixed
-    Data<SReal> showSizeAxis; ///< size of the vector used to display the constrained axis
+    Data<float> showSizeAxis; ///< size of the vector used to display the constrained axis
 
     class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<unsigned int> >
     {
