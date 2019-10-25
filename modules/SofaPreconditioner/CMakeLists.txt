@@ -8,7 +8,7 @@ sofa_find_package(SofaSparseSolver QUIET) # Soft dependency of PrecomputedWarpPr
 
 # Config
 set(HEADER_FILES
-    src/SofaPreconditioner/config.h
+    src/SofaPreconditioner/config.h.in
     )
 set(SOURCE_FILES
     src/SofaPreconditioner/initPreconditioner.cpp

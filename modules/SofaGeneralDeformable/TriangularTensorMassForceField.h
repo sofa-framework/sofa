@@ -133,15 +133,17 @@ protected:
         TriangularTensorMassForceField<DataTypes>* ff;
     };
 
-
-
-    sofa::core::topology::BaseMeshTopology* _topology;
+    
     VecCoord  _initialPoints;///< the intial positions of the points
 
     bool updateMatrix;
 
     Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
     Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TriangularTensorMassForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
@@ -184,6 +186,9 @@ public:
 protected :
 
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
 };
 

@@ -172,12 +172,19 @@ protected:
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> m_matS;
 
     const VecElement *m_indexedElements;
+
+public:
     Data<Real> d_poissonRatio; ///< Potion Ratio
     Data<Real> d_youngModulus; ///< Young Modulus
     Data<Real> d_radius; ///< radius of the section
     Data<Real> d_radiusInner; ///< inner radius of the section for hollow beams
     Data< BaseMeshTopology::SetIndex > d_listSegment; ///< apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology
     Data< bool> d_useSymmetricAssembly; ///< use symmetric assembly of the matrix K
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<BeamFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
+ protected:
     bool m_partialListSegment;
     bool m_updateStiffnessMatrix;
     bool m_assembling;

@@ -58,7 +58,9 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
     , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
     , m_pointHandler(nullptr)
+    , l_topology(initLink("topology", "link to the topology container"))
     , m_topologyType(TOPOLOGY_UNKNOWN)
+    , m_topology(nullptr)
 {
     this->addAlias(&d_fileMass,"fileMass");
 }
@@ -94,7 +96,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeCreation(cons
         for (i=0; i<edgeAdded.size(); ++i)
         {
             /// get the edge to be added
-            const Edge &e=dm->_topology->getEdge(edgeAdded[i]);
+            const Edge &e=dm->m_topology->getEdge(edgeAdded[i]);
             // compute its mass based on the mass density and the edge length
             if(dm->edgeGeo)
             {
@@ -121,7 +123,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeDestruction(c
         for (i=0; i<edgeRemoved.size(); ++i)
         {
             /// get the edge to be added
-            const Edge &e=dm->_topology->getEdge(edgeRemoved[i]);
+            const Edge &e=dm->m_topology->getEdge(edgeRemoved[i]);
             // compute its mass based on the mass density and the edge length
             if(dm->edgeGeo)
             {
@@ -170,7 +172,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleCreation(
         for (i=0; i<triangleAdded.size(); ++i)
         {
             /// get the triangle to be added
-            const Triangle &t=dm->_topology->getTriangle(triangleAdded[i]);
+            const Triangle &t=dm->m_topology->getTriangle(triangleAdded[i]);
             // compute its mass based on the mass density and the triangle area
             if(dm->triangleGeo)
             {
@@ -198,7 +200,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleDestructi
         for (i=0; i<triangleRemoved.size(); ++i)
         {
             /// get the triangle to be added
-            const Triangle &t=dm->_topology->getTriangle(triangleRemoved[i]);
+            const Triangle &t=dm->m_topology->getTriangle(triangleRemoved[i]);
 
             /// compute its mass based on the mass density and the triangle area
             if(dm->triangleGeo)
@@ -250,7 +252,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronCreati
         for (i=0; i<tetrahedronAdded.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Tetrahedron &t=dm->_topology->getTetrahedron(tetrahedronAdded[i]);
+            const Tetrahedron &t=dm->m_topology->getTetrahedron(tetrahedronAdded[i]);
 
             /// compute its mass based on the mass density and the tetrahedron volume
             if(dm->tetraGeo)
@@ -283,7 +285,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronDestru
         for (i=0; i<tetrahedronRemoved.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Tetrahedron &t=dm->_topology->getTetrahedron(tetrahedronRemoved[i]);
+            const Tetrahedron &t=dm->m_topology->getTetrahedron(tetrahedronRemoved[i]);
             if(dm->tetraGeo)
             {
                 // compute its mass based on the mass density and the tetrahedron volume
@@ -335,7 +337,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronCreatio
         for (i=0; i<hexahedronAdded.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Hexahedron &t=dm->_topology->getHexahedron(hexahedronAdded[i]);
+            const Hexahedron &t=dm->m_topology->getHexahedron(hexahedronAdded[i]);
             // compute its mass based on the mass density and the tetrahedron volume
             if(dm->hexaGeo)
             {
@@ -363,7 +365,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronDestruc
         for (i=0; i<hexahedronRemoved.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Hexahedron &t=dm->_topology->getHexahedron(hexahedronRemoved[i]);
+            const Hexahedron &t=dm->m_topology->getHexahedron(hexahedronRemoved[i]);
             if(dm->hexaGeo)
             {
                 // compute its mass based on the mass density and the tetrahedron volume
@@ -547,7 +549,7 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 {
     // add the functions to handle topology changes.
     m_pointHandler = new DMassPointHandler(this, &d_vertexMass);
-    d_vertexMass.createTopologicalEngine(_topology, m_pointHandler);
+    d_vertexMass.createTopologicalEngine(m_topology, m_pointHandler);
     if (edgeGeo)
         d_vertexMass.linkToEdgeDataArray();
     if (triangleGeo)
@@ -564,7 +566,18 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 template <class DataTypes, class MassType>
 bool DiagonalMass<DataTypes, MassType>::checkTopology()
 {
-    _topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        return false;
+    }
 
     this->getContext()->get(edgeGeo);
     this->getContext()->get(triangleGeo);
@@ -572,9 +585,9 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
     this->getContext()->get(tetraGeo);
     this->getContext()->get(hexaGeo);
 
-    if (_topology)
+    if (m_topology)
     {
-        if (_topology->getNbHexahedra() > 0)
+        if (m_topology->getNbHexahedra() > 0)
         {
             if(!hexaGeo)
             {
@@ -587,7 +600,7 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
                 return true;
             }
         }
-        else if (_topology->getNbTetrahedra() > 0)
+        else if (m_topology->getNbTetrahedra() > 0)
         {
             if(!tetraGeo)
             {
@@ -600,7 +613,7 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
                 return true;
             }
         }
-        else if (_topology->getNbQuads() > 0)
+        else if (m_topology->getNbQuads() > 0)
         {
             if(!quadGeo)
             {
@@ -613,7 +626,7 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
                 return true;
             }
         }
-        else if (_topology->getNbTriangles() > 0)
+        else if (m_topology->getNbTriangles() > 0)
         {
             if(!triangleGeo)
             {
@@ -626,7 +639,7 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
                 return true;
             }
         }
-        else if (_topology->getNbEdges() > 0)
+        else if (m_topology->getNbEdges() > 0)
         {
             if(!edgeGeo)
             {
@@ -798,9 +811,9 @@ void DiagonalMass<DataTypes, MassType>::printMass()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::computeMass()
 {
-    if (_topology && (d_massDensity.getValue() > 0 || d_vertexMass.getValue().size() == 0))
+    if (m_topology && (d_massDensity.getValue() > 0 || d_vertexMass.getValue().size() == 0))
     {
-        if (_topology->getNbHexahedra()>0 && hexaGeo)
+        if (m_topology->getNbHexahedra()>0 && hexaGeo)
         {
 
             MassVector& masses = *d_vertexMass.beginEdit();
@@ -814,9 +827,9 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             Real mass=Real(0);
             Real total_mass=Real(0);
 
-            for (Topology::HexahedronID i=0; i<_topology->getNbHexahedra(); ++i)
+            for (Topology::HexahedronID i=0; i<m_topology->getNbHexahedra(); ++i)
             {
-                const Hexahedron &h=_topology->getHexahedron(i);
+                const Hexahedron &h=m_topology->getHexahedron(i);
                 if (hexaGeo)
                 {
                     if (d_computeMassOnRest.getValue())
@@ -836,7 +849,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             d_vertexMass.endEdit();
 
         }
-        else if (_topology->getNbTetrahedra()>0 && tetraGeo)
+        else if (m_topology->getNbTetrahedra()>0 && tetraGeo)
         {
 
             MassVector& masses = *d_vertexMass.beginEdit();
@@ -853,9 +866,9 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             Real mass=Real(0);
             Real total_mass=Real(0);
 
-            for (Topology::TetrahedronID i=0; i<_topology->getNbTetrahedra(); ++i)
+            for (Topology::TetrahedronID i=0; i<m_topology->getNbTetrahedra(); ++i)
             {
-                const Tetrahedron &t=_topology->getTetrahedron(i);
+                const Tetrahedron &t=m_topology->getTetrahedron(i);
                 if(tetraGeo)
                 {
                     if (d_computeMassOnRest.getValue())
@@ -872,7 +885,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             d_totalMass.setValue(total_mass);
             d_vertexMass.endEdit();
         }
-        else if (_topology->getNbQuads()>0 && quadGeo) {
+        else if (m_topology->getNbQuads()>0 && quadGeo) {
             MassVector& masses = *d_vertexMass.beginEdit();
             m_topologyType=TOPOLOGY_QUADSET;
 
@@ -887,9 +900,9 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             Real mass=Real(0);
             Real total_mass=Real(0);
 
-            for (Topology::QuadID i=0; i<_topology->getNbQuads(); ++i)
+            for (Topology::QuadID i=0; i<m_topology->getNbQuads(); ++i)
             {
-                const Quad &t=_topology->getQuad(i);
+                const Quad &t=m_topology->getQuad(i);
                 if(quadGeo)
                 {
                     if (d_computeMassOnRest.getValue())
@@ -906,7 +919,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             d_totalMass.setValue(total_mass);
             d_vertexMass.endEdit();
         }
-        else if (_topology->getNbTriangles()>0 && triangleGeo)
+        else if (m_topology->getNbTriangles()>0 && triangleGeo)
         {
             MassVector& masses = *d_vertexMass.beginEdit();
             m_topologyType=TOPOLOGY_TRIANGLESET;
@@ -922,9 +935,9 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             Real mass=Real(0);
             Real total_mass=Real(0);
 
-            for (Topology::TriangleID i=0; i<_topology->getNbTriangles(); ++i)
+            for (Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
             {
-                const Triangle &t=_topology->getTriangle(i);
+                const Triangle &t=m_topology->getTriangle(i);
                 if(triangleGeo)
                 {
                     if (d_computeMassOnRest.getValue())
@@ -941,7 +954,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             d_totalMass.setValue(total_mass);
             d_vertexMass.endEdit();
         }
-        else if (_topology->getNbEdges()>0 && edgeGeo)
+        else if (m_topology->getNbEdges()>0 && edgeGeo)
         {
 
             MassVector& masses = *d_vertexMass.beginEdit();
@@ -958,9 +971,9 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             Real mass=Real(0);
             Real total_mass=Real(0);
 
-            for (Topology::EdgeID i=0; i<_topology->getNbEdges(); ++i)
+            for (Topology::EdgeID i=0; i<m_topology->getNbEdges(); ++i)
             {
-                const Edge &e=_topology->getEdge(i);
+                const Edge &e=m_topology->getEdge(i);
                 if(edgeGeo)
                 {
                     if (d_computeMassOnRest.getValue())
@@ -1016,9 +1029,9 @@ bool DiagonalMass<DataTypes, MassType>::checkVertexMass()
     const MassVector &vertexMass = d_vertexMass.getValue();
 
     //Check size of the vector
-    if (vertexMass.size() != size_t(_topology->getNbPoints()))
+    if (vertexMass.size() != size_t(m_topology->getNbPoints()))
     {
-        msg_warning() << "Inconsistent size of vertexMass vector ("<< vertexMass.size() <<") compared to the DOFs size ("<< _topology->getNbPoints() <<").";
+        msg_warning() << "Inconsistent size of vertexMass vector ("<< vertexMass.size() <<") compared to the DOFs size ("<< m_topology->getNbPoints() <<").";
         return false;
     }
     else
