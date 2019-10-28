@@ -28,7 +28,7 @@
                 <SubsetMultiMapping template="Vec3d,Vec3d" input="@../../dof1 @../dof2" output="@./dofall" indexPairs="0 0 0 1 1 0 1 1"/>
                 <SphereCollisionModel radius="0.3" selfCollision="1"/>
                 <UniformMass vertexMass="1" />
-                <ConstantForceField points="0" force="1 0 0"/>
+                <ConstantForceField indices="0" force="1 0 0"/>
             </Node>
             
         </Node>
@@ -51,7 +51,7 @@
                 <SubsetMultiMapping template="Rigid3d,Vec3d" input="@../../dof1 @../dof2" output="@./dofall" indexPairs="0 0 0 1 1 0 1 1"/>
                 <SphereCollisionModel radius="0.3" selfCollision="1"/>
                 <UniformMass vertexMass="1" />
-                <ConstantForceField points="0" force="1 0 0"/>
+                <ConstantForceField indices="0" force="1 0 0"/>
             </Node>
 
         </Node>

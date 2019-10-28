@@ -186,20 +186,21 @@ public:
         QuadularBendingSprings<DataTypes>* ff;
     };
 
+    Data<double> f_ks; ///< uniform stiffness for the all springs
+    Data<double> f_kd; ///< uniform damping for the all springs
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<QuadularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     bool updateMatrix;
-
-    Data<double> f_ks; ///< uniform stiffness for the all springs
-    Data<double> f_kd; ///< uniform damping for the all springs
 
     SReal m_potentialEnergy;
 
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
     /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     /// Handler for subset Data
     EdgeBSHandler* edgeHandler;

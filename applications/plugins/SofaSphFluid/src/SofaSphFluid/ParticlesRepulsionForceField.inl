@@ -46,7 +46,7 @@ ParticlesRepulsionForceField<DataTypes>::ParticlesRepulsionForceField()
     : distance (initData(&distance, Real(1)   , "distance", "Distance to maintain between particles"))
     , stiffness(initData(&stiffness, Real(100), "stiffness", "Stiffness"))
     , damping  (initData(&damping  , Real(0.1), "damping", "Damping"))
-    , grid(NULL)
+    , grid(nullptr)
 {
 }
 
@@ -55,7 +55,7 @@ void ParticlesRepulsionForceField<DataTypes>::init()
 {
     this->Inherit::init();
     this->getContext()->get(grid); //new Grid(distance.getValue());
-    if (grid==NULL)
+    if (grid==nullptr)
         serr<<"SpatialGridContainer not found by ParticlesRepulsionForceField, slow O(n2) method will be used !!!" << sendl;
     //int n = (this->mstate->read(core::ConstVecCoordId::position())->getValue()).size();
     //particles.resize(n);
@@ -88,7 +88,7 @@ void ParticlesRepulsionForceField<DataTypes>::addForce(const core::MechanicalPar
 
     // First compute the neighbors
     // This is an O(n2) step, except if a hash-grid is used to optimize it
-    if (grid == NULL)
+    if (grid == nullptr)
     {
         for (int i=0; i<n; i++)
         {

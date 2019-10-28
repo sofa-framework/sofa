@@ -69,6 +69,10 @@ set(HEADER_FILES
     InitTasks.h
     Locks.h
     VisitorAsync.h
+    events/SimulationInitDoneEvent.h
+    events/SimulationInitStartEvent.h
+    events/SimulationStartEvent.h
+    events/SimulationStopEvent.h
 )
 
 set(SOURCE_FILES
@@ -131,6 +135,10 @@ set(SOURCE_FILES
     DefaultTaskScheduler.cpp
     Task.cpp
     InitTasks.cpp
+    events/SimulationInitDoneEvent.cpp
+    events/SimulationInitStartEvent.cpp
+    events/SimulationStartEvent.cpp
+    events/SimulationStopEvent.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
@@ -145,4 +153,4 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread" )
 endif()
 
-sofa_install_targets(SofaSimulation ${PROJECT_NAME} "SofaSimulation/sofa/simulation")
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/simulation")

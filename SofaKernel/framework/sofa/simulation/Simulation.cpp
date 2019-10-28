@@ -57,6 +57,10 @@
 #include <sofa/simulation/SceneLoaderFactory.h>
 
 
+#include <sofa/simulation/events/SimulationInitStartEvent.h>
+#include <sofa/simulation/events/SimulationInitDoneEvent.h>
+
+
 #include <fstream>
 #include <cstring>
 
@@ -145,7 +149,6 @@ void Simulation::exportGraph ( Node* root, const char* filename )
     }
 }
 
-
 /// Initialize the scene.
 void Simulation::init ( Node* root )
 {
@@ -178,18 +181,7 @@ void Simulation::init ( Node* root )
     // all the objects have now been created, update the links
     root->execute<UpdateLinksVisitor>(params);
 
-    // apply the init() and bwdInit() methods to all the components.
-    // and put the VisualModels in a separate graph, rooted at getVisualRoot()
-    root->execute<InitVisitor>(params);
-
-    // Save reset state for later uses in reset()
-    root->execute<StoreResetStateVisitor>(params);
-    {
-        // Why do we need  a copy of the params here ?
-        sofa::core::MechanicalParams mparams(*params);
-        root->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
-        root->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
-    }
+    initNode(root);
 
     root->execute<UpdateBoundingBoxVisitor>(params);
 
@@ -206,7 +198,18 @@ void Simulation::initNode( Node* node)
         return;
     }
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+
+    SimulationInitStartEvent beginInit;
+    PropagateEventVisitor pb {params, &beginInit};
+    node->execute(pb);
+
+    // apply the init() and bwdInit() methods to all the components.
+    // and put the VisualModels in a separate graph, rooted at getVisualRoot()
     node->execute<InitVisitor>(params);
+
+    SimulationInitDoneEvent endInit;
+    PropagateEventVisitor pe {params, &endInit};
+    node->execute(pe);
 
     {
         sofa::core::MechanicalParams mparams(*params);

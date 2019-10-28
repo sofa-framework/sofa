@@ -48,7 +48,7 @@ using sofa::core::objectmodel::ComponentState ;
 
 template<class DataTypes>
 TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
-    : _mesh(nullptr)
+    : m_topology(nullptr)
     , _indexedElements(nullptr)
     , needUpdateTopology(false)
     , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
@@ -866,7 +866,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
         return;
     }
 
-    core::topology::BaseMeshTopology::TetrahedraAroundVertex liste_tetra = _mesh->getTetrahedraAroundVertex(nodeIdx);
+    core::topology::BaseMeshTopology::TetrahedraAroundVertex liste_tetra = m_topology->getTetrahedraAroundVertex(nodeIdx);
 
     R[0][0] = 0.0 ; R[0][1] = 0.0 ; R[0][2] = 0.0 ;
     R[1][0] = 0.0 ; R[1][1] = 0.0 ;  R[1][2] = 0.0 ;
@@ -1322,7 +1322,7 @@ template <class DataTypes>
 TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
 {
     // Need to unaffect a vector to the pointer
-    if (_mesh == nullptr && _indexedElements != nullptr)
+    if (m_topology == nullptr && _indexedElements != nullptr)
         delete _indexedElements;
 }
 
@@ -1352,16 +1352,20 @@ void TetrahedronFEMForceField<DataTypes>::init()
     this->core::behavior::ForceField<DataTypes>::init();
 
     /// Take the user provide topology.
-    _mesh = l_topology.get();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
 
     /// If not possible try to find one in the current context.
-    if(_mesh == nullptr)
-        _mesh = this->getContext()->getMeshTopology();
-
-    if (_mesh==nullptr)
+    if (m_topology == nullptr)
     {
-        msg_error()     << " object must have a mesh topology. The component is inactivated.  "
-                           "To remove this error message please add a topology component to your scene.";
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << " object must have a mesh topology. The component is inactivated.  "
+            "To remove this error message please add a topology component to your scene.";
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
 
         // Need to affect a vector to the pointer even if it is empty.
         if (_indexedElements == nullptr)
@@ -1369,7 +1373,9 @@ void TetrahedronFEMForceField<DataTypes>::init()
 
         return;
     }
-    if (_mesh==nullptr || (_mesh->getNbTetrahedra()<=0 && _mesh->getNbHexahedra()<=0))
+
+    
+    if (m_topology->getNbTetrahedra()<=0 && m_topology->getNbHexahedra()<=0)
     {
         msg_error()     << " object must have a tetrahedric topology. The component is inactivated.  "
                            "To remove this error message please add a tetrahedric topology component to your scene.";
@@ -1378,23 +1384,25 @@ void TetrahedronFEMForceField<DataTypes>::init()
         if (_indexedElements == nullptr)
             _indexedElements = new VecElement();
 
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+
         return;
     }
 
-    if (!_mesh->getTetrahedra().empty())
+    if (!m_topology->getTetrahedra().empty())
     {
-        _indexedElements = & (_mesh->getTetrahedra());
+        _indexedElements = & (m_topology->getTetrahedra());
     }
     else
     {
         core::topology::BaseMeshTopology::SeqTetrahedra* tetrahedra = new core::topology::BaseMeshTopology::SeqTetrahedra;
-        int nbcubes = _mesh->getNbHexahedra();
+        int nbcubes = m_topology->getNbHexahedra();
 
         // These values are only correct if the mesh is a grid topology
         int nx = 2;
         int ny = 1;
         {
-            topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(_mesh);
+            topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(m_topology);
             if (grid != nullptr)
             {
                 nx = grid->getNx()-1;
@@ -1406,7 +1414,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         tetrahedra->reserve(nbcubes*6);
         for (int i=0; i<nbcubes; i++)
         {
-            core::topology::BaseMeshTopology::Hexa c = _mesh->getHexahedron(i);
+            core::topology::BaseMeshTopology::Hexa c = m_topology->getHexahedron(i);
             if (!((i%nx)&1))
             {
                 // swap all points on the X edges
@@ -1466,7 +1474,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     if(m_componentstate==ComponentState::Invalid)
         return ;
 
-    if (!this->mstate || !_mesh){
+    if (!this->mstate || !m_topology){
         // Need to affect a vector to the pointer even if it is empty.
         if (_indexedElements == nullptr)
             _indexedElements = new VecElement();
@@ -1474,9 +1482,9 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         return;
     }
 
-    if (!_mesh->getTetrahedra().empty())
+    if (!m_topology->getTetrahedra().empty())
     {
-        _indexedElements = & (_mesh->getTetrahedra());
+        _indexedElements = & (m_topology->getTetrahedra());
     }
 
     setMethod(f_method.getValue() );
@@ -1528,7 +1536,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(_mesh->getNbPoints());
+        _rotationIdx.resize(m_topology->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
@@ -1545,7 +1553,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(_mesh->getNbPoints());
+        _rotationIdx.resize(m_topology->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         unsigned int i=0;
         typename VecElement::const_iterator it;
@@ -1564,7 +1572,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(_mesh->getNbPoints());
+        _rotationIdx.resize(m_topology->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         _initialTransformation.resize(_indexedElements->size());
         unsigned int i=0;
@@ -2568,7 +2576,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     /// compute the values of vonMises stress in nodes
     for(size_t dof = 0; dof < dofs.size(); dof++) {
-        core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = _mesh->getTetrahedraAroundVertex(dof);
+        core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = m_topology->getTetrahedraAroundVertex(dof);
 
         vMN[dof] = 0.0;
         for (size_t at = 0; at < tetrasAroundDOF.size(); at++)
@@ -2594,8 +2602,8 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
         maxVM = prevMaxStress;
 
     maxVM*=_showStressAlpha.getValue();
-    vonMisesStressColors.resize(_mesh->getNbPoints());
-    vonMisesStressColorsCoeff.resize(_mesh->getNbPoints());
+    vonMisesStressColors.resize(m_topology->getNbPoints());
+    vonMisesStressColorsCoeff.resize(m_topology->getNbPoints());
     std::fill(vonMisesStressColorsCoeff.begin(), vonMisesStressColorsCoeff.end(), 0);
 
     unsigned int i = 0;

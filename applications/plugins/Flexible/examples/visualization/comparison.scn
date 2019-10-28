@@ -55,7 +55,7 @@
                 <MechanicalObject  template="Vec3d" name="pts"    />
                 <UniformMass totalMass="10" />
                 <BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" />
-                <ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/>
+                <ConstantForceField template="Vec3d" indices="@[-1].indices" totalForce="0 -1 0"/>
                 <BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.9"  position="@mesh.position" />
                 <RestShapeSpringsForceField template="Vec3d" points="@[-1].indices" stiffness="1E5"/>
                 <LinearMapping template="Affine,Vec3d"/>
@@ -91,7 +91,7 @@
         <FixedConstraint indices="@[-1].indices" />
 
         <BoxROI template="Vec3d" box="-2 -1 0.99 0 1 1.1 "  drawBoxes="0" /> 
-        <ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
+        <ConstantForceField template="Vec3d" indices="@[-1].indices" totalForce="0 -1 0"/> 
 
         <UniformMass totalMass="10" />
 

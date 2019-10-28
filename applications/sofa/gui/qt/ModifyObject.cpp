@@ -168,12 +168,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
             if (data->getName().empty()) continue; // ignore unnamed data
 
-            if (!data->getGroup())
-            {
-                dmsg_error("ModifyObject") << "nullptr group for Data (" << data->getName() << "() in (" << node->getName() << "'";
-                continue;
-            }
-
             //For each Data of the current Object
             //We determine where it belongs:
             std::string currentGroup=data->getGroup();

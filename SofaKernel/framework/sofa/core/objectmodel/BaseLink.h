@@ -64,9 +64,9 @@ public:
     class BaseInitLink
     {
     public:
-        BaseInitLink(const char* name, const char* help) : name(name), help(help) {}
-        const char* name;
-        const char* help;
+        BaseInitLink(const std::string& name, const std::string& help) : name(name), help(help) {}
+        std::string name;
+        std::string help;
     };
 
     /// This internal class is used by the initLink() methods to store initialization parameters of a Data
@@ -74,7 +74,7 @@ public:
     class InitLink : public BaseInitLink
     {
     public:
-        InitLink(Owner* o, const char* n, const char* h) : BaseInitLink(n, h), owner(o) {}
+        InitLink(Owner* o, const std::string& n, const std::string& h) : BaseInitLink(n, h), owner(o) {}
         Owner* owner;
     };
 
@@ -86,10 +86,10 @@ public:
     void setName(const std::string& name) { m_name = name; }
 
     /// Get help message
-    const char* getHelp() const { return m_help; }
+    const std::string& getHelp() const { return m_help; }
 
     /// Set help message
-    void setHelp(const char* val) { m_help = val; }
+    void setHelp(const std::string& val) { m_help = val; }
 
     virtual Base* getOwnerBase() const = 0;
     virtual BaseData* getOwnerData() const = 0;
@@ -183,7 +183,7 @@ public:
 protected:
     unsigned int m_flags;
     std::string m_name;
-    const char* m_help;
+    std::string m_help;
     /// Number of changes since creation
     helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
     void updateCounter(unsigned int aspect)

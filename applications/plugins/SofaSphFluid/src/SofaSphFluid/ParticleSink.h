@@ -154,7 +154,7 @@ public:
             sofa::component::topology::PointSetTopologyModifier* pointMod;
             this->getContext()->get(pointMod);
 
-            if (pointMod != NULL)
+            if (pointMod != nullptr)
             {
                 msg_info() << "ParticleSink: remove "<<remove.size()<<" particles using PointSetTopologyModifier.";
                 pointMod->removePointsWarning(remove);

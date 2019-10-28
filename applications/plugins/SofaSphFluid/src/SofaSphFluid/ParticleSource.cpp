@@ -20,10 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MISC_PARTICLESOURCE_CPP
-#include "ParticleSource.h"
+#include <SofaSphFluid/ParticleSource.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include "sofa/defaulttype/VecTypes.h"
 
 namespace sofa
 {
