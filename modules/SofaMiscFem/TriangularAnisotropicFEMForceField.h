@@ -110,7 +110,7 @@ public:
     /// Bring inherited member in the current lookup context.
     /// otherwise any access to the Inherit1::member would require "this->".
     /// @see https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    using Inherit1::_topology;
+    using Inherit1::m_topology;
 
     TRQSTriangleHandler* triangleHandler;
 };

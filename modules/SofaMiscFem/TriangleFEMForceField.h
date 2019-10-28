@@ -98,9 +98,7 @@ protected:
 
     /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
     typedef defaulttype::Mat<9, 9, Real> StiffnessMatrix;
-
-
-    sofa::core::topology::BaseMeshTopology* _mesh;
+    
     const VecElement *_indexedElements;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
@@ -108,7 +106,7 @@ protected:
     TriangleFEMForceField();
     virtual ~TriangleFEMForceField();
 
-
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
 public:
 
@@ -140,6 +138,9 @@ public:
 //    void setDamping(Real val) { f_damping.setValue(val); }
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TriangleFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected :
 

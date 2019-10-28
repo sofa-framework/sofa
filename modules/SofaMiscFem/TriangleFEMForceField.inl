@@ -49,7 +49,7 @@ namespace forcefield
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::
 TriangleFEMForceField()
-    : _mesh(nullptr)
+    : m_topology(nullptr)
     , _indexedElements(nullptr)
     , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
     , method(LARGE)
@@ -59,6 +59,7 @@ TriangleFEMForceField()
     , f_thickness(initData(&f_thickness,(Real)1.,"thickness","Thickness of the elements"))
 //    , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , f_planeStrain(initData(&f_planeStrain,false,"planeStrain","Plane strain or plane stress assumption"))
+    , l_topology(initLink("topology", "link to the topology container"))    
 {}
 
 template <class DataTypes>
@@ -78,29 +79,43 @@ void TriangleFEMForceField<DataTypes>::init()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    //    serr<<"TriangleFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<sendl;
-    _mesh = this->getContext()->getMeshTopology();
-
-    if( _mesh )
-        sout<<"TriangleFEMForceField<DataTypes>::init, mesh has " <<_mesh->getTriangles().size() <<" triangles and " << _mesh->getQuads().size() << " quads" << sendl;
-
-    if (_mesh==nullptr || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
+    if (l_topology.empty())
     {
-        serr << "ERROR(TriangleFEMForceField): Need a MeshTopology with triangles or quads."<<sendl;
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    if (!_mesh->getTriangles().empty())
+
+    if (m_topology->getTriangles().empty() && m_topology->getNbQuads() <= 0)
     {
-        _indexedElements = & (_mesh->getTriangles());
+        msg_error() << "Need a MeshTopology with triangles or quads.";
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+    else
+    {
+        msg_info() << "TriangleFEMForceField<DataTypes>::init, mesh has " << m_topology->getTriangles().size() << " triangles and " << m_topology->getQuads().size() << " quads" << sendl;
+    }
+   
+    if (!m_topology->getTriangles().empty())
+    {
+        _indexedElements = & (m_topology->getTriangles());
     }
     else
     {
         sofa::core::topology::BaseMeshTopology::SeqTriangles* trias = new sofa::core::topology::BaseMeshTopology::SeqTriangles;
-        int nbcubes = _mesh->getNbQuads();
+        int nbcubes = m_topology->getNbQuads();
         trias->reserve(nbcubes*2);
         for (int i=0; i<nbcubes; i++)
         {
-            sofa::core::topology::BaseMeshTopology::Quad q = _mesh->getQuad(i);
+            sofa::core::topology::BaseMeshTopology::Quad q = m_topology->getQuad(i);
             trias->push_back(Element(q[0],q[1],q[2]));
             trias->push_back(Element(q[0],q[2],q[3]));
         }
