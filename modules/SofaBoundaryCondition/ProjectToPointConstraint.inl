@@ -69,7 +69,9 @@ ProjectToPointConstraint<DataTypes>::ProjectToPointConstraint()
     , f_point( initData(&f_point,"point","Target of the projection") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , data(new ProjectToPointConstraintInternalData<DataTypes>())
+    , l_topology(initLink("topology", "link to the topology container"))
+    , data(new ProjectToPointConstraintInternalData<DataTypes>())    
+    , m_topology(nullptr)
 {
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
@@ -116,10 +118,22 @@ void ProjectToPointConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
+    f_indices.createTopologicalEngine(m_topology, pointHandler);
     f_indices.registerTopologicalData();
 
     const SetIndexArray & indices = f_indices.getValue();

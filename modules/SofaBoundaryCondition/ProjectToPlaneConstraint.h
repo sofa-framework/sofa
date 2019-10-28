@@ -92,6 +92,8 @@ public:
     Data<CPos> f_normal;       ///< The normal to the plane. Will be normalized by init().
     Data<SReal> f_drawSize;    ///< The size of the display of the constrained particles
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<ProjectToPlaneConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     ProjectToPlaneConstraintInternalData<DataTypes>* data;
@@ -147,7 +149,7 @@ public:
 
 protected :
     /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     /// Handler for subset Data
     FCPointHandler* pointHandler;

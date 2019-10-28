@@ -92,7 +92,9 @@ public:
     Data<SReal> f_drawSize;    ///< The size of the square used to display the constrained particles
     Data<CPos> f_origin;       ///< A point on the line
     Data<CPos> f_direction;    ///< The direction of the line. Will be normalized by init()
-
+             
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<ProjectToLineConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     ProjectToLineConstraintInternalData<DataTypes>* data;
@@ -145,7 +147,7 @@ public:
 
 protected :
     /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     /// Handler for subset Data
     FCPointHandler* pointHandler;
