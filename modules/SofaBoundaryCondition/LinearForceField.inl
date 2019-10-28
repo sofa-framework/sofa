@@ -47,16 +47,30 @@ LinearForceField<DataTypes>::LinearForceField()
     , d_keyTimes(initData(&d_keyTimes, "times", "key times for the interpolation"))
     , d_keyForces(initData(&d_keyForces, "forces", "forces corresponding to the key times"))
     , d_arrowSizeCoef(initData(&d_arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 { }
 
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::init()
 {
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Initialize functions and parameters for topology data and handler
-    points.createTopologicalEngine(topology);
+    points.createTopologicalEngine(m_topology);
     points.registerTopologicalData();
 
     Inherit::init();

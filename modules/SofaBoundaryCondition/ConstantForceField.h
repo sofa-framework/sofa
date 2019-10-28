@@ -81,6 +81,9 @@ public:
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
     Data< bool > indexFromEnd;
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<ConstantForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 public:
     /// Init function
     void init() override;

@@ -80,6 +80,10 @@ public:
 
     /// for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data< SReal > d_arrowSizeCoef;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LinearForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     LinearForceField();
     ~LinearForceField() override { delete data; }
@@ -126,7 +130,7 @@ private :
     //VecCoord x0;
 
 protected:
-    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
 }; // definition of the LinearForceField class
 
