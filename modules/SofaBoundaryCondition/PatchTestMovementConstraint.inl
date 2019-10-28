@@ -71,6 +71,8 @@ PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
     , d_cornerMovements(  initData(&d_cornerMovements,"cornerMovements","movements of the corners of the grid") )
     , d_cornerPoints(  initData(&d_cornerPoints,"cornerPoints","corner points for computing constraint") )
     , d_drawConstrainedPoints(  initData(&d_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
     pointHandler = new FCPointHandler(this, &d_indices);
 
@@ -119,10 +121,22 @@ void PatchTestMovementConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Initialize functions and parameters
-    d_indices.createTopologicalEngine(topology, pointHandler);
+    d_indices.createTopologicalEngine(m_topology, pointHandler);
     d_indices.registerTopologicalData();
 
     const SetIndexArray & indices = d_indices.getValue();

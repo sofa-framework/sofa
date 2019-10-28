@@ -77,6 +77,8 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
     , Y0 ( initData ( &Y0, Real(0.0),"Y0","Size of specimen in Y-direction" ) )
     , Z0 ( initData ( &Z0, Real(0.0),"Z0","Size of specimen in Z-direction" ) )
     , movedDirections( initData(&movedDirections,"movedDirections","for each direction, 1 if moved, 0 if free") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -150,10 +152,22 @@ void PartialLinearMovementConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Initialize functions and parameters
-    m_indices.createTopologicalEngine(topology, pointHandler);
+    m_indices.createTopologicalEngine(m_topology, pointHandler);
     m_indices.registerTopologicalData();
 
     x0.resize(0);

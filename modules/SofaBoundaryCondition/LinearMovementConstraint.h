@@ -101,6 +101,10 @@ public :
     Deriv prevM, nextM;
     ///initial constrained DOFs position
     VecCoord x0;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LinearMovementConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     LinearMovementConstraint();
     ~LinearMovementConstraint() override;
@@ -163,7 +167,7 @@ protected:
     void interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
     /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
 
 private:

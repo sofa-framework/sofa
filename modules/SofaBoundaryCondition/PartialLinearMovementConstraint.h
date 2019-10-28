@@ -113,6 +113,10 @@ public :
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
     core::objectmodel::Data<VecBool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<PartialLinearMovementConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     PartialLinearMovementConstraint();
     ~PartialLinearMovementConstraint() override;
@@ -171,7 +175,7 @@ protected:
     void interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, sofa::defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
     /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
 private:
 

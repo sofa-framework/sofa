@@ -109,6 +109,9 @@ public :
     VecCoord meshPointsX0;
     /// final mesh DOFs position
     VecCoord meshPointsXf;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<AffineMovementConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
  
 protected:
     AffineMovementConstraint();
@@ -166,7 +169,7 @@ public:
 protected:
   
     /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
     
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
