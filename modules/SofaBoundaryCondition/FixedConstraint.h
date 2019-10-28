@@ -90,7 +90,8 @@ public:
     Data<SReal> d_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
     Data<bool> d_projectVelocity; ///< activate project velocity to set velocity
 
-
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<FixedConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     FixedConstraintInternalData<DataTypes>* data;
     friend class FixedConstraintInternalData<DataTypes>;
@@ -148,7 +149,7 @@ protected :
     void checkIndices();
 
     /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     /// Handler for subset Data
     FCPointHandler* pointHandler;

@@ -61,6 +61,8 @@ FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , _drawSize( initData(&_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , f_coordinates( initData(&f_coordinates,"coordinates","Coordinates of the fixed points") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
@@ -104,13 +106,25 @@ void FixedTranslationConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
+    f_indices.createTopologicalEngine(m_topology, pointHandler);
     f_indices.registerTopologicalData();
 
-    f_coordinates.createTopologicalEngine(topology);
+    f_coordinates.createTopologicalEngine(m_topology);
     f_coordinates.registerTopologicalData();
 
 }
@@ -136,7 +150,7 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::Mechani
 
     if (f_fixAll.getValue() == true)
     {
-        for (int i = 0; i < topology->getNbPoints(); ++i)
+        for (int i = 0; i < m_topology->getNbPoints(); ++i)
         {
             clearPos(res[i]);
         }

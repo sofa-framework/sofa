@@ -96,6 +96,8 @@ FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
     , d_dmin( initData(&d_dmin,(Real)0,"dmin","Minimum plane distance from the origin"))
     , d_dmax( initData(&d_dmax,(Real)0,"dmax","Maximum plane distance from the origin") )
     , d_indices( initData(&d_indices,"indices","Indices of the fixed points"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
     m_selectVerticesFromPlanes=false;
     m_pointHandler = new FCPointHandler(this, &d_indices);
@@ -244,7 +246,19 @@ void FixedPlaneConstraint<DataTypes>::init()
 {
     ProjectiveConstraintSet<DataTypes>::init();
 
-    m_topology = getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     /// test that dmin or dmax are different from zero
     if (d_dmin.getValue()!=d_dmax.getValue())

@@ -77,6 +77,8 @@ FixedConstraint<DataTypes>::FixedConstraint()
     , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity") )
     , data(new FixedConstraintInternalData<DataTypes>())
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
@@ -131,14 +133,24 @@ void FixedConstraint<DataTypes>::init()
         return;
     }
 
-    topology = this->getContext()->getMeshTopology();
-    if (!topology)
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology != nullptr)
+    {
+        // Initialize topological functions
+        d_indices.createTopologicalEngine(m_topology, pointHandler);
+        d_indices.registerTopologicalData();
+    }
+    else
+    {
         msg_warning() << "Can not find the topology, won't be able to handle topological changes";
-
-    // Initialize topological functions
-    d_indices.createTopologicalEngine(topology, pointHandler);
-    d_indices.registerTopologicalData();
-
+    }
+   
     this->checkIndices();
     this->m_componentstate = ComponentState::Valid;
 }
