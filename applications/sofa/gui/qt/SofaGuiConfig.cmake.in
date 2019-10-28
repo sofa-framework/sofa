@@ -1,0 +1,19 @@
+# This file will be called whenever some project does find_package(SofaGuiQt).
+
+@PACKAGE_INIT@
+
+# Propagate the variables set by sofa_find_package to other project scope.
+# QGLViewer
+set(SOFAGUIQT_HAVE_QGLVIEWER @SOFAGUIQT_HAVE_QGLVIEWER@)
+
+if(SOFAGUIQT_HAVE_QGLVIEWER)
+    find_package(QGLViewer QUIET REQUIRED)
+endif()
+
+# NodeEditor
+set(SOFAGUIQT_HAVE_NODEEDITOR @SOFAGUIQT_HAVE_NODEEDITOR@)
+
+if(SOFAGUIQT_HAVE_NODEEDITOR)
+    find_package(NodeEditor QUIET REQUIRED)
+endif()
+
