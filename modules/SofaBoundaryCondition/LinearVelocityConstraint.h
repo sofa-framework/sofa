@@ -85,6 +85,10 @@ public :
     VecCoord x0;
     ///position at the previous step for constrained DOFs position
     VecCoord xP;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LinearVelocityConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     LinearVelocityConstraint();
 
@@ -135,7 +139,7 @@ public:
 
 protected:
     /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
 private:
 

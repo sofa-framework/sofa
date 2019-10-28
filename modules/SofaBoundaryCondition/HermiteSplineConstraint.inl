@@ -48,6 +48,8 @@ HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint(core::behavior::Mech
     , m_dx1(initData(&m_dx1,"dX1","sceond control tangente") )
     , m_sx0(initData(&m_sx0,"SX0","first interpolation vector") )
     , m_sx1(initData(&m_sx1,"SX1","second interpolation vector") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
 }
 
@@ -74,10 +76,22 @@ void  HermiteSplineConstraint<DataTypes>::addConstraint(unsigned index)
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::init()
 {
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Initialize functions and parameters for topology data and handler
-    m_indices.createTopologicalEngine(topology);
+    m_indices.createTopologicalEngine(m_topology);
     m_indices.registerTopologicalData();
 
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();

@@ -90,8 +90,9 @@ public:
     Data<Vec2R> m_sx0;
     Data<Vec2R> m_sx1; ///< second interpolation vector
 
-
-
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<HermiteSplineConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    
 protected:
     HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate = nullptr);
 
@@ -126,7 +127,7 @@ protected:
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
     /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
 };
 
