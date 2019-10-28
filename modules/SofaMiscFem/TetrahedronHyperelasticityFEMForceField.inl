@@ -108,7 +108,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::app
 }
 
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHyperelasticityFEMForceField() 
-    : m_topology(0)
+    : m_topology(nullptr)
     , m_initialPoints(0)
     , m_updateMatrix(true)
     , m_meshSaved( false)
@@ -119,6 +119,7 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::T
     , m_tetrahedronInfo(initData(&m_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , m_edgeInfo(initData(&m_edgeInfo, "edgeInfo", "Internal edge data"))
     , m_tetrahedronHandler(nullptr)
+    , l_topology(initLink("topology", "link to the topology container"))
 {
     m_tetrahedronHandler = new TetrahedronHandler(this,&m_tetrahedronInfo);
 }
@@ -148,7 +149,19 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
             copy(anisotropySet.begin(), anisotropySet.end(),globalParameters.anisotropyDirection.begin());
     }
 
-    m_topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
 
     /** parse the input material name */

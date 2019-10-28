@@ -149,7 +149,7 @@ public :
    typedef typename VecCoord::template rebind<EdgeInformation>::other edgeInformationVector;
 
  protected :
-   core::topology::BaseMeshTopology* _topology;
+   core::topology::BaseMeshTopology* m_topology;
    VecCoord  _initialPoints;	/// the intial positions of the points
    bool updateMatrix;
    bool  _meshSaved ;
@@ -157,6 +157,9 @@ public :
    Data<SetParameterArray> f_parameterSet; ///< The global parameters specifying the material
    Data<SetAnisotropyDirectionArray> f_anisotropySet; ///< The global directions of anisotropy of the material
    Data<std::string> f_parameterFileName; ///< the name of the file describing the material parameters for all tetrahedra
+
+   /// Link to be set to the topology container in the component graph.
+   SingleLink<StandardTetrahedralFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
    
 public:
