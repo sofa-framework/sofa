@@ -45,6 +45,8 @@ ParabolicConstraint<DataTypes>::ParabolicConstraint(core::behavior::MechanicalSt
     , m_P3(initData(&m_P3,"P3","third point of the parabol") )
     , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
     , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
 }
 
@@ -66,10 +68,22 @@ void ParabolicConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Initialize functions and parameters for topology data and handler
-    m_indices.createTopologicalEngine(topology);
+    m_indices.createTopologicalEngine(m_topology);
     m_indices.registerTopologicalData();
 
     Vec3R P1 = m_P1.getValue();

@@ -76,6 +76,9 @@ protected:
     Data<Real> m_tBegin;
     Data<Real> m_tEnd; ///< End Time of the motion
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<ParabolicConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
     /// the 3 points projected in the parabol plan
     Vec3R m_locP1;
     Vec3R m_locP2;
@@ -120,7 +123,7 @@ protected:
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
     /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 
