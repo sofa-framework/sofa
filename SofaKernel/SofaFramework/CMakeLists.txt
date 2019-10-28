@@ -26,9 +26,6 @@ add_subdirectory(../modules/SofaHelper ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper)
 add_subdirectory(../modules/SofaDefaultType ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType)
 add_subdirectory(../modules/SofaCore ${CMAKE_CURRENT_BINARY_DIR}/SofaCore)
 add_subdirectory(../modules/SofaSimulationCore ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCore)
-#if(SOFA_BUILD_TESTS)
-#    add_subdirectory(../framework/framework_test ${CMAKE_CURRENT_BINARY_DIR}/framework_test)
-#endif()
 
 # Generate & install the different files that contains the defines associated with
 # the state of the build option.
@@ -54,17 +51,15 @@ set(SOFA_VERSION "${Sofa_VERSION_MAJOR}${Sofa_VERSION_MINOR}${Sofa_VERSION_PATCH
 configure_file(version.h.in "${CMAKE_BINARY_DIR}/include/sofa/version.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/${PROJECT_NAME}/sofa COMPONENT headers)
 
-# IDE folder
-set_target_properties(SofaHelper PROPERTIES FOLDER "SofaFramework")
-set_target_properties(SofaDefaultType PROPERTIES FOLDER "SofaFramework")
-set_target_properties(SofaCore PROPERTIES FOLDER "SofaFramework")
-set_target_properties(SofaSimulationCore PROPERTIES FOLDER "SofaFramework")
-
 # Package install include directory
-set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper)
+set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper SofaSimulationCore)
 foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaFramework") # IDE folder
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
     target_include_directories(${TARGET} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+    if(SOFA_BUILD_TESTS)
+        target_compile_options(${TARGET} PUBLIC "-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/tests\"")
+    endif()
 endforeach()
 
 # CMakeParseLibraryList.cmake

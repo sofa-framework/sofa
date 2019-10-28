@@ -10,7 +10,6 @@ set(SOFA_KERNEL_MODULES_SOURCE_DIR ${SOFA_KERNEL_SOURCE_DIR}/modules)
 set(SOFA_KERNEL_MODULES_BINARY_DIR ${CMAKE_BINARY_DIR}/SofaKernel)
 
 # SofaFramework tests
-add_definitions("-DFRAMEWORK_TEST_RESOURCES_DIR=\"${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/resources/tests\"")
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaHelper/SofaHelper_simutest ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaFramework/SofaHelper/SofaHelper_simutest)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaDefaultType/SofaDefaultType_simutest ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaFramework/SofaDefaultType/SofaDefaultType_simutest)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaCore/SofaCore_simutest ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaFramework/SofaCore/SofaCore_simutest)
