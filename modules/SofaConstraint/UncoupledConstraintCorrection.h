@@ -126,6 +126,9 @@ public:
     Data< Real > d_correctionPositionFactor; ///< Factor applied to the constraint forces when correcting the positions
 
     Data < bool > d_useOdeSolverIntegrationFactors; ///< Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor
+                                                    
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<UncoupledConstraintCorrection<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 private:
     // new :  for non building the constraint system during solving process //

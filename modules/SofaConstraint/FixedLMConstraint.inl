@@ -69,6 +69,8 @@ FixedLMConstraint<DataTypes>::FixedLMConstraint(MechanicalState *dof)
     : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
     , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
     , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
     pointHandler = new FCPointHandler(this, &f_indices);
 }
@@ -113,10 +115,22 @@ void FixedLMConstraint<DataTypes>::init()
 {
     core::behavior::LMConstraint<DataTypes,DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
+    f_indices.createTopologicalEngine(m_topology, pointHandler);
     f_indices.registerTopologicalData();
 
 

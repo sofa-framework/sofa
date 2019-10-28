@@ -38,6 +38,18 @@ namespace component
 namespace constraintset
 {
 
+template< class DataTypes>
+DOFBlockerLMConstraint<DataTypes>::DOFBlockerLMConstraint(MechanicalState *dof = nullptr)
+    : core::behavior::LMConstraint<DataTypes, DataTypes>(dof, dof)
+    , BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain"))
+    , factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis"))
+    , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
+    , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis, (SReal)1.0, "showSizeAxis", "size of the vector used to display the constrained axis"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
+{
+    pointHandler = new FCTPointHandler(this, &f_indices);
+}
 
 
 // Define TestNewPointFunction
@@ -93,10 +105,22 @@ void DOFBlockerLMConstraint<DataTypes>::init()
 {
     core::behavior::LMConstraint<DataTypes,DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
+    f_indices.createTopologicalEngine(m_topology, pointHandler);
     f_indices.registerTopologicalData();
 }
 
