@@ -70,6 +70,9 @@ public:
     Data<Real> dmax;///< coordinates max of the plane for the vertex selection
     Data<bool> p_showForces; ///< draw quads which have a given pressure
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<QuadPressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
 
     class QuadPressureInformation
@@ -98,7 +101,8 @@ protected:
 
     sofa::component::topology::QuadSparseData<sofa::helper::vector<QuadPressureInformation> > quadPressureMap; ///< map between edge indices and their pressure
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    /// Pointer to the current topology                                                                        /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     QuadPressureForceField();
 

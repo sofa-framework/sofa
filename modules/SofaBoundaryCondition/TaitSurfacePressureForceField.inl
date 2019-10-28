@@ -62,6 +62,7 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_drawForceColor(initData(&m_drawForceColor, defaulttype::Vec4f(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
     m_volumeAfterTC(initData(&m_volumeAfterTC, "volumeAfterTC", "OUT: Volume after a topology change")),
     m_surfaceAreaAfterTC(initData(&m_surfaceAreaAfterTC, (Real)0.0, "surfaceAreaAfterTC", "OUT: Surface area after a topology change")),
+    l_topology(initLink("topology", "link to the topology container")),
     m_topology(nullptr),
     lastTopologyRevision(-1)
 {
@@ -106,7 +107,20 @@ template <class DataTypes>
 void TaitSurfacePressureForceField<DataTypes>::init()
 {
     Inherit1::init();
-    m_topology = this->getContext()->getMeshTopology();
+
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     updateFromTopology();
     computeMeshVolumeAndArea(*m_currentVolume.beginEdit(), *m_currentSurfaceArea.beginEdit(), this->mstate->read(sofa::core::VecCoordId::position()));

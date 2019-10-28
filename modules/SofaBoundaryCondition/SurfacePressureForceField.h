@@ -73,9 +73,6 @@ public:
     enum State { INCREASE, DECREASE };
 
 protected:
-
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
     Data< Real >	m_pressure;					///< Scalar pressure value applied on the surfaces.
     Data< Coord >	m_min;						///< Lower bound of the pressured box.
     Data< Coord >	m_max;						///< Upper bound of the pressured box.
@@ -91,6 +88,9 @@ protected:
 
     Data< Real > m_drawForceScale;  ///< scale used to render force vectors
     helper::vector< Deriv> m_f;             ///< store forces for visualization
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<SurfacePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     State state;								///< In pulse mode, says wether pressure is increasing or decreasing.
     Real m_pulseModePressure;					///< Current pressure computed in pulse mode.
@@ -149,6 +149,8 @@ protected:
     VecVec3DerivValues derivTriNormalValues;
     VecVec3DerivIndices derivTriNormalIndices;
     void verifyDerivative(VecDeriv& v_plus, VecDeriv& v,  VecVec3DerivValues& DVval, VecVec3DerivIndices& DVind, const VecDeriv& Din);
+
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 template<>

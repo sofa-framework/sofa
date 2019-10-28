@@ -69,6 +69,8 @@ public:
     Data<bool> p_showForces; ///< draw triangles which have a given pressure
     Data<bool> p_useConstantForce; ///< applied force is computed as the the pressure vector times the area at rest
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TrianglePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
   
 protected:
 
@@ -99,7 +101,7 @@ protected:
 
     component::topology::TriangleSparseData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap; ///< map between edge indices and their pressure
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 	sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
 
 

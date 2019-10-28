@@ -102,6 +102,9 @@ public:
     Data< Real > m_volumeAfterTC;  ///< OUT: Volume after a topology change
     Data< Real > m_surfaceAreaAfterTC;  ///< OUT: Surface area after a topology change
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TaitSurfacePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
     void init() override;
     void storeResetState() override;
     void reset() override;
