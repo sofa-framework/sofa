@@ -67,7 +67,19 @@ void OscillatingTorsionPressureForceField<DataTypes>::init()
     this->core::behavior::ForceField<DataTypes>::init();
     axis.setValue( axis.getValue() / axis.getValue().norm() );
 
-    _topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     if (dmin.getValue()!=dmax.getValue())
     {
@@ -78,7 +90,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::init()
         selectTrianglesFromString();
     }
 
-    int numPts = _topology->getNbPoints();
+    int numPts = m_topology->getNbPoints();
     relMomentToApply.resize( numPts );
     pointActive.resize( numPts );
     vecFromCenter.resize( numPts );
@@ -87,7 +99,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::init()
     origVecFromCenter.resize( numPts );
     origCenter.resize( numPts );
 
-    trianglePressureMap.createTopologicalEngine(_topology);
+    trianglePressureMap.createTopologicalEngine(m_topology);
     trianglePressureMap.registerTopologicalData();
 
     initTriangleInformation();
@@ -200,7 +212,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
         // calculate distances for corner and intermediate points
         for (int j=0; j<3; j++)
         {
-            idx[j] = _topology->getTriangle(my_map[i])[j];
+            idx[j] = m_topology->getTriangle(my_map[i])[j];
             pointActive[idx[j]] = true;
             origVecFromCenter[idx[j]] = getVecFromRotAxis( (x0)[idx[j]] );
             origCenter[idx[j]] = (x0)[idx[j]] - origVecFromCenter[idx[j]];
@@ -247,9 +259,9 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane(
     sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
     helper::vector<unsigned int> inputTriangles;
 
-    for (size_t n=0; n<_topology->getNbTriangles(); ++n)
+    for (size_t n=0; n<m_topology->getNbTriangles(); ++n)
     {
-        if ((vArray[_topology->getTriangle(n)[0]]) && (vArray[_topology->getTriangle(n)[1]])&& (vArray[_topology->getTriangle(n)[2]]) )
+        if ((vArray[m_topology->getTriangle(n)[0]]) && (vArray[m_topology->getTriangle(n)[1]])&& (vArray[m_topology->getTriangle(n)[2]]) )
         {
             // insert a dummy element : computation of pressure done later
             TrianglePressureInformation t;
@@ -309,7 +321,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
     {
         for(unsigned int j=0 ; j< 3 ; j++)
         {
-            const Coord& c = x[_topology->getTriangle(my_map[i])[j]];
+            const Coord& c = x[m_topology->getTriangle(my_map[i])[j]];
             vertices.push_back(sofa::defaulttype::Vector3(c[0], c[1], c[2]));
         }
     }

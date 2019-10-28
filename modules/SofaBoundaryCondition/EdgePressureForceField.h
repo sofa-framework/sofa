@@ -81,7 +81,6 @@ protected:
 
     sofa::component::topology::EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap; ///< map between edge indices and their pressure
 
-    sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::TriangleSetTopologyContainer* _completeTopology;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
 
@@ -96,9 +95,15 @@ protected:
     Data<Coord> p_binormal; ///< binormal of the 2D plane
     Data<bool> p_showForces; ///< draw arrows of edge pressures
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<EdgePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
     EdgePressureForceField();
 
     virtual ~EdgePressureForceField();
+
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 public:
     void init() override;
 
