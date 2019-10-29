@@ -278,37 +278,37 @@ public:
     /// Helper method to get or create the previous model in the hierarchy.
     template<class DerivedModel>
     DerivedModel* createPrevious()
-	{
-		CollisionModel::SPtr prev = previous.get();
-		typename DerivedModel::SPtr pmodel = sofa::core::objectmodel::SPtr_dynamic_cast<DerivedModel>(prev);
-		if (pmodel.get() == nullptr)
-		{
-			int level = 0;
-			CollisionModel *cm = getNext();
-			CollisionModel* root = this;
-			while (cm) 
-            { 
-                root = cm; 
-                cm = cm->getNext(); 
-                ++level; 
+    {
+        CollisionModel::SPtr prev = previous.get();
+        typename DerivedModel::SPtr pmodel = sofa::core::objectmodel::SPtr_dynamic_cast<DerivedModel>(prev);
+        if (pmodel.get() == nullptr)
+        {
+            int level = 0;
+            CollisionModel *cm = getNext();
+            CollisionModel* root = this;
+            while (cm) 
+            {
+                root = cm;
+                cm = cm->getNext();
+                ++level;
             }
 
-			pmodel = sofa::core::objectmodel::New<DerivedModel>();
-			pmodel->setName("BVLevel", level);
-			root->addSlave(pmodel); 
-			pmodel->setMoving(isMoving());
-			pmodel->setSimulated(isSimulated());
-			pmodel->proximity.setValue(proximity.getValue());
+            pmodel = sofa::core::objectmodel::New<DerivedModel>();
+            pmodel->setName("BVLevel", level);
+            root->addSlave(pmodel); 
+            pmodel->setMoving(isMoving());
+            pmodel->setSimulated(isSimulated());
+            pmodel->proximity.setValue(proximity.getValue());
 			
-			pmodel->group.beginEdit()->insert(group.getValue().begin(), group.getValue().end());
-			pmodel->group.endEdit();
+            pmodel->group.beginEdit()->insert(group.getValue().begin(), group.getValue().end());
+            pmodel->group.endEdit();
             pmodel->f_listening.setValue(f_listening.getValue());
             pmodel->f_printLog.setValue(f_printLog.getValue());
 			
-			setPrevious(pmodel);			
-		}
-		return pmodel.get();
-	}
+            setPrevious(pmodel);			
+        }
+        return pmodel.get();
+    }
 
     /// @name Experimental methods
     /// @{
