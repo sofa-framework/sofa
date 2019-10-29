@@ -88,6 +88,9 @@ public:
 
     topology::TriangleData <helper::vector< Deriv> > localFiberDirection; ///< Computed fibers direction within each triangle
 
+    /// Link to be set to the topology container in the component graph.
+    using Inherit1::l_topology;
+
     class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >
     {
     public:
