@@ -44,6 +44,8 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
     , nb_iterations( initData (&nb_iterations, (unsigned int)1, "nb_iterations", "Number of iterations of laplacian smoothing") )
     , showInput( initData (&showInput, false, "showInput", "showInput") )
     , showOutput( initData (&showOutput, false, "showOutput", "showOutput") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
 
 }
@@ -51,9 +53,19 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::init()
 {
-    m_topo = this->getContext()->getMeshTopology();
-    if (!m_topo)
-        serr << "SmoothMeshEngine requires a mesh topology" << sendl;
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     addInput(&input_position);
     addOutput(&output_position);
@@ -72,7 +84,7 @@ void SmoothMeshEngine<DataTypes>::doUpdate()
 {
     using sofa::core::topology::BaseMeshTopology;
 
-    if (!m_topo) return;
+    if (!m_topology) return;
 
     helper::ReadAccessor< Data<VecCoord> > in(input_position);
     helper::ReadAccessor< Data<helper::vector <unsigned int > > > indices(input_indices);
@@ -90,7 +102,7 @@ void SmoothMeshEngine<DataTypes>::doUpdate()
         {
             for (unsigned int i = 0; i < out.size(); i++)
             {
-                BaseMeshTopology::VerticesAroundVertex v = m_topo->getVerticesAroundVertex(i);
+                BaseMeshTopology::VerticesAroundVertex v = m_topology->getVerticesAroundVertex(i);
                 if (v.size()>0) {
                     Coord p = Coord();
                     for (unsigned int j = 0; j < v.size(); j++)
@@ -111,7 +123,7 @@ void SmoothMeshEngine<DataTypes>::doUpdate()
             }            
             for(unsigned int i = 0; i < indices.size(); i++)
             {
-                BaseMeshTopology::VerticesAroundVertex v = m_topo->getVerticesAroundVertex(indices[i]);
+                BaseMeshTopology::VerticesAroundVertex v = m_topology->getVerticesAroundVertex(indices[i]);
                 if (v.size()>0) {
                     Coord p = Coord();
                     for (unsigned int j = 0; j < v.size(); j++)
@@ -163,7 +175,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     bool wireframe=vparams->displayFlags().getShowWireFrame();
 
-    sofa::core::topology::BaseMeshTopology::SeqTriangles tri = m_topo->getTriangles();
+    sofa::core::topology::BaseMeshTopology::SeqTriangles tri = m_topology->getTriangles();
 
     vparams->drawTool()->enableLighting();
 
