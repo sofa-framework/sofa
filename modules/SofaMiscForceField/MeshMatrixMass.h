@@ -128,6 +128,8 @@ public:
     Data< bool >         d_printMass; ///< Boolean to print the mass
     Data< std::map < std::string, sofa::helper::vector<double> > > f_graph; ///< Graph of the controlled potential
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<MeshMatrixMass<DataTypes, TMassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
 
@@ -148,9 +150,6 @@ protected:
 
 
 public:
-
-    sofa::core::topology::BaseMeshTopology* _topology;
-
     sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
     sofa::component::topology::TriangleSetGeometryAlgorithms<GeometricalTypes>* triangleGeo;
     sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
@@ -427,6 +426,8 @@ protected:
     };
 
     EdgeMassHandler* m_edgeMassHandler;
+
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 #if  !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
