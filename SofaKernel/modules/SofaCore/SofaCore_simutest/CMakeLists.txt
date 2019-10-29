@@ -5,6 +5,7 @@ project(SofaCore_simutest)
 find_package(SofaComponentBase REQUIRED)
 
 set(SOURCE_FILES
+    objectmodel/Base_test.cpp
     objectmodel/BaseContext_test.cpp
 )
 
