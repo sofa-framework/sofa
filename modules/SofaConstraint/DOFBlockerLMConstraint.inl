@@ -38,20 +38,6 @@ namespace component
 namespace constraintset
 {
 
-template< class DataTypes>
-DOFBlockerLMConstraint<DataTypes>::DOFBlockerLMConstraint(MechanicalState *dof = nullptr)
-    : core::behavior::LMConstraint<DataTypes, DataTypes>(dof, dof)
-    , BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain"))
-    , factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis"))
-    , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-    , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis, (SReal)1.0, "showSizeAxis", "size of the vector used to display the constrained axis"))
-    , l_topology(initLink("topology", "link to the topology container"))
-    , m_topology(nullptr)
-{
-    pointHandler = new FCTPointHandler(this, &f_indices);
-}
-
-
 // Define TestNewPointFunction
 template< class DataTypes>
 bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(unsigned int /*nbPoints*/, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
