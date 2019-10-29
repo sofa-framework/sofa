@@ -69,6 +69,9 @@ public:
     Data < helper::vector<double> > f_time; ///< set time to write outputs
     Data < double > f_period; ///< period between outputs
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<WriteTopology, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     core::topology::BaseMeshTopology* m_topology;
     std::ofstream* outfile;
