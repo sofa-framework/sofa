@@ -179,9 +179,7 @@ void TriangularFEMForceField<DataTypes>::init()
 
     if (m_topology->getNbTriangles() == 0)
     {
-        msg_error() << "Object must have a Triangular Set Topology.";
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
+        msg_warning() << "No triangles found in linked Topology.";
     }
 
     // Create specific handler for TriangleData

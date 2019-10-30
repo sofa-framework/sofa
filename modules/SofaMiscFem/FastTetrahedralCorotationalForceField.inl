@@ -191,9 +191,7 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
 
     if (m_topology->getNbTetrahedra() == 0)
     {
-        msg_error() << "Object must have a Tetrahedral Set Topology.";
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
+        msg_warning() << "No tetrahedra found in linked Topology.";
     }
 
     updateLameCoefficients();

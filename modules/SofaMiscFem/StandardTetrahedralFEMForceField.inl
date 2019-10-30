@@ -221,8 +221,7 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
 
     if (!m_topology->getNbTetrahedra())
     {
-        msg_error() << "Object must have a Tetrahedral Set Topology.";
-        return;
+        msg_warning() << "No tetrahedra found in linked Topology.";
     }
 
     tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
