@@ -192,9 +192,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     
     if (m_topology->getNbTetrahedra()==0)
     {
-        msg_error() << "Object must have a Tetrahedral Set Topology.";
-        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
-        return;
+        msg_warning() << "No tetrahedra found in linked Topology.";
     }
 
     /// Initialize all the diffusion coefficients (for tetras) to the value given by the user.
