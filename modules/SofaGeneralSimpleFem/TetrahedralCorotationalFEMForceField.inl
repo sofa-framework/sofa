@@ -121,7 +121,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 
     if (m_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ". This FEM needs to rely on a Tetrahedral Topology.";
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". This FEM needs to rely on a Tetrahedral Topology.";
         this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
