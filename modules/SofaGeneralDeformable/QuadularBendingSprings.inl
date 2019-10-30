@@ -534,9 +534,7 @@ void QuadularBendingSprings<DataTypes>::init()
 
     if (m_topology->getNbQuads()==0)
     {
-        msg_error() << "Object must have a Quadular Set Topology.";
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
+        msg_warning() << "No Quads found in linked Topology.";
     }
 
     edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
