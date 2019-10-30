@@ -92,6 +92,8 @@ public:
     Data<SReal> d_bendingStiffness;  ///< Material parameter
     Data<SReal> d_minDistValidity; ///< Minimal distance to consider a spring valid
 
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<FastTriangularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     /// Searches triangle topology and creates the bending springs
     void init() override;
@@ -225,7 +227,7 @@ protected:
         FastTriangularBendingSprings<DataTypes>* ff;
     };
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
 
     FastTriangularBendingSprings();

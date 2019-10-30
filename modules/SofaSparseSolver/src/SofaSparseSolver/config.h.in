@@ -22,7 +22,7 @@
 #ifndef SOFASPARSESOLVER_CONFIG_H
 #define SOFASPARSESOLVER_CONFIG_H
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/config.h>
 
 #cmakedefine01 SOFASPARSESOLVER_HAVE_METIS
 #cmakedefine01 SOFASPARSESOLVER_HAVE_CSPARSE

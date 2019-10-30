@@ -230,6 +230,9 @@ add_subdirectory(SofaGeneral)
 add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 
+## Packages
+add_subdirectory(applications/collections)
+
 # This is all the applications GUI stuff. As there is a dependency to this one
 # In scene creator and SofaPython...it is located here.
 add_subdirectory(SofaGui)
@@ -277,9 +280,6 @@ endif()
 
 ## Plugins
 add_subdirectory(applications/plugins)
-
-## Packages
-add_subdirectory(applications/packages)
 
 ## Applications
 add_subdirectory(applications/projects)

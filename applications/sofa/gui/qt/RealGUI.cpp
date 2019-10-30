@@ -39,6 +39,9 @@
 #include "SofaWindowProfiler.h"
 #endif
 
+#if SOFAGUIQT_HAVE_NODEEDITOR
+#include "SofaWindowDataGraph.h"
+#endif
 
 #ifdef SOFA_PML
 #include <sofa/simulation/Node.h>
@@ -299,12 +302,12 @@ RealGUI::RealGUI ( const char* viewername)
       interactionButton( nullptr ),
       #endif
 
-      #ifndef SOFA_GUI_QT_NO_RECORDER
+#ifndef SOFA_GUI_QT_NO_RECORDER
       recorder(nullptr),
-      #else
+#else
       fpsLabel(nullptr),
       timeLabel(nullptr),
-      #endif
+#endif
 
       #ifdef SOFA_GUI_INTERACTION
       m_interactionActived(false),
@@ -321,9 +324,12 @@ RealGUI::RealGUI ( const char* viewername)
       #endif
 
       m_sofaMouseManager(nullptr),
-      #if SOFAGUIQT_HAVE_QT5_CHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
       m_windowTimerProfiler(nullptr),
-      #endif
+#endif
+#if SOFAGUIQT_HAVE_NODEEDITOR
+      m_sofaWindowDataGraph(nullptr),
+#endif
       simulationGraph(nullptr),
       mCreateViewersOpt(true),
       mIsEmbeddedViewer(true),
@@ -823,6 +829,11 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if (m_windowTimerProfiler)
         m_windowTimerProfiler->resetGraph();
 #endif
+
+#if SOFAGUIQT_HAVE_NODEEDITOR
+    if (m_sofaWindowDataGraph)
+        m_sofaWindowDataGraph->resetNodeGraph(currentSimulation());
+#endif
 }
 
 
@@ -1168,6 +1179,22 @@ void RealGUI::showMouseManager()
 void RealGUI::showVideoRecorderManager()
 {
     SofaVideoRecorderManager::getInstance()->show();
+}
+
+//------------------------------------
+
+void RealGUI::showWindowDataGraph()
+{
+#if SOFAGUIQT_HAVE_NODEEDITOR
+    std::cout << "RealGUI::showWindowDataGraph()" << std::endl;
+    //m_sofaMouseManager->createGraph();
+    if (m_sofaWindowDataGraph == nullptr)
+    {
+        createSofaWindowDataGraph();
+    }
+    m_sofaWindowDataGraph->show(); 
+
+#endif;
 }
 
 //------------------------------------
@@ -1753,6 +1780,14 @@ void RealGUI::createPluginManager()
     pluginManager_dialog->hide();
     this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
     this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
+}
+
+void RealGUI::createSofaWindowDataGraph()
+{
+#if SOFAGUIQT_HAVE_NODEEDITOR
+    m_sofaWindowDataGraph = new SofaWindowDataGraph(this, currentSimulation());
+    m_sofaWindowDataGraph->hide();
+#endif
 }
 
 //------------------------------------

@@ -164,7 +164,7 @@ protected:
 
     SReal m_potentialEnergy;
 
-    core::topology::BaseMeshTopology* _mesh;
+    core::topology::BaseMeshTopology* m_topology;
     const VecElement *_indexedElements;
     bool needUpdateTopology;
 
@@ -230,6 +230,7 @@ public:
     Data<bool>  isToPrint;
     Data<bool>  _updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 
+    /// Link to be set to the topology container in the component graph. 
     SingleLink<TetrahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
 
     helper::vector<defaulttype::Vec<6,Real> > elemDisplacements;

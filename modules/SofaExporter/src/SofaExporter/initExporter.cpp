@@ -61,11 +61,9 @@ void initExternalModule()
     {
         first = false;
 #if SOFAEXPORTER_HAVE_SOFAPYTHON
-        {
-            SP_ADD_CLASS_IN_FACTORY(OBJExporter,sofa::component::misc::OBJExporter)
-            SP_ADD_CLASS_IN_FACTORY(STLExporter,sofa::component::misc::STLExporter)
-        }
-#endif
+        SP_ADD_CLASS_IN_FACTORY(OBJExporter,sofa::component::misc::OBJExporter)
+        SP_ADD_CLASS_IN_FACTORY(STLExporter,sofa::component::misc::STLExporter)
+#endif // SOFAEXPORTER_HAVE_SOFAPYTHON
     }
 }
 

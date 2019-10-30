@@ -83,6 +83,13 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
+
+    Data<double> f_ks; ///< uniform stiffness for the all springs
+    Data<double> f_kd; ///< uniform damping for the all springs
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TriangularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
 
     //Data<double> ks;
@@ -159,17 +166,9 @@ protected:
 
     protected:
         TriangularBendingSprings<DataTypes>* ff;
-    };
-
-    sofa::core::topology::BaseMeshTopology* _topology;
+    };    
 
     bool updateMatrix;
-
-    Data<double> f_ks; ///< uniform stiffness for the all springs
-    Data<double> f_kd; ///< uniform damping for the all springs
-
-
-
     TriangularBendingSprings(/*double _ks, double _kd*/);
     //TriangularBendingSprings(); //MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
 
@@ -205,6 +204,8 @@ protected:
     TriangularBSEdgeHandler* edgeHandler;
 
     SReal m_potentialEnergy;
+
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     //public:
     //Data<double> ks;
