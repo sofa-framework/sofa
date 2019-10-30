@@ -1363,7 +1363,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     /// If not possible try to find one in the current context.
     if (m_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << " object must have a mesh topology. The component is inactivated.  "
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << " object must have a mesh topology. The component is inactivated.  "
             "To remove this error message please add a topology component to your scene.";
         this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
 
