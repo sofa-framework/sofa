@@ -1,5 +1,3 @@
-# this scenes use shader, can't run on CI VM.
+# those scenes use shader, can't run on CI VM.
 ignore "OglFluidModel_SPH.scn"
-
-# this scenes use shader, can't run on CI VM.
-ignore "OglFluidModel_SPHParticles"
+ignore "OglFluidModel_SPHParticles.scn"
