@@ -17,6 +17,7 @@ set(SOFAGUIQT_HAVE_FFMPEG_EXEC @SOFAGUIQT_HAVE_FFMPEG_EXEC@)
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaAdvanced REQUIRED)
+find_package(SofaComponentAll REQUIRED) # Needed by SofaGuiCommon
 
 if(SOFAGUI_HAVE_SOFAGUIQT)
     if(SOFAGUIQT_HAVE_QTVIEWER)
