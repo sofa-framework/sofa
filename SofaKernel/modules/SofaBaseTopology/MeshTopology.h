@@ -97,6 +97,8 @@ private:
 protected:
     MeshTopology();
 public:
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+
     void init() override;
 
     int getNbPoints() const override;
@@ -329,8 +331,6 @@ public:
     Data<SeqTriangles> seqTriangles; ///< List of triangle indices
     Data<SeqQuads>       seqQuads; ///< List of quad indices
     Data<SeqTetrahedra>      seqTetrahedra; ///< List of tetrahedron indices
-    /// Suppress field for save as function
-    Data < bool > isToPrint;
 
     //SeqHexahedra	   seqHexahedra;
     Data<SeqHexahedra>	   seqHexahedra; ///< List of hexahedron indices
