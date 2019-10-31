@@ -28,6 +28,9 @@
 #include <cstdio>		// sprintf and friends
 #include <sstream>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
+#include <sofa/helper/Utils.h>
 
 namespace sofa
 {
@@ -47,7 +50,6 @@ VideoRecorderFFMPEG::VideoRecorderFFMPEG()
     , m_ffmpegBuffer(nullptr)
     , m_pixelFormatSize(4)
 {
-
 }
 
 VideoRecorderFFMPEG::~VideoRecorderFFMPEG()
@@ -56,7 +58,7 @@ VideoRecorderFFMPEG::~VideoRecorderFFMPEG()
 }
 
 
-bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec)
+bool VideoRecorderFFMPEG::init(const std::string& ffmpeg_exec_filepath, const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec)
 {
     msg_error_when(codec.empty(), "VideoRecorderFFMPEG") << "No codec specified";
     if ( codec.empty() )
@@ -93,17 +95,32 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
 
     m_FrameCount = 0;
 
+    m_ffmpegExecPath = ffmpeg_exec_filepath;
+    if(m_ffmpegExecPath.empty())
+    {
+        std::string extension;
+#ifdef WIN32
+        extension = ".exe";
+#endif
+        m_ffmpegExecPath = Utils::getExecutablePath() + "/ffmpeg" + extension;
+        if(!FileSystem::isFile(m_ffmpegExecPath))
+        {
+            // Fallback to a relative FFMPEG (may be in system or exposed in PATH)
+            m_ffmpegExecPath = "ffmpeg" + extension;
+        }
+    }
+
     std::stringstream ss;
-    ss << FFMPEG_EXEC_FILE
+    ss << m_ffmpegExecPath
        << " -r " << m_framerate
-        << " -f rawvideo -pix_fmt rgba "
-        << " -s " << m_ffmpegWidth << "x" << m_ffmpegHeight
-        << " -i - -threads 0  -y"
-        << " -preset fast "
-        << " -pix_fmt " << codec // yuv420p " // " yuv444p "
-        << " -crf 17 "
-        << " -vf vflip "
-        << "\"" << m_filename << "\""; // @TODO C++14 : replace with std::quoted
+       << " -f rawvideo -pix_fmt rgba "
+       << " -s " << m_ffmpegWidth << "x" << m_ffmpegHeight
+       << " -i - -threads 0  -y"
+       << " -preset fast "
+       << " -pix_fmt " << codec // yuv420p " // " yuv444p "
+       << " -crf 17 "
+       << " -vf vflip "
+       << "\"" << m_filename << "\""; // @TODO C++14 : replace with std::quoted
 
     const std::string& command_line = ss.str();
 
@@ -119,7 +136,8 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
     msg_info("VideoRecorderFFMPEG") << "Start recording to " << filename
         << " ( " <<  codec << ", "
         << framerate << " FPS, "
-        << bitrate << " b/s)";
+        << bitrate << " b/s)"
+        << " using " << m_ffmpegExecPath;
     return true;
 }
 

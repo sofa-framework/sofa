@@ -26,8 +26,6 @@ endif()
 sofa_find_package(Eigen3 REQUIRED BOTH_SCOPES)
 # Json (header only) needed by AdvancedTimer
 sofa_find_package(Json 3.1.2 REQUIRED BOTH_SCOPES)
-# FFMPEG_exec
-sofa_find_package(FFMPEG_exec BOTH_SCOPES)
 
 # HEADERS + SOURCES
 set(HEADER_FILES
@@ -279,6 +277,7 @@ if(NOT SOFA_NO_OPENGL)
         gl/Texture.h
         gl/Trackball.h
         gl/Transformation.h
+        gl/VideoRecorderFFMPEG.h
         gl/glText.h
         gl/glText.inl
     )
@@ -289,6 +288,7 @@ if(NOT SOFA_NO_OPENGL)
         gl/glText.cpp
         gl/Capture.cpp
         gl/Texture.cpp
+        gl/VideoRecorderFFMPEG.cpp
         gl/Color.cpp
         gl/glfont.cpp
         system/gl.cpp
@@ -305,10 +305,6 @@ if(NOT SOFA_NO_OPENGL)
         list(APPEND SHADER_FILES
             gl/shaders/generateSphere.cppglsl
         )
-    endif()
-    if (FFMPEG_EXEC_FOUND)
-        list(APPEND HEADER_FILES gl/VideoRecorderFFMPEG.h)
-        list(APPEND SOURCE_FILES gl/VideoRecorderFFMPEG.cpp)
     endif()
 endif()
 
