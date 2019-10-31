@@ -149,7 +149,7 @@ public:
     Data<bool> p_drawEdges; ///< Draw Edges
     Data<bool> p_drawTriangles; ///< Draw Triangles
     Data<bool> p_drawTetrahedra; ///< Draw Tetrahedra
-    Data<double> _drawSize; ///< rendering size for box and topological elements
+    Data<float> _drawSize; ///< rendering size for box and topological elements
 
 private:
 

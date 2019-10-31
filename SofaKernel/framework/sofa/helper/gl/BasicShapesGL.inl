@@ -83,9 +83,9 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
     {
         for (s = 0; s < desc.sectors; s++)
         {
-            const float y = sin(-M_PI_2 + M_PI * r * R);
-            const float  x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
-            const float  z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
+            const float y = sinf(float(-M_PI_2 + M_PI * r * R));
+            const float  x = cosf(float(2 * M_PI * s * S)) * sinf(float(M_PI * r * R));
+            const float  z = sinf(float(2 * M_PI * s * S)) * sinf(float(M_PI * r * R));
 
             *t++ = s*S;
             *t++ = r*R;
