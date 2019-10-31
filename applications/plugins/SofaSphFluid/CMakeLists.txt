@@ -8,6 +8,7 @@ set(PLUGIN_SPH_SRC_DIR src/SofaSphFluid)
 set(HEADER_FILES
     ${PLUGIN_SPH_SRC_DIR}/config.h.in
     ${PLUGIN_SPH_SRC_DIR}/ParticleSink.h
+	${PLUGIN_SPH_SRC_DIR}/ParticleSink.inl
     ${PLUGIN_SPH_SRC_DIR}/ParticleSource.h
 	${PLUGIN_SPH_SRC_DIR}/ParticleSource.inl
     ${PLUGIN_SPH_SRC_DIR}/ParticlesRepulsionForceField.h
