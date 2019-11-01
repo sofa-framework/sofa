@@ -193,10 +193,6 @@ public:
     SingleLink<QuadularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
-    bool updateMatrix;
-
-    SReal m_potentialEnergy;
-
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
     /// Pointer to the current topology
@@ -204,6 +200,9 @@ protected:
 
     /// Handler for subset Data
     EdgeBSHandler* edgeHandler;
+
+    bool updateMatrix;
+    SReal m_potentialEnergy;
 };
 
 

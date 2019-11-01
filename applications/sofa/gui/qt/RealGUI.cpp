@@ -1194,7 +1194,7 @@ void RealGUI::showWindowDataGraph()
     }
     m_sofaWindowDataGraph->show(); 
 
-#endif;
+#endif
 }
 
 //------------------------------------
