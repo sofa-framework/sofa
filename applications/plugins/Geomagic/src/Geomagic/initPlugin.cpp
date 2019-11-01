@@ -19,15 +19,74 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef GEOMAGIC_CONFIG_H
-#define GEOMAGIC_CONFIG_H
+#include <Geomagic/config.h>
+#include <string>
+#include <sofa/helper/system/FileRepository.h>
+#include <stdio.h>
 
-#include <sofa/helper/system/config.h>
+#define Q(x) #x
+#define QUOTE(x) Q(x)
 
-#ifdef SOFA_BUILD_GEOMAGIC
-#  define SOFA_GEOMAGIC_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifndef PLUGIN_DATA_DIR
+#define PLUGIN_DATA_DIR_ ""
 #else
-#  define SOFA_GEOMAGIC_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#define PLUGIN_DATA_DIR_ QUOTE(PLUGIN_DATA_DIR)
 #endif
 
-#endif
+namespace sofa
+{
+
+namespace component
+{
+
+	//Here are just several convenient functions to help user to know what contains the plugin
+
+	extern "C" {
+                SOFA_GEOMAGIC_API void initExternalModule();
+                SOFA_GEOMAGIC_API const char* getModuleName();
+                SOFA_GEOMAGIC_API const char* getModuleVersion();
+                SOFA_GEOMAGIC_API const char* getModuleLicense();
+                SOFA_GEOMAGIC_API const char* getModuleDescription();
+                SOFA_GEOMAGIC_API const char* getModuleComponentList();
+	}
+	
+
+    void initExternalModule()
+    {
+        static bool first = true;
+        if (first) {
+            first = false;
+
+            sofa::helper::system::DataRepository.addLastPath(std::string(PLUGIN_DATA_DIR_));
+            sofa::helper::system::DataRepository.addLastPath(std::string(PLUGIN_DATA_DIR_) + "/data");
+        }
+    }
+
+	const char* getModuleName()
+	{
+                 return "Geomagic";
+	}
+
+	const char* getModuleVersion()
+	{
+                return "1.0";
+	}
+
+	const char* getModuleLicense()
+	{
+		return "LGPL";
+	}
+
+	const char* getModuleDescription()
+	{
+                return "a module for interfacing Geomagic haptic devices";
+	}
+
+	const char* getModuleComponentList()
+	{
+                return "GeomagicDriver";
+	}
+
+} 
+} 
+

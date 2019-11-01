@@ -1,36 +1,49 @@
-cmake_minimum_required(VERSION 2.8.12)
-project(Geomagic)
+cmake_minimum_required(VERSION 3.1)
+project(Geomagic VERSION 0.1)
 
 find_package(SofaHaptics REQUIRED)
-find_package(OpenHaptics)
+find_package(OpenHaptics REQUIRED)
+find_package(SofaOpenglVisual REQUIRED)
+
 if( NOT OPENHAPTICS_FOUND )
     message( SEND_ERROR "OpenHaptics library not found, GeomagicDriver cannot compile")
 endif()
 
-find_package(SofaOpenglVisual REQUIRED)
+set(GEOMAGIC_SRC_DIR src/Geomagic)
 
 set(HEADER_FILES
-      src/GeomagicDriver.h
-      src/initPlugin.h
-      src/config.h
+    ${GEOMAGIC_SRC_DIR}/config.h.in
+    ${GEOMAGIC_SRC_DIR}/GeomagicDriver.h
 )
 
-set(SOURCE_FILES
-      src/GeomagicDriver.cpp
-      src/initPlugin.cpp
+set(SOURCE_FILES	  
+    ${GEOMAGIC_SRC_DIR}/GeomagicDriver.cpp
+    ${GEOMAGIC_SRC_DIR}/initPlugin.cpp
 )
 
-set(SCENES_FILES
-      scenes/Geomagic-Demo.scn
-)
+set(README_FILES README.txt)
 
 include_directories( ${OPENHAPTICS_INCLUDE_DIR})
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${SCENES_FILES} ${README_FILES})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DPLUGIN_DATA_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_GEOMAGIC")
+# Create the plugin library.
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+
+# Set define dllimport/dllexport mechanism on Windows.
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_GEOMAGIC")
+
+# Link the plugin library to its dependencies (other libraries).
 target_link_libraries(${PROJECT_NAME} SofaHelper SofaUserInteraction SofaHaptics SofaOpenglVisual ${OPENHAPTICS_LIBRARIES})
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(${PROJECT_NAME} 1.0 ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    INCLUDE_SOURCE_DIR ${GEOMAGIC_SRC_DIR}
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    RELOCATABLE "plugins"
+    )
