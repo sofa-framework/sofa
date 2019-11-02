@@ -75,7 +75,6 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , d_triangleState(initData(&d_triangleState, "triangleState", "Internal triangle data (time-dependent)"))
     , d_vertexInfo(initData(&d_vertexInfo, "vertexInfo", "Internal point data"))
     , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
-    , m_topology(nullptr)
     , d_poisson(initData(&d_poisson,(Real)(0.45),"poissonRatio","Poisson ratio in Hooke's law"))
     , d_young(initData(&d_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
     , d_damping(initData(&d_damping,(Real)0.,"damping","Ratio damping/stiffness"))
@@ -84,6 +83,7 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , d_showStressMaxValue(initData(&d_showStressMaxValue,(Real)0.0,"showStressMaxValue","Max value for rendering of stress values"))
     , l_topology(initLink("topology", "link to the topology container"))
     , drawPrevMaxStress((Real)-1.0)
+    , m_topology(nullptr)
 {
     triangleInfoHandler = new TFEMFFOTriangleInfoHandler(this, &d_triangleInfo);
     triangleStateHandler = new TFEMFFOTriangleStateHandler(this, &d_triangleState);
