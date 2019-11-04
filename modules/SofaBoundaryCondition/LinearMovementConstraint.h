@@ -52,6 +52,7 @@ class LinearMovementConstraintInternalData
 
 /** impose a motion to given DOFs (translation and rotation)
 	The motion between 2 key times is linearly interpolated
+    Rigid version doesn't handle Topology change.
 */
 template <class TDataTypes>
 class LinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>

@@ -70,6 +70,7 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     , showMovement( initData(&showMovement, (bool)false, "showMovement", "Visualization of the movement to be applied to constrained dofs."))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
+    , pointHandler(nullptr)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -80,8 +81,6 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     m_keyTimes.endEdit();
     m_keyMovements.beginEdit()->push_back( Deriv() );
     m_keyMovements.endEdit();
-
-    pointHandler = new FCPointHandler(this, &m_indices);
 }
 
 
@@ -153,6 +152,7 @@ void LinearMovementConstraint<DataTypes>::init()
     }
 
     // Initialize functions and parameters
+    pointHandler = new FCPointHandler(this, &m_indices);
     m_indices.createTopologicalEngine(m_topology, pointHandler);
     m_indices.registerTopologicalData();
 
