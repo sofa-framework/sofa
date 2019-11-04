@@ -197,56 +197,10 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
             ++index;
         }
     }
-    updateFlags();
     updateNormals();
 
     // topology has changed, force boudingTree recomputation
     m_needsUpdate = true;
-}
-
-template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::updateFlags(int /*ntri*/)
-{
-#if 0
-    if (ntri < 0) ntri = m_triangles->size();
-    //VecCoord& x =m_mstate->read(core::ConstVecCoordId::position())->getValue();
-    //VecDeriv& v = m_mstate->read(core::ConstVecDerivId::velocity())->getValue();
-    vector<bool> pflags(m_mstate->getSize());
-    std::set<std::pair<int,int> > eflags;
-    for (unsigned i=0; i<m_triangles->size(); i++)
-    {
-        int f = 0;
-        topology::Triangle t = (*m_triangles)[i];
-        if (!pflags[t[0]])
-        {
-            f |= FLAG_P1;
-            pflags[t[0]] = true;
-        }
-        if (!pflags[t[1]])
-        {
-            f |= FLAG_P2;
-            pflags[t[1]] = true;
-        }
-        if (!pflags[t[2]])
-        {
-            f |= FLAG_P3;
-            pflags[t[2]] = true;
-        }
-        if (eflags.insert( (t[0]<t[1])?std::make_pair(t[0],t[1]):std::make_pair(t[1],t[0]) ).second)
-        {
-            f |= FLAG_E12;
-        }
-        if (i < (unsigned)ntri && eflags.insert( (t[1]<t[2])?std::make_pair(t[1],t[2]):std::make_pair(t[2],t[1]) ).second) // don't use the diagonal edge of quads
-        {
-            f |= FLAG_E23;
-        }
-        if (eflags.insert( (t[2]<t[0])?std::make_pair(t[2],t[0]):std::make_pair(t[0],t[2]) ).second)
-        {
-            f |= FLAG_E31;
-        }
-        elems[i].flags = f;
-    }
-#endif
 }
 
 

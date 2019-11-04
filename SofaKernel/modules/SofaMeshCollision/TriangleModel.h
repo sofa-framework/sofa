@@ -168,7 +168,6 @@ protected:
     TriangleCollisionModel();
 
     virtual void updateFromTopology();
-    virtual void updateFlags(int ntri=-1);
     virtual void updateNormals();
 
 public:

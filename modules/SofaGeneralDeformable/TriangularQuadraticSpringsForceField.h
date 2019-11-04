@@ -134,8 +134,8 @@ protected:
     Data<Real> f_dampingRatio; ///< Ratio damping/stiffness
     Data<bool> f_useAngularSprings; ///< whether angular springs should be included
 
-    Real lambda;  /// first Lam� coefficient
-    Real mu;    /// second Lam� coefficient
+    Real lambda;  /// first Lame coefficient
+    Real mu;    /// second Lame coefficient
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TriangularQuadraticSpringsForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

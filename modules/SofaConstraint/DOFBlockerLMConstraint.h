@@ -81,7 +81,7 @@ protected:
         , BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain"))
         , factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis"))
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis, (SReal)1.0, "showSizeAxis", "size of the vector used to display the constrained axis"))
+        , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis, 1.0f, "showSizeAxis", "size of the vector used to display the constrained axis"))
         , l_topology(initLink("topology", "link to the topology container"))
         , m_topology(nullptr)
     {
@@ -128,7 +128,7 @@ public:
     Data<helper::vector<Deriv> > BlockedAxis; ///< List of rotation axis to constrain
     Data<helper::vector<SReal> > factorAxis; ///< Factor to apply in order to block only a certain amount of rotation along the axis
     SetIndex f_indices; ///< List of the index of particles to be fixed
-    Data<SReal> showSizeAxis; ///< size of the vector used to display the constrained axis
+    Data<float> showSizeAxis; ///< size of the vector used to display the constrained axis
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<DOFBlockerLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

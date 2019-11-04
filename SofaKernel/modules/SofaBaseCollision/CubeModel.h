@@ -75,21 +75,6 @@ public:
             SReal v2 = c2.minBBox[axis]+c2.maxBBox[axis];
             return v1 < v2;
         }
-        template<int Axis>
-        static int sortCube(const void* p1, const void* p2)
-        {
-            const CubeModel::CubeData* c1 = (const CubeModel::CubeData*)p1;
-            const CubeModel::CubeData* c2 = (const CubeModel::CubeData*)p2;
-            SReal v1 = c1->minBBox[Axis] + c1->maxBBox[Axis];
-            SReal v2 = c2->minBBox[Axis] + c2->maxBBox[Axis];
-
-            if (v1 < v2)
-                return -1;
-            else if (v1 > v2)
-                return 1;
-            else
-                return 0;
-        }
     };
 
 protected:

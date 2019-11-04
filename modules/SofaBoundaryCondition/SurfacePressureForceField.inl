@@ -504,7 +504,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
 
     vparams->drawTool()->disableLighting();
 
-    const sofa::defaulttype::RGBAColor boxcolor(0.0, 0.8, 0.3, 1.0);
+    const sofa::defaulttype::RGBAColor boxcolor(0.0f, 0.8f, 0.3f, 1.0f);
 
     vparams->drawTool()->setMaterial(boxcolor);
     vparams->drawTool()->drawBoundingBox(DataTypes::getCPos(m_min.getValue()), DataTypes::getCPos(m_max.getValue()));

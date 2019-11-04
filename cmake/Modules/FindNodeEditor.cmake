@@ -1,0 +1,56 @@
+#
+# Try to find NODEEDITOR library and include path.
+# Once done this will define
+#
+# NODEEDITOR_FOUND
+# NODEEDITOR_INCLUDE_PATH
+# NODEEDITOR_LIBRARY
+# 
+# lib directory of NODEEDITOR library should be linked to on of the path below under teh directory NODEEDITOR
+
+#include( Common )
+
+IF (WIN32)
+	FIND_PATH( NODEEDITOR_INCLUDE_PATH NODEEDITOR/NODEEDITOR.h
+		DOC "The directory where NODEEDITOR.h resides")
+	FIND_LIBRARY( NODEEDITOR_LIBRARY_RELEASE
+		NAMES NODEEDITOR
+		PATH_SUFFIXES Release
+		DOC "The NODEEDITOR library")
+	FIND_LIBRARY( NODEEDITOR_LIBRARY_DEBUG
+		NAMES NODEEDITORd
+		PATH_SUFFIXES Debug
+		DOC "The NODEEDITOR library")
+		
+	IF(NODEEDITOR_LIBRARY_DEBUG)
+		SET(NODEEDITOR_LIBRARY debug ${NODEEDITOR_LIBRARY_DEBUG} optimized ${NODEEDITOR_LIBRARY_RELEASE})
+	ELSE()
+		SET(NODEEDITOR_LIBRARY ${NODEEDITOR_LIBRARY_RELEASE})
+	ENDIF()
+
+ELSE (WIN32)
+	FIND_PATH( NODEEDITOR_INCLUDE_PATH NODEEDITOR/NODEEDITOR.h
+		/usr/include
+		/usr/local/include
+		/sw/include
+		/opt/local/include
+		DOC "The directory where NODEEDITOR.h resides")
+	FIND_LIBRARY( NODEEDITOR_LIBRARY
+		NAMES NODEEDITOR/libNODEEDITOR.so
+		PATHS
+		/usr/lib64
+		/usr/lib
+		/usr/local/lib64
+		/usr/local/lib
+		/sw/lib
+		/opt/local/lib
+		DOC "The NODEEDITOR library")
+ENDIF (WIN32)
+
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(NODEEDITOR DEFAULT_MSG NODEEDITOR_LIBRARY NODEEDITOR_INCLUDE_PATH)
+
+mark_as_advanced(
+  NODEEDITOR_INCLUDE_PATH
+  NODEEDITOR_LIBRARY
+)
+

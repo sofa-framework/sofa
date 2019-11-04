@@ -22,6 +22,12 @@
 #include "GLBackend.h"
 
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
+#include <sofa/helper/system/SetDirectory.h>
+using sofa::helper::system::SetDirectory;
+#include <sofa/helper/Utils.h>
+using sofa::helper::Utils;
 
 namespace sofa
 {
@@ -53,9 +59,9 @@ void GLBackend::setPrefix(const std::string& prefix)
 {
     m_capture.setPrefix(prefix);
 
-#if SOFAHELPER_HAVE_FFMPEG_EXEC
+#if SOFAGUIQT_HAVE_FFMPEG_EXEC
     m_videoRecorderFFMPEG.setPrefix(prefix);
-#endif // SOFAHELPER_HAVE_FFMPEG_EXEC
+#endif // SOFAGUIQT_HAVE_FFMPEG_EXEC
 }
 
 const std::string GLBackend::screenshotName()
@@ -83,27 +89,36 @@ void GLBackend::setBackgroundImage(helper::io::Image* image)
 bool GLBackend::initRecorder( int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codecExtension, const std::string& codecName)
 {
     bool res = true;
-#if SOFAHELPER_HAVE_FFMPEG_EXEC
+#if SOFAGUIQT_HAVE_FFMPEG_EXEC
+    std::string ffmpeg_exec_path = "NO_FFMPEG_EXECUTABLE";
+    const std::string ffmpegIniFilePath = Utils::getSofaPathTo("etc/SofaGuiQt.ini");
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(ffmpegIniFilePath);
+    if (iniFileValues.find("FFMPEG_EXEC_PATH") != iniFileValues.end())
+    {
+        // get absolute path of FFMPEG executable
+        ffmpeg_exec_path = SetDirectory::GetRelativeFromProcess( iniFileValues["FFMPEG_EXEC_PATH"].c_str() );
+    }
+
     std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, codecExtension);
 
-    res = m_videoRecorderFFMPEG.init(videoFilename, width, height, framerate, bitrate, codecName);
-#endif // SOFAHELPER_HAVE_FFMPEG_EXEC
+    res = m_videoRecorderFFMPEG.init(ffmpeg_exec_path, videoFilename, width, height, framerate, bitrate, codecName);
+#endif // SOFAGUIQT_HAVE_FFMPEG_EXEC
 
     return res;
 }
 
 void GLBackend::endRecorder()
 {
-#if SOFAHELPER_HAVE_FFMPEG_EXEC
+#if SOFAGUIQT_HAVE_FFMPEG_EXEC
     m_videoRecorderFFMPEG.finishVideo();
-#endif //SOFAHELPER_HAVE_FFMPEG_EXEC
+#endif //SOFAGUIQT_HAVE_FFMPEG_EXEC
 }
 
 void GLBackend::addFrameRecorder()
 {
-#if SOFAHELPER_HAVE_FFMPEG_EXEC
+#if SOFAGUIQT_HAVE_FFMPEG_EXEC
     m_videoRecorderFFMPEG.addFrame();
-#endif //SOFAHELPER_HAVE_FFMPEG_EXEC
+#endif //SOFAGUIQT_HAVE_FFMPEG_EXEC
 }
 
 void GLBackend::drawBackgroundImage(const int screenWidth, const int screenHeight)

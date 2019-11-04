@@ -293,21 +293,8 @@ void CubeModel::computeBoundingTree(int maxDepth)
                         splitAxis = 2;
 
                     // Separate cells on each side of the median cell
-
-#if defined(__GNUC__) && (__GNUC__ == 4)
-// && (__GNUC_MINOR__ == 1) && (__GNUC_PATCHLEVEL__ == 1)
-                    // there is apparently a bug in std::sort with GCC 4.x
-                    if (splitAxis == 0)
-                        qsort(&(elems[subcells.first.getIndex()]), subcells.second.getIndex()-subcells.first.getIndex(), sizeof(elems[0]), CubeSortPredicate::sortCube<0>);
-                    else if (splitAxis == 1)
-                        qsort(&(elems[subcells.first.getIndex()]), subcells.second.getIndex()-subcells.first.getIndex(), sizeof(elems[0]), CubeSortPredicate::sortCube<1>);
-                    else
-                        qsort(&(elems[subcells.first.getIndex()]), subcells.second.getIndex()-subcells.first.getIndex(), sizeof(elems[0]), CubeSortPredicate::sortCube<2>);
-#else
                     CubeSortPredicate sortpred(splitAxis);
-                    //std::nth_element(elems.begin()+subcells.first.getIndex(),elems.begin()+middle,elems.begin()+subcells.second.getIndex(), sortpred);
-                    std::sort(elems.begin()+subcells.first.getIndex(),elems.begin()+subcells.second.getIndex(), sortpred);
-#endif
+                    std::sort(elems.begin() + subcells.first.getIndex(), elems.begin() + subcells.second.getIndex(), sortpred);
 
                     // Create the two new subcells
                     Cube cmiddle(this, middle);

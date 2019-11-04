@@ -496,7 +496,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
                 maxDiffusion = d_tetraDiffusionCoefficient.getValue()[i];
         }
 
-        colorLine = sofa::defaulttype::Vec4f(0.2, 0.2, 0.2, 1.0);
+        colorLine = sofa::defaulttype::Vec4f(0.2f, 0.2f, 0.2f, 1.0f);
         vertices.clear();
         for (unsigned int i = 0; i<nbrTetra; ++i)
         {

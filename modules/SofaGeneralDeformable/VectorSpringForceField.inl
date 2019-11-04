@@ -153,8 +153,8 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , m_viscosity( initData(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
     , m_useTopology( initData(&m_useTopology, false, "useTopology", "Activate/Desactivate topology mode of the component (springs on each edge)"))
     , l_topology(initLink("topology", "link to the topology container"))    
-    , edgeHandler(nullptr)
     , m_topology(nullptr)
+    , edgeHandler(nullptr)
 {
 }
 

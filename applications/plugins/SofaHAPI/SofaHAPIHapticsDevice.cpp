@@ -171,7 +171,7 @@ namespace sofa
 				SofaHAPIForceFeedbackEffect::SPtr ffe = sofa::core::objectmodel::New<SofaHAPIForceFeedbackEffect>();
 				ffe->setForceFeedback(ffs[i]);
 				std::ostringstream name;
-				name << "Tool"<<ffs[i]->indice.getValue() <<"-" << ffs[i]->getName();
+				name << "Tool"<<ffs[i]->d_indice.getValue() <<"-" << ffs[i]->getName();
 				ffe->setName(name.str());
 				ForceFeedbackEffect* e = ffe->getEffect();
 				e->setTransform(data);
