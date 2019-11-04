@@ -23,8 +23,6 @@ set(SOURCE_FILES
 
 set(README_FILES README.txt)
 
-include_directories( ${OPENHAPTICS_INCLUDE_DIR})
-
 # Create the plugin library.
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
@@ -34,6 +32,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_GEOMAGIC")
 # Link the plugin library to its dependencies (other libraries).
 target_link_libraries(${PROJECT_NAME} SofaHelper SofaUserInteraction SofaHaptics SofaOpenglVisual ${OPENHAPTICS_LIBRARIES})
 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${OPENHAPTICS_INCLUDE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
