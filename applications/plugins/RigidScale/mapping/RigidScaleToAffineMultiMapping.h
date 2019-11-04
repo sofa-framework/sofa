@@ -131,7 +131,7 @@ public:
 
     void applyJT(const helper::vector< InMatrixDeriv1*>& /*outConstraint1*/ 
 				 , const helper::vector< InMatrixDeriv2*>& /*outConstraint2*/
-                 , const helper::vector<const OutMatrixDeriv*>& /*inConstraint*/) override;
+                 , const helper::vector<const OutMatrixDeriv*>& /*inConstraint*/);
 	
 	void applyJT(const core::ConstraintParams* /* cparams */
 				 , const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */
