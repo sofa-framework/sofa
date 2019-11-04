@@ -44,7 +44,7 @@ namespace gl
     {
     protected:
     
-        FILE* m_File;
+        std::string m_ffmpegExecPath;
         int m_viewportWidth, m_viewportHeight;
         int m_ffmpegWidth, m_ffmpegHeight;
         int m_FrameCount;
@@ -70,7 +70,7 @@ namespace gl
         VideoRecorderFFMPEG();
         ~VideoRecorderFFMPEG();
 
-        bool init(const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec="");
+        bool init(const std::string& ffmpeg_exec_filepath, const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec="");
    
         void addFrame();
         void saveVideo();

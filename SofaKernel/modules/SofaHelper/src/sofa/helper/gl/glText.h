@@ -94,7 +94,7 @@ public:
     static void draw ( const T& text, const defaulttype::Vector3& position = defaulttype::Vector3(0.0,0.0,0.0), const double& scale = 1.0);
     
     static void textureDraw_Overlay(const char* text, const double scale = 1.0);
-    static void textureDraw_Indices(const helper::vector<defaulttype::Vector3>& positions, const double& scale);
+    static void textureDraw_Indices(const helper::vector<defaulttype::Vector3>& positions, const float& scale);
 
 private:
     static void initTexture();

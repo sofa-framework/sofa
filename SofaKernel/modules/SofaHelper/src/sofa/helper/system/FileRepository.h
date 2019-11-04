@@ -27,6 +27,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <map>
+#include <list>
 
 namespace sofa
 {
@@ -55,9 +57,10 @@ namespace system
 class SOFA_HELPER_API FileRepository
 {
 public:
+    typedef std::map< std::string, std::list<std::string> > fileKeysMap;
 
     /// Initialize the set of paths from an environment variable.
-    FileRepository(const char* envVar = "SOFA_DATA_PATH", const char* relativePath = nullptr, const char* iniFilePath = nullptr);
+    FileRepository(const char* envVar = "SOFA_DATA_PATH", const char* relativePath = nullptr, const fileKeysMap& iniFilesAndKeys = {});
 
     ~FileRepository();
 
