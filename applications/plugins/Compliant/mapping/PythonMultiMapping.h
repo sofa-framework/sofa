@@ -67,13 +67,13 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
  protected:
 
 	virtual void assemble_geometric( const helper::vector<typename self::in_pos_type>& in,
-                                     const typename self::const_out_deriv_type& out);
+                                     const typename self::const_out_deriv_type& out) override;
 	
 	
-    virtual void assemble( const helper::vector<typename self::in_pos_type>& in );
+    virtual void assemble( const helper::vector<typename self::in_pos_type>& in ) override;
     
     virtual void apply(typename self::out_pos_type& out, 
-                       const helper::vector<typename self::in_pos_type>& /*in*/ );
+                       const helper::vector<typename self::in_pos_type>& /*in*/ ) override;
 
 
   private:

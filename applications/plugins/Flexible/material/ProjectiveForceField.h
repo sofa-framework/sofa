@@ -59,7 +59,7 @@ public:
     Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real youngModulus=0,viscosity=0;
         for(unsigned int i=0; i<this->material.size(); i++)

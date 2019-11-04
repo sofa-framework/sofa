@@ -73,13 +73,13 @@ public:
     CylinderMesh();
     virtual ~CylinderMesh() { };
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void doUpdate();
+    void doUpdate() override;
     void scale();
     void orientate();
-    void draw();
+    void draw() override;
 
     virtual std::string getTemplateName() const
     {

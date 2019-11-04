@@ -430,11 +430,11 @@ public:
 
     //@}
 
-    virtual std::string getTemplateName() const    { return templateName(this); }
+    virtual std::string getTemplateName() const override { return templateName(this); }
     static std::string templateName(const DiffusionShapeFunction<ShapeFunctionTypes_,ImageTypes_>* = NULL) { return ShapeFunctionTypes_::Name()+std::string(",")+ImageTypes_::Name(); }
 
 
-    virtual void init()
+    virtual void init() override
     {
         Inherit::init();
 
@@ -498,7 +498,7 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         const char* p = arg->getAttribute(nbBoundaryConditions.getName().c_str());
         if (p)
@@ -512,7 +512,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         std::map<std::string,std::string*>::const_iterator it = str.find(nbBoundaryConditions.getName());
         if (it != str.end() && it->second)

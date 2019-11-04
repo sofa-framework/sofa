@@ -37,14 +37,14 @@ class CompliantPseudoStaticSolver : public CompliantOdeSolver {
     CompliantPseudoStaticSolver();
     virtual ~CompliantPseudoStaticSolver(){}
 
-    virtual void init();
+    virtual void init() override;
 
     virtual void solve(const core::ExecParams* params,
                        SReal dt,
                        core::MultiVecCoordId posId,
-                       core::MultiVecDerivId velId);
+                       core::MultiVecDerivId velId) override;
 
-    virtual std::string getTemplateName() const { return templateName(this); }
+    virtual std::string getTemplateName() const override { return templateName(this); }
     static std::string templateName(const CompliantPseudoStaticSolver<CompliantOdeSolver>* x= NULL) { return CompliantOdeSolver::className( (CompliantOdeSolver*)x ); }
 };
 

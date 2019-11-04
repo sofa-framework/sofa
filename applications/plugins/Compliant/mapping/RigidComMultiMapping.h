@@ -46,7 +46,7 @@ protected:
 	SReal total;
 
 	virtual void apply(typename self::out_pos_type& out, 
-                       const helper::vector<typename self::in_pos_type>& in ) {
+                       const helper::vector<typename self::in_pos_type>& in ) override {
 		const mass_type& m = mass.getValue();
 	
 		using namespace utils;
@@ -71,7 +71,7 @@ protected:
 		assert( off == m.size() );
 	}
 
-    void assemble(const helper::vector< typename self::in_pos_type >& in ) {
+    void assemble(const helper::vector< typename self::in_pos_type >& in ) override {
 		const mass_type& m = mass.getValue();
 		
         // resize/clean jacobians

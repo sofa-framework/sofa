@@ -58,7 +58,7 @@ public:
     Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real youngModulus=0,poissonRatio=0,viscosity=0;
         for(unsigned int i=0; i<this->material.size(); i++)
@@ -76,7 +76,7 @@ public:
     }
 
     //Pierre-Luc : I added this function to be able to evaluate forces without using visitors
-    virtual void addForce(typename Inherit::DataVecDeriv& _f , const typename Inherit::DataVecCoord& _x , const typename Inherit::DataVecDeriv& _v, const helper::vector<SReal> _vol)
+    virtual void addForce(typename Inherit::DataVecDeriv& _f , const typename Inherit::DataVecCoord& _x , const typename Inherit::DataVecDeriv& _v, const helper::vector<SReal> _vol) override
      {
          if(this->f_printLog.getValue()==true)
              std::cout << SOFA_CLASS_METHOD << std::endl;
@@ -177,7 +177,7 @@ public:
     Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         if(_DataTypes::material_dimensions==3)
         {
@@ -287,7 +287,7 @@ public:
     Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
             Real youngModulusX=0,youngModulusY=0,poissonRatioXY=0,poissonRatioYZ=0,shearModulusXY=0,viscosity=0;
             for(unsigned int i=0; i<this->material.size(); i++)

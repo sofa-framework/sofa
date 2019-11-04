@@ -64,7 +64,7 @@ public:
 
 protected:
     bool connect();
-    void handleEvent(sofa::core::objectmodel::Event *);
+    void handleEvent(sofa::core::objectmodel::Event *) override;
 
     virtual void update();
 
@@ -81,10 +81,10 @@ public:
     OptiTrackNatNetClient();
     virtual ~OptiTrackNatNetClient();
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
-    virtual void draw(const sofa::core::visual::VisualParams* vparams);
+    virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
 
     sofa::core::objectmodel::Data<float> drawTrackedMarkersSize; ///< Size of displayed markers
     sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawTrackedMarkersColor; ///< Color of displayed markers

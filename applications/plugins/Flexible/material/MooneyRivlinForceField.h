@@ -57,7 +57,7 @@ public:
     Data<bool > f_PSDStabilization; ///< project stiffness matrix to its nearest symmetric, positive semi-definite matrix
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real C1=0,C2=0,bulk=0;
         for(unsigned int i=0; i<this->material.size(); i++)

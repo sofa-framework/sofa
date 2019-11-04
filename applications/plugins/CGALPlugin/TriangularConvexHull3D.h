@@ -64,12 +64,12 @@ public:
     TriangularConvexHull3D();
     virtual ~TriangularConvexHull3D() { };
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void doUpdate();
+    void doUpdate() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

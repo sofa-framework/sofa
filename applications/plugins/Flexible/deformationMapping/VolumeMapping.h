@@ -85,7 +85,7 @@ public:
     typedef typename sofa::core::topology::BaseMeshTopology::index_type Index;
     typedef sofa::helper::vector< Index > VecIndex;
 
-    virtual void init()
+    virtual void init() override
     {
         baseMatrices.resize( 1 );
         baseMatrices[0] = &jacobian;
@@ -93,7 +93,7 @@ public:
         this->Inherit::init();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         vf_triangles.resize(f_nbMeshes.getValue());
         vf_quads.resize(f_nbMeshes.getValue());
@@ -151,7 +151,7 @@ public:
         return sn[2] * (A[2] + B[2] + C[2]);
     }
 
-    virtual void apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+    virtual void apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn) override
     {
         helper::WriteOnlyAccessor< Data<OutVecCoord> >  v = dOut;
         helper::ReadAccessor< Data<InVecCoord> >  x = dIn;
@@ -185,11 +185,11 @@ public:
         jacobian.compress();
     }
 
-    virtual void applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)    { if( jacobian.rowSize() > 0 ) jacobian.mult(dOut,dIn);    }
-    virtual void applyJT(const core::MechanicalParams * /*mparams*/, Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)    { if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(dIn,dOut);    }
-    virtual void applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& /*dIn*/, const Data<OutMatrixDeriv>& /*dOut*/) {}
+    virtual void applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn) override { if( jacobian.rowSize() > 0 ) jacobian.mult(dOut,dIn); }
+    virtual void applyJT(const core::MechanicalParams * /*mparams*/, Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut) override { if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(dIn,dOut); }
+    virtual void applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& /*dIn*/, const Data<OutMatrixDeriv>& /*dOut*/) override {}
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId ) override
     {
         if( !f_geometricStiffness.getValue() ) return;
         Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
@@ -199,7 +199,7 @@ public:
         for(size_t m=0;m<f_nbMeshes.getValue();++m)        hessian[m].addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[m][0]);
     }
 
-    virtual const defaulttype::BaseMatrix* getK()
+    virtual const defaulttype::BaseMatrix* getK() override
     {
         if( f_geometricStiffness.getValue() )
         {
@@ -210,12 +210,12 @@ public:
         return &K;
     }
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
+    virtual const sofa::defaulttype::BaseMatrix* getJ() override { return &jacobian; }
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override { return &baseMatrices; }
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         vf_triangles.parseSizeData(arg, f_nbMeshes);
         vf_quads.parseSizeData(arg, f_nbMeshes);
@@ -223,7 +223,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         vf_triangles.parseFieldsSizeData(str, f_nbMeshes);
         vf_quads.parseFieldsSizeData(str, f_nbMeshes);

@@ -60,7 +60,7 @@ public:
     Data<helper::vector<Real> > f_Vsh;
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real b=0,Vvm=0,Ver=0,lambda0=0,Vsh=0,a=0,sigmaMax=0;
         for(unsigned int i=0; i<this->material.size(); i++)

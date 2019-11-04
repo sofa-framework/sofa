@@ -73,14 +73,14 @@ protected:
 public:
     Data<vector<OutReal> > f_length; ///< distances from the fixed point to the end of the pendulum
 
-    virtual void init();
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void init() override;
+    virtual void draw(const core::visual::VisualParams*) override;
 
-    virtual void apply(const core::MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in);
-    virtual void applyJ(const core::MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in);
-    virtual void applyJT(const core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in);
-    virtual void applyJT(const core::ConstraintParams* mparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in);
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChange, core::ConstMultiVecDerivId);
+    virtual void apply(const core::MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in) override;
+    virtual void applyJ(const core::MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in) override;
+    virtual void applyJT(const core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in) override;
+    virtual void applyJT(const core::ConstraintParams* mparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in) override;
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChange, core::ConstMultiVecDerivId) override;
 
 protected:
     typedef Vec<2, OutReal> Vec2;

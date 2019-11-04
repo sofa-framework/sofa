@@ -67,7 +67,7 @@ public:
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
 
     //Pierre-Luc : I added this function to use some functionalities of the mapping component whitout using it as a sofa graph component (protected)
-    virtual void initJacobianBlock( helper::vector<BlockType>& jacobianBlock )
+    virtual void initJacobianBlock( helper::vector<BlockType>& jacobianBlock ) override
     {
         if(this->f_printLog.getValue()==true)
             std::cout << SOFA_CLASS_METHOD << std::endl;
@@ -117,7 +117,7 @@ public:
         }
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Inherit::reinit();
 
@@ -186,7 +186,7 @@ protected:
 
     virtual ~CorotationalStrainMapping() { }
 
-    virtual void applyBlock(Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn, helper::vector<BlockType>& jacobianBlock)
+    virtual void applyBlock(Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn, helper::vector<BlockType>& jacobianBlock) override
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
@@ -261,7 +261,7 @@ protected:
         dOut.endEdit();
     }
 
-    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
+    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn ) override
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
@@ -341,7 +341,7 @@ protected:
         if(!BlockType::constant && this->assemble.getValue()) this->updateJ();
     }
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId ) override
     {
         if( !f_geometricStiffness.getValue() ) return;
         if(BlockType::constant) return;
