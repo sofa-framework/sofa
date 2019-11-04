@@ -79,7 +79,7 @@ public:
     void doUpdate() override;
     void scale();
     void orientate();
-    void draw() override;
+    void draw(const sofa::core::visual::VisualParams*) override;
 
     virtual std::string getTemplateName() const
     {
