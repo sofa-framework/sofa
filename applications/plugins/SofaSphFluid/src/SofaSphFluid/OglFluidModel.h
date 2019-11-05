@@ -44,15 +44,15 @@ private:
     helper::gl::FrameBufferObject* m_spriteNormalFBO;
     helper::gl::FrameBufferObject* m_spriteBlurDepthHFBO;
     helper::gl::FrameBufferObject* m_spriteBlurDepthVFBO;
-	helper::gl::FrameBufferObject* m_spriteBlurThicknessHFBO;
-	helper::gl::FrameBufferObject* m_spriteBlurThicknessVFBO;
+    helper::gl::FrameBufferObject* m_spriteBlurThicknessHFBO;
+    helper::gl::FrameBufferObject* m_spriteBlurThicknessVFBO;
     helper::gl::FrameBufferObject* m_spriteShadeFBO;
 
     helper::gl::GLSLShader m_spriteShader;
-	helper::gl::GLSLShader m_spriteNormalShader;
-	helper::gl::GLSLShader m_spriteBlurDepthShader;
-	helper::gl::GLSLShader m_spriteBlurThicknessShader;
-	helper::gl::GLSLShader m_spriteShadeShader;
+    helper::gl::GLSLShader m_spriteNormalShader;
+    helper::gl::GLSLShader m_spriteBlurDepthShader;
+    helper::gl::GLSLShader m_spriteBlurThicknessShader;
+    helper::gl::GLSLShader m_spriteShadeShader;
 
     void drawSprites(const core::visual::VisualParams* vparams);
     void updateVertexBuffer();
@@ -69,21 +69,21 @@ public:
     Data<sofa::defaulttype::RGBAColor> d_spriteDiffuseColor;
 
 
-    void init();
-    void initVisual();
-    void fwdDraw(core::visual::VisualParams*);
-    void bwdDraw(core::visual::VisualParams*);
-    void drawVisual(const core::visual::VisualParams* vparams);
-    void computeBBox(const core::ExecParams* params, bool onlyVisible = false);
+    void init() override;
+    void initVisual() override;
+    void fwdDraw(core::visual::VisualParams*) override;
+    void bwdDraw(core::visual::VisualParams*) override;
+    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void computeBBox(const core::ExecParams* params, bool onlyVisible = false) override;
 
-    virtual void updateVisual();
+    virtual void updateVisual() override;
 
     static std::string templateName(const OglFluidModel<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
