@@ -150,8 +150,8 @@ protected:
     if 1 then the material can undergo large compression even inverse elements ***/
     Data<Real> f_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffnes Matrix (between 0 and 1)
 
-    Real lambda;  /// first Lam� coefficient
-    Real mu;    /// second Lam� coefficient
+    Real lambda;  /// first Lame coefficient
+    Real mu;    /// second Lame coefficient
 
 
     TriangularBiquadraticSpringsForceField();

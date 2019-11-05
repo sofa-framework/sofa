@@ -655,6 +655,7 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
 template<class DataTypes>
 void OglFluidModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(onlyVisible);
     const VecCoord& position = m_positions.getValue();
 	constexpr const SReal max_real { std::numeric_limits<SReal>::max() };
 	constexpr const SReal min_real { std::numeric_limits<SReal>::lowest() };

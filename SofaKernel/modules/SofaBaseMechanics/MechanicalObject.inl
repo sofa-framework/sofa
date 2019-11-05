@@ -98,7 +98,6 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere. (default=0)"))
     , d_color(initData(&d_color, defaulttype::Vec4f(1,1,1,1), "showColor", "Color for object display. (default=[1 1 1 1])"))
-    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function. (default=false)"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -114,7 +113,6 @@ MechanicalObject<DataTypes>::MechanicalObject()
 
     data = MechanicalObjectInternalData<DataTypes>(this);
 
-    isToPrint.setDisplayed(false);
 
     x               .setGroup("Vector");
     v               .setGroup("Vector");
@@ -338,6 +336,12 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
         translation2.setValue(Vector3((Real)arg->getAttributeAsFloat("dx2",0.0),
                                       (Real)arg->getAttributeAsFloat("dy2",0.0),
                                       (Real)arg->getAttributeAsFloat("dz2",0.0)));
+    }
+
+    if (arg->getAttribute("isToPrint")!=nullptr)
+    {
+        msg_deprecated() << "The 'isToPrint' data field has been deprecated in Sofa 19.06 due to lack of consistency in how it should work." << msgendl
+                            "Please contact sofa-dev team in case you need similar.";
     }
 
 
@@ -1253,16 +1257,6 @@ void MechanicalObject<DataTypes>::init()
     if (f_reserve.getValue() > 0)
         reserve(f_reserve.getValue());
 
-    if(isToPrint.getValue()==true) {
-        x.setPersistent(false);
-        v.setPersistent(false);
-        f.setPersistent(false);
-        externalForces.setPersistent(false);
-        dx.setPersistent(false);
-        xfree.setPersistent(false);
-        vfree.setPersistent(false);
-        x0.setPersistent(false);
-        reset_position.setPersistent(false);}
 }
 
 template <class DataTypes>

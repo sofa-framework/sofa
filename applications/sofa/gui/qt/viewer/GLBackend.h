@@ -31,9 +31,9 @@
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/helper/gl/Texture.h>
 
-#if SOFAHELPER_HAVE_FFMPEG_EXEC
+#if SOFAGUIQT_HAVE_FFMPEG_EXEC
 #include <sofa/helper/gl/VideoRecorderFFMPEG.h>
-#endif // SOFAHELPER_HAVE_FFMPEG_EXEC
+#endif // SOFAGUIQT_HAVE_FFMPEG_EXEC
 
 
 namespace sofa
@@ -68,9 +68,9 @@ public:
 private:
     sofa::helper::gl::Capture m_capture;
     sofa::helper::gl::Texture* m_texLogo;
-#if SOFAHELPER_HAVE_FFMPEG_EXEC
+#if SOFAGUIQT_HAVE_FFMPEG_EXEC
     sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
-#endif // SOFAHELPER_HAVE_FFMPEG_EXEC
+#endif // SOFAGUIQT_HAVE_FFMPEG_EXEC
 
 };
 

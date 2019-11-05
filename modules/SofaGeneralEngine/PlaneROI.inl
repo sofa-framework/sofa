@@ -58,7 +58,7 @@ PlaneROI<DataTypes>::PlaneROI()
     , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
     , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangles","Draw Triangles") )
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
-    , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
+    , _drawSize( initData(&_drawSize, 0.0f,"drawSize","rendering size for box and topological elements") )
 {
     planes.beginEdit()->push_back(Vec10(sofa::defaulttype::Vec<9,Real>(0,0,0,0,0,0,0,0,0),0));
     planes.endEdit();

@@ -93,8 +93,8 @@ public:
     Data<bool> p_activated; ///< Camera activated ?
 	Data<bool> p_fixedLookAtPoint; ///< keep the lookAt point always fixed
     
-    Data<helper::vector<float> > p_modelViewMatrix; ///< ModelView Matrix
-    Data<helper::vector<float> > p_projectionMatrix; ///< Projection Matrix
+    Data<helper::vector<SReal> > p_modelViewMatrix; ///< ModelView Matrix
+    Data<helper::vector<SReal> > p_projectionMatrix; ///< Projection Matrix
 
     SingleLink<BaseCamera, sofa::component::configurationsetting::BackgroundSetting,
                BaseLink::FLAG_STOREPATH> l_background ;

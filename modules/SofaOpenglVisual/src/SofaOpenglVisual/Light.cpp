@@ -839,12 +839,12 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
 
         if (zNear > 0 && zFar < 1000)
         {
-            zNear *= 0.8; // add some margin
-            zFar *= 1.2;
-            if (zNear < zFar*0.01)
-                zNear = zFar*0.01;
-            if (zNear < 0.1) zNear = 0.1;
-            if (zFar < 2.0) zFar = 2.0;
+            zNear *= 0.8f; // add some margin
+            zFar *= 1.2f;
+            if (zNear < zFar*0.01f)
+                zNear = zFar*0.01f;
+            if (zNear < 0.1f) zNear = 0.1f;
+            if (zFar < 2.0f) zFar = 2.0f;
         }
 
         d_zNear.setValue(zNear);

@@ -11,6 +11,7 @@ GET_FILENAME_COMPONENT(module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 # Look for the header file.
 FIND_PATH(HAPI_INCLUDE_DIR NAMES HAPI/HAPI.h
     PATHS $ENV{H3D_ROOT}/../HAPI/include
+    ${HAPI_ROOT}/include
     ../../HAPI/include
     ${module_file_path}/../../../HAPI/include)
 MARK_AS_ADVANCED(HAPI_INCLUDE_DIR)
@@ -28,17 +29,22 @@ ELSEIF(MSVC80)
     SET( HAPI_NAME HAPI_vc8 )
 ELSEIF(MSVC90)
     SET( HAPI_NAME HAPI_vc9 )
-ELSE(MSVC90)
+ELSEIF(MSVC90)
     SET( HAPI_NAME HAPI )
+ELSE()
+    # for linux and osx the name is hapi
+    SET(HAPI_NAME hapi)
 ENDIF(MSVC70 OR MSVC71)
 
 FIND_LIBRARY(HAPI_LIBRARY NAMES ${HAPI_NAME}
     PATHS $ENV{H3D_ROOT}/../lib
+    ${HAPI_ROOT}/lib
     ../../lib
     ${module_file_path}/../../../lib)
 
 FIND_LIBRARY( HAPI_DEBUG_LIBRARY NAMES ${HAPI_NAME}_d
     PATHS $ENV{H3D_ROOT}/../lib
+    ${HAPI_ROOT}/lib
     ../../lib
     ${module_file_path}/../../../lib )
 MARK_AS_ADVANCED(HAPI_LIBRARY)

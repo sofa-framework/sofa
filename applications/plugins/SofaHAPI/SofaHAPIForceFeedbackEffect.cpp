@@ -136,7 +136,7 @@ namespace sofa
 
 		int SofaHAPIForceFeedbackEffect::getIndice()
 		{
-			return getForceFeedback()->indice.getValue();
+			return getForceFeedback()->d_indice.getValue();
 		}
 
 		int SofaHAPIForceFeedbackEffectClass = sofa::core::RegisterObject("Implement HAPIForceEffect using a Sofa ForceFeedback component")
