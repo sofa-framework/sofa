@@ -19,19 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITGEOMAGIC_H
-#define INITGEOMAGIC_H
+#ifndef SOFA_GEOMAGIC_CONFIG_H
+#define SOFA_GEOMAGIC_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
 #ifdef SOFA_BUILD_GEOMAGIC
-#define SOFA_GEOMAGIC_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#  define SOFA_GEOMAGIC_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_GEOMAGIC_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_GEOMAGIC_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-/** \mainpage
-  This is the init for the Geomagic plugin
-  */
-
-#endif // INITGEOMAGIC_H
+#endif // SOFA_GEOMAGIC_CONFIG_H

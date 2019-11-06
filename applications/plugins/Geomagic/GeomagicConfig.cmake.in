@@ -4,6 +4,7 @@
 
 find_package(SofaGeneral REQUIRED)
 find_package(OpenHaptics REQUIRED)
+find_package(SofaOpenglVisual REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
