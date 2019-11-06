@@ -298,12 +298,12 @@ public:
             root->addSlave(pmodel); 
             pmodel->setMoving(isMoving());
             pmodel->setSimulated(isSimulated());
-            pmodel->proximity.setParent(proximity);
+            pmodel->proximity.setParent(&proximity);
 			
             pmodel->group.beginEdit()->insert(group.getValue().begin(), group.getValue().end());
             pmodel->group.endEdit();
-            pmodel->f_listening.setParent(f_listening);
-            pmodel->f_printLog.setParent(f_printLog);
+            pmodel->f_listening.setParent(&f_listening);
+            pmodel->f_printLog.setParent(&f_printLog);
 			
             setPrevious(pmodel);			
         }
