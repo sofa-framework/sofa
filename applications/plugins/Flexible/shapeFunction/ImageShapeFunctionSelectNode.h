@@ -68,7 +68,7 @@ public:
     Data< DistTypes > d_nodeWeights; ///< weights of the selected node
     //@}
 
-    virtual std::string getTemplateName() const { return templateName(this); }
+    virtual std::string getTemplateName() const override { return templateName(this); }
     static std::string templateName(const ImageShapeFunctionSelectNode<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
     ImageShapeFunctionSelectNode()

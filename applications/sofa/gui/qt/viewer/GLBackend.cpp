@@ -102,6 +102,13 @@ bool GLBackend::initRecorder( int width, int height, unsigned int framerate, uns
     std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, codecExtension);
 
     res = m_videoRecorderFFMPEG.init(ffmpeg_exec_path, videoFilename, width, height, framerate, bitrate, codecName);
+#else
+   SOFA_UNUSED(width);
+   SOFA_UNUSED(height);
+   SOFA_UNUSED(framerate);
+   SOFA_UNUSED(bitrate);
+   SOFA_UNUSED(codecExtension);
+   SOFA_UNUSED(codecName);
 #endif // SOFAGUIQT_HAVE_FFMPEG_EXEC
 
     return res;

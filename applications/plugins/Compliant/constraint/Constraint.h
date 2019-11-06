@@ -15,7 +15,7 @@ namespace linearsolver {
     protected:\
     static const size_t s_constraintTypeIndex; \
     public:\
-    virtual size_t getConstraintTypeIndex() const { return T::s_constraintTypeIndex; } \
+    virtual size_t getConstraintTypeIndex() const override { return T::s_constraintTypeIndex; } \
     static bool checkConstraintType( const Constraint* constraint ) { return constraint->getConstraintTypeIndex() == T::s_constraintTypeIndex; }
 
 

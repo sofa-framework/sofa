@@ -44,7 +44,7 @@ public:
 
     SOFA_CLASS2(SOFA_TEMPLATE(FlexibleCorotationalFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes),SOFA_TEMPLATE(shapefunction::BarycentricShapeFunction,core::behavior::ShapeFunction3));
 
-    virtual std::string getTemplateName() const { return templateName(this); }
+    virtual std::string getTemplateName() const override { return templateName(this); }
     static std::string templateName( const FlexibleCorotationalFEMForceField<DataTypes>* = NULL) { return DataTypes::Name(); }
 
     /** @name  Input types    */
@@ -62,7 +62,7 @@ public:
 
     /** @name forceField functions */
     //@{
-    virtual void init()
+    virtual void init() override
     {
         if( !this->mstate )
         {
@@ -125,7 +125,7 @@ public:
 
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         switch( d_method.getValue().getSelectedId() )
         {
@@ -175,7 +175,7 @@ public:
 
 
 
-    virtual void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& _v)
+    virtual void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& _v) override
     {
         VecDeriv& f = *_f.beginEdit();
         const VecCoord& x = _x.getValue();
@@ -266,7 +266,7 @@ public:
 
 
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& _df, const DataVecDeriv& _dx )
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& _df, const DataVecDeriv& _dx ) override
     {
         VecDeriv& df = *_df.beginEdit();
         const VecDeriv& dx = _dx.getValue();
@@ -342,13 +342,13 @@ public:
 
     }
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const override
     {
         // TODO not implemented
         return 0;
     }
 
-    void draw(const core::visual::VisualParams* /*vparams*/)
+    void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
     //@}

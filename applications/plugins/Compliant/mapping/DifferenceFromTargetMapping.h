@@ -61,7 +61,7 @@ public:
 
     enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
 
-    virtual void init()
+    virtual void init() override
     {
         const helper::vector<unsigned>& ind = indices.getValue();
         if( ind.empty() ) this->toModel->resize( this->fromModel->getSize() );
@@ -94,7 +94,7 @@ public:
     }
 
     virtual void apply(typename Self::out_pos_type& out,
-                       const typename Self::in_pos_type& in )
+                       const typename Self::in_pos_type& in ) override
     {
         const InVecCoord& t = targets.getValue();
         const helper::vector<unsigned>& ind = indices.getValue();
@@ -137,7 +137,7 @@ public:
         }
     }
 
-    virtual void assemble( const typename Self::in_pos_type& in )
+    virtual void assemble( const typename Self::in_pos_type& in ) override
     {
         assert( Nout==Nin ); // supposing TIn==TOut
 
@@ -173,7 +173,7 @@ public:
     }
 
 
-    void draw(const core::visual::VisualParams* vparams)
+    void draw(const core::visual::VisualParams* vparams) override
     {
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 

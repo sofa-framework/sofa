@@ -157,7 +157,7 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* mparams,
                                      const DataVecCoord&  x) const override ;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_InvertibleFVMForceField_CPP)

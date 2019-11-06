@@ -112,8 +112,8 @@ protected:
     ~SceneColladaLoader();
 public:
 
-    virtual void init();
-    virtual bool load();
+    virtual void init() override;
+    virtual bool load() override;
 
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )

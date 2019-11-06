@@ -267,7 +267,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override {return "MechanicalAddComplianceForce";}
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name=std::string("[")+res.getName()+","+lambdas.getName()+std::string("]");
         return name;

@@ -58,7 +58,7 @@ public:
 protected:
 
 	virtual void apply(typename self::out_pos_type& out,
-                       const typename self::in_pos_type& in) {
+                       const typename self::in_pos_type& in) override {
 		
 		// local frames have been computed in assemble
         (void)in;
@@ -90,7 +90,7 @@ protected:
 	}
 
 
-	virtual void assemble( const typename self::in_pos_type& in_pos ) {
+    virtual void assemble( const typename self::in_pos_type& in_pos ) override {
 
         Eigen::Matrix<real, 3, self::Nout> local_frame;
 

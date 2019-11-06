@@ -61,7 +61,7 @@ public:
     Data<helper::vector<Real> > _poissonRatio; ///< incompressibility ]-1,0.5[
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real ym=0,pr=0;
         for(unsigned int i=0; i<this->material.size(); i++)

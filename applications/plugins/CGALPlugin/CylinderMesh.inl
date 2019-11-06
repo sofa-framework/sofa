@@ -500,7 +500,7 @@ void CylinderMesh<DataTypes>::orientate()
 }
 
 template <class DataTypes>
-void CylinderMesh<DataTypes>::draw()
+void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams*)
 {
     if (m_viewPoints.getValue())
     {

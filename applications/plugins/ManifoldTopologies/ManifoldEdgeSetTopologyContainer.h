@@ -69,7 +69,7 @@ public:
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
     @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
     */
-    virtual int getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components);
+    virtual int getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components) override;
 
 protected:
     /** \brief Creates the EdgeSetIndex.

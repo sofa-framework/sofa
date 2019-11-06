@@ -89,15 +89,15 @@ public:
     DecimateMesh();
     virtual ~DecimateMesh();
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void doUpdate();
+    void doUpdate() override;
     void draw();
     void writeObj();
     void computeNormals();
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -107,7 +107,7 @@ public:
         return DataTypes::Name();
     }
 
-    virtual void handleEvent(sofa::core::objectmodel::Event *event);
+    virtual void handleEvent(sofa::core::objectmodel::Event *event) override;
 
 
     void geometry_to_surface(Surface &s);

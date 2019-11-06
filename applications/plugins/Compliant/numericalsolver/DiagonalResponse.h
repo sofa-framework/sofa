@@ -22,7 +22,7 @@ public:
 
     void factor(const rmat& sys) override;
 	void solve(cmat& lval, const cmat& rval) const override;
-	virtual void solve(vec& lval,  const vec& rval) const;
+    virtual void solve(vec& lval,  const vec& rval) const override;
     void reinit() override;
 
 	const vec& diagonal() const { return diag; }

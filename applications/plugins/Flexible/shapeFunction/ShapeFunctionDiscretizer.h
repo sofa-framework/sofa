@@ -90,7 +90,7 @@ public:
     //@}
 
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const override { return templateName(this); }
     static std::string templateName(const ShapeFunctionDiscretizer<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
     ShapeFunctionDiscretizer()    :   Inherited()

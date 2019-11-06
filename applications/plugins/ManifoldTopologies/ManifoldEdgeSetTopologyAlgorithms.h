@@ -55,7 +55,7 @@ public:
 
     virtual ~ManifoldEdgeSetTopologyAlgorithms() {}
 
-    virtual void init();
+    virtual void init() override;
 
 private:
     ManifoldEdgeSetTopologyContainer*					m_container;

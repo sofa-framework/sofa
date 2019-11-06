@@ -61,7 +61,7 @@ public:
     Data<helper::vector<Real> > _poissonRatio; ///< Poisson Ratio ]-1,0.5[
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real youngModulus=0,poissonRatio=0;
         for(unsigned int i=0; i<this->material.size(); i++)

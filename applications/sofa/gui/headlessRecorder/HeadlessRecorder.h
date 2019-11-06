@@ -70,15 +70,15 @@ public:
     HeadlessRecorder();
     ~HeadlessRecorder();
 
-    int mainLoop();
+    int mainLoop() override;
 
     void step();
-    void redraw();
+    void redraw() override;
     void resetView();
     void saveView();
     void initializeGL();
     void paintGL();
-    void setScene(sofa::simulation::Node::SPtr scene, const char* filename=NULL, bool temporaryFile=false);
+    void setScene(sofa::simulation::Node::SPtr scene, const char* filename=NULL, bool temporaryFile=false) override;
     void newView();
 
     // Virtual from BaseGUI
