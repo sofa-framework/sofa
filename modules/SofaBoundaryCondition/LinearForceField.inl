@@ -55,6 +55,8 @@ LinearForceField<DataTypes>::LinearForceField()
 template<class DataTypes>
 void LinearForceField<DataTypes>::init()
 {
+    Inherit::init();
+
     if (l_topology.empty())
     {
         msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -72,8 +74,6 @@ void LinearForceField<DataTypes>::init()
     // Initialize functions and parameters for topology data and handler
     points.createTopologicalEngine(m_topology);
     points.registerTopologicalData();
-
-    Inherit::init();
 }
 
 template<class DataTypes>
