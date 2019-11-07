@@ -131,10 +131,13 @@ protected:
 
 };
 
+template <>
+void SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>::init();
+
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
-extern template class HermiteSplineConstraint<defaulttype::Rigid3Types>;
-extern template class HermiteSplineConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Vec3Types>;
 
 #endif
 

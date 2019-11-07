@@ -38,11 +38,16 @@ namespace projectiveconstraintset
 int HermiteSplineConstraintClass = core::RegisterObject("Apply a hermite cubic spline trajectory to given points")
         .add< HermiteSplineConstraint<defaulttype::Vec3Types> >()
         .add< HermiteSplineConstraint<defaulttype::Rigid3Types> >()
-
         ;
 
-template class HermiteSplineConstraint<defaulttype::Rigid3Types>;
-template class HermiteSplineConstraint<defaulttype::Vec3Types>;
+template <>
+void HermiteSplineConstraint<defaulttype::Rigid3Types>::init()
+{
+    this->core::behavior::ProjectiveConstraintSet<defaulttype::Rigid3Types>::init();
+}
+
+template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>;
+template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Vec3Types>;
 
 
 

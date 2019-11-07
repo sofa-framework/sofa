@@ -76,6 +76,8 @@ void  HermiteSplineConstraint<DataTypes>::addConstraint(unsigned index)
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::init()
 {
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+
     if (l_topology.empty())
     {
         msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -92,9 +94,7 @@ void HermiteSplineConstraint<DataTypes>::init()
 
     // Initialize functions and parameters for topology data and handler
     m_indices.createTopologicalEngine(m_topology);
-    m_indices.registerTopologicalData();
-
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    m_indices.registerTopologicalData();    
 }
 
 template <class DataTypes>
