@@ -136,7 +136,11 @@ protected:
 
 
 template <>
+void LinearForceField<defaulttype::Rigid3Types>::init();
+
+template <>
 SReal LinearForceField<defaulttype::Rigid3Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
+
 template <>
 SReal LinearForceField<defaulttype::Rigid2Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 

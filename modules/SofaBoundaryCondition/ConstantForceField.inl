@@ -56,7 +56,6 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , d_showArrowSize(initData(&d_showArrowSize,SReal(0.0), "showArrowSize", "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
     , d_color(initData(&d_color, defaulttype::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display (default: [0.2,0.9,0.3,1.0])"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_topology(nullptr)
 {
     d_showArrowSize.setGroup("Visualization");
     d_color.setGroup("Visualization");
@@ -92,30 +91,36 @@ template<class DataTypes>
 void ConstantForceField<DataTypes>::init()
 {
     this->m_componentstate = core::objectmodel::ComponentState::Invalid;
-
-    if (l_topology.empty())
+       
+    std::string templateName = this->templateName(this);
+    if (templateName.find("Rigid") == std::string::npos)
     {
-        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopology());
-    }
+        if (l_topology.empty())
+        {
+            msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+            l_topology.set(this->getContext()->getMeshTopology());
+        }
 
-    m_topology = l_topology.get();
-    if (m_topology == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
-        m_systemSize = state->getSize();
+        // temprory pointer to topology
+        sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+        if (_topology == nullptr)
+        {
+            msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+            sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        }
+
+        // Initialize functions and parameters for topology data and handler
+        d_indices.createTopologicalEngine(_topology);
+        d_indices.registerTopologicalData();
+
+        m_systemSize = _topology->getNbPoints();
     }
     else
     {
-         m_systemSize = m_topology->getNbPoints();
-    }
-
-
-    // Initialize functions and parameters for topology data and handler
-    d_indices.createTopologicalEngine(m_topology);
-    d_indices.registerTopologicalData();
+        core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
+        m_systemSize = state->getSize();
+    }       
 
     const VecIndex & indices = d_indices.getValue();
     size_t indicesSize = indices.size();

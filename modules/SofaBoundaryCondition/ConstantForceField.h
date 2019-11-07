@@ -125,9 +125,6 @@ public:
 protected:
     ConstantForceField();
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
     /// Functions checking inputs before update
     bool checkForce(const Deriv&  force);
     bool checkForces(const VecDeriv& forces);
