@@ -163,11 +163,13 @@ void UncoupledConstraintCorrection<DataTypes>::init()
             // If compliance is a vector of value per dof, need to register it as a PointData to the current topology
             if (l_topology.empty())
             {
-                msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+                msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
                 l_topology.set(this->getContext()->getMeshTopology());
             }
 
             sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+            msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
             if (_topology != nullptr)
             {
                 compliance.createTopologicalEngine(_topology);

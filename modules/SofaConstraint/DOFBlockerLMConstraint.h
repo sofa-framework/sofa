@@ -83,15 +83,15 @@ protected:
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
         , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis, 1.0f, "showSizeAxis", "size of the vector used to display the constrained axis"))
         , l_topology(initLink("topology", "link to the topology container"))
-        , m_topology(nullptr)
+        , m_pointHandler(nullptr)
     {
-        pointHandler = new FCTPointHandler(this, &f_indices);
+        
     }
 
     ~DOFBlockerLMConstraint()
     {
-        if (pointHandler)
-            delete pointHandler;
+        if (m_pointHandler)
+            delete m_pointHandler;
     }
 
 public:
@@ -153,10 +153,8 @@ public:
 
 protected :
     sofa::helper::vector<SetIndexArray> idxEquations;
-
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
-    FCTPointHandler* pointHandler;
+    
+    FCTPointHandler* m_pointHandler;
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)

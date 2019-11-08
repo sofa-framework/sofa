@@ -93,21 +93,25 @@ void DOFBlockerLMConstraint<DataTypes>::init()
 
     if (l_topology.empty())
     {
-        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topology.get();
-    if (m_topology == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
 
-    // Initialize functions and parameters
-    f_indices.createTopologicalEngine(m_topology, pointHandler);
-    f_indices.registerTopologicalData();
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+        
+        // Initialize functions and parameters
+        m_pointHandler = new FCTPointHandler(this, &f_indices);
+        f_indices.createTopologicalEngine(_topology, m_pointHandler);
+        f_indices.registerTopologicalData();        
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 }
 
 

@@ -76,8 +76,8 @@ protected:
 
     ~FixedLMConstraint()
     {
-        if (pointHandler)
-            delete pointHandler;
+        if (m_pointHandler)
+            delete m_pointHandler;
     }
 
 public:
@@ -142,9 +142,8 @@ protected :
     SetIndexArray idxX, idxY, idxZ;
     std::map< unsigned int, Coord> restPosition;
 
-    sofa::core::topology::BaseMeshTopology* m_topology;
 
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
 };
 
