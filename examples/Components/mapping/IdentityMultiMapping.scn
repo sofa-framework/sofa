@@ -28,7 +28,7 @@
                 <IdentityMultiMapping template="Vec3d,Vec3d" input="@../../dof1 @../dof2" output="@./dofall" />
                 <SphereCollisionModel radius="0.3" selfCollision="1"/>
                 <UniformMass vertexMass="1" />
-                <ConstantForceField points="0" force="1 0 0"/>
+                <ConstantForceField indices="0" force="1 0 0"/>
             </Node>
             
         </Node>

@@ -81,7 +81,7 @@ struct BoxROITest :  public ::testing::Test
 
     void TearDown() override
     {
-        if (m_root != NULL){
+        if (m_root != nullptr){
             m_simu->unload(m_root);
         }
     }
@@ -357,14 +357,14 @@ struct BoxROITest :  public ::testing::Test
     void computeBBoxTest()
     {
         m_boxroi->findData("box")->read("-1. -1. -1.  0. 0. 0.   1. 1. 1.  2. 2. 2.");
-        m_boxroi->computeBBox(NULL, false);
+        m_boxroi->computeBBox(nullptr, false);
 
         EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3d(-1,-1,-1));
         EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3d(2,2,2));
 
         m_boxroi->findData("box")->read("-1. -1. -1.  0. 0. 0.");
         m_boxroi->findData("orientedBox")->read("0 0 0  2 0 0  2 2 0 2");
-        m_boxroi->computeBBox(NULL, false);
+        m_boxroi->computeBBox(nullptr, false);
 
         EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3d(-1,-1,-1));
         EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3d(2,2,1));

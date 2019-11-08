@@ -103,7 +103,7 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
     core::collision::DetectionOutputVector*& contacts = this->getDetectionOutputs(tm1, tm2);
 
 
-    if (contacts == NULL)
+    if (contacts == nullptr)
     {
         contacts = new
         sofa::core::collision::TDetectionOutputVector <
@@ -259,7 +259,7 @@ void RayTraceDetection::addCollisionModel (core::CollisionModel * cm)
 
         bool swapModels = false;
         core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
-        if (intersector == NULL)
+        if (intersector == nullptr)
             continue;
 
         core::CollisionModel* cm1 = (swapModels?cm2:cm);

@@ -8,12 +8,9 @@ set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
 set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
-
-if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
-    set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel")
-    if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
-        message( FATAL_ERROR "SofaKernel is not present or is inaccessible. Check if ${SOFA_KERNEL_SOURCE_DIR} exists or is accessible.")
-    endif()
+if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR})
+    message(WARNING "SofaKernel is not present or is inaccessible. Check if ${SOFA_KERNEL_SOURCE_DIR} exists or is accessible. Backing up to default value.")
+    set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel" FORCE)
 endif()
 
 ## Default build type
@@ -21,6 +18,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+include(CMakeDependentOption)
 
 # Enable the organisation in folders for generators that support
 # it. (E.g. some versions of Visual Studio have 'solution folders')
@@ -78,6 +76,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
 list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
+
+include(SofaMacros)
 
 ## RPATH
 if(UNIX)
@@ -227,6 +227,9 @@ add_subdirectory(SofaGeneral)
 add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 
+## Packages
+add_subdirectory(applications/collections)
+
 # This is all the applications GUI stuff. As there is a dependency to this one
 # In scene creator and SofaPython...it is located here.
 add_subdirectory(SofaGui)
@@ -264,7 +267,7 @@ add_subdirectory(modules)
 
 if(SOFA_BUILD_TESTS)
     # Tests for all the modules, written using SofaTest.
-    add_subdirectory(modules/tests)
+    add_subdirectory(tests)
     # SofaPython_test is a special case, because it depends on
     # SofaTest, which depends on SofaPython...
     if(PLUGIN_SOFAPYTHON)
@@ -274,9 +277,6 @@ endif()
 
 ## Plugins
 add_subdirectory(applications/plugins)
-
-## Packages
-add_subdirectory(applications/packages)
 
 ## Applications
 add_subdirectory(applications/projects)
@@ -316,17 +316,6 @@ install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION . COMPONENT applicatio
 install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applications)
-
-# Create build and install versions of etc/sofa.ini:
-#   - In build dir, sofa.ini contains absolute paths to distant (in source) share/ and examples/ dirs
-#   - In install dir, sofa.ini (generated later via installedSofa.ini) contains relative paths to local share/ and examples/ dirs
-set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
-set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-set(SHARE_DIR "../share/sofa")
-set(EXAMPLES_DIR "../share/sofa/examples")
-configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
-install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
 
 option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
 ## Install resource files

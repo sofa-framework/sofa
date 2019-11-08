@@ -40,6 +40,7 @@ template<class DataTypes>
 QuadBendingSprings<DataTypes>::QuadBendingSprings()
     : sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>()
     , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , l_topology(initLink("topology", "link to the topology container"))
 {
 }
 
@@ -99,10 +100,21 @@ void QuadBendingSprings<DataTypes>::init()
     std::map< IndexPair, IndexPair > edgeMap;
     std::set< IndexPair > springSet;
 
-    sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
-    assert( topology );
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
 
-    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+    if (_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = _topology->getQuads();
     //sout<<"==================================QuadBendingSprings<DataTypes>::init(), quads size = "<<quads.size()<<sendl;
     for( unsigned i= 0; i<quads.size(); ++i )
     {

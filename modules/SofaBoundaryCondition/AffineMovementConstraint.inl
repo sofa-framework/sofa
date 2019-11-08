@@ -62,7 +62,7 @@ void AffineMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(u
 
 template <class DataTypes>
 AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , data(new AffineMovementConstraintInternalData<DataTypes>)
     , m_meshIndices( initData(&m_meshIndices,"meshIndices","Indices of the mesh") )
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )

@@ -105,7 +105,7 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
                 return false; // this template is not the same as the existing MechanicalState
         }
 
@@ -124,7 +124,7 @@ public:
         return templateName(this);
     }
 
-    static string templateName(const BoxROI<DataTypes>* = NULL)
+    static string templateName(const BoxROI<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

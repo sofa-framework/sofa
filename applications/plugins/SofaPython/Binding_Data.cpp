@@ -863,10 +863,10 @@ static PyObject * Data_getHelp(PyObject *self, PyObject * args)
     }
 
     BaseData* data = get_basedata( self );
-    const char *h = data->getHelp() ;
-    if(h == nullptr)
+    const std::string h = data->getHelp() ;
+    if(h.empty())
         return PyString_FromString("(No help available)");
-    return PyString_FromString(h);
+    return PyString_FromString(h.c_str());
 }
 
 

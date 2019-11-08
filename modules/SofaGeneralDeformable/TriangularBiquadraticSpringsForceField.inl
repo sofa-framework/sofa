@@ -65,9 +65,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
         helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
         ///describe the indices of the 3 triangle vertices
-        const Triangle &t= ff->_topology->getTriangle(triangleIndex);
+        const Triangle &t= ff->m_topology->getTriangle(triangleIndex);
         /// describe the jth edge index of triangle no i
-        const EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleIndex);
+        const EdgesInTriangle &te= ff->m_topology->getEdgesInTriangle(triangleIndex);
         // store square rest length
         for(j=0; j<3; ++j)
         {
@@ -121,7 +121,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
         helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
         /// describe the jth edge index of triangle no i
-        const EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleIndex);
+        const EdgesInTriangle &te= ff->m_topology->getEdgesInTriangle(triangleIndex);
         // store square rest length
         for(j=0; j<3; ++j)
         {
@@ -167,8 +167,10 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::Tr
     , f_stiffnessMatrixRegularizationWeight(initData(&f_stiffnessMatrixRegularizationWeight,(Real)0.4,"matrixRegularization","Regularization of the Stiffnes Matrix (between 0 and 1)"))
     , lambda(0)
     , mu(0)
-    , edgeHandler(NULL)
-    , triangleHandler(NULL)
+    , l_topology(initLink("topology", "link to the topology container"))
+    , edgeHandler(nullptr)
+    , triangleHandler(nullptr)
+    , m_topology(nullptr)
 {
     edgeHandler = new TRBSEdgeHandler(this,&edgeInfo);
     triangleHandler = new TRBSTriangleHandler(this,&triangleInfo);
@@ -184,11 +186,25 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::~T
 template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes>::init()
 {
     this->Inherited::init();
-    _topology = this->getContext()->getMeshTopology();
+    
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
 
-    if (_topology->getNbTriangles()==0)
+    m_topology = l_topology.get();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    if (m_topology->getNbTriangles()==0)
     {
         msg_error() << "Object must have a Triangular Set Topology." ;
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     updateLameCoefficients();
@@ -196,11 +212,11 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     /// prepare to store info in the triangle array
     helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
 
-    triangleInf.resize(_topology->getNbTriangles());
+    triangleInf.resize(m_topology->getNbTriangles());
     /// prepare to store info in the edge array
     helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
-    edgeInf.resize(_topology->getNbEdges());
+    edgeInf.resize(m_topology->getNbEdges());
 
     // get restPosition
     if (_initialPoints.getValue().size() == 0)
@@ -209,25 +225,25 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
         _initialPoints.setValue(p);
     }
     unsigned int i;
-    for (i=0; i<_topology->getNbEdges(); ++i)
+    for (i=0; i<m_topology->getNbEdges(); ++i)
     {
-        edgeHandler->applyCreateFunction(i,edgeInf[i], _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
+        edgeHandler->applyCreateFunction(i,edgeInf[i], m_topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0 );
     }
-    for (i=0; i<_topology->getNbTriangles(); ++i)
+    for (i=0; i<m_topology->getNbTriangles(); ++i)
     {
         triangleHandler->applyCreateFunction(i, triangleInf[i],
-                _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0,
+                m_topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
 
     // Edge info
-    edgeInfo.createTopologicalEngine(_topology,edgeHandler);
+    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
     edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 
     // Triangle info
-    triangleInfo.createTopologicalEngine(_topology,triangleHandler);
+    triangleInfo.createTopologicalEngine(m_topology,triangleHandler);
     triangleInfo.registerTopologicalData();
     triangleInfo.endEdit();
 }
@@ -242,8 +258,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
     const VecDeriv& v = d_v.getValue();
 
     unsigned int j,k,l,v0,v1;
-    size_t nbEdges=_topology->getNbEdges();
-    size_t nbTriangles=_topology->getNbTriangles();
+    size_t nbEdges=m_topology->getNbEdges();
+    size_t nbTriangles=m_topology->getNbTriangles();
     bool compressible=f_compressible.getValue();
     Real areaStiffness=(getLambda()+getMu())*3;
 
@@ -265,8 +281,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
     for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
-        v0=_topology->getEdge(i)[0];
-        v1=_topology->getEdge(i)[1];
+        v0=m_topology->getEdge(i)[0];
+        v1=m_topology->getEdge(i)[1];
         dp=x[v0]-x[v1];
         dv=v[v0]-v[v1];
         L=einfo->currentSquareLength=dp.norm2();
@@ -285,9 +301,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
         {
             tinfo=&triangleInf[i];
             /// describe the jth edge index of triangle no i
-            const EdgesInTriangle &tea= _topology->getEdgesInTriangle(i);
+            const EdgesInTriangle &tea= m_topology->getEdgesInTriangle(i);
             /// describe the jth vertex index of triangle no i
-            const Triangle &ta= _topology->getTriangle(i);
+            const Triangle &ta= m_topology->getTriangle(i);
 
             // store points
             for(j=0; j<3; ++j)
@@ -369,7 +385,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int i,j,k;
-    int nbTriangles=_topology->getNbTriangles();
+    int nbTriangles=m_topology->getNbTriangles();
     bool compressible=f_compressible.getValue();
     Real areaStiffness=(getLambda()+getMu())*3;
     TriangleRestInformation *tinfo;
@@ -393,7 +409,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
         {
             tinfo=&triangleInf[l];
             /// describe the jth edge index of triangle no i
-            const EdgesInTriangle &tea= _topology->getEdgesInTriangle(l);
+            const EdgesInTriangle &tea= m_topology->getEdgesInTriangle(l);
             /// describe the jth vertex index of triangle no i
 
             // store points
@@ -504,7 +520,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
     {
         tinfo=&triangleInf[l];
         /// describe the jth vertex index of triangle no l
-        const Triangle &ta= _topology->getTriangle(l);
+        const Triangle &ta= m_topology->getTriangle(l);
 
         // store points
         for(k=0; k<3; ++k)
@@ -544,7 +560,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
         vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    size_t nbTriangles=_topology->getNbTriangles();
+    size_t nbTriangles=m_topology->getNbTriangles();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
     std::vector<sofa::defaulttype::Vec4f> colors;
@@ -554,9 +570,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
 
     for(unsigned int i=0; i<nbTriangles; ++i)
     {
-        int a = _topology->getTriangle(i)[0];
-        int b = _topology->getTriangle(i)[1];
-        int c = _topology->getTriangle(i)[2];
+        int a = m_topology->getTriangle(i)[0];
+        int b = m_topology->getTriangle(i)[1];
+        int c = m_topology->getTriangle(i)[2];
 
         colors.push_back(sofa::defaulttype::RGBAColor::green());
         vertices.push_back(x[a]);

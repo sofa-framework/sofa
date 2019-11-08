@@ -98,7 +98,7 @@ bool MeshXspLoader::load()
     return XspLoader::Load(m_filename.getValue(), data);
 }
 
-static int MeshXspLoaderClass = core::RegisterObject("Specific mesh loader for Xsp file format.")
+int MeshXspLoaderClass = core::RegisterObject("Specific mesh loader for Xsp file format.")
         .add< MeshXspLoader >();
 } /// namespace loader
 

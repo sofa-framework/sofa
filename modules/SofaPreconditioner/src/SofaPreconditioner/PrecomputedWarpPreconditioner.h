@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_H
 #define SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_H
-#include "config.h"
+#include <SofaPreconditioner/config.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -64,12 +64,12 @@ public :
 
     ~PrecomputedWarpPreconditionerInternalData()
     {
-        if (!shared && MinvPtr!=NULL) delete MinvPtr;
+        if (!shared && MinvPtr!=nullptr) delete MinvPtr;
     }
 
     void setMinv(FullMatrix<Real>* m, bool shared = true)
     {
-        if (!this->shared && MinvPtr!=NULL) delete this->MinvPtr;
+        if (!this->shared && MinvPtr!=nullptr) delete this->MinvPtr;
         this->MinvPtr = m;
         this->shared = shared;
     }
@@ -144,7 +144,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<MState *>(context->getMechanicalState()) == NULL) return false;
+        if (dynamic_cast<MState *>(context->getMechanicalState()) == nullptr) return false;
         return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
@@ -153,7 +153,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const PrecomputedWarpPreconditioner<DataTypes>* = NULL)
+    static std::string templateName(const PrecomputedWarpPreconditioner<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

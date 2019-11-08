@@ -38,7 +38,7 @@ namespace xml
 class SOFA_SIMULATION_COMMON_API BaseMultiMappingElement : public ObjectElement
 {
 public:
-    BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
+    BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);
     bool initNode() override;
 
 protected:

@@ -54,7 +54,7 @@ public :
     Real * tmp;
     SparseLUInvertData()
     {
-        S=NULL; N=NULL; tmp=NULL;
+        S=nullptr; N=nullptr; tmp=nullptr;
     }
 
     ~SparseLUInvertData()

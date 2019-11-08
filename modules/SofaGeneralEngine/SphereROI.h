@@ -90,7 +90,7 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
                 return false; // this template is not the same as the existing MechanicalState
         }
 
@@ -109,7 +109,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const SphereROI<DataTypes>* = NULL)
+    static std::string templateName(const SphereROI<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }
@@ -166,7 +166,7 @@ public:
     Data<bool> p_drawTriangles; ///< Draw Triangles
     Data<bool> p_drawQuads; ///< Draw Quads
     Data<bool> p_drawTetrahedra; ///< Draw Tetrahedra
-    Data<double> _drawSize; ///< rendering size for box and topological elements
+    Data<float> _drawSize; ///< rendering size for box and topological elements
 
 };
 

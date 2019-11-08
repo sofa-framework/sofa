@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_H
 #define SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_H
-#include "config.h"
+#include <SofaPreconditioner/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
@@ -82,7 +82,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const BlockJacobiPreconditioner<TMatrix,TVector>* = NULL)
+    static std::string templateName(const BlockJacobiPreconditioner<TMatrix,TVector>* = nullptr)
     {
         return TVector::Name();
     }

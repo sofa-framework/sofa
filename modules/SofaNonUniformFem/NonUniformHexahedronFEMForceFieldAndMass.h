@@ -82,6 +82,9 @@ public:
     Data<int> d_nbVirtualFinerLevels; ///< use virtual finer levels, in order to compte non-uniform stiffness, only valid if the topology is a SparseGridTopology with enough VirtualFinerLevels.
     Data<bool> d_useMass; ///< Do we want to use this ForceField like a Mass? (or do we prefer using a separate Mass)
     Data<Real> d_totalMass;
+
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<NonUniformHexahedronFEMForceFieldAndMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     NonUniformHexahedronFEMForceFieldAndMass();
 

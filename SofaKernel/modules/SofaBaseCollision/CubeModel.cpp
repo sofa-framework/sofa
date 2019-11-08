@@ -54,7 +54,7 @@ void CubeModel::resize(int size)
     if (size == size0) return;
     // reset parent
     CollisionModel* parent = getPrevious();
-    while(parent != NULL)
+    while(parent != nullptr)
     {
         parent->resize(0);
         parent = parent->getPrevious();
@@ -141,12 +141,12 @@ void CubeModel::updateCubes()
 
 void CubeModel::draw(const core::visual::VisualParams* vparams)
 {
-    if (!isActive() || !((getNext()==NULL)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
+    if (!isActive() || !((getNext()==nullptr)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
 
     int level=0;
     CollisionModel* m = getPrevious();
     float color = 1.0f;
-    while (m!=NULL)
+    while (m!=nullptr)
     {
         m = m->getPrevious();
         ++level;
@@ -195,7 +195,7 @@ void CubeModel::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->drawLines(points, 1, Vec<4,float>(c));
 
 
-    if (getPrevious()!=NULL)
+    if (getPrevious()!=nullptr)
         getPrevious()->draw(vparams);
 }
 
@@ -237,14 +237,14 @@ void CubeModel::computeBoundingTree(int maxDepth)
     for (int i=0; i<maxDepth; i++)
         levels.push_front(levels.front()->createPrevious<CubeModel>());
     CubeModel* root = levels.front();
-    //if (isStatic() && root->getPrevious() == NULL && !root->empty()) return; // No need to recompute BBox if immobile
+    //if (isStatic() && root->getPrevious() == nullptr && !root->empty()) return; // No need to recompute BBox if immobile
 
-    if (root->empty() || root->getPrevious() != NULL)
+    if (root->empty() || root->getPrevious() != nullptr)
     {
         // Tree must be reconstructed
         //sout << "Building Tree with depth "<<maxDepth<<" from "<<size<<" elements."<<sendl;
         // First remove extra levels
-        while(root->getPrevious()!=NULL)
+        while(root->getPrevious()!=nullptr)
         {
             core::CollisionModel::SPtr m = root->getPrevious();
             root->setPrevious(m->getPrevious());
@@ -293,21 +293,8 @@ void CubeModel::computeBoundingTree(int maxDepth)
                         splitAxis = 2;
 
                     // Separate cells on each side of the median cell
-
-#if defined(__GNUC__) && (__GNUC__ == 4)
-// && (__GNUC_MINOR__ == 1) && (__GNUC_PATCHLEVEL__ == 1)
-                    // there is apparently a bug in std::sort with GCC 4.x
-                    if (splitAxis == 0)
-                        qsort(&(elems[subcells.first.getIndex()]), subcells.second.getIndex()-subcells.first.getIndex(), sizeof(elems[0]), CubeSortPredicate::sortCube<0>);
-                    else if (splitAxis == 1)
-                        qsort(&(elems[subcells.first.getIndex()]), subcells.second.getIndex()-subcells.first.getIndex(), sizeof(elems[0]), CubeSortPredicate::sortCube<1>);
-                    else
-                        qsort(&(elems[subcells.first.getIndex()]), subcells.second.getIndex()-subcells.first.getIndex(), sizeof(elems[0]), CubeSortPredicate::sortCube<2>);
-#else
                     CubeSortPredicate sortpred(splitAxis);
-                    //std::nth_element(elems.begin()+subcells.first.getIndex(),elems.begin()+middle,elems.begin()+subcells.second.getIndex(), sortpred);
-                    std::sort(elems.begin()+subcells.first.getIndex(),elems.begin()+subcells.second.getIndex(), sortpred);
-#endif
+                    std::sort(elems.begin() + subcells.first.getIndex(), elems.begin() + subcells.second.getIndex(), sortpred);
 
                     // Create the two new subcells
                     Cube cmiddle(this, middle);

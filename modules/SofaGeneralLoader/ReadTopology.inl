@@ -45,7 +45,7 @@ ReadTopology::ReadTopology()
     , f_shift( initData(&f_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
     , f_loop( initData(&f_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , m_topology(nullptr)
-    , infile(NULL)
+    , infile(nullptr)
 #if SOFAGENERALLOADER_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
@@ -78,7 +78,7 @@ void ReadTopology::reset()
     if (infile)
     {
         delete infile;
-        infile = NULL;
+        infile = nullptr;
     }
 #if SOFAGENERALLOADER_HAVE_ZLIB
     if (gzfile)
@@ -110,7 +110,7 @@ void ReadTopology::reset()
         {
             serr << "Error opening file "<<filename<<sendl;
             delete infile;
-            infile = NULL;
+            infile = nullptr;
         }
     }
     nextTime = 0;

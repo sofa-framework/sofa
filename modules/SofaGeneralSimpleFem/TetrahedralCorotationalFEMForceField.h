@@ -180,9 +180,15 @@ public:
     Data<defaulttype::Vec4f> drawColor3; ///<  draw color for faces 3
     Data<defaulttype::Vec4f> drawColor4; ///<  draw color for faces 4
     Data<std::map < std::string, sofa::helper::vector<double> > > _volumeGraph;
+
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<TetrahedralCorotationalFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     TetrahedralCorotationalFEMForceField();
     TetrahedronHandler* tetrahedronHandler;
+
+    /// Pointer to the topology container. Will be set by link @sa l_topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 public:
 
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }

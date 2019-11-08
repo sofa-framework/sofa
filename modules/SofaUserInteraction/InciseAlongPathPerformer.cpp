@@ -66,7 +66,7 @@ void InciseAlongPathPerformer::execute()
 
     if (currentMethod == 0) // incise from clic to clic
     {
-        if (firstBody.body == NULL) // first clic
+        if (firstBody.body == nullptr) // first clic
             firstBody=startBody;
         else
         {
@@ -75,7 +75,7 @@ void InciseAlongPathPerformer::execute()
         }
 
 
-        if (firstBody.body == NULL || secondBody.body == NULL) return;
+        if (firstBody.body == nullptr || secondBody.body == nullptr) return;
 
         sofa::core::topology::TopologyModifier* topologyModifier;
         firstBody.body->getContext()->get(topologyModifier);
@@ -89,7 +89,7 @@ void InciseAlongPathPerformer::execute()
         }
 
         firstBody = secondBody;
-        secondBody.body = NULL;
+        secondBody.body = nullptr;
 
         this->interactor->setBodyPicked(secondBody);
     }
@@ -97,7 +97,7 @@ void InciseAlongPathPerformer::execute()
     {
 
         BodyPicked currentBody=this->interactor->getBodyPicked();
-        if (currentBody.body == NULL || startBody.body == NULL) return;
+        if (currentBody.body == nullptr || startBody.body == nullptr) return;
 
         if (currentBody.indexCollisionElement == startBody.indexCollisionElement) return;
 
@@ -114,7 +114,7 @@ void InciseAlongPathPerformer::execute()
         startBody = currentBody;
         firstBody = currentBody;
 
-        currentBody.body=NULL;
+        currentBody.body=nullptr;
         this->interactor->setBodyPicked(currentBody);
     }
 
@@ -131,7 +131,7 @@ void InciseAlongPathPerformer::setPerformerFreeze()
 
 void InciseAlongPathPerformer::PerformCompleteIncision()
 {
-    if (firstIncisionBody.body == NULL || startBody.body == NULL)
+    if (firstIncisionBody.body == nullptr || startBody.body == nullptr)
     {
         msg_error("InciseAlongPathPerformer") << "One picked body is null." ;
         return;
@@ -164,7 +164,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 
 
     // Get new coordinate of first incision point:
-    sofa::component::container::MechanicalObject<defaulttype::Vec3Types>* MechanicalObject=NULL;
+    sofa::component::container::MechanicalObject<defaulttype::Vec3Types>* MechanicalObject=nullptr;
     startBody.body->getContext()->get(MechanicalObject, sofa::core::objectmodel::BaseContext::SearchRoot);
     const sofa::defaulttype::Vector3& the_point = (MechanicalObject->read(core::ConstVecCoordId::position())->getValue())[initialNbPoints];
 
@@ -193,7 +193,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
     }
 
     startBody = firstIncisionBody;
-    firstIncisionBody.body = NULL;
+    firstIncisionBody.body = nullptr;
 
     finishIncision = false; //Incure no second cut
 }
@@ -201,23 +201,23 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 InciseAlongPathPerformer::~InciseAlongPathPerformer()
 {
     if (secondBody.body)
-        secondBody.body= NULL;
+        secondBody.body= nullptr;
 
     if (firstBody.body)
-        firstBody.body = NULL;
+        firstBody.body = nullptr;
 
     if (startBody.body)
-        startBody.body = NULL;
+        startBody.body = nullptr;
 
     if (firstIncisionBody.body)
-        firstIncisionBody.body = NULL;
+        firstIncisionBody.body = nullptr;
 
     this->interactor->setBodyPicked(firstIncisionBody);
 }
 
 void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 {
-    if (firstBody.body == NULL) return;
+    if (firstBody.body == nullptr) return;
 
     BodyPicked currentBody=this->interactor->getBodyPicked();
 
@@ -278,7 +278,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
-    sofa::defaulttype::RGBAColor color(0.3, 0.8, 0.3, 1.0);
+    sofa::defaulttype::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
     std::vector<sofa::defaulttype::Vector3> vertices;
     for (unsigned int i = 1; i<positions.size(); ++i)
     {

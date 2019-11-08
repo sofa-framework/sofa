@@ -84,7 +84,7 @@ struct UniformMassTest :  public BaseTest
 
     virtual void SetUp()
     {
-        sofa::simpleapi::importPlugin("SofaAllCommonComponents") ;
+        sofa::simpleapi::importPlugin("SofaComponentAll") ;
 
         todo = true ;
         initBaseMechanics();
@@ -94,7 +94,7 @@ struct UniformMassTest :  public BaseTest
 
     void TearDown()
     {
-        if (m_root != NULL){
+        if (m_root != nullptr){
             m_simu->unload(m_root);
         }
     }

@@ -124,7 +124,7 @@ protected:
     };
 
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+   
     Data< VecCoord > _initialPoints;										///< the intial positions of the points
 
     bool updateMatrix;
@@ -134,9 +134,11 @@ protected:
     Data<Real> f_dampingRatio; ///< Ratio damping/stiffness
     Data<bool> f_useAngularSprings; ///< whether angular springs should be included
 
-    Real lambda;  /// first Lam� coefficient
-    Real mu;    /// second Lam� coefficient
+    Real lambda;  /// first Lame coefficient
+    Real mu;    /// second Lame coefficient
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TriangularQuadraticSpringsForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     TriangularQuadraticSpringsForceField();
 
@@ -215,6 +217,8 @@ protected :
     TRQSTriangleHandler* triangleHandler;
     TRQSEdgeHandler* edgeHandler;
 
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)

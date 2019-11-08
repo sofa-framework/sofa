@@ -148,7 +148,7 @@ void UniformMass<DataTypes, MassType>::initDefaultImpl()
 
     WriteAccessor<Data<vector<int> > > indices = d_indices;
 
-    if(mstate==NULL)
+    if(mstate==nullptr)
     {
         msg_warning(this) << "Missing mechanical state. \n"
                              "UniformMass need to be used with an object also having a MechanicalState. \n"

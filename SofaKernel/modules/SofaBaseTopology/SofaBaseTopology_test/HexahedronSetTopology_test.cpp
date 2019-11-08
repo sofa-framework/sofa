@@ -233,7 +233,7 @@ bool HexahedronSetTopology_test::testQuadBuffers()
 
             if (found == false)
             {
-                if (scene != NULL)
+                if (scene != nullptr)
                     delete scene;
                 return false;
             }
@@ -266,8 +266,8 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
 
     // check edge created element
     HexahedronSetTopologyContainer::Edge edge = topoCon->getEdge(0);
-    EXPECT_EQ(edge[0], 0);
-    EXPECT_EQ(edge[1], 1);
+    EXPECT_EQ(edge[0], 4);
+    EXPECT_EQ(edge[1], 5);
 
 
     // check HexahedronAroundEdge buffer access
@@ -295,7 +295,7 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
     for (size_t i = 0; i < edgeInElem.size(); i++)
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
     
-    sofa::helper::fixed_array<int, 10> edgeInElemTruth(20, 13, 14, 21, 22, 23, 24, 16, 25, 18); // Test only 10 out of 12 edges as no fixed_array<12>
+    sofa::helper::fixed_array<int, 10> edgeInElemTruth(22, 13, 18, 21, 26, 20, 27, 19, 25, 15); // Test only 10 out of 12 edges as no fixed_array<12>
     for (size_t i = 0; i<edgeInElemTruth.size(); ++i)
         EXPECT_EQ(edgeInElem[i], edgeInElemTruth[i]);
     
@@ -328,7 +328,7 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
 
             if (found == false)
             {
-                if (scene != NULL)
+                if (scene != nullptr)
                     delete scene;
                 return false;
             }

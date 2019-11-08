@@ -70,7 +70,7 @@ void Operation::start()
 sofa::component::collision::InteractionPerformer *Operation::createPerformer()
 {
     std::string type = defaultPerformerType();
-    if (type.empty()) return NULL;
+    if (type.empty()) return nullptr;
     return component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject(type, pickHandle->getInteraction()->mouseInteractor.get());
 }
 
@@ -84,7 +84,7 @@ void Operation::end()
     if (performer)
     {
         pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-        delete performer; performer=NULL;
+        delete performer; performer=nullptr;
     }
 }
 

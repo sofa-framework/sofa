@@ -84,7 +84,7 @@ public:
     }
 
 
-    static std::string templateName(const HausdorffDistance<DataTypes>* = NULL)
+    static std::string templateName(const HausdorffDistance<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

@@ -91,7 +91,7 @@ public:
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaAllCommonComponents") ;
+        sofa::simpleapi::importPlugin("SofaComponentAll") ;
 
         component::initBaseMechanics();
         simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
@@ -100,7 +100,7 @@ public:
 
     void TearDown() override
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             simulation::getSimulation()->unload(root);
     }
 

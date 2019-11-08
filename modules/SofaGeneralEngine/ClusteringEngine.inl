@@ -61,7 +61,7 @@ ClusteringEngine<DataTypes>::ClusteringEngine()
     , d_cluster(initData(&d_cluster,"cluster","Computed clusters."))
     , input_filename(initData(&input_filename,"inFile","import precomputed clusters"))
     , output_filename(initData(&output_filename,"outFile","export clusters"))
-    , topo(NULL)
+    , topo(nullptr)
 {
 }
 
@@ -70,7 +70,7 @@ void ClusteringEngine<DataTypes>::init()
 {
     this->mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 
-    if(this->mstate==NULL)
+    if(this->mstate==nullptr)
         msg_info(this) << "This component requires a mechanical state in its context for output visualization.";
 
     addInput(&d_radius);
@@ -371,7 +371,7 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 {
     if (vparams->displayFlags().getShowBehaviorModels())
     {
-        if(this->mstate==NULL)
+        if(this->mstate==nullptr)
             return;
 
         vparams->drawTool()->saveLastState();

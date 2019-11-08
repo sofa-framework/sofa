@@ -40,10 +40,10 @@ namespace misc
 template<class DataTypes>
 EvalSurfaceDistance<DataTypes>::EvalSurfaceDistance()
     : maxDist( initData(&maxDist, (SReal)1.0, "maxDist", "alarm distance for proximity detection"))
-    , pointsCM(NULL)
-    , surfaceCM(NULL)
-    , intersection(NULL)
-    , detection(NULL)
+    , pointsCM(nullptr)
+    , surfaceCM(nullptr)
+    , intersection(nullptr)
+    , detection(nullptr)
 {
 }
 
@@ -61,14 +61,14 @@ void EvalSurfaceDistance<DataTypes>::init()
         return;
     sofa::core::objectmodel::BaseContext* c1 = this->mstate1->getContext();
     c1->get(pointsCM);
-    if (pointsCM == NULL)
+    if (pointsCM == nullptr)
     {
         msg_error() << "EvalSurfaceDistance ERROR: object1 PointModel not found.";
         return;
     }
     sofa::core::objectmodel::BaseContext* c2 = this->mstate2->getContext();
     c2->get(surfaceCM);
-    if (surfaceCM == NULL)
+    if (surfaceCM == nullptr)
     {
         msg_error() << "EvalSurfaceDistance ERROR: object2 TriangleModel not found.";
         return;
@@ -119,7 +119,7 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
     while (it != itend)
     {
         const ContactVector* contacts = dynamic_cast<const ContactVector*>(it->second);
-        if (contacts != NULL)
+        if (contacts != nullptr)
         {
             msg_info() << contacts->size() << " contacts detected.";
             for (unsigned int i=0; i<contacts->size(); i++)

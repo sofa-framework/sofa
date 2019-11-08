@@ -100,7 +100,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
 
     sofa::helper::AdvancedTimer::stepEnd("PCG::setSystemMBKMatrix");
 
-    if (m_preconditioners==NULL) return;
+    if (m_preconditioners==nullptr) return;
 
     if (first) {  //We initialize all the preconditioners for the first step
         m_preconditioners->setSystemMBKMatrix(mparams);
@@ -168,7 +168,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     Vector& w = *vtmp.createTempVector();
     Vector& s = *vtmp.createTempVector();
 
-    bool apply_precond = m_preconditioners!=NULL && f_use_precond.getValue();
+    bool apply_precond = m_preconditioners!=nullptr && f_use_precond.getValue();
 
     double b_norm = b.dot(b);
     double tol = f_tolerance.getValue() * b_norm;

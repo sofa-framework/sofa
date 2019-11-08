@@ -1640,7 +1640,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
     if( d_drawType.getValue()!=2 ) return;
     topology::SparseGridRamificationTopology* sgr = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid);
-    if( sgr==NULL) return;
+    if( sgr==nullptr) return;
 
     {
 

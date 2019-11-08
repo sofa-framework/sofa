@@ -89,12 +89,12 @@ public:
     static T* create(T*, const CreatorArgument& arg)
     {
         typename T::MyData* data = dynamic_cast<typename T::MyData*>(arg.data);
-        if(!data) return NULL;
+        if(!data) return nullptr;
         T* instance = new T(arg.parent, arg.name.c_str(), data);
         if ( !instance->createWidgets() )
         {
             delete instance;
-            instance = NULL;
+            instance = nullptr;
         }
         if (instance)
         {
@@ -120,6 +120,10 @@ public slots:
     /// You call this slot anytime you want to specify that the widget
     /// value is out of sync with the underlying data value.
     void setWidgetDirty(bool b=true);
+
+    /// slot to be called if DataWidget has not been filled at constructor and need to be filled 
+    /// at first call. Will turn toFill to true only if isFilled == false
+    void fillFromData();
 
 signals:
     /// Emitted each time setWidgetDirty is called. You can also emit
@@ -148,6 +152,11 @@ public:
 
     inline bool isDirty() { return dirty; }
 
+    /// return if DataWidget as been filled
+    bool isFilled() { return m_isFilled; }
+    /// method to warn if Data has not been filled at constructor. 
+    void setFilled(bool value) { m_isFilled = value; }
+
     /// The implementation of this method holds the widget creation and the signal / slot
     /// connections.
     virtual bool createWidgets() = 0;
@@ -168,6 +177,8 @@ protected:
     core::objectmodel::BaseData* baseData;
     bool dirty;
     int counter;
+    bool m_isFilled; ///< tell if DataWidget has been filled from Data true by default
+    bool m_toFill; ///< bool to warn action is needed to fill Data, false by default
 };
 
 
@@ -189,14 +200,14 @@ public:
     static RealObject* create( RealObject*, CreatorArgument& arg)
     {
         typename RealObject::MyTData* realData = dynamic_cast< typename RealObject::MyTData* >(arg.data);
-        if (!realData) return NULL;
+        if (!realData) return nullptr;
         else
         {
             RealObject* obj = new RealObject(arg.parent,arg.name.c_str(), realData);
             if( !obj->createWidgets() )
             {
                 delete obj;
-                obj = NULL;
+                obj = nullptr;
             }
             if (obj)
             {

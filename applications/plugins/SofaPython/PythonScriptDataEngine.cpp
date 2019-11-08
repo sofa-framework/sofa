@@ -46,7 +46,8 @@ public:
 
     ~MyyFileEventListener() override{}
 
-    virtual void fileHasChanged(const std::string& filepath){
+    virtual void fileHasChanged(const std::string& filepath) override
+    {
         PythonEnvironment::gil lock {__func__} ;
 
         /// This function is called when the file has changed. Two cases have

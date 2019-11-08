@@ -49,6 +49,7 @@ namespace interactionforcefield
 
 template<class DataTypes>
 TriangleBendingSprings<DataTypes>::TriangleBendingSprings()
+: l_topology(initLink("topology", "link to the topology container"))
 {
     //serr<<"TriangleBendingSprings<DataTypes>::TriangleBendingSprings"<<sendl;
 }
@@ -129,8 +130,20 @@ void TriangleBendingSprings<DataTypes>::init()
     // Set the bending springs
 
     std::map< IndexPair, unsigned > edgeMap;
-    sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
-    assert( topology );
+
+    if (l_topology.empty())
+    {
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
+    if (topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
     //sout<<"==================================TriangleBendingSprings<DataTypes>::init(), triangles size = "<<triangles.size()<<sendl;

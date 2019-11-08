@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1)
 
 project(SofaConstraint_test)
 
+find_package(SofaComponentGeneral REQUIRED)
+
 set(SOURCE_FILES ../../empty.cpp)
 
 list(APPEND SOURCE_FILES

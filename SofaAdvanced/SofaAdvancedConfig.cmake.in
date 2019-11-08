@@ -2,13 +2,15 @@
 
 @PACKAGE_INIT@
 
+set(SOFAADVANCED_TARGETS @SOFAADVANCED_TARGETS@)
+
 find_package(SofaGeneral REQUIRED)
 
-foreach(target @SOFAADVANCED_TARGETS@ SofaComponentAdvanced)
+foreach(target ${SOFAADVANCED_TARGETS})
     if(NOT TARGET ${target})
         include("${CMAKE_CURRENT_LIST_DIR}/SofaAdvancedTargets.cmake")
         break()
     endif()
 endforeach()
 
-check_required_components(@SOFAADVANCED_TARGETS@ SofaComponentAdvanced)
+check_required_components(${SOFAADVANCED_TARGETS})

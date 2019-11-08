@@ -41,7 +41,7 @@ class poutreGridSofa(Sofa.PythonScriptController):
         poutreRegGridNode.createObject('FixedConstraint', template='Vec3d', name='default6', indices='@FixedROI.indices')
         # BoxROI for constant constraint (on the right)
         poutreRegGridNode.createObject('BoxROI', template='Vec3d', box='2.495 -0.005 0.18 2.535 0.065 0.205', name='box_roi2', position='@mecaObj.rest_position')
-        poutreRegGridNode.createObject('ConstantForceField', indices="@box_roi2.indices", force='0 -0.1 0', arrowSizeCoef='0.01')
+        poutreRegGridNode.createObject('ConstantForceField', indices="@box_roi2.indices", force='0 -0.1 0', showArrowSize='0.01')
 
         # Visual node
         VisualNode = poutreRegGridNode.createChild('Visu')

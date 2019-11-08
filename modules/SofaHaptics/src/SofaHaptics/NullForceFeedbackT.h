@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACKT_H
-#define SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACKT_H
+#ifndef SOFA_COMPONENT_CONTROLLER_nullptrFORCEFEEDBACKT_H
+#define SOFA_COMPONENT_CONTROLLER_nullptrFORCEFEEDBACKT_H
 #include <SofaHaptics/MechanicalStateForceFeedback.h>
 #include <SofaHaptics/config.h>
 namespace sofa

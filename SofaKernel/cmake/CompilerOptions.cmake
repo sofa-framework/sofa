@@ -37,6 +37,9 @@ endif()
 if(WIN32)
     add_definitions("-wd4250 -wd4251 -wd4275 -wd4675 -wd4996 -D_USE_MATH_DEFINES")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    if(MSVC_TOOLSET_VERSION GREATER 140) # > VS 2015
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
+    endif()
 endif()
 
 # Mac specific

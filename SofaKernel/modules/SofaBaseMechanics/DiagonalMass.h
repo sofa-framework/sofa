@@ -201,6 +201,9 @@ public:
     /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
     int m_initializationProcess;
 
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<DiagonalMass<DataTypes, TMassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
@@ -217,10 +220,10 @@ protected:
     /// The type of topology to build the mass from the topology
     TopologyType m_topologyType;
 
+    /// Pointer to the topology container. Will be set by link @sa l_topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
 public:
-    sofa::core::topology::BaseMeshTopology* _topology;
-
     sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
     sofa::component::topology::TriangleSetGeometryAlgorithms<GeometricalTypes>* triangleGeo;
     sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
@@ -330,7 +333,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const DiagonalMass<DataTypes, TMassType>* = NULL)
+    static std::string templateName(const DiagonalMass<DataTypes, TMassType>* = nullptr)
     {
         return DataTypes::Name();
     }

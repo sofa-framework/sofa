@@ -50,7 +50,7 @@ int TetrahedronModelClass = core::RegisterObject("collision model using a tetrah
         ;
 
 TetrahedronModel::TetrahedronModel()
-    : tetra(NULL), mstate(NULL)
+    : tetra(nullptr), mstate(nullptr)
 {
     enum_type = TETRAHEDRON_TYPE;
 }
@@ -59,7 +59,7 @@ void TetrahedronModel::resize(int size)
 {
     this->core::CollisionModel::resize(size);
     elems.resize(size);
-    if (getPrevious() != NULL) getPrevious()->resize(0); // force recomputation of bounding tree
+    if (getPrevious() != nullptr) getPrevious()->resize(0); // force recomputation of bounding tree
 }
 
 void TetrahedronModel::init()
@@ -69,7 +69,7 @@ void TetrahedronModel::init()
     this->CollisionModel::init();
     mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
-    if (mstate==NULL)
+    if (mstate==nullptr)
     {
         serr<<"TetrahedronModel requires a Vec3 Mechanical Model" << sendl;
         return;
@@ -175,7 +175,7 @@ void TetrahedronModel::draw(const core::visual::VisualParams* vparams)
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, false);
     }
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 
     vparams->drawTool()->restoreLastState();

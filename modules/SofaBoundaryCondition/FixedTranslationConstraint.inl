@@ -56,7 +56,7 @@ void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction
 
 template< class DataTypes>
 FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , _drawSize( initData(&_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )

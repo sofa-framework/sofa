@@ -134,8 +134,7 @@ protected:
 
     sofa::component::topology::TriangleData<helper::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
     sofa::component::topology::EdgeData<helper::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
-
-    sofa::core::topology::BaseMeshTopology* _topology;
+    
     Data < VecCoord >  _initialPoints;										///< the intial positions of the points
 
     bool updateMatrix;
@@ -151,8 +150,8 @@ protected:
     if 1 then the material can undergo large compression even inverse elements ***/
     Data<Real> f_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffnes Matrix (between 0 and 1)
 
-    Real lambda;  /// first Lam� coefficient
-    Real mu;    /// second Lam� coefficient
+    Real lambda;  /// first Lame coefficient
+    Real mu;    /// second Lame coefficient
 
 
     TriangularBiquadraticSpringsForceField();
@@ -226,11 +225,15 @@ public:
         TriangularBiquadraticSpringsForceField<DataTypes>* ff;
     };
 
-
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TriangularBiquadraticSpringsForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected :
     TRBSEdgeHandler* edgeHandler;
     TRBSTriangleHandler* triangleHandler;
+
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     sofa::component::topology::EdgeData<helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 

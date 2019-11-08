@@ -69,7 +69,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const TransformEngine<DataTypes>* = NULL)
+    static std::string templateName(const TransformEngine<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }    
