@@ -53,6 +53,9 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::init()
 {
+    addInput(&input_position);
+    addOutput(&output_position);
+
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -68,9 +71,6 @@ void SmoothMeshEngine<DataTypes>::init()
         sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-
-    addInput(&input_position);
-    addOutput(&output_position);
 
     setDirtyValue();
 }
@@ -168,11 +168,10 @@ void SmoothMeshEngine<DataTypes>::computeBBox(const core::ExecParams* params, bo
 
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
+{    
+    if (!vparams->displayFlags().getShowVisualModels() || m_topology == nullptr) return;
+
     using sofa::defaulttype::Vec;
-
-    if (!vparams->displayFlags().getShowVisualModels()) return;
-
     vparams->drawTool()->saveLastState();
 
     bool wireframe=vparams->displayFlags().getShowWireFrame();
