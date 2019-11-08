@@ -147,12 +147,9 @@ public:
 protected :
     /// Function check values of given indices
     void checkIndices();
-
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
+    
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
 };
 

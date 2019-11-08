@@ -92,24 +92,19 @@ void ConstantForceField<DataTypes>::init()
 {
     this->m_componentstate = core::objectmodel::ComponentState::Invalid;
        
-    std::string templateName = this->templateName(this);
-    if (templateName.find("Rigid") == std::string::npos)
+    if (l_topology.empty())
     {
-        if (l_topology.empty())
-        {
-            msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-            l_topology.set(this->getContext()->getMeshTopology());
-        }
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
 
-        // temprory pointer to topology
-        sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+    // temprory pointer to topology
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();    
 
-        if (_topology == nullptr)
-        {
-            msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-            sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        }
-
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+        
         // Initialize functions and parameters for topology data and handler
         d_indices.createTopologicalEngine(_topology);
         d_indices.registerTopologicalData();
@@ -118,9 +113,11 @@ void ConstantForceField<DataTypes>::init()
     }
     else
     {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
         core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
         m_systemSize = state->getSize();
-    }       
+    }
+
 
     const VecIndex & indices = d_indices.getValue();
     size_t indicesSize = indices.size();

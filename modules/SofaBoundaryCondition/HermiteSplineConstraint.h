@@ -126,9 +126,6 @@ protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
 };
 
 template <>

@@ -129,9 +129,6 @@ private :
     /// initial constrained DOFs position
     //VecCoord x0;
 
-protected:
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
 }; // definition of the LinearForceField class
 
 

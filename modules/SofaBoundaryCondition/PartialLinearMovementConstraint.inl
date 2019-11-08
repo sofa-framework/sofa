@@ -78,7 +78,7 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
     , Z0 ( initData ( &Z0, Real(0.0),"Z0","Size of specimen in Z-direction" ) )
     , movedDirections( initData(&movedDirections,"movedDirections","for each direction, 1 if moved, 0 if free") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_topology(nullptr)
+    , m_pointHandler(nullptr)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -93,16 +93,14 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
     for( unsigned i=0; i<NumDimensions; i++)
         movedDirection[i] = true;
     movedDirections.setValue(movedDirection);
-
-    pointHandler = new FCPointHandler(this, &m_indices);
 }
 
 
 template <class DataTypes>
 PartialLinearMovementConstraint<DataTypes>::~PartialLinearMovementConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 }
 
 template <class DataTypes>
@@ -154,21 +152,25 @@ void PartialLinearMovementConstraint<DataTypes>::init()
 
     if (l_topology.empty())
     {
-        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topology.get();
-    if (m_topology == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
 
-    // Initialize functions and parameters
-    m_indices.createTopologicalEngine(m_topology, pointHandler);
-    m_indices.registerTopologicalData();
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &m_indices);
+        m_indices.createTopologicalEngine(_topology, m_pointHandler);
+        m_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
     x0.resize(0);
     nextM = prevM = Deriv();

@@ -167,12 +167,7 @@ protected:
     template <class MyCoord>
     void interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
-
 private:
-
     /// to keep the time corresponding to the key times
     Real currentTime;
 
@@ -183,7 +178,7 @@ private:
     void findKeyTimes();
 
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 };
 
 

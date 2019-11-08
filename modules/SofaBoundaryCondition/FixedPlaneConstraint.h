@@ -124,9 +124,6 @@ protected:
     /// whether vertices should be selected from 2 parallel planes
     bool m_selectVerticesFromPlanes {false};
 
-    /// Pointer to the current topology
-    BaseMeshTopology* m_topology {nullptr};
-
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     /// Bring inherited attributes and function in the current lookup context.

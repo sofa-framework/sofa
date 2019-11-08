@@ -78,21 +78,19 @@ FixedConstraint<DataTypes>::FixedConstraint()
     , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity") )
     , data(new FixedConstraintInternalData<DataTypes>())
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_topology(nullptr)
+    , m_pointHandler(nullptr)
 {
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
-
-    pointHandler = new FCPointHandler(this, &d_indices);
 }
 
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::~FixedConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 
     delete data;
 }
@@ -135,20 +133,24 @@ void FixedConstraint<DataTypes>::init()
 
     if (l_topology.empty())
     {
-        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topology.get();
-    if (m_topology != nullptr)
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
     {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
         // Initialize topological functions
-        d_indices.createTopologicalEngine(m_topology, pointHandler);
+        m_pointHandler = new FCPointHandler(this, &d_indices);
+        d_indices.createTopologicalEngine(_topology, m_pointHandler);
         d_indices.registerTopologicalData();
     }
     else
     {
-        msg_warning() << "Can not find the topology, won't be able to handle topological changes";
+        msg_info() << "Can not find the topology, won't be able to handle topological changes";
     }
    
     this->checkIndices();

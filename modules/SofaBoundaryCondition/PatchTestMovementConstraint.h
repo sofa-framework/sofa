@@ -161,9 +161,6 @@ public:
     };
 
 protected:
-  
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
     
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
@@ -171,7 +168,7 @@ protected:
 private:
 
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
     /// Find the corners of the grid mesh
     void findCornerPoints();

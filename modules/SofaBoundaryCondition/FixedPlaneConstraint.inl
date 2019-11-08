@@ -97,10 +97,9 @@ FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
     , d_dmax( initData(&d_dmax,(Real)0,"dmax","Maximum plane distance from the origin") )
     , d_indices( initData(&d_indices,"indices","Indices of the fixed points"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_topology(nullptr)
+    , m_pointHandler(nullptr)
 {
-    m_selectVerticesFromPlanes=false;
-    m_pointHandler = new FCPointHandler(this, &d_indices);
+    m_selectVerticesFromPlanes=false;   
 }
 
 template <class DataTypes>
@@ -248,16 +247,24 @@ void FixedPlaneConstraint<DataTypes>::init()
 
     if (l_topology.empty())
     {
-        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topology.get();
-    if (m_topology == nullptr)
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
     {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+        
+        /// Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &d_indices);
+        d_indices.createTopologicalEngine(_topology, m_pointHandler);
+        d_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
     }
 
     /// test that dmin or dmax are different from zero
@@ -266,10 +273,6 @@ void FixedPlaneConstraint<DataTypes>::init()
 
     if (m_selectVerticesFromPlanes)
         selectVerticesAlongPlane();
-
-    /// Initialize functions and parameters
-    d_indices.createTopologicalEngine(m_topology, m_pointHandler);
-    d_indices.registerTopologicalData();
 }
 
 template <class DataTypes>

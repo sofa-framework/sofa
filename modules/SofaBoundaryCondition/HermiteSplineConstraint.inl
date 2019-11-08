@@ -49,7 +49,6 @@ HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint(core::behavior::Mech
     , m_sx0(initData(&m_sx0,"SX0","first interpolation vector") )
     , m_sx1(initData(&m_sx1,"SX1","second interpolation vector") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_topology(nullptr)
 {
 }
 
@@ -80,21 +79,24 @@ void HermiteSplineConstraint<DataTypes>::init()
 
     if (l_topology.empty())
     {
-        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopology());
     }
 
-    m_topology = l_topology.get();
-    if (m_topology == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
 
-    // Initialize functions and parameters for topology data and handler
-    m_indices.createTopologicalEngine(m_topology);
-    m_indices.registerTopologicalData();    
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters for topology data and handler
+        m_indices.createTopologicalEngine(_topology);
+        m_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 }
 
 template <class DataTypes>

@@ -167,9 +167,6 @@ public:
     };
 
 protected:
-  
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
     
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
@@ -177,7 +174,7 @@ protected:
 private:
 
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
     /// Initialize initial positions
     void initializeInitialPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0);
