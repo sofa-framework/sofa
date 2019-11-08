@@ -1353,11 +1353,12 @@ void TetrahedronFEMForceField<DataTypes>::init()
     /// Take the user provide topology.
     if (l_topology.empty())
     {
-        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopology());
     }
 
     m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
     /// If not possible try to find one in the current context.
     if (m_topology == nullptr)
