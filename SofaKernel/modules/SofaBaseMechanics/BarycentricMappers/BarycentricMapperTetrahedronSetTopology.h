@@ -52,6 +52,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Tetrahedron));
     typedef typename Inherit1::Real Real;
     typedef typename In::VecCoord VecCoord;
+    using Inherit1::m_toTopology;
 
     int addPointInTetra(const int index, const SReal* baryCoords) override ;
 
@@ -71,16 +72,16 @@ protected:
     //handle topology changes depending on the topology
     void processTopologicalChanges(const typename Out::VecCoord& out, const typename In::VecCoord& in, core::topology::Topology* t) {
         using sofa::core::behavior::MechanicalState;
+        
+        if (t != m_toTopology) return;
 
-        if (t != this->m_toTopology) return;
-
-        if ( this->m_toTopology->beginChange() == this->m_toTopology->endChange() )
+        if ( m_toTopology->beginChange() == m_toTopology->endChange() )
             return;
 
-        std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_toTopology->beginChange();
-        std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_toTopology->endChange();
+        auto itBegin = m_toTopology->beginChange();
+        auto itEnd = m_toTopology->endChange();
 
-        helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+        helper::WriteAccessor < Data< helper::vector<MappingData > > > vectorData = d_map;
         vectorData.resize (out.size());
 
         for (auto changeIt = itBegin; changeIt != itEnd; ++changeIt ) {
@@ -133,8 +134,6 @@ protected:
             }
             }
         }
-
-        d_map.endEdit();
     }
 
     void processAddPoint(const sofa::defaulttype::Vec3d & pos, const typename In::VecCoord& in, MappingData & vectorData){
