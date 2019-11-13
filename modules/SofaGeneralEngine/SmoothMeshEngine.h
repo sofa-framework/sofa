@@ -52,8 +52,6 @@ public:
 
 protected:
 
-    sofa::core::topology::BaseMeshTopology* m_topo;
-
     SmoothMeshEngine();
 
     ~SmoothMeshEngine() override {}
@@ -83,8 +81,12 @@ public:
         return DataTypes::Name();
     }
 
-protected:
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<SmoothMeshEngine<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
+protected:
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)

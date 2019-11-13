@@ -55,6 +55,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , d_totalForce(initData(&d_totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
     , d_showArrowSize(initData(&d_showArrowSize,SReal(0.0), "showArrowSize", "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
     , d_color(initData(&d_color, defaulttype::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display (default: [0.2,0.9,0.3,1.0])"))
+    , l_topology(initLink("topology", "link to the topology container"))
 {
     d_showArrowSize.setGroup("Visualization");
     d_color.setGroup("Visualization");
@@ -90,24 +91,33 @@ template<class DataTypes>
 void ConstantForceField<DataTypes>::init()
 {
     this->m_componentstate = core::objectmodel::ComponentState::Invalid;
-
-    // Get topology pointer
-    m_topology = this->getContext()->getMeshTopology();
-    if(m_topology == nullptr)
+       
+    if (l_topology.empty())
     {
-        msg_info() << "No topology found";
-        core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
-        m_systemSize = state->getSize();
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
+
+    // temprory pointer to topology
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();    
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+        
+        // Initialize functions and parameters for topology data and handler
+        d_indices.createTopologicalEngine(_topology);
+        d_indices.registerTopologicalData();
+
+        m_systemSize = _topology->getNbPoints();
     }
     else
     {
-         m_systemSize = m_topology->getNbPoints();
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
+        m_systemSize = state->getSize();
     }
 
-
-    // Initialize functions and parameters for topology data and handler
-    d_indices.createTopologicalEngine(m_topology);
-    d_indices.registerTopologicalData();
 
     const VecIndex & indices = d_indices.getValue();
     size_t indicesSize = indices.size();

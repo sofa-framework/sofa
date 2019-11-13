@@ -54,10 +54,10 @@ Vector6 MeshMatrixMass<Vec3Types, double>::getMomentum ( const core::MechanicalP
         for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
-    for(size_t i=0 ; i<_topology->getNbEdges() ; ++i )
+    for(size_t i=0 ; i<m_topology->getNbEdges() ; ++i )
     {
-        unsigned v0 = _topology->getEdge(i)[0];
-        unsigned v1 = _topology->getEdge(i)[1];
+        unsigned v0 = m_topology->getEdge(i)[0];
+        unsigned v1 = m_topology->getEdge(i)[1];
 
         // is it correct to share the edge mass between the 2 vertices?
         double m = edgeMass[i] * 0.5;

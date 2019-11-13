@@ -80,6 +80,10 @@ public:
 
     /// for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data< SReal > d_arrowSizeCoef;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LinearForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     LinearForceField();
     ~LinearForceField() override { delete data; }
@@ -125,16 +129,17 @@ private :
     /// initial constrained DOFs position
     //VecCoord x0;
 
-protected:
-    sofa::core::topology::BaseMeshTopology* topology;
-
 }; // definition of the LinearForceField class
 
 
 template <>
-SReal LinearForceField<defaulttype::Rigid3Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
+void SOFA_BOUNDARY_CONDITION_API LinearForceField<defaulttype::Rigid3Types>::init();
+
 template <>
-SReal LinearForceField<defaulttype::Rigid2Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
+SReal SOFA_BOUNDARY_CONDITION_API LinearForceField<defaulttype::Rigid3Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
+
+template <>
+SReal SOFA_BOUNDARY_CONDITION_API LinearForceField<defaulttype::Rigid2Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 
 
 

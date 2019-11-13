@@ -53,15 +53,21 @@ template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3Types>;
 
 
 template <>
+void LinearForceField<Rigid3Types>::init()
+{
+    Inherit::init();
+}
+
+template <>
 SReal LinearForceField<Rigid3Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const
 {
-    serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error() << "LinearForceField::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 template <>
 SReal LinearForceField<Rigid2Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const
 {
-    serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error() << "LinearForceField::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 

@@ -160,6 +160,9 @@ public :
     TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > m_tetrahedronInfo; ///< Internal tetrahedron data
     EdgeData<sofa::helper::vector<EdgeInformation> > m_edgeInfo; ///< Internal edge data
    
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TetrahedronHyperelasticityFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 public:
 
     void setMaterialName(const string name) {

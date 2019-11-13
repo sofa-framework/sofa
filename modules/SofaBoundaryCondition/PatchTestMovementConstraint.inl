@@ -71,14 +71,13 @@ PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
     , d_cornerMovements(  initData(&d_cornerMovements,"cornerMovements","movements of the corners of the grid") )
     , d_cornerPoints(  initData(&d_cornerPoints,"cornerPoints","corner points for computing constraint") )
     , d_drawConstrainedPoints(  initData(&d_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_pointHandler(nullptr)
 {
-    pointHandler = new FCPointHandler(this, &d_indices);
-
     if(!d_beginConstraintTime.isSet())
      d_beginConstraintTime = 0;
     if(!d_endConstraintTime.isSet())
         d_endConstraintTime = 20;
-
 }
 
 
@@ -86,8 +85,8 @@ PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
 template <class DataTypes>
 PatchTestMovementConstraint<DataTypes>::~PatchTestMovementConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 }
 
 template <class DataTypes>
@@ -119,11 +118,27 @@ void PatchTestMovementConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
 
-    // Initialize functions and parameters
-    d_indices.createTopologicalEngine(topology, pointHandler);
-    d_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &d_indices);
+        d_indices.createTopologicalEngine(_topology, m_pointHandler);
+        d_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
     const SetIndexArray & indices = d_indices.getValue();
 

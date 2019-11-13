@@ -49,8 +49,6 @@ PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
     this->d_indices.beginEdit()->push_back(0);
     this->d_indices.endEdit();
 
-    this->pointHandler = new typename Inherited::FCPointHandler(this, &this->d_indices);
-
     VecBool blockedDirection;
     for( unsigned i=0; i<NumDimensions; i++)
         blockedDirection[i] = true;

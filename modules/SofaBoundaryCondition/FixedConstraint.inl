@@ -77,20 +77,20 @@ FixedConstraint<DataTypes>::FixedConstraint()
     , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity") )
     , data(new FixedConstraintInternalData<DataTypes>())
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_pointHandler(nullptr)
 {
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
-
-    pointHandler = new FCPointHandler(this, &d_indices);
 }
 
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::~FixedConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 
     delete data;
 }
@@ -131,14 +131,28 @@ void FixedConstraint<DataTypes>::init()
         return;
     }
 
-    topology = this->getContext()->getMeshTopology();
-    if (!topology)
-        msg_warning() << "Can not find the topology, won't be able to handle topological changes";
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopology());
+    }
 
-    // Initialize topological functions
-    d_indices.createTopologicalEngine(topology, pointHandler);
-    d_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
 
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize topological functions
+        m_pointHandler = new FCPointHandler(this, &d_indices);
+        d_indices.createTopologicalEngine(_topology, m_pointHandler);
+        d_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "Can not find the topology, won't be able to handle topological changes";
+    }
+   
     this->checkIndices();
     this->m_componentstate = ComponentState::Valid;
 }

@@ -77,19 +77,21 @@ protected:
 
 
     DOFBlockerLMConstraint(MechanicalState *dof = nullptr)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
+        : core::behavior::LMConstraint<DataTypes, DataTypes>(dof, dof)
         , BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain"))
         , factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis"))
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis, 1.0f,"showSizeAxis","size of the vector used to display the constrained axis") )
+        , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis, 1.0f, "showSizeAxis", "size of the vector used to display the constrained axis"))
+        , l_topology(initLink("topology", "link to the topology container"))
+        , m_pointHandler(nullptr)
     {
-        pointHandler = new FCTPointHandler(this, &f_indices);
+        
     }
 
     ~DOFBlockerLMConstraint()
     {
-        if (pointHandler)
-            delete pointHandler;
+        if (m_pointHandler)
+            delete m_pointHandler;
     }
 
 public:
@@ -128,6 +130,9 @@ public:
     SetIndex f_indices; ///< List of the index of particles to be fixed
     Data<float> showSizeAxis; ///< size of the vector used to display the constrained axis
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<DOFBlockerLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
     class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<unsigned int> >
     {
     public:
@@ -148,12 +153,8 @@ public:
 
 protected :
     sofa::helper::vector<SetIndexArray> idxEquations;
-
-
-    sofa::core::topology::BaseMeshTopology* topology;
-
-    FCTPointHandler* pointHandler;
-
+    
+    FCTPointHandler* m_pointHandler;
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)

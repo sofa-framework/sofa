@@ -90,8 +90,9 @@ public:
     Data<Vec2R> m_sx0;
     Data<Vec2R> m_sx1; ///< second interpolation vector
 
-
-
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<HermiteSplineConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    
 protected:
     HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate = nullptr);
 
@@ -125,15 +126,15 @@ protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
 };
+
+template <>
+void SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>::init();
 
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
-extern template class HermiteSplineConstraint<defaulttype::Rigid3Types>;
-extern template class HermiteSplineConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Vec3Types>;
 
 #endif
 

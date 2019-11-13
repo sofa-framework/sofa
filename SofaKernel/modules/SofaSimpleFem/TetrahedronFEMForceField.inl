@@ -1353,16 +1353,17 @@ void TetrahedronFEMForceField<DataTypes>::init()
     /// Take the user provide topology.
     if (l_topology.empty())
     {
-        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopology());
     }
 
     m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
     /// If not possible try to find one in the current context.
     if (m_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << " object must have a mesh topology. The component is inactivated.  "
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << " object must have a mesh topology. The component is inactivated.  "
             "To remove this error message please add a topology component to your scene.";
         this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
 
