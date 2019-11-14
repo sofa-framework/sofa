@@ -87,7 +87,9 @@ void main(void)
 	diffuse = (1 - distPwr) * diffuse + distPwr * backgroundDistorsion;
 
 	vec4 finalColor = diffuse + specular;
-
+	finalColor.a = thickness;
+    
+	gl_FragDepth = depth;
 	gl_FragColor = finalColor;
 
 }
