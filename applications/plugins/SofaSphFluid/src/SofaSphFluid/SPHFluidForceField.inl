@@ -28,6 +28,11 @@
 #include <sofa/helper/system/config.h>
 #include <cmath>
 #include <iostream>
+#include <sofa/helper/AdvancedTimer.h>
+
+#if __cplusplus >= 201703L
+#include <execution>
+#endif
 
 namespace sofa
 {
@@ -149,6 +154,7 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
     // This is an O(n2) step, except if a hash-grid is used to optimize it
     if (m_grid == nullptr)
     {
+#if __cplusplus < 201703L
         for (int i=0; i<n; i++)
         {
             const Coord& ri = x[i];
@@ -164,12 +170,29 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
                 }
             }
         }
+#else
+        std::for_each(std::execution::par, x.begin(), x.end(), [&](const auto& ri)
+        {
+            int i = &ri - &x[0]; // only possible with vector, etc.
+
+            for (int j=i+1; j<n; j++)
+            {
+                const Coord& rj = x[j];
+                Real r2 = (rj- ri).norm2();
+                if (r2 < h2)
+                {
+                    Real r_h = (Real)sqrt(r2/h2);
+                    m_particles[i].neighbors.push_back(std::make_pair(j,r_h));
+                }
+            }
+
+        });
+#endif
     }
     else
     {
         m_grid->updateGrid(x.ref());
         m_grid->findNeighbors(this, h);
-
 
         if (!d_debugGrid.getValue())
             return;
@@ -311,19 +334,18 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
         }
     }
 
-    
     // Compute the forces
-    for (int i=0; i<n; i++)
+    for (int i = 0; i < n; i++)
     {
-        Particle& Pi = m_particles[i];
+        const Particle& Pi = m_particles[i];
         // Gravity
         //f[i] += g*(m*Pi.density);
-
-        for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
+        
+        for (auto it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
         {
             const int j = it->first;
             const Real r_h = it->second;
-            Particle& Pj = m_particles[j];
+            const Particle& Pj = m_particles[j];
             // Pressure
 
             Real pressureFV = ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
