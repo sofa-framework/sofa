@@ -79,6 +79,12 @@ public:
     virtual void updateForceMask(){/*mask is already filled in the mapper's applyJT*/}
     virtual void resize( core::State<Out>* toModel ) = 0;
 
+    void processTopologicalChanges(const typename Out::VecCoord& out, const typename In::VecCoord& in, core::topology::Topology* t) {
+        SOFA_UNUSED(t);
+        this->clear();
+        this->init(out,in);
+    }
+
 protected:
     TopologyBarycentricMapper(core::topology::BaseMeshTopology* fromTopology,
                               topology::PointSetTopologyContainer* toTopology = nullptr)

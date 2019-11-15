@@ -183,21 +183,26 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
     // Regular Grid Topology
     if (is_a<RegularGridTopology>(input_topology_container) ) {
         rgt = dynamic_cast<RegularGridTopology*>(input_topology_container);
-        if (rgt->hasVolume())
+        if (rgt->hasVolume()) {
+            msg_info() << "Creating RegularGridMapper";
             d_mapper = sofa::core::objectmodel::New<RegularGridMapper>(rgt, output_topology_container);
+        }
         goto end;
     }
 
     // Sparse Grid Topology
     if (is_a<SparseGridTopology>(input_topology_container) ) {
         sgt = dynamic_cast<SparseGridTopology*>(input_topology_container);
-        if (sgt->hasVolume())
+        if (sgt->hasVolume()) {
+            msg_info() << "Creating SparseGridMapper";
             d_mapper = sofa::core::objectmodel::New<SparseGridMapper>(sgt, output_topology_container);
+        }
         goto end;
     }
 
     // Hexahedron Topology
     if (is_a<HexahedronSetTopologyContainer>(input_topology_container)) {
+        msg_info() << "Creating HexahedronSetMapper";
         d_mapper = sofa::core::objectmodel::New<HexahedronSetMapper>(
             dynamic_cast<HexahedronSetTopologyContainer*>(input_topology_container), output_topology_container);
         goto end;
@@ -205,6 +210,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
 
     // Tetrahedron Topology
     if (is_a<TetrahedronSetTopologyContainer>(input_topology_container)) {
+        msg_info() << "Creating TetrahedronSetMapper";
         d_mapper = sofa::core::objectmodel::New<TetrahedronSetMapper >(
             dynamic_cast<TetrahedronSetTopologyContainer*>(input_topology_container), output_topology_container);
         goto end;
@@ -212,6 +218,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
 
     // Quad Topology
     if (is_a<QuadSetTopologyContainer>(input_topology_container)) {
+        msg_info() << "Creating QuadSetMapper";
         d_mapper = sofa::core::objectmodel::New<QuadSetMapper >(
             dynamic_cast<QuadSetTopologyContainer*>(input_topology_container), output_topology_container);
         goto end;
@@ -219,6 +226,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
 
     // Triangle Topology
     if (is_a<TriangleSetTopologyContainer>(input_topology_container)) {
+        msg_info() << "Creating TriangleSetMapper";
         d_mapper = sofa::core::objectmodel::New<TriangleSetMapper >(
             dynamic_cast<TriangleSetTopologyContainer*>(input_topology_container), output_topology_container);
         goto end;
@@ -226,6 +234,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
 
     // Edge Topology
     if (is_a<EdgeSetTopologyContainer>(input_topology_container)) {
+        msg_info() << "Creating EdgeSetMapper";
         d_mapper = sofa::core::objectmodel::New<EdgeSetMapper >(
             dynamic_cast<EdgeSetTopologyContainer*>(input_topology_container), output_topology_container);
         goto end;
@@ -384,8 +393,12 @@ void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * cpara
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topology* t )
 {
-    SOFA_UNUSED(t);
-    reinit(); // we now recompute the entire mapping when there is a topologychange
+    //foward topological modifications to the mapper
+    if (this->d_mapper.get()){
+        this->d_mapper->processTopologicalChanges(((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(),
+                                                  ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue(),
+                                                  t);
+    }
 }
 
 #ifdef BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
