@@ -1140,7 +1140,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
         triangleGeo->getTriangleVertexCoordinates(i, points);
 
         //get d in the equation of the plane of the triangle ax+by+cz + d = 0
-        SReal d = - (points[0][0] * c + points[0][1] * b + points[0][2] * c );
+        SReal d = - (points[0][0] * a + points[0][1] * b + points[0][2] * c );
         Vector3 projectedPoint;
 
         projectedPoint[0] = ((b * b + c * c) * x - a * b * y - a * c * z - d * a) /*/normalNorm*/;
