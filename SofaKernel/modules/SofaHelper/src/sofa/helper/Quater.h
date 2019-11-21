@@ -233,23 +233,92 @@ public:
     }
 
     /// Create a quaternion from Euler angles
-    static Quater createQuaterFromEuler( defaulttype::Vec<3,Real> v)
+    /// Thanks to https://github.com/mrdoob/three.js/blob/dev/src/math/Quaternion.js#L199
+    static Quater createQuaterFromEuler( defaulttype::Vec<3,Real> v, const std::string& order = "ZYX")
     {
-        Real quat[4];      Real a0 = v.elems[0];
+        std::string orderUpCase;
+        std::transform(order.begin(), order.end(), orderUpCase.begin(), ::toupper);
+        Real quat[4];
+        Real a0 = v.elems[0];
         Real a1 = v.elems[1];
         Real a2 = v.elems[2];
-        quat[3] = cos(a0/2)*cos(a1/2)*cos(a2/2) + sin(a0/2)*sin(a1/2)*sin(a2/2);
-        quat[0] = sin(a0/2)*cos(a1/2)*cos(a2/2) - cos(a0/2)*sin(a1/2)*sin(a2/2);
-        quat[1] = cos(a0/2)*sin(a1/2)*cos(a2/2) + sin(a0/2)*cos(a1/2)*sin(a2/2);
-        quat[2] = cos(a0/2)*cos(a1/2)*sin(a2/2) - sin(a0/2)*sin(a1/2)*cos(a2/2);
-        Quater quatResult( quat[0], quat[1], quat[2], quat[3] );
+
+        Real c1 = cos( v.elems[0] / 2 );
+        Real c2 = cos( v.elems[1] / 2 );
+        Real c3 = cos( v.elems[2] / 2 );
+
+        Real s1 = sin( v.elems[0] / 2 );
+        Real s2 = sin( v.elems[1] / 2 );
+        Real s3 = sin( v.elems[2] / 2 );
+
+        if ( orderUpCase == "XYZ" )
+        {
+
+            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
+
+        }
+        else if ( orderUpCase == "YXZ" )
+        {
+
+            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
+
+        }
+        else if ( orderUpCase == "ZXY" )
+        {
+
+            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
+
+        }
+        else if ( orderUpCase == "ZYX" )
+        {
+
+            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
+
+        }
+        else if ( orderUpCase == "YZX" )
+        {
+
+            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
+
+        }
+        else if ( orderUpCase == "XZY" )
+        {
+
+            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
+
+        }
+        else
+        {
+            msg_error("Quaternion") << "FromEuler: " << order << " is not a valid order to create a Quaternion";
+            return Quater();
+        }
+
+        Quater quatResult{ quat[0], quat[1], quat[2], quat[3] };
         return quatResult;
     }
 
 
     /// Create a quaternion from Euler angles
-    static Quater fromEuler( Real alpha, Real beta, Real gamma ){
-        return createQuaterFromEuler( defaulttype::Vec<3,Real>(alpha, beta, gamma) );
+    static Quater fromEuler( Real alpha, Real beta, Real gamma, const std::string& order = "ZYX" ){
+        return createQuaterFromEuler( {alpha, beta, gamma }, order );
     }
 
     /// Create using the entries of a rotation vector (axis*angle) given in parent coordinates
