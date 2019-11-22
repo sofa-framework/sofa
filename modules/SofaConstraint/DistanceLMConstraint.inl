@@ -48,6 +48,8 @@ template <class DataTypes>
 DistanceLMConstraint<DataTypes>::DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2)
     : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
     , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
 }
 
@@ -67,8 +69,25 @@ template <class DataTypes>
 void DistanceLMConstraint<DataTypes>::init()
 {
     sofa::core::behavior::LMConstraint<DataTypes,DataTypes>::init();
-    topology = this->getContext()->getMeshTopology();
-    if (vecConstraint.getValue().size() == 0 && (this->constrainedObject1==this->constrainedObject2) ) vecConstraint.setValue(this->topology->getEdges());
+    
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (!m_topology)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    if (vecConstraint.getValue().size() == 0 && (this->constrainedObject1==this->constrainedObject2) ) 
+        vecConstraint.setValue(m_topology->getEdges());
 }
 
 template <class DataTypes>

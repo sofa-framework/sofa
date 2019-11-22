@@ -108,6 +108,8 @@ public:
     //Edges involving a distance constraint
     Data< SeqEdges > vecConstraint; ///< List of the edges to constrain
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink <DistanceLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected :
 
     ///Compute the length of an edge given the vector of coordinates corresponding
@@ -117,7 +119,7 @@ protected :
     void updateRestLength();
 
     // Base Components of the current context
-    core::topology::BaseMeshTopology *topology;
+    core::topology::BaseMeshTopology *m_topology;
 
     helper::vector<  unsigned int > registeredConstraints;
 
