@@ -54,6 +54,9 @@ public:
     Data < double > f_shift; ///< shift between times in the file and times when they will be read
     Data < bool > f_loop; ///< set to 'true' to re-read the file when reaching the end
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink <ReadTopology, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     core::topology::BaseMeshTopology* m_topology;
     std::ifstream* infile;
@@ -87,7 +90,7 @@ public:
     template<class T>
     static bool canCreate(T* obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMeshTopology() == nullptr)
+        if (context->getMeshTopologyLink() == nullptr)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }

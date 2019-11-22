@@ -74,7 +74,7 @@ WriteTopologyCreator::WriteTopologyCreator(const std::string &n, bool _writeCont
 //Create a Write Topology component each time a BaseMeshTopology is found
 simulation::Visitor::Result WriteTopologyCreator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::core::topology::BaseMeshTopology* topo = dynamic_cast<sofa::core::topology::BaseMeshTopology *>( gnode->getMeshTopology());
+    sofa::core::topology::BaseMeshTopology* topo = dynamic_cast<sofa::core::topology::BaseMeshTopology *>( gnode->getMeshTopologyLink());
     if (!topo)   return simulation::Visitor::RESULT_CONTINUE;
     //We have a meshTopology
     addWriteTopology(topo, gnode);
