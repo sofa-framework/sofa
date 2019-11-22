@@ -1082,7 +1082,7 @@ void MechanicalObject<DataTypes>::init()
 {
     if (!l_topology && d_useTopology.getValue())
     {
-        l_topology.set( this->getContext()->getActiveMeshTopology() );
+        l_topology.set( this->getContext()->getMeshTopology(sofa::simulation::Node::Local) );
     }
 
     if (l_topology)
