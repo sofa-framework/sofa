@@ -185,7 +185,7 @@ public:
     };
 
     /// Link to be set to the topology container in the component graph.
-    SingleLink<LineCollisionModel<TriangleLocalMinDistanceFilter>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<TriangleLocalMinDistanceFilter, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 private:
     topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo; ///< point filter data
