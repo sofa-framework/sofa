@@ -58,6 +58,7 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
     , PointActiverPath(initData(&PointActiverPath,"PointActiverPath", "path of a component PointActiver that activate or deactivate collision point during execution") )
     , m_lmdFilter( nullptr )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
+    , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = POINT_TYPE;
 }
@@ -78,6 +79,12 @@ void PointCollisionModel<DataTypes>::init()
     {
         msg_error() << "PointModel requires a Vec3 Mechanical Model";
         return;
+    }
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
     simulation::Node* node = dynamic_cast< simulation::Node* >(this->getContext());
@@ -143,7 +150,7 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionM
         if (index<=index2) // to avoid to have two times the same auto-collision we only consider the case when index > index2
             return false;
 
-        sofa::core::topology::BaseMeshTopology* topology = this->getMeshTopology();
+        sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
 
         // in the neighborhood, if we find a point in common, we cancel the collision
         const helper::vector <unsigned int>& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
@@ -259,7 +266,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
     {
         normals[i].clear();
     }
-    core::topology::BaseMeshTopology* mesh = getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology* mesh = l_topology.get();
     if (mesh->getNbTetrahedra()+mesh->getNbHexahedra() > 0)
     {
         if (mesh->getNbTetrahedra()>0)
@@ -357,7 +364,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
 
     defaulttype::Vector3 pt = p();
 
-    sofa::core::topology::BaseMeshTopology* mesh = this->model->getMeshTopology();
+    sofa::core::topology::BaseMeshTopology* mesh = l_topology.get();
     const typename DataTypes::VecCoord& x = (*this->model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue());
 
     const helper::vector <unsigned int>& trianglesAroundVertex = mesh->getTrianglesAroundVertex(this->index);

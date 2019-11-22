@@ -140,6 +140,9 @@ public:
 
     Data<bool> d_bothSide; ///< to activate collision on both side of the triangle model
     Data<bool> d_computeNormals; ///< set to false to disable computation of triangles normal
+    
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TriangleCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     core::behavior::MechanicalState<DataTypes>* m_mstate; ///< Pointer to the corresponding MechanicalState
@@ -223,6 +226,11 @@ public:
     }
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
+
+    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
+    {
+        return l_topology.get();
+    }
 };
 
 template <class TDataTypes> using TTriangleModel [[deprecated("The TTriangleModel is now deprecated please use TriangleCollisionModel instead.")]] = TriangleCollisionModel<TDataTypes>;

@@ -181,19 +181,25 @@ public:
         return DataTypes::Name();
     }
 
+    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
+    {
+        return l_topology.get();
+    }
+
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
+    Data< std::string  > LineActiverPath; ///< path of a component LineActiver that activates or deactivates collision line during execution
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
-
     core::behavior::MechanicalState<DataTypes>* mstate;
     Topology* topology;
     PointModel* mpoints;
     int meshRevision;
     LineLocalMinDistanceFilter *m_lmdFilter;
-
-    Data< std::string  > LineActiverPath; ///< path of a component LineActiver that activates or deactivates collision line during execution
-    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     LineActiver *myActiver;
 

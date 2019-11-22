@@ -51,6 +51,7 @@ template<class DataTypes>
 TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
     : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
     , d_computeNormals(initData(&d_computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , m_mstate(nullptr)
     , m_topology(nullptr)
     , m_needsUpdate(true)
@@ -72,7 +73,21 @@ void TriangleCollisionModel<DataTypes>::resize(int size)
 template<class DataTypes>
 void TriangleCollisionModel<DataTypes>::init()
 {
-    m_topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (!m_topology)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TriangleModel requires a Triangular Topology";
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // TODO epernod 2019-01-21: Check if this call super is needed.
     this->CollisionModel::init();
@@ -85,12 +100,6 @@ void TriangleCollisionModel<DataTypes>::init()
     if (m_mstate == nullptr)
     {
         msg_error() << "No MechanicalObject found. TriangleModel requires a Vec3 Mechanical Model in the same Node.";
-        modelsOk = false;
-    }
-
-    if (m_topology == nullptr)
-    {
-        msg_error() << "No Topology found. TriangleModel requires a Triangular Topology in the same Node.";
         modelsOk = false;
     }
 
