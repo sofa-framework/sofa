@@ -352,10 +352,16 @@ bool GNode::hasAncestor(const BaseContext* context) const
 
 /// Mesh Topology that is relevant for this context
 /// (within it or its parents until a mapping is reached that does not preserve topologies).
-core::topology::BaseMeshTopology* GNode::getActiveMeshTopology() const
+core::topology::BaseMeshTopology* GNode::getMeshTopologyLink(SearchDirection dir) const
 {
     if (this->meshTopology)
         return this->meshTopology;
+
+    if (dir != Local)
+        return Node::getMeshTopologyLink(dir);
+
+    //local case similar to getActiveMeshTopology ...
+
     // Check if a local mapping stops the search
     if (this->mechanicalMapping && !this->mechanicalMapping->sameTopology())
     {
@@ -376,7 +382,7 @@ core::topology::BaseMeshTopology* GNode::getActiveMeshTopology() const
     }
     else
     {
-        return p->getActiveMeshTopology();
+        return p->getMeshTopologyLink(Local);
     }
 }
 

@@ -120,7 +120,7 @@ public:
 
     /// Mesh Topology that is relevant for this context
     /// (within it or its parents until a mapping is reached that does not preserve topologies).
-    core::topology::BaseMeshTopology* getActiveMeshTopology() const override;
+    core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const override;
 
 
     /// Called during initialization to corectly propagate the visual context to the children
