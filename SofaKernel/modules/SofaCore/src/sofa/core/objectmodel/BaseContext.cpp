@@ -170,22 +170,14 @@ core::topology::Topology* BaseContext::getTopology() const
 }
 
 /// Mesh Topology (unified interface for both static and dynamic topologies)
-core::topology::BaseMeshTopology* BaseContext::getMeshTopology() const
+core::topology::BaseMeshTopology* BaseContext::getMeshTopology(SearchDirection dir) const
 {
-    return this->get<sofa::core::topology::BaseMeshTopology>();
+    return this->get<sofa::core::topology::BaseMeshTopology>(dir);
 }
 
-/// Mesh Topology that is local to this context (i.e. not within parent contexts)
-core::topology::BaseMeshTopology* BaseContext::getLocalMeshTopology() const
+core::topology::BaseMeshTopology* BaseContext::getMeshTopologyLink(SearchDirection dir) const
 {
-    return this->get<sofa::core::topology::BaseMeshTopology>(Local);
-}
-
-/// Mesh Topology that is relevant for this context
-/// (within it or its parents until a mapping is reached that does not preserve topologies).
-core::topology::BaseMeshTopology* BaseContext::getActiveMeshTopology() const
-{
-    return this->get<sofa::core::topology::BaseMeshTopology>(Local);
+    return this->get<sofa::core::topology::BaseMeshTopology>(dir);
 }
 
 /// Shader

@@ -135,14 +135,10 @@ public:
     virtual core::topology::Topology* getTopology() const;
 
     /// Mesh Topology (unified interface for both static and dynamic topologies)
-    virtual core::topology::BaseMeshTopology* getMeshTopology() const;
+    virtual core::topology::BaseMeshTopology* getMeshTopology(SearchDirection dir = SearchUp) const;
 
-    /// Mesh Topology that is local to this context (i.e. not within parent contexts)
-    virtual core::topology::BaseMeshTopology* getLocalMeshTopology() const;
-
-    /// Mesh Topology that is relevant for this context, either local or within
-    /// a parent until a mapping is reached that does not preserve topologies.
-    virtual core::topology::BaseMeshTopology* getActiveMeshTopology() const;
+    /// Mesh Topology (unified interface for both static and dynamic topologies)
+    virtual core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const;
 
     /// Mass
     virtual core::behavior::BaseMass* getMass() const;
