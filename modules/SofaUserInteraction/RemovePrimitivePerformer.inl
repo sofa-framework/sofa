@@ -160,7 +160,7 @@ template <class DataTypes>
 bool RemovePrimitivePerformer<DataTypes>::createElementList()
 {
     // - STEP 1: Looking for current topology type
-    topo_curr = picked.body->getContext()->getMeshTopology();
+    topo_curr = picked.body->getCollisionTopology();
     if (topo_curr->getNbHexahedra())
         topoType = sofa::core::topology::HEXAHEDRON;
     else if (topo_curr->getNbTetrahedra())
@@ -310,7 +310,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
             }
 
             // Switching variables to initial topology (topotype, topology) clear list of surfacique elements selected
-            topo_curr = picked.body->getMeshTopology();
+            topo_curr = picked.body->getCollisionTopology();
             topoType = topoTypeTmp;
             selectedElem.clear();
 
