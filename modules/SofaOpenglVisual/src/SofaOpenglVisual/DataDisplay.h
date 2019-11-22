@@ -66,7 +66,11 @@ public:
 
     visualmodel::OglColorMap *colorMap;
     core::State<DataTypes> *state;
-    core::topology::BaseMeshTopology* topology;
+    core::topology::BaseMeshTopology* m_topology;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink <DataDisplay, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
     Real oldMin, oldMax;
 
     void init() override;

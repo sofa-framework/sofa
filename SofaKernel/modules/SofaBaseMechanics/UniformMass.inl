@@ -88,6 +88,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , d_indices ( initData ( &d_indices, "indices", "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
     , d_handleTopoChange ( initData ( &d_handleTopoChange, false, "handleTopoChange", "The mass and totalMass are recomputed on particles add/remove." ) )
     , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
+    , l_topology(initLink("topology", "link to the topology container"))
 {
     constructor_message();
 }
@@ -354,7 +355,15 @@ void UniformMass<DataTypes, MassType>::initFromTotalMass()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::handleTopologyChange()
 {
-    BaseMeshTopology *meshTopology = getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    BaseMeshTopology *meshTopology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
     WriteAccessor<Data<vector<int> > > indices = d_indices;
 
     if(m_doesTopoChangeAffect)
