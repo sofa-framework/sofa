@@ -237,6 +237,7 @@ public:
     static Quater createQuaterFromEuler( defaulttype::Vec<3,Real> v, const std::string& order = "ZYX")
     {
         std::string orderUpCase;
+        orderUpCase.resize(order.size());
         std::transform(order.begin(), order.end(), orderUpCase.begin(), ::toupper);
         Real quat[4];
         Real a0 = v.elems[0];
