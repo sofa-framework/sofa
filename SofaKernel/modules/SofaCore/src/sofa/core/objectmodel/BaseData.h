@@ -273,7 +273,7 @@ public:
 
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.
     bool setParent(BaseData* parent, const std::string& path = std::string());
-    bool setParent(const std::string& path);
+    virtual bool setParent(const std::string& path);
 
     /// Check if a given Data can be linked as a parent of this data
     virtual bool validParent(BaseData* parent);
