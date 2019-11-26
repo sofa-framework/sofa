@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: bmarques68/sofa-ubuntu:18.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
       - uses: docker://bmarques68/sofa-ubuntu:18.04          
