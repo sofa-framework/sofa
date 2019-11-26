@@ -13,20 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: build-tools
-        run: apt install build-essential ninja-build clang
+        run: sudo apt install build-essential ninja-build clang
       - name: project-tools
-        run: apt install cmake ccache
+        run: sudo apt install cmake ccache
       - name: qt5-deps
-        run: apt install qt5-default
+        run: sudo apt install qt5-default
       - name: boost-deps
-        run: apt install libboost-atomic-dev libboost-chrono-dev \
+        run: sudo apt install libboost-atomic-dev libboost-chrono-dev \
              libboost-date-time-dev libboost-filesystem-dev \
              libboost-locale-dev libboost-regex-dev libboost-system-dev \
              libboost-thread-dev libboost-program-options-dev
       - name: python2-deps
-        run: apt install python2.7-dev python-numpy python-scipy
+        run: sudo apt install python2.7-dev python-numpy python-scipy
       - name: extra-deps
-        run: apt install libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev
+        run: sudo apt install libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev
         
   build:
     runs-on: ubuntu-latest
