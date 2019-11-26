@@ -27,21 +27,17 @@ jobs:
         run: sudo apt install python2.7-dev python-numpy python-scipy
       - name: extra-deps
         run: sudo apt install libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev
-        
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: create_dir
-      run: mkdir build
-    - name: cmake
-      run: cmake -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" \
-           -S . -B ./build \
-           -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON
-    - name: make
-      run: make -j4
-    - name: make install
-      run: make install -j4
+      - uses: actions/checkout@v1
+      - name: create_dir
+        run: mkdir build
+      - name: cmake
+        run: cmake -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" \
+             -S . -B ./build \
+             -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON
+      - name: make
+        run: make -j4
+      - name: make install
+        run: make install -j4
 
   # run-tests:
   #   runs-on: ubuntu-latest
