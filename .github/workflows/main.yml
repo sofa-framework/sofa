@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  install_deps:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: apt-update
@@ -27,7 +27,7 @@ jobs:
         run:
           mkdir -p build;
           echo $PWD;
-          cmake -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -S "./sofa" -B "./build" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON
+          cmake -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -S "." -B "./build" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON
       - name: make
         run:
           make -j4;
