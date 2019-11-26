@@ -29,10 +29,11 @@ jobs:
           cd build;
           cmake .. -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON
           
-      - name: make
+      - name: build
         run:
-          make -j4;
-          make install
+          echo $PWD
+          ninja;
+          ninja install
 
   # run-tests:
   #   runs-on: ubuntu-latest
