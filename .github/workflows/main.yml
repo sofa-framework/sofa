@@ -12,16 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: apt-update
-        run: 
-          sudo apt-get update;
-          sudo apt install build-essential ninja-build clang;
-          sudo apt install cmake ccache;
-          sudo apt install qt5-default;
-          sudo apt install libboost-atomic-dev libboost-all-dev;
-          sudo apt install python2.7-dev python-numpy python-scipy;
-          sudo apt install libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev;
-          
+      - uses: docker://bmarques68/sofa-ubuntu:18.04          
       - uses: actions/checkout@v1
       - name: configure
         run:
