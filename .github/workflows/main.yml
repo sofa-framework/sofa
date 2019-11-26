@@ -15,29 +15,23 @@ jobs:
       - name: apt-update
         run: 
           sudo apt-get update
-      - name: build-tools
-        run: sudo apt install build-essential ninja-build clang
-      - name: project-tools
-        run: sudo apt install cmake ccache
-      - name: qt5-deps
-        run: sudo apt install qt5-default
-      - name: boost-deps
-        run: sudo apt install libboost-atomic-dev libboost-all-dev
-      - name: python2-deps
-        run: sudo apt install python2.7-dev python-numpy python-scipy
-      - name: extra-deps
-        run: sudo apt install libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev
+          sudo apt install build-essential ninja-build clang
+          sudo apt install cmake ccache
+          sudo apt install qt5-default
+          sudo apt install libboost-atomic-dev libboost-all-dev
+          sudo apt install python2.7-dev python-numpy python-scipy
+          sudo apt install libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev
+
       - uses: actions/checkout@v1
-      - name: create_dir
-        run: mkdir build
-      - name: cmake
-        run: cmake -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" \
-             -S . -B ./build \
-             -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON
+      - name: configure
+        run:
+          mkdir -p build
+          echo $PWD
+          cmake -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -S "./sofa" -B "./build" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON
       - name: make
-        run: make -j4
-      - name: make install
-        run: make install -j4
+        run:
+          make -j4
+          make install
 
   # run-tests:
   #   runs-on: ubuntu-latest
