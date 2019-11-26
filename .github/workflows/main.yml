@@ -14,6 +14,7 @@ jobs:
     steps:
       - name: apt-update
         run: 
+          sudo apt-get install tree;
           #sudo apt-get update;
           #sudo apt install build-essential ninja-build clang;
           #sudo apt install cmake ccache;
@@ -21,7 +22,6 @@ jobs:
           #sudo apt install libboost-atomic-dev libboost-all-dev;
           #sudo apt install python2.7-dev python-numpy python-scipy;
           #sudo apt install libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev;
-          echo "plop"
       - uses: actions/checkout@v1
       - name: configure
         run:
