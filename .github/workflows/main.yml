@@ -10,16 +10,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: bmarques68/sofa-ubuntu:18.04
     steps:
-      - uses: docker://bmarques68/sofa-ubuntu:18.04          
       - uses: actions/checkout@v1
+      - uses: docker://bmarques68/sofa-ubuntu:18.04          
       - name: configure
         run:
           mkdir -p build;
           cd build;
           cmake .. -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON
           
+      - uses: docker://bmarques68/sofa-ubuntu:18.04          
       - name: build
         run:
           cd build;
