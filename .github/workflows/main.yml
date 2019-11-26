@@ -14,19 +14,19 @@ jobs:
     steps:
       - name: apt-update
         run: 
-          sudo apt-get update;
-          sudo apt install build-essential ninja-build clang;
-          sudo apt install cmake ccache;
-          sudo apt install qt5-default;
-          sudo apt install libboost-atomic-dev libboost-all-dev;
-          sudo apt install python2.7-dev python-numpy python-scipy;
-          sudo apt install libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev;
-
+          #sudo apt-get update;
+          #sudo apt install build-essential ninja-build clang;
+          #sudo apt install cmake ccache;
+          #sudo apt install qt5-default;
+          #sudo apt install libboost-atomic-dev libboost-all-dev;
+          #sudo apt install python2.7-dev python-numpy python-scipy;
+          #sudo apt install libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev;
+          echo "plop"
       - uses: actions/checkout@v1
       - name: configure
         run:
           mkdir -p build;
-          echo $PWD;
+          tree $PWD -L 2;
           cmake -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -S "." -B "./build" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON
       - name: make
         run:
