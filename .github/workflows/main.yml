@@ -9,20 +9,20 @@ on:
       - master
 
 jobs:
-  install-dependencies:
-    runs-on: [self-hosted, linux]
-    steps:
-        - name: install dependencies
-          run: |
-            sudo apt-get -y update
-            sudo apt install -y build-essential ninja-build clang
-            sudo apt install -y cmake ccache
-            sudo apt install -y qt5-default
-            sudo apt install -y libboost-atomic-dev libboost-all-dev
-            sudo apt install -y python2.7-dev python-numpy python-scipy
-            sudo apt install -y libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev
+#  install-dependencies:
+#    runs-on: [self-hosted, linux]
+#    steps:
+#        - name: install dependencies
+#          run: |
+#            sudo apt-get -y update
+#            sudo apt install -y build-essential ninja-build clang
+#            sudo apt install -y cmake ccache
+#            sudo apt install -y qt5-default
+#            sudo apt install -y libboost-atomic-dev libboost-all-dev
+#            sudo apt install -y python2.7-dev python-numpy python-scipy
+#            sudo apt install -y libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev
   build:
-    needs: [install-dependencies]
+#    needs: [install-dependencies]
     # ideally I'd like this to run in custom docker image instead of running directly in the self-hosted vm:
     runs-on: [self-hosted, linux] # [self-hosted docker://bmarques68/sofa-ubuntu:18.04]
     steps:
