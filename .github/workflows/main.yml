@@ -48,7 +48,7 @@ jobs:
     steps:
       - name: run-tests
         run: |
-          cd ~/SOFA/bin
+          cd /builds/SOFA/bin
           for f in *_test
           do
             ./$f
