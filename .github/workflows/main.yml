@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     # ideally I'd like this to run in custom docker image instead of running directly in the self-hosted vm:
-    runs-on: [self-hosted, ubuntu-18.04] # [self-hosted docker://bmarques68/sofa-ubuntu:18.04]
+    runs-on: [self-hosted, linux] # [self-hosted docker://bmarques68/sofa-ubuntu:18.04]
     steps:
       # Chechout the project's repo:
       - uses: actions/checkout@v1
