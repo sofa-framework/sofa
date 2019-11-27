@@ -10,25 +10,52 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    # I want to use a custom docker image on a self-hosted vm on ci.inria.fr, with preinstalled deps. meanwhile, let's stick to a github-hosted docker image:
+    runs-on: ubuntu-18.04 # [self-hosted docker://bmarques68/sofa-ubuntu:18.04]
     steps:
+      # Chechout the project's repo:
       - uses: actions/checkout@v1
-      - uses: docker://bmarques68/sofa-ubuntu:18.04          
-      - name: configure
-        run:
-          mkdir -p build;
-          cd build;
-          cmake .. -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON
+      
+      # Ideally we would want to use a self-hosted docker with preinstalled deps. meanwhile, let's add a dependency step:
+      - name: install dependencies
+        run: 
+          sudo apt-get update;
+          sudo apt install build-essential ninja-build clang;
+          sudo apt install cmake ccache;
+          sudo apt install qt5-default;
+          sudo apt install libboost-atomic-dev libboost-all-dev;
+          sudo apt install python2.7-dev python-numpy python-scipy;
+          sudo apt install libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev;
+        
+      - name: configure SOFA
+        run: |
+          mkdir -p build
+          cd build
+          cmake .. -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON -DPLUGIN_SOFAPYTHON=ON
           
-      - uses: docker://bmarques68/sofa-ubuntu:18.04          
-      - name: build
-        run:
-          cd build;
-          ninja;
+      - name: build SOFA
+        run: |
+          cd build
+          ninja
           ninja install
-
-  # run-tests:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: run-tests
-  #     run: sh build/bin/run-tests.sh
+          
+      - name: Upload build-dir
+        uses: actions/upload-artifact@v1
+        with:
+          name: build-dir
+          path: ./build
+          
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build-dir
+        uses: actions/download-artifact@v1
+        with:
+          name: build-dir
+      - name: run-tests
+        run: |
+          cd build
+          for f in *_test
+          do
+            ./$f
+          done
