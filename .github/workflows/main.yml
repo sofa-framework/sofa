@@ -47,6 +47,7 @@ jobs:
           
   run-tests:
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - name: Download build-dir
         uses: actions/download-artifact@v1
