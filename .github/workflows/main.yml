@@ -10,22 +10,22 @@ on:
 
 jobs:
   build:
-    # I want to use a custom docker image on a self-hosted vm on ci.inria.fr, with preinstalled deps. meanwhile, let's stick to a github-hosted docker image:
-    runs-on: ubuntu-18.04 # [self-hosted docker://bmarques68/sofa-ubuntu:18.04]
+    # ideally I'd like this to run in custom docker image instead of running directly in the self-hosted vm:
+    runs-on: [self-hosted ubuntu-18.04] # [self-hosted docker://bmarques68/sofa-ubuntu:18.04]
     steps:
       # Chechout the project's repo:
       - uses: actions/checkout@v1
       
-      # Ideally we would want to use a self-hosted docker with preinstalled deps. meanwhile, let's add a dependency step:
+      # when running on a self-hosted vm with preinstalled deps this dependency step is not necessary of course...:
       - name: install dependencies
-        run: 
-          sudo apt-get update;
-          sudo apt install build-essential ninja-build clang;
-          sudo apt install cmake ccache;
-          sudo apt install qt5-default;
-          sudo apt install libboost-atomic-dev libboost-all-dev;
-          sudo apt install python2.7-dev python-numpy python-scipy;
-          sudo apt install libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev;
+        run: |
+          sudo apt-get -y update
+          sudo apt install -y build-essential ninja-build clang
+          sudo apt install -y cmake ccache
+          sudo apt install -y qt5-default
+          sudo apt install -y libboost-atomic-dev libboost-all-dev
+          sudo apt install -y python2.7-dev python-numpy python-scipy
+          sudo apt install -y libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev
         
       - name: configure SOFA
         run: |
