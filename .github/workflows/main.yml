@@ -9,7 +9,20 @@ on:
       - master
 
 jobs:
-  build:
+  install-dependencies:
+    runs-on: [self-hosted, linux]
+    steps:
+        - name: install dependencies
+          run: |
+            sudo apt-get -y update
+            sudo apt install -y build-essential ninja-build clang
+            sudo apt install -y cmake ccache
+            sudo apt install -y qt5-default
+            sudo apt install -y libboost-atomic-dev libboost-all-dev
+            sudo apt install -y python2.7-dev python-numpy python-scipy
+            sudo apt install -y libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev
+  cmake:
+    needs: [install-dependencies]
     # ideally I'd like this to run in custom docker image instead of running directly in the self-hosted vm:
     runs-on: [self-hosted, linux] # [self-hosted docker://bmarques68/sofa-ubuntu:18.04]
     steps:
@@ -17,45 +30,30 @@ jobs:
       - uses: actions/checkout@v1
       
       # when running on a self-hosted vm with preinstalled deps this dependency step is not necessary of course...:
-      - name: install dependencies
-        run: |
-          sudo apt-get -y update
-          sudo apt install -y build-essential ninja-build clang
-          sudo apt install -y cmake ccache
-          sudo apt install -y qt5-default
-          sudo apt install -y libboost-atomic-dev libboost-all-dev
-          sudo apt install -y python2.7-dev python-numpy python-scipy
-          sudo apt install -y libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev
-        
       - name: configure SOFA
         run: |
           mkdir -p build
           cd build
           cmake .. -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON -DPLUGIN_SOFAPYTHON=ON
           
+
+  build:
+    needs: [cmake]
+    runs-on: [self-hosted, linux]
+    steps:
       - name: build SOFA
         run: |
           cd build
           ninja
           ninja install
           
-      - name: Upload build-dir
-        uses: actions/upload-artifact@v1
-        with:
-          name: build-dir
-          path: ./build
-          
   run-tests:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - name: Download build-dir
-        uses: actions/download-artifact@v1
-        with:
-          name: build-dir
       - name: run-tests
         run: |
-          cd build
+          cd build/install/bin
           for f in *_test
           do
             ./$f
