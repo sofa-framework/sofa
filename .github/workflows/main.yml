@@ -43,12 +43,12 @@ jobs:
           ninja install
           
   run-tests:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     needs: [build]
     steps:
       - name: run-tests
         run: |
-          cd /builds/SOFA/bin
+          cd ~/SOFA/bin
           for f in *_test
           do
             ./$f
