@@ -21,7 +21,7 @@ jobs:
             sudo apt install -y libboost-atomic-dev libboost-all-dev
             sudo apt install -y python2.7-dev python-numpy python-scipy
             sudo apt install -y libpng-dev libjpeg-dev libtiff-dev zlib1g-dev libglew-dev
-  cmake:
+  build:
     needs: [install-dependencies]
     # ideally I'd like this to run in custom docker image instead of running directly in the self-hosted vm:
     runs-on: [self-hosted, linux] # [self-hosted docker://bmarques68/sofa-ubuntu:18.04]
@@ -32,18 +32,13 @@ jobs:
       # when running on a self-hosted vm with preinstalled deps this dependency step is not necessary of course...:
       - name: configure SOFA
         run: |
-          mkdir -p build
-          cd build
-          cmake .. -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON -DPLUGIN_SOFAPYTHON=ON -DCMAKE_INSTALL_PREFIX="~/SOFA"
+          mkdir -p ../build
+          cd ../build
+          cmake ../sofa -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON -DPLUGIN_SOFAPYTHON=ON -DCMAKE_INSTALL_PREFIX="~/SOFA"
           
-
-  build:
-    needs: [cmake]
-    runs-on: [self-hosted, linux]
-    steps:
       - name: build SOFA
         run: |
-          cd build
+          cd ../build
           ninja
           ninja install
           
