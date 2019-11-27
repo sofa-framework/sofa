@@ -34,7 +34,7 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake .. -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON -DPLUGIN_SOFAPYTHON=ON
+          cmake .. -G Ninja -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DSOFA_BUILD_METIS=ON -DPLUGIN_SOFASPARSESOLVER=ON -DPLUGIN_SOFAPYTHON=ON -DCMAKE_INSTALL_PREFIX="~/SOFA"
           
 
   build:
@@ -53,7 +53,7 @@ jobs:
     steps:
       - name: run-tests
         run: |
-          cd build/install/bin
+          cd ~/SOFA/bin
           for f in *_test
           do
             ./$f
