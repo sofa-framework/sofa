@@ -1,0 +1,17 @@
+name: test-workflow
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  plop:
+    runs-on: [self-hosted, linux]
+    needs: [build]
+    steps:
+      - name: plop
+        run: echo "pouet pouet"
