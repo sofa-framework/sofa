@@ -48,6 +48,7 @@ void CenterOfMassMapping<TIn, TOut>::init()
     //get the pointer on the input dofs mass
     if (!l_mass)
     {
+        msg_warning() << "link to the mass should be set to ensure right behavior. First mass found in current context will be used.";
         l_mass.set(this->fromModel->getContext()->getMass());
         if(!l_mass.get())
             msg_error(this) << "Could not retrieve mass from context.";
@@ -61,7 +62,7 @@ void CenterOfMassMapping<TIn, TOut>::init()
 
     //compute the total mass of the object
     for (unsigned int i=0, size = this->fromModel->getSize() ; i< size; i++)
-        totalMass += l_mass->getElementMass(i);
+        totalMass += l_mass.get()->getElementMass(i);
 
     Inherit::init();
 }
@@ -85,7 +86,7 @@ void CenterOfMassMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* 
     //with Xi: position of the dof i, Mi: mass of the dof i, and Mt : total mass of the object
     for (unsigned int i=0 ; i<parentPositions.size() ; i++)
     {
-        outX += parentPositions[i].getCenter() * l_mass->getElementMass(i);
+        outX += parentPositions[i].getCenter() * l_mass.get()->getElementMass(i);
     }
 
     childPositions[0] = outX / totalMass;
@@ -112,7 +113,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams*
     //with Fi: force of the dof i, Mi: mass of the dof i, and Mt : total mass of the object
     for (unsigned int i=0 ; i<parentForces.size() ; i++)
     {
-        outF += getVCenter(parentForces[i]) * l_mass->getElementMass(i);
+        outF += getVCenter(parentForces[i]) * l_mass.get()->getElementMass(i);
     }
 
     childForces[0] = outF / totalMass;
@@ -137,7 +138,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams
     //the force on a dof is proportional to its mass
     //relation is Fi = Fc * (Mi/Mt), with Fc: force of center of mass, Mi: dof mass, Mt: total mass
     for (unsigned int i=0 ; i<parentForces.size() ; i++)
-        getVCenter(parentForces[i]) += childForces[0] * (l_mass->getElementMass(i) / totalMass);
+        getVCenter(parentForces[i]) += childForces[0] * (l_mass.get()->getElementMass(i) / totalMass);
 
     outData.endEdit(mparams);
 }
