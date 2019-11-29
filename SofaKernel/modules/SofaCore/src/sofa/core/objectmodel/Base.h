@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/DDGLink.h>
+#include <sofa/core/DataTracker.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 
@@ -171,6 +172,12 @@ private:
 
 public:
 
+    std::map<std::string, sofa::core::DataTrackerEngine> m_internalEngine;
+
+    void addUpdateCallback(const std::string& name,
+                           std::initializer_list<DDGNode*> inputs,
+                           std::function<sofa::core::objectmodel::ComponentState(void)> function,
+                           std::initializer_list<DDGNode*> outputs);
 
 
     /// Accessor to the object name

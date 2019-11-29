@@ -85,8 +85,8 @@ std::string BaseDDGLink::getPathName() const
     if (!m_owner)
         return getName();
 
-    std::string pathname = m_owner->name.getLinkPath();
-    return pathname.substr(0, pathname.find_last_of(".")) + getName();
+    std::string pathname = m_owner->getPathName();
+    return pathname + "." + getName();
 }
 
 } // namespace objectmodel

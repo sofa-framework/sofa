@@ -93,6 +93,26 @@ void Base::release()
     }
 }
 
+
+void Base::addUpdateCallback(const std::string& name,
+                             std::initializer_list<DDGNode*> inputs,
+                             std::function<sofa::core::objectmodel::ComponentState(void)> func,
+                             std::initializer_list<DDGNode*> outputs)
+{
+    m_internalEngine[name].setName(name);
+    m_internalEngine[name].setOwner(this);
+    m_internalEngine[name].addInputs(inputs);
+    m_internalEngine[name].addCallback([&](sofa::core::DataTrackerEngine* e){
+        std::cout << "in callback" << std::endl;
+        e->updateAllInputsIfDirty();
+        objectmodel::ComponentState cs = func();
+        d_componentstate.setValue(cs);
+        e->cleanDirty();
+    });
+    m_internalEngine[name].addOutputs(outputs);
+    m_internalEngine[name].addOutput(&d_componentstate);
+}
+
 /// Helper method used by initData()
 void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed, bool isReadOnly )
 {

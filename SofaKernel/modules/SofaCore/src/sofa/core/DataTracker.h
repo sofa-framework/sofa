@@ -23,6 +23,7 @@
 #define SOFA_CORE_DATATRACKER_H
 
 #include <sofa/core/objectmodel/DDGNode.h>
+#include "objectmodel/ComponentState.h"
 
 namespace sofa
 {
@@ -87,9 +88,9 @@ namespace core
         void operator=(const DataTrackerDDGNode&);
 
     public:
-        /// Create a DataCallback object associated with multiple Data.
-        void addInputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas);
-        void addOutputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas);
+        /// Create a DataCallback object associated with multiple Nodes.
+        void addInputs(std::initializer_list<sofa::core::objectmodel::DDGNode*> datas);
+        void addOutputs(std::initializer_list<sofa::core::objectmodel::DDGNode*> datas);
 
         /// Set dirty flag to false
         /// for the DDGNode and for all the tracked Data
@@ -175,19 +176,30 @@ namespace core
         /// Calls the callback when one of the data has changed.
         void update() override;
 
+        void setName(const std::string& n)
+        {
+            m_name = n;
+        }
+
         /// This method is needed by DDGNode
         const std::string& getName() const override
         {
-            static const std::string emptyName ="";
-            return emptyName;
+            return m_name;
+        }
+
+        void setOwner(objectmodel::Base* owner)
+        {
+            m_owner = owner;
         }
         /// This method is needed by DDGNode
-        objectmodel::Base* getOwner() const override { return nullptr; }
+        objectmodel::Base* getOwner() const override { return m_owner; }
         /// This method is needed by DDGNode
         objectmodel::BaseData* getData() const override { return nullptr; }
 
     protected:
         std::vector<std::function<void(DataTrackerEngine*)>> m_callbacks;
+        std::string m_name {""};
+        sofa::core::objectmodel::Base* m_owner {nullptr};
     };
 
 
