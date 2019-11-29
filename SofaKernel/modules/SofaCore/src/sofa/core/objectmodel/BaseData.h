@@ -36,6 +36,7 @@ namespace objectmodel
 
 class Base;
 class BaseData;
+class BaseDDGLink;
 
 /**
  *  \brief Abstract base class for Data.

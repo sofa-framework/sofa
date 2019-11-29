@@ -7,6 +7,7 @@ find_package(SofaTest REQUIRED)
 set(SOURCE_FILES
     DAG_test.cpp
     DAGNode_test.cpp
+    DDGLink_test.cpp
     MutationListener_test.cpp
     Node_test.cpp
     SimpleApi_test.cpp

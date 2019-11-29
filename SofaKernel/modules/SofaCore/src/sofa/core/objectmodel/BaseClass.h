@@ -306,6 +306,17 @@ public:
         return ::sofa::core::objectmodel::BaseLink::InitLink<MyType>    \
             (this, name, help);                                         \
     }                                                                   \
+    ::sofa::core::objectmodel::BaseDDGLink::InitDDGLink                 \
+    initDDGLink(::sofa::core::objectmodel::Base* owner, std::string name, \
+                std::string help, std::string group = "")               \
+    {                                                                   \
+        ::sofa::core::objectmodel::BaseDDGLink::InitDDGLink init;       \
+        init.owner = owner;                                             \
+        init.name = name;                                               \
+        init.help = help;                                               \
+        init.group = group;                                             \
+        return init;                                                    \
+    }                                                                   \
     using Inherit1::sout;                                               \
     using Inherit1::serr;                                               \
     using Inherit1::sendl

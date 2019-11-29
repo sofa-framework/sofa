@@ -131,7 +131,7 @@ public:
     virtual const BaseContext* getContext() const = 0;
 
     /// Return the full path name of this node
-    virtual std::string getPathName() const;
+    virtual std::string getPathName() const override;
 
     /// Return the path from this node to the root node
     virtual std::string getRootPath() const;

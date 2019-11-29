@@ -110,6 +110,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/ContextObject.h
     ${SRC_ROOT}/objectmodel/DDGNode.h
     ${SRC_ROOT}/objectmodel/Data.h
+    ${SRC_ROOT}/objectmodel/DDGLink.h
     ${SRC_ROOT}/objectmodel/DataFileName.h
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.h
     ${SRC_ROOT}/objectmodel/Event.h
@@ -217,6 +218,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/Context.cpp
     ${SRC_ROOT}/objectmodel/DDGNode.cpp
     ${SRC_ROOT}/objectmodel/Data.cpp
+    ${SRC_ROOT}/objectmodel/DDGLink.cpp
     ${SRC_ROOT}/objectmodel/DataCallback.cpp
     ${SRC_ROOT}/objectmodel/DataFileName.cpp
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.cpp

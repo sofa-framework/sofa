@@ -444,7 +444,7 @@ public:
 
 
     /// Return the full path name of this object
-    virtual std::string getPathName() const;
+    virtual std::string getPathName() const override;
 
     /// @name internalupdate
     ///   Methods related to tracking of data and the internal update

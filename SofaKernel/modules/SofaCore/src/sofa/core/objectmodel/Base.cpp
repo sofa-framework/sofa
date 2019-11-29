@@ -145,6 +145,19 @@ void Base::addData(BaseData* f, const std::string& name)
     f->setOwner(this);
 }
 
+void Base::addDDGLink(BaseDDGLink* l, const std::string& name)
+{
+    if (name.size() > 0 && (findData(name) || findLink(name)))
+    {
+        msg_warning() << "Data field name " << name
+                << " already used in this class or in a parent class !";
+    }
+    m_vecDDGLink.push_back(l);
+    m_aliasDDGLink.insert(std::make_pair(name, l));
+    l->setOwner(this);
+}
+
+
 /// Add an alias to a Data
 void Base::addAlias( BaseData* field, const char* alias)
 {
@@ -218,6 +231,12 @@ std::string Base::getClassName() const
 std::string Base::getTemplateName() const
 {
     return BaseClass::decodeTemplateName(typeid(*this));
+}
+
+
+std::string Base::getPathName() const
+{
+    return "";
 }
 
 void Base::setName(const std::string& na)
@@ -325,6 +344,13 @@ void Base::removeData(BaseData* d)
     m_aliasData.erase(range.first, range.second);
 }
 
+void Base::removeDDGLink(BaseDDGLink* d)
+{
+    m_vecDDGLink.erase(std::find(m_vecDDGLink.begin(), m_vecDDGLink.end(), d));
+    typedef MapDDGLink::const_iterator mapIterator;
+    std::pair< mapIterator, mapIterator> range = m_aliasDDGLink.equal_range(d->getName());
+    m_aliasDDGLink.erase(range.first, range.second);
+}
 /// Find a data field given its name.
 /// Return nullptr if not found. If more than one field is found (due to aliases), only the first is returned.
 BaseData* Base::findData( const std::string &name ) const
@@ -354,6 +380,18 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
     return result;
 }
 
+/// Find fields given a name: several can be found as we look into the alias map
+std::vector< BaseDDGLink* > Base::findGlobalDDGLink( const std::string &name ) const
+{
+    std::vector<BaseDDGLink*> result;
+    //Search in the aliases
+    typedef MapDDGLink::const_iterator mapIterator;
+    std::pair< mapIterator, mapIterator> range = m_aliasDDGLink.equal_range(name);
+    for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
+        result.push_back(itAlias->second);
+    return result;
+}
+
 
 /// Find a link given its name.
 /// Return nullptr if not found. If more than one link is found (due to aliases), only the first is returned.
@@ -362,6 +400,19 @@ BaseLink* Base::findLink( const std::string &name ) const
     //Search in the aliases
     typedef MapLink::const_iterator mapIterator;
     std::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
+    if (range.first != range.second)
+        return range.first->second;
+    else
+        return nullptr;
+}
+
+/// Find a link given its name.
+/// Return nullptr if not found. If more than one link is found (due to aliases), only the first is returned.
+BaseDDGLink* Base::findDDGLink( const std::string &name ) const
+{
+    //Search in the aliases
+    typedef MapDDGLink::const_iterator mapIterator;
+    std::pair< mapIterator, mapIterator> range = m_aliasDDGLink.equal_range(name);
     if (range.first != range.second)
         return range.first->second;
     else
@@ -416,20 +467,45 @@ void* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& 
 bool Base::hasField( const std::string& attribute) const
 {
     return m_aliasData.find(attribute) != m_aliasData.end()
-            || m_aliasLink.find(attribute) != m_aliasLink.end();
+            || m_aliasLink.find(attribute) != m_aliasLink.end()
+            || m_aliasDDGLink.find(attribute) != m_aliasDDGLink.end();
 }
 
 /// Assign one field value (Data or Link)
 bool Base::parseField( const std::string& attribute, const std::string& value)
 {
+    std::vector< BaseDDGLink* > ddgLinkVec = findGlobalDDGLink(attribute);
     std::vector< BaseData* > dataVec = findGlobalField(attribute);
     std::vector< BaseLink* > linkVec = findLinks(attribute);
-    if (dataVec.empty() && linkVec.empty())
+    if (dataVec.empty() && linkVec.empty() && ddgLinkVec.empty())
     {
         msg_warning() << "Unknown Data field or Link: " << attribute ;
         return false; // no field found
     }
     bool ok = true;
+
+    for (unsigned int d=0; d<ddgLinkVec.size(); ++d)
+    {
+        /// Try to find DDG link
+        if (value.length() > 0 && value[0] == '@')
+        {
+            BaseData* data = nullptr;
+            BaseLink* bl = nullptr;
+            findDataLinkDest(data, value + ".name", bl);
+            if (data != nullptr || data->getOwner() == nullptr)
+            {
+                ddgLinkVec[d]->set(data->getOwner());
+//                msg_info(this) << "Linking object " << ddgLinkVec[d]->get()->toBaseObject()->getPathName() << " to " << ddgLinkVec[d]->getName();
+                ok = true;
+                continue;
+            }
+            else {
+                msg_error(this) << "Could not find object with path " << value << " from " << this->getName();
+                ok = false;
+            }
+        }
+    }
+
     for (unsigned int d=0; d<dataVec.size(); ++d)
     {
         // test if data is a link and can be linked
