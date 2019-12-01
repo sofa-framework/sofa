@@ -147,7 +147,6 @@ void UniformMass<DataTypes, MassType>::initDefaultImpl()
     Mass<DataTypes>::init();
 
     WriteAccessor<Data<vector<int> > > indices = d_indices;
-    m_doesTopoChangeAffect = false;
 
     if(mstate==nullptr)
     {
@@ -179,7 +178,6 @@ void UniformMass<DataTypes, MassType>::initDefaultImpl()
         indices.clear();
         for(int i=0; i<int(mstate->getSize()); i++)
             indices.push_back(i);
-        m_doesTopoChangeAffect = true;
     }
 
 
@@ -340,8 +338,9 @@ void UniformMass<DataTypes, MassType>::initFromTotalMass()
     if(d_indices.getValue().size() > 0)
     {
         MassType *m = d_vertexMass.beginEdit();
-        *m = ( typename DataTypes::Real (d_totalMass.getValue() / d_indices.getValue().size()) );
+        *m = d_totalMass.getValue() / Real(d_indices.getValue().size());
         d_vertexMass.endEdit();
+
         msg_info() << "totalMass information is used";
     }
     else
@@ -355,14 +354,6 @@ template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::handleTopologyChange()
 {
     BaseMeshTopology *meshTopology = getContext()->getMeshTopology();
-    WriteAccessor<Data<vector<int> > > indices = d_indices;
-
-    if(m_doesTopoChangeAffect)
-    {
-        indices.clear();
-        for(size_t i=0; i<mstate->getSize(); i++)
-            indices.push_back(int(i));
-    }
 
     if ( meshTopology != nullptr && mstate->getSize()>0 )
     {
@@ -373,22 +364,77 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
         {
             switch ( ( *it )->getChangeType() )
             {
+            // POINTS ADDED -----------------
             case core::topology::POINTSADDED:
-                if ( d_handleTopoChange.getValue() && m_doesTopoChangeAffect)
+                if ( d_handleTopoChange.getValue())
                 {
-                    MassType* m = d_vertexMass.beginEdit();
-                    *m = ( typename DataTypes::Real (d_totalMass.getValue() / mstate->getSize()) );
-                    d_vertexMass.endEdit();
+                    WriteAccessor<Data<vector<int> > > indices = d_indices;
+                    size_t sizeIndices = indices.size();
+                    const sofa::helper::vector< unsigned int >& pointsAdded = ( static_cast< const sofa::core::topology::PointsAdded * >( *it ) )->getIndexArray();
+                    size_t nbPointsAdded = pointsAdded.size();
+
+                    for(size_t i=0; i<nbPointsAdded; i++)
+                    {
+                        indices.push_back(int(pointsAdded[i]));
+                    }
+
+                    size_t newNbPoints = sizeIndices+nbPointsAdded;
+
+                    if (d_preserveTotalMass.getValue())
+                    {
+                        Real newVertexMass = d_totalMass.getValue() / Real(newNbPoints);
+                        d_vertexMass.setValue( static_cast< MassType >( newVertexMass ) );
+                    }
+                    else
+                    {
+                        d_totalMass.setValue (Real(newNbPoints) * Real(d_vertexMass.getValue()) );
+                    }
+                    this->cleanTracker();
                 }
                 break;
 
+            // POINTS REMOVED -----------------
             case core::topology::POINTSREMOVED:
-                if ( d_handleTopoChange.getValue() && m_doesTopoChangeAffect)
+                if ( d_handleTopoChange.getValue())
                 {
-                    if (!d_preserveTotalMass.getValue())
-                        d_totalMass.setValue (mstate->getSize() * Real(d_vertexMass.getValue()) );
+                    WriteAccessor<Data<vector<int> > > indices = d_indices;
+                    size_t sizeIndices = indices.size();
+                    const sofa::helper::vector< unsigned int >& pointsRemoved = ( static_cast< const sofa::core::topology::PointsRemoved * >( *it ) )->getArray();
+                    size_t nbPointsRemoved = pointsRemoved.size();
+
+                    size_t count=0;
+                    for(size_t i=0; i<nbPointsRemoved; i++)
+                    {
+                        for(size_t j=0; j<sizeIndices; j++)
+                        {
+                            if(indices[j] == int(pointsRemoved[i]))
+                            {
+                                count++;
+                            }
+                            else
+                                indices[i] = indices[i+count];
+                        }
+                    }
+
+                    size_t newNbPoints = sizeIndices-nbPointsRemoved;
+                    indices.resize(newNbPoints);
+
+                    if(newNbPoints<=0)
+                    {
+                        msg_warning() << "All points removed";
+                        return;
+                    }
+
+                    if (d_preserveTotalMass.getValue())
+                    {
+                        Real newVertexMass = d_totalMass.getValue() / Real(newNbPoints);
+                        d_vertexMass.setValue( static_cast< MassType >( newVertexMass ) );
+                    }
                     else
-                        d_vertexMass.setValue( static_cast< MassType >( typename DataTypes::Real (d_totalMass.getValue() / mstate->getSize()) ) );
+                    {
+                        d_totalMass.setValue (Real(newNbPoints) * Real(d_vertexMass.getValue()) );
+                    }
+                    this->cleanTracker();
                 }
                 break;
 
