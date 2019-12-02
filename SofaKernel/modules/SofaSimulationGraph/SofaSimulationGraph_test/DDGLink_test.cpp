@@ -24,11 +24,15 @@ public:
           input(initData(&input, false, "in", "in")),
           output(initData(&output, "out", "out"))
     {
-        addUpdateCallback("engine", {&input}, [&]() -> ComponentState {
-            std::cout << "in engineA" << std::endl;
+        engine.addInput(&input);
+        engine.addCallback([&](sofa::core::DataTrackerEngine* e){
+            e->updateAllInputsIfDirty();
             output.setValue(input.getValue());
-            return ComponentState::Valid;
-        }, {&output});
+            d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Valid);
+            e->cleanDirty();
+        });
+        engine.addOutput(&output);
+        engine.addOutput(&d_componentstate);
     }
 
     ~ClassA() override {}
@@ -44,11 +48,15 @@ public:
           inputLink(initDDGLink(this, "in", "help string")),
           output(initData(&output, "out", "out"))
     {
-        addUpdateCallback("engine", {&inputLink}, [&]() -> ComponentState {
-            std::cout << "in engineB" << std::endl;
+        engine.addInput(&inputLink);
+        engine.addCallback([&](sofa::core::DataTrackerEngine* e){
+            e->updateAllInputsIfDirty();
             output.setValue(inputLink.get()->output.getValue());
-            return ComponentState::Valid;
-        }, {&output});
+            d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Valid);
+            e->cleanDirty();
+        });
+        engine.addOutput(&output);
+        engine.addOutput(&d_componentstate);
     }
 
     ~ClassB() override {}
