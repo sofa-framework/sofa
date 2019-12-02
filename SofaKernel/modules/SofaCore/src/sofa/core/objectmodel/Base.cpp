@@ -102,13 +102,7 @@ void Base::addUpdateCallback(const std::string& name,
     m_internalEngine[name].setName(name);
     m_internalEngine[name].setOwner(this);
     m_internalEngine[name].addInputs(inputs);
-    m_internalEngine[name].addCallback([&](sofa::core::DataTrackerEngine* e){
-        std::cout << "in callback" << std::endl;
-        e->updateAllInputsIfDirty();
-        objectmodel::ComponentState cs = func();
-        d_componentstate.setValue(cs);
-        e->cleanDirty();
-    });
+    m_internalEngine[name].addCallback(func);
     m_internalEngine[name].addOutputs(outputs);
     m_internalEngine[name].addOutput(&d_componentstate);
 }
