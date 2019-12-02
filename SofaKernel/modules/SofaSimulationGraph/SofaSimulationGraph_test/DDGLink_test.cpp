@@ -17,14 +17,13 @@ public:
     
     sofa::Data<bool> input;
     sofa::Data<bool> output;
-    sofa::core::DataTrackerEngine engine;
 
     ClassA()
         : Inherit1(),
           input(initData(&input, false, "in", "in")),
           output(initData(&output, "out", "out"))
     {
-        addUpdateCallback("engine", {&input}, [&]() -> ComponentState {
+        addUpdateCallback("engineA", {&input}, [&]() -> ComponentState {
             std::cout << "in engineA" << std::endl;
             output.setValue(input.getValue());
             return ComponentState::Valid;
@@ -44,7 +43,7 @@ public:
           inputLink(initDDGLink(this, "in", "help string")),
           output(initData(&output, "out", "out"))
     {
-        addUpdateCallback("engine", {&inputLink}, [&]() -> ComponentState {
+        addUpdateCallback("engineB", {&inputLink}, [&]() -> ComponentState {
             std::cout << "in engineB" << std::endl;
             output.setValue(inputLink.get()->output.getValue());
             return ComponentState::Valid;
@@ -54,7 +53,6 @@ public:
     ~ClassB() override {}
 
     sofa::core::objectmodel::DDGLink<ClassA> inputLink;
-    sofa::core::DataTrackerEngine engine;
     sofa::Data<bool> output;
 };
 
@@ -96,13 +94,6 @@ struct DDGLink_test: public BaseTest
 
     void dumpGraph(sofa::core::objectmodel::DDGNode* n, int depth=0)
     {
-        // WTF????
-        if (n->getName() == "engine" && n->getOwner()->getName() == "A") {
-            std::cout <<  "Directly from a : " << n->getOwner()->getName() << "::" << n->getName() << " : " << a->engine.isDirty() << " vs " << n->isDirty() << std::endl;
-        }
-        if (n->getName() == "engine" && n->getOwner()->getName() == "B") {
-            std::cout <<  "Directly from b : " << n->getOwner()->getName() << "::" << n->getName() << " : " << b->engine.isDirty() << " vs " << n->isDirty() << std::endl;
-        }
         for (int i = 0 ; i < depth ; ++i)
             std::cout << " ";
         std::cout << n->getOwner()->getName() << "::" << n->getName() << " : " << n->isDirty() << std::endl;
@@ -115,14 +106,11 @@ struct DDGLink_test: public BaseTest
     void testGraphConsistency()
     {
         std::cout << "INITIAL STATE (everything but A::in should be dirty):" << std::endl;
-        std::cout << "A::engine : " << a->engine.isDirty() << std::endl;
         dumpGraph(&a->input);
         ASSERT_FALSE(a->input.isDirty());
-        ASSERT_TRUE(a->engine.isDirty());
         ASSERT_TRUE(a->output.isDirty());
         ASSERT_TRUE(a->d_componentstate.isDirty());
         ASSERT_TRUE(b->inputLink.isDirty());
-        ASSERT_TRUE(b->engine.isDirty());
         ASSERT_TRUE(b->output.isDirty());
         ASSERT_TRUE(b->d_componentstate.isDirty());
 
@@ -130,11 +118,9 @@ struct DDGLink_test: public BaseTest
         std::cout << "\nAFTER accessing B::out (only B::componentState should be dirty):" << std::endl;
         dumpGraph(&a->input);
         ASSERT_FALSE(a->input.isDirty());
-        ASSERT_FALSE(a->engine.isDirty());
         ASSERT_FALSE(a->output.isDirty());
         ASSERT_FALSE(a->d_componentstate.isDirty());
         ASSERT_FALSE(b->inputLink.isDirty());
-        ASSERT_FALSE(b->engine.isDirty());
         ASSERT_FALSE(b->output.isDirty());
         ASSERT_TRUE(b->d_componentstate.isDirty());
 
@@ -144,11 +130,9 @@ struct DDGLink_test: public BaseTest
         std::cout << "\nAFTER modifying A::in (should dirtify all but A::in):" << std::endl;
         dumpGraph(&a->input);
         ASSERT_FALSE(a->input.isDirty());
-        ASSERT_TRUE(a->engine.isDirty());
         ASSERT_TRUE(a->output.isDirty());
         ASSERT_TRUE(a->d_componentstate.isDirty());
         ASSERT_TRUE(b->inputLink.isDirty());
-        ASSERT_TRUE(b->engine.isDirty());
         ASSERT_TRUE(b->output.isDirty());
         ASSERT_TRUE(b->d_componentstate.isDirty());
     }
