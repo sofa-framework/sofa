@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include "DataTracker.h"
 #include "objectmodel/BaseData.h"
+#include "objectmodel/Base.h"
 
 namespace sofa
 {
@@ -92,17 +93,25 @@ void DataTrackerDDGNode::updateAllInputsIfDirty()
     }
 }
 ///////////////////////
-void DataTrackerEngine::addCallback( std::function<void(DataTrackerEngine*)> f)
+void DataTrackerEngine::addCallback( std::function<sofa::core::objectmodel::ComponentState(void)> f)
 {
     m_callbacks.push_back(f);
 }
 
 void DataTrackerEngine::update()
 {
+    updateAllInputsIfDirty();
+
+    sofa::core::objectmodel::ComponentState cs = sofa::core::objectmodel::ComponentState::Valid;
     for(auto& callback : m_callbacks)
     {
-        callback(this);
+        sofa::core::objectmodel::ComponentState state = callback();
+        if (state != sofa::core::objectmodel::ComponentState::Valid)
+            cs = state;
     }
+    m_owner->d_componentstate.setValue(cs);
+    std::cout << getName() << " cleanDirty()" << std::endl;
+    cleanDirty();
 }
 
 
