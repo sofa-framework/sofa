@@ -19,12 +19,11 @@ BaseDDGLink::BaseDDGLink(const BaseDDGLink::InitDDGLink &init)
     addLink(&outputs);
     m_counters.assign(0);
 
-    std::cout << "constructing ddglink with name " << m_name << std::endl;
     if (m_owner)
     {
-        std::cout << "adding ddglink with name " << m_name << " to " << m_owner->getName() << std::endl;
         m_owner->addDDGLink(this, m_name);
-        std::cout << m_owner->findGlobalDDGLink(m_name).size() << std::endl;
+        if (m_linkedBase)
+            m_linkedBase->addDDGLinkOwner(m_owner);
     }
 }
 
@@ -35,13 +34,24 @@ BaseDDGLink::~BaseDDGLink()
 
 void BaseDDGLink::setOwner(Base* owner)
 {
+    if (m_linkedBase)
+    {
+        m_linkedBase->removeDDGLinkOwner(m_owner);
+        m_linkedBase->addDDGLinkOwner(owner);
+    }
     m_owner = owner;
 }
 
 void BaseDDGLink::set(Base* linkedBase)
 {
+    if (m_linkedBase)
+        m_linkedBase->removeDDGLinkOwner(m_owner);
     m_linkedBase = linkedBase;
-    addInput(&m_linkedBase->d_componentstate);
+    if (m_linkedBase)
+    {
+        linkedBase->addDDGLinkOwner(m_owner);
+        addInput(&m_linkedBase->d_componentstate);
+    }
     ++m_counters[size_t(currentAspect())];
     setDirtyOutputs();
 }

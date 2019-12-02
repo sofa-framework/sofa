@@ -159,6 +159,26 @@ struct DDGLink_test: public BaseTest
         ASSERT_EQ(b->inputLink.getPathName(), "/B.in");
     }
 
+
+
+    void testDDGLink_ownership_methods()
+    {
+        ASSERT_EQ(a->getDDGLinkOwners().size(), 1);
+        ASSERT_EQ(a->getDDGLinkOwners()[0]->getName(), b->getName());
+
+
+        ClassA::SPtr c = sofa::core::objectmodel::New<ClassA>();
+        c->setName("C");
+        node->addObject(c);
+        b->inputLink.set(c.get());
+
+        ASSERT_EQ(a->getDDGLinkOwners().size(), 0);
+        ASSERT_EQ(c->getDDGLinkOwners().size(), 1);
+        ASSERT_EQ(c->getDDGLinkOwners()[0]->getName(), b->getName());
+
+        b->inputLink.set(nullptr);
+        ASSERT_EQ(c->getDDGLinkOwners().size(), 0);
+    }
 };
 
 // Test
@@ -171,5 +191,11 @@ TEST_F(DDGLink_test, testDDGLink_methods )
 {
     this->testDDGLink_methods();
 }
+
+TEST_F(DDGLink_test, testDDGLink_ownership_methods )
+{
+    this->testDDGLink_ownership_methods();
+}
+
 }  // namespace sofa
 

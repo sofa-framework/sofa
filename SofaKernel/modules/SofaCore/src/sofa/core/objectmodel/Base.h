@@ -321,24 +321,38 @@ public:
     /// Add an alias to a Link
     void addAlias( BaseLink* link, const char* alias);
 
+
+    /// Removes a link owner. should only be called from DDGLinks
+    void removeDDGLinkOwner(const Base* l);
+    /// Registers a link owner. should only be called from DDGLinks
+    void addDDGLinkOwner(const Base* l);
+
     /// Registers a DDGLink.
     void addDDGLink(BaseDDGLink* l, const std::string& name);
     /// Remove a DDGLink.
     void removeDDGLink(BaseDDGLink* l);
 
+
     typedef helper::vector<BaseData*> VecData;
     typedef std::multimap<std::string, BaseData*> MapData;
+
     typedef helper::vector<BaseLink*> VecLink;
     typedef std::multimap<std::string, BaseLink*> MapLink;
+
     typedef helper::vector<BaseDDGLink*> VecDDGLink;
     typedef std::map<std::string, BaseDDGLink*> MapDDGLink;
+
+    typedef helper::vector<const Base*> VecDDGLinkOwner;
+
 
     /// Accessor to the vector containing all the fields of this object
     const VecData& getDataFields() const { return m_vecData; }
     /// Accessor to the map containing all the aliases of this object
     const MapData& getDataAliases() const { return m_aliasData; }
 
-    /// Accessor to the vector containing all the fields of this object
+    /// Accessor to the vector containing all the components holding a link to this object
+    const VecDDGLinkOwner& getDDGLinkOwners() const { return m_vecDDGLinkOwners; }
+    /// Accessor to the vector containing all the links to components held by this object
     const VecDDGLink& getDDGLinks() const { return m_vecDDGLink; }
     /// Accessor to the vector containing all the fields of this object
     const MapDDGLink& getDDGLinkAliases() const { return m_aliasDDGLink; }
@@ -512,6 +526,7 @@ protected:
     /// name -> Link multi-map (includes names and aliases)
     MapLink m_aliasLink;
 
+    VecDDGLinkOwner m_vecDDGLinkOwners;
     VecDDGLink m_vecDDGLink;
     MapDDGLink m_aliasDDGLink;
 public:

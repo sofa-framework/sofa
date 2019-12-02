@@ -165,6 +165,20 @@ void Base::addData(BaseData* f, const std::string& name)
     f->setOwner(this);
 }
 
+void Base::addDDGLinkOwner(const Base* l)
+{
+    if (std::find(m_vecDDGLinkOwners.begin(), m_vecDDGLinkOwners.end(), l) == m_vecDDGLinkOwners.end())
+        m_vecDDGLinkOwners.push_back(l);
+}
+
+void Base::removeDDGLinkOwner(const Base* l)
+{
+    auto link = std::find(m_vecDDGLinkOwners.begin(), m_vecDDGLinkOwners.end(), l);
+    if (link != m_vecDDGLinkOwners.end())
+        m_vecDDGLinkOwners.erase(link);
+}
+
+
 void Base::addDDGLink(BaseDDGLink* l, const std::string& name)
 {
     if (name.size() > 0 && (findData(name) || findLink(name)))
