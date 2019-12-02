@@ -101,7 +101,7 @@ class DDGLink : public BaseDDGLink
 {
   public:
 
-    explicit DDGLink(const DDGLink::InitDDGLink& init)
+    explicit DDGLink(const BaseDDGLink::InitDDGLink& init)
         : BaseDDGLink(init)
     {
     }
