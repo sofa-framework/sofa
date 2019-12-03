@@ -53,6 +53,7 @@ private:
     helper::gl::GLSLShader m_spriteBlurDepthShader;
     helper::gl::GLSLShader m_spriteBlurThicknessShader;
     helper::gl::GLSLShader m_spriteShadeShader;
+    helper::gl::GLSLShader m_spriteFinalPassShader;
 
     void drawSprites(const core::visual::VisualParams* vparams);
     void updateVertexBuffer();
@@ -74,6 +75,7 @@ public:
     void fwdDraw(core::visual::VisualParams*) override;
     void bwdDraw(core::visual::VisualParams*) override;
     void drawVisual(const core::visual::VisualParams* vparams) override;
+    void drawTransparent(const core::visual::VisualParams* vparams) override;
     void computeBBox(const core::ExecParams* params, bool onlyVisible = false) override;
 
     virtual void updateVisual() override;
