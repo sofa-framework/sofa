@@ -106,7 +106,6 @@ struct DDGLink_test: public BaseTest
     void testGraphConsistency()
     {
         std::cout << "INITIAL STATE (everything but A::in should be dirty):" << std::endl;
-        std::cout << "A::engine : " << a->engine.isDirty() << std::endl;
         dumpGraph(&a->input);
         ASSERT_FALSE(a->input.isDirty());
         ASSERT_TRUE(a->output.isDirty());
