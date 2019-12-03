@@ -16,6 +16,7 @@ set(SOURCE_FILES
     MeshTopology_test.cpp
 
     RegularGridTopology_test.cpp
+    SparseGridTopology_test.cpp
     TetrahedronNumericalIntegration_test.cpp
     TriangleNumericalIntegration_test.cpp)
 

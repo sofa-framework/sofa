@@ -202,54 +202,72 @@ void SparseGridTopology::buildAsFinest(  )
     {
         std::string _filename = fileTopology.getFullPath();
 
-        if (seqPoints.getValue().empty() )
+        if (_filename.length() > 4 && _filename.compare(_filename.length() - 4, 4, ".raw") == 0)
         {
-            if (_filename.empty())
-            {
-                if (this->seqPoints.getValue().empty())
-                    msg_warning() << "SparseGridTopology: no filename specified nor vertices given as parameters.";
+            _usingMC = true;
 
+            buildFromRawVoxelFile(_filename);
+        }
+        else if (_filename.length() > 6 && _filename.compare(_filename.length() - 6, 6, ".voxel") == 0)
+        {
+            buildFromVoxelFile(_filename);
+        }
+        else // given surface
+        {
+            helper::io::Mesh* mesh = nullptr;
+            if (seqPoints.getValue().size() == 0 && _filename.empty())
+            {
+                msg_warning() << "no filename specified nor vertices given as parameters.";
                 return;
-            }
-
-            if (! sofa::helper::system::DataRepository.findFile ( _filename ))
-                return;
-
-            // initialize the following datafields:
-            // xmin, xmax, ymin, ymax, zmin, zmax, evtl. nx, ny, nz
-            // _regularGrid, _indicesOfRegularCubeInSparseGrid, _types
-            // seqPoints, seqHexahedra.getValue(), nbPoints
-            if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".obj")==0)
-            {
-                buildFromTriangleMesh(_filename);
-            }
-            else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".trian")==0)
-            {
-                buildFromTriangleMesh(_filename);
-            }
-            else if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".stl")==0)
-            {
-                buildFromTriangleMesh(_filename);
-            }
-            else if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".raw")==0)
-            {
-                _usingMC = true;
-
-                buildFromRawVoxelFile(_filename);
-            }
-            else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".voxel")==0)
-            {
-                buildFromVoxelFile(_filename);
             }
             else
             {
-                msg_error() << "SparseGridTopology::buildAsFinest: extension unrecognized ";
-                return;
+                if (_filename.empty())
+                {
+                    mesh = new helper::io::Mesh();
+                    for (unsigned int i = 0; i < seqPoints.getValue().size(); ++i)
+                        mesh->getVertices().push_back(seqPoints.getValue()[i]);
+                    const vector < vector <int> >& facets = this->facets.getValue();
+                    const SeqTriangles& triangles = this->seqTriangles.getValue();
+                    const SeqQuads& quads = this->seqQuads.getValue();
+                    mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
+                    for (size_t i = 0; i < facets.size(); ++i)
+                        mesh->getFacets()[i].push_back(facets[i]);
+                    for (size_t i0 = facets.size(), i = 0; i < triangles.size(); ++i)
+                    {
+                        mesh->getFacets()[i0 + i].resize(1);
+                        mesh->getFacets()[i0 + i][0].resize(3);
+                        mesh->getFacets()[i0 + i][0][0] = triangles[i][0];
+                        mesh->getFacets()[i0 + i][0][1] = triangles[i][1];
+                        mesh->getFacets()[i0 + i][0][2] = triangles[i][2];
+                    }
+                    for (size_t i0 = facets.size() + triangles.size(), i = 0; i < quads.size(); ++i)
+                    {
+                        mesh->getFacets()[i0 + i].resize(1);
+                        mesh->getFacets()[i0 + i][0].resize(4);
+                        mesh->getFacets()[i0 + i][0][0] = quads[i][0];
+                        mesh->getFacets()[i0 + i][0][1] = quads[i][1];
+                        mesh->getFacets()[i0 + i][0][2] = quads[i][2];
+                        mesh->getFacets()[i0 + i][0][3] = quads[i][3];
+                    }
+                }
+                else
+                {
+                    mesh = helper::io::Mesh::Create(_filename.c_str());
+                }
+
+                if (mesh == nullptr || mesh->getVertices().empty())
+                {
+                    msg_error() << "Loading mesh " << _filename << " failed.";
+                    return;
+                }
+                else
+                {
+                    buildFromTriangleMesh(mesh);
+                    dmsg_info() << "Mesh Loaded";
+                    delete mesh;
+                }
             }
-        }
-        else
-        {
-            buildFromTriangleMesh(_filename);
         }
 
         // default stiffness coefficient : BOUNDARY=.5, INSIDE=1
@@ -651,50 +669,8 @@ void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< so
 }
 
 
-void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
+void SparseGridTopology::buildFromTriangleMesh(sofa::helper::io::Mesh* mesh)
 {
-    helper::io::Mesh* mesh = nullptr;
-
-    if (filename.empty())
-    {
-        mesh = new helper::io::Mesh();
-        for (unsigned int i=0; i<seqPoints.getValue().size(); ++i)
-            mesh->getVertices().push_back(seqPoints.getValue()[i]);
-        const vector < vector <int> >& facets = this->facets.getValue();
-        const SeqTriangles& triangles = this->seqTriangles.getValue();
-        const SeqQuads& quads = this->seqQuads.getValue();
-        mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
-        for (size_t i=0; i<facets.size(); ++i)
-            mesh->getFacets()[i].push_back(facets[i]);
-        for (size_t i0 = facets.size(), i=0; i<triangles.size(); ++i)
-        {
-            mesh->getFacets()[i0+i].resize(1);
-            mesh->getFacets()[i0+i][0].resize(3);
-            mesh->getFacets()[i0+i][0][0] = triangles[i][0];
-            mesh->getFacets()[i0+i][0][1] = triangles[i][1];
-            mesh->getFacets()[i0+i][0][2] = triangles[i][2];
-        }
-        for (size_t i0 = facets.size()+triangles.size(), i=0; i<quads.size(); ++i)
-        {
-            mesh->getFacets()[i0+i].resize(1);
-            mesh->getFacets()[i0+i][0].resize(4);
-            mesh->getFacets()[i0+i][0][0] = quads[i][0];
-            mesh->getFacets()[i0+i][0][1] = quads[i][1];
-            mesh->getFacets()[i0+i][0][2] = quads[i][2];
-            mesh->getFacets()[i0+i][0][3] = quads[i][3];
-        }
-    }
-    else
-    {
-        mesh = helper::io::Mesh::Create(filename.c_str());
-    }
-
-    if(mesh == nullptr)
-    {
-        msg_error() << "SparseGridTopology: loading mesh " << filename << " failed." ;
-        return;
-    }
-
     // if not given sizes -> bounding box
     if( _min.getValue()== Vector3() && _max.getValue()== Vector3())
     {
@@ -727,10 +703,6 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
     voxelizeTriangleMesh(mesh, _regularGrid, regularGridTypes);
 
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
-
-    dmsg_info() << "Mesh Loaded";
-
-    delete mesh;
 }
 
 
