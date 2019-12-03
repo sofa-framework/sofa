@@ -25,6 +25,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/core/loader/MeshLoader.h>
+#include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/polygon_cube_intersection/polygon_cube_intersection.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -224,7 +226,7 @@ void SparseGridTopology::buildAsFinest(  )
             {
                 if (_filename.empty())
                 {
-                    mesh = new helper::io::Mesh();
+                    mesh = new sofa::helper::io::Mesh();
                     for (unsigned int i = 0; i < seqPoints.getValue().size(); ++i)
                         mesh->getVertices().push_back(seqPoints.getValue()[i]);
                     const vector < vector <int> >& facets = this->facets.getValue();
