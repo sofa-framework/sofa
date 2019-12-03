@@ -302,9 +302,8 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         }
 
 
-        helper::WriteAccessor< Data< VecCoord > > posData = *this->mstate->write(core::VecCoordId::position());
-        VecCoord& pos = posData.wref();
-        const VecCoord prev_pos = pos;
+        helper::ReadAccessor< Data< VecCoord > > rposData = *this->mstate->read(core::ConstVecCoordId::position());
+        const VecCoord prev_pos = rposData.ref();
 
         helper::WriteAccessor< Data< VecDeriv > > velocityData = *this->mstate->write(core::VecDerivId::velocity());
         VecDeriv& velocity = velocityData.wref();
@@ -331,8 +330,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             sout << "Precomputing constraint correction : " << std::fixed << (float)f / (float)nbNodes * 100.0f << " %   " << '\xd';
             sout.precision(prevPrecision);
 
-            // Deriv unitary_force;
-
             for (unsigned int i = 0; i < dof_on_node; i++)
             {
                 unitary_force.clear();
@@ -343,6 +340,10 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 // Reset positions and velocities
                 velocity.clear();
                 velocity.resize(nbNodes);
+
+                // Actualize ref to the position vector ; it seems it is changed at every eulerSolver->solve()
+                helper::WriteAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::VecCoordId::position());
+                VecCoord& pos = wposData.wref();
 
                 for (unsigned int n = 0; n < nbNodes; n++)
                     pos[n] = prev_pos[n];
@@ -392,6 +393,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         // Retore velocity
         for (unsigned int i = 0; i < velocity.size(); i++)
             velocity[i] = prev_velocity[i];
+
+        helper::WriteAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::VecCoordId::position());
+        VecCoord& pos = wposData.wref();
 
         // Restore position
         for (unsigned int i = 0; i < pos.size(); i++)
