@@ -118,9 +118,6 @@ protected :
     Deriv getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
     void updateRestLength();
 
-    // Base Components of the current context
-    core::topology::BaseMeshTopology *m_topology;
-
     helper::vector<  unsigned int > registeredConstraints;
 
     // rest length pre-computated

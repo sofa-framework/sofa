@@ -49,7 +49,6 @@ DistanceLMConstraint<DataTypes>::DistanceLMConstraint( MechanicalState *dof1, Me
     : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
     , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_topology(nullptr)
 {
 }
 
@@ -70,16 +69,23 @@ void DistanceLMConstraint<DataTypes>::init()
 {
     sofa::core::behavior::LMConstraint<DataTypes,DataTypes>::init();
     
+    // TODO epenod 2019-12-05: Adapt code to not look for topology if constraint is manually set. Need to dig more in the code to understand how topology is used.
+    if (vecConstraint.getValue().size() != 0)
+    {
+        // nothing to do in this case
+        return;
+    }
+
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
-
-    m_topology = l_topology.get();
+    
+    core::topology::BaseMeshTopology *_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-    if (!m_topology)
+    if (!_topology)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
         sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
@@ -87,7 +93,7 @@ void DistanceLMConstraint<DataTypes>::init()
     }
 
     if (vecConstraint.getValue().size() == 0 && (this->constrainedObject1==this->constrainedObject2) ) 
-        vecConstraint.setValue(m_topology->getEdges());
+        vecConstraint.setValue(_topology->getEdges());
 }
 
 template <class DataTypes>
