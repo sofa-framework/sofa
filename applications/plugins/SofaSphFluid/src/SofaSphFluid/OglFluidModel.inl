@@ -11,6 +11,7 @@
 #include <SofaSphFluid/shaders/spriteBlurDepth.cppglsl>
 #include <SofaSphFluid/shaders/spriteBlurThickness.cppglsl>
 #include <SofaSphFluid/shaders/spriteShade.cppglsl>
+#include <SofaSphFluid/shaders/spriteFinalPass.cppglsl>
 
 namespace sofa
 {
@@ -98,7 +99,10 @@ void OglFluidModel<DataTypes>::initVisual()
 	m_spriteShadeShader.SetFragmentShaderFromString(shader::spriteShadeFS);
 	m_spriteShadeShader.InitShaders();
 
-
+    m_spriteFinalPassShader.SetVertexShaderFromString(shader::spriteFinalPassVS);
+    m_spriteFinalPassShader.SetFragmentShaderFromString(shader::spriteFinalPassFS);
+    m_spriteFinalPassShader.InitShaders();
+       
     //Generate PositionVBO
     glGenBuffers(1, &m_posVBO);
     unsigned int totalSize = (vertices.size() * sizeof(vertices[0]));
@@ -597,16 +601,20 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
     glPushMatrix();
     glLoadIdentity();
 
-    glActiveTexture(GL_TEXTURE0);
-    glEnable(GL_TEXTURE_2D);
-    switch(d_debugFBO.getValue())
+    const auto debugFBO = d_debugFBO.getValue();
+
+    if (debugFBO >= 0 && debugFBO < 9)
     {
-		case 0:
-			glBindTexture(GL_TEXTURE_2D, m_spriteThicknessFBO->getColorTexture());
-			break;
-		case 1:
-			glBindTexture(GL_TEXTURE_2D, m_spriteDepthFBO->getDepthTexture());
-		break;
+        glActiveTexture(GL_TEXTURE0);
+        glEnable(GL_TEXTURE_2D);
+        switch (debugFBO)
+        {
+        case 0:
+            glBindTexture(GL_TEXTURE_2D, m_spriteThicknessFBO->getColorTexture());
+            break;
+        case 1:
+            glBindTexture(GL_TEXTURE_2D, m_spriteDepthFBO->getDepthTexture());
+            break;
         case 2:
             glBindTexture(GL_TEXTURE_2D, m_spriteBlurDepthHFBO->getColorTexture());
             break;
@@ -616,30 +624,29 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
         case 4:
             glBindTexture(GL_TEXTURE_2D, m_spriteNormalFBO->getColorTexture());
             break;
-		case 5:
-			glBindTexture(GL_TEXTURE_2D, m_spriteBlurThicknessHFBO->getColorTexture());
-			break;
-		case 6:
-			glBindTexture(GL_TEXTURE_2D, m_spriteBlurThicknessVFBO->getColorTexture());
-			break;
-		case 9:
-		default:
-			glBindTexture(GL_TEXTURE_2D, m_spriteShadeFBO->getColorTexture());
-			break;
+        case 5:
+            glBindTexture(GL_TEXTURE_2D, m_spriteBlurThicknessHFBO->getColorTexture());
+            break;
+        case 6:
+            glBindTexture(GL_TEXTURE_2D, m_spriteBlurThicknessVFBO->getColorTexture());
+            break;
+        default:
+            break;
 
+        }
+
+        glBegin(GL_QUADS);
+        {
+            glTexCoord3f(txmin, tymax, 0.0); glVertex3f(vxmin, vymax, 0.0);
+            glTexCoord3f(txmax, tymax, 0.0); glVertex3f(vxmax, vymax, 0.0);
+            glTexCoord3f(txmax, tymin, 0.0); glVertex3f(vxmax, vymin, 0.0);
+            glTexCoord3f(txmin, tymin, 0.0); glVertex3f(vxmin, vymin, 0.0);
+        }
+        glEnd();
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
-
-    glBegin(GL_QUADS);
-    {
-        glTexCoord3f(txmin, tymax, 0.0); glVertex3f(vxmin, vymax, 0.0);
-        glTexCoord3f(txmax, tymax, 0.0); glVertex3f(vxmax, vymax, 0.0);
-        glTexCoord3f(txmax, tymin, 0.0); glVertex3f(vxmax, vymin, 0.0);
-        glTexCoord3f(txmin, tymin, 0.0); glVertex3f(vxmin, vymin, 0.0);
-    }
-    glEnd();
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
+    
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
@@ -650,6 +657,71 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
 
 	vparams->drawTool()->restoreLastState();
 
+}
+template<class DataTypes>
+void OglFluidModel<DataTypes>::drawTransparent(const core::visual::VisualParams* vparams)
+{
+    vparams->drawTool()->saveLastState();
+    
+    const auto debugFBO = d_debugFBO.getValue();
+    if(debugFBO > 7) 
+    {
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glEnable(GL_DEPTH_TEST);
+        m_spriteFinalPassShader.TurnOn();
+        glActiveTexture(GL_TEXTURE0);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, m_spriteShadeFBO->getColorTexture());
+        glActiveTexture(GL_TEXTURE1);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, m_spriteShadeFBO->getDepthTexture());
+
+        m_spriteFinalPassShader.SetInt(m_spriteFinalPassShader.GetVariable("u_colorTexture"), 0);
+        m_spriteFinalPassShader.SetInt(m_spriteFinalPassShader.GetVariable("u_depthTexture"), 1);
+        
+        float vxmax, vymax;
+        float vxmin, vymin;
+        float txmax, tymax;
+        float txmin, tymin;
+
+        txmin = tymin = 0.0;
+        vxmin = vymin = -1.0;
+        vxmax = vymax = txmax = tymax = 1.0;
+        glBegin(GL_QUADS);
+        {
+            glTexCoord3f(txmin, tymax, 0.0); glVertex3f(vxmin, vymax, 0.0);
+            glTexCoord3f(txmax, tymax, 0.0); glVertex3f(vxmax, vymax, 0.0);
+            glTexCoord3f(txmax, tymin, 0.0); glVertex3f(vxmax, vymin, 0.0);
+            glTexCoord3f(txmin, tymin, 0.0); glVertex3f(vxmin, vymin, 0.0);
+        }
+        glEnd();
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        m_spriteFinalPassShader.TurnOff();
+
+        glDisable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+    }
+
+    vparams->drawTool()->restoreLastState();
 }
 
 template<class DataTypes>

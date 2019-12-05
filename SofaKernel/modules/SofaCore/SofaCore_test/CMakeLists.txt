@@ -10,6 +10,7 @@ set(SOURCE_FILES
     objectmodel/BaseObjectDescription_test.cpp
     objectmodel/DataFileName_test.cpp
     objectmodel/DataCallback_test.cpp
+    objectmodel/BaseClass_test.cpp
     DataEngine_test.cpp
     TrackedData_test.cpp
 )

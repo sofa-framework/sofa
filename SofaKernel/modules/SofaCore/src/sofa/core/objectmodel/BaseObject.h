@@ -456,6 +456,7 @@ private:
 protected:
     /// Method called to add the Data to the DataTracker (listing the Data to track)
     void trackInternalData(const BaseData &data);
+    void cleanTracker();
 
     /// Method called to know if a tracked Data has changed
     bool hasDataChanged(const BaseData &data);

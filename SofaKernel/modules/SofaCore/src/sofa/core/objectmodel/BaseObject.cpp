@@ -294,6 +294,11 @@ void BaseObject::trackInternalData(const objectmodel::BaseData& data)
     m_internalDataTracker.trackData(data);
 }
 
+void BaseObject::cleanTracker()
+{
+    m_internalDataTracker.clean();
+}
+
 bool BaseObject::hasDataChanged(const objectmodel::BaseData& data)
 {
     bool dataFoundinTracker = false;
