@@ -50,9 +50,9 @@ public:
     ~Quater();
     Quater(Real x, Real y, Real z, Real w);
     template<class Real2>
-    Quater(const Real2 q[]) { for (int i=0; i<4; i++) _q[i] = (Real)q[i]; }
+    Quater(const Real2 q[]) { for (int i=0; i<4; i++) _q[i] = Real(q[i]); }
     template<class Real2>
-    Quater(const Quater<Real2>& q) { for (int i=0; i<4; i++) _q[i] = (Real)q[i]; }
+    Quater(const Quater<Real2>& q) { for (int i=0; i<4; i++) _q[i] = Real(q[i]); }
     Quater( const defaulttype::Vec<3,Real>& axis, Real angle );
 
     /** Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo.        
@@ -109,17 +109,17 @@ public:
     template<class Mat33>
     void toMatrix(Mat33 &m) const
     {
-        m[0][0] = (typename Mat33::Real) (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
-        m[0][1] = (typename Mat33::Real) (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
-        m[0][2] = (typename Mat33::Real) (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
+        m[0][0] = typename Mat33::Real (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
+        m[0][1] = typename Mat33::Real (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
+        m[0][2] = typename Mat33::Real (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
 
-        m[1][0] = (typename Mat33::Real) (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
-        m[1][1] = (typename Mat33::Real) (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
-        m[1][2] = (typename Mat33::Real) (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
+        m[1][0] = typename Mat33::Real (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
+        m[1][1] = typename Mat33::Real (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
+        m[1][2] = typename Mat33::Real (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
 
-        m[2][0] = (typename Mat33::Real) (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
-        m[2][1] = (typename Mat33::Real) (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
-        m[2][2] = (typename Mat33::Real) (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
+        m[2][0] = typename Mat33::Real (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
+        m[2][1] = typename Mat33::Real (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
+        m[2][2] = typename Mat33::Real (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
     }
 
     /// Apply the rotation to a given vector
@@ -127,9 +127,9 @@ public:
     Vec rotate( const Vec& v ) const
     {
         return Vec(
-                (typename Vec::value_type)((1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]))*v[0] + (2.0f * (_q[0] * _q[1] - _q[2] * _q[3])) * v[1] + (2.0f * (_q[2] * _q[0] + _q[1] * _q[3])) * v[2]),
-                (typename Vec::value_type)((2.0f * (_q[0] * _q[1] + _q[2] * _q[3]))*v[0] + (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]))*v[1] + (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]))*v[2]),
-                (typename Vec::value_type)((2.0f * (_q[2] * _q[0] - _q[1] * _q[3]))*v[0] + (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]))*v[1] + (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]))*v[2])
+                typename Vec::value_type((1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]))*v[0] + (2.0f * (_q[0] * _q[1] - _q[2] * _q[3])) * v[1] + (2.0f * (_q[2] * _q[0] + _q[1] * _q[3])) * v[2]),
+                typename Vec::value_type((2.0f * (_q[0] * _q[1] + _q[2] * _q[3]))*v[0] + (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]))*v[1] + (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]))*v[2]),
+                typename Vec::value_type((2.0f * (_q[2] * _q[0] - _q[1] * _q[3]))*v[0] + (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]))*v[1] + (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]))*v[2])
                 );
 
     }
@@ -139,9 +139,9 @@ public:
     Vec inverseRotate( const Vec& v ) const
     {
         return Vec(
-                (typename Vec::value_type)((1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]))*v[0] + (2.0f * (_q[0] * _q[1] + _q[2] * _q[3])) * v[1] + (2.0f * (_q[2] * _q[0] - _q[1] * _q[3])) * v[2]),
-                (typename Vec::value_type)((2.0f * (_q[0] * _q[1] - _q[2] * _q[3]))*v[0] + (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]))*v[1] + (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]))*v[2]),
-                (typename Vec::value_type)((2.0f * (_q[2] * _q[0] + _q[1] * _q[3]))*v[0] + (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]))*v[1] + (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]))*v[2])
+                typename Vec::value_type((1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]))*v[0] + (2.0f * (_q[0] * _q[1] + _q[2] * _q[3])) * v[1] + (2.0f * (_q[2] * _q[0] - _q[1] * _q[3])) * v[2]),
+                typename Vec::value_type((2.0f * (_q[0] * _q[1] - _q[2] * _q[3]))*v[0] + (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]))*v[1] + (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]))*v[2]),
+                typename Vec::value_type((2.0f * (_q[2] * _q[0] + _q[1] * _q[3]))*v[0] + (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]))*v[1] + (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]))*v[2])
                 );
 
     }
@@ -149,8 +149,6 @@ public:
     /// Given two quaternions, add them together to get a third quaternion.
     /// Adding quaternions to get a compound rotation is analagous to adding
     /// translations to get a compound translation.
-    //template <class T>
-    //friend Quater<T> operator+(Quater<T> q1, Quater<T> q2);
     Quater<Real> operator+(const Quater<Real> &q1) const;
 
     Quater<Real> operator*(const Quater<Real> &q1) const;
@@ -161,8 +159,6 @@ public:
     void operator/=(const Real &r);
 
     /// Given two Quaters, multiply them together to get a third quaternion.
-    //template <class T>
-    //friend Quater<T> operator*(const Quater<T>& q1, const Quater<T>& q2);
 
     Quater quatVectMult(const defaulttype::Vec<3,Real>& vect);
 
@@ -204,10 +200,6 @@ public:
     void writeOpenGlMatrix( double* m ) const;
     void writeOpenGlMatrix( float* m ) const;
 
-    //void buildRotationMatrix(MATRIX4x4 m);
-
-    //void buildRotationMatrix(Matrix &m);
-
     // This function computes a quaternion based on an axis (defined by
     // the given vector) and an angle about which to rotate.  The angle is
     // expressed in radians.
@@ -221,49 +213,102 @@ public:
     template<class V>
     static Quater createFromRotationVector(const V& a)
     {
-        Real phi = (Real)sqrt(a*a);
+        Real phi = Real(sqrt(a*a));
         if( phi < 1.0e-5 )
             return Quater(0,0,0,1);
         else
         {
             Real nor = 1/phi;
-            Real s = (Real)sin(phi/2);
-            return Quater( a[0]*s*nor, a[1]*s*nor,a[2]*s*nor, (Real)cos(phi/2) );
+            Real s = Real(sin(phi/2));
+            return Quater( a[0]*s*nor, a[1]*s*nor,a[2]*s*nor, Real(cos(phi/2)));
         }
     }
 
     /// Create a quaternion from Euler angles
-    static Quater createQuaterFromEuler( defaulttype::Vec<3,Real> v)
+    /// Thanks to https://github.com/mrdoob/three.js/blob/dev/src/math/Quaternion.js#L199
+    enum class EulerOrder
     {
-        Real quat[4];      Real a0 = v.elems[0];
-        Real a1 = v.elems[1];
-        Real a2 = v.elems[2];
-        quat[3] = cos(a0/2)*cos(a1/2)*cos(a2/2) + sin(a0/2)*sin(a1/2)*sin(a2/2);
-        quat[0] = sin(a0/2)*cos(a1/2)*cos(a2/2) - cos(a0/2)*sin(a1/2)*sin(a2/2);
-        quat[1] = cos(a0/2)*sin(a1/2)*cos(a2/2) + sin(a0/2)*cos(a1/2)*sin(a2/2);
-        quat[2] = cos(a0/2)*cos(a1/2)*sin(a2/2) - sin(a0/2)*sin(a1/2)*cos(a2/2);
-        Quater quatResult( quat[0], quat[1], quat[2], quat[3] );
+        XYZ, YXZ, ZXY, ZYX, YZX, XZY, NONE
+    };
+
+    static Quater createQuaterFromEuler( defaulttype::Vec<3,Real> v, EulerOrder order = EulerOrder::ZYX)
+    {
+        Real quat[4];
+
+        Real c1 = cos( v.elems[0] / 2 );
+        Real c2 = cos( v.elems[1] / 2 );
+        Real c3 = cos( v.elems[2] / 2 );
+
+        Real s1 = sin( v.elems[0] / 2 );
+        Real s2 = sin( v.elems[1] / 2 );
+        Real s3 = sin( v.elems[2] / 2 );
+
+        switch(order)
+        {
+        case EulerOrder::XYZ:
+            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
+            break;
+        case EulerOrder::YXZ:
+            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
+            break;
+        case EulerOrder::ZXY:
+            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
+            break;
+        case EulerOrder::ZYX:
+            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
+            break;
+        case EulerOrder::YZX:
+            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
+            break;
+        case EulerOrder::XZY:
+            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
+            break;
+        case EulerOrder::NONE:
+        default:
+            msg_error("Quaternion") << "FromEuler: given order is not a valid order to create a Quaternion";
+            return Quater();
+        }
+
+        Quater quatResult{ quat[0], quat[1], quat[2], quat[3] };
         return quatResult;
     }
 
 
     /// Create a quaternion from Euler angles
-    static Quater fromEuler( Real alpha, Real beta, Real gamma ){
-        return createQuaterFromEuler( defaulttype::Vec<3,Real>(alpha, beta, gamma) );
+    static Quater fromEuler( Real alpha, Real beta, Real gamma, EulerOrder order = EulerOrder::ZYX ){
+        return createQuaterFromEuler( {alpha, beta, gamma }, order );
     }
 
     /// Create using the entries of a rotation vector (axis*angle) given in parent coordinates
     template<class T>
     static Quater createFromRotationVector(T a0, T a1, T a2 )
     {
-        Real phi = (Real)sqrt((Real)(a0*a0+a1*a1+a2*a2));
+        Real phi = Real(sqrt(a0*a0+a1*a1+a2*a2));
         if( phi < 1.0e-5 )
             return Quater(0,0,0,1);
         else
         {
             Real nor = 1/phi;
-            Real s = (Real)sin(phi/2.0);
-            return Quater( a0*s*nor, a1*s*nor,a2*s*nor, (Real)cos(phi/2.0) );
+            Real s = sin(phi/2.0);
+            return Quater( a0*s*nor, a1*s*nor,a2*s*nor, cos(phi/2.0) );
         }
     }
     /// Create using rotation vector (axis*angle) given in parent coordinates
@@ -346,10 +391,6 @@ public:
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for quaternions)
     enum { spatial_dimensions = 3 };
 };
-
-//typedef Quater<double> Quat; ///< alias
-//typedef Quater<float> Quatf; ///< alias
-//typedef Quater<double> Quaternion; ///< alias
 
 #if  !defined(SOFA_HELPER_QUATER_CPP)
 extern template class SOFA_HELPER_API Quater<double>;
