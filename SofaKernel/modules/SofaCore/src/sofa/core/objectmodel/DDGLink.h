@@ -20,7 +20,7 @@ namespace objectmodel
  * which creates the connection between the BaseLink and the DDG.
  * any data, engine, etc. can then be connected as output.
  */
-class BaseDDGLink : public DDGNode
+class SOFA_CORE_API BaseDDGLink : public DDGNode
 {
 public:
     /// Flags that describe some properties of a Data, and that can be OR'd together.
