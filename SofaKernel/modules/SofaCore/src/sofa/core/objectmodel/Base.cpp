@@ -371,7 +371,7 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
     std::vector<BaseData*> result;
     //Search in the aliases
     auto range = m_aliasData.equal_range(name);
-    for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
+    for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
 }
@@ -382,7 +382,7 @@ std::vector< BaseDDGLink* > Base::findGlobalDDGLink( const std::string &name ) c
     std::vector<BaseDDGLink*> result;
     //Search in the aliases
     auto range = m_aliasDDGLink.equal_range(name);
-    for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
+    for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
 }
@@ -418,7 +418,7 @@ std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
     std::vector<BaseLink*> result;
     //Search in the aliases
     auto range = m_aliasLink.equal_range(name);
-    for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
+    for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
 }

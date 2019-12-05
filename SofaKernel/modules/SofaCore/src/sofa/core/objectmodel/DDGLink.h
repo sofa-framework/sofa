@@ -3,6 +3,7 @@
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/ExecParams.h>
+#include <sofa/core/core.h>
 
 namespace sofa
 {
