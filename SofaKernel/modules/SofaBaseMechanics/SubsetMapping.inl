@@ -175,6 +175,7 @@ void SubsetMapping<TIn, TOut>::init()
         else
         {
             msg_error() << "f_handleTopologyChange set to True but no topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+            sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         }
     }
 
