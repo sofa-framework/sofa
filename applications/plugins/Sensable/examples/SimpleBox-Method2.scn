@@ -24,7 +24,7 @@
             <NewOmniDriver name="omniDriver1" tags="Omni" scale="300" permanent="true" listening="true" alignOmniWithCamera="true"/>
             <Node name="Tool1">
                 <MechanicalObject template="Rigid" name="RealPosition"/>
-                <SubsetMapping indices="0"/>
+                <SubsetMapping indices="0" handleTopologyChange="0"/>
             </Node>
         </Node>
     </Node>
