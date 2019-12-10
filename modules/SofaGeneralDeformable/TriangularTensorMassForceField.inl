@@ -284,7 +284,7 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::~Triangula
 
 template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init()
 {
-    sout << "initializing TriangularTensorMassForceField" << sendl;
+    msg_info() << "initializing TriangularTensorMassForceField";
     this->Inherited::init();
 
     if (l_topology.empty())

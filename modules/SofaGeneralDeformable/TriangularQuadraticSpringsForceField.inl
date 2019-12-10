@@ -163,7 +163,7 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::~Tri
 
 template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>::init()
 {
-    sout<< "initializing TriangularQuadraticSpringsForceField" << sendl;
+    msg_info() << "initializing TriangularQuadraticSpringsForceField";
     this->Inherited::init();
 
     if (l_topology.empty())

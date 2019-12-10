@@ -372,28 +372,28 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                     if (edgeInf[ind_j].m1 == (int) last)
                     {
                         edgeInf[ind_j].m1=(int) tab[i];
-                        //sout << "INFO_print : OK m1 for ind_j =" << ind_j << sendl;
+                        //dmsg_info() << "INFO_print : OK m1 for ind_j =" << ind_j;
                     }
                     else
                     {
                         if (edgeInf[ind_j].m2 == (int) last)
                         {
                             edgeInf[ind_j].m2=(int) tab[i];
-                            //sout << "INFO_print : OK m2 for ind_j =" << ind_j << sendl;
+                            //dmsg_info() << "INFO_print : OK m2 for ind_j =" << ind_j;
                         }
                     }
 
                     if (edgeInf[ind_j].m3 == (int) last)
                     {
                         edgeInf[ind_j].m3=(int) tab[i];
-                        //sout << "INFO_print : OK m3 for ind_j =" << ind_j << sendl;
+                        //dmsg_info() << "INFO_print : OK m3 for ind_j =" << ind_j;
                     }
                     else
                     {
                         if (edgeInf[ind_j].m4 == (int) last)
                         {
                             edgeInf[ind_j].m4=(int) tab[i];
-                            //sout << "INFO_print : OK m4 for ind_j =" << ind_j << sendl;
+                            //dmsg_info() << "INFO_print : OK m4 for ind_j =" << ind_j;
                         }
                     }
 
@@ -411,7 +411,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                     {
                         edgeInf[j_loc].m1 =(int) tab[i];
                         //is_forgotten=true;
-                        //sout << "INFO_print : QuadularBendingSprings - MISS m1 for j_loc =" << j_loc << sendl;
+                        //dmsg_info() << "INFO_print : QuadularBendingSprings - MISS m1 for j_loc =" << j_loc;
 
                     }
                     else
@@ -420,7 +420,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                         {
                             edgeInf[j_loc].m2 =(int) tab[i];
                             //is_forgotten=true;
-                            //sout << "INFO_print : QuadularBendingSprings - MISS m2 for j_loc =" << j_loc << sendl;
+                            //dmsg_info() << "INFO_print : QuadularBendingSprings - MISS m2 for j_loc =" << j_loc;
 
                         }
 
@@ -430,7 +430,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                     {
                         edgeInf[j_loc].m3 =(int) tab[i];
                         //is_forgotten=true;
-                        //sout << "INFO_print : QuadularBendingSprings - MISS m3 for j_loc =" << j_loc << sendl;
+                        //dmsg_info() << "INFO_print : QuadularBendingSprings - MISS m3 for j_loc =" << j_loc;
 
                     }
                     else
@@ -439,7 +439,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                         {
                             edgeInf[j_loc].m4 =(int) tab[i];
                             //is_forgotten=true;
-                            //sout << "INFO_print : QuadularBendingSprings - MISS m4 for j_loc =" << j_loc << sendl;
+                            //dmsg_info() << "INFO_print : QuadularBendingSprings - MISS m4 for j_loc =" << j_loc;
 
                         }
 
@@ -515,7 +515,6 @@ QuadularBendingSprings<DataTypes>::~QuadularBendingSprings()
 template<class DataTypes>
 void QuadularBendingSprings<DataTypes>::init()
 {
-    //serr << "initializing QuadularBendingSprings" << sendl;
     this->Inherited::init();
 
     if (l_topology.empty())
