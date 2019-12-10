@@ -73,8 +73,8 @@ void TriangleModelInRegularGrid::init()
     _topology = this->getContext()->getMeshTopology();
     m_mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
-    if( !m_mstate) { serr << "TriangleModelInRegularGrid requires a Vec3 Mechanical Model" << sendl; return;}
-    if (!m_topology) { serr << "TriangleModelInRegularGrid requires a BaseMeshTopology" << sendl; return;}
+    if (!m_mstate) { msg_error() << "TriangleModelInRegularGrid requires a Vec3 Mechanical Model"; return; }
+    if (!m_topology) { msg_error() << "TriangleModelInRegularGrid requires a BaseMeshTopology"; return; }
 
     // Test if _topology depend on an higher topology (to compute Bounding Tree faster) and get it
     TopologicalMapping* _topoMapping = nullptr;
@@ -99,9 +99,16 @@ void TriangleModelInRegularGrid::init()
             }
         }
     }
-    if ( _topoMapping && !_higher_topo ) { serr << "Topological Mapping " << _topoMapping->getName() << " returns a from topology pointer equal to nullptr." << sendl; return;}
-    else if ( _higher_topo != _topology ) sout << "Using the " << _higher_topo->getClassName() << " \"" << _higher_topo->getName() << "\" to compute the bounding trees." << sendl;
-    else sout << "Keeping the TriangleModel to compute the bounding trees." << sendl;
+    if ( _topoMapping && !_higher_topo ) { 
+        msg_error() << "Topological Mapping " << _topoMapping->getName() << " returns a from topology pointer equal to nullptr.";
+        return;
+    }
+    else if (_higher_topo != _topology) {
+        msg_info() << "Using the " << _higher_topo->getClassName() << " \"" << _higher_topo->getName() << "\" to compute the bounding trees.";
+    }
+    else {
+        msg_info() << "Keeping the TriangleModel to compute the bounding trees.";
+    }
 }
 
 void TriangleModelInRegularGrid::computeBoundingTree ( int )

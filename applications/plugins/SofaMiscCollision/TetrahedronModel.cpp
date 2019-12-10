@@ -71,13 +71,13 @@ void TetrahedronModel::init()
 
     if (mstate==nullptr)
     {
-        serr<<"TetrahedronModel requires a Vec3 Mechanical Model" << sendl;
+        msg_error() << "TetrahedronModel requires a Vec3 Mechanical Model";
         return;
     }
 
     if (!_topology)
     {
-        serr<<"TetrahedronModel requires a BaseMeshTopology" << sendl;
+        msg_error() << "TetrahedronModel requires a BaseMeshTopology";
         return;
     }
 
