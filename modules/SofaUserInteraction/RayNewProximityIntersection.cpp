@@ -78,7 +78,6 @@ bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
-        //sout<<"Collision between Line - Triangle"<<sendl;
         return true;
     }
     else
