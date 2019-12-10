@@ -1501,7 +1501,7 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
         }
     }
     Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+#if !defined(NDEBUG)
     const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
     if (!val.empty() && val.size() != (unsigned int)this->getSize())
     {
@@ -1524,7 +1524,7 @@ const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<Dat
     if (v.index < vectorsCoord.size() && vectorsCoord[v.index] != nullptr)
     {
         const Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+#if !defined(NDEBUG)
         const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
         if (!val.empty() && val.size() != (unsigned int)this->getSize())
         {
@@ -1568,7 +1568,7 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
     }
     Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
 
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+#if !defined(NDEBUG)
     const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
     if (!val.empty() && val.size() != (unsigned int)this->getSize())
     {
@@ -1586,7 +1586,7 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
     {
         const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
 
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+#if !defined(NDEBUG)
         const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
         if (!val.empty() && val.size() != (unsigned int)this->getSize())
         {
