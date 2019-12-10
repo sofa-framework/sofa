@@ -105,7 +105,7 @@ void LineCollisionModel<DataTypes>::init()
     {
 
         myActiver = LineActiver::getDefaultActiver();
-        sout<<"path = "<<path<<" no Line Activer found for LineModel "<<this->getName()<<sendl;
+        msg_info()<<"path = "<<path<<" no Line Activer found for LineModel "<<this->getName()<<sendl;
     }
     else
     {
@@ -114,7 +114,7 @@ void LineCollisionModel<DataTypes>::init()
         this->getContext()->get(activer ,path  );
 
         if (activer != nullptr)
-            sout<<" Activer named"<<activer->getName()<<" found"<<sendl;
+            msg_info()<<" Activer named"<<activer->getName()<<" found"<<sendl;
         else
             msg_error()<<"wrong path for Line Activer";
 
@@ -132,7 +132,7 @@ void LineCollisionModel<DataTypes>::init()
         }
         else
         {
-            sout<<"Line Activer named"<<activer->getName()<<" found !! for LineModel "<< this->getName() <<sendl;
+            msg_info()<<"Line Activer named"<<activer->getName()<<" found !! for LineModel "<< this->getName() <<sendl;
         }
     }
 

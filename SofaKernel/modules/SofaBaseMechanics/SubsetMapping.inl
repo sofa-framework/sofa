@@ -126,7 +126,7 @@ void SubsetMapping<TIn, TOut>::init()
                 ++numnotfound;
                 if(!ignoreNotFound)
                 {
-                    sout<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<sendl;
+                    msg_error() << "Point " << i << "=" << out[i] << " not found in input model within a radius of " << rmax << ".";
                 }
                 indices[i] = (unsigned int)-1;
             }
@@ -134,7 +134,7 @@ void SubsetMapping<TIn, TOut>::init()
         f_indices.endEdit();
         if (numnotfound > 0)
         {
-            sout << out.size() << " points, " << out.size()-numnotfound << " found, " << numnotfound << " fixed points" << sendl;
+            msg_info() << out.size() << " points, " << out.size() - numnotfound << " found, " << numnotfound << " fixed points";
         }
     }
     else if (!ignoreNotFound)
