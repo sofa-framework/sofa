@@ -40,14 +40,6 @@
 #include <algorithm>
 #include <limits>
 
-#ifdef DEBUG_TRIANGLEFEM
-#define DEBUG_TRIANGLEFEM_MSG true
-#else
-#define DEBUG_TRIANGLEFEM_MSG false
-#endif
-
-
-
 namespace sofa
 {
 
@@ -212,9 +204,7 @@ void TriangularFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Index&c)
 {
-
-    if(DEBUG_TRIANGLEFEM_MSG)
-        dmsg_info() << "Entering initSmall" ;
+    dmsg_info() << "Entering initSmall" ;
 
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
 
@@ -244,8 +234,7 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Inde
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Index&c)
 {
-    if(DEBUG_TRIANGLEFEM_MSG)
-        dmsg_info() << "Entering initLarge" ;
+    dmsg_info() << "Entering initLarge" ;
 
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
 
@@ -564,9 +553,7 @@ int TriangularFEMForceField<DataTypes>::getFracturedEdge()
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c)
 {
-
-    if(DEBUG_TRIANGLEFEM_MSG)
-        dmsg_info() << "Entering in computeRotationLarge.";
+    dmsg_info() << "Entering in computeRotationLarge.";
 
     /// check if a, b and c are < size of p
     if (a >= p.size() || b >= p.size() || c >= p.size())
@@ -1162,8 +1149,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stres
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
-    if(DEBUG_TRIANGLEFEM_MSG)
-        dmsg_info() << "Entering in applyStiffnessSmall." ;
+    dmsg_info() << "Entering in applyStiffnessSmall." ;
 
     defaulttype::Mat<6,3,Real> J;
     defaulttype::Vec<3,Real> strain, stress;
@@ -1216,8 +1202,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
 
-    if(DEBUG_TRIANGLEFEM_MSG)
-        msg_info() << "Entering applyStiffnessLarge" ;
+    msg_info() << "Entering applyStiffnessLarge" ;
 
     defaulttype::Mat<6,3,Real> J;
     defaulttype::Vec<3,Real> strain, stress;
@@ -1288,8 +1273,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index )
 {
-    if(DEBUG_TRIANGLEFEM_MSG)
-        dmsg_info() << "TriangularFEMForceField::accumulateDampingSmall" ;
+    dmsg_info() << "TriangularFEMForceField::accumulateDampingSmall" ;
 }
 
 // --------------------------------------------------------------------------------------
@@ -1298,9 +1282,7 @@ void TriangularFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const VecCoord &p, Index elementIndex )
 {
-
-    if(DEBUG_TRIANGLEFEM_MSG)
-        dmsg_info() << "TriangularFEMForceField::accumulateForceSmall" ;
+    dmsg_info() << "TriangularFEMForceField::accumulateForceSmall" ;
 
     Displacement F;
 
@@ -1323,8 +1305,7 @@ void TriangularFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, cons
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const VecCoord &p, Index elementIndex )
 {
-    if(DEBUG_TRIANGLEFEM_MSG)
-        dmsg_info() << "TriangularFEMForceField::accumulateForceLarge" ;
+    dmsg_info() << "TriangularFEMForceField::accumulateForceLarge" ;
 
     Displacement F;
 
@@ -1351,8 +1332,7 @@ void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index )
 {
-    if(DEBUG_TRIANGLEFEM_MSG)
-        dmsg_info() << "TriangularFEMForceField::accumulateDampingLarge" ;
+    dmsg_info() << "TriangularFEMForceField::accumulateDampingLarge" ;
 }
 
 

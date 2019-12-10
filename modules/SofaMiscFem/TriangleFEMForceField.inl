@@ -33,8 +33,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include "config.h"
 
-// #define DEBUG_TRIANGLEFEM
-
 namespace sofa
 {
 
@@ -228,10 +226,6 @@ void TriangleFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, cons
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplacement &J, Coord /*a*/, Coord b, Coord c )
 {
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::computeStrainDisplacement"<<sendl;
-#endif
-
     //    //Coord ab_cross_ac = cross(b, c);
     Real determinant = b[0] * c[1]; // Surface * 2
 
@@ -420,11 +414,6 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::initSmall()
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::initSmall"<<sendl;
-#endif
-
     Transformation identity;
     identity[0][0]=identity[1][1]=identity[2][2]=1;
     identity[0][1]=identity[0][2]=0;
@@ -440,11 +429,6 @@ void TriangleFEMForceField<DataTypes>::initSmall()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const VecCoord &p, Index elementIndex, bool implicit )
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::accumulateForceSmall"<<sendl;
-#endif
-
     Index a = (*_indexedElements)[elementIndex][0];
     Index b = (*_indexedElements)[elementIndex][1];
     Index c = (*_indexedElements)[elementIndex][2];
@@ -481,11 +465,6 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const 
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::applyStiffnessSmall"<<sendl;
-#endif
-
     typename VecElement::const_iterator it;
     unsigned int i(0);
 
@@ -523,11 +502,6 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, 
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::initLarge()
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::initLarge"<<sendl;
-#endif
-
     _rotatedInitialElements.resize(_indexedElements->size());
 
     typename VecElement::const_iterator it;
@@ -564,11 +538,6 @@ void TriangleFEMForceField<DataTypes>::initLarge()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c)
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::computeRotationLarge"<<sendl;
-#endif
-
     // first vector on first edge
     // second vector in the plane of the two first edges
     // third vector orthogonal to first and second
@@ -601,11 +570,6 @@ void TriangleFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, 
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const VecCoord &p, Index elementIndex, bool implicit )
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::accumulateForceLarge"<<sendl;
-#endif
-
     // triangle vertex indices
     Index a = (*_indexedElements)[elementIndex][0];
     Index b = (*_indexedElements)[elementIndex][1];
@@ -658,21 +622,12 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
 //void TriangleFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index )
 //{
 
-//#ifdef DEBUG_TRIANGLEFEM
-//    sout << "TriangleFEMForceField::accumulateDampingLarge"<<sendl;
-//#endif
-
 //}
 
 
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::applyStiffnessLarge"<<sendl;
-#endif
-
     typename VecElement::const_iterator it;
     unsigned int i(0);
 
