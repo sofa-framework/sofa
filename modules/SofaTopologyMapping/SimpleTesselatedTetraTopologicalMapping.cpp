@@ -87,7 +87,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
 //				from_tstc->loadFromMeshLoader(mshLoader);
             }
 
-            //sout << from_tstc->getNbPoints() << sendl;
+            //msg_info() << from_tstc->getNbPoints();
 
             pointSourceData.resize(from_tstc->getNbPoints()+from_tstc->getNbEdges());
 
@@ -95,7 +95,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
             for (int i=0; i<from_tstc->getNbPoints(); i++)
             {
                 to_tstc->addPoint(from_tstc->getPX(i), from_tstc->getPY(i), from_tstc->getPZ(i));
-                //sout << from_tstc->getPX(i) << " " << from_tstc->getPY(i) << " " << from_tstc->getPZ(i) << sendl;
+                //msg_info() << from_tstc->getPX(i) << " " << from_tstc->getPY(i) << " " << from_tstc->getPZ(i);
 
                 pointMappedFromPointData.push_back(i);
                 pointSourceData[i] = i+1;
@@ -184,7 +184,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
                 unsigned int i1 = ( static_cast< const PointsIndicesSwap * >( *changeIt ) )->index[0];
                 unsigned int i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
                 // i1 and i2 swapped in output model
-//				 sout << "OUTPUT SWAP POINTS "<<i1 << " " << i2 << sendl;
+//				 msg_info() << "OUTPUT SWAP POINTS "<<i1 << " " << i2;
                 swapOutputPoints(i1,i2);
                 break;
             }
@@ -196,14 +196,14 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
             case core::topology::POINTSREMOVED:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRemoved * >( *changeIt ) )->getArray();
-//				 sout << "OUTPUT REMOVE POINTS "<<tab << sendl;
+//				 msg_info() << "OUTPUT REMOVE POINTS "<<tab;
                 removeOutputPoints( tab );
                 break;
             }
             case core::topology::POINTSRENUMBERING:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRenumbering * >( *changeIt ) )->getinv_IndexArray();
-//				 sout << "OUTPUT RENUMBER POINTS "<<tab << sendl;
+//				 msg_info() << "OUTPUT RENUMBER POINTS "<<tab;
                 renumberOutputPoints( tab );
                 break;
             }
@@ -215,15 +215,15 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
             case core::topology::TETRAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *changeIt ) )->getArray();
-//				sout << "OUTPUT REMOVE TETRAHEDRA "<<tab << sendl;
+//				msg_info() << "OUTPUT REMOVE TETRAHEDRA "<<tab;
                 removeOutputTetrahedra( tab );
                 break;
             }
             case core::topology::ENDING_EVENT:
             {
-                //sout << "(*pointMappedFromPointData) = " << (*pointMappedFromPointData)<<sendl;
-                //sout << "pointMappedFromEdge = " << pointMappedFromEdge<<sendl;
-                //sout << "(*pointSourceData) = " << pointMappedFromEdge<<sendl;
+                //msg_info() << "(*pointMappedFromPointData) = " << (*pointMappedFromPointData)<<sendl;
+                //msg_info() << "pointMappedFromEdge = " << pointMappedFromEdge<<sendl;
+                //msg_info() << "(*pointSourceData) = " << pointMappedFromEdge<<sendl;
                 if (from_tstm != nullptr && !tetrahedraToRemove.empty())
                 {
                     sofa::helper::vector<unsigned int> vitems;
@@ -259,7 +259,7 @@ void SimpleTesselatedTetraTopologicalMapping::swapOutputPoints(int i1, int i2)
     // first update pointSourceData
     int i1Source = pointSourceData[i1];
     int i2Source = pointSourceData[i2];
-//    sout << "swap output points "<<i1 << " " << i2 << " from source " << i1Source << " " << i2Source << sendl;
+//    msg_info() << "swap output points "<<i1 << " " << i2 << " from source " << i1Source << " " << i2Source;
     setPointSource(i1, i2Source);
     setPointSource(i2, i1Source);
 
@@ -277,7 +277,7 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputPoints( const sofa::he
     {
         swapOutputPoints( index[i], last );
         int source = pointSourceData[last];
-//			sout << "remove output point " << last << " from source " << source << sendl;
+//			msg_info() << "remove output point " << last << " from source " << source;
         if (source > 0)
         {
             pointMappedFromPointData[source-1] = -1;
@@ -361,12 +361,12 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputTetrahedra( const sofa
 			}
             if (nbt == 0) // we need to remove the source tetra
             {
-//				sout << "SimpleTesselatedTetraTopologicalMapping: source tetra "<<source<<" needs to be removed."<<sendl;
+//				msg_info() << "SimpleTesselatedTetraTopologicalMapping: source tetra "<<source<<" needs to be removed."<<sendl;
                 tetrahedraToRemove.insert(source);
             }
             else
             {
-//			    sout << "SimpleTesselatedTetraTopologicalMapping: source tetra "<<source<<" now has "<<nbt<<" / 8 childs."<<sendl;
+//			    msg_info() << "SimpleTesselatedTetraTopologicalMapping: source tetra "<<source<<" now has "<<nbt<<" / 8 childs."<<sendl;
             }
             --last;
         }
@@ -405,7 +405,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
                 unsigned int i1 = ( static_cast< const PointsIndicesSwap * >( *changeIt ) )->index[0];
                 unsigned int i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
                 // i1 and i2 swapped in input model
-//				 sout << "INPUT SWAP POINTS "<<i1 << " " << i2 << sendl;
+//				 msg_info() << "INPUT SWAP POINTS "<<i1 << " " << i2;
                 swapInputPoints(i1,i2);
                 break;
             }
@@ -417,14 +417,14 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
             case core::topology::POINTSREMOVED:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRemoved * >( *changeIt ) )->getArray();
-//				 sout << "INPUT REMOVE POINTS "<<tab << sendl;
+//				 msg_info() << "INPUT REMOVE POINTS "<<tab;
                 removeInputPoints( tab );
                 break;
             }
             case core::topology::POINTSRENUMBERING:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRenumbering * >( *changeIt ) )->getinv_IndexArray();
-//				 sout << "INPUT RENUMBER POINTS "<<tab << sendl;
+//				 msg_info() << "INPUT RENUMBER POINTS "<<tab;
                 renumberInputPoints( tab );
                 break;
             }
@@ -436,7 +436,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
             case core::topology::EDGESREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *changeIt ) )->getArray();
-//				sout << "INPUT REMOVE EDGES "<<tab << sendl;
+//				msg_info() << "INPUT REMOVE EDGES "<<tab;
                 removeInputEdges( tab );
                 break;
             }
@@ -448,15 +448,15 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
             case core::topology::TETRAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *changeIt ) )->getArray();
-//				sout << "INPUT REMOVE TETRAHEDRA "<<tab << sendl;
+//				msg_info() << "INPUT REMOVE TETRAHEDRA "<<tab;
                 removeInputTetrahedra( tab );
                 break;
             }
             case core::topology::ENDING_EVENT:
             {
-                //sout << "(*pointMappedFromPointData) = " << (*pointMappedFromPointData)<<sendl;
-                //sout << "pointMappedFromEdge = " << pointMappedFromEdge<<sendl;
-                //sout << "(*pointSourceData) = " << pointMappedFromEdge<<sendl;
+                //msg_info() << "(*pointMappedFromPointData) = " << (*pointMappedFromPointData)<<sendl;
+                //msg_info() << "pointMappedFromEdge = " << pointMappedFromEdge<<sendl;
+                //msg_info() << "(*pointSourceData) = " << pointMappedFromEdge<<sendl;
                 break;
             }
             default: break;
