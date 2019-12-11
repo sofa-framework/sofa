@@ -93,11 +93,6 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::apply
         for(j=0; j<3; ++j)
         {
             cotangent[j]=(squareRestLength[(j+1)%3] +squareRestLength[(j+2)%3]-squareRestLength[j])/(4*area);
-            /*	if (cotangent[j]<0)
-            serr<<"negative cotangent["<<i<<"]["<<j<<"]"<<sendl;
-            else
-            serr<<"cotangent="<<cotangent[j]<<sendl;*/
-
         }
         for(j=0; j<3; ++j)
         {

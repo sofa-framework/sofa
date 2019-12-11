@@ -372,28 +372,24 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                     if (edgeInf[ind_j].m1 == (int) last)
                     {
                         edgeInf[ind_j].m1=(int) tab[i];
-                        //dmsg_info() << "INFO_print : OK m1 for ind_j =" << ind_j;
                     }
                     else
                     {
                         if (edgeInf[ind_j].m2 == (int) last)
                         {
                             edgeInf[ind_j].m2=(int) tab[i];
-                            //dmsg_info() << "INFO_print : OK m2 for ind_j =" << ind_j;
                         }
                     }
 
                     if (edgeInf[ind_j].m3 == (int) last)
                     {
                         edgeInf[ind_j].m3=(int) tab[i];
-                        //dmsg_info() << "INFO_print : OK m3 for ind_j =" << ind_j;
                     }
                     else
                     {
                         if (edgeInf[ind_j].m4 == (int) last)
                         {
                             edgeInf[ind_j].m4=(int) tab[i];
-                            //dmsg_info() << "INFO_print : OK m4 for ind_j =" << ind_j;
                         }
                     }
 
@@ -402,7 +398,6 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
 
             if(debug_mode)
             {
-
                 for (unsigned int j_loc=0; j_loc<edgeInf.size(); ++j_loc)
                 {
 
@@ -411,8 +406,6 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                     {
                         edgeInf[j_loc].m1 =(int) tab[i];
                         //is_forgotten=true;
-                        //dmsg_info() << "INFO_print : QuadularBendingSprings - MISS m1 for j_loc =" << j_loc;
-
                     }
                     else
                     {
@@ -420,8 +413,6 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                         {
                             edgeInf[j_loc].m2 =(int) tab[i];
                             //is_forgotten=true;
-                            //dmsg_info() << "INFO_print : QuadularBendingSprings - MISS m2 for j_loc =" << j_loc;
-
                         }
 
                     }
@@ -430,8 +421,6 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                     {
                         edgeInf[j_loc].m3 =(int) tab[i];
                         //is_forgotten=true;
-                        //dmsg_info() << "INFO_print : QuadularBendingSprings - MISS m3 for j_loc =" << j_loc;
-
                     }
                     else
                     {
@@ -439,8 +428,6 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                         {
                             edgeInf[j_loc].m4 =(int) tab[i];
                             //is_forgotten=true;
-                            //dmsg_info() << "INFO_print : QuadularBendingSprings - MISS m4 for j_loc =" << j_loc;
-
                         }
 
                     }
@@ -572,7 +559,7 @@ void QuadularBendingSprings<DataTypes>::init()
 template <class DataTypes>
 SReal QuadularBendingSprings<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
 {
-    serr<<"getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error() << "getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 
@@ -593,17 +580,13 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
     //this->dfdx.resize(nbEdges); //m_springs.size()
     f.resize(x.size());
     m_potentialEnergy = 0;
-    /*        serr<<"QuadularBendingSprings<DataTypes>::addForce()"<<sendl;*/
 
     for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
 
-        /*            serr<<"QuadularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
-
         if(einfo->is_activated)
         {
-
             //this->addSpringForce(m_potentialEnergy,f,x,v, i, einfo->spring);
 
             int a1 = einfo->m1;
@@ -620,9 +603,7 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
                 u1 *= inverseLength;
                 Real elongation = (Real)(d1 - einfo->restlength1);
                 m_potentialEnergy += elongation * elongation * einfo->ks / 2;
-                /*      serr<<"QuadularBendingSprings<DataTypes>::addSpringForce, p = "<<p<<sendl;
 
-                		serr<<"QuadularBendingSprings<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;*/
                 Deriv relativeVelocity = v[b1]-v[a1];
                 Real elongationVelocity = dot(u1,relativeVelocity);
                 Real forceIntensity = (Real)(einfo->ks*elongation+einfo->kd*elongationVelocity);
@@ -661,9 +642,7 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
                 u2 *= inverseLength;
                 Real elongation = (Real)(d2 - einfo->restlength2);
                 m_potentialEnergy += elongation * elongation * einfo->ks / 2;
-                /*      serr<<"QuadularBendingSprings<DataTypes>::addSpringForce, p = "<<p<<sendl;
 
-                		serr<<"QuadularBendingSprings<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;*/
                 Deriv relativeVelocity = v[b2]-v[a2];
                 Real elongationVelocity = dot(u2,relativeVelocity);
                 Real forceIntensity = (Real)(einfo->ks*elongation+einfo->kd*elongationVelocity);
@@ -704,7 +683,6 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
 
     //for (unsigned int i=0; i<springs.size(); i++)
     //{
-    /*            serr<<"QuadularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
     //    this->addSpringForce(m_potentialEnergy,f,x,v, i, springs[i]);
     //}
 }
@@ -723,15 +701,11 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
 
     df.resize(dx.size());
-    //serr<<"QuadularBendingSprings<DataTypes>::addDForce, dx1 = "<<dx1<<sendl;
-    //serr<<"QuadularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1<<sendl;
     //const helper::vector<Spring>& springs = this->springs.getValue();
 
     for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
-
-        /*            serr<<"QuadularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
 
         if(einfo->is_activated)
         {
@@ -830,7 +804,6 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
         vparams->drawTool()->setPolygonMode(0, false);
 
 
-    ////
     vertices.clear();
     for(unsigned int i=0; i<m_topology->getNbQuads(); ++i)
     {
@@ -839,11 +812,8 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     }
     vparams->drawTool()->drawQuads(vertices, sofa::defaulttype::RGBAColor::red());
 
-
-    ////
     vparams->drawTool()->restoreLastState();
 }
-
 
 
 } // namespace forcefield
