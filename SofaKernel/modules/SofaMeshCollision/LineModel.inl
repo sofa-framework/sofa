@@ -105,7 +105,7 @@ void LineCollisionModel<DataTypes>::init()
     {
 
         myActiver = LineActiver::getDefaultActiver();
-        msg_info()<<"path = "<<path<<" no Line Activer found for LineModel "<<this->getName()<<sendl;
+        msg_info() << "path = " << path << " no Line Activer found for LineModel " << this->getName();
     }
     else
     {
@@ -114,9 +114,9 @@ void LineCollisionModel<DataTypes>::init()
         this->getContext()->get(activer ,path  );
 
         if (activer != nullptr)
-            msg_info()<<" Activer named"<<activer->getName()<<" found"<<sendl;
+            msg_info() << " Activer named" << activer->getName() << " found";
         else
-            msg_error()<<"wrong path for Line Activer";
+            msg_error() << "wrong path for Line Activer";
 
 
         myActiver = dynamic_cast<LineActiver *> (activer);
@@ -128,11 +128,11 @@ void LineCollisionModel<DataTypes>::init()
             myActiver = LineActiver::getDefaultActiver();
 
 
-            msg_error()<<"wrong path for Line Activer for LineModel "<< this->getName();
+            msg_error() << "wrong path for Line Activer for LineModel " << this->getName();
         }
         else
         {
-            msg_info()<<"Line Activer named"<<activer->getName()<<" found !! for LineModel "<< this->getName() <<sendl;
+            msg_info() << "Line Activer named" << activer->getName() << " found !! for LineModel " << this->getName();
         }
     }
 
@@ -411,7 +411,7 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionMo
 
     if (!topology)
     {
-        msg_error()<<"no topology found";
+        msg_error() << "no topology found";
         return true;
     }
     const helper::vector <unsigned int>& EdgesAroundVertex11 =topology->getEdgesAroundVertex(p11);
