@@ -476,10 +476,7 @@ public:
     sofa::core::topology::Topology* getTopology() const override;
 
     /// Mesh Topology (unified interface for both static and dynamic topologies)
-    sofa::core::topology::BaseMeshTopology* getMeshTopology() const override;
-
-    /// Mesh Topology that is local to this context (i.e. not within parent contexts)
-    core::topology::BaseMeshTopology* getLocalMeshTopology() const override;
+    sofa::core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const override;
 
     /// Degrees-of-Freedom
     sofa::core::BaseState* getState() const override;

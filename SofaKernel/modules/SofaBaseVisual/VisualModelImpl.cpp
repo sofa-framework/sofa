@@ -214,6 +214,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , srgbTexturing		(initData	(&srgbTexturing, (bool) false, "srgbTexturing", "When sRGB rendering is enabled, is the texture in sRGB colorspace?"))
     , materials			(initData	(&materials, "materials", "List of materials"))
     , groups			(initData	(&groups, "groups", "Groups of triangles and quads using a given material"))
+    , l_topology        (initLink   ("topology", "link to the topology container"))
     , xformsModified(false)
 {
     m_topology = nullptr;
@@ -837,7 +838,16 @@ void VisualModelImpl::addTopoHandler(topology::PointData<VecType>* data, int alg
 
 void VisualModelImpl::init()
 {
-    m_topology = getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+
     if (m_vertPosIdx.getValue().size() > 0 && m_vertices2.getValue().empty())
     { // handle case where vertPosIdx was initialized through a loader
         m_vertices2.setValue(m_positions.getValue());
@@ -866,7 +876,7 @@ void VisualModelImpl::init()
 
     load(fileMesh.getFullPath(), "", texturename.getFullPath());
 
-    if (m_topology == 0 || (m_positions.getValue().size()!=0 && m_positions.getValue().size() != (unsigned int)m_topology->getNbPoints()))
+    if (m_topology == nullptr || (m_positions.getValue().size()!=0 && m_positions.getValue().size() != (unsigned int)m_topology->getNbPoints()))
     {
         // Fixes bug when neither an .obj file nor a topology is present in the VisualModel Node.
         // Thus nothing will be displayed.

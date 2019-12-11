@@ -51,6 +51,7 @@ LineCollisionModel<DataTypes>::LineCollisionModel()
     , mstate(nullptr), topology(nullptr), meshRevision(-1), m_lmdFilter(nullptr)
     , LineActiverPath(initData(&LineActiverPath,"LineActiverPath", "path of a component LineActiver that activates or deactivates collision line during execution") )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
+    , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = LINE_TYPE;
 }
@@ -82,13 +83,21 @@ void LineCollisionModel<DataTypes>::init()
         m_lmdFilter = node->getNodeObject< LineLocalMinDistanceFilter >();
     }
 
-    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    core::topology::BaseMeshTopology *bmt = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
     if (!bmt)
     {
-        msg_error() <<"LineModel requires a MeshTopology";
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". LineModel requires a MeshTopology";
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    this->topology = bmt;
     resize( bmt->getNbEdges() );
 
     for(core::topology::BaseMeshTopology::EdgeID i = 0; i < bmt->getNbEdges(); i++)
@@ -141,7 +150,7 @@ void LineCollisionModel<DataTypes>::init()
 template<class DataTypes>
 void LineCollisionModel<DataTypes>::handleTopologyChange()
 {
-    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology *bmt = l_topology.get();
     if (bmt)
     {
         resize(bmt->getNbEdges());
@@ -318,7 +327,7 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
 template<class DataTypes>
 void LineCollisionModel<DataTypes>::updateFromTopology()
 {
-    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology *bmt = l_topology.get();
     if (bmt)
     {
         int revision = bmt->getRevision();
@@ -401,7 +410,7 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionMo
 {
     if (!this->bSelfCollision.getValue()) return true;
     if (this->getContext() != model2->getContext()) return true;
-    sofa::core::topology::BaseMeshTopology* topology = this->getMeshTopology();
+    core::topology::BaseMeshTopology *topology = l_topology.get();
     /*
         TODO : separate 2 case: the model is only composed of lines or is composed of triangles
     */

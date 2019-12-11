@@ -48,6 +48,7 @@ SubsetMapping<TIn, TOut>::SubsetMapping()
     , f_resizeToModel( initData(&f_resizeToModel, false, "resizeToModel", "True to resize the output MechanicalState to match the size of indices"))
     , matrixJ()
     , updateJ(false)
+    , l_topology(initLink("topology", "link to the topology container"))
 {
 }
 
@@ -152,14 +153,30 @@ void SubsetMapping<TIn, TOut>::init()
         f_indices.endEdit();
     }
     this->Inherit::init();
-
-    topology = this->getContext()->getMeshTopology();
-
+    
     if (f_handleTopologyChange.getValue())
     {
-        // Initialize functions and parameters for topological changes
-        f_indices.createTopologicalEngine(topology);
-        f_indices.registerTopologicalData();
+        if (l_topology.empty())
+        {
+            msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+            l_topology.set(this->getContext()->getMeshTopologyLink());
+
+        }
+
+        sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        if (topology)
+        {
+            // Initialize functions and parameters for topological changes
+            f_indices.createTopologicalEngine(topology);
+            f_indices.registerTopologicalData();
+        }
+        else
+        {
+            msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << " Set handleTopologyChange to false if topology is not needed.";
+            sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        }
     }
 
     postInit();

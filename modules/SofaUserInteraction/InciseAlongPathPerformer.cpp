@@ -48,8 +48,8 @@ void InciseAlongPathPerformer::start()
     {
         firstIncisionBody = startBody;
         cpt++;
-        initialNbTriangles = startBody.body->getMeshTopology()->getNbTriangles();
-        initialNbPoints = startBody.body->getMeshTopology()->getNbPoints();
+        initialNbTriangles = startBody.body->getCollisionTopology()->getNbTriangles();
+        initialNbPoints = startBody.body->getCollisionTopology()->getNbPoints();
     }
 }
 
@@ -146,7 +146,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 
     // Initial point could have move due to gravity: looking for new coordinates of first incision point and triangle index.
     bool findTri = false;
-    sofa::helper::vector <unsigned int> triAroundVertex = startBody.body->getMeshTopology()->getTrianglesAroundVertex(initialNbPoints);
+    sofa::helper::vector <unsigned int> triAroundVertex = startBody.body->getCollisionTopology()->getTrianglesAroundVertex(initialNbPoints);
 
     // Check if point index and triangle index are consistent.
     for (unsigned int j = 0; j<triAroundVertex.size(); ++j)

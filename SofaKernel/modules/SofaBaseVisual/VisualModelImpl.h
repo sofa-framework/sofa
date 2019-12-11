@@ -226,6 +226,9 @@ public:
 
     Data< helper::vector<sofa::core::loader::Material> > materials;
     Data< helper::vector<FaceGroup> > groups;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink <VisualModelImpl, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     /// Default constructor.
     VisualModelImpl();

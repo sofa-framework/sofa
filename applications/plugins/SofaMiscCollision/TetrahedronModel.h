@@ -128,6 +128,9 @@ public:
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TetrahedronModel, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 };
 
 inline Tetrahedron::Tetrahedron(TetrahedronModel* model, int index)
