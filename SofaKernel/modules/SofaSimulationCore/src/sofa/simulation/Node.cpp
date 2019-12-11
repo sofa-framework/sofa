@@ -557,7 +557,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         if (destType->hasParent(sofa::core::BaseState::GetClass()))
             return destType->dynamicCast(node->getState());
         else if (destType->hasParent(core::topology::BaseMeshTopology::GetClass()))
-            return destType->dynamicCast(node->getMeshTopology());
+            return destType->dynamicCast(node->getMeshTopologyLink());
         else if (destType->hasParent(core::topology::Topology::GetClass()))
             return destType->dynamicCast(node->getTopology());
         else if (destType->hasParent(core::visual::Shader::GetClass()))
@@ -620,18 +620,13 @@ core::topology::Topology* Node::getTopology() const
 }
 
 /// Mesh Topology (unified interface for both static and dynamic topologies)
-core::topology::BaseMeshTopology* Node::getMeshTopology() const
+core::topology::BaseMeshTopology* Node::getMeshTopologyLink(SearchDirection dir) const
 {
+    SOFA_UNUSED(dir);
     if (this->meshTopology)
         return this->meshTopology;
     else
         return get<core::topology::BaseMeshTopology>(SearchParents);
-}
-
-/// Mesh Topology that is local to this context (i.e. not within parent contexts)
-core::topology::BaseMeshTopology* Node::getLocalMeshTopology() const
-{
-    return this->meshTopology;
 }
 
 /// Degrees-of-Freedom

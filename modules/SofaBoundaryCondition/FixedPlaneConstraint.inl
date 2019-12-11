@@ -248,7 +248,7 @@ void FixedPlaneConstraint<DataTypes>::init()
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopology());
+        l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
     sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();

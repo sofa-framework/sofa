@@ -254,7 +254,7 @@ protected:
             RegularGridTopology::SPtr regularGrid,
             helper::vector<Type>& regularGridTypes) const;
 
-    void buildFromTriangleMesh(const std::string& filename);
+    void buildFromTriangleMesh(sofa::helper::io::Mesh* mesh);
 
     void buildFromRegularGridTypes(RegularGridTopology::SPtr regularGrid, const helper::vector<Type>& regularGridTypes);
 

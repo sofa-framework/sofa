@@ -28,6 +28,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -84,6 +85,9 @@ public:
     using core::behavior::ForceField<DataTypes>::mstate ;
     using core::objectmodel::BaseObject::getContext;
     ////////////////////////////////////////////////////////////////////////////
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink <UniformMass<DataTypes, MassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     UniformMass();

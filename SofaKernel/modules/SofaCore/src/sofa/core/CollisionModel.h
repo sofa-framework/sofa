@@ -344,12 +344,8 @@ public:
     void setGroups(const std::set<int>& ids) { group.setValue(ids); }
     /// @}
 
-
-    /// Topology associated to the collision model
-    virtual Topology* getTopology() { return getContext()->getMeshTopology(); }
-
-    /// BaseMeshTopology associated to the collision model
-    virtual sofa::core::topology::BaseMeshTopology* getMeshTopology() { return getContext()->getMeshTopology(); }
+    /// BaseMeshTopology associated to the collision model. TODO: epernod remove virtual pure method by l_topology.get as soons as new link will be available
+    virtual sofa::core::topology::BaseMeshTopology* getCollisionTopology() { return nullptr; }
 
     /// Get a color that can be used to display this CollisionModel
     const float* getColor4f();

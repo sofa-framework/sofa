@@ -50,7 +50,9 @@ int TetrahedronModelClass = core::RegisterObject("collision model using a tetrah
         ;
 
 TetrahedronModel::TetrahedronModel()
-    : tetra(nullptr), mstate(nullptr)
+    : tetra(nullptr)
+    , mstate(nullptr)
+    , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = TETRAHEDRON_TYPE;
 }
@@ -64,7 +66,21 @@ void TetrahedronModel::resize(int size)
 
 void TetrahedronModel::init()
 {
-    _topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    _topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (!_topology)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TetrahedronModel requires a BaseMeshTopology";
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     this->CollisionModel::init();
     mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
@@ -72,12 +88,6 @@ void TetrahedronModel::init()
     if (mstate==nullptr)
     {
         msg_error() << "TetrahedronModel requires a Vec3 Mechanical Model";
-        return;
-    }
-
-    if (!_topology)
-    {
-        msg_error() << "TetrahedronModel requires a BaseMeshTopology";
         return;
     }
 

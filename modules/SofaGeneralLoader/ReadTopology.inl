@@ -74,12 +74,21 @@ void ReadTopology::init()
 
 void ReadTopology::reset()
 {
-    m_topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+    
     if (infile)
     {
         delete infile;
         infile = nullptr;
     }
+
 #if SOFAGENERALLOADER_HAVE_ZLIB
     if (gzfile)
     {

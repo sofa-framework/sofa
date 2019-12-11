@@ -69,7 +69,7 @@ TopologicalChangeManager::~TopologicalChangeManager()
 int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const helper::vector<int>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
-    topo_curr = model->getContext()->getMeshTopology();
+    topo_curr = model->getCollisionTopology();
 
     if(topo_curr == nullptr)
         return 0;
@@ -146,7 +146,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
                         }
                     }
                 }
-                topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
+                topo_curr = topoMap->getFrom();
                 node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
                 break;
@@ -177,7 +177,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
 int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collision::PointModel* model, const helper::vector<int>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
-    topo_curr = model->getContext()->getMeshTopology();
+    topo_curr = model->getCollisionTopology();
 
     if (topo_curr == nullptr)
         return 0;
@@ -273,7 +273,7 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
                         }
                     }
                 }
-                topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
+                topo_curr = topoMap->getFrom();
                 node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
                 break;
             }
@@ -301,7 +301,7 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
 int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const helper::vector<int>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
-    topo_curr = model->getContext()->getMeshTopology();
+    topo_curr = model->getCollisionTopology();
 
     if(dynamic_cast<PointSetTopologyContainer*>(topo_curr) == nullptr)
         return 0;
@@ -350,7 +350,7 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
                         }
                     }
                 }
-                topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
+                topo_curr = topoMap->getFrom();
                 node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
                 break;
@@ -493,7 +493,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
     }
 
 
-    sofa::core::topology::BaseMeshTopology* currentTopology = firstCollisionModel->getContext()->getMeshTopology();
+    sofa::core::topology::BaseMeshTopology* currentTopology = firstCollisionModel->getCollisionTopology();
     simulation::Node* collisionNode = dynamic_cast<simulation::Node*>(firstCollisionModel->getContext());
 
     // Test if a TopologicalMapping (by default from TetrahedronSetTopology to TriangleSetTopology) exists :

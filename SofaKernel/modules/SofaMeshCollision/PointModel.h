@@ -151,6 +151,11 @@ public:
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void updateNormals();
 
+    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
+    {
+        return l_topology.get();
+    }
+
 protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
@@ -164,7 +169,11 @@ protected:
     PointLocalMinDistanceFilter *m_lmdFilter;
     EmptyFilter m_emptyFilter;
 
-    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)    
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
+                                      
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 
     PointActiver *myActiver;
 };

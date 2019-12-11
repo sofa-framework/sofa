@@ -474,10 +474,16 @@ bool DAGNode::hasAncestor(const BaseContext* context) const
 
 /// Mesh Topology that is relevant for this context
 /// (within it or its parents until a mapping is reached that does not preserve topologies).
-core::topology::BaseMeshTopology* DAGNode::getActiveMeshTopology() const
+core::topology::BaseMeshTopology* DAGNode::getMeshTopologyLink(SearchDirection dir) const
 {
     if (this->meshTopology)
         return this->meshTopology;
+
+    if (dir != Local)
+        return Node::getMeshTopologyLink(dir);
+
+    //local case similar to getActiveMeshTopology ...
+
     // Check if a local mapping stops the search
     if (this->mechanicalMapping && !this->mechanicalMapping->sameTopology())
     {
@@ -497,7 +503,7 @@ core::topology::BaseMeshTopology* DAGNode::getActiveMeshTopology() const
         // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
         if ( parents[i] )
         {
-            core::topology::BaseMeshTopology* res = parents[i]->getActiveMeshTopology();
+            core::topology::BaseMeshTopology* res = parents[i]->getMeshTopologyLink(Local);
             if (res)
                 return res;
         }

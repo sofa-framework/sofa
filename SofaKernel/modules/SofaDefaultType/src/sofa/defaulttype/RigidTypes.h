@@ -643,6 +643,7 @@ public:
     inline friend std::istream& operator >> ( std::istream& in, RigidCoord<3,real>& v )
     {
         in>>v.center>>v.orientation;
+#if !defined(NDEBUG)
         if (!v.orientation.isNormalized())
         {
             std::stringstream text;
@@ -652,6 +653,7 @@ public:
             text << "New value is: " << v.orientation;
             msg_warning("Rigid") << text.str();
         }
+#endif // NDEBUG
         return in;
     }
     static int max_size()

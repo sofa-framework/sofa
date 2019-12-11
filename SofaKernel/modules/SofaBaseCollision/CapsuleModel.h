@@ -171,12 +171,21 @@ public:
         return DataTypes::Name();
     }
 
+    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
+    {
+        return l_topology.get();
+    }
+
     /**
       *Returns true if capsules at indexes i1 and i2 share the same vertex.
       */
     bool shareSameVertex(int i1,int i2)const;
 
     Data<VecReal > & writeRadii();
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TCapsuleModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;
 };

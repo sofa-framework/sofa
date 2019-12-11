@@ -464,7 +464,7 @@ public:
 
     /// alias used by ContactMapper
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
-    core::topology::BaseMeshTopology* getMeshTopology() override { return ffdMesh; }
+    core::topology::BaseMeshTopology* getCollisionTopology() override { return ffdMesh; }
 
     void init() override;
 

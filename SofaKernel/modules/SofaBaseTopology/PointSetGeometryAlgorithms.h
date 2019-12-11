@@ -130,6 +130,9 @@ protected:
     Data<bool> d_showPointIndices; ///< Debug : view Point indices
     /// Tage of the Mechanical State associated with the vertex position
     Data<std::string> d_tagMechanics;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<PointSetGeometryAlgorithms<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)

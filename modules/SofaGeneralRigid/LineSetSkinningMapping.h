@@ -105,7 +105,7 @@ public:
 
 protected:
 
-    sofa::core::topology::BaseMeshTopology* t;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     /*!
     	Set the neighborhood line level

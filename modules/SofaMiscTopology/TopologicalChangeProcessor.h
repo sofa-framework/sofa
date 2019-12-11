@@ -127,7 +127,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMeshTopology() == nullptr)
+        if (context->getMeshTopologyLink() == nullptr)
             return false;
 
         return BaseObject::canCreate(obj, context, arg);
