@@ -625,7 +625,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             {
                 const EdgesAdded *eAdd = static_cast< const EdgesAdded * >( *changeIt );
                 const sofa::helper::vector< unsigned int > &tab = eAdd->edgeIndexArray;
-//				msg_info() << "INPUT ADD EDGES " << tab;
+
                 for (unsigned int i=0; i < tab.size(); i++)
                     addInputEdge(tab[i], toPointMod);
                 toPointMod->propagateTopologicalChanges();
@@ -665,7 +665,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                         toEdgeMod->removeEdgesProcess(tab, false);
                     }
                 }
-//				msg_info() << "INPUT REMOVE EDGES "<<tab;
+
                 removeInput(EDGE, tab );
                 check = true;
                 nbInputRemoved[EDGE] += tab.size();
@@ -675,7 +675,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             {
                 const TrianglesAdded *tAdd = static_cast< const TrianglesAdded * >( *changeIt );
                 const sofa::helper::vector<unsigned int> &tab = tAdd->getArray();
-//				msg_info() << "INPUT ADD TRIANGLES " << tab;
+
                 for (unsigned int i=0; i < tab.size(); i++)
                     addInputTriangle(tab[i], toPointMod);
                 toPointMod->propagateTopologicalChanges();
@@ -719,7 +719,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                         toTriangleMod->removeTrianglesProcess(tab, false);
                     }
                 }
-//				msg_info() << "INPUT REMOVE TRIANGLES "<<tab;
+
                 removeInput(TRIANGLE, tab );
                 check = true;
                 nbInputRemoved[TRIANGLE] += tab.size();
@@ -733,7 +733,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::topology::QUADSREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsRemoved *>( *changeIt ) )->getArray();
-//				msg_info() << "INPUT REMOVE QUADS "<<tab;
+
                 removeInput(QUAD, tab );
                 check = true;
                 nbInputRemoved[QUAD] += tab.size();
@@ -743,7 +743,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             {
 				const TetrahedraAdded *tAdd = static_cast< const TetrahedraAdded * >( *changeIt );
                 const sofa::helper::vector<unsigned int> &tab = tAdd->getArray();
-//				msg_info() << "INPUT ADD TETRAHEDRA " << tab;
+
                 for (unsigned int i=0; i < tab.size(); i++)
                     addInputTetrahedron(tab[i], toPointMod);
                 toPointMod->propagateTopologicalChanges();
@@ -787,7 +787,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                         toTetrahedronMod->removeTetrahedraProcess(tab, false);
                     }
                 }
-//				msg_info() << "INPUT REMOVE TETRAHEDRA "<<tab;
+
                 removeInput(TETRA, tab );
                 nbInputRemoved[TETRA] += tab.size();
                 check = true;
@@ -801,7 +801,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::topology::HEXAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const HexahedraRemoved *>( *changeIt ) )->getArray();
-//				msg_info() << "INPUT REMOVE HEXAHEDRA "<<tab;
+
                 removeInput(HEXA, tab );
                 check = true;
                 nbInputRemoved[TETRA] += tab.size();
@@ -809,7 +809,6 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::ENDING_EVENT:
             {
-//			    msg_info() << "ENDING EVENT";
                 pointsToRemove.erase(BaseMeshTopology::InvalidID);
                 if (toPointMod != nullptr && !pointsToRemove.empty())
                 {
@@ -960,6 +959,8 @@ void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::helper::vecto
 }
 
 } // namespace topology
+
 } // namespace component
+
 } // namespace sofa
 
