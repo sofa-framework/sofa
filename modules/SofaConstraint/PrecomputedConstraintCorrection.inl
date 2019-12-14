@@ -342,7 +342,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 velocity.resize(nbNodes);
 
                 // Actualize ref to the position vector ; it seems it is changed at every eulerSolver->solve()
-                helper::WriteAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::VecCoordId::position());
+                helper::WriteOnlyAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::VecCoordId::position());
                 VecCoord& pos = wposData.wref();
 
                 for (unsigned int n = 0; n < nbNodes; n++)
