@@ -394,7 +394,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         for (unsigned int i = 0; i < velocity.size(); i++)
             velocity[i] = prev_velocity[i];
 
-        helper::WriteAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::VecCoordId::position());
+        helper::WriteOnlyAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::VecCoordId::position());
         VecCoord& pos = wposData.wref();
 
         // Restore position
