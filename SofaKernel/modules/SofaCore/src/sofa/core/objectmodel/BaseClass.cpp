@@ -82,7 +82,6 @@ std::string BaseClass::decodeTypeName(const std::type_info& t)
     size_t start = 0;
     size_t dest = 0;
     //char cprev = '\0';
-    //sout << "name = "<<realname<<sendl;
     for (size_t i=0; i<len; i++)
     {
         char c = realname[i];
@@ -107,7 +106,6 @@ std::string BaseClass::decodeTypeName(const std::type_info& t)
             }
         }
         //cprev = c;
-        //sout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" name = "<<name<<sendl;
     }
     while (start < len)
     {
@@ -115,29 +113,6 @@ std::string BaseClass::decodeTypeName(const std::type_info& t)
     }
     name.resize(dest);
     return name;
-    /*
-        // Remove namespaces
-        std::string cname;
-        for(;;)
-        {
-            std::string::size_type pos = name.find("::");
-            if (pos == std::string::npos) break;
-            std::string::size_type first = name.find_last_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_",pos-1);
-            if (first == std::string::npos) first = 0;
-            else first++;
-            name.erase(first,pos-first+2);
-            //sout << "name="<<name<<sendl;
-        }
-        // Remove "class "
-        for(;;)
-        {
-            std::string::size_type pos = name.find("class ");
-            if (pos == std::string::npos) break;
-            name.erase(pos,6);
-        }
-        //sout << "TYPE NAME="<<name<<sendl;
-        return name;
-    */
 }
 
 /// Extract the class name (removing namespaces and templates)
@@ -151,7 +126,7 @@ std::string BaseClass::decodeClassName(const std::type_info& t)
     size_t dest = 0;
     size_t i;
     //char cprev = '\0';
-    //sout << "name = "<<realname<<sendl;
+
     for (i=0; i<len; i++)
     {
         char c = realname[i];
@@ -185,17 +160,6 @@ std::string BaseClass::decodeClassName(const std::type_info& t)
     }
     name.resize(dest);
     return name;
-    /*
-        std::string name = BaseClass::decodeTypeName(t);
-        // Find template
-        std::string::size_type pos = name.find("<");
-        if (pos != std::string::npos)
-        {
-            name.erase(pos,name.length()-pos);
-        }
-        //sout << "CLASS NAME="<<name<<sendl;
-        return name;
-    */
 }
 
 /// Extract the namespace (removing class name and templates)
@@ -278,21 +242,6 @@ std::string BaseClass::decodeTemplateName(const std::type_info& t)
     }
     name.resize(dest);
     return name;
-    /*
-        std::string name = BaseClass::decodeTypeName(t);
-        // Find template
-        std::string::size_type pos = name.find("<");
-        if (pos != std::string::npos)
-        {
-            name = name.substr(pos+1,name.length()-pos-2);
-        }
-        else
-        {
-            name = "";
-        }
-        //sout << "TEMPLATE NAME="<<name<<sendl;
-        return name;
-    */
 }
 
 } // namespace objectmodel

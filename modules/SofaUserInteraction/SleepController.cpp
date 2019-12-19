@@ -174,7 +174,7 @@ void SleepController::init()
             m_initialState.push_back(m_contextsThatCanSleep[i]->isSleeping());
     }
 
-    sout << "found " << m_statesThatCanSleep.size() << " nodes that can change their sleep state" << sendl;
+    msg_info() << "found " << m_statesThatCanSleep.size() << " nodes that can change their sleep state";
 }
 
 void SleepController::reset()

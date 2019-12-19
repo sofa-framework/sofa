@@ -43,12 +43,12 @@ void DevTensionMonitor<DataTypes>::eval()
 
     if (f_indices.getValue().empty())
     {
-        /*sout << "measuring metrics..." << sendl;
-        sout << "first point position " << xPos[0].getCenter() << sendl;
-        sout << "first point orientation " << xPos[0].getOrientation() << sendl;
+        /*msg_info() << "measuring metrics...";
+        msg_info() << "first point position " << xPos[0].getCenter();
+        msg_info() << "first point orientation " << xPos[0].getOrientation();
 
-        sout << "last point position " << xPos[xPos.size()-1].getCenter() << sendl;
-        sout << "last point orientation " << xPos[xPos.size()-1].getOrientation() << sendl;*/
+        msg_info() << "last point position " << xPos[xPos.size()-1].getCenter();
+        msg_info() << "last point orientation " << xPos[xPos.size()-1].getOrientation();*/
 
         //Compute tension
         // ....

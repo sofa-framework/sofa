@@ -144,7 +144,7 @@ bool LULinearSolver<Matrix, Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
                 }
             }
             acc *= fact;
-            //sout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<sendl;
+
             result.add(row1,row2,acc);
             if (row1!=row2)
                 result.add(row2,row1,acc);

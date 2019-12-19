@@ -131,7 +131,6 @@ void MechanicalStateController<Vec1Types>::applyController()
 template <>
 void MechanicalStateController<Vec1Types>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
-    //sout<<"MouseEvent detected"<<sendl;
     eventX = mev->getPosX();
     eventY = mev->getPosY();
 
@@ -175,7 +174,6 @@ void MechanicalStateController<Vec1Types>::onMouseEvent(core::objectmodel::Mouse
 template <>
 void MechanicalStateController<Rigid3Types>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
-    //sout<<"MouseEvent detected"<<sendl;
     eventX = mev->getPosX();
     eventY = mev->getPosY();
 

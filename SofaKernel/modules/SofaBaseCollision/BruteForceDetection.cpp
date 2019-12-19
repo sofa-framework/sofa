@@ -202,8 +202,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     }
 
     const bool self = (finalcm1->getContext() == finalcm2->getContext());
-    //if (self)
-    //    sout << "SELF: Final intersector " << finalintersector->name() << " for "<<finalcm1->getName()<<" - "<<finalcm2->getName()<<sendl;
 
     sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(finalcm1, finalcm2);
 
@@ -261,7 +259,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
             {
                 msg_error() << "BruteForceDetection: Error finding intersector " << intersectionMethod->getName() << " for "<<cm1->getClassName()<<" - "<<cm2->getClassName()<<sendl;
             }
-            //else sout << "BruteForceDetection: intersector " << intersector->name() << " for " << intersectionMethod->getName() << " for "<<gettypename(typeid(*cm1))<<" - "<<gettypename(typeid(*cm2))<<sendl;
+
             if (swapModels)
             {
                 mirror.intersector = intersector; intersector = &mirror;

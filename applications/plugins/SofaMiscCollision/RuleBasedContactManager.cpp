@@ -95,7 +95,7 @@ std::string RuleBasedContactManager::replaceVariables(std::string response)
             std::string::size_type varEnd = response.find('$', var+1);
             if (varEnd == std::string::npos) // parse error
             {
-                serr << "Error parsing variables in rule " << response << sendl;
+                msg_error() << "Error parsing variables in rule " << response;
                 res.append(response.substr(var));
                 break;
             }
@@ -106,7 +106,7 @@ std::string RuleBasedContactManager::replaceVariables(std::string response)
                 std::map<std::string,Data<std::string>*>::const_iterator it = variablesData.find(varname);
                 if (it == variablesData.end())
                 {
-                    serr << "Unknown variables " << varname << sendl;
+                    msg_error() << "Unknown variables " << varname;
                 }
                 else
                 {

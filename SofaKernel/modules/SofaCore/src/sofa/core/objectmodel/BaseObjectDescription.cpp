@@ -191,12 +191,10 @@ Base* BaseObjectDescription::findObject(const char* nodeName)
     BaseObjectDescription* node = find(nodeName);
     if (node!=nullptr)
     {
-        //sout << "Found node "<<nodeName<<": "<<node->getName()<<sendl;
         Base* obj = node->getObject();
         BaseContext* ctx = obj->toBaseContext();
         if (ctx != nullptr)
         {
-            //sout << "Node "<<nodeName<<" is a context, returning MechanicalState."<<sendl;
             obj = ctx->getMechanicalState();
         }
         return obj;

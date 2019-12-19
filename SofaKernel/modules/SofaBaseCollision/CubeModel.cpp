@@ -232,7 +232,7 @@ void CubeModel::computeBoundingTree(int maxDepth)
 //    if(maxDepth <= 0)
 //        return;
 
-    //sout << ">CubeModel::computeBoundingTree("<<maxDepth<<")"<<sendl;
+    dmsg_info() << ">CubeModel::computeBoundingTree(" << maxDepth << ")";
     std::list<CubeModel*> levels;
     levels.push_front(createPrevious<CubeModel>());
     for (int i=0; i<maxDepth; i++)
@@ -243,7 +243,7 @@ void CubeModel::computeBoundingTree(int maxDepth)
     if (root->empty() || root->getPrevious() != nullptr)
     {
         // Tree must be reconstructed
-        //sout << "Building Tree with depth "<<maxDepth<<" from "<<size<<" elements."<<sendl;
+        dmsg_info() << "Building Tree with depth " << maxDepth << " from " << size << " elements.";
         // First remove extra levels
         while(root->getPrevious()!=nullptr)
         {
@@ -253,13 +253,15 @@ void CubeModel::computeBoundingTree(int maxDepth)
             //delete m;
             m.reset();
         }
+
         // Then clear all existing levels
         {
             for (std::list<CubeModel*>::iterator it = levels.begin(); it != levels.end(); ++it)
                 (*it)->resize(0);
         }
+
         // Then build root cell
-        //sout << "CubeModel: add root cube"<<sendl;
+        dmsg_info() << "CubeModel: add root cube";
         root->addCube(Cube(this,0),Cube(this,size));
         // Construct tree by splitting cells along their biggest dimension
         std::list<CubeModel*>::iterator it = levels.begin();
@@ -268,14 +270,14 @@ void CubeModel::computeBoundingTree(int maxDepth)
         int lvl = 0;
         while(it != levels.end())
         {
-            //sout << "CubeModel: split level "<<lvl<<sendl;
+            dmsg_info() << "CubeModel: split level " << lvl;
             CubeModel* clevel = *it;
             clevel->elems.reserve(level->size*2);
             for(Cube cell = Cube(level->begin()); level->end() != cell; ++cell)
             {
                 const std::pair<Cube,Cube>& subcells = cell.subcells();
                 int ncells = subcells.second.getIndex() - subcells.first.getIndex();
-                //sout << "CubeModel: level "<<lvl<<" cell "<<cell.getIndex()<<": current subcells "<<subcells.first.getIndex() << " - "<<subcells.second.getIndex()<<sendl;
+                dmsg_info() << "CubeModel: level " << lvl << " cell " << cell.getIndex() << ": current subcells " << subcells.first.getIndex() << " - " << subcells.second.getIndex();
                 if (ncells > 4)
                 {
                     // Only split cells with more than 4 childs
@@ -301,7 +303,7 @@ void CubeModel::computeBoundingTree(int maxDepth)
                     Cube cmiddle(this, middle);
                     int c1 = clevel->addCube(subcells.first, cmiddle);
                     int c2 = clevel->addCube(cmiddle, subcells.second);
-                    //sout << "L"<<lvl<<" cell "<<cell.getIndex()<<" split along "<<(splitAxis==0?'X':splitAxis==1?'Y':'Z')<<" in cell "<<c1<<" size "<<middle-subcells.first.getIndex()<<" and cell "<<c2<<" size "<<subcells.second.getIndex()-middle<<"."<<sendl;
+                    dmsg_info() << "L" << lvl << " cell " << cell.getIndex() << " split along " << (splitAxis == 0 ? 'X' : splitAxis == 1 ? 'Y' : 'Z') << " in cell " << c1 << " size " << middle - subcells.first.getIndex() << " and cell " << c2 << " size " << subcells.second.getIndex() - middle << ".";
                     //level->elems[cell.getIndex()].subcells = std::make_pair(Cube(clevel,c1),Cube(clevel,c2+1));
                     level->elems[cell.getIndex()].subcells.first = Cube(clevel,c1);
                     level->elems[cell.getIndex()].subcells.second = Cube(clevel,c2+1);
@@ -324,12 +326,12 @@ void CubeModel::computeBoundingTree(int maxDepth)
         int lvl = 0;
         for (std::list<CubeModel*>::reverse_iterator it = levels.rbegin(); it != levels.rend(); ++it)
         {
-            //sout << "CubeModel: update level "<<lvl<<sendl;
+            dmsg_info() << "CubeModel: update level " << lvl;
             (*it)->updateCubes();
             ++lvl;
         }
     }
-    //sout << "<CubeModel::computeBoundingTree("<<maxDepth<<")"<<sendl;
+    dmsg_info() << "<CubeModel::computeBoundingTree(" << maxDepth << ")";
 }
 
 } // namespace collision

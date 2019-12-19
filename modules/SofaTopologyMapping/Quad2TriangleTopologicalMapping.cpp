@@ -283,8 +283,6 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             for (unsigned int i = 0; i < tab.size(); ++i)
             {
-                //sout << "INFO_print : Quad2TriangleTopologicalMapping - remove quad " << tab[i] << sendl;
-
                 unsigned int k = tab[i];
                 sofa::helper::vector<unsigned int> ind_k;
 
@@ -326,7 +324,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     }
                     else
                     {
-                        sout << "INFO_print : Quad2TriangleTopologicalMapping - In2OutMap should have the quad " << last << sendl;
+                        msg_warning() << "Quad2TriangleTopologicalMapping - In2OutMap should have the quad " << last;
                     }
 
                     if (ind_k[1] != ind_last)

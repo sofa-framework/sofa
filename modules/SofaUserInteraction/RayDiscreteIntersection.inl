@@ -43,7 +43,6 @@ namespace collision
 template<class T>
 bool RayDiscreteIntersection::testIntersection(Ray& ray1, TSphere<T>& sph2)
 {
-    //sout<<"intersectionSphereRay: Collision between Sphere - Ray"<<sendl;
     // Center of the sphere
     const defaulttype::Vector3 sph2Pos(sph2.center());
     // Radius of the sphere

@@ -87,7 +87,7 @@ void TetrahedronModel::init()
 
     if (mstate==nullptr)
     {
-        serr<<"TetrahedronModel requires a Vec3 Mechanical Model" << sendl;
+        msg_error() << "TetrahedronModel requires a Vec3 Mechanical Model";
         return;
     }
 
