@@ -62,7 +62,7 @@ sofa_install_targets(SofaGui runSofa runSofa)
 
 # Post-install scripts
 if(SOFA_BUILD_RELEASE_PACKAGE)
-    if(UNIX AND NOT APPLE) # Linux
+    if(CMAKE_SYSTEM_NAME STREQUAL Linux)
         install(CODE "file(WRITE
             \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
             \"[Paths]\\n  Prefix = ..\\n  LibraryExecutables = bin\"
@@ -74,7 +74,7 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
             \"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
             )"
             COMPONENT applications)
-    elseif(APPLE) # MacOS
+    elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
         if(SOFA_BUILD_APP_BUNDLE)
             install(CODE "file(WRITE
                 \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/../Resources/qt.conf\"
