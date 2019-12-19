@@ -297,40 +297,11 @@ install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/qt" COMPONENT resourc
 
 sofa_install_targets(SofaGui SofaGuiQt "SofaGui/sofa/gui/qt")
 
-
-# QT INSTALL (dirty)
-sofa_install_libraries(TARGETS ${QT_TARGETS})
-# Get Qt libraries dir
-get_target_property(QtCore_location Qt5::Core LOCATION)
-get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
-get_filename_component(QT_LIBRARIES_DIR_NAME ${QT_LIBRARIES_DIR} NAME)
-if(NOT "${QT_LIBRARIES_DIR_NAME}" STREQUAL "lib")
-    get_filename_component(QT_LIBRARIES_DIR ${QT_LIBRARIES_DIR} DIRECTORY) # parent dir
-    get_filename_component(QT_LIBRARIES_DIR_NAME ${QT_LIBRARIES_DIR} NAME)
-endif()
-# Get Qt plugins dir
-list(GET Qt5Gui_PLUGINS 1 QT_PLUGIN_ANY)
-if(TARGET ${QT_PLUGIN_ANY})
-    get_target_property(QT_PLUGIN_ANY_LOCATION ${QT_PLUGIN_ANY} LOCATION)
-    get_filename_component(QT_PLUGINS_SUBDIR ${QT_PLUGIN_ANY_LOCATION} DIRECTORY)
-    get_filename_component(QT_PLUGINS_DIR ${QT_PLUGINS_SUBDIR} DIRECTORY)
-else()
-    # Try to guess QT_PLUGINS_DIR
-    if(CMAKE_SYSTEM_NAME STREQUAL Linux AND EXISTS "${QT_LIBRARIES_DIR}/qt5/plugins")
-        set(QT_PLUGINS_DIR "${QT_LIBRARIES_DIR}/qt5/plugins")
-    endif()
-endif()
-# Install Qt plugins
-foreach(qt_plugin_name iconengines imageformats platforms styles xcbglintegrations)
-    if(EXISTS "${QT_PLUGINS_DIR}/${qt_plugin_name}")
-        install(DIRECTORY "${QT_PLUGINS_DIR}/${qt_plugin_name}" DESTINATION "bin" COMPONENT applications)
-    endif()
-endforeach()
-# Install Apple Qt frameworks
-if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
-    foreach(qt_framework_name QtDBus.framework QtPrintSupport.framework)
-        if(EXISTS "${QT_LIBRARIES_DIR}/${qt_framework_name}")
-            install(DIRECTORY "${QT_LIBRARIES_DIR}/${qt_framework_name}" DESTINATION "lib" COMPONENT appications)
-        endif()
-    endforeach()
+# Qt deployment
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    include(windeployqt)
+    windeployqt(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin ${CMAKE_INSTALL_PREFIX}/bin)
+elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    include(macdeployqt)
+    macdeployqt(${PROJECT_NAME})
 endif()
