@@ -386,7 +386,7 @@ if(NOT SOFA_NO_OPENGL)
     endif()
     if(CMAKE_SYSTEM_NAME STREQUAL Linux AND SOFA_BUILD_RELEASE_PACKAGE AND OPENGL_GLU_FOUND)
         # Add GLU to Linux binaries
-        sofa_install_libraries(LIBRARIES ${OPENGL_glu_LIBRARY})
+        sofa_install_libraries(PATHS ${OPENGL_glu_LIBRARY})
     endif()
 
     if(GLEW_FOUND)
@@ -399,11 +399,11 @@ endif()
 
 # Boost
 if(Boost_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::system Boost::filesystem Boost::program_options Boost::thread)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::system Boost::filesystem Boost::program_options)
     if(Boost_THREAD_FOUND)
         target_link_libraries(${PROJECT_NAME} PUBLIC Boost::thread)
     endif()
-    sofa_install_libraries(LIBRARIES ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
+    sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
 endif()
 
 # GTest

@@ -272,7 +272,7 @@ endif()
 
 if(NODEEDITOR_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC ${NODEEDITOR_LIBRARY})
-    sofa_install_libraries(LIBRARIES ${NODEEDITOR_LIBRARY})
+    sofa_install_libraries(PATHS ${NODEEDITOR_LIBRARY})
     target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${NODEEDITOR_INCLUDE_PATH}>")
 endif()
 
