@@ -150,7 +150,7 @@ void TorsionForceField<DataTypes>::addKToMatrix(defaulttype::BaseMatrix* matrix,
 template<typename DataTypes>
 SReal TorsionForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
 {
-    serr << "Get potentialEnergy not implemented" << sendl;
+    msg_error() << "Get potentialEnergy not implemented";
     return 0.0;
 }
 

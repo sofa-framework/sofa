@@ -275,7 +275,7 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
 template<class DataTypes>
 SReal SurfacePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
 {
-    serr << "Get potentialEnergy not implemented" << sendl;
+    msg_error() << "Get potentialEnergy not implemented";
     return 0.0;
 }
 

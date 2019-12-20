@@ -145,7 +145,7 @@ void ProjectToLineConstraint<DataTypes>::init()
         const unsigned int index=indices[i];
         if (index >= maxIndex)
         {
-            serr << "Index " << index << " not valid!" << sendl;
+            msg_error() << "Index " << index << " not valid!";
             removeConstraint(index);
         }
     }
@@ -220,7 +220,7 @@ void ProjectToLineConstraint<DataTypes>::projectResponse(const core::MechanicalP
 template <class DataTypes>
 void ProjectToLineConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ , DataMatrixDeriv& /*cData*/)
 {
-    serr<<"projectJacobianMatrix(const core::MechanicalParams*, DataMatrixDeriv& ) is not implemented" << sendl;
+    msg_error() << "projectJacobianMatrix(const core::MechanicalParams*, DataMatrixDeriv& ) is not implemented";
 }
 
 template <class DataTypes>
@@ -253,13 +253,13 @@ void ProjectToLineConstraint<DataTypes>::projectPosition(const core::MechanicalP
 template <class DataTypes>
 void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
 {
-    serr << "applyConstraint is not implemented " << sendl;
+    msg_error() << "applyConstraint is not implemented ";
 }
 
 template <class DataTypes>
 void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
 {
-    serr<<"ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented "<< sendl;
+    msg_error() << "ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented ";
 }
 
 
@@ -280,7 +280,7 @@ void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        //serr<<"ProjectToLineConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
+        
         for (Indices::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)

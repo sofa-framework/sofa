@@ -165,7 +165,7 @@ void ConicalForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams*
 template<class DataTypes>
 void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 {
-    serr<<"SphereForceField::updateStiffness-not-implemented !!!"<<sendl;
+    msg_error() << "SphereForceField::updateStiffness-not-implemented !!!";
 }
 
 template<class DataTypes>

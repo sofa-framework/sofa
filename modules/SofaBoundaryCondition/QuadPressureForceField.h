@@ -119,7 +119,7 @@ public:
     /// Constant pressure has null variation
     void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override {}
 
-    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override { serr << "Get potentialEnergy not implemented" << sendl; return 0.0; }
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override { msg_error() << "Get potentialEnergy not implemented"; return 0.0; }
 
     void draw(const core::visual::VisualParams* vparams) override;
 
