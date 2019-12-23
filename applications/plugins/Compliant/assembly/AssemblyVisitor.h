@@ -119,7 +119,7 @@ public:
     struct InteractionForceField
     {
         InteractionForceField( rmat H, core::behavior::BaseInteractionForceField* ff ) : H(H), ff(ff) {
-//        std::cerr<<"Assembly InteractionForceField "<<H<<std::endl;
+
         }
         rmat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
         core::behavior::BaseInteractionForceField* ff;
@@ -333,8 +333,6 @@ struct AssemblyVisitor::process_helper {
                     }
                 }
             }
-
-//            std::cerr<<"Assembly::geometricStiffnessJc "<<geometricStiffnessJc<<" "<<curr->getName()<<std::endl;
         }
 
 //        if( zero(Jc) && curr->getSize() !=0 )  {
