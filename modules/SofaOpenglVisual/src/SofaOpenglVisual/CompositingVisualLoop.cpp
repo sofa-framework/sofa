@@ -104,7 +104,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     //should not happen: the compositing loop relies on one or more rendered passes done by the VisualManagerPass component
     if (gRoot->visualManager.empty())
     {
-        serr << "CompositingVisualLoop: no VisualManagerPass found. Disable multipass rendering." << sendl;
+        msg_error() << "CompositingVisualLoop: no VisualManagerPass found. Disable multipass rendering.";
         defaultRendering(vparams);
     }
 

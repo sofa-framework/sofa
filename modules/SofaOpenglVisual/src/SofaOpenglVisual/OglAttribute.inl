@@ -104,11 +104,11 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
     _index =  (*shaders.begin())->getAttribute ( indexShader.getValue(), id.getValue().c_str() ); //shader->getAttribute ( indexShader.getValue(), id.getValue().c_str() );
     if (_index == GLuint(-1) )
     {
-        serr << "Variable \""<<id.getValue()<<"\" NOT FOUND in shader \"" << (*shaders.begin())->vertFilename.getValue() << "\""<< sendl;
+        msg_error() << "Variable \"" << id.getValue() << "\" NOT FOUND in shader \"" << (*shaders.begin())->vertFilename.getValue() << "\"";
     }
     else
     {
-        sout << "Variable \""<<id.getValue()<<"\" in shader \"" << (*shaders.begin())->vertFilename.getValue() << "\" with index: " << _index << sendl;
+        msg_info() << "Variable \"" << id.getValue() << "\" in shader \"" << (*shaders.begin())->vertFilename.getValue() << "\" with index: " << _index;
     }
     glBindBufferARB(GL_ARRAY_BUFFER,0);
 }
