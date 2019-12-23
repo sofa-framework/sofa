@@ -391,17 +391,14 @@ void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams
 {
     cparams.setOrder(order);
 
-//	ctx->serr << "MechanicalOperations::solveConstraint" << ctx->sendl;
     helper::vector< core::behavior::ConstraintSolver* > constraintSolverList;
 
     ctx->get<core::behavior::ConstraintSolver>(&constraintSolverList, ctx->getTags(), BaseContext::Local);
     if (constraintSolverList.empty())
     {
-        //ctx->sout << "No ConstraintSolver found." << ctx->sendl;
         return;
     }
 
-//	ctx->serr << "MechanicalOperations::solveConstraint found solvers" << ctx->sendl;
     for (helper::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
     {
         (*it)->solveConstraint(&cparams, id);
@@ -413,7 +410,7 @@ void MechanicalOperations::m_resetSystem()
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        ctx->serr << "ERROR: requires a LinearSolver."<<ctx->sendl;
+        msg_error(ctx) << "Requires a LinearSolver.";
         return;
     }
     s->resetSystem();
@@ -424,7 +421,7 @@ void MechanicalOperations::m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal 
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        ctx->serr << "ERROR:  requires a LinearSolver."<<ctx->sendl;
+        msg_error(ctx) << "Requires a LinearSolver.";
         return;
     }
     mparams.setMFactor(mFact);
@@ -438,7 +435,7 @@ void MechanicalOperations::m_setSystemRHVector(core::MultiVecDerivId v)
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        ctx->serr << "ERROR:  requires a LinearSolver."<<ctx->sendl;
+        msg_error(ctx) << "Requires a LinearSolver.";
         return;
     }
     s->setSystemRHVector(v);
@@ -449,7 +446,7 @@ void MechanicalOperations::m_setSystemLHVector(core::MultiVecDerivId v)
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        ctx->serr << "ERROR:  requires a LinearSolver."<<ctx->sendl;
+        msg_error(ctx) << "Requires a LinearSolver.";
         return;
     }
     s->setSystemLHVector(v);
@@ -461,7 +458,7 @@ void MechanicalOperations::m_solveSystem()
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        ctx->serr << "ERROR:  requires a LinearSolver."<<ctx->sendl;
+        msg_error(ctx) << "Requires a LinearSolver.";
         return;
     }
     s->solveSystem();
@@ -472,7 +469,7 @@ void MechanicalOperations::m_print( std::ostream& out )
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        ctx->serr << "ERROR: requires a LinearSolver."<<ctx->sendl;
+        msg_error(ctx) << "Requires a LinearSolver.";
         return;
     }
     defaulttype::BaseMatrix* m = s->getSystemBaseMatrix();

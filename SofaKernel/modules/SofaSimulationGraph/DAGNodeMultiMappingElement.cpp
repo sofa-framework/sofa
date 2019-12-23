@@ -51,8 +51,8 @@ void DAGNodeMultiMappingElement::updateSceneGraph(
     helper::vector<simulation::Node*>::const_iterator it;
     for( it = otherInputs.begin(); it != otherInputs.end(); ++it)
     {
-        multiMapping->serr << "Node: " << (*it)->getName() << " does not belong to "
-                << multiMapping->getContext()->getName() << "ancestors" << multiMapping->sendl;
+        msg_error(multiMapping) << "Node: " << (*it)->getName() << " does not belong to "
+            << multiMapping->getContext()->getName() << "ancestors.";
     }
 }
 
