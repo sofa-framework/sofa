@@ -95,7 +95,7 @@ void VoxelGridLoader::init()
 
     if ( image == nullptr )
     {
-        serr << "Error while loading the file " << m_filename.getValue() << this->sendl;
+        msg_error() << "Error while loading the file " << m_filename.getValue();
         return;
     }
 

@@ -64,7 +64,7 @@ void InputEventReader::init()
 {
 #ifdef __linux__
     if((fd = open(filename.getFullPath().c_str(), O_RDONLY)) < 0)
-        sout << "ERROR: impossible to open the file: " << filename.getValue() << sendl;
+        msg_info() << "ERROR: impossible to open the file: " << filename.getValue();
 #endif
 
     if(p_outputFilename.isSet())
@@ -75,7 +75,7 @@ void InputEventReader::init()
             outFile->open(p_outputFilename.getFullPath().c_str());
             if( !outFile->is_open() )
             {
-                serr << "File " <<p_outputFilename.getFullPath() << " not writable" << sendl;
+                msg_error() << "File " <<p_outputFilename.getFullPath() << " not writable";
                 delete outFile;
                 outFile = nullptr;
             }
@@ -85,7 +85,7 @@ void InputEventReader::init()
             inFile = new std::ifstream(p_outputFilename.getFullPath().c_str(), std::ifstream::in | std::ifstream::binary);
             if( !inFile->is_open() )
             {
-                serr << "File " <<p_outputFilename.getFullPath() << " not readable" << sendl;
+                msg_error() << "File " <<p_outputFilename.getFullPath() << " not readable";
                 delete inFile;
                 inFile = nullptr;
             }
@@ -108,7 +108,7 @@ void InputEventReader::manageEvent(const input_event &ev)
 #endif
 #ifdef __linux__
     if (p_printEvent.getValue())
-        serr << "event type 0x" << std::hex << ev.type << std::dec << " code 0x" << std::hex << ev.code << std::dec << " value " << ev.value << sendl;
+        msg_error() << "event type 0x" << std::hex << ev.type << std::dec << " code 0x" << std::hex << ev.code << std::dec << " value " << ev.value;
 
     if (ev.type == EV_REL)
     {
@@ -182,7 +182,7 @@ void InputEventReader::getInputEvents()
         while (poll(&pfd, 1, 0 /*timeout.getValue()*/)>0 && (pfd.revents & POLLIN))
         {
             if (read(fd, &temp, sizeof(struct input_event)) == -1)
-                serr << "Error: read function return an error." << sendl;
+                msg_error() << "Error: read function return an error.";
 
             memcpy(&ev, &temp, sizeof(struct input_event));
 
