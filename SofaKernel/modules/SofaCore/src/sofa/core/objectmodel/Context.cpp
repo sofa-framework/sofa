@@ -83,7 +83,6 @@ void Context::setChangeSleepingState(bool val)
 /// Simulation timestep
 SReal Context::getDt() const
 {
-//    cerr << "Context::getDt() is " << dt_.getValue() << endl;
     return dt_.getValue();
 }
 
@@ -110,7 +109,6 @@ bool Context::getAnimate() const
 /// Simulation timestep
 void Context::setDt(SReal val)
 {
-//    cerr << "Context::setDt("<< val <<")" << endl;
     dt_.setValue(val);
 }
 
