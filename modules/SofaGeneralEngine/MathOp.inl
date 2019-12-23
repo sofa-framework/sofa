@@ -452,7 +452,7 @@ void MathOp<VecT>::init()
     std::string op = f_op.getValue().getSelectedItem();
     bool result = MathOpApply< typename MathOpTraits<Value>::Ops >::isSupported(op);
     if (!result)
-        serr << "Operation " << op << " NOT SUPPORTED" << sendl;
+        msg_error() << "Operation " << op << " NOT SUPPORTED";
 
     setDirtyValue();
 }
@@ -474,7 +474,7 @@ void MathOp<VecT>::doUpdate()
     bool result = MathOpApply< typename MathOpTraits<Value>::Ops >::apply(
         op, &f_output, vf_inputs);
     if (!result)
-        serr << "Operation " << op << " FAILED" << sendl;
+        msg_error() << "Operation " << op << " FAILED";
 }
 
 } // namespace engine

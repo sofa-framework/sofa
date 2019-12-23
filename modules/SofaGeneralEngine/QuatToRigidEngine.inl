@@ -86,7 +86,7 @@ void QuatToRigidEngine<DataTypes>::doUpdate()
     int nbOrientations = orientations.size();
     if (!nbOrientations)
     {
-        serr << "Warnings : no orientations" << sendl;
+        msg_warning() << "No orientations";
         sizeRigids = 0;
     }
     else if (nbOrientations == 1)
@@ -95,7 +95,7 @@ void QuatToRigidEngine<DataTypes>::doUpdate()
     }
     else if(nbOrientations > 1 && nbPositions != nbOrientations)
     {
-        serr << "Warnings : size of positions and orientations are not equal" << sendl;
+        msg_warning() << "Size of positions and orientations are not equal";
         sizeRigids = std::min(nbPositions, nbOrientations);
     }
 

@@ -373,7 +373,7 @@ void GenerateCylinder<DataTypes>::doUpdate()
                         }
                         else
                         {
-                            serr << "ERROR: duplicate triangle " << tr << " in tetra " << i <<" : " << (*itt) << sendl;
+                            msg_error() << "Duplicate triangle " << tr << " in tetra " << i << " : " << (*itt);
                         }
                         // tests if all vertices are on the circular surface
                         nbSurfaceNodes=0;
