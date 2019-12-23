@@ -61,7 +61,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::init( )
 
     if(this->_topology == nullptr)
     {
-        serr << "ERROR(HexahedralFEMForceField): object must have a HexahedronSetTopology."<<sendl;
+        msg_error() << "ERROR(HexahedralFEMForceField): object must have a HexahedronSetTopology.";
         return;
     }
 
@@ -403,7 +403,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::accFromF(const core::MechanicalParams*, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
-    serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented"<<sendl;
+    msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented";
     // need to built the big global mass matrix and to inverse it...
 }
 
@@ -454,7 +454,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
 template<class DataTypes>
 SReal HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/) const
 {
-    serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented"<<sendl; return 0.0;
+    msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented";
+    return 0.0;
 }
 
 

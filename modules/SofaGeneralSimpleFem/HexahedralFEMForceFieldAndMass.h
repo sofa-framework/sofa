@@ -94,12 +94,15 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_error() << "Get potentialEnergy not implemented";
         return 0.0;
     }
 
     SReal getKineticEnergy(const core::MechanicalParams* /* mparams */, const DataVecDeriv& /*v*/)  const override ///< vMv/2 using dof->getV() override
-    {serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"<<sendl; return 0;}
+    {
+        msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"; 
+        return 0;
+    }
 
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 
