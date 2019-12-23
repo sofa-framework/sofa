@@ -244,7 +244,10 @@ public:
 
     /// Compute the error given a state vector and a line of the Jacobian (line in vector C)
     virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int /*line*/, ConstVecId /*id*/)
-    {  this->serr << "NOT IMPLEMENTED YET" << this->sendl; return (SReal)0;  }
+    {  
+        msg_error() << "getConstraintJacobianTimesVecDeriv not implemented yet.";
+        return SReal(0.0);
+    }
 
     /// @}
 

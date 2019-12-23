@@ -105,10 +105,10 @@ public:
     virtual void solveSystem() = 0;
 
     ///
-    virtual void init_partial_solve() {serr<<"WARNING : partial_solve is not implemented yet"<<sendl; }
+    virtual void init_partial_solve() { msg_warning() << "partial_solve is not implemented yet."; }
 
     ///
-    virtual void partial_solve(std::list<int>& /*I_last_Disp*/, std::list<int>& /*I_last_Dforce*/, bool /*NewIn*/) {serr<<"WARNING : partial_solve is not implemented yet"<<sendl; }
+    virtual void partial_solve(std::list<int>& /*I_last_Disp*/, std::list<int>& /*I_last_Dforce*/, bool /*NewIn*/) { msg_warning() << "partial_solve is not implemented yet"; }
 
     /// Invert the system, this method is optional because it's called when solveSystem() is called for the first time
     virtual void invertSystem() {}
@@ -139,20 +139,20 @@ public:
         SOFA_UNUSED(cparams);
         SOFA_UNUSED(result);
         SOFA_UNUSED(fact);
-        serr << "Error buildComplianceMatrix has not been implemented" << sendl;
+        msg_error() << "buildComplianceMatrix has not been implemented.";
         return false;
     }
 
     /// Apply the contactforce dx = Minv * J^t * f and store the resut in dx VecId
     virtual void applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/,sofa::core::MultiVecDerivId /*dx*/, const defaulttype::BaseVector* /*f*/) {
-        serr << "Error applyConstraintForce has not been implemented" << sendl;
+        msg_error() << "applyConstraintForce has not been implemented.";
     }
 
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute mparams->dF() = J^t lambda
     /// the result is written in mparams->dF()
     virtual void computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector* /*f*/) {
-        serr << "Error computeResidual has not been implemented" << sendl;
+        msg_error() << "computeResidual has not been implemented.";
     }
 
 
