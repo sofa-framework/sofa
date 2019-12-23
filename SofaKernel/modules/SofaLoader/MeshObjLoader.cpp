@@ -639,190 +639,190 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
     const char *single_string_format = "%127s"; // Better than "%s" for scanf
     const char *double_string_format = "%127s %127s"; // Better than "%s %s"
 
-    file = fopen(filename, "r");
-    Material *mat = nullptr;
+    file = fopen(filename, "r");    
     if (!file) {
-        msg_error() << "readMTL() failed: can't open material file " << filename;
+        msg_info() << "readMTL(): can't open material file " << filename;
+        return false;
     }
-    else
+
+    Material *mat = nullptr;
+    /* now, read in the data */
+    while (fscanf(file, single_string_format, buf) != EOF)
     {
-        /* now, read in the data */
-        while (fscanf(file, single_string_format, buf) != EOF)
+
+        switch (buf[0])
         {
-
-            switch (buf[0])
+        case '#':
+            /* comment */
+            /* eat up rest of line */
+            if ( fgets(buf, sizeof(buf), file) == nullptr)
             {
-            case '#':
-                /* comment */
-                /* eat up rest of line */
-                if ( fgets(buf, sizeof(buf), file) == nullptr)
-                {
-					if (feof(file))
-						msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case #.";
-                    else
-                        msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case #.";
-                }
+				if (feof(file))
+					msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case #.";
+                else
+                    msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case #.";
+            }
+            break;
+        case 'n':
+            /* newmtl */
+            if (mat != nullptr)
+            {
+                materials.push_back(*mat);
+                delete mat;
+                mat = nullptr;
+            }
+            mat = new Material();
+            if ( fgets(buf, sizeof(buf), file) == nullptr)
+            {
+                if (feof (file) )
+                    msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case n.";
+                else
+                    msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case n.";
+            }
+            sscanf(buf, double_string_format, buf, buf);
+            mat->name = buf;
+            break;
+        case 'N':
+            switch (buf[1])
+            {
+            case 'i':
+            {
+                float optical_density;
+                if ( fscanf(file, "%f", &optical_density) == EOF )
+                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case N i.";
                 break;
-            case 'n':
-                /* newmtl */
-                if (mat != nullptr)
-                {
-                    materials.push_back(*mat);
-                    delete mat;
-                    mat = nullptr;
-                }
-                mat = new Material();
-                if ( fgets(buf, sizeof(buf), file) == nullptr)
-                {
-                    if (feof (file) )
-                        msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case n.";
-                    else
-                        msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case n.";
-                }
-                sscanf(buf, double_string_format, buf, buf);
-                mat->name = buf;
+            }
+            case 's':
+                if (fscanf(file, "%f", &mat->shininess) == EOF )
+                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case N s.";
+
+                mat->useShininess = true;
                 break;
-            case 'N':
-                switch (buf[1])
-                {
-                case 'i':
-                {
-                    float optical_density;
-                    if ( fscanf(file, "%f", &optical_density) == EOF )
-                        msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case N i.";
-                    break;
-                }
-                case 's':
-                    if (fscanf(file, "%f", &mat->shininess) == EOF )
-                        msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case N s.";
-
-                    mat->useShininess = true;
-                    break;
-                default:
-                    /* eat up rest of line */
-                    if ( fgets(buf, sizeof(buf), file) == nullptr)
-                    {
-                        if (feof (file) )
-                            msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case N.";
-                        else
-                            msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case N.";
-                    }
-                    break;
-                }
-                break;
-            case 'K':
-                switch (buf[1])
-                {
-                case 'd':
-                    if ( fscanf(file, "%f %f %f", &mat->diffuse[0], &mat->diffuse[1], &mat->diffuse[2]) == EOF)
-                        msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K d.";
-                    mat->useDiffuse = true;
-                    break;
-                case 's':
-                    if ( fscanf(file, "%f %f %f", &mat->specular[0], &mat->specular[1], &mat->specular[2]) == EOF)
-                        msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K s.";
-                    mat->useSpecular = true;
-                    break;
-                case 'a':
-                    if ( fscanf(file, "%f %f %f", &mat->ambient[0], &mat->ambient[1], &mat->ambient[2]) == EOF)
-                        msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K a.";
-                    mat->useAmbient = true;
-                    break;
-                default:
-                    /* eat up rest of line */
-                    if ( fgets(buf, sizeof(buf), file) == nullptr)
-                    {
-                        if (feof (file) )
-                            msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case K.";
-                        else
-                            msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case K.";
-                    }
-                    break;
-                }
-                break;
-            case 'd':
-            case 'T':
-				if (!mat)
-				{
-					msg_error("MeshOBJ") << "readMTL 'T' no material";
-					break;
-				}
-                // transparency value
-                if ( fscanf(file, "%f", &mat->diffuse[3]) == EOF)
-                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case T i.";
-                break;
-
-			case 'm':
-			{
-				if (!mat)
-				{
-					msg_error("MeshOBJ") << "readMTL 'm' no material";
-					break;
-				}
-				//texture map
-				char charFilename[128] = { 0 };
-				if (fgets(charFilename, sizeof(charFilename), file) == nullptr)
-				{
-					msg_error("MeshOBJ") << "fgets has encountered an error";
-				}
-				else
-				{
-					mat->useTexture = true;
-
-					//store the filename of the texture map in the material
-					std::string stringFilename(charFilename);
-
-					//delete carriage return from the string assuming the next property of the .mtl file is at the next line
-					stringFilename.erase(stringFilename.end() - 1, stringFilename.end());
-					stringFilename.erase(stringFilename.begin(), stringFilename.begin() + 1);
-					mat->textureFilename = stringFilename;
-				}
-
-				break;
-			}
-			case 'b':
-			{
-				if (!mat)
-				{
-					msg_error("MeshOBJ") << "readMTL 'b' no material";
-					break;
-				}
-				//bump mapping texture map
-				char charFilename[128] = { 0 };
-				if (fgets(charFilename, sizeof(charFilename), file) == nullptr)
-				{
-					msg_error("MeshOBJ") << "fgets has encountered an error";
-				}
-				else
-				{
-					mat->useBumpMapping = true;
-
-					//store the filename of the texture map in the material
-					std::string stringFilename(charFilename);
-
-					//delete carriage return from the string assuming the next property of the .mtl file is at the next line
-					stringFilename.erase(stringFilename.end() - 1, stringFilename.end());
-					stringFilename.erase(stringFilename.begin(), stringFilename.begin() + 1);
-					mat->bumpTextureFilename = stringFilename;
-				}
-
-				break;
-			}
             default:
                 /* eat up rest of line */
                 if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) )
-                        msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case default.";
+                        msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case N.";
                     else
-                        msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case default.";
+                        msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case N.";
                 }
                 break;
             }
+            break;
+        case 'K':
+            switch (buf[1])
+            {
+            case 'd':
+                if ( fscanf(file, "%f %f %f", &mat->diffuse[0], &mat->diffuse[1], &mat->diffuse[2]) == EOF)
+                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K d.";
+                mat->useDiffuse = true;
+                break;
+            case 's':
+                if ( fscanf(file, "%f %f %f", &mat->specular[0], &mat->specular[1], &mat->specular[2]) == EOF)
+                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K s.";
+                mat->useSpecular = true;
+                break;
+            case 'a':
+                if ( fscanf(file, "%f %f %f", &mat->ambient[0], &mat->ambient[1], &mat->ambient[2]) == EOF)
+                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K a.";
+                mat->useAmbient = true;
+                break;
+            default:
+                /* eat up rest of line */
+                if ( fgets(buf, sizeof(buf), file) == nullptr)
+                {
+                    if (feof (file) )
+                        msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case K.";
+                    else
+                        msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case K.";
+                }
+                break;
+            }
+            break;
+        case 'd':
+        case 'T':
+			if (!mat)
+			{
+				msg_error("MeshOBJ") << "readMTL 'T' no material";
+				break;
+			}
+            // transparency value
+            if ( fscanf(file, "%f", &mat->diffuse[3]) == EOF)
+                msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case T i.";
+            break;
 
+		case 'm':
+		{
+			if (!mat)
+			{
+				msg_error("MeshOBJ") << "readMTL 'm' no material";
+				break;
+			}
+			//texture map
+			char charFilename[128] = { 0 };
+			if (fgets(charFilename, sizeof(charFilename), file) == nullptr)
+			{
+				msg_error("MeshOBJ") << "fgets has encountered an error";
+			}
+			else
+			{
+				mat->useTexture = true;
+
+				//store the filename of the texture map in the material
+				std::string stringFilename(charFilename);
+
+				//delete carriage return from the string assuming the next property of the .mtl file is at the next line
+				stringFilename.erase(stringFilename.end() - 1, stringFilename.end());
+				stringFilename.erase(stringFilename.begin(), stringFilename.begin() + 1);
+				mat->textureFilename = stringFilename;
+			}
+
+			break;
+		}
+		case 'b':
+		{
+			if (!mat)
+			{
+				msg_error("MeshOBJ") << "readMTL 'b' no material";
+				break;
+			}
+			//bump mapping texture map
+			char charFilename[128] = { 0 };
+			if (fgets(charFilename, sizeof(charFilename), file) == nullptr)
+			{
+				msg_error("MeshOBJ") << "fgets has encountered an error";
+			}
+			else
+			{
+				mat->useBumpMapping = true;
+
+				//store the filename of the texture map in the material
+				std::string stringFilename(charFilename);
+
+				//delete carriage return from the string assuming the next property of the .mtl file is at the next line
+				stringFilename.erase(stringFilename.end() - 1, stringFilename.end());
+				stringFilename.erase(stringFilename.begin(), stringFilename.begin() + 1);
+				mat->bumpTextureFilename = stringFilename;
+			}
+
+			break;
+		}
+        default:
+            /* eat up rest of line */
+            if ( fgets(buf, sizeof(buf), file) == nullptr)
+            {
+                if (feof (file) )
+                    msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case default.";
+                else
+                    msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case default.";
+            }
+            break;
         }
-        fclose(file);
+
     }
+    fclose(file);
+
     if (mat != nullptr)
     {
         materials.push_back(*mat);
