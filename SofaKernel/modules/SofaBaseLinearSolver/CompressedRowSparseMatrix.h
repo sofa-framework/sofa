@@ -704,7 +704,7 @@ public:
 #ifdef SPARSEMATRIX_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error() << "Invalid read access to element (" << i << "," << j << ") in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
             return 0.0;
         }
 #endif
@@ -716,19 +716,19 @@ public:
     void set(Index i, Index j, double v) override
     {
         dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v ;
+            << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = " << v;
 
 #ifdef SPARSEMATRIX_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 
         dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                << "("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<")["<<bi<<","<<bj<<"] = "<<v ;
+            << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ")[" << bi << "," << bj << "] = " << v;
 
         traits::v(*wbloc(i,j,true), bi, bj) = (Real)v;
     }
@@ -736,19 +736,19 @@ public:
     void add(Index i, Index j, double v) override
     {
         dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v ;
+            << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") += " << v;
 
 #ifdef SPARSEMATRIX_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 
         dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                << "("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<")["<<bi<<","<<bj<<"] += "<<v ;
+            << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ")[" << bi << "," << bj << "] += " << v;
 
         traits::v(*wbloc(i,j,true), bi, bj) += (Real)v;
     }
@@ -761,7 +761,7 @@ public:
 #ifdef SPARSEMATRIX_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
@@ -775,12 +775,12 @@ public:
     void clearRow(Index i) override
     {
         dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0" ;
+            << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0";
 
 #ifdef SPARSEMATRIX_CHECK
         if (i >= rowSize())
         {
-            std::cerr << "ERROR: invalid write access to row "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error() << "Invalid write access to row " << i << " in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
@@ -802,12 +802,12 @@ public:
     void clearCol(Index j) override
     {
         dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                << "("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0" ;
+            << "(" << rowSize() << "," << colSize() << "): col(" << j << ") = 0";
 
 #ifdef SPARSEMATRIX_CHECK
         if (j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to column "<<j<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error() << "Invalid write access to column " << j << " in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
@@ -827,12 +827,12 @@ public:
     void clearRowCol(Index i) override
     {
         dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0" ;
+            << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0 and col(" << i << ") = 0";
 
 #ifdef SPARSEMATRIX_CHECK
         if (i >= rowSize() || i >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to row and column "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error() << "Invalid write access to row and column " << i << " in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
