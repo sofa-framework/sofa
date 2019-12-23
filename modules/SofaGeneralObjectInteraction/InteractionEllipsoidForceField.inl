@@ -354,7 +354,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
 template <class DataTypes1, class DataTypes2>
 SReal InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord1& /*x1*/, const DataVecCoord2& /*x2*/) const
 {
-    serr<<"InteractionEllipsoidForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error() << "InteractionEllipsoidForceField::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 

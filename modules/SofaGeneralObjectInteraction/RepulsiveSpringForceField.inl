@@ -98,7 +98,7 @@ void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::Mechanical
 template <class DataTypes>
 SReal RepulsiveSpringForceField<DataTypes>::getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const
 {
-    serr<<"RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error() << "RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 
