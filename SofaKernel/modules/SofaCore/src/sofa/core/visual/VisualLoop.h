@@ -63,7 +63,7 @@ public:
     virtual void drawStep(sofa::core::visual::VisualParams* /*vparams*/) {}
 
     /// Compute the bounding box of the scene. If init is set to "true", then minBBox and maxBBox will be initialised to a default value
-    virtual void computeBBoxStep(sofa::core::visual::VisualParams* /*vparams*/, SReal* /*minBBox*/, SReal* /*maxBBox*/, bool /*init*/) { serr << "WARNING, VisualLoop::computeBBoxStep does nothing" << sendl; }
+    virtual void computeBBoxStep(sofa::core::visual::VisualParams* /*vparams*/, SReal* /*minBBox*/, SReal* /*maxBBox*/, bool /*init*/) { msg_warning() << "VisualLoop::computeBBoxStep does nothing"; }
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;

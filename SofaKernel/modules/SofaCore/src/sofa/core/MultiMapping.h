@@ -153,7 +153,7 @@ public:
     /// This method must be reimplemented by all mappings if they need to support constraints.
     virtual void applyJT( const ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ )
     {
-        serr << "This mapping does not support certain constraints since MultiMapping::applyJT( const ConstraintParams*, const helper::vector< InDataMatrixDeriv* >& , const helper::vector< const OutDataMatrixDeriv* >&  ) is not overloaded" << sendl;
+        msg_error() << "This mapping does not support certain constraints since MultiMapping::applyJT( const ConstraintParams*, const helper::vector< InDataMatrixDeriv* >& , const helper::vector< const OutDataMatrixDeriv* >&  ) is not overloaded";
     }
 
     /// computeAccFromMapping
