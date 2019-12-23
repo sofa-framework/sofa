@@ -641,7 +641,9 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
 
     file = fopen(filename, "r");
     Material *mat = nullptr;
-    if (!file);//serr << "readMTL() failed: can't open material file " << filename << sendl;
+    if (!file) {
+        msg_error() << "readMTL() failed: can't open material file " << filename;
+    }
     else
     {
         /* now, read in the data */
