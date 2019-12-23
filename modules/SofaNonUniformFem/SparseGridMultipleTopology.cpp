@@ -55,7 +55,7 @@ void SparseGridMultipleTopology::buildAsFinest()
 {
     if( _dataStiffnessCoefs.getValue().size() < _fileTopologies.getValue().size() )
     {
-        serr<<"WARNING: SparseGridMultipleTopology: not enough stiffnessCoefs"<<sendl;
+        msg_warning() << "SparseGridMultipleTopology: not enough stiffnessCoefs";
         for(unsigned i=_dataStiffnessCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
             _dataStiffnessCoefs.beginEdit()->push_back( 1.0 );
         //           return;
@@ -63,7 +63,7 @@ void SparseGridMultipleTopology::buildAsFinest()
 
     if( _dataMassCoefs.getValue().size() < _fileTopologies.getValue().size() )
     {
-        serr<<"WARNING: SparseGridMultipleTopology: not enough massCoefs\n";
+        msg_warning() << "SparseGridMultipleTopology: not enough massCoefs\n";
         for(unsigned i=_dataMassCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
             _dataMassCoefs.beginEdit()->push_back( 1.0 );
         // 			return;
@@ -101,7 +101,7 @@ void SparseGridMultipleTopology::buildAsFinest()
 
         std::string filename = _fileTopologies.getValue()[i];
 
-        sout<<"SparseGridMultipleTopology open "<<filename<<sendl;
+        msg_info() << "SparseGridMultipleTopology open " << filename;
 
         if (! sofa::helper::system::DataRepository.findFile ( filename ))
             continue;
@@ -112,7 +112,7 @@ void SparseGridMultipleTopology::buildAsFinest()
 
             if(meshes[i] == nullptr)
             {
-                serr << "SparseGridTopology: loading mesh " << filename << " failed." <<sendl;
+                msg_error() << "SparseGridTopology: loading mesh " << filename << " failed.";
                 return;
             }
 

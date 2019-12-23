@@ -54,7 +54,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
     _sparseGrid = dynamic_cast<SparseGridTopologyT*> (this->fromModel->getContext()->getTopology());
     if(!_sparseGrid)
     {
-        serr<<"HexahedronCompositeFEMMapping can only be used with a SparseGridTopology"<<sendl;
+        msg_error() << "HexahedronCompositeFEMMapping can only be used with a SparseGridTopology";
         exit(EXIT_FAILURE);
     }
 
@@ -62,7 +62,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
     this->fromModel->getContext()->get(_forcefield);
     if(!_forcefield)
     {
-        serr<<"HexahedronCompositeFEMMapping can only be used with a HexahedronCompositeFEMForceFieldAndMass"<<sendl;
+        msg_error() << "HexahedronCompositeFEMMapping can only be used with a HexahedronCompositeFEMForceFieldAndMass";
         exit(EXIT_FAILURE);
     }
 
@@ -82,13 +82,6 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
         _qFine0.push_back( _finestSparseGrid->getPointPos(i)+translation0 );
 
     _qFine = _qFine0;
-
-
-// 	serr<<_qCoarse0[0]<<sendl;
-
-// 	for(int i=0;i<_qFine0.size();++i)
-// 		serr<<i<<" : "<<_qFine0[i]<<sendl;
-
 
 // 	_pointsCorrespondingToElem.resize(_sparseGrid->getNbHexahedra());
 
@@ -135,25 +128,23 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
                 elementIdx = _finestSparseGrid->findNearestCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
             }
 
-            if( elementIdx!=-1)
+            if (elementIdx != -1)
             {
-                helper::fixed_array<Real,8> baryCoefs;
-                baryCoefs[0] = (Real)((1-coefs[0]) * (1-coefs[1]) * (1-coefs[2]));
-                baryCoefs[1] = (Real)((coefs[0]) * (1-coefs[1]) * (1-coefs[2]));
-                baryCoefs[2] = (Real)((coefs[0]) * (coefs[1]) * (1-coefs[2]));
-                baryCoefs[3] = (Real)((1-coefs[0]) * (coefs[1]) * (1-coefs[2]));
-                baryCoefs[4] = (Real)((1-coefs[0]) * (1-coefs[1]) * (coefs[2]));
-                baryCoefs[5] = (Real)((coefs[0]) * (1-coefs[1]) * (coefs[2]));
+                helper::fixed_array<Real, 8> baryCoefs;
+                baryCoefs[0] = (Real)((1 - coefs[0]) * (1 - coefs[1]) * (1 - coefs[2]));
+                baryCoefs[1] = (Real)((coefs[0]) * (1 - coefs[1]) * (1 - coefs[2]));
+                baryCoefs[2] = (Real)((coefs[0]) * (coefs[1]) * (1 - coefs[2]));
+                baryCoefs[3] = (Real)((1 - coefs[0]) * (coefs[1]) * (1 - coefs[2]));
+                baryCoefs[4] = (Real)((1 - coefs[0]) * (1 - coefs[1]) * (coefs[2]));
+                baryCoefs[5] = (Real)((coefs[0]) * (1 - coefs[1]) * (coefs[2]));
                 baryCoefs[6] = (Real)((coefs[0]) * (coefs[1]) * (coefs[2]));
-                baryCoefs[7] = (Real)((1-coefs[0]) * (coefs[1]) * (coefs[2]));
+                baryCoefs[7] = (Real)((1 - coefs[0]) * (coefs[1]) * (coefs[2]));
 
-                _finestBarycentricCoord[i] = std::pair<int,helper::fixed_array<Real,8> >(elementIdx, baryCoefs);
+                _finestBarycentricCoord[i] = std::pair<int, helper::fixed_array<Real, 8> >(elementIdx, baryCoefs);
             }
             else
-                serr<<"HexahedronCompositeFEMMapping::init()   error finding the corresponding finest cube of vertex "<<_p0[i]<<sendl;
+                msg_error() << "HexahedronCompositeFEMMapping::init()   error finding the corresponding finest cube of vertex " << _p0[i];
         }
-// 		else
-// 			serr<<"HexahedronCompositeFEMMapping::init()   error finding the corresponding coarse cube of vertex "<<_p0[i]<<sendl;
     }
 
 
@@ -174,28 +165,6 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
             _finestWeights[ finehexa[w] ][_forcefield->_finalWeights[i].first] =  W ;
         }
     }
-
-
-
-// 	serr<<_finestWeights[17].size( )<<sendl;
-// 	for(int i=0;i<_finestWeights[17].size( );++i)
-// 		serr<<_finestWeights[17][i].second<<""<<sendl;
-
-
-
-// 	for (unsigned int i=0;i<_forcefield->_finalWeights.size();i++)
-// 	{
-// 		const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexahedron(i);
-// 		serr<<_finestWeights[ finehexa[i] ].size()<<sendl;
-// 		for(int w=0;w<_finestWeights[ finehexa[w] ].size();++w)
-// 		{
-// 			serr<< _finestWeights[ finehexa[w] ][w].first<<sendl;
-// 			serr<< _finestWeights[ finehexa[w] ][w].second<<sendl;
-// 			serr<<"-------"<<sendl;
-// 		}
-// 		serr<<"****************"<<sendl;
-// 	}
-
 
     // non necessary memory optimisation
 // 	_forcefield->_finalWeights.resize(0);

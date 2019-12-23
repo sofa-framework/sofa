@@ -44,7 +44,7 @@ void DynamicSparseGridTopologyModifier::init()
     this->getContext()->get ( m_DynContainer );
     if ( ! m_DynContainer )
     {
-        serr << "ERROR in DynamicSparseGridTopologyModifier::init(): DynamicSparseGridTopologyContainer was not found !" << sendl;
+        msg_error() << "init(): DynamicSparseGridTopologyContainer was not found !";
     }
     everRenumbered = false;
 }
@@ -55,7 +55,7 @@ void DynamicSparseGridTopologyModifier::init()
 void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra )
 {
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
-    serr << "DynamicSparseGridTopologyModifier::addHexahedraProcess( const sofa::helper::vector< Hexahedron > &hexahedra ). You must not use this method. To add some voxels to the topology, you must use addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra, const sofa::helper::vector< unsigned int> &indices ) because, for the moment, indices maps can not be updated !" << sendl;
+    msg_error() << "addHexahedraProcess( const sofa::helper::vector< Hexahedron > &hexahedra ). You must not use this method. To add some voxels to the topology, you must use addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra, const sofa::helper::vector< unsigned int> &indices ) because, for the moment, indices maps can not be updated !";
 }
 
 
