@@ -167,10 +167,10 @@ public:
 public:
     Real* getInverse()
     {
-        if(invM->data)
+        if (invM->data)
             return invM->data;
         else
-            serr<<"Inverse is not computed yet"<<sendl;
+            msg_error() << "Inverse is not computed yet";
         return nullptr;
     }
 

@@ -58,7 +58,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     {
         if (d_useOdeSolverIntegrationFactors.getValue() == true)
         {
-            serr << "Can't find any odeSolver" << sendl;
+            msg_error() << "Can't find any odeSolver";
             d_useOdeSolverIntegrationFactors.setValue(false);
         }
         d_useOdeSolverIntegrationFactors.setReadOnly(true);
@@ -92,11 +92,11 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
             if (um)
                 massValue = um->getVertexMass();
             else
-                serr << "WARNING : no mass found" << sendl;
+                msg_warning() << "No mass found.";
         }
         else
         {
-            serr << "\n WARNING : node is not found => massValue could be incorrect in addComplianceInConstraintSpace function" << sendl;
+            msg_warning() << "Node is not found => massValue could be incorrect in addComplianceInConstraintSpace function.";
         }
         
 
