@@ -90,7 +90,7 @@ public:
 
     void applyJT( const sofa::core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/) override
     {
-        serr << "applyJT(constraint ) not implemented" << sendl;
+        msg_error() << "applyJT(constraint ) not implemented";
     }
 
     //void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );

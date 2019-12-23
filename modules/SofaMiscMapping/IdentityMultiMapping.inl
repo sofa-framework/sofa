@@ -168,7 +168,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
 template <class TIn, class TOut>
 void IdentityMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/, const helper::vector< InDataMatrixDeriv* >& /*dOut*/, const helper::vector< const OutDataMatrixDeriv* >& /*dIn*/)
 {
-//    serr<<"applyJT on matrix is not implemented"<<sendl;
+
 }
 
 

@@ -106,20 +106,20 @@ void MatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, Data
 template <class DataTypes, class MassType>
 void MatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*, DataVecDeriv& , const DataVecDeriv&)
 {
-    serr<<"void MatrixMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f) not yet implemented (need the matrix assembly and inversion)"<<sendl;
+    msg_error() << "void MatrixMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f) not yet implemented (need the matrix assembly and inversion)";
 }
 
 template <class DataTypes, class MassType>
 SReal MatrixMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& ) const
 {
-    serr<<"void MatrixMass<DataTypes, MassType>::getKineticEnergy not yet implemented"<<sendl;
+    msg_error() << "void MatrixMass<DataTypes, MassType>::getKineticEnergy not yet implemented";
     return 0;
 }
 
 template <class DataTypes, class MassType>
 SReal MatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& ) const
 {
-    serr<<"void MatrixMass<DataTypes, MassType>::getPotentialEnergy not yet implemented"<<sendl;
+    msg_error() << "void MatrixMass<DataTypes, MassType>::getPotentialEnergy not yet implemented";
     return 0;
 }
 
@@ -127,7 +127,7 @@ SReal MatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechanica
 template <class DataTypes, class MassType>
 sofa::defaulttype::Vector6 MatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    serr<<"void MatrixMass<DataTypes, MassType>::getMomentum not yet implemented"<<sendl;
+    msg_error() << "void MatrixMass<DataTypes, MassType>::getMomentum not yet implemented";
     return sofa::defaulttype::Vector6();
 }
 

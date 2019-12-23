@@ -101,7 +101,7 @@ public:
         const helper::vector< In2DataMatrixDeriv*>&  /*dataMatOut2Const*/ ,
         const helper::vector<const OutDataMatrixDeriv*>& /*dataMatInConst*/) override
     {
-        serr << "applyJT(constraint) not implemented" << sendl;
+        msg_error() << "applyJT(constraint) not implemented";
     }
 
 
