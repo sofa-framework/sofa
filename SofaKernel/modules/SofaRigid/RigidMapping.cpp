@@ -59,7 +59,7 @@ void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types 
 template<>
 const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK()
 {
-    serr<<"TODO: assembled geometric stiffness not implemented"<<sendl;
+    msg_error() << "TODO: assembled geometric stiffness not implemented";
     return nullptr;
 }
 
