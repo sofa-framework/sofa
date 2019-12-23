@@ -82,7 +82,9 @@ template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit() {
     this->getContext()->get(realSolver, solverName.getValue());
 
-    if (realSolver==nullptr) serr << "Error the cannot find the solver " << solverName.getValue() << sendl;
+    if (realSolver == nullptr) {
+        msg_error() << "The cannot find the solver " << solverName.getValue();
+    }
 
     sofa::core::objectmodel::BaseContext * c = this->getContext();
     c->get<sofa::core::behavior::BaseRotationFinder >(&rotationFinders, sofa::core::objectmodel::BaseContext::Local);
