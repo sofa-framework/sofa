@@ -150,10 +150,7 @@ public:
 
 //        if( incomingBlocks.empty() ) return;
 //        compress_incomingBlocks();
-//        //        cerr<<"compress, before incoming blocks " << this->eigenMatrix << endl;
-//        //        cerr<<"compress, incoming blocks " << this->compressedIncoming << endl;
 //        this->compressedMatrix += this->compressedIncoming;
-//        //        cerr<<"compress, final value " << this->eigenMatrix << endl;
 //        this->compressedMatrix.finalize();
 //    }
 
@@ -280,8 +277,6 @@ public:
     void copyFrom( const CompressedRowSparseMatrix< defaulttype::Mat<Nout,Nin, AnyReal> >& crs )
     {
         this->resize( crs.rowSize(), crs.colSize() );
-//        cerr<<"copyFrom, size " << crs.rowSize() << ", " << crs.colSize()<< ", block rows: " << crs.rowIndex.size() << endl;
-//        cerr<<"copyFrom, crs = " << crs << endl;
 
 //        int rowStarted = 0;
         for (unsigned int xi = 0; xi < crs.rowIndex.size(); ++xi)  // for each non-null block row
@@ -299,7 +294,6 @@ public:
             for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
             {
                 if(r+ blRow*Nout >= (unsigned)this->rowSize() ) break;
-//                cerr<<"copyFrom,  startVec " << rowStarted << endl;
 //                this->compressedMatrix.startVec(rowStarted++);
 
 
@@ -311,7 +305,6 @@ public:
                         {
                         this->add(r + blRow*Nout, c + blCol*Nin, b[r][c]);
 //                        this->compressedMatrix.insertBack(r + blRow*Nout, c + blCol*Nin) = b[r][c];
-//                        cerr<<"copyFrom,  insert at " << r + blRow*Nout << ", " << c + blCol*Nin << endl;
                         }
 
                 }
