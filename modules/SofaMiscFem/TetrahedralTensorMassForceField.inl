@@ -477,7 +477,6 @@ void TetrahedralTensorMassForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/((1-2*f_poissonRatio.getValue())*(1+f_poissonRatio.getValue()));
     mu = f_youngModulus.getValue()/(2*(1+f_poissonRatio.getValue()));
-//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 

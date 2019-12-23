@@ -209,7 +209,7 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
         decompositionMethod= LINEAR_ELASTIC;
     else
     {
-        serr << "cannot recognize method "<< f_method.getValue() << ". Must be either qr, polar, polar2 or none" << sendl;
+        msg_error() << "cannot recognize method " << f_method.getValue() << ". Must be either qr, polar, polar2 or none";
     }
 
 
@@ -509,7 +509,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(const core::
     if (r)
         addKToMatrix(r.matrix, mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()), r.offset);
     else
-        serr<<"addKToMatrix found no valid matrix accessor." << sendl;
+        msg_error() << "addKToMatrix found no valid matrix accessor.";
 }
 
 
