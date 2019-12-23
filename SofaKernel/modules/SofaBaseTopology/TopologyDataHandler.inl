@@ -60,11 +60,11 @@ void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::ve
     unsigned int i0 = (unsigned)data.size();
     if (i0 != index[0])
     {
-        this->m_topologyData->getOwner()->serr << "TopologyDataHandler SIZE MISMATCH in Data "
+        msg_error(this->m_topologyData->getOwner()) << "TopologyDataHandler SIZE MISMATCH in Data "
             << this->m_topologyData->getName() << ": " << nbElements << " "
             << core::topology::TopologyElementInfo<TopologyElementType>::name()
             << " ADDED starting from index " << index[0]
-            << " while vector size is " << i0 << this->m_topologyData->getOwner()->sendl;
+            << " while vector size is " << i0;
         i0 = index[0];
     }
     data.resize(i0+nbElements);
