@@ -77,7 +77,7 @@ void RayModel::init()
     mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     if (mstate==nullptr)
     {
-        serr<<"RayModel requires a Vec3 Mechanical Model" << sendl;
+        msg_error() << "RayModel requires a Vec3 Mechanical Model";
         return;
     }
 
