@@ -63,7 +63,7 @@ public:
 
     ~ClassB() override {}
 
-    sofa::core::objectmodel::DDGLink<ClassA> inputLink;
+    sofa::core::objectmodel::DDGLink<const ClassA> inputLink;
     sofa::core::DataTrackerEngine engine;
     sofa::Data<bool> output;
 };

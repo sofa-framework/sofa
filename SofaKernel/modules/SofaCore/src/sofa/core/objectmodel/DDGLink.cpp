@@ -46,11 +46,28 @@ void BaseDDGLink::set(Base* linkedBase)
     setDirtyOutputs();
 }
 
+void BaseDDGLink::set(const Base* linkedBase)
+{
+    /// storing the ptr as non-const.. but nowhere should the ptr be modified afterwards if manipulating a DDGLink<T>
+    /// When manipulating BaseDDGLinks, be careful to use the correct getter or undefined behavior will occur.
+    m_linkedBase = const_cast<Base*>(linkedBase);
+    addInput(&m_linkedBase->d_componentstate);
+    ++m_counters[size_t(currentAspect())];
+    setDirtyOutputs();
+}
+
+const Base* BaseDDGLink::get() const
+{
+    const_cast <BaseDDGLink*> (this)->update();
+    return m_linkedBase;
+}
+
 Base* BaseDDGLink::get()
 {
     update();
     return m_linkedBase;
 }
+
 
 void BaseDDGLink::update()
 {

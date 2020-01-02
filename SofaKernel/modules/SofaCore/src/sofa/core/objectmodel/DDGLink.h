@@ -69,7 +69,9 @@ public:
     void setOwner(Base* owner);
 
     void set(Base* linkedBase);
+    void set(const Base* linkedBase);
 
+    const Base* get() const;
     Base* get();
 
     virtual void update() override;
