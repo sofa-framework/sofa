@@ -367,18 +367,22 @@ void Base::removeTag(Tag t)
 void Base::removeData(BaseData* d)
 {
     m_vecData.erase(std::find(m_vecData.begin(), m_vecData.end(), d));
-    typedef MapData::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(d->getName());
+    auto range = m_aliasData.equal_range(d->getName());
     m_aliasData.erase(range.first, range.second);
 }
 
 void Base::removeDDGLink(BaseDDGLink* d)
 {
     m_vecDDGLink.erase(std::find(m_vecDDGLink.begin(), m_vecDDGLink.end(), d));
-    typedef MapDDGLink::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasDDGLink.equal_range(d->getName());
+    auto range = m_aliasDDGLink.equal_range(d->getName());
     m_aliasDDGLink.erase(range.first, range.second);
 }
+
+void Base::addComponentStateOutput(BaseDDGLink* output) const
+{
+    output->addInput(&const_cast<Base*>(this)->d_componentstate);
+}
+
 /// Find a data field given its name.
 /// Return nullptr if not found. If more than one field is found (due to aliases), only the first is returned.
 BaseData* Base::findData( const std::string &name ) const
@@ -386,8 +390,7 @@ BaseData* Base::findData( const std::string &name ) const
     //Search in the aliases
     if(m_aliasData.size())
     {
-        typedef MapData::const_iterator mapIterator;
-        std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
+        auto range = m_aliasData.equal_range(name);
         if (range.first != range.second)
             return range.first->second;
         else
@@ -401,9 +404,8 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 {
     std::vector<BaseData*> result;
     //Search in the aliases
-    typedef MapData::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
-    for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
+    auto range = m_aliasData.equal_range(name);
+    for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
 }
@@ -413,9 +415,8 @@ std::vector< BaseDDGLink* > Base::findGlobalDDGLink( const std::string &name ) c
 {
     std::vector<BaseDDGLink*> result;
     //Search in the aliases
-    typedef MapDDGLink::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasDDGLink.equal_range(name);
-    for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
+    auto range = m_aliasDDGLink.equal_range(name);
+    for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
 }
@@ -426,8 +427,7 @@ std::vector< BaseDDGLink* > Base::findGlobalDDGLink( const std::string &name ) c
 BaseLink* Base::findLink( const std::string &name ) const
 {
     //Search in the aliases
-    typedef MapLink::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
+    auto range = m_aliasLink.equal_range(name);
     if (range.first != range.second)
         return range.first->second;
     else
@@ -439,8 +439,7 @@ BaseLink* Base::findLink( const std::string &name ) const
 BaseDDGLink* Base::findDDGLink( const std::string &name ) const
 {
     //Search in the aliases
-    typedef MapDDGLink::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasDDGLink.equal_range(name);
+    auto range = m_aliasDDGLink.equal_range(name);
     if (range.first != range.second)
         return range.first->second;
     else
@@ -452,9 +451,8 @@ std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
 {
     std::vector<BaseLink*> result;
     //Search in the aliases
-    typedef MapLink::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
-    for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
+    auto range = m_aliasLink.equal_range(name);
+    for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
 }

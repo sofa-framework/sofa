@@ -332,6 +332,8 @@ public:
     /// Remove a DDGLink.
     void removeDDGLink(BaseDDGLink* l);
 
+    /// a helper method to add the componentState of a const Base* to a DDGLink.
+    void addComponentStateOutput(BaseDDGLink* output) const;
 
     typedef helper::vector<BaseData*> VecData;
     typedef std::multimap<std::string, BaseData*> MapData;
