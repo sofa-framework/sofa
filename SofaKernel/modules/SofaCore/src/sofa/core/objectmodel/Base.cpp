@@ -349,6 +349,12 @@ void Base::removeDDGLink(BaseDDGLink* d)
     auto range = m_aliasDDGLink.equal_range(d->getName());
     m_aliasDDGLink.erase(range.first, range.second);
 }
+
+void Base::addComponentStateOutput(BaseDDGLink* output) const
+{
+    output->addInput(&const_cast<Base*>(this)->d_componentstate);
+}
+
 /// Find a data field given its name.
 /// Return nullptr if not found. If more than one field is found (due to aliases), only the first is returned.
 BaseData* Base::findData( const std::string &name ) const

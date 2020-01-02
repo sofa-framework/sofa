@@ -89,6 +89,7 @@ protected:
     std::string m_name {""};
     std::string m_help {""};
     std::string m_group {""};
+
     Base* m_linkedBase {nullptr};
     Base* m_owner {nullptr};
     BaseData::DataFlags m_dataFlags {BaseData::FLAG_DEFAULT};

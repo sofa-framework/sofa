@@ -171,8 +171,6 @@ private:
 
 public:
 
-
-
     /// Accessor to the object name
     const std::string& getName() const
     {
@@ -318,6 +316,9 @@ public:
     void addDDGLink(BaseDDGLink* l, const std::string& name);
     /// Remove a DDGLink.
     void removeDDGLink(BaseDDGLink* l);
+
+    /// a helper method to add the componentState of a const Base* to a DDGLink.
+    void addComponentStateOutput(BaseDDGLink* output) const;
 
     typedef helper::vector<BaseData*> VecData;
     typedef std::multimap<std::string, BaseData*> MapData;
