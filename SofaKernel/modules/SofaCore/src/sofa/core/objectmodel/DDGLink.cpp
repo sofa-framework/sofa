@@ -46,11 +46,31 @@ void BaseDDGLink::set(Base* linkedBase)
     setDirtyOutputs();
 }
 
+void BaseDDGLink::set(const Base* linkedBase)
+{
+    /// UNSAFE: storing the ptr as non-const.. not a problem when manipulating a DDGLink<T> / DDGLink<const T>
+    /// but when manipulating a DDGLink<const T> through its abstract type BaseDDGLink, we must be careful to use
+    /// the correct getter or undefined behavior will occur.
+    m_linkedBase = const_cast<Base*>(linkedBase);
+    linkedBase->addComponentStateOutput(this);
+    ++m_counters[size_t(currentAspect())];
+    setDirtyOutputs();
+}
+
+const Base* BaseDDGLink::get() const
+{
+    const_cast <BaseDDGLink*> (this)->update();
+    return m_linkedBase;
+}
+
 Base* BaseDDGLink::get()
 {
     update();
+    /// Dangerous: this method could have an undefined behavior if the linkedBase is a const_cast'ed pointer!
+    /// See BaseDDGLink::set(const Base*)
     return m_linkedBase;
 }
+
 
 void BaseDDGLink::update()
 {

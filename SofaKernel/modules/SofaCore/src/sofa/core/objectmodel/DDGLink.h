@@ -3,6 +3,7 @@
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/ExecParams.h>
+#include <sofa/core/core.h>
 
 namespace sofa
 {
@@ -20,7 +21,7 @@ namespace objectmodel
  * which creates the connection between the BaseLink and the DDG.
  * any data, engine, etc. can then be connected as output.
  */
-class BaseDDGLink : public DDGNode
+class SOFA_CORE_API BaseDDGLink : public DDGNode
 {
 public:
     /// Flags that describe some properties of a Data, and that can be OR'd together.
@@ -69,7 +70,9 @@ public:
     void setOwner(Base* owner);
 
     void set(Base* linkedBase);
+    void set(const Base* linkedBase);
 
+    const Base* get() const;
     Base* get();
 
     virtual void update() override;
@@ -86,6 +89,7 @@ protected:
     std::string m_name {""};
     std::string m_help {""};
     std::string m_group {""};
+
     Base* m_linkedBase {nullptr};
     Base* m_owner {nullptr};
     BaseData::DataFlags m_dataFlags {BaseData::FLAG_DEFAULT};
@@ -101,7 +105,7 @@ class DDGLink : public BaseDDGLink
 {
   public:
 
-    explicit DDGLink(const DDGLink::InitDDGLink& init)
+    explicit DDGLink(const BaseDDGLink::InitDDGLink& init)
         : BaseDDGLink(init)
     {
     }
