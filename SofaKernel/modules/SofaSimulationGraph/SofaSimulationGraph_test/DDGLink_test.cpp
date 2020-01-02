@@ -26,11 +26,8 @@ public:
         addUpdateCallback("engineA", {&input}, [&]() -> ComponentState {
             std::cout << "in engineA" << std::endl;
             output.setValue(input.getValue());
-            d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Valid);
-            e->cleanDirty();
-        });
-        engine.addOutput(&output);
-        engine.addOutput(&d_componentstate);
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }, {&output});
     }
 
     ~ClassA() override {}
@@ -49,11 +46,8 @@ public:
         addUpdateCallback("engineB", {&inputLink}, [&]() -> ComponentState {
             std::cout << "in engineB" << std::endl;
             output.setValue(inputLink.get()->output.getValue());
-            d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Valid);
-            e->cleanDirty();
-        });
-        engine.addOutput(&output);
-        engine.addOutput(&d_componentstate);
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }, {&output});
     }
 
     ~ClassB() override {}

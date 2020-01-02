@@ -45,7 +45,7 @@ public:
     enum { FLAG_DEFAULT = FLAG_DISPLAYED | FLAG_PERSISTENT | FLAG_AUTOLINK };
 
     /// This internal class is used by the initLink() methods to store initialization parameters of a Data
-    class InitDDGLink
+    class SOFA_CORE_API InitDDGLink
     {
     public:
         InitDDGLink()

@@ -103,29 +103,30 @@ protected:
 
 struct DataTracker_test: public ::testing::Test
 {
-    TestObject testObject;
+    TestObject::SPtr testObject;
 
     void SetUp() override
     {
-        testObject.init();
+        testObject = sofa::core::objectmodel::New<TestObject>();
+        testObject->init();
     }
 
     /// to test tracked Data
     void testTrackedData()
     {
         // input did not change, it is not dirtied, so neither its associated DataTracker
-        testObject.updateData();
-        ASSERT_TRUE(testObject.depend_on_input.getValue()==TestObject::NO_CHANGED);
+        testObject->updateData();
+        ASSERT_TRUE(testObject->depend_on_input.getValue()==TestObject::NO_CHANGED);
 
         // modifying input sets it as dirty, so its associated DataTracker too
-        testObject.input.setValue(true);
-        testObject.updateData();
-        ASSERT_TRUE(testObject.depend_on_input.getValue()==TestObject::CHANGED);
+        testObject->input.setValue(true);
+        testObject->updateData();
+        ASSERT_TRUE(testObject->depend_on_input.getValue()==TestObject::CHANGED);
 
-        testObject.input.setValue(false);
-        testObject.input.cleanDirty();
-        testObject.updateData();
-        ASSERT_TRUE(testObject.depend_on_input.getValue()==TestObject::CHANGED);
+        testObject->input.setValue(false);
+        testObject->input.cleanDirty();
+        testObject->updateData();
+        ASSERT_TRUE(testObject->depend_on_input.getValue()==TestObject::CHANGED);
     }
 
 };

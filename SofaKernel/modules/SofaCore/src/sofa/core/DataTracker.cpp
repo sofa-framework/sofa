@@ -110,7 +110,6 @@ void DataTrackerEngine::update()
             cs = state;
     }
     m_owner->d_componentstate.setValue(cs);
-    std::cout << getName() << " cleanDirty()" << std::endl;
     cleanDirty();
 }
 
