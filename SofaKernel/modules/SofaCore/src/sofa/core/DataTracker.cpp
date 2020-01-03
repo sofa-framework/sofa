@@ -109,7 +109,8 @@ void DataTrackerEngine::update()
         if (state != sofa::core::objectmodel::ComponentState::Valid)
             cs = state;
     }
-    m_owner->d_componentstate.setValue(cs);
+    if (m_owner)
+        m_owner->d_componentstate.setValue(cs);
     cleanDirty();
 }
 
