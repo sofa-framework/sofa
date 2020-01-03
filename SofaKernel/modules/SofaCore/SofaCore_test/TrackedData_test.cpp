@@ -215,6 +215,7 @@ struct DataTrackerEngine_test: public BaseTest
 {
 
     static unsigned updateCounter;
+    core::DataTrackerEngine dataTracker;
     void SetUp() override
     {
         updateCounter = 0;
@@ -268,13 +269,20 @@ struct DataTrackerEngine_test: public BaseTest
 
     }
 
-
     /// to test DataTrackerEngine between Data in separated components
     void testBetweenComponents()
     {
-
-
         DummyObject testObject, testObject2;
+
+        dataTracker.addInput(&testObject.myData); // several inputs can be added
+        dataTracker.addOutput(&testObject2.myData); // several output can be added
+        dataTracker.addCallback([&](){
+            ++updateCounter;
+            testObject2.myData.setValue(testObject.myData.getValue());
+            return sofa::core::objectmodel::ComponentState::Valid;
+        });
+
+        dataTracker.setDirtyValue();
         unsigned localCounter = 0u;
 
         testObject.myData.setValue(true);
