@@ -309,9 +309,8 @@ void PMLRigidBody::createVisualModel(StructuralComponent* body)
     //create mappings
     mapping = New<RigidMapping<RigidTypes, Vec3Types> >();
     ((Mapping<RigidTypes, Vec3Types>*)mapping.get())->setModels((MechanicalState<RigidTypes>*)refDOF.get(), (MechanicalState<Vec3Types>*)mmodel.get());
-    // BaseMapping * Vmapping = new IdentityMapping< Mapping< State<Vec3Types>, MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >
-    BaseMapping::SPtr Vmapping = New<IdentityMapping< Vec3Types, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > >();
-    ((Mapping< Vec3Types, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >*)Vmapping.get())->setModels((MechanicalState<Vec3Types>*)mmodel.get(), vmodel.get());
+    BaseMapping::SPtr Vmapping = New<IdentityMapping< Vec3Types, helper::vector< Vec<3,GLfloat>, Vec<3,GLfloat> > > >();
+    ((Mapping< Vec3Types, helper::vector< Vec<3,GLfloat>, Vec<3,GLfloat> > >*)Vmapping.get())->setModels((MechanicalState<Vec3Types>*)mmodel.get(), vmodel.get());
 
     VisualNode->addObject(mapping);
     VisualNode->addObject(Vmapping);

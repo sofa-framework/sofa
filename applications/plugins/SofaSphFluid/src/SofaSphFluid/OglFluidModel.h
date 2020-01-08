@@ -27,9 +27,8 @@ class SOFA_SPH_FLUID_API OglFluidModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(OglFluidModel, core::visual::VisualModel);
-    //typedef ExtVec3fTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
-	typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Real Real;

@@ -50,7 +50,7 @@ protected:
     sofa::core::objectmodel::DataFileName textureright;
     sofa::core::objectmodel::DataFileName fileMesh;
 
-    typedef sofa::defaulttype::ExtVec3fTypes DataTypes;
+    typedef sofa::defaulttype::Vec3fTypes DataTypes;
     typedef DataTypes::Real Real;
     typedef sofa::defaulttype::Vec<2, float> TexCoord;
     typedef sofa::defaulttype::Vec<3,Real> Vec3Real;
