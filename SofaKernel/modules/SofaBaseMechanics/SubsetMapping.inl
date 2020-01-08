@@ -46,9 +46,9 @@ SubsetMapping<TIn, TOut>::SubsetMapping()
     , f_handleTopologyChange( initData(&f_handleTopologyChange, true, "handleTopologyChange", "Enable support of topological changes for indices (disable if it is linked from SubsetTopologicalMapping::pointD2S)"))
     , f_ignoreNotFound( initData(&f_ignoreNotFound, false, "ignoreNotFound", "True to ignore points that are not found in the input model, they will be treated as fixed points"))
     , f_resizeToModel( initData(&f_resizeToModel, false, "resizeToModel", "True to resize the output MechanicalState to match the size of indices"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , matrixJ()
     , updateJ(false)
-    , l_topology(initLink("topology", "link to the topology container"))
 {
 }
 

@@ -97,7 +97,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
 
                     if (m==n)
                     {
-                        my_tinfo.linearDfDxDiag[j][m][m]+=(Real)val;
+                        my_tinfo.linearDfDxDiag[j][m][m]+=Real(val);
                     } else
                         my_tinfo.linearDfDxDiag[j][n][m]=my_tinfo.linearDfDxDiag[j][m][n];
                 }
@@ -125,7 +125,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
 
                     if (m==n)
                     {
-                        my_tinfo.linearDfDx[j][m][m]+=(Real)val;
+                        my_tinfo.linearDfDx[j][m][m]+=Real(val);
                     }
                 }
             }
@@ -147,12 +147,12 @@ template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::Fas
     : pointInfo(initData(&pointInfo, "pointInfo", "Internal point data"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
-    , _initialPoints(0)
     , m_topology(nullptr)
+    , _initialPoints(0)
     , updateMatrix(true)
     , f_method(initData(&f_method,std::string("qr"),"method"," method for rotation computation :\"qr\" (by QR) or \"polar\" or \"polar2\" or \"none\" (Linear elastic) "))
-    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
+    , f_poissonRatio(initData(&f_poissonRatio,Real(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
+    , f_youngModulus(initData(&f_youngModulus,Real(1000.),"youngModulus","Young modulus in Hooke's law"))
     , lambda(0)
     , mu(0)
     , f_drawing(initData(&f_drawing, true, "drawing", " draw the forcefield if true"))
