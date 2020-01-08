@@ -278,7 +278,7 @@ void OglTexture::unbind()
 OglTexture2D::OglTexture2D()
     :texture2DFilename(initData(&texture2DFilename, (std::string) "", "texture2DFilename", "Texture2D Filename"))
 {
-    msg_error() << helper::logging::Message::Deprecated << "OglTexture2D is deprecated. Please use OglTexture instead.";
+    msg_deprecated() << "OglTexture2D is deprecated. Please use OglTexture instead.";
 }
 
 OglTexture2D::~OglTexture2D()
