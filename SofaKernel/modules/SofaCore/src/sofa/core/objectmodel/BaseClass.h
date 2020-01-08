@@ -308,12 +308,14 @@ public:
     }                                                                   \
     ::sofa::core::objectmodel::BaseDDGLink::InitDDGLink                 \
     initDDGLink(::sofa::core::objectmodel::Base* owner, std::string name, \
-                std::string help, std::string group = "")               \
+                std::string help, ::sofa::core::objectmodel::Base::SPtr   \
+                linkedBase = nullptr, std::string group = "")           \
     {                                                                   \
         ::sofa::core::objectmodel::BaseDDGLink::InitDDGLink init;       \
         init.owner = owner;                                             \
         init.name = name;                                               \
         init.help = help;                                               \
+        init.linkedBase = linkedBase.get();                             \
         init.group = group;                                             \
         return init;                                                    \
     }                                                                   \

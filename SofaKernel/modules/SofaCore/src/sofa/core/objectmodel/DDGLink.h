@@ -70,9 +70,7 @@ public:
     void setOwner(Base* owner);
 
     void set(Base* linkedBase);
-    void set(const Base* linkedBase);
 
-    const Base* get() const;
     Base* get();
 
     virtual void update() override;
@@ -123,6 +121,12 @@ class DDGLink : public BaseDDGLink
     {
         return dynamic_cast<T*>(m_linkedBase);
     }
+
+    T* operator->() { return get(); }
+    T* operator*() { return get(); }
+
+    void operator=(T* o) { this->set(o); }
+    void operator=(typename T::SPtr o) { this->set(o.get()); }
 };
 
 } // namespace objectmodel
