@@ -670,11 +670,11 @@ int FlowVRInputMeshClass = sofa::core::RegisterObject("Import a mesh from a Flow
         ;
 
 template<class T>
-class SofaFlowVRAllocator : public sofa::defaulttype::ExtVectorAllocator<T>
+class SofaFlowVRAllocator : public sofa::defaulttype::StdVectorAllocator<T>
 {
 public:
-    typedef typename sofa::defaulttype::ExtVectorAllocator<T>::value_type value_type;
-    typedef typename sofa::defaulttype::ExtVectorAllocator<T>::size_type size_type;
+    typedef typename sofa::defaulttype::StdVectorAllocator<T>::value_type value_type;
+    typedef typename sofa::defaulttype::StdVectorAllocator<T>::size_type size_type;
     virtual void close(value_type* /*data*/)
     {
         delete this;
@@ -1497,7 +1497,7 @@ public:
                 memcpy(vb->data(), &(n[0]), vb->dataSize());
             }
 
-            const ResizableExtVector<TexCoord>& t = vtexcoords;
+            const sofa::helper::vector<TexCoord>& t = vtexcoords;
             if (!t.empty() && !idVBT) // only send texcoords once
             {
                 if (!idVBT)
@@ -1524,9 +1524,9 @@ public:
                     scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "tangent", 0);
                 }
 
-                ResizableExtVector<Vec4f> tangent; tangent.resize(t.size());
-                ResizableExtVector<Coord> tangent1; tangent1.resize(t.size());
-                ResizableExtVector<Coord> tangent2; tangent2.resize(t.size());
+                sofa::helper::vector<Vec4f> tangent; tangent.resize(t.size());
+                sofa::helper::vector<Coord> tangent1; tangent1.resize(t.size());
+                sofa::helper::vector<Coord> tangent2; tangent2.resize(t.size());
 
                 // see http://www.terathon.com/code/tangent.php
 

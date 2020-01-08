@@ -98,7 +98,7 @@ typedef struct
 {
     simulation::Node::SPtr node;
     sofa::component::visualmodel::OglModel::SPtr visu;
-    sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  >::SPtr mapping;
+    sofa::component::mapping::RigidMapping< Rigid3dTypes , Vec3fTypes  >::SPtr mapping;
 
 } VisualComponent;
 

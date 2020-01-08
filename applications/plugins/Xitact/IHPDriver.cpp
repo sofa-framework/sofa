@@ -496,12 +496,12 @@ void IHPDriver::init()
                 visualNode[i].visu->updateVisual();
                 if(i<4)
                 {
-                    visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > >();
+                    visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, Vec3fTypes > >();
                     visualNode[i].mapping->setModels(visualXitactDOF.get(),visualNode[i].visu.get());
                 }
                 else
                 {
-                    visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > >();
+                    visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, Vec3fTypes > >();
                     visualNode[i].mapping->setModels(visualAxesDOF.get(),visualNode[i].visu.get());
                 }
                 visualNode[i].node->addObject(visualNode[i].mapping);
@@ -536,7 +536,7 @@ void IHPDriver::init()
 
         for(int j=0; j<4; j++)
         {
-            sofa::defaulttype::ResizableExtVector<sofa::defaulttype::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+            sofa::helper::vector<sofa::defaulttype::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
             for(unsigned int i=0; i<scaleMapping.size(); i++)
                 for(int p=0; p<3; p++)
                     scaleMapping[i].at(p)*=(float)(Scale.getValue()/100.0);
@@ -931,7 +931,7 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
             float rapport=((float)Scale.getValue())/oldScale;
             for(int j = 0; j<4 ; j++)
             {
-                sofa::defaulttype::ResizableExtVector<sofa::defaulttype::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+                sofa::helper::vector<sofa::defaulttype::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
                 for(unsigned int i=0; i<scaleMapping.size(); i++)
                 {
                     for(int p=0; p<3; p++)
