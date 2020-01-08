@@ -233,8 +233,6 @@ public:
     }
 };
 
-template <class TDataTypes> using TTriangleModel [[deprecated("The TTriangleModel is now deprecated please use TriangleCollisionModel instead.")]] = TriangleCollisionModel<TDataTypes>;
-
 template<class DataTypes>
 inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
