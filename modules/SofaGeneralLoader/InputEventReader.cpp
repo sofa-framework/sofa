@@ -64,7 +64,7 @@ void InputEventReader::init()
 {
 #ifdef __linux__
     if((fd = open(filename.getFullPath().c_str(), O_RDONLY)) < 0)
-        msg_info() << "ERROR: impossible to open the file: " << filename.getValue();
+        msg_error() << "Impossible to open the file: " << filename.getValue();
 #endif
 
     if(p_outputFilename.isSet())
@@ -182,7 +182,7 @@ void InputEventReader::getInputEvents()
         while (poll(&pfd, 1, 0 /*timeout.getValue()*/)>0 && (pfd.revents & POLLIN))
         {
             if (read(fd, &temp, sizeof(struct input_event)) == -1)
-                msg_error() << "Error: read function return an error.";
+                msg_error() << "Read function return an error.";
 
             memcpy(&ev, &temp, sizeof(struct input_event));
 

@@ -111,7 +111,7 @@ void GearSpringForceField<DataTypes>::init()
         outfile = new std::ofstream(filename.c_str());
         if( !outfile->is_open() )
         {
-            msg_error() << "Error creating file " << filename;
+            msg_error() << "Creating file " << filename << " failed.";
             delete outfile;
             outfile = nullptr;
         }
