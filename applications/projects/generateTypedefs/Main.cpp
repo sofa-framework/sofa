@@ -137,24 +137,6 @@ struct onlyFloat : public rule
     }
 };
 
-struct onlyExtVec3f : public rule
-{
-    void operator()(std::string& templateParam )
-    {
-        if ( templateParam == "ExtVec3f" )  this->result = this->result && true;
-        else this->result = false;
-    }
-};
-
-struct onlyExtVec3d : public rule
-{
-    void operator()(std::string& templateParam )
-    {
-        if ( templateParam == "ExtVec3d" )  this->result = this->result && true;
-        else this->result = false;
-    }
-};
-
 struct validTemplate : public rule
 {
     void operator()(std::string& templateParam )
@@ -411,12 +393,11 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                         break;
                     case TYPE_DOUBLE:
                         if( inputFloat ) continue;
-                        if( outputFloat && !applyRule<onlyExtVec3f>(outputTemplateList) ) continue;
+                        if( outputFloat ) continue;
                         break;
                     case TYPE_COMBINATION:
                         if( inputDouble && outputDouble ) continue;
                         if( inputFloat  && outputFloat  ) continue;
-                        if( applyRule<onlyExtVec3f>(outputTemplateList) ) continue;
                         break;
                     }
                     std::string separatorCombination;
@@ -621,8 +602,6 @@ int main(int , char** )
     templateExtension.insert(std::make_pair("Vec1f", "1f"));
     templateExtension.insert(std::make_pair("Rigid3f", "Rigid3f"));
     templateExtension.insert(std::make_pair("Rigid2f", "Rigid2f"));
-    templateExtension.insert(std::make_pair("ExtVec3f", "Ext3f"));
-    templateExtension.insert(std::make_pair("ExtVec3d", "Ext3d"));
 
 #ifdef SOFA_GPU_CUDA
     templateExtension.insert(std::make_pair("CudaVec6d", "Cuda6d"));

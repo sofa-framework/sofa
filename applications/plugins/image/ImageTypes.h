@@ -294,9 +294,9 @@ public:
             sofa::component::visualmodel::VisualStyle::SPtr ptr = visualModels[m]->template searchUp<sofa::component::visualmodel::VisualStyle>();
             if (ptr && !ptr->displayFlags.getValue().getShowVisualModels()) continue;
 
-            const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
+            const sofa::helper::vector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
 
-            ResizableExtVector<Coord> tposition;
+            sofa::helper::vector<Coord> tposition;
             tposition.resize(verts.size());
             for(unsigned int i=0; i<tposition.size(); i++)
             {

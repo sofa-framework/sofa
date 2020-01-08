@@ -106,7 +106,6 @@ using sofa::core::Mapping;
 using sofa::core::behavior::MechanicalState;
 using sofa::core::State;
 using sofa::core::objectmodel::New;
-using sofa::defaulttype::ExtVectorTypes;
 
 using sofa::component::topology::MeshTopology;
 using sofa::component::projectiveconstraintset::FixedConstraint;
@@ -253,13 +252,9 @@ int main(int argc, char** argv)
     cylOglModel->setColor("red");
 
 
-    typedef BarycentricMapping< Vec3dTypes, ExtVec3fTypes > BarycentricMapping3d_to_Ext3f;
-    BarycentricMapping3d_to_Ext3f::SPtr barycentricMapping = New<BarycentricMapping3d_to_Ext3f>(mechanicalObject.get(), cylOglModel.get());
+    typedef BarycentricMapping< Vec3dTypes, Vec3fTypes > BarycentricMapping3d_to_Vec3f;
+    BarycentricMapping3d_to_Vec3f::SPtr barycentricMapping = New<BarycentricMapping3d_to_Vec3f>(mechanicalObject.get(), cylOglModel.get());
     barycentricMapping->setName("Barycentric");
-    //barycentricMapping->setPathInputObject("../..");
-    //barycentricMapping->setPathOutputObject("Visual");
-
-
 
 
     // collision node

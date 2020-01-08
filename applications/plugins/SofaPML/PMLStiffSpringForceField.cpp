@@ -475,8 +475,8 @@ void PMLStiffSpringForceField::createVisualModel(StructuralComponent* body)
     double * color = body->getColor();
     vmodel->setColor((float)color[0], (float)color[1], (float)color[2], (float)color[3]);
     vmodel->load("","","");
-    BaseMapping::SPtr mapping = New<IdentityMapping< Vec3Types, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > >();
-    ((Mapping< Vec3Types, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >*)mapping.get())->setModels(((MechanicalState<Vec3Types>*)mmodel.get()), vmodel.get());
+    BaseMapping::SPtr mapping = New<IdentityMapping< Vec3Types, helper::vector< Vec<3,GLfloat>, Vec<3,GLfloat> > > >();
+    ((Mapping< Vec3Types, helper::vector< Vec<3,GLfloat>, Vec<3,GLfloat> > >*)mapping.get())->setModels(((MechanicalState<Vec3Types>*)mmodel.get()), vmodel.get());
     parentNode->addObject(mapping);
     parentNode->addObject(vmodel);
 

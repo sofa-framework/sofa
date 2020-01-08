@@ -827,7 +827,7 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
 //        this->child->addObject(visu);
 //        visu->useAlpha.setValue(true);
 //        visu->vscale.setValue(this->model->getContext()->getDt());
-//        IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
+//        IdentityMapping< DataTypes, StdVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, StdVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
 //        this->child->addObject(map);
 //        visu->init();
 //        map->init(); */
