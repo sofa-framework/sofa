@@ -185,8 +185,6 @@ protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
 };
 
-template <class TDataTypes> using TSphereModel [[deprecated("The TSphereModel is now deprecated please use SphereCollisionModel instead.")]] = SphereCollisionModel<TDataTypes>;
-
 template<class DataTypes>
 inline TSphere<DataTypes>::TSphere(ParentModel* model, int index)
     : core::TCollisionElementIterator<ParentModel>(model, index)

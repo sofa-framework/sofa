@@ -174,11 +174,9 @@ protected:
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-
     PointActiver *myActiver;
 };
 
-template <class TDataTypes> using TPointModel [[deprecated("The TPointModel is now deprecated please use PointCollisionModel instead.")]] = PointCollisionModel<TDataTypes>;
 
 template<class DataTypes>
 inline TPoint<DataTypes>::TPoint(ParentModel* model, int index)
