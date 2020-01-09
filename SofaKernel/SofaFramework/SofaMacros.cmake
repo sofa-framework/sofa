@@ -928,6 +928,11 @@ function(sofa_copy_libraries)
             if(NOT runtime_output_dir)
                 set(runtime_output_dir ${CMAKE_BINARY_DIR}) # fallback
             endif()
+            if(NOT EXISTS runtime_output_dir)
+                # make sure runtime_output_dir exists before calling configure_file COPYONLY
+                # otherwise it will not be treated as a directory
+                file(MAKE_DIRECTORY ${runtime_output_dir})
+            endif()
 
             if(EXISTS ${SHARED_LIB})
                 if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (Visual Studio)
