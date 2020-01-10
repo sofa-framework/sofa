@@ -274,7 +274,8 @@ inline bool TLine<DataTypes>::activated(core::CollisionModel *cm) const
     return this->model->myActiver->activeLine(this->index, cm);
 }
 
-typedef LineCollisionModel<sofa::defaulttype::Vec3Types> LineModel;
+template <class TDataTypes> using TLineModel [[deprecated("The TLineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] = LineCollisionModel<TDataTypes>;
+[[deprecated("The LineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] typedef LineCollisionModel<sofa::defaulttype::Vec3Types> LineModel;
 typedef TLine<sofa::defaulttype::Vec3Types> Line;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_LINEMODEL_CPP)

@@ -24,6 +24,7 @@
 #include <sofa/version.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/helper/ComponentChange.h>
 
 
 namespace sofa
@@ -84,7 +85,18 @@ void SceneCheckUsingAlias::doPrintSummary()
         for(std::string &unique_alias : unique_aliases)
         {
             unsigned int count = std::count(i.second.begin(), i.second.end(), unique_alias);
-            usingAliasesWarning << "  - " << i.first << ": " << count << " created with alias \"" <<  unique_alias << "\"";
+
+            using sofa::helper::lifecycle::ComponentChange;
+            using sofa::helper::lifecycle::uncreatableComponents;
+            if( uncreatableComponents.find(unique_alias) != uncreatableComponents.end() )
+            {
+                usingAliasesWarning << "  - " << i.first << ": " << count << " created with alias \"" <<  unique_alias << "\". This alias will be REMOVED at the SOFA release " << uncreatableComponents.at(unique_alias).getVersion() << ", please update your scenes.";
+            }
+            else
+            {
+                usingAliasesWarning << "  - " << i.first << ": " << count << " created with alias \"" <<  unique_alias << "\"";
+            }
+
             if(unique_alias != unique_aliases.back()) usingAliasesWarning << msgendl;
         }
 
