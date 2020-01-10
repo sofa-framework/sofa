@@ -165,11 +165,6 @@ namespace core
     public:
         /// set the update function to call
         /// when asking for an output and any input changed.
-        [[deprecated("This function has been replaced by addCallback with similar signature. Update your code.")]]
-        void setUpdateCallback(std::function<void(DataTrackerEngine*)> f){ addCallback(f); }
-
-        /// set the update function to call
-        /// when asking for an output and any input changed.
         void addCallback(std::function<void(DataTrackerEngine*)> f);
 
         /// Calls the callback when one of the data has changed.

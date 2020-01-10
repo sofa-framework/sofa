@@ -172,7 +172,7 @@ public:
     {
         m_dataTracker.addInputs({&input,&input2}); // several inputs can be added
         m_dataTracker.addOutputs({&depend_on_input, &depend_on_input2}); // several output can be added
-        m_dataTracker.setUpdateCallback( &TestObject2::myUpdate );
+        m_dataTracker.addCallback( &TestObject2::myUpdate );
         m_dataTracker.setDirtyValue();
     }
 
