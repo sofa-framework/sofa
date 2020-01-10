@@ -220,7 +220,7 @@ function(sofa_add_generic_external directory name type)
         # Execute commands to fetch content
         message("  Pulling ...")
         file(WRITE "${fetched_dir}/logs.txt" "") # Empty log file
-        execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -G "${CMAKE_GENERATOR}" .
+        execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM} -G "${CMAKE_GENERATOR}" .
             WORKING_DIRECTORY "${fetched_dir}"
             RESULT_VARIABLE generate_exitcode
             OUTPUT_VARIABLE generate_logs ERROR_VARIABLE generate_logs)
