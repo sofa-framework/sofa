@@ -422,7 +422,7 @@ if(EIGEN3_FOUND)
         )
     install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/unsupported/Eigen
         COMPONENT headers
-        DESTINATION "include/extlibs/Eigen"
+        DESTINATION "include/extlibs/Eigen/unsupported/Eigen"
         PATTERN "*.in" EXCLUDE
         PATTERN "*.txt" EXCLUDE
         PATTERN "*.cpp" EXCLUDE
