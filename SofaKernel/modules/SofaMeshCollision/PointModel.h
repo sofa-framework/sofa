@@ -222,7 +222,8 @@ inline bool TPoint<DataTypes>::activated(core::CollisionModel *cm) const
     return this->model->myActiver->activePoint(this->index, cm);
 }
 
-typedef PointCollisionModel<sofa::defaulttype::Vec3Types> PointModel;
+template <class TDataTypes> using TPointModel [[deprecated("The TPointModel is now deprecated, please use PointCollisionModel instead. Compatibility stops at v20.06")]] = PointCollisionModel<TDataTypes>;
+[[deprecated("The PointModel is now deprecated, please use PointCollisionModel instead. Compatibility stops at v20.06")]] typedef PointCollisionModel<sofa::defaulttype::Vec3Types> PointModel;
 typedef TPoint<sofa::defaulttype::Vec3Types> Point;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_POINTMODEL_CPP)

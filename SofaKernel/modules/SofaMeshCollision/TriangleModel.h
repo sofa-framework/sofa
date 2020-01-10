@@ -302,7 +302,9 @@ inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->
 template<class DataTypes>
 inline typename DataTypes::Deriv TriangleCollisionModel<DataTypes>::velocity(int index) const { return (m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][0]] + m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][1]] +
                                                                                                 m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][2]])/((Real)(3.0)); }
-typedef TriangleCollisionModel<sofa::defaulttype::Vec3Types> TriangleModel;
+
+template <class TDataTypes> using TTriangleModel [[deprecated("The TTriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] = TriangleCollisionModel<TDataTypes>;
+[[deprecated("The TriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] typedef TriangleCollisionModel<sofa::defaulttype::Vec3Types> TriangleModel;
 typedef TTriangle<sofa::defaulttype::Vec3Types> Triangle;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_CPP)
