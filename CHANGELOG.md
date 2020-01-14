@@ -4,7 +4,7 @@
 
 ## On master branch (not released yet)
 
-[Full log](https://github.com/sofa-framework/sofa/compare/v19.06...HEAD)
+[Full log](https://github.com/sofa-framework/sofa/compare/v19.12...HEAD)
 
 
 ### Deprecated
@@ -25,6 +25,166 @@
 ### Bug Fixes
 
 
+
+
+____________________________________________________________
+
+
+
+## [v19.12](https://github.com/sofa-framework/sofa/tree/v19.12
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v19.06...v19.12
+
+
+### Breaking
+
+**Architecture**
+- [All] Improve extlibs integration [#1137](https://github.com/sofa-framework/sofa/pull/1137
+- [packages] Move all SofaComponent* + rename SofaAllCommonComponents [#1155](https://github.com/sofa-framework/sofa/pull/1155
+
+**Modules**
+- [All] Add SingleLink to Topology to reveal all hidden GetMeshTopology [#1183](https://github.com/sofa-framework/sofa/pull/1183
+- [All] Remove ExtVecType [#1055](https://github.com/sofa-framework/sofa/pull/1055
+- [All] up change on GetMeshTopology [#1223](https://github.com/sofa-framework/sofa/pull/1223
+- [SofaBoundaryConditions] Apply doInternalUpdate API to ConstantForceField [#1145](https://github.com/sofa-framework/sofa/pull/1145
+- **[SofaKernel]** Replacing const char* with strings for group / help / widget etc. [#1152](https://github.com/sofa-framework/sofa/pull/1152
+- **[SofaKernel]** ADD: static method in events to retrieve the classname [#1118](https://github.com/sofa-framework/sofa/pull/1118
+- **[SofaKernel]** Set BaseData to non-persistant by default [#1191](https://github.com/sofa-framework/sofa/pull/1191
+- **[SofaKernel]** fix root's getPathName [#1146](https://github.com/sofa-framework/sofa/pull/1146
+
+
+### Improvements
+
+**Architecture**
+- [CMake] v19.06 changes [#1114](https://github.com/sofa-framework/sofa/pull/1114
+- [extlibs] Set Eigen as external project + upgrade to 3.2.10 [#1101](https://github.com/sofa-framework/sofa/pull/1101
+- [extlibs] Upgrade Qwt extlib from 6.1.2 to 6.1.4 [#1136](https://github.com/sofa-framework/sofa/pull/1136
+
+**Modules**
+- [All] Add SingleLink to Topology to reveal hidden GetMeshTopology Part 2 [#1199](https://github.com/sofa-framework/sofa/pull/1199
+- [All] Add update internal mechanism [#1131](https://github.com/sofa-framework/sofa/pull/1131
+- [All] Update the SOFA Guidelines [#1135](https://github.com/sofa-framework/sofa/pull/1135
+- **[SofaBaseMechanics]** Add topological change in barycentric mapping [#1203](https://github.com/sofa-framework/sofa/pull/1203
+- **[SofaBaseMechanics]** Use doUpdateInternal API in DiagonalMass [#1150](https://github.com/sofa-framework/sofa/pull/1150
+- **[SofaBaseMechanics]** Use doUpdateInternal API in UniformMass [#1149](https://github.com/sofa-framework/sofa/pull/1149
+- **[SofaBaseTopology]** Add new geometric methods in TetrahedronSetGeometryAlgorythms [#1160](https://github.com/sofa-framework/sofa/pull/1160
+- **[SofaCore]** Remove thread specific declaration [#1129](https://github.com/sofa-framework/sofa/pull/1129
+- [SofaGeneralEngine] Added Rigid to Euler orientation export [#1141](https://github.com/sofa-framework/sofa/pull/1141
+- [SofaHaptics] Add mutex and option to lock the ForceFeedback computation [#1157](https://github.com/sofa-framework/sofa/pull/1157
+- **[SofaKernel]** ADD: DataTypeInfo<vector<string>> & improved  doc [#1113](https://github.com/sofa-framework/sofa/pull/1113
+- **[SofaKernel]** Add a strict option to the BoxROI to prevent partially inside element to be in the box. [#1127](https://github.com/sofa-framework/sofa/pull/1127
+- **[SofaKernel]** Add fixed_array_algorithm + RGBAColor::lighten [#1172](https://github.com/sofa-framework/sofa/pull/1172
+- **[SofaKernel]** Add new events to detect Initialization & Simulation start. [#1173](https://github.com/sofa-framework/sofa/pull/1173
+- **[SofaKernel]** Add option in StiffSpringFF to track list of input springs [#1093](https://github.com/sofa-framework/sofa/pull/1093
+- **[SofaKernel]** Change several AdvancedTimer logs for a better tracking [#1094](https://github.com/sofa-framework/sofa/pull/1094
+- **[SofaKernel]** Consistent SofaFramework modules [#1200](https://github.com/sofa-framework/sofa/pull/1200
+- **[SofaKernel]** Make componentState a real data field [#1168](https://github.com/sofa-framework/sofa/pull/1168
+- [SofaMiscForceField] Use doUpdateInternal API in MeshMatrixMass [#1151](https://github.com/sofa-framework/sofa/pull/1151
+- [SofaQtQuick] Pass extra command-line arguments for python scenes in a more high-level function call [#992](https://github.com/sofa-framework/sofa/pull/992
+- [SofaSphFluid] Add sprite-based point render [#1194](https://github.com/sofa-framework/sofa/pull/1194
+- [SofaSphFluid] Update rendering & other [#1215](https://github.com/sofa-framework/sofa/pull/1215
+
+**Plugins / Projects**
+- [runSofa] Fix DataWidget display Speicherleck and long loading [#1181](https://github.com/sofa-framework/sofa/pull/1181
+
+**Scenes / Examples**
+- [Examples] Add some mesh and PR1000 demo scene [#1112](https://github.com/sofa-framework/sofa/pull/1112
+
+
+### Bug Fixes
+
+**Architecture**
+- [CMake]**[SofaFramework]** Remove FFMPEG_exec target from the dependencies of SofaFramework [#1177](https://github.com/sofa-framework/sofa/pull/1177
+- [CMake] FIX Eigen finding [#1175](https://github.com/sofa-framework/sofa/pull/1175
+- [CMake] FIX unknown compiler option on VS2015 [#1192](https://github.com/sofa-framework/sofa/pull/1192
+- [SofaMacros] FIX default module version [#1123](https://github.com/sofa-framework/sofa/pull/1123
+- [SofaMacros] FIX sofa_set_install_relocatable escaped chars [#1154](https://github.com/sofa-framework/sofa/pull/1154
+
+**Modules**
+- [All] Fix warnings [#1206](https://github.com/sofa-framework/sofa/pull/1206
+- [All] Fix warnings [#1167](https://github.com/sofa-framework/sofa/pull/1167
+- [All] Fix some warnings and OglAttribute handleTopologyChange [#1159](https://github.com/sofa-framework/sofa/pull/1159
+- [SofaBoundaryCondition] Fix FixedRotationConstraint when using more than one locked axis [#1119](https://github.com/sofa-framework/sofa/pull/1119
+- **[SofaBaseMechanics]** Make Uniform and DiagonalMass compatible with topo change [#1212](https://github.com/sofa-framework/sofa/pull/1212
+- **[SofaBaseTopology]** Fix SparseGrid obj loading + tests [#1231](https://github.com/sofa-framework/sofa/pull/1231
+- [SofaComponentAll] FIX SofaAllCommonComponents backward compatibility [#1204](https://github.com/sofa-framework/sofa/pull/1204
+- [SofaConstraint] Fix UncoupledConstraintCorrection topology change handling [#1115](https://github.com/sofa-framework/sofa/pull/1115
+- [SofaConstraint] Fix crash with PrecomputedConstraintCorrection [#1230](https://github.com/sofa-framework/sofa/pull/1230
+- **[SofaCore]** FIX decode functions in BaseClass [#1222](https://github.com/sofa-framework/sofa/pull/1222
+- **[SofaDefaulttype]** FIX too many ExtVec warnings with GCC [#1140](https://github.com/sofa-framework/sofa/pull/1140
+- [SofaExporter] Move bindings from SofaPython [#1095](https://github.com/sofa-framework/sofa/pull/1095
+- **[SofaFramework]** Add other orders for fromEuler() for Quaternions. [#1221](https://github.com/sofa-framework/sofa/pull/1221
+- **[SofaFramework]** Install the SofaSimulationCore target back into the SofaFramework package [#1182](https://github.com/sofa-framework/sofa/pull/1182
+- [SofaGuiQt] Fix unexpected symbol in CMakeLists [#1132](https://github.com/sofa-framework/sofa/pull/1132
+- [SofaGui] FIX missing find_package in SofaGuiConfig.cmake.in [#1198](https://github.com/sofa-framework/sofa/pull/1198
+- [SofaGui] Fix VideoRecorder [#1138](https://github.com/sofa-framework/sofa/pull/1138
+- [SofaGui] Prevent the GuiManager to store a pointer for the valid gui name [#1108](https://github.com/sofa-framework/sofa/pull/1108
+- [SofaHeadlessRecorder] FIX headlessRecorder_test [#1174](https://github.com/sofa-framework/sofa/pull/1174
+- **[SofaHelper]** FIX Eigen install path [#1240](https://github.com/sofa-framework/sofa/pull/1240
+- **[SofaKernel]** Add bloc access in basematrix [#1143](https://github.com/sofa-framework/sofa/pull/1143
+- **[SofaKernel]** Changes for Visual Studio and c++17 [#1162](https://github.com/sofa-framework/sofa/pull/1162
+- **[SofaKernel]** FIX regex in SofaMacros.cmake [#1161](https://github.com/sofa-framework/sofa/pull/1161
+- **[SofaKernel]** Fix alloc size [#1142](https://github.com/sofa-framework/sofa/pull/1142
+- **[SofaKernel]** Fix some AdvanceTimer log missing [#1158](https://github.com/sofa-framework/sofa/pull/1158
+- **[SofaKernel]** Fix useless warnings [#1144](https://github.com/sofa-framework/sofa/pull/1144
+- **[SofaKernel]** Several fix in draw methods and topology warnings [#1111](https://github.com/sofa-framework/sofa/pull/1111
+- **[SofaKernel]** Small Fix in CollisionModel [#1202](https://github.com/sofa-framework/sofa/pull/1202
+- **[SofaKernel]** Use links for input and output topologies of the barycentric mapping [#1125](https://github.com/sofa-framework/sofa/pull/1125
+- [SofaMisc] Fix compilation with SOFA_NO_OPENGL [#1193](https://github.com/sofa-framework/sofa/pull/1193
+- **[SofaSimulationGraph]** Fix CollisionGroupManager wrong search of deformable object node [#1060](https://github.com/sofa-framework/sofa/pull/1060
+- **[SofaSimulationGraph]** Stop DAGNode get parent topology process in BarycentricMapping [#1176](https://github.com/sofa-framework/sofa/pull/1176
+- [SofaSphFluid] Clean, Fix, Update ParticleSink [#1195](https://github.com/sofa-framework/sofa/pull/1195
+
+**Plugins / Projects**
+- [All] Fix minor compilation issue in plugins [#1106](https://github.com/sofa-framework/sofa/pull/1106
+- [Carving plugin] Small fix at init. [#1110](https://github.com/sofa-framework/sofa/pull/1110
+- [Cgal plugin] Fix windows cmake dll path and add a scene example [#958](https://github.com/sofa-framework/sofa/pull/958
+- [Regression_test] Update regression test references for CollisionGroup [#1102](https://github.com/sofa-framework/sofa/pull/1102
+
+
+### Cleanings
+
+**Architecture**
+- [CMake] Use cmake_dependent_option for plugin tests [#1164](https://github.com/sofa-framework/sofa/pull/1164
+
+**Modules**
+- [All] Fix order warnings [#1239](https://github.com/sofa-framework/sofa/pull/1239
+- [All] Fix override warning in option mode [#1210](https://github.com/sofa-framework/sofa/pull/1210
+- [All] Small cleaning on sout and serr [#1234](https://github.com/sofa-framework/sofa/pull/1234
+- [All] Standardize epsilons in SOFA [#1049](https://github.com/sofa-framework/sofa/pull/1049
+- [All] Code cleaning of multiple classes [#1116](https://github.com/sofa-framework/sofa/pull/1116
+- [All] Remove deprecated macro SOFA_TRANGLEFEM [#1233](https://github.com/sofa-framework/sofa/pull/1233
+- [All] Remove references to "isToPrint" because it's broken [#1197](https://github.com/sofa-framework/sofa/pull/1197
+- [All] Replace NULL by nullptr [#1179](https://github.com/sofa-framework/sofa/pull/1179
+- [All] Try to reduce the number of compilation warnings [#1196](https://github.com/sofa-framework/sofa/pull/1196
+- [SceneCreator] Pluginizing... [#1109](https://github.com/sofa-framework/sofa/pull/1109
+- **[SofaBaseLinearSolver]** Remove virtual function BaseLinearSolver::isMultiGroup [#1063](https://github.com/sofa-framework/sofa/pull/1063
+- **[SofaBaseLinearSolver][FullMatrix]**  Restore fast clear function [#1128](https://github.com/sofa-framework/sofa/pull/1128
+- **[SofaFramework]** Remove (painful) check/warning with Rigids [#1229](https://github.com/sofa-framework/sofa/pull/1229
+- [SofaGUI] Split OpenGL and Qt dependency [#1121](https://github.com/sofa-framework/sofa/pull/1121
+- [SofaGeneralObjectInteraction] Create delegate functions in AttachConstraint [#1185](https://github.com/sofa-framework/sofa/pull/1185
+- [SofaGraphComponent] Update sceneCheckerAPI and deprecate MatrixMass [#1107](https://github.com/sofa-framework/sofa/pull/1107
+- [SofaHAPI] Fixes for HAPI [#1189](https://github.com/sofa-framework/sofa/pull/1189
+- **[SofaKernel]** ADD const specifier on notify methods in Node [#1169](https://github.com/sofa-framework/sofa/pull/1169
+- **[SofaKernel]** Remove deprecated SOFA_DEBUG macro  [#1232](https://github.com/sofa-framework/sofa/pull/1232
+- **[SofaMeshCollision]** Clean deprecated code [#1201](https://github.com/sofa-framework/sofa/pull/1201
+- [SofaSphFluid] Clean code of ParticleSource and update scenes [#1190](https://github.com/sofa-framework/sofa/pull/1190
+- [SofaSphFluid] Reorder plugin code and scenes files [#1165](https://github.com/sofa-framework/sofa/pull/1165
+- [SofaSphFluid] Several clean in the plugin components [#1186](https://github.com/sofa-framework/sofa/pull/1186
+- [SofaSphFluid] missing namespace [#1188](https://github.com/sofa-framework/sofa/pull/1188
+- [SofaTest] CLEAN msg in Multi2Mapping_test [#1097](https://github.com/sofa-framework/sofa/pull/1097
+- [SofaTopologyMapping] Cleanups of some topological mappings + better initialization [#1126](https://github.com/sofa-framework/sofa/pull/1126
+- [SofaViewer] Prevent the GUI to ouput every CTRL actions in the console [#1130](https://github.com/sofa-framework/sofa/pull/1130
+
+**Plugins / Projects**
+- [CGALPlugin] Some cleanups to CylinderMesh [#1124](https://github.com/sofa-framework/sofa/pull/1124
+- [CGal plugin][CImgPlugin] Image data moved from Image/ to CImgPlugin/ [#1104](https://github.com/sofa-framework/sofa/pull/1104
+- [Geomagic] Reorder plugin files for better modularization [#1208](https://github.com/sofa-framework/sofa/pull/1208
+- [ManifoldTopologies] Undust and clean [#1156](https://github.com/sofa-framework/sofa/pull/1156
+
+**Scenes / Examples**
+- [Scenes] Clean some alias warnings [#1098](https://github.com/sofa-framework/sofa/pull/1098
+- [scenes] Change OglModel to use a MeshObjLoader instead of loading the mesh internally. [#1096](https://github.com/sofa-framework/sofa/pull/1096
 
 
 ____________________________________________________________
