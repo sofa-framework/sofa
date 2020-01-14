@@ -101,6 +101,8 @@ if(UNIX)
         list(APPEND CMAKE_INSTALL_RPATH
             "@loader_path/../lib"
             "@executable_path/../lib"
+            "@loader_path/../../Frameworks"
+            "@executable_path/../../Frameworks"
             )
         set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif()

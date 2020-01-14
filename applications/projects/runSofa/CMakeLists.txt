@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(runSofa)
 
-set(RESOURCE_FILES
-    resources/docs/runsofa.html
-    )
-
 if(APPLE)
     set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/runSofa.icns")
 else()
@@ -23,6 +19,13 @@ set(_defaultConfigPluginFileName "${_configPluginFileName}.default")
 set(_defaultConfigPluginFilePath "${CMAKE_BINARY_DIR}/${_pluginLocation}/${_defaultConfigPluginFileName}")
 sofa_generate_plugin_config(${_defaultConfigPluginFilePath})
 message("Write Plugin list at ${_defaultConfigPluginFilePath}")
+
+configure_file(${_defaultConfigPluginFilePath} ${PROJECT_BINARY_DIR}/${_defaultConfigPluginFileName} COPYONLY)
+
+set(RESOURCE_FILES
+    resources/docs/runsofa.html
+    ${PROJECT_BINARY_DIR}/${_defaultConfigPluginFileName}
+    )
 
 if(APPLE)
     set_source_files_properties(${RC_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
@@ -76,15 +79,12 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
             COMPONENT applications)
     elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
         if(SOFA_BUILD_APP_BUNDLE)
-            install(CODE "file(WRITE
-                \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/../Resources/qt.conf\"
-                \"[Paths]\\n  Plugins = MacOS/bin\"
-                )"
-                COMPONENT applications)
+            include(macdeployqt) # set MACDEPLOYQT_EXECUTABLE
         endif()
         install(CODE "execute_process(COMMAND /bin/bash
             \"${CMAKE_SOURCE_DIR}/scripts/macos-postinstall-fixup.sh\"
             \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}\"
+            \"${MACDEPLOYQT_EXECUTABLE}\"
             )"
             COMPONENT applications)
     endif()

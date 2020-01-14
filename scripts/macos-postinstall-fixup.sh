@@ -2,68 +2,81 @@
 # set -o errexit # Exit on error
 
 usage() {
-    echo "Usage: macos-postinstall-fixup.sh <install-dir>"
+    echo "Usage: macos-postinstall-fixup.sh <install-dir> <macdeployqt>"
 }
 
 if [ "$#" -ge 1 ]; then
     INSTALL_DIR="$1"
+    MACDEPLOYQT_EXE="$2"
 else
     usage; exit 1
 fi
 
+# Make sure the bin folder exists
+mkdir -p $INSTALL_DIR/bin
+
 if [ -e "$INSTALL_DIR/../MacOS/runSofa" ]; then
     echo "Moving executable to bin ..."
-    ( cd "$INSTALL_DIR" && mv -f runSofa* bin )
+    mv -f $INSTALL_DIR/../MacOS/runSofa* $INSTALL_DIR/../MacOS/bin/
 fi
 
-echo "Fixing up libs..."
+if [ -e "$MACDEPLOYQT_EXE" ]; then
+    echo "Fixing up libs with MacDeployQt ..."
+    $MACDEPLOYQT_EXE $INSTALL_DIR/../../../runSofa.app -always-overwrite
 
-(
-find "$INSTALL_DIR" -type f -name "Qt*" -path "*/Qt*.framework/Versions/*/Qt*" | grep -v "Headers"
-find "$INSTALL_DIR" -type f -name "*.dylib"
-find "$INSTALL_DIR" -type f -name "runSofa" -path "*/bin/*"
-) | while read lib; do
+    cp -R $INSTALL_DIR/../PlugIns/* $INSTALL_DIR/../MacOS/bin && rm -rf $INSTALL_DIR/../PlugIns
 
-    libboost=""
-    libqt=""
-    libicu=""
-    libglew=""
-    libjpeg=""
-    libpng=""
+    printf "[Paths] \n    Plugins = MacOS/bin \n" > $INSTALL_DIR/../Resources/qt.conf
+else
+    echo "Fixing up libs manually ..."
 
-    echo -n "  Fixing $lib"
+    (
+    find "$INSTALL_DIR" -type f -name "Qt*" -path "*/Qt*.framework/Versions/*/Qt*" | grep -v "Headers"
+    find "$INSTALL_DIR" -type f -name "*.dylib"
+    find "$INSTALL_DIR" -type f -name "runSofa" -path "*/bin/*"
+    ) | while read lib; do
 
-    (otool -L $lib | tail -n +2 | perl -p -e 's/^[\t ]+(.*) \(.*$/\1/g') | while read dep; do
-        libboost="$(echo $dep | egrep -o "/libboost_[^\/]*?\.dylib" | cut -c2-)"
-        libqt="$(echo $dep | egrep -o "/Qt[A-Za-z]*$" | cut -c2-)"
-        libicu="$(echo $dep | egrep -o "/libicu[^\/]*?\.dylib$" | cut -c2-)"
-        libglew="$(echo $dep | egrep -o "/libGLEW[^\/]*?\.dylib$" | cut -c2-)"
-        libjpeg="$(echo $dep | egrep -o "/libjpeg[^\/]*?\.dylib$" | cut -c2-)"
-        libpng="$(echo $dep | egrep -o "/libpng[^\/]*?\.dylib$" | cut -c2-)"
-        
-        if [ -n "$libboost" ]; then
-            #echo "install_name_tool -change $dep @rpath/$libboost $lib"
-            install_name_tool -change $dep @rpath/$libboost $lib
-        elif [ -n "$libqt" ]; then
-            #echo "install_name_tool -change $dep @rpath/$libqt.framework/$libqt $lib"
-            install_name_tool -change $dep @rpath/$libqt.framework/$libqt $lib
-        elif [ -n "$libicu" ]; then
-            #echo "install_name_tool -change $dep @rpath/$libicu $lib"
-            install_name_tool -change $dep @rpath/$libicu $lib
-        elif [ -n "$libglew" ]; then
-            #echo "install_name_tool -change $dep @rpath/$libglew $lib"
-            install_name_tool -change $dep @rpath/$libglew $lib
-        elif [ -n "$libjpeg" ]; then
-            #echo "install_name_tool -change $dep @rpath/$libjpeg $lib"
-            install_name_tool -change $dep @rpath/$libjpeg $lib
-        elif [ -n "$libpng" ]; then
-            #echo "install_name_tool -change $dep @rpath/$libpng $lib"
-            install_name_tool -change $dep @rpath/$libpng $lib
-        fi
+        libboost=""
+        libqt=""
+        libicu=""
+        libglew=""
+        libjpeg=""
+        libpng=""
+
+        echo -n "  Fixing $lib"
+
+        (otool -L $lib | tail -n +2 | perl -p -e 's/^[\t ]+(.*) \(.*$/\1/g') | while read dep; do
+            libboost="$(echo $dep | egrep -o "/libboost_[^\/]*?\.dylib" | cut -c2-)"
+            libqt="$(echo $dep | egrep -o "/Qt[A-Za-z]*$" | cut -c2-)"
+            libicu="$(echo $dep | egrep -o "/libicu[^\/]*?\.dylib$" | cut -c2-)"
+            libglew="$(echo $dep | egrep -o "/libGLEW[^\/]*?\.dylib$" | cut -c2-)"
+            libjpeg="$(echo $dep | egrep -o "/libjpeg[^\/]*?\.dylib$" | cut -c2-)"
+            libpng="$(echo $dep | egrep -o "/libpng[^\/]*?\.dylib$" | cut -c2-)"
+            
+            if [ -n "$libboost" ]; then
+                #echo "install_name_tool -change $dep @rpath/$libboost $lib"
+                install_name_tool -change $dep @rpath/$libboost $lib
+            elif [ -n "$libqt" ]; then
+                #echo "install_name_tool -change $dep @rpath/$libqt.framework/$libqt $lib"
+                install_name_tool -change $dep @rpath/$libqt.framework/$libqt $lib
+            elif [ -n "$libicu" ]; then
+                #echo "install_name_tool -change $dep @rpath/$libicu $lib"
+                install_name_tool -change $dep @rpath/$libicu $lib
+            elif [ -n "$libglew" ]; then
+                #echo "install_name_tool -change $dep @rpath/$libglew $lib"
+                install_name_tool -change $dep @rpath/$libglew $lib
+            elif [ -n "$libjpeg" ]; then
+                #echo "install_name_tool -change $dep @rpath/$libjpeg $lib"
+                install_name_tool -change $dep @rpath/$libjpeg $lib
+            elif [ -n "$libpng" ]; then
+                #echo "install_name_tool -change $dep @rpath/$libpng $lib"
+                install_name_tool -change $dep @rpath/$libpng $lib
+            fi
+        done
+
+        echo ": done."
+
     done
-
-    echo ": done."
-
-done
+fi
 
 echo "Done."
