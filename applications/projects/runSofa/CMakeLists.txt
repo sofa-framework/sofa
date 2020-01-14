@@ -80,10 +80,13 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
     elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
         if(SOFA_BUILD_APP_BUNDLE)
             include(macdeployqt) # set MACDEPLOYQT_EXECUTABLE
+        else()
+            set(MACDEPLOYQT_EXECUTABLE "")
         endif()
         install(CODE "execute_process(COMMAND /bin/bash
             \"${CMAKE_SOURCE_DIR}/scripts/macos-postinstall-fixup.sh\"
             \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}\"
+            \"${Qt5_DIR}/../../..\"
             \"${MACDEPLOYQT_EXECUTABLE}\"
             )"
             COMPONENT applications)

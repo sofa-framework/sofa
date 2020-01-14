@@ -2,18 +2,25 @@
 # set -o errexit # Exit on error
 
 usage() {
-    echo "Usage: macos-postinstall-fixup.sh <install-dir> <macdeployqt>"
+    echo "Usage: macos-postinstall-fixup.sh <install-dir> [qt-dir] [macdeployqt]"
 }
 
 if [ "$#" -ge 1 ]; then
     INSTALL_DIR="$1"
-    MACDEPLOYQT_EXE="$2"
+    QT_DIR="$2"
+    MACDEPLOYQT_EXE="$3"
 else
     usage; exit 1
 fi
 
+echo "INSTALL_DIR = $INSTALL_DIR"
+echo "QT_DIR = $QT_DIR"
+echo "MACDEPLOYQT_EXE = $MACDEPLOYQT_EXE"
+
 # Make sure the bin folder exists
-mkdir -p $INSTALL_DIR/bin
+if [ ! -d "$INSTALL_DIR/bin" ]; then
+    mkdir -p $INSTALL_DIR/bin
+fi
 
 if [ -e "$INSTALL_DIR/../MacOS/runSofa" ]; then
     echo "Moving executable to bin ..."
@@ -29,6 +36,13 @@ if [ -e "$MACDEPLOYQT_EXE" ]; then
     printf "[Paths] \n    Plugins = MacOS/bin \n" > $INSTALL_DIR/../Resources/qt.conf
 else
     echo "Fixing up libs manually ..."
+
+    if [ -d "$QT_DIR" ]; then
+        cp -Rf $QT_DIR/plugins/iconengines $INSTALL_DIR/bin
+        cp -Rf $QT_DIR/plugins/imageformats $INSTALL_DIR/bin
+        cp -Rf $QT_DIR/plugins/platforms $INSTALL_DIR/bin
+        cp -Rf $QT_DIR/plugins/styles $INSTALL_DIR/bin
+    fi
 
     (
     find "$INSTALL_DIR" -type f -name "Qt*" -path "*/Qt*.framework/Versions/*/Qt*" | grep -v "Headers"
@@ -57,6 +71,9 @@ else
                 #echo "install_name_tool -change $dep @rpath/$libboost $lib"
                 install_name_tool -change $dep @rpath/$libboost $lib
             elif [ -n "$libqt" ]; then
+                if [ -d "$QT_DIR" ] && [ ! -e $INSTALL_DIR/lib/$libqt.framework ] ; then
+                    cp -Rf $QT_DIR/lib/$libqt.framework $INSTALL_DIR/lib
+                fi
                 #echo "install_name_tool -change $dep @rpath/$libqt.framework/$libqt $lib"
                 install_name_tool -change $dep @rpath/$libqt.framework/$libqt $lib
             elif [ -n "$libicu" ]; then
@@ -75,7 +92,6 @@ else
         done
 
         echo ": done."
-
     done
 fi
 
