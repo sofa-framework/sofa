@@ -253,7 +253,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::reinit()
 template <class DataTypes>
 SReal TetrahedronDiffusionFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
-    msg_error() <<"GetPotentialEnergy not implemented (yet, report on github)." ;
+    msg_warning() <<"Method getPotentialEnergy not implemented yet." ;
     return 0;
 }
 
