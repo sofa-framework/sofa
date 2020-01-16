@@ -71,7 +71,7 @@ public:
     typename MMapper::SPtr mapper;
 
     BarycentricContactMapper()
-        : model(NULL), mapping(NULL), mapper(NULL)
+        : model(nullptr), mapping(nullptr), mapper(nullptr)
     {
     }
 
@@ -86,7 +86,7 @@ public:
 
     void resize(int size)
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             mapper->clear();
             mapping->getMechTo()[0]->resize(size);
@@ -95,7 +95,7 @@ public:
 
     void update()
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
             map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
@@ -105,7 +105,7 @@ public:
 
     void updateXfree()
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
             map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
@@ -115,7 +115,7 @@ public:
 
     void updateX0()
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
             map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
@@ -151,13 +151,13 @@ public:
     typedef typename DataTypes::Coord Coord;
     int addPoint(const Coord& P, int index, Real&)
     {
-        int nbt = this->model->getMeshTopology()->getNbTriangles();
+        int nbt = this->model->getCollisionTopology()->getNbTriangles();
         if (index < nbt)
             return this->mapper->createPointInTriangle(P, index, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
         else
         {
             int qindex = (index - nbt)/2;
-            int nbq = this->model->getMeshTopology()->getNbQuads();
+            int nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
@@ -171,14 +171,14 @@ public:
     int addPointB(const Coord& P, int index, Real& /*r*/, const defaulttype::Vector3& baryP)
     {
 
-        int nbt = this->model->getMeshTopology()->getNbTriangles();
+        int nbt = this->model->getCollisionTopology()->getNbTriangles();
         if (index < nbt)
             return this->mapper->addPointInTriangle(index, baryP.ptr());
         else
         {
             // TODO: barycentric coordinates usage for quads
             int qindex = (index - nbt)/2;
-            int nbq = this->model->getMeshTopology()->getNbQuads();
+            int nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else

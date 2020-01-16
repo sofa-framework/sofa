@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
-#include "config.h"
+#include <SofaSparseSolver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
@@ -54,7 +54,7 @@ public :
     Real * tmp;
     SparseLUInvertData()
     {
-        S=NULL; N=NULL; tmp=NULL;
+        S=nullptr; N=nullptr; tmp=nullptr;
     }
 
     ~SparseLUInvertData()

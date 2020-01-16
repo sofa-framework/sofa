@@ -117,11 +117,16 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
 
 void SceneCheckAPIChange::installDefaultChangeSets()
 {
+    // Template of addHookInChangeSet
+    // addHookInChangeSet warns the user about changes that occured within a component
+    // (change in API, behavior, default values, etc.)
+    /*
     addHookInChangeSet("17.06", [this](Base* o){
         if(o->getClassName() == "BoxStiffSpringForceField" )
             msg_warning(o) << this->getName() << ": "
                            << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'";
     });
+    */
 }
 
 void SceneCheckAPIChange::addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct)

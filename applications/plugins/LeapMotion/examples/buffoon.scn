@@ -1,4 +1,5 @@
 <Node name="root" dt="0.04" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin name="LeapMotion Driver" pluginName="LeapMotion" />
 
@@ -8,14 +9,14 @@
     <VisualStyle displayFlags="showVisualModels hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
 
 
-    <CollisionPipeline name="pipeline" depth="6" />
+    <DefaultPipeline name="pipeline" depth="6" />
     <BruteForceDetection name="detection" />
 	<DiscreteIntersection />
-    <CollisionResponse name="Response" response="default" />
+    <DefaultContactManager name="Response" response="default" />
 
     <LeapMotionDriver name="leapMotionDriver" scale="0.0025" rotation="90 0 0" translation="0 0. 0" displayHand="true" printLog="0"/>
 
-    <EulerImplicit vdamping="2.0"  rayleighStiffness="0.1" rayleighMass="0.1" />
+    <EulerImplicitSolver vdamping="2.0"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="30"  tolerance="1e-6" threshold="1e-6" />
 
     <Node name="TrackedHand" activated="true" >
@@ -38,7 +39,7 @@
 			<UniformMass name="uniformMass" template="Rigid"  totalmass="0.1" />
 			<Node name="Collision_Model" >
 				<MechanicalObject name="collisDOFs" template="Vec3d" position="@../../../leapMotionDriver.handPalmCoordinate" />
-				<Sphere name="colliSphere" contactStiffness="100" group="1" radius="0.07"/>
+				<SphereCollisionModel name="colliSphere" contactStiffness="100" group="1" radius="0.07"/>
 				<IdentityMapping/>
 			</Node>
 		</Node>
@@ -56,7 +57,7 @@
 					<Mesh2PointTopologicalMapping input="@../EdgeContainer" output="@PointContainer" pointBaryCoords="0 0 0" edgeBaryCoords="0.33 0.0 0.0   0.66 0.0 0.0 " />
 					<MechanicalObject name="sphereCollisDOFs"/>
 					<Mesh2PointMechanicalMapping />
-					<Sphere name="colliSphere" group="1" contactStiffness="1e7" contactFriction="0.05" contactRestitution="0" radius="0.0175" />
+					<SphereCollisionModel name="colliSphere" group="1" contactStiffness="1e7" contactFriction="0.05" contactRestitution="0" radius="0.0175" />
 				</Node>
 			</Node>
 		</Node>
@@ -91,35 +92,35 @@
 	<Node name="Collision">
 	    <SphereLoader name="loader" filename="Buffoon/buffoon.sph" />
 	    <MechanicalObject name="sphereDOFs"  position="@loader.position" />
-	    <Sphere listRadius="@loader.listRadius" />
+	    <SphereCollisionModel listRadius="@loader.listRadius" />
 	    <BarycentricMapping input="@../DOFs" output="@sphereDOFs" />
 	</Node>
 
 	<Node name="VisuSpring">
-	    <VisualModel name="Visual" filename="Buffoon/BuffoonSpring.obj" scale="1.0" />
+	    <OglModel name="Visual" filename="Buffoon/BuffoonSpring.obj" scale="1.0" />
 	    <BarycentricMapping input="@../DOFs" output="@Visual" />
 	</Node>
 	<Node name="VisuSkin">
-		<VisualModel name="Visual" filename="Buffoon/BuffoonHeadSkin.obj" scale="1.0" texturename="Buffoon/Buffoon.png" />
+		<OglModel name="Visual" filename="Buffoon/BuffoonHeadSkin.obj" scale="1.0" texturename="Buffoon/Buffoon.png" />
 		<BarycentricMapping input="@../DOFs" output="@Visual" />
 	</Node>
 	<Node name="VisuRed">
-		<VisualModel name="Visual" filename="Buffoon/BuffoonHeadRed.obj" scale="1.0" />
+		<OglModel name="Visual" filename="Buffoon/BuffoonHeadRed.obj" scale="1.0" />
 		<BarycentricMapping input="@../DOFs" output="@Visual" />
 	</Node>
 	<Node name="VisuPurple">
-		<VisualModel name="Visual" filename="Buffoon/BuffoonHeadPurple.obj" scale="1.0" />
+		<OglModel name="Visual" filename="Buffoon/BuffoonHeadPurple.obj" scale="1.0" />
 		<BarycentricMapping input="@../DOFs" output="@Visual" />
 	</Node>
 	<Node name="VisuYellow">
-		<VisualModel name="Visual" filename="Buffoon/BuffoonHeadYellow.obj" scale="1.0" />
+		<OglModel name="Visual" filename="Buffoon/BuffoonHeadYellow.obj" scale="1.0" />
 		<BarycentricMapping input="@../DOFs" output="@Visual" />
 	</Node>
 	<Node name="BoxRed">
-		<VisualModel name="Visual" filename="Buffoon/BoxRed.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
+		<OglModel name="Visual" filename="Buffoon/BoxRed.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
 	</Node>
 	<Node name="BoxPurple">
-		<VisualModel name="Visual" filename="Buffoon/BoxPurple.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
+		<OglModel name="Visual" filename="Buffoon/BoxPurple.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
 	</Node>
     </Node>
 

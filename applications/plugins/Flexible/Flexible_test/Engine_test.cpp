@@ -35,7 +35,7 @@
 #include "../shapeFunction/ShapeFunctionDiscretizer.h"
 #include "../shapeFunction/ImageShapeFunctionSelectNode.h"
 
-
+#include <SofaSimulationGraph/SimpleApi.h>
 
 #include <SceneCreator/SceneCreator.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -59,6 +59,7 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
 
     virtual void init()
     {
+        sofa::simpleapi::importPlugin("SofaOpenglVisual");
         DataEngine_test<DataEngineType>::init();
 
         const DDGLinkContainer& parent_inputs = this->m_engineInput->DDGNode::getInputs();

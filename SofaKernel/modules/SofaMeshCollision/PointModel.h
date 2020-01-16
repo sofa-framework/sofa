@@ -40,18 +40,18 @@ namespace collision
 {
 
 template<class DataTypes>
-class TPointModel;
+class PointCollisionModel;
 
 class PointLocalMinDistanceFilter;
 
 template<class TDataTypes>
-class TPoint : public core::TCollisionElementIterator<TPointModel<TDataTypes> >
+class TPoint : public core::TCollisionElementIterator<PointCollisionModel<TDataTypes> >
 {
 public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef TPointModel<DataTypes> ParentModel;
+    typedef PointCollisionModel<DataTypes> ParentModel;
 
     TPoint(ParentModel* model, int index);
     TPoint() {}
@@ -81,14 +81,14 @@ public:
 };
 
 template<class TDataTypes>
-class SOFA_MESH_COLLISION_API TPointModel : public core::CollisionModel
+class SOFA_MESH_COLLISION_API PointCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TPointModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(PointCollisionModel, TDataTypes), core::CollisionModel);
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
-    typedef TPointModel<DataTypes> ParentModel;
+    typedef PointCollisionModel<DataTypes> ParentModel;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -98,7 +98,7 @@ public:
 
     friend class TPoint<DataTypes>;
 protected:
-    TPointModel();
+    PointCollisionModel();
 public:
     void init() override;
 
@@ -132,7 +132,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -142,7 +142,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const TPointModel<DataTypes>* = NULL)
+    static std::string templateName(const PointCollisionModel<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }
@@ -150,6 +150,11 @@ public:
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void updateNormals();
+
+    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
+    {
+        return l_topology.get();
+    }
 
 protected:
 
@@ -164,10 +169,16 @@ protected:
     PointLocalMinDistanceFilter *m_lmdFilter;
     EmptyFilter m_emptyFilter;
 
-    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)    
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
+                                      
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 
     PointActiver *myActiver;
 };
+
+template <class TDataTypes> using TPointModel [[deprecated("The TPointModel is now deprecated please use PointCollisionModel instead.")]] = PointCollisionModel<TDataTypes>;
 
 template<class DataTypes>
 inline TPoint<DataTypes>::TPoint(ParentModel* model, int index)
@@ -199,7 +210,7 @@ template<class DataTypes>
 inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TPointModel<DataTypes>::velocity(int index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
+inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(int index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }
@@ -213,11 +224,11 @@ inline bool TPoint<DataTypes>::activated(core::CollisionModel *cm) const
     return this->model->myActiver->activePoint(this->index, cm);
 }
 
-typedef TPointModel<sofa::defaulttype::Vec3Types> PointModel;
+typedef PointCollisionModel<sofa::defaulttype::Vec3Types> PointModel;
 typedef TPoint<sofa::defaulttype::Vec3Types> Point;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_POINTMODEL_CPP)
-extern template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
 
 #endif
 

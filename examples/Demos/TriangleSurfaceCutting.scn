@@ -1,5 +1,6 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 -9 1">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -10,13 +11,15 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" scale="10" createSubelements="true" />
         <include href="Objects/TriangleSetTopology.xml" src="@meshLoader" />
-        <MechanicalObject />
+        <MechanicalObject name="Mo"/>
         <DiagonalMass massDensity="0.15" />
         <FixedConstraint indices="0 1" />
         <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
         <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
-        <TTriangleModel />
-        <OglModel name="Visual" color="red" />
-        <IdentityMapping input="@." output="@Visual" />
+        <TriangleCollisionModel />
+        <Node >
+            <OglModel name="Visual" color="red" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
 </Node>

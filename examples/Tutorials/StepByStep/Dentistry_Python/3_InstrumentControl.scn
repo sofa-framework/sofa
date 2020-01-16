@@ -3,6 +3,7 @@ Step 3:
 Instrument Control, and Python script
 -->
 <Node name="root" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin pluginName="SofaPython"/>
 
@@ -29,15 +30,16 @@ Instrument Control, and Python script
         <UniformMass name="mass" totalMass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <UncoupledConstraintCorrection />
         <Node name="VisualModel">
-            <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" />
+            <MeshObjLoader name="meshLoader_0" filename="data/mesh/dental_instrument.obj" handleSeams="1" />
+            <OglModel name="InstrumentVisualModel" src="@meshLoader_0" color="0.8 0.8 0.8 1.0" />
             <RigidMapping name="MM-VM mapping" input="@../instrumentState" output="@InstrumentVisualModel" />
         </Node>
         <Node name="CollisionModel">
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
             <Mesh src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 0" />
-            <Line name="instrument" contactStiffness="10" />
-            <Point name="instrument" contactStiffness="10" />
+            <LineCollisionModel name="instrument" contactStiffness="10" />
+            <PointCollisionModel name="instrument" contactStiffness="10" />
             <RigidMapping name="MM-CM mapping" input="@../instrumentState" output="@instrumentCollisionState" />
         </Node>
 

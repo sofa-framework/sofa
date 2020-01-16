@@ -19,12 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYCONTAINER_H
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYCONTAINER_H
-#include <ManifoldTopologies/config.h>
+#ifndef SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYCONTAINER_H
+#define SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYCONTAINER_H
 
 #include <ManifoldTopologies/config.h>
-
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 
 namespace sofa
@@ -71,7 +69,7 @@ public:
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
     @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
     */
-    virtual int getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components);
+    virtual int getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components) override;
 
 protected:
     /** \brief Creates the EdgeSetIndex.
@@ -103,160 +101,50 @@ private:
         unsigned int ccIndex; // index of the connected component stored in the m_ConnectedComponentArray
     };
 
-    /** \brief Resets the array of connected components and the ComponentVertex array (which are not valide anymore).
-    *
-    */
-    void resetConnectedComponent()
-    {
-        m_ComponentVertexArray.clear();
-        m_ConnectedComponentArray.clear();
-    }
+    /// \brief Resets the array of connected components and the ComponentVertex array (which are not valide anymore).
+    void resetConnectedComponent();
 
-    /** \brief Returns true iff the array of connected components and the ComponentVertex array are valide (ie : not void)
-    *
-    */
-    bool isvoid_ConnectedComponent()
-    {
-        return m_ConnectedComponentArray.size()==0;
-    }
+    /// \brief Returns true iff the array of connected components and the ComponentVertex array are valide (ie : not void)
+    bool isvoid_ConnectedComponent();
 
-    /** \brief Computes the array of connected components and the ComponentVertex array (which makes them valide).
-    *
-    */
+    /// \brief Computes the array of connected components and the ComponentVertex array (which makes them valide).
     void computeConnectedComponent();
 
-    /** \brief Returns the number of connected components.
-    *
-    */
-    virtual int getNumberOfConnectedComponents()
-    {
-        computeConnectedComponent();
-        return m_ConnectedComponentArray.size();
-    }
+    /// \brief Returns the number of connected components.
+    virtual int getNumberOfConnectedComponents();
 
-    /** \brief Returns the FirstVertexIndex of the ith connected component.
-    *
-    */
-    virtual int getFirstVertexIndex(unsigned int i)
-    {
-        computeConnectedComponent();
-        assert(i<m_ConnectedComponentArray.size());
-        return m_ConnectedComponentArray[i].FirstVertexIndex;
-    }
+    /// \brief Returns the FirstVertexIndex of the ith connected component.
+    virtual int getFirstVertexIndex(unsigned int i);
 
-    /** \brief Returns the LastVertexIndex of the ith connected component.
-    *
-    */
-    virtual int getLastVertexIndex(unsigned int i)
-    {
-        computeConnectedComponent();
-        assert(i<m_ConnectedComponentArray.size());
-        return m_ConnectedComponentArray[i].LastVertexIndex;
-    }
+    /// \brief Returns the LastVertexIndex of the ith connected component.
+    virtual int getLastVertexIndex(unsigned int i);
 
-    /** \brief Returns the size of the ith connected component.
-    *
-    */
-    virtual int getComponentSize(unsigned int i)
-    {
-        computeConnectedComponent();
-        assert(i<m_ConnectedComponentArray.size());
-        return m_ConnectedComponentArray[i].size;
-    }
+    /// \brief Returns the size of the ith connected component.
+    virtual int getComponentSize(unsigned int i);
 
-    /** \brief Returns the index of the ith connected component.
-    *
-    */
-    virtual int getComponentIndex(unsigned int i)
-    {
-        computeConnectedComponent();
-        assert(i<m_ConnectedComponentArray.size());
-        return m_ConnectedComponentArray[i].ccIndex;
-    }
+    /// \brief Returns the index of the ith connected component.
+    virtual int getComponentIndex(unsigned int i);
 
-    /** \brief Returns true iff the ith connected component is closed (ie : iff FirstVertexIndex == LastVertexIndex).
-    *
-    */
-    virtual bool isComponentClosed(unsigned int i)
-    {
-        computeConnectedComponent();
-        assert(i<m_ConnectedComponentArray.size());
-        return (m_ConnectedComponentArray[i].FirstVertexIndex == m_ConnectedComponentArray[i].LastVertexIndex);
-    }
+    /// \brief Returns true iff the ith connected component is closed (ie : iff FirstVertexIndex == LastVertexIndex).
+    virtual bool isComponentClosed(unsigned int i);
 
-    /** \brief Returns the indice of the vertex which is next to the vertex indexed by i.
-    */
-    int getNextVertex(const unsigned int i)
-    {
-        assert(getEdgesAroundVertex(i).size()>0);
-        if((getEdgesAroundVertex(i)).size()==1 && (getEdge((getEdgesAroundVertex(i))[0]))[1]==i)
-        {
-            return -1;
-        }
-        else
-        {
-            return (getEdge((getEdgesAroundVertex(i))[0]))[1];
-        }
-    }
+    /// \brief Returns the indice of the vertex which is next to the vertex indexed by i.
+    int getNextVertex(const unsigned int i);
 
-    /** \brief Returns the indice of the vertex which is previous to the vertex indexed by i.
-    */
-    int getPreviousVertex(const unsigned int i)
-    {
-        assert(getEdgesAroundVertex(i).size()>0);
-        if((getEdgesAroundVertex(i)).size()==1 && (getEdge((getEdgesAroundVertex(i))[0]))[0]==i)
-        {
-            return -1;
-        }
-        else
-        {
-            return (getEdge((getEdgesAroundVertex(i))[0]))[0];
-        }
-    }
+    /// \brief Returns the indice of the vertex which is previous to the vertex indexed by i.
+    int getPreviousVertex(const unsigned int i);
 
-    /** \brief Returns the indice of the edge which is next to the edge indexed by i.
-    */
-    int getNextEdge(const unsigned int i)
-    {
-        if((getEdgesAroundVertex(getEdge(i)[1])).size()==1)
-        {
-            return -1;
-        }
-        else
-        {
-            return (getEdgesAroundVertex(getEdge(i)[1]))[1];
-        }
-    }
+    /// \brief Returns the indice of the edge which is next to the edge indexed by i.
+    int getNextEdge(const unsigned int i);
 
-    /** \brief Returns the indice of the edge which is previous to the edge indexed by i.
-    */
-    int getPreviousEdge(const unsigned int i)
-    {
-        if((getEdgesAroundVertex(getEdge(i)[0])).size()==1)
-        {
-            return -1;
-        }
-        else
-        {
-            return (getEdgesAroundVertex(getEdge(i)[0]))[0];
-        }
-    }
+    /// \brief Returns the indice of the edge which is previous to the edge indexed by i.
+    int getPreviousEdge(const unsigned int i);
 
-    /** \brief Returns the ComponentVertex array.
-    *
-    */
-    const sofa::helper::vector< unsigned int > &getComponentVertexArray() const
-    {
-        return m_ComponentVertexArray;
-    }
+    /// \brief Returns the ComponentVertex array.
+    const sofa::helper::vector< unsigned int > &getComponentVertexArray() const;
 
-    /** \brief Returns the array of connected components.
-    *
-    */
-    const sofa::helper::vector< ConnectedComponent > &getConnectedComponentArray() const
-    {
-        return m_ConnectedComponentArray;
-    }
+    /// \brief Returns the array of connected components.
+    const sofa::helper::vector< ConnectedComponent > &getConnectedComponentArray() const;
 
 private:
     /** The array that stores for each vertex index, the connected component the vertex belongs to */
@@ -272,4 +160,4 @@ private:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYCONTAINER_H

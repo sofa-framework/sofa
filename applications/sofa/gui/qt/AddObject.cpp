@@ -54,7 +54,7 @@ namespace qt
 
 
     //Creation of the list of radio button corresponding to the preset objects: they are specified in the sofa/scenes/object.txt file
-    if (list_object != NULL)
+    if (list_object != nullptr)
     {
         QRadioButton *button;
         std::string current_name;
@@ -89,7 +89,7 @@ namespace qt
     scaleValue->hide();
     scaleText->hide();
 
-    openFilePath->setText(NULL);
+    openFilePath->setText(nullptr);
 
     //Make the connection between this widget and the parent
     connect( this, SIGNAL(loadObject(std::string, double, double, double, double, double, double,double)), parent, SLOT(loadObject(std::string, double, double, double,double, double, double, double)));

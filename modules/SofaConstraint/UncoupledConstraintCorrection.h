@@ -25,7 +25,7 @@
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/behavior/OdeSolver.h>
-
+#include <SofaBaseTopology/TopologyData.h>
 
 namespace sofa
 {
@@ -61,16 +61,13 @@ public:
 
     typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 protected:
-    UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);
+    UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
 
     virtual ~UncoupledConstraintCorrection();
 public:
     void init() override;
 
     void reinit() override;
-
-    /// Handle Topological Changes.
-    void handleTopologyChange() override;
 
     void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix *W) override;
 
@@ -119,18 +116,19 @@ public:
 
     /// @}
 
-    Data< VecReal > compliance; ///< Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
+    topology::PointData< VecReal > compliance; ///< Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
 
     Data< Real > defaultCompliance; ///< Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)
 
     Data<bool> f_verbose; ///< Dump the constraint matrix at each iteration
 
-    Data < bool > d_handleTopologyChange; ///< Enable support of topological changes for compliance vector (disable if another component takes care of this)
-      
     Data< Real > d_correctionVelocityFactor; ///< Factor applied to the constraint forces when correcting the velocities
     Data< Real > d_correctionPositionFactor; ///< Factor applied to the constraint forces when correcting the positions
 
     Data < bool > d_useOdeSolverIntegrationFactors; ///< Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor
+                                                    
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<UncoupledConstraintCorrection<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 private:
     // new :  for non building the constraint system during solving process //
@@ -147,8 +145,6 @@ protected:
     void computeDx(const Data< VecDeriv > &f, VecDeriv& x);
 };
 
-template<>
-UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<sofa::defaulttype::Rigid3Types> *mm);
 
 template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::init();

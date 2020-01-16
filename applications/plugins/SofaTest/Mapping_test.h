@@ -43,6 +43,7 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/ArgumentParser.h>
 
 namespace sofa {
 
@@ -160,7 +161,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         /// Load the scene
         root = simulation->createNewGraph("root");
-        root = sofa::simulation::getSimulation()->load(fileName.c_str());
+        root = sofa::simulation::getSimulation()->load(fileName.c_str(), false, sofa::helper::ArgumentParser::extra_args());
 
         // InDofs
         inDofs = root->get<InDOFs>(root->SearchDown);
@@ -451,11 +452,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             // K can be null or empty for linear mappings
             // still performing the test with a null Kv vector to check if the mapping is really linear
 
-            if( bk != NULL ){
+            if( bk != nullptr ){
 
                 typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
                 const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
-                if( K == NULL ){
+                if( K == nullptr ){
                     succeed = false;
                     ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
                     // TODO perform a slow conversion with a big warning rather than a failure?
@@ -521,7 +522,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     virtual ~Mapping_test()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
     }
 
@@ -532,13 +533,13 @@ protected:
     static EigenSparseMatrixType* getMatrix(const helper::vector<sofa::defaulttype::BaseMatrix*>* matrices)
     {
         if( !matrices ){
-            ADD_FAILURE()<< "Matrix list is NULL (API for assembly is not implemented)";
+            ADD_FAILURE()<< "Matrix list is nullptr (API for assembly is not implemented)";
         }
         if( matrices->size() != 1 ){
             ADD_FAILURE()<< "Matrix list should have size == 1 in simple mappings";
         }
         EigenSparseMatrixType* ei = dynamic_cast<EigenSparseMatrixType*>((*matrices)[0] );
-        if( ei == NULL ){
+        if( ei == nullptr ){
             ADD_FAILURE() << "getJs returns a matrix of non-EigenSparseMatrix type";
             // TODO perform a slow conversion with a big warning rather than a failure?
         }

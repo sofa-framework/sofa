@@ -70,12 +70,12 @@ protected:
 
 public:
 
-    virtual void init()
+    virtual void init() override
     {
         core::behavior::Mass<DataTypes>::init();
     }
 
-    virtual void bwdInit()
+    virtual void bwdInit() override
     {
         // if the mass matrix is not given manually -> set to identity
         if( d_massMatrix.getValue().rows() != d_massMatrix.getValue().cols() || (unsigned)d_massMatrix.getValue().rows()!=this->mstate->getMatrixSize() )
@@ -88,21 +88,21 @@ public:
         }
     }
 
-    static std::string templateName(const AffineMass<DataTypes>* = NULL)    { return DataTypes::Name();    }
-    virtual std::string getTemplateName() const	{		return templateName(this); 	}
+    static std::string templateName(const AffineMass<DataTypes>* = NULL) { return DataTypes::Name(); }
+    virtual std::string getTemplateName() const override { return templateName(this); }
 
-    void addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor)
+    void addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override
     {
         if( factor == 1.0 ) d_massMatrix.getValue().addMult( f, dx );
         else d_massMatrix.getValue().addMult( f, dx, factor );
     }
 
-    void accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
+    void accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/) override
     {
         serr<<"accFromF not yet implemented (the matrix inversion is needed)"<<sendl;
     }
 
-    void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
+    void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/) override
     {
         //if gravity was added separately (in solver's "solve" method), then nothing to do here
         if(this->m_separateGravity.getValue()) return;
@@ -122,7 +122,7 @@ public:
         f.endEdit();
     }
 
-    SReal getKineticEnergy(const core::MechanicalParams* /*mparams*/, const DataVecDeriv& v) const
+    SReal getKineticEnergy(const core::MechanicalParams* /*mparams*/, const DataVecDeriv& v) const override
     {
         const VecDeriv& _v = v.getValue();
         SReal e = 0;
@@ -132,13 +132,13 @@ public:
         return e/2;
     }
 
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override
     {
         serr<<SOFA_CLASS_METHOD<<"not implemented!\n";
         return core::behavior::Mass< DataTypes >::getPotentialEnergy( mparams, x );
     }
 
-    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
+    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override
     {
         if(mparams)
         {
@@ -159,7 +159,7 @@ public:
         }
     }
 
-    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
         Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());

@@ -95,7 +95,7 @@ public:
 
     void TearDown()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             simulation::getSimulation()->unload(root);
     }
 

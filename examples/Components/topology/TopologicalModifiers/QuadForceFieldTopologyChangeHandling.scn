@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <!-- Automatic Triangle removing with Triangle2Edge mapping example: Element removed are define in: ./RemovingTrianglesProcess.txt -->
 <Node name="root" gravity="0 -9 1" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showVisual showForceFields" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -9,7 +10,7 @@
     
     <RegularGrid name="grid" nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
     <Node name="QuadularBendingSprings">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         
         <MechanicalObject src="@../grid"/>
@@ -34,7 +35,7 @@
 
 
     <Node name="RegularGridSprings">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject src="@../grid" translation="30 0 0"/>
         <include href="Objects/QuadSetTopology.xml" src="@../grid" />

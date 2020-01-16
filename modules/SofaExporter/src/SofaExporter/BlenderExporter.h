@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_WRITESTATE_H
 #define SOFA_COMPONENT_MISC_WRITESTATE_H
-#include "config.h"
+#include <SofaExporter/config.h>
 
 #include <sofa/core/State.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/Visitor.h>
 
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -96,7 +96,7 @@ namespace sofa
                     return templateName(this);
                 }
 
-                static std::string templateName(const BlenderExporter<T>* = NULL)
+                static std::string templateName(const BlenderExporter<T>* = nullptr)
                 {
                     return T::Name();
                 }
@@ -112,7 +112,7 @@ namespace sofa
                 template<class T2>
                 static bool canCreate(T2*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
                 {
-                    if (dynamic_cast<DataType*>(context->getState()) == NULL)
+                    if (dynamic_cast<DataType*>(context->getState()) == nullptr)
                         return false;
                     return BaseObject::canCreate(obj, context, arg);
                 }

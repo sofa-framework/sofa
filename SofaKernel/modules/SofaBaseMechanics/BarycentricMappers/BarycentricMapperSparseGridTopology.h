@@ -38,7 +38,6 @@ using sofa::defaulttype::BaseMatrix;
 using core::visual::VisualParams;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 
 /// Class allowing barycentric mapping computation on a SparseGridTopology
 template<class In, class Out>
@@ -76,8 +75,10 @@ public:
     void draw(const VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     void resize( core::State<Out>* toModel ) override;
 
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b );
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGridTopology<In, Out> & b );
+    template<class I, class O>
+    friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<I, O> &b );
+    template<class I, class O>
+    friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGridTopology<I, O> & b );
 
 protected:
     BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
@@ -93,7 +94,6 @@ protected:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopology< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopology< Vec3dTypes, ExtVec3Types >;
 
 
 #endif

@@ -40,9 +40,9 @@ namespace mapping
 template <class TIn, class TOut>
 Mesh2PointMechanicalMapping<TIn, TOut>::Mesh2PointMechanicalMapping(core::State<In>* from, core::State<Out>* to)
     : Inherit(from, to)
-    , topoMap(NULL)
-    , inputTopo(NULL)
-    , outputTopo(NULL)
+    , topoMap(nullptr)
+    , inputTopo(nullptr)
+    , outputTopo(nullptr)
 {
 }
 

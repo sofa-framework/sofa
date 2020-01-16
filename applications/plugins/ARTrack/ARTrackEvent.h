@@ -61,6 +61,7 @@ public:
     const Quat getOrientation() const;
     const sofa::helper::fixed_array<double,3> getAngles() const;
     const Vector3 getFingerposition(const unsigned int i) const;
+    static inline const char* GetClassName() { return "ARTrackEvent"; }
 
 private:
     Vector3 m_position; ///< ARTrack coordinates in a Vec3d type.

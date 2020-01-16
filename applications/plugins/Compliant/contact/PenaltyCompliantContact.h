@@ -62,7 +62,7 @@ protected:
 
 
 
-    void create_node()
+    void create_node() override
     {
         const unsigned size = this->mappedContacts.size();
 
@@ -119,7 +119,7 @@ protected:
 
 
 
-    void update_node() 
+    void update_node() override
     {
         const unsigned size = this->mappedContacts.size();
 

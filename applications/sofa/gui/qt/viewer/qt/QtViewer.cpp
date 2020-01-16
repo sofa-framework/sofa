@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/gui/qt/SofaGuiQt.h>
 #include <sofa/gui/qt/viewer/qt/QtViewer.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/thread/CTime.h>
@@ -33,6 +34,7 @@
 #include <cstring>
 #include <cmath>
 #include <cstdlib>
+#include <memory>
 
 #include <qevent.h>
 
@@ -40,15 +42,14 @@
 #include <OpenGL/OpenGL.h>
 #endif
 
-#include <sofa/gui/qt/GenGraphForm.h>
-
-
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/gui/ColourPickingVisitor.h>
+#include <sofa/gui/qt/GLPickHandler.h>
+#include <sofa/gui/qt/viewer/GLBackend.h>
 
 #include <QImage>
 
@@ -66,7 +67,6 @@ namespace viewer
 
 namespace qt
 {
-
 
 
 using std::cout;
@@ -101,7 +101,7 @@ QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
         f.setSamples(nbMSAASamples);
     }
 
-    if(!SOFA_GUI_VSYNC)
+    if(!SOFAGUIQT_ENABLE_VSYNC)
     {
         f.setSwapInterval(0); // disable vertical refresh sync
     }
@@ -157,6 +157,8 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
 #ifdef __linux__
     ::setenv("MESA_GL_VERSION_OVERRIDE", "3.0", 1);
 #endif // __linux
+    m_backend.reset(new GLBackend());
+    pick = new GLPickHandler();
 
     this->setObjectName(name);
 
@@ -164,7 +166,7 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     this->setFormat(setupGLFormat(nbMSAASamples));
 #endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 
-    groot = NULL;
+    groot = nullptr;
     initTexturesDone = false;
     backgroundColour[0] = 1.0f;
     backgroundColour[1] = 1.0f;
@@ -176,7 +178,7 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     //connect( timerAnimate, SIGNAL(timeout()), this, SLOT(animate()) );
 
     _video = false;
-    _axis = false;
+    m_bShowAxis = false;
     _background = 0;
     _numOBJmodels = 0;
     _materialMode = 0;
@@ -281,11 +283,9 @@ void QtViewer::initializeGL(void)
         specref[3] = 1.0f;
 
         // Here we initialize our multi-texturing functions
-#ifdef SOFA_HAVE_GLEW
         glewInit();
-        if (!GLEW_ARB_multitexture)
+        if (!GL_ARB_multitexture)
             msg_error("QtViewer") << "GL_ARB_multitexture not supported.";
-#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;
@@ -597,51 +597,7 @@ void QtViewer::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
 // -------------------------------------------------------------------
 void QtViewer::DrawLogo()
 {
-    int w = 0;
-    int h = 0;
-
-    if (texLogo && texLogo->getImage())
-    {
-        h = texLogo->getImage()->getHeight();
-        w = texLogo->getImage()->getWidth();
-    }
-    else
-        return;
-
-    Enable<GL_TEXTURE_2D> tex;
-    glDisable(GL_DEPTH_TEST);
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(-0.5, _W, -0.5, _H, -1.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-    if (texLogo)
-        texLogo->bind();
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_QUADS);
-    glTexCoord2d(0.0, 0.0);
-    glVertex3d((_W - w) / 2, (_H - h) / 2, 0.0);
-
-    glTexCoord2d(1.0, 0.0);
-    glVertex3d(_W - (_W - w) / 2, (_H - h) / 2, 0.0);
-
-    glTexCoord2d(1.0, 1.0);
-    glVertex3d(_W - (_W - w) / 2, _H - (_H - h) / 2, 0.0);
-
-    glTexCoord2d(0.0, 1.0);
-    glVertex3d((_W - w) / 2, _H - (_H - h) / 2, 0.0);
-    glEnd();
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
+    m_backend->drawBackgroundImage(_W, _H);
 }
 
 
@@ -707,7 +663,7 @@ void QtViewer::DisplayOBJs()
 
         getSimulation()->draw(vparams,groot.get());
 
-        if (_axis)
+        if (m_bShowAxis)
         {
 
             SReal* minBBox = vparams->sceneBBox().minBBoxPtr();
@@ -1057,7 +1013,7 @@ void QtViewer::calcProjection(int width, int height)
     if (!currentCamera)
         return;
 
-    if (groot && (!groot->f_bbox.getValue().isValid() || _axis))
+    if (groot && (!groot->f_bbox.getValue().isValid() || m_bShowAxis))
     {
         vparams->sceneBBox() = groot->f_bbox.getValue();
         currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());

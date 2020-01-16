@@ -100,7 +100,7 @@ public:
     const char* getClassName() const override { return "MechanicalGetConstraintInfoVisitor";}
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -216,9 +216,9 @@ public:
 
     /// for unbuilt lcp ///
     void build_problem_info();
-    int lcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = NULL);
-    int nlcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = NULL);
-    int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = NULL) { if (_mu == 0.0) return lcp_gaussseidel_unbuilt(dfree, f, residuals); else return nlcp_gaussseidel_unbuilt(dfree, f, residuals); }
+    int lcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
+    int nlcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
+    int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr) { if (_mu == 0.0) return lcp_gaussseidel_unbuilt(dfree, f, residuals); else return nlcp_gaussseidel_unbuilt(dfree, f, residuals); }
 
     sofa::component::linearsolver::SparseMatrix<double> *_Wdiag;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;

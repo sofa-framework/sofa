@@ -60,11 +60,12 @@ void SceneLoaderPHP::getExtensionList(ExtensionList* list)
 }
 
 
-sofa::simulation::Node::SPtr SceneLoaderPHP::doLoad(const char *filename)
+sofa::simulation::Node::SPtr SceneLoaderPHP::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
+    SOFA_UNUSED(sceneArgs);
     sofa::simulation::Node::SPtr root;
 
-    if (!canLoadFileName(filename))
+    if (!canLoadFileName(filename.c_str()))
         return 0;
 
     std::string out="",error="";
@@ -87,7 +88,7 @@ sofa::simulation::Node::SPtr SceneLoaderPHP::doLoad(const char *filename)
     if (!fp.findFile(command,""))
     {
         msg_error("SceneLoaderPHP") << "Php not found in your PATH environment." ;
-        return NULL;
+        return nullptr;
     }
 
     sofa::helper::system::PipeProcess::executeProcess(command.c_str(), args,  newFilename, out, error);
@@ -96,9 +97,9 @@ sofa::simulation::Node::SPtr SceneLoaderPHP::doLoad(const char *filename)
     {
         msg_error("SceneLoaderPHP") << error ;
         if (out == "")
-            return NULL;
+            return nullptr;
     }
-    root = SceneLoaderXML::loadFromMemory(filename, out.c_str(), (unsigned int)out.size());
+    root = SceneLoaderXML::loadFromMemory(filename.c_str(), out.c_str(), (unsigned int)out.size());
 
     return root;
 }

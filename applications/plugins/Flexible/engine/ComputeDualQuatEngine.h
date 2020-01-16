@@ -40,7 +40,7 @@ public:
 
 
     // To simplify the template name in the xml file
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

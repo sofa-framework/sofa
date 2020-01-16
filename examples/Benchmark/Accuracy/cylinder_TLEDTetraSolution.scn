@@ -3,6 +3,7 @@
 <!-- Date : 24/02/09 -->
 
 <Node name="root" dt="0.00005">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
     <VisualStyle displayFlags="showBehaviorModels hideCollisionModels hideMappings hideForceFields" />
 	<Gravity name="G" gravity="0 -9.8 0" />
@@ -20,9 +21,9 @@
             <MeshObjLoader filename="mesh/truthCylinder-Deformed.obj"  name="loader"/>
             <Mesh src="@loader"/>
             <MechanicalObject src="@loader" scale="1.0" />
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
         </Node>
 	</Node>
 

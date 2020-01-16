@@ -38,7 +38,6 @@ using namespace sofa::defaulttype;
 // Register in the Factory
 int ImplicitSurfaceMappingClass = core::RegisterObject("Compute an iso-surface from a set of particles")
         .add< ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes > >()
-        .add< ImplicitSurfaceMapping< Vec3dTypes, ExtVec3Types > >()
 
 
 
@@ -47,7 +46,6 @@ int ImplicitSurfaceMappingClass = core::RegisterObject("Compute an iso-surface f
 
 
 template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3dTypes, ExtVec3Types >;
 
 
 

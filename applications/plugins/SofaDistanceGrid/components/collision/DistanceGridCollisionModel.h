@@ -26,7 +26,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
@@ -464,7 +464,7 @@ public:
 
     /// alias used by ContactMapper
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
-    core::topology::BaseMeshTopology* getMeshTopology() override { return ffdMesh; }
+    core::topology::BaseMeshTopology* getCollisionTopology() override { return ffdMesh; }
 
     void init() override;
 

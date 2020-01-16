@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -98,6 +98,7 @@
     <addaction name="PluginManagerAction"/>
     <addaction name="MouseManagerAction"/>
     <addaction name="VideoRecorderManagerAction"/>
+    <addaction name="DataGraphAction"/>
    </widget>
    <widget class="QMenu" name="View">
     <property name="title">
@@ -817,10 +818,18 @@
     <bool>false</bool>
    </property>
   </action>
+  <action name="DataGraphAction">
+   <property name="text">
+    <string>Data Graph...</string>
+   </property>
+   <property name="toolTip">
+    <string>Data Graph Window</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="2" margin="5"/>
  <includes>
-  <include location="local">sofa/gui/qt/SofaGUIQt.h</include>
+  <include location="local">sofa/gui/qt/SofaGuiQt.h</include>
  </includes>
  <resources/>
  <connections>
@@ -967,6 +976,22 @@
      <y>20</y>
     </hint>
    </hints>
+  </connection>
+  <connection>
+    <sender>DataGraphAction</sender>
+    <signal>triggered()</signal>
+    <receiver>GUI</receiver>
+    <slot>showWindowDataGraph()</slot>
+    <hints>
+      <hint type="sourcelabel">
+        <x>-1</x>
+        <y>-1</y>
+      </hint>
+      <hint type="destinationlabel">
+        <x>20</x>
+        <y>20</y>
+      </hint>
+    </hints>
   </connection>
   <connection>
    <sender>editGnuplotDirectoryAction</sender>

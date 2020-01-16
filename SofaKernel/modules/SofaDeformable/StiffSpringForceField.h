@@ -29,7 +29,7 @@
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/MechanicalParams.h>
-
+#include <SofaBaseTopology/TopologySubsetData.h>
 
 namespace sofa
 {
@@ -61,6 +61,8 @@ public:
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 
     typedef typename Inherit::Spring Spring;
@@ -69,6 +71,10 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
+    SetIndex d_indices1; ///< Indices of the source points on the first model
+    SetIndex d_indices2; ///< Indices of the fixed points on the second model
+
+    core::objectmodel::Data<SReal> d_length;
 protected:
     sofa::helper::vector<Mat>  dfdx;
 
@@ -78,16 +84,14 @@ protected:
     /// Apply the stiffness, i.e. accumulate df given dx
     virtual void addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, int i, const Spring& spring, double kFactor, double bFactor);
 
+    StiffSpringForceField(double ks=100.0, double kd=5.0);
+    StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
 
-    StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0)
-        : SpringForceField<DataTypes>(object1, object2, ks, kd)
-    {
-    }
+    void doUpdateInternal() override;
 
-    StiffSpringForceField(double ks=100.0, double kd=5.0)
-        : SpringForceField<DataTypes>(ks, kd)
-    {
-    }
+    /// Will create the set of springs using \sa d_indices1 and \sa d_indices2 with \sa d_length
+    void createSpringsFromInputs();
+
 public:
     void init() override;
 

@@ -27,7 +27,7 @@
 #include <SofaBaseCollision/DefaultContactManager.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/IdentityContactMapper.h>
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <sofa/simulation/Node.h>
 #include <iostream>
 
@@ -41,12 +41,19 @@ namespace collision
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
+FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact()
+    : FrictionContact(nullptr, nullptr, nullptr)
+{
+}
+
+
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
 FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1)
     , model2(model2)
     , intersectionMethod(intersectionMethod)
-    , m_constraint(NULL)
-    , parent(NULL)
+    , m_constraint(nullptr)
+    , parent(nullptr)
     , mu (initData(&mu, 0.8, "mu", "friction coefficient (0 for frictionless contacts)"))
     , tol (initData(&tol, 0.0, "tol", "tolerance for the constraints resolution (0 for default tolerance)"))
 {
@@ -70,10 +77,10 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::clean
     {
         m_constraint->cleanup();
 
-        if (parent != NULL)
+        if (parent != nullptr)
             parent->removeObject(m_constraint);
 
-        parent = NULL;
+        parent = nullptr;
         m_constraint.reset();
 
         mapper1.cleanup();
@@ -176,27 +183,15 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
         typename DataTypes2::Real r2 = 0.;
 
         // Create mapping for first point
-        index1 = mapper1.addPointB(o->point[0], index1, r1
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[0]
-#endif
-                                  );
+        index1 = mapper1.addPointB(o->point[0], index1, r1);
         // Create mapping for second point
         if (selfCollision)
         {
-            index2 = mapper1.addPointB(o->point[1], index2, r2
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    , o->baryCoords[1]
-#endif
-                                      );
+            index2 = mapper1.addPointB(o->point[1], index2, r2);
         }
         else
         {
-            index2 = mapper2.addPointB(o->point[1], index2, r2
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    , o->baryCoords[1]
-#endif
-                                      );
+            index2 = mapper2.addPointB(o->point[1], index2, r2);
         }
         double distance = d0 + r1 + r2;
 
@@ -239,14 +234,14 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::creat
             m_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id);
         }
 
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(m_constraint);
         }
 
         parent = group;
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->addObject(this);
             parent->addObject(m_constraint);
@@ -261,12 +256,12 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::remov
     {
         mapper1.resize(0);
         mapper2.resize(0);
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(m_constraint);
         }
-        parent = NULL;
+        parent = nullptr;
     }
 }
 

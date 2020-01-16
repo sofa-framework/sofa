@@ -19,12 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYMODIFIER_H
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYMODIFIER_H
-#include <ManifoldTopologies/config.h>
+#ifndef SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYMODIFIER_H
+#define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYMODIFIER_H
 
 #include <ManifoldTopologies/config.h>
-
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 
 namespace sofa
@@ -51,12 +49,7 @@ class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyModifier : public 
 public:
     SOFA_CLASS(ManifoldTriangleSetTopologyModifier,TriangleSetTopologyModifier);
 
-    ManifoldTriangleSetTopologyModifier()
-        : TriangleSetTopologyModifier()
-        , m_triSwap(initData(&m_triSwap,  "swap 2 triangles by their index", "Debug : Test swap function (only while animate)."))
-        , m_swapMesh(initData (&m_swapMesh, false, "Mesh Optimization", "If true, optimize the mesh only by swapping edges"))
-    {
-    }
+    ManifoldTriangleSetTopologyModifier();        
 
     ~ManifoldTriangleSetTopologyModifier() override {}
 
@@ -85,12 +78,12 @@ public:
      * @param baryCoefs - their barycoefs related to these ancestors.
      * @param trianglesIndex2remove - List of triangle indices to remove.
      */
-    virtual void addRemoveTriangles (const unsigned int nTri2Add,
+    virtual void addRemoveTriangles (const size_t nTri2Add,
             const sofa::helper::vector< Triangle >& triangles2Add,
             const sofa::helper::vector< unsigned int >& trianglesIndex2Add,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-            sofa::helper::vector< unsigned int >& trianglesIndex2remove);
+            sofa::helper::vector< unsigned int >& trianglesIndex2remove) override;
 
 
     /** \brief: Reorder the vertex in the array of a given edge. In order to be in the oriented in the right direction
@@ -129,7 +122,7 @@ protected:
     * @see createRemovingEdgesFutureModifications()
     * @see testRemovingModifications().
     */
-    virtual bool removeTrianglesPreconditions(const sofa::helper::vector< unsigned int >& items);
+    virtual bool removeTrianglesPreconditions(const sofa::helper::vector< unsigned int >& items) override;
 
     /**\brief Postprocessing to apply to the triangle topology. In this class topology should stay manifold.
     * These functions reorder the triangles around each vertex where triangles have been deleted.
@@ -139,20 +132,20 @@ protected:
     * @see updateRemovingModifications()
     * @see reorderEdgeForRemoving()
     */
-    virtual void removeTrianglesPostProcessing(const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved );
+    virtual void removeTrianglesPostProcessing(const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved ) override;
 
 
     /**\brief Preconditions to fulfill before adding triangles. In this class topology should stay manifold.
      * Test if triangles could be added and stock the informations of where triangles are added in the map:
      * @see m_modificationsEdge
      */
-    virtual bool addTrianglesPreconditions (const sofa::helper::vector <Triangle>& triangles);
+    virtual bool addTrianglesPreconditions (const sofa::helper::vector <Triangle>& triangles) override;
 
 
     /**\brief Postprocessing to apply to the triangle topology. In this class topology should stay manifold.
      * Using the map @see m_modificationsEdge, reorder the different shells.
      */
-    virtual void addTrianglesPostProcessing(const sofa::helper::vector <Triangle>& triangles);
+    virtual void addTrianglesPostProcessing(const sofa::helper::vector <Triangle>& triangles) override;
 
 
 private:
@@ -244,4 +237,4 @@ private:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYMODIFIER_H

@@ -91,7 +91,7 @@ public:
         if(v == core::VecCoordId::position())
             return &f_X;
 
-        return NULL;
+        return nullptr;
     }
 
     const Data< VecCoord >* read(core::ConstVecCoordId v) const override
@@ -99,7 +99,7 @@ public:
         if(v == core::ConstVecCoordId::position())
             return &f_X;
         else
-            return NULL;
+            return nullptr;
     }
 
     Data< VecDeriv >* write(core::VecDerivId v) override
@@ -107,7 +107,7 @@ public:
         if(v == core::VecDerivId::velocity())
             return &f_V;
         else
-            return NULL;
+            return nullptr;
     }
 
     const Data< VecDeriv >* read(core::ConstVecDerivId v) const override
@@ -115,17 +115,17 @@ public:
         if(v == core::ConstVecDerivId::velocity())
             return &f_V;
         else
-            return NULL;
+            return nullptr;
     }
 
     Data< MatrixDeriv >* write(core::MatrixDerivId /*v*/) override
     {
-        return NULL;
+        return nullptr;
     }
 
     const Data< MatrixDeriv >* read(core::ConstMatrixDerivId /*v*/) const override
     {
-        return NULL;
+        return nullptr;
     }
 };
 

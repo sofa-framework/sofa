@@ -1,0 +1,39 @@
+<!-- Mechanical MassSpring Group Basic Example -->
+<Node name="root" dt="0.05" showBoundingTree="0" gravity="0 -9 1">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <VisualStyle displayFlags="showVisual showBehaviorModels showMappings" />
+    <DefaultPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    
+    <Node name="MeshVolume" >
+        <RegularGridTopology name="HexaTop" n="7 7 7" min="-10 0 -10" max="10 20 10" />
+        <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position" />
+        <TetrahedronSetTopologyModifier name="Modifier"/>
+        <Hexa2TetraTopologicalMapping input="@HexaTop" output="@Container" swapping="false" />
+    </Node>
+
+    
+    <Node name="Deformable">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
+        <TetrahedronSetTopologyContainer name="Container" src="@../MeshVolume/Container" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetTopologyAlgorithms name="TopoAlgo"  template="Vec3d" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" />
+        
+        <MechanicalObject />
+        <DiagonalMass massDensity="10.0" />
+        <TetrahedronFEMForceField youngModulus="4000" poissonRatio="0.45" />
+        <BoxROI name="box" box="-10 19 -10 10 21 10" drawBoxes="true" />
+        <FixedConstraint  name="FixedConstraint" indices="@box.indices" activate_projectVelocity="1"/>
+     
+        <Node name="Visu">
+            <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" translation="0 10 0" scale3d="4 4 4" />
+            <OglModel name="Visual" src="@meshLoader_3" color="red" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+</Node>

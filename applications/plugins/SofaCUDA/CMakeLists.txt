@@ -16,6 +16,7 @@ if(${SOFA_NO_OPENGL})
 endif()
 
 set(HEADER_FILES
+    config.h.in
     sofa/gpu/cuda/CudaBarycentricMapping.h
     sofa/gpu/cuda/CudaBarycentricMapping.inl
     sofa/gpu/cuda/CudaBarycentricMappingRigid.h
@@ -180,13 +181,11 @@ else()
 endif()
 
 find_package(SofaDistanceGrid QUIET)
-find_package(MiniFlowVR QUIET)
+sofa_find_package(MiniFlowVR QUIET)
 
 if(SofaDistanceGrid_FOUND)
     if(MiniFlowVR_FOUND)
-        add_definitions("-DSOFA_HAVE_MINIFLOWVR")
         message(STATUS "SofaCUDA: MiniFlowVR enabled.")
-
     else()
         message(STATUS "SofaCUDA: MiniFlowVR was not enabled, therefore some feature of CudaDistanceGridCollisionModel will not be compiled.")
     endif()

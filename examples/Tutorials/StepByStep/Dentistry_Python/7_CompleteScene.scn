@@ -3,15 +3,16 @@ This is the final step of his tutorial:
 An assemblage of all the previous steps altogether
 -->
 <Node name="root" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin pluginName="SofaPython"/>
 
     <BackgroundSetting color="0.5 0.5 0.5" />
     <VisualStyle displayFlags="showVisualModels hideForceFields" /> 
 
-    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <CollisionResponse name="response" response="FrictionContact" />
+    <DefaultContactManager name="response" response="FrictionContact" />
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" />
 
     <FreeMotionAnimationLoop />
@@ -20,10 +21,11 @@ An assemblage of all the previous steps altogether
     <Node name="Head">
 	<Node name="Head Visual Model" activated="true">
 	    <VisualStyle displayFlags="showVisualModels showWireframe" /> 
-	    <OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
+	    <MeshObjLoader name="meshLoader_3" filename="data/mesh/head.obj" handleSeams="1" />
+	    <OglModel name="HeadVisualModel" src="@meshLoader_3" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
 	</Node>
         <Node name="Tongue" activated="true">
-            <EulerImplicit name="odesolver" vdamping="4.0"/>
+            <EulerImplicitSolver name="odesolver" vdamping="4.0"/>
             <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshVTKLoader name="volTongue" filename="data/mesh/volumetricTongue.vtu" />
             <TetrahedronSetTopologyContainer name="volume" src="@volTongue" />
@@ -38,7 +40,8 @@ An assemblage of all the previous steps altogether
             <FixedConstraint template="Vec3d" indices="@ROI.indices"/>   
 
             <Node name="TongueVisualModel">
-                <OglModel name="TongueVisualModel" fileMesh="data/mesh/tongue.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
+                <MeshObjLoader name="meshLoader_0" filename="data/mesh/tongue.obj" handleSeams="1" />
+                <OglModel name="TongueVisualModel" src="@meshLoader_0" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
                 <BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@TongueVisualModel" />
             </Node>
             <Node name="TongueCollisionModel">
@@ -49,9 +52,9 @@ An assemblage of all the previous steps altogether
                 <Tetra2TriangleTopologicalMapping name="mapping" input="@../volume" output="@TriContainer" flipNormals="true" />
                 <MechanicalObject name="colTongue" />
 		        <IdentityMapping name="identityMappingToCollision" input="@../mecaTongue" output="@colTongue" isMechanical="false" />
-                <Triangle name="tongue" contactStiffness="5" />
-                <Line name="tongue" contactStiffness="5" />
-                <Point name="tongue" contactStiffness="5" />
+                <TriangleCollisionModel name="tongue" contactStiffness="5" />
+                <LineCollisionModel name="tongue" contactStiffness="5" />
+                <PointCollisionModel name="tongue" contactStiffness="5" />
             </Node>
         </Node>
         <Node name="Teeth" activated="true" >
@@ -59,12 +62,13 @@ An assemblage of all the previous steps altogether
             <Node name="CollisionModel">
                 <Mesh src="@../loader" name="ToothCollisionModel" />
                 <MechanicalObject src="@../loader" name="toothState" />
-                <Triangle name="tooth" contactStiffness="5" simulated="0" moving="0" />
-                <Line name="tooth" contactStiffness="5" simulated="0" moving="0" />
-                <Point name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <TriangleCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <PointCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
             </Node>
             <Node name="VisualModel">
-                <OglModel name="TeethVisualModel" fileMesh="data/mesh/teeth.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
+                <MeshObjLoader name="meshLoader_2" filename="data/mesh/teeth.obj" handleSeams="1" />
+                <OglModel name="TeethVisualModel" src="@meshLoader_2" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
             </Node>
         </Node>
     </Node>
@@ -87,15 +91,16 @@ An assemblage of all the previous steps altogether
         <UniformMass name="mass" totalMass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <UncoupledConstraintCorrection />
         <Node name="VisualModel">
-            <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" />
+            <MeshObjLoader name="meshLoader_1" filename="data/mesh/dental_instrument.obj" handleSeams="1" />
+            <OglModel name="InstrumentVisualModel" src="@meshLoader_1" color="0.8 0.8 0.8 1.0" />
             <RigidMapping name="MM-VM mapping" input="@../instrumentState" output="@InstrumentVisualModel" />
         </Node>
         <Node name="CollisionModel">
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
             <Mesh src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 0" />
-            <Line name="instrument" contactStiffness="10" />
-            <Point name="instrument" contactStiffness="10" />
+            <LineCollisionModel name="instrument" contactStiffness="10" />
+            <PointCollisionModel name="instrument" contactStiffness="10" />
             <RigidMapping name="MM-CM mapping" input="@../instrumentState" output="@instrumentCollisionState" />
         </Node>
 

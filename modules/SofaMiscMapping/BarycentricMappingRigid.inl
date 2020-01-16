@@ -36,6 +36,17 @@ namespace component
 namespace mapping
 {
 
+template <class In, class Out>
+BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::BarycentricMapperTetrahedronSetTopologyRigid(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
+    : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
+      map(initData(&map,"map", "mapper data")),
+      mapOrient(initData(&mapOrient,"mapOrient", "mapper data for mapped frames")),
+      _fromContainer(fromTopology),
+      _fromGeomAlgo(nullptr),
+      matrixJ(nullptr),
+      updateJ(true)
+{
+}
 
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::clear ( int reserve )
@@ -328,7 +339,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigi
     if (outSize > 0 && map.getValue().size() == 0)
     {
         msg_error() << "Maps not created yet" ;
-        return NULL; // error: maps not yet created ?
+        return nullptr; // error: maps not yet created ?
     }
     if (!matrixJ)
     {

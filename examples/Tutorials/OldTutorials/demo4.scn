@@ -1,8 +1,9 @@
 <!-- Mechanical+Visual+Collision Basic Example -->
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
     <Node name="Poutre1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" threshold="1e-5" tolerance="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/smCube27.msh" />
         <Node name="M1">
@@ -17,7 +18,7 @@
             <Node name="Surf">
                 <MechanicalObject />
                 <SphereLoader filename="mesh/smCube27b.sph" />
-                <Sphere listRadius="@[-1].listRadius" />
+                <SphereCollisionModel listRadius="@[-1].listRadius" />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -30,7 +31,7 @@
                 <Node name="Surf">
                     <MechanicalObject />
                     <SphereLoader filename="mesh/smCube27b.sph" />
-                    <Sphere listRadius="@[-1].listRadius" />
+                    <SphereCollisionModel listRadius="@[-1].listRadius" />
                     <IdentityMapping />
                 </Node>
             </Node>
@@ -50,7 +51,7 @@
             <Node name="Surf">
                 <MechanicalObject />
                 <SphereLoader filename="mesh/smCube27b.sph" />
-                <Sphere listRadius="@[-1].listRadius" />
+                <SphereCollisionModel listRadius="@[-1].listRadius" />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -67,7 +68,7 @@
                 <Node name="Surf">
                     <MechanicalObject />
                     <SphereLoader filename="mesh/smCube27b.sph" />
-                    <Sphere listRadius="@[-1].listRadius" />
+                    <SphereCollisionModel listRadius="@[-1].listRadius" />
                     <IdentityMapping />
                 </Node>
             </Node>
@@ -83,7 +84,7 @@
             <Node name="Surf">
                 <MechanicalObject />
                 <SphereLoader filename="mesh/smCube27b.sph" />
-                <Sphere listRadius="@[-1].listRadius" />
+                <SphereCollisionModel listRadius="@[-1].listRadius" />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -101,7 +102,7 @@
             <Node name="Surf">
                 <MechanicalObject />
                 <SphereLoader filename="mesh/dragon.sph" />
-                <Sphere listRadius="@[-1].listRadius" />
+                <SphereCollisionModel listRadius="@[-1].listRadius" />
                 <RigidMapping />
             </Node>
         </Node>

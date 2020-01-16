@@ -43,7 +43,7 @@ protected:
     CompliantSleepController();
     ~CompliantSleepController() override;
 
-	virtual void collectWakeupPairs(std::vector<BaseContexts>& wakeupPairs);
+    virtual void collectWakeupPairs(std::vector<BaseContexts>& wakeupPairs) override;
 
 	bool isCompliance(core::objectmodel::BaseObject* o) const;
 

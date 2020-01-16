@@ -69,7 +69,7 @@ SphereROI<DataTypes>::SphereROI()
     , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangles","Draw Triangles") )
     , p_drawQuads( initData(&p_drawQuads,false,"drawQuads","Draw Quads") )
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
-    , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
+    , _drawSize( initData(&_drawSize,0.0f,"drawSize","rendering size for box and topological elements") )
 {
     //Adding alias to handle TrianglesInSphereROI input/output
     addAlias(&p_drawSphere,"isVisible");
@@ -102,7 +102,7 @@ void SphereROI<DataTypes>::init()
         }
         else
         {
-            core::loader::MeshLoader* loader = NULL;
+            core::loader::MeshLoader* loader = nullptr;
             this->getContext()->get(loader);
             if (loader)
             {

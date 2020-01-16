@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_MESHEXPORTER_H
 #define SOFA_COMPONENT_MISC_MESHEXPORTER_H
-#include "config.h"
+#include <SofaExporter/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>

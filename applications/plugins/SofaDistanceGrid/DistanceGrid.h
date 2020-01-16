@@ -49,26 +49,23 @@ namespace component
 namespace container
 {
 
+
 /// Private namespace to avoid leaking data types into the files.
 namespace _distancegrid_
 {
 using sofa::helper::io::Mesh;
 using sofa::defaulttype::Vector3 ;
-using sofa::defaulttype::ExtVector ;
-using sofa::defaulttype::ExtVectorAllocator ;
 typedef Vector3 Coord;
 
 class SOFA_SOFADISTANCEGRID_API DistanceGrid
 {
 public:
-    static SReal maxDist() { return (SReal)1e10; }
+    static SReal maxDist() { return std::numeric_limits<SReal>::max(); }
     typedef Vector3 Coord;
-    typedef ExtVector<SReal> VecSReal;
-    typedef ExtVector<Coord> VecCoord;
+    typedef helper::vector<SReal> VecSReal;
+    typedef helper::vector<Coord> VecCoord;
 
     DistanceGrid(int m_nx, int m_ny, int m_nz, Coord m_pmin, Coord m_pmax);
-    DistanceGrid(int m_nx, int m_ny, int m_nz, Coord m_pmin, Coord m_pmax,
-                 ExtVectorAllocator<SReal>* alloc);
 
     ~DistanceGrid();
 

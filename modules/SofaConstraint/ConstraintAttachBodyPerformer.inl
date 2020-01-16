@@ -88,7 +88,7 @@ void ConstraintAttachBodyPerformer<DataTypes>::draw(const core::visual::VisualPa
 template <class DataTypes>
 ConstraintAttachBodyPerformer<DataTypes>::ConstraintAttachBodyPerformer(BaseMouseInteractor *i):
     TInteractionPerformer<DataTypes>(i),
-    mapper(NULL)
+    mapper(nullptr)
 {
     flags.setShowVisualModels(false);
     flags.setShowInteractionForceFields(true);
@@ -107,7 +107,7 @@ void ConstraintAttachBodyPerformer<DataTypes>::clear()
     if (mapper)
     {
         mapper->cleanup();
-        delete mapper; mapper=NULL;
+        delete mapper; mapper=nullptr;
     }
 
     this->interactor->setDistanceFromMouse(0);
@@ -124,7 +124,7 @@ ConstraintAttachBodyPerformer<DataTypes>::~ConstraintAttachBodyPerformer()
 template <class DataTypes>
 bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
 {
-    core::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
+    core::behavior::MechanicalState<DataTypes>* mstateCollision=nullptr;
     int index;
     if (picked.body)
     {
@@ -142,11 +142,7 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
         const int idx=picked.indexCollisionElement;
         typename DataTypes::Real r=0.0;
 
-        index = mapper->addPointB(pointPicked, idx, r
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , picked.baryCoords
-#endif
-                                 );
+        index = mapper->addPointB(pointPicked, idx, r);
         mapper->update();
 
         if (mstateCollision->getContext() != picked.body->getContext())

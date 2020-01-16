@@ -194,10 +194,9 @@ void MechanicalStateController<DataTypes>::applyController()
 //template <class DataTypes>
 //void MechanicalStateController<DataTypes>::onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *oev)
 //{
-//	//sout << "void MechanicalStateController<DataTypes>::onHapticDeviceEvent()"<<sendl;
 //	//if (oev->getButton())
 //	//{
-//	//		sout<<" Button1 pressed"<<sendl;
+//	//		msg_info()<<" Button1 pressed";
 //
 //	//}
 //

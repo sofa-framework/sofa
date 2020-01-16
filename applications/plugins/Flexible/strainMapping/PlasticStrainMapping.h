@@ -69,7 +69,7 @@ public:
 
 
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         _squaredYield.resize(_yield.getValue().size());
         for(size_t i=0;i<_yield.getValue().size();i++) _squaredYield[i] = _yield.getValue()[i] * _yield.getValue()[i];
@@ -77,7 +77,7 @@ public:
         Inherit::reinit();
     }
 
-    virtual void reset()
+    virtual void reset() override
     {
         //serr<<"PlasticStrainMapping::reset"<<sendl;
         Inherit::reset();
@@ -106,7 +106,7 @@ protected:
 
     virtual ~PlasticStrainMapping() { }
 
-    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
+    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn ) override
     {
         helper::ReadAccessor<Data<typename Inherit::InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));

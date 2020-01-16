@@ -1,5 +1,6 @@
 <!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
 <Node>
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual" />
 
     <MeshSTLLoader name="STLLoader" filename="mesh/pliers_binary.stl" printLog="true" />

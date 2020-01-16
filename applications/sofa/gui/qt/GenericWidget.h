@@ -33,14 +33,14 @@ public:
     static RealObject* create( RealObject*, CreatorArgument& arg)
     {
         typename RealObject::MyData* realData = dynamic_cast< typename RealObject::MyData* >(arg.data);
-        if (!realData) return NULL;
+        if (!realData) return nullptr;
         else
         {
             RealObject* obj = new RealObject(arg.parent,arg.name.c_str(), realData);
             if( !obj->createWidgets() )
             {
                 delete obj;
-                obj = NULL;
+                obj = nullptr;
             }
             if (obj)
             {

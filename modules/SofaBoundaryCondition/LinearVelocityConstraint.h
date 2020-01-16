@@ -69,13 +69,13 @@ public:
 
 public :
     /// indices of the DOFs the constraint is applied to
-    SetIndex m_indices;
+    SetIndex d_indices;
     /// the key frames when the motion is defined by the user
-    Data<helper::vector<Real> > m_keyTimes;
+    Data<helper::vector<Real> > d_keyTimes;
     /// the motions corresponding to the key frames
-    Data<VecDeriv > m_keyVelocities;
+    Data<VecDeriv > d_keyVelocities;
     /// the coordinates on which to applay velocities
-    SetIndex m_coordinates;
+    SetIndex d_coordinates;
 
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
@@ -85,6 +85,10 @@ public :
     VecCoord x0;
     ///position at the previous step for constrained DOFs position
     VecCoord xP;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LinearVelocityConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     LinearVelocityConstraint();
 
@@ -133,10 +137,6 @@ public:
         LinearVelocityConstraint<DataTypes> *lc;
     };
 
-protected:
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
 private:
 
     /// to keep the time corresponding to the key times
@@ -149,7 +149,7 @@ private:
     void findKeyTimes();
 
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 };
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP)

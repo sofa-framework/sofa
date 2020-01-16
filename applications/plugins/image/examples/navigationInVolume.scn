@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
 <Node name="root"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     
 	<RequiredPlugin pluginName="image" />
         
 	<ImageContainer template="ImageUC" name="image"  filename="data/pelvis_f.raw" />
 	<ImageViewer template="ImageUC" name="viewer"  image="@image.image"  transform="@image.transform"  plane="0 226 50"/>
         
-	<OglModel name="Mesh" fileMesh="data/pelvis_f.obj" material="Default Diffuse 1 1 0.4 0.5 1 Ambient 1 0.2 0.08 0.1 1 Specular 0 1 0.4 0.5 1 Emissive 0 1 0.4 0.5 1 Shininess 0 45"/>
+	<MeshObjLoader name="meshLoader_0" filename="data/pelvis_f.obj" handleSeams="1" />
+	<OglModel name="Mesh" src="@meshLoader_0" material="Default Diffuse 1 1 0.4 0.5 1 Ambient 1 0.2 0.08 0.1 1 Specular 0 1 0.4 0.5 1 Emissive 0 1 0.4 0.5 1 Shininess 0 45"/>
         
 </Node>

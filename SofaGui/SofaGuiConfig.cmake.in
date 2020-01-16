@@ -2,31 +2,48 @@
 
 @PACKAGE_INIT@
 
+set(SOFAGUI_TARGETS @SOFAGUI_TARGETS@)
+
+set(SOFAGUI_HAVE_SOFAHEADLESSRECORDER @SOFAGUI_HAVE_SOFAHEADLESSRECORDER@)
+set(SOFAGUI_HAVE_SOFAGUIQT @SOFAGUI_HAVE_SOFAGUIQT@)
+set(SOFAGUIQT_HAVE_QTVIEWER @SOFAGUIQT_HAVE_QTVIEWER@)
+set(SOFAGUIQT_HAVE_QGLVIEWER @SOFAGUIQT_HAVE_QGLVIEWER@)
+set(SOFAGUIQT_HAVE_QT5_CHARTS @SOFAGUIQT_HAVE_QT5_CHARTS@)
+set(SOFAGUIQT_HAVE_QWT @SOFAGUIQT_HAVE_QWT@)
+set(SOFAGUIQT_HAVE_NODEEDITOR @SOFAGUIQT_HAVE_NODEEDITOR@)
+set(SOFAGUIQT_HAVE_FFMPEG_EXEC @SOFAGUIQT_HAVE_FFMPEG_EXEC@)
+
+# Find dependencies
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaAdvanced REQUIRED)
+find_package(SofaComponentAll REQUIRED) # Needed by SofaGuiCommon
 
-set(SOFA_HAVE_QT @SOFA_HAVE_QT@)
-set(SOFA_GUI_HEADLESS_RECORDER @SOFA_GUI_HEADLESS_RECORDER@)
-set(SOFA_GUI_QT @SOFA_GUI_QT@)
-set(SOFA_GUI_QTVIEWER @SOFA_GUI_QTVIEWER@)
-set(SOFA_GUI_QGLVIEWER @SOFA_GUI_QGLVIEWER@)
-set(SOFA_GUI_NATIVE_MENU @SOFA_GUI_NATIVE_MENU@)
-set(SOFA_QT5 @SOFA_QT5@)
-
-if(SOFA_HAVE_QT)
-    set(QT_USE_IMPORTED_TARGETS 1)
-    if(SOFA_QT5)
-        find_package(Qt5 QUIET REQUIRED COMPONENTS Core Gui OpenGL Xml)
+if(SOFAGUI_HAVE_SOFAGUIQT)
+    if(SOFAGUIQT_HAVE_QTVIEWER)
+        find_package(Qt5 QUIET REQUIRED Core Gui OpenGL)
+        if(SOFAGUIQT_HAVE_QT5_CHARTS)
+            find_package(Qt5 QUIET REQUIRED Charts)
+        endif()
     endif()
-
-    if (SOFA_GUI_QGLVIEWER)
-        find_package(QGLViewer REQUIRED)
+    if(SOFAGUIQT_HAVE_QGLVIEWER)
+        find_package(QGLViewer QUIET REQUIRED)
+    endif()
+    if(SOFAGUIQT_HAVE_QWT)
+        find_package(Qwt QUIET REQUIRED)
     endif()
 endif()
 
-if(NOT TARGET SofaGuiCommon)
-	include("${CMAKE_CURRENT_LIST_DIR}/SofaGuiTargets.cmake")
+
+if(SOFAGUIQT_HAVE_NODEEDITOR)
+    find_package(NodeEditor QUIET REQUIRED)
 endif()
 
-check_required_components(@SOFAGUI_TARGETS@)
+foreach(target ${SOFAGUI_TARGETS})
+    if(NOT TARGET ${target})
+        include("${CMAKE_CURRENT_LIST_DIR}/SofaGuiTargets.cmake")
+        break()
+    endif()
+endforeach()
+
+check_required_components(${SOFAGUI_TARGETS})

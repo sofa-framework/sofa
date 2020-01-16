@@ -112,7 +112,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override {return "AccumulateConstraintForceVisitor";}
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name=std::string("[")+lambda.getName()+std::string("]");
         return name;
@@ -224,7 +224,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override {return "MechanicalAddLagrangeForce";}
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name=std::string("[")+res.getName()+","+lambdas.getName()+std::string("]");
         return name;

@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <SofaBoundaryCondition_test/config.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
@@ -88,7 +89,9 @@ struct FixedConstraint_test : public BaseTest
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( defaulttype::Vector3(0,0,0) );
 
+#if SOFABOUNDARYCONDITION_TEST_HAVE_SOFASPARSESOLVER
         simpleapi::createObject(root , "RequiredPlugin", {{"name", "SofaSparseSolver"}}) ;
+#endif
 
         simulation::Node::SPtr node = createEulerSolverNode(root,"test", integrationScheme);
 
@@ -181,7 +184,7 @@ TYPED_TEST( FixedConstraint_test , testValueExplicit )
     EXPECT_TRUE(  this->test(1e-8, std::string("Explicit")) );
 }
 
-#ifdef SOFA_HAVE_SOFASPARSESOLVER
+#if SOFABOUNDARYCONDITION_TEST_HAVE_SOFASPARSESOLVER
 TYPED_TEST( FixedConstraint_test , testValueImplicitWithSparseLDL )
 {
     EXPECT_MSG_NOEMIT(Error) ;

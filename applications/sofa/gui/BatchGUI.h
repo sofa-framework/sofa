@@ -45,7 +45,7 @@ public:
 
     BatchGUI();
 
-    void setScene(sofa::simulation::Node::SPtr groot, const char* filename="", bool temporaryFile=false);
+    void setScene(sofa::simulation::Node::SPtr groot, const char* filename="", bool temporaryFile=false) override;
 
     void resetScene();
 
@@ -55,7 +55,7 @@ public:
 
     static void setNumIterations(const std::string& nbIterInp) 
     {
-        int inpLen= nbIterInp.length();
+        size_t inpLen= nbIterInp.length();
        
         if (nbIterInp == "infinite")
         {
@@ -78,7 +78,7 @@ public:
     /// @name registration of each GUI
     /// @{
 
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
 
 

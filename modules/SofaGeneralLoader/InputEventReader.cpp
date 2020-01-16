@@ -52,7 +52,7 @@ InputEventReader::InputEventReader()
     , p_key2(initData(&p_key2, '1', "key2","Key event generated when the right pedal is pressed"))
     , p_writeEvents(initData(&p_writeEvents, false , "writeEvents","If true, write incoming events ; if false, read events from that file (if an output filename is provided)"))
     , p_outputFilename(initData(&p_outputFilename, "outputFilename","Other filename where events will be stored (or read)"))
-    , inFile(NULL), outFile(NULL)
+    , inFile(nullptr), outFile(nullptr)
     , fd(-1)
     , deplX(0), deplY(0)
     , pedalValue(-1)
@@ -77,7 +77,7 @@ void InputEventReader::init()
             {
                 serr << "File " <<p_outputFilename.getFullPath() << " not writable" << sendl;
                 delete outFile;
-                outFile = NULL;
+                outFile = nullptr;
             }
         }
         else
@@ -87,7 +87,7 @@ void InputEventReader::init()
             {
                 serr << "File " <<p_outputFilename.getFullPath() << " not readable" << sendl;
                 delete inFile;
-                inFile = NULL;
+                inFile = nullptr;
             }
         }
     }

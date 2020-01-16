@@ -151,7 +151,7 @@ void MeshROI<DataTypes>::checkInputData()
         }
         else
         {
-            MeshLoader* loader = NULL;
+            MeshLoader* loader = nullptr;
             this->getContext()->get(loader,BaseContext::Local); // perso
             if (loader)
             {
@@ -220,7 +220,7 @@ void MeshROI<DataTypes>::checkInputData()
         }
         else
         {
-            MeshLoader* loader = NULL;
+            MeshLoader* loader = nullptr;
             this->getContext()->get(loader,BaseContext::Local); // perso
             if (loader)
             {
@@ -609,7 +609,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
 
     std::vector<sofa::defaulttype::Vector3> vertices;
 
-    Real drawSize = (d_drawSize.getValue() > 1.0) ? d_drawSize.getValue() : 1.0;
+    float drawSize = float((d_drawSize.getValue() > 1.0) ? d_drawSize.getValue() : 1.0);
 
     // draw the ROI mesh
     if( d_drawMesh.getValue())

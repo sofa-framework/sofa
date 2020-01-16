@@ -220,17 +220,6 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPt
     gui->setScene(groot, filename);
     gui->initializeGL();
 
-    GLuint screen_width;
-    GLuint screen_height;
-    psglGetDeviceDimensions(psglGetCurrentDevice(), &screen_width, &screen_height);
-
-    SimpleGUI* gui = new SimpleGUI();
-    gui->setScene(groot, filename);
-
-    gui->initializeGL();
-    gui->resizeGL(screen_width, screen_height);
-#endif
-
     return gui;
 }
 
@@ -440,11 +429,9 @@ void SimpleGUI::initializeGL(void)
         specref[2] = 1.0f;
         specref[3] = 1.0f;
         // Here we initialize our multi-texturing functions
-#if defined(SOFA_HAVE_GLEW)
         glewInit();
         if (!GLEW_ARB_multitexture)
             std::cerr << "Error: GL_ARB_multitexture not supported\n";
-#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;

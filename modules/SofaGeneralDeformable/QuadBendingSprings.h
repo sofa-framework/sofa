@@ -51,6 +51,10 @@ public:
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
+
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<QuadBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     QuadBendingSprings();
 

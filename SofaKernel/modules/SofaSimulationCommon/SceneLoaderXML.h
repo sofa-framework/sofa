@@ -22,6 +22,7 @@
 #ifndef SOFA_SIMULATION_SCENELOADERXML_H
 #define SOFA_SIMULATION_SCENELOADERXML_H
 
+#include <SofaSimulationCommon/common.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <SofaSimulationCommon/xml/BaseElement.h>
 
@@ -41,7 +42,7 @@ public:
     bool canWriteFileExtension(const char *extension) override;
 
     /// load the file
-    virtual sofa::simulation::Node::SPtr doLoad(const char *filename);
+    virtual sofa::simulation::Node::SPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs) override;
 
     /// write the file
     void write(sofa::simulation::Node* node, const char *filename) override;
@@ -53,7 +54,7 @@ public:
     static Node::SPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
 
     /// get the file type description
-    virtual std::string getFileTypeDesc();
+    virtual std::string getFileTypeDesc() override;
 
     /// get the list of file extensions
     void getExtensionList(ExtensionList* list) override;

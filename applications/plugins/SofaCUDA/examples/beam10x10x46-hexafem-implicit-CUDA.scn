@@ -6,7 +6,7 @@
 	<BruteForceDetection name="N2" />
 	<MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
 	<DefaultContactManager name="Response" response="default" />
-	<CollisionGroup name="Group" />
+	<DefaultCollisionGroupManager name="Group" />
 	
 	<Node name="M1" processor="0">
 		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />

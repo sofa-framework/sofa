@@ -64,6 +64,16 @@ int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
 
 // Implementation
 
+Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
+    : TopologicalMapping()
+    , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
+    , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
+    , edgeList(initData(&edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
+    , flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
+    , m_radiusContainer(nullptr)
+{
+}
+
 void Edge2QuadTopologicalMapping::init()
 {
 
@@ -72,16 +82,12 @@ void Edge2QuadTopologicalMapping::init()
         this->getContext()->get(m_radiusContainer);
 
         if(!m_radiusContainer)
-            sout << "No radius defined" << sendl;
+            msg_info() << "No radius defined";
     }
  
 
     unsigned int N = m_nbPointsOnEachCircle.getValue();
     double rho = m_radius.getValue();
-
-    
-
-    //sout << "INFO_print : init Edge2QuadTopologicalMapping" << sendl;
 
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
 
@@ -91,12 +97,12 @@ void Edge2QuadTopologicalMapping::init()
     if (fromModel)
     {
 
-        sout << "INFO_print : Edge2QuadTopologicalMapping - from = edge" << sendl;
+        msg_info() << "INFO_print : Edge2QuadTopologicalMapping - from = edge";
 
         if (toModel)
         {
 
-            sout << "INFO_print : Edge2QuadTopologicalMapping - to = quad" << sendl;
+            msg_info() << "INFO_print : Edge2QuadTopologicalMapping - to = quad";
 
             QuadSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
@@ -288,7 +294,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::ENDING_EVENT:
                 {
-                    //sout << "INFO_print : TopologicalMapping - ENDING_EVENT" << sendl;
                     to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
                     to_tstm->propagateTopologicalChanges();
@@ -297,7 +302,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::EDGESADDED:
                 {
-                    //sout << "INFO_print : TopologicalMapping - EDGESADDED" << sendl;
                     if (fromModel)
                     {
 
@@ -354,11 +358,8 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 }
                 case core::topology::EDGESREMOVED:
                 {
-                    //sout << "INFO_print : TopologicalMapping - EDGESREMOVED" << sendl;
-
                     if (fromModel)
                     {
-
                         const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *itBegin ) )->getArray();
 
                         unsigned int last = (unsigned int)fromModel->getNbEdges() - 1;
@@ -414,7 +415,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                 }
                                 else
                                 {
-                                    sout << "INFO_print : Edge2QuadTopologicalMapping - In2OutMap should have the edge " << last << sendl;
+                                    msg_info() << "INFO_print : Edge2QuadTopologicalMapping - In2OutMap should have the edge " << last;
                                 }
 
                                 if (ind_k[N-1] != ind_last)
@@ -467,7 +468,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             }
                             else
                             {
-                                sout << "INFO_print : Edge2QuadTopologicalMapping - In2OutMap should have the edge " << k << sendl;
+                                msg_info() << "INFO_print : Edge2QuadTopologicalMapping - In2OutMap should have the edge " << k;
                             }
 
                             --last;
@@ -479,8 +480,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::POINTSRENUMBERING:
                 {
-                    //sout << "INFO_print : Edge2QuadTopologicalMapping - POINTSRENUMBERING" << sendl;
-
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
                     const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
@@ -495,8 +494,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             indices.push_back(tab[i]*N + j);
                             inv_indices.push_back(inv_tab[i]*N + j);
                         }
-
-                        //sout << "INFO_print : Edge2QuadTopologicalMapping - renumber point = " << tab[i] << sendl;
                     }
 
                     sofa::helper::vector<unsigned int>& tab_indices = indices;
@@ -511,8 +508,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::POINTSADDED:
                 {
-                    //sout << "INFO_print : Edge2QuadTopologicalMapping - POINTSADDED" << sendl;
-
                     const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
 
                     unsigned int to_nVertices = (unsigned int)ta->getNbAddedVertices() * N;
@@ -521,7 +516,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                     for(unsigned int i =0; i < ta->getNbAddedVertices(); i++)
                     {
-
                         sofa::helper::vector< unsigned int > my_ancestors;
                         sofa::helper::vector< double > my_coefs;
 

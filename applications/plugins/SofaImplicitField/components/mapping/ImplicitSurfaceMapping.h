@@ -215,7 +215,6 @@ Y
 
 #if  !defined(SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_CPP)
 extern template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3Types >;
 
 
 

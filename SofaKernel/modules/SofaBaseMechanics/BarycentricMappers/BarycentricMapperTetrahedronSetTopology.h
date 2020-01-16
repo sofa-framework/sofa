@@ -38,7 +38,6 @@ namespace mapping
 
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
 typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
@@ -53,6 +52,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Tetrahedron));
     typedef typename Inherit1::Real Real;
     typedef typename In::VecCoord VecCoord;
+    using Inherit1::m_toTopology;
 
     int addPointInTetra(const int index, const SReal* baryCoords) override ;
 
@@ -69,6 +69,11 @@ protected:
     void computeDistance(double& d, const Vector3& v) override;
     void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
 
+    //handle topology changes depending on the topology
+    void processTopologicalChanges(const typename Out::VecCoord& out, const typename In::VecCoord& in, core::topology::Topology* t);
+
+    void processAddPoint(const sofa::defaulttype::Vec3d & pos, const typename In::VecCoord& in, MappingData & vectorData);
+
     topology::TetrahedronSetTopologyContainer*      m_fromContainer {nullptr};
     topology::TetrahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};
 
@@ -80,11 +85,12 @@ protected:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTETRAHEDRONSETTOPOLOGY_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, ExtVec3Types >;
-
-
 #endif
 
-}}}
+} // namespace mapping
 
-#endif
+} // namespace component
+
+} // namespace sofa
+
+#endif // SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTETRAHEDRONSETTOPOLOGY_H

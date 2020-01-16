@@ -40,13 +40,14 @@
 #include <sofa/helper/system/glu.h>
 #include <sofa/gui/BaseGUI.h>
 #include <qevent.h>
-#include <sofa/gui/qt/GenGraphForm.h>
 
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/gui/qt/GLPickHandler.h>
+#include <sofa/gui/qt/viewer/GLBackend.h>
 
 namespace sofa
 {
@@ -84,7 +85,7 @@ QGLFormat QtGLViewer::setupGLFormat(const unsigned int nbMSAASamples)
         f.setSamples(nbMSAASamples);
     }
 
-    if(!SOFA_GUI_VSYNC)
+    if(!SOFAGUIQT_ENABLE_VSYNC)
     {
         QSurfaceFormat format;
         format.setSwapInterval(0);
@@ -99,7 +100,10 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
 {
     this->setObjectName(name);
 
-    groot = NULL;
+    m_backend.reset(new GLBackend());
+    pick = new GLPickHandler();
+
+    groot = nullptr;
     initTexturesDone = false;
 
     backgroundColour[0]=1.0f;
@@ -116,7 +120,7 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
     // 	_zoomSpeed = 250.0;
     // 	_panSpeed = 25.0;
     _video = false;
-    _axis = false;
+    m_bShowAxis = false;
     _background = 0;
     _numOBJmodels = 0;
     _materialMode = 0;
@@ -134,8 +138,8 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
 
     setManipulatedFrame( new qglviewer::ManipulatedFrame() );
     //near and far plane are better placed
-    camera()->setZNearCoefficient(0.001);
-    camera()->setZClippingCoefficient(5);
+    camera()->setZNearCoefficient(0.005);
+    camera()->setZClippingCoefficient(2);
 
     vparams->zNear() = camera()->zNear();
     vparams->zFar()  = camera()->zFar();
@@ -200,9 +204,7 @@ void QtGLViewer::init(void)
         specref[3] = 1.0f;
 
         // Here we initialize our multi-texturing functions
-#ifdef SOFA_HAVE_GLEW
         glewInit();
-#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;
@@ -566,53 +568,7 @@ void QtGLViewer::drawColourPicking(ColourPickingVisitor::ColourCode code)
 // -------------------------------------------------------------------
 void QtGLViewer::DrawLogo()
 {
-    glPushMatrix();
-
-    int w = 0;
-    int h = 0;
-
-    if (texLogo && texLogo->getImage())
-    {
-        h = texLogo->getImage()->getHeight();
-        w = texLogo->getImage()->getWidth();
-//        h = _H;
-//        w = _W;
-    }
-    else return;
-
-    Enable <GL_TEXTURE_2D> tex;
-    glDisable(GL_DEPTH_TEST);
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(-0.5, _W, -0.5, _H, -1.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    if (texLogo)
-        texLogo->bind();
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_QUADS);
-    glTexCoord2d(0.0, 0.0);
-    glVertex3d((_W-w)/2, (_H-h)/2, 0.0);
-
-    glTexCoord2d(1.0, 0.0);
-    glVertex3d( _W-(_W-w)/2, (_H-h)/2, 0.0);
-
-    glTexCoord2d(1.0, 1.0);
-    glVertex3d( _W-(_W-w)/2, _H-(_H-h)/2, 0.0);
-
-    glTexCoord2d(0.0, 1.0);
-    glVertex3d((_W-w)/2, _H-(_H-h)/2, 0.0);
-    glEnd();
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
+    m_backend->drawBackgroundImage(_W, _H);
 }
 
 // -------------------------------------------------------------------
@@ -664,13 +620,13 @@ void QtGLViewer::DisplayOBJs()
 
 
     {
+		this->setSceneBoundingBox(qglviewer::Vec(vparams->sceneBBox().minBBoxPtr()),
+			qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()));
+
         //Draw Debug information of the components
         simulation::getSimulation()->draw(vparams,groot.get());
-        if (_axis)
+        if (m_bShowAxis)
         {
-            this->setSceneBoundingBox(qglviewer::Vec(vparams->sceneBBox().minBBoxPtr()),
-                    qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()) );
-
             //DrawAxis(0.0, 0.0, 0.0, 10.0);
             DrawAxis(0.0, 0.0, 0.0, this->sceneRadius());
 
@@ -1063,6 +1019,7 @@ void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
     direction = transform*Vec4d(0,0,1,0);
     direction.normalize();
     pick->updateRay(position, direction);
+
 }
 
 // -------------------------------------------------------------------
@@ -1200,20 +1157,6 @@ QString QtGLViewer::helpString() const
                 <li><b>V</b>: TO SAVE A VIDEO<br>\
                 Each time the frame is updated a screenshot is saved<br></li>\
                 <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>"
-#ifdef SOFA_HAVE_SENSABLE
-        +(QString)"<H1>Sensable</H1>\
-                <ul>\
-                <li><b>Ctrl + index interface</b>: TO DRAW AXIS<br></li>\
-                <li><b>Option OmniVisu</b>: TO DRAW INTERFACE<br></li>\
-                <li>If <b>OmniVisu</b> and <b>axis</b> are active:<br></li>\
-                <ul>\
-                <li><b>Ctrl + Axis: x, y or z + arrow left or right</b>: TO MOVE THE INTERFACE ON THE AXIS<br></li>\
-                <li><b>Ctrl + Axis: x, y or z + arrow up or down</b>: TO ROTATE THE INTERFACE ON THE AXIS<br></li>\
-                <li><b>Ctrl + Q + arrow left or right</b>: TO CHANGE THE SCALE OF THE INTERFACE<br></li>\
-                <li><b>Ctrl + E </b>: TO RESET THE POSITION OF THE INTERFACE<br></li>\
-                </ul>\
-                </ul>"
-#endif
     );
 
     return text;

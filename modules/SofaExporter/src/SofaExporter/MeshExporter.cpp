@@ -47,7 +47,7 @@ namespace component
 namespace _meshexporter_
 {
 
-static int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
+int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
                                              "Supported format are: " msgendl
                                              "- vtkxml" msgendl
                                              "- vtk" msgendl
@@ -91,7 +91,7 @@ void MeshExporter::doReInit()
 
     if (!d_position.isSet() && m_inputmstate)
     {
-        sofa::core::objectmodel::BaseData* parent = NULL;
+        sofa::core::objectmodel::BaseData* parent = nullptr;
         if (!parent && m_inputmstate) parent = m_inputmstate->findData("position");
         if (!parent && m_inputtopology) parent = m_inputmstate->findData("topology");
         if (parent)
@@ -719,7 +719,7 @@ bool MeshExporter::writeMeshTetgen()
     }
 
     outfile.close();
-    sout << filename << " written" << sendl;
+    msg_info() << filename << " written";
 
     //Write Volume Elements
 
@@ -744,7 +744,6 @@ bool MeshExporter::writeMeshTetgen()
                 // check tetra inversion
                 if (dot(pointsPos[t[1]]-pointsPos[t[0]],cross(pointsPos[t[2]]-pointsPos[t[0]],pointsPos[t[3]]-pointsPos[t[0]])) > 0)
                 {
-                    //sout << "Inverting tetra " << i << sendl;
                     unsigned int tmp = t[3]; t[3] = t[2]; t[2] = tmp;
                 }
 
@@ -755,7 +754,7 @@ bool MeshExporter::writeMeshTetgen()
             }
         }
         outfile.close();
-        sout << filename << " written" << sendl;
+        msg_info() << filename << " written";
     }
 
     //Write Surface Elements

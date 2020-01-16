@@ -121,7 +121,6 @@ template <int N, class Real> struct RigidMappingMatrixHelper;
 
 #if  !defined(SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_CPP)
 extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< defaulttype::Rigid3Types, defaulttype::Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< defaulttype::Rigid3Types, defaulttype::ExtVec3Types >;
 
 
 

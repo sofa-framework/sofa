@@ -1,13 +1,13 @@
 <Node name="root" dt="0.02" gravity="0 -10 0">
     <RequiredPlugin name="SofaSparseSolver"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="M1">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <PCGLinearSolver iterations="1000" threshold="1.0e-9" printLog="0" refresh="0" verbose="0" />
         <MechanicalObject />
         <UniformMass mass="1" />

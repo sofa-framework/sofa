@@ -3,22 +3,12 @@ project(SofaAdvanced)
 
 ## Dependencies
 find_package(SofaGeneral REQUIRED)
-find_package(MiniFlowVR QUIET)
-set(SOFA_HAVE_MINIFLOWVR ${MiniFlowVR_FOUND})
-set(SOFA_HAVE_FLOWVR ${MiniFlowVR_FOUND}) # cmakedefine
 
 ## Version
 set(SOFAADVANCED_VERSION ${SofaFramework_VERSION})
 
-## SofaAdvanced/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
-
-
-### Subdirectories
-
+## Subdirectories
 set(SOFAADVANCED_TARGETS
-    SofaComponentAdvanced
     SofaNonUniformFem
 )
 
@@ -32,6 +22,9 @@ foreach(TARGET ${SOFAADVANCED_TARGETS})
     set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFAADVANCED_VERSION})
 endforeach()
 
+## SofaAdvanced/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
 
 ## CMake package configurations files
 sofa_write_package_config_files(SofaAdvanced ${SOFAADVANCED_VERSION})

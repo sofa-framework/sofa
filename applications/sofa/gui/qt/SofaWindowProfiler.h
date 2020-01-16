@@ -39,6 +39,7 @@
 #include <QtCharts/QChart>
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
 
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
@@ -213,6 +214,8 @@ signals:
 protected:
     /// Pointer to the chart Data
     QtCharts::QChart *m_chart;
+    /// Pointer to Y Axis
+    QtCharts::QValueAxis *m_axisY;
     /// Pointer to the \sa ProfilerChartView class to handle chart drawing/selection
     ProfilerChartView* m_chartView;
 

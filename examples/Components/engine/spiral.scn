@@ -6,9 +6,9 @@
         <Spiral name="spiral" template="Vec3d" rest_position="@dofs1.position" />
         <Node>
             <MechanicalObject name="dofs" position="@../spiral.position" />
-            <TriangleModel />
-            <LineModel />
-            <PointModel />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
         </Node>
     </Node>
 </Node>

@@ -75,24 +75,11 @@ public:
     Data< SeqQuads > quads; ///< Quads of mesh subset
 
     virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MeshSubsetEngine<DataTypes>* = NULL) { return DataTypes::Name();    }
+    static std::string templateName(const MeshSubsetEngine<DataTypes>* = nullptr) { return DataTypes::Name();    }
 
 protected:
-
-    MeshSubsetEngine()    : Inherited()
-      , inputPosition(initData(&inputPosition,"inputPosition","input vertices"))
-      , inputEdges(initData(&inputEdges,"inputEdges","input edges"))
-      , inputTriangles(initData(&inputTriangles,"inputTriangles","input triangles"))
-      , inputQuads(initData(&inputQuads,"inputQuads","input quads"))
-      , indices(initData(&indices,"indices","Index lists of the selected vertices"))
-      , position(initData(&position,"position","Vertices of mesh subset"))
-      , edges(initData(&edges,"edges","edges of mesh subset"))
-      , triangles(initData(&triangles,"triangles","Triangles of mesh subset"))
-      , quads(initData(&quads,"quads","Quads of mesh subset"))
-    {
-    }
-
-    ~MeshSubsetEngine() override {}
+    MeshSubsetEngine();
+    ~MeshSubsetEngine() override;
 
 public:
     void init() override

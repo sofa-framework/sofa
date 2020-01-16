@@ -242,7 +242,7 @@ def createSphere(parentNode,name,x,y,z,*args):
 
 	#SurfNode = node.createChild('Surf')
 	node.createObject('MechanicalObject',template='Vec3d',name='falling_particle',position=str(x)+' '+str(y)+' '+str(z),velocity='0 0 '+str(falling_speed))
-	node.createObject('TSphereModel',template='Vec3d',name='sphere_model',radius=str(r))
+	node.createObject('SphereCollisionModel',template='Vec3d',name='sphere_model',radius=str(r))
 	node.createObject('UniformMass',name='mass',totalMass=1)
 	#SurfNode.createObject('RigidMapping',template='Rigid,Vec3d',name='rigid_mapping',input='@../rigidDOF',output='@falling_particle')
 
@@ -284,7 +284,7 @@ def createRigidSphere(parentNode,name,x,y,z,*args):
 
 	#SurfNode = node.createChild('Surf')
 	node.createObject('MechanicalObject',template='Rigid',name='falling_particle',position=str(x)+' '+str(y)+' '+str(z)+' 0 0 0 1',velocity='0 0 '+str(falling_speed)+' 0 0 0 1')
-	node.createObject('TSphereModel',template='Rigid',name='sphere_model',radius=str(r))
+	node.createObject('SphereCollisionModel',template='Rigid',name='sphere_model',radius=str(r))
 	node.createObject('UniformMass',name='mass',totalMass=1)
 	#SurfNode.createObject('RigidMapping',template='Rigid,Vec3d',name='rigid_mapping',input='@../rigidDOF',output='@falling_particle')
 

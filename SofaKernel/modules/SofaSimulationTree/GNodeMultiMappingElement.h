@@ -38,7 +38,7 @@ class GNodeMultiMappingElement : public sofa::simulation::xml::BaseMultiMappingE
 public:
     GNodeMultiMappingElement(const std::string& name,
             const std::string& type,
-            BaseElement* parent =NULL);
+            BaseElement* parent =nullptr);
 
     const char* getClass() const override;
 
@@ -47,7 +47,7 @@ protected:
         sofa::core::BaseMapping* multiMapping,
         const helper::vector<simulation::Node*>& ancestorInputs,
         helper::vector<simulation::Node*>& otherInputs,
-        helper::vector<simulation::Node*>& outputs);
+        helper::vector<simulation::Node*>& outputs) override;
 };
 
 

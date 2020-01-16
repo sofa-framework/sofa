@@ -110,8 +110,8 @@ public:
 
     EigenSparseIterativeSolver();
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
 };
 

@@ -105,9 +105,9 @@ public:
     ~RigidScaleToAffineMultiMapping();
 
 	/************************** SOFA METHOD ****************************/
-    void init();
-    void reinit();
-	void reset();
+    void init() override;
+    void reinit() override;
+    void reset() override;
 
     using Inherit::apply;
     using Inherit::applyJ;
@@ -117,43 +117,43 @@ public:
     void apply(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */
 			   , const helper::vector<OutDataVecCoord*>& /*dataVecOutPos*/
 			   , const helper::vector<const In1DataVecCoord*>& /*dataVecIn1Pos*/
-			   , const helper::vector<const In2DataVecCoord*>& /*dataVecIn2Pos*/);
+               , const helper::vector<const In2DataVecCoord*>& /*dataVecIn2Pos*/) override;
 
     void applyJ(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */
 			    , const helper::vector< OutDataVecDeriv*>& /*dataVecOutVel*/		
 				, const helper::vector<const In1DataVecDeriv*>& /*dataVecIn1Vel*/ 
-				, const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Vel*/);
+                , const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Vel*/) override;
 
     void applyJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */
 				 , const helper::vector< In1DataVecDeriv*>& /*dataVecOut1Force*/
 				 , const helper::vector< In2DataVecDeriv*>& /*dataVecOut2Force*/
-				 , const helper::vector<const OutDataVecDeriv*>& /*dataVecInForce*/);
+                 , const helper::vector<const OutDataVecDeriv*>& /*dataVecInForce*/) override;
 
     void applyJT(const helper::vector< InMatrixDeriv1*>& /*outConstraint1*/ 
 				 , const helper::vector< InMatrixDeriv2*>& /*outConstraint2*/
-				 , const helper::vector<const OutMatrixDeriv*>& /*inConstraint*/);
+                 , const helper::vector<const OutMatrixDeriv*>& /*inConstraint*/);
 	
 	void applyJT(const core::ConstraintParams* /* cparams */
 				 , const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */
 				 , const helper::vector< In2DataMatrixDeriv*>&  /* dataMatOut2Const */
-				 , const helper::vector<const OutDataMatrixDeriv*>& /* dataMatInConst */);
+                 , const helper::vector<const OutDataMatrixDeriv*>& /* dataMatInConst */) override;
 	
-    void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/);
+    void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override;
 
     void computeAccFromMapping(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */
 							   , const helper::vector< OutDataVecDeriv*>& /*dataVecOutAcc*/
 							   , const helper::vector<const In1DataVecDeriv*>& /*dataVecIn1Vel*/
 							   , const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Vel*/
 							   , const helper::vector<const In1DataVecDeriv*>& /*dataVecIn1Acc*/
-							   , const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Acc*/);
+                               , const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Acc*/) override;
 
     void computeAccFromMapping(const core::MechanicalParams* /*mparams*/, OutVecDeriv& /*f*/,const OutVecCoord& /*x*/, const OutVecDeriv& /*v*/);
 
-    const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
-    const sofa::defaulttype::BaseMatrix* getJ();
+    const sofa::defaulttype::BaseMatrix* getJ() override;
 
-    const sofa::defaulttype::BaseMatrix* getK();		                   
+    const sofa::defaulttype::BaseMatrix* getK() override;
 
     Data< helper::vector<unsigned> > index;  ///< Two indices per child: the index of the rigid, and the index of scale
 	Data< bool > automaticInit; ///< Automatic setup based only on the rigid position. The index data is init, the scale mechanical state is reinit and the affine mechanical state is reinit.

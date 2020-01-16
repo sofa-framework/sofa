@@ -84,7 +84,7 @@ protected:
 public:
 
     FullMatrix()
-        : data(NULL), nRow(0), nCol(0), pitch(0), allocsize(0)
+        : data(nullptr), nRow(0), nCol(0), pitch(0), allocsize(0)
     {
     }
 
@@ -287,12 +287,14 @@ public:
 
     void clear() override
     {
-        //if (pitch == nCol)
-        //    std::fill(data, data+nRow*pitch, (Real)0);
-        //else
-        for (Index i=0; i<nRow; ++i)
-            for (Index j=0; j<nCol; ++j)
-                data[i*pitch+j] = (Real)0;
+        if (pitch == nCol)
+            std::fill(data, data+nRow*pitch, (Real)0);
+        else
+        {
+            for (Index i = 0; i<nRow; ++i)
+                for (Index j = 0; j<nCol; ++j)
+                    data[i*pitch + j] = (Real)0;
+        }
     }
 
     /// matrix-vector product
@@ -423,7 +425,7 @@ protected:
     Index lallocsize;
 public:
     LPtrFullMatrix()
-        : ldata(NULL), lallocsize(0)
+        : ldata(nullptr), lallocsize(0)
     {
     }
 

@@ -28,20 +28,9 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/VecId.h>
 
-//#include <sofa/gui/GUIManager.h>
-//#include <sofa/gui/Main.h>
-
-//#include <sofa/helper/ArgumentParser.h>
-//#include <sofa/helper/system/FileRepository.h>
-//#include <sofa/helper/system/glut.h>
-
-//#include <SofaSimulationTree/GNode.h>
-//#include <SofaSimulationTree/TreeSimulation.h>
-
 #include <iostream>
 #include <fstream>
 
-//using namespace sofa::simulation::tree;
 using namespace sofa;
 using sofa::simulation::Node;
 using sofa::component::odesolver::EulerImplicitSolver;

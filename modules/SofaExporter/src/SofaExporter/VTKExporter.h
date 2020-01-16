@@ -28,7 +28,7 @@
 
 #ifndef VTKEXPORTER_H_
 #define VTKEXPORTER_H_
-#include "config.h"
+#include <SofaExporter/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>

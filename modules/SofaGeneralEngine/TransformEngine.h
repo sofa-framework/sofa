@@ -69,7 +69,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const TransformEngine<DataTypes>* = NULL)
+    static std::string templateName(const TransformEngine<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }    
@@ -92,8 +92,6 @@ extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2T
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3Types>;
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid2Types>;
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid3Types>;
- 
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::ExtVec3fTypes>;
 #endif
 
 } // namespace engine

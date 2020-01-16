@@ -45,6 +45,8 @@ namespace _scenechecking_
 class SOFA_GRAPH_COMPONENT_API SceneCheck
 {
 public:
+    virtual ~SceneCheck() {}
+
     typedef std::shared_ptr<SceneCheck> SPtr;
     virtual const std::string getName() = 0;
     virtual const std::string getDesc() = 0;

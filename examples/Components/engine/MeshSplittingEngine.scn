@@ -2,6 +2,7 @@
 <!-- MeshSplittingEngine Example -->
 
 <Node name="root" dt="0.1">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehavior showVisual" />
     <BackgroundSetting color="1 1 1"/>
     
@@ -12,7 +13,7 @@
     <MeshSplittingEngine name="split" src="@loader" nbInputs="1" tetrahedronIndices1="@roi.tetrahedronIndices" printLog="true"/>
 
         <Node name="rigid">
-            <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
             
             <MechanicalObject name="rigidframe" template="Rigid" position="1 0 1 0 0 0 1" />
@@ -34,7 +35,8 @@
                             <TetrahedronFEMForceField youngModulus="100" poissonRatio="0.3"/>
                             
                             <Node name="Visu">
-                                <VisualModel name="Visual" fileMesh="mesh/torus.obj" color="5E-1 5E-1 5E-1 5E-1" />
+                                <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+                                <OglModel name="Visual" src="@meshLoader_0" color="5E-1 5E-1 5E-1 5E-1" />
                                 <BarycentricMapping  />
                             </Node>
                         </Node>

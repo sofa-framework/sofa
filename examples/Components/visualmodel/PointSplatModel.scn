@@ -1,12 +1,13 @@
 <!-- Mechanical PointSplatModel Example -->
 <Node dt="0.005" gravity="0 -10 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="SofaSphFluid"/>
     <RequiredPlugin pluginName="SofaMiscCollision"/>
 
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <NewProximityIntersection alarmDistance="0.5" contactDistance="0.3" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <Node name="Fluid">
         <RungeKutta4 />
         <PointSetTopologyContainer />
@@ -50,9 +51,9 @@
     <Node name="World">
         <MechanicalObject position="-4 -1.6 -4    4 -5.6 -4    4 -6.4 4    -4 -2.4 4" scale="1.075" />
         <Mesh triangles="0 1 2  0 2 3" />
-        <Triangle contactStiffness="20" moving="false" simulated="false" />
-        <Line contactStiffness="20" moving="false" simulated="false" />
-        <Point contactStiffness="20" moving="false" simulated="false" />
+        <TriangleCollisionModel contactStiffness="20" moving="false" simulated="false" />
+        <LineCollisionModel contactStiffness="20" moving="false" simulated="false" />
+        <PointCollisionModel contactStiffness="20" moving="false" simulated="false" />
         <OglModel name="VModel" color="blue" printLog="true" />
     </Node>
 </Node>

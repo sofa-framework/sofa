@@ -22,6 +22,8 @@
 #ifndef SOFA_GUI_QGLVIEWER_QTVIEWER_H
 #define SOFA_GUI_QGLVIEWER_QTVIEWER_H
 
+#include <sofa/gui/qt/SofaGuiQt.h>
+
 #include <sofa/helper/system/gl.h>
 #include <qgl.h>
 #include <qtimer.h>
@@ -31,7 +33,7 @@
 #include <cstring>
 #include <fstream>
 
-#include <sofa/gui/qt/viewer/SofaViewer.h>
+#include <sofa/gui/qt/viewer/OglModelPolicy.h>
 #include <sofa/gui/ViewerFactory.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
@@ -107,7 +109,7 @@ public:
         ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
         return viewerArg ?
                 new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str(), viewerArg->getNbMSAASamples() ) :
-                new QtGLViewer(NULL, pArg->getName().c_str(), pArg->getNbMSAASamples() )
+                new QtGLViewer(nullptr, pArg->getName().c_str(), pArg->getNbMSAASamples() )
                 ;
     }
 
@@ -115,12 +117,12 @@ public:
 
     static const char* acceleratedName()  { return "&QGLViewer"; }
 
-    virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
+    virtual void drawColourPicking (ColourPickingVisitor::ColourCode code) override;
 
     QtGLViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
     ~QtGLViewer() override;
 
-    QWidget* getQWidget() { return this; }
+    QWidget* getQWidget() override { return this; }
 
 protected:
      static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
@@ -130,28 +132,28 @@ protected:
     /// Overloaded from QGLViewer to render the scene
     void draw() override;
     /// Overloaded from SofaViewer
-    virtual void viewAll();
+    virtual void viewAll() override;
     void resizeGL( int w, int h ) override;
 
 public:
 
     //void			reshape(int width, int height);
-    int GetWidth()
+    int getWidth() override
     {
         return _W;
     }
-    int GetHeight()
+    int getHeight() override
     {
         return _H;
     }
-    bool ready() {return !_waitForRender;}
-    void wait() {_waitForRender = true;}
+    bool ready() override {return !_waitForRender;}
+    void wait() override {_waitForRender = true;}
 
     void	UpdateOBJ(void);
 
-    void moveRayPickInteractor(int eventX, int eventY);
+    void moveRayPickInteractor(int eventX, int eventY) override;
 
-    void setCameraMode(core::visual::VisualParams::CameraType mode);
+    void setCameraMode(core::visual::VisualParams::CameraType mode) override;
 
     QString helpString() const override;
 
@@ -178,7 +180,7 @@ private:
 protected:
     //virtual bool event ( QEvent * e );
 
-    virtual void	drawScene();
+    virtual void	drawScene() override;
     virtual void	DrawLogo(void);
 
 
@@ -188,20 +190,20 @@ protected:
     void mouseReleaseEvent ( QMouseEvent * e ) override;
     void mouseMoveEvent ( QMouseEvent * e ) override;
     void wheelEvent(QWheelEvent* e) override;
-    bool         mouseEvent( QMouseEvent * e );
+    bool mouseEvent( QMouseEvent * e ) override;
 
 
 
 public slots:
-    void resetView();
-    void saveView();
-    void setSizeW(int);
-    void setSizeH(int);
+    void resetView() override;
+    void saveView() override;
+    void setSizeW(int) override;
+    void setSizeH(int) override;
 
-    virtual void getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const;
-    virtual void setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori);
-    virtual void captureEvent() { SofaViewer::captureEvent(); }
-    void fitObjectBBox(sofa::core::objectmodel::BaseObject* object)
+    virtual void getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const override;
+    virtual void setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori) override;
+    virtual void captureEvent() override { SofaViewer::captureEvent(); }
+    void fitObjectBBox(sofa::core::objectmodel::BaseObject* object) override
     {
         if( object->f_bbox.getValue().isValid() && !object->f_bbox.getValue().isFlat() )
             this->camera()->fitBoundingBox(
@@ -221,7 +223,7 @@ public slots:
         this->update();
     }
 
-    void fitNodeBBox(sofa::core::objectmodel::BaseNode* node)
+    void fitNodeBBox(sofa::core::objectmodel::BaseNode* node) override
     {
         if( node->f_bbox.getValue().isValid() && !node->f_bbox.getValue().isFlat() )
             this->camera()->fitBoundingBox(
@@ -234,9 +236,9 @@ public slots:
     }
 
 signals:
-    void redrawn();
-    void resizeW( int );
-    void resizeH( int );
+    void redrawn() override;
+    void resizeW( int ) override;
+    void resizeH( int ) override;
     void quit();
 };
 

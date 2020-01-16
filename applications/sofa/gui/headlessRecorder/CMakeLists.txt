@@ -9,17 +9,17 @@ else()
 endif()
 
 # FFMPEG
-find_package(FFMPEG QUIET)
+sofa_find_package(FFMPEG QUIET)
 if(FFMPEG_FOUND)
     message("Found FFMPEG/LibAV libraries")
     include_directories(${FFMPEG_INCLUDE_DIR})
 else()
     message(SEND_ERROR "Can't find libavcodec, libavformat or libavutil.")
 endif()
-set(SOFA_HAVE_AVCODEC ${AVCODEC_FOUND})
+sofa_set_01(SOFAHEADLESSRECORDER_HAVE_AVCODEC VALUE ${AVCODEC_FOUND}) # see config.h.in
 
 # X11
-find_package(X11 QUIET)
+sofa_find_package(X11 QUIET)
 if(X11_FOUND)
     message("Found X11 libraries")
     include_directories(${X11_INCLUDE_DIR})
@@ -36,7 +36,7 @@ set(SOURCE_FILES
     HeadlessRecorder.cpp
     VideoRecorderFFMpeg.cpp)
 
-if(SOFAGUI_BUILD_TESTS)
+if(SOFA_BUILD_TESTS)
     configure_file(headlessRecorder_test ${CMAKE_BINARY_DIR}/bin/headlessRecorder_test COPYONLY)
 endif()
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
 <Node name="Root" gravity="0 -9.81 0" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollision showMapping" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
     <BruteForceDetection name="Detection" />
@@ -8,7 +9,7 @@
     <DefaultContactManager name="Response" response="default" />
     <TreeCollisionGroupManager name="Group" />
     <Node name="gmsh file">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="GmshLoader" filename="mesh/square3.msh" createSubelements="true" />
         <MechanicalObject name="dofs" scale="10" src="@GmshLoader" />
@@ -20,7 +21,7 @@
         <FixedConstraint indices="0 1" />
         <TriangularFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" method="large" />
         <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
-        <TriangleModel />
+        <TriangleCollisionModel />
         <Node>
             <OglModel src="@../GmshLoader" name="VisualModel" color="blue" />
             <IdentityMapping name="mapping" input="@.." output="@VisualModel" />

@@ -52,6 +52,7 @@ class LinearMovementConstraintInternalData
 
 /** impose a motion to given DOFs (translation and rotation)
 	The motion between 2 key times is linearly interpolated
+    Rigid version doesn't handle Topology change.
 */
 template <class TDataTypes>
 class LinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
@@ -101,6 +102,10 @@ public :
     Deriv prevM, nextM;
     ///initial constrained DOFs position
     VecCoord x0;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LinearMovementConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     LinearMovementConstraint();
     ~LinearMovementConstraint() override;
@@ -162,12 +167,7 @@ protected:
     template <class MyCoord>
     void interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
-
 private:
-
     /// to keep the time corresponding to the key times
     Real currentTime;
 
@@ -178,7 +178,7 @@ private:
     void findKeyTimes();
 
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 };
 
 

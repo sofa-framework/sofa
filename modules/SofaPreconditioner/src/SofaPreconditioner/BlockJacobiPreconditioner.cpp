@@ -34,17 +34,7 @@ namespace linearsolver
 {
 
 int BlockJacobiPreconditionerClass = core::RegisterObject("Linear solver based on a NxN bloc diagonal matrix (i.e. block Jacobi preconditioner)")
-        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,double> ,FullVector<double> > >()
-
-//#ifdef SOFA_WITH_FLOAT
-//.add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,float> ,FullVector<float> > >()
-//#endif
-
-// .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<2,double> ,FullVector<double> > >()
-// .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<6,double> ,FullVector<double> > >()
-// .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<9,double> ,FullVector<double> > >()
-// .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<12,double> ,FullVector<double> > >()
-        ;
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,double> ,FullVector<double> > >();
 
 } // namespace linearsolver
 

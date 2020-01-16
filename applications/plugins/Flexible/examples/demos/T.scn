@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0 " dt=".15"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="image"/>
     <RequiredPlugin pluginName="Flexible"/>
 
@@ -9,7 +10,8 @@
 
 	<Node name="Plane"  >
 
-		<OglModel name="Visual"  fileMesh="mesh/cubeUV.obj"  translation="0 -5 0"  rotation="0 0 0"  scale3d="500 0.1 500"   material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+		<MeshObjLoader name="meshLoader_1" filename="mesh/cubeUV.obj"  translation="0 -5 0"  rotation="0 0 0"  scale3d="500 0.1 500" handleSeams="1" />
+		<OglModel name="Visual" src="@meshLoader_1"   material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 	</Node>
 
 
@@ -57,7 +59,8 @@
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="../data/mesh/T.obj" color="0.8 0.6 0.5" scale3d="10 10 10" />
+		<MeshObjLoader name="meshLoader_0" filename="../data/mesh/T.obj" scale3d="10 10 10" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.8 0.6 0.5" />
 	    	<LinearMapping template="Affine,ExtVec3f"/>
 	    </Node>
     </Node>

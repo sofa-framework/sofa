@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_StringMeshCreator_H
 #define SOFA_COMPONENT_LOADER_StringMeshCreator_H
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/MeshLoader.h>
 

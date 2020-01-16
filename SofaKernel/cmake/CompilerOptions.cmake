@@ -35,22 +35,18 @@ endif()
 
 ## Windows-specific
 if(WIN32)
-    add_definitions("-wd4250 -wd4251 -wd4275 -wd4675 -wd4996")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    add_definitions("-wd4250 -wd4251 -wd4275 -wd4675 -wd4996 -D_USE_MATH_DEFINES")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    if(MSVC_TOOLSET_VERSION GREATER 140) # > VS 2015
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
+    endif()
 endif()
 
-
-## SOFA_DEBUG preprocessor macro
-if(WIN32 OR APPLE)
-    # Reminder: multi-configuration generators like Visual Studio and XCode do
-    # not use CMAKE_BUILD_TYPE, as they generate all configurations in the
-    # project, not just one at a time!
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DSOFA_DEBUG")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSOFA_DEBUG")
-elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
-    add_definitions("-DSOFA_DEBUG")
+# Mac specific
+if(APPLE)
+    #remove OpenGL deprecation message
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGL_SILENCE_DEPRECATION")
 endif()
-
 
 
 ## OpenMP

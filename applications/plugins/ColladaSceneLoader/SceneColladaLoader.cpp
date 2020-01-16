@@ -40,12 +40,12 @@
 #include <stack>
 #include <algorithm>
 
-#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+#if COLLADASCENELOADER_HAVE_FLEXIBLE
 #include <Flexible/deformationMapping/LinearMapping.h>
 #endif
 
 
-#ifdef SOFA_HAVE_PLUGIN_IMAGE
+#if COLLADASCENELOADER_HAVE_IMAGE
 #include <image/ImageContainer.h>
 #include <image/MeshToImageEngine.h>
 #include <image/ImageFilter.h>
@@ -81,10 +81,10 @@ SceneColladaLoader::SceneColladaLoader() : SceneLoader()
   , importer()
   , animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
   , generateCollisionModels(initData(&generateCollisionModels, true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
-  #ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+  #if COLLADASCENELOADER_HAVE_FLEXIBLE
   , useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)"))
   #endif
-  #ifdef SOFA_HAVE_PLUGIN_IMAGE
+  #if COLLADASCENELOADER_HAVE_IMAGE
   , generateShapeFunction(initData(&generateShapeFunction, false, "generateShapeFunction", "Generate a shape function that could be used in another simulation"))
   , voxelSize(initData(&voxelSize, (SReal)0.02, "voxelSize", "voxelSize used for shape function generation"))
   #endif
@@ -476,7 +476,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
 
                         helper::vector<core::topology::BaseMeshTopology::Triangle>& seqTriangles = *currentMeshTopology->seqTriangles.beginEdit();
-#ifdef SOFA_HAVE_PLUGIN_IMAGE
+#if COLLADASCENELOADER_HAVE_IMAGE
                         if( generateShapeFunction.getValue() )
                         {
                             if( numTriangles || numQuads ) seqTriangles.reserve(numTriangles+numQuads*2);
@@ -571,43 +571,43 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                     if(generateCollisionModels.getValue())
                     {
-                        TTriangleModel<defaulttype::Vec3Types>::SPtr currentTTriangleModel = sofa::core::objectmodel::New<TTriangleModel<defaulttype::Vec3Types> >();
+                        TriangleCollisionModel<defaulttype::Vec3Types>::SPtr currentTriangleCollisionModel = sofa::core::objectmodel::New<TriangleCollisionModel<defaulttype::Vec3Types> >();
                         {
-                            // adding the generated TTriangleModel to its parent Node
-                            currentSubNode->addObject(currentTTriangleModel);
+                            // adding the generated TriangleCollisionModel to its parent Node
+                            currentSubNode->addObject(currentTriangleCollisionModel);
 
                             std::stringstream nameStream(meshName);
                             if(meshName.empty())
                                 nameStream << componentIndex++;
-                            currentTTriangleModel->setName(nameStream.str());
+                            currentTriangleCollisionModel->setName(nameStream.str());
                         }
 
-                        TLineModel<defaulttype::Vec3Types>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3Types> >();
+                        LineCollisionModel<defaulttype::Vec3Types>::SPtr currentLineCollisionModel = sofa::core::objectmodel::New<LineCollisionModel<defaulttype::Vec3Types> >();
                         {
-                            // adding the generated TLineModel to its parent Node
-                            currentSubNode->addObject(currentTLineModel);
+                            // adding the generated LineCollisionModel to its parent Node
+                            currentSubNode->addObject(currentLineCollisionModel);
 
                             std::stringstream nameStream(meshName);
                             if(meshName.empty())
                                 nameStream << componentIndex++;
-                            currentTLineModel->setName(nameStream.str());
+                            currentLineCollisionModel->setName(nameStream.str());
                         }
 
-                        TPointModel<defaulttype::Vec3Types>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3Types> >();
+                        PointCollisionModel<defaulttype::Vec3Types>::SPtr currentPointCollisionModel = sofa::core::objectmodel::New<PointCollisionModel<defaulttype::Vec3Types> >();
                         {
-                            // adding the generated TPointModel to its parent Node
-                            currentSubNode->addObject(currentTPointModel);
+                            // adding the generated PointCollisionModel to its parent Node
+                            currentSubNode->addObject(currentPointCollisionModel);
 
                             std::stringstream nameStream(meshName);
                             if(meshName.empty())
                                 nameStream << componentIndex++;
-                            currentTPointModel->setName(nameStream.str());
+                            currentPointCollisionModel->setName(nameStream.str());
                         }
                     }
 
                     if(currentAiMesh->HasBones())
                     {
-#ifdef SOFA_HAVE_PLUGIN_IMAGE
+#if COLLADASCENELOADER_HAVE_IMAGE
                         if( generateShapeFunction.getValue() )
                         {
                             SReal vsize = this->voxelSize.getValue();
@@ -726,7 +726,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             }
                         } else
 #endif
-#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+#if COLLADASCENELOADER_HAVE_FLEXIBLE
                             if(useFlexible.getValue())
                             {
                                 LinearMapping<Rigid3Types, Vec3Types>::SPtr currentLinearMapping = sofa::core::objectmodel::New<LinearMapping<Rigid3Types, Vec3Types> >();

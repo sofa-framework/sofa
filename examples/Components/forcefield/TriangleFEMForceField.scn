@@ -1,48 +1,49 @@
 <?xml version="1.0" ?>
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" gravity="0 0 1" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings showVisual" />
-    <CollisionPipeline verbose="0" name="CollisionPipeline" />
+    <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" name="collision response" />
+    <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection />
     <Node name="M1">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject />
         <UniformMass vertexMass="0.1" />
         <RegularGrid nx="3" ny="3" nz="1" xmin="10" xmax="19" ymin="0" ymax="9" zmin="4" zmax="5" />
         <FixedConstraint indices="0 8" />
         <TriangleFEMForceField name="FEM1" youngModulus="5000" poissonRatio="0.3" method="large" />
-        <Triangle />
+        <TriangleCollisionModel />
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="M2">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject />
         <UniformMass vertexMass="0.1" />
         <RegularGrid nx="4" ny="4" nz="1" xmin="20" xmax="29" ymin="0" ymax="9" zmin="8" zmax="9" />
         <FixedConstraint indices="0 15" />
         <TriangleFEMForceField name="FEM2" youngModulus="5000" poissonRatio="0.3" method="large" />
-        <Triangle />
+        <TriangleCollisionModel />
         <Node name="Visu">
             <OglModel name="Visual" color="blue" />
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="M3">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject />
         <UniformMass vertexMass="0.1" />
         <RegularGrid nx="10" ny="10" nz="1" xmin="30" xmax="39" ymin="0" ymax="9" zmin="12" zmax="13" />
         <FixedConstraint indices="0 9 99" />
         <TriangleFEMForceField name="FEM3" youngModulus="50000" poissonRatio="0.3" method="large" />
-        <Triangle />
+        <TriangleCollisionModel />
         <Node name="Visu">
             <OglModel name="Visual" color="yellow" />
             <IdentityMapping input="@.." output="@Visual" />

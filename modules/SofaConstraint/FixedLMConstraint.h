@@ -72,26 +72,12 @@ protected:
     FixedLMConstraintInternalData<DataTypes> data;
     friend class FixedLMConstraintInternalData<DataTypes>;
 
-
-    FixedLMConstraint( MechanicalState *dof)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
-        , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    {
-        pointHandler = new FCPointHandler(this, &f_indices);
-    }
-
-    FixedLMConstraint()
-        : f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    {
-        pointHandler = new FCPointHandler(this, &f_indices);
-    }
+    FixedLMConstraint( MechanicalState *dof = nullptr);
 
     ~FixedLMConstraint()
     {
-        if (pointHandler)
-            delete pointHandler;
+        if (m_pointHandler)
+            delete m_pointHandler;
     }
 
 public:
@@ -113,7 +99,7 @@ public:
     {
         return templateName(this);
     }
-    static std::string templateName(const FixedLMConstraint<DataTypes>* = NULL)
+    static std::string templateName(const FixedLMConstraint<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }
@@ -128,6 +114,8 @@ public:
     SetIndex f_indices; ///< List of the index of particles to be fixed
     Data<double> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<FixedLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
@@ -154,9 +142,8 @@ protected :
     SetIndexArray idxX, idxY, idxZ;
     std::map< unsigned int, Coord> restPosition;
 
-    sofa::core::topology::BaseMeshTopology* topology;
 
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
 };
 

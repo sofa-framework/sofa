@@ -196,6 +196,9 @@ void PythonEnvironment::Init()
         }
     }
 
+    // Add the directories listed in SofaPython.so/../../python
+    addPythonModulePathsForPluginsByName("SofaPython");
+
     // python livecoding related
     PyRun_SimpleString("from SofaPython.livecoding import onReimpAFile");
 

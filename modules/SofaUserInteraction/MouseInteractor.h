@@ -49,9 +49,6 @@ struct BodyPicked
     sofa::core::behavior::BaseMechanicalState *mstate;
     unsigned int indexCollisionElement;
     defaulttype::Vector3 point;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    defaulttype::Vector3 baryCoords;
-#endif
     SReal dist;
     SReal rayLength;
     operator bool() { return mstate != nullptr; }
@@ -118,7 +115,7 @@ public:
     typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
     typedef typename DataTypes::Coord Coord;
 public:
-    MouseInteractor():mouseInSofa(NULL) {}
+    MouseInteractor():mouseInSofa(nullptr) {}
     ~MouseInteractor() override {}
 
     void init() override;
@@ -130,7 +127,7 @@ public:
     {
         return templateName(this);
     }
-    static std::string templateName(const MouseInteractor<DataTypes>* = NULL)
+    static std::string templateName(const MouseInteractor<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

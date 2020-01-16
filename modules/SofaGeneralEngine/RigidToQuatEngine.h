@@ -74,7 +74,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const RigidToQuatEngine<DataTypes>* = NULL)
+    static std::string templateName(const RigidToQuatEngine<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }
@@ -82,6 +82,7 @@ public:
     //
     Data<helper::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
     Data<helper::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
+    Data<helper::vector<Vec3> > f_orientationsEuler; ///< Orientation (Euler angle)
     Data<helper::vector<RigidVec3> > f_rigids; ///< Rigid (Position + Orientation)
 };
 

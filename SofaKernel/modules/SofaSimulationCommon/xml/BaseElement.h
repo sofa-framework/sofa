@@ -74,10 +74,10 @@ public:
     core::objectmodel::Base* getObject() override = 0;
 
     /// Get the node instance name
-    std::string getName()
+    std::string getName() override
     { return attributes["name"]; }
 
-    virtual void setName(const std::string& newName)
+    virtual void setName(const std::string& newName) override
     { attributes["name"] = newName; }
 
     /// Get the node instance type (MassObject, IdentityMapping, ...)
@@ -97,7 +97,7 @@ public:
 
 
     /// Get the file where this description was read from. Useful to resolve relative file paths.
-    std::string getBaseFile();
+    std::string getBaseFile() override;
     virtual void setBaseFile(const std::string& newBaseFile);
 
     const std::string& getSrcFile() const ;
@@ -122,14 +122,14 @@ public:
     //std::map<std::string,std::string*>& getAttributeMap();
 
     ///// Get an attribute given its name (return defaultVal if not present)
-    //const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
+    //const char* getAttribute(const std::string& attr, const char* defaultVal=nullptr);
 
 
     /// Verify the presence of an attribute
     virtual bool presenceAttribute(const std::string& s);
 
     /// Remove an attribute. Fails if this attribute is "name" or "type"
-    virtual bool removeAttribute(const std::string& attr);
+    virtual bool removeAttribute(const std::string& attr) override;
 
     /// List of parameters to be replaced
     virtual void addReplaceAttribute(const std::string &attr, const char* val);
@@ -147,7 +147,7 @@ public:
     void pushObjects(Sequence& result)
     {
         typename Sequence::value_type obj = dynamic_cast<typename Sequence::value_type>(getObject());
-        if (obj!=NULL) result.push_back(obj);
+        if (obj!=nullptr) result.push_back(obj);
 
         for (child_iterator<> it = begin(); it != end(); ++it)
             it->pushObjects<Sequence>(result);
@@ -160,7 +160,7 @@ public:
         typedef typename Map::value_type V;
         typedef typename V::second_type OPtr;
         OPtr obj = dynamic_cast<OPtr>(getObject());
-        if (obj!=NULL) result.insert(std::make_pair(getFullName(),obj));
+        if (obj!=nullptr) result.insert(std::make_pair(getFullName(),obj));
 
         for (child_iterator<> it = begin(); it != end(); ++it)
             it->pushNamedObjects<Map>(result);
@@ -188,7 +188,7 @@ public:
         ChildList::iterator it;
         Node* current;
         child_iterator(BaseElement* parent, ChildList::iterator it)
-            : parent(parent), it(it), current(NULL)
+            : parent(parent), it(it), current(nullptr)
         {
             checkIt();
         }
@@ -197,10 +197,10 @@ public:
             while (it != parent->children.end())
             {
                 current=dynamic_cast<Node*>(*it);
-                if (current!=NULL) return;
+                if (current!=nullptr) return;
                 ++it;
             }
-            current = NULL;
+            current = nullptr;
         }
     public:
         operator Node*() { return current; }

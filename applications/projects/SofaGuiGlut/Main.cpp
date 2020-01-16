@@ -29,9 +29,11 @@ using std::string;
 #include <vector>
 using std::vector;
 
+#include <boost/program_options.hpp>
+
 #include "SimpleGUI.h"
 
-#ifdef SOFA_HAVE_BOOST
+#if SOFAHELPER_HAVE_BOOST // TODO: SOFAGUIGLUT_HAVE_BOOST_THREAD
 #include "MultithreadGUI.h"
 #endif
 
@@ -75,7 +77,6 @@ using sofa::core::ExecParams ;
 
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
-using sofa::helper::Console;
 
 using sofa::component::misc::CompareStateCreator;
 using sofa::component::misc::ReadStateActivator;
@@ -179,21 +180,21 @@ int main(int argc, char** argv)
     ArgumentParser* argParser = new ArgumentParser(argc, argv);
 
 #ifdef SOFA_SMP
-    argParser->addArgument(po::value<bool>(&disableStealing)->default_value(false)->implicit_value(true),           "disableStealing,w", "Disable Work Stealing")
-    argParser->addArgument(po::value<std::string>(&nProcs)->default_value(""),                                      "nprocs", "Number of processor")
-    argParser->addArgument(po::value<bool>(&affinity)->default_value(false)->implicit_value(true),                  "affinity", "Enable aFfinity base Work Stealing")
+    argParser->addArgument(boost::program_options::value<bool>(&disableStealing)->default_value(false)->implicit_value(true),           "disableStealing,w", "Disable Work Stealing")
+    argParser->addArgument(boost::program_options::value<std::string>(&nProcs)->default_value(""),                                      "nprocs", "Number of processor")
+    argParser->addArgument(boost::program_options::value<bool>(&affinity)->default_value(false)->implicit_value(true),                  "affinity", "Enable aFfinity base Work Stealing")
 #endif
 
 
-    argParser->addArgument(po::value<bool>(&showHelp)->default_value(false)->implicit_value(true), "help,h", "Display this help message");
-    argParser->addArgument(po::value<bool>(&startAnim)->default_value(false)->implicit_value(true), "start,a", "start the animation loop");
-    argParser->addArgument(po::value<bool>(&printFactory)->default_value(false)->implicit_value(true), "factory,p", "print factory logs");
-    argParser->addArgument(po::value<bool>(&loadRecent)->default_value(false)->implicit_value(true), "recent,r", "load most recently opened file");
-    argParser->addArgument(po::value<bool>(&temporaryFile)->default_value(false)->implicit_value(true), "tmp", "the loaded scene won't appear in history of opened files");
-    argParser->addArgument(po::value<std::string>(&colorsStatus)->default_value("auto")->implicit_value("yes"), "colors,c", "use colors on stdout and stderr (yes, no, auto)");
-    argParser->addArgument(po::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f", "select the message formatting to use (auto, clang, sofa, rich, test)");
-    argParser->addArgument(po::value<std::string>(&gui)->default_value(""), "gui,g", gui_help.c_str());
-    argParser->addArgument(po::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true), "noautoload", "disable plugins autoloading");
+    argParser->addArgument(boost::program_options::value<bool>(&showHelp)->default_value(false)->implicit_value(true), "help,h", "Display this help message");
+    argParser->addArgument(boost::program_options::value<bool>(&startAnim)->default_value(false)->implicit_value(true), "start,a", "start the animation loop");
+    argParser->addArgument(boost::program_options::value<bool>(&printFactory)->default_value(false)->implicit_value(true), "factory,p", "print factory logs");
+    argParser->addArgument(boost::program_options::value<bool>(&loadRecent)->default_value(false)->implicit_value(true), "recent,r", "load most recently opened file");
+    argParser->addArgument(boost::program_options::value<bool>(&temporaryFile)->default_value(false)->implicit_value(true), "tmp", "the loaded scene won't appear in history of opened files");
+    argParser->addArgument(boost::program_options::value<std::string>(&colorsStatus)->default_value("auto")->implicit_value("yes"), "colors,c", "use colors on stdout and stderr (yes, no, auto)");
+    argParser->addArgument(boost::program_options::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f", "select the message formatting to use (auto, clang, sofa, rich, test)");
+    argParser->addArgument(boost::program_options::value<std::string>(&gui)->default_value(""), "gui,g", gui_help.c_str());
+    argParser->addArgument(boost::program_options::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true), "noautoload", "disable plugins autoloading");
 
     argParser->parse();
     files = argParser->getInputFileList();
@@ -227,12 +228,24 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new TreeSimulation());
 #endif
 
-    if (colorsStatus == "auto")
-        Console::setColorsStatus(Console::ColorsAuto);
+    if (colorsStatus == "unset") {
+        // If the parameter is unset, check the environment variable
+        const char * colorStatusEnvironment = std::getenv("SOFA_COLOR_TERMINAL");
+        if (colorStatusEnvironment != nullptr) {
+            const std::string status (colorStatusEnvironment);
+            if (status == "yes" || status == "on" || status == "always")
+                sofa::helper::console::setStatus(sofa::helper::console::Status::On);
+            else if (status == "no" || status == "off" || status == "never")
+                sofa::helper::console::setStatus(sofa::helper::console::Status::Off);
+            else
+                sofa::helper::console::setStatus(sofa::helper::console::Status::Auto);
+        }
+    } else if (colorsStatus == "auto")
+        sofa::helper::console::setStatus(sofa::helper::console::Status::Auto);
     else if (colorsStatus == "yes")
-        Console::setColorsStatus(Console::ColorsEnabled);
+        sofa::helper::console::setStatus(sofa::helper::console::Status::On);
     else if (colorsStatus == "no")
-        Console::setColorsStatus(Console::ColorsDisabled);
+        sofa::helper::console::setStatus(sofa::helper::console::Status::Off);
 
     //TODO(dmarchal): Use smart pointer there to avoid memory leaks !!
     if (messageHandler == "auto" )
@@ -253,7 +266,7 @@ int main(int argc, char** argv)
     else if (messageHandler == "rich")
     {
         MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter()) ) ;
+        MessageDispatcher::addHandler( new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance()) ) ;
     }
     else if (messageHandler == "test"){
         MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;

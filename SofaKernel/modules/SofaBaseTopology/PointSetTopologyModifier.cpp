@@ -447,7 +447,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     }
 
     m_container->cleanPointTopologyFromDirty();
-    sofa::helper::AdvancedTimer::stepBegin("PointSetTopologyModifier::propagateTopologicalEngineChanges");
+    sofa::helper::AdvancedTimer::stepEnd("PointSetTopologyModifier::propagateTopologicalEngineChanges");
 }
 
 void PointSetTopologyModifier::propagateStateChanges()

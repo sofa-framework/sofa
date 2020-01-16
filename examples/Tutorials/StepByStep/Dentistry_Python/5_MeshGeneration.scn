@@ -4,6 +4,7 @@ Volumetric mesh generation
 -->
 
 <Node name="Root" dt="0.0001">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisualModels showWireframe" />
     <Node name="input">
         <Mesh name="surface" filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/tongue.obj" />

@@ -252,7 +252,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     contacts->resize(contacts->size() + 1);
     DetectionOutput *detection = &*(contacts->end() - 1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
 
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
@@ -273,10 +273,6 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0] = P;
     detection->point[1] = Q;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0] = alpha;
-    detection->baryCoords[1][0] = beta;
-#endif
     detection->normal = PQ;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -413,7 +409,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree,ABfree,ACfree;
@@ -433,11 +429,6 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
     detection->id = e1.getIndex();
     detection->point[0] = Q;
     detection->point[1] = P;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0] = 0;
-    detection->baryCoords[1][0] = alpha;
-    detection->baryCoords[1][1] = beta;
-#endif
     detection->normal = QP;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -571,7 +562,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree,ABfree,ACfree;
@@ -591,11 +582,6 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
     detection->id = e1.getIndex();
     detection->point[0] = Q;
     detection->point[1] = P;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0] = 0;
-    detection->baryCoords[1][0] = alpha;
-    detection->baryCoords[1][1] = beta;
-#endif
     detection->normal = QP;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -704,7 +690,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 ABfree = e2.p2Free() - e2.p1Free();
@@ -722,10 +708,6 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
-    detection->baryCoords[1][0]=alpha;
-#endif
     detection->normal=QP;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -833,7 +815,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 ABfree = e2.p2Free() - e2.p1Free();
@@ -851,10 +833,6 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
-    detection->baryCoords[1][0]=alpha;
-#endif
     detection->normal=QP;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -929,7 +907,7 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree;
@@ -947,10 +925,6 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
-    detection->baryCoords[1][0]=0;
-#endif
     detection->normal=PQ;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -1018,7 +992,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree;
@@ -1036,10 +1010,6 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
-    detection->baryCoords[1][0]=0;
-#endif
     detection->normal=PQ;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -1107,7 +1077,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree;
@@ -1125,10 +1095,6 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
-    detection->baryCoords[1][0]=0;
-#endif
     detection->normal=PQ;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
@@ -1189,7 +1155,7 @@ int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* c
     detection->id = t1.getIndex();
     detection->point[1]=P;
     detection->point[0]=Q;
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     detection->freePoint[1] = P;
     detection->freePoint[0] = Q;
 #endif
@@ -1262,7 +1228,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
     if ( !(node->get< LineModel >()) )
         return true;
 
-    BaseMeshTopology* topology = p.getCollisionModel()->getMeshTopology();
+    BaseMeshTopology* topology = p.getCollisionModel()->getCollisionTopology();
     const helper::vector<Vector3>& x =(p.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
 
     const helper::vector <unsigned int>& trianglesAroundVertex = topology->getTrianglesAroundVertex(p.getIndex());
@@ -1341,7 +1307,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
     Vector3 AB = pt2 - pt1;
     AB.normalize();
 
-    BaseMeshTopology* topology = l.getCollisionModel()->getMeshTopology();
+    BaseMeshTopology* topology = l.getCollisionModel()->getCollisionTopology();
     const helper::vector<Vector3>& x =(l.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
     const sofa::helper::vector<unsigned int>& trianglesAroundEdge = topology->getTrianglesAroundEdge(l.getIndex());
 

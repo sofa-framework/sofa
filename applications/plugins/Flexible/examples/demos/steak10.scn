@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" dt="0.2"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="image"/>
     <RequiredPlugin pluginName="Flexible"/>
 
@@ -60,7 +61,8 @@
 		</Node>
 
 		<Node name="Visu">
-			<OglModel name="Beam" fileMesh="../data/mesh/steak.obj" texturename="../data/mesh/steak.png" normals="0" />
+			<MeshObjLoader name="meshLoader_0" filename="../data/mesh/steak.obj" handleSeams="1" />
+			<OglModel name="Beam" src="@meshLoader_0" texturename="../data/mesh/steak.png" normals="0" />
 			<LinearMapping template="Affine,ExtVec3f"/>
 		</Node>
     </Node>

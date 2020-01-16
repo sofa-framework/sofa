@@ -24,7 +24,7 @@
 
 #include <SofaBaseMechanics/MappedObject.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {
@@ -51,16 +51,16 @@ template <class DataTypes>
 void MappedObject<DataTypes>::init()
 {
     if (getSize() == 0)
-    {
-        sofa::core::topology::BaseMeshTopology* topo = this->getContext()->getActiveMeshTopology();
-        if (topo!=NULL && topo->hasPos())
+    {        
+        sofa::core::behavior::BaseMechanicalState* mstate = this->getContext()->getMechanicalState();
+        int nbp = mstate->getSize();
+        if (nbp > 0)
         {
             VecCoord& x = *getX();
-            int nbp = topo->getNbPoints();
             x.resize(nbp);
             for (int i=0; i<nbp; i++)
             {
-                DataTypes::set(x[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
+                DataTypes::set(x[i], mstate->getPX(i), mstate->getPY(i), mstate->getPZ(i));
             }
         }
     }

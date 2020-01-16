@@ -16,7 +16,7 @@ The outcome of this scene is a still object. The MechanicalObject is comprised b
 		<MeshObjLoader name="loader"  filename="mesh/cube.obj" />
 		<MeshTopology  src="@loader" />
 		<MechanicalObject  />
-    <TriangleModel />
+    <TriangleCollisionModel />
     <FixedLMConstraint indices="4 5 6 7"/>
     <RigidMapping input="@.." output="@." rigidIndexPerPoint="4 4" />
 	</Node>

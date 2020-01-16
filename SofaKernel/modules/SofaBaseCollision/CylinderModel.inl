@@ -45,7 +45,7 @@ TCylinderModel<DataTypes>::TCylinderModel():
       d_default_radius(initData(&d_default_radius,Real(0.5),"defaultRadius","The default radius")),
       d_default_height(initData(&d_default_height,Real(2),"defaultHeight","The default height")),
       d_default_local_axis(initData(&d_default_local_axis,typename DataTypes::Vec3(0.0, 1.0, 0.0),"defaultLocalAxis", "The default local axis cylinder is modeled around")),
-      m_mstate(NULL)
+      m_mstate(nullptr)
 {
     enum_type = CYLINDER_TYPE;
 }
@@ -107,7 +107,7 @@ void TCylinderModel<DataTypes>::init()
 {
     this->CollisionModel::init();
     m_mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (m_mstate==NULL)
+    if (m_mstate==nullptr)
     {
         msg_error() << "TCylinderModel requires a Rigid Mechanical Model";
         m_componentstate = ComponentState::Invalid;
@@ -204,7 +204,7 @@ void TCylinderModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     }
 
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

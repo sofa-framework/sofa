@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="Root" gravity="0 -10 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
   <RequiredPlugin pluginName="Flexible"/>
   <RequiredPlugin pluginName="image"/>
@@ -25,7 +26,7 @@
 
 
 <Node name="red: flexible"   >
-  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
   <Mesh  name="mesh" src="@../sampler" />
@@ -50,23 +51,24 @@
   <Node name="Collision">      
 	<Mesh  src="@../../loader" />
 	<MechanicalObject name="dof" />
-	<TTriangleModel />
+	<TriangleCollisionModel />
         <LinearMapping name="colmap" template="Vec3d,Vec3d"  assemble="true" parallel="false"/>
         
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"  color='red' />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+            <OglModel src="@meshLoader_0"  color='red' />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>
 
    <!-- 
     <Node name="VisuHexa"  >
-            <VisualModel color="0.8 0.8 1 0.1" />
+            <OglModel color="0.8 0.8 1 0.1" />
             <IdentityMapping />
     </Node>
     <Node name="VisuHexa2"  >
             <VisualStyle displayFlags="showWireframe"/>
-            <VisualModel color="0.8 0.8 1 1" />
+            <OglModel color="0.8 0.8 1 1" />
             <IdentityMapping />
     </Node>
     -->
@@ -76,7 +78,7 @@
 
 
 <Node name="green: flexible_corotational mesh"   >
-  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
   <Mesh  name="mesh" src="@../sampler" />
@@ -109,23 +111,24 @@
   <Node name="Collision">      
 	<Mesh  src="@../../loader" />
 	<MechanicalObject name="dof" />
-	<TTriangleModel />
+	<TriangleCollisionModel />
         <LinearMapping name="colmap" template="Vec3d,Vec3d"  assemble="true" parallel="false"/>
         
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='green'  />
+            <MeshObjLoader name="meshLoader_2" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+            <OglModel src="@meshLoader_2" color='green'  />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>
 
    <!-- 
     <Node name="VisuHexa"  >
-            <VisualModel color="0.8 0.8 1 0.1" />
+            <OglModel color="0.8 0.8 1 0.1" />
             <IdentityMapping />
     </Node>
     <Node name="VisuHexa2"  >
             <VisualStyle displayFlags="showWireframe"/>
-            <VisualModel color="0.8 0.8 1 1" />
+            <OglModel color="0.8 0.8 1 1" />
             <IdentityMapping />
     </Node>
     -->
@@ -135,7 +138,7 @@
     
     
 <Node name="blue: hexaFEMforcefield"   >
-  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
   <Mesh  name="mesh" src="@../sampler" />
@@ -150,11 +153,12 @@
   <Node name="Collision">      
 	<Mesh  src="@../../loader" />
 	<MechanicalObject name="dof" />
-	<TTriangleModel />
+	<TriangleCollisionModel />
 	 <BarycentricMapping input="@.." output="@." />
         
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='blue'  />
+            <MeshObjLoader name="meshLoader_3" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+            <OglModel src="@meshLoader_3" color='blue'  />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>
@@ -164,7 +168,7 @@
 
 
 <Node name="yellow: meta-FlexibleCorotationalStrain"   >
-  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
   <Mesh  name="mesh" src="@../sampler" />
@@ -179,11 +183,12 @@
   <Node name="Collision">      
 	<Mesh  src="@../../loader" />
 	<MechanicalObject name="dof" />
-	<TTriangleModel />
+	<TriangleCollisionModel />
 	 <BarycentricMapping input="@.." output="@." />
         
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='yellow'  />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+            <OglModel src="@meshLoader_1" color='yellow'  />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>
@@ -192,7 +197,7 @@
 
 
 <Node name="magenta: meta-FlexibleCorotationalMesh"   >
-  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
   <Mesh  name="mesh" src="@../sampler" />
@@ -207,11 +212,12 @@
   <Node name="Collision">      
 	<Mesh  src="@../../loader" />
 	<MechanicalObject name="dof" />
-	<TTriangleModel />
+	<TriangleCollisionModel />
 	 <BarycentricMapping input="@.." output="@." />
         
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='magenta'  />
+            <MeshObjLoader name="meshLoader_4" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+            <OglModel src="@meshLoader_4" color='magenta'  />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>

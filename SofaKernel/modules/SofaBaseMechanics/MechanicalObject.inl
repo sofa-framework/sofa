@@ -51,7 +51,7 @@ namespace
 template<class V>
 void renumber(V* v, V* tmp, const sofa::helper::vector< unsigned int > &index )
 {
-    if (v == NULL)
+    if (v == nullptr)
         return;
 
     if (v->empty())
@@ -98,7 +98,6 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere. (default=0)"))
     , d_color(initData(&d_color, defaulttype::Vec4f(1,1,1,1), "showColor", "Color for object display. (default=[1 1 1 1])"))
-    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function. (default=false)"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -107,14 +106,13 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , d_size(initData(&d_size, 0, "size", "Size of the vectors"))
     , l_topology(initLink("topology","Link to the topology relevant for this object"))
     , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors. (default=0)"))
-    , m_gnuplotFileX(NULL)
-    , m_gnuplotFileV(NULL)
+    , m_gnuplotFileX(nullptr)
+    , m_gnuplotFileV(nullptr)
 {
     m_initialized = false;
 
     data = MechanicalObjectInternalData<DataTypes>(this);
 
-    isToPrint.setDisplayed(false);
 
     x               .setGroup("Vector");
     v               .setGroup("Vector");
@@ -177,26 +175,26 @@ MechanicalObject<DataTypes>::MechanicalObject()
 template <class DataTypes>
 MechanicalObject<DataTypes>::~MechanicalObject()
 {
-    if (m_gnuplotFileV != NULL)
+    if (m_gnuplotFileV != nullptr)
         delete m_gnuplotFileV;
 
-    if (m_gnuplotFileX != NULL)
+    if (m_gnuplotFileX != nullptr)
         delete m_gnuplotFileX;
 
     for(unsigned i=core::VecCoordId::V_FIRST_DYNAMIC_INDEX; i<vectorsCoord.size(); i++)
-        if( vectorsCoord[i] != NULL ) { delete vectorsCoord[i]; vectorsCoord[i]=NULL; }
-    if( vectorsCoord[core::VecCoordId::null().getIndex()] != NULL )
-        { delete vectorsCoord[core::VecCoordId::null().getIndex()]; vectorsCoord[core::VecCoordId::null().getIndex()] = NULL; }
+        if( vectorsCoord[i] != nullptr ) { delete vectorsCoord[i]; vectorsCoord[i]=nullptr; }
+    if( vectorsCoord[core::VecCoordId::null().getIndex()] != nullptr )
+        { delete vectorsCoord[core::VecCoordId::null().getIndex()]; vectorsCoord[core::VecCoordId::null().getIndex()] = nullptr; }
 
     for(unsigned i=core::VecDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsDeriv.size(); i++)
-        if( vectorsDeriv[i] != NULL )  { delete vectorsDeriv[i]; vectorsDeriv[i]=NULL; }
-    if( vectorsDeriv[core::VecDerivId::null().getIndex()] != NULL )
-        { delete vectorsDeriv[core::VecDerivId::null().getIndex()]; vectorsDeriv[core::VecDerivId::null().getIndex()] = NULL; }
-    if( core::VecDerivId::dforce().getIndex()<vectorsDeriv.size() && vectorsDeriv[core::VecDerivId::dforce().getIndex()] != NULL )
-        { delete vectorsDeriv[core::VecDerivId::dforce().getIndex()]; vectorsDeriv[core::VecDerivId::dforce().getIndex()] = NULL; }
+        if( vectorsDeriv[i] != nullptr )  { delete vectorsDeriv[i]; vectorsDeriv[i]=nullptr; }
+    if( vectorsDeriv[core::VecDerivId::null().getIndex()] != nullptr )
+        { delete vectorsDeriv[core::VecDerivId::null().getIndex()]; vectorsDeriv[core::VecDerivId::null().getIndex()] = nullptr; }
+    if( core::VecDerivId::dforce().getIndex()<vectorsDeriv.size() && vectorsDeriv[core::VecDerivId::dforce().getIndex()] != nullptr )
+        { delete vectorsDeriv[core::VecDerivId::dforce().getIndex()]; vectorsDeriv[core::VecDerivId::dforce().getIndex()] = nullptr; }
 
     for(unsigned i=core::MatrixDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsMatrixDeriv.size(); i++)
-        if( vectorsMatrixDeriv[i] != NULL )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=NULL; }
+        if( vectorsMatrixDeriv[i] != nullptr )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=nullptr; }
 }
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
@@ -245,10 +243,10 @@ void MechanicalObject<DataTypes>::initGnuplot(const std::string path)
 {
     if( !this->getName().empty() )
     {
-        if (m_gnuplotFileX != NULL)
+        if (m_gnuplotFileX != nullptr)
             delete m_gnuplotFileX;
 
-        if (m_gnuplotFileV != NULL)
+        if (m_gnuplotFileV != nullptr)
             delete m_gnuplotFileV;
 
         m_gnuplotFileX = new std::ofstream( (path + this->getName()+"_x.txt").c_str() );
@@ -259,12 +257,12 @@ void MechanicalObject<DataTypes>::initGnuplot(const std::string path)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::exportGnuplot(SReal time)
 {
-    if( m_gnuplotFileX!=NULL )
+    if( m_gnuplotFileX!=nullptr )
     {
         (*m_gnuplotFileX) << time <<"\t"<< read(core::ConstVecCoordId::position())->getValue() << std::endl;
     }
 
-    if( m_gnuplotFileV!=NULL )
+    if( m_gnuplotFileV!=nullptr )
     {
         (*m_gnuplotFileV) << time <<"\t"<< read(core::ConstVecDerivId::velocity())->getValue() << std::endl;
     }
@@ -284,7 +282,7 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 {
     Inherited::parse(arg);
 
-    if (arg->getAttribute("size") != NULL)
+    if (arg->getAttribute("size") != nullptr)
     {
         int newsize = arg->getAttributeAsInt("size", 1) ;
         if(newsize>=0)
@@ -299,45 +297,51 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
         }
     }
 
-    if (arg->getAttribute("scale") != NULL)
+    if (arg->getAttribute("scale") != nullptr)
     {
         SReal s = (SReal)arg->getAttributeAsFloat("scale", 1.0);
         scale.setValue(Vector3(s, s, s));
     }
 
-    if (arg->getAttribute("sx") != NULL || arg->getAttribute("sy") != NULL || arg->getAttribute("sz") != NULL)
+    if (arg->getAttribute("sx") != nullptr || arg->getAttribute("sy") != nullptr || arg->getAttribute("sz") != nullptr)
     {
         scale.setValue(Vector3((SReal)arg->getAttributeAsFloat("sx",1.0),
                                (SReal)arg->getAttributeAsFloat("sy",1.0),
                                (SReal)arg->getAttributeAsFloat("sz",1.0)));
     }
 
-    if (arg->getAttribute("rx") != NULL || arg->getAttribute("ry") != NULL || arg->getAttribute("rz") != NULL)
+    if (arg->getAttribute("rx") != nullptr || arg->getAttribute("ry") != nullptr || arg->getAttribute("rz") != nullptr)
     {
         rotation.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx",0.0),
                                   (SReal)arg->getAttributeAsFloat("ry",0.0),
                                   (SReal)arg->getAttributeAsFloat("rz",0.0)));
     }
 
-    if (arg->getAttribute("dx") != NULL || arg->getAttribute("dy") != NULL || arg->getAttribute("dz") != NULL)
+    if (arg->getAttribute("dx") != nullptr || arg->getAttribute("dy") != nullptr || arg->getAttribute("dz") != nullptr)
     {
         translation.setValue(Vector3((Real)arg->getAttributeAsFloat("dx",0.0),
                                      (Real)arg->getAttributeAsFloat("dy",0.0),
                                      (Real)arg->getAttributeAsFloat("dz",0.0)));
     }
 
-    if (arg->getAttribute("rx2") != NULL || arg->getAttribute("ry2") != NULL || arg->getAttribute("rz2") != NULL)
+    if (arg->getAttribute("rx2") != nullptr || arg->getAttribute("ry2") != nullptr || arg->getAttribute("rz2") != nullptr)
     {
         rotation2.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx2",0.0),
                                    (SReal)arg->getAttributeAsFloat("ry2",0.0),
                                    (SReal)arg->getAttributeAsFloat("rz2",0.0)));
     }
 
-    if (arg->getAttribute("dx2") != NULL || arg->getAttribute("dy2") != NULL || arg->getAttribute("dz2") != NULL)
+    if (arg->getAttribute("dx2") != nullptr || arg->getAttribute("dy2") != nullptr || arg->getAttribute("dz2") != nullptr)
     {
         translation2.setValue(Vector3((Real)arg->getAttributeAsFloat("dx2",0.0),
                                       (Real)arg->getAttributeAsFloat("dy2",0.0),
                                       (Real)arg->getAttributeAsFloat("dz2",0.0)));
+    }
+
+    if (arg->getAttribute("isToPrint")!=nullptr)
+    {
+        msg_deprecated() << "The 'isToPrint' data field has been deprecated in Sofa 19.06 due to lack of consistency in how it should work." << msgendl
+                            "Please contact sofa-dev team in case you need similar.";
     }
 
 
@@ -396,7 +400,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
     using sofa::core::topology::PointsMoved;
     using sofa::core::topology::PointsRemoved;
     using sofa::core::topology::PointsRenumbering;
-    sofa::core::topology::GeometryAlgorithms *geoAlgo = NULL;
+    sofa::core::topology::GeometryAlgorithms *geoAlgo = nullptr;
     this->getContext()->get(geoAlgo, sofa::core::objectmodel::BaseContext::Local);
 
     std::list< const TopologyChange * >::const_iterator itBegin = l_topology->beginStateChange();
@@ -462,14 +466,14 @@ void MechanicalObject<DataTypes>::handleStateChange()
                 }
             }
 
-            if (!pointsAdded.ancestorElems.empty() && (geoAlgo != NULL))
+            if (!pointsAdded.ancestorElems.empty() && (geoAlgo != nullptr))
             {
                 helper::vector< core::VecCoordId > coordVecs;
                 helper::vector< core::VecDerivId > derivVecs;
 
                 for (unsigned int k = 0; k < vectorsCoord.size(); k++)
                 {
-                    if (vectorsCoord[k] != NULL)
+                    if (vectorsCoord[k] != nullptr)
                     {
                         const VecCoord &vecCoord = vectorsCoord[k]->getValue();
 
@@ -482,7 +486,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
                 for (unsigned int k = 0; k < vectorsDeriv.size(); k++)
                 {
-                    if (vectorsDeriv[k] != NULL)
+                    if (vectorsDeriv[k] != nullptr)
                     {
                         const VecDeriv &vecDeriv = vectorsDeriv[k]->getValue();
 
@@ -576,7 +580,7 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
     const unsigned int vecCoordSize = vectorsCoord.size();
     for (unsigned int i = 0; i < vecCoordSize; i++)
     {
-        if (vectorsCoord[i] != NULL)
+        if (vectorsCoord[i] != nullptr)
         {
             VecCoord& vector = *(vectorsCoord[i]->beginEdit());
 
@@ -590,7 +594,7 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
     const unsigned int vecDerivSize = vectorsDeriv.size();
     for (unsigned int i = 0; i < vecDerivSize; i++)
     {
-        if (vectorsDeriv[i] != NULL)
+        if (vectorsDeriv[i] != nullptr)
         {
             VecDeriv& vector = *(vectorsDeriv[i]->beginEdit());
 
@@ -613,7 +617,7 @@ void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
     unsigned int i;
     for (i=0; i<vectorsCoord.size(); i++)
     {
-        if(vectorsCoord[i] != NULL)
+        if(vectorsCoord[i] != nullptr)
         {
             VecCoord& vector = *vectorsCoord[i]->beginEdit();
             if(vector.size() > maxIndex)
@@ -627,7 +631,7 @@ void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
     }
     for (i=0; i<vectorsDeriv.size(); i++)
     {
-        if(vectorsDeriv[i] != NULL)
+        if(vectorsDeriv[i] != nullptr)
         {
             VecDeriv& vector = *vectorsDeriv[i]->beginEdit();
             if(vector.size() > maxIndex)
@@ -649,7 +653,7 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< un
 
     for (unsigned int i = 0; i < vectorsCoord.size(); ++i)
     {
-        if (vectorsCoord[i] != NULL)
+        if (vectorsCoord[i] != nullptr)
         {
             renumber(vectorsCoord[i]->beginEdit(), &ctmp, index);
             vectorsCoord[i]->endEdit();
@@ -658,7 +662,7 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< un
 
     for (unsigned int i = 0; i < vectorsDeriv.size(); ++i)
     {
-        if (vectorsDeriv[i] != NULL)
+        if (vectorsDeriv[i] != nullptr)
         {
             renumber(vectorsDeriv[i]->beginEdit(), &dtmp, index);
             vectorsDeriv[i]->endEdit();
@@ -679,7 +683,7 @@ void MechanicalObject<DataTypes>::resize(const size_t size)
                 d_size.setValue( size );
             for (unsigned int i = 0; i < vectorsCoord.size(); i++)
             {
-                if (vectorsCoord[i] != NULL && vectorsCoord[i]->isSet())
+                if (vectorsCoord[i] != nullptr && vectorsCoord[i]->isSet())
                 {
                     vectorsCoord[i]->beginEdit()->resize(size);
                     vectorsCoord[i]->endEdit();
@@ -688,7 +692,7 @@ void MechanicalObject<DataTypes>::resize(const size_t size)
 
             for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
             {
-                if (vectorsDeriv[i] != NULL && vectorsDeriv[i]->isSet())
+                if (vectorsDeriv[i] != nullptr && vectorsDeriv[i]->isSet())
                 {
                     vectorsDeriv[i]->beginEdit()->resize(size);
                     vectorsDeriv[i]->endEdit();
@@ -702,7 +706,7 @@ void MechanicalObject<DataTypes>::resize(const size_t size)
         d_size.setValue(0);
         for (unsigned int i = 0; i < vectorsCoord.size(); i++)
         {
-            if (vectorsCoord[i] != NULL && vectorsCoord[i]->isSet())
+            if (vectorsCoord[i] != nullptr && vectorsCoord[i]->isSet())
             {
                 vectorsCoord[i]->beginEdit()->clear();
                 vectorsCoord[i]->endEdit();
@@ -711,7 +715,7 @@ void MechanicalObject<DataTypes>::resize(const size_t size)
 
         for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
         {
-            if (vectorsDeriv[i] != NULL && vectorsDeriv[i]->isSet())
+            if (vectorsDeriv[i] != nullptr && vectorsDeriv[i]->isSet())
             {
                 vectorsDeriv[i]->beginEdit()->clear();
                 vectorsDeriv[i]->endEdit();
@@ -728,7 +732,7 @@ void MechanicalObject<DataTypes>::reserve(const size_t size)
 
     for (unsigned int i = 0; i < vectorsCoord.size(); i++)
     {
-        if (vectorsCoord[i] != NULL && vectorsCoord[i]->isSet())
+        if (vectorsCoord[i] != nullptr && vectorsCoord[i]->isSet())
         {
             vectorsCoord[i]->beginEdit()->reserve(size);
             vectorsCoord[i]->endEdit();
@@ -737,7 +741,7 @@ void MechanicalObject<DataTypes>::reserve(const size_t size)
 
     for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
     {
-        if (vectorsDeriv[i] != NULL && vectorsDeriv[i]->isSet())
+        if (vectorsDeriv[i] != nullptr && vectorsDeriv[i]->isSet())
         {
             vectorsDeriv[i]->beginEdit()->reserve(size);
             vectorsDeriv[i]->endEdit();
@@ -824,7 +828,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 
     for (unsigned int k = 0; k < vectorsCoord.size(); k++)
     {
-        if (vectorsCoord[k] != NULL)
+        if (vectorsCoord[k] != nullptr)
         {
             VecCoord &vecCoord = *(vectorsCoord[k]->beginEdit());
 
@@ -845,7 +849,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 
     for (unsigned int k = 0; k < vectorsDeriv.size(); k++)
     {
-        if (vectorsDeriv[k] != NULL)
+        if (vectorsDeriv[k] != nullptr)
         {
             VecDeriv &vecDeriv = *(vectorsDeriv[k]->beginEdit());
 
@@ -1078,7 +1082,7 @@ void MechanicalObject<DataTypes>::init()
 {
     if (!l_topology && d_useTopology.getValue())
     {
-        l_topology.set( this->getContext()->getActiveMeshTopology() );
+        l_topology.set( this->getContext()->getMeshTopology(sofa::simulation::Node::Local) );
     }
 
     if (l_topology)
@@ -1253,16 +1257,6 @@ void MechanicalObject<DataTypes>::init()
     if (f_reserve.getValue() > 0)
         reserve(f_reserve.getValue());
 
-    if(isToPrint.getValue()==true) {
-        x.setPersistent(false);
-        v.setPersistent(false);
-        f.setPersistent(false);
-        externalForces.setPersistent(false);
-        dx.setPersistent(false);
-        xfree.setPersistent(false);
-        vfree.setPersistent(false);
-        x0.setPersistent(false);
-        reset_position.setPersistent(false);}
 }
 
 template <class DataTypes>
@@ -1489,7 +1483,7 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
         vectorsCoord.resize(v.index + 1, 0);
     }
 
-    if (vectorsCoord[v.index] == NULL)
+    if (vectorsCoord[v.index] == nullptr)
     {
         vectorsCoord[v.index] = new Data< VecCoord >;
         vectorsCoord[v.index]->setName(v.getName());
@@ -1507,7 +1501,7 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
         }
     }
     Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+#if !defined(NDEBUG)
     const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
     if (!val.empty() && val.size() != (unsigned int)this->getSize())
     {
@@ -1527,10 +1521,10 @@ const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<Dat
         msg_error() << "Accessing null VecCoord";
     }
 
-    if (v.index < vectorsCoord.size() && vectorsCoord[v.index] != NULL)
+    if (v.index < vectorsCoord.size() && vectorsCoord[v.index] != nullptr)
     {
         const Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+#if !defined(NDEBUG)
         const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
         if (!val.empty() && val.size() != (unsigned int)this->getSize())
         {
@@ -1542,7 +1536,7 @@ const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<Dat
     else
     {
         msg_error() << "Vector " << v << " does not exist";
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -1555,7 +1549,7 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
         vectorsDeriv.resize(v.index + 1, 0);
     }
 
-    if (vectorsDeriv[v.index] == NULL)
+    if (vectorsDeriv[v.index] == nullptr)
     {
         vectorsDeriv[v.index] = new Data< VecDeriv >;
         vectorsDeriv[v.index]->setName(v.getName());
@@ -1574,7 +1568,7 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
     }
     Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
 
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+#if !defined(NDEBUG)
     const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
     if (!val.empty() && val.size() != (unsigned int)this->getSize())
     {
@@ -1592,7 +1586,7 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
     {
         const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
 
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+#if !defined(NDEBUG)
         const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
         if (!val.empty() && val.size() != (unsigned int)this->getSize())
         {
@@ -1604,7 +1598,7 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
     else
     {
         msg_error() << "Vector " << v << "does not exist";
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -1617,7 +1611,7 @@ Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTy
         vectorsMatrixDeriv.resize(v.index + 1, 0);
     }
 
-    if (vectorsMatrixDeriv[v.index] == NULL)
+    if (vectorsMatrixDeriv[v.index] == nullptr)
     {
         vectorsMatrixDeriv[v.index] = new Data< MatrixDeriv >;
         vectorsMatrixDeriv[v.index]->setName(v.getName());
@@ -1637,7 +1631,7 @@ const Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<
     else
     {
         msg_error() << "Vector " << v << "does not exist";
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -2441,7 +2435,7 @@ void MechanicalObject<DataTypes>::printDOF( core::ConstVecId v, std::ostream& ou
     if( v.type==sofa::core::V_COORD)
     {
         const Data<VecCoord>* d_x = this->read(core::ConstVecCoordId(v));
-        if (d_x == NULL) return;
+        if (d_x == nullptr) return;
         helper::ReadAccessor< Data<VecCoord> > x = *d_x;
 
         if (x.empty())
@@ -2457,7 +2451,7 @@ void MechanicalObject<DataTypes>::printDOF( core::ConstVecId v, std::ostream& ou
     else if( v.type==sofa::core::V_DERIV)
     {
         const Data<VecDeriv>* d_x = this->read(core::ConstVecDerivId(v));
-        if (d_x == NULL) return;
+        if (d_x == nullptr) return;
         helper::ReadAccessor< Data<VecDeriv> > x = *d_x;
 
         if (x.empty())
@@ -2481,7 +2475,7 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v
     if (v.type == sofa::core::V_COORD)
     {
         const Data<VecCoord>* d_x = this->read(core::ConstVecCoordId(v));
-        if (d_x == NULL) return 0;
+        if (d_x == nullptr) return 0;
         helper::ReadAccessor< Data<VecCoord> > x = *d_x;
 
         for (unsigned i = 0; i < x.size(); ++i)
@@ -2495,7 +2489,7 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v
     else if (v.type == sofa::core::V_DERIV)
     {
         const Data<VecDeriv>* d_x = this->read(core::ConstVecDerivId(v));
-        if (d_x == NULL) return 0;
+        if (d_x == nullptr) return 0;
         helper::ReadAccessor< Data<VecDeriv> > x = *d_x;
 
         for (unsigned i = 0; i < x.size(); ++i)

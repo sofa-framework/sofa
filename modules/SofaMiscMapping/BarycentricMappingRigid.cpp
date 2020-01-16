@@ -51,7 +51,7 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 // Register in the Factory
-static int BarycentricMappingRigidClass = core::RegisterObject("")
+int BarycentricMappingRigidClass = core::RegisterObject("")
         .add< BarycentricMapping< Vec3Types, Rigid3Types > >()
 
 

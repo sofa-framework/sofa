@@ -1,4 +1,5 @@
 <Node name="root">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<Node name="oglModels">
     <OglShader fragFilename="shaders/generalRenderingShader.frag" vertFilename="shaders/generalRenderingShader.vert" />
     <OglShaderDefineMacro id="PERLIN_NOISE_COLOR" />

@@ -1,7 +1,8 @@
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="M1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="0" />
         <UniformMass totalMass="10" />
@@ -15,7 +16,7 @@
         <PlaneForceField normal="0 0 1" d="-50" />
     </Node>
     <Node name="M2">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="0.0001" threshold="0.000000001" />
         <MechanicalObject dx="-12" dy="0" />
         <UniformMass totalMass="10" />
@@ -29,7 +30,7 @@
         <PlaneForceField normal="0 0 1" d="-50" />
     </Node>
     <Node name="M3">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="-24" dy="0" />
         <UniformMass totalMass="10" />
@@ -43,7 +44,7 @@
         <PlaneForceField normal="0 0 1" d="-50" />
     </Node>
     <Node name="M4">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.00001" threshold="0.000001" />
         <!--
 		<RungeKutta4 />
@@ -59,8 +60,8 @@
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
-            <Line />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
             <RigidMapping />
             <PlaneForceField normal="0 1 -0.5" d="-10" />
             <PlaneForceField normal="0 0 1" d="-50" />

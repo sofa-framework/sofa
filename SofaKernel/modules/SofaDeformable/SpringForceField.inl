@@ -46,6 +46,12 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
+SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
+    : SpringForceField(nullptr, nullptr, _ks, _kd)
+{
+}
+
+template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
     : Inherit(mstate1, mstate2)
     , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
@@ -55,22 +61,8 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , maskInUse(false)
 {
-}
-
-template<class DataTypes>
-SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
-    : ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
-    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
-    , showArrowSize(initData(&showArrowSize,0.01f,"showArrowSize","size of the axis"))
-    , drawMode(initData(&drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
-    , fileSprings(initData(&fileSprings, "filename", "Xsp file describing the springs."))
-    , maskInUse(false)
-{
     this->addAlias(&fileSprings, "fileSprings");
 }
-
-
 
 template <class DataTypes>
 class SpringForceField<DataTypes>::Loader : public helper::io::XspLoaderDataHook
@@ -306,7 +298,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
     {
         core::topology::BaseMeshTopology*	_topology = topo->toBaseMeshTopology();
 
-        if(_topology != NULL)
+        if(_topology != nullptr)
         {
             std::list<const core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
             std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
@@ -336,7 +328,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
     {
         core::topology::BaseMeshTopology*	_topology = topo->toBaseMeshTopology();
 
-        if(_topology != NULL)
+        if(_topology != nullptr)
         {
             std::list<const core::topology::TopologyChange *>::const_iterator changeIt=_topology->beginChange();
             std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
@@ -411,7 +403,7 @@ void SpringForceField<DataTypes>::initGnuplot(const std::string path)
 {
     if (!this->getName().empty())
     {
-        if (m_gnuplotFileEnergy != NULL)
+        if (m_gnuplotFileEnergy != nullptr)
         {
             m_gnuplotFileEnergy->close();
             delete m_gnuplotFileEnergy;
@@ -423,7 +415,7 @@ void SpringForceField<DataTypes>::initGnuplot(const std::string path)
 template<class DataTypes>
 void SpringForceField<DataTypes>::exportGnuplot(SReal time)
 {
-    if (m_gnuplotFileEnergy!=NULL)
+    if (m_gnuplotFileEnergy!=nullptr)
     {
         (*m_gnuplotFileEnergy) << time <<"\t"<< this->m_potentialEnergy << std::endl;
     }

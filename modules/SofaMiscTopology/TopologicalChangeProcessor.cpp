@@ -80,9 +80,10 @@ TopologicalChangeProcessor::TopologicalChangeProcessor()
     , m_epsilonSnapPath( initData(&m_epsilonSnapPath, (SReal)0.1, "epsilonSnapPath", "epsilon snap path"))
     , m_epsilonSnapBorder( initData(&m_epsilonSnapBorder, (SReal)0.25, "epsilonSnapBorder", "epsilon snap path"))
     , m_draw( initData(&m_draw, false, "draw", "draw information"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
-    , infile(NULL)
-#ifdef SOFA_HAVE_ZLIB
+    , infile(nullptr)
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
     , nextTime(0)
@@ -97,7 +98,7 @@ TopologicalChangeProcessor::~TopologicalChangeProcessor()
 {
     if (infile)
         delete infile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -106,7 +107,21 @@ TopologicalChangeProcessor::~TopologicalChangeProcessor()
 
 void TopologicalChangeProcessor::init()
 {
-    m_topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     if (!m_useDataInputs.getValue())
         this->readDataFile();
@@ -125,9 +140,9 @@ void TopologicalChangeProcessor::readDataFile()
     if (infile)
     {
         delete infile;
-        infile = NULL;
+        infile = nullptr;
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     if (gzfile)
     {
         gzclose(gzfile);
@@ -140,7 +155,7 @@ void TopologicalChangeProcessor::readDataFile()
     {
         serr << "TopologicalChangeProcessor: ERROR: empty filename"<<sendl;
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
         gzfile = gzopen(filename.c_str(),"rb");
@@ -157,7 +172,7 @@ void TopologicalChangeProcessor::readDataFile()
         {
             serr << "TopologicalChangeProcessor: Error opening file "<<filename<<sendl;
             delete infile;
-            infile = NULL;
+            infile = nullptr;
         }
     }
     nextTime = 0;
@@ -297,7 +312,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
 {
     if (!m_topology) return false;
     if (!infile
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
         && !gzfile
 #endif
        )
@@ -305,10 +320,10 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
     lastTime = time;
     validLines.clear();
     std::string line, cmd;
-    double epsilon = 1e-10;
+    const SReal epsilon = std::numeric_limits<SReal>::epsilon();
     while (nextTime < time || fabs(nextTime - time) < epsilon )
     {
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
         if (gzfile)
         {
             if (gzeof(gzfile))
@@ -321,7 +336,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
             line.clear();
             char buf[4097];
             buf[0] = '\0';
-            while (gzgets(gzfile,buf,sizeof(buf))!=NULL && buf[0])
+            while (gzgets(gzfile,buf,sizeof(buf))!=nullptr && buf[0])
             {
                 size_t l = strlen(buf);
                 if (buf[l-1] == '\n')
@@ -1427,7 +1442,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     {
         trianglesToDraw.clear();
         /* initialize random seed: */
-        srand ( (unsigned int)time(NULL) );
+        srand ( (unsigned int)time(nullptr) );
 
         for (size_t i = 0 ; i < errorTrianglesIndices.size() ; i++)
         {

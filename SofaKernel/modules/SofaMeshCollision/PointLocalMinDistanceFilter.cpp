@@ -43,6 +43,10 @@ namespace component
 namespace collision
 {
 
+PointInfo::PointInfo(LocalMinDistanceFilter *lmdFilters)
+    : InfoFilter(lmdFilters)
+{
+}
 
 void PointInfo::buildFilter(unsigned int p_index)
 {
@@ -198,8 +202,8 @@ bool PointInfo::validate(const unsigned int p, const defaulttype::Vector3 &PQ)
 
 PointLocalMinDistanceFilter::PointLocalMinDistanceFilter()
     : m_pointInfo(initData(&m_pointInfo, "pointInfo", "point filter data"))
-    , pointInfoHandler(NULL)
-    , bmt(NULL)
+    , pointInfoHandler(nullptr)
+    , bmt(nullptr)
 {
 }
 
@@ -272,7 +276,7 @@ void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned
     if(pLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             pInfo.setPositionFiltering(&(mstateVec3d->read(core::ConstVecCoordId::restPosition())->getValue()));
         }
@@ -281,7 +285,7 @@ void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned
     else
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             pInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
         }

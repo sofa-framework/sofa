@@ -50,7 +50,9 @@ int TetrahedronModelClass = core::RegisterObject("collision model using a tetrah
         ;
 
 TetrahedronModel::TetrahedronModel()
-    : tetra(NULL), mstate(NULL)
+    : tetra(nullptr)
+    , mstate(nullptr)
+    , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = TETRAHEDRON_TYPE;
 }
@@ -59,25 +61,33 @@ void TetrahedronModel::resize(int size)
 {
     this->core::CollisionModel::resize(size);
     elems.resize(size);
-    if (getPrevious() != NULL) getPrevious()->resize(0); // force recomputation of bounding tree
+    if (getPrevious() != nullptr) getPrevious()->resize(0); // force recomputation of bounding tree
 }
 
 void TetrahedronModel::init()
 {
-    _topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    _topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (!_topology)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TetrahedronModel requires a BaseMeshTopology";
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     this->CollisionModel::init();
     mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
-    if (mstate==NULL)
+    if (mstate==nullptr)
     {
-        serr<<"TetrahedronModel requires a Vec3 Mechanical Model" << sendl;
-        return;
-    }
-
-    if (!_topology)
-    {
-        serr<<"TetrahedronModel requires a BaseMeshTopology" << sendl;
+        msg_error() << "TetrahedronModel requires a Vec3 Mechanical Model";
         return;
     }
 
@@ -175,7 +185,7 @@ void TetrahedronModel::draw(const core::visual::VisualParams* vparams)
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, false);
     }
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 
     vparams->drawTool()->restoreLastState();

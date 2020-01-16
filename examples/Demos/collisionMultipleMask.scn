@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.03333">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName='SofaMiscCollision'/>
     
     <DefaultPipeline verbose="0" depth="10" draw="0" />
@@ -31,9 +32,9 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
-            <TTriangleModel />
-            <TLineModel />
-            <TPointModel />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -53,9 +54,9 @@
             <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
-            <TTriangleModel />
-            <TLineModel />
-            <TPointModel />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -87,9 +88,9 @@
             <MeshObjLoader name="loader" filename="mesh/frog-push25.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TTriangleModel />
-            <TLineModel />
-            <TPointModel />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -98,9 +99,9 @@
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader"  dy="-10.25" scale="0.5" />
-        <TTriangleModel name="FloorTriangleModel" simulated="0" moving="0" />
-        <TLineModel name="FloorLineModel" simulated="0" moving="0" />
-        <TPointModel name="FloorPointModel" simulated="0" moving="0" />
+        <TriangleCollisionModel name="FloorTriangleModel" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorLineModel" simulated="0" moving="0" />
+        <PointCollisionModel name="FloorPointModel" simulated="0" moving="0" />
         <OglModel name="FloorVisualModel" src="@../../Loader-floor" scale="0.5" texturename="textures/floor.bmp" dy="-10" />
     </Node>
 </Node>

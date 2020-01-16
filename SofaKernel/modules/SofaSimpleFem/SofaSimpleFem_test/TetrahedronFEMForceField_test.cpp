@@ -111,7 +111,6 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
         this->clearSceneGraph();
 
         // This is a RAII message.
-        EXPECT_MSG_NOEMIT(Warning, Fatal) ;
         EXPECT_MSG_EMIT(Error) ;
 
         std::stringstream scene ;

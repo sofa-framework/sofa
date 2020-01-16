@@ -33,11 +33,11 @@ namespace component
 namespace collision
 {
 
-template class SOFA_GPU_CUDA_API TTriangleModel<sofa::gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TTriangleModel<sofa::gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API TTriangleModel<sofa::gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API TTriangleModel<sofa::gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace collision
@@ -51,11 +51,11 @@ namespace cuda
 {
 
 int TriangleModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::collision::TTriangleModel<CudaVec3fTypes> >()
-        .add< component::collision::TTriangleModel<CudaVec3f1Types> >()
+        .add< component::collision::TriangleCollisionModel<CudaVec3fTypes> >()
+        .add< component::collision::TriangleCollisionModel<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::collision::TTriangleModel<CudaVec3dTypes> >()
-        .add< component::collision::TTriangleModel<CudaVec3d1Types> >()
+        .add< component::collision::TriangleCollisionModel<CudaVec3dTypes> >()
+        .add< component::collision::TriangleCollisionModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

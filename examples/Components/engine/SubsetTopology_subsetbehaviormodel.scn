@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="Root" gravity="0 0 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showWireframe" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
     <BruteForceDetection name="Detection" />
@@ -34,7 +35,7 @@
                 <TriangleSetTopologyAlgorithms template="Vec3d" />
                 <TriangleSetTopologyModifier />
                 <Tetra2TriangleTopologicalMapping input="@../container" output="@container" />
-                <TTriangleModel template="Vec3d" />
+                <TriangleCollisionModel template="Vec3d" />
             </Node>
         </Node>
     </Node>

@@ -87,7 +87,7 @@ protected:
     virtual ~LinearMultiMapping()     { }
 
 
-    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)
+    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w) override
     {
         helper::ReadAccessor<Data<InVecCoord1> > in10 (*this->fromModel1->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord1> > in1 (*this->fromModel1->read(core::ConstVecCoordId::position()));
@@ -121,7 +121,7 @@ protected:
         }
     }
 
-    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)
+    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw) override
     {
         helper::ReadAccessor<Data<InVecCoord1> > in10 (*this->fromModel1->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord1> > in1 (*this->fromModel1->read(core::ConstVecCoordId::position()));
@@ -154,7 +154,7 @@ protected:
         F=Fc.getF();
     }
 
-    virtual void initJacobianBlocks()
+    virtual void initJacobianBlocks() override
     {
         helper::ReadAccessor<Data<InVecCoord1> > in1 (*this->fromModel1->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord2> > in2 (*this->fromModel2->read(core::ConstVecCoordId::restPosition()));

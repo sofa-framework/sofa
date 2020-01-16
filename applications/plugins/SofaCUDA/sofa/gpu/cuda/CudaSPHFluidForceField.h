@@ -82,16 +82,16 @@ public:
 
     void fillParams(Main* m, int kernelType, double kFactor=1.0, double bFactor=1.0)
     {
-        Real h = m->particleRadius.getValue();
+        Real h = m->d_particleRadius.getValue();
         params.h = h;
         params.h2 = h*h;
         params.inv_h2 = 1/(h*h);
-        params.stiffness = (Real)(kFactor*m->pressureStiffness.getValue());
-        params.mass = m->particleMass.getValue();
+        params.stiffness = (Real)(kFactor*m->d_pressureStiffness.getValue());
+        params.mass = m->d_particleMass.getValue();
         params.mass2 = params.mass*params.mass;
-        params.density0 = m->density0.getValue();
-        params.viscosity = (Real)(bFactor*m->viscosity.getValue());
-        params.surfaceTension = (Real)(kFactor*m->surfaceTension.getValue());
+        params.density0 = m->d_density0.getValue();
+        params.viscosity = (Real)(bFactor*m->d_viscosity.getValue());
+        params.surfaceTension = (Real)(kFactor*m->d_surfaceTension.getValue());
         if (kernelType == 1)
         {
             params.CWd          = SPHKernel<SPH_KERNEL_CUBIC,Coord>::constW(h);

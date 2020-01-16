@@ -156,7 +156,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
     m_modifier->notifyEndingEvent();
     m_modifier->propagateTopologicalChanges();
 
-    sout << "NbCutElement=" << toBeRemovedTetraIndex.size() << " NbAddedElement=" << toBeAddedTetraIndex.size() << sendl;
+    dmsg_info() << "NbCutElement=" << toBeRemovedTetraIndex.size() << " NbAddedElement=" << toBeAddedTetraIndex.size();
 }
 
 template<class DataTypes>
@@ -266,7 +266,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
     m_modifier->notifyEndingEvent();
     m_modifier->propagateTopologicalChanges();
 
-    sout << "NbCutElement=" << toBeRemovedTetraIndex.size() << " NbAddedElement=" << toBeAddedTetraIndex.size() << sendl;
+    dmsg_info() << "NbCutElement=" << toBeRemovedTetraIndex.size() << " NbAddedElement=" << toBeAddedTetraIndex.size();
 }
 
 template<class DataTypes>
@@ -1267,7 +1267,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronsWit
     m_modifier->notifyEndingEvent();
     m_modifier->propagateTopologicalChanges();
 
-    sout << "NbCutElement=" << toBeRemovedTetraIndex.size() << " NbAddedElement=" << toBeAddedTetraIndex.size() << sendl;
+    dmsg_info() << "NbCutElement=" << toBeRemovedTetraIndex.size() << " NbAddedElement=" << toBeAddedTetraIndex.size();
 }
 
 template<class DataTypes>
@@ -1377,7 +1377,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronsWit
     m_modifier->notifyEndingEvent();
     m_modifier->propagateTopologicalChanges();
 
-    sout << "NbCutElement=" << toBeRemovedTetraIndex.size() << " NbAddedElement=" << toBeAddedTetraIndex.size() << sendl;
+    dmsg_info() << "NbCutElement=" << toBeRemovedTetraIndex.size() << " NbAddedElement=" << toBeAddedTetraIndex.size();
 }
 
 template<class DataTypes>

@@ -25,14 +25,7 @@
 #include <SofaSimulationCommon/common.h>
 #include <SofaSimulationCommon/xml/Element.h>
 
-#ifdef SOFA_XML_PARSER_TINYXML
-#include <tinyxml.h>
-#endif
-#ifdef SOFA_XML_PARSER_LIBXML
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#endif
-
+class TiXmlDocument;
 
 namespace sofa
 {
@@ -43,12 +36,7 @@ namespace simulation
 namespace xml
 {
 
-#ifdef SOFA_XML_PARSER_TINYXML
 SOFA_SIMULATION_COMMON_API BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, bool fromMem=false);
-#endif
-#ifdef SOFA_XML_PARSER_LIBXML
-SOFA_SIMULATION_COMMON_API BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc, bool fromMem=false);
-#endif
 
 SOFA_SIMULATION_COMMON_API BaseElement* loadFromFile(const char *filename);
 

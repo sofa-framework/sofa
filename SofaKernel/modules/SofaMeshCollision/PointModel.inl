@@ -51,33 +51,40 @@ namespace collision
 {
 
 template<class DataTypes>
-TPointModel<DataTypes>::TPointModel()
+PointCollisionModel<DataTypes>::PointCollisionModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
-    , mstate(NULL)
+    , mstate(nullptr)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
     , PointActiverPath(initData(&PointActiverPath,"PointActiverPath", "path of a component PointActiver that activate or deactivate collision point during execution") )
-    , m_lmdFilter( NULL )
+    , m_lmdFilter( nullptr )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
+    , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = POINT_TYPE;
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::resize(int size)
+void PointCollisionModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::init()
+void PointCollisionModel<DataTypes>::init()
 {
     this->CollisionModel::init();
     mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
 
-    if (mstate==NULL)
+    if (mstate==nullptr)
     {
-        serr<<"ERROR: PointModel requires a Vec3 Mechanical Model" << sendl;
+        msg_error() << "PointModel requires a Vec3 Mechanical Model";
         return;
+    }
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
     simulation::Node* node = dynamic_cast< simulation::Node* >(this->getContext());
@@ -97,112 +104,45 @@ void TPointModel<DataTypes>::init()
     {
 
         myActiver = PointActiver::getDefaultActiver();
-        sout<<"path = "<<path<<" no Point Activer found for PointModel "<<this->getName()<<sendl;
+        msg_info() << "path = " << path << " no Point Activer found for PointModel " << this->getName();
     }
     else
     {
 
-        core::objectmodel::BaseObject *activer=NULL;
+        core::objectmodel::BaseObject *activer=nullptr;
         this->getContext()->get(activer ,path  );
 
-        if (activer != NULL)
-            sout<<" Activer named"<<activer->getName()<<" found"<<sendl;
-        else
-            serr<<"wrong path for PointActiver"<<sendl;
+        if (activer != nullptr) {
+            msg_info() << " Activer named" << activer->getName() << " found";
+        }
+        else {
+            msg_error() << "wrong path for PointActiver";
+        }
 
 
         myActiver = dynamic_cast<PointActiver *> (activer);
 
 
 
-        if (myActiver==NULL)
+        if (myActiver == nullptr)
         {
             myActiver = PointActiver::getDefaultActiver();
-
-
-            serr<<"no dynamic cast possible for Point Activer for PointModel "<< this->getName() <<sendl;
+            msg_error() << "no dynamic cast possible for Point Activer for PointModel " << this->getName();
         }
         else
         {
-            sout<<"PointActiver named"<<activer->getName()<<" found !! for PointModel "<< this->getName() <<sendl;
+            msg_info() << "PointActiver named" << activer->getName() << " found !! for PointModel " << this->getName();
         }
     }
 }
 
-template<class DataTypes>
-void TPointModel<DataTypes>::draw(const core::visual::VisualParams*,int index)
-{
-    SOFA_UNUSED(index);
-    //TODO(fred roy 2018-06-21)...please implement.
-}
-
 
 template<class DataTypes>
-void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (vparams->displayFlags().getShowCollisionModels())
-    {
-        if (vparams->displayFlags().getShowWireFrame())
-            vparams->drawTool()->setPolygonMode(0,true);
-
-        // Check topological modifications
-        const int npoints = mstate->getSize();
-        if (npoints != size)
-            return;
-
-        std::vector< defaulttype::Vector3 > pointsP;
-        std::vector< defaulttype::Vector3 > pointsL;
-        for (int i = 0; i < size; i++)
-        {
-            TPoint<DataTypes> p(this,i);
-            if (p.activated())
-            {
-                pointsP.push_back(p.p());
-                if ((unsigned)i < normals.size())
-                {
-                    pointsL.push_back(p.p());
-                    pointsL.push_back(p.p()+normals[i]*0.1f);
-                }
-            }
-        }
-
-        vparams->drawTool()->drawPoints(pointsP, 3, defaulttype::Vec<4,float>(getColor4f()));
-        vparams->drawTool()->drawLines(pointsL, 1, defaulttype::Vec<4,float>(getColor4f()));
-
-        if (m_displayFreePosition.getValue())
-        {
-            std::vector< defaulttype::Vector3 > pointsPFree;
-
-            for (int i = 0; i < size; i++)
-            {
-                TPoint<DataTypes> p(this,i);
-                if (p.activated())
-                {
-                    pointsPFree.push_back(p.pFree());
-                }
-            }
-
-            vparams->drawTool()->drawPoints(pointsPFree, 3, defaulttype::Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
-        }
-
-        if (vparams->displayFlags().getShowWireFrame())
-            vparams->drawTool()->setPolygonMode(0,false);
-    }
-
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
-        getPrevious()->draw(vparams);
-}
-
-template<class DataTypes>
-bool TPointModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
+bool PointCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
 {
 
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
     if (this->getContext() != model2->getContext()) return true;
-
-
-    bool debug= false;
-
 
     if (model2 == this)
     {
@@ -210,10 +150,7 @@ bool TPointModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mo
         if (index<=index2) // to avoid to have two times the same auto-collision we only consider the case when index > index2
             return false;
 
-        sofa::core::topology::BaseMeshTopology* topology = this->getMeshTopology();
-
-
-
+        sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
 
         // in the neighborhood, if we find a point in common, we cancel the collision
         const helper::vector <unsigned int>& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
@@ -227,18 +164,12 @@ bool TPointModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mo
             for (unsigned int i2=0; i2<verticesAroundVertex2.size(); i2++)
             {
 
-                if (debug)
-                    std::cout<<"v1 = "<<v1 <<"  verticesAroundVertex2[i2]"<<verticesAroundVertex2[i2]<<std::endl;
-                if (v1==verticesAroundVertex2[i2] || v1==(unsigned int)index2 || index == (int)verticesAroundVertex2[i2])
+                if (v1 == verticesAroundVertex2[i2] || v1 == (unsigned int)index2 || index == (int)verticesAroundVertex2[i2])
                 {
-                    if(debug)
-                        std::cout<<" return false"<<std::endl;
                     return false;
                 }
             }
         }
-        if(debug)
-            std::cout<<" return true"<<std::endl;
         return true;
     }
     else
@@ -246,7 +177,7 @@ bool TPointModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mo
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::computeBoundingTree(int maxDepth)
+void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     const int npoints = mstate->getSize();
@@ -282,7 +213,7 @@ void TPointModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
+void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     const int npoints = mstate->getSize();
@@ -326,7 +257,7 @@ void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDep
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::updateNormals()
+void PointCollisionModel<DataTypes>::updateNormals()
 {
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     int n = x.size();
@@ -335,7 +266,7 @@ void TPointModel<DataTypes>::updateNormals()
     {
         normals[i].clear();
     }
-    core::topology::BaseMeshTopology* mesh = getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology* mesh = l_topology.get();
     if (mesh->getNbTetrahedra()+mesh->getNbHexahedra() > 0)
     {
         if (mesh->getNbTetrahedra()>0)
@@ -433,7 +364,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
 
     defaulttype::Vector3 pt = p();
 
-    sofa::core::topology::BaseMeshTopology* mesh = this->model->getMeshTopology();
+    sofa::core::topology::BaseMeshTopology* mesh = this->model->l_topology.get();
     const typename DataTypes::VecCoord& x = (*this->model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue());
 
     const helper::vector <unsigned int>& trianglesAroundVertex = mesh->getTrianglesAroundVertex(this->index);
@@ -486,20 +417,20 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
 }
 
 template<class DataTypes>
-PointLocalMinDistanceFilter *TPointModel<DataTypes>::getFilter() const
+PointLocalMinDistanceFilter *PointCollisionModel<DataTypes>::getFilter() const
 {
     return m_lmdFilter;
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::setFilter(PointLocalMinDistanceFilter *lmdFilter)
+void PointCollisionModel<DataTypes>::setFilter(PointLocalMinDistanceFilter *lmdFilter)
 {
     m_lmdFilter = lmdFilter;
 }
 
 
 template<class DataTypes>
-void TPointModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     if( !onlyVisible ) return;
 
@@ -525,6 +456,72 @@ void TPointModel<DataTypes>::computeBBox(const core::ExecParams* params, bool on
     }
 
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+}
+
+
+
+template<class DataTypes>
+void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*, int index)
+{
+    SOFA_UNUSED(index);
+    //TODO(fred roy 2018-06-21)...please implement.
+}
+
+
+template<class DataTypes>
+void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+{
+    if (vparams->displayFlags().getShowCollisionModels())
+    {
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, true);
+
+        // Check topological modifications
+        const int npoints = mstate->getSize();
+        if (npoints != size)
+            return;
+
+        std::vector< defaulttype::Vector3 > pointsP;
+        std::vector< defaulttype::Vector3 > pointsL;
+        for (int i = 0; i < size; i++)
+        {
+            TPoint<DataTypes> p(this, i);
+            if (p.activated())
+            {
+                pointsP.push_back(p.p());
+                if ((unsigned)i < normals.size())
+                {
+                    pointsL.push_back(p.p());
+                    pointsL.push_back(p.p() + normals[i] * 0.1f);
+                }
+            }
+        }
+
+        vparams->drawTool()->drawPoints(pointsP, 3, defaulttype::Vec<4, float>(getColor4f()));
+        vparams->drawTool()->drawLines(pointsL, 1, defaulttype::Vec<4, float>(getColor4f()));
+
+        if (m_displayFreePosition.getValue())
+        {
+            std::vector< defaulttype::Vector3 > pointsPFree;
+
+            for (int i = 0; i < size; i++)
+            {
+                TPoint<DataTypes> p(this, i);
+                if (p.activated())
+                {
+                    pointsPFree.push_back(p.pFree());
+                }
+            }
+
+            vparams->drawTool()->drawPoints(pointsPFree, 3, defaulttype::Vec<4, float>(0.0f, 1.0f, 0.2f, 1.0f));
+        }
+
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, false);
+    }
+
+    if (getPrevious() != nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
+        getPrevious()->draw(vparams);
 }
 
 

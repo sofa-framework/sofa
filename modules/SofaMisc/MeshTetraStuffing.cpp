@@ -76,7 +76,7 @@ void MeshTetraStuffing::init()
     const SeqQuads& inQ = inputQuads.getValue();
     if (inP.empty() || (inT.empty() && inQ.empty()))
     {
-        serr << "Empty input mesh. Use data dependency to link them to a loaded Topology or MeshLoader" << sendl;
+        serr << "Empty input mesh. Use data dependency to link them to a loaded Topology or MeshLoader";
         return;
     }
     if (!inQ.empty())
@@ -126,7 +126,7 @@ void MeshTetraStuffing::init()
         cellsize = bsize / -cellsize;
     }
 
-    sout << "bbox = " << bb << " cell size = " << cellsize << sendl;
+    msg_info() << "bbox = " << bb << " cell size = " << cellsize;
 
 #ifdef USE_OCTREE
     collision::TriangleOctreeRoot octree;
@@ -148,15 +148,15 @@ void MeshTetraStuffing::init()
         h0[c] = g0[c] - cellsize/2;
     }
 
-    sout << "Grid <"<<c0[0]<<","<<c0[1]<<","<<c0[2]<<">-<"<<c1[0]<<","<<c1[1]<<","<<c1[2]<<">" << sendl;
+    msg_info() << "Grid <"<<c0[0]<<","<<c0[1]<<","<<c0[2]<<">-<"<<c1[0]<<","<<c1[1]<<","<<c1[2]<<">";
 
     SeqPoints& outP = *outputPoints.beginEdit();
     SeqTetrahedra& outT = *outputTetrahedra.beginEdit();
 
     outP.resize(gsize[0]*gsize[1]*gsize[2] + hsize[0]*hsize[1]*hsize[2]);
 
-    sout << "Grid 1 size " << gsize[0] << "x" << gsize[1] << "x" << gsize[2] << ", total " << gsize[0]*gsize[1]*gsize[2] << sendl;
-    sout << "Grid 2 size " << hsize[0] << "x" << hsize[1] << "x" << hsize[2] << ", total " << hsize[0]*hsize[1]*hsize[2] << sendl;
+    msg_info() << "Grid 1 size " << gsize[0] << "x" << gsize[1] << "x" << gsize[2] << ", total " << gsize[0]*gsize[1]*gsize[2];
+    msg_info() << "Grid 2 size " << hsize[0] << "x" << hsize[1] << "x" << hsize[2] << ", total " << hsize[0]*hsize[1]*hsize[2];
 
     ph0 = gsize[0]*gsize[1]*gsize[2];
     int p = 0;
@@ -171,7 +171,7 @@ void MeshTetraStuffing::init()
                 outP[p] = h0 + Point(x*cellsize,y*cellsize,z*cellsize);
 
     int nbp = outP.size();
-    sout << "nbp = " << nbp << sendl;
+    msg_info() << "nbp = " << nbp;
 
     pInside.resize(nbp);
     eBDist.resize(nbp);
@@ -260,13 +260,13 @@ void MeshTetraStuffing::init()
                         {
                             eBDist[p1][e] = results[i].t - d;
                             if (eBDist[p1][e] < 0.00001)
-                                sout << "WARNING: point " << p1 << " is too close to the surface on edge " << e << " : alpha = " << eBDist[p1][e]<<sendl;
+                                msg_info() << "WARNING: point " << p1 << " is too close to the surface on edge " << e << " : alpha = " << eBDist[p1][e]<<sendl;
                         }
                         if (i > 0)
                         {
                             eBDist[p1][e+1] = d - results[i-1].t;
                             if (eBDist[p1][e+1] < 0.00001)
-                                sout << "WARNING: point " << p1 << " is too close to the surface on edge " << e+1 << " : alpha = " << eBDist[p1][e+1]<<sendl;
+                                msg_info() << "WARNING: point " << p1 << " is too close to the surface on edge " << e+1 << " : alpha = " << eBDist[p1][e+1]<<sendl;
                         }
 
                         p1 = getEdgePoint2(p1,e);
@@ -309,7 +309,7 @@ void MeshTetraStuffing::init()
                     alpha = alphaShort;
                 if (eBDist[p][e] != 0.0 && eBDist[p][e] < alpha)
                 {
-                    //sout << "point " << p << " violated on edge " << e << " by alpha " << eBDist[p][e] << sendl;
+                    //msg_info() << "point " << p << " violated on edge " << e << " by alpha " << eBDist[p][e];
                     violated = true;
                 }
             }
@@ -356,7 +356,7 @@ void MeshTetraStuffing::init()
                 int e = minEdge;
                 int p2 = getEdgePoint2(p,e);
                 // Wrap p toward p2
-                sout << "Wrapping outside point " << p << " toward " << p2 << " by " << eBDist[p][e] << sendl;
+                msg_info() << "Wrapping outside point " << p << " toward " << p2 << " by " << eBDist[p][e];
                 outP[p] += (outP[p2]-outP[p]) * (eBDist[p][e]);
                 snaps.push_back(outP[p]);
                 ++nwraps;
@@ -402,7 +402,7 @@ void MeshTetraStuffing::init()
             int p = *it;
             if (pInside[p] == 0)
             {
-                serr << "ERROR: inside point " << p << " already wrapped." << sendl;
+                serr << "ERROR: inside point " << p << " already wrapped.";
                 continue;
             }
             Real minDist = 0;
@@ -427,13 +427,13 @@ void MeshTetraStuffing::init()
             }
             if (minEdge == -1) // no violated edge
             {
-                serr << "ERROR: inside point " << p << " has no violated edges." << sendl;
+                serr << "ERROR: inside point " << p << " has no violated edges.";
                 continue;
             }
             int e = minEdge;
             int p2 = getEdgePoint2(p,e);
             // Wrap p toward p2
-            sout << "Wrapping inside point " << p << " toward " << p2 << " by " << eBDist[p][e] << sendl;
+            msg_info() << "Wrapping inside point " << p << " toward " << p2 << " by " << eBDist[p][e];
             outP[p] += (outP[p2]-outP[p]) * (eBDist[p][e]);
             snaps.push_back(outP[p]);
             pInside[p] = 0; // p is now on the surface
@@ -460,7 +460,7 @@ void MeshTetraStuffing::init()
                 if (p2 == -1) continue;
                 if (pInside[p2] <= 0) continue; // look for inside points
                 int newP = outP.size();
-                sout << "Creating cut point " << newP << " between " << p << " and " << p2 << " at " << eBDist[p][e] << sendl;
+                msg_info() << "Creating cut point " << newP << " between " << p << " and " << p2 << " at " << eBDist[p][e];
                 outP.push_back( outP[p] + (outP[p2]-outP[p]) * (eBDist[p][e]) );
                 splitPoints[std::make_pair(p,p2)]=newP;
             }
@@ -556,7 +556,7 @@ void MeshTetraStuffing::init()
         Real vol6 = a*(b.cross(c));
         if (vol6 < 0)
         {
-            sout << "WARNING: tetra " << t << " is inverted." << sendl;
+            msg_info() << "WARNING: tetra " << t << " is inverted.";
             int tmp = outT[t][2]; outT[t][2] = outT[t][3]; outT[t][3] = tmp;
         }
         for (int i=0; i<4; ++i)
@@ -568,12 +568,12 @@ void MeshTetraStuffing::init()
             if (i%2) { int tmp = tr[1]; tr[1] = tr[2]; tr[2] = tmp; }
             if (!triSet.insert(tr).second)
             {
-                serr << "ERROR: duplicate triangle " << tr << " in tetra " << t <<" : " << outT[t] << sendl;
+                serr << "ERROR: duplicate triangle " << tr << " in tetra " << t <<" : " << outT[t];
             }
         }
     }
 
-    sout << "Final mesh: " << outP.size() << " points, "<<outT.size() << " tetrahedra." << sendl;
+    msg_info() << "Final mesh: " << outP.size() << " points, "<<outT.size() << " tetrahedra.";
 
     outputPoints.endEdit();
     outputTetrahedra.endEdit();
@@ -591,7 +591,7 @@ void MeshTetraStuffing::addFinalTetra(SeqTetrahedra& outT, SeqPoints& outP, int 
     Real vol6 = a*(b.cross(c));
     if (vol6 < 0)
     {
-        sout << __FILE__ << "(" << line << "): WARNING: final tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is inverted." << sendl;
+        msg_info() << __FILE__ << "(" << line << "): WARNING: final tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is inverted.";
         int tmp = p3; p3 = p4; p4 = tmp;
     }
     outT.push_back(Tetra(p1,p2,p3,p4));
@@ -634,7 +634,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
         Real vol6 = a*(b.cross(c));
         if (vol6 < 0)
         {
-            sout << "MeshTetraStuffing("<<line<<"): WARNING: grid tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is inverted." << sendl;
+            msg_info() << "MeshTetraStuffing("<<line<<"): WARNING: grid tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is inverted.";
             int tmp = p3; p3 = p4; p4 = tmp;
         }
     }
@@ -708,7 +708,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
         }
         else
         {
-            serr << "Invalid tetra split: flipA = " << flipA << "   flipB = " << flipB << sendl;
+            serr << "Invalid tetra split: flipA = " << flipA << "   flipB = " << flipB;
         }
     }
     else // npos == 3 && nneg == 1
@@ -721,7 +721,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
         bool flip3 = flipDiag(outP, ppos[2],ppos[0],cut1,cut3,pneg[0]);
         if (flip1 == flip2 && flip2 == flip3)
         {
-            serr << "Invalid tetra split" << sendl;
+            serr << "Invalid tetra split";
             flip3 = !flip1;
         }
         int pp0;
@@ -806,7 +806,7 @@ int MeshTetraStuffing::getSplitPoint(int from, int to)
     if (it != splitPoints.end()) return it->second;
     it = splitPoints.find(std::make_pair(to, from));
     if (it != splitPoints.end()) return it->second;
-    serr << "ERROR: cut point between " << from << " and " << to << " not found." << sendl;
+    serr << "ERROR: cut point between " << from << " and " << to << " not found.";
     return from;
 }
 

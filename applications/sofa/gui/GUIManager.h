@@ -70,12 +70,12 @@ public:
     static std::vector<std::string> ListSupportedGUI();
     static std::string ListSupportedGUI(char separator);
     static void RegisterParameters(ArgumentParser* parser);
-    static int createGUI(sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
+    static int createGUI(sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
     static void closeGUI();
 
     /// @name Static methods for direct access to GUI
     /// @{
-    static int MainLoop(sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
+    static int MainLoop(sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
 
     static void Redraw();
 
@@ -91,7 +91,7 @@ protected:
     /*!
      *  \brief Comparaison between guiname passed as parameter and all guiname store in guiCreators list
      *  \param name : It is the name of your gui.
-     *  \return NULL if the name don't match with any guiCreators name, the correct pointer otherwise
+     *  \return nullptr if the name don't match with any guiCreators name, the correct pointer otherwise
      */
     static GUICreator* GetGUICreator(const char* name = nullptr);
     /* CLASS FIELDS */
@@ -100,7 +100,7 @@ protected:
 
     static std::vector<std::string> guiOptions;
     static BaseGUI* currentGUI;
-    static const char* valid_guiname;
+    static std::string valid_guiname;
     static ArgumentParser* currentArgumentParser;
 public:
     static BaseGUI* getGUI();

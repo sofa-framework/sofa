@@ -67,7 +67,7 @@ public:
     typename MMapping::SPtr mapping;
 
     IdentityContactMapper()
-        : model(NULL), mapping(NULL)
+        : model(nullptr), mapping(nullptr)
     {
     }
 
@@ -91,7 +91,7 @@ public:
 
     void update()
     {
-        if (mapping!=NULL)
+        if (mapping!=nullptr)
         {
             mapping->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
             mapping->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
@@ -100,7 +100,7 @@ public:
 
     void updateXfree()
     {
-        if (mapping!=NULL)
+        if (mapping!=nullptr)
         {
             mapping->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
             mapping->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::freeVelocity(), core::ConstVecDerivId::freeVelocity());
@@ -110,7 +110,7 @@ public:
     
     void updateX0()
     {
-        if(mapping!=NULL)
+        if(mapping!=nullptr)
         {
              mapping->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
         }
@@ -132,7 +132,7 @@ public:
     MCollisionModel* model;
 
     IdentityContactMapper()
-        : model(NULL)
+        : model(nullptr)
     {
     }
 
@@ -147,7 +147,7 @@ public:
 
     MMechanicalState* createMapping(const char* /*name*/="contactPoints")
     {
-        if (model==NULL) return NULL;
+        if (model==nullptr) return nullptr;
         return model->getMechanicalState();
     }
 

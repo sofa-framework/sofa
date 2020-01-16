@@ -62,7 +62,7 @@ void AffineMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(u
 
 template <class DataTypes>
 AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , data(new AffineMovementConstraintInternalData<DataTypes>)
     , m_meshIndices( initData(&m_meshIndices,"meshIndices","Indices of the mesh") )
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
@@ -72,9 +72,9 @@ AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
     , m_quaternion( initData(&m_quaternion,"quaternion","quaternion applied to border points") )
     , m_translation(  initData(&m_translation,"translation","translation applied to border points") )
     , m_drawConstrainedPoints(  initData(&m_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_pointHandler(nullptr)
 {
-    pointHandler = new FCPointHandler(this, &m_indices);
-
     if(!m_beginConstraintTime.isSet())
         m_beginConstraintTime = 0;
     if(!m_endConstraintTime.isSet())
@@ -86,8 +86,8 @@ AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
 template <class DataTypes>
 AffineMovementConstraint<DataTypes>::~AffineMovementConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 }
 
 template <class DataTypes>
@@ -119,11 +119,27 @@ void AffineMovementConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters
-    m_indices.createTopologicalEngine(topology, pointHandler);
-    m_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";        
+
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &m_indices);
+        m_indices.createTopologicalEngine(_topology, m_pointHandler);
+        m_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
     const SetIndexArray & indices = m_indices.getValue();
 

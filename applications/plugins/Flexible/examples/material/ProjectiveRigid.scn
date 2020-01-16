@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -10 0 " dt="0.05"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
   <RequiredPlugin pluginName="Flexible"/>
   <RequiredPlugin pluginName="Compliant"/>
@@ -39,7 +40,8 @@
     <UniformMass totalMass="250"/>
     
     <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"/>
+      <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0"/>
       <LinearMapping template="Vec3d,ExtVec3f"  />
     </Node>
   </Node>
@@ -80,7 +82,8 @@
     <UniformMass totalMass="250"/>
     
     <Node       name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="blue"/>
+      <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="blue"/>
       <LinearMapping template="Vec3d,ExtVec3f"  />
     </Node>
   </Node>
@@ -114,7 +117,8 @@
     <UniformMass totalMass="250"/>
 
     <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="red"/>
+      <MeshObjLoader name="meshLoader_2" filename="mesh/torus.obj" handleSeams="1" />
+      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_2" color="red"/>
       <LinearMapping template="Vec3d,ExtVec3f"  />
     </Node>
   </Node>

@@ -38,7 +38,7 @@ namespace collision
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricDistanceLMConstraintContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
-    : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(NULL), parent(NULL)
+    : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(nullptr), parent(nullptr)
 {
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
@@ -56,11 +56,11 @@ BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Respons
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::cleanup()
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
         ff->cleanup();
-        if (parent!=NULL) parent->removeObject(ff);
-        parent = NULL;
+        if (parent!=nullptr) parent->removeObject(ff);
+        parent = nullptr;
         ff.reset();
         mapper1.cleanup();
         mapper2.cleanup();
@@ -71,7 +71,7 @@ template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTyp
 void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
-    if (ff==NULL)
+    if (ff==nullptr)
     {
 
         MechanicalState1* mstate1 = mapper1.createMapping(GenerateStringID::generate().c_str());
@@ -173,17 +173,9 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
         typename DataTypes1::Real r1 = 0.0;
         typename DataTypes2::Real r2 = 0.0;
         // Create mapping for first point
-        index1 = mapper1.addPointB(o->point[0], index1, r1
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[0]
-#endif
-                                  );
+        index1 = mapper1.addPointB(o->point[0], index1, r1);
         // Create mapping for second point
-        index2 = mapper2.addPointB(o->point[1], index2, r2
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[1]
-#endif
-                                  );
+        index2 = mapper2.addPointB(o->point[1], index2, r2);
 
         ff->addContact(index1,index2);
         ff->contactFriction.setValue( elem1.getCollisionModel()->getContactFriction(0) * elem2.getCollisionModel()->getContactFriction(0) );
@@ -197,15 +189,15 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::createResponse(core::objectmodel::BaseContext* group)
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(ff);
         }
         parent = group;
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             //msg_error() << "Attaching contact response to "<<parent->getName() ;
             parent->addObject(this);
@@ -217,14 +209,14 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::removeResponse()
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(ff);
         }
-        parent = NULL;
+        parent = nullptr;
     }
 }
 

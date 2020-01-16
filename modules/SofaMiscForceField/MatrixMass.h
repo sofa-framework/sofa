@@ -46,7 +46,7 @@ It is possible to use lumped matrices.
 */
 
 template <class DataTypes, class MassType>
-class MatrixMass : public core::behavior::Mass<DataTypes>
+class [[deprecated("Class MatrixMass is deprecated and will be removed after 19.12")]] MatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(MatrixMass,DataTypes,MassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
@@ -72,14 +72,7 @@ public:
     const VecMass* _usedMassMatrices; ///< what VecMass is used to represent matrices ? f_mass.getValue() or _lumpedMasses ?
 
 protected:
-    MatrixMass()
-        :  f_mass( initData(&f_mass, "massMatrices", "values of the particles masses") )
-        , _lumped(initData( &_lumped, false, "lumped", ""))
-        , _defaultValue( initData(&_defaultValue, (Real)1.0,"defaultValue", "real default value") )
-        , _usingDefaultDiagonalMatrices(false)
-    {
-    };
-
+    MatrixMass();
     ~MatrixMass();
 
 public:

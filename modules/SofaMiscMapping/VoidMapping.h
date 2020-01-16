@@ -110,7 +110,7 @@ protected:
     In* fromModel;
     Out* toModel;
 
-    VoidMapping():Inherit(),fromModel(NULL),toModel(NULL)
+    VoidMapping():Inherit(),fromModel(nullptr),toModel(nullptr)
     {
         this->f_mapForces.setValue(false);
         this->f_mapConstraints.setValue(false);

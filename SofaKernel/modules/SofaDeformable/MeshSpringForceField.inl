@@ -53,6 +53,7 @@ MeshSpringForceField<DataTypes>::MeshSpringForceField()
     , d_drawMaxElongationRange(initData(&d_drawMaxElongationRange, Real(15.), "drawMaxElongationRange","Max range of elongation (red eongation - blue neutral - green compression)"))
     , d_drawSpringSize(initData(&d_drawSpringSize, Real(8.), "drawSpringSize","Size of drawed lines"))
     , d_localRange( initData(&d_localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , l_topology(initLink("topology", "link to the topology container"))
 {
 	this->ks.setDisplayed(false);
     this->kd.setDisplayed(false);
@@ -106,91 +107,104 @@ void MeshSpringForceField<DataTypes>::init()
 
     if (mstate1==mstate2)
     {
-        sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
 
-        if (topology != NULL)
+        if (l_topology.empty())
         {
-            std::set< std::pair<int,int> > sset;
-            size_t n;
-            Real s, d;
-            if (d_linesStiffness.getValue() != 0.0 || d_linesDamping.getValue() != 0.0)
-            {
-                s = d_linesStiffness.getValue();
-                d = d_linesDamping.getValue();
-                n = topology->getNbLines();
-                for (size_t i=0; i<n; ++i)
-                {
-                    sofa::core::topology::BaseMeshTopology::Line e = topology->getLine(i);
-                    addSpring(sset, e[0], e[1], s, d);
-                }
-            }
-            if (d_trianglesStiffness.getValue() != 0.0 || d_trianglesDamping.getValue() != 0.0)
-            {
-                s = d_trianglesStiffness.getValue();
-                d = d_trianglesDamping.getValue();
-                n = topology->getNbTriangles();
-                for (size_t i=0; i<n; ++i)
-                {
-                    sofa::core::topology::BaseMeshTopology::Triangle e = topology->getTriangle(i);
-                    addSpring(sset, e[0], e[1], s, d);
-                    addSpring(sset, e[0], e[2], s, d);
-                    addSpring(sset, e[1], e[2], s, d);
-                }
-            }
-            if (d_quadsStiffness.getValue() != 0.0 || d_quadsDamping.getValue() != 0.0)
-            {
-                s = d_quadsStiffness.getValue();
-                d = d_quadsDamping.getValue();
-                n = topology->getNbQuads();
-                for (size_t i=0; i<n; ++i)
-                {
-                    sofa::core::topology::BaseMeshTopology::Quad e = topology->getQuad(i);
-                    addSpring(sset, e[0], e[1], s, d);
-                    addSpring(sset, e[0], e[2], s, d);
-                    addSpring(sset, e[0], e[3], s, d);
-                    addSpring(sset, e[1], e[2], s, d);
-                    addSpring(sset, e[1], e[3], s, d);
-                    addSpring(sset, e[2], e[3], s, d);
-                }
-            }
-            if (d_tetrahedraStiffness.getValue() != 0.0 || d_tetrahedraDamping.getValue() != 0.0)
-            {
-                s = d_tetrahedraStiffness.getValue();
-                d = d_tetrahedraDamping.getValue();
-                n = topology->getNbTetrahedra();
-                for (size_t i=0; i<n; ++i)
-                {
-                    sofa::core::topology::BaseMeshTopology::Tetra e = topology->getTetrahedron(i);
-                    addSpring(sset, e[0], e[1], s, d);
-                    addSpring(sset, e[0], e[2], s, d);
-                    addSpring(sset, e[0], e[3], s, d);
-                    addSpring(sset, e[1], e[2], s, d);
-                    addSpring(sset, e[1], e[3], s, d);
-                    addSpring(sset, e[2], e[3], s, d);
-                }
-            }
+            msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+            l_topology.set(this->getContext()->getMeshTopologyLink());
+        }
 
-            if (d_cubesStiffness.getValue() != 0.0 || d_cubesDamping.getValue() != 0.0)
+        sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        if (_topology == nullptr)
+        {
+            msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+            sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
+        
+        std::set< std::pair<int,int> > sset;
+        size_t n;
+        Real s, d;
+        if (d_linesStiffness.getValue() != 0.0 || d_linesDamping.getValue() != 0.0)
+        {
+            s = d_linesStiffness.getValue();
+            d = d_linesDamping.getValue();
+            n = _topology->getNbLines();
+            for (size_t i=0; i<n; ++i)
             {
-                s = d_cubesStiffness.getValue();
-                d = d_cubesDamping.getValue();
+                sofa::core::topology::BaseMeshTopology::Line e = _topology->getLine(i);
+                addSpring(sset, e[0], e[1], s, d);
+            }
+        }
+        if (d_trianglesStiffness.getValue() != 0.0 || d_trianglesDamping.getValue() != 0.0)
+        {
+            s = d_trianglesStiffness.getValue();
+            d = d_trianglesDamping.getValue();
+            n = _topology->getNbTriangles();
+            for (size_t i=0; i<n; ++i)
+            {
+                sofa::core::topology::BaseMeshTopology::Triangle e = _topology->getTriangle(i);
+                addSpring(sset, e[0], e[1], s, d);
+                addSpring(sset, e[0], e[2], s, d);
+                addSpring(sset, e[1], e[2], s, d);
+            }
+        }
+        if (d_quadsStiffness.getValue() != 0.0 || d_quadsDamping.getValue() != 0.0)
+        {
+            s = d_quadsStiffness.getValue();
+            d = d_quadsDamping.getValue();
+            n = _topology->getNbQuads();
+            for (size_t i=0; i<n; ++i)
+            {
+                sofa::core::topology::BaseMeshTopology::Quad e = _topology->getQuad(i);
+                addSpring(sset, e[0], e[1], s, d);
+                addSpring(sset, e[0], e[2], s, d);
+                addSpring(sset, e[0], e[3], s, d);
+                addSpring(sset, e[1], e[2], s, d);
+                addSpring(sset, e[1], e[3], s, d);
+                addSpring(sset, e[2], e[3], s, d);
+            }
+        }
+        if (d_tetrahedraStiffness.getValue() != 0.0 || d_tetrahedraDamping.getValue() != 0.0)
+        {
+            s = d_tetrahedraStiffness.getValue();
+            d = d_tetrahedraDamping.getValue();
+            n = _topology->getNbTetrahedra();
+            for (size_t i=0; i<n; ++i)
+            {
+                sofa::core::topology::BaseMeshTopology::Tetra e = _topology->getTetrahedron(i);
+                addSpring(sset, e[0], e[1], s, d);
+                addSpring(sset, e[0], e[2], s, d);
+                addSpring(sset, e[0], e[3], s, d);
+                addSpring(sset, e[1], e[2], s, d);
+                addSpring(sset, e[1], e[3], s, d);
+                addSpring(sset, e[2], e[3], s, d);
+            }
+        }
 
-                n = topology->getNbHexahedra();
-                for (size_t i=0; i<n; ++i)
+        if (d_cubesStiffness.getValue() != 0.0 || d_cubesDamping.getValue() != 0.0)
+        {
+            s = d_cubesStiffness.getValue();
+            d = d_cubesDamping.getValue();
+
+            n = _topology->getNbHexahedra();
+            for (size_t i=0; i<n; ++i)
+            {
+                sofa::core::topology::BaseMeshTopology::Hexa e = _topology->getHexahedron(i);
+
+                for (int k=0; k<8; k++)
                 {
-                    sofa::core::topology::BaseMeshTopology::Hexa e = topology->getHexahedron(i);
-
-                    for (int k=0; k<8; k++)
+                    for (int j=k+1; j<8; j++)
                     {
-                        for (int j=k+1; j<8; j++)
-                        {
-                            addSpring(sset, e[k], e[j], s, d);
-                        }
+                        addSpring(sset, e[k], e[j], s, d);
                     }
                 }
             }
         }
     }
+
     StiffSpringForceField<DataTypes>::init();
 }
 

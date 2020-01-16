@@ -23,7 +23,7 @@ public:
 
     void factor(const rmat& sys) override;
 	void solve(cmat& lval, const cmat& rval) const override;
-    virtual void solve(vec& lval, const vec& rval) const;
+    virtual void solve(vec& lval, const vec& rval) const override;
     void reinit() override;
     bool isSymmetric() const override { return symmetric; }
 
@@ -113,8 +113,8 @@ public:
 
     EigenSparseIterativeResponse();
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
 };
 

@@ -101,7 +101,7 @@ protected:
         {}
 	
 	void apply(typename self::out_pos_type& out,
-               const helper::vector< typename self::in_pos_type >& in ) {
+               const helper::vector< typename self::in_pos_type >& in ) override {
 
 		const pairs_type& p = pairs.getValue();
 		
@@ -123,7 +123,7 @@ protected:
 
 
     void assemble_geometric(const helper::vector<typename self::const_in_coord_type>& in_pos,
-                            const typename self::const_out_deriv_type& out_force) {
+                            const typename self::const_out_deriv_type& out_force) override {
         // we're done lol
         if( true || ! geometricStiffness.getValue() ) return;
 
@@ -243,7 +243,7 @@ protected:
         
     }
 
-    void assemble(const helper::vector< typename self::in_pos_type >& in ) {
+    void assemble(const helper::vector< typename self::in_pos_type >& in ) override {
 		assert(this->getFrom()[0] != this->getFrom()[1]);
 
 		const pairs_type& p = pairs.getValue();
@@ -323,7 +323,7 @@ protected:
 		}
 	}
 	
-    virtual void updateForceMask()
+    virtual void updateForceMask() override
     {
         const pairs_type& p = pairs.getValue();
 

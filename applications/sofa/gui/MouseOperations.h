@@ -61,7 +61,7 @@ class SOFA_SOFAGUI_API Operation
 {
     friend class OperationFactory;
 public:
-    Operation(sofa::component::configurationsetting::MouseButtonSetting::SPtr s = NULL): pickHandle(nullptr),mbsetting(s),performer(nullptr),button(NONE) {}
+    Operation(sofa::component::configurationsetting::MouseButtonSetting::SPtr s = nullptr): pickHandle(nullptr),mbsetting(s),performer(nullptr),button(NONE) {}
     virtual ~Operation() {}
     virtual void configure(PickHandler*picker, MOUSE_BUTTON b) { pickHandle=picker; button=b; }
     virtual void configure(PickHandler* picker, sofa::component::configurationsetting::MouseButtonSetting* s)
@@ -116,7 +116,7 @@ public:
 
 protected:
     void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) override { Operation::setSetting(s); setting = down_cast<sofa::component::configurationsetting::AttachBodyButtonSetting>(s); }
-    virtual std::string defaultPerformerType();
+    virtual std::string defaultPerformerType() override;
     void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 
     sofa::component::configurationsetting::AttachBodyButtonSetting::SPtr setting;
@@ -137,14 +137,14 @@ public:
     FixOperation() : setting(sofa::core::objectmodel::New<sofa::component::configurationsetting::FixPickedParticleButtonSetting>())
     {}
 
-    ~FixOperation() override {};
+    ~FixOperation() override {}
 
     void setStiffness(double s) {setting->stiffness.setValue(s); }
     virtual double getStiffness() const { return setting->stiffness.getValue();}
 
     static std::string getDescription() {return "Fix Picked particle";}
 protected:
-    virtual std::string defaultPerformerType();
+    virtual std::string defaultPerformerType() override;
     void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 
     sofa::component::configurationsetting::FixPickedParticleButtonSetting::SPtr setting;
@@ -155,7 +155,7 @@ class SOFA_SOFAGUI_API AddFrameOperation : public Operation
 public:
     static std::string getDescription() {return "Add a Frame to a Skinned model";}
 protected:
-    virtual std::string defaultPerformerType();
+    virtual std::string defaultPerformerType() override;
     void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 };
 
@@ -166,7 +166,7 @@ public:
 	{}
 	static std::string getDescription() {return "Save camera's view points for navigation ";}
 protected:
-	virtual std::string defaultPerformerType();
+    virtual std::string defaultPerformerType() override;
 	void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 	sofa::component::configurationsetting::AddRecordedCameraButtonSetting::SPtr setting;
 };
@@ -178,7 +178,7 @@ public:
 	{}
 	static std::string getDescription() {return "Start navigation if camera's view points have been saved";}
 protected:
-	virtual std::string defaultPerformerType();
+    virtual std::string defaultPerformerType() override;
 	void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 	sofa::component::configurationsetting::StartNavigationButtonSetting::SPtr setting;
 };
@@ -186,7 +186,7 @@ protected:
 class SOFA_SOFAGUI_API InciseOperation : public Operation
 {
 public:
-    InciseOperation():startPerformer(nullptr), cpt (0) {};
+    InciseOperation():startPerformer(nullptr), cpt (0) {}
     ~InciseOperation() override;
     void start() override ;
     void execution() override ;
@@ -220,9 +220,9 @@ protected:
 class SOFA_SOFAGUI_API TopologyOperation : public Operation
 {
 public:
-    TopologyOperation():scale (0.0), volumicMesh (0), firstClick(1) {};
+    TopologyOperation():scale (0.0), volumicMesh (0), firstClick(1) {}
 
-    ~TopologyOperation() override {};
+    ~TopologyOperation() override {}
     void start() override;
     void execution() override;
     void end() override;
@@ -259,7 +259,7 @@ public:
 
     static std::string getDescription() {return "Add a spring to suture two points.";}
 protected:
-    virtual std::string defaultPerformerType();
+    virtual std::string defaultPerformerType() override;
     void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 
     double stiffness;

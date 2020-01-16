@@ -1,7 +1,9 @@
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="SofaStereo"/>
     <StereoCamera enabled="true" mode="3" strategy="0" baseline="10" />
 
-    <OglModel name="visual" fileMesh="mesh/dragon.obj" />
+    <MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
+    <OglModel name="visual" src="@meshLoader_0" />
 </Node>
     

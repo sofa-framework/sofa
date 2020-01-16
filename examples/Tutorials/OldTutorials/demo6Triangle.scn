@@ -1,12 +1,13 @@
 <!-- Hierarchical Group Basic Test -->
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
-    <CollisionPipeline depth="6" verbose="0" draw="1" />
+    <DefaultPipeline depth="6" verbose="0" draw="1" />
     <BruteForceDetection name="N2" />
     <!--<ProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="1" useLineTriangle="0"/>-->
     <MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5"  />
     <Node name="Poutre1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="meshLoader" filename="mesh/smCube27.msh" />
         <Node name="M1">
@@ -22,9 +23,9 @@
                 <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -39,9 +40,9 @@
                 <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
             <Node name="Visu">
@@ -61,9 +62,9 @@
                 <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -82,9 +83,9 @@
                 <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -100,9 +101,9 @@
                 <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -121,9 +122,9 @@
                 <MeshObjLoader filename="mesh/dragon.obj" name="loader" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -137,9 +138,9 @@
         <MeshObjLoader filename="mesh/floor.obj" name="loader" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-20" />
-        <Triangle name="Floor" simulated="0" moving="0" />
-        <Line name="Floor" simulated="0" moving="0" />
-        <Point name="Floor" simulated="0" moving="0" />
+        <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
+        <LineCollisionModel name="Floor" simulated="0" moving="0" />
+        <PointCollisionModel name="Floor" simulated="0" moving="0" />
         <OglModel name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" dy="-20" />
     </Node>
 </Node>

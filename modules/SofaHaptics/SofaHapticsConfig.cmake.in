@@ -2,6 +2,8 @@
 
 @PACKAGE_INIT@
 
+find_package(SofaGeneral REQUIRED) # To have SofaConstraint
+
 ### Is the target existing ?
 if(NOT TARGET SofaHaptics)
         ### If not we are building out of tree.

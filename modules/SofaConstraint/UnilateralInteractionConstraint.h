@@ -91,7 +91,7 @@ protected:
 class SOFA_CONSTRAINT_API UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
-    UnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev=NULL, bool* active = NULL)
+    UnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev = nullptr, bool* active = nullptr)
         :core::behavior::ConstraintResolution(3)
         , _mu(mu)
         , _prev(prev)
@@ -189,7 +189,7 @@ public:
 
     unsigned int constraintId;
 protected:
-    UnilateralInteractionConstraint(MechanicalState* object1=NULL, MechanicalState* object2=NULL);
+    UnilateralInteractionConstraint(MechanicalState* object1=nullptr, MechanicalState* object2=nullptr);
     virtual ~UnilateralInteractionConstraint();
 
 public:

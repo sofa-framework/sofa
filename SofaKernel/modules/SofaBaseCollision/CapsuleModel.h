@@ -155,7 +155,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == nullptr && context->getMechanicalState() != nullptr)
             return false;
 
         return BaseObject::canCreate(obj, context, arg);
@@ -166,9 +166,14 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const TCapsuleModel<DataTypes>* = NULL)
+    static std::string templateName(const TCapsuleModel<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
+    }
+
+    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
+    {
+        return l_topology.get();
     }
 
     /**
@@ -177,6 +182,10 @@ public:
     bool shareSameVertex(int i1,int i2)const;
 
     Data<VecReal > & writeRadii();
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TCapsuleModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;
 };

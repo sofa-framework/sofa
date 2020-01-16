@@ -39,13 +39,11 @@ using namespace sofa::defaulttype;
 // Register in the Factory
 int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
         .add< BarycentricMapping< Vec3dTypes, Vec3dTypes > >(true)
-        .add< BarycentricMapping< Vec3dTypes, ExtVec3Types > >()
 
 
         ;
 
 template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, ExtVec3Types >;
 
 
 

@@ -507,7 +507,6 @@ MeshTopology::MeshTopology()
     , seqTriangles(initData(&seqTriangles,"triangles","List of triangle indices"))
     , seqQuads(initData(&seqQuads,"quads","List of quad indices"))
     , seqTetrahedra(initData(&seqTetrahedra,"tetrahedra","List of tetrahedron indices"))
-    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
     , seqHexahedra(initData(&seqHexahedra,"hexahedra","List of hexahedron indices"))
     , seqUVs(initData(&seqUVs,"uv","List of uv coordinates"))
     , nbPoints(0)
@@ -527,9 +526,19 @@ MeshTopology::MeshTopology()
     addAlias(&seqUVs,"texcoords");
 }
 
+void MeshTopology::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("isToPrint")!=nullptr)
+    {
+        msg_deprecated() << "The 'isToPrint' data field has been deprecated in Sofa 19.06 due to lack of consistency in how it should work." << msgendl
+                            "Please contact sofa-dev team in case you need similar.";
+    }
+    Inherit1::parse(arg);
+}
+
 void MeshTopology::init()
 {
-    if(isToPrint.getValue()==true) seqEdges.setPersistent(false);
+
     BaseMeshTopology::init();
     if (nbPoints==0)
     {
@@ -596,7 +605,7 @@ void MeshTopology::init()
 
     if(seqEdges.getValue().empty() )
     {
-        if(seqEdges.getParent() != NULL )
+        if(seqEdges.getParent() != nullptr )
         {
             seqEdges.delInput(seqEdges.getParent());
         }
@@ -606,7 +615,7 @@ void MeshTopology::init()
     }
     if(seqTriangles.getValue().empty() )
     {
-        if(seqTriangles.getParent() != NULL)
+        if(seqTriangles.getParent() != nullptr)
         {
             seqTriangles.delInput(seqTriangles.getParent());
         }
@@ -616,7 +625,7 @@ void MeshTopology::init()
     }
     if(seqQuads.getValue().empty() )
     {
-        if(seqQuads.getParent() != NULL )
+        if(seqQuads.getParent() != nullptr )
         {
             seqQuads.delInput(seqQuads.getParent());
         }

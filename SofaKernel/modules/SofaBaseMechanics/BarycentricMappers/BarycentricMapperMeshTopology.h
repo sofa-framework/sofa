@@ -39,7 +39,6 @@ using core::visual::VisualParams;
 using sofa::defaulttype::BaseMatrix;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 
 /// Class allowing barycentric mapping computation on a MeshTopology
 template<class In, class Out>
@@ -89,8 +88,10 @@ public:
 
     sofa::helper::vector< MappingData3D > const* getMap3d() const { return &m_map3d; }
 
-    friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b );
-    friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperMeshTopology<In, Out> & b );
+    template<class I, class O>
+    friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<I, O> &b );
+    template<class I, class O>
+    friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperMeshTopology<I, O> & b );
 
     ~BarycentricMapperMeshTopology() override ;
 
@@ -114,7 +115,6 @@ private:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERMESHTOPOLOGY_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3dTypes, ExtVec3Types >;
 
 
 #endif

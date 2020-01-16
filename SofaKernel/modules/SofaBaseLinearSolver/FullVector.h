@@ -75,13 +75,13 @@ public:
 
     FullVector()
         : defaulttype::BaseVector()
-        , data(NULL), cursize(0), allocsize(0)
+        , data(nullptr), cursize(0), allocsize(0)
     {
     }
 
     FullVector(const FullVector& vect)
         : defaulttype::BaseVector()
-        , data(NULL), cursize(0), allocsize(0)
+        , data(nullptr), cursize(0), allocsize(0)
     {
         (*this) = vect;
     }

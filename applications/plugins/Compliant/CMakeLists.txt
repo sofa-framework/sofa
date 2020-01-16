@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 project(Compliant VERSION 0.1)
 
+find_package(SofaMisc REQUIRED)
+find_package(SofaMiscCollision REQUIRED)
+find_package(SofaGui QUIET)
+sofa_find_package(SofaPython QUIET)
+
 set(HEADER_FILES
+    config.h.in
     assembly/AssembledSystem.h
     assembly/AssemblyHelper.h
     assembly/AssemblyVisitor.h
@@ -126,8 +132,7 @@ set(HEADER_FILES
     utils/sub_kkt.h
     utils/sub_kkt.inl
     utils/thread_variable.h
-)
-
+    )
 set(SOURCE_FILES
     assembly/AssembledSystem.cpp
     assembly/AssemblyVisitor.cpp
@@ -213,13 +218,11 @@ set(SOURCE_FILES
     utils/anderson.cpp
     utils/nlnscg.cpp
     utils/sub_kkt.cpp
-)
-
-find_package(SofaMiscCollision REQUIRED)
-
-find_package(SofaPython QUIET)
-if( SofaPython_FOUND )
-
+    )
+set(README_FILES
+    Compliant.txt
+    )
+if(SofaPython_FOUND)
     set(PYTHON_FILES
         python/Compliant/Control.py
         python/Compliant/Frame.py
@@ -231,16 +234,13 @@ if( SofaPython_FOUND )
         python/Compliant/__init__.py
         python/Compliant/future.py
         python/Compliant/sml.py
-    )
-
-
+        )
     list(APPEND HEADER_FILES
         mapping/PythonMultiMapping.h
         mapping/PythonMultiMapping.inl
         python/Binding_AssembledSystem.h
         python/python.h
         )
-
     list(APPEND SOURCE_FILES
         mapping/PythonMultiMapping.cpp
         python/_Compliant.cpp
@@ -254,14 +254,10 @@ if( SofaPython_FOUND )
     sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 endif()
 
-
-set(README_FILES Compliant.txt)
-
-find_package(SofaMisc REQUIRED)
-
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
+
 target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph SofaMiscCollision)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Compliant")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
@@ -271,17 +267,9 @@ if(UNIX AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME} rt)
 endif()
 
-
-set(COMPLIANT_COMPILER_FLAGS "-DSOFA_BUILD_Compliant")
-
-if( SofaPython_FOUND )
+if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
-    set(COMPLIANT_COMPILER_FLAGS "${COMPLIANT_COMPILER_FLAGS} -DSOFA_HAVE_SOFAPYTHON")
 endif()
-
-
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COMPLIANT_COMPILER_FLAGS}")
-
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)
@@ -290,8 +278,7 @@ if(SOFA_BUILD_TESTS)
     endif()
 endif()
 
-find_package(SofaGui QUIET)
-if(SofaGui_FOUND AND SOFA_GUI_QT)
+if(SofaGui_FOUND AND SOFAGUI_HAVE_SOFAGUIQT)
     add_subdirectory(Compliant_gui)
 endif()
 

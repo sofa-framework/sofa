@@ -24,13 +24,13 @@
 #include <cstdlib>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <SofaSimulationCommon/xml/ElementNameHelper.h>
+#include <sofa/helper/logging/Message.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/core/ObjectFactory.h>
 #include <cstring>
-
-#include <sofa/helper/logging/Message.h>
+#include <tinyxml.h>
 
 /* For loading the scene */
 
@@ -77,7 +77,7 @@ bool deriveFromMultiMapping( const std::string& className)
 
 } // namespace anonymous
 
-void recReplaceAttribute(BaseElement* node, const char* attr, const char* value, const char* nodename=NULL)
+void recReplaceAttribute(BaseElement* node, const char* attr, const char* value, const char* nodename=nullptr)
 {
     if (nodename)
     {
@@ -100,9 +100,6 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
 }
 
 
-
-#ifdef SOFA_XML_PARSER_TINYXML
-
 BaseElement* includeNode  (TiXmlNode* root,const char *basefilename, ElementNameHelper& resolveElementName);
 BaseElement* attributeNode(TiXmlNode* root,const char *basefilename);
 void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode);
@@ -111,21 +108,21 @@ int numDefault=0;
 
 BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHelper& elementNameHelper, bool isRoot = false)
 {
-    //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return NULL;
+    //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return nullptr;
 
     // TinyXml API changed in 2.6.0, ELEMENT was replaced with TINYXML_ELEMENT
     // As the version number is not available as a macro, the most portable was is to
     // replace these constants with checks of the return value of ToElement()
     // (which is already done here). -- Jeremie A. 02/07/2011
-    // if (root->Type() != TiXmlNode::ELEMENT) return NULL;
+    // if (root->Type() != TiXmlNode::ELEMENT) return nullptr;
     TiXmlElement* element = root->ToElement();
     if (!element)
-        return NULL;
+        return nullptr;
 
     if (!element->Value() || !element->Value()[0])
     {
         msg_error_withfile("XMLParser", basefilename, element->Row()) << "Invalid element : " << *element ;
-        return NULL;
+        return nullptr;
     }
 
     // handle special 'preprocessor' tags
@@ -141,7 +138,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
 
     const char* pname = element->Attribute("name");
 
-    if (pname != NULL)
+    if (pname != nullptr)
     {
         name = pname;
     }
@@ -153,7 +150,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
 
     const char* ptype = element->Attribute("type");
 
-    if (ptype != NULL)
+    if (ptype != nullptr)
     {
         type = ptype;
     }
@@ -174,7 +171,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
         filename += type;
         filename += ".xml";
 
-        if (sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename, NULL))
+        if (sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename, nullptr))
         {
             // we found a replacement xml
             element->SetAttribute("href",filename.c_str());
@@ -190,10 +187,10 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
     name = elementNameHelper.resolveName(type,name);
 
     BaseElement* node = BaseElement::Create(classType,name,type);
-    if (node==NULL)
+    if (node==nullptr)
     {
         msg_info_withfile("XMLParser", basefilename, element->Row()) << "Node "<<element->Value()<<" name "<<name<<" type "<<type<<" creation failed.\n";
-        return NULL;
+        return nullptr;
     }
 
     if (isRoot)
@@ -205,16 +202,16 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
      // List attributes
     for (TiXmlAttribute* attr=element->FirstAttribute(); attr ; attr = attr->Next())
     {
-        if (attr->Value()==NULL) continue;
+        if (attr->Value()==nullptr) continue;
         if (!(strcmp(attr->Name(), "name"))) continue;
         if (!(strcmp(attr->Name(), "type"))) continue;
-        node->setAttribute(attr->Name(), attr->Value());
+        node->setAttribute(attr->Name(), std::string(attr->Value()));
     }
 
-    for (TiXmlNode* child = root->FirstChild() ; child != NULL; child = child->NextSibling())
+    for (TiXmlNode* child = root->FirstChild() ; child != nullptr; child = child->NextSibling())
     {
         BaseElement* childnode = createNode(child, basefilename, elementNameHelper);
-        if (childnode != NULL)
+        if (childnode != nullptr)
         {
             //  if the current node is an included node, with the special name Group, we only add the objects.
             switch(childnode->getIncludeNodeType())
@@ -273,10 +270,10 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, b
     ElementNameHelper resolveElementName;
     const TiXmlElement* hRoot = doc.RootElement();
 
-    if (hRoot == NULL)
+    if (hRoot == nullptr)
     {
         msg_info("XMLParser") << " Empty document: " << filename ;
-        return NULL;
+        return nullptr;
     }
 
     std::string basefilename;
@@ -286,10 +283,10 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, b
         basefilename = sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
     BaseElement* graph = createNode((TiXmlElement*)hRoot, basefilename.c_str(),resolveElementName, true);
 
-    if (graph == NULL)
+    if (graph == nullptr)
     {
         msg_error("XMLParser") << "XML Graph creation failed." ;
-        return NULL;
+        return nullptr;
     }
 
     return graph;
@@ -305,7 +302,7 @@ BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int
     if (doc.Error())
     {
         msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc.ErrorDesc() << " at line " << doc.ErrorRow() << " row " << doc.ErrorCol() ;
-        return NULL;
+        return nullptr;
     }
     return processXMLLoading(filename, doc, true);
 }
@@ -328,7 +325,7 @@ BaseElement* loadFromFile(const char *filename)
     {
         msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc->ErrorDesc() << " at line " << doc->ErrorRow() << " row " << doc->ErrorCol() ;
         delete doc;
-        return NULL;
+        return nullptr;
     }
 
     BaseElement* r = processXMLLoading(filename, *doc);
@@ -344,7 +341,7 @@ BaseElement* loadFromFile(const char *filename)
 BaseElement* includeNode(TiXmlNode* root,const char *basefilename, ElementNameHelper& resolveElementName)
 {
     TiXmlElement* element = root->ToElement();
-    if (!element) return NULL;
+    if (!element) return nullptr;
 
     std::string filename;
     const char *pfilename = element->Attribute("href");
@@ -355,22 +352,22 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename, ElementNameHe
     if (filename.empty())
     {
         msg_error("XMLParser") << "Xml include tag requires non empty filename or href attribute." ;
-        return NULL;
+        return nullptr;
     }
     sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename);
     TiXmlDocument doc; // the resulting document tree
     if (!doc.LoadFile(filename.c_str()))
     {
         msg_error("XMLParser") << "Failed to parse " << filename << "\n";
-        return NULL;
+        return nullptr;
     }
     TiXmlElement* newroot = doc.RootElement();
 
-    if (newroot == NULL)
+    if (newroot == nullptr)
     {
         msg_error("XMLParser") << "ERROR: empty document in " << filename << "\n";
         //xmlFreeDoc(doc);
-        return NULL;
+        return nullptr;
     }
     BaseElement* result = createNode(newroot, filename.c_str(),resolveElementName, true);
     if (result)
@@ -379,9 +376,9 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename, ElementNameHe
         if (result->getName() == "_Group_") result->setIncludeNodeType(INCLUDE_NODE_GROUP);
         if (result->getName() == "_Merge_") result->setIncludeNodeType(INCLUDE_NODE_MERGE);
         // Copy attributes
-        for (TiXmlAttribute* attr=element->FirstAttribute(); attr != NULL ; attr = attr->Next())
+        for (TiXmlAttribute* attr=element->FirstAttribute(); attr != nullptr ; attr = attr->Next())
         {
-            if (attr->Value()==NULL) continue;
+            if (attr->Value()==nullptr) continue;
             if (!(strcmp(attr->Name(), "href"))) continue;
             if (!(strcmp(attr->Name(), "name")))
             {
@@ -412,7 +409,6 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename, ElementNameHe
     //xmlFreeDoc(doc);
     return result;
 }
-#endif // SOFA_XML_PARSER_TINYXML
 
 void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode)
 {
@@ -425,13 +421,13 @@ void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode)
         if (aname == "name") continue;
         const char* aval = srcNode->getAttribute(aname);
         if (!aval) continue;
-        destNode->setAttribute(aname, aval);
+        destNode->setAttribute(aname, std::string(aval));
     }
     BaseElement::child_iterator<> itS(srcNode->begin());
     for(; itS!=srcNode->end(); ++itS)
     {
         BaseElement* srcElem = itS;
-        BaseElement* destElem = NULL;
+        BaseElement* destElem = nullptr;
         if (!srcElem->getName().empty())
         {
             BaseElement::child_iterator<> itD(destNode->begin());
@@ -455,265 +451,6 @@ void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode)
         }
     }
 }
-
-#ifdef SOFA_XML_PARSER_LIBXML
-BaseElement* includeNode  (xmlNodePtr root,const char *basefilename);
-BaseElement* attributeNode(xmlNodePtr root,const char *basefilename);
-
-
-int numDefault=0;
-
-BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot = false)
-{
-    //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return NULL;
-    if (root->type != XML_ELEMENT_NODE) return NULL;
-
-    // handle special 'preprocessor' tags
-
-    if (!xmlStrcmp(root->name,(const xmlChar*)"include"))
-    {
-        return includeNode(root, basefilename);
-    }
-
-    std::string classType,name, type;
-
-    xmlChar *pname = xmlGetProp(root, (const xmlChar*) "name");
-    xmlChar *ptype = xmlGetProp(root, (const xmlChar*) "type");
-    classType=(const char*)root->name;
-    if (pname != NULL)
-    {
-        name = (const char*)pname;
-        xmlFree(pname);
-    }
-    else
-    {
-        name = "default";
-        // 		static int num = 0;
-        char buf[16];
-        sprintf(buf, "%d", numDefault);
-        ++numDefault;
-        name += buf;
-    }
-    if (ptype != NULL)
-    {
-        type = (const char*)ptype;
-        xmlFree(ptype);
-    }
-    else
-    {
-        type = "default";
-    }
-    BaseElement* node = BaseElement::Create(classType,name,type);
-    if (node == NULL)
-    {
-        type=classType;
-        classType="Object";
-        node = BaseElement::Create(classType,name,type);
-        if (node==NULL)
-        {
-            msg_error("XML") << "Node "<<root->name<<" name "<<name<<" type "<<type<<" creation failed.";
-            return NULL;
-        }
-    }
-
-    if (isRoot)
-        node->setBaseFile( basefilename );
-
-    // List attributes
-    for (xmlAttrPtr attr = root->properties; attr!=NULL; attr = attr->next)
-    {
-        if (attr->children==NULL) continue;
-        if (!xmlStrcmp(attr->name,(const xmlChar*)"name")) continue;
-        if (!xmlStrcmp(attr->name,(const xmlChar*)"type")) continue;
-        node->setAttribute((const char*)attr->name, (const char*)attr->children->content);
-    }
-
-    for (xmlNodePtr child = root->xmlChildrenNode; child != NULL; child = child->next)
-    {
-        BaseElement* childnode = createNode(child, basefilename);
-        if (childnode != NULL)
-        {
-            //  if the current node is an included node, with the special name Group, we only add the objects.
-            if (childnode->isGroupType())
-            {
-                BaseElement::child_iterator<> it(childnode->begin());
-                for(; it!=childnode->end(); ++it) {node->addChild(it); childnode->removeChild(it);}
-            }
-            else
-            {
-                if (!node->addChild(childnode))
-                {
-                    msg_info("XML") << "Node "<<childnode->getClass()<<" name "<<childnode->getName()<<" type "<<childnode->getType()
-                            <<" cannot be a child of node "<<node->getClass()<<" name "<<node->getName()<<" type "<<node->getType();
-                    delete childnode;
-                }
-            }
-        }
-    }
-    return node;
-}
-
-static void dumpNode(BaseElement* node, std::string prefix0="==", std::string prefix="  ")
-{
-    std::cout << prefix0;
-    std::cout << node->getClass()<<" name "<<node->getName()<<" type "<<node->getType()<<std::endl;
-    BaseElement::child_iterator<> it = node->begin();
-    BaseElement::child_iterator<> end = node->end();
-    while (it != end)
-    {
-        BaseElement::child_iterator<> next = it;
-        ++next;
-        if (next==end) dumpNode(it, prefix+"\\-", prefix+"  ");
-        else           dumpNode(it, prefix+"+-", prefix+"| ");
-        it = next;
-    }
-}
-
-BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc)
-{
-    xmlNodePtr root;
-
-    if (doc == NULL)
-    {
-        msg_info("XML") << "Failed to open '" << filename << "'";
-        return NULL;
-    }
-
-    root = xmlDocGetRootElement(doc);
-
-    if (root == NULL)
-    {
-        msg_info("XML") << "empty document.";
-        xmlFreeDoc(doc);
-        return NULL;
-    }
-
-    std::string basefilename =
-        sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
-    BaseElement* graph = createNode(root, basefilename.c_str(), true);
-    xmlFreeDoc(doc);
-    xmlCleanupParser();
-    xmlMemoryDump();
-
-    if (graph == NULL)
-    {
-        msg_info("XML") << "XML Graph creation failed.";
-        return NULL;
-    }
-
-    return graph;
-}
-
-BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int size )
-{
-    //
-    // this initialize the library and check potential ABI mismatches
-    // between the version it was compiled for and the actual shared
-    // library used.
-    //
-    LIBXML_TEST_VERSION
-
-    xmlDocPtr doc; // the resulting document tree
-
-    xmlSubstituteEntitiesDefault(1);
-
-    doc = xmlParseMemory(data,size);
-
-    return processXMLLoading(filename, doc);
-}
-
-BaseElement* loadFromFile(const char *filename)
-{
-    //
-    // this initialize the library and check potential ABI mismatches
-    // between the version it was compiled for and the actual shared
-    // library used.
-    //
-    LIBXML_TEST_VERSION
-
-    xmlDocPtr doc; // the resulting document tree
-
-    xmlSubstituteEntitiesDefault(1);
-
-    doc = xmlParseFile(filename);
-
-    return processXMLLoading(filename, doc);
-
-}
-
-
-BaseElement* includeNode(xmlNodePtr root,const char *basefilename)
-{
-    std::string filename;
-    xmlChar *pfilename = xmlGetProp(root, (const xmlChar*) "href");
-    if (pfilename)
-    {
-        filename = (const char*)pfilename;
-        xmlFree(pfilename);
-    }
-    if (filename.empty())
-    {
-        msg_info("XML") << "Xml include tag requires non empty filename or href attribute.";
-        return NULL;
-    }
-    /*  std::cout << "XML: Including external file " << filename << " from " << basefilename << std::endl;*/
-    sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename);
-    xmlDocPtr doc; // the resulting document tree
-    doc = xmlParseFile(filename.c_str());
-    if (doc == NULL)
-    {
-        msg_info("XML") << "Failed to parse '" << filename << "'" ;
-        return NULL;
-    }
-
-    xmlNodePtr newroot = xmlDocGetRootElement(doc);
-    if (newroot == NULL)
-    {
-        msg_info("XML") << "Empty document in '" << filename << "'";
-        xmlFreeDoc(doc);
-        return NULL;
-    }
-    BaseElement* result = createNode(newroot, filename.c_str(), true);
-    if (result)
-    {
-
-        if (result->getName() == "Group") result->setGroupType(true);
-        // Copy attributes
-        for (xmlAttrPtr attr = root->properties; attr!=NULL; attr = attr->next)
-        {
-            if (attr->children==NULL) continue;
-            if (!xmlStrcmp(attr->name,(const xmlChar*)"href")) continue;
-            if (!xmlStrcmp(attr->name,(const xmlChar*)"name"))
-            {
-                if(!xmlStrcmp(attr->children->content,(const xmlChar*)"Group")) result->setGroupType(true);
-                else  result->setGroupType(false);
-
-                if (!result->isGroupType()) result->setName((const char*)attr->children->content);
-            }
-            else
-            {
-                const char* attrname = (const char*)attr->name;
-
-                const char* value = (const char*)attr->children->content;
-                if (const char* sep = strstr(attrname,"__"))
-                {
-                    // replace attribute in nodes with a given name
-                    std::string nodename(attrname, sep);
-                    recReplaceAttribute(result, sep+2, value, nodename.c_str());
-                }
-                else
-                {
-                    // replace attribute in all nodes already containing it
-                    recReplaceAttribute(result, attrname, value);
-                }
-            }
-        }
-    }
-    xmlFreeDoc(doc);
-    return result;
-}
-
-#endif //SOFA_XML_PARSER_LIBXML
 
 
 } // namespace xml

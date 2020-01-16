@@ -4,20 +4,13 @@ project(SofaGeneral)
 # Send warnings when deprecated CMake project is activated
 option(CMAKE_WARN_DEPRECATED "Send warning when deprecated projects are found" ON)
 
-## Dependencies
+# Dependencies
 find_package(SofaCommon REQUIRED)
-find_package(Newmat)
-set(SOFA_HAVE_NEWMAT ${Newmat_FOUND})
 
-## Version
+# Version
 set(SOFAGENERAL_VERSION ${SofaFramework_VERSION})
 
-## SofaGeneral/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
-
-### Subdirectories
-
+# Subdirectories
 set(SOFAGENERAL_TARGETS
     SofaGeneralAnimationLoop
     SofaGeneralDeformable
@@ -32,7 +25,6 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralTopology
     SofaGeneralVisual
     SofaBoundaryCondition
-    SofaComponentGeneral
     SofaConstraint
     SofaGeneralEngine
     SofaGraphComponent
@@ -41,13 +33,11 @@ set(SOFAGENERAL_TARGETS
     SofaValidation
 )
 
-if(SOFA_HAVE_NEWMAT)
+find_package(Newmat QUIET)
+if(Newmat_FOUND)
     list(APPEND SOFAGENERAL_TARGETS SofaDenseSolver)
 endif()
-
-if(NOT SOFA_NO_OPENGL)
-    list(APPEND SOFAGENERAL_TARGETS SofaOpenglVisual)
-endif()
+sofa_set_01(SOFAGENERAL_HAVE_SOFADENSESOLVER VALUE ${Newmat_FOUND})
 
 foreach(TARGET ${SOFAGENERAL_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
@@ -59,6 +49,9 @@ foreach(TARGET ${SOFAGENERAL_TARGETS})
     set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFAGENERAL_VERSION})
 endforeach()
 
+# SofaGeneral/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
 
-## CMake package configurations files
+# CMake package configurations files
 sofa_write_package_config_files(SofaGeneral ${SOFAGENERAL_VERSION})

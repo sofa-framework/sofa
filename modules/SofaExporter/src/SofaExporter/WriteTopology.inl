@@ -48,9 +48,10 @@ WriteTopology::WriteTopology()
     , f_interval( initData(&f_interval, 0.0, "interval", "time duration between outputs"))
     , f_time( initData(&f_time, helper::vector<double>(0), "time", "set time to write outputs"))
     , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
-    , outfile(NULL)
-    #ifdef SOFA_HAVE_ZLIB
+    , outfile(nullptr)
+    #if SOFAEXPORTER_HAVE_ZLIB
     , gzfile(nullptr)
     #endif
     , nextTime(0)
@@ -64,7 +65,7 @@ WriteTopology::~WriteTopology()
 {
     if (outfile)
         delete outfile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -73,14 +74,28 @@ WriteTopology::~WriteTopology()
 
 void WriteTopology::init()
 {
-    m_topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     const std::string& filename = f_filename.getFullPath();
 
     if (filename.empty())
         return;
 
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
         gzfile = gzopen(filename.c_str(),"wb");
@@ -97,7 +112,7 @@ void WriteTopology::init()
     {
         msg_error() << "Unable to create the file "<<filename;
         delete outfile;
-        outfile = NULL;
+        outfile = nullptr;
     }
 }
 
@@ -115,7 +130,7 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
     {
         if (!m_topology) return;
         if (!outfile
-        #ifdef SOFA_HAVE_ZLIB
+        #if SOFAEXPORTER_HAVE_ZLIB
                 && !gzfile
         #endif
                 )
@@ -147,7 +162,7 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
 
         if (writeCurrent)
         {
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
             if (gzfile)
             {
                 std::ostringstream str;

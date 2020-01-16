@@ -4,11 +4,11 @@ project(SofaPreconditioner VERSION 1.0)
 # Dependencies
 find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaSimpleFem
 find_package(SofaGeneral REQUIRED) # SofaGeneralLinearSolver
-find_package(newmat QUIET)
+sofa_find_package(SofaSparseSolver QUIET) # Soft dependency of PrecomputedWarpPreconditioner
 
 # Config
 set(HEADER_FILES
-    src/SofaPreconditioner/config.h
+    src/SofaPreconditioner/config.h.in
     )
 set(SOURCE_FILES
     src/SofaPreconditioner/initPreconditioner.cpp
@@ -39,20 +39,20 @@ list(APPEND SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaImplicitOdeSolver SofaGeneralLinearSolver SofaSimpleFem)
+if(SofaSparseSolver_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaSparseSolver)
+endif()
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPRECONDITIONER")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
-if(newmat_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC SofaDenseSolver)
-    message(STATUS "-- newmat was found.")
-else()
-    message(STATUS "-- newmat was not found.")
-endif()
-
-sofa_generate_package(NAME SofaPreconditioner VERSION ${PROJECT_VERSION} TARGETS SofaPreconditioner
+sofa_generate_package(
+    NAME SofaPreconditioner
+    VERSION ${PROJECT_VERSION}
+    TARGETS SofaPreconditioner
     INCLUDE_SOURCE_DIR "src/SofaPreconditioner"
     INCLUDE_INSTALL_DIR "SofaPreconditioner"
+    RELOCATABLE "plugins"
     )

@@ -45,21 +45,21 @@ using namespace sofa::simulation;
 template<class Matrix, class Vector>
 LULinearSolver<Matrix,Vector>::LULinearSolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , solver(NULL), computedMinv(false)
+    , solver(nullptr), computedMinv(false)
 {
 }
 
 template<class Matrix, class Vector>
 LULinearSolver<Matrix,Vector>::~LULinearSolver()
 {
-    if (solver != NULL)
+    if (solver != nullptr)
         delete solver;
 }
 
 template<class Matrix, class Vector>
 void LULinearSolver<Matrix,Vector>::invert (Matrix& M)
 {
-    if (solver != NULL)
+    if (solver != nullptr)
         delete solver;
     solver = M.makeLUSolver();
     computedMinv = false;
@@ -144,7 +144,7 @@ bool LULinearSolver<Matrix, Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
                 }
             }
             acc *= fact;
-            //sout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<sendl;
+
             result.add(row1,row2,acc);
             if (row1!=row2)
                 result.add(row2,row1,acc);

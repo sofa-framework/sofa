@@ -84,9 +84,9 @@ protected:
 
     void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 
-    FrictionContact() {}
-
+    FrictionContact();
     FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
+
     ~FrictionContact() override;
 public:
     void cleanup() override;

@@ -35,7 +35,6 @@
 #include <sofa/helper/map.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -129,6 +128,8 @@ public:
     Data< bool >         d_printMass; ///< Boolean to print the mass
     Data< std::map < std::string, sofa::helper::vector<double> > > f_graph; ///< Graph of the controlled potential
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<MeshMatrixMass<DataTypes, TMassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
 
@@ -137,7 +138,7 @@ protected:
     Real m_massLumpingCoeff;
 
     MeshMatrixMass();
-    ~MeshMatrixMass();
+    ~MeshMatrixMass() override;
 
     bool checkTopology();
     void initTopologyHandlers();
@@ -147,17 +148,8 @@ protected:
     MeshMatrixMassInternalData<DataTypes, MassType> data;
     friend class MeshMatrixMassInternalData<DataTypes, MassType>;
 
-    /// Data tracker
-    sofa::core::DataTracker m_dataTrackerVertex;
-    sofa::core::DataTracker m_dataTrackerEdge;
-    sofa::core::DataTracker m_dataTrackerDensity;
-    sofa::core::DataTracker m_dataTrackerTotal;
-
 
 public:
-
-    sofa::core::topology::BaseMeshTopology* _topology;
-
     sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
     sofa::component::topology::TriangleSetGeometryAlgorithms<GeometricalTypes>* triangleGeo;
     sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
@@ -169,8 +161,8 @@ public:
 
     void reinit() override;
     void init() override;
-    void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
-    bool update();
+    void handleEvent(sofa::core::objectmodel::Event *event) override;
+    void doUpdateInternal() override;
 
     TopologyType getMassTopologyType() const
     {
@@ -434,6 +426,8 @@ protected:
     };
 
     EdgeMassHandler* m_edgeMassHandler;
+
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 #if  !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)

@@ -1,11 +1,12 @@
 <Node name="root" dt="0.03333">
-    <CollisionPipeline verbose="0" depth="10" draw="0" />
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <DefaultPipeline verbose="0" depth="10" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="M1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="20" dz="29" />
         <UniformMass totalMass="10" />
@@ -19,14 +20,14 @@
             <MeshObjLoader filename="mesh/torus2_scale3.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader"/>
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
     <Node name="M1">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="20" dy="20" dz="29" />
         <UniformMass totalMass="10" />
@@ -40,14 +41,14 @@
             <MeshObjLoader filename="mesh/dragon.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader"/>
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
     <Node name="M1">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="-20" dy="20" dz="29" />
         <UniformMass totalMass="10" />
@@ -73,9 +74,9 @@
             <MeshObjLoader filename="mesh/frog-push25.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -83,9 +84,9 @@
         <MeshObjLoader filename="mesh/floor2b.obj" name="loader" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-10.25" scale="0.5" />
-        <Triangle name="Floor" simulated="0" moving="0" />
-        <Line name="Floor" simulated="0" moving="0" />
-        <Point name="Floor" simulated="0" moving="0" />
+        <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
+        <LineCollisionModel name="Floor" simulated="0" moving="0" />
+        <PointCollisionModel name="Floor" simulated="0" moving="0" />
         <OglModel name="FloorV" filename="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" color="gray" dy="-10" />
     </Node>
 </Node>

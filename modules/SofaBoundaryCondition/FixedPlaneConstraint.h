@@ -77,6 +77,10 @@ public:
     Data<Real> d_dmax; ///< coordinates max of the plane for the vertex selection
     SetIndex   d_indices; ///< the set of vertex indices
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<FixedPlaneConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
+
     /// inherited from the BaseObject interface
     void init() override;
     void draw(const VisualParams* vparams) override;
@@ -119,9 +123,6 @@ protected:
 
     /// whether vertices should be selected from 2 parallel planes
     bool m_selectVerticesFromPlanes {false};
-
-    /// Pointer to the current topology
-    BaseMeshTopology* m_topology {nullptr};
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html

@@ -38,7 +38,6 @@ using namespace defaulttype;
 int RigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
         .add< RigidMapping< Rigid3Types, Vec3dTypes > >()
         .add< RigidMapping< Rigid2Types, Vec2Types > >()
-        .add< RigidMapping< Rigid3Types, ExtVec3Types > >()
 
 
 
@@ -46,7 +45,6 @@ int RigidMappingClass = core::RegisterObject("Set the positions and velocities o
 
 template class SOFA_RIGID_API RigidMapping< Rigid3Types, Vec3dTypes >;
 template class SOFA_RIGID_API RigidMapping< Rigid2Types, Vec2Types >;
-template class SOFA_RIGID_API RigidMapping< Rigid3Types, ExtVec3Types >;
 
 
 
@@ -62,7 +60,7 @@ template<>
 const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK()
 {
     serr<<"TODO: assembled geometric stiffness not implemented"<<sendl;
-    return NULL;
+    return nullptr;
 }
 
 

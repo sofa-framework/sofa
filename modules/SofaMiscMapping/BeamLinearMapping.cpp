@@ -40,14 +40,12 @@ using namespace defaulttype;
 int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
 
         .add< BeamLinearMapping< Rigid3Types, Vec3dTypes > >()
-        .add< BeamLinearMapping< Rigid3Types, ExtVec3Types > >()
 
 
 
         ;
 
 template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3Types, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3Types, ExtVec3Types >;
 
 
 

@@ -54,6 +54,8 @@ SurfacePressureForceField<DataTypes>::SurfacePressureForceField():
     m_defaultVolume(initData(&m_defaultVolume, (Real)-1.0, "defaultVolume", "Default Volume")),
     m_mainDirection(initData(&m_mainDirection, Deriv(), "mainDirection", "Main direction for pressure application")),
     m_drawForceScale(initData(&m_drawForceScale, (Real)0, "drawForceScale", "DEBUG: scale used to render force vectors"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
 
 }
@@ -72,7 +74,22 @@ template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::init()
 {
     this->core::behavior::ForceField<DataTypes>::init();
-    m_topology = this->getContext()->getMeshTopology();
+   
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     state = ( m_pressure.getValue() > 0 ) ? INCREASE : DECREASE;
 
@@ -489,7 +506,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
 
     vparams->drawTool()->disableLighting();
 
-    const sofa::defaulttype::RGBAColor boxcolor(0.0, 0.8, 0.3, 1.0);
+    const sofa::defaulttype::RGBAColor boxcolor(0.0f, 0.8f, 0.3f, 1.0f);
 
     vparams->drawTool()->setMaterial(boxcolor);
     vparams->drawTool()->drawBoundingBox(DataTypes::getCPos(m_min.getValue()), DataTypes::getCPos(m_max.getValue()));

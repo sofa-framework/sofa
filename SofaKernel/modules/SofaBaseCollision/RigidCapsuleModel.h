@@ -108,11 +108,11 @@ public:
     typedef TCapsule<DataTypes> Element;
     friend class TCapsule<DataTypes>;
 protected:
-    Data<VecReal > _capsule_radii; ///< Radius of each capsule
-    Data<VecReal > _capsule_heights; ///< The capsule heights
+    Data<VecReal > d_capsule_radii; ///< Radius of each capsule
+    Data<VecReal > d_capsule_heights; ///< The capsule heights
 
-    Data<Real> _default_radius; ///< The default radius
-    Data<Real> _default_height; ///< The default height
+    Data<Real> d_default_radius; ///< The default radius
+    Data<Real> d_default_height; ///< The default height
 
     sofa::helper::vector<std::pair<int,int> > _capsule_points;
 
@@ -162,7 +162,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr && context->getMechanicalState() != nullptr)
             return false;
 
         return BaseObject::canCreate(obj, context, arg);
@@ -173,7 +173,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const TCapsuleModel<DataTypes>* = NULL)
+    static std::string templateName(const TCapsuleModel<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

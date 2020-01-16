@@ -48,14 +48,12 @@ using namespace sofa::gpu::cuda;
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3f1Types>;
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, Vec3Types>;
-template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, ExtVec3Types>;
 template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3Types, CudaVec3fTypes>;
 
 // CudaVec3f1Types
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, CudaVec3f1Types>;
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, Vec3Types>;
-template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, ExtVec3Types >;
 template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3dTypes, CudaVec3f1Types>;
 
 
@@ -64,12 +62,10 @@ template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3dTypes, CudaVec3f1Types>;
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, CudaVec3dTypes>;
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, Vec3Types>;
-template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, ExtVec3Types >;
 
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3dTypes>;
 template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3Types, CudaVec3dTypes>;
 
-template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3d1Types, ExtVec3Types >;
 
 #endif
 
@@ -94,14 +90,12 @@ int IdentityMappingCudaClass = core::RegisterObject("Supports GPU-side computati
     .add< IdentityMapping< CudaVec3fTypes, CudaVec3fTypes> >()
     .add< IdentityMapping< CudaVec3fTypes, CudaVec3f1Types> >()
     .add< IdentityMapping< CudaVec3fTypes, Vec3Types> >()
-    .add< IdentityMapping< CudaVec3fTypes, ExtVec3Types> >()
     .add< IdentityMapping< Vec3Types, CudaVec3fTypes> >()
     
     // CudaVec3f1Types
     .add< IdentityMapping< CudaVec3f1Types, CudaVec3f1Types> >()
     .add< IdentityMapping< CudaVec3f1Types, CudaVec3fTypes> >()
     .add< IdentityMapping< CudaVec3f1Types, Vec3Types> >()
-    .add< IdentityMapping< CudaVec3f1Types, ExtVec3Types> >()
     .add< IdentityMapping< Vec3Types, CudaVec3f1Types> >()
           
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -109,12 +103,10 @@ int IdentityMappingCudaClass = core::RegisterObject("Supports GPU-side computati
     .add< IdentityMapping< CudaVec3dTypes, CudaVec3dTypes> >()
     .add< IdentityMapping< CudaVec3dTypes, CudaVec3fTypes> >()
     .add< IdentityMapping< CudaVec3dTypes, Vec3Types> >()
-    .add< IdentityMapping< CudaVec3dTypes, ExtVec3Types> >()
 
     .add< IdentityMapping< CudaVec3fTypes, CudaVec3dTypes> >()
     .add< IdentityMapping< Vec3Types, CudaVec3dTypes> >()
-    
-    .add< IdentityMapping< CudaVec3d1Types, ExtVec3Types> >()    
+
 #endif
         
         ;

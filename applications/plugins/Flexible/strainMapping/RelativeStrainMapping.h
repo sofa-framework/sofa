@@ -55,7 +55,7 @@ public:
     Data<bool> d_inverted; ///< offset-Strain (rather than Strain-offset )
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         bool inverted = d_inverted.getValue();
         for( size_t i=0 ; i<this->jacobian.size() ; i++ )
@@ -75,7 +75,7 @@ protected:
 
     virtual ~RelativeStrainMapping() { }
 
-    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
+    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn ) override
     {
         helper::ReadAccessor<Data<typename Inherit::InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));

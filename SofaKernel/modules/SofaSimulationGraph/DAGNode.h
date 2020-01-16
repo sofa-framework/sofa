@@ -72,7 +72,7 @@ public:
     /// returns number of parents
     size_t getNbParents() const override;
 
-    /// return the first parent (returns NULL if no parent)
+    /// return the first parent (returns nullptr if no parent)
     BaseNode* getFirstParent() const override;
 
     /// Test if the given node is a parent of this node.
@@ -111,7 +111,7 @@ public:
 
     /// Mesh Topology that is relevant for this context
     /// (within it or its parents until a mapping is reached that does not preserve topologies).
-    core::topology::BaseMeshTopology* getActiveMeshTopology() const override;
+    core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const override;
 
 
     /// Called during initialization to corectly propagate the visual context to the children
@@ -131,7 +131,9 @@ public:
     }
 
 
-    /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
+    /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
+    /// it assumes that the DAG node is a tree node. In case of multiple parents it returns any of the parents.
+    /// it uses the node descendancy informations.
     Node* findCommonParent( Node* node2 ) override;
 
     /// compute the traversal order from this Node

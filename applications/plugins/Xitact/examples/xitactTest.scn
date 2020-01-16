@@ -1,17 +1,18 @@
 <?xml version="1.0"?>
 <Node name="root"  dt="0.05" gravity="0 0 -9810">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle displayFlags="showVisualModels hideBehaviorModels showCollisionModels hideMappings hideForceFields" />
 	<FreeMotionAnimationLoop />
 	<GenericConstraintSolver/>
-	<CollisionPipeline depth="6" verbose="0" draw="0"/>
+	<DefaultPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="Proximity" alarmDistance="0.06" contactDistance="0.02" coneFactor="0.5" angleCone="-0.001"/>
-	<CollisionResponse name="Response" response="FrictionContact" />
+	<DefaultContactManager name="Response" response="FrictionContact" />
 
 
 
   <Node name="VirtualArticulatedXitact">
-    <EulerImplicit rayleighMass="0.1" rayleighStiffness="0.01" printLog="0"/>
+    <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.01" printLog="0"/>
     <CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15" printLog="0"/>
     <!-- Modify this position in the scene -->
     <MechanicalObject name="bati" template="Rigid" position="0 0 0 0 0 0 1"/>
@@ -19,9 +20,12 @@
     <UncoupledConstraintCorrection compliance="0.00001  0.000001 0 0 0.000001 0 0.000001"/>
 
     <Node name="VisuOfXitactBase">
-      <OglModel name="VM" fileMesh="dt/cube_low_res.obj" scale="0.003" dy="0.015"  dz="0.030"/>
-      <OglModel name="VM" fileMesh="dt/cube_low_res.obj" scale="0.003" dy="0.030"  dz="0.030"/>
-      <OglModel name="VM" fileMesh="dt/cube_low_res.obj" scale="0.0005"  dy="0.038" />
+      <MeshObjLoader name="meshLoader_2" filename="dt/cube_low_res.obj" scale="0.003" handleSeams="1" />
+      <OglModel name="VM" src="@meshLoader_2" dy="0.015"  dz="0.030"/>
+      <MeshObjLoader name="meshLoader_3" filename="dt/cube_low_res.obj" scale="0.003" handleSeams="1" />
+      <OglModel name="VM" src="@meshLoader_3" dy="0.030"  dz="0.030"/>
+      <MeshObjLoader name="meshLoader_0" filename="dt/cube_low_res.obj" scale="0.0005" handleSeams="1" />
+      <OglModel name="VM" src="@meshLoader_0"  dy="0.038" />
       <RigidMapping input="@.." output="@VM" index="0"/>
     </Node>
 
@@ -47,8 +51,8 @@
         <Node name="Tool1CM">
           <RegularGrid nx="1" ny="2" nz="1" min="0 -0.350 0" max="0 0 0" />
           <MechanicalObject name="Endoscope Collision State"/>
-          <Line group="1"/>
-          <Point group="1"/>
+          <LineCollisionModel group="1"/>
+          <PointCollisionModel group="1"/>
           <RigidMapping name="MM->CM mapping" input="@.." index="1"/>
         </Node>
 
@@ -62,9 +66,9 @@
           <MeshLoader filename="dt/mors1_extralight.obj" />
           <Mesh/>
           <MechanicalObject name="CM" scale="0.001"  dy="0.025"/>
-          <Triangle group="1"/>
-          <Line group="1"/>
-          <Point group="1"/>
+          <TriangleCollisionModel group="1"/>
+          <LineCollisionModel group="1"/>
+          <PointCollisionModel group="1"/>
           <RigidMapping input="@.." output="@CM" index="2"/>
         </Node>
         
@@ -80,9 +84,9 @@
           <MeshLoader filename="dt/mors1_extralight.obj" />
           <Mesh/>
           <MechanicalObject name="CM" scale="0.001"  dy="0.025" />
-          <Triangle group="1"/>
-          <Line group="1"/>
-          <Point group="1"/>
+          <TriangleCollisionModel group="1"/>
+          <LineCollisionModel group="1"/>
+          <PointCollisionModel group="1"/>
           <RigidMapping input="@.." output="@CM" index="3"/>
         </Node>
 -->
@@ -130,10 +134,11 @@
     <MeshObjLoader name="meshLoader" filename="mesh/box_inside.obj" triangulate="true"/>
     <Mesh/>
     <MechanicalObject scale="0.1" dx="0.4" dy="-0.3" dz="0.4"/>
-    <Triangle simulated="0" moving="0"/>
-    <Line simulated="0" moving="0"/>
-    <Point simulated="0" moving="0"/>
-    <OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="0.0 0.4 0.6 0.2" scale="0.1" dx="0.4" dy="-0.3"  dz="0.4"/>
+    <TriangleCollisionModel simulated="0" moving="0"/>
+    <LineCollisionModel simulated="0" moving="0"/>
+    <PointCollisionModel simulated="0" moving="0"/>
+    <MeshObjLoader name="meshLoader_1" filename="mesh/box_outside.obj" scale="0.1" handleSeams="1" />
+    <OglModel name="Visual" src="@meshLoader_1" color="0.0 0.4 0.6 0.2" dx="0.4" dy="-0.3"  dz="0.4"/>
   </Node>
 
 

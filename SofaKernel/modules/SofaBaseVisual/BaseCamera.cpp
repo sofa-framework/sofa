@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define _USE_MATH_DEFINES // for C++
 #include <cmath>
 
 #include <SofaBaseVisual/BaseCamera.h>
@@ -77,8 +76,8 @@ BaseCamera::BaseCamera()
     type.setSelectedItem(sofa::core::visual::VisualParams::PERSPECTIVE_TYPE);
     p_type.setValue(type);
 
-    helper::vector<float>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
-    helper::vector<float>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
+    helper::vector<SReal>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
+    helper::vector<SReal>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
 
     wModelViewMatrix.resize(16);
     wProjectionMatrix.resize(16);
@@ -336,7 +335,7 @@ BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
     this->getProjectionMatrix(projection);
 
     float fwinZ = 0.0;
-    vp->drawTool()->readPixels(x, int(winY), 1, 1, NULL, &fwinZ);
+    vp->drawTool()->readPixels(x, int(winY), 1, 1, nullptr, &fwinZ);
 
     double winZ = (double)fwinZ;
     glhUnProjectf<double>(winX, winY, winZ, modelview, projection, viewport, pos);
@@ -375,8 +374,8 @@ void BaseCamera::getOpenGLModelViewMatrix(double mat[16])
 
 void BaseCamera::getProjectionMatrix(double mat[16])
 {
-    float width = (float)p_widthViewport.getValue();
-    float height = (float)p_heightViewport.getValue();
+    double width = double(p_widthViewport.getValue());
+    double height = double(p_heightViewport.getValue());
     //TODO: check if orthographic or projective
 
     computeZ();
@@ -400,30 +399,30 @@ void BaseCamera::getProjectionMatrix(double mat[16])
     }
     else
     {
-        float xFactor = 1.0, yFactor = 1.0;
+        double xFactor = 1.0, yFactor = 1.0;
         if ((height != 0) && (width != 0))
         {
             if (height > width)
             {
-                yFactor = (double)height / (double)width;
+                yFactor = height / width;
             }
             else
             {
-                xFactor = (double)width / (double)height;
+                xFactor = width / height;
             }
         }
 
-        double orthoCoef = tan((float)(M_PI / 180.0) * getFieldOfView() / 2.0);
+        double orthoCoef = tan((M_PI / 180.0) * getFieldOfView() / 2.0);
         double zDist = orthoCoef * fabs(worldToCameraCoordinates(getLookAt())[2]);
         double halfWidth = zDist * xFactor;
         double halfHeight = zDist * yFactor;
 
-        float left = -halfWidth;
-        float right = halfWidth;
-        float top = halfHeight;
-        float bottom = -halfHeight;
-        float zfar = currentZFar;
-        float znear = currentZNear;
+        double left = -halfWidth;
+        double right = halfWidth;
+        double top = halfHeight;
+        double bottom = -halfHeight;
+        double zfar = currentZFar;
+        double znear = currentZNear;
 
         mat[0] = 2 / (right-left);
         mat[1] = 0.0;
@@ -797,8 +796,8 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
 void BaseCamera::updateOutputData()
 {
     //Matrices
-    helper::vector<float>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
-    helper::vector<float>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
+    helper::vector<SReal>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
+    helper::vector<SReal>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
 
     double modelViewMatrix[16];
     double projectionMatrix[16];

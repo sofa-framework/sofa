@@ -166,52 +166,52 @@ public:
 
 
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
-    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
+    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0) override; /// resizing given custom positions and weights
 
     /** @name Mapping functions */
     //@{
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
     using Inherit::apply;
     using Inherit::applyJ;
     using Inherit::applyJT;
 
     void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord1>& dIn1, const Data<InVecCoord2>& dIn2);
-    virtual void apply(const core::MechanicalParams* mparams,const helper::vector<Data<OutVecCoord>*>& dOut, const helper::vector<const Data<InVecCoord1>*>& dIn1, const helper::vector<const Data<InVecCoord2>*>& dIn2)
+    virtual void apply(const core::MechanicalParams* mparams,const helper::vector<Data<OutVecCoord>*>& dOut, const helper::vector<const Data<InVecCoord1>*>& dIn1, const helper::vector<const Data<InVecCoord2>*>& dIn2) override
     {
         apply(mparams,*dOut[0],*dIn1[0],*dIn2[0]);
     }
     void applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv1>& dIn1, const Data<InVecDeriv2>& dIn2);
-    virtual void applyJ(const core::MechanicalParams* mparams , const helper::vector<Data<OutVecDeriv>*>& dOut, const helper::vector<const Data<InVecDeriv1>*>& dIn1, const helper::vector<const Data<InVecDeriv2>*>& dIn2)
+    virtual void applyJ(const core::MechanicalParams* mparams , const helper::vector<Data<OutVecDeriv>*>& dOut, const helper::vector<const Data<InVecDeriv1>*>& dIn1, const helper::vector<const Data<InVecDeriv2>*>& dIn2) override
     {
         if(this->isMechanical())
             applyJ(mparams,*dOut[0],*dIn1[0],*dIn2[0]);
     }
     void applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv1>& dIn1, Data<InVecDeriv2>& dIn2, const Data<OutVecDeriv>& dOut);
-    virtual void applyJT(const core::MechanicalParams* mparams , const helper::vector<Data<InVecDeriv1>*>& dIn1,  const helper::vector<Data<InVecDeriv2>*>& dIn2, const helper::vector<const Data<OutVecDeriv>*>& dOut)
+    virtual void applyJT(const core::MechanicalParams* mparams , const helper::vector<Data<InVecDeriv1>*>& dIn1,  const helper::vector<Data<InVecDeriv2>*>& dIn2, const helper::vector<const Data<OutVecDeriv>*>& dOut) override
     {
         if(this->isMechanical())
             applyJT(mparams,*dIn1[0],*dIn2[0],*dOut[0]);
     }
     void applyJT(const core::ConstraintParams * /*cparams*/ , Data<InMatrixDeriv1>& /*out1*/, Data<InMatrixDeriv2>& /*out2*/,  const Data<OutMatrixDeriv>& /*in*/);
-    virtual void applyJT(const core::ConstraintParams* cparams ,const helper::vector<Data<InMatrixDeriv1>*>& dIn1,const  helper::vector<Data<InMatrixDeriv2>*>& dIn2, const helper::vector<const Data<OutMatrixDeriv>*>& dOut)
+    virtual void applyJT(const core::ConstraintParams* cparams ,const helper::vector<Data<InMatrixDeriv1>*>& dIn1,const  helper::vector<Data<InMatrixDeriv2>*>& dIn2, const helper::vector<const Data<OutMatrixDeriv>*>& dOut) override
     {
         if(this->isMechanical())
             applyJT(cparams,*dIn1[0],*dIn2[0],*dOut[0]);
     }
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId );
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId ) override;
 
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
-    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override;
 
-    virtual const defaulttype::BaseMatrix* getK()
+    virtual const defaulttype::BaseMatrix* getK() override
     {
         return &K;
     }
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     //@}
 
@@ -222,9 +222,9 @@ public:
 
     /** @name PointMapper functions */
     //@{
-    virtual void ForwardMapping(Coord& p,const Coord& p0);
-    virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const size_t NbMaxIt=10);
-    virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false);
+    virtual void ForwardMapping(Coord& p,const Coord& p0) override;
+    virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const size_t NbMaxIt=10) override;
+    virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false) override;
 
     virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)=0;
     virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)=0;
@@ -295,7 +295,7 @@ protected:
     Data< unsigned > d_geometricStiffness; ///< 0=no GS, 1=non symmetric, 2=symmetrized
     Data< bool > d_parallel;		///< use openmp ?
 
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
 };
 
 

@@ -22,10 +22,14 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 namespace cliplane_test
 {
 
 int initMessage(){
+    sofa::simpleapi::importPlugin("SofaOpenglVisual");
+
     /// Install the backtrace so that we have more information in case of test segfault.
     BackTrace::autodump() ;
     return 0;

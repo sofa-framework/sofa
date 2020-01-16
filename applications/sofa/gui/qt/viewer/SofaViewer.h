@@ -22,11 +22,11 @@
 #ifndef SOFA_VIEWER_H
 #define SOFA_VIEWER_H
 
-#include "VisualModelPolicy.h"
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/qt/PickHandlerCallBacks.h>
-#include <sofa/gui/qt/SofaGUIQt.h>
+#include <sofa/gui/qt/SofaGuiQt.h>
 #include <sofa/gui/qt/SofaVideoRecorderManager.h>
+#include <sofa/gui/qt/viewer/EngineBackend.h>
 
 #include <QString>
 #include <QWidget>
@@ -55,9 +55,6 @@ enum
 {
     BTLEFT_MODE = 101, BTRIGHT_MODE = 102, BTMIDDLE_MODE = 103,
 };
-
-
-
 
 class SOFA_SOFAGUIQT_API SofaViewer : public sofa::gui::BaseViewer
 {
@@ -91,7 +88,16 @@ public:
     virtual void mouseReleaseEvent ( QMouseEvent * e);
     virtual bool mouseEvent(QMouseEvent *e);
 
+    // Overriden from BaseViewer
+    virtual void configure(sofa::component::configurationsetting::ViewerSetting* viewerConf) override;
+    const std::string screenshotName() override;
+    void setPrefix(const std::string& prefix, bool prependDirectory = true) override;
+    virtual void screenshot(const std::string& filename, int compression_level =-1) override;
+    virtual void setBackgroundImage(std::string imageFileName = std::string("textures/SOFA_logo.bmp")) override;
+
 protected:
+    std::unique_ptr<EngineBackend> m_backend;
+
     void redraw() override;
 
     QTimer captureTimer;
@@ -105,20 +111,6 @@ signals:
     virtual void resizeW(int) = 0;
     virtual void resizeH(int) = 0;
 };
-
-template < typename VisualModelPolicyType >
-class CustomPolicySofaViewer : public VisualModelPolicyType, public sofa::gui::qt::viewer::SofaViewer
-{
-public:
-    using VisualModelPolicyType::load;
-    using VisualModelPolicyType::unload;
-    CustomPolicySofaViewer() { load(); }
-    ~CustomPolicySofaViewer() override { unload(); }
-protected:
-};
-
-typedef CustomPolicySofaViewer< OglModelPolicy > OglModelSofaViewer;
-
 
 }
 }

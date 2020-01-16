@@ -36,7 +36,6 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
 
 namespace sofa
@@ -52,7 +51,7 @@ template<class DataTypes>
 TOBBModel<DataTypes>::TOBBModel():
     ext(initData(&ext,"extents","Extents in x,y and z directions")),
     default_ext(initData(&default_ext,(Real)(1.0), "defaultExtent","Default extent")),
-    _mstate(NULL)
+    _mstate(nullptr)
 {
     enum_type = OBB_TYPE;
 }
@@ -72,7 +71,7 @@ void TOBBModel<DataTypes>::init()
 {
     this->CollisionModel::init();
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (_mstate==NULL)
+    if (_mstate==nullptr)
     {
         msg_error()<<"TOBBModel requires a Rigid Mechanical Model";
         return;
@@ -229,7 +228,7 @@ void TOBBModel<DataTypes>::draw(const core::visual::VisualParams* vparams){
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
     }
 
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 
     vparams->drawTool()->setPolygonMode(0,false);

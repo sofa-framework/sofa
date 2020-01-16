@@ -95,6 +95,11 @@ public:
     Data< defaulttype::RGBAColor > d_color;         ///< drawing color
     Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<DistanceMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
+
+
     void init() override;
 
     using Inherit::apply;
@@ -123,7 +128,7 @@ protected:
     DistanceMapping();
     virtual ~DistanceMapping();
 
-    topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
+    topology::EdgeSetTopologyContainer* m_edgeContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
@@ -189,6 +194,10 @@ public:
     Data< defaulttype::RGBAColor >             d_color;         ///< drawing color
     Data< helper::vector<defaulttype::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
     Data< unsigned >                           d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
+
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<DistanceMultiMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 
     // Append particle of given index within the given model to the subset.
     void addPoint(const core::BaseState* fromModel, int index);
@@ -279,7 +288,7 @@ protected:
     DistanceMultiMapping();
     virtual ~DistanceMultiMapping();
 
-    topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
+    topology::EdgeSetTopologyContainer* m_edgeContainer;  ///< where the edges are defined
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     helper::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
     helper::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)

@@ -98,7 +98,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     const SReal& h = dt;
     const SReal rM = f_rayleighMass.getValue();
     const SReal rK = f_rayleighStiffness.getValue();
-    const bool verbose  = f_verbose.getValue();
 
     if (cpt == 0 || this->getContext()->getTime()==0.0)
     {

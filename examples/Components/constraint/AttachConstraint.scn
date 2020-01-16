@@ -1,7 +1,7 @@
 <Node name="root" dt="0.02">
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="Single">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <Node name="M1">
             <MechanicalObject showObject="1"/>
@@ -13,7 +13,7 @@
         </Node>
     </Node>
     <Node name="AttachOneWay">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <Node name="M1">
             <MechanicalObject />
@@ -23,7 +23,7 @@
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
         <Node name="M2">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject />
             <UniformMass vertexMass="1" />
@@ -31,7 +31,7 @@
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
         <Node name="M3">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject />
             <UniformMass vertexMass="1" />
@@ -43,7 +43,7 @@
         <AttachConstraint object1="@M2" object2="@M3" indices1="144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159" indices2="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" constraintFactor="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"/>
     </Node>
     <Node name="AttachTwoWay">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <Node name="M1">
             <MechanicalObject />
@@ -53,7 +53,7 @@
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
         <Node name="M2">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject />
             <UniformMass vertexMass="1" />
@@ -61,7 +61,7 @@
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
         <Node name="M3">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject />
             <UniformMass vertexMass="1" />

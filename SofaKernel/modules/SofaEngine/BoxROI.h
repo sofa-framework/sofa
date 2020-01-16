@@ -105,7 +105,7 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
                 return false; // this template is not the same as the existing MechanicalState
         }
 
@@ -124,7 +124,7 @@ public:
         return templateName(this);
     }
 
-    static string templateName(const BoxROI<DataTypes>* = NULL)
+    static string templateName(const BoxROI<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }
@@ -147,6 +147,7 @@ public:
     Data<bool> d_computeTetrahedra; ///< If true, will compute tetrahedra list and index list inside the ROI. (default = true)
     Data<bool> d_computeHexahedra; ///< If true, will compute hexahedra list and index list inside the ROI. (default = true)
     Data<bool> d_computeQuad; ///< If true, will compute quad list and index list inside the ROI. (default = true)
+    Data<bool> d_strict; ///< If true, an element is inside the box if all of its nodes are inside. If False, only the center point of the element is checked. (default = true)
 
     //Output
     Data<SetIndex> d_indices; ///< Indices of the points contained in the ROI
@@ -205,10 +206,15 @@ protected:
     bool isPointInBoxes(const CPos& p);
     bool isPointInBoxes(const PointID& pid);
     bool isEdgeInBoxes(const Edge& e);
+    bool isEdgeInBoxesStrict(const Edge& e);
     bool isTriangleInBoxes(const Triangle& t);
+    bool isTriangleInBoxesStrict(const Triangle& t);
     bool isTetrahedronInBoxes(const Tetra& t);
+    bool isTetrahedronInBoxesStrict(const Tetra& t);
     bool isHexahedronInBoxes(const Hexa& t);
+    bool isHexahedronInBoxesStrict(const Hexa& t);
     bool isQuadInBoxes(const Quad& q);
+    bool isQuadInBoxesStrict(const Quad& q);
 
     void getPointsFromOrientedBox(const Vec10& box, vector<Vec3> &points);
 };

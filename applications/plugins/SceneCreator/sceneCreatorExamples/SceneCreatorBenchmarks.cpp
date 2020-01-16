@@ -32,6 +32,8 @@
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>
 
+#include <boost/program_options.hpp>
+
 
 void fallingCubeExample(sofa::simulation::Node::SPtr root)
 {
@@ -106,14 +108,25 @@ int main(int argc, char** argv)
     bool showHelp = false;
     unsigned int idExample = 0;
     ArgumentParser* argParser = new ArgumentParser(argc, argv);
-    argParser->addArgument(po::value<bool>(&showHelp)->default_value(false)->implicit_value(true),                  "help,h", "Display this help message");
-    argParser->addArgument(po::value<unsigned int>(&idExample)->default_value(0)->notifier([](unsigned int value)
-    {
-        if (value > 9) {
-            std::cerr << "Example Number to enter from (0 - 9), current value: " << value << std::endl;
-            exit( EXIT_FAILURE );
-        }
-    }),                                                                                                             "example,e", "Example Number to enter from (0 - 9)");
+    argParser->addArgument(
+        boost::program_options::value<bool>(&showHelp)
+        ->default_value(false)
+        ->implicit_value(true),
+        "help,h",
+        "Display this help message"
+    );
+    argParser->addArgument(
+        boost::program_options::value<unsigned int>(&idExample)
+        ->default_value(0)
+        ->notifier([](unsigned int value) {
+            if (value > 9) {
+                std::cerr << "Example Number to enter from (0 - 9), current value: " << value << std::endl;
+                exit( EXIT_FAILURE );
+            }
+        }),
+        "example,e",
+        "Example Number to enter from (0 - 9)"
+    );
 
     argParser->parse();
 

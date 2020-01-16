@@ -44,19 +44,18 @@ namespace collision
 {
 
 template<class DataTypes>
-TCapsuleModel<DataTypes>::TCapsuleModel():
-      _capsule_radii(initData(&_capsule_radii, "listCapsuleRadii","Radius of each capsule")),
-      _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
-      _mstate(NULL)
+TCapsuleModel<DataTypes>::TCapsuleModel()
+    : TCapsuleModel(nullptr)
 {
     enum_type = CAPSULE_TYPE;
 }
 
 template<class DataTypes>
-TCapsuleModel<DataTypes>::TCapsuleModel(core::behavior::MechanicalState<DataTypes>* mstate):
-    _capsule_radii(initData(&_capsule_radii, "listCapsuleRadii","Radius of each capsule")),
-    _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
-    _mstate(mstate)
+TCapsuleModel<DataTypes>::TCapsuleModel(core::behavior::MechanicalState<DataTypes>* mstate)
+    : _capsule_radii(initData(&_capsule_radii, "listCapsuleRadii", "Radius of each capsule"))
+    , _default_radius(initData(&_default_radius, (Real)0.5, "defaultRadius", "The default radius"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , _mstate(mstate)
 {
     enum_type = CAPSULE_TYPE;
 }
@@ -88,16 +87,25 @@ void TCapsuleModel<DataTypes>::init()
 {
     this->CollisionModel::init();
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (_mstate==NULL)
+    if (_mstate==nullptr)
     {
         msg_error()<<"TCapsuleModel requires a Vec3 Mechanical Model";
         return;
     }
 
-    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    core::topology::BaseMeshTopology *bmt = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
     if (!bmt)
     {
-        msg_error()<<"CapsuleModel requires a MeshTopology";
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -122,7 +130,7 @@ void TCapsuleModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     using namespace sofa::defaulttype;
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int ncap = getContext()->getMeshTopology()->getNbEdges();
+    const int ncap = l_topology.get()->getNbEdges();
     bool updated = false;
     if (ncap != size)
     {
@@ -195,7 +203,7 @@ void TCapsuleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
     }
 
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 
     vparams->drawTool()->setPolygonMode(0,false);

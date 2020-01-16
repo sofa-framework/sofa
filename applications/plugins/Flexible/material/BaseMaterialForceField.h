@@ -146,7 +146,7 @@ public:
         std::cout << "Do nothing" << std::endl;
     }
 
-    virtual void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
+    virtual void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v) override
     {
         if(this->mstate->getSize()!=material.size()) resize();
 
@@ -174,7 +174,7 @@ public:
         }
     }
 
-    virtual void addDForce( const core::MechanicalParams* mparams, DataVecDeriv&  _df, const DataVecDeriv& _dx )
+    virtual void addDForce( const core::MechanicalParams* mparams, DataVecDeriv&  _df, const DataVecDeriv& _dx ) override
     {
         VecDeriv&  df = *_df.beginEdit();
         const VecDeriv&  dx = _dx.getValue();
@@ -197,7 +197,7 @@ public:
     }
 
 
-    const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams * /*mparams*/)
+    const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams * /*mparams*/) override
     {
         if( !this->assemble.getValue() || !BlockType::constantK)
         {
@@ -220,14 +220,14 @@ public:
         return &C;
     }
 
-    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset )
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset ) override
     {
         if(!this->assemble.getValue() || !BlockType::constantK) updateK();
 
         K.addToBaseMatrix( matrix, kFact, offset );
     }
 
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix *matrix, SReal bFact, unsigned int &offset)
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix *matrix, SReal bFact, unsigned int &offset) override
     {
         if(!this->assemble.getValue() || !BlockType::constantK) updateB();
 
@@ -242,7 +242,7 @@ public:
 
     using Inherit::getPotentialEnergy;
 
-    virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
+    virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const override
     {
         SReal e = 0;
         const VecCoord& _x = x.getValue();

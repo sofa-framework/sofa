@@ -33,7 +33,7 @@ namespace simulation
 {
 namespace xml
 {
-BaseMultiMappingElement::BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent/* =NULL */)
+BaseMultiMappingElement::BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent/* =nullptr */)
     :ObjectElement(name,type,parent)
 {
 

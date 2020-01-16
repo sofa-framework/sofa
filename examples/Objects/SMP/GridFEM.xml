@@ -14,7 +14,7 @@
 	  <MeshLoader name="loader"  filename="file"/>
 		<Mesh src="@loader"/>
 		<MechanicalObject src="@loader" />
-		<Triangle />
+		<TriangleCollisionModel />
 		<BarycentricMapping />
 	</Node>
 </Node>

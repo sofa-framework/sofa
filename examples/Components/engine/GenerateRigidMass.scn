@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="Root" gravity="0 0 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels showWireframe" />
     <Node name="Livers">
         <Node name="Green Liver">

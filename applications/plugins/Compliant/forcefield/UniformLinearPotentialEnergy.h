@@ -40,7 +40,7 @@ public:
     Data<SReal> d_factor; ///< scalar factor
 
     virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/,
-                                      const DataVecCoord& x ) const {
+                                      const DataVecCoord& x ) const override {
         const VecCoord& pos = x.getValue();
         const SReal& k = d_factor.getValue();
 
@@ -54,7 +54,7 @@ public:
     virtual void addForce(const core::MechanicalParams *,
                           DataVecDeriv &f,
                           const DataVecCoord & x,
-                          const DataVecDeriv &) {
+                          const DataVecDeriv &) override {
 
         const VecCoord& pos = x.getValue();
         const SReal& k = d_factor.getValue();
@@ -66,9 +66,9 @@ public:
         f.endEdit();
     }
 
-    virtual void addDForce( const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &) {}
+    virtual void addDForce( const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &) override {}
 
-    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &offset )
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &offset ) override
     {
         offset += this->mstate->getMatrixSize();
     }

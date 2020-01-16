@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
   <VisualStyle displayFlags="showVisual" />
 
@@ -10,7 +11,7 @@
   <ImageSampler template="ImageB" name="sampler" src="@image" param="1" showEdges="true" printLog="true"/>
 
   <Node name="simu"  >
-	  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+	  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
 	  <CGLinearSolver />
 	  <Mesh  src="@../sampler" />
 	  <MechanicalObject  />
@@ -19,7 +20,8 @@
           <HexahedronFEMForceField youngModulus="30.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" />
 
 	  <Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
+	     <MeshObjLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_0"   />
 	     <BarycentricMapping input="@.." output="@." />
 	  </Node>
   </Node>

@@ -27,7 +27,7 @@
 
 #include <SofaGui/config.h>
 #include <ui_GUI.h>
-#include <sofa/gui/qt/SofaGUIQt.h>
+#include <sofa/gui/qt/SofaGuiQt.h>
 #include "GraphListenerQListView.h"
 #include "QMenuFilesRecentlyOpened.h"
 #include "PickHandlerCallBacks.h"
@@ -97,8 +97,12 @@ class GraphVisitor;
 
 class SofaMouseManager;
 
-#ifdef SOFAGUIQT_HAS_QTCHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
 class SofaWindowProfiler;
+#endif
+
+#if SOFAGUIQT_HAVE_NODEEDITOR
+class SofaWindowDataGraph;
 #endif
 
 namespace viewer
@@ -113,7 +117,7 @@ class SOFA_SOFAGUIQT_API RealGUI : public QMainWindow, public Ui::GUI, public so
 
 //-----------------STATIC METHODS------------------------{
 public:
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
 
     static void SetPixmap(std::string pixmap_filename, QPushButton* b);
 
@@ -166,8 +170,12 @@ private:
     GraphVisitor* handleTraceVisitor;
 #endif
     SofaMouseManager* m_sofaMouseManager;
-#ifdef SOFAGUIQT_HAS_QTCHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
     SofaWindowProfiler* m_windowTimerProfiler;
+#endif
+
+#if SOFAGUIQT_HAVE_NODEEDITOR
+    SofaWindowDataGraph* m_sofaWindowDataGraph;
 #endif
 //-----------------OPTIONS DEFINITIONS------------------------}
 
@@ -243,7 +251,7 @@ public:
 
     // virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
-    virtual void setScene(Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false);
+    virtual void setScene(Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false) override;
     virtual void setSceneWithoutMonitor(Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false);
 
     virtual void unloadScene(bool _withViewer = true);
@@ -256,7 +264,7 @@ public:
     void setFullScreen() override { setFullScreen(true); }
     virtual void setFullScreen(bool enable);
     void setBackgroundColor(const defaulttype::RGBAColor& c) override;
-    virtual void setBackgroundImage(const std::string& i);
+    virtual void setBackgroundImage(const std::string& i) override;
     void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf) override;
     void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button) override;
 
@@ -264,8 +272,8 @@ public:
     void setDumpState(bool) override;
     void setLogTime(bool) override;
     void setExportState(bool) override;
-    virtual void setRecordPath(const std::string & path);
-    virtual void setGnuplotPath(const std::string & path);
+    virtual void setRecordPath(const std::string & path) override;
+    virtual void setGnuplotPath(const std::string & path) override;
 
     /// create a viewer according to the argument key
     /// \note the viewerMap have to be initialize at least once before
@@ -287,9 +295,9 @@ public:
 
     virtual void removeViewer();
 
-    void dragEnterEvent( QDragEnterEvent* event);
+    void dragEnterEvent( QDragEnterEvent* event) override;
 
-    void dropEvent(QDropEvent* event);
+    void dropEvent(QDropEvent* event) override;
 
 protected:
     /// init data member from RealGUI for the viewer initialisation in the GUI
@@ -298,7 +306,7 @@ protected:
     void loadSimulation(bool one_step=false); //? where is the implementation ?
     void eventNewStep();
     void eventNewTime();
-    void keyPressEvent ( QKeyEvent * e );
+    void keyPressEvent ( QKeyEvent * e ) override;
     void startDumpVisitor();
     void stopDumpVisitor();
 
@@ -333,6 +341,7 @@ private:
     void parseOptions();
 
     void createPluginManager();
+    void createSofaWindowDataGraph();
 
     /// configure Recently Opened Menu
     void createRecentFilesMenu();
@@ -397,6 +406,7 @@ public slots:
     virtual void showPluginManager();
     virtual void showMouseManager();
     virtual void showVideoRecorderManager();
+    virtual void showWindowDataGraph();
     virtual void toolsDockMoved();
 
 protected slots:

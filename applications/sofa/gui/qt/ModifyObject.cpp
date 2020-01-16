@@ -29,7 +29,7 @@
 #include <QDesktopServices>
 #include <QTimer>
 #include <sofa/gui/qt/QTransformationWidget.h>
-#ifdef SOFA_HAVE_QWT
+#if SOFAGUIQT_HAVE_QWT
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <sofa/gui/qt/QMomentumStatWidget.h>
 #endif
@@ -77,9 +77,9 @@ ModifyObject::ModifyObject(void *Id,
       messageTab(nullptr),
       messageEdit(nullptr),
       transformation(nullptr)
-    #ifdef SOFA_HAVE_QWT
-    ,energy(NULL)
-    ,momentum(NULL)
+    #if SOFAGUIQT_HAVE_QWT
+    ,energy(nullptr)
+    ,momentum(nullptr)
     #endif
 {
     setWindowTitle(name);
@@ -162,17 +162,11 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             core::objectmodel::BaseData* data=*it;
             if (!data)
             {
-                dmsg_error("ModifyObject") << "NULL Data in '" << node->getName() << "'" ;
+                dmsg_error("ModifyObject") << "nullptr Data in '" << node->getName() << "'" ;
                 continue;
             }
 
             if (data->getName().empty()) continue; // ignore unnamed data
-
-            if (!data->getGroup())
-            {
-                dmsg_error("ModifyObject") << "NULL group for Data (" << data->getName() << "() in (" << node->getName() << "'";
-                continue;
-            }
 
             //For each Data of the current Object
             //We determine where it belongs:
@@ -188,7 +182,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 #ifdef DEBUG_GUI
             std::cout << "GUI: add Data " << data->getName() << " in " << currentGroup << std::endl;
 #endif
-            QTabulationModifyObject* currentTab=NULL;
+            QTabulationModifyObject* currentTab=nullptr;
 
             std::vector<QTabulationModifyObject* > &tabs=groupTabulation[currentGroup];
             bool newTab = false;
@@ -240,7 +234,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             std::cout << "GUI: add Link " << link->getName() << " in " << currentGroup << std::endl;
 #endif
 
-            QTabulationModifyObject* currentTab=NULL;
+            QTabulationModifyObject* currentTab=nullptr;
 
             std::vector<QTabulationModifyObject* > &tabs=groupTabulation[currentGroup];
             if (tabs.empty()) tabNames.push_back(currentGroup);
@@ -564,7 +558,7 @@ void ModifyObject::updateTables()
 #ifdef DEBUG_GUI
     std::cout << "GUI<emit updateDataWidgets()" << std::endl;
 #endif
-#ifdef SOFA_HAVE_QWT
+#if SOFAGUIQT_HAVE_QWT
     if (energy)
     {
         energy->step();

@@ -23,7 +23,7 @@
 #define SOFA_GUI_VIEWER_QT_QMENUFILESRECENTLYOPENED_H
 
 #include <sofa/gui/FilesRecentlyOpenedManager.h>
-#include "SofaGUIQt.h"
+#include <sofa/gui/qt/SofaGuiQt.h>
 
 #include <QMenu>
 
@@ -37,12 +37,12 @@ namespace qt
 class SOFA_SOFAGUIQT_API QMenuFilesRecentlyOpened: public FilesRecentlyOpenedManager
 {
 public:
-    QMenuFilesRecentlyOpened(const std::string &configFile):FilesRecentlyOpenedManager(configFile),menuRecentlyOpenedFiles(nullptr) {};
-    ~QMenuFilesRecentlyOpened() override {if (menuRecentlyOpenedFiles) delete menuRecentlyOpenedFiles;};
-    void openFile(const std::string &file);
+    QMenuFilesRecentlyOpened(const std::string &configFile):FilesRecentlyOpenedManager(configFile),menuRecentlyOpenedFiles(nullptr) {}
+    ~QMenuFilesRecentlyOpened() override {if (menuRecentlyOpenedFiles) delete menuRecentlyOpenedFiles;}
+    void openFile(const std::string &file) override;
 
     QMenu *createWidget(QWidget *parent, const std::string& =std::string("Recently Opened Files ..."));
-    QMenu *getMenu() {return menuRecentlyOpenedFiles;};
+    QMenu *getMenu() {return menuRecentlyOpenedFiles;}
 
 protected:
     void updateWidget();

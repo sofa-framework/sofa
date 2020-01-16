@@ -53,8 +53,8 @@ WriteState::WriteState()
     , d_stopAt( initData(&d_stopAt, 0.0, "stopAt", "stop the simulation when the given threshold is reached"))
     , d_keperiod( initData(&d_keperiod, 0.0, "keperiod", "set the period to measure the kinetic energy increase"))
     , mmodel(nullptr)
-    , outfile(NULL)
-#ifdef SOFA_HAVE_ZLIB
+    , outfile(nullptr)
+#if SOFAEXPORTER_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
     , nextIteration(0)
@@ -71,7 +71,7 @@ WriteState::~WriteState()
 {
     if (outfile)
         delete outfile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -94,7 +94,7 @@ void WriteState::init()
     const std::string& filename = d_filename.getFullPath();
     if (!filename.empty())
     {
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
         if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
         {
             gzfile = gzopen(filename.c_str(),"wb");
@@ -111,7 +111,7 @@ void WriteState::init()
             {
                 msg_error() << "Error creating file "<<filename;
                 delete outfile;
-                outfile = NULL;
+                outfile = nullptr;
             }
         }
     }
@@ -229,7 +229,7 @@ void WriteState::init()
 void WriteState::reinit(){
 if (outfile)
     delete outfile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
 if (gzfile)
     gzclose(gzfile);
 #endif
@@ -254,7 +254,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
     {
         if (!mmodel) return;
         if (!outfile
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
             && !gzfile
 #endif
            )
@@ -281,7 +281,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                     // computes the energy increase
                     if (fabs(gnode->mass->getKineticEnergy() - savedKineticEnergy) < d_stopAt.getValue())
                     {
-                        sout << "WriteState has been stopped. Kinetic energy threshold has been reached" << sendl;
+                        msg_info() << "WriteState has been stopped. Kinetic energy threshold has been reached";
                         kineticEnergyThresholdReached = true;
                     }
                     else
@@ -297,12 +297,13 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
 
         //check if the state has to be written or not
         bool writeCurrent = false;
+        SReal epsilonStep = 0.1*this->getContext()->getDt();
         if (nextIteration<d_time.getValue().size())
         {
             // store the actual time instant
             lastTime = d_time.getValue()[nextIteration];
             // if the time simulation is >= that the actual time instant
-            if ( (time > lastTime) || (fabs(time - lastTime)< std::numeric_limits<double>::epsilon()) )
+            if ( (time > lastTime) || (fabs(time - lastTime)< epsilonStep) )
             {
                 writeCurrent = true;
                 firstExport = true;
@@ -315,7 +316,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
             {
                 double nextTime = lastTime + d_period.getValue();
                 // write the state using a period
-                if ( (time > nextTime) || (fabs(time - nextTime)< std::numeric_limits<double>::epsilon()) )
+                if ( (time > nextTime) || (fabs(time - nextTime)< epsilonStep) )
                 {
                     writeCurrent = true;
                     lastTime += d_period.getValue();
@@ -324,7 +325,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
         }
         if (writeCurrent)
         {
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAEXPORTER_HAVE_ZLIB
             if (gzfile)
             {
                 // write the X state

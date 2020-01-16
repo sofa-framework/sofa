@@ -11,7 +11,7 @@
 	<Node 	 name="gNode4"  gravity="0 0 -9.81"  >
 		<MechanicalObject template="Vec3d" name="obstacle_particle"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  reserve="0" />
 		<UniformMass template="Vec3d" name="Mass" />
-		<TSphereModel template="Vec3d" name="tSphereModel46"  radius="1" />
+		<SphereCollisionModel template="Vec3d" name="tSphereModel46"  radius="1" />
 	</Node>
 	<Node 	 name="gNode4"  gravity="0 0 -9.81"  >
 		<MechanicalObject template="Rigid" name="mObject37"  position="0 0 -10 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />

@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/DataTracker.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -56,12 +56,12 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef TMassType MassType;
 
-    Data<MassType>                        d_vertexMass;   ///< single value defining the mass of each particle
-    Data<SReal>                           d_totalMass;    ///< if >0 : total mass of this body
+    Data<MassType> d_vertexMass;   ///< single value defining the mass of each particle
+    Data<SReal> d_totalMass;    ///< if >0 : total mass of this body
     sofa::core::objectmodel::DataFileName d_filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
 
-    Data<bool>                            d_showCenterOfGravity; ///< to display the center of gravity of the system
-    Data<float>                           d_showAxisSize;        ///< to display the center of gravity of the system
+    Data<bool>  d_showCenterOfGravity; ///< to display the center of gravity of the system
+    Data<float> d_showAxisSize;        ///< to display the center of gravity of the system
 
     Data<bool>  d_computeMappingInertia; ///< to be used if the mass is placed under a mapping
     Data<bool>  d_showInitialCenterOfGravity; ///< display the initial center of gravity of the system
@@ -86,8 +86,8 @@ public:
     using core::objectmodel::BaseObject::getContext;
     ////////////////////////////////////////////////////////////////////////////
 
-    bool m_doesTopoChangeAffect;
-
+    /// Link to be set to the topology container in the component graph.
+    SingleLink <UniformMass<DataTypes, MassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     UniformMass();
@@ -96,10 +96,6 @@ protected:
 
     /// @internal fonction called in the constructor that can be specialized
     void constructor_message() ;
-
-    /// Data tracker
-    sofa::core::DataTracker m_dataTrackerVertex;
-    sofa::core::DataTracker m_dataTrackerTotal;
 
 public:
 
@@ -121,8 +117,8 @@ public:
     void reinit() override;
     void init() override;
     void initDefaultImpl() ;
-    bool update();
-    void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
+    void doUpdateInternal() override;
+    void handleEvent(sofa::core::objectmodel::Event *event) override;
 
     /// @name Check and standard initialization functions from mass information
     /// @{
@@ -158,7 +154,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
 
-    //Temporary function to warn the user when old attribute names are used
+    //Temporary function to warn the user when old attribute names are used until v19.12
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         if (arg->getAttribute("mass"))

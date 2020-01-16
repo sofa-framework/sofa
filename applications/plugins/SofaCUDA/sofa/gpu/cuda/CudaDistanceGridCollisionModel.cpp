@@ -19,19 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifdef SOFA_HAVE_GLEW
-#include <GL/glew.h>
-#endif
-#ifdef SOFA_HAVE_MINIFLOWVR
-    #include <flowvr/render/mesh.h>
-#endif // SOFA_HAVE_MINIFLOWVR
+
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <fstream>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/rmath.h>
+#include <SofaBaseCollision/CubeModel.h>
+#if SOFACUDA_HAVE_MINIFLOWVR
+    #include <flowvr/render/mesh.h>
+#endif // SOFACUDA_HAVE_MINIFLOWVR
+#include <GL/glew.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -137,7 +136,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
             grid->sampleSurface(sampling);
         return grid;
     }
-#ifdef SOFA_HAVE_MINIFLOWVR
+#if SOFACUDA_HAVE_MINIFLOWVR
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
         flowvr::render::Mesh mesh;
@@ -197,7 +196,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         std::cout << "Distance grid creation DONE."<<std::endl;
         return grid;
     }
-#endif // SOFA_HAVE_MINIFLOWVR
+#endif // SOFACUDA_HAVE_MINIFLOWVR
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
@@ -430,7 +429,6 @@ void CudaDistanceGrid::calcCubeDistance(Real dim, int np)
 /// Compute distance field from given mesh
 void CudaDistanceGrid::calcDistance()
 {
-#ifdef SOFA_HAVE_GLEW
 
     if (GLEW_EXT_framebuffer_object && GLEW_ARB_vertex_buffer_object)
     {
@@ -474,10 +472,6 @@ void CudaDistanceGrid::calcDistance()
         std::cerr << "ERROR: Unsupported OpenGL extensions EXT_framebuffer_object ARB_vertex_buffer_object" << std::endl;
     }
 
-#else
-    std::cerr << "ERROR: CudaDistanceGrid::calcDistance requires GLEW to access OpenGL extensions" << std::endl;
-
-#endif
 }
 
 CudaDistanceGrid* CudaDistanceGrid::loadShared(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)

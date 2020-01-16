@@ -25,5 +25,5 @@ qt4_add_resources(RESOURCE_FILES "./icons.qrc")
 set(MOC_FILES_GROUP "Generated")
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${RESOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaSimpleGUI ${GLUT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} SofaSimpleGUI SofaOpenglVisual ${GLUT_LIBRARIES})
 compile_definitions("-DQTSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")

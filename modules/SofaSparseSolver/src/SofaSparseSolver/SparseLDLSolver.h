@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_H
-#include "config.h"
+#include <SofaSparseSolver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>

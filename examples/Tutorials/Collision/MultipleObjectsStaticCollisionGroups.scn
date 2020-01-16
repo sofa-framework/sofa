@@ -3,7 +3,7 @@
 <Node name="root" dt="0.01" gravity="0 0 -9.81">
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
-    <CollisionPipeline />
+    <DefaultPipeline />
     <BruteForceDetection />
     <DefaultContactManager />
     <MinProximityIntersection alarmDistance="0.5" contactDistance="0.2" />
@@ -35,9 +35,9 @@
         <UniformMass name="Mass" totalMass="1" />
         <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
         <!-- Collision Models -->
-        <TriangleModel name="Triangles CubeGeometry1" />
-        <LineModel name="Lines CubeGeometry1" />
-        <PointModel name="Points CubeGeometry1" />
+        <TriangleCollisionModel name="Triangles CubeGeometry1" />
+        <LineCollisionModel name="Lines CubeGeometry1" />
+        <PointCollisionModel name="Points CubeGeometry1" />
     </Node>
     <Node name="CubeGeometry2">
         <EulerImplicitSolver name="EulerImplicit" />
@@ -47,15 +47,15 @@
         <UniformMass name="Mass" totalMass="1" />
         <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
         <!-- Collision Models -->
-        <TriangleModel name="Triangles CubeGeometry2" />
-        <LineModel name="Lines CubeGeometry2" />
-        <PointModel name="Points CubeGeometry2" />
+        <TriangleCollisionModel name="Triangles CubeGeometry2" />
+        <LineCollisionModel name="Lines CubeGeometry2" />
+        <PointCollisionModel name="Points CubeGeometry2" />
     </Node>
     <Node name="SaladBowl">
         <MeshTopology name="Topology Salad Bowl" filename="mesh/SaladBowl.obj" />
         <MechanicalObject name="Particles Salad Bowl" scale="10" />
-        <TriangleModel name="Triangles Salad Bowl" moving="0" simulated="0" />
-        <LineModel name="Lines Salad Bowl" moving="0" simulated="0" />
-        <PointModel name="Points Salad Bowl" moving="0" simulated="0" />
+        <TriangleCollisionModel name="Triangles Salad Bowl" moving="0" simulated="0" />
+        <LineCollisionModel name="Lines Salad Bowl" moving="0" simulated="0" />
+        <PointCollisionModel name="Points Salad Bowl" moving="0" simulated="0" />
     </Node>
 </Node>

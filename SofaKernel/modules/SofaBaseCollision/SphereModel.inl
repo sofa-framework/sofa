@@ -33,7 +33,6 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -49,17 +48,17 @@ namespace collision
 {
 
 template<class DataTypes>
-TSphereModel<DataTypes>::TSphereModel()
+SphereCollisionModel<DataTypes>::SphereCollisionModel()
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
-    , mstate(NULL)
+    , mstate(nullptr)
 {
     enum_type = SPHERE_TYPE;
 }
 
 template<class DataTypes>
-TSphereModel<DataTypes>::TSphereModel(core::behavior::MechanicalState<DataTypes>* _mstate )
+SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::MechanicalState<DataTypes>* _mstate )
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius. (default=1.0)"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
@@ -70,7 +69,7 @@ TSphereModel<DataTypes>::TSphereModel(core::behavior::MechanicalState<DataTypes>
 
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::resize(int size)
+void SphereCollisionModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -92,7 +91,7 @@ void TSphereModel<DataTypes>::resize(int size)
 
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::init()
+void SphereCollisionModel<DataTypes>::init()
 {
     if(m_componentstate==ComponentState::Valid){
         msg_warning(this) << "Calling an already fully initialized component. You should use reinit instead." ;
@@ -120,7 +119,7 @@ void TSphereModel<DataTypes>::init()
 
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index)
+void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index)
 {
     if(m_componentstate!=ComponentState::Valid)
         return ;
@@ -132,7 +131,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int
 
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if(m_componentstate!=ComponentState::Valid)
         return ;
@@ -171,12 +170,12 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
     // restore current polygon mode
     vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
 
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 
 template <class DataTypes>
-void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
+void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     if(m_componentstate!=ComponentState::Valid)
         return ;
@@ -214,7 +213,7 @@ void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
 
 
 template <class DataTypes>
-void TSphereModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
+void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
 {
     using sofa::defaulttype::Vector3 ;
 
@@ -262,7 +261,7 @@ void TSphereModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDep
 }
 
 template <class DataTypes>
-typename TSphereModel<DataTypes>::Real TSphereModel<DataTypes>::getRadius(const int i) const
+typename SphereCollisionModel<DataTypes>::Real SphereCollisionModel<DataTypes>::getRadius(const int i) const
 {
     if(i < (int) this->radius.getValue().size())
         return radius.getValue()[i];
@@ -271,7 +270,7 @@ typename TSphereModel<DataTypes>::Real TSphereModel<DataTypes>::getRadius(const 
 }
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     if(m_componentstate!=ComponentState::Valid)
         return ;

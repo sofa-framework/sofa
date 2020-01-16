@@ -12,8 +12,8 @@
 		<Mesh src="@meshLoader"/>
 		<MechanicalObject scale="1.0" />
 		<TriangleOctree />
-		<Line />
-		<Point />
+		<LineCollisionModel />
+		<PointCollisionModel />
 		<RigidMapping />
 	</Node>
 </Node>

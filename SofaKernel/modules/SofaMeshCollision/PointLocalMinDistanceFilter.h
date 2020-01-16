@@ -51,20 +51,7 @@ public:
     /**
      * @brief Default constructor.
      */
-    PointInfo(LocalMinDistanceFilter *lmdFilters)
-        : InfoFilter(lmdFilters)
-    {
-
-    }
-
-    /**
-     * @brief Empty constructor. Required by PointData<>.
-     */
-    PointInfo()
-        : InfoFilter(NULL)
-    {
-
-    }
+    PointInfo(LocalMinDistanceFilter *lmdFilters = nullptr);
 
     /**
      * @brief Default destructor.

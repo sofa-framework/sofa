@@ -35,7 +35,6 @@ namespace sofa
                 int BlenderExportClass = core::RegisterObject("Export the simulation result as blender point cache files")
                 .add< BlenderExporter<Vec3dTypes> >()
                 .add< BlenderExporter<Rigid3Types> >()
-				.add< BlenderExporter<ExtVec3Types> >()
 
 				;
 

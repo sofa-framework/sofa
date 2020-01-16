@@ -10,7 +10,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package(SofaFramework REQUIRED)
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
-
+find_package(SofaOpenglVisual REQUIRED)
 find_package(Leap REQUIRED)
 
 

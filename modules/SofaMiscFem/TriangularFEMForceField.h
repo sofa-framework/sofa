@@ -222,7 +222,7 @@ public:
     };
 
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     /// Get/Set methods
     Real getPoisson() { return (f_poisson.getValue())[0]; }
@@ -322,6 +322,9 @@ public:
     Data<bool> f_computePrincipalStress; ///< Compute principal stress for each triangle
 
     TRQSTriangleHandler* triangleHandler;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TriangularFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 #ifdef PLOT_CURVE
     //structures to save values for each element along time

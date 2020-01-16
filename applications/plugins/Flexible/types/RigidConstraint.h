@@ -74,13 +74,13 @@ public:
     VecCoord oldPos;
 
     // -- Constraint interface
-    virtual void init()
+    virtual void init() override
     {
         Inherit1::init();
         reinit();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         // sort indices to fill the jacobian in ascending order
         Indices tmp = f_index.getValue();
@@ -102,19 +102,19 @@ public:
         for(unsigned ind=0; ind<indices.size(); ind++) res[indices[ind]].setRigid( oldPos[ind], method );
     }
 
-    virtual void projectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData)
+    virtual void projectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData) override
     {
         helper::WriteAccessor<DataVecDeriv> res = resData;
         projectResponseT<VecDeriv>( res.wref());
     }
 
-    virtual void projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData)
+    virtual void projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData) override
     {
         helper::WriteAccessor<DataVecDeriv> res = resData;
         projectResponseT<VecDeriv>( res.wref());
     }
 
-    virtual void projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
+    virtual void projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData) override
     {
         helper::WriteAccessor<DataVecCoord> res = xData;
         const helper::vector<unsigned> & indices = f_index.getValue();
@@ -123,7 +123,7 @@ public:
         for(unsigned i=0; i<indices.size(); i++)      { oldPos[i]=res[indices[i]];  res[indices[i]].setRigid( method ); }
     }
 
-    virtual void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& cData)
+    virtual void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& cData) override
     {
         helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
@@ -141,7 +141,7 @@ public:
     virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int /*offset*/) {}
     virtual void applyConstraint(defaulttype::BaseVector *, unsigned int /*offset*/) {}
 
-    void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+    void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset ) override
     {
         // resize the jacobian
         SparseMatrix jacobian; ///< projection matrix
@@ -189,7 +189,7 @@ protected:
 
     virtual ~RigidConstraint()  {    }
 
-    virtual void draw(const core::visual::VisualParams* vparams)
+    virtual void draw(const core::visual::VisualParams* vparams) override
     {
         if (!vparams->displayFlags().getShowBehaviorModels()) return;
         if (!this->isActive()) return;

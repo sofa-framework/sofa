@@ -52,20 +52,7 @@ public:
     /**
      * @brief Default constructor.
      */
-    TriangleInfo(LocalMinDistanceFilter *lmdFilters)
-        : InfoFilter(lmdFilters)
-    {
-
-    }
-
-    /**
-     * @brief Empty constructor. Required by TriangleData<>.
-     */
-    TriangleInfo()
-        : InfoFilter(NULL)
-    {
-
-    }
+    TriangleInfo(LocalMinDistanceFilter *lmdFilters = nullptr);
 
     /**
      * @brief Default destructor.
@@ -196,6 +183,9 @@ public:
     protected:
         TriangleLocalMinDistanceFilter* f;
     };
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TriangleLocalMinDistanceFilter, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 private:
     topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo; ///< point filter data

@@ -63,25 +63,25 @@ void ProjectToLineConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(un
 
 template <class DataTypes>
 ProjectToLineConstraint<DataTypes>::ProjectToLineConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , f_origin( initData(&f_origin,CPos(),"origin","A point in the line"))
     , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))
-    , data(new ProjectToLineConstraintInternalData<DataTypes>())
+    , l_topology(initLink("topology", "link to the topology container"))
+    , data(new ProjectToLineConstraintInternalData<DataTypes>())    
+    , m_pointHandler(nullptr)
 {
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
-
-    pointHandler = new FCPointHandler(this, &f_indices);
 }
 
 
 template <class DataTypes>
 ProjectToLineConstraint<DataTypes>::~ProjectToLineConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 
     delete data;
 }
@@ -115,11 +115,27 @@ void ProjectToLineConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
-    f_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+        
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &f_indices);
+        f_indices.createTopologicalEngine(_topology, m_pointHandler);
+        f_indices.registerTopologicalData();        
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
     const Indices & indices = f_indices.getValue();
 

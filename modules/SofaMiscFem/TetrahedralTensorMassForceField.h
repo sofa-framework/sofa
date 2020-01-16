@@ -102,8 +102,6 @@ protected:
     };
     typedef typename VecCoord::template rebind<EdgeRestInformation>::other edgeRestInfoVector;
 
-
-    sofa::core::topology::BaseMeshTopology* _topology;
     VecCoord  _initialPoints;///< the intial positions of the points
 
     bool updateMatrix;
@@ -113,6 +111,10 @@ protected:
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TetrahedralTensorMassForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 
     TetrahedralTensorMassForceField();
 
@@ -186,6 +188,8 @@ protected:
 
 
     TetrahedralTMEdgeHandler* edgeHandler;
+
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
 };
 

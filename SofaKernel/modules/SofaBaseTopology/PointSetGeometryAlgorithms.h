@@ -97,7 +97,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -107,7 +107,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const PointSetGeometryAlgorithms<DataTypes>* = NULL)
+    static std::string templateName(const PointSetGeometryAlgorithms<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }
@@ -130,6 +130,9 @@ protected:
     Data<bool> d_showPointIndices; ///< Debug : view Point indices
     /// Tage of the Mechanical State associated with the vertex position
     Data<std::string> d_tagMechanics;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<PointSetGeometryAlgorithms<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)

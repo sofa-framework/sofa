@@ -45,7 +45,8 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/rmath.h>
-#include <image/ImageTypes.h>
+
+#include <CImgPlugin/CImgData.h>
 
 //CGAL
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
@@ -117,14 +118,14 @@ public:
     MeshGenerationFromImage();
     virtual ~MeshGenerationFromImage() { }
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void doUpdate();
+    void doUpdate() override;
 
-    void draw(const sofa::core::visual::VisualParams* vparams);
+    void draw(const sofa::core::visual::VisualParams* vparams) override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

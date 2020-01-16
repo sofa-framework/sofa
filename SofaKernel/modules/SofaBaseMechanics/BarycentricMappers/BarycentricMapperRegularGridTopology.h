@@ -38,7 +38,6 @@ using core::visual::VisualParams;
 using sofa::defaulttype::BaseMatrix;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 using topology::RegularGridTopology;
 using topology::PointSetTopologyContainer;
 
@@ -78,8 +77,10 @@ public:
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
     const BaseMatrix* getJ(int outSize, int inSize) override;
 
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b );
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperRegularGridTopology<In, Out> & b );
+    template<class I, class O>
+    friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<I, O> &b );
+    template<class I, class O>
+    friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperRegularGridTopology<I, O> & b );
 
 protected:
     BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,
@@ -94,7 +95,6 @@ protected:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperRegularGridTopology< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperRegularGridTopology< Vec3dTypes, ExtVec3Types >;
 
 
 #endif

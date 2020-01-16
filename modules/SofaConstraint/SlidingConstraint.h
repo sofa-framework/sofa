@@ -71,10 +71,9 @@ protected:
     unsigned int m_cid;
 
 
-
-    SlidingConstraint(MechanicalState* object1, MechanicalState* object2);
-    SlidingConstraint(MechanicalState* object);
     SlidingConstraint();
+    SlidingConstraint(MechanicalState* object);
+    SlidingConstraint(MechanicalState* object1, MechanicalState* object2);
 
     virtual ~SlidingConstraint(){}
 

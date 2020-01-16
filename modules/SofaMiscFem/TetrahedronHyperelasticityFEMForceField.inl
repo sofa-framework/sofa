@@ -23,7 +23,6 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
 
-#include <sofa/helper/system/gl.h>
 #include <SofaMiscFem/BoyceAndArruda.h>
 #include <SofaMiscFem/NeoHookean.h>
 #include <SofaMiscFem/MooneyRivlin.h>
@@ -109,7 +108,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::app
 }
 
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHyperelasticityFEMForceField() 
-    : m_topology(0)
+    : m_topology(nullptr)
     , m_initialPoints(0)
     , m_updateMatrix(true)
     , m_meshSaved( false)
@@ -119,7 +118,8 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::T
     , d_anisotropySet(initData(&d_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
     , m_tetrahedronInfo(initData(&m_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , m_edgeInfo(initData(&m_edgeInfo, "edgeInfo", "Internal edge data"))
-    , m_tetrahedronHandler(NULL)
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_tetrahedronHandler(nullptr)
 {
     m_tetrahedronHandler = new TetrahedronHandler(this,&m_tetrahedronInfo);
 }
@@ -149,7 +149,21 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
             copy(anisotropySet.begin(), anisotropySet.end(),globalParameters.anisotropyDirection.begin());
     }
 
-    m_topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
 
     /** parse the input material name */

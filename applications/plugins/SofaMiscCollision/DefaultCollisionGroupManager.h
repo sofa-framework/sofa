@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
 #define SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
-#include "config.h"
+#include <SofaMiscCollision/config.h>
 
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/simulation/Node.h>
@@ -43,8 +43,9 @@ class SOFA_MISC_COLLISION_API DefaultCollisionGroupManager : public core::collis
 public:
     SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::collision::CollisionGroupManager);
 
-    typedef std::set<simulation::Node::SPtr> GroupSet;
-    GroupSet groupSet;
+    typedef std::map<simulation::Node*, simulation::Node*> GroupMap; 
+    // this map stores the deformable object node and its collision group <deformable object node*, collison group node*>
+    GroupMap groupMap; 
 
 public:
     void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts) override;
@@ -59,10 +60,9 @@ protected:
 
     void changeInstance(Instance inst) override;
 
-    template <typename Container>
-    void clearGroup(const Container &inNodes, simulation::Node::SPtr group);
+    void clearCollisionGroup(simulation::Node::SPtr group);
 
-    std::map<Instance,GroupSet> storedGroupSet;
+    std::map<Instance,GroupMap> storedGroupSet;
 
 private:
     DefaultCollisionGroupManager(const DefaultCollisionGroupManager& n) ;

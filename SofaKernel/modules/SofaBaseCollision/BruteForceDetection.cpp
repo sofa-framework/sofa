@@ -78,7 +78,6 @@ void BruteForceDetection::reinit()
 
 void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
 {
-    //sout<<"--------- add Collision Model : "<<cm->getLast()->getName()<<" -------"<<sendl;
     if (cm->empty())
         return;
 
@@ -100,13 +99,11 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
     if (cm->isSimulated() && cm->getLast()->canCollideWith(cm->getLast()))
     {
         // self collision
-        //sout << "Test broad phase Self "<<cm->getLast()->getName()<<sendl;
         bool swapModels = false;
         core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm, swapModels);
-        if (intersector != NULL)
+        if (intersector != nullptr)
             if (intersector->canIntersect(cm->begin(), cm->begin()))
             {
-                //sout << "Broad phase Self "<<cm->getLast()->getName()<<sendl;
                 cmPairs.push_back(std::make_pair(cm, cm));
             }
 
@@ -125,7 +122,7 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
 
         bool swapModels = false;
         core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
-        if (intersector == NULL)
+        if (intersector == nullptr)
             continue;
 
         core::CollisionModel* cm1 = (swapModels?cm2:cm);
@@ -155,7 +152,6 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
         // Here we assume a single root element is present in both models
         if (intersector->canIntersect(cm1->begin(), cm2->begin()))
         {
-            //sout << "Broad phase "<<cm1->getLast()->getName()<<" - "<<cm2->getLast()->getName()<<sendl;
             cmPairs.push_back(std::make_pair(cm1, cm2));
         }
     }
@@ -176,15 +172,11 @@ bool BruteForceDetection::keepCollisionBetween(core::CollisionModel *cm1, core::
 
 
 void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair)
-{
-    sofa::helper::AdvancedTimer::StepVar bfTimer("BruteForceDetection::addCollisionPair");
+{    
     typedef std::pair< std::pair<core::CollisionElementIterator,core::CollisionElementIterator>, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> > TestPair;
 
     core::CollisionModel *cm1 = cmPair.first; //->getNext();
     core::CollisionModel *cm2 = cmPair.second; //->getNext();
-
-    //int size0 = elemPairs.size();
-    //sout << "Narrow phase "<<cm1->getLast()->getName()<<" - "<<cm2->getLast()->getName()<<sendl;
 
     if (!cm1->isSimulated() && !cm2->isSimulated())
         return;
@@ -194,10 +186,13 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
 
     core::CollisionModel *finalcm1 = cm1->getLast();//get the finnest CollisionModel which is not a CubeModel
     core::CollisionModel *finalcm2 = cm2->getLast();
-    //sout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<sendl;
+
+    std::string msg = "BruteForceDetection addCollisionPair: " + finalcm1->getName() + " - " + finalcm2->getName();
+    sofa::helper::ScopedAdvancedTimer bfTimer(msg);
+    
     bool swapModels = false;
     core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2, swapModels);//find the method for the finnest CollisionModels
-    if (finalintersector == NULL)
+    if (finalintersector == nullptr)
         return;
     if (swapModels)
     {
@@ -207,8 +202,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     }
 
     const bool self = (finalcm1->getContext() == finalcm2->getContext());
-    //if (self)
-    //    sout << "SELF: Final intersector " << finalintersector->name() << " for "<<finalcm1->getName()<<" - "<<finalcm2->getName()<<sendl;
 
     sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(finalcm1, finalcm2);
 
@@ -217,9 +210,9 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     if (finalcm1 == cm1 || finalcm2 == cm2)
     {
         // The last model also contains the root element -> it does not only contains the final level of the tree
-        finalcm1 = NULL;
-        finalcm2 = NULL;
-        finalintersector = NULL;
+        finalcm1 = nullptr;
+        finalcm2 = nullptr;
+        finalintersector = nullptr;
     }
 
     std::queue< TestPair > externalCells;
@@ -245,10 +238,10 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     //externalCells.push(std::make_pair(std::make_pair(cm1->begin(),cm1->end()),std::make_pair(cm2->begin(),cm2->end())));
 
     //core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm1, cm2);
-    core::collision::ElementIntersector* intersector = NULL;
+    core::collision::ElementIntersector* intersector = nullptr;
     MirrorIntersector mirror;
-    cm1 = NULL; // force later init of intersector
-    cm2 = NULL;
+    cm1 = nullptr; // force later init of intersector
+    cm2 = nullptr;
 
     while (!externalCells.empty())
     {
@@ -262,17 +255,17 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
             if (!cm1 || !cm2) continue;
             intersector = intersectionMethod->findIntersector(cm1, cm2, swapModels);
 
-            if (intersector == NULL)
+            if (intersector == nullptr)
             {
-                sout << "BruteForceDetection: Error finding intersector " << intersectionMethod->getName() << " for "<<cm1->getClassName()<<" - "<<cm2->getClassName()<<sendl;
+                msg_error() << "BruteForceDetection: Error finding intersector " << intersectionMethod->getName() << " for "<<cm1->getClassName()<<" - "<<cm2->getClassName()<<sendl;
             }
-            //else sout << "BruteForceDetection: intersector " << intersector->name() << " for " << intersectionMethod->getName() << " for "<<gettypename(typeid(*cm1))<<" - "<<gettypename(typeid(*cm2))<<sendl;
+
             if (swapModels)
             {
                 mirror.intersector = intersector; intersector = &mirror;
             }
         }
-        if (intersector == NULL)
+        if (intersector == nullptr)
             continue;
         std::stack< TestPair > internalCells;
         internalCells.push(root);
@@ -400,9 +393,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
             }
         }
     }
-
-    //sofa::helper::AdvancedTimer::stepEnd("BruteForceDetection::addCollisionPair");
-    //sout << "Narrow phase "<<cm1->getLast()->getName()<<"("<<gettypename(typeid(*cm1->getLast()))<<") - "<<cm2->getLast()->getName()<<"("<<gettypename(typeid(*cm2->getLast()))<<"): "<<elemPairs.size()-size0<<" contacts."<<sendl;
 }
 
 } // namespace collision

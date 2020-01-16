@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <!-- Automatic Tetrahedron adding example with Tetra2Triangle mapping: Element added are define in: ./AddingTetrahedraProcess.txt -->
 <Node name="root" gravity="0 0 -9" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -29,9 +30,9 @@
             <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" listening="1" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" /> 
             
-            <TriangleSet />
+            <TriangleCollisionModel />
             <Node name="Visu">
-                <VisualModel name="Visual" color="yellow" />
+                <OglModel name="Visual" color="yellow" />
                 <IdentityMapping input="@../../Volume" output="@Visual" />
             </Node>
         </Node>

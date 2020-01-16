@@ -36,7 +36,7 @@ namespace engine
 {
 
 template <class DataTypes>
-const typename Vertex2Frame<DataTypes>::Real Vertex2Frame<DataTypes>::EPSILON = 0.99;
+const typename Vertex2Frame<DataTypes>::Real Vertex2Frame<DataTypes>::EPSILON = std::numeric_limits<Vertex2Frame<DataTypes>::Real>::epsilon();
 
 template <class DataTypes>
 Vertex2Frame<DataTypes>::Vertex2Frame():
@@ -105,7 +105,7 @@ void Vertex2Frame<DataTypes>::doUpdate()
 
             CPos xAxis;
             CPos yAxis(0.0, 1.0, 0.0);
-            if ( fabs(dot(yAxis, zAxis)) >= EPSILON)
+            if ( 1.0f - fabs(dot(yAxis, zAxis)) <= EPSILON)
                 yAxis = CPos(0.0, 0.0, 1.0);
 
             xAxis = yAxis.cross(zAxis);
@@ -133,7 +133,7 @@ void Vertex2Frame<DataTypes>::doUpdate()
 
             CPos yAxis;
             CPos zAxis(1.0, 0.0, 0.0);
-            if ( fabs(dot(zAxis, xAxis)) >= EPSILON)
+            if ( 1.0f - fabs(dot(zAxis, xAxis)) <= EPSILON)
                 zAxis = CPos(0.0, 0.0, 1.0);
 
             yAxis = zAxis.cross(xAxis);

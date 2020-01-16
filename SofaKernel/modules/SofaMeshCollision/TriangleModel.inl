@@ -48,31 +48,46 @@ namespace collision
 {
 
 template<class DataTypes>
-TTriangleModel<DataTypes>::TTriangleModel()
+TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
     : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
     , d_computeNormals(initData(&d_computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
-    , m_mstate(NULL)
-    , m_topology(NULL)
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_mstate(nullptr)
+    , m_topology(nullptr)
     , m_needsUpdate(true)
     , m_topologyRevision(-1)
-    , m_pointModels(NULL)
-    , m_lmdFilter(NULL)
+    , m_pointModels(nullptr)
+    , m_lmdFilter(nullptr)
 {
     m_triangles = &m_internalTriangles;
     enum_type = TRIANGLE_TYPE;
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::resize(int size)
+void TriangleCollisionModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
     m_normals.resize(size);
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::init()
+void TriangleCollisionModel<DataTypes>::init()
 {
-    m_topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (!m_topology)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TriangleModel requires a Triangular Topology";
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // TODO epernod 2019-01-21: Check if this call super is needed.
     this->CollisionModel::init();
@@ -82,15 +97,9 @@ void TTriangleModel<DataTypes>::init()
 
     // Check object pointer access
     bool modelsOk = true;
-    if (m_mstate == NULL)
+    if (m_mstate == nullptr)
     {
         msg_error() << "No MechanicalObject found. TriangleModel requires a Vec3 Mechanical Model in the same Node.";
-        modelsOk = false;
-    }
-
-    if (m_topology == NULL)
-    {
-        msg_error() << "No Topology found. TriangleModel requires a Triangular Topology in the same Node.";
         modelsOk = false;
     }
 
@@ -122,7 +131,7 @@ void TTriangleModel<DataTypes>::init()
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::updateNormals()
+void TriangleCollisionModel<DataTypes>::updateNormals()
 {
     for (int i=0; i<size; i++)
     {
@@ -137,7 +146,7 @@ void TTriangleModel<DataTypes>::updateNormals()
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::updateFromTopology()
+void TriangleCollisionModel<DataTypes>::updateFromTopology()
 {
     int revision = m_topology->getRevision();
     if (revision == m_topologyRevision)
@@ -197,61 +206,15 @@ void TTriangleModel<DataTypes>::updateFromTopology()
             ++index;
         }
     }
-    updateFlags();
     updateNormals();
 
     // topology has changed, force boudingTree recomputation
     m_needsUpdate = true;
 }
 
-template<class DataTypes>
-void TTriangleModel<DataTypes>::updateFlags(int /*ntri*/)
-{
-#if 0
-    if (ntri < 0) ntri = m_triangles->size();
-    //VecCoord& x =m_mstate->read(core::ConstVecCoordId::position())->getValue();
-    //VecDeriv& v = m_mstate->read(core::ConstVecDerivId::velocity())->getValue();
-    vector<bool> pflags(m_mstate->getSize());
-    std::set<std::pair<int,int> > eflags;
-    for (unsigned i=0; i<m_triangles->size(); i++)
-    {
-        int f = 0;
-        topology::Triangle t = (*m_triangles)[i];
-        if (!pflags[t[0]])
-        {
-            f |= FLAG_P1;
-            pflags[t[0]] = true;
-        }
-        if (!pflags[t[1]])
-        {
-            f |= FLAG_P2;
-            pflags[t[1]] = true;
-        }
-        if (!pflags[t[2]])
-        {
-            f |= FLAG_P3;
-            pflags[t[2]] = true;
-        }
-        if (eflags.insert( (t[0]<t[1])?std::make_pair(t[0],t[1]):std::make_pair(t[1],t[0]) ).second)
-        {
-            f |= FLAG_E12;
-        }
-        if (i < (unsigned)ntri && eflags.insert( (t[1]<t[2])?std::make_pair(t[1],t[2]):std::make_pair(t[2],t[1]) ).second) // don't use the diagonal edge of quads
-        {
-            f |= FLAG_E23;
-        }
-        if (eflags.insert( (t[2]<t[0])?std::make_pair(t[2],t[0]):std::make_pair(t[0],t[2]) ).second)
-        {
-            f |= FLAG_E31;
-        }
-        elems[i].flags = f;
-    }
-#endif
-}
-
 
 template<class DataTypes>
-bool TTriangleModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
+bool TriangleCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
 {
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
     if (this->getContext() != model2->getContext()) return true;
@@ -288,7 +251,7 @@ bool TTriangleModel<DataTypes>::canCollideWithElement(int index, CollisionModel*
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
+void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
 
@@ -350,7 +313,7 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
+void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
 
@@ -409,20 +372,20 @@ void TTriangleModel<DataTypes>::computeContinuousBoundingTree(double dt, int max
 }
 
 template<class DataTypes>
-TriangleLocalMinDistanceFilter *TTriangleModel<DataTypes>::getFilter() const
+TriangleLocalMinDistanceFilter *TriangleCollisionModel<DataTypes>::getFilter() const
 {
     return m_lmdFilter;
 }
 
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::setFilter(TriangleLocalMinDistanceFilter *lmdFilter)
+void TriangleCollisionModel<DataTypes>::setFilter(TriangleLocalMinDistanceFilter *lmdFilter)
 {
     m_lmdFilter = lmdFilter;
 }
 
 template<class DataTypes>
-int TTriangleModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
+int TriangleCollisionModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 {
     int f = 0;
     sofa::core::topology::BaseMeshTopology::Triangle t = (*m_triangles)[i];
@@ -455,7 +418,7 @@ int TTriangleModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     if( !onlyVisible ) return;
 
@@ -493,7 +456,7 @@ void TTriangleModel<DataTypes>::computeBBox(const core::ExecParams* params, bool
 
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams ,int index)
+void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams ,int index)
 {
     Element t(this,index);
 
@@ -505,7 +468,7 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams ,
 
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {
@@ -556,7 +519,7 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
         }
     }
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

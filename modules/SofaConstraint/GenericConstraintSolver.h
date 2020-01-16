@@ -169,7 +169,7 @@ public:
     bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() { }
+    void setReadWriteVectors() override { }
 #endif
 private:
     /// Constraint parameters

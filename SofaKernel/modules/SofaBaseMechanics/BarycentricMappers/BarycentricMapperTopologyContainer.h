@@ -43,7 +43,6 @@ using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Vec3i;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
@@ -85,8 +84,10 @@ public:
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
     const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
 
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<In, Out, MappingDataType, Element> &b );
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTopologyContainer<In, Out, MappingDataType, Element> & b );
+    template<class I, class O, class MDType, class E>
+    friend std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<I, O, MDType, E> &b );
+    template<class I, class O, class MDType, class E>
+    friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTopologyContainer<I, O, MDType, E> & b );
 
     bool isEmpty();
 
@@ -190,15 +191,10 @@ protected:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData1D, Edge>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3Types , typename BarycentricMapper<Vec3dTypes, ExtVec3Types>::MappingData1D, Edge>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData2D, Triangle>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3Types , typename BarycentricMapper<Vec3dTypes, ExtVec3Types>::MappingData2D, Triangle>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData2D, Quad>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3Types , typename BarycentricMapper<Vec3dTypes, ExtVec3Types>::MappingData2D, Quad>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData3D, Tetrahedron>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3Types , typename BarycentricMapper<Vec3dTypes, ExtVec3Types>::MappingData3D, Tetrahedron>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData3D, Hexahedron>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3Types , typename BarycentricMapper<Vec3dTypes, ExtVec3Types>::MappingData3D, Hexahedron>;
 
 
 #endif

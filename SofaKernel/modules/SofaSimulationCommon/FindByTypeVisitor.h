@@ -57,7 +57,7 @@ public:
         return RESULT_CONTINUE;
     }
     const char* getClassName() const override { return "FindByTypeVisitor"; }
-    virtual std::string getInfos() const { std::string name="["+sofa::helper::gettypename(typeid(T))+"]"; return name; }
+    virtual std::string getInfos() const override { std::string name="["+sofa::helper::gettypename(typeid(T))+"]"; return name; }
 
 };
 

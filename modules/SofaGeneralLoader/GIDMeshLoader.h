@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef GIDMESHLOADER_H
 #define GIDMESHLOADER_H
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/MeshLoader.h>
 

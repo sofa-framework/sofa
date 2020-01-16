@@ -71,6 +71,9 @@ public:
     Data<bool> f_fixAll; ///< filter all the DOF to implement a fixed object
     Data<SReal> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
     SetIndex f_coordinates; ///< Coordinates of the fixed points
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<FixedTranslationConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     FixedTranslationConstraint();
 
@@ -116,11 +119,8 @@ protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
 };
 

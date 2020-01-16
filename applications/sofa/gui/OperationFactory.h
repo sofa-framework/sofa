@@ -37,7 +37,7 @@ namespace gui
 class OperationCreator
 {
 public:
-    virtual ~OperationCreator() {};
+    virtual ~OperationCreator() {}
     virtual Operation* create() const =0;
     virtual std::string getDescription() const=0;
 };
@@ -46,8 +46,8 @@ template<class RealOperation>
 class TOperationCreator: public OperationCreator
 {
 public:
-    Operation* create() const override {return new RealOperation();};
-    std::string getDescription() const { return RealOperation::getDescription();};
+    Operation* create() const override {return new RealOperation();}
+    std::string getDescription() const override { return RealOperation::getDescription();}
 };
 
 
@@ -62,7 +62,7 @@ public:
     {
         static OperationFactory instance;
         return &instance;
-    };
+    }
 
     static std::string GetDescription(const std::string &name)
     {

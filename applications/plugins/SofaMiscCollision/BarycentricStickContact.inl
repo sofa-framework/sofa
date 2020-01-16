@@ -39,7 +39,7 @@ namespace collision
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricStickContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
-    : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(NULL), parent(NULL)
+    : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(nullptr), parent(nullptr)
     , f_keepAlive(initData(&f_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
 {
     mapper1.setCollisionModel(model1);
@@ -55,11 +55,11 @@ BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::~B
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::cleanup()
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
         ff->cleanup();
-        if (parent!=NULL) parent->removeObject(ff);
-        parent = NULL;
+        if (parent!=nullptr) parent->removeObject(ff);
+        parent = nullptr;
         ff.reset();
         mapper1.cleanup();
         mapper2.cleanup();
@@ -69,10 +69,10 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
 {
-    if (o==NULL) return;
+    if (o==nullptr) return;
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
 
-    if (ff==NULL)
+    if (ff==nullptr)
     {
         msg_info() << "Creating BarycentricStickContact springs" ;
         MechanicalState1* mstate1 = mapper1.createMapping(GenerateStringID::generate().c_str());
@@ -180,17 +180,9 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         typename DataTypes1::Real r1 = 0.0;
         typename DataTypes2::Real r2 = 0.0;
         // Create mapping for first point
-        index1 = mapper1.addPointB(o->point[0], index1, r1
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[0]
-#endif
-                                  );
+        index1 = mapper1.addPointB(o->point[0], index1, r1);
         // Create mapping for second point
-        index2 = mapper2.addPointB(o->point[1], index2, r2
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[1]
-#endif
-                                  );
+        index2 = mapper2.addPointB(o->point[1], index2, r2);
 
         double distance = d0 + r1 + r2;
         double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness())/distance;
@@ -210,15 +202,15 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::createResponse(core::objectmodel::BaseContext* group)
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(ff);
         }
         parent = group;
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->addObject(this);
             parent->addObject(ff);
@@ -229,15 +221,15 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::removeResponse()
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             //sout << "Removing contact response from "<<parent->getName()<<sendl;
             parent->removeObject(this);
             parent->removeObject(ff);
         }
-        parent = NULL;
+        parent = nullptr;
     }
 }
 

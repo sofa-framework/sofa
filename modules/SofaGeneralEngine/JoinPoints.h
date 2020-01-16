@@ -66,7 +66,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const JoinPoints<DataTypes>* = NULL)
+    static std::string templateName(const JoinPoints<DataTypes>* = nullptr)
     {
         return DataTypes::Name();
     }

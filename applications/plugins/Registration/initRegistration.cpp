@@ -78,6 +78,3 @@ namespace component
 
 } // namespace sofa
 
-////////// BEGIN CLASS LIST //////////
-#ifdef SOFA_HAVE_IMAGE
-#endif
