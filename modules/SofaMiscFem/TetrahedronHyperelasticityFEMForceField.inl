@@ -494,7 +494,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::M
 template<class DataTypes>
 SReal TetrahedronHyperelasticityFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
-    msg_error() << "ERROR("<<this->getClassName()<<"): getPotentialEnergy( const MechanicalParams*, const DataVecCoord& ) not implemented.";
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
 }
 
