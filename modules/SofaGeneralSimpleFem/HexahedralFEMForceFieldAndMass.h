@@ -94,7 +94,7 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        msg_error() << "Get potentialEnergy not implemented";
+        msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
 

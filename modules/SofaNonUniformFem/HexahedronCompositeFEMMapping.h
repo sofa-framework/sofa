@@ -109,7 +109,7 @@ public:
 
     void applyJT( const sofa::core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/) override
     {
-        msg_error() << "applyJT(constraint) not implemented";
+        msg_warning() << "This object only support Direct Solving but an Indirect Solver in the scene is calling method applyJT(constraint) which is not implemented. This will produce un-expected behavior.";
     }
 
     //void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
