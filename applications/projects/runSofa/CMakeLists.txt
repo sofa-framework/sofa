@@ -75,6 +75,7 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
             \"${CMAKE_SOURCE_DIR}/scripts/linux-postinstall-fixup.sh\"
             \"${CMAKE_BINARY_DIR}\"
             \"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
+            \"${Qt5_DIR}/../../..\"
             )"
             COMPONENT applications)
     elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)

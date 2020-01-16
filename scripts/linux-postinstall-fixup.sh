@@ -1,12 +1,13 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: linux-postinstall-fixup.sh <build-dir> <install-dir>"
+    echo "Usage: linux-postinstall-fixup.sh <build-dir> <install-dir> [qt-dir]"
 }
 
 if [ "$#" -ge 2 ]; then
     BUILD_DIR="$(cd $1 && pwd)"
     INSTALL_DIR="$(cd $2 && pwd)"
+    QT_DIR="$3"
     
     OUTPUT_TMP="all_deps.tmp"
 else
@@ -21,7 +22,20 @@ rm -rf "$INSTALL_DIR/plugins/imageformats"
 rm -rf "$INSTALL_DIR/plugins/platforms"
 rm -rf "$INSTALL_DIR/plugins/styles"
 
-rm -f "$OUTPUT_TMP"
+if [ -d "$QT_DIR" ]; then
+    if [ -d "$QT_DIR/plugins/iconengines" ]; then
+        cp -R "$QT_DIR/plugins/iconengines" "$INSTALL_DIR/bin"
+    fi
+    if [ -d "$QT_DIR/plugins/imageformats" ]; then
+        cp -R "$QT_DIR/plugins/imageformats" "$INSTALL_DIR/bin"
+    fi    
+    if [ -d "$QT_DIR/plugins/platforms" ]; then
+        cp -R "$QT_DIR/plugins/platforms" "$INSTALL_DIR/bin"
+    fi    
+    if [ -d "$QT_DIR/plugins/styles" ]; then
+        cp -R "$QT_DIR/plugins/styles" "$INSTALL_DIR/bin"
+    fi    
+fi
 
 echo_debug() {
     if [ -n "$DEBUG" ] && [ "$DEBUG" -gt 0 ]; then
@@ -80,4 +94,5 @@ for group in $groups; do
 done
 
 echo "Done."
+rm -f "$OUTPUT_TMP"
 exit 0
