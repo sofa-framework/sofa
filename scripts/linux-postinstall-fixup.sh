@@ -21,6 +21,7 @@ rm -rf "$INSTALL_DIR/plugins/iconengines"
 rm -rf "$INSTALL_DIR/plugins/imageformats"
 rm -rf "$INSTALL_DIR/plugins/platforms"
 rm -rf "$INSTALL_DIR/plugins/styles"
+rm -rf "$INSTALL_DIR/plugins/xcbglintegrations"
 
 if [ -d "$QT_DIR" ]; then
     if [ -d "$QT_DIR/plugins/iconengines" ]; then
@@ -28,13 +29,16 @@ if [ -d "$QT_DIR" ]; then
     fi
     if [ -d "$QT_DIR/plugins/imageformats" ]; then
         cp -R "$QT_DIR/plugins/imageformats" "$INSTALL_DIR/bin"
-    fi    
+    fi
     if [ -d "$QT_DIR/plugins/platforms" ]; then
         cp -R "$QT_DIR/plugins/platforms" "$INSTALL_DIR/bin"
-    fi    
+    fi
     if [ -d "$QT_DIR/plugins/styles" ]; then
         cp -R "$QT_DIR/plugins/styles" "$INSTALL_DIR/bin"
-    fi    
+    fi
+    if [ -d "$QT_DIR/plugins/xcbglintegrations" ]; then
+        cp -R "$QT_DIR/plugins/xcbglintegrations" "$INSTALL_DIR/bin"
+    fi
 fi
 
 echo_debug() {
