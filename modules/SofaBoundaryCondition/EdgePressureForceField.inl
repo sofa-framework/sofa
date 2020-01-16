@@ -154,7 +154,7 @@ void EdgePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 template <class DataTypes>
 SReal EdgePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
 {
-    msg_error() << "Get potentialEnergy not implemented" ;
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
 }
 
