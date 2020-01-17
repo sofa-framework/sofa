@@ -35,8 +35,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <cassert>
 
-// #define DEBUG_TRIANGLEFEM
-
 namespace sofa
 {
 

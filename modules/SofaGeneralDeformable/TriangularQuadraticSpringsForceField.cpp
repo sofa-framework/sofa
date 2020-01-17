@@ -30,9 +30,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-
-// #define DEBUG_TRIANGLEFEM
-
 namespace sofa
 {
 

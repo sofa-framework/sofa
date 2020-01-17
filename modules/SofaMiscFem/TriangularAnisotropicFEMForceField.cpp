@@ -23,7 +23,6 @@
 #include "TriangularAnisotropicFEMForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 
-// #define DEBUG_TRIANGLEFEM
 
 namespace sofa
 {

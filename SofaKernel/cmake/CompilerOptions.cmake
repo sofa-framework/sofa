@@ -48,18 +48,6 @@ if(APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGL_SILENCE_DEPRECATION")
 endif()
 
-## SOFA_DEBUG preprocessor macro
-if(WIN32 OR APPLE)
-    # Reminder: multi-configuration generators like Visual Studio and XCode do
-    # not use CMAKE_BUILD_TYPE, as they generate all configurations in the
-    # project, not just one at a time!
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DSOFA_DEBUG")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSOFA_DEBUG")
-elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
-    add_definitions("-DSOFA_DEBUG")
-endif()
-
-
 
 ## OpenMP
 option(SOFA_OPENMP "Compile Sofa with OpenMP multithreading." OFF)
