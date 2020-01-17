@@ -1406,8 +1406,27 @@ std::map<AdvancedTimer::IdStep, StepData> AdvancedTimer::getStepData(IdTimer id,
 helper::vector<Record> AdvancedTimer::getRecords(IdTimer id)
 {
     TimerData& data = timers[id];
-    for (unsigned int i=0; i<data.records.size(); ++i)
-        data.records[i].label = std::string(AdvancedTimer::IdStep(data.records[i].id));
+    for (Record & r : data.records) {
+        switch (r.type) {
+            case Record::RBEGIN: // Timer begins
+            case Record::REND: // Timer ends
+                r.label = (std::string) AdvancedTimer::IdTimer(r.id);
+                break;
+            case Record::RSTEP_BEGIN: // Step begins
+            case Record::RSTEP_END: // Step ends
+            case Record::RSTEP: // Step
+                r.label = (std::string) AdvancedTimer::IdStep(r.id);
+                break;
+            case Record::RVAL_SET: // Sets a value
+            case Record::RVAL_ADD: // Adds a value
+                r.label = (std::string) AdvancedTimer::IdVal(r.id);
+                break;
+            default:
+                r.label = (std::string) AdvancedTimer::IdObj(r.id);
+                break;
+        }
+    }
+
     return data.records;
 }
 
