@@ -11,8 +11,8 @@ if(NOT WIN32)
 endif()
 
 if(${SOFA_NO_OPENGL})
-    message(SEND_ERROR "Warning: CMake flag SOFA_NO_OPENGL is active.")
-    message("Flag SOFA_NO_OPENGL incompatible with the SofaCUDA plugin.")
+    message(WARNING "CMake flag SOFA_NO_OPENGL is active.")
+    message("OpenGL-related code wont be enabled (Sharing OpenGL buffers with CUDA)")
 endif()
 
 set(HEADER_FILES
@@ -315,7 +315,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
-target_link_libraries(${PROJECT_NAME} SofaOpenglVisual SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaComponentAdvanced SofaComponentMisc)
+
+if(NOT SOFA_NO_OPENGL)
+    target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
+endif()
 
 if(SofaDistanceGrid_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)

@@ -26,8 +26,9 @@
 #include <cstring>
 #include "mycuda.h"
 
+#ifndef  SOFA_NO_OPENGL
 #include <sofa/helper/system/gl.h>
-
+#endif // SOFA_NO_OPENGL
 
 namespace sofa
 {
@@ -51,7 +52,9 @@ public :
 
     typedef T* host_pointer;
     typedef /*mutable*/ void* device_pointer;
+#ifndef  SOFA_NO_OPENGL
     typedef GLuint gl_buffer;
+#endif // SOFA_NO_OPENGL
 
     enum { MAX_DEVICES = 8 };
     enum { BSIZE = 64 };
@@ -113,6 +116,7 @@ public :
 
     static bool bufferAlloc(gl_buffer* bId, int n)
     {
+#ifndef SOFA_NO_OPENGL
         if (n > 0)
         {
             glGenBuffers(1, bId);
@@ -121,34 +125,47 @@ public :
             glBindBuffer( GL_ARRAY_BUFFER, 0);
             return true;
         }
+#endif // SOFA_NO_OPENGL
         return false;
     }
 
     static void bufferFree(const gl_buffer bId)
     {
+#ifndef SOFA_NO_OPENGL
         glDeleteBuffers( 1, &bId);
+#endif // SOFA_NO_OPENGL
     }
 
     static bool bufferRegister(const gl_buffer bId)
     {
+#ifndef SOFA_NO_OPENGL
         mycudaGLRegisterBufferObject(bId);
+#endif // SOFA_NO_OPENGL
         return true;
     }
 
     static void bufferUnregister(const gl_buffer bId)
     {
+#ifndef SOFA_NO_OPENGL
         mycudaGLUnregisterBufferObject(bId);
+#endif // SOFA_NO_OPENGL
     }
 
     static bool bufferMapToDevice(device_pointer * dDestPointer, const gl_buffer bSrcId)
     {
+#ifndef SOFA_NO_OPENGL
         mycudaGLMapBufferObject(dDestPointer, bSrcId);
         return true;
+#else
+        return false;
+#endif // SOFA_NO_OPENGL
     }
 
     static void bufferUnmapToDevice(device_pointer * /*dDestPointer*/, const gl_buffer bSrcId)
     {
+#ifndef SOFA_NO_OPENGL
         mycudaGLUnmapBufferObject(bSrcId);
+#endif // SOFA_NO_OPENGL
     }
 
     static device_pointer deviceOffset(device_pointer dPointer,size_t offset)
