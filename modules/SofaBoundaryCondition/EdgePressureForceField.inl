@@ -29,9 +29,6 @@
 #include <vector>
 #include <set>
 
-
-// #define DEBUG_TRIANGLEFEM
-
 namespace sofa
 {
 

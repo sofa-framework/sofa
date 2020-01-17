@@ -77,13 +77,13 @@ bool TriangleInfo::validate(const unsigned int tri_index, const defaulttype::Vec
 
 
 TriangleLocalMinDistanceFilter::TriangleLocalMinDistanceFilter()
-    : m_pointInfo(initData(&m_pointInfo, "pointInfo", "point filter data"))
+    : l_topology(initLink("topology", "link to the topology container"))
+    , m_pointInfo(initData(&m_pointInfo, "pointInfo", "point filter data"))
     , m_lineInfo(initData(&m_lineInfo, "lineInfo", "line filter data"))
     , m_triangleInfo(initData(&m_triangleInfo, "triangleInfo", "triangle filter data"))
     , pointInfoHandler(nullptr)
     , lineInfoHandler(nullptr)
     , triangleInfoHandler(nullptr)
-    , l_topology(initLink("topology", "link to the topology container"))
     , bmt(nullptr)
 {
 }
