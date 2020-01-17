@@ -10,11 +10,6 @@ if(NOT WIN32)
     set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 endif()
 
-if(${SOFA_NO_OPENGL})
-    message(WARNING "CMake flag SOFA_NO_OPENGL is active.")
-    message("OpenGL-related code wont be enabled (Sharing OpenGL buffers with CUDA)")
-endif()
-
 set(HEADER_FILES
     config.h.in
     sofa/gpu/cuda/CudaBarycentricMapping.h
@@ -78,8 +73,6 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaTypes.h
     sofa/gpu/cuda/CudaUniformMass.h
     sofa/gpu/cuda/CudaUniformMass.inl
-    sofa/gpu/cuda/CudaVisualModel.h
-    sofa/gpu/cuda/CudaVisualModel.inl
     sofa/gpu/cuda/mycuda.h
 )
 
@@ -130,7 +123,6 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp
     sofa/gpu/cuda/CudaTypes.cpp
     sofa/gpu/cuda/CudaUniformMass.cpp
-    sofa/gpu/cuda/CudaVisualModel.cpp
     sofa/gpu/cuda/mycuda.cpp
 )
 
@@ -159,10 +151,24 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cu
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu
     sofa/gpu/cuda/CudaUniformMass.cu
-    sofa/gpu/cuda/CudaVisualModel.cu
     sofa/gpu/cuda/mycuda.cu
 )
 
+if(SOFA_NO_OPENGL)
+    message(WARNING "CMake flag SOFA_NO_OPENGL is active.")
+    message("OpenGL-related code wont be enabled (Sharing OpenGL buffers with CUDA)")
+else()
+    list(APPEND HEADER_FILES
+        sofa/gpu/cuda/CudaVisualModel.h
+        sofa/gpu/cuda/CudaVisualModel.inl
+    )
+    list(APPEND SOURCE_FILES
+        sofa/gpu/cuda/CudaVisualModel.cpp
+    )
+    list(APPEND CUDA_SOURCES
+        sofa/gpu/cuda/CudaVisualModel.cu
+    )
+endif()
 
 set(README_FILES SofaCUDA.txt)
 
