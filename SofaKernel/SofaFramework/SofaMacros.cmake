@@ -881,7 +881,7 @@ function(sofa_install_libraries)
             else()
                 install(FILES ${SHARED_LIBS} DESTINATION "lib" COMPONENT applications)
             endif()
-            install(FILES ${STATIC_LIBS} DESTINATION "lib" COMPONENT libraries)
+            # install(FILES ${STATIC_LIBS} DESTINATION "lib" COMPONENT libraries)
         endif()
     endforeach()
 
