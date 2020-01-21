@@ -131,7 +131,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundVertexArray()
     {
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<3; ++j)
-            m_trianglesAroundVertex[ m_triangle[i][j]  ].push_back( (TriangleID)i );
+            m_trianglesAroundVertex[ m_triangle[i][j]  ].push_back( TriangleID(i) );
     }
 }
 
@@ -175,14 +175,14 @@ void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
     m_trianglesAroundEdge.resize( numEdges );
     for (size_t i = 0; i < numTriangles; ++i)
     {
-        const Triangle &t = getTriangle((TriangleID)i);
+        const Triangle &t = getTriangle(TriangleID(i));
         // adding triangle i in the triangle shell of all edges
         for (unsigned int j=0; j<3; ++j)
         {
             if (d_edge.getValue()[m_edgesInTriangle[i][j]][0] == t[(j + 1) % 3])
                 m_trianglesAroundEdge[m_edgesInTriangle[i][j]].insert(m_trianglesAroundEdge[m_edgesInTriangle[i][j]].begin(), (TriangleID)i); // triangle is on the left of the edge
             else
-                m_trianglesAroundEdge[m_edgesInTriangle[i][j]].push_back((TriangleID)i); // triangle is on the right of the edge
+                m_trianglesAroundEdge[m_edgesInTriangle[i][j]].push_back(TriangleID(i)); // triangle is on the right of the edge
         }
     }
 }
@@ -224,7 +224,7 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
             {
                 // edge not in edgeMap so create a new one
                 const size_t edgeIndex = edgeMap.size();
-                edgeMap[e] = (EdgeID)edgeIndex;
+                edgeMap[e] = EdgeID(edgeIndex);
                 //m_edge.push_back(e); Changed to have oriented edges on the border of the triangulation
                 m_edge.push_back(Edge(v1,v2));
             }
@@ -262,8 +262,8 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
 
         for (size_t edge=0; edge<numEdges; ++edge)  //Todo: check if not better using multimap <PointID ,TriangleID> and for each edge, push each triangle present in both shell
         {
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0], (EdgeID)edge));
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1], (EdgeID)edge));
+            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0], EdgeID(edge)));
+            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1], EdgeID(edge)));
         }
         for ( size_t i = 0 ; (i < numTriangles) && (foundEdge == true) ; ++i )
         {
@@ -291,7 +291,6 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                         << " [" << t[(j + 1) % 3] << ", " << t[(j + 2) % 3] << "]"
                         << " in triangle " << i;
                     m_edgesInTriangle.clear();
-                    return;
                 }
             }
         }
@@ -323,8 +322,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                     // edge not in edgeMap so create a new one
                     const size_t edgeIndex = edgeMap.size();
                     /// add new edge
-                    edgeMap[e] = (EdgeID)edgeIndex;
-//			  m_edge.push_back(e);
+                    edgeMap[e] = EdgeID(edgeIndex);
                     m_edge.push_back(Edge(v1,v2));
 
                 }
@@ -425,7 +423,7 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
 
 void TriangleSetTopologyContainer::reOrientateTriangle(TriangleID id)
 {
-    if (id >= (TriangleID)this->getNbTriangles())
+    if (id >= TriangleID(this->getNbTriangles()))
     {
         if (CHECK_TOPOLOGY)
             msg_warning() << "Triangle ID out of bounds.";
@@ -453,7 +451,7 @@ const sofa::helper::vector<TriangleSetTopologyContainer::Triangle> & TriangleSet
 
 const TriangleSetTopologyContainer::Triangle TriangleSetTopologyContainer::getTriangle (TriangleID i)
 {
-    if ((size_t)i >= getNbTriangles())
+    if (size_t(i) >= getNbTriangles())
         return Triangle(InvalidID, InvalidID, InvalidID);
     else
         return (d_triangle.getValue())[i];
@@ -492,7 +490,7 @@ TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriang
         msg_warning_when(out2.size() > 1) << "More than one triangle found for indices: [" << v1 << "; " << v2 << "; " << v3 << "]";
 
     if (out2.size()==1)
-        return (int) (out2[0]);
+        return TriangleSetTopologyContainer::TriangleID(out2[0]);
 
     return InvalidID;
 }
