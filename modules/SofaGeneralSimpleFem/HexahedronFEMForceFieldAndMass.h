@@ -102,13 +102,13 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        msg_warning() << "HexahedronFEMForceFieldAndMass::getPotentialEnergy() not implemented" << msgendl;
+        msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/) const override
     {
-        msg_warning() << "HexahedronFEMForceFieldAndMass::getPotentialEnergy() not implemented" << msgendl;
+        msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
 

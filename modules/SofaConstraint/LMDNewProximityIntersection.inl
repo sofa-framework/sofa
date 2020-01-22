@@ -437,7 +437,7 @@ int LMDNewProximityIntersection::computeIntersection(TSphere<T1>& e1, TSphere<T2
 template<class T>
 bool LMDNewProximityIntersection::testIntersection(Line&, TSphere<T>&)
 {
-    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere)."<<sendl;
+    msg_error() << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere).";
     return true;
 }
 
@@ -465,7 +465,7 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, O
 template<class T>
 bool LMDNewProximityIntersection::testIntersection(Triangle&, TSphere<T>&)
 {
-    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere)."<<sendl;
+    msg_error() << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere).";
     return true;
 }
 

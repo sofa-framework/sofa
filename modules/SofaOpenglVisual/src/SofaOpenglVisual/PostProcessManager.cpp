@@ -73,7 +73,7 @@ void PostProcessManager::init()
 
     if (!dofShader)
     {
-        serr << "PostProcessingManager: OglShader not found ; no post process applied."<< sendl;
+        msg_error() << "PostProcessingManager: OglShader not found ; no post process applied.";
         postProcessEnabled = false;
         return;
     }

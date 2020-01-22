@@ -100,7 +100,7 @@ void ReadTopology::reset()
     const std::string& filename = f_filename.getFullPath();
     if (filename.empty())
     {
-        serr << "ERROR: empty filename"<<sendl;
+        msg_error() << "Empty filename";
     }
 #if SOFAGENERALLOADER_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
@@ -108,7 +108,7 @@ void ReadTopology::reset()
         gzfile = gzopen(filename.c_str(),"rb");
         if( !gzfile )
         {
-            serr << "Error opening compressed file "<<filename<<sendl;
+            msg_error() << "Opening compressed file " << filename;
         }
     }
 #endif
@@ -117,7 +117,7 @@ void ReadTopology::reset()
         infile = new std::ifstream(filename.c_str());
         if( !infile->is_open() )
         {
-            serr << "Error opening file "<<filename<<sendl;
+            msg_error() << "Opening file " << filename;
             delete infile;
             infile = nullptr;
         }

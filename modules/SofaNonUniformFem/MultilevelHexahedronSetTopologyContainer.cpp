@@ -305,7 +305,7 @@ int MultilevelHexahedronSetTopologyContainer::getHexaParent(const unsigned int h
             return i;
     }
 
-    serr << "ERROR(MultilevelHexahedronSetTopologyContainer) No hexa parent found. \n";
+    msg_error() << "No hexa parent found.";
     return 0;
 }
 

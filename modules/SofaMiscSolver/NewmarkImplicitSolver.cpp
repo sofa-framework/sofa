@@ -126,9 +126,9 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
     if( verbose )
      {
-        serr<<"NewmarkImplicitSolver, aPrevious = "<< a <<sendl;
-        serr<<"NewmarkImplicitSolver, xPrevious = "<< pos <<sendl;
-        serr<<"NewmarkImplicitSolver, vPrevious = "<< vel <<sendl;
+        msg_info() << "NewmarkImplicitSolver, aPrevious = " << a;
+        msg_info() << "NewmarkImplicitSolver, xPrevious = " << pos;
+        msg_info() << "NewmarkImplicitSolver, vPrevious = " << vel;
     }
 
     // 2. Compute right hand term of equation on a_{t+h}
@@ -148,13 +148,13 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     mop.addMBKv(b, -rM, 1,rK+h);
     // b += -h K v
 
-    if( verbose )
-        serr<<"NewmarkImplicitSolver, b = "<< b <<sendl;
+    if (verbose)
+        msg_info() << "NewmarkImplicitSolver, b = " << b;
 
     mop.projectResponse(b);          // b is projected to the constrained space
 
-    if( verbose )
-        serr<<"NewmarkImplicitSolver, projected b = "<< b <<sendl;
+    if (verbose)
+        msg_info() << "NewmarkImplicitSolver, projected b = " << b;
 
     // 3. Solve system of equations on a_{t+h}
 
@@ -163,14 +163,14 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     matrix = MechanicalMatrix::K * (-h*h*beta - h*rK*gamma) + MechanicalMatrix::B*(-h)*gamma + MechanicalMatrix::M * (1 + h*gamma*rM);
 
  //   if( verbose )
- //       serr<<"NewmarkImplicitSolver, matrix = "<< MechanicalMatrix::K *(-h*h*beta + -h*rK*gamma) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix<<sendl;
+ //       msg_info()<<"NewmarkImplicitSolver, matrix = "<< MechanicalMatrix::K *(-h*h*beta + -h*rK*gamma) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix<<sendl;
 
 
     matrix.solve(aResult, b);
     //mop.projectResponse(aResult);
 
-    if( verbose )
-        serr<<"NewmarkImplicitSolver, a1 = "<< aResult <<sendl;
+    if (verbose)
+        msg_info() << "NewmarkImplicitSolver, a1 = " << aResult;
 
 
     // 4. Compute the new position and velocity
@@ -213,8 +213,8 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
     if( verbose )
     {
-        serr<<"NewmarkImplicitSolver, final x = "<< newPos <<sendl;
-        serr<<"NewmarkImplicitSolver, final v = "<< newVel <<sendl;
+        msg_info() << "NewmarkImplicitSolver, final x = " << newPos;
+        msg_info() << "NewmarkImplicitSolver, final v = " << newVel;
     }
 
     // Increment

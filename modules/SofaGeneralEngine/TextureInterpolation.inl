@@ -124,13 +124,13 @@ void TextureInterpolation<DataTypes>::doUpdate()
     // Check min and max values:
     if(_changeScale.getValue())
     {
-        if( _minVal.getValue() < _maxVal.getValue() )
+        if (_minVal.getValue() < _maxVal.getValue())
         {
             minVal = _minVal.getValue();
             maxVal = _maxVal.getValue();
         }
         else
-            serr << "Error: in scale for TextureInterpolation, min_value is not smaller than max_value." << sendl;
+            msg_error() << "In scale for TextureInterpolation, min_value is not smaller than max_value.";
     }
     else
     {

@@ -311,7 +311,7 @@ void OglIntVector2Variable::init()
     helper::vector<GLint> temp = value.getValue();
     if (temp.size() %2 != 0)
     {
-        serr << "The number of values is not even ; padding with one zero" << sendl;
+        msg_error() << "The number of values is not even ; padding with one zero";
         temp.push_back(0);
         value.setValue(temp);
 
@@ -325,7 +325,7 @@ void OglIntVector3Variable::init()
 
     if (temp.size() %3 != 0)
     {
-        serr << "The number of values is not a multiple of 3 ; padding with zero(s)" << sendl;
+        msg_error() << "The number of values is not a multiple of 3 ; padding with zero(s)";
         while (temp.size() %3 != 0)
             temp.push_back(0);
         value.setValue(temp);
@@ -339,7 +339,7 @@ void OglIntVector4Variable::init()
 
     if (temp.size() %4 != 0)
     {
-        serr << "The number of values is not a multiple of 4 ; padding with zero(s)" << sendl;
+        msg_error() << "The number of values is not a multiple of 4 ; padding with zero(s)";
         while (temp.size() %4 != 0)
             temp.push_back(0);
         value.setValue(temp);
@@ -484,7 +484,7 @@ void OglMatrix2Variable::init()
 
     if (temp.size() %4 != 0)
     {
-        serr << "The number of values is not a multiple of 4 ; padding with zero(s)" << sendl;
+        msg_error() << "The number of values is not a multiple of 4 ; padding with zero(s)";
         while (temp.size() %4 != 0)
             temp.push_back(0.0);
         value.setValue(temp);
@@ -516,7 +516,7 @@ void OglMatrix3Variable::init()
 
     if (temp.size() %9 != 0)
     {
-        serr << "The number of values is not a multiple of 9 ; padding with zero(s)" << sendl;
+        msg_error() << "The number of values is not a multiple of 9 ; padding with zero(s)";
         while (temp.size() %9 != 0)
             temp.push_back(0.0);
         value.setValue(temp);
@@ -548,7 +548,7 @@ void OglMatrix4Variable::init()
 
     if (temp.size() %16 != 0)
     {
-        serr << "The number of values is not a multiple of 16 ; padding with zero(s)" << sendl;
+        msg_error() << "The number of values is not a multiple of 16 ; padding with zero(s)";
         while (temp.size() %16 != 0)
             temp.push_back(0.0);
         value.setValue(temp);
@@ -580,7 +580,7 @@ void OglMatrix2x3Variable::init()
 
     if (temp.size() %6 != 0)
     {
-        serr << "The number of values is not a multiple of 6 ; padding with zero(s)" << sendl;
+        msg_error() << "The number of values is not a multiple of 6 ; padding with zero(s)";
         while (temp.size() %6 != 0)
             temp.push_back(0.0);
         value.setValue(temp);
@@ -613,7 +613,7 @@ void OglMatrix3x2Variable::init()
 
     if (temp.size() %6 != 0)
     {
-        serr << "The number of values is not a multiple of 6 ; padding with zero(s)" << sendl;
+        msg_error() << "The number of values is not a multiple of 6 ; padding with zero(s)";
         while (temp.size() %6 != 0)
             temp.push_back(0.0);
         value.setValue(temp);
@@ -645,7 +645,7 @@ void OglMatrix2x4Variable::init()
 
     if (temp.size() %8 != 0)
     {
-        serr << "The number of values is not a multiple of 8 ; padding with zero(s)" << sendl;
+        msg_error() << "The number of values is not a multiple of 8 ; padding with zero(s)";
         while (temp.size() %8 != 0)
             temp.push_back(0.0);
         value.setValue(temp);
@@ -677,7 +677,7 @@ void OglMatrix4x2Variable::init()
 
     if (temp.size() %8 != 0)
     {
-        serr << "The number of values is not a multiple of 8 ; padding with zero(s)" << sendl;
+        msg_error() << "The number of values is not a multiple of 8 ; padding with zero(s)";
         while (temp.size() %8 != 0)
             temp.push_back(0.0);
         value.setValue(temp);
@@ -709,7 +709,7 @@ void OglMatrix3x4Variable::init()
 
     if (temp.size() %12 != 0)
     {
-        serr << "The number of values is not a multiple of 12 ; padding with zero(s)" << sendl;
+        msg_error() << "The number of values is not a multiple of 12 ; padding with zero(s)";
         while (temp.size() %12 != 0)
             temp.push_back(0.0);
         value.setValue(temp);
@@ -741,7 +741,7 @@ void OglMatrix4x3Variable::init()
 
     if (temp.size() %12 != 0)
     {
-        serr << "The number of values is not a multiple of 12 ; padding with zero(s)" << sendl;
+        msg_error() << "The number of values is not a multiple of 12 ; padding with zero(s)";
         while (temp.size() %12 != 0)
             temp.push_back(0.0);
         value.setValue(temp);
@@ -773,7 +773,7 @@ void OglMatrix4VectorVariable::initVisual()
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
     const helper::vector<defaulttype::Mat4x4f>& v = value.getValue();
-    //serr << "OglMatrix4VectorVariable::initVisual(), v = " << v << sendl;
+
     const float* vptr = v.empty() ? nullptr : &(v[0][0][0]);
     bool transp = transpose.getValue();
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)

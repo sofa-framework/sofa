@@ -131,7 +131,7 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
         mapper = MouseContactMapper::Create(picked.body);
         if (!mapper)
         {
-            this->interactor->serr << "Problem with Mouse Mapper creation : " << this->interactor->sendl;
+            msg_error(this->interactor) << "Problem with Mouse Mapper creation.";
             return false;
         }
         std::string name = "contactMouse";
@@ -167,7 +167,7 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
         index = picked.indexCollisionElement;
         if (!mstateCollision)
         {
-            this->interactor->serr << "incompatible MState during Mouse Interaction " << this->interactor->sendl;
+            msg_error(this->interactor) << "incompatible MState during Mouse Interaction.";
             return false;
         }
     }

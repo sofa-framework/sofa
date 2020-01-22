@@ -104,7 +104,7 @@ void JoinPoints<DataTypes>::doUpdate()
 
     if (points.size() < 1)
     {
-        serr << "Error, no point defined" << sendl;
+        msg_error() << "Error, no point defined";
         return ;
     }
 

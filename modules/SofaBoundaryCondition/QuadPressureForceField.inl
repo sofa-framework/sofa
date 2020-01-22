@@ -137,8 +137,10 @@ void QuadPressureForceField<DataTypes>::initQuadInformation()
     sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* quadGeo;
     this->getContext()->get(quadGeo);
 
-    if(!quadGeo)
-        serr << "Missing component: Unable to get QuadSetGeometryAlgorithms from the current context." << sendl;
+    if (!quadGeo)
+    {
+        msg_error() << "Missing component: Unable to get QuadSetGeometryAlgorithms from the current context.";
+    }
 
     // FIXME: a dirty way to avoid a crash
     if(!quadGeo)

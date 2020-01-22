@@ -136,7 +136,7 @@ public:
 
     void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */) override
     {
-        serr << "projectJacobianMatrix not implemented" << sendl;
+        msg_error() << "projectJacobianMatrix not implemented";
     }
 
     /// Compute the theoretical final positions

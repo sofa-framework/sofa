@@ -98,7 +98,7 @@ void MergePoints<DataTypes>::doUpdate()
             if (posX < points.size()) // new point to insert
                 points[posX] = x2[i]; // insert X2 inside X1
             else
-                serr << "Error Trying to insert vertex from mapping at pos: " <<  posX << " which is out of bounds of X1." << sendl;
+                msg_error() << "Error Trying to insert vertex from mapping at pos: " << posX << " which is out of bounds of X1.";
         }
 
         // fill indice1 & indice2 buffers

@@ -667,7 +667,7 @@ SReal BeamFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPar
 {
     SOFA_UNUSED(x);
     SOFA_UNUSED(mparams);
-    dmsg_warning() << "Get potentialEnergy not implemented";
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
 }
 

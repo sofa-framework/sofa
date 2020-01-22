@@ -146,7 +146,7 @@ void ProjectDirectionConstraint<DataTypes>::init()
         const unsigned int index=indices[i];
         if (index >= maxIndex)
         {
-            serr << "Index " << index << " not valid!" << sendl;
+            msg_error() << "Index " << index << " not valid!";
             removeConstraint(index);
         }
     }
@@ -229,7 +229,7 @@ void ProjectDirectionConstraint<DataTypes>::projectResponse(const core::Mechanic
 template <class DataTypes>
 void ProjectDirectionConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ , DataMatrixDeriv& /*cData*/)
 {
-    serr<<"projectJacobianMatrix(const core::MechanicalParams*, DataMatrixDeriv& ) is not implemented" << sendl;
+    msg_error() << "projectJacobianMatrix(const core::MechanicalParams*, DataMatrixDeriv& ) is not implemented";
 }
 
 template <class DataTypes>
@@ -260,13 +260,13 @@ void ProjectDirectionConstraint<DataTypes>::projectPosition(const core::Mechanic
 template <class DataTypes>
 void ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
 {
-    serr << "applyConstraint is not implemented " << sendl;
+    msg_error() << "applyConstraint is not implemented ";
 }
 
 template <class DataTypes>
 void ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
 {
-    serr<<"ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented "<< sendl;
+    msg_error() << "ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented ";
 }
 
 

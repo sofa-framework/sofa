@@ -185,7 +185,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
 
     if (m_topology->getNbTriangles()==0)
     {
-        serr << "ERROR(TriangularQuadraticSpringsForceField): object must have a Triangular Set Topology."<<sendl;
+        msg_error() << "ERROR(TriangularQuadraticSpringsForceField): object must have a Triangular Set Topology.";
         return;
     }
     updateLameCoefficients();
@@ -261,7 +261,6 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
         val=einfo->stiffness*(einfo->dl)/L;
         f[v1]+=dp*val;
         f[v0]-=dp*val;
-        //	serr << "einfo->stiffness= "<<einfo->stiffness<<sendl;
     }
     if (f_useAngularSprings.getValue()==true)
     {
@@ -284,14 +283,12 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
                 f[ta[k]]-=force;
             }
         }
-        //	serr << "tinfo->gamma[0] "<<tinfo->gamma[0]<<sendl;
 
     }
     edgeInfo.endEdit();
     triangleInfo.endEdit();
     updateMatrix=true;
     d_f.endEdit();
-    //serr << "end addForce" << sendl;
 }
 
 
@@ -310,8 +307,6 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
     TriangleRestInformation *tinfo;
 
     helper::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
-
-    //	serr << "start addDForce" << sendl;
     helper::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     assert(this->mstate);
@@ -326,7 +321,6 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
         Real val1,val2,vali,valj,valk;
         Coord dpj,dpk,dpi;
 
-        //	serr <<"updating matrix"<<sendl;
         updateMatrix=false;
         for(int l=0; l<nbTriangles; l++ )
         {
@@ -428,7 +422,6 @@ void TriangularQuadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
     mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-    //	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 
