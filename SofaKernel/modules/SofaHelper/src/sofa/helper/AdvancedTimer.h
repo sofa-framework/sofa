@@ -349,9 +349,9 @@ public:
     static std::map<AdvancedTimer::IdStep, StepData> getStepData(IdTimer id, bool processData = false);
 
     /**
-     * @brief getRecords the vector of \sa Record of the AdvancedTimer given execution id.
+     * @brief getRecords the vector of Record of the AdvancedTimer given execution id.
      * @param id IdTimer, id of the timer
-     * @return The timer full records inside a vector of \sa Record
+     * @return The timer full records inside a vector of Record
      */
     static helper::vector<Record> getRecords(IdTimer id);
 
