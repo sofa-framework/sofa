@@ -120,14 +120,14 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         tr = 1.0;
 
     if (verbose)
-        std::cout<<"trapezoidal factor = "<< tr <<std::endl;
+        msg_info() << "trapezoidal factor = " << tr;
 
     sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
     mop->setImplicit(true); // this solver is implicit
     // compute the net forces at the beginning of the time step
     mop.computeForce(f);
-    if( verbose )
-        serr<<"EulerImplicitSolver, initial f = "<< f <<sendl;
+    if (verbose)
+        msg_info() << "EulerImplicitSolver, initial f = " << f;
 
     sofa::helper::AdvancedTimer::stepNext ("ComputeForce", "ComputeRHTerm");
     if( firstOrder )
@@ -140,8 +140,8 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
         // force in the current configuration
         b.eq(f,1.0/tr);                                                                         // b = f0
-        if( verbose )
-            serr<<"EulerImplicitSolver, f = "<< f <<sendl;
+        if (verbose)
+            msg_info() << "EulerImplicitSolver, f = " << f;
 
         // add the change of force due to stiffness + Rayleigh damping
         mop.addMBKv(b, -f_rayleighMass.getValue(), 1, h+f_rayleighStiffness.getValue()); // b =  f0 + ( rm M + B + (h+rs) K ) v
@@ -150,13 +150,13 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         b.teq(h*tr);                                                                        // b = h(f0 + ( rm M + B + (h+rs) K ) v )
     }
 
-    if( verbose )
-        serr<<"EulerImplicitSolver, b = "<< b <<sendl;
+    if (verbose)
+        msg_info() << "EulerImplicitSolver, b = " << b;
 
     mop.projectResponse(b);          // b is projected to the constrained space
 
-    if( verbose )
-        serr<<"EulerImplicitSolver, projected b = "<< b <<sendl;
+    if (verbose)
+        msg_info() << "EulerImplicitSolver, projected b = " << b;
 
     sofa::helper::AdvancedTimer::stepNext ("ComputeRHTerm", "MBKBuild");
 
@@ -169,8 +169,8 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     if( verbose )
     {
-        serr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) << " = " << matrix <<sendl;
-        serr<<"EulerImplicitSolver, Matrix K = " << MechanicalMatrix::K << sendl;
+        msg_info() << "EulerImplicitSolver, matrix = " << (MechanicalMatrix::K * (-h * (h + f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1 + h * f_rayleighMass.getValue())) << " = " << matrix;
+        msg_info() << "EulerImplicitSolver, Matrix K = " << MechanicalMatrix::K;
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -300,10 +300,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         mop.projectVelocity(newVel);
         mop.propagateX(newPos);
         mop.propagateV(newVel);
-        serr<<"EulerImplicitSolver, final x = "<< newPos <<sendl;
-        serr<<"EulerImplicitSolver, final v = "<< newVel <<sendl;
+        msg_info() << "EulerImplicitSolver, final x = " << newPos;
+        msg_info() << "EulerImplicitSolver, final v = " << newVel;
         mop.computeForce(f);
-        serr<<"EulerImplicitSolver, final f = "<< f <<sendl;
+        msg_info() << "EulerImplicitSolver, final f = " << f;
     }
 }
 

@@ -51,7 +51,6 @@ SingleMatrixAccessor::InteractionMatrixRef SingleMatrixAccessor::getMatrix(const
 
 SingleMatrixAccessor::MatrixRef SingleMatrixAccessor::getMatrix(const core::behavior::BaseMechanicalState*) const
 {
-//    cerr<<"SingleMatrixAccessor::getMatrix" << endl;
     return matRef;
 }
 

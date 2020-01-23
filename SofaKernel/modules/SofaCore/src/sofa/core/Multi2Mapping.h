@@ -195,7 +195,7 @@ public:
         const helper::vector< In2DataMatrixDeriv*>&  /* dataMatOut2Const */,
         const helper::vector<const OutDataMatrixDeriv*>& /* dataMatInConst */)
     {
-        serr << "This mapping does not support constraint because Multi2Mapping::applyJT(const ConstraintParams*, const helper::vector< In1DataMatrixDeriv*>&, const helper::vector< In2DataMatrixDeriv*>&, const helper::vector<const OutDataMatrixDeriv*>&) is not overloaded." << sendl;
+        msg_error() << "This mapping does not support constraint because Multi2Mapping::applyJT(const ConstraintParams*, const helper::vector< In1DataMatrixDeriv*>&, const helper::vector< In2DataMatrixDeriv*>&, const helper::vector<const OutDataMatrixDeriv*>&) is not overloaded.";
     }
 
     /// computeAccFromMapping

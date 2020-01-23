@@ -290,14 +290,14 @@ bool BaseMeshTopology::load(const char* filename)
     std::string meshFilename(filename);
     if (!sofa::helper::system::DataRepository.findFile (meshFilename))
     {
-        serr << "Mesh \""<< filename <<"\" not found"<< sendl;
+        msg_error() << "Mesh \"" << filename << "\" not found";
         return false;
     }
     this->fileTopology.setValue( filename );
     DefaultMeshTopologyLoader loader(this);
     if (!loader.load(meshFilename.c_str()))
     {
-        serr << "Unable to load Mesh \""<<filename << "\"";
+        msg_error() << "Unable to load Mesh \"" << filename << "\"";
         return false;
     }
     return true;
@@ -346,7 +346,7 @@ void BaseMeshTopology::reOrientateTriangle(TriangleID /*id*/)
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginChange() const
 {
-    serr << "beginChange() not supported.";
+    msg_error() << "beginChange() not supported.";
     std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
