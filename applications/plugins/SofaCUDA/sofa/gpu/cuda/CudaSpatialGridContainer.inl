@@ -300,6 +300,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 template<class TCoord, class TDeriv, class TReal>
 void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::draw(const core::visual::VisualParams* )
 {
+#ifdef SOFA_NO_OPENGL
     if (!lastX) return;
     int nbPoints = particleHash.size();
     int index0 = nbCells+BSIZE;
@@ -330,6 +331,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     }
     glEnd();
     glPointSize(1);
+#endif // SOFA_NO_OPENGL
 }
 
 } // namespace container
