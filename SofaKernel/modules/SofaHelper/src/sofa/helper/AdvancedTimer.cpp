@@ -1410,19 +1410,19 @@ helper::vector<Record> AdvancedTimer::getRecords(IdTimer id)
         switch (r.type) {
             case Record::RBEGIN: // Timer begins
             case Record::REND: // Timer ends
-                r.label = (std::string) AdvancedTimer::IdTimer(r.id);
+                r.label = IdTimer::IdFactory::getName(r.id);
                 break;
             case Record::RSTEP_BEGIN: // Step begins
             case Record::RSTEP_END: // Step ends
             case Record::RSTEP: // Step
-                r.label = (std::string) AdvancedTimer::IdStep(r.id);
+                r.label = IdStep::IdFactory::getName(r.id);
                 break;
             case Record::RVAL_SET: // Sets a value
             case Record::RVAL_ADD: // Adds a value
-                r.label = (std::string) AdvancedTimer::IdVal(r.id);
+                r.label = IdVal::IdFactory::getName(r.id);
                 break;
             default:
-                r.label = (std::string) AdvancedTimer::IdObj(r.id);
+                r.label = "Unknown";
                 break;
         }
     }
