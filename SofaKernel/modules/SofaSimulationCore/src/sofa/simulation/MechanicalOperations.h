@@ -137,7 +137,7 @@ public:
 
     void multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
     void baseVector2MultiVector(const defaulttype::BaseVector *src, core::MultiVecId dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    void multiVectorPeqBaseVector(core::MultiVecDerivId dest, defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void multiVectorPeqBaseVector(core::MultiVecDerivId dest, const defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     /// @}
 

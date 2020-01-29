@@ -534,7 +534,7 @@ void MechanicalOperations::multiVector2BaseVector(core::ConstMultiVecId src, def
 }
 
 
-void MechanicalOperations::multiVectorPeqBaseVector(core::MultiVecDerivId dest, defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MechanicalOperations::multiVectorPeqBaseVector(core::MultiVecDerivId dest, const defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     if (src != nullptr)
     {
