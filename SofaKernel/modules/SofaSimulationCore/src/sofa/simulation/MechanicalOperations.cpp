@@ -517,7 +517,7 @@ void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiM
     }
 }
 
-void MechanicalOperations::baseVector2MultiVector(core::MultiVecId dest, defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MechanicalOperations::baseVector2MultiVector(const defaulttype::BaseVector *src, core::MultiVecId dest, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     if (src != nullptr)
     {
