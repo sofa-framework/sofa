@@ -118,7 +118,6 @@ protected:
         helper::fixed_array<deformationGradientFunction, 27> _BeMatrices; /// One Be function for each Gauss Point (27 in one beam element)
 
         helper::fixed_array<MechanicalState, 27> _pointMechanicalState;
-        helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory; ///< history of the plastic strain, one tensor for each Gauss point
 
         ///< Indicates which type of mechanical computation should be used.
         ///  The meaning of the three cases is the following :
@@ -126,6 +125,14 @@ protected:
         ///     - PLASTIC: at least one Gauss point is in a PLASTIC state.
         ///     - POSTPLASTIC: Gauss points are either in an ELASTIC or POSTPLASTIC state.
         MechanicalState _beamMechanicalState;
+
+        // Plastic strain
+        helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory; ///< history of the plastic strain, one tensor for each Gauss point
+        helper::fixed_array<Real, 27> _effectivePlasticStrains;
+
+        // For hardening
+        helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _backStresses;
+        helper::fixed_array<Real, 27> _localYieldStresses;
 
         ///< For drawing
         int _nbCentrelineSeg = 10;
@@ -137,7 +144,6 @@ protected:
 
         // 	static const double FLEXIBILITY=1.00000; // was 1.00001
         double _E0,_E; //Young
-        double _yS; //yield Stress
         double _nu;//Poisson
         double _L; //length
         double _zDim; //for rectangular beams: dimension of the cross-section along z axis
@@ -268,7 +274,9 @@ public:
     typedef defaulttype::Vec<12, Real> nodalForces; ///<  Intensities of the nodal forces in the Timoshenko beam element
 
     typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; ///< Symmetrical tensor of order 2, written with Voigt notation
+    typedef Eigen::Matrix<double, 9, 1> VectTensor2; ///< Symmetrical tensor of order 2, written with in vector notation
     typedef Eigen::Matrix<double, 6, 6> VoigtTensor4; ///< Symmetrical tensor of order 4, written with Voigt notation
+    typedef Eigen::Matrix<double, 9, 9> VectTensor4; ///< Symmetrical tensor of order 4, written in vector notation
     typedef Eigen::Matrix<double, 12, 1> EigenDisplacement; ///<Nodal displacement
     typedef Eigen::Matrix<double, 12, 1> EigenNodalForces;
     typedef Eigen::Matrix<double, 12, 12> tangentStiffnessMatrix;
@@ -293,7 +301,7 @@ protected:
     double _NRThreshold;
     unsigned int _NRMaxIterations;
 
-    Data<bool> _isPlasticKrabbenhoft;
+    Data<bool> _isPlasticHugues;
     Data<bool> _isPerfectlyPlastic;
 
     MultiBeamForceField<DataTypes>* ff;
@@ -303,13 +311,13 @@ protected:
     fem::PlasticConstitutiveLaw<DataTypes> *m_ConstitutiveLaw;
     Data<std::string> d_modelName; ///< name of the model, for specialisation
 
-    void updateYieldStress(int beamIndex, double yieldStressIncrement);
-
     bool goToPlastic(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=FALSE);
     bool goToPostPlastic(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement,
                          const bool verbose = FALSE);
 
     void computeLocalDisplacement(const VecCoord& x, Displacement &localDisp, int i, Index a, Index b);
+    void computeDisplacement(const VecCoord& x, const VecCoord& xRef, Displacement &localDisp, int i, Index a, Index b);
+    void computeDisplacementWithoutCo(const VecCoord& x, const VecCoord& xRef, Displacement &localDisp, int i, Index a, Index b);
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
                                       Displacement &dispIncrement, int i, Index a, Index b);
 
@@ -320,15 +328,30 @@ protected:
     void computePlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
     void computePostPlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
 
+    //Hardening
+    void computeHardeningStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &lastStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
+                                         MechanicalState &pointMechanicalState);
+    void computeForceWithHardening(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
+
+    // Auxiliary methods for hardening
+    VectTensor2 voigtToVect2(const VoigtTensor2 &voigtTensor);
+    VectTensor4 voigtToVect4(const VoigtTensor4 &voigtTensor);
+    VoigtTensor2 vectToVoigt2(const VectTensor2 &vectTensor);
+    VoigtTensor4 vectToVoigt4(const VectTensor4 &vectTensor);
+
+    VoigtTensor2 deviatoricStress(const VoigtTensor2 &stressTensor);
     double equivalentStress(const VoigtTensor2 &stressTensor);
     double vonMisesYield(const VoigtTensor2 &stressTensor, const double yieldStress);
     VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor);
-    VoigtTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double yieldStress);
+    VectTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double yieldStress);
 
-    //*************************************************************** DEBUG ***************************************************************//
-    VoigtTensor2 vonMisesGradientFD(const VoigtTensor2 &currentStressTensor, const double increment, const double yieldStress);
-    VoigtTensor4 vonMisesHessianFD(const VoigtTensor2 &lastStressTensor, const VoigtTensor2 &currentStressTensor, const double yieldStress);
-    //************************************************************************************************************************************//
+    //Alternative expressions of the Von Mises functions, for debug
+    double vectEquivalentStress(const VectTensor2 &stressTensor);
+    double devEquivalentStress(const VoigtTensor2 &stressTensor);
+    double devVonMisesYield(const VoigtTensor2 &stressTensor, const double yieldStress);
+    double vectVonMisesYield(const VectTensor2 &stressTensor, const double yieldStress);
+    VectTensor2 vectVonMisesGradient(const VectTensor2 &stressTensor);
+    VoigtTensor2 devVonMisesGradient(const VoigtTensor2 &stressTensor);
 
     // Special implementation for second-order tensor dot product, with the Voigt notation.
     double voigtDotProduct(const VoigtTensor2 &t1, const VoigtTensor2 &t2);
