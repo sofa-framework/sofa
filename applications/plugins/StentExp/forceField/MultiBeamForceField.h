@@ -241,28 +241,6 @@ protected:
 
     };
 
-    /**************************************************************************/
-    /*                         Multi-beams connexion                          */
-    /**************************************************************************/
-
-    //Vector containing all the local orientations, one for each beam element
-    //TO DO: for the moment, this orientations can be manually provided with the
-    //       Data field _inputLocalOrientations. In this case, the orientations
-    //       must be coherent with the corresponding topology
-    //       the second fields (_beamLocalOrientation) allows to correct these
-    //       user orientations if they are incoherent, and facilitate their
-    //       handling
-    //       In the future, it would be better to automatically compute the
-    //       orientation of each beam, directly from the topology.
-    //Handling of the global to local transform
-    //TO DO: this is a prototype for a model which has the ability to connect
-    //       more than 2 beams. If it works, every redundancy with BeamInfo.quat
-    //       should be suppressed
-    Data< helper::vector<defaulttype::Quat> > _inputLocalOrientations;
-    helper::vector<defaulttype::Quat> _beamLocalOrientations;
-
-    /**************************************************************************/
-
     virtual void reset() override;
 
     /**************************************************************************/

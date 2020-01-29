@@ -63,7 +63,6 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _youngModulus(initData(&_youngModulus, (Real)5000, "youngModulus", "Young Modulus"))
     , _yieldStress(initData(&_yieldStress,(Real)6.0e8,"yieldStress","yield stress"))
     , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
-    , _inputLocalOrientations(initData(&_inputLocalOrientations, { defaulttype::Quat(0, 0, 0, 1) }, "beamLocalOrientations", "local orientation of each beam element"))
     , _isPlasticHugues(initData(&_isPlasticHugues, false, "isPlasticHugues", "indicates wether the behaviour model is plastic, as in Hugues, 1984"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
@@ -90,7 +89,6 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youn
     , _youngModulus(initData(&_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
     , _yieldStress(initData(&_yieldStress, (Real)yieldStress, "yieldStress", "yield stress"))
     , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
-    , _inputLocalOrientations(initData(&_inputLocalOrientations, localOrientations, "beamLocalOrientations", "local orientation of each beam element"))
     , _isPlasticHugues(initData(&_isPlasticHugues, false, "isPlasticHugues", "indicates wether the behaviour model is plastic, as in Hugues, 1984"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
@@ -188,23 +186,6 @@ void MultiBeamForceField<DataTypes>::reinit()
         /***** Krabbenhoft plasticity *****/
         _NRThreshold = 0.0; //to be changed during iterations
         _NRMaxIterations = 25;
-
-        /***** Local orientations handling *****/
-        size_t nbQuat = _inputLocalOrientations.getValue().size();
-        _beamLocalOrientations.resize(n);
-        if (nbQuat != n)
-        {
-            //The vector of orientations given by the user doesn't match the topology
-            //TO DO: for now we set all of them with the neutral quaternion, but this
-            //       should be computed automatically from topology
-            for (size_t i = 0; i < n; i++)
-                _beamLocalOrientations[i] = defaulttype::Quat(0, 0, 0, 1);
-        }
-        else
-        {
-            for (size_t i = 0; i < n; i++)
-                _beamLocalOrientations[i] = _inputLocalOrientations.getValue()[i];
-        }
 
         _prevStresses.resize(n);
         for (int i = 0; i < n; i++)
@@ -676,9 +657,6 @@ void MultiBeamForceField<DataTypes>::reset()
 
     if (_virtualDisplacementMethod.getValue())
     {
-        for (unsigned i = 0; i < _beamLocalOrientations.size(); ++i)
-            _beamLocalOrientations[i].clear();
-
         for (unsigned i = 0; i < _prevStresses.size(); ++i)
             for (unsigned j = 0; j < 27; ++j)
                 _prevStresses[i][j] = VoigtTensor2::Zero();
