@@ -46,31 +46,54 @@ public:
     typedef defaulttype::Mat<3, 3, Real> Matrix3;
     typedef defaulttype::Mat<6, 6, Real> Matrix6;
 
-    RambergOsgood(Real E, Real yieldStress, unsigned int n=15, Real A=(Real)0.002)
+    RambergOsgood(Real E, Real yieldStress,
+                  Real eps1 = (Real)0.00384942, Real sig1 = (Real)6.0e8,
+                  Real eps2 = (Real)0.0030727273, Real sig2 = (Real)5.6e8,
+                  unsigned int n = 15, Real A = (Real)0.002)
     {
-        _A = A;
-        _n = n;
+        // Initialsation of generic material parameters
         _E = E;
         _yieldStress = yieldStress;
 
-        // Computing _K
+        // Initialisation of Ramberg-Osgood parameters
+        _A = A;
+        _n = n;
         _K = A * pow(E / yieldStress, n);
+
+        // Initialisation of Ramberg-Osgood alternative form parameters
+        Real m1 = sig1 / (E*eps1);
+        Real m2 = sig2 / (E*eps2);
+        _N = 1 + (log((m1 - 1) / (m2 - 1)) / log(eps1 / eps2));
+        _altK = (m1 - 1) / pow(eps1,_N - 1);
     }
 
-    virtual Real getTangentModulus(const double yieldStress) {
-
+    virtual Real getTangentModulusFromStress(const double effStress)
+    {
         double En1 = pow(_E, _n - 1);
-        Real tangentModulus = (_E*En1) / ( En1 + _K*_n*pow(yieldStress,_n-1) );
+        Real tangentModulus = (_E*En1) / ( En1 + _K*_n*pow(effStress,_n-1) );
+        return tangentModulus;
+    }
+
+    virtual Real getTangentModulusFromStrain(const double effPlasticStrain)
+    {
+        Real tangentModulus = _E*(1 + _altK*_N*pow(effPlasticStrain,_N-1));
         return tangentModulus;
     }
 
 protected:
 
+    // Material
+    Real _E;
+    Real _yieldStress;
+
+    // Ramberg-Osgood model as in Ramberg and Osgood, 1943
     Real _A;
     Real _K;
     unsigned int _n;
-    Real _E;
-    Real _yieldStress;
+
+    // Alternative form of Ramberg-Osgood as in Venkateswara Rao and Krishna Murty, 1971
+    Real _altK;
+    Real _N;
 
 };
 
