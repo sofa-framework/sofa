@@ -261,8 +261,17 @@ public:
 
 protected:
 
-    /// virtual displacement method, same as in TetrahedronFEMForceField
-    Data<bool> _virtualDisplacementMethod;
+    // Rather than computing the elastic stiffness matrix _Ke_loc by Gaussian
+    // reduced integration, we can use a precomputed form, as the matrix remains
+    // constant during deformation. The precomputed form _k_loc can be found in
+    // litterature, for instance in : Theory of Matrix Structural Analysis,
+    // Przemieniecki, 1968, McGraw-Hill, New-York.
+    // /!\ This option does not imply that all computations will be made with
+    // linear elasticity using _k_loc. It only means that _k_loc will be used
+    // instead of _Ke_loc, saving the time of one Gaussian integration per beam
+    // element. For purely elastic beam elements, the BeamFEMForceField component
+    // should be used.
+    Data<bool> _usePrecomputedStiffness;
 
     void computeVDStiffness(int i, Index a, Index b);
     void computeMaterialBehaviour(int i, Index a, Index b);

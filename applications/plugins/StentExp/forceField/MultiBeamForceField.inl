@@ -62,7 +62,8 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _poissonRatio(initData(&_poissonRatio,(Real)0.3f,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus, (Real)5000, "youngModulus", "Young Modulus"))
     , _yieldStress(initData(&_yieldStress,(Real)6.0e8,"yieldStress","yield stress"))
-    , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
+    , _usePrecomputedStiffness(initData(&_usePrecomputedStiffness, true, "usePrecomputedStiffness",
+                                        "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
     , _isPlasticHugues(initData(&_isPlasticHugues, false, "isPlasticHugues", "indicates wether the behaviour model is plastic, as in Hugues, 1984"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
@@ -88,7 +89,8 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youn
     , _poissonRatio(initData(&_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
     , _yieldStress(initData(&_yieldStress, (Real)yieldStress, "yieldStress", "yield stress"))
-    , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
+    , _usePrecomputedStiffness(initData(&_usePrecomputedStiffness, true, "usePrecomputedStiffness",
+                                        "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
     , _isPlasticHugues(initData(&_isPlasticHugues, false, "isPlasticHugues", "indicates wether the behaviour model is plastic, as in Hugues, 1984"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
@@ -178,20 +180,17 @@ void MultiBeamForceField<DataTypes>::reinit()
 {
     size_t n = _indexedElements->size();
 
-    if (_virtualDisplacementMethod.getValue())
-    {
-        //Initialises the lastPos field with the rest position
-        _lastPos = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    //Initialises the lastPos field with the rest position
+    _lastPos = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-        /***** Krabbenhoft plasticity *****/
-        _NRThreshold = 0.0; //to be changed during iterations
-        _NRMaxIterations = 25;
+    /***** Krabbenhoft plasticity *****/
+    _NRThreshold = 0.0; //to be changed during iterations
+    _NRMaxIterations = 25;
 
-        _prevStresses.resize(n);
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < 27; j++)
-                _prevStresses[i][j] = VoigtTensor2::Zero();
-    }
+    _prevStresses.resize(n);
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < 27; j++)
+            _prevStresses[i][j] = VoigtTensor2::Zero();
 
     initBeams( n );
     for (unsigned int i=0; i<n; ++i)
@@ -229,23 +228,24 @@ void MultiBeamForceField<DataTypes>::reinitBeam(unsigned int i)
 
     setBeam(i, stiffness, yieldStress, length, poisson, zSection, ySection);
 
-    if (_virtualDisplacementMethod.getValue())
-    {
-        //In first step, we assume elastic deformation
-        computeMaterialBehaviour(i, a, b);
-        computeVDStiffness(i, a, b);
-    }
-    else
-    {
+    computeMaterialBehaviour(i, a, b);
+
+    // Initialisation of the elastic stiffness matrix
+    if (_usePrecomputedStiffness.getValue())
         computeStiffness(i, a, b);
-    }
+    else
+        computeVDStiffness(i, a, b);
+    // Initialisation of the tangent stiffness matrix
+    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
+    Kt_loc.clear();
+    beamsData.endEdit();
 
     // Initialisation of the beam element orientation
     //TO DO: is necessary ?
     beamQuat(i) = x0[a].getOrientation();
     beamQuat(i).normalize();
-
-    beamsData.endEdit();
+    beamsData.endEdit(); // consecutive to beamQuat
 
 }
 
@@ -655,12 +655,10 @@ void MultiBeamForceField<DataTypes>::reset()
 {
     //serr<<"MultiBeamForceField<DataTypes>::reset"<<sendl;
 
-    if (_virtualDisplacementMethod.getValue())
-    {
-        for (unsigned i = 0; i < _prevStresses.size(); ++i)
-            for (unsigned j = 0; j < 27; ++j)
-                _prevStresses[i][j] = VoigtTensor2::Zero();
-    }
+    for (unsigned i = 0; i < _prevStresses.size(); ++i)
+        for (unsigned j = 0; j < 27; ++j)
+            _prevStresses[i][j] = VoigtTensor2::Zero();
+
     // TO DO: call to init?
 }
 
@@ -825,104 +823,60 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
             StiffnessMatrix K;
             bool exploitSymmetry = _useSymmetricAssembly.getValue();
 
-            if (_virtualDisplacementMethod.getValue())
-            {
-                StiffnessMatrix K0;
-                if (beamMechanicalState == PLASTIC)
-                    K0 = beamsData.getValue()[i]._Kt_loc;
-                else
-                    K0 = beamsData.getValue()[i]._Ke_loc; //TO TO: distinguish ELASTIC and POST-PLASTIC ?
-
-                if (exploitSymmetry) {
-                    for (int x1 = 0; x1<12; x1 += 3) {
-                        for (int y1 = x1; y1<12; y1 += 3)
-                        {
-                            defaulttype::Mat<3, 3, Real> m;
-                            K0.getsub(x1, y1, m);
-                            m = R*m*Rt;
-
-                            for (int i = 0; i<3; i++)
-                                for (int j = 0; j<3; j++)
-                                {
-                                    K.elems[i + x1][j + y1] += m[i][j];
-                                    K.elems[j + y1][i + x1] += m[i][j];
-                                }
-                            if (x1 == y1)
-                                for (int i = 0; i<3; i++)
-                                    for (int j = 0; j<3; j++)
-                                        K.elems[i + x1][j + y1] *= double(0.5);
-                        }
-                    }
-                } // end if (exploitSymmetry)
-                else
-                {
-                    for (int x1 = 0; x1<12; x1 += 3) {
-                        for (int y1 = 0; y1<12; y1 += 3)
-                        {
-                            defaulttype::Mat<3, 3, Real> m;
-                            K0.getsub(x1, y1, m);
-                            m = R*m*Rt;
-                            K.setsub(x1, y1, m);
-                        }
-                    }
-                }
-
-                int index[12];
-                for (int x1 = 0; x1<6; x1++)
-                    index[x1] = offset + a * 6 + x1;
-                for (int x1 = 0; x1<6; x1++)
-                    index[6 + x1] = offset + b * 6 + x1;
-                for (int x1 = 0; x1<12; ++x1)
-                    for (int y1 = 0; y1<12; ++y1)
-                        mat->add(index[x1], index[y1], -K(x1, y1)*k);
-
-            } // end if (_virtualDisplacementMethod)
+            StiffnessMatrix K0;
+            if (beamMechanicalState == PLASTIC)
+                K0 = beamsData.getValue()[i]._Kt_loc;
             else
             {
-                const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
-                if (exploitSymmetry) {
-                    for (int x1 = 0; x1<12; x1 += 3) {
-                        for (int y1 = x1; y1<12; y1 += 3)
-                        {
-                            defaulttype::Mat<3, 3, Real> m;
-                            K0.getsub(x1, y1, m);
-                            m = R*m*Rt;
+                if (_usePrecomputedStiffness.getValue())
+                    K0 = beamsData.getValue()[i]._k_loc;
+                else
+                    K0 = beamsData.getValue()[i]._Ke_loc;
+            }
+               
+            if (exploitSymmetry) {
+                for (int x1 = 0; x1<12; x1 += 3) {
+                    for (int y1 = x1; y1<12; y1 += 3)
+                    {
+                        defaulttype::Mat<3, 3, Real> m;
+                        K0.getsub(x1, y1, m);
+                        m = R*m*Rt;
 
+                        for (int i = 0; i<3; i++)
+                            for (int j = 0; j<3; j++)
+                            {
+                                K.elems[i + x1][j + y1] += m[i][j];
+                                K.elems[j + y1][i + x1] += m[i][j];
+                            }
+                        if (x1 == y1)
                             for (int i = 0; i<3; i++)
                                 for (int j = 0; j<3; j++)
-                                {
-                                    K.elems[i + x1][j + y1] += m[i][j];
-                                    K.elems[j + y1][i + x1] += m[i][j];
-                                }
-                            if (x1 == y1)
-                                for (int i = 0; i<3; i++)
-                                    for (int j = 0; j<3; j++)
-                                        K.elems[i + x1][j + y1] *= double(0.5);
-                        }
-                    }
-                } // end if (exploitSymmetry)
-                else
-                {
-                    for (int x1 = 0; x1<12; x1 += 3) {
-                        for (int y1 = 0; y1<12; y1 += 3)
-                        {
-                            defaulttype::Mat<3, 3, Real> m;
-                            K0.getsub(x1, y1, m);
-                            m = R*m*Rt;
-                            K.setsub(x1, y1, m);
-                        }
+                                    K.elems[i + x1][j + y1] *= double(0.5);
                     }
                 }
-
-                int index[12];
-                for (int x1 = 0; x1<6; x1++)
-                    index[x1] = offset + a * 6 + x1;
-                for (int x1 = 0; x1<6; x1++)
-                    index[6 + x1] = offset + b * 6 + x1;
-                for (int x1 = 0; x1<12; ++x1)
-                    for (int y1 = 0; y1<12; ++y1)
-                        mat->add(index[x1], index[y1], -K(x1, y1)*k);
+            } // end if (exploitSymmetry)
+            else
+            {
+                for (int x1 = 0; x1<12; x1 += 3) {
+                    for (int y1 = 0; y1<12; y1 += 3)
+                    {
+                        defaulttype::Mat<3, 3, Real> m;
+                        K0.getsub(x1, y1, m);
+                        m = R*m*Rt;
+                        K.setsub(x1, y1, m);
+                    }
+                }
             }
+
+            int index[12];
+            for (int x1 = 0; x1<6; x1++)
+                index[x1] = offset + a * 6 + x1;
+            for (int x1 = 0; x1<6; x1++)
+                index[6 + x1] = offset + b * 6 + x1;
+            for (int x1 = 0; x1<12; ++x1)
+                for (int y1 = 0; y1<12; ++y1)
+                    mat->add(index[x1], index[y1], -K(x1, y1)*k);
+
             //TO DO: beamsData.endEdit(); consecutive to the call to beamQuat
 
         } // end for _indexedElements
@@ -1114,10 +1068,7 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
     const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     StiffnessMatrix& Ke_loc = bd[i]._Ke_loc;
-    StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
-
     Ke_loc.clear();
-    Kt_loc.clear();
 
     // Reduced integration
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
@@ -1147,8 +1098,6 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
         for (int j = 0; j < 12; j++)
         {
             Ke_loc[i][j] = stiffness(i, j);
-            //Initialising the tangent stiffness matrix with Ke
-            Kt_loc[i][j] = stiffness(i, j);
         }
 
     beamsData.endEdit();
@@ -1722,17 +1671,16 @@ void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
     defaulttype::Vec<12, Real> local_dforce;
 
     // The stiffness matrix we use depends on the mechanical state of the beam element
-    if (_virtualDisplacementMethod.getValue())
-    {
-        if (beamMechanicalState == PLASTIC)
-            local_dforce = beamsData.getValue()[i]._Kt_loc * local_depl;
-        else
-            local_dforce = beamsData.getValue()[i]._Ke_loc * local_depl; //TO DO: distinction between ELASTIC and POST-PLASTIC ?
-    }
+
+    if (beamMechanicalState == PLASTIC)
+        local_dforce = beamsData.getValue()[i]._Kt_loc * local_depl;
     else
     {
-        // this computation can be optimised: (we know that half of "depl" is null)
-        local_dforce = beamsData.getValue()[i]._k_loc * local_depl;
+        if (_usePrecomputedStiffness.getValue())
+            // this computation can be optimised: (we know that half of "depl" is null)
+            local_dforce = beamsData.getValue()[i]._k_loc * local_depl;
+        else
+            local_dforce = beamsData.getValue()[i]._Ke_loc * local_depl;
     }
 
     Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_dforce[0], local_dforce[1], local_dforce[2]));
