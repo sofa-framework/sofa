@@ -272,7 +272,11 @@ protected:
     double _NRThreshold;
     unsigned int _NRMaxIterations;
 
-    Data<bool> _isPlasticHugues;
+    // Indicates if the plasticity model is perfect plasticity, or if hardening
+    // is represented. The only hardening model we implement is a linear
+    // combination of isotropic and kinematic hardening, as described in :
+    // Theoretical foundation for large scale computations for nonlinear material
+    // behaviour, Hugues(et al) 1984
     Data<bool> _isPerfectlyPlastic;
 
     MultiBeamForceField<DataTypes>* ff;

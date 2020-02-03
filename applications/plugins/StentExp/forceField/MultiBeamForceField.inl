@@ -64,7 +64,6 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _yieldStress(initData(&_yieldStress,(Real)6.0e8,"yieldStress","yield stress"))
     , _usePrecomputedStiffness(initData(&_usePrecomputedStiffness, true, "usePrecomputedStiffness",
                                         "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
-    , _isPlasticHugues(initData(&_isPlasticHugues, false, "isPlasticHugues", "indicates wether the behaviour model is plastic, as in Hugues, 1984"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
     , _zSection(initData(&_zSection, (Real)0.2, "zSection", "length of the section in the z direction for rectangular beams"))
@@ -91,7 +90,6 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youn
     , _yieldStress(initData(&_yieldStress, (Real)yieldStress, "yieldStress", "yield stress"))
     , _usePrecomputedStiffness(initData(&_usePrecomputedStiffness, true, "usePrecomputedStiffness",
                                         "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
-    , _isPlasticHugues(initData(&_isPlasticHugues, false, "isPlasticHugues", "indicates wether the behaviour model is plastic, as in Hugues, 1984"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
     , _zSection(initData(&_zSection, (Real)zSection, "zSection", "length of the section in the z direction for rectangular beams"))
@@ -1596,7 +1594,7 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
     Eigen::Matrix<double, 12, 1> fint = Eigen::VectorXd::Zero(12);
 
-    if (!_isPlasticHugues.getValue())
+    if (_isPerfectlyPlastic.getValue())
     {
         const MechanicalState beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
 
@@ -1744,7 +1742,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
             Cep = C; //TO DO: is that correct ?
         else
         {
-            if (_isPlasticHugues.getValue())
+            if (!_isPerfectlyPlastic.getValue())
             {
                 VoigtTensor2 normal = helper::rsqrt(2.0 / 3.0)*gradient;
                 VectTensor2 vectNormal = voigtToVect2(normal);
@@ -1759,13 +1757,8 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
             {
                 Cgrad = C*gradient;
                 gradTC = Cgrad.transpose();
-
-                if (_isPerfectlyPlastic.getValue())
-                    //Assuming associative flow rule
-                    Cep = C - (Cgrad*gradTC) / (voigtDotProduct(gradTC, gradient));
-                else
-                    //Assuming associative flow rule and isotropic hardening
-                    Cep = C - (Cgrad*gradTC) / (plasticModulus + voigtDotProduct(gradTC, gradient));
+                //Assuming associative flow rule
+                Cep = C - (Cgrad*gradTC) / (voigtDotProduct(gradTC, gradient));
             }
         }
 
@@ -2320,194 +2313,49 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
     /*****************  Plastic stress increment computation *****************/
 
-    // 1st SCENARIO : perfect plasticity
-    if (_isPerfectlyPlastic.getValue())
-    {
-        /* For a perfectly plastic material, the assumption is made that during
-        * the plastic phase, the deformation is entirely plastic. In this case,
-        * the internal stress state of the material does not change during the
-        * plastic deformation, remaining constant (in 1D, equal to the yield
-        * stress value). All the corresponding deformation energy is dissipated
-        * in the form of plastic strain (i.e. during a plastic deformation, the
-        * elastic strain is null).
-        */
+    /* For a perfectly plastic material, the assumption is made that during
+    * the plastic phase, the deformation is entirely plastic. In this case,
+    * all the corresponding deformation energy is dissipated in the form of
+    * plastic strain (i.e. during a plastic deformation, the elastic part
+    * of the strain is null).
+    */
 
-        /**** Naive implementation ****/
+    /**** Litterature implementation ****/
+    // Ref: Theoretical foundation for large scale computations for nonlinear
+    // material behaviour, Hugues (et al) 1984
 
-        //// Updating the stress point
-        //newStressPoint = initialStress; // delta_sigma = 0
+    //Computation of the deviatoric stress tensor
+    VoigtTensor2 elasticPredictor = currentStressPoint;
+    double meanStress = (1.0 / 3)*(elasticPredictor[0] + elasticPredictor[1] + elasticPredictor[2]);
+    VoigtTensor2 elasticDeviatoricStress = elasticPredictor;
+    elasticDeviatoricStress[0] -= meanStress;
+    elasticDeviatoricStress[1] -= meanStress;
+    elasticDeviatoricStress[2] -= meanStress;
 
-        //// Updating the plastic strain
-        //helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-        //helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
-        //plasticStrainHistory[gaussPointIt] += strainIncrement;
-        //beamsData.endEdit();
+    double sigmaEq = equivalentStress(elasticPredictor);
+    double sqrtA = helper::rsqrt(2.0 / 3) * sigmaEq;
+    double R = helper::rsqrt(2.0 / 3) * yieldStress;
 
-        /**** Litterature implementation ****/
-        // Ref: Theoritecal foundation for large scale computations for nonlinear material behaviour, Hugues (et al) 1984
+    // Computing the new stress
+    VoigtTensor2 voigtIdentityTensor = VoigtTensor2::Zero();
+    voigtIdentityTensor[0] = 1;
+    voigtIdentityTensor[1] = 1;
+    voigtIdentityTensor[2] = 1;
 
-        //Computation of the deviatoric stress tensor
-        VoigtTensor2 elasticPredictor = currentStressPoint;
-        double meanStress = (1.0 / 3)*(elasticPredictor[0] + elasticPredictor[1] + elasticPredictor[2]);
-        VoigtTensor2 elasticDeviatoricStress = elasticPredictor;
-        elasticDeviatoricStress[0] -= meanStress;
-        elasticDeviatoricStress[1] -= meanStress;
-        elasticDeviatoricStress[2] -= meanStress;
+    newStressPoint = (R / sqrtA)*elasticDeviatoricStress + meanStress*voigtIdentityTensor;
 
-        double sigmaEq = equivalentStress(elasticPredictor);
-        double sqrtA = helper::rsqrt(2.0 / 3) * sigmaEq;
-        double R = helper::rsqrt(2.0 / 3) * yieldStress;
+    // Updating the plastic strain
+    VoigtTensor2 yieldNormal = helper::rsqrt(3.0 / 2)*(1 / sigmaEq)*elasticDeviatoricStress;
 
-        // Computing the new stress
-        VoigtTensor2 voigtIdentityTensor = VoigtTensor2::Zero();
-        voigtIdentityTensor[0] = 1;
-        voigtIdentityTensor[1] = 1;
-        voigtIdentityTensor[2] = 1;
+    double lambda = voigtDotProduct(yieldNormal, strainIncrement);
 
-        newStressPoint = (R / sqrtA)*elasticDeviatoricStress + meanStress*voigtIdentityTensor;
-
-        // Updating the plastic strain
-        VoigtTensor2 yieldNormal = helper::rsqrt(3.0 / 2)*(1 / sigmaEq)*elasticDeviatoricStress;
-
-        //double lambda = voigtDotProduct(yieldNormal, elasticIncrement) / voigtDotProduct(yieldNormal, C*yieldNormal);
-        double lambda = voigtDotProduct(yieldNormal, strainIncrement);
-
-        VoigtTensor2 plasticStrainIncrement = lambda*yieldNormal;
-        helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-        helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
-        plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
-        beamsData.endEdit();
-    }
-
-    // 2nd SCENARIO : hardening
-    else
-    {
-        /*******************************************/
-        /*      Implicit method - Krabbenhoft      */
-        /*******************************************/
-        {
-            /* With the initial conditions we use, the first system to be solve actually
-            * admits a closed-form solution.
-            * If a Von Mises yield criterion is used, the residual for this closed-form
-            * solution should be 0 (left apart rounding errors caused by floating point
-            * operations). The reason for this is the underlying regularity of the Von
-            * Mises yield function, assuring a constant gradient between consecutive
-            * stress points.
-            * We implement the closed-form solution of the first step separately, in
-            * order to save the computational cost of the system solution.
-            */
-
-            Eigen::Matrix<double, 7, 1> newIncrement = Eigen::Matrix<double, 7, 1>::Zero();
-            double yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
-            VoigtTensor2 gradient = vonMisesGradient(currentStressPoint);
-
-            newIncrement(6, 0) = yieldCondition / voigtDotProduct(gradient.transpose(), C*gradient);
-            newIncrement.block<6, 1>(0, 0) = -newIncrement(6, 0)*C*gradient;
-
-            Eigen::Matrix<double, 7, 1> totalIncrement = newIncrement;
-
-            // Updating the stress point
-            currentStressPoint += newIncrement.block<6, 1>(0, 0);
-
-            yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
-
-            // Testing if the result of the first iteration is satisfaying
-            double threshold = 2e-6; //TO DO: choose coherent value
-            bool consistencyTestIsPositive = helper::rabs(yieldCondition) >= threshold;
-
-            if (!consistencyTestIsPositive)
-            {
-                /* If the new stress point computed after one iteration of the implicit
-                * method satisfied the consistency condition, we could stop the
-                * iterative procedure at this point.
-                * Otherwise the solution found with the first iteration does not
-                * satisfy the consistency condition. In this case, we need to go
-                * through more iterations to find a more correct solution.
-                */
-                unsigned int nbMaxIterations = 25;
-
-                Eigen::Matrix<double, 6, 6> I6 = Eigen::Matrix<double, 6, 6>::Identity();
-
-                // Jacobian J of the nonlinear system of equations
-                Eigen::Matrix<double, 7, 7> J = Eigen::Matrix<double, 7, 7>::Zero();
-
-                // Second member b
-                Eigen::Matrix<double, 7, 1> b = Eigen::Matrix<double, 7, 1>::Zero();
-
-                //solver
-                Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
-
-                // Updating gradient
-                gradient = vonMisesGradient(currentStressPoint);
-                // Updating / initialising hessian
-                VectTensor4 vectHessian = vonMisesHessian(currentStressPoint, yieldStress);
-                VoigtTensor4 hessian = vectToVoigt4(vectHessian); //TO DO: is this OK? Is the hessian symmetrical?
-                // NB: yieldCondition was already updated after first iterations
-
-                unsigned int count = 1;
-                while (helper::rabs(yieldCondition) >= threshold && count < nbMaxIterations)
-                {
-                    //Updates J and b
-                    J.block<6, 6>(0, 0) = I6 + totalIncrement(6, 0)*C*hessian;
-                    J.block<6, 1>(0, 6) = C*gradient;
-                    J.block<1, 6>(6, 0) = gradient.transpose();
-
-                    b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticIncrement + C*totalIncrement(6, 0)*gradient;
-                    b(6, 0) = yieldCondition;
-
-                    //Computes the new increment
-                    LU.compute(J);
-                    newIncrement = LU.solve(-b);
-
-                    totalIncrement += newIncrement;
-
-                    // Update of the yield condition, gradient and hessian.
-                    currentStressPoint = initialStress + totalIncrement.block<6, 1>(0, 0);
-                    yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
-                    gradient = vonMisesGradient(currentStressPoint);
-                    hessian = vectToVoigt4(vonMisesHessian(currentStressPoint, yieldStress));
-
-                    count++;
-                }
-            } // endif (!consistencyTestIsPositive)
-
-              // Computation of the plastic strain increment, to keep track of the plastic loading history
-
-            double plasticMultiplier = totalIncrement(6, 0);
-
-            //TO DO: check if the increments should be stored independently rather than summed
-            helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-            helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
-            VoigtTensor2 plasticStrainIncrement = plasticMultiplier*gradient;
-            plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
-            beamsData.endEdit();
-
-            // Updating the new stress point
-            newStressPoint = currentStressPoint;
-
-            // Updating the yield stress [isotropic hardening]
-            const double youngModulus = beamsData.getValue()[index]._E;
-            const double eqStress = equivalentStress(newStressPoint); // TO DO: check if the equivalent stress has to be computed on the new stress point
-            const double tangentModulus = m_ConstitutiveLaw->getTangentModulusFromStress(eqStress);
-
-            const double H = tangentModulus / (1 - tangentModulus / youngModulus);
-
-            // NB: Updating the yield stress requires the definition of an equivalent plastic
-            //     strain, i.e. a scalar value computed from the plastic strain tensor.
-            //     Using a Von Mises yield criterion and an associative flow rule, this
-            //     equivalent plastic strain can be shown to be equal to the plastic multiplier.
-            bd = *(beamsData.beginEdit());
-            Real &yieldStress = bd[index]._localYieldStresses[gaussPointIt];
-            yieldStress += H*plasticMultiplier;
-            beamsData.endEdit();
-        }
-
-    } //end if (!_isPerfectlyPlastic)
-
+    VoigtTensor2 plasticStrainIncrement = lambda*yieldNormal;
+    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
+    plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
+    beamsData.endEdit();
 }
 
-
-// Hugues implementation (perfectly plastic and mixed hardening)
 
 template<class DataTypes>
 Eigen::Matrix<double, 9, 1> MultiBeamForceField<DataTypes>::voigtToVect2(const VoigtTensor2 &voigtTensor)
@@ -2689,6 +2537,7 @@ Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vectToVoigt4(const V
 }
 
 
+// Hugues implementation (perfectly plastic and mixed hardening)
 template< class DataTypes>
 void MultiBeamForceField<DataTypes>::computeForceWithHardening(Eigen::Matrix<double, 12, 1> &internalForces,
     const VecCoord& x, int index, Index a, Index b)
