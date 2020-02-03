@@ -142,7 +142,6 @@ protected:
 
         /*********************************************************************/
 
-        // 	static const double FLEXIBILITY=1.00000; // was 1.00001
         double _E0,_E; //Young
         double _nu;//Poisson
         double _L; //length
@@ -156,27 +155,12 @@ protected:
         double _Asy; //_Asy is the y-direction effective shear area =  10/9 (for solid circular section) or 0 for a non-Timoshenko beam
         double _Asz; //_Asz is the z-direction effective shear area;
         StiffnessMatrix _k_loc;
-        //new: k_loc is the stiffness in the local frame... to compute Ke we only change lambda
-        //NewMAT::Matrix  _k_loc;
-
-        // _eigenvalue_loc are 4 diagonal matrices (6x6) representing the eigenvalues of each
-        // 6x6 block of _k_loc. _eigenvalue_loc[1] = _eigenvalue_loc[2] since _k_loc[1] = _k_loc[2]
-        //NewMAT::DiagonalMatrix  _eigenvalue_loc[4], _inv_eigenvalue_loc[4];
-        // k_flex is the stiffness matrix + reinforcement of diagonal (used in gauss-seidel process)
-        //NewMAT::Matrix  _k_flex;
-        //lambda is a matrix that contains the direction of the local frame in the global frame
-        //NewMAT::Matrix  _lambda;
-        //non-linear value of the internal forces (computed with previous time step positions) (based on k_loc)
-        //NewMAT::ColumnVector  _f_k;
-        //initial deformation of the beam (gives the curvature) on the local frame
-        //NewMAT::ColumnVector _u_init;
-        //actual deformation of the beam on the local frame
-        //NewMAT::ColumnVector _u_actual;
 
         defaulttype::Quat quat;
 
         //void localStiffness();
         void init(double E, double yS, double L, double nu, double zSection, double ySection, bool isTimoshenko);
+
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& bi )
         {
