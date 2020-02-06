@@ -410,7 +410,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge()
         MultigridConstraintsMerge_Spatial();
         break;
     default:
-        serr << "Unsupported merge method " << merge_method.getValue() << sendl;
+        msg_error() << "Unsupported merge method " << merge_method.getValue();
     }
 }
 
@@ -525,12 +525,12 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
                     << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea;
             if (!info.hasPosition)
             {
-                serr << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " have no position data" << sendl;
+                msg_error() << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " have no position data";
                 continue;
             }
             if (!info.hasDirection)
             {
-                serr << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " have no direction data" << sendl;
+                msg_error() << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " have no direction data";
                 continue;
             }
             ConstraintBlockInfo newInfo;
@@ -547,12 +547,12 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
                 int idFine = c0 + c*nbl;
                 if (idFine + 2 >= numConstraints)
                 {
-                    serr << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid index" << sendl;
+                    msg_error() << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid index";
                     break;
                 }
                 if ((unsigned)(info.offsetPosition + c) >= constraintPositions.size())
                 {
-                    serr << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid position index" << sendl;
+                    msg_error() << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid position index";
                     break;
                 }
                 ConstCoord posFine = constraintPositions[info.offsetPosition + c];
@@ -848,13 +848,13 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
     if(_mu==0.0)
     {
-        serr<<"WARNING: frictionless case with unbuilt nlcp is not implemented"<<sendl;
+        msg_error() << "WARNING: frictionless case with unbuilt nlcp is not implemented";
         return 0;
     }
 
     if (_numConstraints%3 != 0)
     {
-        serr<<" WARNING dim should be dividable by 3 in nlcp_gaussseidel"<<sendl;
+        msg_error() << " WARNING dim should be dividable by 3 in nlcp_gaussseidel";
         return 0;
     }
     int numContacts =  _numConstraints/3;
@@ -924,8 +924,8 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
             }
         }
-        if(!elem1)
-            serr<<"WARNING: no constraintCorrection found for contact"<<c1<<sendl;
+        if (!elem1)
+            msg_error() << "WARNING: no constraintCorrection found for contact" << c1;
         if(!elem2)
             _cclist_elem2.push_back(nullptr);
 

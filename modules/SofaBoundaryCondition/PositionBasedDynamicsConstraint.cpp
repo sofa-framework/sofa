@@ -69,7 +69,7 @@ void PositionBasedDynamicsConstraint<Rigid3Types>::projectPosition(const core::M
     helper::ReadAccessor<DataVecCoord> tpos = position ;
 	helper::WriteAccessor<DataVecDeriv> vel ( mparams, velocity );
 	helper::WriteAccessor<DataVecCoord> old_pos ( mparams, old_position );
-    if (tpos.size() != res.size()) 	{ serr << "Invalid target position vector size." << sendl;		return; }
+    if (tpos.size() != res.size()) { msg_error() << "Invalid target position vector size."; return; }
 
     Real dt =  (Real)this->getContext()->getDt();
     if(!dt) return;

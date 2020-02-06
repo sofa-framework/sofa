@@ -146,10 +146,12 @@ public:
     template<class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        if ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) == nullptr )
-            context->serr << "Cannot create "<<className ( obj ) <<" as the hexas container is missing."<<context->sendl;
-        if ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) == nullptr )
-            context->serr << "Cannot create "<<className ( obj ) <<" as the target point set is missing."<<context->sendl;
+        if (arg->findObject(arg->getAttribute("hexaContainerPath", "../..")) == nullptr) {
+            msg_error(context) << "Cannot create " << className(obj) << " as the hexas container is missing.";
+        }
+        if (arg->findObject(arg->getAttribute("targetPath", "..")) == nullptr) {
+            msg_error(context) << "Cannot create " << className(obj) << " as the target point set is missing.";
+        }
         if ( dynamic_cast<sofa::component::topology::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == nullptr )
             return false;
         if ( dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) == nullptr )

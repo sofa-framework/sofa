@@ -54,13 +54,13 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
 
     if(this->getFromModels1().empty())
     {
-        serr << "Error while iniatilizing ; input Model not found" << sendl;
+        msg_error() << "While iniatilizing ; input Model not found.";
         return;
     }
 
     if(this->getToModels().empty())
     {
-        serr << "Error while iniatilizing ; output Model not found" << sendl;
+        msg_error() << "While iniatilizing ; output Model not found.";
         return;
     }
 

@@ -387,7 +387,6 @@ public:
         int getGlobalOffset(const core::behavior::BaseMechanicalState*) const override { return 0; }
         MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const override
         {
-            //    cerr<<"SingleMatrixAccessor::getMatrix" << endl;
             return matRef;
         }
 

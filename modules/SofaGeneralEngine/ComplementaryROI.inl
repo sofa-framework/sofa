@@ -118,8 +118,8 @@ void ComplementaryROI<DataTypes>::doUpdate()
         ReadAccessor< Data<SetIndex> > setIndices(vd_setIndices[i]);
         for (unsigned int j=0;j<setIndices.size();++j) {
             set<index_type>::iterator it = myIndices.find(setIndices[j]);
-            if (it==myIndices.end())
-                serr << "index " << setIndices[j] << " does not exist" << sendl;
+            if (it == myIndices.end())
+                msg_error() << "index " << setIndices[j] << " does not exist";
             else
                 myIndices.erase(it);
         }

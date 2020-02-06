@@ -23,7 +23,6 @@
 #include <cmath>
 #include "WDoubleLineEdit.h"
 #include <iostream>
-using std::cerr; using std::endl;
 /* -------------------------------------------------------- */
 
 WDoubleLineEdit::WDoubleLineEdit(QWidget *parent,const char *name) : QLineEdit(parent /*,name */)

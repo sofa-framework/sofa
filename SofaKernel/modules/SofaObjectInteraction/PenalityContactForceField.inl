@@ -145,7 +145,7 @@ void PenalityContactForceField<DataTypes>::addDForce(const sofa::core::Mechanica
 template <class DataTypes>
 SReal PenalityContactForceField<DataTypes>::getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const
 {
-    serr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error() << "PenalityContactForceField::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 

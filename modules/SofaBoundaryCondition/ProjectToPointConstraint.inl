@@ -140,16 +140,18 @@ void ProjectToPointConstraint<DataTypes>::init()
 
     const SetIndexArray & indices = f_indices.getValue();
 
+    std::stringstream sstream;
     unsigned int maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
     {
         const unsigned int index=indices[i];
         if (index >= maxIndex)
         {
-            serr << "Index " << index << " not valid!" << sendl;
+            sstream << "Index " << index << " not valid!\n";
             removeConstraint(index);
         }
     }
+    msg_error_when(!sstream.str().empty()) << sstream.str();
 
     reinit();
 }

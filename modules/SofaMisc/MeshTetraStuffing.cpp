@@ -76,7 +76,7 @@ void MeshTetraStuffing::init()
     const SeqQuads& inQ = inputQuads.getValue();
     if (inP.empty() || (inT.empty() && inQ.empty()))
     {
-        serr << "Empty input mesh. Use data dependency to link them to a loaded Topology or MeshLoader";
+        msg_error() << "Empty input mesh. Use data dependency to link them to a loaded Topology or MeshLoader";
         return;
     }
     if (!inQ.empty())
@@ -402,7 +402,7 @@ void MeshTetraStuffing::init()
             int p = *it;
             if (pInside[p] == 0)
             {
-                serr << "ERROR: inside point " << p << " already wrapped.";
+                msg_error() << "Inside point " << p << " already wrapped.";
                 continue;
             }
             Real minDist = 0;
@@ -427,7 +427,7 @@ void MeshTetraStuffing::init()
             }
             if (minEdge == -1) // no violated edge
             {
-                serr << "ERROR: inside point " << p << " has no violated edges.";
+                msg_error() << "Inside point " << p << " has no violated edges.";
                 continue;
             }
             int e = minEdge;
@@ -556,7 +556,7 @@ void MeshTetraStuffing::init()
         Real vol6 = a*(b.cross(c));
         if (vol6 < 0)
         {
-            msg_info() << "WARNING: tetra " << t << " is inverted.";
+            msg_warning() << "tetra " << t << " is inverted.";
             int tmp = outT[t][2]; outT[t][2] = outT[t][3]; outT[t][3] = tmp;
         }
         for (int i=0; i<4; ++i)
@@ -568,7 +568,7 @@ void MeshTetraStuffing::init()
             if (i%2) { int tmp = tr[1]; tr[1] = tr[2]; tr[2] = tmp; }
             if (!triSet.insert(tr).second)
             {
-                serr << "ERROR: duplicate triangle " << tr << " in tetra " << t <<" : " << outT[t];
+                msg_error() << "Duplicate triangle " << tr << " in tetra " << t <<" : " << outT[t];
             }
         }
     }
@@ -708,7 +708,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
         }
         else
         {
-            serr << "Invalid tetra split: flipA = " << flipA << "   flipB = " << flipB;
+            msg_error() << "Invalid tetra split: flipA = " << flipA << "   flipB = " << flipB;
         }
     }
     else // npos == 3 && nneg == 1
@@ -721,7 +721,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
         bool flip3 = flipDiag(outP, ppos[2],ppos[0],cut1,cut3,pneg[0]);
         if (flip1 == flip2 && flip2 == flip3)
         {
-            serr << "Invalid tetra split";
+            msg_error() << "Invalid tetra split";
             flip3 = !flip1;
         }
         int pp0;
@@ -806,7 +806,7 @@ int MeshTetraStuffing::getSplitPoint(int from, int to)
     if (it != splitPoints.end()) return it->second;
     it = splitPoints.find(std::make_pair(to, from));
     if (it != splitPoints.end()) return it->second;
-    serr << "ERROR: cut point between " << from << " and " << to << " not found.";
+    msg_error() << "Cut point between " << from << " and " << to << " not found.";
     return from;
 }
 

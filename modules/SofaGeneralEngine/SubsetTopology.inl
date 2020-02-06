@@ -405,7 +405,7 @@ void SubsetTopology<DataTypes>::doUpdate()
 
         if (cen.size() != rad.size())
         {
-            serr << "WARNING: number of sphere centers and radius doesn't match." <<sendl;
+            msg_warning() << "Number of sphere centers and radius doesn't match.";
             return;
         }
         ROInum = cen.size();

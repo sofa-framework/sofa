@@ -216,7 +216,7 @@ public:
     void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_warning() << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
     void draw(const core::visual::VisualParams* vparams) override;

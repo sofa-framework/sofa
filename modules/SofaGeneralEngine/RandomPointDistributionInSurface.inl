@@ -206,7 +206,7 @@ void RandomPointDistributionInSurface<DataTypes>::doUpdate()
 
     if (triangles.size() <= 1 ||  vertices.size() <= 1)
     {
-        serr << "Error in input data (number of vertices of triangles is less than 1)." << sendl;
+        msg_error() << "In input data (number of vertices of triangles is less than 1).";
         return;
     }
 
@@ -247,7 +247,7 @@ void RandomPointDistributionInSurface<DataTypes>::doUpdate()
     }
 
     if (safeCounter == safeLimit)
-        sout << "ERROR while generating point ; cancelling to break infinite loop" << sendl;
+        msg_error() << "While generating point ; cancelling to break infinite loop";
 
     f_inPoints.endEdit();
     f_outPoints.endEdit();

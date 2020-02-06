@@ -81,11 +81,11 @@ void GenerateGrid<DataTypes>::doUpdate()
     size_t freqW=d_resolution.getValue()[1];
 
     if (freqL==0) {
-        serr<<" Number of cubes in the x direction cannot be 0; Changed to 1"<<sendl;
+        msg_error() << " Number of cubes in the x direction cannot be 0; Changed to 1";
         freqL=1;
     }
     if (freqW==0) {
-        serr<<" Number of cubes in the y direction cannot be 0; Changed to 1"<<sendl;
+        msg_error() << " Number of cubes in the y direction cannot be 0; Changed to 1";
         freqW=1;
     }
     const Real length = size[0]/freqL;

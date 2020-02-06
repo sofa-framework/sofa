@@ -325,7 +325,7 @@ public:
 class SOFA_SIMULATION_CORE_API MechanicalMultiVectorPeqBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
-    sofa::defaulttype::BaseVector *src;
+    const sofa::defaulttype::BaseVector *src;
     sofa::core::MultiVecDerivId dest;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
@@ -335,7 +335,7 @@ public:
     const char* getClassName() const override { return "MechanicalMultiVectorPeqBaseVectorVisitor"; }
 
     MechanicalMultiVectorPeqBaseVectorVisitor(
-        const core::ExecParams* params, sofa::core::MultiVecDerivId _dest, defaulttype::BaseVector * _src,
+        const core::ExecParams* params, sofa::core::MultiVecDerivId _dest, const defaulttype::BaseVector * _src,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
     {
@@ -359,7 +359,7 @@ public:
 class SOFA_SIMULATION_CORE_API MechanicalMultiVectorFromBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
-    sofa::defaulttype::BaseVector *src;
+    const sofa::defaulttype::BaseVector *src;
     sofa::core::MultiVecId dest;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
@@ -370,7 +370,7 @@ public:
 
     MechanicalMultiVectorFromBaseVectorVisitor(
         const core::ExecParams* params, sofa::core::MultiVecId _dest,
-        defaulttype::BaseVector * _src,
+        const defaulttype::BaseVector * _src,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
     {

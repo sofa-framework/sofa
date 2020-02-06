@@ -119,7 +119,7 @@ void HexahedralFEMForceField<DataTypes>::init()
 
     if (_topology==nullptr)
     {
-        serr << "ERROR(HexahedralFEMForceField): object must have a HexahedronSetTopology."<<sendl;
+        msg_error() << "Object must have a HexahedronSetTopology.";
         return;
     }
 

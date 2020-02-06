@@ -152,7 +152,7 @@ public:
     /// This method must be reimplemented by all mappings if they need to support constraints.
     virtual void applyJT( const ConstraintParams* /* mparams */, InDataMatrixDeriv& /* out */, const OutDataMatrixDeriv& /* in */)
     {
-        serr << "This mapping does not support certain constraints because Mapping::applyJT( const ConstraintParams* , InDataMatrixDeriv&, const OutDataMatrixDeriv&) is not overloaded." << sendl;
+        msg_error() << "This mapping does not support certain constraints because Mapping::applyJT( const ConstraintParams* , InDataMatrixDeriv&, const OutDataMatrixDeriv&) is not overloaded.";
     }
 
     /// computeAccFromMapping
@@ -228,8 +228,8 @@ public:
         if (static_cast<BaseObject*>(stin) == static_cast<BaseObject*>(stout))
         {
             // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
-            context->serr << "Creation of " << className(obj) << " mapping failed because the same object \"" << stin->getName() << "\" is linked as both input and output." << context->sendl;
-            context->serr << "  Maybe a MechanicalObject should be added before this mapping." << context->sendl;
+            msg_error(context) << "Creation of " << className(obj) << " mapping failed because the same object \"" << stin->getName() << "\" is linked as both input and output.";
+            msg_error(context) << "  Maybe a MechanicalObject should be added before this mapping.";
             return false;
         }
 

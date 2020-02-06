@@ -161,8 +161,7 @@ void SleepController::init()
             }
         }
 
-        if (!found)
-            serr << "SleepController can not control node " << state->getContext()->getName() << " of type " << state->getClass()->templateName << sendl;
+        msg_error_when(!found) << "SleepController can not control node " << state->getContext()->getName() << " of type " << state->getClass()->templateName;
     }
 
     m_timeSinceWakeUp.assign(m_contextsThatCanSleep.size(), 0.0);

@@ -75,8 +75,8 @@ void LULinearSolver<Matrix,Vector>::solve (Matrix& M, Vector& x, Vector& b)
 
     if( verbose )
     {
-        serr<<"LULinearSolver, b = "<< b <<sendl;
-        serr<<"LULinearSolver, M = "<< M <<sendl;
+        msg_info() << "LULinearSolver, b = " << b;
+        msg_info() << "LULinearSolver, M = " << M;
     }
     if (solver)
         M.solve(&x,&b, solver);
@@ -86,7 +86,7 @@ void LULinearSolver<Matrix,Vector>::solve (Matrix& M, Vector& x, Vector& b)
     // x is the solution of the system
     if( verbose )
     {
-        serr<<"LULinearSolver::solve, solution = "<<x<<sendl;
+        msg_info() << "LULinearSolver::solve, solution = " << x;
     }
 }
 
@@ -117,7 +117,7 @@ bool LULinearSolver<Matrix, Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
     const unsigned int Jcols = J.colSize();
     if (Jcols != (unsigned int)this->currentGroup->systemMatrix->rowSize())
     {
-        serr << "LULinearSolver::addJMInvJt ERROR: incompatible J matrix size." << sendl;
+        msg_error() << "AddJMInvJt ERROR: incompatible J matrix size.";
         return false;
     }
 

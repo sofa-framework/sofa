@@ -315,7 +315,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(const co
         break;
 
     default :
-        serr << "UnilateralInteractionConstraint doesn't implement " << cparams->getName() << " constraint violation\n";
+        msg_error() << "UnilateralInteractionConstraint doesn't implement " << cparams->getName() << " constraint violation\n";
         break;
     }
 }

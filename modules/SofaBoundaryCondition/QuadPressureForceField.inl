@@ -53,8 +53,8 @@ QuadPressureForceField<DataTypes>::QuadPressureForceField()
     , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
     , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
     , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw quads which have a given pressure"))
-    , quadPressureMap(initData(&quadPressureMap, "quadPressureMap", "map between edge indices and their pressure"))
     , l_topology(initLink("topology", "link to the topology container"))
+    , quadPressureMap(initData(&quadPressureMap, "quadPressureMap", "map between edge indices and their pressure"))
     , m_topology(nullptr)
 {
 }
@@ -137,8 +137,10 @@ void QuadPressureForceField<DataTypes>::initQuadInformation()
     sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* quadGeo;
     this->getContext()->get(quadGeo);
 
-    if(!quadGeo)
-        serr << "Missing component: Unable to get QuadSetGeometryAlgorithms from the current context." << sendl;
+    if (!quadGeo)
+    {
+        msg_error() << "Missing component: Unable to get QuadSetGeometryAlgorithms from the current context.";
+    }
 
     // FIXME: a dirty way to avoid a crash
     if(!quadGeo)

@@ -674,6 +674,7 @@ void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams*
 
 void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,int index)
 {
+#ifndef SOFA_NO_OPENGL
     if (elems[index].isTransformed)
     {
         glPushMatrix();
@@ -803,6 +804,7 @@ void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams*
     {
         glPopMatrix();
     }
+#endif // SOFA_NO_OPENGL
 }
 
 

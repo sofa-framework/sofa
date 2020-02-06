@@ -154,14 +154,14 @@ bool OffSequenceLoader::load(const char * filename)
 
     if (!file.good())
     {
-        serr << "Cannot read file '" << m_filename << "'." << sendl;
+        msg_error() << "Cannot read file '" << m_filename << "'.";
         return false;
     }
 
     file >> cmd;
     if (cmd != "OFF")
     {
-        serr << "Not a OFF file (header problem) '" << m_filename << "'." << sendl;
+        msg_error() << "Not a OFF file (header problem) '" << m_filename << "'.";
         return false;
     }
 

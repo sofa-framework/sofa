@@ -139,7 +139,7 @@ void DefaultVisualManagerLoop::computeBBoxStep(sofa::core::visual::VisualParams*
     VisualComputeBBoxVisitor act(vparams);
     if ( gRoot )
         gRoot->execute ( act );
-//    cerr<<"DefaultVisualManagerLoop::computeBBoxStep, xm= " << act.minBBox[0] <<", xM= " << act.maxBBox[0] << endl;
+
     if (init)
     {
         minBBox[0] = (SReal)(act.minBBox[0]);

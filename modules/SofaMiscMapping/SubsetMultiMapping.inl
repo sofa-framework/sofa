@@ -113,7 +113,7 @@ void SubsetMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int i
             break;
     if(i==this->fromModels.size())
     {
-        serr<<"SubsetMultiMapping<TIn, TOut>::addPoint, parent "<<from->getName()<<" not found !"<< sendl;
+        msg_error() << "SubsetMultiMapping<TIn, TOut>::addPoint, parent " << from->getName() << " not found !";
         assert(0);
     }
 
@@ -173,7 +173,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cpa
 
     if (dOut.size() != this->fromModels.size())
     {
-        serr<<"problem with number of output constraint matrices"<<sendl;
+        msg_error() << "Problem with number of output constraint matrices";
         return;
     }
 

@@ -80,7 +80,7 @@ void DisplacementTransformEngine< DataTypes, OutputType >::doUpdate()
     // Check the size of x0
     if( size != size0 )
     {
-        serr << "x and x0 have not the same size: respectively " << size << " and " << size0 << sendl;
+        msg_error() << "x and x0 have not the same size: respectively " << size << " and " << size0;
         return;
     }
 
@@ -93,7 +93,6 @@ void DisplacementTransformEngine< DataTypes, OutputType >::doUpdate()
         mult( displacements[i], inverses[i], x[i] );
     }
     d_displacements.endEdit();
-    //serr << "update(), displaceMats  = " << d_displaceMats.getValue() << sendl;
 }
 
 ///////////////////////////////////////////////////////////////
@@ -142,7 +141,7 @@ void DisplacementMatrixEngine< DataTypes >::reinit()
 
     if( size0 != sizeS)
     {
-        serr << "x0 and S have not the same size: respectively " << ", " << size0 << " and " << sizeS << sendl;
+        msg_error() << "x0 and S have not the same size: respectively " << ", " << size0 << " and " << sizeS;
         return;
     }
 
@@ -174,7 +173,7 @@ void DisplacementMatrixEngine< DataTypes >::doUpdate()
     // Check the size of x0
     if( size != size0 || size != sizeS)
     {
-        serr << "x, x0 and S have not the same size: respectively " << size << ", " << size0 << " and " << sizeS << sendl;
+        msg_error() << "x, x0 and S have not the same size: respectively " << size << ", " << size0 << " and " << sizeS;
         return;
     }
 
