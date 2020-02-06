@@ -41,7 +41,6 @@ namespace cuda
 {
 
 using namespace sofa::defaulttype;
-//using namespace sofa::component::collision;
 
 class CudaPointCollisionModel;
 
@@ -115,6 +114,9 @@ inline int CudaPoint::getSize()
     else
         return model->groupSize.getValue();
 }
+
+using CudaPointModel [[deprecated("The CudaPointModel is now deprecated, please use CudaPointCollisionModel instead. Compatibility stops at v20.06")]] = CudaPointCollisionModel;
+
 
 } // namespace cuda
 
