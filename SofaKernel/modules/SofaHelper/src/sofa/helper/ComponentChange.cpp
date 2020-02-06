@@ -140,6 +140,27 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"SphereModel", Removed("v19.12", "v20.06")},
     {"TSphereModel", Removed("v19.12", "v20.06")},
 
+    {"Capsule", Removed("v19.12", "v20.06")},
+    {"CapsuleModel", Removed("v19.12", "v20.06")},
+    {"TCapsuleModel", Removed("v19.12", "v20.06")},
+
+    {"RigidCapsule", Removed("v19.12", "v20.06")},
+    {"RigidCapsuleModel", Removed("v19.12", "v20.06")},
+
+    {"Cube", Removed("v19.12", "v20.06")},
+    {"CubeModel", Removed("v19.12", "v20.06")},
+
+    {"CudaPoint", Removed("v19.12", "v20.06")},
+    {"CudaPointModel", Removed("v19.12", "v20.06")},
+
+    {"Cylinder", Removed("v19.12", "v20.06")},
+    {"CylinderModel", Removed("v19.12", "v20.06")},
+
+    {"Ray", Removed("v19.12", "v20.06")},
+    {"RayModel", Removed("v19.12", "v20.06")},
+
+    {"Tetrahedron", Removed("v19.12", "v20.06")},
+    {"TetrahedronModel", Removed("v19.12", "v20.06")},
 
     /***********************/
     // REMOVED SINCE v18.12

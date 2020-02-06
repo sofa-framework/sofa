@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
@@ -304,10 +304,10 @@ inline typename DataTypes::Deriv TriangleCollisionModel<DataTypes>::velocity(int
                                                                                                 m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][2]])/((Real)(3.0)); }
 
 template <class TDataTypes> using TTriangleModel [[deprecated("The TTriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] = TriangleCollisionModel<TDataTypes>;
-[[deprecated("The TriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] typedef TriangleCollisionModel<sofa::defaulttype::Vec3Types> TriangleModel;
-typedef TTriangle<sofa::defaulttype::Vec3Types> Triangle;
+using TriangleModel [[deprecated("The TriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] = TriangleCollisionModel<sofa::defaulttype::Vec3Types>;
+using Triangle = TTriangle<sofa::defaulttype::Vec3Types>;
 
-#if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_CPP)
 extern template class SOFA_MESH_COLLISION_API TriangleCollisionModel<defaulttype::Vec3Types>;
 #endif
 

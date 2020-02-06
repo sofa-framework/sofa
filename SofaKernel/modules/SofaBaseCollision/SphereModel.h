@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_SPHEREMODEL_H
-#define SOFA_COMPONENT_COLLISION_SPHEREMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
@@ -222,13 +222,13 @@ inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->ms
 
 
 template <class TDataTypes> using TSphereModel [[deprecated("The TSphereModel is now deprecated, please use SphereCollisionModel instead. Compatibility stops at v20.06")]] = SphereCollisionModel<TDataTypes>;
-[[deprecated("The SphereModel is now deprecated, please use SphereCollisionModel instead. Compatibility stops at v20.06")]] typedef SphereCollisionModel<sofa::defaulttype::Vec3Types> SphereModel;
-typedef TSphere<sofa::defaulttype::Vec3Types> Sphere;
+using SphereModel [[deprecated("The SphereModel is now deprecated, please use SphereCollisionModel instead. Compatibility stops at v20.06")]] = SphereCollisionModel<sofa::defaulttype::Vec3Types>;
+using Sphere = TSphere<sofa::defaulttype::Vec3Types>;
 
 typedef SphereCollisionModel<sofa::defaulttype::Rigid3Types> RigidSphereModel;
 typedef TSphere<sofa::defaulttype::Rigid3Types> RigidSphere;
 
-#if  !defined(SOFA_COMPONENT_COLLISION_SPHEREMODEL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_CPP)
 extern template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3Types>;
 extern template class SOFA_BASE_COLLISION_API SphereCollisionModel<defaulttype::Vec3Types>;
 extern template class SOFA_BASE_COLLISION_API SphereCollisionModel<defaulttype::Rigid3Types>;

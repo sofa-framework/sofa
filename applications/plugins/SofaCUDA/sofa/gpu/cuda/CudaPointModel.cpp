@@ -35,32 +35,33 @@ namespace gpu
 namespace cuda
 {
 
-int CudaPointModelClass = core::RegisterObject("GPU-based point collision model using CUDA")
-        .add< CudaPointModel >()
+int CudaPointCollisionModelClass = core::RegisterObject("GPU-based point collision model using CUDA")
+        .add< CudaPointCollisionModel >()
         .addAlias("CudaPoint")
+        .addAlias("CudaPointModel")
         ;
 
 using namespace defaulttype;
 
-CudaPointModel::CudaPointModel()
+CudaPointCollisionModel::CudaPointCollisionModel()
     : groupSize( initData( &groupSize, (int)BSIZE, "groupSize", "number of point per collision element" ) )
     , mstate(NULL)
 {
 }
 
-void CudaPointModel::resize(int size)
+void CudaPointCollisionModel::resize(int size)
 {
     this->core::CollisionModel::resize(size);
 }
 
-void CudaPointModel::init()
+void CudaPointCollisionModel::init()
 {
     this->CollisionModel::init();
     mstate = dynamic_cast< core::behavior::MechanicalState<InDataTypes>* > (getContext()->getMechanicalState());
 
     if (mstate==NULL)
     {
-        serr << "ERROR: CudaPointModel requires a CudaVec3f Mechanical Model.\n";
+        serr << "ERROR: CudaPointCollisionModel requires a CudaVec3f Mechanical Model.\n";
         return;
     }
 
@@ -70,7 +71,7 @@ void CudaPointModel::init()
     resize(nelems);
 }
 
-void CudaPointModel::draw(const core::visual::VisualParams* ,int index)
+void CudaPointCollisionModel::draw(const core::visual::VisualParams* ,int index)
 {
     const int gsize = groupSize.getValue();
     CudaPoint t(this,index);
@@ -85,7 +86,7 @@ void CudaPointModel::draw(const core::visual::VisualParams* ,int index)
     glEnd();
 }
 
-void CudaPointModel::draw(const core::visual::VisualParams* vparams)
+void CudaPointCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (isActive() && vparams->displayFlags().getShowCollisionModels())
     {
@@ -113,7 +114,7 @@ void CudaPointModel::draw(const core::visual::VisualParams* vparams)
 
 using sofa::component::collision::CubeModel;
 
-void CudaPointModel::computeBoundingTree(int maxDepth)
+void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     const int npoints = mstate->getSize();
