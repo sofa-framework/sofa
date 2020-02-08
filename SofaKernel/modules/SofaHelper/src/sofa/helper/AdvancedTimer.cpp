@@ -1411,11 +1411,17 @@ helper::vector<Record> AdvancedTimer::getRecords(IdTimer id)
             case Record::RBEGIN: // Timer begins
             case Record::REND: // Timer ends
                 r.label = IdTimer::IdFactory::getName(r.id);
+                if (r.obj != 0 || (!IdObj::IdFactory::getName(r.obj).empty() && IdObj::IdFactory::getName(r.obj) != "0")) {
+                    r.label += " (" + IdObj::IdFactory::getName(r.obj) + ")";
+                }
                 break;
             case Record::RSTEP_BEGIN: // Step begins
             case Record::RSTEP_END: // Step ends
             case Record::RSTEP: // Step
                 r.label = IdStep::IdFactory::getName(r.id);
+                if (r.obj != 0 || (!IdObj::IdFactory::getName(r.obj).empty() && IdObj::IdFactory::getName(r.obj) != "0")) {
+                    r.label += " (" + IdObj::IdFactory::getName(r.obj) + ")";
+                }
                 break;
             case Record::RVAL_SET: // Sets a value
             case Record::RVAL_ADD: // Adds a value
