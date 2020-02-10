@@ -23,7 +23,6 @@
 
 #include <SofaBaseVisual/BaseCamera.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/glu.h>
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/SolidTypes.h>
@@ -929,14 +928,11 @@ void BaseCamera::draw(const sofa::core::visual::VisualParams* /*params*/)
 {
 }
 
-
 void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
 {
-    glEnable(GL_MULTISAMPLE_ARB);
-    glLineWidth(1.0f);
-
-    vparams->drawTool()->setPolygonMode(0, true);
-    vparams->drawTool()->setLightingEnabled(false);
+    auto dt = (vparams->drawTool());
+    dt->setPolygonMode(0, true);
+    dt->setLightingEnabled(false);
 
     Vec3 camPos = getPosition();
     sofa::defaulttype::Vector3 p1, p2, p3, p4;
@@ -945,27 +941,19 @@ void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
     p3 = viewportToWorldPoint(Vec3(1,1,0.994));
     p4 = viewportToWorldPoint(Vec3(0,1,0.994));
 
-    vparams->drawTool()->drawLine(camPos, p1, Vec4(0,0,0,1));
-    vparams->drawTool()->drawLine(camPos, p2, Vec4(0,0,0,1));
-    vparams->drawTool()->drawLine(camPos, p3, Vec4(0,0,0,1));
-    vparams->drawTool()->drawLine(camPos, p4, Vec4(0,0,0,1));
+    dt->drawLine(camPos, p1, Vec4(0,0,0,1));
+    dt->drawLine(camPos, p2, Vec4(0,0,0,1));
+    dt->drawLine(camPos, p3, Vec4(0,0,0,1));
+    dt->drawLine(camPos, p4, Vec4(0,0,0,1));
 
-    vparams->drawTool()->drawLine(p1, p2, Vec4(0,0,0,1));
-    vparams->drawTool()->drawLine(p2, p3, Vec4(0,0,0,1));
-    vparams->drawTool()->drawLine(p3, p4, Vec4(0,0,0,1));
-    vparams->drawTool()->drawLine(p4, p1, Vec4(0,0,0,1));
+    dt->drawLine(p1, p2, Vec4(0,0,0,1));
+    dt->drawLine(p2, p3, Vec4(0,0,0,1));
+    dt->drawLine(p3, p4, Vec4(0,0,0,1));
+    dt->drawLine(p4, p1, Vec4(0,0,0,1));
 
-    vparams->drawTool()->setPolygonMode(0, false);
-    glBegin(GL_TRIANGLES);
-    glColor4f(.0f,.0f,.0f,.1f);
-    glVertex3d(camPos.x(), camPos.y(), camPos.z());
-    glVertex3d(p1.x(), p1.y(), p1.z());
-    glVertex3d(p2.x(), p2.y(), p2.z());
-    glEnd();
-
-    vparams->drawTool()->setLightingEnabled(true);
-
-    glDisable(GL_MULTISAMPLE_ARB);
+    dt->setPolygonMode(0, false);
+    dt->drawTriangles({camPos, p1, p2}, RGBAColor::black());
+    dt->setLightingEnabled(true);
 }
 
 } // namespace visualmodel
