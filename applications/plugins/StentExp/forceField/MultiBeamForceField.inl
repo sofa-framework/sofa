@@ -194,6 +194,16 @@ void MultiBeamForceField<DataTypes>::reinit()
         for (int j = 0; j < 27; j++)
             _prevStresses[i][j] = VoigtTensor2::Zero();
 
+    if (_useConsistentTangentOperator.getValue())
+    {
+        // No need to store elastic predictors at each iteration if the consistent
+        // tangent operator is not used.
+        _elasticPredictors.resize(n);
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < 27; j++)
+                _elasticPredictors[i][j] = VoigtTensor2::Zero();
+    }
+
     initBeams( n );
     for (unsigned int i=0; i<n; ++i)
         reinitBeam(i);
@@ -660,6 +670,14 @@ void MultiBeamForceField<DataTypes>::reset()
     for (unsigned i = 0; i < _prevStresses.size(); ++i)
         for (unsigned j = 0; j < 27; ++j)
             _prevStresses[i][j] = VoigtTensor2::Zero();
+
+    if (_useConsistentTangentOperator.getValue())
+    {
+        for (unsigned i = 0; i < _elasticPredictors.size(); ++i)
+            for (unsigned j = 0; j < 27; ++j)
+                _elasticPredictors[i][j] = VoigtTensor2::Zero();
+
+    }
 
     // TO DO: call to init?
 }
@@ -1742,29 +1760,85 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         // Cep
         gradient = vonMisesGradient(currentStressPoint);
 
-        if (gradient.isZero() || pointMechanicalState[gaussPointIt] != PLASTIC)
-            Cep = C; //TO DO: is that correct ?
-        else
+        if (!_useConsistentTangentOperator.getValue())
         {
-            if (!_isPerfectlyPlastic.getValue())
+            if (gradient.isZero() || pointMechanicalState[gaussPointIt] != PLASTIC)
+                Cep = C; //TO DO: is that correct ?
+            else
             {
-                VoigtTensor2 normal = helper::rsqrt(2.0 / 3.0)*gradient;
-                VectTensor2 vectNormal = voigtToVect2(normal);
-                VectTensor4 vectC = voigtToVect4(C);
-                VectTensor4 vectCep = VectTensor4::Zero();
-                double mu = E / (2 * (1 + nu)); // Lame coefficient
+                if (!_isPerfectlyPlastic.getValue())
+                {
+                    VoigtTensor2 normal = helper::rsqrt(2.0 / 3.0)*gradient;
+                    VectTensor2 vectNormal = voigtToVect2(normal);
+                    VectTensor4 vectC = voigtToVect4(C);
+                    VectTensor4 vectCep = VectTensor4::Zero();
 
-                vectCep = vectC - (1.0 / (1.0 + plasticModulus / (3 * mu)))*vectC*(vectNormal*vectNormal.transpose());
-                Cep = vectToVoigt4(vectCep);
-            }
-            else 
-            {
-                Cgrad = C*gradient;
-                gradTC = Cgrad.transpose();
-                //Assuming associative flow rule
-                Cep = C - (Cgrad*gradTC) / (voigtDotProduct(gradTC, gradient));
+                    VectTensor2 CN = vectC*vectNormal;
+                    // NtC = (NC)t because of C symmetry
+                    vectCep = vectC - (CN*CN.transpose()) / (vectNormal.transpose()*CN + (2.0 / 3.0)*plasticModulus);
+
+                    // DEBUG : old version
+                    //double mu = E / (2 * (1 + nu)); // Lame coefficient
+                    //VectTensor4 vectCep2 = VectTensor4::Zero();
+                    //vectCep2 = vectC - (1.0 / (1.0 + plasticModulus / (3 * mu)))*vectC*(vectNormal*vectNormal.transpose());
+                    //double diffCep = (vectCep - vectCep2).norm();
+                    //std::cout << "Norme de la difference dans le calcul de Cep : " << diffCep << std::endl;
+
+                    Cep = vectToVoigt4(vectCep);
+                }
+                else
+                {
+                    VoigtTensor2 normal = helper::rsqrt(2.0 / 3.0)*gradient;
+                    VectTensor2 vectNormal = voigtToVect2(normal);
+                    VectTensor4 vectC = voigtToVect4(C);
+                    VectTensor4 vectCep = VectTensor4::Zero();
+
+                    VectTensor2 CN = vectC*vectNormal;
+                    vectCep = vectC - (CN*CN.transpose()) / (vectNormal.transpose()*CN);
+
+                    // DEBUG : old version
+                    /*Cgrad = C*gradient;
+                    gradTC = Cgrad.transpose();
+                    Cep = C - (Cgrad*gradTC) / (voigtDotProduct(gradTC, gradient));
+                    VectTensor4 vectCep2 = voigtToVect4(Cep);
+                    double diffCep = (vectCep2 - vectCep).norm();
+                    std::cout << "Norme de la difference dans le calcul de Cep : " << diffCep << std::endl;*/
+
+                    Cep = vectToVoigt4(vectCep);
+                }
             }
         }
+        else // _useConsistentTangentOperator = true
+        {
+            //Computation of matrix H as in Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
+            VectTensor4 H = VectTensor4::Zero();
+            VectTensor4 I = VectTensor4::Identity();
+            VoigtTensor2 elasticPredictor = _elasticPredictors[i][gaussPointIt];
+
+            VectTensor2 vectGradient = voigtToVect2(gradient);
+            VectTensor4 vectC = voigtToVect4(C);
+            double yieldStress = beamsData.getValue()[i]._localYieldStresses[gaussPointIt];
+            // NB: the gradient is the same between the elastic predictor and the new stress
+            double DeltaLambda = vonMisesYield(elasticPredictor, yieldStress) / (vectGradient.transpose()*vectC*vectGradient);
+            VectTensor4 vectHessian = vonMisesHessian(elasticPredictor, yieldStress);
+
+            VectTensor4 M = (I + DeltaLambda*vectC*vectHessian);
+            // M is symmetric positive definite, we perform Cholesky decomposition to invert it
+            VectTensor4 invertedM = M.llt().solve(I);
+            H = invertedM*vectC;
+
+            if (gradient.isZero() || pointMechanicalState[gaussPointIt] != PLASTIC)
+                Cep = C; //TO DO: is that correct ?
+            else if (gradient.isZero())
+                Cep = vectToVoigt4(H);
+            else
+            {
+                VectTensor4 consistentCep = VectTensor4::Zero();
+                Eigen::Matrix<double, 1, 9> gradTH = vectGradient.transpose()*H;
+                consistentCep = H - (H*vectGradient*gradTH) / (gradTH*vectGradient);
+                Cep = vectToVoigt4(consistentCep);
+            }
+        } // end if _useConsistentTangentOperator = true
 
         tangentStiffness += (w1*w2*w3)*beTCBeMult(Be.transpose(), Cep, nu, E);
 
@@ -2229,6 +2303,9 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     VoigtTensor2 elasticIncrement = C*strainIncrement;
     VoigtTensor2 currentStressPoint = initialStress + elasticIncrement;
 
+    if (_useConsistentTangentOperator.getValue())
+        _elasticPredictors[index][gaussPointIt] = currentStressPoint;
+
 
     /***************** Determination of the mechanical state *****************/
 
@@ -2641,6 +2718,9 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
 
         VoigtTensor2 elasticIncrement = C*strainIncrement;
         VoigtTensor2 trialStress = lastStress + elasticIncrement;
+
+        if (_useConsistentTangentOperator.getValue())
+            _elasticPredictors[index][gaussPointIt] = trialStress;
 
         helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
 

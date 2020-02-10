@@ -269,8 +269,9 @@ protected:
     void computeVDStiffness(int i, Index a, Index b);
     void computeMaterialBehaviour(int i, Index a, Index b);
 
-    typedef helper::fixed_array<VoigtTensor2, 27>  elementPreviousStresses; ///< one 6x1 strain tensor for each of the 27 points of integration
-    helper::vector<elementPreviousStresses> _prevStresses;
+    typedef helper::fixed_array<VoigtTensor2, 27>  gaussPointStresses; ///< one 6x1 strain tensor for each of the 27 points of integration
+    helper::vector<gaussPointStresses> _prevStresses;
+    helper::vector<gaussPointStresses> _elasticPredictors;
 
     //Position at the last time step, to handle increments for the plasticity resolution
     VecCoord _lastPos;
