@@ -257,6 +257,15 @@ protected:
     // should be used.
     Data<bool> _usePrecomputedStiffness;
 
+    // In the elasto-plastic model, the tangent operator can be computed either
+    // in a straightforward way, or in a way consistent with the radial return
+    // algorithm. This field is used to determine which method will be used.
+    // For more information on the consistent tangent operator, we recommend
+    // reading the following publications :
+    //   - Consistent tangent operators for rate-independent elastoplasticity, Simo and Taylor, 1985
+    //   - Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
+    Data<bool> _useConsistentTangentOperator;
+
     void computeVDStiffness(int i, Index a, Index b);
     void computeMaterialBehaviour(int i, Index a, Index b);
 

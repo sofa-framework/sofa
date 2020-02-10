@@ -64,6 +64,8 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _yieldStress(initData(&_yieldStress,(Real)6.0e8,"yieldStress","yield stress"))
     , _usePrecomputedStiffness(initData(&_usePrecomputedStiffness, true, "usePrecomputedStiffness",
                                         "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
+    , _useConsistentTangentOperator(initData(&_useConsistentTangentOperator, false, "useConsistentTangentOperator",
+        "indicates wether to use a consistent tangent operator in the computation of the plastic stiffness matrix"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
     , _zSection(initData(&_zSection, (Real)0.2, "zSection", "length of the section in the z direction for rectangular beams"))
@@ -90,6 +92,8 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youn
     , _yieldStress(initData(&_yieldStress, (Real)yieldStress, "yieldStress", "yield stress"))
     , _usePrecomputedStiffness(initData(&_usePrecomputedStiffness, true, "usePrecomputedStiffness",
                                         "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
+    , _useConsistentTangentOperator(initData(&_useConsistentTangentOperator, false, "useConsistentTangentOperator", 
+                                             "indicates wether to use a consistent tangent operator in the computation of the plastic stiffness matrix"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
     , _zSection(initData(&_zSection, (Real)zSection, "zSection", "length of the section in the z direction for rectangular beams"))
