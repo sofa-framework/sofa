@@ -1618,14 +1618,15 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
     if (_isPerfectlyPlastic.getValue())
     {
-        const MechanicalState beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
+        //const MechanicalState beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
+        //if (beamMechanicalState == ELASTIC)
+        //    computeElasticForce(fint, x, i, a, b);
+        //else if (beamMechanicalState == PLASTIC)
+        //    computePlasticForce(fint, x, i, a, b);
+        //else
+        //    computePostPlasticForce(fint, x, i, a, b);
 
-        if (beamMechanicalState == ELASTIC)
-            computeElasticForce(fint, x, i, a, b);
-        else if (beamMechanicalState == PLASTIC)
-            computePlasticForce(fint, x, i, a, b);
-        else
-            computePostPlasticForce(fint, x, i, a, b);
+        computeForceWithPerfectPlasticity(fint, x, i, a, b);
     }
     else
     {
@@ -2964,21 +2965,166 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
 }
 
 
+// TESTING : Incremental implementation for perfect plasticity
+template< class DataTypes>
+void MultiBeamForceField<DataTypes>::computeForceWithPerfectPlasticity(Eigen::Matrix<double, 12, 1> &internalForces,
+    const VecCoord& x, int index, Index a, Index b)
+{
+    // Computes displacement increment, from last system solution
+    Displacement currentDisp;
+    Displacement lastDisp;
+    Displacement dispIncrement;
+    computeDisplacementIncrement(x, _lastPos, currentDisp, lastDisp, dispIncrement, index, a, b);
+
+    // Converts to Eigen data structure
+    EigenDisplacement displacementIncrement;
+    for (int k = 0; k < 12; k++)
+        displacementIncrement(k) = dispIncrement[k];
+
+    //All the rest of the force computation is made inside of the lambda function
+    //as the stress and strain are computed for each Gauss point
+
+    typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
+    typedef std::function<void(double, double, double, double, double, double)> LambdaType;
+
+    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour;
+    Eigen::Matrix<double, 6, 12> Be;
+
+    VoigtTensor2 initialStressPoint = VoigtTensor2::Zero();
+    VoigtTensor2 strainIncrement = VoigtTensor2::Zero();
+    VoigtTensor2 newStressPoint = VoigtTensor2::Zero();
+
+    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::fixed_array<MechanicalState, 27>& pointMechanicalState = bd[index]._pointMechanicalState;
+    bool isPlasticBeam = false;
+    int gaussPointIt = 0;
+
+    // Computation of the new stress point, through material point iterations as in Krabbenhoft lecture notes
+
+    // This function is to be called if the last stress point corresponded to elastic deformation
+    LambdaType computeStress = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+    {
+        Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
+        MechanicalState &mechanicalState = pointMechanicalState[gaussPointIt];
+
+        //Strain
+        strainIncrement = Be*displacementIncrement;
+
+        //Stress
+        initialStressPoint = _prevStresses[index][gaussPointIt];
+        computePerfectPlasticStressIncrement(index, gaussPointIt, initialStressPoint, newStressPoint,
+            strainIncrement, mechanicalState);
+
+        isPlasticBeam = isPlasticBeam || (mechanicalState == PLASTIC);
+
+        _prevStresses[index][gaussPointIt] = newStressPoint;
+
+        internalForces += (w1*w2*w3)*beTTensor2Mult(Be.transpose(), newStressPoint);
+
+        gaussPointIt++; //Next Gauss Point
+    };
+
+    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[index]._integrationInterval;
+    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStress);
+
+    // Updates the beam mechanical state information
+    if (!isPlasticBeam)
+    {
+        MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
+        beamMechanicalState = POSTPLASTIC;
+    }
+    beamsData.endEdit();
+
+    //Update the tangent stiffness matrix with the new computed stresses
+    //This matrix will then be used in addDForce and addKToMatrix methods
+    updateTangentStiffness(index, a, b);
+}
 
 
+template< class DataTypes>
+void MultiBeamForceField<DataTypes>::computePerfectPlasticStressIncrement(int index,
+                                                                          int gaussPointIt,
+                                                                          const VoigtTensor2 &lastStress,
+                                                                          VoigtTensor2 &newStressPoint,
+                                                                          const VoigtTensor2 &strainIncrement,
+                                                                          MechanicalState &pointMechanicalState)
+{
+    /** Material point iterations **/
+    //NB: we consider that the yield function and the plastic flow are equal (f=g)
+    //    This corresponds to an associative flow rule (for plasticity)
 
+    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
 
+    /***************************************************/
+    /*  Radial return in perfect plasticity - Hugues   */
+    /***************************************************/
+    {
+        //First we compute the trial stress, taking into account the back stress
+        // (i.e. the centre of the yield surface)
 
+        VoigtTensor2 elasticIncrement = C*strainIncrement;
+        VoigtTensor2 trialStress = lastStress + elasticIncrement;
 
+        if (_useConsistentTangentOperator.getValue())
+            _elasticPredictors[index][gaussPointIt] = trialStress;
 
+        helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
 
+        helper::fixed_array<Real, 27> &localYieldStresses = bd[index]._localYieldStresses;
+        Real &yieldStress = localYieldStresses[gaussPointIt];
 
+        VoigtTensor2 devTrialStress = deviatoricStress(trialStress);
 
+        double A = voigtDotProduct(devTrialStress, devTrialStress);
+        double R = helper::rsqrt(2.0 / 3) * yieldStress;
+        const double R2 = R*R;
 
+        if (A <= R2) //TO DO: proper comparison
+        {
+            // The Gauss point is in elastic state: the back stress and yield stress
+            // remain constant, and the new stress is equal to the trial stress.
+            newStressPoint = trialStress;
 
+            // If the Gauss point was initially plastic, we update its mechanical state
+            if (pointMechanicalState == PLASTIC)
+                pointMechanicalState = POSTPLASTIC;
+        }
+        else
+        {
+            // If the Gauss point was initially elastic, we update its mechanical state
+            if (pointMechanicalState == POSTPLASTIC || pointMechanicalState == ELASTIC)
+                pointMechanicalState = PLASTIC;
 
+            // We then compute the new stress
 
+            /**** Litterature implementation ****/
+            // Ref: Theoretical foundation for large scale computations for nonlinear
+            // material behaviour, Hugues (et al) 1984
 
+            double meanStress = (1.0 / 3)*(trialStress[0] + trialStress[1] + trialStress[2]);
+
+            // Computing the new stress
+            VoigtTensor2 voigtIdentityTensor = VoigtTensor2::Zero();
+            voigtIdentityTensor[0] = 1;
+            voigtIdentityTensor[1] = 1;
+            voigtIdentityTensor[2] = 1;
+
+            newStressPoint = (R / helper::rsqrt(A))*devTrialStress + meanStress*voigtIdentityTensor;
+
+            // Updating the plastic strain
+            VoigtTensor2 yieldNormal = helper::rsqrt(3.0 / 2)*(1.0 / equivalentStress(trialStress))*devTrialStress;
+
+            double lambda = voigtDotProduct(yieldNormal, strainIncrement);
+
+            VoigtTensor2 plasticStrainIncrement = lambda*yieldNormal;
+            helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+            helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
+            plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
+            beamsData.endEdit();
+        }
+
+    }
+}
 
 
 

@@ -318,6 +318,11 @@ protected:
                                          MechanicalState &pointMechanicalState);
     void computeForceWithHardening(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
 
+    //TESTING : incremental perfect plasticity
+    void computePerfectPlasticStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &lastStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
+        MechanicalState &pointMechanicalState);
+    void computeForceWithPerfectPlasticity(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
+
     // Auxiliary methods for hardening
     VectTensor2 voigtToVect2(const VoigtTensor2 &voigtTensor);
     VectTensor4 voigtToVect4(const VoigtTensor4 &voigtTensor);
