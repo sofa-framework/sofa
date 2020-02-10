@@ -66,9 +66,9 @@ endif()
 
 
 
-# C++11 is now mandatory
+# C++17 is now mandatory
 # TODO how to propagate such properties to dependents?
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # An important C++11 feature may be not enabled due to
