@@ -44,13 +44,6 @@ namespace collision
 {
 
 template<class DataTypes>
-TCapsuleModel<DataTypes>::TCapsuleModel()
-    : TCapsuleModel(nullptr)
-{
-    enum_type = CAPSULE_TYPE;
-}
-
-template<class DataTypes>
 TCapsuleModel<DataTypes>::TCapsuleModel(core::behavior::MechanicalState<DataTypes>* mstate)
     : _capsule_radii(initData(&_capsule_radii, "listCapsuleRadii", "Radius of each capsule"))
     , _default_radius(initData(&_default_radius, (Real)0.5, "defaultRadius", "The default radius"))

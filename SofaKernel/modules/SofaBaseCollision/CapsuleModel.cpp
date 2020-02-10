@@ -23,7 +23,6 @@
 #include <SofaBaseCollision/CapsuleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-
 namespace sofa
 {
 
@@ -37,19 +36,14 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-int CapsuleModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
+static int CapsuleModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
         .add<  TCapsuleModel<Vec3Types> >()
-
         .addAlias("Capsule")
         .addAlias("CapsuleModel")
-//.addAlias("CapsuleMesh")
-//.addAlias("CapsuleSet")
         ;
 
 template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3Types>;
 template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3Types>;
-
-
 
 } // namespace collision
 

@@ -103,8 +103,7 @@ protected:
     Data<Real> _default_radius; ///< The default radius
     sofa::helper::vector<std::pair<int,int> > _capsule_points;
 
-    TCapsuleModel();
-    TCapsuleModel(core::behavior::MechanicalState<TDataTypes>* mstate );
+    TCapsuleModel(core::behavior::MechanicalState<TDataTypes>* mstate = nullptr );
 public:
     void init() override;
 
