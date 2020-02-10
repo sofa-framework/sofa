@@ -66,12 +66,16 @@ public:
     virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colour) = 0;
 
     virtual void drawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& colour) =  0;
+    virtual void drawInfiniteLine(const Vector3 &point, const Vector3 &direction, const Vec4f& color) = 0;
     virtual void drawLines(const std::vector<Vector3> &points, float size, const Vec4f& colour) = 0 ;
     virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colours) = 0 ;
     virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index , float size, const Vec4f& colour) = 0 ;
 
     virtual void drawLineStrip(const std::vector<Vector3> &points, float size, const Vec4f& colour) = 0 ;
     virtual void drawLineLoop(const std::vector<Vector3> &points, float size, const Vec4f& colour) = 0 ;
+
+    virtual void drawDisk(float radius, double from, double to, int resolution, const Vec4f& color) = 0;
+    virtual void drawCircle(float radius, float lineThickness, int resolution, const Vec4f& color) = 0;
 
     virtual void drawTriangles(const std::vector<Vector3> &points, const Vec4f& colour) = 0 ;
     virtual void drawTriangles(const std::vector<Vector3> &points, const Vector3& normal, const Vec4f& colour) = 0 ;
@@ -116,6 +120,7 @@ public:
 
     virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& colour,  int subd=16) = 0 ;
     virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const Vec4f& colour,  int subd=16) = 0 ;
+    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, float coneRadius, const Vec4f& color,  int subd=16) = 0;
 
     /// Draw a cross (3 lines) centered on p
     virtual void drawCross(const Vector3&p, float length, const Vec4f& colour) = 0;
