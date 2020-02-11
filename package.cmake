@@ -70,7 +70,7 @@ setSofaOption(PLUGIN_MULTITHREADING ON)
 setSofaOption(PLUGIN_DIFFUSIONSOLVER ON)
 setSofaOption(PLUGIN_IMAGE ON) # Depends on CImgPlugin, soft dependency to MultiThreading
 setSofaOption(PLUGIN_COMPLIANT ON)
-setSofaOption(PLUGIN_FLEXIBLE ON) # Depends on image & CImgPlugin
+# setSofaOption(PLUGIN_FLEXIBLE ON) # Depends on image, CImgPlugin, SofaPython
 setSofaOption(PLUGIN_REGISTRATION ON)
 setSofaOption(PLUGIN_PREASSEMBLEDMASS ON) # Depends on Flexible and Compliant
 setSofaOption(PLUGIN_EXTERNALBEHAVIORMODEL ON)
