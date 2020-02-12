@@ -19,7 +19,7 @@ public:
     const Vec3& origin() const { return m_origin; }
     const Vec3& direction() const { return m_direction; }
 
-    Vec3 getPoint(double z) const
+    Vec3 getPoint(double z) const //< Returns a point at distance units along the ray.
     {
         return m_origin + (m_direction * z);
     }
