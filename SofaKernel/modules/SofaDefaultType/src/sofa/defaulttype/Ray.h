@@ -2,9 +2,11 @@
 
 #include "Vec.h"
 
-namespace sofa {
-namespace defaulttype {
+namespace sofa::defaulttype
+{
 
+/// Representation of rays.
+/// A ray is an infinite line starting at origin and going in some direction.
 class Ray
 {
 public:
@@ -19,7 +21,7 @@ public:
 
     Vec3 getPoint(double z) const
     {
-        return m_origin + (m_direction.normalized() * z);
+        return m_origin + (m_direction * z);
     }
 
     void setOrigin(const Vec3& origin) { m_origin = origin; }
@@ -29,5 +31,5 @@ private:
     Vec3 m_origin;
     Vec3 m_direction;
 };
-} // namespace defaulttype
-} // namespace sofa
+    
+} // namespace sofa::defaulttype
