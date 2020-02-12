@@ -70,7 +70,7 @@ public:
     ~DocBrowser() override ;
 
     void loadHtml(const std::string& filename) ;
-    void showEvent(QShowEvent*) override ;
+    virtual void showEvent(QShowEvent*) override ;
 
 public slots:
     void onLinkClicked(const QUrl& url) ;

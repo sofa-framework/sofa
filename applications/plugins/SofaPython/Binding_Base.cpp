@@ -28,7 +28,6 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-
 #include <sofa/helper/logging/Messaging.h>
 
 #include "PythonFactory.h"
@@ -275,7 +274,9 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     {
         return nullptr;
     }
+
     BaseData* bd = nullptr;
+
     if(KwargsOrArgs) // parse kwargs
     {
         if(kw==nullptr || !PyDict_Check(kw) )
