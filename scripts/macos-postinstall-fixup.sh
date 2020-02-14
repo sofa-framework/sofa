@@ -152,6 +152,8 @@ if [ -d "$BUNDLE_DIR" ]; then
     done
 else
     check-all-deps "copy"
+    check-all-deps "copy"
+    check-all-deps "copy"
     chmod -R 755 $INSTALL_DIR/lib
     check-all-deps "fixup"
 fi
