@@ -287,6 +287,35 @@ public:
 };
 
 
+/// Returns a read accessor from the provided Data<>
+/// Example of use:
+///   auto points = getReadAccessor(d_points)
+template<class D>
+sofa::helper::ReadAccessor<D> getReadAccessor(D& c)
+{
+    return sofa::helper::ReadAccessor<D>{ c };
+}
+
+/// Returns a write only accessor from the provided Data<>
+/// Example of use:
+///   auto points = getWriteOnlyAccessor(d_points)
+template<class D>
+sofa::helper::WriteAccessor<D> getWriteAccessor(D& c)
+{
+    return sofa::helper::WriteAccessor<D>{ c };
+}
+
+/// Returns a write only accessor from the provided Data<>
+/// WriteOnly accessors are faster than WriteAccessor because
+/// as the data is only read this means there is no need to pull
+/// the data from the parents
+/// Example of use:
+///   auto points = getWriteOnlyAccessor(d_points)
+template<class D>
+sofa::helper::WriteOnlyAccessor<D> getWriteOnlyAccessor(D& c)
+{
+    return sofa::helper::WriteOnlyAccessor<D>{ c };
+}
 
 } // namespace helper
 
