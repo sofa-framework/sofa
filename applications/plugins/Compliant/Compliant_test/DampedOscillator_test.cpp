@@ -172,8 +172,8 @@ TEST_F(DampedOscillator_test, explicitEuler )
     setup( 1.0, 1.0, 0.0, 1.0, 0.0 );// mass, stiffness, damping, x0, v0
 
     // === Numerical integrator
-    odesolver::EulerSolver::SPtr eulerSolver = addNew<odesolver::EulerSolver>(node);
-    eulerSolver->symplectic.setValue(false);
+    odesolver::EulerExplicitSolver::SPtr eulerExplicitSolver = addNew<odesolver::EulerExplicitSolver>(node);
+    eulerExplicitSolver->d_symplectic.setValue(false);
 
     // === Run the test
     SReal moreThanOneCycle = 7 * sqrt( 1.0/1.0 ); // 2*M_PI*sqrt(m/k)
@@ -188,8 +188,8 @@ TEST_F(DampedOscillator_test, symplecticEuler )
     setup( 1.0, 1.0, 0.0, 1.0, 0.0 );// mass, stiffness, damping, x0, v0
 
     // === Numerical integrator
-    odesolver::EulerSolver::SPtr eulerSolver = addNew<odesolver::EulerSolver>(node);
-    eulerSolver->symplectic.setValue(true);
+    odesolver::EulerExplicitSolver::SPtr eulerExplicitSolver = addNew<odesolver::EulerExplicitSolver>(node);
+    eulerExplicitSolver->d_symplectic.setValue(true);
 
     // === Run the test
     SReal moreThanOneCycle = 7 * sqrt( 1.0/1.0 ); // 2*M_PI*sqrt(m/k)
