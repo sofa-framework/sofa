@@ -44,14 +44,14 @@ namespace collision
 {
 
 template<class DataTypes>
-TCapsuleModel<DataTypes>::TCapsuleModel()
-    : TCapsuleModel(nullptr)
+CapsuleCollisionModel<DataTypes>::CapsuleCollisionModel()
+    : CapsuleCollisionModel(nullptr)
 {
     enum_type = CAPSULE_TYPE;
 }
 
 template<class DataTypes>
-TCapsuleModel<DataTypes>::TCapsuleModel(core::behavior::MechanicalState<DataTypes>* mstate)
+CapsuleCollisionModel<DataTypes>::CapsuleCollisionModel(core::behavior::MechanicalState<DataTypes>* mstate)
     : _capsule_radii(initData(&_capsule_radii, "listCapsuleRadii", "Radius of each capsule"))
     , _default_radius(initData(&_default_radius, (Real)0.5, "defaultRadius", "The default radius"))
     , l_topology(initLink("topology", "link to the topology container"))
@@ -61,7 +61,7 @@ TCapsuleModel<DataTypes>::TCapsuleModel(core::behavior::MechanicalState<DataType
 }
 
 template<class DataTypes>
-void TCapsuleModel<DataTypes>::resize(int size)
+void CapsuleCollisionModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
     _capsule_points.resize(size);
@@ -83,13 +83,13 @@ void TCapsuleModel<DataTypes>::resize(int size)
 
 
 template<class DataTypes>
-void TCapsuleModel<DataTypes>::init()
+void CapsuleCollisionModel<DataTypes>::init()
 {
     this->CollisionModel::init();
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
     if (_mstate==nullptr)
     {
-        msg_error()<<"TCapsuleModel requires a Vec3 Mechanical Model";
+        msg_error()<<"CapsuleCollisionModel requires a Vec3 Mechanical Model";
         return;
     }
 
@@ -120,13 +120,13 @@ void TCapsuleModel<DataTypes>::init()
 }
 
 template <class DataTypes>
-unsigned int TCapsuleModel<DataTypes>::nbCap()const
+unsigned int CapsuleCollisionModel<DataTypes>::nbCap()const
 {
     return _capsule_radii.getValue().size();
 }
 
 template <class DataTypes>
-void TCapsuleModel<DataTypes>::computeBoundingTree(int maxDepth)
+void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     using namespace sofa::defaulttype;
     CubeModel* cubeModel = createPrevious<CubeModel>();
@@ -178,14 +178,14 @@ void TCapsuleModel<DataTypes>::computeBoundingTree(int maxDepth)
 
 
 template<class DataTypes>
-void TCapsuleModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index)
+void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index)
 {
     sofa::defaulttype::Vec<4,float> col4f(getColor4f());
     vparams->drawTool()->drawCapsule(point1(index),point2(index),(float)radius(index),col4f);
 }
 
 template<class DataTypes>
-void TCapsuleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {
@@ -211,42 +211,42 @@ void TCapsuleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
 
 template <class DataTypes>
-typename TCapsuleModel<DataTypes>::Real TCapsuleModel<DataTypes>::defaultRadius() const
+typename CapsuleCollisionModel<DataTypes>::Real CapsuleCollisionModel<DataTypes>::defaultRadius() const
 {
     return this->_default_radius.getValue();
 }
 
 template <class DataTypes>
-inline const typename TCapsuleModel<DataTypes>::Coord & TCapsuleModel<DataTypes>::point(int i)const{
+inline const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<DataTypes>::point(int i)const{
     return this->_mstate->read(core::ConstVecCoordId::position())->getValue()[i];
 }
 
 template <class DataTypes>
-typename TCapsuleModel<DataTypes>::Real TCapsuleModel<DataTypes>::radius(int i) const
+typename CapsuleCollisionModel<DataTypes>::Real CapsuleCollisionModel<DataTypes>::radius(int i) const
 {
     return this->_capsule_radii.getValue()[i];
 }
 
 template <class DataTypes>
-const typename TCapsuleModel<DataTypes>::Coord & TCapsuleModel<DataTypes>::point1(int i) const
+const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<DataTypes>::point1(int i) const
 {
     return  point(_capsule_points[i].first);
 }
 
 template <class DataTypes>
-const typename TCapsuleModel<DataTypes>::Coord & TCapsuleModel<DataTypes>::point2(int i) const
+const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<DataTypes>::point2(int i) const
 {
     return  point(_capsule_points[i].second);
 }
 
 template <class DataTypes>
-int TCapsuleModel<DataTypes>::point1Index(int i) const
+int CapsuleCollisionModel<DataTypes>::point1Index(int i) const
 {
     return  _capsule_points[i].first;
 }
 
 template <class DataTypes>
-int TCapsuleModel<DataTypes>::point2Index(int i) const
+int CapsuleCollisionModel<DataTypes>::point2Index(int i) const
 {
     return  _capsule_points[i].second;
 }
@@ -271,21 +271,21 @@ typename TCapsule<DataTypes>::Real TCapsule<DataTypes>::radius() const
 
 
 template<class DataTypes>
-typename TCapsuleModel<DataTypes>::Deriv TCapsuleModel<DataTypes>::velocity(int index) const { return ((_mstate->read(core::ConstVecDerivId::velocity())->getValue())[_capsule_points[index].first] +
+typename CapsuleCollisionModel<DataTypes>::Deriv CapsuleCollisionModel<DataTypes>::velocity(int index) const { return ((_mstate->read(core::ConstVecDerivId::velocity())->getValue())[_capsule_points[index].first] +
                                                                                        (_mstate->read(core::ConstVecDerivId::velocity())->getValue())[_capsule_points[index].second])/2.0;}
 
 template<class DataTypes>
 typename TCapsule<DataTypes>::Coord TCapsule<DataTypes>::v() const {return this->model->velocity(this->index);}
 
 template<class DataTypes>
-typename TCapsuleModel<DataTypes>::Coord TCapsuleModel<DataTypes>::axis(int index) const {
+typename CapsuleCollisionModel<DataTypes>::Coord CapsuleCollisionModel<DataTypes>::axis(int index) const {
     Coord ax(point2(index) - point1(index));
     ax.normalize();
     return ax;
 }
 
 template<class DataTypes>
-bool TCapsuleModel<DataTypes>::shareSameVertex(int i1,int i2)const{
+bool CapsuleCollisionModel<DataTypes>::shareSameVertex(int i1,int i2)const{
     return _capsule_points[i1].first == _capsule_points[i2].first || _capsule_points[i1].first == _capsule_points[i2].second ||
             _capsule_points[i1].second == _capsule_points[i2].first || _capsule_points[i1].second == _capsule_points[i2].second;
 }
@@ -296,7 +296,7 @@ bool TCapsule<DataTypes>::shareSameVertex(const TCapsule<DataTypes> & other)cons
 }
 
 template<class DataTypes>
-sofa::defaulttype::Quaternion TCapsuleModel<DataTypes>::orientation(int index) const {
+sofa::defaulttype::Quaternion CapsuleCollisionModel<DataTypes>::orientation(int index) const {
     Coord ax(point2(index) - point1(index));
     ax.normalize();
 
@@ -318,12 +318,12 @@ sofa::defaulttype::Quaternion TCapsuleModel<DataTypes>::orientation(int index) c
 }
 
 template<class DataTypes>
-typename TCapsuleModel<DataTypes>::Coord TCapsuleModel<DataTypes>::center(int index) const {
+typename CapsuleCollisionModel<DataTypes>::Coord CapsuleCollisionModel<DataTypes>::center(int index) const {
     return (point2(index) + point1(index))/2;
 }
 
 template<class DataTypes>
-typename TCapsuleModel<DataTypes>::Real TCapsuleModel<DataTypes>::height(int index) const {
+typename CapsuleCollisionModel<DataTypes>::Real CapsuleCollisionModel<DataTypes>::height(int index) const {
     return (point2(index) - point1(index)).norm();
 }
 
@@ -333,7 +333,7 @@ typename TCapsule<DataTypes>::Coord TCapsule<DataTypes>::axis() const {
 }
 
 template<class DataTypes>
-Data<typename TCapsuleModel<DataTypes>::VecReal > & TCapsuleModel<DataTypes>::writeRadii(){
+Data<typename CapsuleCollisionModel<DataTypes>::VecReal > & CapsuleCollisionModel<DataTypes>::writeRadii(){
     return _capsule_radii;
 }
 

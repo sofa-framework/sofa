@@ -30,7 +30,6 @@ namespace sofa
             {
                 f_listening.setValue(true);
 
-                //helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<VecCoord> > > inputsVec = d_inputs;
                 helper::ReadAccessor< Data<VecCoord> > output = d_result;
 
                 std::vector<component::container::MechanicalObject<DataTypes>*> mechObjs;

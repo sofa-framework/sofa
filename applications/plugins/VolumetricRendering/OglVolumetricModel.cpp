@@ -167,7 +167,7 @@ void OglVolumetricModel::init()
 
 void OglVolumetricModel::initVisual()
 {
-    const defaulttype::ResizableExtVector<Coord>& positions = m_positions.getValue();
+    const helper::vector<Coord>& positions = m_positions.getValue();
 
     m_mappingTableValues->initVisual();
     m_runSelectTableValues->initVisual();
@@ -211,7 +211,7 @@ void OglVolumetricModel::initVisual()
         m_vertexColors->setID("a_vertexColor");
         m_vertexColors->setIndexShader(0);
     }
-    sofa::defaulttype::ResizableExtVector<defaulttype::Vec4f>& vertexColors = *(m_vertexColors->beginEdit());
+    sofa::helper::vector<defaulttype::Vec4f>& vertexColors = *(m_vertexColors->beginEdit());
     unsigned int nbPositions = m_positions.getValue().size();
     if ((vertexColors.size() != nbPositions))
     {
@@ -261,7 +261,7 @@ void OglVolumetricModel::computeMeshFromTopology()
     if (m_topology->hasPos())
     {
         sout << "OglVolumetricModel: copying " << m_topology->getNbPoints() << "points from topology." << sendl;
-        helper::WriteAccessor<  Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
+        helper::WriteAccessor<  Data<helper::vector<Coord> > > position = m_positions;
         position.resize(m_topology->getNbPoints());
         for (unsigned int i = 0; i<position.size(); i++) 
         {
@@ -275,7 +275,7 @@ void OglVolumetricModel::computeMeshFromTopology()
     if (BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState()))
     {
         sout << "OglVolumetricModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
-        helper::WriteAccessor< Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
+        helper::WriteAccessor< Data<helper::vector<Coord> > > position = m_positions;
         position.resize(mstate->getSize());
         for (unsigned int i = 0; i<position.size(); i++)
         {
@@ -292,7 +292,7 @@ void OglVolumetricModel::computeMeshFromTopology()
     // update Tetrahedrons
     const SeqTetrahedra& inputTetrahedra = m_topology->getTetrahedra();
     sout << "OglVolumetricModel: copying " << inputTetrahedra.size() << " tetrahedra from topology." << sendl;
-    helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+    helper::WriteAccessor< Data< helper::vector<Tetrahedron> > > tetrahedra = d_tetrahedra;
     tetrahedra.clear();
     tetrahedra.resize(inputTetrahedra.size());
     for (unsigned int i = 0; i<inputTetrahedra.size(); i++) {
@@ -302,7 +302,7 @@ void OglVolumetricModel::computeMeshFromTopology()
     // update Hexahedrons
     const SeqHexahedra& inputHexahedra = m_topology->getHexahedra();
     sout << "OglVolumetricModel: copying " << inputHexahedra.size() << " hexahedra from topology." << sendl;
-    helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Hexahedron> > > hexahedra = d_hexahedra;
+    helper::WriteAccessor< Data< helper::vector<Hexahedron> > > hexahedra = d_hexahedra;
     hexahedra.clear();
     hexahedra.resize(inputHexahedra.size());
     for (unsigned int i = 0; i < inputHexahedra.size(); i++) {
@@ -312,8 +312,8 @@ void OglVolumetricModel::computeMeshFromTopology()
 
 void OglVolumetricModel::splitHexahedra()
 {
-    helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
-    helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Hexahedron> > > hexahedra = d_hexahedra;
+    helper::ReadAccessor< Data< helper::vector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+    helper::ReadAccessor< Data< helper::vector<Hexahedron> > > hexahedra = d_hexahedra;
     m_hexaToTetrahedra.clear();
 
     //split hexahedron to 5 tetrahedra
@@ -334,9 +334,9 @@ void OglVolumetricModel::splitHexahedra()
 
 void OglVolumetricModel::computeBarycenters()
 {
-    helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
-    helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Hexahedron> > > hexahedra = d_hexahedra;
-    const defaulttype::ResizableExtVector<Coord>& positions = m_positions.getValue();
+    helper::ReadAccessor< Data< helper::vector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+    helper::ReadAccessor< Data< helper::vector<Hexahedron> > > hexahedra = d_hexahedra;
+    const helper::vector<Coord>& positions = m_positions.getValue();
     
     m_tetraBarycenters.clear();
     for (unsigned int i = 0; i < tetrahedra.size(); i++)
@@ -436,9 +436,8 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    //helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
-    const defaulttype::ResizableExtVector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
-    const defaulttype::ResizableExtVector<Hexahedron>& hexahedra = d_hexahedra.getValue();
+    const helper::vector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
+    const helper::vector<Hexahedron>& hexahedra = d_hexahedra.getValue();
     //glEnable(GL_CLIP_DISTANCE0);
 
     if (tetrahedra.size() > 0)
@@ -477,7 +476,7 @@ void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* on
     //if (m_topology)
     {
         Coord v;
-        const defaulttype::ResizableExtVector<Coord>& position = m_positions.getValue();
+        const helper::vector<Coord>& position = m_positions.getValue();
         const SReal max_real = std::numeric_limits<SReal>::max();
         const SReal min_real = std::numeric_limits<SReal>::min();
 
@@ -501,7 +500,7 @@ void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* on
 
 void OglVolumetricModel::updateVertexBuffer()
 {
-    const defaulttype::ResizableExtVector<Coord>& positions = m_positions.getValue();
+    const helper::vector<Coord>& positions = m_positions.getValue();
     unsigned positionsBufferSize;
 
     positionsBufferSize = (positions.size()*sizeof(positions[0]));

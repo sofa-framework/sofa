@@ -38,7 +38,7 @@ namespace component
 namespace collision
 {
     class ComponentMouseInteraction;
-    class RayModel;
+    class RayCollisionModel;
 }
 namespace configurationsetting
 {

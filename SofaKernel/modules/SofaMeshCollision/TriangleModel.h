@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
@@ -233,8 +233,6 @@ public:
     }
 };
 
-template <class TDataTypes> using TTriangleModel [[deprecated("The TTriangleModel is now deprecated please use TriangleCollisionModel instead.")]] = TriangleCollisionModel<TDataTypes>;
-
 template<class DataTypes>
 inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
@@ -304,10 +302,12 @@ inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->
 template<class DataTypes>
 inline typename DataTypes::Deriv TriangleCollisionModel<DataTypes>::velocity(int index) const { return (m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][0]] + m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][1]] +
                                                                                                 m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][2]])/((Real)(3.0)); }
-typedef TriangleCollisionModel<sofa::defaulttype::Vec3Types> TriangleModel;
-typedef TTriangle<sofa::defaulttype::Vec3Types> Triangle;
 
-#if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_CPP)
+template <class TDataTypes> using TTriangleModel [[deprecated("The TTriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] = TriangleCollisionModel<TDataTypes>;
+using TriangleModel [[deprecated("The TriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] = TriangleCollisionModel<sofa::defaulttype::Vec3Types>;
+using Triangle = TTriangle<sofa::defaulttype::Vec3Types>;
+
+#if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_CPP)
 extern template class SOFA_MESH_COLLISION_API TriangleCollisionModel<defaulttype::Vec3Types>;
 #endif
 

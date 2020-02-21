@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_CPP
+#define SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_CPP
 #include <SofaMeshCollision/TriangleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 

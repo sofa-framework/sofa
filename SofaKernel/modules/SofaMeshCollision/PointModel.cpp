@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_POINTMODEL_CPP
+#define SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP
 #include <SofaMeshCollision/PointModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
