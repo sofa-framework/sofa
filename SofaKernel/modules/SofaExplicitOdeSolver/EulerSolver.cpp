@@ -46,92 +46,157 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace core::behavior;
 
-int EulerSolverClass = core::RegisterObject("A simple explicit time integrator")
-        .add< EulerSolver >()
+int EulerExplicitSolverClass = core::RegisterObject("A simple explicit time integrator")
+        .add< EulerExplicitSolver >()
         .addAlias("Euler")
         .addAlias("EulerExplicit")
         .addAlias("ExplicitEuler")
-        .addAlias("EulerExplicitSolver")
+        .addAlias("EulerSolver")
         .addAlias("ExplicitEulerSolver")
         ;
 
-EulerSolver::EulerSolver()
-    : symplectic( initData( &symplectic, true, "symplectic", "If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
+EulerExplicitSolver::EulerExplicitSolver()
+    : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
+    , d_optimizedForDiagonalMatrix(initData(&d_optimizedForDiagonalMatrix, true, "optimizedForDiagonalMatrix", "If true, solution to the system Ax=b can be directly found by computing x = f/m. Must be set to false if M is sparse."))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
 
 typedef simulation::Visitor::ctime_t ctime_t;
 
-void EulerSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void EulerExplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(false); // this solver is explicit only
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecDeriv acc(&vop, core::VecDerivId::dx()); acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv f  (&vop, core::VecDerivId::force() );
-    MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
-    MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
 
-    mop.addSeparateGravity(dt); // v += dt*g . Used if mass wants to added G separately from the other forces to v.
-    sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
-    mop.computeForce(f);
-    sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
+    MultiVecCoord newPos(&vop, xResult /*core::VecCoordId::position()*/ );
+    MultiVecDeriv newVel(&vop, vResult /*core::VecDerivId::velocity()*/ );
 
-    sofa::helper::AdvancedTimer::stepBegin("AccFromF");
-    mop.accFromF(acc, f);
-    sofa::helper::AdvancedTimer::stepEnd("AccFromF");
-    mop.projectResponse(acc);
+    MultiVecDeriv acc(&vop, core::VecDerivId::dx()); acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
+    x.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
-    mop.solveConstraint(acc, core::ConstraintParams::ACC);
 
-    // update state
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-    if (symplectic.getValue())
+    // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
+    if(d_optimizedForDiagonalMatrix.getValue())
     {
-        vel2.eq(vel, acc, dt);
-        mop.solveConstraint(vel2, core::ConstraintParams::VEL);
-        pos2.eq(pos, vel2, dt);
-        mop.solveConstraint(pos2, core::ConstraintParams::POS);
+        mop.addSeparateGravity(dt); // v += dt*g . Used if mass wants to add G separately from the other forces to v.
+        sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
+        mop.computeForce(f);
+        sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
+
+        sofa::helper::AdvancedTimer::stepBegin("AccFromF");
+        mop.accFromF(acc, f);
+        sofa::helper::AdvancedTimer::stepEnd("AccFromF");
+        mop.projectResponse(acc);
+
+        mop.solveConstraint(acc, core::ConstraintParams::ACC);
+
+
+        // update state
+    #ifdef SOFA_NO_VMULTIOP // unoptimized version
+        if (d_symplectic.getValue())
+        {
+            newVel.eq(vel, acc, dt);
+            mop.solveConstraint(newVel, core::ConstraintParams::VEL);
+            newPos.eq(pos, newVel, dt);
+            mop.solveConstraint(newPos, core::ConstraintParams::POS);
+        }
+        else
+        {
+            newPos.eq(pos, vel, dt);
+            mop.solveConstraint(newPos, core::ConstraintParams::POS);
+            newVel.eq(vel, acc, dt);
+            mop.solveConstraint(newVel, core::ConstraintParams::VEL);
+        }
+    #else // single-operation optimization
+        {
+            typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+            VMultiOp ops;
+            ops.resize(2);
+            // change order of operations depending on the symplectic flag
+            int op_vel = (d_symplectic.getValue()?0:1);
+            int op_pos = (d_symplectic.getValue()?1:0);
+            ops[op_vel].first = newVel;
+            ops[op_vel].second.push_back(std::make_pair(vel.id(),1.0));
+            ops[op_vel].second.push_back(std::make_pair(acc.id(),dt));
+            ops[op_pos].first = newPos;
+            ops[op_pos].second.push_back(std::make_pair(pos.id(),1.0));
+            ops[op_pos].second.push_back(std::make_pair(newVel.id(),dt));
+
+            vop.v_multiop(ops);
+
+            mop.solveConstraint(newVel,core::ConstraintParams::VEL);
+            mop.solveConstraint(newPos,core::ConstraintParams::POS);
+        }
+    #endif
     }
     else
     {
-        pos2.eq(pos, vel, dt);
-        mop.solveConstraint(pos2, core::ConstraintParams::POS);
-        vel2.eq(vel, acc, dt);
-        mop.solveConstraint(vel2, core::ConstraintParams::VEL);
-    }
-#else // single-operation optimization
-    {
+        std::cout<< " THIS should need a LinearSolver: rename EulerSolver.h, "<<std::endl;
+
+        mop.addSeparateGravity(dt); // v += dt*g . Used if mass wants to added G separately from the other forces to v.
+
+        sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
+        mop.computeForce(f);
+        sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
+
+        sofa::helper::AdvancedTimer::stepBegin ("projectResponse");
+        mop.projectResponse(f);
+        sofa::helper::AdvancedTimer::stepEnd ("projectResponse");
+
+        sofa::helper::AdvancedTimer::stepBegin ("MBKBuild");
+        core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
+        matrix = MechanicalMatrix(1.0,0,0); // MechanicalMatrix::M;
+        sofa::helper::AdvancedTimer::stepEnd ("MBKBuild");
+
+        std::cout << "EulerExplicitSolver, matrix = " << matrix <<std::endl;
+
+        sofa::helper::AdvancedTimer::stepBegin ("MBKSolve");
+        matrix.solve(x, f); //Call to ODE resolution: x is the solution of the system
+        sofa::helper::AdvancedTimer::stepEnd  ("MBKSolve");
+
+        std::cout << "X = "<< x<<std::endl;
+        std::cout << "f = "<< f<<std::endl;
+
+#ifdef SOFA_NO_VMULTIOP
+        sofa::helper::AdvancedTimer::stepBegin ("solveConstraint");
+        newVel.eq(vel, x);
+        mop.solveConstraint(newVel,core::ConstraintParams::VEL);
+        newPos.eq(pos, newVel, dt);
+        mop.solveConstraint(newPos,core::ConstraintParams::POS);
+        sofa::helper::AdvancedTimer::stepEnd  ("solveConstraint");
+#else
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         // change order of operations depending on the symplectic flag
-        int op_vel = (symplectic.getValue()?0:1);
-        int op_pos = (symplectic.getValue()?1:0);
-        ops[op_vel].first = vel2;
-        ops[op_vel].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[op_vel].second.push_back(std::make_pair(acc.id(),dt));
-        ops[op_pos].first = pos2;
+        size_t op_vel = (d_symplectic.getValue()?0:1);
+        size_t op_pos = (d_symplectic.getValue()?1:0);
+        ops[op_vel].first = newVel;
+//        ops[op_vel].second.push_back(std::make_pair(vel.id(),1.0));
+        ops[op_vel].second.push_back(std::make_pair(x.id(),1.0));
+        ops[op_pos].first = newPos;
         ops[op_pos].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[op_pos].second.push_back(std::make_pair(vel2.id(),dt));
+        ops[op_pos].second.push_back(std::make_pair(newVel.id(),dt));
 
         vop.v_multiop(ops);
 
-        mop.solveConstraint(vel2,core::ConstraintParams::VEL);
-        mop.solveConstraint(pos2,core::ConstraintParams::POS);
-    }
+        mop.solveConstraint(newVel,core::ConstraintParams::VEL);
+        mop.solveConstraint(newPos,core::ConstraintParams::POS);
 #endif
+    }
 }
 
-double EulerSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
+double EulerExplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
 {
     const SReal dt = getContext()->getDt();
     double matrix[3][3] =
     {
-        { 1, dt, ((symplectic.getValue())?dt*dt:0.0)},
+        { 1, dt, ((d_symplectic.getValue())?dt*dt:0.0)},
         { 0, 1, dt},
         { 0, 0, 0}
     };
@@ -141,17 +206,17 @@ double EulerSolver::getIntegrationFactor(int inputDerivative, int outputDerivati
         return matrix[outputDerivative][inputDerivative];
 }
 
-double EulerSolver::getSolutionIntegrationFactor(int outputDerivative) const
+double EulerExplicitSolver::getSolutionIntegrationFactor(int outputDerivative) const
 {
     const SReal dt = getContext()->getDt();
-    double vect[3] = {((symplectic.getValue()) ? dt * dt : 0.0), dt, 1};
+    double vect[3] = {((d_symplectic.getValue()) ? dt * dt : 0.0), dt, 1};
     if (outputDerivative >= 3)
         return 0;
     else
         return vect[outputDerivative];
 }
 
-void EulerSolver::init()
+void EulerExplicitSolver::init()
 {
     OdeSolver::init();
     reinit();
