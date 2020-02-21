@@ -439,6 +439,9 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 
 bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1)
 {
+    if (!e1.activated(e2.getCollisionModel()))
+        return false;
+
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     const Vector3 AB = e2.p2()-e2.p1();
@@ -507,6 +510,8 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1)
 
 int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector* contacts)
 {
+    if (!e1.activated(e2.getCollisionModel()))
+        return false;
 
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 

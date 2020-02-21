@@ -51,6 +51,7 @@ template<class DataTypes>
 SphereCollisionModel<DataTypes>::SphereCollisionModel()
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
+    , SphereActiverPath(initData(&SphereActiverPath, "SphereActiverPath", "path of a component SphereActiver that activate or deactivate collision sphere during execution"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
     , mstate(nullptr)
 {
@@ -61,6 +62,7 @@ template<class DataTypes>
 SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::MechanicalState<DataTypes>* _mstate )
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius. (default=1.0)"))
+    , SphereActiverPath(initData(&SphereActiverPath, "SphereActiverPath", "path of a component SphereActiver that activate or deactivate collision sphere during execution"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
     , mstate(_mstate)
 {
@@ -115,6 +117,38 @@ void SphereCollisionModel<DataTypes>::init()
     resize(npoints);
 
     m_componentstate = ComponentState::Valid ;
+
+    const std::string path = SphereActiverPath.getValue();
+
+    if (path.size() == 0)
+    {
+        myActiver = SphereActiver::getDefaultActiver();
+        msg_info() << "path = " << path << " no Point Activer found for PointModel " << this->getName();
+    }
+    else
+    {
+        core::objectmodel::BaseObject *activer = nullptr;
+        this->getContext()->get(activer, path);
+
+        if (activer != nullptr) {
+            msg_info() << " Activer named" << activer->getName() << " found";
+        }
+        else {
+            msg_error() << "wrong path for SphereActiver";
+        }
+
+        myActiver = dynamic_cast<SphereActiver *> (activer);
+
+        if (myActiver == nullptr)
+        {
+            myActiver = SphereActiver::getDefaultActiver();
+            msg_error() << "no dynamic cast possible for Sphere Activer for SphereModel " << this->getName();
+        }
+        else
+        {
+            msg_info() << "SphereActiver named" << activer->getName() << " found !! for SphereModel " << this->getName();
+        }
+    }
 }
 
 
@@ -153,9 +187,12 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
         for (int i=0; i<npoints; i++)
         {
             TSphere<DataTypes> t(this,i);
-            Vector3 p = t.p();
-            points.push_back(p);
-            radius.push_back((float)t.r());
+            if (t.activated())
+            {
+                Vector3 p = t.p();
+                points.push_back(p);
+                radius.push_back((float)t.r());
+            }
         }
 
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
