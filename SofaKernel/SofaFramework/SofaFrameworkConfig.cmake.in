@@ -3,7 +3,9 @@
 @PACKAGE_INIT@
 
 # CMake policies
-cmake_policy(SET CMP0072 NEW) # Use  GLVND libraries for OpenGL and GLX when available
+if(POLICY CMP0072)
+    cmake_policy(SET CMP0072 NEW) # Use  GLVND libraries for OpenGL and GLX when available
+endif()
 
 get_filename_component(SOFA_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
 

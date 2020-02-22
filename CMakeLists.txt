@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.1)
 project(Sofa) # Cannot use VERSION with patch like "00"
 
 # CMake policies
-cmake_policy(SET CMP0072 NEW) # Use  GLVND libraries for OpenGL and GLX when available
+if(POLICY CMP0072)
+    cmake_policy(SET CMP0072 NEW) # Use  GLVND libraries for OpenGL and GLX when available
+endif()
 
 # Manually define VERSION
 set(Sofa_VERSION_MAJOR 19)
