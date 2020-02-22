@@ -265,7 +265,14 @@ public:
             // share the maps like with a copy constructor, because otherwise a simple operation like passing a
             // MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
             // will cause a temporary copy of the map, which this define was meant to avoid!
-            idMap_ptr = *reinterpret_cast<const std::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+
+            // Type-punning
+            union {
+                const std::shared_ptr< IdMap > * this_map_type;
+                const std::shared_ptr< typename TMultiVecId<vtype,vaccess2>::IdMap > * other_map_type;
+            } ptr;
+            ptr.other_map_type = &mv.idMap_ptr;
+            idMap_ptr = *(ptr.this_map_type);
         }
     }
 
@@ -279,7 +286,14 @@ public:
             // share the maps like with a copy constructor, because otherwise a simple operation like passing a
             // MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
             // will cause a temporary copy of the map, which this define was meant to avoid!
-            idMap_ptr = *reinterpret_cast<const std::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+
+            // Type-punning
+            union {
+                const std::shared_ptr< IdMap > * this_map_type;
+                const std::shared_ptr< typename TMultiVecId<vtype,vaccess2>::IdMap > * other_map_type;
+            } ptr;
+            ptr.other_map_type = &mv.idMap_ptr;
+            idMap_ptr = *(ptr.this_map_type);
         }
 
         return *this;
@@ -517,7 +531,14 @@ public:
 			// share the maps like with a copy constructor, because otherwise a simple operation like passing a
 			// MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
 			// will cause a temporary copy of the map, which this define was meant to avoid!
-            idMap_ptr = *reinterpret_cast<const std::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+
+            // Type-punning
+            union {
+                const std::shared_ptr< IdMap > * this_map_type;
+                const std::shared_ptr< typename TMultiVecId<vtype2,vaccess2>::IdMap > * other_map_type;
+            } ptr;
+            ptr.other_map_type = &mv.idMap_ptr;
+            idMap_ptr = *(ptr.this_map_type);
         }
     }
 
@@ -531,7 +552,14 @@ public:
             // share the maps like with a copy constructor, because otherwise a simple operation like passing a
             // MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
             // will cause a temporary copy of the map, which this define was meant to avoid!
-            idMap_ptr = *reinterpret_cast<const std::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+
+            // Type-punning
+            union {
+                const std::shared_ptr< IdMap > * this_map_type;
+                const std::shared_ptr< typename TMultiVecId<vtype2,vaccess2>::IdMap > * other_map_type;
+            } ptr;
+            ptr.other_map_type = &mv.idMap_ptr;
+            idMap_ptr = *(ptr.this_map_type);
         }
 
         return *this;
