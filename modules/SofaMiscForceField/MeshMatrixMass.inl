@@ -1831,7 +1831,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f)
 {
-    if( !mparams->implicit() && !d_lumping.getValue() )
+    if( !d_lumping.getValue() )
     {
         msg_error() << "the method 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. "
                     << "Please proceed to mass lumping or use a DiagonalMass (both are equivalent).";
