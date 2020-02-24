@@ -75,10 +75,9 @@ void EulerExplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     MultiVecCoord newPos(&vop, xResult /*core::VecCoordId::position()*/ );
     MultiVecDeriv newVel(&vop, vResult /*core::VecDerivId::velocity()*/ );
+    MultiVecDeriv acc(&vop, core::VecDerivId::dx());
 
-    MultiVecDeriv acc(&vop, core::VecDerivId::dx()); acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    x.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
-
+    acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
 
     // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
     if(d_optimizedForDiagonalMatrix.getValue())
@@ -88,6 +87,8 @@ void EulerExplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         mop.computeForce(f);
         sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
 
+        msg_info() << "f = "<< f;
+
         sofa::helper::AdvancedTimer::stepBegin("AccFromF");
         mop.accFromF(acc, f);
         sofa::helper::AdvancedTimer::stepEnd("AccFromF");
@@ -96,47 +97,10 @@ void EulerExplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         mop.solveConstraint(acc, core::ConstraintParams::ACC);
 
 
-        // update state
-    #ifdef SOFA_NO_VMULTIOP // unoptimized version
-        if (d_symplectic.getValue())
-        {
-            newVel.eq(vel, acc, dt);
-            mop.solveConstraint(newVel, core::ConstraintParams::VEL);
-            newPos.eq(pos, newVel, dt);
-            mop.solveConstraint(newPos, core::ConstraintParams::POS);
-        }
-        else
-        {
-            newPos.eq(pos, vel, dt);
-            mop.solveConstraint(newPos, core::ConstraintParams::POS);
-            newVel.eq(vel, acc, dt);
-            mop.solveConstraint(newVel, core::ConstraintParams::VEL);
-        }
-    #else // single-operation optimization
-        {
-            typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-            VMultiOp ops;
-            ops.resize(2);
-            // change order of operations depending on the symplectic flag
-            int op_vel = (d_symplectic.getValue()?0:1);
-            int op_pos = (d_symplectic.getValue()?1:0);
-            ops[op_vel].first = newVel;
-            ops[op_vel].second.push_back(std::make_pair(vel.id(),1.0));
-            ops[op_vel].second.push_back(std::make_pair(acc.id(),dt));
-            ops[op_pos].first = newPos;
-            ops[op_pos].second.push_back(std::make_pair(pos.id(),1.0));
-            ops[op_pos].second.push_back(std::make_pair(newVel.id(),dt));
-
-            vop.v_multiop(ops);
-
-            mop.solveConstraint(newVel,core::ConstraintParams::VEL);
-            mop.solveConstraint(newPos,core::ConstraintParams::POS);
-        }
-    #endif
     }
     else
     {
-        std::cout<< " THIS should need a LinearSolver: rename EulerSolver.h, "<<std::endl;
+        x.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
         mop.addSeparateGravity(dt); // v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
@@ -153,23 +117,34 @@ void EulerExplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         matrix = MechanicalMatrix(1.0,0,0); // MechanicalMatrix::M;
         sofa::helper::AdvancedTimer::stepEnd ("MBKBuild");
 
-        std::cout << "EulerExplicitSolver, matrix = " << matrix <<std::endl;
+        msg_info() << "f = "<< f;
 
         sofa::helper::AdvancedTimer::stepBegin ("MBKSolve");
         matrix.solve(x, f); //Call to ODE resolution: x is the solution of the system
         sofa::helper::AdvancedTimer::stepEnd  ("MBKSolve");
 
-        std::cout << "X = "<< x<<std::endl;
-        std::cout << "f = "<< f<<std::endl;
+        acc.eq(x);
+    }
 
-#ifdef SOFA_NO_VMULTIOP
-        sofa::helper::AdvancedTimer::stepBegin ("solveConstraint");
-        newVel.eq(vel, x);
-        mop.solveConstraint(newVel,core::ConstraintParams::VEL);
+
+    // update state
+#ifdef SOFA_NO_VMULTIOP // unoptimized version
+    if (d_symplectic.getValue())
+    {
+        newVel.eq(vel, acc, dt);
+        mop.solveConstraint(newVel, core::ConstraintParams::VEL);
         newPos.eq(pos, newVel, dt);
-        mop.solveConstraint(newPos,core::ConstraintParams::POS);
-        sofa::helper::AdvancedTimer::stepEnd  ("solveConstraint");
-#else
+        mop.solveConstraint(newPos, core::ConstraintParams::POS);
+    }
+    else
+    {
+        newPos.eq(pos, vel, dt);
+        mop.solveConstraint(newPos, core::ConstraintParams::POS);
+        newVel.eq(vel, acc, dt);
+        mop.solveConstraint(newVel, core::ConstraintParams::VEL);
+    }
+#else // single-operation optimization
+    {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
@@ -177,8 +152,8 @@ void EulerExplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         size_t op_vel = (d_symplectic.getValue()?0:1);
         size_t op_pos = (d_symplectic.getValue()?1:0);
         ops[op_vel].first = newVel;
-//        ops[op_vel].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[op_vel].second.push_back(std::make_pair(x.id(),1.0));
+        ops[op_vel].second.push_back(std::make_pair(vel.id(),1.0));
+        ops[op_vel].second.push_back(std::make_pair(acc.id(),dt));
         ops[op_pos].first = newPos;
         ops[op_pos].second.push_back(std::make_pair(pos.id(),1.0));
         ops[op_pos].second.push_back(std::make_pair(newVel.id(),dt));
@@ -187,8 +162,8 @@ void EulerExplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
         mop.solveConstraint(newVel,core::ConstraintParams::VEL);
         mop.solveConstraint(newPos,core::ConstraintParams::POS);
-#endif
     }
+#endif
 }
 
 double EulerExplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
