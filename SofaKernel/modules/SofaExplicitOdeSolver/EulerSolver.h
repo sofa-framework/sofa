@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ODESOLVER_EULEREXPLICITSOLVER_H
-#define SOFA_COMPONENT_ODESOLVER_EULEREXPLICITSOLVER_H
+#pragma once
+
 #include "config.h"
 
 #include <sofa/core/behavior/OdeSolver.h>
