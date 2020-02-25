@@ -73,5 +73,3 @@ protected:
 } // namespace component
 
 } // namespace sofa
-
-#endif
