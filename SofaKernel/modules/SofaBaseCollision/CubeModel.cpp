@@ -38,17 +38,18 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-int CubeModelClass = core::RegisterObject("Collision model representing a cube")
-        .add< CubeModel >()
+int CubeCollisionModelClass = core::RegisterObject("Collision model representing a cube")
+        .add< CubeCollisionModel >()
         .addAlias("Cube")
+        .addAlias("CubeModel")
         ;
 
-CubeModel::CubeModel()
+CubeCollisionModel::CubeCollisionModel()
 {
     enum_type = AABB_TYPE;
 }
 
-void CubeModel::resize(int size)
+void CubeCollisionModel::resize(int size)
 {
     int size0 = this->size;
     if (size == size0) return;
@@ -71,14 +72,14 @@ void CubeModel::resize(int size)
     }
 }
 
-void CubeModel::setParentOf(int childIndex, const Vector3& min, const Vector3& max)
+void CubeCollisionModel::setParentOf(int childIndex, const Vector3& min, const Vector3& max)
 {
     int i = parentOf[childIndex];
     elems[i].minBBox = min;
     elems[i].maxBBox = max;
 }
 
-void CubeModel::setLeafCube(int cubeIndex, int childIndex)
+void CubeCollisionModel::setLeafCube(int cubeIndex, int childIndex)
 {
     parentOf[childIndex] = cubeIndex;
     this->elems[cubeIndex].children.first=core::CollisionElementIterator(getNext(), childIndex);
@@ -87,14 +88,14 @@ void CubeModel::setLeafCube(int cubeIndex, int childIndex)
     //elems[cubeIndex].maxBBox = max;
 }
 
-void CubeModel::setLeafCube(int cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vector3& min, const Vector3& max)
+void CubeCollisionModel::setLeafCube(int cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vector3& min, const Vector3& max)
 {
     elems[cubeIndex].minBBox = min;
     elems[cubeIndex].maxBBox = max;
     elems[cubeIndex].children = children;
 }
 
-int CubeModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
+int CubeCollisionModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
 {
     int index = size;
 
@@ -109,7 +110,7 @@ int CubeModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
     return index;
 }
 
-void CubeModel::updateCube(int index)
+void CubeCollisionModel::updateCube(int index)
 {
     const std::pair<Cube,Cube>& subcells = elems[index].subcells;
     if (subcells.first != subcells.second)
@@ -134,13 +135,13 @@ void CubeModel::updateCube(int index)
     }
 }
 
-void CubeModel::updateCubes()
+void CubeCollisionModel::updateCubes()
 {
     for (int i=0; i<size; i++)
         updateCube(i);
 }
 
-void CubeModel::draw(const core::visual::VisualParams* vparams)
+void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive() || !((getNext()==nullptr)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
 
@@ -200,12 +201,12 @@ void CubeModel::draw(const core::visual::VisualParams* vparams)
         getPrevious()->draw(vparams);
 }
 
-std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeModel::getInternalChildren(int index) const
+std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeCollisionModel::getInternalChildren(int index) const
 {
     return elems[index].subcells;
 }
 
-std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeModel::getExternalChildren(int index) const
+std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeCollisionModel::getExternalChildren(int index) const
 {
     return elems[index].children;
     /*
@@ -222,22 +223,22 @@ std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeMod
     */
 }
 
-bool CubeModel::isLeaf( int index ) const
+bool CubeCollisionModel::isLeaf( int index ) const
 {
     return elems[index].children.first.valid();
 }
 
-void CubeModel::computeBoundingTree(int maxDepth)
+void CubeCollisionModel::computeBoundingTree(int maxDepth)
 {
 //    if(maxDepth <= 0)
 //        return;
 
-    dmsg_info() << ">CubeModel::computeBoundingTree(" << maxDepth << ")";
-    std::list<CubeModel*> levels;
-    levels.push_front(createPrevious<CubeModel>());
+    dmsg_info() << ">CubeCollisionModel::computeBoundingTree(" << maxDepth << ")";
+    std::list<CubeCollisionModel*> levels;
+    levels.push_front(createPrevious<CubeCollisionModel>());
     for (int i=0; i<maxDepth; i++)
-        levels.push_front(levels.front()->createPrevious<CubeModel>());
-    CubeModel* root = levels.front();
+        levels.push_front(levels.front()->createPrevious<CubeCollisionModel>());
+    CubeCollisionModel* root = levels.front();
     //if (isStatic() && root->getPrevious() == nullptr && !root->empty()) return; // No need to recompute BBox if immobile
 
     if (root->empty() || root->getPrevious() != nullptr)
@@ -256,28 +257,28 @@ void CubeModel::computeBoundingTree(int maxDepth)
 
         // Then clear all existing levels
         {
-            for (std::list<CubeModel*>::iterator it = levels.begin(); it != levels.end(); ++it)
+            for (std::list<CubeCollisionModel*>::iterator it = levels.begin(); it != levels.end(); ++it)
                 (*it)->resize(0);
         }
 
         // Then build root cell
-        dmsg_info() << "CubeModel: add root cube";
+        dmsg_info() << "CubeCollisionModel: add root cube";
         root->addCube(Cube(this,0),Cube(this,size));
         // Construct tree by splitting cells along their biggest dimension
-        std::list<CubeModel*>::iterator it = levels.begin();
-        CubeModel* level = *it;
+        std::list<CubeCollisionModel*>::iterator it = levels.begin();
+        CubeCollisionModel* level = *it;
         ++it;
         int lvl = 0;
         while(it != levels.end())
         {
-            dmsg_info() << "CubeModel: split level " << lvl;
-            CubeModel* clevel = *it;
+            dmsg_info() << "CubeCollisionModel: split level " << lvl;
+            CubeCollisionModel* clevel = *it;
             clevel->elems.reserve(level->size*2);
             for(Cube cell = Cube(level->begin()); level->end() != cell; ++cell)
             {
                 const std::pair<Cube,Cube>& subcells = cell.subcells();
                 int ncells = subcells.second.getIndex() - subcells.first.getIndex();
-                dmsg_info() << "CubeModel: level " << lvl << " cell " << cell.getIndex() << ": current subcells " << subcells.first.getIndex() << " - " << subcells.second.getIndex();
+                dmsg_info() << "CubeCollisionModel: level " << lvl << " cell " << cell.getIndex() << ": current subcells " << subcells.first.getIndex() << " - " << subcells.second.getIndex();
                 if (ncells > 4)
                 {
                     // Only split cells with more than 4 childs
@@ -324,14 +325,14 @@ void CubeModel::computeBoundingTree(int maxDepth)
     {
         // Simply update the existing tree, starting from the bottom
         int lvl = 0;
-        for (std::list<CubeModel*>::reverse_iterator it = levels.rbegin(); it != levels.rend(); ++it)
+        for (std::list<CubeCollisionModel*>::reverse_iterator it = levels.rbegin(); it != levels.rend(); ++it)
         {
-            dmsg_info() << "CubeModel: update level " << lvl;
+            dmsg_info() << "CubeCollisionModel: update level " << lvl;
             (*it)->updateCubes();
             ++lvl;
         }
     }
-    dmsg_info() << "<CubeModel::computeBoundingTree(" << maxDepth << ")";
+    dmsg_info() << "<CubeCollisionModel::computeBoundingTree(" << maxDepth << ")";
 }
 
 } // namespace collision

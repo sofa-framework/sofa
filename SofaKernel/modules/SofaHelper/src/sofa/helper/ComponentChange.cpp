@@ -109,6 +109,59 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"VisualManagerPass", Pluginized("v19.06", "SofaOpenglVisual")},
     {"VisualmanagerSecondaryPass", Pluginized("v19.06", "SofaOpenglVisual")},
 
+
+    /***********************/
+    // REMOVED SINCE v20.06
+
+    // SofaKernel
+    {"Point", Removed("v19.12", "v20.06")},
+    {"TPointModel", Removed("v19.12", "v20.06")},
+    {"PointModel", Removed("v19.12", "v20.06")},
+    {"PointMesh", Removed("v19.12", "v20.06")},
+    {"PointSet", Removed("v19.12", "v20.06")},
+
+    {"Line", Removed("v19.12", "v20.06")},
+    {"TLineModel", Removed("v19.12", "v20.06")},
+    {"LineMeshModel", Removed("v19.12", "v20.06")},
+    {"LineSetModel", Removed("v19.12", "v20.06")},
+    {"LineMesh", Removed("v19.12", "v20.06")},
+    {"LineSet", Removed("v19.12", "v20.06")},
+    {"LineModel", Removed("v19.12", "v20.06")},
+
+    {"Triangle", Removed("v19.12", "v20.06")},
+    {"TriangleSet", Removed("v19.12", "v20.06")},
+    {"TriangleMesh", Removed("v19.12", "v20.06")},
+    {"TriangleSetModel", Removed("v19.12", "v20.06")},
+    {"TriangleMeshModel", Removed("v19.12", "v20.06")},
+    {"TriangleModel", Removed("v19.12", "v20.06")},
+    {"TTriangleModel", Removed("v19.12", "v20.06")},
+
+    {"Sphere", Removed("v19.12", "v20.06")},
+    {"SphereModel", Removed("v19.12", "v20.06")},
+    {"TSphereModel", Removed("v19.12", "v20.06")},
+
+    {"Capsule", Removed("v19.12", "v20.06")},
+    {"CapsuleModel", Removed("v19.12", "v20.06")},
+    {"TCapsuleModel", Removed("v19.12", "v20.06")},
+
+    {"RigidCapsule", Removed("v19.12", "v20.06")},
+    {"RigidCapsuleModel", Removed("v19.12", "v20.06")},
+
+    {"Cube", Removed("v19.12", "v20.06")},
+    {"CubeModel", Removed("v19.12", "v20.06")},
+
+    {"CudaPoint", Removed("v19.12", "v20.06")},
+    {"CudaPointModel", Removed("v19.12", "v20.06")},
+
+    {"Cylinder", Removed("v19.12", "v20.06")},
+    {"CylinderModel", Removed("v19.12", "v20.06")},
+
+    {"Ray", Removed("v19.12", "v20.06")},
+    {"RayModel", Removed("v19.12", "v20.06")},
+
+    {"Tetrahedron", Removed("v19.12", "v20.06")},
+    {"TetrahedronModel", Removed("v19.12", "v20.06")},
+
     /***********************/
     // REMOVED SINCE v18.12
 

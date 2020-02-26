@@ -65,8 +65,6 @@ public:
     int getQuadsRevision();    ///< changes each time quads data is updated
 
     typedef sofa::core::visual::VisualModel SofaVisualOutputMesh;
-    
-    //typedef sofa::defaulttype::ExtVec3dTypes Vec3d
     typedef sofa::component::visualmodel::VisualModelImpl SofaOutputMesh;
     typedef SofaOutputMesh::DataTypes DataTypes;
     typedef SofaOutputMesh::Coord Coord;

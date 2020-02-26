@@ -35,12 +35,12 @@ namespace component
 namespace collision
 {
 
-class RayModel;
+class RayCollisionModel;
 
 class SOFA_USER_INTERACTION_API BaseRayContact : public core::collision::Contact
 {
 public:
-    typedef RayModel CollisionModel1;
+    typedef RayCollisionModel CollisionModel1;
 
 protected:
     CollisionModel1* model1;
@@ -67,7 +67,7 @@ template<class CM2>
 class RayContact : public BaseRayContact
 {
 public:
-    typedef RayModel CollisionModel1;
+    typedef RayCollisionModel CollisionModel1;
     typedef CM2 CollisionModel2;
     typedef core::collision::Intersection Intersection;
     typedef core::collision::TDetectionOutputVector<CollisionModel1, CollisionModel2> OutputVector;

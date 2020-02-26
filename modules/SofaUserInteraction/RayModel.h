@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_RAYMODEL_H
-#define SOFA_COMPONENT_COLLISION_RAYMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_RAYCOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_RAYCOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
@@ -38,12 +38,12 @@ namespace component
 namespace collision
 {
 
-class RayModel;
+class RayCollisionModel;
 
-class Ray : public core::TCollisionElementIterator<RayModel>
+class Ray : public core::TCollisionElementIterator<RayCollisionModel>
 {
 public:
-    Ray(RayModel* model, int index);
+    Ray(RayCollisionModel* model, int index);
 
     explicit Ray(const core::CollisionElementIterator& i);
 
@@ -58,17 +58,17 @@ public:
 
 class BaseRayContact;
 
-class SOFA_USER_INTERACTION_API RayModel : public core::CollisionModel
+class SOFA_USER_INTERACTION_API RayCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(RayModel, core::CollisionModel);
+    SOFA_CLASS(RayCollisionModel, core::CollisionModel);
 
     typedef sofa::defaulttype::Vec3Types InDataTypes;
     typedef sofa::defaulttype::Vec3Types DataTypes;
     typedef Ray Element;
     friend class Ray;
 protected:
-    RayModel(SReal defaultLength=1);
+    RayCollisionModel(SReal defaultLength=1);
 public:
     void init() override;
 
@@ -106,12 +106,12 @@ protected:
 
 };
 
-inline Ray::Ray(RayModel* model, int index)
-    : core::TCollisionElementIterator<RayModel>(model, index)
+inline Ray::Ray(RayCollisionModel* model, int index)
+    : core::TCollisionElementIterator<RayCollisionModel>(model, index)
 {}
 
 inline Ray::Ray(const core::CollisionElementIterator& i)
-    : core::TCollisionElementIterator<RayModel>(static_cast<RayModel*>(i.getCollisionModel()), i.getIndex())
+    : core::TCollisionElementIterator<RayCollisionModel>(static_cast<RayCollisionModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
@@ -152,6 +152,8 @@ inline void Ray::setL(SReal newL)
 {
     model->length[index] = newL;
 }
+
+using RayModel [[deprecated("The TriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] = RayCollisionModel;
 
 } // namespace collision
 

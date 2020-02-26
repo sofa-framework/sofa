@@ -249,7 +249,7 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
 
     simpleapi::createObject(node, mappingType, {
                                 {"name", nameVisual},
-                                {"template", "Vec3,ExtVec3"},
+                                {"template", "Vec3,Vec3"},
                                 {"input", refDof},
                                 {"output", refVisual}});
 
