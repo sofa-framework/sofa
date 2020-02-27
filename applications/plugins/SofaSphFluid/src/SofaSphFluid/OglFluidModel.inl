@@ -20,7 +20,7 @@ namespace component
 namespace visualmodel
 {
 
-const float SPRITE_SCALE_DIV = tanf(65.0f * (0.5f * 3.1415926535f / 180.0f));
+const float SPRITE_SCALE_DIV = tanf(65.0f * (0.5f * (float)M_PI / 180.0f));
 
 template<class DataTypes>
 OglFluidModel<DataTypes>::OglFluidModel()

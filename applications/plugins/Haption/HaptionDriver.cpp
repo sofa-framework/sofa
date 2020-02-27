@@ -21,6 +21,7 @@
 ******************************************************************************/
 
 #include "HaptionDriver.h"
+#include <math.h>
 
 
 namespace sofa
@@ -429,7 +430,7 @@ void HaptionDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 
     if(visuAxes  && haptionVisu.getValue())
     {
-        double pi = 3.1415926535;
+        double pi = M_PI;
         if ((kpe->getKey()=='X' || kpe->getKey()=='x') && !modX )
         {
             modX=true;

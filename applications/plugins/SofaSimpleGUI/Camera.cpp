@@ -31,7 +31,7 @@ void Camera::viewAll( float xmin, float ymin, float zmin, float xmax, float ymax
     //    cout<<"Camera, scene radius = " << radius << endl;
 
     // Desired distance:  distance * tan(a) = radius
-    float distance = 1.5 * radius / tan(fovy * 3.1415927/180);
+    float distance = 1.5 * radius / tan(fovy * M_PI/180);
     //    cout<<"Camera::viewAll, angle = " << fovy << ", tan = " << tan(fovy) << ", distance = " << distance << endl;
     //    cout<<"Camera::viewAll, xmin xmax ymin ymax zmin zmax = " << xmin << " " << xmax <<" "<<ymin<<" "<<ymax<<" "<<zmin<<" "<<zmax<< endl;
 

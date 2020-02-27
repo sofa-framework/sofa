@@ -80,7 +80,7 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
     if(myData->xiToolData[0]->lcp_forceFeedback)
     {
         //get tool state for each xitact
-        double pi = 3.1415926535;
+        double pi = M_PI;
         for(unsigned int i=0; i<myData->xiToolData.size(); i++)
         {
             xiTrocarAcquire();
@@ -812,7 +812,7 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
         dir[1] = (double)state.trocarDir[2];
         dir[2] = -(double)state.trocarDir[1];
 
-        double pi = 3.1415926535;
+        double pi = M_PI;
 
         double thetaY;
         double thetaX;
@@ -984,7 +984,7 @@ void IHPDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 
     if(visuAxes  && xitactVisu.getValue())
     {
-        double pi = 3.1415926535;
+        double pi = M_PI;
         if ((kpe->getKey()=='X' || kpe->getKey()=='x') && !modX )
         {
             modX=true;
