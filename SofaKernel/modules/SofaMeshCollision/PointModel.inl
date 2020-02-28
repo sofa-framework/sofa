@@ -55,7 +55,7 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , mstate(nullptr)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
-    , PointActiverPath(initData(&PointActiverPath,"PointActiverPath", "path of a component PointActiver that activate or deactivate collision point during execution") )
+    , l_pointActiver(initLink("PointActiver", "PointActiver component that activates or deactivates collision point(s) during execution"))
     , m_lmdFilter( nullptr )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
@@ -98,31 +98,14 @@ void PointCollisionModel<DataTypes>::init()
     if (computeNormals.getValue()) updateNormals();
 
 
-    const std::string path = PointActiverPath.getValue();
-
-    if (path.size()==0)
+    if (l_pointActiver.get() == nullptr)
     {
-
         myActiver = PointActiver::getDefaultActiver();
-        msg_info() << "path = " << path << " no Point Activer found for PointModel " << this->getName();
+        msg_info() << "no Point Activer found for PointModel " << this->getName();
     }
     else
     {
-
-        core::objectmodel::BaseObject *activer=nullptr;
-        this->getContext()->get(activer ,path  );
-
-        if (activer != nullptr) {
-            msg_info() << " Activer named" << activer->getName() << " found";
-        }
-        else {
-            msg_error() << "wrong path for PointActiver";
-        }
-
-
-        myActiver = dynamic_cast<PointActiver *> (activer);
-
-
+        myActiver = dynamic_cast<PointActiver *> (l_pointActiver.get());
 
         if (myActiver == nullptr)
         {
@@ -131,9 +114,10 @@ void PointCollisionModel<DataTypes>::init()
         }
         else
         {
-            msg_info() << "PointActiver named" << activer->getName() << " found !! for PointModel " << this->getName();
+            msg_info() << "PointActiver named" << l_pointActiver.get()->getName() << " found !! for PointModel " << this->getName();
         }
     }
+
 }
 
 

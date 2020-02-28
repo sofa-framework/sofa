@@ -162,8 +162,6 @@ protected:
 
     Data<bool> computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
 
-    Data<std::string> PointActiverPath; ///< path of a component PointActiver that activate or deactivate collision point during execution
-
     VecDeriv normals;
 
     PointLocalMinDistanceFilter *m_lmdFilter;
@@ -173,6 +171,8 @@ protected:
                                       
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    
+    SingleLink<PointCollisionModel<DataTypes>, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_pointActiver;
 
 
     PointActiver *myActiver;

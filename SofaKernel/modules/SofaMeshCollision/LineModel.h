@@ -188,11 +188,12 @@ public:
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
-    Data< std::string  > LineActiverPath; ///< path of a component LineActiver that activates or deactivates collision line during execution
     Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    
+    SingleLink<LineCollisionModel<DataTypes>, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_lineActiver;
 
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;

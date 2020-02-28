@@ -201,8 +201,9 @@ public:
     SphereActiver *myActiver; ///< SphereActiver that activate or deactivate collision sphere during execution
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
-    Data<std::string> SphereActiverPath; ///< path of a component SphereActiver that activate or deactivate collision sphere during execution
-    SingleLink<SphereCollisionModel, core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_sphereActiver;
+    SingleLink<SphereCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
+    SingleLink<SphereCollisionModel<DataTypes>, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_sphereActiver;
 
 };
 
