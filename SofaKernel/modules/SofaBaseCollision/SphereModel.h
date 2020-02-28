@@ -202,6 +202,8 @@ public:
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
     Data<std::string> SphereActiverPath; ///< path of a component SphereActiver that activate or deactivate collision sphere during execution
+    SingleLink<SphereCollisionModel, core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_sphereActiver;
+
 };
 
 template <class TDataTypes> using TSphereModel [[deprecated("The TSphereModel is now deprecated please use SphereCollisionModel instead.")]] = SphereCollisionModel<TDataTypes>;
