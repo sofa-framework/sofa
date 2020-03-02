@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <cmath>
+#include <sofa/helper/rmath.h>
+using sofa::helper::isEqual;
 
 #include <SofaBaseVisual/BaseCamera.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -598,8 +600,11 @@ BaseCamera::Vec3 BaseCamera::viewportToWorldPoint(const BaseCamera::Vec3& p)
     getOpenGLModelViewMatrix(glM.ptr());
 
     Vec4 vsPosition = glP.inverted().transposed() * Vec4(nsPosition, 1.0);
+    if(isEqual(vsPosition.w(), 0.0))
+    {
+        return Vec3(std::nan(""), std::nan(""), std::nan(""));
+    }
     vsPosition /= vsPosition.w();
-
     Vec4 v = (glM.inverted().transposed() * vsPosition);
 
     return Vec3(v[0],v[1],v[2]);
@@ -612,8 +617,13 @@ BaseCamera::Vec3 BaseCamera::worldToScreenPoint(const BaseCamera::Vec3& p)
     getOpenGLModelViewMatrix(glM.ptr());
 
     Vec4 nsPosition = (glP.transposed() * glM.transposed() * Vec4(p, 1.0));
-    nsPosition /= nsPosition.w();
 
+    if(isEqual(nsPosition.w(), 0.0))
+    {
+        return Vec3(std::nan(""), std::nan(""), std::nan(""));
+    }
+
+    nsPosition /= nsPosition.w();
     return Vec3((nsPosition.x() * 0.5 + 0.5) * p_widthViewport.getValue() + 0.5,
                 p_heightViewport.getValue() - (nsPosition.y() * 0.5 + 0.5) * p_heightViewport.getValue() + 0.5,
                 (nsPosition.z() * 0.5 + 0.5));
