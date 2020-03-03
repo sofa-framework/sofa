@@ -162,6 +162,12 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"Tetrahedron", Removed("v19.12", "v20.06")},
     {"TetrahedronModel", Removed("v19.12", "v20.06")},
 
+    {"Euler", Removed("v19.12", "v20.06")},
+    {"EulerExplicit", Removed("v19.12", "v20.06")},
+    {"ExplicitEuler", Removed("v19.12", "v20.06")},
+    {"EulerSolver", Removed("v19.12", "v20.06")},
+    {"ExplicitEulerSolver", Removed("v19.12", "v20.06")},
+
     /***********************/
     // REMOVED SINCE v18.12
 
