@@ -639,7 +639,7 @@ class ParameterizedTestCaseInfo : public ParameterizedTestCaseInfoBase {
 
     // Check for invalid characters
     for (std::string::size_type index = 0; index < name.size(); ++index) {
-      if (!isalnum(name[index]) && name[index] != '_')
+      if (!isalnum(name[index]) && name[index] != '_' && name[index] != '-')
         return false;
     }
 
