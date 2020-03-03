@@ -87,8 +87,6 @@ void EulerExplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         mop.computeForce(f);
         sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
 
-        msg_info() << "f = "<< f;
-
         sofa::helper::AdvancedTimer::stepBegin("AccFromF");
         mop.accFromF(acc, f);
         sofa::helper::AdvancedTimer::stepEnd("AccFromF");
@@ -116,8 +114,6 @@ void EulerExplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
         matrix = MechanicalMatrix(1.0,0,0); // MechanicalMatrix::M;
         sofa::helper::AdvancedTimer::stepEnd ("MBKBuild");
-
-        msg_info() << "f = "<< f;
 
         sofa::helper::AdvancedTimer::stepBegin ("MBKSolve");
         matrix.solve(x, f); //Call to ODE resolution: x is the solution of the system
