@@ -124,9 +124,11 @@ public:
     /// Get the full name of this object (i.e. concatenation if all the names of its ancestors and itself)
     virtual std::string getFullName();
 
-    virtual void logError(std::string s) {errors.push_back(s);}
+    virtual void logError(const std::string & s) {errors.push_back(s);}
+    virtual void logErrors(const std::vector<std::string> & e) {errors.insert(errors.end(), e.begin(), e.end());}
 
     std::vector< std::string > const& getErrors() const {return errors;}
+    virtual void clearErrors() {errors.clear();}
 
 protected:
     AttributeMap attributes;
