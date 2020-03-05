@@ -430,7 +430,6 @@ void HaptionDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 
     if(visuAxes  && haptionVisu.getValue())
     {
-        double pi = M_PI;
         if ((kpe->getKey()=='X' || kpe->getKey()=='x') && !modX )
         {
             modX=true;
@@ -479,14 +478,14 @@ void HaptionDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
         else if ((kpe->getKey()==21) && (modX || modY || modZ)) //down
         {
             VecCoord& posB =(*posBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-pi/50);
+            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-M_PI/50);
             posB[0].getOrientation()*=quarter_transform;
             posBase.endEdit();
         }
         else if ((kpe->getKey()==19) && (modX || modY || modZ)) //up
         {
             VecCoord& posB =(*posBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),+pi/50);
+            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),+M_PI/50);
             posB[0].getOrientation()*=quarter_transform;
             posBase.endEdit();
         }

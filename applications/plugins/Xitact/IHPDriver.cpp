@@ -80,7 +80,6 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
     if(myData->xiToolData[0]->lcp_forceFeedback)
     {
         //get tool state for each xitact
-        double pi = M_PI;
         for(unsigned int i=0; i<myData->xiToolData.size(); i++)
         {
             xiTrocarAcquire();
@@ -98,31 +97,31 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
             double thetaX;
 
             thetaY = (atan2(dir[0],-sqrt(1-dir[0]*dir[0])));
-            thetaX = (pi-acos(dir[2]*sqrt(1-dir[0]*dir[0])/(dir[0]*dir[0]-1)));
+            thetaX = (M_PI-acos(dir[2]*sqrt(1-dir[0]*dir[0])/(dir[0]*dir[0]-1)));
 
             //look if thetaX and thetaY are NaN
             if(!(thetaX == thetaX))
             {
                 cout<<"ratrapage X"<<endl;
-                thetaX=pi;
+                thetaX=M_PI;
             }
             if(!(thetaY == thetaY))
             {
                 cout<<"ratrapage Y"<<endl;
-                thetaY=pi;
+                thetaY=M_PI;
             }
 
             if(dir[1]>=0)
                 thetaX*=-1;
 
             while(thetaY<=0)
-                thetaY+=2*pi;
+                thetaY+=2*M_PI;
             while(thetaX<=0)
-                thetaX+=2*pi;
-            while(thetaY>2*pi)
-                thetaY-=2*pi;
-            while(thetaX>2*pi)
-                thetaX-=2*pi;
+                thetaX+=2*M_PI;
+            while(thetaY>2*M_PI)
+                thetaY-=2*M_PI;
+            while(thetaX>2*M_PI)
+                thetaX-=2*M_PI;
 
             //mettre le posBaseglobal dans data
             SolidTypes<double>::Transform sofaWorld_H_base(myData->xiToolData[i]->posBase,myData->xiToolData[i]->quatBase);	  //sofaWorld_H_base
@@ -179,37 +178,35 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
     //dir[1] = (double)state.trocarDir[2];
     //dir[2] = -(double)state.trocarDir[1];
 
-    //double pi = 3.1415926535;
-
     //double thetaY;
     //double thetaX;
 
     //thetaY = (atan2(dir[0],-sqrt(1-dir[0]*dir[0])));
-    //thetaX = (pi-acos(dir[2]*sqrt(1-dir[0]*dir[0])/(dir[0]*dir[0]-1)));
+    //thetaX = (M_PI-acos(dir[2]*sqrt(1-dir[0]*dir[0])/(dir[0]*dir[0]-1)));
 
     ////look if thetaX and thetaY are NaN
     //if(!(thetaX == thetaX))
     //{
     //	cout<<"ratrapage X"<<endl;
-    //	thetaX=pi;
+    //	thetaX=M_PI;
     //}
     //if(!(thetaY == thetaY))
     //{
     //	cout<<"ratrapage Y"<<endl;
-    //	thetaY=pi;
+    //	thetaY=M_PI;
     //}
 
     //if(dir[1]>=0)
     //	thetaX*=-1;
 
     //while(thetaY<=0)
-    //	thetaY+=2*pi;
+    //	thetaY+=2*M_PI;
     //while(thetaX<=0)
-    //	thetaX+=2*pi;
-    //while(thetaY>2*pi)
-    //	thetaY-=2*pi;
-    //while(thetaX>2*pi)
-    //	thetaX-=2*pi;
+    //	thetaX+=2*M_PI;
+    //while(thetaY>2*M_PI)
+    //	thetaY-=2*M_PI;
+    //while(thetaX>2*M_PI)
+    //	thetaX-=2*M_PI;
 
     //double toolDpth = state.toolDepth;
 
@@ -812,37 +809,35 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
         dir[1] = (double)state.trocarDir[2];
         dir[2] = -(double)state.trocarDir[1];
 
-        double pi = M_PI;
-
         double thetaY;
         double thetaX;
 
         thetaY = (atan2(dir[0],-sqrt(1-dir[0]*dir[0])));
-        thetaX = (pi-acos(dir[2]*sqrt(1-dir[0]*dir[0])/(dir[0]*dir[0]-1)));
+        thetaX = (M_PI-acos(dir[2]*sqrt(1-dir[0]*dir[0])/(dir[0]*dir[0]-1)));
 
         //look if thetaX and thetaY are NaN
         if(!(thetaX == thetaX))
         {
             cout<<"ratrapage X"<<endl;
-            thetaX=pi;
+            thetaX=M_PI;
         }
         if(!(thetaY == thetaY))
         {
             cout<<"ratrapage Y"<<endl;
-            thetaY=pi;
+            thetaY=M_PI;
         }
 
         if(dir[1]>=0)
             thetaX*=-1;
 
         while(thetaY<=0)
-            thetaY+=2*pi;
+            thetaY+=2*M_PI;
         while(thetaX<=0)
-            thetaX+=2*pi;
-        while(thetaY>2*pi)
-            thetaY-=2*pi;
-        while(thetaX>2*pi)
-            thetaX-=2*pi;
+            thetaX+=2*M_PI;
+        while(thetaY>2*M_PI)
+            thetaY-=2*M_PI;
+        while(thetaX>2*M_PI)
+            thetaX-=2*M_PI;
 
 
 
@@ -880,8 +875,8 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
         posD[0].getCenter() =  tampon.getOrigin();
         posD[0].getOrientation() =  tampon.getOrientation();
 
-        sofa::helper::Quater<double> qRotX(Vec3d(1,0,0),pi/2);
-        sofa::helper::Quater<double> qRotY(Vec3d(0,0,-1),pi/2);
+        sofa::helper::Quater<double> qRotX(Vec3d(1,0,0),M_PI_2);
+        sofa::helper::Quater<double> qRotY(Vec3d(0,0,-1),M_PI_2);
         SolidTypes<double>::Transform transformRotX(Vec3d(0.0,0.0,0.0),qRotX);
         SolidTypes<double>::Transform transformRotY(Vec3d(0.0,0.0,0.0),qRotY);
         SolidTypes<double>::Transform tamponAxes=tampon;
@@ -984,7 +979,6 @@ void IHPDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 
     if(visuAxes  && xitactVisu.getValue())
     {
-        double pi = M_PI;
         if ((kpe->getKey()=='X' || kpe->getKey()=='x') && !modX )
         {
             modX=true;
@@ -1033,14 +1027,14 @@ void IHPDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
         else if ((kpe->getKey()==21) && (modX || modY || modZ)) //down
         {
             VecCoord& posB =(*positionBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-pi/50);
+            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-M_PI/50);
             posB[0].getOrientation()*=quarter_transform;
             positionBase.endEdit();
         }
         else if ((kpe->getKey()==19) && (modX || modY || modZ)) //up
         {
             VecCoord& posB =(*positionBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),+pi/50);
+            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),+M_PI/50);
             posB[0].getOrientation()*=quarter_transform;
             positionBase.endEdit();
         }
