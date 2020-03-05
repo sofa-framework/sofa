@@ -265,7 +265,7 @@ bool glhUnProjectf(Real winx, Real winy, Real winz, Real *modelview, Real *proje
     //Objects coordinates
     out = m * in;
 
-    if (out[3] == 0.0)
+    if (isEqual(out[3], 0.0))
         return false;
     out[3] = 1.0 / out[3];
     objectCoordinate[0] = out[0] * out[3];
@@ -360,8 +360,9 @@ BaseCamera::Vec2 BaseCamera::worldToScreenCoordinates(const BaseCamera::Vec3& po
     this->getProjectionMatrix(projection.ptr());
 
     clipSpacePos = projection * (modelview * clipSpacePos);
-    if (clipSpacePos.w() == 0.0)
-        clipSpacePos.w() = 1.0;
+    if (isEqual(clipSpacePos.w(), 0.0))
+        return Vec2(std::nan(""), std::nan(""));
+
     sofa::defaulttype::Vec3 ndcSpacePos = sofa::defaulttype::Vec3(clipSpacePos.x(),clipSpacePos.y(), clipSpacePos.z()) * clipSpacePos.w();
     Vec2 screenCoord = Vec2((ndcSpacePos.x() + 1.0) / 2.0 * viewport[2], (ndcSpacePos.y() + 1.0) / 2.0 * viewport[3]);
     return screenCoord + Vec2(viewport[0], viewport[1]);
