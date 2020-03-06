@@ -118,9 +118,9 @@ ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* sol
 
 // First the easy cases...
 
-SolverSet createSolverEulerEuler(odesolver::EulerSolver& solver1, odesolver::EulerSolver& solver2)
+SolverSet createSolverEulerExplicitEulerExplicit(odesolver::EulerExplicitSolver& solver1, odesolver::EulerExplicitSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::EulerSolver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
+    return SolverSet(copySolver<odesolver::EulerExplicitSolver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
 }
 
 SolverSet createSolverRungeKutta4RungeKutta4(odesolver::RungeKutta4Solver& solver1, odesolver::RungeKutta4Solver& solver2)
@@ -176,12 +176,12 @@ SolverSet createSolverStaticSolver(odesolver::StaticSolver& solver1, odesolver::
 
 // Then the other, with the policy of taking the more precise solver
 
-SolverSet createSolverRungeKutta4Euler(odesolver::RungeKutta4Solver& solver1, odesolver::EulerSolver& solver2)
+SolverSet createSolverRungeKutta4Euler(odesolver::RungeKutta4Solver& solver1, odesolver::EulerExplicitSolver& solver2)
 {
     return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
 }
 
-SolverSet createSolverEulerImplicitEuler(odesolver::EulerImplicitSolver& solver1, odesolver::EulerSolver& solver2)
+SolverSet createSolverEulerImplicitEuler(odesolver::EulerImplicitSolver& solver1, odesolver::EulerExplicitSolver& solver2)
 {
     return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1),
             createLinearSolver(&solver1, nullptr),
@@ -213,11 +213,11 @@ SolverSet SolverMerger::merge(core::behavior::OdeSolver* solver1, core::behavior
 
 SolverMerger::SolverMerger()
 {
-    solverDispatcher.add<odesolver::EulerSolver,odesolver::EulerSolver,createSolverEulerEuler,false>();
+    solverDispatcher.add<odesolver::EulerExplicitSolver,odesolver::EulerExplicitSolver,createSolverEulerExplicitEulerExplicit,false>();
     solverDispatcher.add<odesolver::RungeKutta4Solver,odesolver::RungeKutta4Solver,createSolverRungeKutta4RungeKutta4,false>();
     solverDispatcher.add<odesolver::EulerImplicitSolver,odesolver::EulerImplicitSolver,createSolverEulerImplicitEulerImplicit,false>();
-    solverDispatcher.add<odesolver::RungeKutta4Solver,odesolver::EulerSolver,createSolverRungeKutta4Euler,true>();
-    solverDispatcher.add<odesolver::EulerImplicitSolver,odesolver::EulerSolver,createSolverEulerImplicitEuler,true>();
+    solverDispatcher.add<odesolver::RungeKutta4Solver,odesolver::EulerExplicitSolver,createSolverRungeKutta4Euler,true>();
+    solverDispatcher.add<odesolver::EulerImplicitSolver,odesolver::EulerExplicitSolver,createSolverEulerImplicitEuler,true>();
     solverDispatcher.add<odesolver::EulerImplicitSolver,odesolver::RungeKutta4Solver,createSolverEulerImplicitRungeKutta4,true>();
     solverDispatcher.add<odesolver::StaticSolver,odesolver::StaticSolver,createSolverStaticSolver,true>();
 }

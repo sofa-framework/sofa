@@ -395,7 +395,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
             if(pid_j*dof_on_node+d <2 )
             {
-                EulerSolver->f_verbose.setValue(true);
                 EulerSolver->f_printLog.setValue(true);
                 msg_info() <<"getF : "<<force;
             }
@@ -411,7 +410,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
             if(pid_j*dof_on_node+d < 2)
             {
-                EulerSolver->f_verbose.setValue(false);
                 EulerSolver->f_printLog.setValue(false);
                 msg_info()<<"getV : "<<velocity;
             }
