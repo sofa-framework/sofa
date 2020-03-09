@@ -76,25 +76,7 @@ public:
     {
         return surfacePoint;
     }
-
-    bool activated(core::CollisionModel *cm = nullptr) const;
 };
-
-template<class DataTypes>
-inline bool TSphere<DataTypes>::activated(core::CollisionModel *cm) const
-{
-    return this->model->myActiver->activeSphere(this->index, cm);
-}
-
-class SphereActiver
-{
-public:
-    SphereActiver() {}
-    virtual ~SphereActiver() {}
-    virtual bool activeSphere(int /*index*/, core::CollisionModel * /*cm*/ = nullptr) { return true; }
-    static SphereActiver* getDefaultActiver() { static SphereActiver defaultActiver; return &defaultActiver; }
-};
-
 
 // Specializations
 template <> SOFA_BASE_COLLISION_API
@@ -198,13 +180,9 @@ public:
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
-    SphereActiver *myActiver; ///< SphereActiver that activate or deactivate collision sphere during execution
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
     SingleLink<SphereCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-
-    SingleLink<SphereCollisionModel<DataTypes>, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_sphereActiver;
-
 };
 
 template <class TDataTypes> using TSphereModel [[deprecated("The TSphereModel is now deprecated please use SphereCollisionModel instead.")]] = SphereCollisionModel<TDataTypes>;

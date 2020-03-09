@@ -67,17 +67,6 @@ public:
     bool hasFreePosition() const;
 
     bool testLMD(const sofa::defaulttype::Vector3 &, double &, double &);
-
-    bool activated(core::CollisionModel *cm = nullptr) const;
-};
-
-class PointActiver
-{
-public:
-    PointActiver() {}
-    virtual ~PointActiver() {}
-    virtual bool activePoint(int /*index*/, core::CollisionModel * /*cm*/ = nullptr) {return true;}
-	static PointActiver* getDefaultActiver() { static PointActiver defaultActiver; return &defaultActiver; }
 };
 
 template<class TDataTypes>
@@ -171,11 +160,7 @@ protected:
                                       
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-    
-    SingleLink<PointCollisionModel<DataTypes>, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_pointActiver;
 
-
-    PointActiver *myActiver;
 };
 
 template <class TDataTypes> using TPointModel [[deprecated("The TPointModel is now deprecated please use PointCollisionModel instead.")]] = PointCollisionModel<TDataTypes>;
@@ -217,12 +202,6 @@ inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigne
 
 template<class DataTypes>
 inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
-
-template<class DataTypes>
-inline bool TPoint<DataTypes>::activated(core::CollisionModel *cm) const
-{
-    return this->model->myActiver->activePoint(this->index, cm);
-}
 
 typedef PointCollisionModel<sofa::defaulttype::Vec3Types> PointModel;
 typedef TPoint<sofa::defaulttype::Vec3Types> Point;

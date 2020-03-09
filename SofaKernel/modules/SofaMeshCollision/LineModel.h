@@ -77,17 +77,6 @@ public:
 
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
-
-    bool activated(core::CollisionModel *cm = nullptr) const;
-};
-
-class LineActiver
-{
-public:
-    LineActiver() {}
-    virtual ~LineActiver() {}
-    virtual bool activeLine(int /*index*/, core::CollisionModel * /*cm*/ = nullptr) {return true;}
-	static LineActiver* getDefaultActiver() { static LineActiver defaultActiver; return &defaultActiver; }
 };
 
 template<class TDataTypes>
@@ -193,17 +182,12 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
     
-    SingleLink<LineCollisionModel<DataTypes>, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_lineActiver;
-
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
     Topology* topology;
     PointModel* mpoints;
     int meshRevision;
     LineLocalMinDistanceFilter *m_lmdFilter;
-
-    LineActiver *myActiver;
-
 
 };
 
@@ -273,12 +257,6 @@ inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(th
 
 template<class DataTypes>
 inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
-
-template<class DataTypes>
-inline bool TLine<DataTypes>::activated(core::CollisionModel *cm) const
-{
-    return this->model->myActiver->activeLine(this->index, cm);
-}
 
 typedef LineCollisionModel<sofa::defaulttype::Vec3Types> LineModel;
 typedef TLine<sofa::defaulttype::Vec3Types> Line;

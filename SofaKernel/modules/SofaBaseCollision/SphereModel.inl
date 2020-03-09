@@ -51,7 +51,6 @@ template<class DataTypes>
 SphereCollisionModel<DataTypes>::SphereCollisionModel()
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
-    , l_sphereActiver(initLink("SphereActiver", "SphereActiver component that activates or deactivates collision sphere(s) during execution"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
     , mstate(nullptr)
 {
@@ -62,7 +61,6 @@ template<class DataTypes>
 SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::MechanicalState<DataTypes>* _mstate )
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius. (default=1.0)"))
-    , l_sphereActiver(initLink("SphereActiver", "SphereActiver component that activates or deactivates collision sphere(s) during execution"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
     , mstate(_mstate)
 {
@@ -117,26 +115,6 @@ void SphereCollisionModel<DataTypes>::init()
     resize(npoints);
 
     m_componentstate = ComponentState::Valid ;
-
-    if (l_sphereActiver.get() == nullptr)
-    {
-        myActiver = SphereActiver::getDefaultActiver();
-        msg_info() << "no Sphere Activer found for SphereModel " << this->getName();
-    }
-    else
-    {
-        myActiver = dynamic_cast<SphereActiver *> (l_sphereActiver.get());
-
-        if (myActiver == nullptr)
-        {
-            myActiver = SphereActiver::getDefaultActiver();
-            msg_error() << "no dynamic cast possible for Sphere Activer for SphereModel " << this->getName();
-        }
-        else
-        {
-            msg_info() << "SphereActiver named" << l_sphereActiver.get()->getName() << " found !! for SphereModel " << this->getName();
-        }
-    }
 }
 
 
@@ -175,7 +153,7 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
         for (int i=0; i<npoints; i++)
         {
             TSphere<DataTypes> t(this,i);
-            if (t.activated())
+            if (t.isActive())
             {
                 Vector3 p = t.p();
                 points.push_back(p);
