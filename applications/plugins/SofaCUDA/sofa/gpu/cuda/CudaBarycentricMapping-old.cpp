@@ -39,11 +39,9 @@ using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 
 template class BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes>;
-template class BarycentricMapping< CudaVec3fTypes, ExtVec3fTypes>;
 template class BarycentricMapping< CudaVec3f1Types, CudaVec3f1Types>;
 template class BarycentricMapping< CudaVec3f1Types, CudaVec3fTypes>;
 template class BarycentricMapping< CudaVec3fTypes, CudaVec3f1Types>;
-template class BarycentricMapping< CudaVec3f1Types, ExtVec3fTypes>;
 
 
 template class BarycentricMapping< Vec3Types, CudaVec3Types>;
@@ -69,11 +67,9 @@ using namespace sofa::component::mapping;
 
 int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes> >()
-        .add< BarycentricMapping< CudaVec3fTypes, ExtVec3fTypes> >()
         .add< BarycentricMapping< CudaVec3f1Types, CudaVec3f1Types> >()
         .add< BarycentricMapping< CudaVec3f1Types, CudaVec3fTypes> >()
         .add< BarycentricMapping< CudaVec3fTypes, CudaVec3f1Types> >()
-        .add< BarycentricMapping< CudaVec3f1Types, ExtVec3fTypes> >()
         .add< BarycentricMapping< Vec3Types, CudaVec3Types> >()
         .add< BarycentricMapping< CudaVec3Types, Vec3Types> >()
         .add< BarycentricMapping< Vec3Types, CudaVec3f1Types> >()
@@ -87,8 +83,6 @@ int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side comput
         .add< BarycentricMapping< CudaVec3dTypes, Vec3dTypes> >()
         .add< BarycentricMapping< Vec3fTypes, CudaVec3dTypes> >()
         .add< BarycentricMapping< Vec3dTypes, CudaVec3dTypes> >()
-//.add< BarycentricMapping< CudaVec3d1Types, ExtVec3fTypes> >()
-//.add< BarycentricMapping< CudaVec3dTypes, ExtVec3fTypes> >()
 #endif
         ;
 

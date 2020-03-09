@@ -51,6 +51,12 @@ DynamicLibrary::Handle::Handle(): m_realHandle(nullptr)
 {
 }
 
+DynamicLibrary::Handle& DynamicLibrary::Handle::operator= (const Handle& other) {
+    m_realHandle = other.m_realHandle;
+    m_filename = other.m_filename;
+    return *this;
+}
+
 bool DynamicLibrary::Handle::isValid() const
 {
     return m_realHandle != nullptr;

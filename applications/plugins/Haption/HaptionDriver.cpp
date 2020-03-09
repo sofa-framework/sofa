@@ -237,9 +237,9 @@ void HaptionDriver::init()
                 visualNode[i].visu->initVisual();
                 visualNode[i].visu->updateVisual();
                 if(i<2)
-                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes >(visualHaptionDOF,visualNode[i].visu);
+                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, Vec3fTypes >(visualHaptionDOF,visualNode[i].visu);
                 else
-                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes >(visualAxesDOF,visualNode[i].visu);
+                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, Vec3fTypes >(visualAxesDOF,visualNode[i].visu);
                 visualNode[i].node->addObject(visualNode[i].mapping);
                 visualNode[i].mapping->name.setValue("RigidMapping");
                 visualNode[i].mapping->f_mapConstraints.setValue(false);
@@ -270,7 +270,7 @@ void HaptionDriver::init()
 
         for(int j=0; j<2; j++)
         {
-            sofa::defaulttype::ResizableExtVector<sofa::defaulttype::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+            sofa::helper::vector<sofa::defaulttype::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
             for(unsigned int i=0; i<scaleMapping.size(); i++)
                 for(int p=0; p<3; p++)
                     scaleMapping[i].at(p)*=(float)(scale.getValue());

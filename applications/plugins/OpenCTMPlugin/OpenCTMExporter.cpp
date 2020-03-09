@@ -112,12 +112,11 @@ void OpenCTMExporter::writeOpenCTM()
         //typedef sofa::component::visualmodel::VisualModelImpl::TexCoord TexCoord;
         typedef sofa::component::visualmodel::VisualModelImpl::Coord Coord;
 
-        const sofa::defaulttype::ResizableExtVector<Coord>& vertices = m_pVisual->getVertices();
-        const sofa::defaulttype::ResizableExtVector<Coord>& normals = m_pVisual->getVnormals();
-//        const sofa::defaulttype::ResizableExtVector<TexCoord>& texCoords = m_pVisual->getVtexcoords();
+        const sofa::helper::vector<Coord>& vertices = m_pVisual->getVertices();
+        const sofa::helper::vector<Coord>& normals = m_pVisual->getVnormals();
 
-        const sofa::defaulttype::ResizableExtVector<sofa::core::topology::Triangle>& triangles = m_pVisual->getTriangles();
-        const sofa::defaulttype::ResizableExtVector<sofa::core::topology::Quad>& quads = m_pVisual->getQuads();
+        const sofa::helper::vector<sofa::core::topology::Triangle>& triangles = m_pVisual->getTriangles();
+        const sofa::helper::vector<sofa::core::topology::Quad>& quads = m_pVisual->getQuads();
 
 
         // Save the file using the OpenCTM API

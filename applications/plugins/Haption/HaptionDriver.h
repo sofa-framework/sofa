@@ -68,7 +68,7 @@ typedef struct
 {
     simulation::Node *node;
     sofa::component::visualmodel::OglModel *visu;
-    sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  > *mapping;
+    sofa::component::mapping::RigidMapping< Rigid3dTypes , Vec3fTypes  > *mapping;
 } VisualComponent;
 
 typedef struct

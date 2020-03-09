@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_LINEMODEL_H
-#define SOFA_COMPONENT_COLLISION_LINEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
@@ -191,7 +191,6 @@ protected:
 
 };
 
-template <class TDataTypes> using TLineModel [[deprecated("The TLineModel is now deprecated please use LineCollisionModel instead.")]] = LineCollisionModel<TDataTypes>;
 
 template<class DataTypes>
 inline TLine<DataTypes>::TLine(ParentModel* model, int index)
@@ -258,10 +257,11 @@ inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(th
 template<class DataTypes>
 inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
-typedef LineCollisionModel<sofa::defaulttype::Vec3Types> LineModel;
-typedef TLine<sofa::defaulttype::Vec3Types> Line;
+template <class TDataTypes> using TLineModel [[deprecated("The TLineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] = LineCollisionModel<TDataTypes>;
+using  LineModel [[deprecated("The LineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] = LineCollisionModel<sofa::defaulttype::Vec3Types>;
+using Line = TLine<sofa::defaulttype::Vec3Types>;
 
-#if  !defined(SOFA_COMPONENT_COLLISION_LINEMODEL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP)
 extern template class SOFA_MESH_COLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
 
 #endif

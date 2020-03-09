@@ -53,7 +53,7 @@ template<class T> class thread_specific_ptr;
 
 #if defined(SOFA_TLS_KEYWORD)
 
-#define SOFA_THREAD_SPECIFIC_PTR(type,name) static SOFA_TLS_KEYWORD type * name = 0
+#define SOFA_THREAD_SPECIFIC_PTR(type,name) static SOFA_TLS_KEYWORD type * name = nullptr
 
 #elif defined(SOFA_TLS_PTHREAD)
 
