@@ -436,7 +436,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 {
     m_activeDofs.clear();
 
-	const MatrixDeriv& c = cparams->readJ(this->mstate)->getValue(cparams);
+	const MatrixDeriv& c = cparams->readJ(this->mstate)->getValue();
 
     double factor = 1.0;
 
@@ -683,7 +683,7 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, 
     sofa::Data< VecDeriv > &v_d, sofa::Data< VecDeriv > &dv_d, const sofa::Data<VecDeriv>& correction_d)
 {
-    const VecDeriv& correction = correction_d.getValue(cparams);
+    const VecDeriv& correction = correction_d.getValue();
     auto dv = sofa::helper::write(dv_d, cparams);
     VecDeriv& v = *v_d.beginEdit();
 
