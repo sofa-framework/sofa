@@ -31,11 +31,6 @@ namespace sofa
 namespace core
 {
 
-#if defined(SOFA_MAX_THREADS)
-enum { SOFA_DATA_MAX_ASPECTS = 2*SOFA_MAX_THREADS };
-#else
-enum { SOFA_DATA_MAX_ASPECTS = 1 };
-#endif
 
 #if !defined(NDEBUG) && !defined(SOFA_DEBUG_THREAD)
 #define SOFA_DEBUG_THREAD
@@ -68,9 +63,6 @@ private:
 
         /// Index of current thread (0 corresponding to the only thread in sequential mode, or first thread in parallel mode)
         int threadID;
-
-        /// Aspect index for the current thread
-        int aspectID;
 
         ExecParamsThreadStorage(int tid);
     };
@@ -109,15 +101,6 @@ public:
     /// Number of threads currently known to Sofa
     int nbThreads() const { return g_nbThreads; }
 
-    /// Aspect index for the current thread
-    int aspectID() const
-    {
-#ifdef SOFA_DEBUG_THREAD
-        checkValidStorage();
-#endif
-        return storage->aspectID;
-    }
-
     ExecParams()
         : storage(threadStorage())
     {
@@ -147,28 +130,6 @@ public:
 #endif
         storage->threadID = v;
         return *this;
-    }
-
-    /// Specify the aspect index of the current thread
-    ExecParams& setAspectID(int v)
-    {
-#ifdef SOFA_DEBUG_THREAD
-        checkValidStorage();
-#endif
-        storage->aspectID = v;
-        return *this;
-    }
-
-    static int currentAspect()
-    {
-        if (SOFA_DATA_MAX_ASPECTS == 1) return 0;
-        else                             return defaultInstance()->aspectID();
-    }
-
-    static inline int currentAspect(const core::ExecParams* params)
-    {
-        if (SOFA_DATA_MAX_ASPECTS == 1) return 0;
-        else                             return params != nullptr ? params->aspectID() : defaultInstance()->aspectID();
     }
 
 };

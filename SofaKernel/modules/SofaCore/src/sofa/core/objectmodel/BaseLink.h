@@ -22,7 +22,6 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASELINK_H
 #define SOFA_CORE_OBJECTMODEL_BASELINK_H
 
-#include <sofa/helper/fixed_array.h>
 #include <sofa/core/core.h>
 #include <sofa/core/ExecParams.h>
 #include <string>
@@ -123,11 +122,12 @@ public:
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    int getCounter() const { return m_counters[size_t(core::ExecParams::currentAspect())]; }
+    int getCounter() const { return m_counter; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    int getCounter(const core::ExecParams* params) const { return m_counters[size_t(core::ExecParams::currentAspect(params))]; }
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    int getCounter(const core::ExecParams*) const { return getCounter(); }
 
     virtual size_t getSize() const = 0;
     virtual Base* getLinkedBase(unsigned int index=0) const = 0;
@@ -155,12 +155,6 @@ public:
 
     /// @}
 
-    /// Copy the value of an aspect into another one.
-    virtual void copyAspect(int destAspect, int srcAspect) = 0;
-
-    /// Release memory allocated for the specified aspect.
-    virtual void releaseAspect(int aspect);
-
     /// @name Serialization Helper API
     /// @{
 
@@ -185,10 +179,10 @@ protected:
     std::string m_name;
     std::string m_help;
     /// Number of changes since creation
-    helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
-    void updateCounter(unsigned int aspect)
+    int m_counter;
+    void updateCounter()
     {
-        ++m_counters[aspect];
+        ++m_counter;
     }
 };
 

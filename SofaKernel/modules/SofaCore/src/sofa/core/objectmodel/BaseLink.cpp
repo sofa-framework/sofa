@@ -42,13 +42,13 @@ namespace objectmodel
 BaseLink::BaseLink(LinkFlags flags)
     : m_flags(flags)
 {
-    m_counters.assign(0);
+    m_counter = 0;
 }
 
 BaseLink::BaseLink(const BaseInitLink& init, LinkFlags flags)
     : m_flags(flags), m_name(init.name), m_help(init.help)
 {
-    m_counters.assign(0);
+    m_counter = 0;
 }
 
 BaseLink::~BaseLink()
@@ -91,18 +91,6 @@ std::string BaseLink::getValueTypeString() const
         t += '>';
     }
     return t;
-}
-
-/// Copy the value of an aspect into another one.
-void BaseLink::copyAspect(int destAspect, int srcAspect)
-{
-    m_counters[size_t(destAspect)] = m_counters[size_t(srcAspect)];
-}
-
-/// Release memory allocated for the specified aspect.
-void BaseLink::releaseAspect(int aspect)
-{
-    m_counters[size_t(aspect)] = -1;
 }
 
 bool BaseLink::ParseString(const std::string& text, std::string* path, std::string* data, Base* owner)
