@@ -25,8 +25,8 @@ void UniformConstraint<DataTypes>::buildConstraintMatrix(const sofa::core::Const
 {
     const std::size_t N = Deriv::size(); // MatrixDeriv is a container of Deriv types.
 
-    auto& jacobian = sofa::helper::write(c, cParams).wref();
-    auto  xVec     = sofa::helper::read(x, cParams);
+    auto& jacobian = sofa::helper::write(c).wref();
+    auto  xVec     = sofa::helper::read(x);
 
     m_constraintIndex = cIndex; // we should not have to remember this, it should be available through the API directly.
 
@@ -59,8 +59,8 @@ void computeViolation(DstV& resV, unsigned int constraintIndex, const
 template< class DataTypes >
 void UniformConstraint<DataTypes>::getConstraintViolation(const sofa::core::ConstraintParams* cParams, sofa::defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v)
 {
-    auto xfree = sofa::helper::read(x, cParams);
-    auto vfree = sofa::helper::read(v, cParams);
+    auto xfree = sofa::helper::read(x);
+    auto vfree = sofa::helper::read(v);
     const SReal dt = this->getContext()->getDt();
     const SReal invDt = 1.0 / dt;
 
@@ -92,7 +92,7 @@ template< class DataTypes >
 void UniformConstraint<DataTypes>::getConstraintResolution(const sofa::core::ConstraintParams* cParams, std::vector<sofa::core::behavior::ConstraintResolution*>& crVector, unsigned int& offset)
 {
 
-    if (d_iterative.getValue(cParams))
+    if (d_iterative.getValue())
     {
         for (std::size_t i = 0; i < this->getMState()->getSize(); ++i)
         {

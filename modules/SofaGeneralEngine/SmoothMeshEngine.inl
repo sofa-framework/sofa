@@ -144,7 +144,7 @@ void SmoothMeshEngine<DataTypes>::doUpdate()
  * initial geometry. Thus, the output coordinates are "inside" the input one's
  */
 template<class DataTypes>
-void SmoothMeshEngine<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+void SmoothMeshEngine<DataTypes>::computeBBox(const core::ExecParams*, bool onlyVisible)
 {
 	if( !onlyVisible ) return;
 

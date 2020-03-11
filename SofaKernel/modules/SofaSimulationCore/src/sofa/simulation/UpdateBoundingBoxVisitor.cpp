@@ -44,7 +44,7 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
     helper::vector<BaseObject*> objectList;
     helper::vector<BaseObject*>::iterator object;
     node->get<BaseObject>(&objectList,BaseContext::Local);
-    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
+    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
     nodeBBox->invalidate();
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
@@ -71,7 +71,7 @@ void UpdateBoundingBoxVisitor::processNodeBottomUp(simulation::Node* node)
     std::string msg = "BoundingBoxVisitor - ProcessBottomUp: " + node->getName();
     sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
 
-    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
+    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
     Node::ChildIterator childNode;
     for( childNode = node->child.begin(); childNode!=node->child.end(); ++childNode)
     {

@@ -99,13 +99,13 @@ void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams* c
 
 
 template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& result1, Data<VecDeriv>& result2,
+void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams*, Data<VecDeriv>& result1, Data<VecDeriv>& result2,
     const Data<MatrixDeriv>& jacobian1, const Data<MatrixDeriv>& jacobian2, const sofa::defaulttype::BaseVector* lambda)
 {
-    auto res1 = sofa::helper::write(result1, cParams);
-    auto res2 = sofa::helper::write(result2, cParams);
-    const MatrixDeriv& j1 = jacobian1.getValue(cParams);
-    const MatrixDeriv& j2 = jacobian2.getValue(cParams);
+    auto res1 = sofa::helper::write(result1);
+    auto res2 = sofa::helper::write(result2);
+    const MatrixDeriv& j1 = jacobian1.getValue();
+    const MatrixDeriv& j2 = jacobian2.getValue();
 
     j1.multTransposeBaseVector(res1, lambda );
     j2.multTransposeBaseVector(res2, lambda );

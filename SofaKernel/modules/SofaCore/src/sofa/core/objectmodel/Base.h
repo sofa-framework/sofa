@@ -170,8 +170,6 @@ private:
 
 public:
 
-
-
     /// Accessor to the object name
     const std::string& getName() const
     {

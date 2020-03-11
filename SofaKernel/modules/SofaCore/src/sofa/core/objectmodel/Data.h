@@ -742,7 +742,7 @@ inline ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::D
 
 
 template<class T>
-inline ReadAccessor<core::objectmodel::Data<T> > read(core::objectmodel::Data<T>& data)
+inline ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data)
 {
     return read(data);
 }

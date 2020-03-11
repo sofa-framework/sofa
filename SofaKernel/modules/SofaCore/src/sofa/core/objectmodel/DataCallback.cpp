@@ -43,7 +43,7 @@ void DataCallback::addCallback(std::function<void(void)> f)
     m_callbacks.push_back(f);
 }
 
-void DataCallback::notifyEndEdit(const core::ExecParams* params)
+void DataCallback::notifyEndEdit(const core::ExecParams*)
 {
     if (!m_updating)
     {

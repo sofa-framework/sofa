@@ -41,7 +41,7 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
 
     node->initialize();
 
-    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
+    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
     if(!node->f_bbox.isSet())
         nodeBBox->invalidate();
 
@@ -60,7 +60,7 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
 {
     // init all the components in reverse order
     node->setDefaultVisualContextValue();
-    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
+    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
 
     for(unsigned int i=node->object.size(); i>0; --i)
     {

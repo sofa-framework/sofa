@@ -142,7 +142,7 @@ public:
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
     virtual void applyJ(
-        const MechanicalParams* mparams, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
+        const MechanicalParams*, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
         const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
         const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel)
     {
