@@ -458,7 +458,7 @@ public:
         const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
         if (d)
         {
-            m_value = m_value;
+            m_value = d->m_value;
             m_counter++;
             m_isSet = true;
             setDirtyOutputs();
@@ -721,30 +721,30 @@ public:
 
 /// Easy syntax for getting read/write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);
 template<class T>
-inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams* params)
+inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams*)
 {
-    return WriteAccessor<core::objectmodel::Data<T> >(params,data);
+    return WriteAccessor<core::objectmodel::Data<T> >(data);
 }
 
 
 template<class T>
 inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) 
 { 
-    return write(data,sofa::core::ExecParams::defaultInstance() ); 
+    return write(data);
 }
 
 
 template<class T>
-inline ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams* params)
+inline ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams*)
 {
-    return ReadAccessor<core::objectmodel::Data<T> >(params, data);
+    return ReadAccessor<core::objectmodel::Data<T> >(data);
 }
 
 
 template<class T>
 inline ReadAccessor<core::objectmodel::Data<T> > read(core::objectmodel::Data<T>& data)
 {
-    return read(data, sofa::core::ExecParams::defaultInstance());
+    return read(data);
 }
 
 /// Easy syntax for getting write only access to a Data using operator ->. Example: writeOnly(someFlagData)->setFlagValue(true);
