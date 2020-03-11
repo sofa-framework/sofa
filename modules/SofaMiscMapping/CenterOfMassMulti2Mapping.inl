@@ -104,14 +104,14 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(
     //Not optimized at all...
     helper::vector<OutVecCoord*> outPos;
     for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-        outPos.push_back(dataVecOutPos[i]->beginEdit(mparams));
+        outPos.push_back(dataVecOutPos[i]->beginEdit());
 
     helper::vector<const In1VecCoord*> inPos1;
     for(unsigned int i=0; i<dataVecIn1Pos.size(); i++)
-        inPos1.push_back(&dataVecIn1Pos[i]->getValue(mparams));
+        inPos1.push_back(&dataVecIn1Pos[i]->getValue());
     helper::vector<const In2VecCoord*> inPos2;
     for(unsigned int i=0; i<dataVecIn2Pos.size(); i++)
-        inPos2.push_back(&dataVecIn2Pos[i]->getValue(mparams));
+        inPos2.push_back(&dataVecIn2Pos[i]->getValue());
 
 
     {
@@ -148,7 +148,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(
 
     //Really Not optimized at all...
     for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-        dataVecOutPos[i]->endEdit(mparams);
+        dataVecOutPos[i]->endEdit();
 }
 
 template <class TIn1, class TIn2, class TOut>
@@ -165,14 +165,14 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(
     //Not optimized at all...
     helper::vector<OutVecDeriv*> outDeriv;
     for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-        outDeriv.push_back(dataVecOutVel[i]->beginEdit(mparams));
+        outDeriv.push_back(dataVecOutVel[i]->beginEdit());
 
     helper::vector<const In1VecDeriv*> inDeriv1;
     for(unsigned int i=0; i<dataVecIn1Vel.size(); i++)
-        inDeriv1.push_back(&dataVecIn1Vel[i]->getValue(mparams));
+        inDeriv1.push_back(&dataVecIn1Vel[i]->getValue());
     helper::vector<const In2VecDeriv*> inDeriv2;
     for(unsigned int i=0; i<dataVecIn2Vel.size(); i++)
-        inDeriv2.push_back(&dataVecIn2Vel[i]->getValue(mparams));
+        inDeriv2.push_back(&dataVecIn2Vel[i]->getValue());
 
     SReal px=0,py=0,pz=0;
 
@@ -210,7 +210,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(
 
     //Really Not optimized at all...
     for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-        dataVecOutVel[i]->endEdit(mparams);
+        dataVecOutVel[i]->endEdit();
 }
 
 
@@ -227,14 +227,14 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJT(
     //Not optimized at all...
     helper::vector<In1VecDeriv*> outDeriv1;
     for(unsigned int i=0; i<dataVecOut1Force.size(); i++)
-        outDeriv1.push_back(dataVecOut1Force[i]->beginEdit(mparams));
+        outDeriv1.push_back(dataVecOut1Force[i]->beginEdit());
     helper::vector<In2VecDeriv*> outDeriv2;
     for(unsigned int i=0; i<dataVecOut2Force.size(); i++)
-        outDeriv2.push_back(dataVecOut2Force[i]->beginEdit(mparams));
+        outDeriv2.push_back(dataVecOut2Force[i]->beginEdit());
 
     helper::vector<const OutVecDeriv*> inDeriv;
     for(unsigned int i=0; i<dataVecInForce.size(); i++)
-        inDeriv.push_back(&dataVecInForce[i]->getValue(mparams));
+        inDeriv.push_back(&dataVecInForce[i]->getValue());
 
     typename Out::Deriv gravityCenterForce;
     const typename Out::VecDeriv* inForce = inDeriv[0];
@@ -280,11 +280,11 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJT(
     //Really Not optimized at all...
     for(unsigned int i=0; i<dataVecOut1Force.size(); i++)
     {
-        dataVecOut1Force[i]->endEdit(mparams);
+        dataVecOut1Force[i]->endEdit();
     }
     for(unsigned int i=0; i<dataVecOut2Force.size(); i++)
     {
-        dataVecOut2Force[i]->endEdit(mparams);
+        dataVecOut2Force[i]->endEdit();
     }
 }
 

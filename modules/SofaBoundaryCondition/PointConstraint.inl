@@ -93,7 +93,7 @@ template <class DataTypes>
 void PointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
+    const SetIndexArray & indices = f_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
@@ -106,7 +106,7 @@ template <class DataTypes>
 void PointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
+    const SetIndexArray & indices = f_indices.getValue();
 
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();
