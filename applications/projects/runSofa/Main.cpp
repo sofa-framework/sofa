@@ -175,8 +175,6 @@ int main(int argc, char** argv)
 
     sofa::helper::BackTrace::autodump();
 
-    ExecParams::defaultInstance()->setAspectID(0);
-
 #ifdef WIN32
     {
         HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);

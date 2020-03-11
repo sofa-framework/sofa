@@ -150,7 +150,7 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const co
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const core::ConstraintParams* cparams, Data< VecDeriv > &f, const Data< MatrixDeriv>& j, const defaulttype::BaseVector *lambda)
+void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const core::ConstraintParams*, Data< VecDeriv > &f, const Data< MatrixDeriv>& j, const defaulttype::BaseVector *lambda)
 {
     VecDeriv& force = *f.beginEdit();
 
