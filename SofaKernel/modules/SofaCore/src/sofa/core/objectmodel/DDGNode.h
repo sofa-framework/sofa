@@ -164,42 +164,38 @@ public:
     virtual void update() = 0;
 
     /// Returns true if the DDGNode needs to be updated
-    bool isDirty(const core::ExecParams* params = nullptr) const
-    {
-        return dirtyFlags[size_t(currentAspect(params))].dirtyValue;
-    }
+    bool isDirty(const core::ExecParams* params) const { return isDirty(); }
+    bool isDirty() const { return dirtyFlags.dirtyValue; }
 
     /// Indicate the value needs to be updated
-    virtual void setDirtyValue(const core::ExecParams* params = nullptr);
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    virtual void setDirtyValue(const core::ExecParams* params){ return setDirtyValue(); }
+    virtual void setDirtyValue();
 
     /// Indicate the outputs needs to be updated. This method must be called after changing the value of this node.
-    virtual void setDirtyOutputs(const core::ExecParams* params = nullptr);
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    virtual void setDirtyOutputs(const core::ExecParams* params){ setDirtyOutputs(); }
+    virtual void setDirtyOutputs();
 
     /// Set dirty flag to false
-    void cleanDirty(const core::ExecParams* params = nullptr);
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    void cleanDirty(const core::ExecParams* params){ cleanDirty(); }
+    void cleanDirty();
 
     /// Notify links that the DGNode has been modified
-    virtual void notifyEndEdit(const core::ExecParams* params = 0);
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    virtual void notifyEndEdit(const core::ExecParams* params){ notifyEndEdit(); }
+    virtual void notifyEndEdit();
 
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
-    void updateIfDirty(const core::ExecParams* params = nullptr) const
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    void updateIfDirty(const core::ExecParams* params) const { updateIfDirty(); }
+    void updateIfDirty() const
     {
-        if (isDirty(params))
+        if (isDirty())
         {
             const_cast <DDGNode*> (this)->update();
         }
-    }
-
-    /// Copy the value of an aspect into another one.
-    virtual void copyAspect(int destAspect, int srcAspect);
-
-    static int currentAspect()
-    {
-        return core::ExecParams::currentAspect();
-    }
-    static int currentAspect(const core::ExecParams* params)
-    {
-        return core::ExecParams::currentAspect(params);
     }
 
     virtual const std::string& getName() const = 0;
@@ -220,8 +216,6 @@ protected:
         return BaseLink::InitLink<DDGNode>(this, name, help);
     }
 
-    //std::list<DDGNode*> inputs;
-    //std::list<DDGNode*> outputs;
     DDGLink inputs;
     DDGLink outputs;
 
@@ -246,7 +240,8 @@ protected:
     }
 
     /// the dirtyOutputs flags of all the inputs will be set to false
-    void cleanDirtyOutputsOfInputs(const core::ExecParams* params);
+    void cleanDirtyOutputsOfInputs(const core::ExecParams* params) { cleanDirtyOutputsOfInputs(); }
+    void cleanDirtyOutputsOfInputs();
 
 private:
 
@@ -257,7 +252,7 @@ private:
         bool dirtyValue;
         bool dirtyOutputs;
     };
-    helper::fixed_array<DirtyFlags, SOFA_DATA_MAX_ASPECTS> dirtyFlags;
+    DirtyFlags dirtyFlags;
 };
 
 } // namespace objectmodel

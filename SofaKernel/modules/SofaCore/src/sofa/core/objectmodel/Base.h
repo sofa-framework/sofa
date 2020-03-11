@@ -333,9 +333,6 @@ public:
         return (result != nullptr);
     }
 
-    virtual void copyAspect(int destAspect, int srcAspect);
-
-    virtual void releaseAspect(int aspect);
     /// @}
 
     /// @name tags

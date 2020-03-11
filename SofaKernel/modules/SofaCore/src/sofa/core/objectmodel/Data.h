@@ -291,6 +291,11 @@ template < class T = void* >
 class Data : public TData<T>
 {
 public:
+    using TData<T>::m_counter;
+    using TData<T>::m_isSet;
+    using TData<T>::setDirtyOutputs;
+    using TData<T>::updateIfDirty;
+    using TData<T>::notifyEndEdit;
 
     /// @name Class reflection system
     /// @{
@@ -326,35 +331,27 @@ public:
     /** \copydoc BaseData(const BaseData::BaseInitData& init) */
     explicit Data(const BaseData::BaseInitData& init)
         : TData<T>(init)
-        , shared(nullptr)
     {
     }
 
     /** \copydoc Data(const BaseData::BaseInitData&) */
     explicit Data(const InitData& init)
         : TData<T>(init)
-        , m_values()
-        , shared(nullptr)
     {
-        m_values[DDGNode::currentAspect()] = ValueType(init.value);
+        m_value = ValueType(init.value);
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
-    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped. 
-    //[[deprecated("Replaced with one with std::string instead of char* version")]]
+    [[deprecated("Replaced with one with std::string instead of char* version")]]
     Data( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : Data(sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
 
-    /** \copydoc BaseData(const char*, bool, bool) */
+    /** \copydoc BaseData(const std::string& , bool, bool) */
     Data( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
-        , m_values()
-        , shared(nullptr)
     {
-        ValueType val;
-        m_values.assign(val);
+        m_value = ValueType();
     }
-
 
     /** \copydoc BaseData(const char*, bool, bool)
      *  \param value The default value.
@@ -368,45 +365,40 @@ public:
      */
     Data( const T& value, const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
-        , m_values()
-        , shared(nullptr)
     {
-        m_values[DDGNode::currentAspect()] = ValueType(value);
+        m_value = ValueType(value);
     }
 
     /// Destructor.
-    virtual ~Data()
-    {}
+    virtual ~Data() {}
 
     /// @}
 
     /// @name Simple edition and retrieval API
     /// @{
 
-    inline T* beginEdit(const core::ExecParams* params = nullptr)
-    {
-        size_t aspect = static_cast<size_t>(DDGNode::currentAspect(params));
-        this->updateIfDirty(params);
-        ++this->m_counters[aspect];
-        this->m_isSets[aspect] = true;
-        BaseData::setDirtyOutputs(params);
-        return m_values[aspect].beginEdit();
-    }
-
     /// BeginEdit method if it is only to write the value
-    inline T* beginWriteOnly(const core::ExecParams* params = nullptr)
+    inline T* beginEdit()
     {
-        size_t aspect = static_cast<size_t>(DDGNode::currentAspect(params));
-        ++this->m_counters[aspect];
-        this->m_isSets[aspect] = true;
-        BaseData::setDirtyOutputs(params);
-        return m_values[aspect].beginEdit();
+        updateIfDirty();
+        m_counter++;
+        m_isSet = true;
+        setDirtyOutputs();
+        return m_value.beginEdit();
     }
 
-    inline void endEdit(const core::ExecParams* params = nullptr)
+    inline T* beginWriteOnly()
     {
-        m_values[DDGNode::currentAspect(params)].endEdit();
-        BaseData::notifyEndEdit(params);
+        m_counter++;
+        m_isSet=true;
+        setDirtyOutputs();
+        return m_value.beginEdit();
+    }
+
+    inline void endEdit()
+    {
+        m_value.endEdit();
+        notifyEndEdit();
     }
 
     /// @warning writeOnly (the Data is not updated before being set)
@@ -416,29 +408,40 @@ public:
         endEdit();
     }
 
+    inline const T& getValue() const
+    {
+        updateIfDirty();
+        return m_value.getValue();
+    }
+
+
+    inline void endEdit(const core::ExecParams* params)
+    {
+        endEdit();
+    }
+
+    inline T* beginWriteOnly(const core::ExecParams* params)
+    {
+        return beginWriteOnly();
+    }
+
+    inline T* beginEdit(const core::ExecParams* params)
+    {
+        return beginEdit();
+    }
+
     /// @warning writeOnly (the Data is not updated before being set)
     inline void setValue(const core::ExecParams* params, const T& value)
     {
-        *beginWriteOnly(params)=value;
-        endEdit(params);
+        setValue(value);
     }
 
-    inline const T& getValue(const core::ExecParams* params = nullptr) const
+    inline const T& getValue(const core::ExecParams* params) const
     {
-        this->updateIfDirty(params);
-        return m_values[DDGNode::currentAspect(params)].getValue();
+        return getValue();
     }
 
-    void copyAspect(int destAspect, int srcAspect)
-    {
-        m_values[destAspect] = m_values[srcAspect];
-        BaseData::copyAspect(destAspect, srcAspect);
-    }
 
-    void releaseAspect(int aspect)
-    {
-        m_values[aspect].release();
-    }
     /// @}
 
     /// @name Virtual edition and retrieval API (for generic TData parent API, deprecated)
@@ -452,18 +455,15 @@ public:
         const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
         if (d)
         {
-            size_t aspect = static_cast<size_t>(DDGNode::currentAspect());
-            this->m_values[aspect] = d->m_values[aspect];
-            //FIX: update counter
-            ++this->m_counters[aspect];
-            this->m_isSets[aspect] = true;
-            BaseData::setDirtyOutputs();
+            m_value = m_value;
+            m_counter++;
+            m_isSet = true;
+            setDirtyOutputs();
         }
     }
 
     virtual T* virtualBeginEdit() { return beginEdit(); }
     virtual void virtualEndEdit() { endEdit(); }
-
 
     /// @}
 
@@ -493,10 +493,7 @@ protected:
     typedef DataValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
 
     /// Value
-    helper::fixed_array<ValueType, SOFA_DATA_MAX_ASPECTS> m_values;
-
-public:
-    mutable void* shared;
+    ValueType m_value;
 
 private:
     Data(const Data& );
@@ -604,7 +601,6 @@ bool TData<T>::updateFromParentValue(const BaseData* parent)
 {
     if (parent == parentData.get())
     {
-        //virtualSetValue(parentData->virtualGetValue());
         virtualSetLink(*parentData.get());
         return true;
     }

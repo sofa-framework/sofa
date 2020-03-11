@@ -39,23 +39,11 @@ ReleaseAspectVisitor::~ReleaseAspectVisitor()
 
 void ReleaseAspectVisitor::processObject(sofa::core::objectmodel::BaseObject* obj)
 {
-    obj->releaseAspect(aspect);
-    const sofa::core::objectmodel::BaseObject::VecSlaves& slaves = obj->getSlaves();
-
-    for(sofa::core::objectmodel::BaseObject::VecSlaves::const_iterator iObj = slaves.begin(), endObj = slaves.end(); iObj != endObj; ++iObj)
-    {
-        processObject(iObj->get());
-    }
 }
 
 ReleaseAspectVisitor::Result ReleaseAspectVisitor::processNodeTopDown(Node* node)
 {
-    node->releaseAspect(aspect);
-    for(Node::ObjectIterator iObj = node->object.begin(), endObj = node->object.end(); iObj != endObj; ++iObj)
-    {
-        processObject(iObj->get());
-    }
-    return RESULT_CONTINUE;
+    return RESULT_PRUNE;
 }
 
 } // namespace sofa

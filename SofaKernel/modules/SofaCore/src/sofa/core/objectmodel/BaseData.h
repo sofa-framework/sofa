@@ -158,12 +158,6 @@ public:
     /// @return true if the copy was successful.
     virtual bool copyValue(const BaseData* parent);
 
-    /// Copy the value of an aspect into another one.
-    void copyAspect(int destAspect, int srcAspect) override = 0;
-
-    /// Release memory allocated for the specified aspect.
-    virtual void releaseAspect(int aspect) = 0;
-
     /// Get a help message that describes this %Data.
     const std::string& getHelp() const { return help; }
 
@@ -224,7 +218,6 @@ public:
     /// @}
 
     /// If we use the Data as a link and not as value directly
-    //void setLinkPath(const std::string &path) { m_linkPath = path; }
     std::string getLinkPath() const { return parentBaseData.getPath(); }
     /// Return whether this %Data can be used as a linkPath.
     ///
@@ -256,18 +249,26 @@ public:
 
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
-    /// (even if the parent's value has not been modified)
-    bool isSet(const core::ExecParams* params=nullptr) const { return m_isSets[static_cast<size_t>(currentAspect(params))]; }
+    /// (even if the parent's value has not been modified)s
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    bool isSet(const core::ExecParams* params) const { return isSet(); }
+    bool isSet() const { return m_isSet; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    void unset(const core::ExecParams* params=nullptr) { m_isSets[static_cast<size_t>(currentAspect(params))] = false; }
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    void unset(const core::ExecParams* params) { unset(); }
+    void unset() { m_isSet = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    void forceSet(const core::ExecParams* params=nullptr) { m_isSets[static_cast<size_t>(currentAspect(params))] = true; }
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    void forceSet(const core::ExecParams* params) { forceSet(); }
+    void forceSet() { m_isSet = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    int getCounter(const core::ExecParams* params=nullptr) const { return m_counters[static_cast<size_t>(currentAspect(params))]; }
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    int getCounter(const core::ExecParams* params) const { return getCounter(); }
+    int getCounter() const { return m_counter; }
 
     /// @}
 
@@ -335,17 +336,16 @@ protected:
     /// widget
     std::string widget {""};
     /// Number of changes since creation
-    helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
+    int m_counter;
     /// True if this %Data is set, i.e. its value is different from the default value
-    helper::fixed_array<bool, SOFA_DATA_MAX_ASPECTS> m_isSets;
+    bool m_isSet;
     /// Flags indicating the purpose and behaviour of this %Data
     DataFlags m_dataFlags;
     /// Return the Base component owning this %Data
     Base* m_owner {nullptr};
     /// Data name within the Base component
     std::string m_name;
-//    /// Link to another Data, if used as an input from another Data (@ typo).
-//    std::string m_linkPath;
+
     /// Parent Data
     SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentBaseData;
 

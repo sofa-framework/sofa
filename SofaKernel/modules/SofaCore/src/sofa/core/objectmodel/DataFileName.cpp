@@ -63,7 +63,7 @@ void DataFileName::updatePath()
     else
     {
         // Update the fullpath.
-        m_fullpath = m_values[size_t(currentAspect())].getValue();
+        m_fullpath = m_value.getValue();
         if (!m_fullpath.empty())
             DataRepository.findFile(m_fullpath,"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
 
@@ -78,7 +78,7 @@ void DataFileName::updatePath()
             }
         }
         if (m_relativepath.empty())
-            m_relativepath = m_values[size_t(currentAspect())].getValue();
+            m_relativepath = m_value.getValue();
 
         // Compute the file extension if found.
         std::size_t found = m_relativepath.find_last_of(".");        
@@ -96,7 +96,7 @@ void DataFileNameVector::updatePath()
     {
         parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.get());
     }
-    fullpath = m_values[size_t(currentAspect())].getValue();
+    fullpath = m_value.getValue();
     if (!fullpath.empty())
         for (unsigned int i=0 ; i<fullpath.size() ; i++)
         {
