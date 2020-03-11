@@ -164,32 +164,32 @@ public:
     virtual void update() = 0;
 
     /// Returns true if the DDGNode needs to be updated
-    bool isDirty(const core::ExecParams* params) const { return isDirty(); }
+    bool isDirty(const core::ExecParams*) const { return isDirty(); }
     bool isDirty() const { return dirtyFlags.dirtyValue; }
 
     /// Indicate the value needs to be updated
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    virtual void setDirtyValue(const core::ExecParams* params){ return setDirtyValue(); }
+    virtual void setDirtyValue(const core::ExecParams*){ return setDirtyValue(); }
     virtual void setDirtyValue();
 
     /// Indicate the outputs needs to be updated. This method must be called after changing the value of this node.
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    virtual void setDirtyOutputs(const core::ExecParams* params){ setDirtyOutputs(); }
+    virtual void setDirtyOutputs(const core::ExecParams*){ setDirtyOutputs(); }
     virtual void setDirtyOutputs();
 
     /// Set dirty flag to false
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    void cleanDirty(const core::ExecParams* params){ cleanDirty(); }
+    void cleanDirty(const core::ExecParams*){ cleanDirty(); }
     void cleanDirty();
 
     /// Notify links that the DGNode has been modified
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    virtual void notifyEndEdit(const core::ExecParams* params){ notifyEndEdit(); }
+    virtual void notifyEndEdit(const core::ExecParams*){ notifyEndEdit(); }
     virtual void notifyEndEdit();
 
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    void updateIfDirty(const core::ExecParams* params) const { updateIfDirty(); }
+    void updateIfDirty(const core::ExecParams*) const { updateIfDirty(); }
     void updateIfDirty() const
     {
         if (isDirty())
@@ -240,7 +240,7 @@ protected:
     }
 
     /// the dirtyOutputs flags of all the inputs will be set to false
-    void cleanDirtyOutputsOfInputs(const core::ExecParams* params) { cleanDirtyOutputsOfInputs(); }
+    void cleanDirtyOutputsOfInputs(const core::ExecParams*) { cleanDirtyOutputsOfInputs(); }
     void cleanDirtyOutputsOfInputs();
 
 private:

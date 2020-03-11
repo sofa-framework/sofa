@@ -342,7 +342,7 @@ public:
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
-    [[deprecated("Replaced with one with std::string instead of char* version")]]
+    //[[deprecated("Replaced with one with std::string instead of char* version")]]
     Data( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : Data(sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
 
@@ -414,29 +414,32 @@ public:
         return m_value.getValue();
     }
 
-
-    inline void endEdit(const core::ExecParams* params)
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    inline void endEdit(const core::ExecParams*)
     {
         endEdit();
     }
 
-    inline T* beginWriteOnly(const core::ExecParams* params)
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    inline T* beginWriteOnly(const core::ExecParams*)
     {
         return beginWriteOnly();
     }
 
-    inline T* beginEdit(const core::ExecParams* params)
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    inline T* beginEdit(const core::ExecParams*)
     {
         return beginEdit();
     }
 
-    /// @warning writeOnly (the Data is not updated before being set)
-    inline void setValue(const core::ExecParams* params, const T& value)
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    inline void setValue(const core::ExecParams*, const T& value)
     {
         setValue(value);
     }
 
-    inline const T& getValue(const core::ExecParams* params) const
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    inline const T& getValue(const core::ExecParams*) const
     {
         return getValue();
     }
@@ -638,13 +641,15 @@ public:
     typedef core::objectmodel::Data<T> data_container_type;
     typedef T container_type;
 
-//protected:
-//    const data_container_type* data;
 public:
-    ReadAccessor(const data_container_type& d) : Inherit(d.getValue())/*, data(&d)*/ {}
-    ReadAccessor(const data_container_type* d) : Inherit(d->getValue())/*, data(d)*/ {}
-    ReadAccessor(const core::ExecParams* params, const data_container_type& d) : Inherit(d.getValue(params))/*, data(&d)*/ {}
-    ReadAccessor(const core::ExecParams* params, const data_container_type* d) : Inherit(d->getValue(params))/*, data(d)*/ {}
+    ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
+    ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
+
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    ReadAccessor(const core::ExecParams*, const data_container_type& d) : Inherit(d.getValue()) {}
+
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    ReadAccessor(const core::ExecParams*, const data_container_type* d) : Inherit(d->getValue()) {}
 };
 
 /// Read/Write Accessor.
@@ -668,17 +673,20 @@ public:
 
 protected:
     data_container_type& data;
-    const core::ExecParams* dparams;
 
     /// @internal used by WriteOnlyAccessor
-    WriteAccessor( container_type* c, data_container_type& d, const core::ExecParams* params=nullptr ) : Inherit(*c), data(d), dparams(params) {}
+    WriteAccessor( container_type* c, data_container_type& d) : Inherit(*c), data(d) {}
 
 public:
-    WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d), dparams(nullptr) {}
-    WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d), dparams(nullptr) {}
-    WriteAccessor(const core::ExecParams* params, data_container_type& d) : Inherit(*d.beginEdit(params)), data(d), dparams(params) {}
-    WriteAccessor(const core::ExecParams* params, data_container_type* d) : Inherit(*d->beginEdit(params)), data(*d), dparams(params) {}
-    ~WriteAccessor() { if (dparams) data.endEdit(dparams); else data.endEdit(); }
+    WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
+    WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d) {}
+
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    WriteAccessor(const core::ExecParams*, data_container_type& d) : WriteAccessor(d) {}
+
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    WriteAccessor(const core::ExecParams*, data_container_type* d) : WriteAccessor(d) {}
+    ~WriteAccessor() { data.endEdit(); }
 };
 
 
@@ -703,8 +711,12 @@ public:
 
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
-    WriteOnlyAccessor(const core::ExecParams* params, data_container_type& d) : Inherit( d.beginWriteOnly(), d, params ) {}
-    WriteOnlyAccessor(const core::ExecParams* params, data_container_type* d) : Inherit( d->beginWriteOnly(), *d, params ) {}
+
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    WriteOnlyAccessor(const core::ExecParams*, data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
+
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 };
 
 /// Easy syntax for getting read/write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);

@@ -51,7 +51,7 @@ void DataCallback::notifyEndEdit(const core::ExecParams* params)
         for (auto& callback : m_callbacks)
             callback();
 
-        sofa::core::objectmodel::DDGNode::notifyEndEdit(params);
+        sofa::core::objectmodel::DDGNode::notifyEndEdit();
         m_updating = false;
     }
     else

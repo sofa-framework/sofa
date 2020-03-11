@@ -416,7 +416,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
         }
     }
 
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 

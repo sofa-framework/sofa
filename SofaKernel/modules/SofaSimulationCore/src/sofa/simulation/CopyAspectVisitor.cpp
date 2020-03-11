@@ -37,12 +37,12 @@ CopyAspectVisitor::~CopyAspectVisitor()
 {
 }
 
-void CopyAspectVisitor::processObject(sofa::core::objectmodel::BaseObject* obj)
+void CopyAspectVisitor::processObject(sofa::core::objectmodel::BaseObject*)
 {
 
 }
 
-CopyAspectVisitor::Result CopyAspectVisitor::processNodeTopDown(Node* node)
+CopyAspectVisitor::Result CopyAspectVisitor::processNodeTopDown(Node*)
 {
     return RESULT_PRUNE;
 }

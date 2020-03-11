@@ -251,23 +251,23 @@ public:
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)s
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    bool isSet(const core::ExecParams* params) const { return isSet(); }
+    bool isSet(const core::ExecParams*) const { return isSet(); }
     bool isSet() const { return m_isSet; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    void unset(const core::ExecParams* params) { unset(); }
+    void unset(const core::ExecParams*) { unset(); }
     void unset() { m_isSet = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    void forceSet(const core::ExecParams* params) { forceSet(); }
+    void forceSet(const core::ExecParams*) { forceSet(); }
     void forceSet() { m_isSet = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    int getCounter(const core::ExecParams* params) const { return getCounter(); }
+    int getCounter(const core::ExecParams*) const { return getCounter(); }
     int getCounter() const { return m_counter; }
 
     /// @}

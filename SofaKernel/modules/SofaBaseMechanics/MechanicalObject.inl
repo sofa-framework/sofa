@@ -1696,7 +1696,7 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::V
     {
         Data<VecCoord>* vec_d = this->write(v);
         vec_d->beginEdit(params)->resize(d_size.getValue());
-        vec_d->endEdit(params);
+        vec_d->endEdit();
     }
 
     //vOp(v); // clear vector
@@ -1711,7 +1711,7 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::V
     {
         Data<VecDeriv>* vec_d = this->write(v);
         vec_d->beginEdit(params)->resize(d_size.getValue());
-        vec_d->endEdit(params);
+        vec_d->endEdit();
     }
 
     //vOp(v); // clear vector
@@ -1725,7 +1725,7 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core:
     if ( !vec_d->isSet(params) /*&& v.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX*/ )
     {
         vec_d->beginEdit(params)->resize(d_size.getValue());
-        vec_d->endEdit(params);
+        vec_d->endEdit();
     }
 }
 
@@ -1737,7 +1737,7 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core:
     if ( !vec_d->isSet(params) /*&& v.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX*/ )
     {
         vec_d->beginEdit(params)->resize(d_size.getValue());
-        vec_d->endEdit(params);
+        vec_d->endEdit();
     }
 }
 
@@ -1750,7 +1750,7 @@ void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params, core::Ve
 
         VecCoord *vec = vec_d->beginEdit(params);
         vec->resize(0);
-        vec_d->endEdit(params);
+        vec_d->endEdit();
 
         vec_d->unset(params);
     }
@@ -1765,7 +1765,7 @@ void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params, core::Ve
 
         VecDeriv *vec = vec_d->beginEdit(params);
         vec->resize(0);
-        vec_d->endEdit(params);
+        vec_d->endEdit();
 
         vec_d->unset(params);
     }
@@ -2310,8 +2310,8 @@ SReal MechanicalObject<DataTypes>::vDot(const core::ExecParams* params, core::Co
 
     if (a.type == sofa::core::V_COORD && b.type == sofa::core::V_COORD)
     {
-        const VecCoord &va = this->read(core::ConstVecCoordId(a))->getValue(params);
-        const VecCoord &vb = this->read(core::ConstVecCoordId(b))->getValue(params);
+        const VecCoord &va = this->read(core::ConstVecCoordId(a))->getValue();
+        const VecCoord &vb = this->read(core::ConstVecCoordId(b))->getValue();
 
         for (unsigned int i=0; i<va.size(); i++)
         {
@@ -2320,8 +2320,8 @@ SReal MechanicalObject<DataTypes>::vDot(const core::ExecParams* params, core::Co
     }
     else if (a.type == sofa::core::V_DERIV && b.type == sofa::core::V_DERIV)
     {
-        const VecDeriv &va = this->read(core::ConstVecDerivId(a))->getValue(params);
-        const VecDeriv &vb = this->read(core::ConstVecDerivId(b))->getValue(params);
+        const VecDeriv &va = this->read(core::ConstVecDerivId(a))->getValue();
+        const VecDeriv &vb = this->read(core::ConstVecDerivId(b))->getValue();
 
         for (unsigned int i=0; i<va.size(); i++)
         {
@@ -2349,7 +2349,7 @@ SReal MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, core::Co
     }
     else if (a.type == sofa::core::V_DERIV)
     {
-        const VecDeriv &va = this->read(core::ConstVecDerivId(a))->getValue(params);
+        const VecDeriv &va = this->read(core::ConstVecDerivId(a))->getValue();
 
         if( l==0 ) for (nat i=0; i<va.size(); i++)
         {
@@ -2377,7 +2377,7 @@ SReal MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::Co
 
     if (a.type == sofa::core::V_COORD )
     {
-        const VecCoord &va = this->read(core::ConstVecCoordId(a))->getValue(params);
+        const VecCoord &va = this->read(core::ConstVecCoordId(a))->getValue();
 
         for (nat i=0; i<va.size(); i++)
         {
@@ -2387,7 +2387,7 @@ SReal MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::Co
     }
     else if (a.type == sofa::core::V_DERIV)
     {
-        const VecDeriv &va = this->read(core::ConstVecDerivId(a))->getValue(params);
+        const VecDeriv &va = this->read(core::ConstVecDerivId(a))->getValue();
 
         for (nat i=0; i<va.size(); i++)
         {
@@ -2408,12 +2408,12 @@ size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params, core::
 {
     if (v.type == sofa::core::V_COORD)
     {
-        const VecCoord &vv = this->read(core::ConstVecCoordId(v))->getValue(params);
+        const VecCoord &vv = this->read(core::ConstVecCoordId(v))->getValue();
         return vv.size() * Coord::total_size;
     }
     else if (v.type == sofa::core::V_DERIV)
     {
-        const VecDeriv &vv = this->read(core::ConstVecDerivId(v))->getValue(params);
+        const VecDeriv &vv = this->read(core::ConstVecDerivId(v))->getValue();
         return vv.size() * Deriv::total_size;
     }
     else

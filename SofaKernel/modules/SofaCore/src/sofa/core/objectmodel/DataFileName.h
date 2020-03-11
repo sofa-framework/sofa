@@ -75,10 +75,10 @@ public:
     {
     }
 
-    void endEdit(const core::ExecParams* params = nullptr)
+    void endEdit(const core::ExecParams* = nullptr)
     {
         updatePath();
-        Inherit::endEdit(params);
+        Inherit::endEdit();
     }
 
     void setValue(const std::string& v)
@@ -167,10 +167,10 @@ public:
 
     virtual ~DataFileNameVector();
 
-    void endEdit(const core::ExecParams* params = nullptr)
+    void endEdit(const core::ExecParams* = nullptr)
     {
         updatePath();
-        Inherit::endEdit(params);
+        Inherit::endEdit();
     }
 
     void setValue(const sofa::helper::vector<std::string>& v)
