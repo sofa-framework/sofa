@@ -29,7 +29,9 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <tinyxml.h>
+// Forward declarations
+class TiXmlNode;
+class TiXmlElement;
 
 #include <map>
 
