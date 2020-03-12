@@ -254,7 +254,15 @@ public:
     /// @}
 
     Model* model;   ///< CollisionModel containing the referenced element.
+
+    bool isActive(core::CollisionModel *cm = nullptr) const;
 };
+
+template<class CollisionModel>
+inline bool TCollisionElementIterator<CollisionModel>::isActive(core::CollisionModel *cm) const
+{
+    return model->myCollElemActiver->isCollElemActive(this->index, cm);
+}
 
 /**
  *  \brief Reference to an abstract collision element.

@@ -77,17 +77,6 @@ public:
 
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
-
-    bool activated(core::CollisionModel *cm = nullptr) const;
-};
-
-class LineActiver
-{
-public:
-    LineActiver() {}
-    virtual ~LineActiver() {}
-    virtual bool activeLine(int /*index*/, core::CollisionModel * /*cm*/ = nullptr) {return true;}
-	static LineActiver* getDefaultActiver() { static LineActiver defaultActiver; return &defaultActiver; }
 };
 
 template<class TDataTypes>
@@ -188,20 +177,20 @@ public:
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
-    Data< std::string  > LineActiverPath; ///< path of a component LineActiver that activates or deactivates collision line during execution
     Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-
+    
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
     Topology* topology;
     PointModel* mpoints;
     int meshRevision;
     LineLocalMinDistanceFilter *m_lmdFilter;
-    LineActiver *myActiver;
+
 };
+
 
 template<class DataTypes>
 inline TLine<DataTypes>::TLine(ParentModel* model, int index)
@@ -268,14 +257,8 @@ inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(th
 template<class DataTypes>
 inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
-template<class DataTypes>
-inline bool TLine<DataTypes>::activated(core::CollisionModel *cm) const
-{
-    return this->model->myActiver->activeLine(this->index, cm);
-}
-
 template <class TDataTypes> using TLineModel [[deprecated("The TLineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] = LineCollisionModel<TDataTypes>;
-using LineModel [[deprecated("The LineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] = LineCollisionModel<sofa::defaulttype::Vec3Types>;
+using  LineModel [[deprecated("The LineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] = LineCollisionModel<sofa::defaulttype::Vec3Types>;
 using Line = TLine<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP)

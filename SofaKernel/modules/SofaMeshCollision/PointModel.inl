@@ -55,7 +55,6 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , mstate(nullptr)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
-    , PointActiverPath(initData(&PointActiverPath,"PointActiverPath", "path of a component PointActiver that activate or deactivate collision point during execution") )
     , m_lmdFilter( nullptr )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
@@ -96,44 +95,6 @@ void PointCollisionModel<DataTypes>::init()
     const int npoints = mstate->getSize();
     resize(npoints);
     if (computeNormals.getValue()) updateNormals();
-
-
-    const std::string path = PointActiverPath.getValue();
-
-    if (path.size()==0)
-    {
-
-        myActiver = PointActiver::getDefaultActiver();
-        msg_info() << "path = " << path << " no Point Activer found for PointModel " << this->getName();
-    }
-    else
-    {
-
-        core::objectmodel::BaseObject *activer=nullptr;
-        this->getContext()->get(activer ,path  );
-
-        if (activer != nullptr) {
-            msg_info() << " Activer named" << activer->getName() << " found";
-        }
-        else {
-            msg_error() << "wrong path for PointActiver";
-        }
-
-
-        myActiver = dynamic_cast<PointActiver *> (activer);
-
-
-
-        if (myActiver == nullptr)
-        {
-            myActiver = PointActiver::getDefaultActiver();
-            msg_error() << "no dynamic cast possible for Point Activer for PointModel " << this->getName();
-        }
-        else
-        {
-            msg_info() << "PointActiver named" << activer->getName() << " found !! for PointModel " << this->getName();
-        }
-    }
 }
 
 
@@ -486,7 +447,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
         for (int i = 0; i < size; i++)
         {
             TPoint<DataTypes> p(this, i);
-            if (p.activated())
+            if (p.isActive())
             {
                 pointsP.push_back(p.p());
                 if ((unsigned)i < normals.size())
@@ -507,7 +468,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
             for (int i = 0; i < size; i++)
             {
                 TPoint<DataTypes> p(this, i);
-                if (p.activated())
+                if (p.isActive())
                 {
                     pointsPFree.push_back(p.pFree());
                 }
