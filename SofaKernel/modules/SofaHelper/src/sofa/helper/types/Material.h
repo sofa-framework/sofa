@@ -62,6 +62,7 @@ public:
     friend SOFA_HELPER_API std::istream& operator >> (std::istream& in, Material &m ) ;
     Material() ;
     Material(const Material& mat) ;
+    Material & operator= (const Material& other);
 };
 
 } // namespace types

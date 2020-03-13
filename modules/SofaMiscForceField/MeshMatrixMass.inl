@@ -1829,26 +1829,22 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f)
+void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f)
 {
+    if( !d_lumping.getValue() )
+    {
+        msg_error() << "the method 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. "
+                    << "Please proceed to mass lumping or use a DiagonalMass (both are equivalent).";
+        return;
+    }
+
     helper::WriteAccessor< DataVecDeriv > _a = a;
     const VecDeriv& _f = f.getValue();
     const MassVector &vertexMass= d_vertexMassInfo.getValue();
 
-    if(d_lumping.getValue())
+    for (unsigned int i=0; i<vertexMass.size(); i++)
     {
-        for (unsigned int i=0; i<vertexMass.size(); i++)
-        {
-            _a[i] = _f[i] / ( vertexMass[i] * m_massLumpingCoeff);
-        }
-    }
-    else
-    {
-        (void)a;
-        (void)f;
-        msg_error() << "the method 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. "
-                    << "Please proceed to mass lumping or use a DiagonalMass (both are equivalent).";
-        return;
+        _a[i] = _f[i] / ( vertexMass[i] * m_massLumpingCoeff);
     }
 }
 

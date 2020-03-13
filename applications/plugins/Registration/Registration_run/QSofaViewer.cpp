@@ -11,6 +11,7 @@
 using std::cout;
 using std::endl;
 #include <SofaMiscCollision/RayTriangleVisitor.h>
+#include <math.h>
 
 typedef std::size_t Index;
 
@@ -24,7 +25,7 @@ GLfloat camera_target[] = { 22.0, 0.0, 0.0 };
 GLfloat camera_angle = 55;
 GLfloat znear = 15;
 GLfloat zfar = 35;
-GLfloat DegToRad = 3.1415927 / 180;
+GLfloat DegToRad = M_PI / 180;
 
 
 QSofaViewer::QSofaViewer(QSofaScene *sofaScene, QWidget *parent) :

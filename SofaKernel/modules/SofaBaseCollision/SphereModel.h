@@ -76,7 +76,6 @@ public:
     {
         return surfacePoint;
     }
-
 };
 
 // Specializations
@@ -183,6 +182,7 @@ public:
 
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
+    SingleLink<SphereCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 };
 
 template<class DataTypes>

@@ -109,7 +109,6 @@ public:
     Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
     Data<SReal> f_velocityDamping; ///< Velocity decay coefficient (no decay if null)
     Data<bool> f_firstOrder; ///< Use backward Euler scheme for first order ode system.
-    Data<bool> f_verbose; ///< Dump system state at each iteration
     Data<bool> d_trapezoidalScheme; ///< Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time
     Data<bool> f_solveConstraint; ///< Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)
     Data<bool> d_threadSafeVisitor;

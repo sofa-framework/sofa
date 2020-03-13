@@ -206,11 +206,11 @@ public:
         switch(v.getType())
         {
         case V_COORD:
-            return TStandardVec<V_COORD,vaccess>::getName((TVecId<V_COORD,vaccess>)v);
+            return TStandardVec<V_COORD,vaccess>::getName(static_cast<TVecId<V_COORD,vaccess>>(v));
         case V_DERIV:
-            return TStandardVec<V_DERIV,vaccess>::getName((TVecId<V_DERIV,vaccess>)v);
+            return TStandardVec<V_DERIV,vaccess>::getName(static_cast<TVecId<V_DERIV,vaccess>>(v));
         case V_MATDERIV:
-            return TStandardVec<V_MATDERIV,vaccess>::getName((TVecId<V_MATDERIV,vaccess>)v);
+            return TStandardVec<V_MATDERIV,vaccess>::getName(static_cast<TVecId<V_MATDERIV,vaccess>>(v));
         default:
             std::string result;
             std::ostringstream out;
@@ -254,25 +254,55 @@ class TVecId : public BaseVecId, public TStandardVec<vtype, vaccess>, public Vec
 public:
     TVecId() : BaseVecId(vtype, 0) { }
     TVecId(unsigned int i) : BaseVecId(vtype, i) { }
+
+    /// Copy constructor
+    TVecId(const TVecId<vtype, vaccess> & v) : BaseVecId(vtype, v.getIndex()) {}
+
     /// Copy from another VecId, possibly with another type of access, with the
     /// constraint that the access must be compatible (i.e. cannot create
     /// a write-access VecId from a read-only VecId.
     template<VecAccess vaccess2>
     TVecId(const TVecId<vtype, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
-        static_assert(vaccess2 >= vaccess, "");
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
     }
-
-    TVecId(const TVecId<vtype, V_WRITE>& v) : BaseVecId(vtype, v.getIndex()) { }
 
 	template<VecAccess vaccess2>
     explicit TVecId(const TVecId<V_ALL, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
-        static_assert(vaccess2 >= vaccess, "");
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
 #ifndef NDEBUG
         assert(v.getType() == vtype);
 #endif
     }
+
+    // Copy assignment
+
+    TVecId<vtype, vaccess> & operator=(const TVecId<vtype, vaccess>& other) {
+        this->index = other.index;
+        this->type = other.type;
+        return *this;
+    }
+
+    template<VecAccess vaccess2>
+    TVecId<vtype, vaccess> & operator=(const TVecId<vtype, vaccess2>& other) {
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
+        this->index = other.index;
+        this->type = other.type;
+        return *this;
+    }
+
+    template<VecAccess vaccess2>
+    TVecId<vtype, vaccess> & operator=(const TVecId<V_ALL, vaccess2>& other) {
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
+#ifndef NDEBUG
+        assert(other.getType() == vtype);
+#endif
+        this->index = other.index;
+        this->type = other.type;
+        return *this;
+    }
+
 
     template<VecType vtype2, VecAccess vaccess2>
     bool operator==(const TVecId<vtype2, vaccess2>& v) const
@@ -313,8 +343,18 @@ public:
     template<VecType vtype2, VecAccess vaccess2>
     TVecId(const TVecId<vtype2, vaccess2>& v) : BaseVecId(v.getType(), v.getIndex())
     {
-        static_assert(vaccess2 >= vaccess, "");
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
     }
+
+    // Copy assignment
+    template<VecType vtype2, VecAccess vaccess2>
+    TVecId<V_ALL, vaccess> & operator=(const TVecId<vtype2, vaccess2>& other) {
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
+        this->index = other.index;
+        this->type = other.type;
+        return *this;
+    }
+
 
     template<VecType vtype2, VecAccess vaccess2>
     bool operator==(const TVecId<vtype2, vaccess2>& v) const
