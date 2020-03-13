@@ -83,22 +83,6 @@ TEST_F(DDGNode_test, addOutput)
     EXPECT_EQ(m_ddgnode3.getInputs().size(), 1);
 }
 
-TEST_F(DDGNode_test, duplicatedAddInput)
-{
-    EXPECT_EQ(m_ddgnode1.getOutputs().size(), 0);
-    EXPECT_EQ(m_ddgnode2.getOutputs().size(), 0);
-    EXPECT_EQ(m_ddgnode3.getOutputs().size(), 0);
-
-    m_ddgnode1.addInput(&m_ddgnode2);
-    EXPECT_EQ(m_ddgnode1.getInputs().size(), 1);
-    EXPECT_EQ(m_ddgnode2.getOutputs().size(), 1);
-
-    /// Adds a second input...it shouldn't trigger an assert
-    m_ddgnode1.addInput(&m_ddgnode2);
-    EXPECT_EQ(m_ddgnode1.getInputs().size(), 1);
-    EXPECT_EQ(m_ddgnode2.getOutputs().size(), 1);
-}
-
 TEST_F(DDGNode_test, dellInput)
 {
     EXPECT_EQ(m_ddgnode1.getOutputs().size(), 0);
