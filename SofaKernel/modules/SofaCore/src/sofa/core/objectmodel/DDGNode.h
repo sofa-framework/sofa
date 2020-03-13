@@ -169,12 +169,12 @@ public:
 
     /// Indicate the value needs to be updated
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    virtual void setDirtyValue(const core::ExecParams*){ return setDirtyValue(); }
+    virtual void setDirtyValue(const core::ExecParams*) final { return setDirtyValue(); }
     virtual void setDirtyValue();
 
     /// Indicate the outputs needs to be updated. This method must be called after changing the value of this node.
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    virtual void setDirtyOutputs(const core::ExecParams*){ setDirtyOutputs(); }
+    virtual void setDirtyOutputs(const core::ExecParams*) final { setDirtyOutputs(); }
     virtual void setDirtyOutputs();
 
     /// Set dirty flag to false
@@ -184,7 +184,7 @@ public:
 
     /// Notify links that the DGNode has been modified
     [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
-    virtual void notifyEndEdit(const core::ExecParams*){ notifyEndEdit(); }
+    virtual void notifyEndEdit(const core::ExecParams*) final { notifyEndEdit(); }
     virtual void notifyEndEdit();
 
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
