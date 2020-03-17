@@ -58,6 +58,8 @@ setSofaOption(MODULE_SOFAOPENGLVISUAL ON)
 
 message("-------- Setting some plugins ON --------")
 
+setSofaOption(PLUGIN_SOFAPYTHON ON)
+
 setSofaOption(PLUGIN_SOFACOMPONENTALL ON)
 setSofaOption(PLUGIN_CIMGPLUGIN ON)
 setSofaOption(PLUGIN_SOFAEULERIANFLUID ON)
@@ -70,7 +72,7 @@ setSofaOption(PLUGIN_MULTITHREADING ON)
 setSofaOption(PLUGIN_DIFFUSIONSOLVER ON)
 setSofaOption(PLUGIN_IMAGE ON) # Depends on CImgPlugin, soft dependency to MultiThreading
 setSofaOption(PLUGIN_COMPLIANT ON)
-# setSofaOption(PLUGIN_FLEXIBLE ON) # Depends on image, CImgPlugin, SofaPython
+setSofaOption(PLUGIN_FLEXIBLE ON) # Depends on image, CImgPlugin, SofaPython
 setSofaOption(PLUGIN_REGISTRATION ON)
 setSofaOption(PLUGIN_PREASSEMBLEDMASS ON) # Depends on Flexible and Compliant
 setSofaOption(PLUGIN_EXTERNALBEHAVIORMODEL ON)
@@ -80,8 +82,6 @@ setSofaOption(PLUGIN_MANUALMAPPING ON)
 setSofaOption(PLUGIN_THMPGSPATIALHASHING ON)
 setSofaOption(PLUGIN_SOFACARVING ON)
 setSofaOption(PLUGIN_RIGIDSCALE ON)
-
-# setSofaOption(PLUGIN_SOFAPYTHON ON)
 
 #setSofaOption(PLUGIN_VOLUMETRICRENDERING ON)
 
