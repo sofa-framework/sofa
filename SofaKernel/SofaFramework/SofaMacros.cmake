@@ -676,8 +676,6 @@ function(sofa_set_install_relocatable target install_dir)
         if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (Visual Studio)
             set(escaped_dollar "\$")
         endif()
-        if(CMAKE_SYSTEM_VERSION VERSION_LESS 10) # before Windows 10
-        endif()
         string(REGEX REPLACE "/" "\\\\" target_binary_dir_windows "${target_binary_dir}")
         add_custom_target(${target}_relocatable_install ALL
             COMMENT "${target}: Patching cmake_install.cmake"
