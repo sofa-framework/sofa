@@ -279,7 +279,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
     if (mstate==nullptr)
     {
-        serr << "PrecomputedWarpPreconditioner can't find Mstate" << sendl;
+        msg_error() << "PrecomputedWarpPreconditioner can't find Mstate";
         return;
     }
 
@@ -322,7 +322,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     }
     else
     {
-        serr<<"PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
+        msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation";
         return;
     }
     sofa::core::VecDerivId lhId = core::VecDerivId::velocity();
@@ -395,7 +395,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
             if(pid_j*dof_on_node+d <2 )
             {
-                EulerSolver->f_verbose.setValue(true);
                 EulerSolver->f_printLog.setValue(true);
                 msg_info() <<"getF : "<<force;
             }
@@ -411,7 +410,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
             if(pid_j*dof_on_node+d < 2)
             {
-                EulerSolver->f_verbose.setValue(false);
                 EulerSolver->f_printLog.setValue(false);
                 msg_info()<<"getV : "<<velocity;
             }
@@ -530,7 +528,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
     }
     else
     {
-        serr << "No rotation defined : use Identity !!";
+        msg_error() << "No rotation defined : use Identity !!";
         for(unsigned int k = 0; k < nb_dofs; k++)
         {
             R[k*9] = R[k*9+4] = R[k*9+8] = 1.0f;

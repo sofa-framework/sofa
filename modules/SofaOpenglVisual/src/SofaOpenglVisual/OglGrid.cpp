@@ -90,7 +90,7 @@ void OglGrid::updateVisual()
     }
     else
     {
-        serr << "Plane parameter " << plane.getValue() << " not recognized. Set to z instead" << sendl;
+        msg_error() << "Plane parameter " << plane.getValue() << " not recognized. Set to z instead";
         plane.setValue("z");
         internalPlane = PLANE_Z;
     }
@@ -98,7 +98,7 @@ void OglGrid::updateVisual()
     int nb = nbSubdiv.getValue();
     if (nb < 2)
     {
-        serr << "nbSubdiv should be > 2" << sendl;
+        msg_error() << "nbSubdiv should be > 2";
         nbSubdiv.setValue(2);
     }
 

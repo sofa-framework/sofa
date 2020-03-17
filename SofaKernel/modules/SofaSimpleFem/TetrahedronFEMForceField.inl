@@ -1286,11 +1286,7 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessCorotational( Vec
 
     Displacement F;
 
-    //serr<<"X : "<<X<<sendl;
-
     computeForce( F, X, materialsStiffnesses[i], strainDisplacements[i], fact );
-
-    //serr<<"F : "<<F<<sendl;
 
 
     // rotate by rotations[i]

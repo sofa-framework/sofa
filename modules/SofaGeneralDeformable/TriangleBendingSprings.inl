@@ -49,9 +49,9 @@ namespace interactionforcefield
 
 template<class DataTypes>
 TriangleBendingSprings<DataTypes>::TriangleBendingSprings()
-: l_topology(initLink("topology", "link to the topology container"))
+    : l_topology(initLink("topology", "link to the topology container"))
 {
-    //serr<<"TriangleBendingSprings<DataTypes>::TriangleBendingSprings"<<sendl;
+    
 }
 
 

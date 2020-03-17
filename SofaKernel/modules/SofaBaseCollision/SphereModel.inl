@@ -153,9 +153,12 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
         for (int i=0; i<npoints; i++)
         {
             TSphere<DataTypes> t(this,i);
-            Vector3 p = t.p();
-            points.push_back(p);
-            radius.push_back((float)t.r());
+            if (t.isActive())
+            {
+                Vector3 p = t.p();
+                points.push_back(p);
+                radius.push_back((float)t.r());
+            }
         }
 
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning

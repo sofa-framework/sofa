@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CUBEMODEL_H
-#define SOFA_COMPONENT_COLLISION_CUBEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_CUBECOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_CUBECOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
@@ -36,12 +36,12 @@ namespace component
 namespace collision
 {
 
-class CubeModel;
+class CubeCollisionModel;
 
-class Cube : public core::TCollisionElementIterator<CubeModel>
+class Cube : public core::TCollisionElementIterator<CubeCollisionModel>
 {
 public:
-    Cube(CubeModel* model=nullptr, int index=0);
+    Cube(CubeCollisionModel* model=nullptr, int index=0);
 
     explicit Cube(const core::CollisionElementIterator& i);
 
@@ -52,10 +52,10 @@ public:
     const std::pair<Cube,Cube>& subcells() const;
 };
 
-class SOFA_BASE_COLLISION_API CubeModel : public core::CollisionModel
+class SOFA_BASE_COLLISION_API CubeCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(CubeModel,sofa::core::CollisionModel);
+    SOFA_CLASS(CubeCollisionModel,sofa::core::CollisionModel);
 
     struct CubeData
     {
@@ -87,7 +87,7 @@ public:
     typedef Cube Element;
     friend class Cube;
 protected:
-    CubeModel();
+    CubeCollisionModel();
 public:
     void resize(int size) override;
 
@@ -145,12 +145,12 @@ public:
     void updateCubes();
 };
 
-inline Cube::Cube(CubeModel* model, int index)
-    : core::TCollisionElementIterator<CubeModel>(model, index)
+inline Cube::Cube(CubeCollisionModel* model, int index)
+    : core::TCollisionElementIterator<CubeCollisionModel>(model, index)
 {}
 
 inline Cube::Cube(const core::CollisionElementIterator& i)
-    : core::TCollisionElementIterator<CubeModel>(static_cast<CubeModel*>(i.getCollisionModel()), i.getIndex())
+    : core::TCollisionElementIterator<CubeCollisionModel>(static_cast<CubeCollisionModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
@@ -169,6 +169,8 @@ inline const std::pair<Cube,Cube>& Cube::subcells() const
 {
     return model->elems[index].subcells;
 }
+
+using CubeModel [[deprecated("The CubeModel is now deprecated, please use CubeCollisionModel instead. Compatibility stops at v20.06")]] = CubeCollisionModel;
 
 } // namespace collision
 

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_POINTMODEL_H
-#define SOFA_COMPONENT_COLLISION_POINTMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
@@ -67,17 +67,6 @@ public:
     bool hasFreePosition() const;
 
     bool testLMD(const sofa::defaulttype::Vector3 &, double &, double &);
-
-    bool activated(core::CollisionModel *cm = nullptr) const;
-};
-
-class PointActiver
-{
-public:
-    PointActiver() {}
-    virtual ~PointActiver() {}
-    virtual bool activePoint(int /*index*/, core::CollisionModel * /*cm*/ = nullptr) {return true;}
-	static PointActiver* getDefaultActiver() { static PointActiver defaultActiver; return &defaultActiver; }
 };
 
 template<class TDataTypes>
@@ -162,8 +151,6 @@ protected:
 
     Data<bool> computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
 
-    Data<std::string> PointActiverPath; ///< path of a component PointActiver that activate or deactivate collision point during execution
-
     VecDeriv normals;
 
     PointLocalMinDistanceFilter *m_lmdFilter;
@@ -174,11 +161,8 @@ protected:
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-
-    PointActiver *myActiver;
 };
 
-template <class TDataTypes> using TPointModel [[deprecated("The TPointModel is now deprecated please use PointCollisionModel instead.")]] = PointCollisionModel<TDataTypes>;
 
 template<class DataTypes>
 inline TPoint<DataTypes>::TPoint(ParentModel* model, int index)
@@ -218,16 +202,11 @@ inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigne
 template<class DataTypes>
 inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
-template<class DataTypes>
-inline bool TPoint<DataTypes>::activated(core::CollisionModel *cm) const
-{
-    return this->model->myActiver->activePoint(this->index, cm);
-}
+template <class TDataTypes> using TPointModel [[deprecated("The TPointModel is now deprecated, please use PointCollisionModel instead. Compatibility stops at v20.06")]] = PointCollisionModel<TDataTypes>;
+using PointModel [[deprecated("The PointModel is now deprecated, please use PointCollisionModel instead. Compatibility stops at v20.06")]] = PointCollisionModel<sofa::defaulttype::Vec3Types>;
+using Point = TPoint<sofa::defaulttype::Vec3Types>;
 
-typedef PointCollisionModel<sofa::defaulttype::Vec3Types> PointModel;
-typedef TPoint<sofa::defaulttype::Vec3Types> Point;
-
-#if  !defined(SOFA_COMPONENT_COLLISION_POINTMODEL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP)
 extern template class SOFA_MESH_COLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
 
 #endif

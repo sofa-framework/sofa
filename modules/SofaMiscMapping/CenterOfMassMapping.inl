@@ -68,7 +68,7 @@ void CenterOfMassMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* 
 
     if(!masses || totalMass==0.0)
     {
-        serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
+        msg_error() << "CenterOfMassMapping : no mass found corresponding to the DOFs";
         return;
     }
 
@@ -95,7 +95,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams*
 
     if(!masses || totalMass==0.0)
     {
-        serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
+        msg_error() << "CenterOfMassMapping : no mass found corresponding to the DOFs";
         return;
     }
 
@@ -122,7 +122,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams
 
     if(!masses || totalMass==0.0)
     {
-        serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
+        msg_error() << "CenterOfMassMapping : no mass found corresponding to the DOFs";
         return;
     }
 

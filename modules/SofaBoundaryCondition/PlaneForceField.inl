@@ -122,9 +122,7 @@ template<class DataTypes>
 SReal PlaneForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
                                                      const DataVecCoord&  /* x */) const
 {
-    msg_error(this) << "Function potentialEnergy is not implemented. " << msgendl
-                    << "To remove this errore message you need to implement a proper calculus of "
-                       "the plane force field potential energy.";
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
 }
 

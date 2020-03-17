@@ -112,7 +112,6 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
 
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
-    std::stringstream availabletemplate;
     objectmodel::BaseObject::SPtr object = nullptr;
     std::vector< std::pair<std::string, Creator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
@@ -151,7 +150,13 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+    // In order to get the errors from the creators only, we save the current errors at this point
+    // and we clear them. Once we extracted the errors from the creators, we put push them back.
+    std::map<std::string, std::vector<std::string>> creators_errors; // (template_name, errors)
+    const auto previous_errors = arg->getErrors();
+    arg->clearErrors();
 
+    // For every classes in the registery
     ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end()) // Found the classname
     {
@@ -164,8 +169,12 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         if (it2 != entry->creatorMap.end())
         {
             Creator::SPtr c = it2->second;
-            if (c->canCreate(context, arg))
+            if (c->canCreate(context, arg)) {
                 creators.push_back(*it2);
+            } else {
+                creators_errors[templatename] = arg->getErrors();
+                arg->clearErrors();
+            }
         }
 
         // If object cannot be created with the given template (or the default one), try all possible ones
@@ -174,17 +183,22 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             CreatorMap::iterator it3;
             for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
             {
+                if (it3->first == templatename)
+                    continue; // We already tried to create the object with the specified (or default) template
+
                 Creator::SPtr c = it3->second;
                 if (c->canCreate(context, arg)){
                     creators.push_back(*it3);
-                }
-                else
-                {
-                    availabletemplate << it3->first << ", ";
+                } else {
+                    creators_errors[it3->first] = arg->getErrors();
+                    arg->clearErrors();
                 }
             }
         }
     }
+
+    // Restore previous errors without the errors from the creator
+    arg->logErrors(previous_errors);
 
     if (creators.empty())
     {
@@ -205,8 +219,50 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         {
             std::stringstream tmp;
             tmp << "The object is in the factory but cannot be created." << msgendl;
-            tmp << "Requested template: " << templatename << "(" << usertemplatename << ")" << msgendl;
-            tmp << "Available templates: " << availabletemplate.rdbuf() ;
+            tmp << "Requested template : " << (usertemplatename.empty() ? "None" : usertemplatename) << msgendl;
+            if (templatename.empty()) {
+                tmp << "Used template      : None" << msgendl;
+            } else {
+                tmp << "Used template      : " << templatename;
+                if (templatename == entry->defaultTemplate) {
+                    tmp << " (default)";
+                }
+                tmp << msgendl;
+            }
+
+            // Collect the errors from the creator with the specified (or default) template name
+            auto main_creator_errors_iterator = creators_errors.find(templatename);
+            if (main_creator_errors_iterator != creators_errors.end()) {
+                tmp << "Reason(s)          : ";
+                if (main_creator_errors_iterator->second.empty()) {
+                    tmp << "No reasons given" << msgendl;
+                } else if (main_creator_errors_iterator->second.size() == 1) {
+                    tmp << main_creator_errors_iterator->second[0] << msgendl;
+                } else {
+                    tmp << msgendl;
+                    for (std::size_t i = 0; i < main_creator_errors_iterator->second.size(); ++i) {
+                        tmp << "    " << (i+1) << ". " << main_creator_errors_iterator->second[i] << msgendl;
+                    }
+                }
+                creators_errors.erase(main_creator_errors_iterator);
+            }
+
+            // Collect the errors from the creator with all remaining template names
+            if (! creators_errors.empty()) {
+                for (const auto & creator_errors_it : creators_errors) {
+                    const std::string & creator_template_name = creator_errors_it.first;
+                    const std::vector<std::string> & creator_errors = creator_errors_it.second;
+                    tmp << "Also tried to create the object with the template '"<<creator_template_name << "' but failed ";
+                    if (creator_errors.empty()) {
+                        tmp << "(no reason given)." << msgendl;
+                    } else {
+                        tmp << "for the following reason(s):" << msgendl;
+                        for (std::size_t i = 0; i < creator_errors.size(); ++i) {
+                            tmp << "    " << (i+1) << ". " << creator_errors[i] << msgendl;
+                        }
+                    }
+                }
+            }
             arg->logError(tmp.str());
         }
         return nullptr;

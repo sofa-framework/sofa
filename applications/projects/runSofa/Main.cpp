@@ -389,7 +389,7 @@ int main(int argc, char** argv)
         ->default_value(1)
         ->notifier([](unsigned int value) {
             if (value < 1) {
-                std::cerr << "msaa sample cannot be lower than 1" << std::endl;
+                msg_error("runSofa") << "msaa sample cannot be lower than 1";
                 exit( EXIT_FAILURE );
             }
         }),

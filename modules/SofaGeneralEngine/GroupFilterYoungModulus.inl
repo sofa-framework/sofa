@@ -110,7 +110,7 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
                     }
 
                     if (!found)
-                        serr << "Group " << groupName << " not found" << sendl;
+                        msg_error() << "Group " << groupName << " not found";
                     else
                     {
                         mapMG[groups[gid]] = youngModulus;
@@ -119,7 +119,10 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
                             maxSize = groups[gid].p0+ groups[gid].nbp;
                     }
                 }
-                else serr << "Error while parsing mapping" << sendl;
+                else
+                {
+                    msg_error() << "Error while parsing mapping";
+                }
             }
             //build YM vector
             youngModulusVector.clear();

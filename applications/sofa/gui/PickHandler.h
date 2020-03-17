@@ -35,7 +35,7 @@ namespace component
 namespace collision
 {
     class ComponentMouseInteraction;
-    class RayModel;
+    class RayCollisionModel;
 }
 namespace configurationsetting
 {
@@ -67,7 +67,7 @@ public:
 
 class SOFA_SOFAGUI_API PickHandler
 {
-    typedef sofa::component::collision::RayModel MouseCollisionModel;
+    typedef sofa::component::collision::RayCollisionModel MouseCollisionModel;
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
 
 public:

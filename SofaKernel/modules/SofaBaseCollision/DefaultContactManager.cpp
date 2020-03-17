@@ -130,6 +130,7 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
     size_t nbContact = 0;
 
     // First iterate on the collision detection outputs and look for existing or new contacts
+    std::stringstream errorStream;
     for (DetectionOutputMap::const_iterator outputsIt = outputsMap.begin(),
         outputsItEnd = outputsMap.end(); outputsIt != outputsItEnd ; ++outputsIt)
     {
@@ -161,21 +162,21 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
                         std::make_pair(model1class, model2class))];
                     if (count <= 10)
                     {
-                        msg_error() << "Contact " << responseUsed << " between " << model1->getClassName()
-                                    << " and " << model2->getClassName() << " creation failed";
+                        errorStream << "Contact " << responseUsed << " between " << model1->getClassName()
+                            << " and " << model2->getClassName() << " creation failed \n";
                         if (count == 1)
                         {
-                            msg_error()<< "Supported models for contact " << responseUsed << ":";
+                            errorStream << "Supported models for contact " << responseUsed << ":\n";
                             for (Contact::Factory::const_iterator it =
                                 Contact::Factory::getInstance()->begin(),
                                 itend = Contact::Factory::getInstance()->end(); it != itend; ++it)
                             {
                                 if (it->first != responseUsed) continue;
-                                msg_error() << "   " << helper::gettypename(it->second->type());
+                                errorStream << "   " << helper::gettypename(it->second->type()) << "\n";
                             }
-                            msg_error() << "error..."; // was previously "serr << sendl", no idea why ??;
+                            errorStream << "\n";
                         }
-                        if (count == 10) msg_error() << "further messages suppressed";
+                        if (count == 10) errorStream << "further messages suppressed.\n";
                     }
                     contactMap.erase(contactIt);
                 }
@@ -198,6 +199,8 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
             ++nbContact;
         }
     }
+
+    msg_error_when(!errorStream.str().empty()) << errorStream.str();
 
     // Then look at previous contacts
     // and remove inactive contacts

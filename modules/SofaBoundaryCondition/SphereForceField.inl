@@ -206,7 +206,7 @@ void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 template<class DataTypes>
 SReal SphereForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
 {
-    serr << "Get potentialEnergy not implemented" << sendl;
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
 }
 

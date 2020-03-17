@@ -1061,8 +1061,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         if (cId >= id_to_localIndex.size())
             id_to_localIndex.resize(cId + 1, -1);
 
-        if (id_to_localIndex[cId] != -1)
-            serr << "duplicate entry in constraints for id " << cId << " : " << id_to_localIndex[cId] << " + " << cpt ;
+        msg_error_when(id_to_localIndex[cId] != -1) << "duplicate entry in constraints for id " << cId << " : " << id_to_localIndex[cId] << " + " << cpt;
 
         id_to_localIndex[cId] = cpt;
         localIndex_to_id.push_back(cId);
@@ -1077,7 +1076,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         {
             if(error_message_not_displayed)
             {
-                serr<<"Initial_guess not supported yet in unbuilt mode with NEW_METHOD_UNBUILT!=> PUT F to 0"<<sendl;
+                msg_error() << "Initial_guess not supported yet in unbuilt mode with NEW_METHOD_UNBUILT!=> PUT F to 0";
                 error_message_not_displayed = false;
             }
 

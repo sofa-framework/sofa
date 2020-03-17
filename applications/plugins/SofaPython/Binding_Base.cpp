@@ -54,7 +54,7 @@ PSDEDataFactory* getFactoryInstance(){
     if (s_localfactory == nullptr)
     {
         // helper vector style containers
-        std::string containers[] = {"vector", "ResizableExtVector"};
+        std::string containers[] = {"vector"};
 
         s_localfactory = new PSDEDataFactory();
         // Scalars

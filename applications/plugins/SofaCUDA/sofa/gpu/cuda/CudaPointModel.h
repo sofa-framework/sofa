@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAPOINTMODEL_H
-#define SOFA_GPU_CUDA_CUDAPOINTMODEL_H
+#ifndef SOFA_GPU_CUDA_CUDAPOINTCOLLISIONMODEL_H
+#define SOFA_GPU_CUDA_CUDAPOINTCOLLISIONMODEL_H
 
 #include "CudaTypes.h"
 
@@ -41,14 +41,13 @@ namespace cuda
 {
 
 using namespace sofa::defaulttype;
-//using namespace sofa::component::collision;
 
-class CudaPointModel;
+class CudaPointCollisionModel;
 
-class CudaPoint : public core::TCollisionElementIterator<CudaPointModel>
+class CudaPoint : public core::TCollisionElementIterator<CudaPointCollisionModel>
 {
 public:
-    CudaPoint(CudaPointModel* model, int index);
+    CudaPoint(CudaPointCollisionModel* model, int index);
 
     int i0();
     int getSize();
@@ -56,10 +55,10 @@ public:
     explicit CudaPoint(const core::CollisionElementIterator& i);
 };
 
-class CudaPointModel : public core::CollisionModel
+class CudaPointCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(CudaPointModel,core::CollisionModel);
+    SOFA_CLASS(CudaPointCollisionModel,core::CollisionModel);
     typedef CudaVec3fTypes InDataTypes;
     typedef CudaVec3fTypes DataTypes;
     typedef DataTypes::VecCoord VecCoord;
@@ -71,7 +70,7 @@ public:
 
     Data<int> groupSize; ///< number of point per collision element
 
-    CudaPointModel();
+    CudaPointCollisionModel();
 
     virtual void init() override;
 
@@ -94,12 +93,12 @@ protected:
     core::behavior::MechanicalState<InDataTypes>* mstate;
 };
 
-inline CudaPoint::CudaPoint(CudaPointModel* model, int index)
-    : core::TCollisionElementIterator<CudaPointModel>(model, index)
+inline CudaPoint::CudaPoint(CudaPointCollisionModel* model, int index)
+    : core::TCollisionElementIterator<CudaPointCollisionModel>(model, index)
 {}
 
 inline CudaPoint::CudaPoint(const core::CollisionElementIterator& i)
-    : core::TCollisionElementIterator<CudaPointModel>(static_cast<CudaPointModel*>(i.getCollisionModel()), i.getIndex())
+    : core::TCollisionElementIterator<CudaPointCollisionModel>(static_cast<CudaPointCollisionModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
@@ -115,6 +114,9 @@ inline int CudaPoint::getSize()
     else
         return model->groupSize.getValue();
 }
+
+using CudaPointModel [[deprecated("The CudaPointModel is now deprecated, please use CudaPointCollisionModel instead. Compatibility stops at v20.06")]] = CudaPointCollisionModel;
+
 
 } // namespace cuda
 

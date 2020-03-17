@@ -72,17 +72,23 @@ void LennardJonesForceField<DataTypes>::init()
 
         // Validity check: compute force and potential at d0
         Real f0 = a*alpha.getValue()*(Real)pow(d0.getValue(),-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d0.getValue(),-beta.getValue()-1);
-        if (fabs(f0)>0.001)
-            serr << "Lennard-Jones initialization failed: f0="<<f0<<sendl;
+
+        msg_error_when(fabs(f0) > 0.001) << "Lennard-Jones initialization failed: f0=" << f0;
         Real cp0 = (a*(Real)pow(d0.getValue(),-alpha.getValue())-b*(Real)pow(d0.getValue(),-beta.getValue()));
-        if (fabs(cp0/p0.getValue()-1)>0.001)
-            serr << "Lennard-Jones initialization failed: cp0="<<cp0<<sendl;
+
+        msg_error_when(fabs(cp0 / p0.getValue() - 1) > 0.001) << "Lennard-Jones initialization failed: cp0=" << cp0;
+
         // Debug
-        for (Real d = 0; d<dmax.getValue(); d+= dmax.getValue()/60)
+        if (this->f_printLog.getValue())
         {
-            Real f = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
-            msg_info() << "f("<<d<<")="<<f;
-        }
+            std::stringstream tmp;
+            for (Real d = 0; d<dmax.getValue(); d += dmax.getValue() / 60)
+            {
+                Real f = a * alpha.getValue()*(Real)pow(d, -alpha.getValue() - 1) - b * beta.getValue()*(Real)pow(d, -beta.getValue() - 1);
+                tmp << "f(" << d << ")=" << f;
+            }
+            msg_info() << tmp.str();
+        }        
     }
 }
 

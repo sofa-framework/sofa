@@ -198,7 +198,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     }
     else
     {
-        intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
+        msg_warning(intersection) << "Null distance between contact detected";
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
@@ -323,7 +323,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     }
     else
     {
-        intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
+        msg_warning(intersection) << "Null distance between contact detected";
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
@@ -427,7 +427,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     }
     else
     {
-        intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
+        msg_warning(intersection) << "Null distance between contact detected";
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
@@ -489,7 +489,7 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
     }
     else
     {
-        intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
+        msg_warning(intersection) << "Null distance between contact detected";
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;

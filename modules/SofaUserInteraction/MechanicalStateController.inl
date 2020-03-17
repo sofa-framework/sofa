@@ -72,8 +72,8 @@ void MechanicalStateController<DataTypes>::init()
 {
     using core::behavior::MechanicalState;
     mState = dynamic_cast<MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());
-    if (!mState)
-        serr << "MechanicalStateController has no binding MechanicalState" << sendl;
+    
+    msg_error_when(!mState) << "MechanicalStateController has no binding MechanicalState";
     device = false;
 }
 

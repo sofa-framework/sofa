@@ -48,10 +48,9 @@ using core::topology::BaseMeshTopology;
 template<class DataTypes>
 LineCollisionModel<DataTypes>::LineCollisionModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
-    , mstate(nullptr), topology(nullptr), meshRevision(-1), m_lmdFilter(nullptr)
-    , LineActiverPath(initData(&LineActiverPath,"LineActiverPath", "path of a component LineActiver that activates or deactivates collision line during execution") )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
+    , mstate(nullptr), topology(nullptr), meshRevision(-1), m_lmdFilter(nullptr)
 {
     enum_type = LINE_TYPE;
 }
@@ -107,44 +106,6 @@ void LineCollisionModel<DataTypes>::init()
     }
 
     updateFromTopology();
-
-    const std::string path = LineActiverPath.getValue();
-
-    if (path.size()==0)
-    {
-
-        myActiver = LineActiver::getDefaultActiver();
-        msg_info() << "path = " << path << " no Line Activer found for LineModel " << this->getName();
-    }
-    else
-    {
-
-        core::objectmodel::BaseObject *activer=nullptr;
-        this->getContext()->get(activer ,path  );
-
-        if (activer != nullptr)
-            msg_info() << " Activer named" << activer->getName() << " found";
-        else
-            msg_error() << "wrong path for Line Activer";
-
-
-        myActiver = dynamic_cast<LineActiver *> (activer);
-
-
-
-        if (myActiver==nullptr)
-        {
-            myActiver = LineActiver::getDefaultActiver();
-
-
-            msg_error() << "wrong path for Line Activer for LineModel " << this->getName();
-        }
-        else
-        {
-            msg_info() << "Line Activer named" << activer->getName() << " found !! for LineModel " << this->getName();
-        }
-    }
-
 }
 
 template<class DataTypes>
@@ -373,7 +334,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         for (int i=0; i<size; i++)
         {
             TLine<DataTypes> l(this,i);
-            if(l.activated())
+            if(l.isActive())
             {
                 points.push_back(l.p1());
                 points.push_back(l.p2());
@@ -388,7 +349,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
             for (int i=0; i<size; i++)
             {
                 TLine<DataTypes> l(this,i);
-                if(l.activated())
+                if(l.isActive())
                 {
                     pointsFree.push_back(l.p1Free());
                     pointsFree.push_back(l.p2Free());

@@ -42,13 +42,13 @@ void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
     this->getContext()->get ( topoContainer );
     if ( !topoContainer )
     {
-        serr << "buildTriangleMesh(). Error: can't find the mapping on the triangular topology." << sendl;
+        msg_error() << "buildTriangleMesh(). Error: can't find the mapping on the triangular topology.";
         exit(EXIT_FAILURE);
     }
     this->getContext()->get( dof);
     if( !dof)
     {
-        serr << "Can not find the dof" << sendl;
+        msg_error() << "Can not find the dof";
         return;
     }
 }
@@ -60,7 +60,6 @@ core::topology::BaseMeshTopology::HexaID DynamicSparseGridGeometryAlgorithms<Dat
     existing = !(it == topoContainer->idInRegularGrid2IndexInTopo.getValue().end());
     if( !existing)
     {
-        //serr << "getTopoIndexFromRegularGridIndex(): Warning ! unexisting given index " << index << " !" << sendl;
         return 0;
     }
     return it->second;
@@ -119,7 +118,7 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     if( index == -1)
     {
         // Dans le cas de projection ou autre.... il se peut que la zone ciblée ne contienne pas d'hexahedra, il faut alors tous les parcourrir.
-        serr << "findNearestElementInRestPos(). Index not found" << sendl;
+        msg_error() << "findNearestElementInRestPos(). Index not found";
         return HexahedronSetGeometryAlgorithms<DataTypes>::findNearestElementInRestPos( pos, baryC, distance);
     }
 

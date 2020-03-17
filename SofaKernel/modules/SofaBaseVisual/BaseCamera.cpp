@@ -585,15 +585,15 @@ void BaseCamera::computeZ()
     {
         if (p_zNear.getValue() >= p_zFar.getValue())
         {
-            serr << "ZNear > ZFar !" << sendl;
+            msg_error() << "ZNear > ZFar !";
         }
         else if (p_zNear.getValue() <= 0.0)
         {
-            serr << "ZNear is negative!" << sendl;
+            msg_error() << "ZNear is negative!";
         }
         else if (p_zFar.getValue() <= 0.0)
         {
-            serr << "ZFar is negative!" << sendl;
+            msg_error() << "ZFar is negative!";
         }
         else
         {
@@ -732,24 +732,24 @@ bool BaseCameraXMLImportSingleParameter(TiXmlElement* root, core::objectmodel::B
                     std::string m_string; m_string.assign(attrValue);
                     bool retvalue = data.read(m_string);
                     if(!retvalue)
-                        c->serr << "Unreadable value for " << data.getName() << " field." << c->sendl;
+                        msg_error(c) << "Unreadable value for " << data.getName() << " field.";
                     return retvalue;
                 }
                 else
                 {
-                    c->serr << "Attribute value has not been found for " << data.getName() << " field." << c->sendl;
+                    msg_error(c) << "Attribute value has not been found for " << data.getName() << " field.";
                     return false;
                 }
             }
             else
             {
-                c->serr << "Unknown error occured for " << data.getName() << " field." << c->sendl;
+                msg_error(c) << "Unknown error occured for " << data.getName() << " field.";
                 return false;
             }
         }
         else
         {
-            c->serr << "Field " << data.getName() << " has not been found." << c->sendl;
+            msg_error(c) << "Field " << data.getName() << " has not been found.";
             return false;
         }
     }
@@ -760,7 +760,7 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
 {
     bool result = true;
 
-    sout << "Reading " << viewFilename << " for view parameters." << sendl;
+    msg_info() << "Reading " << viewFilename << " for view parameters.";
     TiXmlDocument doc(viewFilename.c_str());
     if (!doc.LoadFile())
     {
@@ -788,7 +788,7 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     }
     else
     {
-        sout << "Error while reading " << viewFilename << "." << sendl;
+        msg_info() << "Error while reading " << viewFilename << ".";
     }
     return result;
 }

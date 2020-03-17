@@ -154,7 +154,7 @@ void OglCylinderModel::setColor(std::string color)
     else if (color == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
     else
     {
-        serr << "Unknown color "<<color<<sendl;
+        msg_error() << "Unknown color " << color;
         return;
     }
     setColor(r,g,b,a);

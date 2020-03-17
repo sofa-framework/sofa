@@ -62,7 +62,7 @@ struct EulerExplicitDynamic_test : public Elasticity_test<_DataTypes>
     typedef typename DataTypes::Coord Coord;
 
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef component::odesolver::EulerSolver EulerSolver;
+    typedef component::odesolver::EulerExplicitSolver EulerExplicitSolver;
 
     /// Root of the scene graph
     simulation::Node::SPtr root;      
@@ -84,7 +84,7 @@ struct EulerExplicitDynamic_test : public Elasticity_test<_DataTypes>
         root->setGravity(Coord(0,-10,0));
 
         // Solver
-        EulerSolver::SPtr eulerSolver = addNew<EulerSolver> (root);
+        EulerExplicitSolver::SPtr eulerExplicitSolver = addNew<EulerExplicitSolver> (root);
 
         // Set initial positions and velocities of fixed point and mass
         MechanicalObject3::VecCoord xFixed(1);

@@ -153,7 +153,7 @@ void TopologicalChangeProcessor::readDataFile()
     const std::string& filename = m_filename.getFullPath();
     if (filename.empty())
     {
-        serr << "TopologicalChangeProcessor: ERROR: empty filename"<<sendl;
+        msg_error() << "empty filename";
     }
 #if SOFAMISCTOPOLOGY_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
@@ -161,7 +161,7 @@ void TopologicalChangeProcessor::readDataFile()
         gzfile = gzopen(filename.c_str(),"rb");
         if( !gzfile )
         {
-            serr << "TopologicalChangeProcessor: Error opening compressed file "<<filename<<sendl;
+            msg_error() << "TopologicalChangeProcessor: Error opening compressed file " << filename;
         }
     }
 #endif
@@ -170,7 +170,7 @@ void TopologicalChangeProcessor::readDataFile()
         infile = new std::ifstream(filename.c_str());
         if( !infile->is_open() )
         {
-            serr << "TopologicalChangeProcessor: Error opening file "<<filename<<sendl;
+            msg_error() << "TopologicalChangeProcessor: Error opening file " << filename;
             delete infile;
             infile = nullptr;
         }
@@ -242,7 +242,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             if (topoMod)
                 topoMod->removeItems(vitems);
             else
-                serr<< "TopologicalChangeProcessor: Error: No HexahedraTopology available" << sendl;
+                msg_error() << "No HexahedraTopology available";
         }
 
         if (!tetrahedra.empty())
@@ -255,7 +255,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             if (topoMod)
                 topoMod->removeItems(vitems);
             else
-                serr<< "TopologicalChangeProcessor: Error: No TetrahedraTopology available" << sendl;
+                msg_error() << "No TetrahedraTopology available";
         }
 
         if (!quads.empty())
@@ -268,7 +268,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             if (topoMod)
                 topoMod->removeItems(vitems);
             else
-                serr<< "TopologicalChangeProcessor: Error: No QuadTopology available" << sendl;
+                msg_error() << "No QuadTopology available";
         }
 
         if (!triangles.empty())
@@ -281,7 +281,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             if (topoMod)
                 topoMod->removeItems(vitems);
             else
-                serr<< "TopologicalChangeProcessor: Error: No TriangleTopology available" << sendl;
+                msg_error() << "No TriangleTopology available";
         }
 
         if (!edges.empty())
@@ -294,7 +294,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             if (topoMod)
                 topoMod->removeItems(vitems);
             else
-                serr<< "TopologicalChangeProcessor: Error: No EdgeTopology available" << sendl;
+                msg_error() << "No EdgeTopology available";
         }
 
         // iterate, time set to infini if no interval.
@@ -425,7 +425,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if(!topoMod)
                 {
-                    serr << "No PointSetTopologyModifier available" << sendl;
+                    msg_error() << "No PointSetTopologyModifier available";
                     continue;
                 }
 
@@ -468,7 +468,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!topoMod)
                 {
-                    serr<< "TopologicalChangeProcessor: Error: No QuadTopology available" << sendl;
+                    msg_error() << "No QuadTopology available";
                     continue;
                 }
 
@@ -507,7 +507,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!topoMod)
                 {
-                    serr<< "TopologicalChangeProcessor: Error: No TriangleTopology available" << sendl;
+                    msg_error() << "No TriangleTopology available";
                     continue;
                 }
 
@@ -533,7 +533,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!topoMod)
                 {
-                    serr<< "TopologicalChangeProcessor: Error: No QuadTopology available" << sendl;
+                    msg_error() << "No QuadTopology available";
                     continue;
                 }
 
@@ -552,7 +552,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!topoMod)
                 {
-                    serr<< "TopologicalChangeProcessor: Error: No TetrahedraTopology available" << sendl;
+                    msg_error() << "No TetrahedraTopology available";
                     continue;
                 }
 
@@ -571,7 +571,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!topoMod)
                 {
-                    serr<< "TopologicalChangeProcessor: Error: No HexahedraTopology available" << sendl;
+                    msg_error() << "No HexahedraTopology available";
                     continue;
                 }
 
@@ -586,7 +586,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             }
             else
             {
-                serr<< "TopologicalChangeProcessor: Error: keyword: '" << EleType <<"' not expected."<< sendl;
+                msg_error() << "keyword: '" << EleType << "' not expected.";
                 continue;
             }
 
@@ -619,7 +619,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
         }
         else if ( buff == "INCISE=" )
         {
-            msg_info() << "processTopologicalChanges: about to make a incision with time = " << time ;
+            msg_info() << "processTopologicalChanges: about to make a incision with time = " << time;
 
             if (m_saveIndicesAtInit.getValue())
             {
@@ -716,7 +716,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!isPathOk)
                 {
-                    dmsg_error() << "Invalid path in computeIntersectedPointsList" ;
+                    msg_error() << "Invalid path in computeIntersectedPointsList";
                     break;
                 }
 
@@ -795,20 +795,20 @@ void TopologicalChangeProcessor::saveIndices()
         if (found!=std::string::npos)
         {
             size_t foundT = listInTheFile[i-1].find("T=");
-            if (foundT!=std::string::npos)
+            if (foundT != std::string::npos)
             {
-                linesAboutIncision.push_back(listInTheFile[i-1]);
+                linesAboutIncision.push_back(listInTheFile[i - 1]);
                 linesAboutIncision.push_back(listInTheFile[i]);
-                linesAboutIncision.push_back(listInTheFile[i+1]);
+                linesAboutIncision.push_back(listInTheFile[i + 1]);
             }
             else
-                dmsg_error() << " Error in line " << i << " : " << listInTheFile[i-1] ;
+                msg_error() << " Error in line " << i << " : " << listInTheFile[i - 1];
         }
     }
 
     if (linesAboutIncision.size() % 3)
     {
-        dmsg_error() << " Problem (Bug) while saving the lines about incision." ;
+        msg_error() << " Problem (Bug) while saving the lines about incision.";
     }
 
     for (std::vector<std::string>::iterator it=linesAboutIncision.begin(); it!=linesAboutIncision.end();)
@@ -853,17 +853,14 @@ void TopologicalChangeProcessor::saveIndices()
 
         std::vector<SReal> values = getValuesInLine(*it, nbElements);
 
-        dmsg_error_when(values.empty())
-                <<  "Error while saving the indices. Cannot get the values of line " << *it ;
+        msg_error_when(values.empty()) << "Error while saving the indices. Cannot get the values of line " << *it;
 
         bool onlyCoordinates = false;
 
         if (values.size() == nbElements * 3)
         {
             onlyCoordinates = true;
-
-            if(DEBUG_MSG)
-                dmsg_info() << "Use only coordinates. Triangles indices will be computed. " ;
+            msg_info() << "Use only coordinates. Triangles indices will be computed. ";
         }
 
         unsigned int increment = ( onlyCoordinates ) ? 3 : 4; // 3 if only the coordinates, 4 if there is also a triangle index
@@ -934,8 +931,7 @@ void TopologicalChangeProcessor::saveIndices()
 
             if (equal &&  triangleIncisionInformation[i].coordinates.size() > 1)
             {
-                if(DEBUG_MSG)
-                    dmsg_warning() << "Two consecutives values are equal" ;
+                msg_warning() << "Two consecutives values are equal" ;
 
                 Vector3 direction =  triangleIncisionInformation[i].coordinates[1] - triangleIncisionInformation[i].coordinates[0];
                 direction *= epsilon;
@@ -948,8 +944,7 @@ void TopologicalChangeProcessor::saveIndices()
                 int triIndex;
                 findElementIndex(Vector3(newPosition), triIndex, -1);
 
-                msg_error_when( (triIndex==-1) )
-                        << "Error while searching triangle index." ;
+                msg_error_when( (triIndex==-1) ) << "Error while searching triangle index." ;
 
                 triangleIncisionInformation[i].triangleIndices[0] = (unsigned int) triIndex;
 
@@ -1008,7 +1003,7 @@ std::vector<SReal> TopologicalChangeProcessor::getValuesInLine(std::string line,
             {
                 if (nbElements*4 < values.size())
                 {
-                    msg_warning() << "Incorrect input in '" << m_filename.getValue() <<"'. Too much values (" << values.size()<< ") in input in " << std::string(line) ;
+                    msg_warning() << "Incorrect input in '" << m_filename.getValue() << "'. Too much values (" << values.size() << ") in input in " << std::string(line);
                 }
                 else if (nbElements*3 > values.size())
                 {
@@ -1140,7 +1135,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
         triangleGeo->getTriangleVertexCoordinates(i, points);
 
         //get d in the equation of the plane of the triangle ax+by+cz + d = 0
-        SReal d = - (points[0][0] * c + points[0][1] * b + points[0][2] * c );
+        SReal d = - (points[0][0] * a + points[0][1] * b + points[0][2] * c );
         Vector3 projectedPoint;
 
         projectedPoint[0] = ((b * b + c * c) * x - a * b * y - a * c * z - d * a) /*/normalNorm*/;
@@ -1245,14 +1240,14 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     {
         if (triangleIncisionInformation[indexOfTime].triangleIndices.empty())
         {
-            msg_error() << "List of triangles indices cannot be empty. Aborting. " ;
+            msg_error() << "List of triangles indices cannot be empty. Aborting. ";
             return;
         }
         ind_ta = triangleIncisionInformation[indexOfTime].triangleIndices[0];
     }
     else
     {
-        msg_error() <<  "found index '" << indexOfTime << "' which is larger than the vector size '" << triangleIncisionInformation.size() <<"'" ;
+        msg_error() << "found index '" << indexOfTime << "' which is larger than the vector size '" << triangleIncisionInformation.size() << "'";
         return;
     }
 
@@ -1293,14 +1288,11 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
 
         if (!isPathOk)
         {
-            dmsg_error() << "While computing computeIntersectedPointsList between triangles '"
+            msg_error() << "While computing computeIntersectedPointsList between triangles '"
                     << errorTrianglesIndices[errorTrianglesIndices.size() - 1] << "' and '" << errorTrianglesIndices[errorTrianglesIndices.size() - 2]  << "' at time = '" << getContext()->getTime()  << "'" ;
 
-            if(DEBUG_MSG)
-            {
-                dmsg_error() << " a = " << a << " b = " << b << msgendl
+            msg_error() << " a = " << a << " b = " << b << msgendl
                              << "ind_ta = " << ind_ta << " ind_tb = " << ind_tb ;
-            }
 
             break;
         }

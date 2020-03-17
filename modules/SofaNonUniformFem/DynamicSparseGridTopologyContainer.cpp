@@ -63,7 +63,7 @@ void DynamicSparseGridTopologyContainer::init()
     this->getContext()->get(VoxelLoader);
     if ( !VoxelLoader )
     {
-        this->serr << "DynamicSparseGridTopologyContainer::init(): No VoxelLoader found! Aborting..." << this->sendl;
+        msg_error() << "DynamicSparseGridTopologyContainer::init(): No VoxelLoader found! Aborting...";
         exit(EXIT_FAILURE);
     }
 

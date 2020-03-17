@@ -53,8 +53,8 @@ namespace sofa
                 //typedef sofa::defaulttype::Vec<1, Real>                       Coord1D;
                 //typedef sofa::defaulttype::Vec<2, Real>                       Coord2D;
                 //typedef sofa::defaulttype::Vec<3, Real>                       Coord3D;
-                typedef sofa::defaulttype::ResizableExtVector <Coord>       ResizableExtVectorCoord;
-                typedef sofa::defaulttype::ResizableExtVector <VecCoord>    ResizableExtVectorVecCoord;
+                typedef sofa::helper::vector <Coord>       VectorCoord;
+                typedef sofa::helper::vector <VecCoord>    VectorVecCoord;
                 //typedef sofa::helper::vector <Coord3D>    VecCoord3D;
 
             public:

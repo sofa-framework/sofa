@@ -200,15 +200,15 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 {
     if (e1.getIndex() >= e1.getCollisionModel()->getSize())
     {
-        intersection->serr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e1 index "
-                << e1.getIndex() << " on CM " << e1.getCollisionModel()->getName() << " of size " << e1.getCollisionModel()->getSize()<<intersection->sendl;
+        msg_error(intersection) << "computeIntersection(Triangle, Triangle): ERROR invalid e1 index "
+            << e1.getIndex() << " on CM " << e1.getCollisionModel()->getName() << " of size " << e1.getCollisionModel()->getSize();
         return 0;
     }
 
     if (e2.getIndex() >= e2.getCollisionModel()->getSize())
     {
-        intersection->serr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e2 index "
-                << e2.getIndex() << " on CM " << e2.getCollisionModel()->getName() << " of size " << e2.getCollisionModel()->getSize()<<intersection->sendl;
+        msg_error(intersection) << "computeIntersection(Triangle, Triangle): ERROR invalid e2 index "
+            << e2.getIndex() << " on CM " << e2.getCollisionModel()->getName() << " of size " << e2.getCollisionModel()->getSize();
         return 0;
     }
 

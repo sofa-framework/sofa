@@ -114,10 +114,12 @@ void IndicesFromValues<T>::doUpdate()
                     break;
                 }
             }
-            if (index >= 0)
+            if (index >= 0) {
                 indices.push_back(index);
-            else
-                serr << "Input value " << i <<" not found : " << v << sendl;
+            }
+            else {
+                msg_error() << "Input value " << i << " not found : " << v;
+            }
         }
     }
 }

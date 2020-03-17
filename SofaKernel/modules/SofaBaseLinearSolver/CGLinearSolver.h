@@ -39,8 +39,6 @@ namespace component
 namespace linearsolver
 {
 
-//#define DISPLAY_TIME
-
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 class CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector>
@@ -57,11 +55,7 @@ public:
     Data<bool> f_warmStart; ///< Use previous solution as initial solution
     Data<bool> f_verbose; ///< Dump system state at each iteration
     Data<std::map < std::string, sofa::helper::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
-#ifdef DISPLAY_TIME
-    SReal time1;
-    SReal time2;
-    SReal timeStamp;
-#endif
+
 protected:
 
     CGLinearSolver();

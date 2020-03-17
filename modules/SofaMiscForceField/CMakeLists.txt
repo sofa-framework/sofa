@@ -13,14 +13,11 @@ set(SOURCE_FILES
 list(APPEND HEADER_FILES
     GearSpringForceField.h
     GearSpringForceField.inl
-    MatrixMass.h
-    MatrixMass.inl
     MeshMatrixMass.h
     MeshMatrixMass.inl
     )
 list(APPEND SOURCE_FILES
     GearSpringForceField.cpp
-    MatrixMass.cpp
     MeshMatrixMass.cpp
     )
 

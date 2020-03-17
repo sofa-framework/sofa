@@ -105,7 +105,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
 
     if (model1->getContactStiffness(0) == 0 || model2->getContactStiffness(0) == 0)
     {
-        serr << "Disabled FrictionContact with " << (outputs.size()) << " collision points." << sendl;
+        msg_error() << "Disabled FrictionContact with " << (outputs.size()) << " collision points.";
         return;
     }
 
@@ -215,7 +215,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::creat
     const double mu_ = this->mu.getValue();
     // Checks if friction is considered
     if ( mu_ < 0.0 )
-        serr << sendl << "Error: mu has to take positive values" << sendl;
+        msg_error() << "mu has to take positive values";
 
     int i=0;
     if (m_constraint)

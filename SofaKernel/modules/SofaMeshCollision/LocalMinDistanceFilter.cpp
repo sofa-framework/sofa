@@ -65,13 +65,13 @@ void LocalMinDistanceFilter::bwdInit()
 
         if(r_mapping==nullptr)
         {
-            serr<<"No RigidMapping were found in the same or child node: maybe a template problem (only works for double)"<<sendl;
+            msg_error() << "No RigidMapping were found in the same or child node: maybe a template problem (only works for double)";
             this->setRigid(false);
             return;
         }
         if(!r_mapping->useX0.getValue())
         {
-            serr<<"optimization for rigid can not be used if the RigidMapping.useX0=false : cancel optim"<<sendl;
+            msg_error() << "optimization for rigid can not be used if the RigidMapping.useX0=false : cancel optim";
             this->setRigid(false);
             return;
         }

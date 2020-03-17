@@ -286,8 +286,8 @@ protected:
     SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
-    const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
-    const defaulttype::ResizableExtVector<int> *extvertPosIdx;
+    const helper::vector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
+    const helper::vector<int> *extvertPosIdx;
     Data< float > showDeformationGradientScale; ///< Scale for deformation gradient display
     Data< helper::OptionsGroup > showDeformationGradientStyle; ///< Visualization style for deformation gradients
     Data< helper::OptionsGroup > showColorOnTopology; ///< Color mapping method

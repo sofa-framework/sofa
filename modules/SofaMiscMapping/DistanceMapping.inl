@@ -104,23 +104,25 @@ void DistanceMapping<TIn, TOut>::init()
             {
                 restLengths[i] = (pos[links[i][0]] - pos[links[i][1]]).norm();
 
-                if( restLengths[i]<=s_null_distance_epsilon && compliance ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
+                msg_error_when(restLengths[i] <= s_null_distance_epsilon && compliance) << "Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof " << i << " if used with a compliance";
             }
         }
         else
         {
-            if( compliance ) serr<<"Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance"<<sendl;
+            msg_error_when(compliance) << "Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance";
             for(unsigned i=0; i<links.size(); i++ )
                 restLengths[i] = (Real)0.;
         }
     }
-    else // manually set
-        if( compliance ) // for warning message
-        {
-            helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
-            for(unsigned i=0; i<links.size(); i++ )
-                if( restLengths[i]<=s_null_distance_epsilon ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
-        }
+    else if (compliance) // for warning message
+    {
+        helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
+        std::stringstream sstream;
+        for (unsigned i = 0; i < links.size(); i++)
+            if (restLengths[i] <= s_null_distance_epsilon) 
+                sstream << "Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof " << i << " if used with a compliance \n";
+        msg_error_when(!sstream.str().empty()) << sstream.str();
+    }
 
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
@@ -198,8 +200,6 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     }
 
     jacobian.compress();
-//    serr<<"apply, jacobian: "<<std::endl<< jacobian << sendl;
-
 }
 
 
@@ -443,7 +443,7 @@ void DistanceMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int
             break;
     if(i==this->fromModels.size())
     {
-        serr<<"SubsetMultiMapping<TIn, TOut>::addPoint, parent "<<from->getName()<<" not found !"<< sendl;
+        msg_error() << "SubsetMultiMapping<TIn, TOut>::addPoint, parent " << from->getName() << " not found !";
         assert(0);
     }
 
@@ -506,23 +506,24 @@ void DistanceMultiMapping<TIn, TOut>::init()
 
                 restLengths[i] = (pos0 - pos1).norm();
 
-                if( restLengths[i]==0 && compliance ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
+                msg_error_when(restLengths[i] == 0 && compliance) << "Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof " << i << " if used with a compliance";
             }
         }
         else
         {
-            if( compliance ) serr<<"Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance"<<sendl;
+            msg_error_when(compliance) << "Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance";
             for(unsigned i=0; i<links.size(); i++ )
                 restLengths[i] = (Real)0.;
         }
     }
-    else // manually set
-        if( compliance ) // for warning message
-        {
-            helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
-            for(unsigned i=0; i<links.size(); i++ )
-                if( restLengths[i]<=s_null_distance_epsilon ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
-        }
+    else if( compliance ) // manually set // for warning message
+    {
+        helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
+        std::stringstream sstream;
+        for(unsigned i=0; i<links.size(); i++ )
+            if( restLengths[i]<=s_null_distance_epsilon ) sstream <<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance \n";
+        msg_error_when(!sstream.str().empty()) << sstream.str();
+    }
 
     alloc();
 

@@ -363,7 +363,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # X11 functions are used in glfont.cpp
     sofa_find_package(X11 REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_X11_LIB})
-    target_include_directories(${PROJECT_NAME} PUBLIC
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
         "$<BUILD_INTERFACE:${X11_X11_INCLUDE_PATH}>"
         # No INSTALL_INTERFACE include dir => dev user will need to find_package this dependency
         )
@@ -384,7 +384,7 @@ if(NOT SOFA_NO_OPENGL)
         target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL OpenGL::GLU)
     else()
         target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_LIBRARIES})
-        target_include_directories(${PROJECT_NAME} PUBLIC ${OPENGL_INCLUDE_DIR})
+        target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${OPENGL_INCLUDE_DIR})
     endif()
     if(CMAKE_SYSTEM_NAME STREQUAL Linux AND SOFA_BUILD_RELEASE_PACKAGE AND OPENGL_GLU_FOUND)
         # Add GLU to Linux binaries
@@ -429,7 +429,7 @@ if(EIGEN3_FOUND)
         PATTERN "*.txt" EXCLUDE
         PATTERN "*.cpp" EXCLUDE
         )
-    target_include_directories(${PROJECT_NAME} PUBLIC
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
         "$<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>"
         "$<INSTALL_INTERFACE:include/extlibs/Eigen>"
         )
@@ -444,7 +444,7 @@ if(JSON_FOUND)
         PATTERN "*.txt" EXCLUDE
         PATTERN "*.cpp" EXCLUDE
         )
-    target_include_directories(${PROJECT_NAME} PUBLIC
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
         "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>"
         "$<INSTALL_INTERFACE:include/extlibs/json>"
         )

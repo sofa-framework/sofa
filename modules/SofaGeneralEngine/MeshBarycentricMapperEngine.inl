@@ -98,7 +98,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
 
     if(TopoInput==nullptr)
     {
-        serr<<"no TopoInput found !!"<<sendl;
+        msg_error() << "no TopoInput found !!";
         return;
     }
     /*

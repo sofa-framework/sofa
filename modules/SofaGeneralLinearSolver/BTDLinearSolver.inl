@@ -662,7 +662,6 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
         //	nHn_1.resize(1);
         //	nHn_1[0] = B[i] *alpha_inv[i-1];
         //	H.insert(make_pair(IndexPair(i,i-1),nHn_1[0])); //IndexPair(i+1,i) ??
-        //	serr<<" Add pair ("<<i<<","<<i-1<<")"<<sendl;
         //}
 
         msg_info_when(this->f_verbose.getValue()) << "alpha_inv["<<i<<"] = " << alpha_inv[i] ;
@@ -780,17 +779,14 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
 
 
         H_it = H.find( IndexPair(i0,j0+1) );
-        //serr<<" find pair ("<<i<<","<<j0+1<<")"<<sendl;
 
         if (H_it == H.end())
         {
             my_identity(iHj, bsize);
-            if (i0!=j0+1)
-                serr<<"WARNING !! element("<<i0<<","<<j0+1<<") not found : nBlockComputedMinv[i] = "<<nBlockComputedMinv[i]<<sendl;
+            msg_error_when(i0 != j0 + 1) << "element(" << i0 << "," << j0 + 1 << ") not found : nBlockComputedMinv[i] = " << nBlockComputedMinv[i];
         }
         else
         {
-            //serr<<"element("<<i0<<","<<j0+1<<")  found )!"<<sendl;
             iHj = H_it->second;
         }
 
@@ -1295,7 +1291,7 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
     const Index Jcols = J.colSize();
     if (Jcols != Minv.rowSize())
     {
-        serr << "BTDLinearSolver::addJMInvJt ERROR: incompatible J matrix size." << sendl;
+        msg_error() << "AddJMInvJt: incompatible J matrix size.";
         return false;
     }
 

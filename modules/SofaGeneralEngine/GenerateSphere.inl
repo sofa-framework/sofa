@@ -168,8 +168,8 @@ void GenerateSphere<DataTypes>::init()
 	} else if (f_platonicSolidName.getValue() == "octahedron"){
 		platonicSolid=OCTAHEDRON;
 	} else {
-		serr << "Wrong Platonic Solid Name : "<< f_platonicSolidName <<sendl;
-		serr << "It should be either \"tetrahedron\", \"octahedron\" or \"icosahedron\" "<<sendl;
+        msg_error() << "Wrong Platonic Solid Name : "<< f_platonicSolidName << msgendl
+		 << "It should be either \"tetrahedron\", \"octahedron\" or \"icosahedron\" ";
 	}
 
 }

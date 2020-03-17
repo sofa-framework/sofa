@@ -45,8 +45,7 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
     helper::vector<BaseObject*>::iterator object;
     node->get<BaseObject>(&objectList,BaseContext::Local);
     sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
-    if(!node->f_bbox.isSet())
-        nodeBBox->invalidate();
+    nodeBBox->invalidate();
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
         sofa::helper::AdvancedTimer::stepBegin("ComputeBBox: " + (*object)->getName());
@@ -58,9 +57,9 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
         // if some objects does not participate to the bounding box where they should,
         // you should overload their computeBBox function to correct that
         (*object)->computeBBox(params, true);
-//        cerr<<"UpdateBoundingBoxVisitor::processNodeTopDown object " << (*object)->getName() << " = "<< (*object)->f_bbox.getValue(params) << endl;
+
         nodeBBox->include((*object)->f_bbox.getValue(params));
-//        cerr << "   new bbox = " << *nodeBBox << endl;
+
         sofa::helper::AdvancedTimer::stepEnd("ComputeBBox: " + (*object)->getName());
     }
     node->f_bbox.endEdit(params);
@@ -76,7 +75,6 @@ void UpdateBoundingBoxVisitor::processNodeBottomUp(simulation::Node* node)
     Node::ChildIterator childNode;
     for( childNode = node->child.begin(); childNode!=node->child.end(); ++childNode)
     {
-//        cerr<<"   UpdateBoundingBoxVisitor::processNodeBottomUpDown object " << (*childNode)->getName() << endl;
         nodeBBox->include((*childNode)->f_bbox.getValue(params));
     }
     node->f_bbox.endEdit(params);

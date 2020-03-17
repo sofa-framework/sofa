@@ -344,8 +344,8 @@ protected :
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
-    const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
-    const defaulttype::ResizableExtVector<int> *extvertPosIdx;
+    const helper::vector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
+    const helper::vector<int> *extvertPosIdx;
 
     void updateForceMask() override;
 

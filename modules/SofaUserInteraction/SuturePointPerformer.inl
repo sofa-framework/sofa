@@ -55,7 +55,7 @@ void SuturePointPerformer<DataTypes>::start()
 
         if (picked.body == nullptr || CollisionModel == nullptr)
         {
-            this->interactor->serr << "Error: SuturePointPerformer no picked body in first clic." << this->interactor->sendl;
+            msg_error(this->interactor) << "No picked body in first clic.";
             return;
         }
 
@@ -69,7 +69,7 @@ void SuturePointPerformer<DataTypes>::start()
 
         if (picked.body == nullptr || CollisionModel == nullptr)
         {
-            this->interactor->serr << "Error: SuturePointPerformer no picked body in second clic." << this->interactor->sendl;
+            msg_error(this->interactor) << "No picked body in second clic.";
             return;
         }
 
@@ -85,22 +85,22 @@ void SuturePointPerformer<DataTypes>::start()
 
         if (!SpringObject)
         {
-            this->interactor->serr << "Error: can't find StiffSpringForceField." << this->interactor->sendl;
+            msg_error(this->interactor) << "Can't find StiffSpringForceField.";
             return;
         }
         else if (!triangleContainer)
         {
-            this->interactor->serr << "Error: can't find triangleContainer." << this->interactor->sendl;
+            msg_error(this->interactor) << "Can't find triangleContainer.";
             return;
         }
         else if (!MechanicalObject)
         {
-            this->interactor->serr << "Error: can't find MechanicalObject." << this->interactor->sendl;
+            msg_error(this->interactor) << "Can't find MechanicalObject.";
             return;
         }
         else if (!FixObject)
         {
-            this->interactor->serr << "Error: can't find FixObject." << this->interactor->sendl;
+            msg_error(this->interactor) << "Can't find FixObject.";
             return;
         }
 

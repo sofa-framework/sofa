@@ -125,6 +125,15 @@ void DrawToolGL::drawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& col
     glEnd();
 }
 
+void DrawToolGL::drawInfiniteLine(const Vector3 &point, const Vector3 &direction, const Vec4f& color)
+{
+    glBegin(GL_LINES);
+    glColor4f(color[0],color[1],color[2],color[3]);
+    glVertex4d(point[0], point[1], point[2], 1.0);
+    glVertex4d(direction[0], direction[1], direction[2], 0.0);
+    glEnd();
+}
+
 void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const Vec<4,float>& color)
 {
     setMaterial(color);
@@ -221,6 +230,70 @@ void DrawToolGL::drawLineLoop(const std::vector<Vector3> &points, float size, co
     resetMaterial(color);
     glLineWidth(1);
 }
+
+void DrawToolGL::drawDisk(float radius, double from, double to, int resolution, const Vec4f& color)
+{
+    if (from > to)
+        to += 2.0 * M_PI;
+    glBegin(GL_TRIANGLES);
+    {
+        glColor4f(color.x(), color.y(), color.z(), color.w());
+        bool first = true;
+        float prev_alpha = 0;
+        float prev_beta = 0;
+        bool stop = false;
+        for (int i  = 0 ; i <= resolution ; ++i)
+        {
+            double angle = (double(i) / double(resolution) * 2.0 * M_PI) + from;
+            if(angle >= to)
+            {
+                angle = to;
+                stop = true;
+            }
+            float alpha = float(std::sin(angle));
+            float beta = float(std::cos(angle));
+
+            if (first)
+            {
+                first = false;
+                prev_alpha = alpha;
+                prev_beta = beta;
+            }
+            glVertex3f(0.0, 0.0, 0.0);
+            glVertex3f(radius * prev_alpha, radius * prev_beta, 0.0);
+            glVertex3f(radius * alpha, radius * beta, 0.0);
+            if (stop)
+                break;
+            prev_alpha = alpha;
+            prev_beta = beta;
+        }
+    }
+    glEnd();
+}
+
+void DrawToolGL::drawCircle(float radius, float lineThickness, int resolution, const Vec4f& color)
+{
+    glLineWidth(lineThickness);
+    glEnable(GL_LINE_SMOOTH);
+
+    glBegin(GL_LINE_STRIP);
+    {
+        glColor4f(color.x(), color.y(), color.z(), color.w());
+        for (int i  = 0 ; i <= resolution ; ++i)
+        {
+            float angle = float(double(i) / double(resolution) * 2.0 * M_PI);
+            float alpha = std::sin(angle);
+            float beta = std::cos(angle);
+
+            glVertex3f(radius * alpha, radius * beta, 0.0);
+        }
+    }
+    glEnd();
+
+    glDisable(GL_LINE_SMOOTH);
+    glLineWidth(1.0f);
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -597,21 +670,26 @@ void DrawToolGL::drawArrow(const Vector3& p1, const Vector3 &p2, float radius, c
 
 void DrawToolGL::drawArrow(const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const Vec<4,float>& color, int subd)
 {
+    drawArrow(p1, p2, radius, coneLength, radius * 2.5f, color, subd);
+}
+
+void DrawToolGL::drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, float coneRadius, const Vec4f& color, int subd)
+{
     // fixed coneLength ; cone can be stretched or when its length depends on the total arrow length
 
     Vector3 a = p2 - p1;
     SReal n = a.norm();
     if( coneLength >= n )
-        drawCone( p1,p2,radius*2.5f,0,color,subd);
+        drawCone( p1,p2,coneRadius,0,color,subd);
     else
     {
         a /= n; // normalizing
         Vector3 p3 = p2 - coneLength*a;
         drawCylinder( p1,p3,radius,color,subd);
-        drawCone( p3,p2,radius*2.5f,0,color,subd);
+        drawCone( p3,p2,coneRadius,0,color,subd);
     }
-
 }
+
 
 void DrawToolGL::drawCross(const Vector3&p, float length, const Vec4f& color)
 {

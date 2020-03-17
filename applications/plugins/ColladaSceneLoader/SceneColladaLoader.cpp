@@ -880,14 +880,14 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                         if(0 != currentAiMesh->mNumVertices)
                         {
-                            sofa::defaulttype::ResizableExtVector<OglModel::Deriv> normals;
+                            sofa::helper::vector<OglModel::Deriv> normals;
                             normals.resize(currentAiMesh->mNumVertices);
                             memcpy(&normals[0], currentAiMesh->mNormals, currentAiMesh->mNumVertices * sizeof(aiVector3D));
                             currentOglModel->setVnormals(&normals);
                         }
                     }
 
-                    IdentityMapping<Vec3Types, ExtVec3Types>::SPtr currentIdentityMapping = sofa::core::objectmodel::New<IdentityMapping<Vec3Types, ExtVec3Types> >();
+                    IdentityMapping<Vec3Types, Vec3Types>::SPtr currentIdentityMapping = sofa::core::objectmodel::New<IdentityMapping<Vec3Types, Vec3Types> >();
                     {
                         // adding the generated IdentityMapping to its parent Node
                         currentSubNode->addObject(currentIdentityMapping);

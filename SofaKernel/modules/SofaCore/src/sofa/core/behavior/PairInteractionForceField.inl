@@ -61,7 +61,7 @@ void PairInteractionForceField<DataTypes>::init()
 
     if (mstate1.get() == nullptr || mstate2.get() == nullptr)
     {
-        serr<< "Init of PairInteractionForceField " << getContext()->getName() << " failed!" << sendl;
+        msg_error() << "Init of PairInteractionForceField " << getContext()->getName() << " failed!";
         //getContext()->removeObject(this);
         return;
     }
@@ -73,14 +73,14 @@ void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mpar
 {
     if (mstate1 && mstate2)
     {
-            addForce( mparams, *fId[mstate1.get(mparams)].write()   , *fId[mstate2.get(mparams)].write()   ,
-                    *mparams->readX(mstate1), *mparams->readX(mstate2),
-                    *mparams->readV(mstate1), *mparams->readV(mstate2) );
+        addForce(mparams, *fId[mstate1.get(mparams)].write(), *fId[mstate2.get(mparams)].write(),
+            *mparams->readX(mstate1), *mparams->readX(mstate2),
+            *mparams->readV(mstate1), *mparams->readV(mstate2));
 
         updateForceMask();
     }
     else
-        serr<<"PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* /*mparams*/, MultiVecDerivId /*fId*/ ), mstate missing"<<sendl;
+        msg_error() << "PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* /*mparams*/, MultiVecDerivId /*fId*/ ), mstate missing";
 }
 
 template<class DataTypes>
@@ -88,12 +88,12 @@ void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mpa
 {
     if (mstate1 && mstate2)
     {
-            addDForce(
-                mparams, *dfId[mstate1.get(mparams)].write()    , *dfId[mstate2.get(mparams)].write()   ,
-                *mparams->readDx(mstate1) , *mparams->readDx(mstate2) );
+        addDForce(
+            mparams, *dfId[mstate1.get(mparams)].write(), *dfId[mstate2.get(mparams)].write(),
+            *mparams->readDx(mstate1), *mparams->readDx(mstate2));
     }
     else
-        serr<<"PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* /*mparams*/, MultiVecDerivId /*fId*/ ), mstate missing"<<sendl;
+        msg_error() << "PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* /*mparams*/, MultiVecDerivId /*fId*/ ), mstate missing";
 }
 
 template<class DataTypes>

@@ -70,7 +70,7 @@ void ConstantForceField<DataTypes>::parse(BaseObjectDescription* arg)
     const char* val1=arg->getAttribute("points",nullptr) ;
     if(val1)
     {
-        msg_error() << "The attribute 'points' is no longer valid."
+        msg_error() << "The attribute 'points' is no longer valid. "
                     << "It has been converted into 'indices' since Sofa 17.06 '" ;
 
     }
@@ -79,7 +79,7 @@ void ConstantForceField<DataTypes>::parse(BaseObjectDescription* arg)
     const char* val2=arg->getAttribute("arrowSizeCoef",nullptr) ;
     if(val2)
     {
-        msg_error() << "The attribute 'arrowSizeCoef' is no longer valid."
+        msg_error() << "The attribute 'arrowSizeCoef' is no longer valid. "
                     << "It has been converted into 'showArrowSize' since Sofa 19.12 '" ;
 
     }
@@ -432,7 +432,6 @@ void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* param
             _f1[m_systemSize - indices[i] - 1] += forces[i];
         }
     }
-
 }
 
 template <class DataTypes>

@@ -91,7 +91,7 @@ void DataDisplay::init()
 
     this->getContext()->get(colorMap);
     if (!colorMap) {
-        serr << "No ColorMap found, using default." << sendl;
+        msg_error() << "No ColorMap found, using default.";
         colorMap = OglColorMap::getDefault();
     }
 }
@@ -124,27 +124,27 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     // TODO: can this go to updateVisual()?
     if (ptData.size() > 0) {
         if (ptData.size() != x.size()) {
-            serr << "Size of pointData does not mach number of nodes" << sendl;
+            msg_error() << "Size of pointData does not mach number of nodes";
         } else {
             bDrawPointData = true;
         }
     } else if (triData.size() > 0 || quadData.size()>0 ) {
         if (!m_topology ) {
-            serr << "Topology is necessary for drawing cell data" << sendl;
+            msg_error() << "Topology is necessary for drawing cell data";
         } else if (triData.size() != m_topology->getNbTriangles()) {
-            serr << "Size of triangleData does not match number of triangles" << sendl;
+            msg_error() << "Size of triangleData does not match number of triangles";
         } else if (quadData.size() != m_topology->getNbQuads()) {
-            serr << "Size of quadData does not match number of quads" << sendl;
+            msg_error() << "Size of quadData does not match number of quads";
         } else {
             bDrawCellData = true;
         }
     } else if (pointTriData.size()>0 || pointQuadData.size()>0) {
         if (!m_topology ) {
-            serr << "Topology is necessary for drawing cell data" << sendl;
+            msg_error() << "Topology is necessary for drawing cell data";
         } else if (pointTriData.size() != m_topology->getNbTriangles()*3) {
-            serr << "Size of pointTriData does not match number of triangles" << sendl;
+            msg_error() << "Size of pointTriData does not match number of triangles";
         } else if (pointQuadData.size() != m_topology->getNbQuads()*4) {
-            serr << "Size of pointQuadData does not match number of quads" << sendl;
+            msg_error() << "Size of pointQuadData does not match number of quads";
         } else {
             bDrawCellData = true;
         }

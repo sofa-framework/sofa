@@ -59,18 +59,18 @@ public:
 
     void addKToMatrix(const MechanicalParams* /* mparams */, const sofa::core::behavior::MultiMatrixAccessor* /* matrix */ ) override
     {
-        serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
+        msg_error() << "addKToMatrix not implemented.";
     }
 
 
     /// initialization to export potential energy to gnuplot files format
     virtual void initGnuplot(const std::string path){
-        sout << path << std::endl << "Warning ::: initGnuplot not implemented for all interaction force field" << sendl;
+        msg_warning() << path << msgendl << "initGnuplot not implemented for all interaction force field";
     }
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
     virtual void exportGnuplot(SReal time){
-        sout << time << std::endl << "Warning ::: exportGnuplot not implemented for all interaction force field" << sendl;
+        msg_warning() << time << msgendl << "exportGnuplot not implemented for all interaction force field";
     }
 
 

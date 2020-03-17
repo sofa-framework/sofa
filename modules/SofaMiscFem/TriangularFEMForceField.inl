@@ -353,7 +353,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
 template <class DataTypes>
 SReal TriangularFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* x */) const
 {
-    serr<<"TriangularFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error() << "TriangularFEMForceField::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 
