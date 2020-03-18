@@ -19,7 +19,6 @@
 
 #include <iostream>
 
-using namespace std;
 #ifndef _WIN32
 #define OS_UNIX  // for Unix (Linux, Irix)
 #else
