@@ -5,7 +5,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields showWireframe" />
 
     <Node name="Particles">
-        <EulerSolver symplectic="1" />
+        <EulerExplicitSolver symplectic="1" />
         <MechanicalObject name="MModel" />
         <ParticleSource name="Source" translation="0 10 0" radius="0.01 0.1 0.01" velocity="0 -10 0" delay="0.02" start="-0.1" stop="4" printLog="0"
         center="-0.375 0 -0.75 

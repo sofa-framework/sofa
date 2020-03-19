@@ -7,8 +7,8 @@
 
     <Node name="SPH" >
 
-        <EulerExplicit symplectic="1" />
-        <RegularGrid nx="5" ny="400" nz="5" xmin="-3.0" xmax="0" ymin="-3" ymax="36" zmin="-3.0" zmax="0" />
+        <EulerExplicitSolver symplectic="1" />
+        <RegularGridTopology nx="5" ny="400" nz="5" xmin="-3.0" xmax="0" ymin="-3" ymax="36" zmin="-3.0" zmax="0" />
         <MechanicalObject name="MModel" />
         <!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
         <UniformMass name="M1" vertexMass="1" />

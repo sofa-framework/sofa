@@ -5,8 +5,8 @@
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <Node>
-<!--        <RungeKutta4 /> -->
-        <EulerSolver symplectic="1" />
+<!--        <RungeKutta4Solver /> -->
+        <EulerExplicitSolver symplectic="1" />
         <MechanicalObject name="MModel" />
         <!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
         <RegularGridTopology nx="5" ny="40" nz="5" xmin="-1.5" xmax="0" ymin="-3" ymax="12" zmin="-1.5" zmax="0" drawEdges="1"/>
