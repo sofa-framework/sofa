@@ -4,7 +4,7 @@
     <VisualStyle displayFlags="hideBehaviorModels showForceFields hideCollisionModels hideVisualModels" />
 
     <Node name="Floor">
-        <RegularGrid nx="2" ny="1" nz="2" xmin="20" xmax="-20" ymin="-3.05" ymax="-3.05" zmin="-20" zmax="20" />
+        <RegularGridTopology nx="2" ny="1" nz="2" xmin="20" xmax="-20" ymin="-3.05" ymax="-3.05" zmin="-20" zmax="20" />
         <MechanicalObject />
 
         <Node name="Visu">
@@ -16,7 +16,7 @@
     <Node name="SquareCloth1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <RegularGrid nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+        <RegularGridTopology nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <MechanicalObject />
         <UniformMass totalMass="100" />
         <BoxConstraint box="-12 7 12 -10 7 12    10 7 12 12 7 12" />

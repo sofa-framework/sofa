@@ -33,7 +33,7 @@
         </Node>
         <!--
 		<Node name="MAN">
-			<EulerSolver/>
+			<EulerExplicitSolver/>
 			<MechanicalObject template="Rigid"  dx="0.0" dy="0.0" dz="0.0"/>
 			<UniformMass totalmass="100.0"/>
 			<UncoupledConstraintCorrection/>
@@ -74,7 +74,7 @@
         </Node>
         <!--
 		<Node name="DRAGON1">
-			<EulerSolver/>
+			<EulerExplicitSolver/>
 			<MechanicalObject template="Rigid" scale="10.0"  dx="0.0" dy="2.5" dz="0.0"/>
 			<UniformMass totalmass="100.0"/>
 			<UncoupledConstraintCorrection/>

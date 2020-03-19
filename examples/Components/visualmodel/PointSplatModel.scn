@@ -9,7 +9,7 @@
     <BruteForceDetection name="N2" />
     <DefaultContactManager response="default" />
     <Node name="Fluid">
-        <RungeKutta4 />
+        <RungeKutta4Solver />
         <PointSetTopologyContainer />
         <MechanicalObject name="MModel" />
 <!--        <ParticleSource name="Source" center=" 

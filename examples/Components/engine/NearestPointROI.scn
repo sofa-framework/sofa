@@ -6,7 +6,7 @@
         <Node name="M1">
             <MechanicalObject />
             <UniformMass vertexMass="1" />
-            <RegularGrid nx="4" ny="4" nz="10" xmin="1" xmax="4" ymin="0" ymax="3" zmin="0" zmax="9" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="1" xmax="4" ymin="0" ymax="3" zmin="0" zmax="9" />
             <BoxConstraint box="0.9 -0.1 -0.1 4.1 3.1 0.1" />
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
@@ -15,7 +15,7 @@
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject />
             <UniformMass vertexMass="1" />
-            <RegularGrid nx="4" ny="4" nz="10" xmin="1" xmax="4" ymin="0" ymax="3" zmin="9" zmax="18" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="1" xmax="4" ymin="0" ymax="3" zmin="9" zmax="18" />
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
         <Node name="M3">
@@ -23,7 +23,7 @@
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject />
             <UniformMass vertexMass="1" />
-            <RegularGrid nx="4" ny="4" nz="10" xmin="1" xmax="4" ymin="0" ymax="3" zmin="18" zmax="27" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="1" xmax="4" ymin="0" ymax="3" zmin="18" zmax="27" />
             <!--<BoxConstraint box="0.9 -0.1 26.9 4.1 3.1 27.1" />-->
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
@@ -36,7 +36,7 @@
         <Node name="M1">
             <MechanicalObject name="mo"/>
             <UniformMass vertexMass="1" />
-            <RegularGrid nx="4" ny="4" nz="10" xmin="6" xmax="9" ymin="0" ymax="3" zmin="0" zmax="9" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="6" xmax="9" ymin="0" ymax="3" zmin="0" zmax="9" />
             <BoxConstraint box="5.9 -0.1 -0.1 9.1 3.1 0.1" />
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
@@ -45,7 +45,7 @@
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject name="mo"/>
             <UniformMass vertexMass="1" />
-            <RegularGrid nx="4" ny="4" nz="10" xmin="6" xmax="9" ymin="0" ymax="3" zmin="9" zmax="18" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="6" xmax="9" ymin="0" ymax="3" zmin="9" zmax="18" />
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
         <Node name="M3">
@@ -53,7 +53,7 @@
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject name="mo"/>
             <UniformMass vertexMass="1" />
-            <RegularGrid nx="4" ny="4" nz="10" xmin="6" xmax="9" ymin="0" ymax="3" zmin="18" zmax="27" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="6" xmax="9" ymin="0" ymax="3" zmin="18" zmax="27" />
             <!--<BoxConstraint box="-4.1 -0.1 26.9 -0.9 3.1 27.1" />-->
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
