@@ -5,7 +5,7 @@
 	<Node name="fluid">
 		<CentralDifferenceSolver/>
 <!--
-		<RungeKutta4/>
+		<RungeKutta4Solver/>
 		<EulerImplicitSolver rayleighMass="0" rayleighStiffness="0" />
 		<CGLinearSolver tolerance="1.0e-20" threshold="1.0e-12"/>
 -->

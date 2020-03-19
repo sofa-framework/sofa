@@ -18,7 +18,7 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         
-        <RegularGrid nx="50" ny="1" nz="50" xmin="-9" xmax="5" ymin="7" ymax="7" zmin="-7" zmax="7" name="Container" />
+        <RegularGridTopology nx="50" ny="1" nz="50" xmin="-9" xmax="5" ymin="7" ymax="7" zmin="-7" zmax="7" name="Container" />
         <MechanicalObject name="dofs" />
         <UniformMass totalMass="100" />
         <Node name="T">

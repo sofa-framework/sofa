@@ -14,7 +14,7 @@
 	    <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" /-->
     
         <Node name="FVM">
-            <EulerSolver name="odeExplicitSolver" />
+            <EulerExplicitSolver name="odeExplicitSolver" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader"  />
@@ -37,7 +37,7 @@
 	
 	
         <Node name="FEM">
-            <EulerSolver name="odeExplicitSolver" />
+            <EulerExplicitSolver name="odeExplicitSolver" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="7" />

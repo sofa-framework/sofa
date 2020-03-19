@@ -19,7 +19,7 @@
     <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
 
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" />
-       <RegularGrid 
+       <RegularGridTopology 
                    n="5 5 21"
                    min="-0.2 -0.2  -1"
                    max=" 0.2  0.2   1"/> 
@@ -47,7 +47,7 @@
     <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
 
        <MechanicalObject template="Vec3d" name="Triangles"   />
-       <RegularGrid 
+       <RegularGridTopology 
                    n="5 5 21"
                    min="-0.2 -0.2  -1"
                    max=" 0.2  0.2   1"/> 

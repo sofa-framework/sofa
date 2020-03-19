@@ -16,7 +16,7 @@
 	<Node name="external behavior model" >
 	  
 	    <MechanicalObject name="exposedDOF" template="Vec3d" showObject="1" showObjectScale="10"/>
-	    <RegularGrid />	    
+	    <RegularGridTopology />	    
 	    <FixedConstraint indices="0 1 2 3" />
 	  	    
 	    <FEMGridBehaviorModel youngModulus="100" poissonRatio="0.3" totalMass="3" subdivisions="10"/>
@@ -34,7 +34,7 @@
 	<Node name="external behavior model" >
 	  
 	    <MechanicalObject name="sofaDOFS" template="Vec3d" showObject="1" showObjectScale="1" translation="2 0 0"/>
-	    <RegularGrid n="11 11 11"/>	  
+	    <RegularGridTopology n="11 11 11"/>	  
 	    
 	    <FixedConstraint indices="0 10 110 120" />
 	  	    

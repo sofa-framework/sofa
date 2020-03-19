@@ -7,7 +7,7 @@
 	<DefaultCollisionGroupManager name="Group" />
 	
 	<Node name="M1" processor="0">
-    <RungeKutta4 />
+    <RungeKutta4Solver />
 		<MechanicalObject template="Vec3"/>
 		<UniformMass totalMass="200" />
 		<RegularGridTopology

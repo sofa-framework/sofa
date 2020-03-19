@@ -19,7 +19,7 @@
 		</Node>
 	</Node>
 	<Node name="M1">
-		<RungeKutta4 />
+		<RungeKutta4Solver />
 		<RegularGridTopology
 			nx="10" ny="10" nz="46"
 			xmin="-1.5" xmax="1.5"
@@ -39,7 +39,7 @@
 				zmin="-5.5" zmax="6.5"
 			/>
 			<MechanicalObject/>
-			<SphereModel radius="1.0" />
+			<SphereCollisionModel radius="1.0" />
 			<BarycentricMapping />
 		</Node>
 		<Node>

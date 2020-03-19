@@ -99,7 +99,7 @@
     	<VisualStyle displayFlags="showWireframe hideBehaviorModels" />
 
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" />
-       	<RegularGrid 
+       	<RegularGridTopology 
                    n="5 5 21"
                    min="-1.2 -0.2  -1"
                    max=" -0.8  0.2   1"/> 

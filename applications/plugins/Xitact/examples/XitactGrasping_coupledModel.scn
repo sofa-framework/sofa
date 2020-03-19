@@ -118,7 +118,7 @@
         </Node>
 
         <Node name="Tool1CM">
-          <RegularGrid nx="1" ny="2" nz="1" min="0 -350 0" max="0 0 0" />
+          <RegularGridTopology nx="1" ny="2" nz="1" min="0 -350 0" max="0 0 0" />
           <MechanicalObject name="Endoscope Collision State"/>
           <LineCollisionModel group="1"/>
           <PointCollisionModel group="1"/>
@@ -235,7 +235,7 @@
         </Node>
 
         <Node name="Tool1CM">
-          <RegularGrid nx="1" ny="2" nz="1" min="0 -350 0" max="0 0 0" />
+          <RegularGridTopology nx="1" ny="2" nz="1" min="0 -350 0" max="0 0 0" />
           <MechanicalObject name="Endoscope Collision State"/>
           <LineCollisionModel group="1"/>
           <PointCollisionModel group="1"/>
