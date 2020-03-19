@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" dt="0.02"  >
-	<RungeKutta4SolverSolver />
+	<RungeKutta4Solver />
 	<VisualStyle displayFlags="showBehavior" />
 	<Node >
 		<RegularGridTopology min="0 0 0"  max="1 1 1"  p0="0 0 0" />
