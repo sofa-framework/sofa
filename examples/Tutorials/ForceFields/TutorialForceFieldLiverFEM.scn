@@ -24,7 +24,7 @@
         <Node name="Surf" gravity="0 -9.81 0">
             <SphereLoader name="SphereLoader" filename="mesh/liver.sph" />
             <MechanicalObject name="mappedMS" position="@[-1].position" />
-            <SphereModel name="CollisionModel" listRadius="@[-2].listRadius" />
+            <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <BarycentricMapping name="sphere mapping" input="@../dofs" output="@mappedMS" />
         </Node>
     </Node>

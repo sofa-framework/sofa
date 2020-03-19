@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" dt="0.02"  >
-	<EulerSolver  />
+	<EulerExplicitSolver  />
 	<VisualStyle displayFlags="showBehavior" />
 	<Node >
 		<RegularGridTopology  />

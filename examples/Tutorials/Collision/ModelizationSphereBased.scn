@@ -14,7 +14,7 @@
         <UniformMass name="Mass" totalMass="1" />
         <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
         <!-- Collision Model -->
-        <SphereModel name="Sphere For Collision" />
+        <SphereCollisionModel name="Sphere For Collision" />
     </Node>
     <Node name="Floor">
         <MeshTopology name="Topology Floor" filename="mesh/floor.obj" />

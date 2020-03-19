@@ -16,7 +16,7 @@
             <UniformMass name="Mass" totalMass="1" />
             <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
             <!-- Collision Model -->
-            <SphereModel name="Spheres Cube1" radius="0.4" />
+            <SphereCollisionModel name="Spheres Cube1" radius="0.4" />
         </Node>
         <Node name="CubeSphere2">
             <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="0 0 6" />
@@ -24,7 +24,7 @@
             <UniformMass name="Mass" totalMass="1" />
             <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
             <!-- Collision Model -->
-            <SphereModel name="Spheres Cube2" radius="0.4" />
+            <SphereCollisionModel name="Spheres Cube2" radius="0.4" />
         </Node>
         <Node name="CubeGeometry1">
             <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="0 1 2" />
