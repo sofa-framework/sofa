@@ -3,7 +3,7 @@
 		<BackgroundSetting color="0.5 0.5 0.5" />
 
 		<Node name="Example">
-			<RegularGrid n="50 50 50"  min="0 0 0" max="10 10 10" />
+			<RegularGridTopology n="50 50 50"  min="0 0 0" max="10 10 10" />
             <MechanicalObject name="DOFs" template="Vec3d" />
             <SphereCollisionModel radius="0.1" />
         </Node >
