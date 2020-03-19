@@ -54,10 +54,6 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");
-#ifdef DISPLAY_TIME
-    timeStamp = 1.0 / (SReal)sofa::helper::system::thread::CTime::getRefTicksPerSec();
-#endif
-
     f_maxIter.setRequired(true);
     f_tolerance.setRequired(true);
     f_smallDenominatorThreshold.setRequired(true);
@@ -115,16 +111,8 @@ void CGLinearSolver<TMatrix,TVector>::resetSystem()
 template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
-#ifdef DISPLAY_TIME
-    sofa::helper::system::thread::CTime timer;
-    time2 = (SReal) timer.getTime();
-#endif
-
+    sofa::helper::ScopedAdvancedTimer("CG-setSystemMBKMatrix");
     Inherit::setSystemMBKMatrix(mparams);
-
-#ifdef DISPLAY_TIME
-    time2 = ((SReal) timer.getTime() - time2)  * timeStamp;
-#endif
 }
 
 /// Solve Mx=b
@@ -177,11 +165,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     unsigned nb_iter = 0;
     const char* endcond = "iterations";
 
-
-#ifdef DISPLAY_TIME
-    sofa::helper::system::thread::CTime timer;
-    time1 = (SReal) timer.getTime();
-#endif
+    sofa::helper::AdvancedTimer::stepBegin("CG-Solve");
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("VectorAllocation");
@@ -365,19 +349,12 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         }
     }
 
-#ifdef DISPLAY_TIME
-    time1 = (SReal)(((SReal) timer.getTime() - time1) * timeStamp / (nb_iter-1));
-#endif
+    sofa::helper::AdvancedTimer::stepEnd("CG-Solve");
 
     f_graph.endEdit();
     timeStepCount ++;
 
     sofa::helper::AdvancedTimer::valSet("CG iterations", nb_iter);
-
-    // x is the solution of the system
-#ifdef DISPLAY_TIME
-    dmsg_info() << " solve, CG = " << time1 << " build = " << time2;
-#endif
 
     dmsg_info() << "solve, nbiter = "<<nb_iter<<" stop because of "<<endcond;
     dmsg_info_when( verbose ) <<"solve, solution = "<< x ;

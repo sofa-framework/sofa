@@ -20,7 +20,7 @@
         </Node>
         <Node name="TriangleSurf">
             <MeshObjLoader name="loader" filename="mesh/frog.obj" />
-            <Mesh />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel group="1" />
             <LineCollisionModel group="1" />
@@ -44,7 +44,7 @@
         </Node>
         <Node name="QuadSurf">
             <MeshObjLoader name="loader" filename="mesh/frog_quads.obj" />
-            <Mesh />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel group="1" />
             <LineCollisionModel group="1" />

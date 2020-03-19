@@ -45,8 +45,7 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
     helper::vector<BaseObject*>::iterator object;
     node->get<BaseObject>(&objectList,BaseContext::Local);
     sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
-    if(!node->f_bbox.isSet())
-        nodeBBox->invalidate();
+    nodeBBox->invalidate();
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
         sofa::helper::AdvancedTimer::stepBegin("ComputeBBox: " + (*object)->getName());

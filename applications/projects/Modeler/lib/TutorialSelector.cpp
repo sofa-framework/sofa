@@ -30,6 +30,8 @@
 #include <QHeaderView>
 #include <QImage>
 
+#include <tinyxml.h>
+
 namespace sofa
 {
 
