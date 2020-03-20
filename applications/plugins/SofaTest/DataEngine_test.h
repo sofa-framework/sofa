@@ -92,6 +92,8 @@ struct DataEngine_test : public Sofa_test<>
 
     virtual void init()
     {
+        preInit();
+
         m_engineInput->init();
         m_engine->init();
 
@@ -128,24 +130,24 @@ struct DataEngine_test : public Sofa_test<>
 
         const DDGLinkContainer& inputs = m_engine->DDGNode::getInputs();
 
-        CHECKCOUNTER( 0 );  // c'est parti mon kiki
+        CHECKCOUNTER( 0 );
         const DDGLinkContainer& parent_inputs = m_engineInput->DDGNode::getInputs();
 
 
-        CHECKCOUNTER( 0 );  // c'est parti mon kiki
+        CHECKCOUNTER( 0 );
         const DDGLinkContainer& outputs = m_engine->DDGNode::getOutputs();
 
 
-        CHECKCOUNTER( 0 );  // c'est parti mon kiki
+        CHECKCOUNTER( 0 );
 
         // modifying inputs to ensure the engine should be evaluated
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {
             parent_inputs[i]->setDirtyValue();
-            CHECKCOUNTER( 0 );  // c'est parti mon kiki
+            CHECKCOUNTER( 0 );
         }
 
-        CHECKCOUNTER( 0 );  // c'est parti mon kiki
+        CHECKCOUNTER( 0 );
 
         outputs[0]->updateIfDirty(); // could call the engine
         CHECKMAXCOUNTER( 1 );
@@ -173,7 +175,11 @@ struct DataEngine_test : public Sofa_test<>
         }
         CHECKMAXCOUNTER( parent_inputs.size() );
     }
-
+private:
+    virtual void preInit()
+    {
+        // stub
+    }
 
 };
 
