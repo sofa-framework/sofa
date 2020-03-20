@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+        <VisualStyle displayFlags="showBehaviorModels" />
+    <Node name="Random">
+        <MeshObjLoader name="meshLoader" filename="mesh/liver.obj" />
+        <MechanicalObject src="@meshLoader"/>
+        <RandomPointDistributionInSurface template="Vec3d" drawOutputPoints="true"
+            vertices="@meshLoader.position" triangles="@meshLoader.triangles" numberOfInPoints="100" numberOfTests="3" minDistanceBetweenPoints="0.1" 
+        />
+    </Node>
+    <Node name="Visu">
+        <VisualStyle displayFlags="showWireFrame" />
+        <OglModel filename="mesh/liver.obj" />
+    </Node>
+</Node>
