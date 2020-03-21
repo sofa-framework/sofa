@@ -6,6 +6,9 @@ set(SOFABASE_TARGETS @SOFABASE_TARGETS@)
 
 find_package(SofaSimulation REQUIRED)
 
+# Eigen3 is required by SofaBaseTopology
+find_package(Eigen3 REQUIRED)
+
 foreach(target ${SOFABASE_TARGETS})
     if(NOT TARGET ${target})
         include("${CMAKE_CURRENT_LIST_DIR}/SofaBaseTargets.cmake")

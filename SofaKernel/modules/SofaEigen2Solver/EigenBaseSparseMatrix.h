@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_H
 #define SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_H
 
+#include <SofaEigen2Solver/config.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/SortedPermutation.h>
@@ -30,12 +31,9 @@
 #include <map>
 #include <Eigen/Sparse>
 
-#ifdef _OPENMP
+#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
 #include "EigenBaseSparseMatrix_MT.h"
 #endif
-
-
-
 
 namespace sofa
 {
@@ -45,12 +43,6 @@ namespace component
 
 namespace linearsolver
 {
-
-//#define EigenBaseSparseMatrix_CHECK
-//#define EigenBaseSparseMatrix_VERBOSE
-
-
-
 
 /** Sparse matrix based on the Eigen library.
 
@@ -311,7 +303,7 @@ public:
     void mult_MT( VectorEigen& result, const VectorEigen& data )
     {
         compress();
-#ifdef _OPENMP
+#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
         result = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, data );
 #else
         result = compressedMatrix * data;
@@ -434,7 +426,7 @@ public:
     /// @warning res MUST NOT be the same variable as this or rhs
     void mul_MT(EigenBaseSparseMatrix<Real>& res, const EigenBaseSparseMatrix<Real>& rhs) const
     {
-    #ifdef _OPENMP
+    #ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
         assert( &res != this );
         assert( &res != &rhs );
         ((EigenBaseSparseMatrix<Real>*)this)->compress();  /// \warning this violates the const-ness of the method
@@ -455,7 +447,7 @@ public:
     void mul_MT( Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& res, const Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& rhs )
     {
         compress();
-#ifdef _OPENMP
+#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
         res = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, rhs );
 #else
         res = compressedMatrix * rhs;

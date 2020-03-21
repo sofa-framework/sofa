@@ -410,18 +410,16 @@ cpack_add_component(resources
     GROUP runtime
     )
 
-set(CPACK_COMPONENTS_ALL applications headers Eigen_headers GTest_headers libraries resources)
+set(CPACK_COMPONENTS_ALL applications headers GTest_headers libraries resources)
 
 set(CPACK_COMPONENT_APPLICATIONS_DISPLAY_NAME "runSofa Application")
 set(CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
-set(CPACK_COMPONENT_EIGEN_HEADERS_DISPLAY_NAME "Eigen Headers")
 set(CPACK_COMPONENT_GTEST_HEADERS_DISPLAY_NAME "GTest Headers")
 set(CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
 set(CPACK_COMPONENT_RESOURCES_DISPLAY_NAME "Resources")
 
 set(CPACK_COMPONENT_APPLICATIONS_GROUP "Runtime")
 set(CPACK_COMPONENT_HEADERS_GROUP "Development")
-set(CPACK_COMPONENT_EIGEN_HEADERS_GROUP "Development")
 set(CPACK_COMPONENT_GTEST_HEADERS_GROUP "Development")
 set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
 set(CPACK_COMPONENT_RESOURCES_GROUP "Runtime")
@@ -459,10 +457,6 @@ if(CPACK_BINARY_IFW)
         )
     cpack_ifw_configure_component(headers
         DISPLAY_NAME "C++ Headers"
-        DEPENDS development
-        )
-    cpack_ifw_configure_component(Eigen_headers
-        DISPLAY_NAME "Eigen Headers"
         DEPENDS development
         )
     cpack_ifw_configure_component(GTest_headers

@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
 #define SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
 
+#include <SofaEigen2Solver/config.h>
 #include "EigenBaseSparseMatrix.h"
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
@@ -142,28 +143,6 @@ public:
         this->resize(nbBlockRows * Nout, nbBlockCols * Nin);
     }
 
-
-//    /// Finalize the matrix after a series of insertions. Add the values from the temporary list to the compressed matrix, and clears the list.
-//    virtual void compress()
-//    {
-//        Inherit::compress();
-
-//        if( incomingBlocks.empty() ) return;
-//        compress_incomingBlocks();
-//        this->compressedMatrix += this->compressedIncoming;
-//        this->compressedMatrix.finalize();
-//    }
-
-//    /** Return write access to an incoming block.
-//    Note that this does not give access to the compressed matrix.
-//    The block belongs to a temporary list which will be added to the compressed matrix using method compress().
-//    */
-//    Block& wBlock( int i, int j )
-//    {
-//        return incomingBlocks[i][j];
-//    }
-
-
     /// Schedule the addition of the block at the given place. Scheduled additions must be finalized using function compress().
     void addBlock( unsigned row, unsigned col, const Block& b )
     {
@@ -283,12 +262,6 @@ public:
         {
             int blRow = crs.rowIndex[xi];      // block row
 
-//            while( rowStarted<blRow*Nout )   // make sure all the rows are started, even the empty ones
-//            {
-//                this->compressedMatrix.startVec(rowStarted);
-//                rowStarted++;
-//            }
-
             typename CompressedRowSparseMatrix<Block>::Range rowRange(crs.rowBegin[xi], crs.rowBegin[xi+1]);
 
             for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
@@ -314,10 +287,6 @@ public:
 
     }
 
-#ifdef _OPENMP
-#define EIGENSPARSEMATRIX_PARALLEL
-#endif
-
 protected:
 
 	// max: factored out the two exact same implementations for
@@ -331,7 +300,7 @@ protected:
 		// use optimized product if possible
         if(canCast(data)) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
             if( alias(result, data) )
                 map(result) = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, map(data).template cast<Real>() );
             else
@@ -357,7 +326,7 @@ protected:
 		}
 		
         // compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
 #else
         aux2.noalias() = this->compressedMatrix * aux1;
@@ -380,7 +349,7 @@ protected:
 		// use optimized product if possible
 		if( canCast(data) ) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
             if( alias(result, data) )
                 map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
             else
@@ -410,7 +379,7 @@ protected:
 		}
         
         // compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
 #else
         aux2.noalias() = this->compressedMatrix * aux1;
@@ -432,7 +401,7 @@ protected:
 		// use optimized product if possible
 		if(canCast(result)) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
             if( alias(result, data) )
                 map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
             else {
@@ -462,7 +431,7 @@ protected:
 		}
 		
 		// compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), aux1 );
 #else
         aux2.noalias() = this->compressedMatrix.transpose() * aux1;
