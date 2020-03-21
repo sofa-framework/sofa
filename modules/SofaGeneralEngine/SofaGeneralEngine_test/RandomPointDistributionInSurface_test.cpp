@@ -105,33 +105,33 @@ namespace sofa
 		// Test suite for all the instanciations
 		TYPED_TEST_CASE(RandomPointDistributionInSurface_test, DataTypes);
 
-		//// test data setup
-		//TYPED_TEST(RandomPointDistributionInSurface_test, data_setup)
-		//{
-		//	testData();
-		//}
+		// test data setup
+		TYPED_TEST(RandomPointDistributionInSurface_test, data_setup)
+		{
+			testData();
+		}
 
-		////// test no input
-		//TYPED_TEST(RandomPointDistributionInSurface_test, no_input)
-		//{
-		//	testNoInput();
-		//}
+		//// test no input
+		TYPED_TEST(RandomPointDistributionInSurface_test, no_input)
+		{
+			testNoInput();
+		}
 
-		////// test with a not closed mesh
-		//TYPED_TEST(RandomPointDistributionInSurface_test, illFormedMesh)
-		//{
-		//	VecCoord vertices{ {1.0, 0.0, 0.0}, {2.0, 0.0, 0.0}, {3.0, 0.0, 0.0}, {4.0, 0.0, 0.0} };
-		//	VecTriangle triangles{ {0, 2, 3}, { 1, 3, 0}, {0, 2, 1}, {1, 2, 3} };
+		//// test with a not closed mesh
+		TYPED_TEST(RandomPointDistributionInSurface_test, illFormedMesh)
+		{
+			VecCoord vertices{ {1.0, 0.0, 0.0}, {2.0, 0.0, 0.0}, {3.0, 0.0, 0.0}, {4.0, 0.0, 0.0} };
+			VecTriangle triangles{ {0, 2, 3}, { 1, 3, 0}, {0, 2, 1}, {1, 2, 3} };
 
-		//	VecCoord outputPoints;
-		//	const unsigned int randomSeed = 123456789;
-		//	const unsigned int nbPoints = 100;
-		//	EXPECT_MSG_EMIT(Error);
-		//	generate(vertices, triangles, 0.001, randomSeed, 10, outputPoints); // fixed random seed
-		//	EXPECT_MSG_EMIT(Error);
-		//	generate(vertices, triangles, 0.001, 0, 10, outputPoints); // true random seed
-		//	// just asking for 10 points, otherwise takes forever to not find correct points...
-		//}
+			VecCoord outputPoints;
+			const unsigned int randomSeed = 123456789;
+			const unsigned int nbPoints = 100;
+			EXPECT_MSG_EMIT(Error);
+			generate(vertices, triangles, 0.001, randomSeed, 10, outputPoints); // fixed random seed
+			EXPECT_MSG_EMIT(Error);
+			generate(vertices, triangles, 0.001, 0, 10, outputPoints); // true random seed
+			// just asking for 10 points, otherwise takes forever to not find correct points...
+		}
 
 		// test with closed tetra
 		TYPED_TEST(RandomPointDistributionInSurface_test, closedMesh)
