@@ -108,63 +108,62 @@ namespace sofa
 		// test data setup
 		TYPED_TEST(RandomPointDistributionInSurface_test, data_setup)
 		{
-			testData();
+            this->testData();
 		}
 
 		//// test no input
 		TYPED_TEST(RandomPointDistributionInSurface_test, no_input)
 		{
-			testNoInput();
+            this->testNoInput();
 		}
 
 		//// test with a not closed mesh
 		TYPED_TEST(RandomPointDistributionInSurface_test, illFormedMesh)
 		{
-			VecCoord vertices{ {1.0, 0.0, 0.0}, {2.0, 0.0, 0.0}, {3.0, 0.0, 0.0}, {4.0, 0.0, 0.0} };
-			VecTriangle triangles{ {0, 2, 3}, { 1, 3, 0}, {0, 2, 1}, {1, 2, 3} };
+            typename TestFixture::VecCoord vertices{ {1.0, 0.0, 0.0}, {2.0, 0.0, 0.0}, {3.0, 0.0, 0.0}, {4.0, 0.0, 0.0} };
+            typename TestFixture::VecTriangle triangles{ {0, 2, 3}, { 1, 3, 0}, {0, 2, 1}, {1, 2, 3} };
 
-			VecCoord outputPoints;
+            typename TestFixture::VecCoord outputPoints;
 			const unsigned int randomSeed = 123456789;
-			const unsigned int nbPoints = 100;
+            const unsigned int nbPoints = 10; // just asking for 10 points, otherwise takes forever to not find correct points...
 			EXPECT_MSG_EMIT(Error);
-			generate(vertices, triangles, 0.001, randomSeed, 10, outputPoints); // fixed random seed
+            this->generate(vertices, triangles, 0.001, randomSeed, nbPoints, outputPoints); // fixed random seed
 			EXPECT_MSG_EMIT(Error);
-			generate(vertices, triangles, 0.001, 0, 10, outputPoints); // true random seed
-			// just asking for 10 points, otherwise takes forever to not find correct points...
+            this->generate(vertices, triangles, 0.001, 0, nbPoints, outputPoints); // true random seed
 		}
 
 		// test with closed tetra
 		TYPED_TEST(RandomPointDistributionInSurface_test, closedMesh)
 		{
-			VecCoord vertices{ {0.0, 1.0, 0.0}, {1.0, 0.0, 1.0}, {-1.0, 0.0, -1.0}, {1.0, 0.0, -1.0} };
-			VecTriangle triangles{ {2, 0, 3}, { 1, 3, 0}, {0, 2, 1}, {1, 2, 3} };
+            typename TestFixture::VecCoord vertices{ {0.0, 1.0, 0.0}, {1.0, 0.0, 1.0}, {-1.0, 0.0, -1.0}, {1.0, 0.0, -1.0} };
+            typename TestFixture::VecTriangle triangles{ {2, 0, 3}, { 1, 3, 0}, {0, 2, 1}, {1, 2, 3} };
 			
-			VecCoord outputPoints;			
+            typename TestFixture::VecCoord outputPoints;
 			const unsigned int randomSeed = 123456789;
 			const unsigned int nbPoints = 10;
 			EXPECT_MSG_NOEMIT(Error);
-			generate(vertices, triangles, 0.1, randomSeed, nbPoints, outputPoints); // fixed random seed
+            this->generate(vertices, triangles, 0.1, randomSeed, nbPoints, outputPoints); // fixed random seed
 			ASSERT_EQ(outputPoints.size(), nbPoints);
 
-			generate(vertices, triangles, 0.1, 0, nbPoints, outputPoints); // true random seed
+            this->generate(vertices, triangles, 0.1, 0, nbPoints, outputPoints); // true random seed
 			ASSERT_EQ(outputPoints.size(), nbPoints);
 		}
 
 		// test with seeds
 		TYPED_TEST(RandomPointDistributionInSurface_test, seeds)
 		{
-			VecCoord vertices{ {0.0, 1.0, 0.0}, {1.0, 0.0, 1.0}, {-1.0, 0.0, -1.0}, {1.0, 0.0, -1.0} };
-			VecTriangle triangles{ {2, 0, 3}, { 1, 3, 0}, {0, 2, 1}, {1, 2, 3} };
+            typename TestFixture::VecCoord vertices{ {0.0, 1.0, 0.0}, {1.0, 0.0, 1.0}, {-1.0, 0.0, -1.0}, {1.0, 0.0, -1.0} };
+            typename TestFixture::VecTriangle triangles{ {2, 0, 3}, { 1, 3, 0}, {0, 2, 1}, {1, 2, 3} };
 
-			VecCoord outputPoints1;
-			VecCoord outputPoints2;
+            typename TestFixture::VecCoord outputPoints1;
+            typename TestFixture::VecCoord outputPoints2;
 			const unsigned int randomSeed1 = 123456789;
 			const unsigned int randomSeed2 = 987654321;
 			const unsigned int nbPoints = 100;
 			EXPECT_MSG_NOEMIT(Error);
 			// same seed
-			generate(vertices, triangles, 0.1, randomSeed1, nbPoints, outputPoints1);
-			generate(vertices, triangles, 0.1, randomSeed1, nbPoints, outputPoints2);
+            this->generate(vertices, triangles, 0.1, randomSeed1, nbPoints, outputPoints1);
+            this->generate(vertices, triangles, 0.1, randomSeed1, nbPoints, outputPoints2);
 			ASSERT_EQ(outputPoints1.size(), nbPoints);
 			ASSERT_EQ(outputPoints2.size(), nbPoints);
 
@@ -174,8 +173,8 @@ namespace sofa
 			}
 
 			// different seed
-			generate(vertices, triangles, 0.1, randomSeed1, nbPoints, outputPoints1);
-			generate(vertices, triangles, 0.1, randomSeed2, nbPoints, outputPoints2);
+            this->generate(vertices, triangles, 0.1, randomSeed1, nbPoints, outputPoints1);
+            this->generate(vertices, triangles, 0.1, randomSeed2, nbPoints, outputPoints2);
 			ASSERT_EQ(outputPoints1.size(), nbPoints);
 			ASSERT_EQ(outputPoints2.size(), nbPoints);
 
@@ -189,9 +188,9 @@ namespace sofa
 
 
 			// true random seeds
-			generate(vertices, triangles, 0.1, 0, nbPoints, outputPoints1);
+            this->generate(vertices, triangles, 0.1, 0, nbPoints, outputPoints1);
 			sofa::helper::system::thread::CTime::sleep(1.1); // wait a bit in order to change seed  
-			generate(vertices, triangles, 0.1, 0, nbPoints, outputPoints2);
+            this->generate(vertices, triangles, 0.1, 0, nbPoints, outputPoints2);
 			ASSERT_EQ(outputPoints1.size(), nbPoints);
 			ASSERT_EQ(outputPoints2.size(), nbPoints);
 

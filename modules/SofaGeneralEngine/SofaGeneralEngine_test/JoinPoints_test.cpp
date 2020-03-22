@@ -105,9 +105,9 @@ namespace sofa
 
 		// test with merge
 		TYPED_TEST(JoinPoints_test, mergeCase)
-		{
-			VecCoord input { {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
-			VecCoord expectedOutput{ {0.5, 0.5, 0.0} };
+        {
+            typename TestFixture::VecCoord input { {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
+            typename TestFixture::VecCoord expectedOutput{ {0.5, 0.5, 0.0} };
 
 			this->testValue(input, 2.0, expectedOutput);
 		}
@@ -115,8 +115,8 @@ namespace sofa
 		// test with no merge
 		TYPED_TEST(JoinPoints_test, noMergeCase)
 		{
-			VecCoord input{ {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
-			VecCoord expectedOutput{ {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
+            typename TestFixture::VecCoord input{ {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
+            typename TestFixture::VecCoord expectedOutput{ {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
 
 			this->testValue(input, 0.5, expectedOutput);
 		}
