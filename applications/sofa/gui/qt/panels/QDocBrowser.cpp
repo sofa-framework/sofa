@@ -228,14 +228,6 @@ void DocBrowser::loadHtml(const std::string& filename)
     htmlfile.resize(htmlfile.size()-extension.size()-1);
     htmlfile+=".html";
 
-    /// Check if there exists an .html  file associated with the provided file.
-    /// If nor and the history is empty we load a default document from the share repository.
-    ///if (! DataRepository.findFile(htmlfile, "", NULL))
-    ///{
-    ///    htmlfile = GuiDataRepository.getFile("docs/runsofa.html").c_str() ;
-    ///   showView = false ;
-    /// }
-
     /// Check if either the scene specific html or default provided can be loaded.
     /// If so...load the page and add the entry into the history.
     if (!DataRepository.findFile(htmlfile, "", NULL))
