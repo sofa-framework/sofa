@@ -7,6 +7,7 @@ else()
     set(RC_FILES "sofa.rc")
 endif()
 
+find_package(TinyXML REQUIRED)
 find_package(Qt5 COMPONENTS Core REQUIRED)
 
 if(Qt5Core_FOUND)
@@ -15,6 +16,6 @@ if(Qt5Core_FOUND)
 endif()
 
 add_executable(${PROJECT_NAME} Main.cpp ${RC_FILES} ${RESOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PRIVATE SofaModeler SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml SofaModeler SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
 
 sofa_install_targets(SofaGui Modeler "")
