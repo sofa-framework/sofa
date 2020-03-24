@@ -17,4 +17,4 @@ endif()
 add_executable(${PROJECT_NAME} Main.cpp ${RC_FILES} ${RESOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaModeler SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
 
-sofa_install_targets(SofaGui Modeler "")
+sofa_install_targets(SofaModeler Modeler "Modeler")
