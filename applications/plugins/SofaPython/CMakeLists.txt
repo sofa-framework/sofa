@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaPython VERSION 0.1)
 
+set(CMAKE_CXX_STANDARD 11) # Python 2.7 is not compatible with C++17 and later
+
 if(UNIX)
   list(APPEND PYTHON_LIBRARIES dl)
 endif()
