@@ -494,11 +494,7 @@ void HeadlessRecorder::paintGL()
 void HeadlessRecorder::step()
 {
     sofa::helper::AdvancedTimer::begin("Animate");
-#ifdef SOFA_SMP
-    mg->step();
-#else
     getSimulation()->animate(groot.get());
-#endif
     sofa::helper::AdvancedTimer::end("Animate");
     getSimulation()->updateVisual(groot.get());
     redraw();

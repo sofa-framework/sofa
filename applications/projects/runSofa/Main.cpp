@@ -223,11 +223,7 @@ int main(int argc, char** argv)
 
     vector<string> plugins;
     vector<string> files;
-#ifdef SOFA_SMP
-    string nProcs="";
-    bool        disableStealing = false;
-    bool        affinity = false;
-#endif
+
     string colorsStatus = "unset";
     string messageHandler = "auto";
     bool enableInteraction = false ;
@@ -357,29 +353,6 @@ int main(int argc, char** argv)
         "argv",
         "forward extra args to the python interpreter"
     );
-
-#ifdef SOFA_SMP
-    argParser->addArgument(
-        boost::program_options::value<bool>(&disableStealing)
-        ->default_value(false)
-        ->implicit_value(true),
-        "disableStealing,w",
-        "Disable Work Stealing"
-    );
-    argParser->addArgument(
-        boost::program_options::value<std::string>(&nProcs)
-        ->default_value(""),
-        "nprocs",
-        "Number of processor"
-    );
-    argParser->addArgument(
-        boost::program_options::value<bool>(&affinity)
-        ->default_value(false)
-        ->implicit_value(true),
-        "affinity",
-        "Enable aFfinity base Work Stealing"
-    );
-#endif
 
     // example of an option using lambda function which ensure the value passed is > 0
     argParser->addArgument(
