@@ -40,9 +40,9 @@ public:
         m_cptNotify++;
     }
 
-    const std::string& getName() const override  {}
-    sofa::core::objectmodel::Base* getOwner() const override  {}
-    sofa::core::objectmodel::BaseData* getData() const override  {}
+    const std::string& getName() const override  {static std::string t=""; return t;}
+    sofa::core::objectmodel::Base* getOwner() const override  {return nullptr;}
+    sofa::core::objectmodel::BaseData* getData() const override  {return nullptr;}
 };
 
 class DDGNode_test: public BaseTest
