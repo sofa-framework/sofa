@@ -30,7 +30,7 @@
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
 
-#if __cplusplus >= 201703L
+#if __has_include(<execution>)
 #include <execution>
 #endif
 
@@ -154,7 +154,7 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
     // This is an O(n2) step, except if a hash-grid is used to optimize it
     if (m_grid == nullptr)
     {
-#if __cplusplus < 201703L
+#if not __has_include(<execution>)
         for (int i=0; i<n; i++)
         {
             const Coord& ri = x[i];
