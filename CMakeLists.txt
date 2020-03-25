@@ -7,8 +7,8 @@ if(POLICY CMP0072)
 endif()
 
 # Manually define VERSION
-set(Sofa_VERSION_MAJOR 19)
-set(Sofa_VERSION_MINOR 12)
+set(Sofa_VERSION_MAJOR 20)
+set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
