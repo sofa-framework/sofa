@@ -2,6 +2,8 @@
 
 @PACKAGE_INIT@
 
+set(CMAKE_CXX_STANDARD 11) # Python 2.7 is not compatible with C++17 and later 
+
 find_package(PythonLibs 2.7 REQUIRED)
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
