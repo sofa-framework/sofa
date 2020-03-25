@@ -29,98 +29,98 @@ using sofa::component::engine::JoinPoints;
 namespace sofa
 {
 
-	using defaulttype::Vector3;
+using defaulttype::Vector3;
 
-	template <typename _DataTypes>
-	class JoinPoints_test : public ::testing::Test, public JoinPoints<_DataTypes>
-	{
-	public:
-		typedef _DataTypes DataTypes;
-		typedef typename DataTypes::VecCoord VecCoord;
-		typedef typename DataTypes::Coord Coord;
-		typedef typename DataTypes::Real Real;
-		typedef sofa::helper::Quater<SReal> Quat;
+template <typename _DataTypes>
+class JoinPoints_test : public ::testing::Test, public JoinPoints<_DataTypes>
+{
+public:
+    typedef _DataTypes DataTypes;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Real Real;
+    typedef sofa::helper::Quater<SReal> Quat;
 
-		JoinPoints_test()
-		{
-		}
+    JoinPoints_test()
+    {
+    }
 
-		void testData()
-		{
-			EXPECT_TRUE(this->findData("points") != nullptr);
-			EXPECT_TRUE(this->findData("distance") != nullptr);
-			EXPECT_TRUE(this->findData("mergedPoints") != nullptr);
-		}
+    void testData()
+    {
+        EXPECT_TRUE(this->findData("points") != nullptr);
+        EXPECT_TRUE(this->findData("distance") != nullptr);
+        EXPECT_TRUE(this->findData("mergedPoints") != nullptr);
+    }
 
-		void testNoInput()
-		{
-			EXPECT_MSG_EMIT(Error);
-			this->doUpdate();
-		}
-
-
-		void testValue(const VecCoord& inputPoints, Real inputDistance, const VecCoord& expectedPoints)
-		{
-			EXPECT_MSG_NOEMIT(Error);
-			this->f_points.setValue(inputPoints);
-			this->f_distance.setValue(inputDistance);
-			
-			this->doUpdate();
-			helper::ReadAccessor<Data<VecCoord> > outputPoints = this->f_mergedPoints;
-			ASSERT_EQ(expectedPoints.size(), outputPoints.size());
-
-			for (size_t i = 0; i < expectedPoints.size(); i++)
-			{
-				EXPECT_EQ(expectedPoints[i], outputPoints[i]);
-			}
-
-		}
-
-	};
+    void testNoInput()
+    {
+        EXPECT_MSG_EMIT(Error);
+        this->doUpdate();
+    }
 
 
-	namespace
-	{
+    void testValue(const VecCoord& inputPoints, Real inputDistance, const VecCoord& expectedPoints)
+    {
+        EXPECT_MSG_NOEMIT(Error);
+        this->f_points.setValue(inputPoints);
+        this->f_distance.setValue(inputDistance);
+        
+        this->doUpdate();
+        helper::ReadAccessor<Data<VecCoord> > outputPoints = this->f_mergedPoints;
+        ASSERT_EQ(expectedPoints.size(), outputPoints.size());
 
-		// Define the list of DataTypes to instanciate
-		using testing::Types;
-		typedef Types<
-			defaulttype::Vec3Types
-		> DataTypes; // the types to instanciate.
-
-		// Test suite for all the instanciations
-		TYPED_TEST_CASE(JoinPoints_test, DataTypes);
-
-		// test data setup
-		TYPED_TEST(JoinPoints_test, data_setup)
-		{
-			this->testData();
-		}
-
-		// test no input
-		TYPED_TEST(JoinPoints_test, no_input)
-		{
-			this->testNoInput();
-		}
-
-		// test with merge
-		TYPED_TEST(JoinPoints_test, mergeCase)
+        for (size_t i = 0; i < expectedPoints.size(); i++)
         {
-            typename TestFixture::VecCoord input { {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
-            typename TestFixture::VecCoord expectedOutput{ {0.5, 0.5, 0.0} };
+            EXPECT_EQ(expectedPoints[i], outputPoints[i]);
+        }
 
-			this->testValue(input, 2.0, expectedOutput);
-		}
+    }
 
-		// test with no merge
-		TYPED_TEST(JoinPoints_test, noMergeCase)
-		{
-            typename TestFixture::VecCoord input{ {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
-            typename TestFixture::VecCoord expectedOutput{ {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
+};
 
-			this->testValue(input, 0.5, expectedOutput);
-		}
 
-	}// namespace
+namespace
+{
+
+    // Define the list of DataTypes to instanciate
+    using testing::Types;
+    typedef Types<
+        defaulttype::Vec3Types
+    > DataTypes; // the types to instanciate.
+
+    // Test suite for all the instanciations
+    TYPED_TEST_CASE(JoinPoints_test, DataTypes);
+
+    // test data setup
+    TYPED_TEST(JoinPoints_test, data_setup)
+    {
+        this->testData();
+    }
+
+    // test no input
+    TYPED_TEST(JoinPoints_test, no_input)
+    {
+        this->testNoInput();
+    }
+
+    // test with merge
+    TYPED_TEST(JoinPoints_test, mergeCase)
+    {
+        typename TestFixture::VecCoord input { {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
+        typename TestFixture::VecCoord expectedOutput{ {0.5, 0.5, 0.0} };
+
+        this->testValue(input, 2.0, expectedOutput);
+    }
+
+    // test with no merge
+    TYPED_TEST(JoinPoints_test, noMergeCase)
+    {
+        typename TestFixture::VecCoord input{ {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
+        typename TestFixture::VecCoord expectedOutput{ {0.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0} };
+
+        this->testValue(input, 0.5, expectedOutput);
+    }
+
+}// namespace
 
 }// namespace sofa
