@@ -5,7 +5,6 @@
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <Node>
-<!--        <RungeKutta4Solver /> -->
         <EulerExplicitSolver symplectic="1" />
         <MechanicalObject name="MModel" />
         <!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
