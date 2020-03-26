@@ -168,27 +168,32 @@ public:
     bool isDirty() const { return dirtyFlags.dirtyValue; }
 
     /// Indicate the value needs to be updated
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     virtual void setDirtyValue(const core::ExecParams*) final { return setDirtyValue(); }
     virtual void setDirtyValue();
 
     /// Indicate the outputs needs to be updated. This method must be called after changing the value of this node.
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     virtual void setDirtyOutputs(const core::ExecParams*) final { setDirtyOutputs(); }
     virtual void setDirtyOutputs();
 
     /// Set dirty flag to false
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     void cleanDirty(const core::ExecParams*){ cleanDirty(); }
     void cleanDirty();
 
     /// Notify links that the DGNode has been modified
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     virtual void notifyEndEdit(const core::ExecParams*) final { notifyEndEdit(); }
     virtual void notifyEndEdit();
 
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     void updateIfDirty(const core::ExecParams*) const { updateIfDirty(); }
     void updateIfDirty() const
     {

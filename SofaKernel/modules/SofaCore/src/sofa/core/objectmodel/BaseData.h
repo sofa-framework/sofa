@@ -250,23 +250,27 @@ public:
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)s
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     bool isSet(const core::ExecParams*) const { return isSet(); }
     bool isSet() const { return m_isSet; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     void unset(const core::ExecParams*) { unset(); }
     void unset() { m_isSet = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     void forceSet(const core::ExecParams*) { forceSet(); }
     void forceSet() { m_isSet = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     int getCounter(const core::ExecParams*) const { return getCounter(); }
     int getCounter() const { return m_counter; }
 

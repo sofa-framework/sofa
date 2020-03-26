@@ -126,7 +126,8 @@ public:
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     int getCounter(const core::ExecParams*) const { return getCounter(); }
 
     virtual size_t getSize() const = 0;
