@@ -48,7 +48,7 @@
 			zmin="-12" zmax="12" />
 			/>
 			<MechanicalObject/>
-			<SphereModel radius="1.0" contactStiffness="1" />
+			<SphereCollisionModel radius="1.0" contactStiffness="1" />
 			<SubsetMapping />
 		</Node>
 		<!--

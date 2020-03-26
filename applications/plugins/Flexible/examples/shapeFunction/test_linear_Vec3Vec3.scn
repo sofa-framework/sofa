@@ -3,7 +3,7 @@
     <RequiredPlugin pluginName="Flexible"/>
     <VisualStyle displayFlags="showBehaviorModels showMechanicalMappings showForceFields" />
 
-    <EulerSolver />
+    <EulerExplicitSolver />
     <Node 	name="Flexible"   >
     	<Mesh name="mesh" position="0 0 1   0 1 0   1 0 0   -1 -1 0  2 2 2 " tetrahedra="0 1 2 3 0 1 2 4" />
     	<MechanicalObject  name="parent" src="@mesh"  />

@@ -1,6 +1,6 @@
 <Node      name="Root"  dt="0.04"  >
     <VisualStyle displayFlags="showBehaviorModels" />
-    <EulerSolver name="solver" />
+    <EulerExplicitSolver name="solver" />
 
     <Node      name="Point Oscillator"  >
         <MechanicalObject template="Vec3d" name="mech"

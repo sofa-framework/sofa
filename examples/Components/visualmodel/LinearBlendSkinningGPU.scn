@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Node 	 name="root"  dt="0.01" animate="1" >
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <EulerSolver name="odesolver"  />
+    <EulerExplicitSolver name="odesolver"  />
     <Node 	 name="DeformableObject"   >
         <MechanicalObject template="Rigid3d" name="Bones"  position="0 -2 0 0 0 0 1 0 2 0 0 0 0 1" rest_position="0 -2 0 0 0 0 1 0 2 0 0 0 0 1"  showObject="1"  showObjectScale="0.5" />
         <LinearMovementConstraint template="Rigid3d" name="BoneTrajectories"  indices="1"  keyTimes="0 1 2 3 4 5 6 7 8 9 10 11 12 20"  movements=" 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />

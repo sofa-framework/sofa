@@ -17,7 +17,7 @@
         <UniformMass name="Mass" totalMass="1" />
         <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
         <!-- Collision Model -->
-        <SphereModel name="Triangles Cube" radius="0.4" />
+        <SphereCollisionModel name="Triangles Cube" radius="0.4" />
     </Node>
     <Node name="CubeSphere2">
         <EulerImplicitSolver name="EulerImplicit" />
@@ -27,7 +27,7 @@
         <UniformMass name="Mass" totalMass="1" />
         <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
         <!-- Collision Model -->
-        <SphereModel name="Spheres Cube" radius="0.4" />
+        <SphereCollisionModel name="Spheres Cube" radius="0.4" />
     </Node>
     <Node name="CubeGeometry1">
         <EulerImplicitSolver name="EulerImplicit" />

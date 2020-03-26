@@ -7,14 +7,14 @@
     <DiscreteIntersection />
 
     <Node name="Mesh">
-        <RegularGrid name="Grid" nx="10" ny="10" nz="1" xmin="0" xmax="9" ymin="0" ymax="9" zmin="0" zmax="1" />
+        <RegularGridTopology name="Grid" nx="10" ny="10" nz="1" xmin="0" xmax="9" ymin="0" ymax="9" zmin="0" zmax="1" />
         <MechanicalObject name="MO" />
     </Node>
 
     <Node name="Simulation">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <RegularGrid src="@/Mesh/Grid" />
+        <RegularGridTopology src="@/Mesh/Grid" />
         <MechanicalObject />
         <UniformMass vertexMass="0.1" />
         <FixedConstraint indices="0 9 99" />

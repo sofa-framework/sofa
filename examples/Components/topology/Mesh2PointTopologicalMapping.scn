@@ -23,7 +23,7 @@
             <Mesh2PointTopologicalMapping input="@Container1" output="@Container2" pointBaryCoords="0 0 0" edgeBaryCoords="0.5 0.5 0.0" />
             <MechanicalObject />
             <!--<Mesh2PointMechanicalMapping/>-->
-            <SphereModel radius="0.25" />
+            <SphereCollisionModel radius="0.25" />
         </Node>
     </Node>
 </Node>

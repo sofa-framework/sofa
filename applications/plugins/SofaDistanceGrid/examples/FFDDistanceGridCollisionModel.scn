@@ -34,7 +34,7 @@
         
         <VisualStyle displayFlags="hideForceFields" />
         
-        <RegularGrid nx="50" ny="1" nz="50" xmin="-6" xmax="2" ymin="6" ymax="6" zmin="-4" zmax="4" name="Container" />
+        <RegularGridTopology nx="50" ny="1" nz="50" xmin="-6" xmax="2" ymin="6" ymax="6" zmin="-4" zmax="4" name="Container" />
         <MechanicalObject name="dofs" />
         <UniformMass totalMass="100" />
         <Node name="T">

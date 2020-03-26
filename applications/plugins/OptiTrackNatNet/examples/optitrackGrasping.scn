@@ -19,7 +19,7 @@
     <OptiTrackNatNetDevice name="GrabDevice" trackableName="Grab" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Grab.obj" simMarkersMeshFile="./data/markers-Grab.obj"  controlNode="1" distanceMarkersID="5 6" closedDistance="46" openDistance="48" jointCenter="0 33.7158 17.7522" jointAxis="0 4 -2.8" jointOpenAngle="5" jointClosedAngle="-0.1" drawMarkersColor="1 1 0 1" drawAxisSize="10 10 10" drawMarkersSize="2" drawMarkersIDSize="2" />
     <Node name="GrabPoint">
       <MechanicalObject name="vertices" position="0 -2.7482 -40.7508 0 -1.5256 -40.7505" />
-      <SphereModel name="CM" radius="2" contactResponse="stick" group="1" simulated="0" moving="1" contactStiffness="1000" />
+      <SphereCollisionModel name="CM" radius="2" contactResponse="stick" group="1" simulated="0" moving="1" contactStiffness="1000" />
       <RigidMapping index="0" />
       <GraspingManager name="Grasping" active="@../GrabDevice.closed" printLog="1" />
     </Node>

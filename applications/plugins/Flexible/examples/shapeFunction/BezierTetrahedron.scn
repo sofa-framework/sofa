@@ -46,7 +46,7 @@
 			<LinearMapping template="Vec3d,ExtVec3f"/> 
 		</Node>
 
-<!--            <SphereModel radius="0.05" />-->
+<!--            <SphereCollisionModel radius="0.05" />-->
 
 <!--		 <Node name="col">-->
 <!--			<MeshObjLoader name="loader" filename="mesh/liver-smooth.obj" />-->

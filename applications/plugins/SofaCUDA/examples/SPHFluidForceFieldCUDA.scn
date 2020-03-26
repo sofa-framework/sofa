@@ -2,7 +2,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 	<Node>
-		<RungeKutta4/>
+		<RungeKutta4Solver/>
 		<!--<CentralDifferenceSolver/>-->
         <!--<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver/>-->

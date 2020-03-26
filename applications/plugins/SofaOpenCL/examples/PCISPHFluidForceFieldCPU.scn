@@ -1,14 +1,14 @@
 <Node dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="1" gravity="0 -10 0" >
     <RequiredPlugin name="SofaOpenglVisual"/>
 	<Node>
-	<!--<RungeKutta4/>-->
+	<!--<RungeKutta4Solver/>-->
 		<!--<CentralDifferenceSolver/>-->
         <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver/>
 <!---->		<MechanicalObject name="MModel" template="Vec3f"/>  <-- -->
 <!-- 		<MechanicalObject name="MModel" template="Vec3f" position="0 6 0" /> -->
 		<!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
-<!---->		<RegularGrid
+<!---->		<RegularGridTopology
 			nx="3" ny="7" nz="3"
 			xmin="-1.5" xmax="1.5"
 			ymin="-1.5" ymax="6.0"

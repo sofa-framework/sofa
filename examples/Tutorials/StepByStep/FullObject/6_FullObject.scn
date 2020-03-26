@@ -21,7 +21,7 @@
             <MeshObjLoader name="meshLoader1" filename="mesh/cube.obj" />
             <MeshTopology name="Mesh" src="@meshLoader1" />
             <MechanicalObject template="Vec3d" name="CollisionObject" scale3d="6 6 6" restScale="1" />
-            <SphereModel name="Spheres" contactStiffness="1000" />
+            <SphereCollisionModel name="Spheres" contactStiffness="1000" />
             <BarycentricMapping template="Vec3d,Vec3d" name="MechanicalMapping"  />
         </Node>
     </Node>

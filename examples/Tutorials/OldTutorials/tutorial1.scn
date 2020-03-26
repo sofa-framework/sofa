@@ -6,7 +6,7 @@
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="0" />
         <UniformMass totalMass="10" />
-        <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
+        <RegularGridTopology nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <RegularGridSpringForceField name="Springs" stiffness="100" damping="1" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="green" />
@@ -19,7 +19,7 @@
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="-12" dy="0" />
         <UniformMass totalMass="10" />
-        <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
+        <RegularGridTopology nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="150" poissonRatio="0.49" method="small" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="yellow" />
@@ -32,7 +32,7 @@
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="-24" dy="0" />
         <UniformMass totalMass="10" />
-        <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
+        <RegularGridTopology nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="150" poissonRatio="0.3" method="polar" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="cyan" />

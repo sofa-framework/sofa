@@ -2,7 +2,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="TorusRigidX">
-        <EulerSolver />
+        <EulerExplicitSolver />
         <CGLinearSolver iterations="25" threshold="0.00000001" tolerance="1e-5"/>
         <MechanicalObject template="Rigid" dx="2" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
         <UniformMass />
@@ -15,7 +15,7 @@
         </Node>
     </Node>
     <Node name="TorusRigidY">
-        <EulerSolver />
+        <EulerExplicitSolver />
         <CGLinearSolver iterations="25" threshold="0.00000001" tolerance="1e-5"/>
         <MechanicalObject template="Rigid" dx="2" dy="2" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
         <UniformMass />

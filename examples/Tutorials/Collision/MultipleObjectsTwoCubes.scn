@@ -16,7 +16,7 @@
         <UniformMass name="Mass Cube1" totalMass="1" />
         <MeshSpringForceField name="Springs Cube1" stiffness="100" damping="1" />
         <!-- Collision Models -->
-        <SphereModel name="Spheres For Collision Cube1" radius="0.2" />
+        <SphereCollisionModel name="Spheres For Collision Cube1" radius="0.2" />
     </Node>
     <!-- Using a deformable cube using collision triangles, lines and points  -->
     <Node name="Cube2">

@@ -12,7 +12,7 @@
 
   <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
-  <!--    <EulerExplicitSolver /> -->
+  <!--    <EulerExplicitSolverSolver /> -->
 
   <Node 	name="FEM tetra NOT lumped"   >
 
