@@ -214,9 +214,9 @@ bool PluginManager::loadPlugin(const std::string& plugin, const std::string& suf
     }
 }
 
-bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* errlog)
+bool PluginManager::unloadPlugin(const std::string& pluginPath, std::ostream* errlog)
 {
-    if(!pluginIsLoaded(pluginPath))
+    if (!pluginIsLoaded(pluginPath))
     {
         const std::string msg = "Plugin not loaded: " + pluginPath;
         msg_error("PluginManager::unloadPlugin()") << msg;
@@ -225,8 +225,19 @@ bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* er
     }
     else
     {
-        m_pluginMap.erase(m_pluginMap.find(pluginPath));
-        return true;
+        auto pluginMapEntry = m_pluginMap.find(pluginPath);
+        int ret = DynamicLibrary::unload(pluginMapEntry->second.dynamicLibrary);
+        if (ret)
+        {
+            msg_error("PluginManager::unloadPlugin()") << "Error while unloading " << pluginPath << " : "
+                << DynamicLibrary::getLastError();
+            return false;
+        }
+        else
+        {
+            m_pluginMap.erase(m_pluginMap.find(pluginPath));
+            return true;
+        }
     }
 }
 
