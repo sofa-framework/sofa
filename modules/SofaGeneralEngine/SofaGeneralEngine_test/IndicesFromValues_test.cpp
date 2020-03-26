@@ -64,6 +64,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
         IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read(" ");
         m_thisObject->findData("values")->read("1");
+        EXPECT_MSG_EMIT(Error); // an error is emitted if the engine does not find the value (purpose of this test)
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"");
@@ -82,6 +83,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
         IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("1.  4. ");
+        EXPECT_MSG_EMIT(Error); // an error is emitted when it will not found the value
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"5");
@@ -92,6 +94,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
         IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("4. ");
+        EXPECT_MSG_EMIT(Error); // an error is emitted if the engine does not find the value (purpose of this test)
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "");
