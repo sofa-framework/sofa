@@ -372,7 +372,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             {
             // POINTS ADDED -----------------
             case core::topology::POINTSADDED:
-                if ( d_handleTopologyChanges.getValue())
+                if ( d_handleTopologicalChanges.getValue())
                 {
                     WriteAccessor<Data<vector<int> > > indices = d_indices;
                     size_t sizeIndices = indices.size();
@@ -401,7 +401,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
 
             // POINTS REMOVED -----------------
             case core::topology::POINTSREMOVED:
-                if ( d_handleTopologyChanges.getValue())
+                if ( d_handleTopologicalChanges.getValue())
                 {
                     WriteAccessor<Data<vector<int> > > indices = d_indices;
                     size_t sizeIndices = indices.size();
