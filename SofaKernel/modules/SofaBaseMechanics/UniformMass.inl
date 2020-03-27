@@ -84,7 +84,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
                                                                                    "Any computation involving only indices outside of this range \n"
                                                                                    "are discarded (useful for parallelization using mesh partitionning)" ) )
     , d_indices ( initData ( &d_indices, "indices", "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
-    , d_handleTopologyChanges ( initData ( &d_handleTopologyChanges, false, "handleTopologyChanges", "The mass and totalMass are recomputed on particles add/remove." ) )
+    , d_handleTopologicalChanges ( initData ( &d_handleTopologicalChanges, false, "handleTopologicalChanges", "The mass and totalMass are recomputed on particles add/remove." ) )
     , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
     , l_topology(initLink("topology", "link to the topology container"))
 {
