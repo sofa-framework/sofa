@@ -7,7 +7,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="1" />
 
   <Node name="Grab">
-    <Euler />
+    <EulerExplicitSolver />
     <MechanicalObject name="ms1" template="Rigid" />
     <UniformMass name="mass" />
     <OmniDriver scale="600" omniVisu="0" permanent="1"  listening="true" handleEventTriggersUpdate="true"
