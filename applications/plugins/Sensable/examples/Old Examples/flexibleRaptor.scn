@@ -19,7 +19,7 @@
 
            	<EulerImplicitSolver name="odesolver" />
             	<CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<SparseGrid n="5 5 10" fileTopology="mesh/raptor_8kp.obj" />
+		<SparseGridTopology n="5 5 10" fileTopology="mesh/raptor_8kp.obj" />
 		<MechanicalObject name="mecaRaptor"  rotation="0 0 90"/>
 		<PrecomputedConstraintCorrection recompute="true"/>
 		<DiagonalMass massDensity="1" name="computed using mass density" />

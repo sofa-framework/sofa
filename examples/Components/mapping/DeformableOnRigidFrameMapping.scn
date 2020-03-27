@@ -26,12 +26,12 @@
             <!--<FixedConstraint /> -->
             <!-- 	</Node> -->
             <Node name="TorusDeformLocal">
-                <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
+                <SparseGridTopology filename="mesh/torus_for_collision.obj" n="7 2 4" />
                 <MechanicalObject />
                 <TetrahedronFEMForceField youngModulus="125" poissonRatio="0.45" />
                 <BoxConstraint box="-1 -1 -1 1 1 1" />
                 <Node name="DeformableMappedModel">
-                    <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
+                    <SparseGridTopology filename="mesh/torus_for_collision.obj" n="7 2 4" />
                     <MechanicalObject name="deformedMO" />
                     <DeformableOnRigidFrameMapping input1="@.." input2="@../../rigidframe" output="@deformedMO" printLog="0" />
                     <Node name="TorusCollisLocal">

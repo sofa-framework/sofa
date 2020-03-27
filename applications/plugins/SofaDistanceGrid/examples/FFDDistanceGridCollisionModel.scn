@@ -17,7 +17,7 @@
         
         <MechanicalObject />
         <UniformMass totalMass="1000.0" />
-        <SparseGrid n="8 6 6" fileTopology="mesh/liver-smooth.obj" />
+        <SparseGridTopology n="8 6 6" fileTopology="mesh/liver-smooth.obj" />
         <BoxROI name="box1" box="-2.5 0 -2.5 7.5 3 2" />
         <FixedConstraint indices="@box1.indices"/>
         <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
