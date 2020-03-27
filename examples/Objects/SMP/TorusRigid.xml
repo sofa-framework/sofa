@@ -9,7 +9,7 @@
 	</Node>
 	<Node name="Surf2">
 		<MeshObjLoader name="meshLoader" filename="mesh/torus_for_collision.obj"/>
-		<Mesh src="@meshLoader"/>
+		<MeshTopology src="@meshLoader"/>
 		<MechanicalObject scale="1.0" />
 		<TriangleCollisionModel />
 		<LineCollisionModel />

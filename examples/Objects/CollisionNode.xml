@@ -1,6 +1,6 @@
 <Node name="CollisionNode">
   <MeshLoader name="loader" filename="file"/>
-  <Mesh src="@loader"/>
+  <MeshTopology src="@loader"/>
   <MechanicalObject src="@loader" />
   <TriangleCollisionModel contactStiffness="200"/>
   <LineCollisionModel     contactStiffness="@[-1].contactStiffness"/>

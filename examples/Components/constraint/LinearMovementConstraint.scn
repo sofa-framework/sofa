@@ -12,7 +12,7 @@
 										      0 0 -1   0 0 6.3" />
         <Node name="coli">
             <MeshObjLoader name="loader" filename="mesh/liver.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
             <TriangleMeshModel moving="1" simulated="1" contactStiffness="100000000"/>
             <RigidMapping template="Rigid3d,Vec3d" />
@@ -34,7 +34,7 @@
 										      0 0 0   0 0 6.3" />
         <Node name="coli">
             <MeshObjLoader name="loader" filename="mesh/liver.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
             <TriangleMeshModel moving="1" simulated="1" contactStiffness="100000000" />
             <RigidMapping template="Rigid3d,Vec3d" />
@@ -56,7 +56,7 @@
 										      0 0 -1   0 0 0" />
         <Node name="coli">
             <MeshObjLoader name="loader" filename="mesh/liver.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
             <TriangleMeshModel moving="1" simulated="1" contactStiffness="100000000" />
             <RigidMapping template="Rigid3d,Vec3d" />

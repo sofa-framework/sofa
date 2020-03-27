@@ -13,7 +13,7 @@
   <Node name="simu"  >
 	  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
 	  <CGLinearSolver />
-	  <Mesh  src="@../sampler" />
+	  <MeshTopology  src="@../sampler" />
 	  <MechanicalObject  />
 	  <UniformMass totalmass="100.0" />
 

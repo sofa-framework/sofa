@@ -10,7 +10,7 @@
     <Node name="ChainRigid">
         <Node name="TorusFixed">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
             <MeshObjLoader name="meshLoader_4" filename="mesh/torus2.obj" handleSeams="1" />
@@ -28,7 +28,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
                 <RigidMapping />
@@ -46,7 +46,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
                 <RigidMapping />
@@ -64,7 +64,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
                 <RigidMapping />
@@ -82,7 +82,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
                 <RigidMapping />

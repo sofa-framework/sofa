@@ -13,7 +13,7 @@
 	</Node>
 	<Node name="source">
 			<MeshObjLoader name="MeshLoader"  filename="data/femur_m_res.obj" />
-			<Mesh src="@MeshLoader" />
+			<MeshTopology src="@MeshLoader" />
 			<MechanicalObject  name="PointSet"   />
 			<UniformMass mass="0.001"/>
    			<MeshSpringForceField name="Springs" stiffness="10000" />

@@ -31,7 +31,7 @@
 
 		<Node name="Collis">
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <TriangleCollisionModel  selfCollision="0" />
             <LineCollisionModel    selfCollision="0" />
@@ -62,14 +62,14 @@
 
 		<Node name="Stick">
 			<MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <LineCollisionModel simulated="false" moving="false" />
             <PointCollisionModel simulated="false"  moving="false"/>
 		</Node>
 		<Node name="Blobs">
 			<MeshObjLoader name="loader" filename="mesh/collision_boules_V3.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
 			<TriangleCollisionModel simulated="false" moving="false"/>
             <LineCollisionModel simulated="false" moving="false"/>
@@ -78,7 +78,7 @@
 
 		<Node name="Foot">
 			<MeshObjLoader name="loader" filename="mesh/collision_pied.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
 			<TriangleCollisionModel simulated="false" moving="false"/>
             <LineCollisionModel simulated="false" moving="false"/>

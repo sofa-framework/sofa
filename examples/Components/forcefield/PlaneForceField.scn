@@ -20,7 +20,7 @@
         </Node>
         <Node name="Collis">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
             <BarycentricMapping input="@.." output="@Collis" />

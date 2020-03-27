@@ -8,7 +8,7 @@
     <Node name="Chain">
         <Node name="TorusFixed">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
             <MeshObjLoader name="meshLoader_3" filename="mesh/torus2.obj" handleSeams="1" />
@@ -28,7 +28,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" translation="2.5 0 0" />
                 <TriangleCollisionModel />
                 <BarycentricMapping />
@@ -48,7 +48,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" dx="5" />
                 <TriangleCollisionModel />
                 <BarycentricMapping />
@@ -68,7 +68,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" dx="7.5" />
                 <TriangleCollisionModel />
                 <BarycentricMapping />
@@ -88,7 +88,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" dx="10" />
                 <TriangleCollisionModel />
                 <BarycentricMapping />

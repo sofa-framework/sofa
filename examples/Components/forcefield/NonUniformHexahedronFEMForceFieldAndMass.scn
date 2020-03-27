@@ -20,7 +20,7 @@
         </Node>
         <Node name="Colliunif">
             <MeshObjLoader name="loader" filename="mesh/Armadillo_verysimplified.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel contactStiffness="1" />
             <LineCollisionModel contactStiffness="1" />
@@ -41,7 +41,7 @@
         </Node>
         <Node name="Collinonunif">
             <MeshObjLoader name="loader" filename="mesh/Armadillo_verysimplified.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel contactStiffness="1" />
             <LineCollisionModel contactStiffness="1" />

@@ -9,7 +9,7 @@
         <RandomPointDistributionInSurface template="Vec3d" vertices="@extrusion.extrusionVertices" triangles="@extrusion.extrusionTriangles" numberOfInPoints="100" numberOfTests="3" minDistanceBetweenPoints="0.1" />
     </Node>
     <Node name="Extrusion">
-        <Mesh points="@../extrude/extrusion.extrusionVertices" triangles="@../extrude/extrusion.extrusionTriangles" />
+        <MeshTopology points="@../extrude/extrusion.extrusionVertices" triangles="@../extrude/extrusion.extrusionTriangles" />
         <MechanicalObject position="@../extrude/extrusion.extrusionVertices"/>
         <OglModel color="red" />
     </Node>

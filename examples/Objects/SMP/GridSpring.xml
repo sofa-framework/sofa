@@ -11,7 +11,7 @@
 	</Node>
 	<Node name="CollisionNode">
     <MeshLoader name="loader" filename="file"/>
-		<Mesh src="@loader"/>
+		<MeshTopology src="@loader"/>
 		<MechanicalObject src="@loader" useMask="true"  />
 		<TriangleCollisionModel />
 		<LineCollisionModel />

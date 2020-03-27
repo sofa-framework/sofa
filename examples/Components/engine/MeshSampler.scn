@@ -6,7 +6,7 @@
 <Node name="using Geodesic Distances (red)" >
     <MeshObjLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />
     <OglModel name="Visual" src="@meshLoader_1" color="red" dz="0" />
-    <Mesh name="topo" src="@Visual" />
+    <MeshTopology name="topo" src="@Visual" />
 
     <MeshSampler name="sampler1" position="@topo.position" edges="@topo.edges"  number="10" maxIter="100" printLog="1"/>
     <MechanicalObject template="Vec3d" position="@sampler1.outputPosition" showObject="1" showObjectScale="10" />

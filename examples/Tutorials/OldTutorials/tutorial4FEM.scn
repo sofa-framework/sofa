@@ -18,7 +18,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/torus2_scale3.obj" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
             <LineCollisionModel />
@@ -39,7 +39,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/dragon.obj" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
             <LineCollisionModel />
@@ -72,7 +72,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/frog-push25.obj" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
             <LineCollisionModel />
@@ -82,7 +82,7 @@
     </Node>
     <Node name="Floor">
         <MeshObjLoader filename="mesh/floor2b.obj" name="loader" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10.25" scale="0.5" />
         <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
         <LineCollisionModel name="Floor" simulated="0" moving="0" />

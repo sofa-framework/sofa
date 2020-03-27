@@ -28,7 +28,7 @@ Using LCP contact detection and resolution:
         <Node name="Teeth">
             <MeshObjLoader filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/teeth.obj" name="loader" />
             <Node name="CollisionModel">
-                <Mesh src="@../loader" name="ToothCollisionModel" />
+                <MeshTopology src="@../loader" name="ToothCollisionModel" />
                 <MechanicalObject src="@../loader" name="toothState" />
                 <TriangleCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
@@ -46,7 +46,7 @@ Using LCP contact detection and resolution:
         <MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true" />
         <Node name="RefModel">
             <MeshObjLoader filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/dental_instrument_centerline.obj" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" rx="180" rz="150" dx="-1.2" dy="-1.6" dz="3.55" />
             <RigidMapping />
         </Node>
@@ -66,7 +66,7 @@ Using LCP contact detection and resolution:
         </Node>
         <Node name="CollisionModel">
             <MeshObjLoader filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/dental_instrument_centerline.obj" name="loader" />
-            <Mesh src="@loader" name="InstrumentCollisionModel" />
+            <MeshTopology src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" rx="180" rz="150" dx="-1.2" dy="-1.6" dz="3.55" />
             <TriangleCollisionModel name="instrument" contactStiffness="10" />
             <LineCollisionModel name="instrument" contactStiffness="10" />

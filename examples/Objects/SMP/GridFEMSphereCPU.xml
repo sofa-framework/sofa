@@ -9,7 +9,7 @@
 
 	<Node name="VisualNode">
          	<MeshLoader name="loader"  filename="file" />
-                <Mesh src="@loader"/>
+                <MeshTopology src="@loader"/>
 		<VisualModel computeNormals="true"    name="Visual"   diffuse="0.8 0.8 0.8 1.0"    />
 		<BarycentricMapping   input="@.." output="@Visual" />
 	</Node>

@@ -20,7 +20,7 @@
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <Node name="Surf">
                 <SphereLoader filename="mesh/smCube27b.sph" />
                 <MechanicalObject dz="-21.0" />
@@ -55,7 +55,7 @@
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <Node name="Surf">
                 <MechanicalObject />
                 <SphereLoader filename="mesh/smCube27b.sph" />
@@ -90,7 +90,7 @@
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <Node name="Surf">
                 <MechanicalObject dz="21" />
                 <SphereLoader filename="mesh/smCube27b.sph" />

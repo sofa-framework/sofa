@@ -8,7 +8,7 @@
     <Node name="ChainFEM">
         <Node name="TorusFixed">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
             <MeshObjLoader name="meshLoader_3" filename="mesh/torus2.obj" handleSeams="1" />
@@ -18,7 +18,7 @@
             <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" createSubelements="true"/>
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" dx="2.5" template="Vec3d" />
             <UniformMass totalMass="5" />
             <StandardTetrahedralFEMForceField name="FEM" ParameterSet="200 0.01" />
@@ -29,7 +29,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" dx="2.5" />
                 <TriangleCollisionModel />
                 <BarycentricMapping />
@@ -39,7 +39,7 @@
             <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" createSubelements="true"/>
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" dx="5" />
             <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="polar" />
@@ -50,7 +50,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" dx="5" />
                 <TriangleCollisionModel />
                 <BarycentricMapping />
@@ -60,7 +60,7 @@
             <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" createSubelements="true"/>
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" dx="7.5" />
             <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="svd" />
@@ -71,7 +71,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" dx="7.5" />
                 <TriangleCollisionModel />
                 <BarycentricMapping />

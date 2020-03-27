@@ -50,7 +50,7 @@
 
 <!--		 <Node name="col">-->
 <!--			<MeshObjLoader name="loader" filename="mesh/liver-smooth.obj" />-->
-<!--			<Mesh src="@loader" />-->
+<!--			<MeshTopology src="@loader" />-->
 <!--			<MechanicalObject showObject="1" showObjectScale="2"/>-->
 <!--			<LinearMapping />-->
 <!--	        </Node>-->

@@ -10,7 +10,7 @@
 		<EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MeshObjLoader name="loader" filename="mesh/dragon.obj" />
-		<Mesh name="topo" src="@loader" />
+		<MeshTopology name="topo" src="@loader" />
 		<MechanicalObject name="dofs" src="@loader" scale="1" dz="10" />
 		<UniformMass mass="3" />
 
@@ -25,7 +25,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" dz="10" />
             <TriangleCollisionModel contactStiffness="1000" />
             <LineCollisionModel contactStiffness="1000" />
@@ -35,7 +35,7 @@
 	</Node>
     <Node name="Floor">
         <MeshObjLoader name="loader" filename="mesh/floor3.obj" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
         <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
         <LineCollisionModel name="FloorLine" simulated="0" moving="0" />

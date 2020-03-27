@@ -14,7 +14,7 @@
 <!--     <Node 	name="FEM"   activated="0" >
     	      <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	      <Mesh name="mesh" src="@loader" />
+	      <MeshTopology name="mesh" src="@loader" />
 	      <MechanicalObject template="Vec3d" name="parent" />
 
              <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -74,14 +74,14 @@
 	<Node 	name="mass"   >
 	      <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	      <Mesh name="mesh" src="@loader" />
+	      <MeshTopology name="mesh" src="@loader" />
 	      <MechanicalObject />
 	      <UniformMass totalMass="20" />
 	      <LinearMapping template="Quadratic,Vec3d"  />
         </Node>
 
 	    <Node 	name="collision"   >
-		<Mesh name="mesh" src="@../loader" /> 
+		<MeshTopology name="mesh" src="@../loader" /> 
 		<MechanicalObject  template="Vec3d" name="pts"    />
 	    	<LinearMapping template="Quadratic,Vec3d"/>
 	    </Node>

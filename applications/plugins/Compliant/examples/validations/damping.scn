@@ -33,7 +33,7 @@
 
 			<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 
-			<Mesh name="mesh" src="@loader" />
+			<MeshTopology name="mesh" src="@loader" />
 
 			<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
@@ -122,7 +122,7 @@
 
 			<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 
-			<Mesh name="mesh" src="@loader" />
+			<MeshTopology name="mesh" src="@loader" />
 
 			<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
@@ -212,7 +212,7 @@
 
 			<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 
-			<Mesh name="mesh" src="@loader" />
+			<MeshTopology name="mesh" src="@loader" />
 
 			<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
@@ -298,7 +298,7 @@
 
 			<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 
-			<Mesh name="mesh" src="@loader" />
+			<MeshTopology name="mesh" src="@loader" />
 
 			<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 

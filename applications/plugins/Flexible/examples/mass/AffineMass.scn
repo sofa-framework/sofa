@@ -46,7 +46,7 @@
 <!-- <ImageDensityMass template="Affine"  densityImage="@density.outputImage" transform="@image.transform" lumping="0"  printMassMatrix="true" />-->
 
     <Node 	name="collision"   >
-	<Mesh name="mesh" src="@../loader" /> 
+	<MeshTopology name="mesh" src="@../loader" /> 
 	<MechanicalObject  template="Vec3d" name="pts"    />
     	<LinearMapping template="Affine,Vec3d"/>
     	<Node 	name="visual"   >

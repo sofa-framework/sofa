@@ -28,7 +28,7 @@
 	  <ImageDensityMass  template="Affine" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" /> 
 
 	    <Node 	name="collision"   >
-		<Mesh name="mesh" src="@../loader" /> 
+		<MeshTopology name="mesh" src="@../loader" /> 
 		<MechanicalObject  template="Vec3d" name="pts"    />
 	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>

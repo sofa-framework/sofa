@@ -58,7 +58,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
             <LineCollisionModel />

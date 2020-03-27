@@ -23,7 +23,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
             <PointCollisionModel />
@@ -45,7 +45,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
             <PointCollisionModel />
@@ -67,7 +67,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
             <PointCollisionModel />

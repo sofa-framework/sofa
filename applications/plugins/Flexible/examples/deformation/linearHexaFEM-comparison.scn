@@ -29,7 +29,7 @@
   <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
-  <Mesh  name="mesh" src="@../sampler" />
+  <MeshTopology  name="mesh" src="@../sampler" />
   <MechanicalObject  name="dofs" tags="NoPicking" position="@./mesh.position"/>
   <UniformMass totalMass="20"/>
 
@@ -49,7 +49,7 @@
             </Node>
     </Node>
   <Node name="Collision">      
-	<Mesh  src="@../../loader" />
+	<MeshTopology  src="@../../loader" />
 	<MechanicalObject name="dof" />
 	<TriangleCollisionModel />
         <LinearMapping name="colmap" template="Vec3d,Vec3d"  assemble="true" parallel="false"/>
@@ -81,7 +81,7 @@
   <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
-  <Mesh  name="mesh" src="@../sampler" />
+  <MeshTopology  name="mesh" src="@../sampler" />
   <MechanicalObject  name="dofs" tags="NoPicking" position="@./mesh.position"/>
   <UniformMass totalMass="20"/>
 
@@ -93,7 +93,7 @@
 	    <MechanicalObject  name="dofs" template="Vec3d" showObject="0" showObjectScale="5" />
 	    <CorotationalMeshMapping name="mapping" inputHexahedra="@../mesh.hexahedra" />
 
-	    <Mesh name="mesh" src="@mapping" position="@dofs.position"/>
+	    <MeshTopology name="mesh" src="@mapping" position="@dofs.position"/>
 		
 	    <BarycentricShapeFunction nbRef="8" />
     		<Node name="behavior"   >
@@ -109,7 +109,7 @@
     		</Node>
     	</Node>
   <Node name="Collision">      
-	<Mesh  src="@../../loader" />
+	<MeshTopology  src="@../../loader" />
 	<MechanicalObject name="dof" />
 	<TriangleCollisionModel />
         <LinearMapping name="colmap" template="Vec3d,Vec3d"  assemble="true" parallel="false"/>
@@ -141,7 +141,7 @@
   <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
-  <Mesh  name="mesh" src="@../sampler" />
+  <MeshTopology  name="mesh" src="@../sampler" />
   <MechanicalObject  name="dofs" tags="NoPicking" position="@./mesh.position"/>
   <UniformMass totalMass="20"/>
 
@@ -151,7 +151,7 @@
 	  <HexahedronFEMForceField youngModulus="3000.0" poissonRatio="0.3" method="polar" updateStiffnessMatrix="false" />
 
   <Node name="Collision">      
-	<Mesh  src="@../../loader" />
+	<MeshTopology  src="@../../loader" />
 	<MechanicalObject name="dof" />
 	<TriangleCollisionModel />
 	 <BarycentricMapping input="@.." output="@." />
@@ -171,7 +171,7 @@
   <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
-  <Mesh  name="mesh" src="@../sampler" />
+  <MeshTopology  name="mesh" src="@../sampler" />
   <MechanicalObject  name="dofs" tags="NoPicking" position="@./mesh.position"/>
   <UniformMass totalMass="20"/>
 
@@ -181,7 +181,7 @@
 	  <FlexibleCorotationalFEMForceField youngModulus="3000.0" poissonRatio="0.3" method="polar"  order="2" />
 
   <Node name="Collision">      
-	<Mesh  src="@../../loader" />
+	<MeshTopology  src="@../../loader" />
 	<MechanicalObject name="dof" />
 	<TriangleCollisionModel />
 	 <BarycentricMapping input="@.." output="@." />
@@ -200,7 +200,7 @@
   <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
-  <Mesh  name="mesh" src="@../sampler" />
+  <MeshTopology  name="mesh" src="@../sampler" />
   <MechanicalObject  name="dofs" tags="NoPicking" position="@./mesh.position"/>
   <UniformMass totalMass="20"/>
 
@@ -210,7 +210,7 @@
 	  <FlexibleCorotationalMeshFEMForceField youngModulus="3000.0" poissonRatio="0.3" method="polar"  order="2" />
 
   <Node name="Collision">      
-	<Mesh  src="@../../loader" />
+	<MeshTopology  src="@../../loader" />
 	<MechanicalObject name="dof" />
 	<TriangleCollisionModel />
 	 <BarycentricMapping input="@.." output="@." />

@@ -9,7 +9,7 @@
 
 	<Node name="VisualNode">
          	<MeshLoader name="loader"  filename="file" />
-                <Mesh src="@loader"/>
+                <MeshTopology src="@loader"/>
                 <MappedObject name="Mapped" template="CudaVec3f" />
 		<CudaVisualModel computeNormals="true"   template="CudaVec3f"   name="Visual"   diffuse="0.8 0.8 0.8 1.0"    />
 		<BarycentricMapping   input="@.." output="@Mapped" />
