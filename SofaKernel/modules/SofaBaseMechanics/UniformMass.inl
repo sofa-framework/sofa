@@ -84,7 +84,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
                                                                                    "Any computation involving only indices outside of this range \n"
                                                                                    "are discarded (useful for parallelization using mesh partitionning)" ) )
     , d_indices ( initData ( &d_indices, "indices", "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
-    , d_handleTopoChange ( initData ( &d_handleTopoChange, false, "handleTopoChange", "The mass and totalMass are recomputed on particles add/remove." ) )
+    , d_handleTopologyChange ( initData ( &d_handleTopologyChange, false, "handleTopologyChange", "The mass and totalMass are recomputed on particles add/remove." ) )
     , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
     , l_topology(initLink("topology", "link to the topology container"))
 {
@@ -372,7 +372,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             {
             // POINTS ADDED -----------------
             case core::topology::POINTSADDED:
-                if ( d_handleTopoChange.getValue())
+                if ( d_handleTopologyChange.getValue())
                 {
                     WriteAccessor<Data<vector<int> > > indices = d_indices;
                     size_t sizeIndices = indices.size();
@@ -401,7 +401,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
 
             // POINTS REMOVED -----------------
             case core::topology::POINTSREMOVED:
-                if ( d_handleTopoChange.getValue())
+                if ( d_handleTopologyChange.getValue())
                 {
                     WriteAccessor<Data<vector<int> > > indices = d_indices;
                     size_t sizeIndices = indices.size();
