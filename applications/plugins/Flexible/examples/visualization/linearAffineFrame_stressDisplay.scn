@@ -7,7 +7,7 @@
     <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showWireframe" />
 
     <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
-    <CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
+    <CGLinearSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
     <Node 	name="Frames"   >
 	  <MeshObjLoader name="loader" filename="mesh/torus.obj" triangulate="1"/>

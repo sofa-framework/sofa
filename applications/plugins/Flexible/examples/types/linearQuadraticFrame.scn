@@ -7,7 +7,7 @@
 <!--     <RequiredPlugin pluginName="SofaMJEDFEM"/> -->
   
     <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
-    <CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
+    <CGLinearSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
     <!-- <PythonScriptController filename="RealTimeController.py" classname="RealTimeController"/> -->
 

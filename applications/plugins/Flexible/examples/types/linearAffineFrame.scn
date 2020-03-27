@@ -6,7 +6,7 @@
     <RequiredPlugin pluginName="image"/>
   
     <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
-    <CGSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+    <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
 
     <!-- <PythonScriptController filename="RealTimeController.py" classname="RealTimeController"/> -->
 

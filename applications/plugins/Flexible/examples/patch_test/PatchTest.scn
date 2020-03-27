@@ -6,7 +6,7 @@
 
   <Node name="Patch" >
     <EulerImplicitSolver verbose="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
-    <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
+    <CGLinearSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
 
     <!--Nodes-->
     <RegularGridTopology name ="loader" nx="4" ny="4" nz="4" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1" />
