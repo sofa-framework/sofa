@@ -17,7 +17,7 @@
 	<Node name="CollisionNode">
 	        <SparseGrid name="sparse" n="6 6 6" filename="file"/>
 		<MechanicalObject   />
-		<SphereModel />
+		<SphereCollisionModel />
 		<BarycentricMapping />
 	</Node>
 </Node>
