@@ -4,7 +4,7 @@
 
         <!-- Matrix system is diagonal because integration is explicit and Mass is diagonal -->
         <!-- No need for a LinearSolver -->
-        <EulerExplicitSolverSolver name="odeExplicitSolver" optimizedForDiagonalMatrix="1" />
+        <EulerExplicitSolver name="odeExplicitSolver" optimizedForDiagonalMatrix="1" />
 
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
         <TetrahedronSetTopologyContainer src="@loader" name="topology"/>
