@@ -1543,6 +1543,16 @@ double MultiBeamForceField<DataTypes>::voigtDotProduct(const VoigtTensor2 &t1, c
 }
 
 template< class DataTypes>
+double MultiBeamForceField<DataTypes>::voigtTensorNorm(const VoigtTensor2 &t)
+{
+    // This method provides a correct implementation of the norm for 2nd-order tensors represented
+    // with Voigt notation. The unrepresented elements are taken into account in the
+    // voigtDotProduct method
+
+    return helper::rsqrt(voigtDotProduct(t, t));
+}
+
+template< class DataTypes>
 Eigen::Matrix<double, 12, 1> MultiBeamForceField<DataTypes>::beTTensor2Mult(const Eigen::Matrix<double, 12, 6> &BeT,
     const VoigtTensor2 &T)
 {
@@ -2713,254 +2723,243 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
     /***************************************************/
     /*      Radial return with hardening - Hugues      */
     /***************************************************/
+
+    //First we compute the trial stress, taking into account the back stress
+    // (i.e. the centre of the yield surface)
+
+    VoigtTensor2 elasticIncrement = C*strainIncrement;
+    VoigtTensor2 trialStress = lastStress + elasticIncrement;
+
+    if (_useConsistentTangentOperator.getValue())
+        _elasticPredictors[index][gaussPointIt] = trialStress;
+
+    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+
+    helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &backStresses = bd[index]._backStresses;
+    Eigen::Matrix<double, 6, 1> &backStress = backStresses[gaussPointIt];
+
+    helper::fixed_array<Real, 27> &localYieldStresses = bd[index]._localYieldStresses;
+    Real &yieldStress = localYieldStresses[gaussPointIt];
+
+    if (!goToPlastic(trialStress - backStress, yieldStress))
     {
-        //First we compute the trial stress, taking into account the back stress
-        // (i.e. the centre of the yield surface)
+        // The Gauss point is in elastic state: the back stress and yield stress
+        // remain constant, and the new stress is equal to the trial stress.
+        newStressPoint = trialStress;
 
-        VoigtTensor2 elasticIncrement = C*strainIncrement;
-        VoigtTensor2 trialStress = lastStress + elasticIncrement;
+        // If the Gauss point was initially plastic, we update its mechanical state
+        if (pointMechanicalState == PLASTIC)
+            pointMechanicalState = POSTPLASTIC;
+    }
+    else
+    {
+        // If the Gauss point was initially elastic, we update its mechanical state
+        if (pointMechanicalState == POSTPLASTIC || pointMechanicalState == ELASTIC)
+            pointMechanicalState = PLASTIC;
 
-        if (_useConsistentTangentOperator.getValue())
-            _elasticPredictors[index][gaussPointIt] = trialStress;
-
-        helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-
-        helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &backStresses = bd[index]._backStresses;
-        Eigen::Matrix<double, 6, 1> &backStress = backStresses[gaussPointIt];
-
-        helper::fixed_array<Real, 27> &localYieldStresses = bd[index]._localYieldStresses;
-        Real &yieldStress = localYieldStresses[gaussPointIt];
-
-        VoigtTensor2 shiftedTrialStress = trialStress - backStress; // xi_n+1^tr
-        VoigtTensor2 devShiftedTrialStress = deviatoricStress(shiftedTrialStress);
-
-        double A = voigtDotProduct(devShiftedTrialStress, devShiftedTrialStress);
-        double R = helper::rsqrt(2.0 / 3) * yieldStress;
-        const double R2 = R*R;
-
-        if (A <= R2) //TO DO: proper comparison
+        /*******************************************/
+        /*             Explicit method             */
+        /*******************************************/
         {
-            // The Gauss point is in elastic state: the back stress and yield stress
-            // remain constant, and the new stress is equal to the trial stress.
-            newStressPoint = trialStress;
+            VoigtTensor2 shiftedTrialStress = trialStress - backStress;
+            VoigtTensor2 xiTrial = deviatoricStress(shiftedTrialStress);
 
-            // If the Gauss point was initially plastic, we update its mechanical state
-            if (pointMechanicalState == PLASTIC)
-                pointMechanicalState = POSTPLASTIC;
+            // Normal at the end of the time step
+            double xiTrialNorm = voigtTensorNorm(xiTrial);
+            VoigtTensor2 finalN = xiTrial / xiTrialNorm;
+
+            const double beta = 0.5; // Indicates the proportion of Kinematic vs isotropic hardening. beta=0 <=> kinematic, beta=1 <=> isotropic
+
+            const double E = beamsData.getValue()[index]._E;
+            const double nu = beamsData.getValue()[index]._nu;
+            const double mu = E / (2 * (1 + nu)); // Lame coefficient
+
+            //const double eqTrialStress = equivalentStress(xiTrial);
+            //const Real effPlasticStrain = bd[index]._effectivePlasticStrains[gaussPointIt];
+            //double tangentModulus = m_ConstitutiveLaw->getTangentModulusFromStrain(effPlasticStrain); //TO DO: check for definition of H' in Hugues 1984
+            //tangentModulus = m_ConstitutiveLaw->getTangentModulusFromStress(eqTrialStress); //TO DO: check for definition of H' in Hugues 1984
+            //tangentModulus = 34628588874.0;
+            //const double plasticModulus = tangentModulus / (1 - tangentModulus / E);
+            double H = 34628588874.0; // TO DO: look for proper constant, from Hugues 1984 definition of H'
+
+            // Computation of the plastic multiplier
+            double plasticMultiplier = (xiTrialNorm - helper::rsqrt(2.0 / 3.0)*yieldStress) / ( mu*helper::rsqrt(6.0) * (1 + H / (3 * mu)));
+
+            // Updating plastic variables
+            newStressPoint = trialStress - helper::rsqrt(6.0)*mu*plasticMultiplier*finalN;
+
+            yieldStress += beta*H*plasticMultiplier;
+
+            backStress += helper::rsqrt(2.0 / 3.0)*(1 - beta)*H*plasticMultiplier*finalN;
+
+            //helper::vector<BeamInfo>& bd = *(beamsData.beginEdit()); //Done in the beginning to modify the yield and back stresses
+            helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
+            VoigtTensor2 plasticStrainIncrement = helper::rsqrt(3.0/2.0)*plasticMultiplier*finalN;
+            plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
+            //beamsData.endEdit();
+
+            helper::fixed_array<Real, 27> &effectivePlasticStrain = bd[index]._effectivePlasticStrains;
+            effectivePlasticStrain[gaussPointIt] += plasticMultiplier;
+
+            beamsData.endEdit(); //end edit _backStresses, _localYieldStresses, _plasticStrainHistory, and _effectivePlasticStrains
         }
-        else
+
+        /*******************************************/
+        /*             Implicit method             */
+        /*******************************************/
         {
-            // If the Gauss point was initially elastic, we update its mechanical state
-            if (pointMechanicalState == POSTPLASTIC || pointMechanicalState == ELASTIC)
-                pointMechanicalState = PLASTIC;
+            //***** Constructing the system for the first iteration *****/
 
-            /*******************************************/
-            /*             Explicit method             */
-            /*******************************************/
-            {
-                //// The Gauss point is in plastic state: we update the back stress,
-                //// yield stress, and new stress accordingly
-                //VoigtTensor2 normalApprox = devShiftedTrialStress / helper::rsqrt(A); //TO DO: check for simpler expression of norm(devShiftedTrialStress)
+            //helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
 
-                //// Computation of the plastic multiplier
-                //const double E = beamsData.getValue()[index]._E;
-                //const double nu = beamsData.getValue()[index]._nu;
-                //const double mu = E / (2 * (1 + nu)); // Lame coefficient
-                //const double eqLastStress = equivalentStress(lastStress);
+            //helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &backStresses = bd[index]._backStresses;
+            //Eigen::Matrix<double, 6, 1> &backStress = backStresses[gaussPointIt];
+            //helper::fixed_array<Real, 27> &localYieldStresses = bd[index]._localYieldStresses;
+            //Real &yieldStress = localYieldStresses[gaussPointIt];
 
-                //const Real effPlasticStrain = bd[index]._effectivePlasticStrains[gaussPointIt];
-                //double tangentModulus = m_ConstitutiveLaw->getTangentModulusFromStrain(effPlasticStrain); //TO DO: check for definition of H' in Hugues 1984
-                //tangentModulus = m_ConstitutiveLaw->getTangentModulusFromStress(eqLastStress); //TO DO: check for definition of H' in Hugues 1984
-                ////tangentModulus = 34628588874.0;
-                //const double plasticModulus = tangentModulus / (1 - tangentModulus / E);
+            //const VectTensor4 vectC = voigtToVect4(C);
+            //const double E = beamsData.getValue()[index]._E;
+            //const double beta = 0.5;
 
-                //double lambdaTilde = (0.5 / mu)*(1 / (1 + (plasticModulus / (3 * mu))))*(helper::rsqrt(A) - R);
+            //VoigtTensor2 currentStress = trialStress;
+            //VectTensor2 vectCurrentStress = voigtToVect2(currentStress);
 
-                //const double beta = 0.5; // Indicates the proportion of Kinematic vs isotropic hardening. beta=0 <=> kinematic, beta=1 <=> isotropic 
+            //double yieldCondition = vonMisesYield(currentStress - backStress, yieldStress);
 
-                //// Updating plastic variables
-                //newStressPoint = trialStress - 2 * mu*lambdaTilde*normalApprox;
+            //// Variables
+            //Eigen::Matrix<double, 10, 1> newIncrement = Eigen::Matrix<double, 10, 1>::Zero();
+            //Eigen::Matrix<double, 9, 1> vectLastStress = voigtToVect2(lastStress);
+            //Eigen::Matrix<double, 10, 1> totalIncrement = Eigen::Matrix<double, 10, 1>::Zero();
+            //totalIncrement.block<9, 1>(0, 0) = voigtToVect2(elasticIncrement);
+            //double lambda = 0.0;
 
-                ////yieldStress = helper::rsqrt(3.0 / 2.0) * (helper::rsqrt(2.0 / 3.0)*yieldStress + (2.0 / 3.0)*beta*plasticModulus*lambdaTilde);
-                //yieldStress += helper::rsqrt(2.0 / 3.0)*beta*plasticModulus*lambdaTilde;
+            //// Shifted stress point
+            //VoigtTensor2 shiftedStress = trialStress - backStress; // At 1st step, lambda=0
 
-                ////std::cout << "Nouvelle valeur pour le yield stress (modifie en plasticite), element " << index << ", point de Gauss " << gaussPointIt << " : " << std::endl;
-                ////std::cout.precision(17);
-                ////std::cout << "    " << yieldStress << std::scientific << " " << std::endl;
-                ////std::cout << std::endl;
+            //// Normal
+            //VoigtTensor2 trialNormal = helper::rsqrt(2.0 / 3.0)*vonMisesGradient(trialStress);
+            //VectTensor2 vectTrialNormal = voigtToVect2(trialNormal);
+            //VoigtTensor2 shiftedGradient = vonMisesGradient(shiftedStress);
+            //VectTensor2 vectShiftedGradient = voigtToVect2(shiftedGradient);
 
-                //backStress += (2.0 / 3.0)*(1 - beta)*plasticModulus*lambdaTilde*normalApprox;
+            //// Plastic modulus
+            ////double eqLastStress = equivalentStress(lastStress);
+            ////double tangentModulus = m_ConstitutiveLaw->getTangentModulusFromStress(eqLastStress); //TO DO: check for definition of H' in Hugues 1984
+            //double tangentModulus = 34628588874.0;
+            //double plasticModulus = tangentModulus / (1 - tangentModulus / E);
+            //
+            //// Jacobian
+            //Eigen::Matrix<double, 10, 10> J = Eigen::Matrix<double, 10, 10>::Zero();
+            //Eigen::Matrix<double, 9, 9> I9 = Eigen::Matrix<double, 9, 9>::Identity();
+            //
+            //J.block<9, 9>(0, 0) = I9; // At 1st step, lambda=0
+            //J.block<1, 9>(9, 0) = vectShiftedGradient.transpose()*I9; // At 1st step, lambda=0
+            //J.block<9, 1>(0, 9) = vectC*vectTrialNormal;
+            //double scalarProduct = vectTrialNormal.transpose()*vectShiftedGradient;
+            //J(9, 9) = -(2.0/3.0)*(1-beta)*plasticModulus*scalarProduct - helper::rsqrt(2.0 / 3.0)*beta*plasticModulus;
 
-                ////helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-                //helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
-                //VoigtTensor2 plasticStrainIncrement = lambdaTilde*normalApprox;
-                //plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
-                ////beamsData.endEdit();
+            //// Second member b
+            //Eigen::Matrix<double, 10, 1> b = Eigen::Matrix<double, 10, 1>::Zero();
+            //// b.block<9, 1>(0, 0) is zero
+            //b(9, 0) = equivalentStress(shiftedStress) - yieldStress;
 
-                //helper::fixed_array<Real, 27> &effectivePlasticStrain = bd[index]._effectivePlasticStrains;
-                //effectivePlasticStrain[gaussPointIt] += helper::rsqrt(2.0 / 3.0)*lambdaTilde;
+            //// Solver
+            //Eigen::FullPivLU<Eigen::Matrix<double, 10, 10> > LU(J.rows(), J.cols());
+            //LU.compute(J);
 
-                //beamsData.endEdit(); //end edit _backStresses, _localYieldStresses, _plasticStrainHistory, and _effectivePlasticStrains
-            }
+            //// First iteration
+            //newIncrement = LU.solve(-b);
 
-            /*******************************************/
-            /*             Implicit method             */
-            /*******************************************/
-            {
-                /***** Constructing the system for the first iteration *****/
+            //// Updating the variables
+            //totalIncrement += newIncrement;
+            //lambda = totalIncrement[9];
+            //vectCurrentStress += newIncrement.block<9, 1>(0, 0);
+            //currentStress = vectToVoigt2(vectCurrentStress);
 
-                helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+            //yieldStress += helper::rsqrt(2.0 / 3.0)*beta*plasticModulus*lambda;
+            //backStress += (2.0 / 3.0)*(1 - beta)*plasticModulus*lambda*helper::rsqrt(2.0/3.0)*vonMisesGradient(currentStress);
 
-                helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &backStresses = bd[index]._backStresses;
-                Eigen::Matrix<double, 6, 1> &backStress = backStresses[gaussPointIt];
-                helper::fixed_array<Real, 27> &localYieldStresses = bd[index]._localYieldStresses;
-                Real &yieldStress = localYieldStresses[gaussPointIt];
+            ////Testing the consistency condition
+            //yieldCondition = vonMisesYield(currentStress - backStress, yieldStress);
 
-                const VectTensor4 vectC = voigtToVect4(C);
-                const double E = beamsData.getValue()[index]._E;
-                const double beta = 0.5;
+            //// Testing if the result of the first iteration is satisfaying
+            //double threshold = 1.0; //TO DO: choose coherent value
+            //bool consistencyTestIsPositive = helper::rabs(yieldCondition) <= threshold;
 
-                VoigtTensor2 currentStress = trialStress;
-                VectTensor2 vectCurrentStress = voigtToVect2(currentStress);
+            //// Declaration of variables for the iterations
+            //VoigtTensor2 currentNormal = helper::rsqrt(2.0 / 3.0)*vonMisesGradient(currentStress);
 
-                double yieldCondition = vonMisesYield(currentStress - backStress, yieldStress);
+            //if (!consistencyTestIsPositive)
+            ////if (false)
+            //{
+            //    /* If the new stress point computed after one iteration of the implicit
+            //    * method satisfied the consistency condition, we could stop the
+            //    * iterative procedure at this point.
+            //    * Otherwise the solution found with the first iteration does not
+            //    * satisfy the consistency condition. In this case, we need to go
+            //    * through more iterations to find a more correct solution.
+            //    */
+            //    unsigned int nbMaxIterations = 100;
 
-                // Variables
-                Eigen::Matrix<double, 10, 1> newIncrement = Eigen::Matrix<double, 10, 1>::Zero();
-                Eigen::Matrix<double, 9, 1> vectLastStress = voigtToVect2(lastStress);
-                Eigen::Matrix<double, 10, 1> totalIncrement = Eigen::Matrix<double, 10, 1>::Zero();
-                totalIncrement.block<9, 1>(0, 0) = voigtToVect2(elasticIncrement);
-                double lambda = 0.0;
+            //    // Updates for next iteration
+            //    currentNormal = helper::rsqrt(2.0 / 3.0)*vonMisesGradient(currentStress);
+            //    VectTensor2 vectCurrentNormal = voigtToVect2(currentNormal);
+            //    shiftedStress = currentStress - backStress; // both backStress and currentStress already updated
+            //    shiftedGradient = vonMisesGradient(shiftedStress);
+            //    vectShiftedGradient = voigtToVect2(shiftedGradient);
+            //    VectTensor4 vectHessian = vonMisesHessian(currentStress, yieldStress);
 
-                // Shifted stress point
-                VoigtTensor2 shiftedStress = trialStress - backStress; // At 1st step, lambda=0
+            //    unsigned int count = 1;
+            //    while (helper::rabs(yieldCondition) >= threshold && count < nbMaxIterations)
+            //    {
+            //        //Updates J and b
+            //        J.block<9, 9>(0, 0) = I9 + helper::rsqrt(2.0 / 3.0)*lambda*vectC*vectHessian;
+            //        J.block<1, 9>(9, 0) = vectShiftedGradient.transpose()*(I9 - (2.0/3.0)*helper::rsqrt(2.0/3.0)*(1-beta)*plasticModulus*lambda*vectHessian);
+            //        J.block<9, 1>(0, 9) = vectC*vectCurrentNormal;
+            //        // J(9, 9) = -helper::rsqrt(2.0 / 3.0)*beta*plasticModulus; // Optionnal with constant plastic modulus
 
-                // Normal
-                VoigtTensor2 trialNormal = helper::rsqrt(2.0 / 3.0)*vonMisesGradient(trialStress);
-                VectTensor2 vectTrialNormal = voigtToVect2(trialNormal);
-                VoigtTensor2 shiftedGradient = vonMisesGradient(shiftedStress);
-                VectTensor2 vectShiftedGradient = voigtToVect2(shiftedGradient);
+            //        // Second member b
+            //        Eigen::Matrix<double, 10, 1> b = Eigen::Matrix<double, 10, 1>::Zero();
+            //        b(9, 0) = equivalentStress(shiftedStress) - yieldStress; // both backStress and yieldStress already updated
+            //        b.block<9, 1>(0, 0) = totalIncrement.block<9, 1>(0, 0) - voigtToVect2(elasticIncrement) + lambda*vectC*vectCurrentNormal;
 
-                // Plastic modulus
-                //double eqLastStress = equivalentStress(lastStress);
-                //double tangentModulus = m_ConstitutiveLaw->getTangentModulusFromStress(eqLastStress); //TO DO: check for definition of H' in Hugues 1984
-                double tangentModulus = 34628588874.0;
-                double plasticModulus = tangentModulus / (1 - tangentModulus / E);
-                
-                // Jacobian
-                Eigen::Matrix<double, 10, 10> J = Eigen::Matrix<double, 10, 10>::Zero();
-                Eigen::Matrix<double, 9, 9> I9 = Eigen::Matrix<double, 9, 9>::Identity();
-                
-                J.block<9, 9>(0, 0) = I9; // At 1st step, lambda=0
-                J.block<1, 9>(9, 0) = vectShiftedGradient.transpose()*I9; // At 1st step, lambda=0
-                J.block<9, 1>(0, 9) = vectC*vectTrialNormal;
-                double scalarProduct = vectTrialNormal.transpose()*vectShiftedGradient;
-                J(9, 9) = -(2.0/3.0)*(1-beta)*plasticModulus*scalarProduct - helper::rsqrt(2.0 / 3.0)*beta*plasticModulus;
+            //        //Computes the new increment
+            //        LU.compute(J);
+            //        newIncrement = LU.solve(-b);
 
-                // Second member b
-                Eigen::Matrix<double, 10, 1> b = Eigen::Matrix<double, 10, 1>::Zero();
-                // b.block<9, 1>(0, 0) is zero
-                b(9, 0) = equivalentStress(shiftedStress) - yieldStress;
+            //        totalIncrement += newIncrement;
 
-                // Solver
-                Eigen::FullPivLU<Eigen::Matrix<double, 10, 10> > LU(J.rows(), J.cols());
-                LU.compute(J);
+            //        // Update the variables (currentStress, backStress, yieldStress, yieldCondition, gradient and hessian)
+            //        lambda = totalIncrement[9];
+            //        vectCurrentStress += newIncrement.block<9, 1>(0, 0);
+            //        currentStress = vectToVoigt2(vectCurrentStress);
+            //        yieldStress += helper::rsqrt(2.0 / 3.0)*beta*plasticModulus*lambda;
+            //        backStress += (2.0 / 3.0)*(1 - beta)*plasticModulus*lambda*helper::rsqrt(2.0 / 3.0)*vonMisesGradient(currentStress);
+            //        yieldCondition = vonMisesYield(currentStress - backStress, yieldStress);
 
-                // First iteration
-                newIncrement = LU.solve(-b);
+            //        // TO DO: optimise the variable update by placing it at the beginning of the loop,
+            //        // and merging it with the update before the first iteration
+            //        currentNormal = helper::rsqrt(2.0 / 3.0)*vonMisesGradient(currentStress);
+            //        vectCurrentNormal = voigtToVect2(currentNormal);
+            //        shiftedStress = currentStress - backStress;
+            //        shiftedGradient = vonMisesGradient(shiftedStress);
+            //        vectShiftedGradient = voigtToVect2(shiftedGradient);
+            //        vectHessian = vonMisesHessian(currentStress, yieldStress);
 
-                // Updating the variables
-                totalIncrement += newIncrement;
-                lambda = totalIncrement[9];
-                vectCurrentStress += newIncrement.block<9, 1>(0, 0);
-                currentStress = vectToVoigt2(vectCurrentStress);
+            //        count++;
+            //    }
 
-                yieldStress += helper::rsqrt(2.0 / 3.0)*beta*plasticModulus*lambda;
-                backStress += (2.0 / 3.0)*(1 - beta)*plasticModulus*lambda*helper::rsqrt(2.0/3.0)*vonMisesGradient(currentStress);
+            //} // endif (!consistencyTestIsPositive)
 
-                //Testing the consistency condition
-                yieldCondition = vonMisesYield(currentStress - backStress, yieldStress);
+            //VectTensor2 vectTotalIncrement = totalIncrement.block<9, 1>(0, 0);
+            //newStressPoint = lastStress + vectToVoigt2(vectTotalIncrement);
 
-                // Testing if the result of the first iteration is satisfaying
-                double threshold = 1.0; //TO DO: choose coherent value
-                bool consistencyTestIsPositive = helper::rabs(yieldCondition) <= threshold;
+            //helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
+            //VoigtTensor2 plasticStrainIncrement = lambda*currentNormal;
+            //plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
 
-                // Declaration of variables for the iterations
-                VoigtTensor2 currentNormal = helper::rsqrt(2.0 / 3.0)*vonMisesGradient(currentStress);
-
-                if (!consistencyTestIsPositive)
-                //if (false)
-                {
-                    /* If the new stress point computed after one iteration of the implicit
-                    * method satisfied the consistency condition, we could stop the
-                    * iterative procedure at this point.
-                    * Otherwise the solution found with the first iteration does not
-                    * satisfy the consistency condition. In this case, we need to go
-                    * through more iterations to find a more correct solution.
-                    */
-                    unsigned int nbMaxIterations = 100;
-
-                    // Updates for next iteration
-                    currentNormal = helper::rsqrt(2.0 / 3.0)*vonMisesGradient(currentStress);
-                    VectTensor2 vectCurrentNormal = voigtToVect2(currentNormal);
-                    shiftedStress = currentStress - backStress; // both backStress and currentStress already updated
-                    shiftedGradient = vonMisesGradient(shiftedStress);
-                    vectShiftedGradient = voigtToVect2(shiftedGradient);
-                    VectTensor4 vectHessian = vonMisesHessian(currentStress, yieldStress);
-
-                    unsigned int count = 1;
-                    while (helper::rabs(yieldCondition) >= threshold && count < nbMaxIterations)
-                    {
-                        //Updates J and b
-                        J.block<9, 9>(0, 0) = I9 + helper::rsqrt(2.0 / 3.0)*lambda*vectC*vectHessian;
-                        J.block<1, 9>(9, 0) = vectShiftedGradient.transpose()*(I9 - (2.0/3.0)*helper::rsqrt(2.0/3.0)*(1-beta)*plasticModulus*lambda*vectHessian);
-                        J.block<9, 1>(0, 9) = vectC*vectCurrentNormal;
-                        // J(9, 9) = -helper::rsqrt(2.0 / 3.0)*beta*plasticModulus; // Optionnal with constant plastic modulus
-
-                        // Second member b
-                        Eigen::Matrix<double, 10, 1> b = Eigen::Matrix<double, 10, 1>::Zero();
-                        b(9, 0) = equivalentStress(shiftedStress) - yieldStress; // both backStress and yieldStress already updated
-                        b.block<9, 1>(0, 0) = totalIncrement.block<9, 1>(0, 0) - voigtToVect2(elasticIncrement) + lambda*vectC*vectCurrentNormal;
-
-                        //Computes the new increment
-                        LU.compute(J);
-                        newIncrement = LU.solve(-b);
-
-                        totalIncrement += newIncrement;
-
-                        // Update the variables (currentStress, backStress, yieldStress, yieldCondition, gradient and hessian)
-                        lambda = totalIncrement[9];
-                        vectCurrentStress += newIncrement.block<9, 1>(0, 0);
-                        currentStress = vectToVoigt2(vectCurrentStress);
-                        yieldStress += helper::rsqrt(2.0 / 3.0)*beta*plasticModulus*lambda;
-                        backStress += (2.0 / 3.0)*(1 - beta)*plasticModulus*lambda*helper::rsqrt(2.0 / 3.0)*vonMisesGradient(currentStress);
-                        yieldCondition = vonMisesYield(currentStress - backStress, yieldStress);
-
-                        // TO DO: optimise the variable update by placing it at the beginning of the loop,
-                        // and merging it with the update before the first iteration
-                        currentNormal = helper::rsqrt(2.0 / 3.0)*vonMisesGradient(currentStress);
-                        vectCurrentNormal = voigtToVect2(currentNormal);
-                        shiftedStress = currentStress - backStress;
-                        shiftedGradient = vonMisesGradient(shiftedStress);
-                        vectShiftedGradient = voigtToVect2(shiftedGradient);
-                        vectHessian = vonMisesHessian(currentStress, yieldStress);
-
-                        count++;
-                    }
-
-                } // endif (!consistencyTestIsPositive)                
-
-                VectTensor2 vectTotalIncrement = totalIncrement.block<9, 1>(0, 0);
-                newStressPoint = lastStress + vectToVoigt2(vectTotalIncrement);
-
-                helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
-                VoigtTensor2 plasticStrainIncrement = lambda*currentNormal;
-                plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
-
-                beamsData.endEdit(); //end edit _backStresses, _localYieldStresses, _plasticStrainHistory
-            }
+            //beamsData.endEdit(); //end edit _backStresses, _localYieldStresses, _plasticStrainHistory
         }
-        
     }
 }
 

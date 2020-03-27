@@ -343,8 +343,9 @@ protected:
     VectTensor2 vectVonMisesGradient(const VectTensor2 &stressTensor);
     VoigtTensor2 devVonMisesGradient(const VoigtTensor2 &stressTensor);
 
-    // Special implementation for second-order tensor dot product, with the Voigt notation.
+    // Special implementation for second-order tensor operations, with the Voigt notation.
     double voigtDotProduct(const VoigtTensor2 &t1, const VoigtTensor2 &t2);
+    double voigtTensorNorm(const VoigtTensor2 &t);
     Eigen::Matrix<double, 12, 1> beTTensor2Mult(const Eigen::Matrix<double, 12, 6> &BeT, const VoigtTensor2 &T);
     Eigen::Matrix<double, 12, 12> beTCBeMult(const Eigen::Matrix<double, 12, 6> &BeT, const VoigtTensor4 &C,
                                              const double nu, const double E);
