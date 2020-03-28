@@ -97,15 +97,22 @@ public:
     {
         if (arg->getAttribute("object1") || arg->getAttribute("object2"))
         {
-            if (dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1",".."))) == nullptr)
+            if (dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1",".."))) == nullptr) {
+                arg->logError("Data attribute 'object1' must point the a valid mechanical state of datatype '" + std::string(DataTypes1::Name()) + "'.");
                 return false;
-            if (dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2",".."))) == nullptr)
+            }
+
+            if (dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2",".."))) == nullptr) {
+                arg->logError("Data attribute 'object2' must point the a valid mechanical state of datatype '" + std::string(DataTypes2::Name()) + "'.");
                 return false;
+            }
         }
         else
         {
-            if (dynamic_cast<MechanicalState<DataTypes1>*>(context->getMechanicalState()) == nullptr)
+            if (dynamic_cast<MechanicalState<DataTypes1>*>(context->getMechanicalState()) == nullptr) {
+                arg->logError("No mechanical state with the datatype '" + std::string(DataTypes1::Name()) + "' found in the context node.");
                 return false;
+            }
         }
         return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }

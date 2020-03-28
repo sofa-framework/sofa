@@ -217,19 +217,20 @@ public:
 
         if (stin == nullptr)
         {
+            arg->logError("Data attribute 'input' does not point to a mechanical state of data type '"+std::string(In::Name())+"' and none can be found in the parent node context.");
             return false;
         }
 
         if (stout == nullptr)
         {
+            arg->logError("Data attribute 'output' does not point to a mechanical state of data type '"+std::string(Out::Name())+"' and none can be found in the parent node context.");
             return false;
         }
 
-        if (static_cast<BaseObject*>(stin) == static_cast<BaseObject*>(stout))
+        if (dynamic_cast<BaseObject*>(stin) == dynamic_cast<BaseObject*>(stout))
         {
             // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
-            msg_error(context) << "Creation of " << className(obj) << " mapping failed because the same object \"" << stin->getName() << "\" is linked as both input and output.";
-            msg_error(context) << "  Maybe a MechanicalObject should be added before this mapping.";
+            arg->logError("Both the input and the output point to the same mechanical state ('"+stin->getName()+"').");
             return false;
         }
 

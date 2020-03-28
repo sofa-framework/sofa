@@ -153,14 +153,6 @@ public:
     /// by the generic MixedInteractionForceField::getPotentialEnergy() method.
     virtual SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2) const =0;
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-
-        return BaseInteractionForceField::canCreate(obj, context, arg);
-    }
 
     /// Construction method called by ObjectFactory.
     template<class T>
