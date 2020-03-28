@@ -40,9 +40,9 @@
     <EulerImplicitSolver name="cg_odesolver" printLog="false" />
     <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
-    <MechanicalObject template="Rigid" name="instrumentState" tags="Omni" rotation="90 45 0" translation="0 0 1"/>
-    <UniformMass template="Rigid" name="mass"  totalmass="0.05" />
-    <LinearMovementConstraint template="Rigid" keyTimes="0 2" movements="0 0 0   0 0 0
+    <MechanicalObject template="Rigid3d" name="instrumentState" tags="Omni" rotation="90 45 0" translation="0 0 1"/>
+    <UniformMass template="Rigid3d" name="mass"  totalmass="0.05" />
+    <LinearMovementConstraint template="Rigid3d" keyTimes="0 2" movements="0 0 0   0 0 0
 										      0 0 0   0 0 0" />
     <Node 	name="VisualModel" >
       <MeshObjLoader name="meshLoader_0" filename="mesh/dental_instrument_light.obj" scale3d="1 1 1" translation="-0.412256 -0.067639 3.35" rotation="180 0 150" handleSeams="1" />

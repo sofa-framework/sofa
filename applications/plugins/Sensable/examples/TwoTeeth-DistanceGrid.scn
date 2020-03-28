@@ -14,8 +14,8 @@
 
   <Node 	name="Instrument"  >
 
-    <MechanicalObject template="Rigid" name="instrumentState" tags="Omni"  />
-    <UniformMass template="Rigid" name="mass"  totalMass="0.05" />
+    <MechanicalObject template="Rigid3d" name="instrumentState" tags="Omni"  />
+    <UniformMass template="Rigid3d" name="mass"  totalMass="0.05" />
     <Node 	name="VisualModel" >
       <MeshObjLoader name="meshLoader_1" filename="data/mesh/dental_instrument.obj" translation="-0.212256 0.132361 3.55" rotation="180 0 150" handleSeams="1" />
       <OglModel template="ExtVec3f" name="InstrumentVisualModel" src="@meshLoader_1" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />

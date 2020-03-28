@@ -12,7 +12,7 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <DefaultCollisionGroupManager name="Group" />
         <Node name="TORUS">
-            <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0.0" dz="0.0" />
+            <MechanicalObject template="Rigid3d" scale="1.0" dx="0.0" dy="0.0" dz="0.0" />
             <UniformMass totalMass="40.0" printLog="false" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
@@ -32,7 +32,7 @@
         </Node>
         <Node name="MAN">
             <EulerExplicitSolver />
-            <MechanicalObject template="Rigid" dx="0.0" dy="0.0" dz="0.0" />
+            <MechanicalObject template="Rigid3d" dx="0.0" dy="0.0" dz="0.0" />
             <UniformMass totalMass="100.0" printLog="false" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
@@ -51,7 +51,7 @@
             </Node>
         </Node>
         <Node name="CUBE">
-            <MechanicalObject template="Rigid" scale="0.3" dx="-2.0" dy="-2.0" dz="-0.5" />
+            <MechanicalObject template="Rigid3d" scale="0.3" dx="-2.0" dy="-2.0" dz="-0.5" />
             <UniformMass totalMass="100.0" printLog="false" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
@@ -71,7 +71,7 @@
         </Node>
         <Node name="DRAGON1">
             <EulerExplicitSolver />
-            <MechanicalObject template="Rigid" dx="0.0" dy="2.5" dz="2.5" />
+            <MechanicalObject template="Rigid3d" dx="0.0" dy="2.5" dz="2.5" />
             <UniformMass totalMass="100.0" printLog="false" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">

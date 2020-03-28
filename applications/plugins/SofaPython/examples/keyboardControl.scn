@@ -46,7 +46,7 @@
 	<!-- The PythonScriptController gathers events from input devices and populates the Mechanical state -->
 	<Node name="Input">
 		<PythonScriptController filename="keyboardControl.py" classname="KeyboardControl"/>
-		<MechanicalObject template="Rigid" name="DOFs" position="0 0 0  0  0  0  1.0"/>
+		<MechanicalObject template="Rigid3d" name="DOFs" position="0 0 0  0  0  0  1.0"/>
 		<Node name="VisuAvatar" activated="false" >
 			<MeshObjLoader name="meshLoader_0" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
 			<OglModel name="Visual" src="@meshLoader_0" color="gray"/>
@@ -63,7 +63,7 @@
 	<Node name="Instrument" >
 		<EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
 		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
-		<MechanicalObject name="instrumentState" template="Rigid" />
+		<MechanicalObject name="instrumentState" template="Rigid3d" />
 		<UniformMass name="mass" totalMass="0.05" />
 		<LCPForceFeedback activate="true" forceCoef="0.001"/> <!-- ADDED : Compute a force-feedback for the device -->
 		<UncoupledConstraintCorrection/>

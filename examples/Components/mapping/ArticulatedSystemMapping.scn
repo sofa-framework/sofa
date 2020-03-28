@@ -15,11 +15,11 @@
         <Node name="articulation">
             <MechanicalObject name="Articulations" template="Vec1d" position="0 0 0 0" />
             <Node>
-                <MechanicalObject template="Rigid" name="DOFs" position="0 0 0  0 0 0 1  1 0 0  0 0 0 1  3 0 0  0 0 0 1  5 0 0  0 0 0 1  7 0 0  0 0 0 1" />
+                <MechanicalObject template="Rigid3d" name="DOFs" position="0 0 0  0 0 0 1  1 0 0  0 0 0 1  3 0 0  0 0 0 1  5 0 0  0 0 0 1  7 0 0  0 0 0 1" />
                 <BeamFEMForceField name="FEM" radius="0.1" youngModulus="1e8" poissonRatio="0.45"/>
                 <Mesh name="lines" lines="0 1 1 2 2 3 3 4 " />
-                <UniformMass template="Rigid" name="mass" vertexMass="0.1 0.1 [1 0 0,0 1 0,0 0 1]" />
-                <FixedConstraint template="Rigid" name="fixOrigin" indices="0" />
+                <UniformMass template="Rigid3d" name="mass" vertexMass="0.1 0.1 [1 0 0,0 1 0,0 0 1]" />
+                <FixedConstraint template="Rigid3d" name="fixOrigin" indices="0" />
                 <ArticulatedSystemMapping input1="@../Articulations" output="@DOFs" />
                 <Node name="Collision">
                     <MechanicalObject template="Vec3d" position="-1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5" />

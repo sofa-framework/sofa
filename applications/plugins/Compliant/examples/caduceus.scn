@@ -73,7 +73,7 @@
     
     <Node name="Base" >
 
-        <MechanicalObject template="Rigid"/>
+        <MechanicalObject template="Rigid3d"/>
         <RigidMass mass="1" inertia="1 1 1"/>
         <FixedConstraint fixAll="1"/>
 

@@ -8,7 +8,7 @@
 
   <Node name="Grab">
     <Euler />
-    <MechanicalObject name="ms1" template="Rigid" />
+    <MechanicalObject name="ms1" template="Rigid3d" />
     <UniformMass name="mass" />
     <OmniDriver scale="600" omniVisu="0" permanent="1"  listening="true" handleEventTriggersUpdate="true"
 		positionBase="0 5 0" orientationBase="0 0.707107 0.707107 0" 

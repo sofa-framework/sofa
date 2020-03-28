@@ -10,7 +10,7 @@ Instrument Visual & Collision Models setup
     <VisualStyle displayFlags="showVisualModels showCollisionModels" /> 
 
     <Node name="Instrument">
-        <MechanicalObject name="instrumentState" template="Rigid" position="0.05 0.5 -7.65  0 0 0 1" />
+        <MechanicalObject name="instrumentState" template="Rigid3d" position="0.05 0.5 -7.65  0 0 0 1" />
         <Node name="VisualModel">
             <MeshObjLoader name="meshLoader_0" filename="data/mesh/dental_instrument.obj" handleSeams="1" />
             <OglModel name="InstrumentVisualModel" src="@meshLoader_0" color="0.8 0.8 0.8 1.0" />

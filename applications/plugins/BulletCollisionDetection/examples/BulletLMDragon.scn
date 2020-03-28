@@ -11,8 +11,8 @@
         <LMConstraintSolver listening="1" constraintVel="1" constraintPos="1" numIterations="25" />
 	<BulletIntersection contactDistance="5"/>
 	<Node 	 name="Dragon"  >
-		<MechanicalObject template="Rigid" name="mObject0"  position="0 0 50 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  reserve="1" />
-		<UniformMass template="Rigid" name="uniformMass0" />
+		<MechanicalObject template="Rigid3d" name="mObject0"  position="0 0 50 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  reserve="1" />
+		<UniformMass template="Rigid3d" name="uniformMass0" />
 		<Node 	 name="Dragon2"  >
 			<!-- <MeshObjLoader name="loader"  filename="mesh/SimpleThinCube.obj" /> -->
 			<MeshObjLoader name="loader"  filename="mesh/dragon.obj" />
@@ -24,9 +24,9 @@
 		</Node>
 	</Node>
 	<Node 	 name="Floor"  >
-		<MechanicalObject template="Rigid" name="rigidDOF"  position="0 0 0 0 0 0 1"/>
-		<UniformMass template="Rigid" name="uniformMass63" />
-		<FixedConstraint template="Rigid" name="fixedConstraint0"  indices="0" />
+		<MechanicalObject template="Rigid3d" name="rigidDOF"  position="0 0 0 0 0 0 1"/>
+		<UniformMass template="Rigid3d" name="uniformMass63" />
+		<FixedConstraint template="Rigid3d" name="fixedConstraint0"  indices="0" />
 			<Node 	 name="TRIANGLE"  >
 				<MeshTopology name="meshTopology35"  edges="2 0  1 2  0 1 "  triangles="0 1 2 "  drawEdges="1"  drawTriangles="1" />
 				<!-- <MechanicalObject template="Vec3d" name="fix"  position="-2 0 -2 -2 0 2 2 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" reserve="0" /> -->

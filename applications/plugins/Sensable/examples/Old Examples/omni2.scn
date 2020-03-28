@@ -12,11 +12,11 @@
 		<NewOmniDriver name="newOmniDriver1"  listening="1"  forceScale="0.01"  deviceIndex="0" />
 		<EulerImplicitSolver name="eulerImplicitSolver2"  rayleighStiffness="0.01"  rayleighMass="0.1" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="40"  tolerance="1e-009"  threshold="1e-015" />
-		<MechanicalObject template="Rigid" name="tool"  position="0 0 0 -0.707107 0 0 0.707107 0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  rest_position="0 0 0 0 0 0 1 0 0 0 0 0 0 1"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001" />
-		<UniformMass template="Rigid" name="uniformMass3"  totalmass="0.01" />
-		<RestShapeSpringsForceField template="Rigid" name="restShapeSpringsForceField1"  points="0 1"  stiffness="1000 1000"  angularStiffness="10000 10000" />
-		<LCPForceFeedback template="Rigid" name="lCPForceFeedback7"  listening="1"  activate="1" />
-		<UncoupledConstraintCorrection template="Rigid" name="uncoupledConstraintCorrection2"  compliance="1e-005 1e-009 0 0 1e-009 0 1e-009" />
+		<MechanicalObject template="Rigid3d" name="tool"  position="0 0 0 -0.707107 0 0 0.707107 0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  rest_position="0 0 0 0 0 0 1 0 0 0 0 0 0 1"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001" />
+		<UniformMass template="Rigid3d" name="uniformMass3"  totalmass="0.01" />
+		<RestShapeSpringsForceField template="Rigid3d" name="restShapeSpringsForceField1"  points="0 1"  stiffness="1000 1000"  angularStiffness="10000 10000" />
+		<LCPForceFeedback template="Rigid3d" name="lCPForceFeedback7"  listening="1"  activate="1" />
+		<UncoupledConstraintCorrection template="Rigid3d" name="uncoupledConstraintCorrection2"  compliance="1e-005 1e-009 0 0 1e-009 0 1e-009" />
 		<Node 	name="Tool1VM"  >
 			<OglModel template="ExtVec3f" name="VM"  fileMesh="dt/aspi.trian"  rotation="0 0 0"  scale3d="1 1 1"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
 			<RigidMapping template="Rigid,ExtVec3f" name="rigidMapping6"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@VM"  index="0" />

@@ -23,7 +23,7 @@
 	<Node name="TORUS">
 		<EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighMass="30"  rayleighStiffness="0.001"/>
     <CGLinearSolver iterations="25" threshold="1.0e-15"  tolerance="1.0e-9" />
-    <MechanicalObject template="Rigid" scale="5.0"  dx="40.0" dy="0.0" dz="-70.0"/>
+    <MechanicalObject template="Rigid3d" scale="5.0"  dx="40.0" dy="0.0" dz="-70.0"/>
 		<UniformMass mass="0.01"/>
     <!--<LinearSolverConstraintCorrection />-->
     <UncoupledConstraintCorrection />
@@ -80,7 +80,7 @@
     <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.01"/>
     <CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15"/>
     <!-- Modify this position in the scene -->
-    <MechanicalObject name="bati" template="Rigid" position="0 0 0 -0.7071068 0 0 0.7071068"/>
+    <MechanicalObject name="bati" template="Rigid3d" position="0 0 0 -0.7071068 0 0 0.7071068"/>
     <UniformMass totalMass="0.01"/>
 
 
@@ -111,7 +111,7 @@
       
 
       <Node name="Jaws">
-        <MechanicalObject name="GrasperDOFs" template="Rigid" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  "/>
+        <MechanicalObject name="GrasperDOFs" template="Rigid3d" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  "/>
         <!--	<UniformMass mass="0.1 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
 
         <Node name="Tool1VM">

@@ -42,8 +42,8 @@ Using LCP contact detection and resolution:
     </Node>
     <!-- ADDED: the Mechanical state Controller gathers events from the Omni driver and populates the Mechanical state -->
     <Node name="Omni">
-        <MechanicalObject template="Rigid" name="DOFs" position="1.2 1.6 -3.55  0 0 0 1" />
-        <MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true" />
+        <MechanicalObject template="Rigid3d" name="DOFs" position="1.2 1.6 -3.55  0 0 0 1" />
+        <MechanicalStateController template="Rigid3d" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true" />
         <Node name="RefModel">
             <MeshObjLoader filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/dental_instrument_centerline.obj" name="loader" />
             <Mesh src="@loader" />
@@ -54,7 +54,7 @@ Using LCP contact detection and resolution:
     <Node name="Instrument">
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
-        <MechanicalObject name="instrumentState" template="Rigid" position="1.2 1.6 -3.55  0 0 0 1" />
+        <MechanicalObject name="instrumentState" template="Rigid3d" position="1.2 1.6 -3.55  0 0 0 1" />
         <UniformMass name="mass" totalMass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <LCPForceFeedback activate="true" forceCoef="0.005" />
         <!-- ADDED : Compute a force-feedback for the device -->
@@ -74,6 +74,6 @@ Using LCP contact detection and resolution:
             <RigidMapping name="MM-&gt;CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
         </Node>
         <VectorSpringForceField object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
-        <JointSpringForceField template="Rigid" name="joint springs" object1="@Omni" object2="@instrumentState" spring="BEGIN_SPRING 0 0 KS_T 50 50  KS_R 500.0 500.0  KS_B 500.0  KD 0.0 END_SPRING" />
+        <JointSpringForceField template="Rigid3d" name="joint springs" object1="@Omni" object2="@instrumentState" spring="BEGIN_SPRING 0 0 KS_T 50 50  KS_R 500.0 500.0  KS_B 500.0  KD 0.0 END_SPRING" />
     </Node>
 </Node>

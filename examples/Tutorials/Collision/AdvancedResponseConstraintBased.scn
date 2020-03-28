@@ -15,7 +15,7 @@
     <Node name="Cube">
         <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject name="Cube RigidDOF" template="Rigid" dy="2" />
+        <MechanicalObject name="Cube RigidDOF" template="Rigid3d" dy="2" />
         <UniformMass name="UniformMass" totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visual Model">
@@ -36,7 +36,7 @@
     <Node name="Cube">
         <EulerImplicitSolver name="EulerImplicit" />
         <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject name="Cube RigidDOF" template="Rigid" dy="5" dx="1" />
+        <MechanicalObject name="Cube RigidDOF" template="Rigid3d" dy="5" dx="1" />
         <UniformMass name="UniformMass" totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visual Model">
