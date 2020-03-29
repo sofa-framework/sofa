@@ -195,7 +195,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         return;
     }
 
-    int i0 = this->mstate->getSize();    
+    size_t i0 = this->mstate->getSize();
     if (i0 == 1) // ignore the first point if it is the only one
     {
         i0 = 0;
@@ -208,7 +208,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         }
     }
 
-    int nbParticlesToCreate = (int)((time - m_lastTime) / d_delay.getValue());    
+    size_t nbParticlesToCreate = (int)((time - m_lastTime) / d_delay.getValue());    
     if (nbParticlesToCreate > 0)
     {
         msg_info() << "ParticleSource: animate begin time= " << time << " | size: " << i0 << sendl;
@@ -228,10 +228,10 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
 
             //int lastparticle = i0 + i * N;
 
-            int lp0 = _lastparticles.empty() ? 0 : _lastparticles.size() / 2;
+            size_t lp0 = _lastparticles.empty() ? 0 : _lastparticles.size() / 2;
             if (lp0 > 0)
             {
-                int shift = _lastparticles.size() - lp0;
+                size_t shift = _lastparticles.size() - lp0;
                 Deriv dpos = v0 * d_delay.getValue();
                 for (int s = 0; s < lp0; s++)
                 {

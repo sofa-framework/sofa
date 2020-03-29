@@ -105,7 +105,7 @@ void OglFluidModel<DataTypes>::initVisual()
        
     //Generate PositionVBO
     glGenBuffers(1, &m_posVBO);
-    unsigned int totalSize = (vertices.size() * sizeof(vertices[0]));
+    size_t totalSize = (vertices.size() * sizeof(vertices[0]));
     glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
     glBufferData(GL_ARRAY_BUFFER,
             totalSize,
@@ -755,7 +755,7 @@ void OglFluidModel<DataTypes>::updateVertexBuffer()
     const VecCoord& vertices = m_positions.getValue();
 
     //Positions
-    unsigned int totalSize = (vertices.size() * sizeof(vertices[0]));
+    size_t totalSize = (vertices.size() * sizeof(vertices[0]));
     glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
     glBufferData(GL_ARRAY_BUFFER,
             totalSize,

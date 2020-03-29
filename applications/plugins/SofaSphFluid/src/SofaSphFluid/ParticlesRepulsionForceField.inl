@@ -76,7 +76,7 @@ void ParticlesRepulsionForceField<DataTypes>::addForce(const core::MechanicalPar
     const Real h2 = h*h;
     const Real ks = stiffness.getValue();
     const Real kd = damping.getValue();
-    const int n = x.size();
+    const size_t n = x.size();
 
     // Initialization
     f.resize(n);
@@ -151,7 +151,7 @@ void ParticlesRepulsionForceField<DataTypes>::addDForce(const core::MechanicalPa
     const Real h2 = h*h;
     const Real ks = (Real)(stiffness.getValue() * mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
     //const Real kd = damping.getValue()*bFactor;
-    const int n = x.size();
+    const size_t n = x.size();
     df.resize(dx.size());
 
     // Compute the forces

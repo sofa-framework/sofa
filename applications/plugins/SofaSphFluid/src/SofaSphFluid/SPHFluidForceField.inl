@@ -80,7 +80,7 @@ void SPHFluidForceField<DataTypes>::init()
     if (m_grid==nullptr)
         msg_error() << "SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!";
 
-    const unsigned n = this->mstate->getSize();
+    size_t n = this->mstate->getSize();
     m_particles.resize(n);
     for (unsigned i=0u; i<n; i++)
     {
@@ -144,7 +144,7 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
     const Real h = d_particleRadius.getValue();
     const Real h2 = h*h;
 
-    const int n = x.size();
+    size_t n = x.size();
     m_particles.resize(n);
     for (int i=0; i<n; i++) {
         m_particles[i].neighbors.clear();
