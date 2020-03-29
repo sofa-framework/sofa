@@ -250,7 +250,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
                 for (unsigned int c = 0; c < p.size(); c++)
                     p[c] += d_radius.getValue()[c] * rrand();
                 m_lastpos.push_back(p);
-                _lastparticles.push_back(i0 + newX.size());
+                _lastparticles.push_back(unsigned int(i0 + newX.size()));
                 newX.push_back(p + v0 * (time - m_lastTime)); // account for particle initial motion
                 newV.push_back(v0);
             }
