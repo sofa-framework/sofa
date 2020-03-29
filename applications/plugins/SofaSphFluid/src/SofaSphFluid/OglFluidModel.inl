@@ -28,7 +28,7 @@ OglFluidModel<DataTypes>::OglFluidModel()
     , d_debugFBO(initData(&d_debugFBO, unsigned(9), "debugFBO", "DEBUG FBO"))
     , d_spriteRadius(initData(&d_spriteRadius, 1.0f,"spriteRadius", "Radius of sprites"))
     , d_spriteThickness(initData(&d_spriteThickness, 0.01f,"spriteThickness", "Thickness of sprites"))
-    , d_spriteBlurRadius(initData(&d_spriteBlurRadius,  unsigned(10), "spriteBlurRadius", "Blur radius (in pixels)"))
+    , d_spriteBlurRadius(initData(&d_spriteBlurRadius,  float(10.f), "spriteBlurRadius", "Blur radius (in pixels)"))
     , d_spriteBlurScale(initData(&d_spriteBlurScale, 0.1f, "spriteBlurScale", "Blur scale"))
     , d_spriteBlurDepthFalloff(initData(&d_spriteBlurDepthFalloff, 1.0f,"spriteBlurDepthFalloff", "Blur Depth Falloff"))
     , d_spriteDiffuseColor(initData(&d_spriteDiffuseColor, sofa::defaulttype::RGBAColor::blue(),"spriteDiffuseColor", "Diffuse Color"))
@@ -145,11 +145,11 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     if (positions.size() < 1)
         return;
 	
-	const float zNear = vparams->zNear();
-	const float zFar = vparams->zFar();
+	const float zNear = float(vparams->zNear());
+	const float zFar = float(vparams->zFar());
 
-	const int width = vparams->viewport()[2];
-	const int height = vparams->viewport()[3];
+	const float width = float(vparams->viewport()[2]);
+	const float height = float(vparams->viewport()[3]);
 	
     const float clearColor[4] = { 1.0f,1.0f,1.0f, 1.0f };
     ///////////////////////////////////////////////
@@ -169,12 +169,12 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 	vparams->getProjectionMatrix(projMat);
     float fProjMat[16];
     for (unsigned int i = 0; i < 16; i++)
-        fProjMat[i] = projMat[i];
+        fProjMat[i] = float(projMat[i]);
 
     vparams->getModelViewMatrix(modelMat);
     float fModelMat[16];
     for (unsigned int i = 0; i < 16; i++)
-        fModelMat[i] = modelMat[i];
+        fModelMat[i] = float(modelMat[i]);
 	
 	m_spriteShader.TurnOn();
 
@@ -196,7 +196,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glBlendFunc(GL_ONE, GL_ONE);
     glDisable(GL_DEPTH_TEST);
 	
-    glDrawElements(GL_POINTS, positions.size(), GL_UNSIGNED_INT, &indices[0]);
+    glDrawElements(GL_POINTS, GLsizei(positions.size()), GL_UNSIGNED_INT, &indices[0]);
 
     glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -228,7 +228,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     glEnable(GL_POINT_SPRITE);
     glEnable(GL_DEPTH_TEST);
-    glDrawElements(GL_POINTS, positions.size(), GL_UNSIGNED_INT, &indices[0]);
+    glDrawElements(GL_POINTS, GLsizei(positions.size()), GL_UNSIGNED_INT, &indices[0]);
 
     glDisableClientState(GL_VERTEX_ARRAY);
 
