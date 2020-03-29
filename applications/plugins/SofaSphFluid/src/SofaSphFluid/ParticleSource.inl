@@ -268,7 +268,16 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         // Particles creation.
         if (pointMod != nullptr)
         {
-            int n = i0 + nbParticlesToCreate - this->mstate->getSize();
+            size_t n = i0 + nbParticlesToCreate;
+            if (n < this->mstate->getSize())
+            {
+                msg_error() << "Less particle to create than the number of dof in the current mstate: " << n << " vs " << this->mstate->getSize();
+                n = 0;
+            }
+            else
+            {
+                n -= this->mstate->getSize();
+            }            
             pointMod->addPoints(n);
         }
         else
