@@ -19,9 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFADENSESOLVER_CONFIG_H
-#define SOFADENSESOLVER_CONFIG_H
+#pragma once
+#include <SofaDenseSolver/config.h>
 
-#include <SofaGeneral/config.h>
+namespace sofa::component
+{
 
-#endif
+void SOFA_DENSE_SOLVER_API initDenseSolver();
+
+
+} // namespace sofa::component
+
+

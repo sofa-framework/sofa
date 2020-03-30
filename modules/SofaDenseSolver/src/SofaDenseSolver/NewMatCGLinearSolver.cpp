@@ -19,22 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_DENSE_SOLVER_INIT_H
-#define SOFA_COMPONENT_DENSE_SOLVER_INIT_H
-#include "config.h"
 
-namespace sofa
+#include <SofaBaseLinearSolver/CGLinearSolver.inl>
+#include <SofaDenseSolver/NewMatMatrix.h>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::linearsolver
 {
 
-namespace component
-{
+int NewMatCGLinearSolverClass = core::RegisterObject("NewMat linear system solver using the conjugate gradient iterative algorithm")
+        .add< CGLinearSolver< NewMatMatrix, NewMatVector > >()
+        .add< CGLinearSolver< NewMatSymmetricMatrix, NewMatVector > >()
+        .add< CGLinearSolver< NewMatBandMatrix, NewMatVector > >()
+        .add< CGLinearSolver< NewMatSymmetricBandMatrix, NewMatVector > >()
+        ;
 
-
-void SOFA_DENSE_SOLVER_API initDenseSolver();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver
 
