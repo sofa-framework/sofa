@@ -39,7 +39,7 @@ int RigidCapsuleCollisionModelClass = core::RegisterObject("Collision model whic
         .add<  CapsuleCollisionModel<defaulttype::Rigid3Types> >()
 
         .addAlias("RigidCapsule")
-        .addAlias("RigidCapsuleModel")
+        .addAlias("CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>")
 
         .addAlias("RigidCapsuleCollisionModel")
         ;

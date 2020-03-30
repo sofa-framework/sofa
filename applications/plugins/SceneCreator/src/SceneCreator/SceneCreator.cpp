@@ -150,25 +150,25 @@ Node::SPtr createObstacle(Node::SPtr  parent, const std::string &filenameCollisi
                                 {"rotation", str(rotation)}
                             });
 
-    simpleapi::createObject(nodeFixed, "TriangleModel", {
+    simpleapi::createObject(nodeFixed, "TriangleCollisionModel<sofa::defaulttype::Vec3Types>", {
                                 {"name", "Collision Fixed"},
                                 {"simulated", "false"},
                                 {"moving", "false"},
                             });
 
-    simpleapi::createObject(nodeFixed, "LineModel", {
+    simpleapi::createObject(nodeFixed, "LineCollisionModel<sofa::defaulttype::Vec3Types>", {
                                 {"name", "Collision Fixed"},
                                 {"simulated", "false"},
                                 {"moving", "false"},
                             });
 
-    simpleapi::createObject(nodeFixed, "PointModel", {
+    simpleapi::createObject(nodeFixed, "PointCollisionModel<sofa::defaulttype::Vec3Types>", {
                                 {"name", "Collision Fixed"},
                                 {"simulated", "false"},
                                 {"moving", "false"},
                             });
 
-    simpleapi::createObject(nodeFixed, "LineModel", {
+    simpleapi::createObject(nodeFixed, "LineCollisionModel<sofa::defaulttype::Vec3Types>", {
                                 {"name", "Collision Fixed"},
                                 {"simulated", "false"},
                                 {"moving", "false"},
@@ -321,12 +321,12 @@ Node::SPtr createVisualNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
 void addCollisionModels(Node::SPtr parent, const std::vector<std::string> &elements)
 {
     std::map<std::string, std::string> alias = {
-        {"Triangle", "TriangleModel"},
-        {"Line", "LineModel"},
-        {"Point", "PointModel"},
-        {"Sphere", "SphereModel"},
-        {"Capsule", "CapsuleModel"},
-        {"OBB", "OBBModel"}};
+        {"Triangle", "TriangleCollisionModel<sofa::defaulttype::Vec3Types>"},
+        {"Line", "LineCollisionModel<sofa::defaulttype::Vec3Types>"},
+        {"Point", "PointCollisionModel<sofa::defaulttype::Vec3Types>"},
+        {"Sphere", "SphereCollisionModel<sofa::defaulttype::Vec3Types>"},
+        {"Capsule", "CapsuleCollisionModel<sofa::defaulttype::Vec3Types>"},
+        {"OBB", "OBBCollisionModel<sofa::defaulttype::Rigid3Types>"}};
 
     for (auto& element : elements)
     {

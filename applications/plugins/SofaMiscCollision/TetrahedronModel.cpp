@@ -47,7 +47,7 @@ using namespace sofa::defaulttype;
 int TetrahedronCollisionModelClass = core::RegisterObject("collision model using a tetrahedral mesh, as described in BaseMeshTopology")
         .add< TetrahedronCollisionModel >()
         .addAlias("Tetrahedron")
-        .addAlias("TetrahedronModel")
+        .addAlias("TetrahedronCollisionModel")
         ;
 
 TetrahedronCollisionModel::TetrahedronCollisionModel()
@@ -194,7 +194,7 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
 
 void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     if (!mstate || !_topology) return;
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 

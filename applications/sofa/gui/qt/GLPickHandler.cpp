@@ -113,8 +113,8 @@ component::collision::BodyPicked GLPickHandler::findCollisionUsingColourCoding(c
     sofa::defaulttype::Vec4f color;
     int x = mousePosition.x;
     int y = mousePosition.screenHeight - mousePosition.y;
-    TriangleModel* tmodel;
-    SphereModel* smodel;
+    TriangleCollisionModel<defaulttype::Vec3Types>* tmodel;
+    SphereCollisionModel<defaulttype::Vec3Types>* smodel;
     _fbo.start();
     if(renderCallback)
     {
@@ -123,11 +123,11 @@ component::collision::BodyPicked GLPickHandler::findCollisionUsingColourCoding(c
         decodeCollisionElement(color,result);
         renderCallback->render(ColourPickingVisitor::ENCODE_RELATIVEPOSITION );
         glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType,color.elems);
-        if( ( tmodel = dynamic_cast<TriangleModel*>(result.body) ) != nullptr )
+        if( ( tmodel = dynamic_cast<TriangleCollisionModel<defaulttype::Vec3Types>*>(result.body) ) != nullptr )
         {
             decodePosition(result,color,tmodel,result.indexCollisionElement);
         }
-        if( ( smodel = dynamic_cast<SphereModel*>(result.body)) != nullptr)
+        if( ( smodel = dynamic_cast<SphereCollisionModel<defaulttype::Vec3Types>*>(result.body)) != nullptr)
         {
             decodePosition(result, color,smodel,result.indexCollisionElement);
         }

@@ -79,7 +79,7 @@ void LocalMinDistanceFilter::bwdInit()
 }
 
 
-// invalidate function is called by PointModel, LineModel or TriangleModel each time a new computation of the BoundingTree is called
+// invalidate function is called by PointCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types> or TriangleCollisionModel<sofa::defaulttype::Vec3Types> each time a new computation of the BoundingTree is called
 void LocalMinDistanceFilter::invalidate()
 {
 

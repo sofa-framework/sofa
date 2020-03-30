@@ -100,47 +100,47 @@ public:
 };
 
 #if !defined(SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_CPP)
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereModel, SphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereModel, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>;
 extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidSphereModel, RigidSphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereModel, PointModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidSphereModel, PointModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<PointModel, PointModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineModel, PointModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineModel, LineModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineModel, SphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineModel, RigidSphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, SphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, RigidSphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, PointModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, LineModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, TriangleModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, TriangleModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, LineModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, CapsuleModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, SphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, RigidSphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<OBBModel, OBBModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, OBBModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereModel, OBBModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidSphereModel, OBBModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, OBBModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, TriangleModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, LineModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, RigidCapsuleModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, RigidCapsuleModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, SphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, RigidSphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, OBBModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, CylinderModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, TriangleModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, RigidCapsuleModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, CylinderModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, SphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, RigidSphereModel>;
-extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, OBBModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, CylinderCollisionModel<sofa::defaulttype::Rigid3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CylinderCollisionModel<sofa::defaulttype::Rigid3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 #endif
 
 } // namespace collision

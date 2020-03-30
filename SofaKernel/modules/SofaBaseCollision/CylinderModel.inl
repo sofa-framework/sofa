@@ -122,7 +122,7 @@ template<class DataTypes>
 void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     using namespace sofa::defaulttype;
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int ncyl = m_mstate->getSize();
 
     bool updated = false;

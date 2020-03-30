@@ -438,7 +438,7 @@ void PMLRigidBody::createCollisionModel()
         CollisionNode->addObject(topology);
         CollisionNode->addObject(mapping);*/
 
-        TriangleModel::SPtr cmodel = New<TriangleModel>();
+        TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr cmodel = New<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
         //LineModel *lmodel = new LineModel;
         //PointModel *pmodel = new PointModel;
         VisualNode->addObject(cmodel);

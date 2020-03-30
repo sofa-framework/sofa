@@ -162,7 +162,7 @@ protected:
     bool m_needsUpdate; ///< parameter storing the info boundingTree has to be recomputed.
     int m_topologyRevision; ///< internal revision number to check if topology has changed.
 
-    PointModel* m_pointModels;
+    PointCollisionModel<sofa::defaulttype::Vec3Types>* m_pointModels;
 
     TriangleLocalMinDistanceFilter *m_lmdFilter;
 
@@ -304,7 +304,7 @@ inline typename DataTypes::Deriv TriangleCollisionModel<DataTypes>::velocity(int
                                                                                                 m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][2]])/((Real)(3.0)); }
 
 template <class TDataTypes> using TTriangleModel [[deprecated("The TTriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] = TriangleCollisionModel<TDataTypes>;
-using TriangleModel [[deprecated("The TriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] = TriangleCollisionModel<sofa::defaulttype::Vec3Types>;
+using TriangleModel [[deprecated("The TriangleModel is now deprecated, please use TriangleCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = TriangleCollisionModel<sofa::defaulttype::Vec3Types>;
 using Triangle = TTriangle<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_CPP)

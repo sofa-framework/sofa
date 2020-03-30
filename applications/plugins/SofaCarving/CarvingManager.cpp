@@ -50,7 +50,7 @@ int CarvingManagerClass = core::RegisterObject("Manager handling carving operati
 
 CarvingManager::CarvingManager()
     : d_toolModelPath( initData(&d_toolModelPath, "toolModelPath", "Tool model path"))
-    , d_surfaceModelPath( initData(&d_surfaceModelPath, "surfaceModelPath", "TriangleSetModel or SphereModel path"))
+    , d_surfaceModelPath( initData(&d_surfaceModelPath, "surfaceModelPath", "TriangleSetModel or SphereCollisionModel<sofa::defaulttype::Vec3Types> path"))
     , d_carvingDistance( initData(&d_carvingDistance, 0.0, "carvingDistance", "Collision distance at which cavring will start. Equal to contactDistance by default."))
     , d_active( initData(&d_active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
     , d_keyEvent( initData(&d_keyEvent, '1', "key", "key to press to activate this object until the key is released") )

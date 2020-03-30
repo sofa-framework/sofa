@@ -83,7 +83,7 @@ protected:
 public:
     /// Tool model path
     Data < std::string > d_toolModelPath; 
-    /// TriangleSetModel or SphereModel path
+    /// TriangleSetModel or SphereCollisionModel<sofa::defaulttype::Vec3Types> path
     Data < std::string > d_surfaceModelPath;
 
     /// Collision distance at which cavring will start. Equal to contactDistance by default.

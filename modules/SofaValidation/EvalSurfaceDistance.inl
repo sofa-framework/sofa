@@ -63,14 +63,14 @@ void EvalSurfaceDistance<DataTypes>::init()
     c1->get(pointsCM);
     if (pointsCM == nullptr)
     {
-        msg_error() << "EvalSurfaceDistance ERROR: object1 PointModel not found.";
+        msg_error() << "EvalSurfaceDistance ERROR: object1 PointCollisionModel<sofa::defaulttype::Vec3Types> not found.";
         return;
     }
     sofa::core::objectmodel::BaseContext* c2 = this->mstate2->getContext();
     c2->get(surfaceCM);
     if (surfaceCM == nullptr)
     {
-        msg_error() << "EvalSurfaceDistance ERROR: object2 TriangleModel not found.";
+        msg_error() << "EvalSurfaceDistance ERROR: object2 TriangleCollisionModel<sofa::defaulttype::Vec3Types> not found.";
         return;
     }
 

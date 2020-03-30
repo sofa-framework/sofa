@@ -48,9 +48,8 @@ using sofa::component::collision::MeshNewProximityIntersection ;
 using sofa::core::ExecParams ;
 using sofa::core::objectmodel::New;
 using sofa::component::collision::Sphere;
-using sofa::component::collision::SphereModel ;
-using sofa::component::collision::TriangleModel;
-using sofa::component::collision::RigidSphereModel;
+using sofa::component::collision::SphereCollisionModel ;
+using sofa::component::collision::TriangleCollisionModel;
 using sofa::component::collision::RigidSphere;
 using sofa::component::collision::BaseIntTool;
 using sofa::core::collision::DetectionOutput;
@@ -104,15 +103,15 @@ bool TestSphere::rigidRigid1(){
     angles[1] = 0;
     angles[2] = 0;
 
-   Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-                                        //the center of this OBB is (0,0,-1) and its extent is 1
+    Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
-    RigidSphereModel::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
-    RigidSphereModel::SPtr sphmodel2 = makeRigidSphere(Vec3d(0,0,-2),2,Vec3d(0,0,0),angles,order,scn);
+    SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
+    SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel2 = makeRigidSphere(Vec3d(0,0,-2),2,Vec3d(0,0,0),angles,order,scn);
 
 
-    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
     RigidSphere sph1(sphmodel1.get(),0);
     RigidSphere sph2(sphmodel2.get(),0);
 
@@ -164,11 +163,11 @@ bool TestSphere::rigidRigid2(){
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
-    RigidSphereModel::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles_1,order_1,scn);
-    RigidSphereModel::SPtr sphmodel2 = makeRigidSphere(Vec3d(0,0,-2),2,Vec3d(0,0,0),angles_2,order_2,scn);
+    SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles_1,order_1,scn);
+    SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel2 = makeRigidSphere(Vec3d(0,0,-2),2,Vec3d(0,0,0),angles_2,order_2,scn);
 
 
-    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
     RigidSphere sph1(sphmodel1.get(),0);
     RigidSphere sph2(sphmodel2.get(),0);
 
@@ -211,11 +210,11 @@ bool TestSphere::rigidSoft2(){
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
-    RigidSphereModel::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
-    SphereModel::SPtr sphmodel2 = makeSphere(Vec3d(0,0,-2),(SReal)(2.0),Vec3d(0,0,0),scn);
+    SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
+    SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphmodel2 = makeSphere(Vec3d(0,0,-2),(SReal)(2.0),Vec3d(0,0,0),scn);
 
 
-    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
     RigidSphere sph1(sphmodel1.get(),0);
     Sphere sph2(sphmodel2.get(),0);
 
@@ -258,11 +257,11 @@ bool TestSphere::rigidSoft1(){
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
-    RigidSphereModel::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
-    SphereModel::SPtr sphmodel2 = makeSphere(Vec3d(0,0,-2),(SReal)(2.0),Vec3d(0,0,0),scn);
+    SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
+    SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphmodel2 = makeSphere(Vec3d(0,0,-2),(SReal)(2.0),Vec3d(0,0,0),scn);
 
 
-    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
     RigidSphere sph1(sphmodel1.get(),0);
     Sphere sph2(sphmodel2.get(),0);
 
@@ -306,11 +305,11 @@ bool TestSphere::rigidSoft3(){
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
-    RigidSphereModel::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
-    SphereModel::SPtr sphmodel2 = makeSphere(Vec3d(0,0,-2),(SReal)(2.0),Vec3d(0,0,0),scn);
+    SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
+    SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphmodel2 = makeSphere(Vec3d(0,0,-2),(SReal)(2.0),Vec3d(0,0,0),scn);
 
 
-    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
     RigidSphere sph1(sphmodel1.get(),0);
     Sphere sph2(sphmodel2.get(),0);
 
@@ -353,11 +352,11 @@ bool TestSphere::rigidSoft4(){
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
-    RigidSphereModel::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
-    SphereModel::SPtr sphmodel2 = makeSphere(Vec3d(0,0,-2),(SReal)(2.0),Vec3d(0,0,0),scn);
+    SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel1 = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
+    SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphmodel2 = makeSphere(Vec3d(0,0,-2),(SReal)(2.0),Vec3d(0,0,0),scn);
 
 
-    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
     RigidSphere sph1(sphmodel1.get(),0);
     Sphere sph2(sphmodel2.get(),0);
 
@@ -400,11 +399,11 @@ bool TestSphere::rigidTriangle(Intersector &bi){
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
-    RigidSphereModel::SPtr sphmodel = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
-    TriangleModel::SPtr trimodel = makeTri(Vec3d(-1,-1,0),Vec3d(1,-1,0),Vec3d(0,1,0),Vec3d(0,0,0),scn);
+    SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel = makeRigidSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),angles,order,scn);
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = makeTri(Vec3d(-1,-1,0),Vec3d(1,-1,0),Vec3d(0,1,0),Vec3d(0,0,0),scn);
 
 
-    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
     RigidSphere sph(sphmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
@@ -439,11 +438,11 @@ bool TestSphere::softTriangle(Intersector &bi){
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
-    SphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),scn);
-    TriangleModel::SPtr trimodel = makeTri(Vec3d(-1,-1,0),Vec3d(1,-1,0),Vec3d(0,1,0),Vec3d(0,0,0),scn);
+    SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphmodel = makeSphere(Vec3d(0,0,2 + 0.01),2,Vec3d(0,0,-10),scn);
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = makeTri(Vec3d(-1,-1,0),Vec3d(1,-1,0),Vec3d(0,1,0),Vec3d(0,0,0),scn);
 
 
-    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
     Sphere sph(sphmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
@@ -477,11 +476,11 @@ bool TestSphere::softSoft1(){
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
-    SphereModel::SPtr sphmodel1 = makeSphere(Vec3d(0,0,2 + 0.01),(SReal)(2.0),Vec3d(0,0,-10),scn);
-    SphereModel::SPtr sphmodel2 = makeSphere(Vec3d(0,0,-2),(SReal)(2.0),Vec3d(0,0,0),scn);
+    SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphmodel1 = makeSphere(Vec3d(0,0,2 + 0.01),(SReal)(2.0),Vec3d(0,0,-10),scn);
+    SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphmodel2 = makeSphere(Vec3d(0,0,-2),(SReal)(2.0),Vec3d(0,0,0),scn);
 
 
-    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
     Sphere sph1(sphmodel1.get(),0);
     Sphere sph2(sphmodel2.get(),0);
 

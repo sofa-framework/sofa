@@ -41,7 +41,7 @@ int LineCollisionModelClass = core::RegisterObject("collision model using a line
         .addAlias("LineSetModel")
         .addAlias("LineMesh")
         .addAlias("LineSet")
-        .addAlias("LineModel")
+        .addAlias("LineCollisionModel<sofa::defaulttype::Vec3Types>")
         ;
 
 

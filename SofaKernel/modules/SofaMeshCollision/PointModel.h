@@ -203,7 +203,7 @@ template<class DataTypes>
 inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 template <class TDataTypes> using TPointModel [[deprecated("The TPointModel is now deprecated, please use PointCollisionModel instead. Compatibility stops at v20.06")]] = PointCollisionModel<TDataTypes>;
-using PointModel [[deprecated("The PointModel is now deprecated, please use PointCollisionModel instead. Compatibility stops at v20.06")]] = PointCollisionModel<sofa::defaulttype::Vec3Types>;
+using PointModel [[deprecated("The PointModel is now deprecated, please use PointCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = PointCollisionModel<sofa::defaulttype::Vec3Types>;
 using Point = TPoint<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP)

@@ -195,8 +195,8 @@ inline TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsule(const cor
 {
 }
 
-using RigidCapsuleModel [[deprecated("The RigidCapsuleModel is now deprecated, please use CapsuleCollisionModel instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>;
-using RigidCapsuleCollisionModel = CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>;
+using RigidCapsuleModel [[deprecated("The RigidCapsuleModel is now deprecated, please use CapsuleCollisionModel<sofa::defaulttype::Rigid3Types> instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>;
+using RigidCapsuleCollisionModel  [[deprecated("The RigidCapsuleCollisionModel is now deprecated, please use CapsuleCollisionModel<sofa::defaulttype::Rigid3Types> instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>;
 using RigidCapsule = TCapsule<sofa::defaulttype::Rigid3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_CPP)

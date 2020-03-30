@@ -120,7 +120,7 @@ using sofa::component::collision::CubeModel;
 
 void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int npoints = mstate->getSize();
     const int gsize = groupSize.getValue();
     const int nelems = (npoints + gsize-1)/gsize;

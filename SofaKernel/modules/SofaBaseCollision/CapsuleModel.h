@@ -202,7 +202,7 @@ inline TCapsule<DataTypes>::TCapsule(const core::CollisionElementIterator& i)
 }
 
 template <class TDataTypes> using TCapsuleModel [[deprecated("The TCapsuleModel is now deprecated, please use CapsuleCollisionModel instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<TDataTypes>;
-using CapsuleModel [[deprecated("The CapsuleModel is now deprecated, please use CapsuleCollisionModel instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Vec3Types>;
+using CapsuleModel [[deprecated("The CapsuleModel is now deprecated, please use CapsuleCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Vec3Types>;
 using Capsule = TCapsule<sofa::defaulttype::Vec3Types>;
 
 

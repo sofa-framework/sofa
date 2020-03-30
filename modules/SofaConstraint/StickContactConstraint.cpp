@@ -38,16 +38,16 @@ using namespace sofa::helper;
 using simulation::Node;
 using namespace sofa::core::collision;
 
-Creator<Contact::Factory, StickContactConstraint<PointModel, PointModel> > PointPointStickContactConstraintClass("StickContactConstraint",true);
-Creator<Contact::Factory, StickContactConstraint<LineModel, SphereModel> > LineSphereStickContactConstraintClass("StickContactConstraint",true);
-Creator<Contact::Factory, StickContactConstraint<LineModel, PointModel> > LinePointStickContactConstraintClass("StickContactConstraint",true);
-Creator<Contact::Factory, StickContactConstraint<LineModel, LineModel> > LineLineStickContactConstraintClass("StickContactConstraint",true);
-Creator<Contact::Factory, StickContactConstraint<TriangleModel, SphereModel> > TriangleSphereStickContactConstraintClass("StickContactConstraint",true);
-Creator<Contact::Factory, StickContactConstraint<TriangleModel, PointModel> > TrianglePointStickContactConstraintClass("StickContactConstraint",true);
-Creator<Contact::Factory, StickContactConstraint<TriangleModel, LineModel> > TriangleLineStickContactConstraintClass("StickContactConstraint",true);
-Creator<Contact::Factory, StickContactConstraint<TriangleModel, TriangleModel> > TriangleTriangleStickContactConstraintClass("StickContactConstraint",true);
-Creator<Contact::Factory, StickContactConstraint<SphereModel, SphereModel> > SphereSphereStickContactConstraintClass("StickContactConstraint",true);
-Creator<Contact::Factory, StickContactConstraint<SphereModel, PointModel> > SpherePointStickContactConstraintClass("StickContactConstraint",true);
+Creator<Contact::Factory, StickContactConstraint<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointStickContactConstraintClass("StickContactConstraint",true);
+Creator<Contact::Factory, StickContactConstraint<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > LineSphereStickContactConstraintClass("StickContactConstraint",true);
+Creator<Contact::Factory, StickContactConstraint<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > LinePointStickContactConstraintClass("StickContactConstraint",true);
+Creator<Contact::Factory, StickContactConstraint<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineLineStickContactConstraintClass("StickContactConstraint",true);
+Creator<Contact::Factory, StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleSphereStickContactConstraintClass("StickContactConstraint",true);
+Creator<Contact::Factory, StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TrianglePointStickContactConstraintClass("StickContactConstraint",true);
+Creator<Contact::Factory, StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleLineStickContactConstraintClass("StickContactConstraint",true);
+Creator<Contact::Factory, StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleTriangleStickContactConstraintClass("StickContactConstraint",true);
+Creator<Contact::Factory, StickContactConstraint<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereSphereStickContactConstraintClass("StickContactConstraint",true);
+Creator<Contact::Factory, StickContactConstraint<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > SpherePointStickContactConstraintClass("StickContactConstraint",true);
 
 } // namespace collision
 

@@ -84,7 +84,7 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
         // Test triedges cross boxfaces.
         for (i0 = 0; i0 < 3; ++i0)
         {
-            if(tri_flg&TriangleModel::FLAG_E12){
+            if(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12){
                 axis = edge[0].cross(mBox->axis(i0));
                 if(axis.norm2() > IntrUtil<Real>::ZERO_TOLERANCE()){
                     IntrUtil<Real>::normalize(axis);
@@ -98,7 +98,7 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
                 }
             }
 
-            if(tri_flg&TriangleModel::FLAG_E23){
+            if(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23){
                 axis = edge[1].cross(mBox->axis(i0));
                 if(axis.norm2() > IntrUtil<Real>::ZERO_TOLERANCE()){
                     IntrUtil<Real>::normalize(axis);
@@ -112,7 +112,7 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
                 }
             }
 
-            if(tri_flg&TriangleModel::FLAG_E31){
+            if(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31){
                 axis = edge[2].cross(mBox->axis(i0));
                 if(axis.norm2() > IntrUtil<Real>::ZERO_TOLERANCE()){
                     IntrUtil<Real>::normalize(axis);
@@ -130,7 +130,7 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
       else
     {
         // Test triedges cross coplanar box axis.
-        if(tri_flg&TriangleModel::FLAG_E12){
+        if(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12){
             axis = edge[0].cross(_tri->n());
             IntrUtil<Real>::normalize(axis);
 
@@ -142,7 +142,7 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
                 _sep_axis = axis;
         }
 
-        if(tri_flg&TriangleModel::FLAG_E23){
+        if(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23){
             axis = edge[1].cross(_tri->n());
             IntrUtil<Real>::normalize(axis);
 
@@ -154,7 +154,7 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
                 _sep_axis = axis;
         }
 
-        if(tri_flg&TriangleModel::FLAG_E31){
+        if(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31){
             axis = edge[2].cross(_tri->n());
             IntrUtil<Real>::normalize(axis);
 
@@ -176,11 +176,11 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
     FindContactSet<IntrTri,Box>(*_tri, *mBox, _sep_axis,side, triContact, boxContact,
          mContactTime, _pt_on_first,_pt_on_second);
 
-    if((!(tri_flg&TriangleModel::FLAG_P1)) && IntrUtil<Real>::equal(_pt_on_first,_tri->p(0)))
+    if((!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)) && IntrUtil<Real>::equal(_pt_on_first,_tri->p(0)))
         return false;
-    else if((!(tri_flg&TriangleModel::FLAG_P2)) && IntrUtil<Real>::equal(_pt_on_first,_tri->p(1)))
+    else if((!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)) && IntrUtil<Real>::equal(_pt_on_first,_tri->p(1)))
         return false;
-    else if((!(tri_flg&TriangleModel::FLAG_P3)) && IntrUtil<Real>::equal(_pt_on_first,_tri->p(2)))
+    else if((!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)) && IntrUtil<Real>::equal(_pt_on_first,_tri->p(2)))
         return false;
 
     if(side == IntrConfiguration<Real>::LEFT)

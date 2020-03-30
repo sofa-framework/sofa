@@ -37,7 +37,7 @@ namespace collision
 int RayCollisionModelClass = core::RegisterObject("Collision model representing a ray in space, e.g. a mouse click")
         .add< RayCollisionModel >()
         .addAlias("Ray")
-        .addAlias("RayModel")
+        .addAlias("RayCollisionModel")
         ;
 
 
@@ -132,7 +132,7 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams)
 
 void RayCollisionModel::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
 
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 

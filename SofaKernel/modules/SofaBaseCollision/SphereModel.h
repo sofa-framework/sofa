@@ -222,7 +222,7 @@ inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->ms
 
 
 template <class TDataTypes> using TSphereModel [[deprecated("The TSphereModel is now deprecated, please use SphereCollisionModel instead. Compatibility stops at v20.06")]] = SphereCollisionModel<TDataTypes>;
-using SphereModel [[deprecated("The SphereModel is now deprecated, please use SphereCollisionModel instead. Compatibility stops at v20.06")]] = SphereCollisionModel<sofa::defaulttype::Vec3Types>;
+using SphereModel [[deprecated("The SphereModel is now deprecated, please use SphereCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = SphereCollisionModel<sofa::defaulttype::Vec3Types>;
 using Sphere = TSphere<sofa::defaulttype::Vec3Types>;
 
 typedef SphereCollisionModel<sofa::defaulttype::Rigid3Types> RigidSphereModel;
