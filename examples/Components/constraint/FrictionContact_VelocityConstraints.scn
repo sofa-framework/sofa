@@ -12,7 +12,7 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <DefaultCollisionGroupManager name="Group" />
         <Node name="CUBE_1_1">
-            <MechanicalObject template="Rigid" scale="0.3" dx="-2.8" dy="-1.5" dz="0.0" rx="0" />
+            <MechanicalObject template="Rigid3d" scale="0.3" dx="-2.8" dy="-1.5" dz="0.0" rx="0" />
             <UniformMass totalMass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
@@ -31,7 +31,7 @@
             </Node>
         </Node>
         <Node name="CUBE_1_2">
-            <MechanicalObject template="Rigid" scale="0.3" dx="0.0" dy="-1.5" dz="0.0" ry="0" />
+            <MechanicalObject template="Rigid3d" scale="0.3" dx="0.0" dy="-1.5" dz="0.0" ry="0" />
             <UniformMass totalMass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
@@ -50,7 +50,7 @@
             </Node>
         </Node>
         <Node name="CUBE_1_3">
-            <MechanicalObject template="Rigid" scale="0.3" dx="2.8" dy="-1.5" dz="0.0" rx="0" />
+            <MechanicalObject template="Rigid3d" scale="0.3" dx="2.8" dy="-1.5" dz="0.0" rx="0" />
             <UniformMass totalMass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
@@ -69,7 +69,7 @@
             </Node>
         </Node>
         <Node name="CUBE_2_1">
-            <MechanicalObject template="Rigid" scale="0.3" dx="-1.5" dy="1" dz="0.0" rz="45" />
+            <MechanicalObject template="Rigid3d" scale="0.3" dx="-1.5" dy="1" dz="0.0" rz="45" />
             <UniformMass totalMass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
@@ -88,7 +88,7 @@
             </Node>
         </Node>
         <Node name="CUBE_2_2">
-            <MechanicalObject template="Rigid" scale="0.3" dx="1.5" dy="1" dz="0.0" rz="45" />
+            <MechanicalObject template="Rigid3d" scale="0.3" dx="1.5" dy="1" dz="0.0" rz="45" />
             <UniformMass totalMass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
@@ -107,7 +107,7 @@
             </Node>
         </Node>
         <Node name="CUBE_3_1">
-            <MechanicalObject template="Rigid" scale="0.3" dx="0.0" dy="3.5" dz="0.0" rx="0" />
+            <MechanicalObject template="Rigid3d" scale="0.3" dx="0.0" dy="3.5" dz="0.0" rx="0" />
             <UniformMass totalMass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">

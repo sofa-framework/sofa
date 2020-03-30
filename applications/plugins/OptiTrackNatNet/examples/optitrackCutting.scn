@@ -14,7 +14,7 @@
     <OptiTrackNatNetDevice name="CutDevice" trackableName="Cut" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Cut.obj" simMarkersMeshFile="./data/markers-Cut.obj" drawMarkersColor="1 0 1 1" drawAxisSize="10 10 10" drawMarkersSize="2" />
   </Node>
   <Node name="Grab">
-    <MechanicalObject name="ms1" template="Rigid" />
+    <MechanicalObject name="ms1" template="Rigid3d" />
     <OptiTrackNatNetDevice name="GrabDevice" trackableName="Grab" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Grab.obj" simMarkersMeshFile="./data/markers-Grab.obj"  controlNode="1" distanceMarkersID="5 6" closedDistance="46" openDistance="48" jointCenter="0 33.7158 17.7522" jointAxis="0 4 -2.8" jointOpenAngle="5" jointClosedAngle="-0.1" drawMarkersColor="1 1 0 1" drawAxisSize="10 10 10" drawMarkersSize="2" drawMarkersIDSize="2" />
     <Node name="CutEdges">
       <MeshTopology position="-0.2745 -2.7482 -40.7508    -0.2760 -1.5256 -40.7505    -0.2775 -0.3030 -40.4702    -0.2790 0.9196 -40.4699" edges="0 1 1 2 2 3" />

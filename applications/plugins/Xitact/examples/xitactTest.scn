@@ -15,7 +15,7 @@
     <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.01" printLog="0"/>
     <CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15" printLog="0"/>
     <!-- Modify this position in the scene -->
-    <MechanicalObject name="bati" template="Rigid" position="0 0 0 0 0 0 1"/>
+    <MechanicalObject name="bati" template="Rigid3d" position="0 0 0 0 0 0 1"/>
     <RestShapeSpringsForceField points="0" stiffness="100000" angularStiffness="1000000"/> <!--external_rest_shape="@toto"/>-->
     <UncoupledConstraintCorrection compliance="0.00001  0.000001 0 0 0.000001 0 0.000001"/>
 
@@ -40,7 +40,7 @@
       
 
       <Node name="Jaws">
-        <MechanicalObject name="GrasperDOFs" template="Rigid" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  "/>
+        <MechanicalObject name="GrasperDOFs" template="Rigid3d" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  "/>
         <!--	<UniformMass mass="0.1 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
 
         <Node name="Tool1VM">
