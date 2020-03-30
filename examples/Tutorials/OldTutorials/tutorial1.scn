@@ -51,7 +51,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <RigidMapping />
             <PlaneForceField normal="0 1 0" d="-10" />

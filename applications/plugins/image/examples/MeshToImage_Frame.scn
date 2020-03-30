@@ -38,7 +38,7 @@
 
 	    <Node 	name="collision"   >
 		<MeshObjLoader name="MeshLoader" filename="mesh/Armadillo_simplified.obj" />
-		<Mesh src="@MeshLoader" /> 
+		<MeshTopology src="@MeshLoader" /> 
 		<MechanicalObject  />
 	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>

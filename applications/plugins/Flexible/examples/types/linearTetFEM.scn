@@ -13,7 +13,7 @@
      <Node 	name="FEM"   >
     <EulerImplicitSolver /> <CGLinearSolver  />
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	      <Mesh name="mesh" src="@loader" />
+	      <MeshTopology name="mesh" src="@loader" />
 	      <MechanicalObject template="Vec3d" name="parent" />
 
              <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -34,7 +34,7 @@
     <Node 	name="Flexible"   >
     <EulerImplicitSolver /> <CGLinearSolver  />
         <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	<Mesh name="mesh" src="@loader" />
+	<MeshTopology name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
 
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -69,7 +69,7 @@
 
 	<Node name="collision"  >
 	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
-	     <Mesh src="@loader"/>
+	     <MeshTopology src="@loader"/>
  	     <MechanicalObject  />
              <TriangleCollisionModel />
              <LinearMapping template="Vec3d,Vec3d"/>
@@ -90,7 +90,7 @@
 <!--   <Node 	name="FEM_stVenant"   >
     <EulerImplicitSolver /> <CGLinearSolver  />
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="0 0 5" />
-	    <Mesh name="mesh" src="@loader" />
+	    <MeshTopology name="mesh" src="@loader" />
 	    <MechanicalObject template="Vec3d" name="parent" />
 
            <BoxROI template="Vec3d" box="0 -2 5 5 2 10" position="@mesh.position" name="FixedROI"/>
@@ -112,7 +112,7 @@
     <Node 	name="Flexible_stVenant"   >
     <EulerImplicitSolver /> <CGLinearSolver  />
 	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="0 0 5" />
-        <Mesh name="mesh" src="@loader" />
+        <MeshTopology name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
         <BoxROI template="Vec3d" box="0 -2 5 5 2 10" position="@mesh.position" name="FixedROI"/>
@@ -140,7 +140,7 @@
 
 	<Node name="collision"  >
 	     <MeshObjLoader name="loader" filename="mesh/torus.obj" translation="0 0 5"/>
-	     <Mesh src="@loader"/>
+	     <MeshTopology src="@loader"/>
  	     <MechanicalObject  />
              <TriangleCollisionModel />
              <LinearMapping template="Vec3d,Vec3d"/>

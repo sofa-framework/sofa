@@ -54,7 +54,7 @@
 	    <Node 	name="collision"   >
 	    	<VisualStyle displayFlags="showVisual hideBehaviorModels" />
 		<MeshObjLoader name="mesh" filename="../beam/beam_100-40-1.obj" triangulate="1"/>
-		<Mesh name="mesh" src="@mesh" /> 
+		<MeshTopology name="mesh" src="@mesh" /> 
 		<MechanicalObject  template="Vec3d" name="pts"    />
 		<UniformMass totalMass="1000" />
 	    	<LinearMapping template="Affine,Vec3d"/>

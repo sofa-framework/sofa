@@ -23,7 +23,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" triangulate="true" />
-                <Mesh src="@loader"/>
+                <MeshTopology src="@loader"/>
                 <MechanicalObject src="@loader" scale="1.0" />
                 <TriangleCollisionModel />
                 <LineCollisionModel />
@@ -64,7 +64,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
-                <Mesh src="@loader"/>
+                <MeshTopology src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
                 <TriangleCollisionModel />
                 <LineCollisionModel />
@@ -96,7 +96,7 @@
 -->
         <Node name="BOX">
             <MeshObjLoader name="loader" filename="mesh/box_inside.obj" triangulate="true" />
-            <Mesh src="@loader"/>
+            <MeshTopology src="@loader"/>
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />

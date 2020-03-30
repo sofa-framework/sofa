@@ -13,7 +13,7 @@
         <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" tags="meca"/>
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  tags="meca"/>
         <Hexa2TetraTopologicalMapping name="default28" swapping="0" tags="meca"/>
-        <TriangleModel name="collisionmodel" />
+        <TriangleCollisionModel name="collisionmodel" />
 
         <Node name="Temperature" gravity="0 0 0"  >
             <EulerImplicitSolver name="Euler" firstOrder="1" tags="heat" rayleighStiffness="0.1" rayleighMass="0.1" />

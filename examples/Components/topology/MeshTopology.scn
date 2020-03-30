@@ -9,7 +9,7 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <!-- or MeshTopology -->
         <MechanicalObject src="@loader" />
         <FixedConstraint name="FixedConstraint" indices="0" />
@@ -22,7 +22,7 @@
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <!-- or MeshTopology -->
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />

@@ -23,7 +23,7 @@
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
-            <Mesh filename="mesh/cube.obj" />
+            <MeshTopology filename="mesh/cube.obj" />
             <MechanicalObject scale="1.0" />
             <TriangleCollisionModel contactStiffness="0.1" />
             <LineCollisionModel contactStiffness="0.1" />
@@ -50,7 +50,7 @@
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
-            <Mesh filename="mesh/cube.obj" />
+            <MeshTopology filename="mesh/cube.obj" />
             <MechanicalObject scale="1.0" />
             <TriangleCollisionModel contactStiffness="0.1" />
             <LineCollisionModel contactStiffness="0.1" />

@@ -17,7 +17,7 @@
 <LDLTResponse constant="False"/>
 
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-    <Mesh name="mesh" src="@loader" />
+    <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -57,7 +57,7 @@
 <LDLTResponse constant="True"/>
 
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-    <Mesh name="mesh" src="@loader" />
+    <MeshTopology name="mesh" src="@loader" />
    
     <MechanicalObject template="Vec3d" name="parent" showObject="0" showObjectScale="10"/>
 
@@ -99,7 +99,7 @@
 <LDLTResponse constant="True"/>
 
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-    <Mesh name="mesh" src="@loader" />
+    <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>

@@ -9,7 +9,7 @@
 -->
     
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-    <Mesh src="@loader" />
+    <MeshTopology src="@loader" />
     <MechanicalObject src="@loader" name="parent" />
     <BarycentricShapeFunction position="@parent.rest_position" />
 

@@ -19,7 +19,7 @@
         </Node>
         <Node name="Surface">
             <MeshObjLoader filename="mesh/truthCylinder-Deformed.obj"  name="loader"/>
-            <Mesh src="@loader"/>
+            <MeshTopology src="@loader"/>
             <MechanicalObject src="@loader" scale="1.0" />
             <TriangleCollisionModel />
             <LineCollisionModel />
@@ -31,7 +31,7 @@
 	<Node name="CylinderFEMTetra">
         <CentralDifferenceSolver rayleighMass="5"/>
 		<MeshGmshLoader  filename="mesh/cylinder_Hexa.msh"  name="loader"/>
-		<Mesh src="@loader"/>
+		<MeshTopology src="@loader"/>
 		<MechanicalObject src="@loader" template="CudaVec3f"/>
 		<UniformMass totalmass="0.216" />
 		<BoxConstraint box="-0.020 -0.020 -0.001 0.020 0.020 .001" fixAll="0" />

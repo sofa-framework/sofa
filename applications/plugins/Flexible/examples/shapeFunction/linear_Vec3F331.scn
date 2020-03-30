@@ -14,7 +14,7 @@
 
     <Node 	name="Child"   >
 	<MeshObjLoader name="MeshLoader" filename="mesh/ball.obj"/>
-	<Mesh src="@MeshLoader" /> 
+	<MeshTopology src="@MeshLoader" /> 
 	<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
     	<LinearMapping template="Vec3d,F331"  />
 

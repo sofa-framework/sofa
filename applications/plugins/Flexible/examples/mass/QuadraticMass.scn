@@ -49,14 +49,14 @@
 
     <Node 	name="mass"   >
       <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-      <Mesh name="mesh" src="@loader" />
+      <MeshTopology name="mesh" src="@loader" />
       <MechanicalObject />
       <UniformMass totalMass="250" />
       <LinearMapping template="Quadratic,Vec3d"  />
     </Node>
     <Node 	name="collision"   >
       <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
-      <Mesh name="mesh" src="@MeshLoader" />
+      <MeshTopology name="mesh" src="@MeshLoader" />
       <MechanicalObject  template="Vec3d" name="pts"    />
       <LinearMapping template="Quadratic,Vec3d"/>
     </Node>
@@ -114,7 +114,7 @@
     </Node>
     <Node 	name="collision"   >
       <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
-      <Mesh name="mesh" src="@MeshLoader" />
+      <MeshTopology name="mesh" src="@MeshLoader" />
       <MechanicalObject  template="Vec3d" name="pts"    />
       <LinearMapping template="Quadratic,Vec3d"/>
     </Node>
@@ -167,7 +167,7 @@
     </Node>
     <Node 	name="collision"   >
       <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
-      <Mesh name="mesh" src="@MeshLoader" />
+      <MeshTopology name="mesh" src="@MeshLoader" />
       <MechanicalObject  template="Vec3d" name="pts"    />
       <LinearMapping template="Quadratic,Vec3d"/>
     </Node>
@@ -219,7 +219,7 @@
     </Node>
     <Node 	name="collision"   >
       <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
-      <Mesh name="mesh" src="@MeshLoader" />
+      <MeshTopology name="mesh" src="@MeshLoader" />
       <MechanicalObject  template="Vec3d" name="pts"    />
       <LinearMapping template="Quadratic,Vec3d"/>
     </Node>

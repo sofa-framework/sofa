@@ -20,7 +20,7 @@
     <CGLinearSolver />
 
 
-    <Mesh  name="grid" src="@sampler" />
+    <MeshTopology  name="grid" src="@sampler" />
     <MechanicalObject  name="dofs" tags="NoPicking" position="@grid.position"/>
     <HexahedronSetTopologyContainer src="@grid"/>
     <HexahedronSetGeometryAlgorithms />
@@ -43,7 +43,7 @@
 
     <Node name="Collision">
 
-        <Mesh  src="@../loader" />
+        <MeshTopology  src="@../loader" />
         <MechanicalObject name="dof" />
         <TriangleCollisionModel />
         <LinearMapping name="colmap" template="Vec3d,Vec3d" />

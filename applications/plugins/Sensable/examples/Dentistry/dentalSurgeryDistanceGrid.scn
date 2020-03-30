@@ -36,19 +36,19 @@
 		</Node>
 		<Node name="RefModel">
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader"  />
+			<MeshTopology src="@loader"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<RigidMapping />
 		</Node>
 		<Node name="RefModelRight" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel" />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="0.5" />
 			<RigidMapping />
 		</Node>
 		<Node name="RefModelLeft" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="-0.5" />
 			<RigidMapping />
 		</Node>
@@ -67,7 +67,7 @@
 		</Node>
 		<Node name="CollisionModel" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<LineCollisionModel name="instrument" contactStiffness="10" />
 			<PointCollisionModel name="instrument" contactStiffness="10" />
@@ -75,13 +75,13 @@
 		</Node>
 		<Node name="RefModelRight" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="0.5" />
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelLeft" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="-0.5" />
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>

@@ -69,7 +69,7 @@
       </Node>
       <Node name="Collision">
         <MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
-        <Mesh src="@MeshLoader" />
+        <MeshTopology src="@MeshLoader" />
         <MechanicalObject  />
         <LinearMapping template="Affine,Vec3d"/>
       </Node>
@@ -132,7 +132,7 @@
       </Node>
       <Node name="Collision">
         <MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
-        <Mesh src="@MeshLoader" />
+        <MeshTopology src="@MeshLoader" />
         <MechanicalObject  />
         <LinearMapping template="Affine,Vec3d"/>
       </Node>

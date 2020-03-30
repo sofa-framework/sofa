@@ -7,7 +7,7 @@
 
     <Node 	name="Tri" >
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" /> 
-	<CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
+	<CGLinearSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
         <!--parametrizable mesh-->
         <GridMeshCreator name="loader" filename="nofile" resolution="11 11" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
@@ -48,7 +48,7 @@
 
     <Node 	name="Quad" >
         <EulerImplicitSolver /> 
-	<CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
+	<CGLinearSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
         <!--parametrizable mesh-->
         <GridMeshCreator name="loader" filename="nofile" resolution="11 11" trianglePattern="0" rotation="0 0 0 " translation="2 0 0 " scale="1 1 0" />

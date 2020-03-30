@@ -19,7 +19,7 @@
 
            	<EulerImplicitSolver name="odesolver" />
             	<CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<SparseGrid n="5 5 10" fileTopology="mesh/raptor_8kp.obj" />
+		<SparseGridTopology n="5 5 10" fileTopology="mesh/raptor_8kp.obj" />
 		<MechanicalObject name="mecaRaptor"  rotation="0 0 90"/>
 		<PrecomputedConstraintCorrection recompute="true"/>
 		<DiagonalMass massDensity="1" name="computed using mass density" />
@@ -33,7 +33,7 @@
 
 		<Node name="CollisionModel" >
 		 	<MeshObjLoader filename="mesh/raptor_8kp.obj"  name="loader"/>
-			<Mesh src="@loader" name="raptorVisualModel"  />
+			<MeshTopology src="@loader" name="raptorVisualModel"  />
 			<MechanicalObject src="@loader" name="raptorState"/>		
 			<TriangleCollisionModel name="raptor" contactStiffness="100"/>
 			<LineCollisionModel name="raptor" contactStiffness="100"/>	
@@ -54,7 +54,7 @@
 		</Node>
 		<Node name="RefModel">
 			<MeshObjLoader filename="dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader"  />
+			<MeshTopology src="@loader"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<RigidMapping />
 		</Node>
@@ -74,7 +74,7 @@
 		</Node>
 		<Node name="CollisionModel" >
 			<MeshObjLoader filename="dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel" />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<LineCollisionModel name="instrument" contactStiffness="10" />
 			<PointCollisionModel name="instrument" contactStiffness="10" /> 

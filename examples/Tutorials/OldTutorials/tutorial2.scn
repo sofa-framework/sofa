@@ -48,7 +48,7 @@
         <CGLinearSolver iterations="25" tolerance="0.00001" threshold="0.000001" />
         <!--
 		<RungeKutta4Solver />
-		<Euler />
+		<EulerExplicitSolver />
 		-->
         <MechanicalObject template="Rigid" dx="-36" />
         <UniformMass filename="BehaviorModels/smCube125.rigid" />
@@ -58,7 +58,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
             <LineCollisionModel />

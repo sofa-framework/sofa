@@ -7,7 +7,7 @@
 
     <Node name="Hexa" >
         <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
-	<CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
+	<CGLinearSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
         <RegularGridTopology name="grid" n="4 4 4" min="0 0 0" max="1 1 1"  />
         <MechanicalObject name="DOF" />
