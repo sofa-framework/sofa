@@ -30,7 +30,6 @@ set(SOFAGENERAL_TARGETS
     SofaGraphComponent
     SofaTopologyMapping
     SofaUserInteraction
-    SofaValidation
 )
 
 find_package(Newmat QUIET)

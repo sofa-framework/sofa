@@ -29,11 +29,13 @@ if(APPLE)
 endif()
 
 if(APPLE AND SOFA_BUILD_APP_BUNDLE)
-    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RC_FILES} ${RESOURCE_FILES} Main.cpp )
+    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RC_FILES} ${RESOURCE_FILES} Main.cpp runSofa_config.h.in)
     set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/runSofa.plist")
 else()
-    add_executable(${PROJECT_NAME} ${RC_FILES} ${RESOURCE_FILES} Main.cpp)
+    add_executable(${PROJECT_NAME} ${RC_FILES} ${RESOURCE_FILES} Main.cpp runSofa_config.h.in)
 endif()
+
+find_package(SofaValidation QUIET)
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC "CONFIG_PLUGIN_FILENAME=${_configPluginFileName}")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "DEFAULT_CONFIG_PLUGIN_FILENAME=${_defaultConfigPluginFileName}")
@@ -41,12 +43,23 @@ target_link_libraries(${PROJECT_NAME} SofaComponentAdvanced SofaComponentMisc)
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} SofaGuiMain)
 
+if(SofaValidation_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaValidation)
+else()
+    message(WARNING "runSofa: SofaValidation has not been found ; disabling validation feature.")
+endif()
+
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)
     if(SofaTest_FOUND)
         add_subdirectory(runSofa_test)
     endif()
 endif()
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/>")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/runSofa_config.h.in" "${CMAKE_BINARY_DIR}/include/runSofa_config.h")
 
 # Create build and install versions of .ini file for resources finding
 set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")

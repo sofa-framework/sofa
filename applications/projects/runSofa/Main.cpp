@@ -29,6 +29,7 @@ using std::string;
 #include <vector>
 using std::vector;
 
+#include "runSofa_config.h"
 
 #include <sofa/helper/ArgumentParser.h>
 #include <SofaSimulationCommon/common.h>
@@ -54,7 +55,6 @@ using sofa::simulation::scenechecking::SceneCheckerListener;
 #include <SofaComponentMisc/initComponentMisc.h>
 
 #include <SofaGeneralLoader/ReadState.h>
-#include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/cast.h>
 #include <sofa/helper/BackTrace.h>
@@ -75,7 +75,11 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
 
+#ifdef RUNSOFA_ENABLE_VALIDATION
+#include <SofaValidation/CompareState.h>
 using sofa::component::misc::CompareStateCreator;
+#endif // RUNSOFA_ENABLE_VALIDATION
+
 using sofa::component::misc::ReadStateActivator;
 using sofa::simulation::tree::TreeSimulation;
 using sofa::simulation::graph::DAGSimulation;
@@ -122,7 +126,7 @@ using sofa::helper::logging::ExceptionMessageHandler;
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
-
+#ifdef RUNSOFA_ENABLE_VALIDATION
 void loadVerificationData(string& directory, string& filename, Node* node)
 {
     msg_info("") << "loadVerificationData from " << directory << " and file " << filename ;
@@ -143,6 +147,7 @@ void loadVerificationData(string& directory, string& filename, Node* node)
     ReadStateActivator v_read(ExecParams::defaultInstance(), true);
     v_read.execute(node);
 }
+#endif // RUNSOFA_ENABLE_VALIDATION
 
 void addGUIParameters(ArgumentParser* argumentParser)
 {
@@ -550,10 +555,12 @@ int main(int argc, char** argv)
     if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
 
+#ifdef RUNSOFA_ENABLE_VALIDATION
     if (!verif.empty())
     {
         loadVerificationData(verif, fileName, groot.get());
     }
+#endif // RUNSOFA_ENABLE_VALIDATION
 
     if( computationTimeAtBegin )
     {
