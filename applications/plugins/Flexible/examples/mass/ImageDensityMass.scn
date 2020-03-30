@@ -12,11 +12,11 @@
 
   <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
-  <!--    <EulerExplicitSolverSolver /> -->
+
 
   <Node 	name="FEM tetra NOT lumped"   >
 
-    <!--         <MeshGmshLoader name="loader" filename="mesh/tetra.msh" /> -->
+    <!--  <MeshGmshLoader name="loader" filename="mesh/tetra.msh" /> -->
     <!-- 	<MeshTopology name="mesh" src="@loader" /> -->
 
 

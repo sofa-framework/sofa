@@ -164,6 +164,7 @@ public:
         data[i] = (Real)v;
     }
 
+    using BaseMatrix::add;
     void add(Index i, double v)
     {
         data[i] += (Real)v;

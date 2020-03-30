@@ -2,7 +2,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <Node name="DeformableObject">
 
-        <EulerExplicitSolverSolver name="odeExplicitSolver" optimizedForDiagonalMatrix="0" symplectic="1" />
+        <EulerExplicitSolver name="odeExplicitSolver" optimizedForDiagonalMatrix="0" symplectic="1" />
         <CGLinearSolver iterations="1000" tolerance="1e-9" threshold="1e-9"/>
 
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
