@@ -47,7 +47,7 @@ using namespace sofa::defaulttype;
 int TetrahedronCollisionModelClass = core::RegisterObject("collision model using a tetrahedral mesh, as described in BaseMeshTopology")
         .add< TetrahedronCollisionModel >()
         .addAlias("Tetrahedron")
-        .addAlias("TetrahedronCollisionModel")
+        .addAlias("TetrahedronModel")
         ;
 
 TetrahedronCollisionModel::TetrahedronCollisionModel()

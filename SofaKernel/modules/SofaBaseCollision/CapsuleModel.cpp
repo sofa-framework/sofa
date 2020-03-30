@@ -38,7 +38,7 @@ int CapsuleCollisionModelClass = core::RegisterObject("Collision model which rep
         .add< CapsuleCollisionModel<sofa::defaulttype::Vec3Types> >()
 
         .addAlias("Capsule")
-        .addAlias("CapsuleCollisionModel<sofa::defaulttype::Vec3Types>")
+        .addAlias("CapsuleModel")
         .addAlias("TCapsuleModel")
 
         ;

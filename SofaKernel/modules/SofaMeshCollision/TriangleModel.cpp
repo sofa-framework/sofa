@@ -36,7 +36,7 @@ int TriangleCollisionModelClass = core::RegisterObject("collision model using a 
         .add< TriangleCollisionModel<defaulttype::Vec3Types> >()
 
         .addAlias("TTriangleModel")
-        .addAlias("TriangleCollisionModel<sofa::defaulttype::Vec3Types>")
+        .addAlias("TriangleModel")
         .addAlias("TriangleMeshModel")
         .addAlias("TriangleSetModel")
         .addAlias("TriangleMesh")

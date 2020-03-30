@@ -40,9 +40,7 @@ int OBBModelClass = core::RegisterObject("Collision model which represents a set
         .add<  OBBCollisionModel<Rigid3Types> >()
 
         .addAlias("OBB")
-        .addAlias("OBBCollisionModel<sofa::defaulttype::Rigid3Types>")
-//.addAlias("OBBMesh")
-//.addAlias("OBBSet")
+        .addAlias("OBBModel")
         ;
 
 template class SOFA_BASE_COLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;

@@ -61,7 +61,7 @@ int SphereModelClass = core::RegisterObject("Collision model which represents a 
 
         .addAlias("TSphereModel")
         .addAlias("Sphere")
-        .addAlias("SphereCollisionModel<sofa::defaulttype::Vec3Types>")
+        .addAlias("SphereModel")
         ;
 
 template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3Types>;

@@ -41,7 +41,7 @@ using namespace sofa::defaulttype;
 int CubeCollisionModelClass = core::RegisterObject("Collision model representing a cube")
         .add< CubeCollisionModel >()
         .addAlias("Cube")
-        .addAlias("CubeCollisionModel")
+        .addAlias("CubeModel")
         ;
 
 CubeCollisionModel::CubeCollisionModel()
