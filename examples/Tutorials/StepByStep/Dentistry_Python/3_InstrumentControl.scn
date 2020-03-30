@@ -18,7 +18,7 @@ Instrument Control, and Python script
 
         <Node name="RefModel">
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" rz="90" dx="2"/>
             <RigidMapping input="@../DOFs" output="@instrumentCollisionState"/>
         </Node> 
@@ -36,7 +36,7 @@ Instrument Control, and Python script
         </Node>
         <Node name="CollisionModel">
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
-            <Mesh src="@loader" name="InstrumentCollisionModel" />
+            <MeshTopology src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 0" />
             <LineCollisionModel name="instrument" contactStiffness="10" />
             <PointCollisionModel name="instrument" contactStiffness="10" />

@@ -16,7 +16,7 @@
 		
         <Node name="TriangleSurf">
             <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
-            <Mesh src="@loader"/>
+            <MeshTopology src="@loader"/>
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel group="1" />
             <LineCollisionModel group="1" />
@@ -40,7 +40,7 @@
 		
         <Node name="TriangleSurf">
             <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
-            <Mesh src="@loader"/>
+            <MeshTopology src="@loader"/>
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel group="1" />
             <LineCollisionModel group="1" />
@@ -61,7 +61,7 @@
 		</Node>
 		<Node name="Surf2">
 			<MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
-			<Mesh src="@loader"/>
+			<MeshTopology src="@loader"/>
 			<MechanicalObject src="@loader"/>
 			<TriangleCollisionModel group="1"/>
 			<LineCollisionModel group="1"/>
@@ -82,7 +82,7 @@
 		</Node>
 		<Node name="Surf2">
 			<MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
-			<Mesh src="@loader"/>
+			<MeshTopology src="@loader"/>
 			<MechanicalObject src="@loader"/>
 			<TriangleCollisionModel group="1"/>
 			<LineCollisionModel group="1"/>

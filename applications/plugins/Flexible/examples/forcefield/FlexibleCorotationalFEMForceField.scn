@@ -14,7 +14,7 @@
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
     
-	<Mesh name="mesh" src="@../loader" />
+	<MeshTopology name="mesh" src="@../loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
        <UniformMass totalMass="250" />
 
@@ -34,7 +34,7 @@
     <Node 	name="CorotationalMesh"   >
 	<EulerImplicitSolver /> 
 	<CGLinearSolver    iterations="50" tolerance="1e-5" threshold="1e-5"/>
-	<Mesh name="mesh" src="@../loader" />
+	<MeshTopology name="mesh" src="@../loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
         <UniformMass totalMass="250" />
 
@@ -47,7 +47,7 @@
 	    <MechanicalObject  name="pts" template="Vec3d" showObject="0" showObjectScale="5" />
 	    <CorotationalMeshMapping name="mapping" inputTetrahedra="@../mesh.tetrahedra"/>
 
-	    <Mesh name="mesh" src="@mapping" position="@pts.position"/>
+	    <MeshTopology name="mesh" src="@mapping" position="@pts.position"/>
 		
 <!--		<Node name="Visual"  >
 		    <OglModel  color="0 1 0"/>
@@ -88,7 +88,7 @@
         <EulerImplicitSolver />
         <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
     
-	<Mesh name="mesh" src="@../loader" />
+	<MeshTopology name="mesh" src="@../loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
        <UniformMass totalMass="250" />
 
@@ -112,7 +112,7 @@
         <EulerImplicitSolver />
         <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
     
-	<Mesh name="mesh" src="@../loader" />
+	<MeshTopology name="mesh" src="@../loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
        <UniformMass totalMass="250" />
 

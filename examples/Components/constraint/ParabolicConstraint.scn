@@ -26,7 +26,7 @@
     </Node>
     <Node name="CubeFixed">
         <MeshObjLoader name="loader" filename="mesh/cube.obj" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" scale="20" dz="-35" />
         <TriangleCollisionModel simulated="0" moving="0" />
         <MeshObjLoader name="meshLoader_0" filename="mesh/cube.obj" scale="20" handleSeams="1" />

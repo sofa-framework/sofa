@@ -20,7 +20,7 @@
 		<Node 	 name="gNode19"  >
 			<MechanicalObject template="Vec3d" name="Capsule"  position="-0.5 0 -0.5 0.5 0 0.5"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  reserve="0" />
 			<MeshTopology name="meshTopology34"  edges="0 1 "  drawEdges="1" />
-			<TCapsuleModel template="Vec3d" name="tCapsuleModel42" />
+			<CapsuleCollisionModel template="Vec3d" name="tCapsuleModel42" />
 			<RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../"  output="@./" />
 		</Node>
 	</Node>

@@ -41,8 +41,8 @@
 		<LCPForceFeedback activate="true" forceCoef="0.001" />
 
 		<Node name="Collision">
-<!--			<Mesh filename="assets/meshes/crescentBlade_CM.obj"  />	 -->
-			<Mesh position="0 0 0   0 0 10" lines="0 1"  />
+<!--			<MeshTopology filename="assets/meshes/crescentBlade_CM.obj"  />	 -->
+			<MeshTopology position="0 0 0   0 0 10" lines="0 1"  />
 			<MechanicalObject name="CM" />
 			<TriangleCollisionModel bothSide="true" group="1" color="0 0 1 1" />
 			<LineCollisionModel  bothSide="true" group="1" />
@@ -57,7 +57,7 @@
     <MeshObjLoader name="InputMesh" filename="mesh/sphere_05.obj" scale="0.2" triangulate="1" />
 
     <Node name="InitTopology">
-        <Mesh name="surface" src="@../InputMesh" />
+        <MeshTopology name="surface" src="@../InputMesh" />
         <MeshTetraStuffing name="stuffing" snapPoints="true" splitTetras="false" draw="false" size="2.5" inputPoints="@surface.points" inputTriangles="@surface.triangles" />
     </Node>
     <Node name="SoftSphere" >

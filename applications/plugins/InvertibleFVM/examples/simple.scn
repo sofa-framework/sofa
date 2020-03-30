@@ -18,7 +18,7 @@
 	      
 	      <!--Mesh name="mesh" position="0 0 0  1 0 0  0 1 0  0 0 1" tetrahedra="0 1 2 3" />   <!--regular tetra-->
 	      <!--Mesh name="mesh" position="0 0 0  1 0 0  0 1 0  0 0 -1" tetrahedra="0 1 2 3" />   <!--inverted tetra-->
-	      <Mesh name="mesh" position="1 0 0  1 1 0  0 0 0  1 0 1" tetrahedra="0 1 2 3" />   <!--rotated regular tetra-->
+	      <MeshTopology name="mesh" position="1 0 0  1 1 0  0 0 0  1 0 1" tetrahedra="0 1 2 3" />   <!--rotated regular tetra-->
 	      <!--Mesh name="mesh" position="0.2 -0.1 0.3  0.7 0.2 0.1  -0.2 0.7 0.2  0.2 -0.1 1" tetrahedra="0 1 2 3" />   <!--crappy tetra-->
 	    
             <MechanicalObject src="@mesh"  />
@@ -34,7 +34,7 @@
 	    <Node name="FEM">
 	    <EulerExplicitSolver name="odeExplicitSolver" />
 	    
-             <Mesh name="mesh" position="1 0 0  1 1 0  0 0 0  1 0 1" tetrahedra="0 1 2 3" />   <!--rotated regular tetra-->
+             <MeshTopology name="mesh" position="1 0 0  1 1 0  0 0 0  1 0 1" tetrahedra="0 1 2 3" />   <!--rotated regular tetra-->
 	     
             <MechanicalObject src="@mesh" dx="2" />
             <UniformMass totalMass="4" />

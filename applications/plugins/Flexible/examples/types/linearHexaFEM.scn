@@ -19,7 +19,7 @@
     <CGLinearSolver  />
 
   <Node name="FEM"  >
-        <Mesh name="mesh" src="@../sampler" />
+        <MeshTopology name="mesh" src="@../sampler" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" />
 
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -37,7 +37,7 @@
   </Node>
 
   <Node name="Flexible"  >
-        <Mesh name="mesh" src="@../sampler" />
+        <MeshTopology name="mesh" src="@../sampler" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>

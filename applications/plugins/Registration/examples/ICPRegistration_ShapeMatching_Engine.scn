@@ -15,7 +15,7 @@
 			
 	<Node name="source">
 			<MeshObjLoader name="meshLoader" filename="data/femur_m_res.obj"/>
-			<Mesh src="@meshLoader" />
+			<MeshTopology src="@meshLoader" />
 			<MechanicalObject  name="PointSet"   />
 			<UniformMass mass="10"/>
 			

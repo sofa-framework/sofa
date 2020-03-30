@@ -24,7 +24,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel /> <LineCollisionModel /> <PointCollisionModel /> <SubsetMapping />
         </Node>
@@ -47,7 +47,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" dx="50" dy="20" />
             <TriangleCollisionModel /> <LineCollisionModel /> <PointCollisionModel /> <SubsetMapping />
         </Node>
@@ -70,7 +70,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" dx="-30" dy="10" />
             <TriangleCollisionModel /> <LineCollisionModel /> <PointCollisionModel /> <SubsetMapping />
         </Node>
@@ -78,7 +78,7 @@
 	
     <Node name="Floor">
         <MeshObjLoader name="loader" filename="mesh/floor3.obj" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
         <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
         <LineCollisionModel name="FloorLine" simulated="0" moving="0" />

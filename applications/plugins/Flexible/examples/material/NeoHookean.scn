@@ -18,7 +18,7 @@
     <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
 
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-    <Mesh name="mesh" src="@loader" />
+    <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -59,7 +59,7 @@
     <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
 
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-    <Mesh name="mesh" src="@loader" />
+    <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -102,7 +102,7 @@
     <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
 
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-    <Mesh name="mesh" src="@loader" />
+    <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -142,7 +142,7 @@
     <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
 
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-    <Mesh name="mesh" src="@loader" />
+    <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -182,7 +182,7 @@
     <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
 
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-    <Mesh name="mesh" src="@loader" />
+    <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>

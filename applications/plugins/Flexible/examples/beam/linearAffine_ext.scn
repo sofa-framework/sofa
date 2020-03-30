@@ -101,7 +101,7 @@
         </Node>
 
 	    <Node 	name="collision"   >
-		<Mesh name="mesh" src="@../mesh" /> 
+		<MeshTopology name="mesh" src="@../mesh" /> 
 		<MechanicalObject  template="Vec3d" name="pts"    />
 		<UniformMass totalMass="10" />
 
@@ -155,7 +155,7 @@
 
 		<Node name="Collision">
 			<MeshObjLoader name="MeshLoader" filename="beam.obj"/>
-      			<Mesh name="mesh" src="@MeshLoader"  /> 
+      			<MeshTopology name="mesh" src="@MeshLoader"  /> 
       			<MechanicalObject  name="PointSet"/>
       			<TriangleCollisionModel />
 			<FrameBlendingMapping template="Affine,Vec3d" input="@../DOFs"  output="@PointSet" showStrain="false"/>

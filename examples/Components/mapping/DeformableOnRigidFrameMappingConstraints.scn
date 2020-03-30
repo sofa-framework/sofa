@@ -12,7 +12,7 @@
     <Node name="ChainRigid">
         <Node name="TorusFixed">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
@@ -30,18 +30,18 @@
         <Node name="TorusDeformLocal">
             <EulerImplicitSolver />
             <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
-            <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
+            <SparseGridTopology filename="mesh/torus_for_collision.obj" n="7 2 4" />
             <MechanicalObject />
             <TetrahedronFEMForceField youngModulus="1e4" poissonRatio="0.45"/>
             <BoxConstraint box="-1 -1 -1 1 1 1" />
             <PrecomputedConstraintCorrection recompute="true" />
             <Node name="DeformableMappedModel">
-                <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
+                <SparseGridTopology filename="mesh/torus_for_collision.obj" n="7 2 4" />
                 <MechanicalObject name="deformedMO" />
                 <DeformableOnRigidFrameMapping input1="@.." input2="@../../TorusRigid/rigidframe" output="@deformedMO" printLog="0" />
                 <Node name="TorusCollisLocal">
                     <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                    <Mesh src="@loader" />
+                    <MeshTopology src="@loader" />
                     <MechanicalObject src="@loader" />
                     <TriangleCollisionModel group="2" />
                     <LineCollisionModel group="2" />

@@ -9,7 +9,7 @@
 	</Node>
 	<Node name="CollisionNode">
       <MeshObjLoader name="loader" filename="file"/>
-      <Mesh src="@loader"/>
+      <MeshTopology src="@loader"/>
       <MechanicalObject src="@loader" scale3d="1 1 1"/>
       <TriangleCollisionModel contactStiffness="200"/>
       <LineCollisionModel     contactStiffness="@[-1].contactStiffness"/>

@@ -18,7 +18,7 @@
             <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube1 RigidDOF" object2="Visual Cube1" />
         </Node>
 <!--        <Node name="Collision Model1">
-            <Mesh name="Cube1 Mesh" filename="mesh/cube.obj" />
+            <MeshTopology name="Cube1 Mesh" filename="mesh/cube.obj" />
             <MechanicalObject name="Collision Cube1" />
             <TriangleCollisionModel name="TriangleModel1" />
             <LineCollisionModel name="Cube1 Edge For Collision" />
@@ -37,7 +37,7 @@
             <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube2 RigidDOF" object2="Visual Cube2" />
         </Node>
 <!--        <Node name="Collision Model2">
-            <Mesh name="Cube Mesh2" filename="mesh/cube.obj" />
+            <MeshTopology name="Cube Mesh2" filename="mesh/cube.obj" />
             <MechanicalObject name="Collision Cube2" scale="2 2 2" />
             <TriangleCollisionModel name="TriangleModel2" />
             <LineCollisionModel name="Cube2 Edge For Collision" />

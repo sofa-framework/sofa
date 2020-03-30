@@ -8,7 +8,7 @@
     <Node name="ChainSpring">
         <Node name="TorusFixed">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
             <MeshObjLoader name="meshLoader_3" filename="mesh/torus2.obj" handleSeams="1" />
@@ -18,7 +18,7 @@
             <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="2.5 0 0"/>
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <UniformMass totalMass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="1000" tetrasDamping="0" />
@@ -29,7 +29,7 @@
             </Node>
             <Node name="Surf1">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" translation="2.5 0 0"/>
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
                 <BarycentricMapping />
@@ -39,7 +39,7 @@
             <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" translation="5 0 0"/>
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <UniformMass totalMass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="200" tetrasDamping="0" />
@@ -50,7 +50,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" translation="5 0 0"/>
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader"  />
                 <TriangleCollisionModel />
                 <BarycentricMapping />
@@ -60,7 +60,7 @@
             <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="7.5 0 0"/>
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <UniformMass totalMass="0.5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="0" />
@@ -71,7 +71,7 @@
             </Node>
             <Node name="Surf3">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" translation="7.5 0 0"/>
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader"  />
                 <TriangleCollisionModel />
                 <BarycentricMapping />
@@ -81,7 +81,7 @@
             <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" translation="10 0 0"/>
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"  />
             <UniformMass totalMass="0.5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="0" />
@@ -92,7 +92,7 @@
             </Node>
             <Node name="Surf4">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" translation="10 0 0"/>
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader"  />
                 <TriangleCollisionModel />
                 <BarycentricMapping />

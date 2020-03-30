@@ -31,8 +31,8 @@
     
     <Node name="Snake" >
 
-        <SparseGridRamification name="grid"  n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
-        <!--                <SparseGridRamification name="grid" n="8 20 5" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="1" finestConnectivity="0" /> -->
+        <SparseGridRamificationTopology name="grid"  n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
+        <!--                <SparseGridRamificationTopology name="grid" n="8 20 5" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="1" finestConnectivity="0" /> -->
 
         
         <MechanicalObject name="dofs"  scale="1" dy="2" position="@grid.position"  tags="NoPicking" />
@@ -41,7 +41,7 @@
 
         <Node name="Collis">
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <TriangleCollisionModel  selfCollision="1" />
             <LineCollisionModel    selfCollision="1" />
@@ -79,7 +79,7 @@
 
         <Node name="Stick">
             <MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
             <LineCollisionModel simulated="false" moving="false" proximity="1.4" />
@@ -88,7 +88,7 @@
         
         <Node name="Blobs">
             <MeshObjLoader name="loader" filename="mesh/collision_boules_V3.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
             <TriangleCollisionModel simulated="false" moving="false" proximity="1" />
@@ -98,7 +98,7 @@
 
         <Node name="Foot">
             <MeshObjLoader name="loader" filename="mesh/collision_pied.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
             <TriangleCollisionModel simulated="false" moving="false" proximity="1" />
@@ -109,7 +109,7 @@
 
         <!-- <Node name="collision">
             <MeshObjLoader name="loader" filename="mesh/mesh/SOFA_pod.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
             <TriangleCollisionModel simulated="false" moving="false"/>

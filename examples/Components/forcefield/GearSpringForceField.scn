@@ -20,7 +20,7 @@
     </Node>
     <Node name="0">
         <MeshObjLoader name="MeshLoader" filename="mesh/gear0.obj" />
-        <Mesh src="@MeshLoader" />
+        <MeshTopology src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
         <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="0" />
@@ -32,7 +32,7 @@
     </Node>
     <Node name="1">
         <MeshObjLoader name="MeshLoader" filename="mesh/gear1.obj" />
-        <Mesh src="@MeshLoader" />
+        <MeshTopology src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
         <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="1" />
@@ -44,7 +44,7 @@
     </Node>
     <Node name="2">
         <MeshObjLoader name="MeshLoader" filename="mesh/gear2.obj" />
-        <Mesh src="@MeshLoader" />
+        <MeshTopology src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
         <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="2" />
@@ -56,7 +56,7 @@
     </Node>
     <Node name="3">
         <MeshObjLoader name="MeshLoader" filename="mesh/gear3.obj" />
-        <Mesh src="@MeshLoader" />
+        <MeshTopology src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
         <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="3" />
@@ -68,7 +68,7 @@
     </Node>
     <Node name="support">
         <MeshObjLoader name="MeshLoader" filename="mesh/gearsupport.obj" />
-        <Mesh src="@MeshLoader" />
+        <MeshTopology src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
         <TriangleCollisionModel />
         <RigidMapping template="Rigid,Vec3d" index="4" />

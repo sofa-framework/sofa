@@ -26,7 +26,7 @@
     <MechanicalObject template="Affine" name="parent"  showObject="true" src="@merged" />
 
 <!--linear weights-->
-<Mesh name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
+<MeshTopology name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
 <BarycentricShapeFunction  position="@parent.rest_position" nbRef="2" />
 <ShapeFunctionDiscretizer name="SF" src="@image" />
 
@@ -48,7 +48,7 @@
 
     <Node 	name="collision"   >
         <VisualStyle displayFlags="hideBehaviorModels " />
-	<Mesh name="mesh" src="@../mesh" /> 
+	<MeshTopology name="mesh" src="@../mesh" /> 
 	<MechanicalObject  template="Vec3d" name="pts"    />
 	<UniformMass totalMass="10" />
 	<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
@@ -77,7 +77,7 @@
     <MechanicalObject template="Rigid3d" name="parent"  showObject="true" src="@merged" />
 
 <!--linear weights-->
-<Mesh name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
+<MeshTopology name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
 <BarycentricShapeFunction  position="@parent.rest_position" nbRef="2" />
 <ShapeFunctionDiscretizer name="SF" src="@image" />
 
@@ -99,7 +99,7 @@
 
     <Node 	name="collision"   >
         <VisualStyle displayFlags="hideBehaviorModels " />
-	<Mesh name="mesh" src="@../mesh" /> 
+	<MeshTopology name="mesh" src="@../mesh" /> 
 	<MechanicalObject  template="Vec3d" name="pts"    />
 	<UniformMass totalMass="10" />
 	<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
@@ -130,7 +130,7 @@
     <MechanicalObject template="Quadratic" name="parent"  showObject="true" src="@merged" />
 
 <!--linear weights-->
-<Mesh name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
+<MeshTopology name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
 <BarycentricShapeFunction  position="@parent.rest_position" nbRef="2" />
 <ShapeFunctionDiscretizer name="SF" src="@image" />
 
@@ -152,7 +152,7 @@
 
     <Node 	name="collision"   >
         <VisualStyle displayFlags="hideBehaviorModels " />
-	<Mesh name="mesh" src="@../mesh" /> 
+	<MeshTopology name="mesh" src="@../mesh" /> 
 	<MechanicalObject  template="Vec3d" name="pts"    />
 	<UniformMass totalMass="10" />
 	<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 

@@ -16,7 +16,7 @@
 
      <Node 	name="FEM"   >
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	      <Mesh name="mesh" src="@loader" />
+	      <MeshTopology name="mesh" src="@loader" />
 	      <MechanicalObject template="Vec3d" name="parent" />
 
              <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -58,7 +58,7 @@
 
 		<!-- use tet centers and volumes -->
 <!--        	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />-->
-<!--		<Mesh name="mesh" src="@loader" />-->
+<!--		<MeshTopology name="mesh" src="@loader" />-->
 <!--	    	<TopologyGaussPointSampler name="sampler" inPosition="@mesh.position" showSamplesScale="0" method="0" order="1" />-->
 
 		<MechanicalObject template="F331" name="F" />
@@ -73,7 +73,7 @@
 	    </Node>
 
 	    <Node 	name="collision"   >
-		<Mesh name="mesh" src="@../surf" /> 
+		<MeshTopology name="mesh" src="@../surf" /> 
 		<MechanicalObject  template="Vec3d" name="pts"    />
 
 	    	<UniformMass totalMass="250" />

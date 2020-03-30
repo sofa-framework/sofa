@@ -20,16 +20,16 @@
     <MechanicalObject name="ms1" template="Rigid3d" />
     <OptiTrackNatNetDevice name="CutDevice" trackableName="Cut" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Cystitome.obj" simMarkersMeshFile="./data/markers_cystitome.obj" controlNode="1" drawMarkersColor="1 0 1 1" drawAxisSize="10 10 10" drawMarkersSize="2" />
     <Node name="CutEdges">
-<!--      <Mesh position="0 0.0167 -0.0424 0 0.1959 0.2303" edges="0 1" /> -->
-<!--      <Mesh position="0 -0.1625 -0.3151    0 0.1959 0.2303" edges="0 1" /> -->
-      <Mesh position="0 -0.7001 -1.1332    0 0.1959 0.2303" edges="0 1" />
-<!--      <Mesh position="0 -1.7753 -2.7694    0 0.1959 0.2303" edges="0 1" /> -->
+<!--      <MeshTopology position="0 0.0167 -0.0424 0 0.1959 0.2303" edges="0 1" /> -->
+<!--      <MeshTopology position="0 -0.1625 -0.3151    0 0.1959 0.2303" edges="0 1" /> -->
+      <MeshTopology position="0 -0.7001 -1.1332    0 0.1959 0.2303" edges="0 1" />
+<!--      <MeshTopology position="0 -1.7753 -2.7694    0 0.1959 0.2303" edges="0 1" /> -->
       <MechanicalObject name="vertices" />
       <LineCollisionModel name="CM" group="2" simulated="0" moving="1" contactStiffness="0" />
       <RigidMapping />
     </Node>
     <Node name="Surface">
-      <Mesh position="
+      <MeshTopology position="
 0 0.1063 0.0939
 0 -0.0300 1.3480
 0 -0.3800 2.5480
@@ -58,7 +58,7 @@
     </Node>
     <Node name="GrabSurfaceL">
       <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left.obj" triangulate="1" createSubelements="true" />
-      <Mesh src="@loaderPince" />
+      <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleCollisionModel group="1" simulated="0" moving="1" />
       <LineCollisionModel group="1" simulated="0" moving="1" />
@@ -67,7 +67,7 @@
     </Node>
     <Node name="GrabSurfaceR">
       <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right.obj" triangulate="1" createSubelements="true"/>
-      <Mesh src="@loaderPince" />
+      <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleCollisionModel group="1" simulated="0" moving="1" />
       <LineCollisionModel group="1" simulated="0" moving="1" />

@@ -35,7 +35,7 @@
         </Node>
         
         <Node name="Collision">
-            <Mesh src="@../../loader" />
+            <MeshTopology src="@../../loader" />
             <MechanicalObject name="dof" />
             <TriangleCollisionModel />
             <LinearMapping template="Affine,Vec3d" />

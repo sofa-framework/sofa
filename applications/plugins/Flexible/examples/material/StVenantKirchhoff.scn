@@ -13,7 +13,7 @@
 
         
 	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh"  />
-        <Mesh name="mesh" src="@loader" />
+        <MeshTopology name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@loader.position" name="FixedROI"/>
@@ -53,7 +53,7 @@
         
         
 	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh"  />
-        <Mesh name="mesh" src="@loader" />
+        <MeshTopology name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@loader.position" name="FixedROI"/>
@@ -94,7 +94,7 @@
          
     
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	      <Mesh name="mesh" position="@loader.position"  tetrahedra="@loader.tetrahedra" />  <!--warning Mesh should have no edge or the full tetrahedra edges-->
+	      <MeshTopology name="mesh" position="@loader.position"  tetrahedra="@loader.tetrahedra" />  <!--warning Mesh should have no edge or the full tetrahedra edges-->
                             
 	      <MechanicalObject template="Vec3d" name="parent" />
 

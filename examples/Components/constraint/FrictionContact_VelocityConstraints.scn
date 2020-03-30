@@ -22,7 +22,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
-                <Mesh src="@loader"/>
+                <MeshTopology src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
                 <TriangleCollisionModel />
                 <LineCollisionModel />
@@ -41,7 +41,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
-                <Mesh src="@loader"/>
+                <MeshTopology src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
                 <TriangleCollisionModel />
                 <LineCollisionModel />
@@ -60,7 +60,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
-                <Mesh src="@loader"/>
+                <MeshTopology src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
                 <TriangleCollisionModel />
                 <LineCollisionModel />
@@ -79,7 +79,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
-                <Mesh src="@loader"/>
+                <MeshTopology src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
                 <TriangleCollisionModel />
                 <LineCollisionModel />
@@ -98,7 +98,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
-                <Mesh src="@loader"/>
+                <MeshTopology src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
                 <TriangleCollisionModel />
                 <LineCollisionModel />
@@ -117,7 +117,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
-                <Mesh src="@loader"/>
+                <MeshTopology src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
                 <TriangleCollisionModel />
                 <LineCollisionModel />
@@ -127,7 +127,7 @@
         </Node>
         <Node name="BOX">
             <MeshObjLoader name="loader" filename="mesh/box_inside.obj" triangulate="true" />
-            <Mesh src="@loader"/>
+            <MeshTopology src="@loader"/>
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />

@@ -18,7 +18,7 @@
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/sphere.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" scale="50" />
             <TriangleCollisionModel />
             <LineCollisionModel />

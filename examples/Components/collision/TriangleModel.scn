@@ -20,7 +20,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
             <LineCollisionModel />
@@ -30,7 +30,7 @@
     </Node>
     <Node name="Floor">
         <MeshObjLoader name="loader" filename="mesh/floor3.obj" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
         <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
         <LineCollisionModel name="FloorLine" simulated="0" moving="0" />

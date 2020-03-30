@@ -10,7 +10,7 @@
  <Node name="ExternalBehaviorModel" >
 
       <EulerImplicitSolver verbose="0" rayleighMass="0" rayleighStiffness="0" vdamping="0" />
-      <CGSolver verbose="0" iterations="100" tolerance="1.0e-10" threshold="1.0e-10" />
+      <CGLinearSolver verbose="0" iterations="100" tolerance="1.0e-10" threshold="1.0e-10" />
 
 
 	<Node name="external behavior model" >
@@ -28,7 +28,7 @@
 	 <Node name="SOFA" >
 
       <EulerImplicitSolver verbose="0" rayleighMass="0" rayleighStiffness="0" vdamping="0" />
-      <CGSolver verbose="0" iterations="100" tolerance="1.0e-10" threshold="1.0e-10" />
+      <CGLinearSolver verbose="0" iterations="100" tolerance="1.0e-10" threshold="1.0e-10" />
 
 
 	<Node name="external behavior model" >
