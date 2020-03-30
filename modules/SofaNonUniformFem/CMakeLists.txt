@@ -42,7 +42,8 @@ list(APPEND SOURCE_FILES
     SparseGridRamificationTopology.cpp
     )
 
-if(SOFAGENERAL_HAVE_SOFADENSESOLVER)
+find_package(SofaDenseSolver QUIET)
+if(SofaDenseSolver_FOUND)
     list(APPEND HEADER_FILES
         HexahedronCompositeFEMForceFieldAndMass.h
         HexahedronCompositeFEMForceFieldAndMass.inl
@@ -50,11 +51,13 @@ if(SOFAGENERAL_HAVE_SOFADENSESOLVER)
     list(APPEND SOURCE_FILES
         HexahedronCompositeFEMForceFieldAndMass.cpp
         )
+else()
+    message(WARNING "SofaDenseSolver not found, disabling HexahedronCompositeFEMForceFieldAndMass compilation.")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaGeneralSimpleFem SofaBaseTopology SofaBaseMechanics)
-if(SOFAGENERAL_HAVE_SOFADENSESOLVER)
+if(SofaDenseSolver_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaDenseSolver)
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_NON_UNIFORM_FEM")
