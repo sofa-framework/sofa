@@ -31,7 +31,7 @@
 #include <map>
 #include <Eigen/Sparse>
 
-#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
+#ifdef SOFAEIGEN2SOLVER_HAVE_OPENMP
 #include "EigenBaseSparseMatrix_MT.h"
 #endif
 
@@ -303,7 +303,7 @@ public:
     void mult_MT( VectorEigen& result, const VectorEigen& data )
     {
         compress();
-#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
+#ifdef SOFAEIGEN2SOLVER_HAVE_OPENMP
         result = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, data );
 #else
         result = compressedMatrix * data;
@@ -426,7 +426,7 @@ public:
     /// @warning res MUST NOT be the same variable as this or rhs
     void mul_MT(EigenBaseSparseMatrix<Real>& res, const EigenBaseSparseMatrix<Real>& rhs) const
     {
-    #ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
+    #ifdef SOFAEIGEN2SOLVER_HAVE_OPENMP
         assert( &res != this );
         assert( &res != &rhs );
         ((EigenBaseSparseMatrix<Real>*)this)->compress();  /// \warning this violates the const-ness of the method
@@ -447,7 +447,7 @@ public:
     void mul_MT( Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& res, const Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& rhs )
     {
         compress();
-#ifdef SOFAEIGEN2SOLVER_WITH_OPENMP
+#ifdef SOFAEIGEN2SOLVER_HAVE_OPENMP
         res = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, rhs );
 #else
         res = compressedMatrix * rhs;
