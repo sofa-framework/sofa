@@ -71,7 +71,7 @@ RayTraceDetection ():bDraw (initData
 }
 
 
-void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeCollisionModel * cm2)
+void RayTraceDetection::findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2)
 {
     /*Obtain the CollisionModel at the lowest level, in this case it must be a TriangleOctreeModel */
 

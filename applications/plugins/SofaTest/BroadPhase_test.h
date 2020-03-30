@@ -71,7 +71,7 @@ struct InitIntersection{
 };
 
 //static bool goodBoundingTree(sofa::core::CollisionModel * cm){
-//    sofa::component::collision::CubeModel * cbm = dynamic_cast<sofa::component::collision::CubeModel *>(cm->getFirst());
+//    sofa::component::collision::CubeCollisionModel * cbm = dynamic_cast<sofa::component::collision::CubeCollisionModel *>(cm->getFirst());
 //    sofa::component::collision::Cube c(cbm);
 //    const Vector3 & min = c.minVect();
 //    const Vector3 & max = c.maxVect();

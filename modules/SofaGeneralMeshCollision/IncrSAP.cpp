@@ -304,7 +304,7 @@ inline void IncrSAP::addCollisionModel(core::CollisionModel *cm)
         _colliding_elems.add(cm->getLast(),intersectionMethod);
         _nothing_added = false;
 
-        CubeCollisionModel * cube_model = dynamic_cast<CubeModel *>(cm->getLast()->getPrevious());
+        CubeCollisionModel * cube_model = dynamic_cast<CubeCollisionModel *>(cm->getLast()->getPrevious());
         assert(cube_model->getPrevious() == cm->getFirst());
 
         int old_size = _boxes.size();

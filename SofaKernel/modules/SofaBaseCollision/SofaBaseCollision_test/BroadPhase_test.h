@@ -98,7 +98,7 @@ struct InitIntersection{
 };
 
 //static bool goodBoundingTree(sofa::core::CollisionModel * cm){
-//    sofa::component::collision::CubeModel * cbm = dynamic_cast<sofa::component::collision::CubeModel *>(cm->getFirst());
+//    sofa::component::collision::CubeCollisionModel * cbm = dynamic_cast<sofa::component::collision::CubeCollisionModel *>(cm->getFirst());
 //    sofa::component::collision::Cube c(cbm);
 //    const Vector3 & min = c.minVect();
 //    const Vector3 & max = c.maxVect();
@@ -133,7 +133,7 @@ bool genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 static Vector3 randVect(const Vector3 & min,const Vector3 & max);
 
 void getMyBoxes(sofa::core::CollisionModel * cm,std::vector<MyBox> & my_boxes){
-    sofa::component::collision::CubeModel * cbm = dynamic_cast<sofa::component::collision::CubeModel*>(cm->getLast()->getPrevious());
+    sofa::component::collision::CubeCollisionModel * cbm = dynamic_cast<sofa::component::collision::CubeCollisionModel*>(cm->getLast()->getPrevious());
     assert(cbm != 0x0);
 
     for(int i = 0 ; i < cbm->getSize() ; ++i)

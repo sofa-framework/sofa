@@ -104,7 +104,7 @@ void ColourPickingVisitor::processCollisionModel(simulation::Node*  node , core:
         processSphereModel(node,smodel);
 }
 
-void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::component::collision::TriangleModel * tmodel)
+void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> * tmodel)
 {
 #ifndef SOFA_NO_OPENGL
     using namespace sofa::core::collision;
@@ -165,7 +165,7 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
 #endif /* SOFA_NO_OPENGL */
 }
 
-void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::component::collision::SphereModel * smodel)
+void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types> * smodel)
 {
 #ifndef SOFA_NO_OPENGL
     typedef Sphere::Coord Coord;

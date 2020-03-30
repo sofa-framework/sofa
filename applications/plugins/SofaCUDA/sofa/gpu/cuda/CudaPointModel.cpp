@@ -116,7 +116,7 @@ void CudaPointCollisionModel::draw(const core::visual::VisualParams* vparams)
 #endif // SOFA_NO_OPENGL
 }
 
-using sofa::component::collision::CubeModel;
+using sofa::component::collision::CubeCollisionModel;
 
 void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
 {
