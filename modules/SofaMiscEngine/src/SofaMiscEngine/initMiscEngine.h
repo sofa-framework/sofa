@@ -19,26 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaMiscEngine/initMiscEngine.h>
+#pragma once
 
+#include <SofaMiscEngine/config.h>
 
-namespace sofa
-{
-
-namespace component
+namespace sofa::component
 {
 
 
-void initMiscEngine()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+void SOFA_SOFAMISCENGINE_API initMiscEngine();
 
-} // namespace component
+} // namespace sofa::component
 
-} // namespace sofa
+
+

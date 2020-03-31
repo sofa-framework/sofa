@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_H
-#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_H
+#pragma once
 
-#include "config.h"
+#include <SofaMiscEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 
@@ -134,10 +127,5 @@ public:
     helper::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
 };
 
-} // namespace engine
+} // namespace sofa::component::engine
 
-} // namespace component
-
-} // namespace sofa
-
-#endif // FLEXIBLE_DisplacementMatrixENGINE_H

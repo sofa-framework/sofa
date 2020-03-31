@@ -19,29 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP
-#include <SofaMiscEngine/ProjectiveTransformEngine.inl>
+//#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_CPP
+
+#include "DisplacementMatrixEngine.inl"
+
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::engine
 {
 
-namespace component
+using namespace defaulttype;
+
+int DisplacementTransformEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement transforms.")
+    .add< DisplacementTransformEngine<Rigid3Types,Mat4x4f> >()
+    .add< DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord> >()
+;
+
+template class SOFA_SOFAMISCENGINE_API DisplacementTransformEngine<Rigid3Types,Mat4x4f>;
+template class SOFA_SOFAMISCENGINE_API DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>;
+
+template <>
+void DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>::setInverse( Rigid3Types::Coord& inv, const Coord& x0 )
 {
+    inv = Rigid3Types::inverse(x0);
+}
 
-namespace engine
+template <>
+void DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>::mult( Rigid3Types::Coord& out, const Rigid3Types::Coord& inv, const Coord& x )
 {
+    out = x;
+    out.multRight(inv);
+}
 
-  int ProjectiveTransformEngineClass = core::RegisterObject("Project the position of 3d points onto a plane according to a projection matrix")
-        .add< ProjectiveTransformEngine<defaulttype::Vec3Types> >(true) // default template
-        ;
+template <>
+void DisplacementTransformEngine<Rigid3Types,Mat4x4f>::setInverse( Mat4x4f& inv, const Coord& x0 )
+{
+    Rigid3Types::inverse(x0).toMatrix(inv);
+}
 
-template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
+template <>
+void DisplacementTransformEngine<Rigid3Types,Mat4x4f>::mult( Mat4x4f& out, const Mat4x4f& inv, const Coord& x )
+{
+    x.toMatrix(out);
+    out = out * inv;
+}
 
+/////////////////////////////////////////
 
-} // namespace constraint
+int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement matrices.")
+    .add< DisplacementMatrixEngine<Rigid3Types> >()
+;
 
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::engine

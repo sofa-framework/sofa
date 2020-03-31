@@ -19,34 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_DISTANCES_CPP
-#include <SofaMiscEngine/Distances.inl>
+#define SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP
+#include <SofaMiscEngine/ProjectiveTransformEngine.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
+namespace sofa::component::engine
 {
 
-namespace component
-{
-
-namespace engine
-{
-
-using namespace sofa::defaulttype;
-
-int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
-        .add< Distances<Vec3Types> >()
- 
+  int ProjectiveTransformEngineClass = core::RegisterObject("Project the position of 3d points onto a plane according to a projection matrix")
+        .add< ProjectiveTransformEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-template class SOFA_MISC_ENGINE_API Distances<Vec3Types>;
- 
+template class SOFA_SOFAMISCENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::engine

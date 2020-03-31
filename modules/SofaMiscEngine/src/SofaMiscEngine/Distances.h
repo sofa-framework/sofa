@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_DISTANCES_H
-#define SOFA_COMPONENT_ENGINE_DISTANCES_H
-#include "config.h"
+#pragma once
 
-
+#include <SofaMiscEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -33,6 +31,7 @@
 #include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <utility>
 
 #define TYPE_GEODESIC 0
 #define TYPE_HARMONIC 1
@@ -40,13 +39,7 @@
 #define TYPE_VORONOI 3
 #define TYPE_HARMONIC_STIFFNESS 4
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 class HexahedronSetTopologyContainer;
@@ -56,9 +49,9 @@ class HexahedronSetTopologyModifier;
 template < class DataTypes >
 class DynamicSparseGridGeometryAlgorithms;
 
-}
+} // namespace sofa::component::topology
 
-namespace engine
+namespace sofa::component::engine
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -232,15 +225,9 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DISTANCES_CPP)
-extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3Types>;
-//extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAMISCENGINE_API Distances<defaulttype::Vec3Types>;
+//extern template class SOFA_SOFAMISCENGINE_API Distances<defaulttype::Rigid3Types>;
  
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::engine

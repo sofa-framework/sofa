@@ -19,9 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISCENGINE_CONFIG_H
-#define SOFAMISCENGINE_CONFIG_H
+#define SOFA_COMPONENT_ENGINE_DISTANCES_CPP
 
-#include <SofaMisc/config.h>
+#include <SofaMiscEngine/Distances.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#endif
+namespace sofa::component::engine
+{
+
+using namespace sofa::defaulttype;
+
+int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
+        .add< Distances<Vec3Types> >()
+ 
+        ;
+
+template class SOFA_SOFAMISCENGINE_API Distances<Vec3Types>;
+ 
+} // namespace sofa::component::engine

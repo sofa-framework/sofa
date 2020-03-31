@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_INL
-#define SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_INL
+#pragma once
 
 #include <SofaMiscEngine/ProjectiveTransformEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/rmath.h> //M_PI
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -95,10 +88,4 @@ void ProjectiveTransformEngine<DataTypes>::doUpdate()
     }
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::engine

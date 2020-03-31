@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_H
-#define SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscEngine/config.h>
 
 
 
@@ -32,13 +32,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
@@ -87,14 +81,9 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)
 
-extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAMISCENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace engine
+} // namespace sofa::component::engine
 
-} // namespace component
-
-} // namespace sofa
-
-#endif

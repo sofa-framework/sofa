@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_DISTANCES_INL
-#define SOFA_COMPONENT_ENGINE_DISTANCES_INL
+#pragma once
 
 #include <SofaMiscEngine/Distances.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -33,13 +32,8 @@
 #include <functional>
 #include <queue>
 #include <fstream>
-namespace sofa
-{
 
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using std::queue;
@@ -723,10 +717,4 @@ void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::engine
