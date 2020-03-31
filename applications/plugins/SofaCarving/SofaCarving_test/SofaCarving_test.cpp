@@ -212,7 +212,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         { "totalMass", "1.0" }
     });
 
-    createObject(nodeCarv, "SphereCollisionModel<sofa::defaulttype::Vec3Types>", {
+    createObject(nodeCarv, "SphereCollisionModel", {
         { "name", "Sphere Model" },
         { "radius", "0.02" },
         { "tags", "CarvingTool" },

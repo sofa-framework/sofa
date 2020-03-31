@@ -116,7 +116,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     // SofaKernel
     {"Point", Removed("v19.12", "v20.06")},
     {"TPointModel", Removed("v19.12", "v20.06")},
-    {"PointCollisionModel<sofa::defaulttype::Vec3Types>", Removed("v19.12", "v20.06")},
+    {"PointModel", Removed("v19.12", "v20.06")},
     {"PointMesh", Removed("v19.12", "v20.06")},
     {"PointSet", Removed("v19.12", "v20.06")},
 
@@ -126,41 +126,41 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"LineSetModel", Removed("v19.12", "v20.06")},
     {"LineMesh", Removed("v19.12", "v20.06")},
     {"LineSet", Removed("v19.12", "v20.06")},
-    {"LineCollisionModel<sofa::defaulttype::Vec3Types>", Removed("v19.12", "v20.06")},
+    {"LineModel", Removed("v19.12", "v20.06")},
 
     {"Triangle", Removed("v19.12", "v20.06")},
     {"TriangleSet", Removed("v19.12", "v20.06")},
     {"TriangleMesh", Removed("v19.12", "v20.06")},
     {"TriangleSetModel", Removed("v19.12", "v20.06")},
     {"TriangleMeshModel", Removed("v19.12", "v20.06")},
-    {"TriangleCollisionModel<sofa::defaulttype::Vec3Types>", Removed("v19.12", "v20.06")},
+    {"TriangleModel", Removed("v19.12", "v20.06")},
     {"TTriangleModel", Removed("v19.12", "v20.06")},
 
     {"Sphere", Removed("v19.12", "v20.06")},
-    {"SphereCollisionModel<sofa::defaulttype::Vec3Types>", Removed("v19.12", "v20.06")},
+    {"SphereModel", Removed("v19.12", "v20.06")},
     {"TSphereModel", Removed("v19.12", "v20.06")},
 
     {"Capsule", Removed("v19.12", "v20.06")},
-    {"CapsuleCollisionModel<sofa::defaulttype::Vec3Types>", Removed("v19.12", "v20.06")},
+    {"CapsuleModel", Removed("v19.12", "v20.06")},
     {"TCapsuleModel", Removed("v19.12", "v20.06")},
 
     {"RigidCapsule", Removed("v19.12", "v20.06")},
-    {"CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>", Removed("v19.12", "v20.06")},
+    {"CapsuleModel", Removed("v19.12", "v20.06")},
 
     {"Cube", Removed("v19.12", "v20.06")},
-    {"CubeCollisionModel", Removed("v19.12", "v20.06")},
+    {"CubeModel", Removed("v19.12", "v20.06")},
 
     {"CudaPoint", Removed("v19.12", "v20.06")},
     {"CudaPointModel", Removed("v19.12", "v20.06")},
 
     {"Cylinder", Removed("v19.12", "v20.06")},
-    {"CylinderCollisionModel<sofa::defaulttype::Rigid3Types>", Removed("v19.12", "v20.06")},
+    {"CylinderModel", Removed("v19.12", "v20.06")},
 
     {"Ray", Removed("v19.12", "v20.06")},
-    {"RayCollisionModel", Removed("v19.12", "v20.06")},
+    {"RayModel", Removed("v19.12", "v20.06")},
 
     {"Tetrahedron", Removed("v19.12", "v20.06")},
-    {"TetrahedronCollisionModel", Removed("v19.12", "v20.06")},
+    {"TetrahedronModel", Removed("v19.12", "v20.06")},
 
     {"Euler", Removed("v19.12", "v20.06")},
     {"EulerExplicit", Removed("v19.12", "v20.06")},
