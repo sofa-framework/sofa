@@ -16,8 +16,6 @@ list(APPEND HEADER_FILES
     DynamicSparseGridTopologyAlgorithms.h
     DynamicSparseGridTopologyContainer.h
     DynamicSparseGridTopologyModifier.h
-    HexahedronCompositeFEMMapping.h
-    HexahedronCompositeFEMMapping.inl
     MultilevelHexahedronSetTopologyContainer.h
     NonUniformHexahedralFEMForceFieldAndMass.h
     NonUniformHexahedralFEMForceFieldAndMass.inl
@@ -33,7 +31,6 @@ list(APPEND SOURCE_FILES
     DynamicSparseGridTopologyAlgorithms.cpp
     DynamicSparseGridTopologyContainer.cpp
     DynamicSparseGridTopologyModifier.cpp
-    HexahedronCompositeFEMMapping.cpp
     MultilevelHexahedronSetTopologyContainer.cpp
     NonUniformHexahedralFEMForceFieldAndMass.cpp
     NonUniformHexahedronFEMForceFieldAndMass.cpp
@@ -47,9 +44,12 @@ if(SofaDenseSolver_FOUND)
     list(APPEND HEADER_FILES
         HexahedronCompositeFEMForceFieldAndMass.h
         HexahedronCompositeFEMForceFieldAndMass.inl
+        HexahedronCompositeFEMMapping.h
+        HexahedronCompositeFEMMapping.inl
         )
     list(APPEND SOURCE_FILES
         HexahedronCompositeFEMForceFieldAndMass.cpp
+        HexahedronCompositeFEMMapping.cpp
         )
 else()
     message(WARNING "SofaDenseSolver not found, disabling HexahedronCompositeFEMForceFieldAndMass compilation.")
