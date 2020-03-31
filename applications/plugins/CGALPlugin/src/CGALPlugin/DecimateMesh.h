@@ -148,8 +148,8 @@ public:
 
     void operator()( HDS& hds)
     {
-        unsigned int numVertices = m_vertices.size();
-        unsigned int numTriangles = m_triangles.size();
+        size_t numVertices = m_vertices.size();
+        size_t numTriangles = m_triangles.size();
 
         CGAL::Polyhedron_incremental_builder_3<HalfedgeDS> builder(hds, true);
         builder.begin_surface(numVertices, numTriangles);

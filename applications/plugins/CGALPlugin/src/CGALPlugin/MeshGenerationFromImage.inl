@@ -182,13 +182,13 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::doUpdate()
             vrnimage->vy = inT->getScale()[1];
             vrnimage->vz = inT->getScale()[2];
             //image translation
-            vrnimage->tx = inT->getTranslation()[0];
-            vrnimage->ty = inT->getTranslation()[1];
-            vrnimage->tz = inT->getTranslation()[2];
+            vrnimage->tx = float(inT->getTranslation()[0]);
+            vrnimage->ty = float(inT->getTranslation()[1]);
+            vrnimage->tz = float(inT->getTranslation()[2]);
             //image rotation
-            vrnimage->rx = inT->getRotation()[0];
-            vrnimage->ry = inT->getRotation()[1];
-            vrnimage->rz = inT->getRotation()[2];
+            vrnimage->rx = float(inT->getRotation()[0]);
+            vrnimage->ry = float(inT->getRotation()[1]);
+            vrnimage->rz = float(inT->getRotation()[2]);
             vrnimage->endianness = END_LITTLE;
             vrnimage->wdim = 1;
             vrnimage->wordKind = WK_FIXED;
@@ -365,8 +365,8 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::doUpdate()
         tetraDomain.push_back(c3t3.subdomain_index(cit));
     }
 
-    int nbp = newPoints.size();
-    int nbe = tetrahedra.size();
+    size_t nbp = newPoints.size();
+    size_t nbe = tetrahedra.size();
 
     switch(d_ordering.getValue())
     {
@@ -458,10 +458,10 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::draw(const sofa::core::vis
             int c = tetrahedra[i][2];
             int d = tetrahedra[i][3];
             Coord center = (x[a]+x[b]+x[c]+x[d])*0.125;
-            Coord pa = (x[a]+center)*(Real)0.666667;
-            Coord pb = (x[b]+center)*(Real)0.666667;
-            Coord pc = (x[c]+center)*(Real)0.666667;
-            Coord pd = (x[d]+center)*(Real)0.666667;
+            Coord pa = (x[a]+center)*Real(0.666667);
+            Coord pb = (x[b]+center)*Real(0.666667);
+            Coord pc = (x[c]+center)*Real(0.666667);
+            Coord pd = (x[d]+center)*Real(0.666667);
 
             pointsDomains[0][domainLabel].push_back(pa);
             pointsDomains[0][domainLabel].push_back(pb);

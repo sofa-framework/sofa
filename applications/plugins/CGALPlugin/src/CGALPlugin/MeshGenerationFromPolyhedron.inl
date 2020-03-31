@@ -366,8 +366,8 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
         tetrahedra.push_back(tetra);
     }
 
-    int nbp = newPoints.size();
-    int nbe = tetrahedra.size();
+    size_t nbp = newPoints.size();
+    size_t nbe = tetrahedra.size();
 
     switch(ordering.getValue())
     {
