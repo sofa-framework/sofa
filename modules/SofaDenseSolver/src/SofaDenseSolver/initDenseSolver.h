@@ -25,7 +25,7 @@
 namespace sofa::component
 {
 
-void SOFA_DENSE_SOLVER_API initDenseSolver();
+void SOFA_SOFADENSESOLVER_API initDenseSolver();
 
 
 } // namespace sofa::component

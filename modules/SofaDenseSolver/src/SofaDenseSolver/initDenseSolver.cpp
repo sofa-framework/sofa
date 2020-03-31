@@ -33,10 +33,10 @@ namespace linearsolver
 {
 // template specialization on specific matrix types
 
-template class SOFA_DENSE_SOLVER_API MatrixLinearSolver< NewMatMatrix, NewMatVector >;
-template class SOFA_DENSE_SOLVER_API MatrixLinearSolver< NewMatSymmetricMatrix, NewMatVector >;
-template class SOFA_DENSE_SOLVER_API MatrixLinearSolver< NewMatBandMatrix, NewMatVector >;
-template class SOFA_DENSE_SOLVER_API MatrixLinearSolver< NewMatSymmetricBandMatrix, NewMatVector >;
+template class SOFA_SOFADENSESOLVER_API MatrixLinearSolver< NewMatMatrix, NewMatVector >;
+template class SOFA_SOFADENSESOLVER_API MatrixLinearSolver< NewMatSymmetricMatrix, NewMatVector >;
+template class SOFA_SOFADENSESOLVER_API MatrixLinearSolver< NewMatBandMatrix, NewMatVector >;
+template class SOFA_SOFADENSESOLVER_API MatrixLinearSolver< NewMatSymmetricBandMatrix, NewMatVector >;
 } // namespace linearsolver
 
 
