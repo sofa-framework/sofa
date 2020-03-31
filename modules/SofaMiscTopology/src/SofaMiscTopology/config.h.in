@@ -19,26 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaMiscTopology/initMiscTopology.h>
+#pragma once
 
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace sofa
-{
+#cmakedefine01 SOFAMISCTOPOLOGY_HAVE_ZLIB
 
-namespace component
-{
-
-
-void initMiscTopology()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+#ifdef SOFA_BUILD_MISC_TOPOLOGY
+#cmakedefine SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAMISCTOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAMISCTOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

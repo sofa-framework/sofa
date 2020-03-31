@@ -19,11 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISCTOPOLOGY_CONFIG_H
-#define SOFAMISCTOPOLOGY_CONFIG_H
+#include <SofaMiscTopology/initMiscTopology.h>
 
-#include <SofaMisc/config.h>
+namespace sofa::component
+{
 
-#cmakedefine01 SOFAMISCTOPOLOGY_HAVE_ZLIB
+void initMiscTopology()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-#endif
+} // namespace sofa::component
+
