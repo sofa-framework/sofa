@@ -19,15 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * CylinderMesh.h
- *
- *  Created on: 21 mar. 2010
- *      Author: Yiyi
- */
-
-#ifndef CGALPLUGIN_CYLINDERMESH_H
-#define CGALPLUGIN_CYLINDERMESH_H
+#pragma once
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -36,7 +28,7 @@
 #include <sofa/helper/gl/template.h>
 
 #include <math.h>
-#include   <algorithm>
+#include <algorithm>
 
 namespace cgal
 {
@@ -119,5 +111,3 @@ extern template class SOFA_CGALPLUGIN_API CylinderMesh<defaulttype::Vec3Types>;
 #endif
 
 } //cgal
-
-#endif /* CGALPLUGIN_CYLINDERMESH_H */

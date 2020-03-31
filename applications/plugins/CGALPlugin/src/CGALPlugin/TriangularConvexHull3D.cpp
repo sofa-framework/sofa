@@ -19,16 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * TriangularConvexHull3D.cpp
- *
- *  Created on: 27 oct. 2009
- *      Author: froy
- */
 #define CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP
 
 #include <CGALPlugin/config.h>
-#include "TriangularConvexHull3D.inl"
+#include <CGALPlugin/TriangularConvexHull3D.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

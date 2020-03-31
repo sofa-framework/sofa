@@ -19,16 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * CylinderMesh.cpp
- *
- *  Created on: 21 mar. 2010
- *      Author: Yiyi
- */
 #define CGALPLUGIN_CYLINDERMESH_CPP
 
 #include <CGALPlugin/config.h>
-#include "CylinderMesh.inl"
+#include <CGALPlugin/CylinderMesh.inl>
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

@@ -19,16 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * DecimateMesh.cpp
- *
- *  Created on: 2nd of June 2010
- *      Author: Olivier
- */
 #define CGALPLUGIN_DECIMETEMESH_CPP
 
 #include <CGALPlugin/config.h>
-#include "DecimateMesh.inl"
+#include <CGALPlugin/DecimateMesh.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

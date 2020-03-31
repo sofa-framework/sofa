@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef CGALPLUGIN_MESHGENERATIONFROMIMAGE_H
-#define CGALPLUGIN_MESHGENERATIONFROMIMAGE_H
+#pragma once
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -181,5 +180,3 @@ extern template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<sofa::defaultt
 #endif
 
 } //cgal
-
-#endif /* CGALPLUGIN_MESHGENERATIONFROMIMAGE_H */

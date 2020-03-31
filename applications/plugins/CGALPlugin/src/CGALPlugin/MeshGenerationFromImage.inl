@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef CGALPLUGIN_MESHGENERATIONFROMIMAGE_INL
-#define CGALPLUGIN_MESHGENERATIONFROMIMAGE_INL
-#include "MeshGenerationFromImage.h"
+#pragma once
+
+#include <CGALPlugin/MeshGenerationFromImage.h>
 #include <sofa/defaulttype/Quat.h>
 
 using namespace sofa;
@@ -491,5 +491,3 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::draw(const sofa::core::vis
 }
 
 } //cgal
-
-#endif //CGALPLUGIN_MESHGENERATIONFROMIMAGE_INL

@@ -7,13 +7,18 @@
 
 AUTHOR :
  - Frédérick ROY
+ - Olivier Comas
 
 
 
 LICENCE :
  - ??
 
-
+LOGS :
+- TriangularConvexHull3D: Created on: 27 oct. 2009 - Author: Frédérick ROY
+- MeshGenerationFromPolyhedron: Created on: 27 oct. 2009 - Author: Frédérick ROY
+- DecimateMesh: Created on: 2nd of June 2010 - Author: Olivier Comas
+- CylinderMesh: Created on: 21 mar. 2010 - Author: Yiyi
 
 OTHER COMMENTS :
 Use CGAL components in SOFA.

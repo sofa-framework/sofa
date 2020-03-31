@@ -19,15 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * MeshGenerationFromPolyhedron.h
- *
- *  Created on: 27 oct. 2009
- *      Author: froy
- */
-
-#ifndef CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_H
-#define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_H
+#pragma once
 
 #define CGAL_MESH_3_VERBOSE 0
 
@@ -208,5 +200,3 @@ extern template class SOFA_CGALPLUGIN_API MeshGenerationFromPolyhedron<sofa::def
 #endif
 
 } //cgal
-
-#endif /* CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_H */

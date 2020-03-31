@@ -19,16 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * MeshGenerationFromPolyhedron.inl
- *
- *  Created on: 27 oct. 2009
- *      Author: froy
- */
+#pragma once
 
-#ifndef CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
-#define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
-#include "MeshGenerationFromPolyhedron.h"
+#include <CGALPlugin/MeshGenerationFromPolyhedron.h>
 
 #if CGAL_VERSION_NR <= CGAL_VERSION_NUMBER(4,9,1)
 #include <CGAL/AABB_intersections.h>
@@ -530,5 +523,3 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
 }
 
 } //cgal
-
-#endif //CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL

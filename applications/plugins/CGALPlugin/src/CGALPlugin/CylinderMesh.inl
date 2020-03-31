@@ -19,16 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * CylinderMesh.inl
- *
- *  Created on: 21 mar. 2010
- *      Author: Yiyi
- */
+#pragma once
 
-#ifndef CGALPLUGIN_CYLINDERMESH_INL
-#define CGALPLUGIN_CYLINDERMESH_INL
-#include "CylinderMesh.h"
+#include <CGALPlugin/CylinderMesh.h>
 
 
 #define MAX(a,b) ( (a)>(b) ? (a):(b))
@@ -629,5 +622,3 @@ void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams*)
 }
 
 } //cgal
-
-#endif //CGALPLUGIN_CYLINDERMESH_INL

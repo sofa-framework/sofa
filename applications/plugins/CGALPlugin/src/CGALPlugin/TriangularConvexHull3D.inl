@@ -19,15 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * TriangularConvexHull3D.inl
- *
- *  Created on: 27 oct. 2009
- *      Author: froy
- */
-#ifndef CGALPLUGIN_TRIANGULARCONVEXHULL3D_INL
-#define CGALPLUGIN_TRIANGULARCONVEXHULL3D_INL
-#include "TriangularConvexHull3D.h"
+#pragma once
+
+#include <CGALPlugin/TriangularConvexHull3D.h>
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/point_generators_3.h>
@@ -160,5 +154,3 @@ void TriangularConvexHull3D<DataTypes>::doUpdate()
 }
 
 } //cgal
-
-#endif //CGALPLUGIN_TRIANGULARCONVEXHULL3D_INL

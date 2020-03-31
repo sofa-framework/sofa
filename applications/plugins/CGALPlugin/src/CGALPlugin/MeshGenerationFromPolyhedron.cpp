@@ -19,17 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * MeshGenerationFromPolyhedron.cpp
- *
- *  Created on: 27 oct. 2009
- *      Author: froy
- */
 #define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_CPP
 
-
 #include <CGALPlugin/config.h>
-#include "MeshGenerationFromPolyhedron.inl"
+#include <CGALPlugin/MeshGenerationFromPolyhedron.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

@@ -22,7 +22,7 @@
 #define CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP
 
 #include <CGALPlugin/config.h>
-#include "MeshGenerationFromImage.inl"
+#include <CGALPlugin/MeshGenerationFromImage.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

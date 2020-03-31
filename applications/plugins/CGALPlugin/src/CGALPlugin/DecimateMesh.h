@@ -19,15 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * DecimateMesh.h
- *
- *  Created on: 2nd of June 2010
- *      Author: Olivier
- */
-
-#ifndef CGALPLUGIN_DECIMATEMESH_H
-#define CGALPLUGIN_DECIMATEMESH_H
+#pragma once
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -199,5 +191,3 @@ extern template class SOFA_CGALPLUGIN_API DecimateMesh<defaulttype::Vec3Types>;
 #endif
 
 } //cgal
-
-#endif /* CGALPLUGIN_DECIMATEMESH_H */

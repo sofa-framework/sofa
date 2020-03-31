@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <CGALPlugin/config.h>
-
 #include <CGALPlugin/MeshGenerationFromPolyhedron.h>
 
 namespace sofa
