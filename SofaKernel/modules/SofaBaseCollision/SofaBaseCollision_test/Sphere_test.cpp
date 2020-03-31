@@ -513,8 +513,8 @@ void checkAttributes()
     scene << "<?xml version='1.0'?>"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <Node name='Level 1'>                                                        \n"
-             "   <MechanicalObject template='Vec3d'/>                                         \n"
-             "   <SphereModel name='spheremodel'/>                                           \n"
+             "   <MechanicalObject template='Vec3d'/>                                        \n"
+             "   <SphereCollisionModel name='spheremodel'/>                                  \n"
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
@@ -543,8 +543,8 @@ void checkSceneWithVec3MechanicalModel()
     scene << "<?xml version='1.0'?>"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <Node name='Level 1'>                                                        \n"
-             "   <MechanicalObject template='Vec3d'/>                                         \n"
-             "   <SphereModel name='spheremodel'/>                                           \n"
+             "   <MechanicalObject template='Vec3d'/>                                        \n"
+             "   <SphereCollisionModel name='spheremodel'/>                                  \n"
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
@@ -564,8 +564,8 @@ void checkSceneWithRigid3dMechanicalModel()
     scene << "<?xml version='1.0'?>"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <Node name='Level 1'>                                                        \n"
-             "   <MechanicalObject template='Rigid3d'/>                                       \n"
-             "   <SphereModel name='spheremodel'/>                                           \n"
+             "   <MechanicalObject template='Rigid3d'/>                                      \n"
+             "   <SphereCollisionModel name='spheremodel'/>                                  \n"
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
@@ -587,7 +587,7 @@ void checkGracefulHandlingWhenMechanicalModelIsMissing()
     scene << "<?xml version='1.0'?>"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <Node name='Level 1'>                                                        \n"
-             "   <SphereModel name='spheremodel' template='Vec3d'/>                          \n"
+             "   <SphereCollisionModel name='spheremodel' template='Vec3d'/>                 \n"
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 

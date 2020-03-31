@@ -41,6 +41,7 @@ int OBBModelClass = core::RegisterObject("Collision model which represents a set
 
         .addAlias("OBB")
         .addAlias("OBBModel")
+        .addAlias("TOBBModel")
         ;
 
 template class SOFA_BASE_COLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
