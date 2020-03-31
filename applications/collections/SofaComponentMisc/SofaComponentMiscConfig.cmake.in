@@ -2,7 +2,12 @@
 
 @PACKAGE_INIT@
 
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscTopology REQUIRED)
+find_package(SofaMiscOther REQUIRED)
+find_package(SofaMiscForceField REQUIRED)
+find_package(SofaMiscEngine REQUIRED)
+find_package(SofaMiscSolver REQUIRED)
+find_package(SofaMiscFem REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

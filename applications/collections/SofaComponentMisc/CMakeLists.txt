@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaComponentMisc VERSION 1.0)
 
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscTopology REQUIRED)
+find_package(SofaMiscOther REQUIRED)
+find_package(SofaMiscForceField REQUIRED)
+find_package(SofaMiscEngine REQUIRED)
+find_package(SofaMiscSolver REQUIRED)
+find_package(SofaMiscFem REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
 
 set(HEADER_FILES
     config.h
@@ -13,9 +19,7 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-foreach(target ${SOFAMISC_TARGETS})
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${target})
-endforeach()
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMiscTopology SofaMiscOther SofaMiscForceField SofaMiscEngine SofaMiscSolver SofaMiscFem SofaMiscMapping)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_COMPONENT_MISC")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/modules>")

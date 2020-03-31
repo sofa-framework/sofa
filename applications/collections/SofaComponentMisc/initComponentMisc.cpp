@@ -27,7 +27,7 @@
 #include <SofaMiscFem/initMiscFEM.h>
 #include <SofaMiscEngine/initMiscEngine.h>
 #include <SofaMiscSolver/initMiscSolver.h>
-#include <SofaMisc/initMisc.h>
+#include <SofaMiscOther/initMiscOther.h>
 
 namespace sofa
 {
@@ -50,7 +50,7 @@ void initComponentMisc()
     initMiscFEM();
     initMiscEngine();
     initMiscSolver();
-    initMisc();
+    initMiscOther();
 }
 
 } // namespace component

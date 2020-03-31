@@ -28,7 +28,13 @@
 #include <vector>
 
 
-namespace sofa::component::forcefield
+namespace sofa
+{
+
+namespace component
+{
+
+namespace forcefield
 {
 
 template<class DataTypes>
@@ -96,4 +102,8 @@ extern template class SOFA_SOFAMISCFORCEFIELD_API LennardJonesForceField<default
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)
 
-} // namespace sofa::component::forcefield
+} // namespace forcefield
+
+} // namespace component
+
+} // namespace sofa

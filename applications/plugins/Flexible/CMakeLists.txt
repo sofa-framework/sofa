@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(Flexible VERSION 0.1)
 
-find_package(SofaMisc REQUIRED)
+find_package(SofaComponentMisc REQUIRED)
 sofa_find_package(SofaPython REQUIRED)
 sofa_find_package(image QUIET)
 sofa_find_package(SofaHighOrderTopology QUIET)

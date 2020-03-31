@@ -36,7 +36,10 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa::component
+namespace sofa
+{
+
+namespace component
 {
 
 namespace topology
@@ -438,4 +441,6 @@ extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Ve
 
 } // namespace mass
 
-} // namespace sofa::component
+} // namespace component
+
+} // namespace sofa

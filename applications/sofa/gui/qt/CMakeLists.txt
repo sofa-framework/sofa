@@ -73,6 +73,8 @@ sofa_set_01(SOFAGUIQT_HAVE_NODEEDITOR VALUE ${SOFAGUIQT_ENABLE_NODEGRAPH} BOTH_S
 # FFMPEG_exec
 sofa_find_package(FFMPEG_exec BOTH_SCOPES)
 
+find_package(SofaMiscForceField REQUIRED)
+
 set(MOC_HEADER_FILES
     AddObject.h
     DataFilenameWidget.h

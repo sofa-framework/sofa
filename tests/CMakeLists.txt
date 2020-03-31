@@ -52,13 +52,5 @@ add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralLoader/SofaGeneralLoa
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralSimpleFem/SofaGeneralSimpleFem_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaGeneralSimpleFem/SofaGeneralSimpleFem_test)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGraphComponent/SofaGraphComponent_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaGraphComponent/SofaGraphComponent_test)
 
-# SofaMisc tests
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscFem/SofaMiscFem_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscFem/SofaMiscFem_test)
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMisc/SofaMisc_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMisc/SofaMisc_test)
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscMapping/SofaMiscMapping_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscMapping/SofaMiscMapping_test)
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscSolver/SofaMiscSolver_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscSolver/SofaMiscSolver_test)
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscTopology/SofaMiscTopology_test)
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscForceField/SofaMiscForceField_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscForceField/SofaMiscForceField_test)
-
 # SofaComponent* tests
 add_subdirectory(${CMAKE_SOURCE_DIR}/applications/collections/SofaComponentBase/SofaComponentBase_test ${SOFA_EXT_MODULES_BINARY_DIR}/applications/collections/SofaComponentBase/SofaComponentBase_test)

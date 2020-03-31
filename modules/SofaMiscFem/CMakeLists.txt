@@ -89,6 +89,6 @@ sofa_generate_package(
 cmake_dependent_option(SOFAMISCFEM_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
 if(SOFAMISCFEM_BUILD_TESTS)
     enable_testing()
-    add_subdirectory(SofaMiscFEM_test)
+    add_subdirectory(SofaMiscFem_test)
 endif()
 

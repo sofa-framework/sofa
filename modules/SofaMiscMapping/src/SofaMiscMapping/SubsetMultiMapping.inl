@@ -27,7 +27,13 @@
 #include <iostream>
 #include <SofaBaseMechanics/IdentityMapping.h>
 
-namespace sofa::component::mapping
+namespace sofa
+{
+
+namespace component
+{
+
+namespace mapping
 {
 
 template <class TIn, class TOut>
@@ -221,4 +227,8 @@ void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparam
     }
 }
 
-} // namespace sofa::component::mapping
+} // namespace mapping
+
+} // namespace component
+
+} // namespace sofa

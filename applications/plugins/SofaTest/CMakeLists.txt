@@ -42,7 +42,7 @@ if(SOFA_WITH_DEPRECATED_COMPONENTS)
 endif()
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaMisc REQUIRED)
+find_package(SofaComponentMisc REQUIRED)
 find_package(SceneCreator REQUIRED)
 
 find_package(SofaPython QUIET)

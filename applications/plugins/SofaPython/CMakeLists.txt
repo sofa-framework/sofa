@@ -147,7 +147,7 @@ set(PYTHON_FILES
 find_package(PythonLibs 2.7 REQUIRED)
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
-find_package(SofaMisc REQUIRED)
+find_package(SofaComponentMisc REQUIRED)
 
 GET_FILENAME_COMPONENT(LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} NAME_WE)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

@@ -233,7 +233,12 @@ add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 add_subdirectory(SofaGeneral)
 add_subdirectory(SofaAdvanced)
-add_subdirectory(SofaMisc)
+# add_subdirectory(SofaMisc)
+
+## Modules
+## in the consortium convention a module is a similar to a plugin the difference is that
+## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(modules)
 
 ## Packages
 add_subdirectory(applications/collections)
@@ -267,11 +272,6 @@ if(SOFA_BUILD_TESTS)
     # Library used to write high level tests involving many components.
     add_subdirectory(applications/plugins/SofaTest)
 endif()
-
-## Modules
-## in the consortium convention a module is a similar to a plugin the difference is that
-## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
-add_subdirectory(modules)
 
 if(SOFA_BUILD_TESTS)
     # Tests for all the modules, written using SofaTest.

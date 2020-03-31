@@ -28,7 +28,13 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::mapping
+namespace sofa
+{
+
+namespace component
+{
+
+namespace mapping
 {
 
 /**
@@ -109,4 +115,8 @@ extern template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< defaulttype::
 
 #endif
 
-} // namespace sofa::component::mapping
+} // namespace mapping
+
+} // namespace component
+
+} // namespace sofa

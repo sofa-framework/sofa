@@ -4,6 +4,14 @@ sofa_add_module(SofaExporter SofaExporter ON)
 sofa_add_module(SofaSparseSolver SofaSparseSolver ON)      #
 sofa_add_module(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
 sofa_add_module(SofaHaptics SofaHaptics ON)
+sofa_add_module(SofaMiscTopology SofaMiscTopology ON)
+sofa_add_module(SofaMiscOther SofaMiscOther ON)
+sofa_add_module(SofaMiscForceField SofaMiscForceField ON)
+sofa_add_module(SofaMiscEngine SofaMiscEngine ON)
+sofa_add_module(SofaMiscSolver SofaMiscSolver ON)
+sofa_add_module(SofaMiscFem SofaMiscFem ON)
+sofa_add_module(SofaMiscMapping SofaMiscMapping ON)
+
 
 if(SOFA_NO_OPENGL)
     message("SOFA_NO_OPENGL flag prevents from using the SofaCUDA, SofaSimpleGUI and VolumetricRendering plugins")

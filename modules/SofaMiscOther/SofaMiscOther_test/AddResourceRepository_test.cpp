@@ -26,7 +26,7 @@
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 
-#include <SofaMisc/AddResourceRepository.h>
+#include <SofaMiscOther/AddResourceRepository.h>
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
