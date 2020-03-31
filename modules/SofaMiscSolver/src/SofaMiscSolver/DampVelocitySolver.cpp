@@ -19,9 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISCSOLVER_CONFIG_H
-#define SOFAMISCSOLVER_CONFIG_H
+#include <SofaMiscSolver/DampVelocitySolver.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
+#include <sofa/core/ObjectFactory.h>
+#include <cmath>
+#include <iostream>
 
-#include <SofaMisc/config.h>
 
-#endif
+
+
+namespace sofa::component::odesolver
+{
+
+using namespace sofa::defaulttype;
+using namespace core::behavior;
+
+int DampVelocitySolverClass = core::RegisterObject("Reduce the velocities")
+        .add< DampVelocitySolver >()
+        .addAlias("DampVelocity")
+        ;
+
+DampVelocitySolver::DampVelocitySolver()
+    : rate( initData( &rate, 0.99, "rate", "Factor used to reduce the velocities. Typically between 0 and 1.") )
+    , threshold( initData( &threshold, 0.0, "threshold", "Threshold under which the velocities are canceled.") )
+{}
+
+void DampVelocitySolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId /*xResult*/, sofa::core::MultiVecDerivId vResult)
+{
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+    MultiVecDeriv vel(&vop, vResult /*core::VecDerivId::velocity()*/ );
+
+    msg_info() <<"DampVelocitySolver, dt = "<< dt
+               <<"DampVelocitySolver, initial v = "<< vel ;
+
+
+    vel.teq( exp(-rate.getValue()*dt) );
+    if( threshold.getValue() != 0.0 )
+        vel.threshold( threshold.getValue() );
+
+    msg_info() <<"DampVelocitySolver, final v = "<< vel ;
+}
+
+} // namespace sofa::component::odesolver
+

@@ -19,16 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include <SofaMiscSolver/initMiscSolver.h>
 
 
-namespace sofa
+namespace sofa::component
 {
-
-namespace component
-{
-
 
 void initMiscSolver()
 {
@@ -39,6 +34,5 @@ void initMiscSolver()
     }
 }
 
-} // namespace component
+} // namespace sofa::component
 
-} // namespace sofa

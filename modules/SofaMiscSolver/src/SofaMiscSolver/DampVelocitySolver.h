@@ -19,25 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ODESOLVER_DampVelocitySolver_H
-#define SOFA_COMPONENT_ODESOLVER_DampVelocitySolver_H
-#include "config.h"
+#pragma once
+#include <SofaMiscSolver/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
+namespace sofa::component::odesolver
 {
 
 /** Velocity damping and thresholding.
 This is not an ODE solver, but it can be used as a post-process after a real ODE solver.
 */
-class SOFA_MISC_SOLVER_API DampVelocitySolver : public sofa::core::behavior::OdeSolver
+class SOFA_SOFAMISCSOLVER_API DampVelocitySolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(DampVelocitySolver, sofa::core::behavior::OdeSolver);
@@ -75,10 +68,4 @@ protected:
     DampVelocitySolver();
 };
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::odesolver

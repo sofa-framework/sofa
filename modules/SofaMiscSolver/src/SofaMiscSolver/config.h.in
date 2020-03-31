@@ -19,58 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscSolver/DampVelocitySolver.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
-#include <sofa/core/ObjectFactory.h>
-#include <cmath>
-#include <iostream>
+#pragma once
 
+#include <sofa/config/sharedlibrary_defines.h>
 
-
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
-{
-
-using namespace sofa::defaulttype;
-using namespace core::behavior;
-
-int DampVelocitySolverClass = core::RegisterObject("Reduce the velocities")
-        .add< DampVelocitySolver >()
-        .addAlias("DampVelocity")
-        ;
-
-DampVelocitySolver::DampVelocitySolver()
-    : rate( initData( &rate, 0.99, "rate", "Factor used to reduce the velocities. Typically between 0 and 1.") )
-    , threshold( initData( &threshold, 0.0, "threshold", "Threshold under which the velocities are canceled.") )
-{}
-
-void DampVelocitySolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId /*xResult*/, sofa::core::MultiVecDerivId vResult)
-{
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    MultiVecDeriv vel(&vop, vResult /*core::VecDerivId::velocity()*/ );
-
-    msg_info() <<"DampVelocitySolver, dt = "<< dt
-               <<"DampVelocitySolver, initial v = "<< vel ;
-
-
-    vel.teq( exp(-rate.getValue()*dt) );
-    if( threshold.getValue() != 0.0 )
-        vel.threshold( threshold.getValue() );
-
-    msg_info() <<"DampVelocitySolver, final v = "<< vel ;
-}
-
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
+#ifdef SOFA_BUILD_MISC_SOLVER
+#cmakedefine SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAMISCSOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAMISCSOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

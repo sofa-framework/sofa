@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaMiscSolver/NewmarkImplicitSolver.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
@@ -32,14 +33,9 @@
 
 
 
-namespace sofa
+namespace sofa::component::odesolver
 {
 
-namespace component
-{
-
-namespace odesolver
-{
 using core::VecId;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
@@ -226,9 +222,4 @@ int NewmarkImplicitSolverClass = core::RegisterObject("Implicit time integratoru
         .addAlias("Newmark");
 ;
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::odesolver

@@ -19,21 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_SOLVER_INIT_H
-#define SOFA_COMPONENT_MISC_SOLVER_INIT_H
-#include "config.h"
+#pragma once
+#include <SofaMiscSolver/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+void SOFA_SOFAMISCSOLVER_API initMiscSolver();
 
-void SOFA_MISC_SOLVER_API initMiscSolver();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component
