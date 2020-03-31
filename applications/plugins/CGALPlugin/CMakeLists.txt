@@ -1,56 +1,51 @@
 cmake_minimum_required(VERSION 3.1)
-project(CGALPlugin)
+project(CGALPlugin VERSION 0.1)
 
-set(CGALPLUGIN_MAJOR_VERSION 0)
-set(CGALPLUGIN_MINOR_VERSION 1)
-set(CGALPLUGIN_VERSION ${CGALPLUGIN_MAJOR_VERSION}.${CGALPLUGIN_MINOR_VERSION})
-
+set(PLUGIN_CGAL_SRC_DIR src/CGALPlugin)
 set(HEADER_FILES
-    config.h.in
-    DecimateMesh.h
-    DecimateMesh.inl
-    MeshGenerationFromPolyhedron.h
-    MeshGenerationFromPolyhedron.inl
-    TriangularConvexHull3D.h
-    TriangularConvexHull3D.inl
-    CylinderMesh.h
-    CylinderMesh.inl
+    ${PLUGIN_CGAL_SRC_DIR}/config.h.in
+    ${PLUGIN_CGAL_SRC_DIR}/DecimateMesh.h
+    ${PLUGIN_CGAL_SRC_DIR}/DecimateMesh.inl
+    ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromPolyhedron.h
+    ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromPolyhedron.inl
+    ${PLUGIN_CGAL_SRC_DIR}/TriangularConvexHull3D.h
+    ${PLUGIN_CGAL_SRC_DIR}/TriangularConvexHull3D.inl
+    ${PLUGIN_CGAL_SRC_DIR}/CylinderMesh.h
+    ${PLUGIN_CGAL_SRC_DIR}/CylinderMesh.inl
 )
 
 set(SOURCE_FILES
-    DecimateMesh.cpp
-    MeshGenerationFromPolyhedron.cpp
-    TriangularConvexHull3D.cpp
-    initCGALPlugin.cpp
-    CylinderMesh.cpp
+    ${PLUGIN_CGAL_SRC_DIR}/initCGALPlugin.cpp
+    ${PLUGIN_CGAL_SRC_DIR}/DecimateMesh.cpp
+    ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromPolyhedron.cpp
+    ${PLUGIN_CGAL_SRC_DIR}/TriangularConvexHull3D.cpp
+    ${PLUGIN_CGAL_SRC_DIR}/CylinderMesh.cpp
 )
 
 set(README_FILES CGALPlugin.txt)
 
 
-### Dependencies
-
-
+# Add CGAL dependencies
 find_package(SofaFramework REQUIRED)
-find_package(CImgPlugin QUIET)
 
+# Check if CImg plugin is build, If yes add more files
+find_package(CImgPlugin QUIET)
 if(CImgPlugin_FOUND)
-    list(APPEND HEADER_FILES MeshGenerationFromImage.h)
-    list(APPEND HEADER_FILES MeshGenerationFromImage.inl)
-    list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
+    list(APPEND HEADER_FILES ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromImage.h)
+    list(APPEND HEADER_FILES ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromImage.inl)
+    list(APPEND SOURCE_FILES ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromImage.cpp)
+    
     find_package(CGAL REQUIRED COMPONENTS ImageIO)
-else ()
-    message (STATUS "CImgPlugin not found, won't build MeshGenerationFromImage")
+else()
     find_package(CGAL REQUIRED)
 endif()
 
-
 ## CGAL dependencies
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package(MPFR REQUIRED)
 find_package(GMP REQUIRED)
-find_package(Boost QUIET REQUIRED COMPONENTS system thread)
+#find_package(Boost QUIET COMPONENTS system thread)
 
+# Get CGAL version
 message(STATUS "CGAL VERSION ${CGAL_MAJOR_VERSION}.${CGAL_MINOR_VERSION}")
 set(CGAL_VERSION ${CGAL_MAJOR_VERSION}.${CGAL_MINOR_VERSION})
 if (CGAL_VERSION VERSION_GREATER 4.9) # if CGAL >= 4.10
@@ -59,64 +54,46 @@ endif()
 
 
 if(WIN32)
-    #add library dir as it is not added automatically on Windows (?)
-    link_directories(${CGAL_LIBRARIES_DIR})
-	
-	if(NOT EXISTS ${CGAL_INSTALL_PREFIX})
-		set(CGAL_INSTALL_PREFIX CACHE PATH "Set path to CGAL Install dir root.")
-	endif()
-
-    # Gather all CGAL dlls into var CGAL_DLLS
-    file(GLOB CGAL_DLLS "${CGAL_INSTALL_PREFIX}/bin/*.dll")
-	
-	if ("${CGAL_DLLS}" STREQUAL "")
-		MESSAGE(FATAL_ERROR "No CGAL_DLLS found at location: {CGAL_INSTALL_PREFIX}/bin/ equal to: ${CGAL_INSTALL_PREFIX}/bin/" )
-	endif()
-	
-    # We suppose that the auxiliary DLLS for CGAL are always used from the CGAL package
-    file(GLOB CGAL_AUX_DLLS "${GMP_INCLUDE_DIR}/../lib/*.dll")
-    ## Copy DLLs to the build tree
-    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-            file(COPY ${CGAL_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
-            file(COPY ${CGAL_AUX_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
-        endforeach()
-    else()                      # Single-config generator (nmake)
-        file(COPY ${CGAL_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-        file(COPY ${CGAL_AUX_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-    endif()
-    ## Install DLLs
-    install(FILES ${DLLS} DESTINATION bin)
-    install(FILES ${LIBS} DESTINATION lib)
+#    sofa_copy_libraries(${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARIES})
+#    sofa_install_libraries(${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARIES})
 endif()
 
-
+# Create the plugin library.
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+
+# Set define dllimport/dllexport mechanism on Windows.
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_CGALPLUGIN")
+
+# Link the plugin library to its dependencies (other libraries).
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCommon ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${GMP_LIBRARIES} ${MPFR_LIBRARIES} CGAL)
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR} ${CGAL_INCLUDE_DIRS})
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CGALPLUGIN_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CGALPLUGIN")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationCommon ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARY})
-
 
 if(CImgPlugin_FOUND)
-    target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY} CImgPlugin)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${CGAL_ImageIO_LIBRARY} CImgPlugin)
+    #target_include_directories(${PROJECT_NAME} PUBLIC ${CImg_INCLUDE_DIRS})
 else()
     target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY})
 endif()
 
+
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)
-    add_subdirectory(CGALPlugin_test)
+    if(SofaTest_FOUND)
+        add_subdirectory(CGALPlugin_test)
+    endif()
 endif()
 
-## Install rules for the library and the headers; CMake package configurations files
-sofa_create_package(CGALPlugin ${CGALPLUGIN_VERSION} CGALPlugin CGALPlugin)
-
-## Install rules for the resources
-install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+# Install rules for the library and the headers; CMake package configurations files
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    INCLUDE_SOURCE_DIR "src/CGALPlugin"
+    INCLUDE_INSTALL_DIR "CGALPlugin"
+    RELOCATABLE "plugins"
+    )

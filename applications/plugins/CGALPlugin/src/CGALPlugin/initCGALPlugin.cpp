@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <CGALPlugin/config.h>
 
-#include <MeshGenerationFromPolyhedron.h>
+#include <CGALPlugin/MeshGenerationFromPolyhedron.h>
 
 namespace sofa
 {
