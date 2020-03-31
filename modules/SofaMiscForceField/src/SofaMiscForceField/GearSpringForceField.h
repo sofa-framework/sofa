@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscForceField/config.h>
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -32,13 +32,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 template<typename DataTypes>
@@ -307,14 +301,9 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP)
-extern template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3Types>;
-extern template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API GearSpring<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API GearSpringForceField<defaulttype::Rigid3Types>;
 
 #endif
-} // namespace interactionforcefield
 
-} // namespace component
-
-} // namespace sofa
-
-#endif /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_H */
+} // namespace sofa::component::interactionforcefield

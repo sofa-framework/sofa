@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_INL
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_INL
+#pragma once
 
 #include <SofaMiscForceField/GearSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -34,13 +33,7 @@
 
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes>
@@ -408,11 +401,5 @@ void GearSpringForceField<DataTypes>::updateForceMask()
 }
 
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_INL */
+} // namespace sofa::component::interactionforcefield
 

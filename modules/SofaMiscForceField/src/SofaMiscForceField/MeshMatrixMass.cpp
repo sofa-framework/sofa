@@ -23,13 +23,7 @@
 #include <SofaMiscForceField/MeshMatrixMass.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 using namespace sofa::defaulttype;
@@ -92,15 +86,10 @@ int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each 
 
         ;
 
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec3Types,Vec3Types::Real>;
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec2Types,Vec2Types::Real>;
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec1Types,Vec1Types::Real>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec3Types,Vec3Types::Real>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec2Types,Vec2Types::Real>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec1Types,Vec1Types::Real>;
 
 
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mass

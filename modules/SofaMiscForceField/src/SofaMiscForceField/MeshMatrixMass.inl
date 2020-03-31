@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_MESHMATRIXMASS_INL
-#define SOFA_COMPONENT_MASS_MESHMATRIXMASS_INL
+#pragma once
 
 #include <SofaMiscForceField/MeshMatrixMass.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -40,13 +39,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 template <class DataTypes, class MassType>
@@ -2119,10 +2112,4 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
 }
 
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mass

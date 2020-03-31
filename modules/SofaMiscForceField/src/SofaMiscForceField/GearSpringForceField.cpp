@@ -19,37 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP
+#define SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP
 
-#include <SofaMiscForceField/LennardJonesForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
+#include <SofaMiscForceField/GearSpringForceField.inl>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
-
-namespace sofa
-{
+//#include <typeinfo>
 
 
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
-using namespace core::behavior;
 
-int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for fluids")
-        .add< LennardJonesForceField<Vec3Types> >()
+
+// Register in the Factory
+int GearSpringForceFieldClass = core::RegisterObject("Gear springs for Rigids")
+        .add< GearSpringForceField<Rigid3Types> >()
 
         ;
 
-template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3Types>;
+template class SOFA_SOFAMISCFORCEFIELD_API GearSpring<defaulttype::Rigid3Types>;
+template class SOFA_SOFAMISCFORCEFIELD_API GearSpringForceField<defaulttype::Rigid3Types>;
 
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::interactionforcefield

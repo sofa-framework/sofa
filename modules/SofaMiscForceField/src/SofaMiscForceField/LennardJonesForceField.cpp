@@ -19,9 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISCFORCEFIELD_CONFIG_H
-#define SOFAMISCFORCEFIELD_CONFIG_H
+#define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP
 
-#include <SofaMisc/config.h>
+#include <SofaMiscForceField/LennardJonesForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-#endif
+namespace sofa
+{
+
+
+namespace component
+{
+
+namespace forcefield
+{
+
+using namespace sofa::defaulttype;
+using namespace core::behavior;
+
+int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for fluids")
+        .add< LennardJonesForceField<Vec3Types> >()
+
+        ;
+
+template class SOFA_SOFAMISCFORCEFIELD_API LennardJonesForceField<Vec3Types>;
+
+
+
+} // namespace forcefield
+
+} // namespace component
+
+} // namespace sofa
+

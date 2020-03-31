@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_FORCEFIELD_INIT_H
-#define SOFA_COMPONENT_MISC_FORCEFIELD_INIT_H
-#include "config.h"
+#pragma once
 
-namespace sofa
+#include <SofaMiscForceField/config.h>
+
+namespace sofa::component
 {
+void SOFA_SOFAMISCFORCEFIELD_API initMiscForcefield();
 
-namespace component
-{
+} // namespace sofa::component
 
-
-void SOFA_MISC_FORCEFIELD_API initMiscForcefield();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
 

@@ -19,42 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-#define SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP
-#include <SofaMiscForceField/GearSpringForceField.inl>
-#include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/ObjectFactory.h>
-//#include <typeinfo>
+#pragma once
 
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
-{
-
-using namespace sofa::defaulttype;
-
-
-// Register in the Factory
-int GearSpringForceFieldClass = core::RegisterObject("Gear springs for Rigids")
-        .add< GearSpringForceField<Rigid3Types> >()
-
-        ;
-
-template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3Types>;
-template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3Types>;
-
-
-
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
+#ifdef SOFA_BUILD_MISC_FORCEFIELD
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAMISCFORCEFIELD_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAMISCFORCEFIELD_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 

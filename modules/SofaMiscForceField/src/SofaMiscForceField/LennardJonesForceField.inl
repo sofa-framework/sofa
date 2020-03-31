@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_INL
+#pragma once
 
 #include <SofaMiscForceField/LennardJonesForceField.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -30,15 +29,7 @@
 #include <iostream>
 
 
-
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template<class DataTypes>
@@ -243,10 +234,4 @@ void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* v
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_INL
+} // namespace sofa::component::forcefield
