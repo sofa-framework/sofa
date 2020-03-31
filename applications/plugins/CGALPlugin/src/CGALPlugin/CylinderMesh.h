@@ -21,14 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
-
-#include <math.h>
-#include <algorithm>
 
 namespace cgal
 {
@@ -105,9 +100,8 @@ public:
 
 };
 
-#if  !defined(CGALPLUGIN_CYLINDERMESH_CPP)
+#if !defined(CGALPLUGIN_CYLINDERMESH_CPP)
 extern template class SOFA_CGALPLUGIN_API CylinderMesh<defaulttype::Vec3Types>;
- 
 #endif
 
 } //cgal

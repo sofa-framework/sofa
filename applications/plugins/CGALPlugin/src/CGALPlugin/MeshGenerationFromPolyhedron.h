@@ -24,13 +24,10 @@
 #define CGAL_MESH_3_VERBOSE 0
 
 
-#include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include <CGAL/version.h>
 
@@ -194,9 +191,8 @@ public:
 
 };
 
-#if  !defined(CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_CPP)
+#if !defined(CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_CPP)
 extern template class SOFA_CGALPLUGIN_API MeshGenerationFromPolyhedron<sofa::defaulttype::Vec3Types>;
- 
 #endif
 
 } //cgal

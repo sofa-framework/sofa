@@ -21,13 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
-
+#include <sofa/defaulttype/Vec.h>
 
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polyhedron_3.h>
@@ -184,10 +180,8 @@ public:
 
 };
 
-
-#if  !defined(CGALPLUGIN_SIMPLIFICATIONMESH_CPP)
+#if !defined(CGALPLUGIN_DECIMETEMESH_CPP)
 extern template class SOFA_CGALPLUGIN_API DecimateMesh<defaulttype::Vec3Types>;
- 
 #endif
 
 } //cgal
