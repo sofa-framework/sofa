@@ -19,22 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_MISC_INIT_H
-#define SOFA_MISC_INIT_H
-#include <SofaMisc/config.h>
+#pragma once
+#include <SofaMiscOther/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+void SOFA_SOFAMISCOTHER_API initMiscOther();
 
-
-void SOFA_SOFAMISC_API initMisc();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component
 

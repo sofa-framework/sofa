@@ -19,17 +19,64 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMisc/Misc.h>
-#include <sofa/core/Plugin.h>
+#pragma once
 
-class MiscPlugin: public sofa::core::Plugin {
+#include <SofaMiscOther/config.h>
+
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::FileRepository;
+
+
+namespace sofa::component::misc
+{
+
+
+class SOFA_SOFAMISCOTHER_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
+{
 public:
-    MiscPlugin(): Plugin("Misc") {
-        setDescription("");
-        setVersion("");
-        setLicense("LGPL");
-        setAuthors("The SOFA Team");
-    }
+    SOFA_ABSTRACT_CLASS(BaseAddResourceRepository, sofa::core::objectmodel::BaseObject);
+
+protected:
+    BaseAddResourceRepository();
+    ~BaseAddResourceRepository() override;
+
+    FileRepository* m_repository;
+
+public:
+    //cannot be a DataFilename
+    Data<std::string> d_repositoryPath; ///< Path to add to the pool of resources
+
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+    void cleanup() override;
+
+private:
+    std::string m_currentAddedPath;
+
+    virtual FileRepository* getFileRepository() = 0;
 };
 
-SOFA_PLUGIN(MiscPlugin);
+
+/// Add a new path to DataRepository
+class AddDataRepository: public BaseAddResourceRepository
+{
+public:
+    SOFA_CLASS(AddDataRepository, BaseAddResourceRepository);
+
+protected:
+    FileRepository* getFileRepository() override { return &sofa::helper::system::DataRepository; }
+};
+
+
+/// Add a new path to PluginRepository
+class AddPluginRepository: public BaseAddResourceRepository
+{
+public:
+    SOFA_CLASS(AddPluginRepository, BaseAddResourceRepository);
+
+protected:
+    FileRepository* getFileRepository() override { return &sofa::helper::system::PluginRepository; }
+};
+
+} //  sofa::component::misc
+

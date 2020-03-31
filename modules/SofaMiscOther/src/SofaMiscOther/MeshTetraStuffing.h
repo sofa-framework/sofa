@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMisc/config.h>
+#include <SofaMiscOther/config.h>
 
 #include <string>
 #include <sofa/helper/fixed_array.h>
@@ -40,7 +40,7 @@ namespace sofa::component::misc
  *
  */
 
-class SOFA_SOFAMISC_API MeshTetraStuffing : public core::objectmodel::BaseObject
+class SOFA_SOFAMISCOTHER_API MeshTetraStuffing : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(MeshTetraStuffing,core::objectmodel::BaseObject);

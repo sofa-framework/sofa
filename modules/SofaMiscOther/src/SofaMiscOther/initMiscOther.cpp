@@ -19,64 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <SofaMisc/config.h>
-
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/helper/system/FileRepository.h>
-using sofa::helper::system::FileRepository;
+#include <SofaMiscOther/initMiscOther.h>
 
 
-namespace sofa::component::misc
+namespace sofa::component
 {
 
 
-class SOFA_SOFAMISC_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
+void initMiscOther()
 {
-public:
-    SOFA_ABSTRACT_CLASS(BaseAddResourceRepository, sofa::core::objectmodel::BaseObject);
-
-protected:
-    BaseAddResourceRepository();
-    ~BaseAddResourceRepository() override;
-
-    FileRepository* m_repository;
-
-public:
-    //cannot be a DataFilename
-    Data<std::string> d_repositoryPath; ///< Path to add to the pool of resources
-
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
-    void cleanup() override;
-
-private:
-    std::string m_currentAddedPath;
-
-    virtual FileRepository* getFileRepository() = 0;
-};
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
 
-/// Add a new path to DataRepository
-class AddDataRepository: public BaseAddResourceRepository
-{
-public:
-    SOFA_CLASS(AddDataRepository, BaseAddResourceRepository);
-
-protected:
-    FileRepository* getFileRepository() override { return &sofa::helper::system::DataRepository; }
-};
-
-
-/// Add a new path to PluginRepository
-class AddPluginRepository: public BaseAddResourceRepository
-{
-public:
-    SOFA_CLASS(AddPluginRepository, BaseAddResourceRepository);
-
-protected:
-    FileRepository* getFileRepository() override { return &sofa::helper::system::PluginRepository; }
-};
-
-} //  sofa::component::misc
-
+} // namespace sofa::component

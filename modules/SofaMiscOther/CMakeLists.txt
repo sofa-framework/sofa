@@ -1,29 +1,32 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaMisc VERSION 1.0 LANGUAGES CXX)
+project(SofaMiscOther VERSION 1.0 LANGUAGES CXX)
 
-set(SOFAMISC_SRC "src/${PROJECT_NAME}")
+find_package(SofaMiscTopology REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
+set(SOFAMISCOTHER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    ${SOFAMISC_SRC}/initMisc.h
-    ${SOFAMISC_SRC}/config.h.in
+    ${SOFAMISCOTHER_SRC}/initMiscOther.h
+    ${SOFAMISCOTHER_SRC}/config.h.in
     )
 
 set(SOURCE_FILES
-    ${SOFAMISC_SRC}/initMisc.cpp
+    ${SOFAMISCOTHER_SRC}/initMiscOther.cpp
     )
 
 list(APPEND HEADER_FILES
-    ${SOFAMISC_SRC}/MeshTetraStuffing.h
-    ${SOFAMISC_SRC}/AddResourceRepository.h
+    ${SOFAMISCOTHER_SRC}/MeshTetraStuffing.h
+    ${SOFAMISCOTHER_SRC}/AddResourceRepository.h
     )
 list(APPEND SOURCE_FILES
-    ${SOFAMISC_SRC}/MeshTetraStuffing.cpp
-    ${SOFAMISC_SRC}/AddResourceRepository.cpp
+    ${SOFAMISCOTHER_SRC}/MeshTetraStuffing.cpp
+    ${SOFAMISCOTHER_SRC}/AddResourceRepository.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGeneralMeshCollision SofaMiscTopology SofaTopologyMapping)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_OTHER")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
@@ -45,5 +48,5 @@ sofa_generate_package(
 cmake_dependent_option(SOFAMISC_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
 if(SOFAMISC_BUILD_TESTS)
     enable_testing()
-    add_subdirectory(SofaMisc_test)
+    add_subdirectory(SofaMiscOther_test)
 endif()
