@@ -220,7 +220,7 @@ function(sofa_add_generic_external directory name type)
         # Execute commands to fetch content
         message("  Pulling ...")
         file(WRITE "${fetched_dir}/logs.txt" "") # Empty log file
-        execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -G "${CMAKE_GENERATOR}" .
+        execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM} -G "${CMAKE_GENERATOR}" .
             WORKING_DIRECTORY "${fetched_dir}"
             RESULT_VARIABLE generate_exitcode
             OUTPUT_VARIABLE generate_logs ERROR_VARIABLE generate_logs)
@@ -672,9 +672,9 @@ function(sofa_set_install_relocatable target install_dir)
     # Hack to make installed plugin independant and keep the add_subdirectory mechanism
     # Does not fail if cmakepatch file already exists thanks to "|| true"
     if(WIN32)
-        set(escaped_dollar "\$")
-        if(CMAKE_SYSTEM_VERSION VERSION_LESS 10 ) # before Windows 10
-            set(escaped_dollar "\$\$")
+        set(escaped_dollar "\$\$")
+        if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (Visual Studio)
+            set(escaped_dollar "\$")
         endif()
         string(REGEX REPLACE "/" "\\\\" target_binary_dir_windows "${target_binary_dir}")
         add_custom_target(${target}_relocatable_install ALL
@@ -820,11 +820,15 @@ endmacro()
 # Get path of all library versions (involving symbolic links) for a specified library
 function(sofa_install_libraries)
     set(options NO_COPY)
-    set(multiValueArgs TARGETS LIBRARIES)
+    set(multiValueArgs TARGETS LIBRARIES PATHS)
     cmake_parse_arguments("sofa_install_libraries" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
     set(no_copy ${sofa_install_libraries_NO_COPY})
     set(targets ${sofa_install_libraries_TARGETS})
-    set(libraries ${sofa_install_libraries_LIBRARIES})
+    set(lib_paths ${sofa_install_libraries_PATHS})
+    if(sofa_install_libraries_LIBRARIES)
+        message(WARNING "sofa_install_libraries: LIBRARIES parameter is deprecated, use PATHS instead.")
+        list(APPEND lib_paths "${sofa_install_libraries_LIBRARIES}")
+    endif()
 
     foreach(target ${targets})
         get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
@@ -833,22 +837,36 @@ function(sofa_install_libraries)
             get_filename_component(target_location ${target_location} DIRECTORY) # parent dir
             install(DIRECTORY ${target_location} DESTINATION "lib" COMPONENT applications)
         else()
-            list(APPEND libraries "${target_location}")
+            list(APPEND lib_paths "${target_location}")
         endif()
     endforeach()
 
-    foreach(library ${libraries})
-        if(EXISTS ${library})
-            get_filename_component(LIBREAL ${library} REALPATH)
+    PARSE_LIBRARY_LIST(${lib_paths}
+        FOUND   parseOk
+        DEBUG   LIBRARIES_DEBUG
+        OPT     LIBRARIES_RELEASE
+        GENERAL LIBRARIES_GENERAL)
+
+    if(parseOk)
+        if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+            set(lib_paths ${LIBRARIES_DEBUG})
+        else()
+            set(lib_paths ${LIBRARIES_RELEASE})
+        endif()
+    endif()
+
+    foreach(lib_path ${lib_paths})
+        if(EXISTS ${lib_path})
+            get_filename_component(LIBREAL ${lib_path} REALPATH)
             get_filename_component(LIBREAL_NAME ${LIBREAL} NAME_WE)
             get_filename_component(LIBREAL_PATH ${LIBREAL} PATH)
 
             # In "${LIBREAL_NAME}." the dot is a real dot, not a regex symbol
             # CMAKE_*_LIBRARY_SUFFIX also start with a dot
             # So regex is:
-            # <library_path> <slash> <library_name> <dot> <dll/so/dylib/...>
+            # <lib_path> <slash> <library_name> <dot> <dll/so/dylib/...>
             # or:
-            # <library_path> <slash> <library_name> <dot> <anything> <dot> <dll/so/dylib/...>
+            # <lib_path> <slash> <library_name> <dot> <anything> <dot> <dll/so/dylib/...>
             file(GLOB_RECURSE SHARED_LIBS
                 "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libtiff.dll
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
@@ -872,38 +890,42 @@ function(sofa_install_libraries)
     endforeach()
 
     if(WIN32 AND NOT no_copy)
-        sofa_copy_libraries(LIBRARIES ${libraries})
+        sofa_copy_libraries(PATHS ${lib_paths})
     endif()
 endfunction()
 
 function(sofa_install_get_libraries library)
     message(WARNING "sofa_install_get_libraries() is deprecated. Please use sofa_install_libraries() instead.")
-    sofa_install_libraries(LIBRARIES ${library})
+    sofa_install_libraries(PATHS ${library})
 endfunction()
 
 
 function(sofa_copy_libraries)
-    set(multiValueArgs TARGETS LIBRARIES)
+    set(multiValueArgs TARGETS LIBRARIES PATHS)
     cmake_parse_arguments("sofa_copy_libraries" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
     set(targets ${sofa_copy_libraries_TARGETS})
-    set(libraries ${sofa_copy_libraries_LIBRARIES})
+    set(lib_paths ${sofa_copy_libraries_PATHS})
+    if(sofa_copy_libraries_LIBRARIES)
+        message(WARNING "sofa_copy_libraries: LIBRARIES parameter is deprecated, use PATHS instead.")
+        list(APPEND lib_paths "${sofa_copy_libraries_LIBRARIES}")
+    endif()
 
     foreach(target ${targets})
         if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
             foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
                 get_target_property(target_location ${target} LOCATION_${CONFIG})
-                list(APPEND libraries "${target_location}")
+                list(APPEND lib_paths "${target_location}")
             endforeach()
         else() # Single-config generator (nmake)
             get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
-            list(APPEND libraries "${target_location}")
+            list(APPEND lib_paths "${target_location}")
         endif()
     endforeach()
 
-    foreach(library ${libraries})
-        if(EXISTS ${library})
-            get_filename_component(LIB_NAME ${library} NAME_WE)
-            get_filename_component(LIB_PATH ${library} PATH)
+    foreach(lib_path ${lib_paths})
+        if(EXISTS ${lib_path})
+            get_filename_component(LIB_NAME ${lib_path} NAME_WE)
+            get_filename_component(LIB_PATH ${lib_path} PATH)
 
             file(GLOB SHARED_LIB
                 "${LIB_PATH}/${LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
@@ -914,13 +936,20 @@ function(sofa_copy_libraries)
             if(NOT runtime_output_dir)
                 set(runtime_output_dir ${CMAKE_BINARY_DIR}) # fallback
             endif()
+            if(NOT EXISTS runtime_output_dir)
+                # make sure runtime_output_dir exists before calling configure_file COPYONLY
+                # otherwise it will not be treated as a directory
+                file(MAKE_DIRECTORY ${runtime_output_dir})
+            endif()
 
-            if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-                foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                    file(COPY ${SHARED_LIB} DESTINATION "${runtime_output_dir}/${CONFIG}")
-                endforeach()
-            else()                      # Single-config generator (nmake)
-                file(COPY ${SHARED_LIB} DESTINATION "${runtime_output_dir}")
+            if(EXISTS ${SHARED_LIB})
+                if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (Visual Studio)
+                    foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+                        configure_file(${SHARED_LIB} "${runtime_output_dir}/${CONFIG}" COPYONLY)
+                    endforeach()
+                else()                        # Single-config generator (nmake, ninja)
+                    configure_file(${SHARED_LIB} "${runtime_output_dir}" COPYONLY)
+                endif()
             endif()
         endif()
     endforeach()

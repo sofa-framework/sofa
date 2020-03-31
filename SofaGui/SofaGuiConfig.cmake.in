@@ -21,7 +21,7 @@ find_package(SofaComponentAll REQUIRED) # Needed by SofaGuiCommon
 
 if(SOFAGUI_HAVE_SOFAGUIQT)
     if(SOFAGUIQT_HAVE_QTVIEWER)
-        find_package(Qt5 QUIET REQUIRED Core Gui OpenGL)
+        find_package(Qt5 QUIET REQUIRED Core Gui OpenGL WebEngine WebEngineWidgets)
         if(SOFAGUIQT_HAVE_QT5_CHARTS)
             find_package(Qt5 QUIET REQUIRED Charts)
         endif()

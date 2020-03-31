@@ -7,7 +7,7 @@ if(POLICY CMP0072)
 endif()
 
 # Manually define VERSION
-set(Sofa_VERSION_MAJOR 19)
+set(Sofa_VERSION_MAJOR 20)
 set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
@@ -106,6 +106,8 @@ if(UNIX)
         list(APPEND CMAKE_INSTALL_RPATH
             "@loader_path/../lib"
             "@executable_path/../lib"
+            "@loader_path/../../Frameworks"
+            "@executable_path/../../Frameworks"
             )
         set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif()
@@ -115,6 +117,7 @@ include(CompilerOptions)
 
 ## Boost (1.54.0 or higher) is now mandatory.
 set(BOOST_MIN_VERSION "1.54.0")
+set(Boost_NO_BOOST_CMAKE TRUE)
 find_package(Boost ${BOOST_MIN_VERSION} QUIET)
 if(NOT Boost_FOUND)
     if(WIN32)

@@ -21,44 +21,67 @@ Index:
     - [Python DSL](#pure-python-dsl)
     - [Writing templates in python (DOC TODO)](#writing-templates-in-pure-python)
     - [Extending PSL](#extending-psl)
+    - [PSLX](#writing-psl-scene-with-xml-syntax)
+
 
 # Installation and requirement.
-The PSL framework is implemented as a Sofa plugin named PSL. While developping PSL we noticed several
-bug in Sofa that we have not yet submitted to the master branch of Sofa... so currently to use PSL
-you need to use our whole PSL branch.
-
-PSL can be used with several alternatives syntax file ending with *.psl* use the H-JSON syntax while
-*.pslx* use the XML one. The XML one is provided by default but if you plan to use the H-JSON syntax
-you need to install H-JSON parser that is available at: http://hjson.org/
-You can do :
+PSL can propose several alternatives syntaxes. Files ending with *.psl* are referring to H-JSON, a syntax
+that look like QML or JSON. While files ending with *.pslx* use the XML syntax. The XML one is provided by
+default, you want to use the H-JSON syntax you need to install H-JSON parser that is available at: http://hjson.org/
+To do that you can do :
 ```shell
 git clone https://github.com/hjson/hjson-py.git
 cd hjson-py
 sudo python setup.py install
 ```
 
-We also provides a syntax coloring scheme to handle *.psl* files in Kate or qtcreator in the file
-[psl-highlighting.xml](./psl-highlighting.xml). Installation instruction
-for [qtcreator](http://doc.qt.io/qtcreator/creator-highlighting.html)
-
+It is also a good idea to install the syntax coloring scheme to handle *.psl* files in Kate or qtcreator.
+The color scheme is provided in the file [psl-highlighting.xml](./psl-highlighting.xml). Installation
+instructions for qtcreator are given [here](http://doc.qt.io/qtcreator/creator-highlighting.html).
 
 # Introduction.
 PSL features:
 - a declarative scene language (as is .scn) that can be loaded & saved.
 - with multiple alternative syntax (xml, hjson, python-pickled)
-- with procedural elements (with embeded Python)
+- with procedural elements (embeded Python)
 - with scene templates (dynamic element that can be reuse and instantiated)
 - with scene libraries (to store scene templates for reuse and sharing)
 - with explicit aliasing (to simplify scene writing).
 - with dedicated python DSL to simpliyfy scene writing in pure-python
 - ... more to come ...
 
-
-For the simplicity of the following we will employ the H-JSON syntax as it provides both readbility,
+For the simplicity of the following we will employ the so called *H-JSON syntax* as it provides both readbility,
 compactness and clarity.
 
-As pointed previously, in *.scn* files everything is static. For this reason more and more people are using
-python to describe scene because it allows to write:
+## First example
+
+### Writing scene with the H-JSON syntax.
+Let's start with a very simple sofa scene that only contains two hierarchical nodes,
+and OglModel and a MechanicalObject. Using the XML scene syntax this would be written
+this way: 
+```xml
+<Node name="root">
+        <Node name="child1">
+                <MechanicalObject name="mstate"/>
+                <OglModel filename="anObj.obj"/>
+        </Node>
+</Node>
+```
+
+Using PSL/HJSON syntax, the same scene would be written like that:
+```css
+Node : {
+        name : "root"
+        Node : {
+                name : "child1"
+                MechanicalObject: { name : "mstate" }
+                OglModel : { filename : "anObj.obj" }
+        }
+}
+```
+
+The problem of our classic xml *.scn* files is that everything is static. For this reason ones often use
+python to describe scenes as it allows to write:
 ```python
 root = Sofa.createNode("root")
 child1 = root.createNode("child1")
@@ -68,7 +91,7 @@ for i in range(0,10):
         child1.createNode("child_"+str(i))
 ```
 The drawback of doing this, in addition to the poor visual emphasizing of the Sofa component lost in
-the middle of python code is that once saved, this good looking python scene is now more like:
+the middle of python code is that once loaded this good looking python scene is in fact serialized as this one:
 ```python
 root = Sofa.createNode("root")
 child1 = root.createNode("child1")
@@ -86,51 +109,12 @@ child1.createNode("child_8")
 child1.createNode("child_9")
 ```
 
-This is because in *.pyscn* the python code is executed (consumed) at loading time and thus is not
-part of the scene once loaded. The consequence is that saving the scene is in fact storing the *result* of
-the execution of the script and thus we are totally loosing the advantages of python. This is why we
-have decided to create a custom DSL for writing scene with Python.
+This is because in *.pyscn* the python code is consumed at loading time to generate the scene.
+The consequence is that saving the scene is in fact storing the *result* of the execution of the script
+and thus we are totally loosing the advantages of python.
 
-## First examples
-The PSL language itself is defined with an abstract syntax semantics. This allow us to very quickly implement concrete syntaxes
-depending on the developpers preferences. We currently have implemented an XML base concrete syntax, this syntax is compatible with
-most of the existing .scn files. We also have implemented an H-JSON concrete syntax. This one look a lot like QML's or JSON.
-The important aspect to keep in mind while reading this document is that whetever the syntax you like...
-this is mostly a "cosmetic" aspect of PSL and that it is same underlying computational model is shared between
-the different syntaxes.
 
-### Writing PSL scene with XML syntax.
-Let's start with a simple scene example in XML.
-```xml
-<Node name="root">
-        <Node name="child1">
-                <MechanicalObject name="mstate"/>
-                <OglModel filename="anObj.obj"/>
-        </Node>
-</Node>
-```
-At this point, this is a classical *.scn* file. With PSL this scene can be made dynamic with the help of the
-*Python* component as in:
-```xml
-<Node name="myNameisRoot">
-        <Node name="child1">
-                <MechanicalObject name="mstate"/>
-                <OglModel filename="anObj.obj"/>
-        </Node>
-        <Python>
-                Sofa.msg_info(myNameIsRoot, "Hello world")
-                for i in range(0,10):
-                        myNameIsRoot.addChild("three")
-        </Python>
-</Node>
-```
-
-The interesting aspect of this pslx syntax is that it offer a very good backward compatibility with
-existing scene. If, like me, you prefer curly-braces instead of an XML syntax you can implement
-exactely the same scene using the H-JSON syntax.
-
-### Writing scene with the H-JSON syntax.
-The same scene as in the previous example should be written like that:
+With PSL it is possible to implement the following dynamic behavior in the following way.
 ```css
 Node : {
         name : "root"
@@ -148,12 +132,8 @@ Node : {
 }
 ```
 
-Now you have reached this point we hope this example gave you some envy to learn more about PSL
-and its other cool features.
-
-
-
-
+The advantage of PSL is that the python fragment are stored into the scene in their textual form
+and can thus be saved or re-executed.
 
 ### Python fragments
 In PSL it is possible to add python code to your scene using the *Python* component as in:
@@ -354,3 +334,27 @@ mytemplate.py more elegant:
 ## Extending-PSL
 PSL is a work in progress, if you think about additional great features to add you can submit a
 proposal for that. All the proposals we have are stored in the [PEP directory](./pep/).
+
+### Writing PSL scene with XML syntax
+PSL is defined in term of an abstract syntax. This syntax can be serialized in multiple concrete syntax.
+In this document we have used the HJSON syntax but other alternative exists. One that is interestin is the
+XML one (file with a .pslx extensions).
+Our initial PSL example now just look like:
+```xml
+<Node name="myNameisRoot">
+        <Node name="child1">
+                <MechanicalObject name="mstate"/>
+                <OglModel filename="anObj.obj"/>
+        </Node>
+        <Python>
+                Sofa.msg_info(myNameIsRoot, "Hello world")
+                for i in range(0,10):
+                        myNameIsRoot.addChild("three")
+        </Python>
+</Node>
+```
+
+The interesting aspect of this pslx syntax is that it offer a very good backward compatibility with
+existing scene and allow PSL to be integrated into an XML oriented workflow.
+
+
