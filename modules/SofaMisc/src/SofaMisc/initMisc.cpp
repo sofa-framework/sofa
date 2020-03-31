@@ -19,14 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include <SofaMisc/initMisc.h>
 
 
-namespace sofa
-{
-
-namespace component
+namespace sofa::component
 {
 
 
@@ -40,6 +36,4 @@ void initMisc()
 }
 
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component
