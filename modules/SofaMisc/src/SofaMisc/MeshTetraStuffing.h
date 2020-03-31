@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_MESHTETRASTUFFING_H
-#define SOFA_COMPONENT_MISC_MESHTETRASTUFFING_H
+#pragma once
 #include <SofaMisc/config.h>
 
 #include <string>
@@ -33,13 +32,7 @@
 
 #include <sofa/helper/map.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 /**
@@ -47,7 +40,7 @@ namespace misc
  *
  */
 
-class SOFA_MISC_API MeshTetraStuffing : public core::objectmodel::BaseObject
+class SOFA_SOFAMISC_API MeshTetraStuffing : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(MeshTetraStuffing,core::objectmodel::BaseObject);
@@ -121,10 +114,4 @@ public:
 
 };
 
-}
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //  sofa::component::misc

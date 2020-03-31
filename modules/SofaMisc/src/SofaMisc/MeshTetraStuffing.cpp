@@ -31,13 +31,7 @@
 
 #define USE_OCTREE
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 using namespace sofa::defaulttype;
@@ -918,8 +912,4 @@ void MeshTetraStuffing::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawPoints(snaps, 4, Vec<4,float>(0,0,1,1));
 }
 
-}
-
-} // namespace component
-
-} // namespace sofa
+} //  sofa::component::misc

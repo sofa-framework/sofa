@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_H
-#define SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_H
+#pragma once
 
 #include <SofaMisc/config.h>
 
@@ -29,15 +28,11 @@
 using sofa::helper::system::FileRepository;
 
 
-namespace sofa
-{
-namespace component
-{
-namespace misc
+namespace sofa::component::misc
 {
 
 
-class SOFA_MISC_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
+class SOFA_SOFAMISC_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseAddResourceRepository, sofa::core::objectmodel::BaseObject);
@@ -83,9 +78,5 @@ protected:
     FileRepository* getFileRepository() override { return &sofa::helper::system::PluginRepository; }
 };
 
+} //  sofa::component::misc
 
-} // namespace misc
-} // namespace component
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_H
