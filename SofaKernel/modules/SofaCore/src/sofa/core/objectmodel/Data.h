@@ -723,28 +723,26 @@ public:
 template<class T>
 inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams*)
 {
-    return WriteAccessor<core::objectmodel::Data<T> >(data);
+    return write(data);
 }
 
 
 template<class T>
 inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) 
 { 
-    return write(data);
+    return WriteAccessor<core::objectmodel::Data<T> >(data);
 }
-
 
 template<class T>
 inline ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams*)
 {
-    return ReadAccessor<core::objectmodel::Data<T> >(data);
+    return read(data);
 }
-
 
 template<class T>
 inline ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data)
 {
-    return read(data);
+    return ReadAccessor<core::objectmodel::Data<T> >(data);
 }
 
 /// Easy syntax for getting write only access to a Data using operator ->. Example: writeOnly(someFlagData)->setFlagValue(true);
