@@ -24,7 +24,7 @@
 
 #include <sofa/simulation/config.h>
 
-#ifdef SOFA_BUILD_BASE_TOPOLOGY
+#ifdef SOFA_BUILD_SOFABASE
 #  define SOFA_TARGET SofaBase
 #  define SOFA_SOFABASE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
