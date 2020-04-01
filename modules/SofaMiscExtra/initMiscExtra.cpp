@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_MISC_INIT_H
-#define SOFA_MISC_INIT_H
-#include <SofaMisc/config.h>
+#include <sofa/helper/system/config.h>
+#include <SofaMiscExtra/initMiscExtra.h>
+
 
 namespace sofa
 {
@@ -30,11 +30,16 @@ namespace component
 {
 
 
-void SOFA_MISC_API initMisc();
+void initMiscExtra()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
 
 } // namespace component
 
 } // namespace sofa
-
-#endif
-

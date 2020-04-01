@@ -19,27 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaMisc/initMisc.h>
-
+#pragma once
+#include <SofaMisc/config.h>
 
 namespace sofa
 {
 
 namespace component
 {
+    
+void SOFA_MISC_EXTRA_API initMiscExtra();
 
-
-void initMisc()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-
-} // namespace component
+}// namespace component
 
 } // namespace sofa
+
+
