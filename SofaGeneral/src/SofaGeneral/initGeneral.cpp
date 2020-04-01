@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
+
+#include <SofaGeneral/config.h>
 
 #include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
 #include <SofaGeneralDeformable/initGeneralDeformable.h>
@@ -55,7 +56,7 @@ namespace component
 {
 
 
-void initComponentGeneral()
+void initGeneral()
 {
     static bool first = true;
     if (first)
