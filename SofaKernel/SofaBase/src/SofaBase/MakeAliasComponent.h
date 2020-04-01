@@ -19,15 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
-* Contributors:                                                               *
-*     - damien.marchal@univ-lille1.fr                                         *
-******************************************************************************/
-#ifndef SOFA_INFOCOMPONENT_H
-#define SOFA_INFOCOMPONENT_H
+#pragma once
 
+#include <SofaBase/config.h>
+
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include "config.h"
+#include <sofa/core/objectmodel/Data.h>
+
+#include <string>
 
 namespace sofa
 {
@@ -38,26 +38,45 @@ namespace component
 /// fearing it will leack names into the global namespace. When closing this namespace
 /// selected object from this per-file namespace are then imported into their parent namespace.
 /// for ease of use
-namespace infocomponent
+namespace makealiascomponent
 {
-using sofa::core::objectmodel::BaseObject ;
 
-/// Despite this component does absolutely nothin... it is very usefull as it can be used to
-/// retain information scene graph.
-class SOFA_COMPONENT_BASE_API InfoComponent : public BaseObject
+/// A component to add alias to other components.
+class SOFA_SOFABASE_API MakeAliasComponent : public core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(InfoComponent, BaseObject);
+    SOFA_CLASS(MakeAliasComponent, core::objectmodel::BaseObject);
 
-    InfoComponent() {}
-    ~InfoComponent() override{}
+    MakeAliasComponent() ;
+    ~MakeAliasComponent() override{}
+
+    /// Inherited from BaseObject.
+    /// Parse the given description to assign values to this object's fields and
+    /// potentially other parameters.
+    void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
+
+    Data<std::string>   d_targetcomponent       ; ///< The component class for which to create an alias.
+    Data<std::string>   d_alias                 ; ///< The new alias of the component.
+
+
+    static std::string className(const MakeAliasComponent* ptr)
+    {
+        SOFA_UNUSED(ptr);
+        return "MakeAlias" ;
+    }
+
+    virtual std::string getClassName() const override
+    {
+        return "MakeAlias" ;
+    }
+
+
 };
 
 }
 
 /// Import the component from the per-file namespace.
-using infocomponent::InfoComponent ;
+using makealiascomponent::MakeAliasComponent ;
 
 }
 }
-#endif // SOFA_INFOCOMPONENT_H

@@ -19,66 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_MAKEALIASCOMPONENT_H
-#define SOFA_MAKEALIASCOMPONENT_H
+#include <sofa/helper/system/config.h>
+#include <SofaBase/initBase.h>
+#include <SofaBaseTopology/initBaseTopology.h>
+#include <SofaBaseMechanics/initBaseMechanics.h>
+#include <SofaBaseCollision/initBaseCollision.h>
+#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
+#include <SofaBaseVisual/initBaseVisual.h>
 
-#include "config.h"
+#include "messageHandlerComponent.h"
+using sofa::component::logging::MessageHandlerComponent ;
+using sofa::component::logging::FileMessageHandlerComponent ;
 
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/Data.h>
+#include "MakeAliasComponent.h"
+using sofa::component::MakeAliasComponent ;
 
-#include <string>
+#include "MakeDataAliasComponent.h"
+using sofa::component::MakeAliasComponent ;
 
 namespace sofa
 {
+
 namespace component
 {
 
-/// I use a per-file namespace so that I can employ the 'using' keywords without
-/// fearing it will leack names into the global namespace. When closing this namespace
-/// selected object from this per-file namespace are then imported into their parent namespace.
-/// for ease of use
-namespace makealiascomponent
+
+void initComponentBase()
 {
-
-/// A component to add alias to other components.
-class SOFA_COMPONENT_BASE_API MakeAliasComponent : public core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(MakeAliasComponent, core::objectmodel::BaseObject);
-
-    MakeAliasComponent() ;
-    ~MakeAliasComponent() override{}
-
-    /// Inherited from BaseObject.
-    /// Parse the given description to assign values to this object's fields and
-    /// potentially other parameters.
-    void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
-
-    Data<std::string>   d_targetcomponent       ; ///< The component class for which to create an alias.
-    Data<std::string>   d_alias                 ; ///< The new alias of the component.
-
-
-    static std::string className(const MakeAliasComponent* ptr)
+    static bool first = true;
+    if (first)
     {
-        SOFA_UNUSED(ptr);
-        return "MakeAlias" ;
+        initBaseTopology();
+        initBaseMechanics();
+        initBaseCollision();
+        initBaseLinearSolver();
+        initBaseVisual();
+        first = false;
     }
-
-    virtual std::string getClassName() const override
-    {
-        return "MakeAlias" ;
-    }
-
-
-};
-
 }
 
-/// Import the component from the per-file namespace.
-using makealiascomponent::MakeAliasComponent ;
+} // namespace component
 
-}
-}
-#endif // SOFA_AliasComponent_H
+} // namespace sofa

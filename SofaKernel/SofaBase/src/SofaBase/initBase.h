@@ -19,44 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFABASE_CONFIG_H
-#define SOFABASE_CONFIG_H
+#pragma once
 
-#include <sofa/simulation/config.h>
+#include <SofaBase/config.h>
 
-#ifdef SOFA_BUILD_BASE_TOPOLOGY
-#  define SOFA_TARGET SofaBaseTopology
-#  define SOFA_BASE_TOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_BASE_TOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa
+{
 
-#ifdef SOFA_BUILD_BASE_LINEAR_SOLVER
-#  define SOFA_TARGET SofaBaseLinearSolver
-#  define SOFA_BASE_LINEAR_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_BASE_LINEAR_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace component
+{
 
-#ifdef SOFA_BUILD_BASE_MECHANICS
-#  define SOFA_TARGET SofaBaseMechanics
-#  define SOFA_BASE_MECHANICS_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_BASE_MECHANICS_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+void SOFA_SOFABASE_API initBase();
 
-#ifdef SOFA_BUILD_BASE_COLLISION
-#  define SOFA_TARGET SofaBaseCollision
-#  define SOFA_BASE_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_BASE_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+} // namespace component
 
-#ifdef SOFA_BUILD_BASE_VISUAL
-#  define SOFA_TARGET SofaBaseVisual
-#  define SOFA_BASE_VISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_BASE_VISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+} // namespace sofa
 
-#endif
+

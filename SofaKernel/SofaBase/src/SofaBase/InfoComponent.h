@@ -19,21 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_BASE_INIT_H
-#define SOFA_COMPONENT_BASE_INIT_H
-#include "config.h"
+/******************************************************************************
+* Contributors:                                                               *
+*     - damien.marchal@univ-lille1.fr                                         *
+******************************************************************************/
+#pragma once
+
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <SofaBase/config.h>
 
 namespace sofa
 {
-
 namespace component
 {
 
-void SOFA_COMPONENT_BASE_API initComponentBase();
+/// I use a per-file namespace so that I can employ the 'using' keywords without
+/// fearing it will leack names into the global namespace. When closing this namespace
+/// selected object from this per-file namespace are then imported into their parent namespace.
+/// for ease of use
+namespace infocomponent
+{
+using sofa::core::objectmodel::BaseObject ;
 
-} // namespace component
+/// Despite this component does absolutely nothin... it is very usefull as it can be used to
+/// retain information scene graph.
+class SOFA_SOFABASE_API InfoComponent : public BaseObject
+{
+public:
+    SOFA_CLASS(InfoComponent, BaseObject);
 
-} // namespace sofa
+    InfoComponent() {}
+    ~InfoComponent() override{}
+};
 
-#endif
+}
 
+/// Import the component from the per-file namespace.
+using infocomponent::InfoComponent ;
+
+}
+}
