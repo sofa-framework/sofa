@@ -300,7 +300,7 @@ protected:
 		// use optimized product if possible
         if(canCast(data)) {
 
-#ifdef SOFAEIGEN2SOLVER_HAVE_OPENMP
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
             if( alias(result, data) )
                 map(result) = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, map(data).template cast<Real>() );
             else
@@ -326,7 +326,7 @@ protected:
 		}
 		
         // compute the product
-#ifdef SOFAEIGEN2SOLVER_HAVE_OPENMP
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
 #else
         aux2.noalias() = this->compressedMatrix * aux1;
@@ -349,7 +349,7 @@ protected:
 		// use optimized product if possible
 		if( canCast(data) ) {
 
-#ifdef SOFAEIGEN2SOLVER_HAVE_OPENMP
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
             if( alias(result, data) )
                 map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
             else
@@ -379,7 +379,7 @@ protected:
 		}
         
         // compute the product
-#ifdef SOFAEIGEN2SOLVER_HAVE_OPENMP
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
 #else
         aux2.noalias() = this->compressedMatrix * aux1;
@@ -401,7 +401,7 @@ protected:
 		// use optimized product if possible
 		if(canCast(result)) {
 
-#ifdef SOFAEIGEN2SOLVER_HAVE_OPENMP
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
             if( alias(result, data) )
                 map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
             else {
@@ -431,7 +431,7 @@ protected:
 		}
 		
 		// compute the product
-#ifdef SOFAEIGEN2SOLVER_HAVE_OPENMP
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), aux1 );
 #else
         aux2.noalias() = this->compressedMatrix.transpose() * aux1;
