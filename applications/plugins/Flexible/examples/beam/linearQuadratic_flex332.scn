@@ -49,7 +49,7 @@
 
     <Node 	name="collision"   >
       <VisualStyle displayFlags="hideBehaviorModels " />
-      <Mesh name="mesh" src="@../mesh" />
+      <MeshTopology name="mesh" src="@../mesh" />
       <MechanicalObject  template="Vec3d" name="pts"    />
       <UniformMass totalMass="10" />
       <BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" />

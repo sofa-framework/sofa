@@ -19,7 +19,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
             <LineCollisionModel />
@@ -40,7 +40,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
             <LineCollisionModel />
@@ -53,9 +53,9 @@
         <CGLinearSolver iterations="25" tolerance="0.00001" threshold="0.000001" />
         <!--
 		<RungeKutta4Solver />
-		<Euler />
+		<EulerExplicitSolver />
 		-->
-        <MechanicalObject template="Rigid" dx="-17" dy="16" dz="29" />
+        <MechanicalObject template="Rigid3d" dx="-17" dy="16" dz="29" />
         <UniformMass filename="BehaviorModels/smCube125.rigid" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="white" />
@@ -63,7 +63,7 @@
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
             <LineCollisionModel />
@@ -73,7 +73,7 @@
     </Node>
     <Node name="Floor">
         <MeshObjLoader filename="mesh/floor2b.obj" name="loader" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10.25" scale="0.5" />
         <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
         <LineCollisionModel name="Floor" simulated="0" moving="0" />

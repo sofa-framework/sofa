@@ -21,7 +21,7 @@
 	
   
  <Node name="Triangles">
-    <MechanicalObject name="dofs" template="Rigid" position="-5 3 10 0 0 0 1" velocity="10 -10 0 0 0 0" />
+    <MechanicalObject name="dofs" template="Rigid3d" position="-5 3 10 0 0 0 1" velocity="10 -10 0 0 0 0" />
     <RigidMass mass="10" inertia="10 10 10" />
     <Node name="collision">
       <MeshObjLoader name="loader" filename="mesh/cube.obj" />
@@ -37,7 +37,7 @@
 
  
    <Node name="Ball">
-    <MechanicalObject name="dofs" template="Rigid" position="0 3 10 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
+    <MechanicalObject name="dofs" template="Rigid3d" position="0 3 10 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
     <SphereCollisionModel radius="1" contactFriction="1" contactRestitution="0" />
   </Node>
@@ -48,7 +48,7 @@
   
   <Node name="ground">
 		<!-- adjusted with contact distance, so that we end-up at zero -->
-    <MechanicalObject name="dofs" template="Rigid" position="0 -3.2 0 0 0 0 1" />
+    <MechanicalObject name="dofs" template="Rigid3d" position="0 -3.2 0 0 0 0 1" />
     <RigidMass mass="1" inertia="15 1 15" />
 <!--     <OBB extents="15 1 15" contactRestitution="1"/> -->
     <Node name="collision">

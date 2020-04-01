@@ -10,7 +10,7 @@
     <Node name="uniform">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <SparseGrid n="8 6 7" fileTopology="mesh/Armadillo_verysimplified.obj" />
+        <SparseGridTopology n="8 6 7" fileTopology="mesh/Armadillo_verysimplified.obj" />
         <MechanicalObject dx="70" ry="25" />
         <HexahedronFEMForceFieldAndMass youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0" />
         <Node name="Visuunif">
@@ -20,7 +20,7 @@
         </Node>
         <Node name="Colliunif">
             <MeshObjLoader name="loader" filename="mesh/Armadillo_verysimplified.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel contactStiffness="1" />
             <LineCollisionModel contactStiffness="1" />
@@ -31,7 +31,7 @@
     <Node name="non uniform">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <SparseGrid n="8 6 7" fileTopology="mesh/Armadillo_verysimplified.obj" nbVirtualFinerLevels="2" />
+        <SparseGridTopology n="8 6 7" fileTopology="mesh/Armadillo_verysimplified.obj" nbVirtualFinerLevels="2" />
         <MechanicalObject ry="25" />
         <NonUniformHexahedronFEMForceFieldAndMass nbVirtualFinerLevels="2" youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0" />
         <Node name="Visunonunif">
@@ -41,7 +41,7 @@
         </Node>
         <Node name="Collinonunif">
             <MeshObjLoader name="loader" filename="mesh/Armadillo_verysimplified.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel contactStiffness="1" />
             <LineCollisionModel contactStiffness="1" />

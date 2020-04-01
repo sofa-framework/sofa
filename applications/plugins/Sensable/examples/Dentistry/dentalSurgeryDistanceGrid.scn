@@ -27,8 +27,8 @@
 
 	<!-- ADDED: the Mechanical state Controller gathers events from the Omni driver and populates the Mechanical state -->
 	<Node name="Omni">
-		<MechanicalObject template="Rigid" name="DOFs" position="0 0 0  0 0 0 1"/>
-		<MechanicalStateController template="Rigid" listening="true"  mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
+		<MechanicalObject template="Rigid3d" name="DOFs" position="0 0 0  0 0 0 1"/>
+		<MechanicalStateController template="Rigid3d" listening="true"  mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
 		<Node name="VisuAvatar" activated="false">
 			<MeshObjLoader name="meshLoader_2" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
 			<OglModel name="Visual" src="@meshLoader_2" color="gray"/>
@@ -36,19 +36,19 @@
 		</Node>
 		<Node name="RefModel">
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader"  />
+			<MeshTopology src="@loader"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<RigidMapping />
 		</Node>
 		<Node name="RefModelRight" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel" />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="0.5" />
 			<RigidMapping />
 		</Node>
 		<Node name="RefModelLeft" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="-0.5" />
 			<RigidMapping />
 		</Node>
@@ -57,7 +57,7 @@
 	<Node name="Instrument" >
 		<EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
 		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
-		<MechanicalObject name="instrumentState" template="Rigid" />
+		<MechanicalObject name="instrumentState" template="Rigid3d" />
 		<UniformMass name="mass" totalmass="0.05" />
 		<EnslavementForceFeedback activate="true" stiffness="3.0"/> <!-- ADDED : Compute a force-feedback for the device -->
 		<Node name="VisualModel" >
@@ -67,7 +67,7 @@
 		</Node>
 		<Node name="CollisionModel" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<LineCollisionModel name="instrument" contactStiffness="10" />
 			<PointCollisionModel name="instrument" contactStiffness="10" />
@@ -75,13 +75,13 @@
 		</Node>
 		<Node name="RefModelRight" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="0.5" />
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelLeft" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="-0.5" />
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>

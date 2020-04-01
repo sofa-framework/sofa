@@ -10,7 +10,7 @@
 -->
     <VisualStyle displayFlags="showForceFields" />
     <Node name="input">
-        <Mesh name="surface" filename="mesh/liver-smooth.obj" />
+        <MeshTopology name="surface" filename="mesh/liver-smooth.obj" />
         <MeshTetraStuffing name="stuffing" snapPoints="true" splitTetras="true" draw="true" size="0.7" alphaLong="0.3" alphaShort="0.4" inputPoints="@surface.points" inputTriangles="@surface.triangles" />
     </Node>
     <Node activated="1" name="output">
@@ -49,7 +49,7 @@
     <Node activated="0" name="output-gpu">
         <EulerImplicitSolver name="odesolver" />
         <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Mesh name="volume" points="@../input/stuffing.outputPoints" tetras="@../input/stuffing.outputTetras" />
+        <MeshTopology name="volume" points="@../input/stuffing.outputPoints" tetras="@../input/stuffing.outputTetras" />
         <MechanicalObject template="CudaVec3f" />
         <UniformMass totalMass="5" name="mass" />
         <TetrahedronFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" method="large" />

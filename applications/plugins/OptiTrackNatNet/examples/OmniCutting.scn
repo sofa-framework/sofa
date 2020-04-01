@@ -7,15 +7,15 @@
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="1" />
 
   <Node name="Grab">
-    <Euler />
-    <MechanicalObject name="ms1" template="Rigid" />
+    <EulerExplicitSolver />
+    <MechanicalObject name="ms1" template="Rigid3d" />
     <UniformMass name="mass" />
     <OmniDriver scale="600" omniVisu="0" permanent="1"  listening="true" handleEventTriggersUpdate="true"
 		positionBase="0 5 0" orientationBase="0 0.707107 0.707107 0" 
 		positionTool="0 0 0" orientationTool="0.6 0.01 0 1" />
 <!--  <LinearMovementConstraint name="keyframes" keyTimes="0 1 5 6 7 11 12 13 17 18 19 23 24" movements="20 60 70 0 0 0    20 50 70 0 0 0    20 50 110 0 0 0     35 60 110 0 0 0    35 50 110 0 0 0   70 50 110 0 0 0     70 60 95 0 0 0    70 50 95 0 0 0    70 50 70 0 0 0   55 60 70 0 0 0   55 50 70 0 0 0   35 50 70 0 0 0   35 60 70 0 0 0" showMovement="1" /> -->
     <Node name="CutEdges">
-      <Mesh position="-0.2745 -2.7482 -40.7508    -0.2760 -1.5256 -40.7505    -0.2775 -0.3030 -40.4702    -0.2790 0.9196 -40.4699" edges="0 1 1 2 2 3" />
+      <MeshTopology position="-0.2745 -2.7482 -40.7508    -0.2760 -1.5256 -40.7505    -0.2775 -0.3030 -40.4702    -0.2790 0.9196 -40.4699" edges="0 1 1 2 2 3" />
       <MechanicalObject name="vertices" />
       <LineCollisionModel name="CM" group="1" simulated="0" moving="1" contactStiffness="0" />
       <RigidMapping index="0" />
@@ -23,7 +23,7 @@
     </Node>
     <Node name="GrabSurfaceL">
       <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left_cut.obj" triangulate="1" />
-      <Mesh src="@loaderPince" />
+      <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleCollisionModel group="1" simulated="0" moving="1" />
       <LineCollisionModel group="1" simulated="0" moving="1" />
@@ -32,7 +32,7 @@
     </Node>
     <Node name="GrabSurfaceR">
       <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right_cut.obj" triangulate="1" />
-      <Mesh src="@loaderPince" />
+      <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleCollisionModel group="1" simulated="0" moving="1" />
       <LineCollisionModel group="1" simulated="0" moving="1" />

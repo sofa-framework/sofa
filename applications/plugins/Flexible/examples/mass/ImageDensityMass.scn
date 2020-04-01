@@ -12,15 +12,15 @@
 
   <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
-  <!--    <EulerExplicitSolverSolver /> -->
+
 
   <Node 	name="FEM tetra NOT lumped"   >
 
-    <!--         <MeshGmshLoader name="loader" filename="mesh/tetra.msh" /> -->
-    <!-- 	<Mesh name="mesh" src="@loader" /> -->
+    <!--  <MeshGmshLoader name="loader" filename="mesh/tetra.msh" /> -->
+    <!-- 	<MeshTopology name="mesh" src="@loader" /> -->
 
 
-    <Mesh name="mesh" position="-1.5 0 0    -0.5 0 0    -1.5 1 0    -1.5 0 1" edges="0 1  1 2  2 0  0 3  1 3  2 3" triangles="0 1 2   1 3 2   3 0 2  0 3 1" tetrahedra="0 1 2 3" />
+    <MeshTopology name="mesh" position="-1.5 0 0    -0.5 0 0    -1.5 1 0    -1.5 0 1" edges="0 1  1 2  2 0  0 3  1 3  2 3" triangles="0 1 2   1 3 2   3 0 2  0 3 1" tetrahedra="0 1 2 3" />
 
 
     <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
@@ -63,7 +63,7 @@
 
   <Node 	name="FEM tetra lumped"   >
 
-    <Mesh name="mesh" position="0 0 0    1 0 0    0 1 0    0 0 1" edges="0 1  1 2  2 0  0 3  1 3  2 3" triangles="0 1 2   1 3 2   3 0 2  0 3 1" tetrahedra="0 1 2 3" />
+    <MeshTopology name="mesh" position="0 0 0    1 0 0    0 1 0    0 0 1" edges="0 1  1 2  2 0  0 3  1 3  2 3" triangles="0 1 2   1 3 2   3 0 2  0 3 1" tetrahedra="0 1 2 3" />
 
 
     <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
@@ -112,7 +112,7 @@
 
   <Node 	name="FEM triangle NOT lumped" >
 
-    <Mesh name="mesh" position="3 0 0    4 0 0     3.5 0 1" edges="0 1 1 2 2 0" triangles="0 1 2" />
+    <MeshTopology name="mesh" position="3 0 0    4 0 0     3.5 0 1" edges="0 1 1 2 2 0" triangles="0 1 2" />
     <MechanicalObject name="defoDOF" template="Vec3d"   />
     <BarycentricShapeFunction template="ShapeFunctiond"  />
 
@@ -153,7 +153,7 @@
 
   <Node 	name="FEM triangle lumped" >
 
-    <Mesh name="mesh" position="5 0 0    6 0 0     5.5 0 1" edges="0 1 1 2 2 0" triangles="0 1 2" />
+    <MeshTopology name="mesh" position="5 0 0    6 0 0     5.5 0 1" edges="0 1 1 2 2 0" triangles="0 1 2" />
     <MechanicalObject name="defoDOF" template="Vec3d"   />
     <BarycentricShapeFunction template="ShapeFunctiond"  />
 

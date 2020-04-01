@@ -10,7 +10,7 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" name="Liver" />
         <UniformMass name="mass" vertexMass="0.05" />
         <TetrahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />

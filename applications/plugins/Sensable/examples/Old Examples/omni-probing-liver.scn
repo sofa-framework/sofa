@@ -29,8 +29,8 @@
 		</Node>
 	</Node>
 	<Node 	name="Instrument" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-		<MechanicalObject template="Rigid" name="rigidDOF"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  internalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1"  translation="0 6 0" />
-		<MechanicalStateController template="Rigid" name="default40"  listening="1"  handleEventTriggersUpdate="1"  mainDirection="-1 0 0" />
+		<MechanicalObject template="Rigid3d" name="rigidDOF"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  internalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1"  translation="0 6 0" />
+		<MechanicalStateController template="Rigid3d" name="default40"  listening="1"  handleEventTriggersUpdate="1"  mainDirection="-1 0 0" />
 		<Node 	name="Collision" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<MeshLoader name="loader"  filename="mesh/blade_instrument_centered.obj" />
 			<MeshTopology name="topology" />

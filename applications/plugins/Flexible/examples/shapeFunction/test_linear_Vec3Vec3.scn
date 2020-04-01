@@ -5,7 +5,7 @@
 
     <EulerExplicitSolver />
     <Node 	name="Flexible"   >
-    	<Mesh name="mesh" position="0 0 1   0 1 0   1 0 0   -1 -1 0  2 2 2 " tetrahedra="0 1 2 3 0 1 2 4" />
+    	<MeshTopology name="mesh" position="0 0 1   0 1 0   1 0 0   -1 -1 0  2 2 2 " tetrahedra="0 1 2 3 0 1 2 4" />
     	<MechanicalObject  name="parent" src="@mesh"  />
     	<UniformMass mass="1" />
 <!--    <ShepardShapeFunction position="@parent.rest_position" power="2"/> -->
@@ -34,7 +34,7 @@
  -->
 
     <Node 	name="FEM"   >
-    	<Mesh name="mesh" position="0 0 1   0 1 0   1 0 0   -1 -1 0  2 2 2 " tetrahedra="0 1 2 3 0 1 2 4" />
+    	<MeshTopology name="mesh" position="0 0 1   0 1 0   1 0 0   -1 -1 0  2 2 2 " tetrahedra="0 1 2 3 0 1 2 4" />
     	<MechanicalObject  name="parent" src="@mesh"  />
     	<UniformMass mass="1" />
 	   <ConstantForceField indices="0" force="0 0 1000" />

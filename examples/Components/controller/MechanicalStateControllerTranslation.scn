@@ -9,7 +9,7 @@
     <Node name="InstrumentEdgeSet">
         <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
         <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
-        <MechanicalObject template="Rigid" />
+        <MechanicalObject template="Rigid3d" />
         <UniformMass totalMass="1" />
         <Node name="Visu">
             <MeshObjLoader name="meshLoader_0" filename="mesh/sphere.obj" scale="50" handleSeams="1" />
@@ -18,13 +18,13 @@
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/sphere.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" scale="50" />
             <TriangleCollisionModel />
             <LineCollisionModel />
             <PointCollisionModel />
             <RigidMapping />
         </Node>
-        <MechanicalStateController template="Rigid" onlyTranslation="true" listening="true" handleEventTriggersUpdate="true" />
+        <MechanicalStateController template="Rigid3d" onlyTranslation="true" listening="true" handleEventTriggersUpdate="true" />
     </Node>
 </Node>

@@ -10,7 +10,7 @@
     <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
     <CGLinearSolver iterations="25" tolerance="1e-10" threshold="1e-10"  />
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-    <Mesh name="mesh" src="@loader" />
+    <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
     <FixedConstraint indices="@FixedROI.indices" />
@@ -37,7 +37,7 @@
 
     <Node name="collision"  >
       <MeshObjLoader name="loader" filename="mesh/torus.obj" />
-      <Mesh src="@loader"/>
+      <MeshTopology src="@loader"/>
       <MechanicalObject  />
       <TriangleCollisionModel />
       <LinearMapping template="Vec3d,Vec3d"/>
@@ -58,7 +58,7 @@
     <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
     <CGLinearSolver iterations="25" tolerance="1e-10" threshold="1e-10"  />
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-    <Mesh name="mesh" src="@loader" />
+    <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
     <FixedConstraint indices="@FixedROI.indices" />
@@ -84,7 +84,7 @@
     -->
     <Node name="collision"  >
       <MeshObjLoader name="loader" filename="mesh/torus.obj" />
-      <Mesh src="@loader"/>
+      <MeshTopology src="@loader"/>
       <MechanicalObject  />
       <TriangleCollisionModel />
       <LinearMapping template="Vec3d,Vec3d"/>

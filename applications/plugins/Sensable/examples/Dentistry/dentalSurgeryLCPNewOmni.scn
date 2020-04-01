@@ -13,8 +13,8 @@
 	<LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
 	<NewOmniDriver name="default38"  listening="1"  scale="50"  positionBase="0 1 -0.5"  permanent="1"  omniVisu="0" />
 	<Node 	name="Omni" gravity="0 -9.81 0" >
-		<MechanicalObject template="Rigid" name="DOFs"  position="1.2 1.6 -3.55 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1" />
-		<MechanicalStateController template="Rigid" name="default40"  listening="1"  handleEventTriggersUpdate="1"  mainDirection="-1 0 0" />
+		<MechanicalObject template="Rigid3d" name="DOFs"  position="1.2 1.6 -3.55 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1" />
+		<MechanicalStateController template="Rigid3d" name="default40"  listening="1"  handleEventTriggersUpdate="1"  mainDirection="-1 0 0" />
 		<Node 	name="RefModel" gravity="0 -9.81 0" >
 			<MeshObjLoader name="loader"  filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj" />
 			<MeshTopology src="@loader" name="default42" />
@@ -25,10 +25,10 @@
 	<Node 	name="Instrument" gravity="0 -9.81 0" >
 		<EulerImplicitSolver name="ODE solver"  rayleighStiffness="0.01"  rayleighMass="1" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-010"  threshold="1e-009" />
-		<MechanicalObject template="Rigid" name="instrumentState"  position="1.2 1.6 -3.55 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1" />
-		<UniformMass template="Rigid" name="mass"  totalmass="0.05"  filename="BehaviorModels/dental_instrument.rigid" />
-		<LCPForceFeedback template="Rigid" name="default44"  listening="1"  activate="1"  forceCoef="0.005" />
-		<UncoupledConstraintCorrection template="Rigid" name="default45" />
+		<MechanicalObject template="Rigid3d" name="instrumentState"  position="1.2 1.6 -3.55 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1" />
+		<UniformMass template="Rigid3d" name="mass"  totalmass="0.05"  filename="BehaviorModels/dental_instrument.rigid" />
+		<LCPForceFeedback template="Rigid3d" name="default44"  listening="1"  activate="1"  forceCoef="0.005" />
+		<UncoupledConstraintCorrection template="Rigid3d" name="default45" />
 		<Node 	name="VisualModel" gravity="0 -9.81 0" >
 			<MeshObjLoader name="meshLoader_0" filename="Demos/Dentistry/data/mesh/dental_instrument.obj"  translation="-1.2 -1.6 3.55"  rotation="180 0 150" handleSeams="1" />
 			<OglModel template="ExtVec3f" name="InstrumentVisualModel" src="@meshLoader_0"  material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
@@ -44,7 +44,7 @@
 			<RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@instrumentState"  output="@instrumentCollisionState" />
 		</Node>
 		<VectorSpringForceField template="Vec3d" name="default47"  object1="@Omni/RefModel/instrumentCollisionState"  object2="@Instrument/CollisionModel/instrumentCollisionState"  stiffness="10"  viscosity="0" />
-		<JointSpringForceField template="Rigid" name="joint springs"  object1="@Omni"  object2="@instrumentState"  spring="BEGIN_SPRING  0 0  KS_T 50 50  KS_R 500 500  KS_B 500  END_SPRING
+		<JointSpringForceField template="Rigid3d" name="joint springs"  object1="@Omni"  object2="@instrumentState"  spring="BEGIN_SPRING  0 0  KS_T 50 50  KS_R 500 500  KS_B 500  END_SPRING
 " />
 	</Node>
 	<Node 	name="Tooth" gravity="0 -9.81 0" >

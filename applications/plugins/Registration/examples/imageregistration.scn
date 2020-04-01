@@ -19,7 +19,7 @@
         <ImageContainer  name="rimage" filename="data/thigh_m.raw" drawBB="false"/>
 
         <MeshObjLoader name="meshLoader" filename="data/femur_m.obj"/>
-        <Mesh src="@meshLoader" />
+        <MeshTopology src="@meshLoader" />
         <MechanicalObject  name="PointSet"   />
         <UniformMass vertexMass="10"/>
 

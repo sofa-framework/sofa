@@ -19,7 +19,7 @@
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <Node name="Surf">
                 <SphereLoader filename="mesh/smCube27b.sph" />
                 <MechanicalObject position="@[-1].position" translation="0 0 -21.0" />
@@ -28,7 +28,7 @@
             </Node>
         </Node>
         <Node name="M2">
-            <MechanicalObject template="Rigid" dz="-10.5" />
+            <MechanicalObject template="Rigid3d" dz="-10.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
                 <MechanicalObject template="Vec3d" src="@../../meshLoader"/>
@@ -54,7 +54,7 @@
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <Node name="Surf">
                 <MechanicalObject />
                 <SphereLoader filename="mesh/smCube27b.sph" />
@@ -63,7 +63,7 @@
             </Node>
         </Node>
         <Node name="M4">
-            <MechanicalObject template="Rigid" dz="10.5" />
+            <MechanicalObject template="Rigid3d" dz="10.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
                 <MechanicalObject template="Vec3d" src="@../../meshLoader"/>
@@ -89,7 +89,7 @@
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <Node name="Surf">
                 <MechanicalObject dz="21" />
                 <SphereLoader filename="mesh/smCube27b.sph" />
@@ -98,7 +98,7 @@
             </Node>
         </Node>
         <Node name="M6">
-            <MechanicalObject template="Rigid" dz="31.5" />
+            <MechanicalObject template="Rigid3d" dz="31.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
                 <MechanicalObject template="Vec3d" src="@../../meshLoader"/>

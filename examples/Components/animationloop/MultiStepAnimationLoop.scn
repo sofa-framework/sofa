@@ -10,7 +10,7 @@
     <Node name="ChainRigid">
         <Node name="TorusFixed">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
             <MeshObjLoader name="meshLoader_4" filename="mesh/torus2.obj" handleSeams="1" />
@@ -19,7 +19,7 @@
         <Node name="TorusRigid">
             <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
-            <MechanicalObject template="Rigid" dx="2.5" />
+            <MechanicalObject template="Rigid3d" dx="2.5" />
             <UniformMass />
             <Node name="Visu">
                 <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" />
@@ -28,7 +28,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
                 <RigidMapping />
@@ -37,7 +37,7 @@
         <Node name="TorusRigid">
             <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
-            <MechanicalObject template="Rigid" dx="5" />
+            <MechanicalObject template="Rigid3d" dx="5" />
             <UniformMass />
             <Node name="Visu">
                 <MeshObjLoader name="meshLoader_0" filename="mesh/torus2.obj" handleSeams="1" />
@@ -46,7 +46,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
                 <RigidMapping />
@@ -55,7 +55,7 @@
         <Node name="TorusRigid">
             <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
-            <MechanicalObject template="Rigid" dx="7.5" />
+            <MechanicalObject template="Rigid3d" dx="7.5" />
             <UniformMass />
             <Node name="Visu">
                 <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
@@ -64,7 +64,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
                 <RigidMapping />
@@ -73,7 +73,7 @@
         <Node name="TorusRigid">
             <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
-            <MechanicalObject template="Rigid" dx="10" />
+            <MechanicalObject template="Rigid3d" dx="10" />
             <UniformMass />
             <Node name="Visu">
                 <MeshObjLoader name="meshLoader_2" filename="mesh/torus2.obj" handleSeams="1" />
@@ -82,7 +82,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
                 <RigidMapping />

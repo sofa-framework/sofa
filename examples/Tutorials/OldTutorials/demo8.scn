@@ -18,7 +18,7 @@
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <Node name="Surf">
             <MechanicalObject dz="-21.0" />
             <SphereLoader filename="mesh/smCube27b.sph" />
@@ -29,7 +29,7 @@
     <Node name="M2">
         <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid" dz="-10.5" />
+        <MechanicalObject template="Rigid3d" dz="-10.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
             <MechanicalObject template="Vec3d" src="@../../meshLoader" />
@@ -57,7 +57,7 @@
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <Node name="Surf">
             <MechanicalObject />
             <SphereLoader filename="mesh/smCube27b.sph" />
@@ -68,7 +68,7 @@
     <Node name="M4">
         <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid" dz="10.5" />
+        <MechanicalObject template="Rigid3d" dz="10.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
             <MechanicalObject template="Vec3d" src="@../../meshLoader" />
@@ -96,7 +96,7 @@
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <Node name="Surf">
             <MechanicalObject dz="21" />
             <SphereLoader filename="mesh/smCube27b.sph" />
@@ -107,7 +107,7 @@
     <Node name="M6">
         <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid" dz="31.5" />
+        <MechanicalObject template="Rigid3d" dz="31.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
             <MechanicalObject template="Vec3d" src="@../../meshLoader"/>

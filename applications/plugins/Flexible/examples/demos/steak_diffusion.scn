@@ -74,7 +74,7 @@
 		<Node name="Collision">
 		        <VisualStyle displayFlags="hideBehaviorModels" />
 			<MeshObjLoader name="MeshLoader" filename="../data/mesh/steak.obj"/>
-			<Mesh src="@MeshLoader" /> 
+			<MeshTopology src="@MeshLoader" /> 
                         <MechanicalObject  name="PointSet"  />
 <!--                         <UniformMass totalMass="1000"/> -->
 			<LinearMapping template="Affine,Vec3d"/>

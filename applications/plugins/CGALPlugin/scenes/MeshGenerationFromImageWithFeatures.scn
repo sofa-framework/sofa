@@ -14,8 +14,4 @@
 	
 	<MeshTopology name="generatedMesh" points="@generator.outputPoints" 	tetras="@generator.outputTetras"/> 	
 	<!--<VTKExporter name="exporter" filename="cubeWithFeatures.vtk"  XMLformat="0" edges="0" tetras="1" exportAtBegin="1" cellsDataFields="generator.outputCellData"/>-->
-
 </Node>
-
-
-

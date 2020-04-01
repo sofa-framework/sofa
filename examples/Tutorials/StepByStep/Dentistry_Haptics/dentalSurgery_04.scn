@@ -16,7 +16,7 @@
         <Node name="Teeth">
             <MeshObjLoader filename="data/mesh/teeth.obj" name="loader" />
             <Node name="CollisionModel">
-                <Mesh src="@../loader" name="ToothCollisionModel" />
+                <MeshTopology src="@../loader" name="ToothCollisionModel" />
                 <MechanicalObject src="@../loader" name="toothState" />
                 <TriangleCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
@@ -31,7 +31,7 @@
     <Node name="Instrument">
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
-        <MechanicalObject name="instrumentState" template="Rigid" />
+        <MechanicalObject name="instrumentState" template="Rigid3d" />
         <UniformMass name="mass" totalMass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <Node name="VisualModel">
             <MeshObjLoader name="meshLoader_2" filename="data/mesh/dental_instrument.obj" handleSeams="1" />
@@ -40,7 +40,7 @@
         </Node>
         <Node name="CollisionModel">
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
-            <Mesh src="@loader" name="InstrumentCollisionModel" />
+            <MeshTopology src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 -10" />
             <LineCollisionModel name="instrument" contactStiffness="5" />
             <PointCollisionModel name="instrument" contactStiffness="5" />

@@ -97,3 +97,9 @@ endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 
 sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "extlibs/${PROJECT_NAME}/${PROJECT_NAME}")
+
+# Qt deployment
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    include(windeployqt)
+    windeployqt(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin ${CMAKE_INSTALL_PREFIX}/bin)
+endif()

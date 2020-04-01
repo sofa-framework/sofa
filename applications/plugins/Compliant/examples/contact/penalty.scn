@@ -15,21 +15,21 @@
   <LDLTSolver/>
   
   <Node name="ground">
-    <MechanicalObject name="grounddof" template="Rigid" position="0 0 0 0.9659258262890683 -0.25881904510252074 0 0" />
+    <MechanicalObject name="grounddof" template="Rigid3d" position="0 0 0 0.9659258262890683 -0.25881904510252074 0 0" />
     <RigidMass mass="1" inertia="1 1 1" />
     <FixedConstraint indices="0" />
     <OBB extents="10 2 2" simulated="0" moving="0"/>
   </Node>
   
   <Node name="ground2">
-    <MechanicalObject name="dofs" template="Rigid" position="20 -6.5 0 0.9914448613738104 0.13052619222005157 0 0" />
+    <MechanicalObject name="dofs" template="Rigid3d" position="20 -6.5 0 0.9914448613738104 0.13052619222005157 0 0" />
     <RigidMass mass="1" inertia="1 1 1" />
     <FixedConstraint indices="0" />
     <OBB extents="20 2 2" simulated="0" moving="0"/>
   </Node>
   
   <Node name="cube">
-    <MechanicalObject name="cubedof" template="Rigid" position="0 5.5 0 0.9659258262890683 -0.25881904510252074 0 0" velocity="0 -1 0 0 0 0" />
+    <MechanicalObject name="cubedof" template="Rigid3d" position="0 5.5 0 0.9659258262890683 -0.25881904510252074 0 0" velocity="0 -1 0 0 0 0" />
     <RigidMass mass="1" inertia="1 1 1" />
     <OBB/>
   </Node>

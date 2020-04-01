@@ -15,7 +15,7 @@
         <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" template="Vec3d" name="Liver1MS" />
         <UniformMass name="mass" vertexMass="0.05" />
         <TetrahedronFEMForceField name="FEM" youngModulus="2000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
@@ -37,7 +37,7 @@
         <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" template="Vec3d" name="Liver2MS" dx="10" ry="180" />
         <UniformMass name="mass" vertexMass="0.05" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
@@ -58,7 +58,7 @@
         <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
-        <Mesh src="@loader" />
+        <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" template="Vec3d" name="Liver3MS" dx="20" ry="90" />
         <UniformMass name="mass" vertexMass="0.05" />
         <!--                <FixedConstraint name="FixedConstraint" indices="3 39 64" /> -->

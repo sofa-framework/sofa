@@ -1,6 +1,6 @@
   <Node name="Obstacle">       
     <MeshLoader filename="file" name="loader"/>
-    <Mesh src="@loader"/>        
+    <MeshTopology src="@loader"/>        
     <MechanicalObject src="@loader" name="Obstacle"  translation="0 0 0" rotation="0 0 0" scale3d="1 1 1"/>
     <TriangleCollisionModel moving="0" simulated="0" contactStiffness="200" contactFriction="0.01"/> 
     <LineCollisionModel     moving="0" simulated="0" contactStiffness="@[-1].contactStiffness" contactFriction="@[-1].contactFriction"/>        

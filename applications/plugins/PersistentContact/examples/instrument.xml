@@ -4,7 +4,7 @@
 	<CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15"/>
 	
 	<Node name="Trocar">
-		<MechanicalObject name="MO" template="Rigid" position="5 0 -7 0 0 0 1"/>
+		<MechanicalObject name="MO" template="Rigid3d" position="5 0 -7 0 0 0 1"/>
 		<RestShapeSpringsForceField points="0" stiffness="1e4" angularStiffness="1e9"/>
 		<UncoupledConstraintCorrection compliance="1e-4  1e-9 0 0 1e-9 0 1e-9"/>	
 
@@ -16,11 +16,11 @@
 			<GrasperController doubleGrasper="true"/>
 			
 			<Node name="Tool Description">
-				<MechanicalObject name="GrasperDOFs" template="Rigid" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1"/>
+				<MechanicalObject name="GrasperDOFs" template="Rigid3d" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1"/>
 				
 				<Node name="First Grasper Line CM">
 					<MeshObjLoader name="ml" filename="Mors1_CM_line.obj" />
-					<Mesh src="@ml"/>
+					<MeshTopology src="@ml"/>
 					<MechanicalObject src="@ml" name="CM" rx="180"/>
 					<LineCollisionModel name="FGL Line" proximity="1.5" group="11"/>   
 					<PointCollisionModel name="FGL Point" proximity="1.5" group="11"/>
@@ -34,7 +34,7 @@
 				
 				<Node name="Second Grasper Line CM">
 					<MeshObjLoader name="ml" filename="Mors2_CM_line.obj" />
-					<Mesh src="@ml"/>
+					<MeshTopology src="@ml"/>
 					<MechanicalObject src="@ml" name="CM" rx="180"/>
 					<LineCollisionModel name="SGL Line" proximity="1.5" group="11"/>
 					<PointCollisionModel name="SGL Point" proximity="1.5" group="11"/>

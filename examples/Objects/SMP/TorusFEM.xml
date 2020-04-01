@@ -2,7 +2,7 @@
 	<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0" />
   <ParallelCGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
 	<MeshGmshLoader name="meshLoader" filename="mesh/torus_low_res.msh"/>
-	<Mesh src="@meshLoader" />
+	<MeshTopology src="@meshLoader" />
 	<MechanicalObject dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
 	<UniformMass totalMass="5" />
 	<TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar"/>
@@ -12,7 +12,7 @@
 	</Node>
 	<Node name="Surf2">
 		<MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj"/>
-		<Mesh src="@loader" />
+		<MeshTopology src="@loader" />
 		<MechanicalObject src="@loader" dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>
 		<TriangleCollisionModel />
 		<BarycentricMapping />

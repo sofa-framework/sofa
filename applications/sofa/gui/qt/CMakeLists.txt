@@ -5,12 +5,12 @@ project(SofaGuiQt)
 set(QT_TARGETS "")
 set(QT_USE_IMPORTED_TARGETS 1)
 set(QT5_NO_LINK_QTMAIN 1)
-sofa_find_package(Qt5 COMPONENTS Core Gui OpenGL QUIET)
+sofa_find_package(Qt5 COMPONENTS Core Gui OpenGL WebEngine WebEngineWidgets QUIET)
 if(NOT Qt5Core_FOUND)
     message(SEND_ERROR "SofaGuiQt: Qt5 is required and was not found.\n"
         "Add Qt5 directory to CMAKE_PREFIX_PATH or disable SofaGuiQt by setting SOFAGUI_QT to OFF.")
 endif()
-set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL)
+set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::WebEngine Qt5::WebEngineWidgets)
 sofa_find_package(Qt5 COMPONENTS Charts QUIET BOTH_SCOPES)
 if(Qt5Charts_FOUND)
     set(QT_TARGETS ${QT_TARGETS} Qt5::Charts)
@@ -272,7 +272,7 @@ endif()
 
 if(NODEEDITOR_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC ${NODEEDITOR_LIBRARY})
-    sofa_install_libraries(LIBRARIES ${NODEEDITOR_LIBRARY})
+    sofa_install_libraries(PATHS ${NODEEDITOR_LIBRARY})
     target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${NODEEDITOR_INCLUDE_PATH}>")
 endif()
 
@@ -297,40 +297,8 @@ install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/qt" COMPONENT resourc
 
 sofa_install_targets(SofaGui SofaGuiQt "SofaGui/sofa/gui/qt")
 
-
-# QT INSTALL (dirty)
-sofa_install_libraries(TARGETS ${QT_TARGETS})
-# Get Qt libraries dir
-get_target_property(QtCore_location Qt5::Core LOCATION)
-get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
-get_filename_component(QT_LIBRARIES_DIR_NAME ${QT_LIBRARIES_DIR} NAME)
-if(NOT "${QT_LIBRARIES_DIR_NAME}" STREQUAL "lib")
-    get_filename_component(QT_LIBRARIES_DIR ${QT_LIBRARIES_DIR} DIRECTORY) # parent dir
-    get_filename_component(QT_LIBRARIES_DIR_NAME ${QT_LIBRARIES_DIR} NAME)
-endif()
-# Get Qt plugins dir
-list(GET Qt5Gui_PLUGINS 1 QT_PLUGIN_ANY)
-if(TARGET ${QT_PLUGIN_ANY})
-    get_target_property(QT_PLUGIN_ANY_LOCATION ${QT_PLUGIN_ANY} LOCATION)
-    get_filename_component(QT_PLUGINS_SUBDIR ${QT_PLUGIN_ANY_LOCATION} DIRECTORY)
-    get_filename_component(QT_PLUGINS_DIR ${QT_PLUGINS_SUBDIR} DIRECTORY)
-else()
-    # Try to guess QT_PLUGINS_DIR
-    if(CMAKE_SYSTEM_NAME STREQUAL Linux AND EXISTS "${QT_LIBRARIES_DIR}/qt5/plugins")
-        set(QT_PLUGINS_DIR "${QT_LIBRARIES_DIR}/qt5/plugins")
-    endif()
-endif()
-# Install Qt plugins
-foreach(qt_plugin_name iconengines imageformats platforms styles xcbglintegrations)
-    if(EXISTS "${QT_PLUGINS_DIR}/${qt_plugin_name}")
-        install(DIRECTORY "${QT_PLUGINS_DIR}/${qt_plugin_name}" DESTINATION "bin" COMPONENT applications)
-    endif()
-endforeach()
-# Install Apple Qt frameworks
-if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
-    foreach(qt_framework_name QtDBus.framework QtPrintSupport.framework)
-        if(EXISTS "${QT_LIBRARIES_DIR}/${qt_framework_name}")
-            install(DIRECTORY "${QT_LIBRARIES_DIR}/${qt_framework_name}" DESTINATION "lib" COMPONENT appications)
-        endif()
-    endforeach()
+# Qt deployment
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    include(windeployqt)
+    windeployqt(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin ${CMAKE_INSTALL_PREFIX}/bin)
 endif()

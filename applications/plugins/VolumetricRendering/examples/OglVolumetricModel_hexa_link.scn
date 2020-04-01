@@ -3,7 +3,7 @@
     <RequiredPlugin name="VolumetricRendering" />
 
     <Node name="Input">
-		<SparseGrid name="grid" n="51 51 51" fileTopology="mesh/raptor_8kp.obj" />
+		<SparseGridTopology name="grid" n="51 51 51" fileTopology="mesh/raptor_8kp.obj" />
 
 		<MechanicalObject name="dofs" template="Vec3d" />
 	 	<HexahedronSetTopologyContainer name="topology" hexahedra="@grid.hexahedra" />

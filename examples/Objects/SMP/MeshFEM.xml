@@ -1,7 +1,7 @@
 <Node name="FEM">
 	<ParrallelCGImplicit rayleighStiffness="0.01" iterations="25" threshold="0.00000001"  />
 	<MeshLoader name="loader" filename="file"/>
-	<Mesh src="@loader"/>
+	<MeshTopology src="@loader"/>
 	<MechanicalObject src="@loader" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
 	<UniformMass totalmass="1" />
 	<TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3"  method="polar"/>
@@ -11,7 +11,7 @@
 	</Node>
 	<Node name="CollisionNode">
     <MeshLoader name="loader"  filename="file"/>
-		<Mesh src="@loader"/>
+		<MeshTopology src="@loader"/>
 		<MechanicalObject src="@loader" useMask="true"/>
 		<TriangleCollisionModel />
 		<BarycentricMapping />

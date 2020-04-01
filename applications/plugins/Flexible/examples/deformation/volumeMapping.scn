@@ -15,7 +15,7 @@
     <Node 	name="volumeconservation"   >
 
 	<MeshObjLoader name="loader" filename="mesh/torus.obj" />
-	<Mesh name="mesh" src="@loader" />
+	<MeshTopology name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
         <UniformMass totalMass="250" />
 
@@ -52,7 +52,7 @@
     <Node 	name="constantPressure"   >
 
 	<MeshObjLoader name="loader" filename="mesh/torus.obj" translation="0 0 5"/>
-	<Mesh name="mesh" src="@loader" />
+	<MeshTopology name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
         <UniformMass totalMass="250" />
 

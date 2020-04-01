@@ -16,7 +16,7 @@
         <Node name="FVM">
             <EulerExplicitSolver name="odeExplicitSolver" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"  />
             <UniformMass totalMass="5" />
             <InvertibleFVMForceField name="FEM" youngModulus="100" poissonRatio="0"  />
@@ -28,7 +28,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader"  />
                 <TriangleCollisionModel />
                 <BarycentricMapping />
@@ -39,7 +39,7 @@
         <Node name="FEM">
             <EulerExplicitSolver name="odeExplicitSolver" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" dx="7" />
             <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="100" poissonRatio="0" computeGlobalMatrix="false" method="svd" />
@@ -51,7 +51,7 @@
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                <Mesh src="@loader" />
+                <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" dx="7" />
                 <TriangleCollisionModel />
                 <BarycentricMapping />
