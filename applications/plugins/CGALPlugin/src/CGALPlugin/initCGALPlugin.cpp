@@ -60,7 +60,7 @@ const char* getModuleVersion()
 
 const char* getModuleLicense()
 {
-    return "LGPL";
+    return "GPL";
 }
 
 
@@ -71,7 +71,7 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "MeshGenerationFromPolyhedron, TriangularConvexHull3D";
+    return "MeshGenerationFromPolyhedron, MeshGenerationFromImage, TriangularConvexHull3D, DecimateMesh, CylinderMesh, Refine2DMesh";
 }
 
 
