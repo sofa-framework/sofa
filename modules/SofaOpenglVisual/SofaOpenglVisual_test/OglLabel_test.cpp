@@ -25,8 +25,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -48,7 +48,7 @@ using sofa::defaulttype::RGBAColor ;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
-class OglLabelTest : public Sofa_test<>
+class OglLabelTest : public BaseTest
 {
 public:
     void SetUp(){

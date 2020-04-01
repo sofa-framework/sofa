@@ -25,7 +25,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -46,14 +47,11 @@ using sofa::helper::logging::MessageDispatcher ;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message ;
-
 #include <SofaSimulationGraph/SimpleApi.h>
 
 namespace sofa {
 
-struct TestLightManager : public Sofa_test<> {
+struct TestLightManager : public BaseTest {
 };
 
 void checkAttributes()

@@ -4,8 +4,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -37,7 +37,7 @@ int initMessage(){
 
 int messageInited = initMessage();
 
-class TestClipPlane : public Sofa_test<> {
+class TestClipPlane : public BaseTest {
 public:
     void checkClipPlaneValidAttributes();
     void checkClipPlaneAttributesValues(const std::string& dataname, const std::string& value);
@@ -72,7 +72,7 @@ void TestClipPlane::checkClipPlaneValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( clp->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    clearSceneGraph();
+    sofa::simulation::getSimulation()->unload(root);
 }
 
 
@@ -98,7 +98,7 @@ void TestClipPlane::checkClipPlaneAttributesValues(const std::string& dataname, 
     BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
     ASSERT_NE(clp, nullptr) ;
 
-    clearSceneGraph();
+    sofa::simulation::getSimulation()->unload(root);
 }
 
 TEST_F(TestClipPlane, checkClipPlaneIdInValidValues)
