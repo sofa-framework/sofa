@@ -12,6 +12,8 @@ set(HEADER_FILES
     ${PLUGIN_CGAL_SRC_DIR}/TriangularConvexHull3D.inl
     ${PLUGIN_CGAL_SRC_DIR}/CylinderMesh.h
     ${PLUGIN_CGAL_SRC_DIR}/CylinderMesh.inl
+    ${PLUGIN_CGAL_SRC_DIR}/Refine2DMesh.h
+    ${PLUGIN_CGAL_SRC_DIR}/Refine2DMesh.inl
 )
 
 set(SOURCE_FILES
@@ -20,6 +22,7 @@ set(SOURCE_FILES
     ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromPolyhedron.cpp
     ${PLUGIN_CGAL_SRC_DIR}/TriangularConvexHull3D.cpp
     ${PLUGIN_CGAL_SRC_DIR}/CylinderMesh.cpp
+    ${PLUGIN_CGAL_SRC_DIR}/Refine2DMesh.cpp
 )
 
 set(README_FILES CGALPlugin.txt)
@@ -29,8 +32,8 @@ set(README_FILES CGALPlugin.txt)
 find_package(SofaFramework REQUIRED)
 
 # Check if CImg plugin is build, If yes add more files
-find_package(CImgPlugin QUIET)
-if(CImgPlugin_FOUND)
+find_package(image QUIET)
+if(image_FOUND)
     list(APPEND HEADER_FILES ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromImage.h)
     list(APPEND HEADER_FILES ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromImage.inl)
     list(APPEND SOURCE_FILES ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromImage.cpp)
@@ -74,7 +77,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 target_include_directories(${PROJECT_NAME} PUBLIC ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR} ${CGAL_INCLUDE_DIRS})
 
 if(CImgPlugin_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${CGAL_ImageIO_LIBRARY} CImgPlugin)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${CGAL_ImageIO_LIBRARY} image)
     #target_include_directories(${PROJECT_NAME} PUBLIC ${CImg_INCLUDE_DIRS})
 else()
     target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY})
