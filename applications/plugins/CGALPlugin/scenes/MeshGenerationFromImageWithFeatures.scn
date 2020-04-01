@@ -7,13 +7,13 @@
 	<ImageContainer name="image" template="ImageUC" filename="data/image/image-cube.inr"/>
 	<ImageViewer template="ImageUC" src="@image" plane="0 0 0"/>
 	
-   	<MeshGenerationFromImage template="Vec3d" name="generator" printLog="true" drawTetras="true" 
+   	<MeshGenerationFromImage template="Vec3d" name="generator" printLog="0" drawTetras="true" 
             image="@image.image" transform="@image.transform"  features="@loader.position"
             cellSize="5" edgeSize="5"  facetSize="5" facetApproximation="0.1"  facetAngle="30" cellRatio="3"  ordering="0"
 			label="1 2 3" labelCellSize="0.15 0.15 0.15" labelCellData="100 200 300"/>/> 
 	
-	<Mesh name="generatedMesh" points="@generator.outputPoints" 	tetras="@generator.outputTetras"/> 	
-	<VTKExporter name="exporter" filename="cubeWithFeatures.vtk"  XMLformat="0" edges="0" tetras="1" exportAtBegin="1" cellsDataFields="generator.outputCellData"/>		
+	<MeshTopology name="generatedMesh" points="@generator.outputPoints" 	tetras="@generator.outputTetras"/> 	
+	<!--<VTKExporter name="exporter" filename="cubeWithFeatures.vtk"  XMLformat="0" edges="0" tetras="1" exportAtBegin="1" cellsDataFields="generator.outputCellData"/>-->
 
 </Node>
 
