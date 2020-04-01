@@ -24,8 +24,9 @@
 #include <iterator>
 #include <algorithm>
 
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
@@ -33,6 +34,7 @@
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <SofaExporter/WriteState.h>
 
 namespace sofa {
@@ -43,7 +45,7 @@ namespace sofa {
 
 
     template <typename _DataTypes>
-    struct WriteState_test : public Sofa_test<typename _DataTypes::Real>
+    struct WriteState_test : public BaseTest
     {
         typedef _DataTypes DataTypes;
         typedef typename DataTypes::CPos CPos;

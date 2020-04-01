@@ -44,15 +44,18 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
+
 using std::vector;
 using testing::Types;
 
 #include <boost/filesystem.hpp>
+
 namespace {
 std::string tempdir = boost::filesystem::temp_directory_path().string() ;
 
-class MeshExporter_test : public sofa::Sofa_test<>,
+class MeshExporter_test : public BaseTest,
                           public ::testing::WithParamInterface<vector<string>>
 {
 public:
