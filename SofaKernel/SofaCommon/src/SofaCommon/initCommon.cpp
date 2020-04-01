@@ -19,9 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COMMON_INIT_H
-#define SOFA_COMPONENT_COMMON_INIT_H
-#include "config.h"
+#include <sofa/helper/system/config.h>
+#include <SofaCommon/initCommon.h>
+#include <SofaLoader/initLoader.h>
+#include <SofaEngine/initEngine.h>
+
+#include <SofaRigid/initRigid.h>
+#include <SofaDeformable/initDeformable.h>
+#include <SofaSimpleFem/initSimpleFEM.h>
+#include <SofaObjectInteraction/initObjectInteraction.h>
+#include <SofaMeshCollision/initMeshCollision.h>
+#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
+#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
+#include <SofaEigen2Solver/initEigen2Solver.h>
+#include <SofaObjectInteraction/initObjectInteraction.h>
 
 namespace sofa
 {
@@ -30,11 +41,27 @@ namespace component
 {
 
 
-void SOFA_COMPONENT_COMMON_API initComponentCommon();
+void initCommon()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+
+    initLoader();
+    initEngine();
+    initRigid();
+    initDeformable();
+    initSimpleFEM();
+    initObjectInteraction();
+    initMeshCollision();
+    initExplicitODESolver();
+    initImplicitODESolver();
+    initEigen2Solver();
+    initObjectInteraction();
+}
 
 } // namespace component
 
 } // namespace sofa
-
-#endif
-

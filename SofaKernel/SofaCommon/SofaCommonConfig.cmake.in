@@ -4,7 +4,7 @@
 
 set(SOFACOMMON_TARGETS @SOFACOMMON_TARGETS@)
 
-find_package(SofaBase REQUIRED SofaComponentBase)
+find_package(SofaBase REQUIRED)
 
 foreach(target ${SOFACOMMON_TARGETS})
     if(NOT TARGET ${target})
