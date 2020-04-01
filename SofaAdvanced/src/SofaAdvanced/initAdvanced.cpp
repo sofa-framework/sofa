@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,16 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAADVANCED_CONFIG_H
-#define SOFAADVANCED_CONFIG_H
+#include <sofa/helper/system/config.h>
+#include <SofaAdvanced/initAdvanced.h>
+#include <SofaNonUniformFem/initNonUniformFEM.h>
 
-#include <SofaCommon/config.h>
+namespace sofa
+{
 
-#ifdef SOFA_BUILD_NON_UNIFORM_FEM
-#  define SOFA_TARGET SofaNonUniformFem
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace component
+{
 
-#endif
+
+void initAdvanced()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+
+    initNonUniformFEM();
+}
+
+
+} // namespace component
+
+} // namespace sofa
