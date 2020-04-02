@@ -26,16 +26,7 @@
 #include <SofaBaseCollision/initBaseCollision.h>
 #include <SofaBaseLinearSolver/initBaseLinearSolver.h>
 #include <SofaBaseVisual/initBaseVisual.h>
-
-#include "messageHandlerComponent.h"
-using sofa::component::logging::MessageHandlerComponent ;
-using sofa::component::logging::FileMessageHandlerComponent ;
-
-#include "MakeAliasComponent.h"
-using sofa::component::MakeAliasComponent ;
-
-#include "MakeDataAliasComponent.h"
-using sofa::component::MakeAliasComponent ;
+#include <SofaBaseUtils/initBaseUtils.h>
 
 namespace sofa
 {
@@ -54,6 +45,7 @@ void initBase()
         initBaseCollision();
         initBaseLinearSolver();
         initBaseVisual();
+        initBaseUtils();
         first = false;
     }
 }

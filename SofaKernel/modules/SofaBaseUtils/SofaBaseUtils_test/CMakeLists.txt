@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(SofaComponentBase_test)
+project(SofaBaseUtils_test)
 
 set(SOURCE_FILES
         MessageHandlerComponent_test.cpp

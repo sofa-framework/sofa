@@ -33,18 +33,10 @@ set(SOFABASE_SRC src/${PROJECT_NAME})
 set(HEADER_FILES
     ${SOFABASE_SRC}/config.h.in
     ${SOFABASE_SRC}/initBase.h
-    ${SOFABASE_SRC}/messageHandlerComponent.h
-    ${SOFABASE_SRC}/MakeAliasComponent.h
-    ${SOFABASE_SRC}/MakeDataAliasComponent.h
-    ${SOFABASE_SRC}/InfoComponent.h
 )
 
 set(SOURCE_FILES
     ${SOFABASE_SRC}/initBase.cpp
-    ${SOFABASE_SRC}/messageHandlerComponent.cpp
-    ${SOFABASE_SRC}/MakeAliasComponent.cpp
-    ${SOFABASE_SRC}/MakeDataAliasComponent.cpp
-    ${SOFABASE_SRC}/InfoComponent.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
@@ -66,11 +58,3 @@ sofa_generate_package(
     TARGETS ${PROJECT_NAME} 
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}/${PROJECT_NAME}"
     )
-
-# Tests
-# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-# cmake_dependent_option(SOFABASE_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-# if(SOFABASE_BUILD_TESTS)
-#     enable_testing()
-#     add_subdirectory(SofaBase_test)
-# endif()
