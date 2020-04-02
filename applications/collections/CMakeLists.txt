@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 
-sofa_add_collection(SofaComponentBase SofaComponentBase ON)
-sofa_add_collection(SofaComponentCommon SofaComponentCommon ON)
-sofa_add_collection(SofaComponentGeneral SofaComponentGeneral ON)
-sofa_add_collection(SofaComponentMisc SofaComponentMisc ON)
-sofa_add_collection(SofaComponentAdvanced SofaComponentAdvanced ON)
+# sofa_add_collection(SofaComponentBase SofaComponentBase ON)
+# sofa_add_collection(SofaComponentCommon SofaComponentCommon ON)
+# sofa_add_collection(SofaComponentGeneral SofaComponentGeneral ON)
+# sofa_add_collection(SofaComponentMisc SofaComponentMisc ON)
+# sofa_add_collection(SofaComponentAdvanced SofaComponentAdvanced ON)
 
 sofa_add_collection(SofaComponentAll SofaComponentAll ON) # Depends on all SofaComponent*
