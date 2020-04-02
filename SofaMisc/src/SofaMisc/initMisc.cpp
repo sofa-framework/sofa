@@ -36,7 +36,7 @@ namespace component
 {
 
 
-void initComponentMisc()
+void initMisc()
 {
     static bool first = true;
     if (first)

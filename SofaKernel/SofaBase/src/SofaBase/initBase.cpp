@@ -44,7 +44,7 @@ namespace component
 {
 
 
-void initComponentBase()
+void initBase()
 {
     static bool first = true;
     if (first)

@@ -19,11 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include <SofaCommon/initCommon.h>
+
 #include <SofaLoader/initLoader.h>
 #include <SofaEngine/initEngine.h>
-
 #include <SofaRigid/initRigid.h>
 #include <SofaDeformable/initDeformable.h>
 #include <SofaSimpleFem/initSimpleFEM.h>

@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-
 #include <SofaGeneral/config.h>
 
+#include <SofaGeneral/initGeneral.h>
 #include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
 #include <SofaGeneralDeformable/initGeneralDeformable.h>
 #include <SofaGeneralExplicitOdeSolver/initGeneralExplicitODESolver.h>
