@@ -98,12 +98,6 @@ protected:
 
 public:
 
-    template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        return core::DataEngine::canCreate (obj, context, arg);
-    }
-
     virtual std::string getTemplateName() const override;
     static std::string templateName(const GenerateRigidMass<DataTypes,MassType>*);
 

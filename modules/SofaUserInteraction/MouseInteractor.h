@@ -58,7 +58,7 @@ class SOFA_USER_INTERACTION_API BaseMouseInteractor : public core::BehaviorModel
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMouseInteractor, core::BehaviorModel);
-    typedef sofa::component::collision::RayModel MouseCollisionModel;
+    typedef sofa::component::collision::RayCollisionModel MouseCollisionModel;
     typedef helper::vector< InteractionPerformer* > VecPerformer;
 protected:
     BaseMouseInteractor(): isAttached(false),distanceFromMouse(0) {}

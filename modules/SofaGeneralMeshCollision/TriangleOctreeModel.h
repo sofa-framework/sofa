@@ -40,10 +40,10 @@ namespace component
 namespace collision
 {
 
-class SOFA_GENERAL_MESH_COLLISION_API TriangleOctreeModel : public  TriangleModel, public TriangleOctreeRoot
+class SOFA_GENERAL_MESH_COLLISION_API TriangleOctreeModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public TriangleOctreeRoot
 {
 public:
-    SOFA_CLASS(TriangleOctreeModel, TriangleModel);
+    SOFA_CLASS(TriangleOctreeModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
 protected:
     TriangleOctreeModel();
 public:

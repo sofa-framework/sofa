@@ -70,8 +70,8 @@ public:
     void addCollisionPair (const std::pair < core::CollisionModel *,
             core::CollisionModel * >&cmPair) override;
 
-    void findPairsVolume (CubeModel * cm1,
-            CubeModel * cm2);
+    void findPairsVolume (CubeCollisionModel * cm1,
+            CubeCollisionModel * cm2);
 
     void beginBroadPhase() override
     {

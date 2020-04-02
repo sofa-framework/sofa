@@ -53,7 +53,7 @@ namespace gui
 class SOFA_SOFAGUIQT_API GLPickHandler : public PickHandler
 {
     typedef PickHandler Inherit;
-    typedef sofa::component::collision::RayModel MouseCollisionModel;
+    typedef sofa::component::collision::RayCollisionModel MouseCollisionModel;
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
 
 public:

@@ -67,7 +67,6 @@ class DecimateMesh : public sofa::core::DataEngine
 public:
     SOFA_CLASS(SOFA_TEMPLATE(DecimateMesh,DataTypes),sofa::core::DataEngine);
 
-//        typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename Coord::value_type Real;
@@ -81,7 +80,6 @@ public:
     void reinit() override;
 
     void doUpdate() override;
-    void draw();
     void writeObj();
     void computeNormals();
 

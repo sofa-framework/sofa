@@ -310,10 +310,4 @@ bool DecimateMesh<DataTypes>::testVertexAndFindIndex(const Vec3 &vertex, int &in
 }
 
 
-template <class DataTypes>
-void DecimateMesh<DataTypes>::draw()
-{
-
-}
-
 } //cgal

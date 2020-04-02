@@ -73,13 +73,6 @@ public:
     Data< std::string >                    d_ODESolverName; ///< name of the ode solver
     Data< double > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix.
 
-    /// Pre-construction check method called by ObjectFactory.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return BaseConstraintCorrection::canCreate(obj, context, arg);
-    }
-
 protected:
     GenericConstraintCorrection();
     ~GenericConstraintCorrection() override;

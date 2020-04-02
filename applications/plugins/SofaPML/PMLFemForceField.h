@@ -81,7 +81,7 @@ public :
     string isTypeOf() { return "FEM"; }
 
     ///accessors
-    TriangleModel::SPtr getTriangleModel() { return tmodel; }
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr getTriangleModel() { return tmodel; }
     //LineModel * getLineModel() { return lmodel; }
     //PointModel * getPointModel() { return pmodel; }
 
@@ -110,7 +110,7 @@ private :
     BaseMeshTopology::Tetra * Tesselate(Cell* pCell);
     
     //structure
-    TriangleModel::SPtr tmodel;
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr tmodel;
     //LineModel * lmodel;
     //PointModel * pmodel;
 

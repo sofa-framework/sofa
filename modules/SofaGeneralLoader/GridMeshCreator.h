@@ -48,9 +48,6 @@ public:
     bool canLoad() override { return true; }
     bool load() override; ///< create the grid
 
-    template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg ) { return BaseLoader::canCreate (obj, context, arg); }
-
     Data< defaulttype::Vec2i > resolution;  ///< Number of vertices in each direction
     Data< int > trianglePattern;            ///< 0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles.
 

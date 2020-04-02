@@ -208,7 +208,7 @@ void RigidDistanceGridCollisionModel::updateState()
 /// Create or update the bounding volume hierarchy.
 void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = this->createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = this->createPrevious<CubeCollisionModel>();
 
     if (!modified && !isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
@@ -595,7 +595,7 @@ void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
 /// Create or update the bounding volume hierarchy.
 void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = this->createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = this->createPrevious<CubeCollisionModel>();
 
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 

@@ -48,25 +48,25 @@ MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersect
 {
     if (addSelf)
     {
-        intersection->intersectors.add<PointModel, PointModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<SphereModel, PointModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<LineModel, PointModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<LineModel, SphereModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<LineModel, LineModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<TriangleModel, PointModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<TriangleModel, SphereModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<TriangleModel, LineModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<TriangleModel, TriangleModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<CapsuleModel, TriangleModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<CapsuleModel, LineModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<TriangleModel, OBBModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MeshNewProximityIntersection>(this);
 
-        intersection->intersectors.add<RigidSphereModel, PointModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<LineModel, RigidSphereModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<TriangleModel, RigidSphereModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, MeshNewProximityIntersection>(this);
 
-        intersection->intersectors.add<RigidCapsuleModel, TriangleModel, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<RigidCapsuleModel, LineModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
     }
 }
 
@@ -156,15 +156,15 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
 
     int n = 0;
 
-    if (f1&TriangleModel::FLAG_P1)
+    if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)
     {
         n += doIntersectionLinePoint(dist2, q1, q2, p1, contacts, e2.getIndex(), true);
     }
-    if (f1&TriangleModel::FLAG_P2)
+    if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)
     {
         n += doIntersectionLinePoint(dist2, q1, q2, p2, contacts, e2.getIndex(), true);
     }
-    if (f1&TriangleModel::FLAG_P3)
+    if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)
     {
         n += doIntersectionLinePoint(dist2, q1, q2, p3, contacts, e2.getIndex(), true);
     }
@@ -174,11 +174,11 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
 
     if (intersection->useLineLine.getValue())
     {
-        if (f1&TriangleModel::FLAG_E12)
+        if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)
             n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, e2.getIndex());
-        if (f1&TriangleModel::FLAG_E23)
+        if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23)
             n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, e2.getIndex());
-        if (f1&TriangleModel::FLAG_E31)
+        if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)
             n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, e2.getIndex());
     }
 
@@ -231,49 +231,49 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 
     int n = 0;
 
-    if (f1&TriangleModel::FLAG_P1)
+    if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)
         n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p1, contacts, id1+0, true);
-    if (f1&TriangleModel::FLAG_P2)
+    if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)
         n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p2, contacts, id1+1, true);
-    if (f1&TriangleModel::FLAG_P3)
+    if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)
         n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p3, contacts, id1+2, true);
 
-    if (f2&TriangleModel::FLAG_P1)
+    if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)
         n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, id2+0, false);
-    if (f2&TriangleModel::FLAG_P2)
+    if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)
         n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, id2+1, false);
-    if (f2&TriangleModel::FLAG_P3)
+    if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)
         n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q3, contacts, id2+2, false);
 
     if (intersection->useLineLine.getValue())
     {
-        if (f1&TriangleModel::FLAG_E12)
+        if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)
         {
-            if (f2&TriangleModel::FLAG_E12)
+            if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)
                 n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, id2+3);
-            if (f2&TriangleModel::FLAG_E23)
+            if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23)
                 n += doIntersectionLineLine(dist2, p1, p2, q2, q3, contacts, id2+4);
-            if (f2&TriangleModel::FLAG_E31)
+            if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)
                 n += doIntersectionLineLine(dist2, p1, p2, q3, q1, contacts, id2+5);
         }
 
-        if (f1&TriangleModel::FLAG_E23)
+        if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23)
         {
-            if (f2&TriangleModel::FLAG_E12)
+            if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)
                 n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, id2+6);
-            if (f2&TriangleModel::FLAG_E23)
+            if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23)
                 n += doIntersectionLineLine(dist2, p2, p3, q2, q3, contacts, id2+7);
-            if (f2&TriangleModel::FLAG_E31)
+            if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)
                 n += doIntersectionLineLine(dist2, p2, p3, q3, q1, contacts, id2+8);
         }
 
-        if (f1&TriangleModel::FLAG_E31)
+        if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)
         {
-            if (f2&TriangleModel::FLAG_E12)
+            if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)
                 n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, id2+9);
-            if (f2&TriangleModel::FLAG_E23)
+            if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23)
                 n += doIntersectionLineLine(dist2, p3, p1, q2, q3, contacts, id2+10);
-            if (f2&TriangleModel::FLAG_E31)
+            if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)
                 n += doIntersectionLineLine(dist2, p3, p1, q3, q1, contacts, id2+11);
         }
     }

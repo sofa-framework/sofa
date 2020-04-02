@@ -186,8 +186,12 @@ public:
         context->findLinkDest(mstate1, object1, nullptr);
         context->findLinkDest(mstate2, object2, nullptr);
 
-        if (!mstate1 || !mstate2)
-        {
+        if (!mstate1) {
+            arg->logError("Data attribute 'object1' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
+            return false;
+        }
+        if (!mstate2) {
+            arg->logError("Data attribute 'object2' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
             return false;
         }
 

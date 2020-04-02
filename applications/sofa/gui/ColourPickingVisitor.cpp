@@ -66,23 +66,23 @@ void decodeCollisionElement(const sofa::defaulttype::Vec4f colour,  sofa::compon
 
 }
 
-void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f colour, const TriangleModel* model,
+void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f colour, const TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index)
 {
 
     if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  )
     {
-        component::collision::Triangle t(const_cast<TriangleModel*>(model),index);
+        component::collision::Triangle t(const_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(model),index);
         body.point = (t.p1()*colour[0]) + (t.p2()*colour[1]) + (t.p3()*colour[2]) ;
 
     }
 
 }
 
-void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f /*colour*/, const SphereModel *model,
+void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f /*colour*/, const SphereCollisionModel<sofa::defaulttype::Vec3Types> *model,
         const unsigned int index)
 {
-    Sphere s(const_cast<SphereModel*>(model),index);
+    Sphere s(const_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(model),index);
     body.point = s.center();
 }
 
@@ -96,15 +96,15 @@ simulation::Visitor::Result ColourPickingVisitor::processNodeTopDown(simulation:
 void ColourPickingVisitor::processCollisionModel(simulation::Node*  node , core::CollisionModel* o)
 {
     using namespace core::objectmodel;
-    TriangleModel* tmodel = nullptr;
-    SphereModel*   smodel = nullptr;
-    if((tmodel = dynamic_cast<TriangleModel*>(o)) != nullptr )
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>* tmodel = nullptr;
+    SphereCollisionModel<sofa::defaulttype::Vec3Types>*   smodel = nullptr;
+    if((tmodel = dynamic_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(o)) != nullptr )
         processTriangleModel(node,tmodel);
-    if( (smodel = dynamic_cast<SphereModel*>(o) ) != nullptr )
+    if( (smodel = dynamic_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(o) ) != nullptr )
         processSphereModel(node,smodel);
 }
 
-void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::component::collision::TriangleModel * tmodel)
+void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> * tmodel)
 {
 #ifndef SOFA_NO_OPENGL
     using namespace sofa::core::collision;
@@ -165,7 +165,7 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
 #endif /* SOFA_NO_OPENGL */
 }
 
-void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::component::collision::SphereModel * smodel)
+void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types> * smodel)
 {
 #ifndef SOFA_NO_OPENGL
     typedef Sphere::Coord Coord;

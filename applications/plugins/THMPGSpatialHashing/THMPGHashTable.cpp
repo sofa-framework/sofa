@@ -23,7 +23,7 @@ void THMPGHashTable::refersh(SReal timeStamp){
 
     _timeStamp = timeStamp;
 
-    sofa::component::collision::CubeModel* cube_model = dynamic_cast<sofa::component::collision::CubeModel*>(_cm->getPrevious());
+    sofa::component::collision::CubeCollisionModel* cube_model = dynamic_cast<sofa::component::collision::CubeCollisionModel*>(_cm->getPrevious());
 
     long int nb_added_elems = 0;
     int mincell[3];

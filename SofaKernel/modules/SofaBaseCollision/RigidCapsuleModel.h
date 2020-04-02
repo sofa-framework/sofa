@@ -163,7 +163,11 @@ public:
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr && context->getMechanicalState() != nullptr)
+        {
+            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                          "' found in the context node.");
             return false;
+        }
 
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -195,8 +199,8 @@ inline TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsule(const cor
 {
 }
 
-using RigidCapsuleModel [[deprecated("The RigidCapsuleModel is now deprecated, please use CapsuleCollisionModel instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>;
-using RigidCapsuleCollisionModel = CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>;
+using RigidCapsuleModel [[deprecated("The RigidCapsuleModel is now deprecated, please use CapsuleCollisionModel<sofa::defaulttype::Rigid3Types> instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>;
+using RigidCapsuleCollisionModel  [[deprecated("The RigidCapsuleCollisionModel is now deprecated, please use CapsuleCollisionModel<sofa::defaulttype::Rigid3Types> instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>;
 using RigidCapsule = TCapsule<sofa::defaulttype::Rigid3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_CPP)

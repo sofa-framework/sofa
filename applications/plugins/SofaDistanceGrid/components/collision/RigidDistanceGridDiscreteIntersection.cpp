@@ -47,11 +47,11 @@ IntersectorCreator<DiscreteIntersection, RigidDistanceGridDiscreteIntersection> 
 RigidDistanceGridDiscreteIntersection::RigidDistanceGridDiscreteIntersection(DiscreteIntersection* object)
     : intersection(object)
 {
-    intersection->intersectors.add<RigidDistanceGridCollisionModel, PointModel,                      RigidDistanceGridDiscreteIntersection>  (this);
-    intersection->intersectors.add<RigidDistanceGridCollisionModel, SphereModel,                     RigidDistanceGridDiscreteIntersection>  (this);
-    intersection->intersectors.add<RigidDistanceGridCollisionModel, LineModel,                       RigidDistanceGridDiscreteIntersection>  (this);
-    intersection->intersectors.add<RigidDistanceGridCollisionModel, TriangleModel,                   RigidDistanceGridDiscreteIntersection>  (this);
-    intersection->intersectors.add<RayModel, RigidDistanceGridCollisionModel, RigidDistanceGridDiscreteIntersection>  (this);
+    intersection->intersectors.add<RigidDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>,                      RigidDistanceGridDiscreteIntersection>  (this);
+    intersection->intersectors.add<RigidDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>,                     RigidDistanceGridDiscreteIntersection>  (this);
+    intersection->intersectors.add<RigidDistanceGridCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>,                       RigidDistanceGridDiscreteIntersection>  (this);
+    intersection->intersectors.add<RigidDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>,                   RigidDistanceGridDiscreteIntersection>  (this);
+    intersection->intersectors.add<RayCollisionModel, RigidDistanceGridCollisionModel, RigidDistanceGridDiscreteIntersection>  (this);
     intersection->intersectors.add<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel, RigidDistanceGridDiscreteIntersection> (this);
 }
 
@@ -620,7 +620,7 @@ bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCo
 int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Triangle& e2, OutputVector* contacts)
 {
     const int f2 = e2.flags();
-    if (!(f2&(TriangleModel::FLAG_POINTS|TriangleModel::FLAG_BEDGES))) return 0; // no points associated with this triangle
+    if (!(f2&(TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS|TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_BEDGES))) return 0; // no points associated with this triangle
     DistanceGrid* grid1 = e1.getGrid();
     const bool useXForm = e1.isTransformed();
     const Vector3& t1 = e1.getTranslation();
@@ -631,7 +631,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     int nc = 0;
     for (unsigned int iP = 0; iP < 3; ++iP)
     {
-        if (!(f2&(TriangleModel::FLAG_P1 << iP))) continue;
+        if (!(f2&(TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1 << iP))) continue;
 
         Vector3 p2 = e2.p(iP);
         DistanceGrid::Coord p1;
@@ -674,7 +674,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     }
     for (unsigned int iE = 0; iE < 3; ++iE)
     {
-        if (!(f2&(TriangleModel::FLAG_BE23 << iE))) continue;
+        if (!(f2&(TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_BE23 << iE))) continue;
         unsigned int iP1 = (iE+1)%3;
         unsigned int iP2 = (iE+2)%3;
         Vector3 p2 = (e2.p(iP1)+e2.p(iP2))*0.5;
@@ -729,7 +729,7 @@ bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCo
 int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Line& e2, OutputVector* contacts)
 {
     const int f2 = e2.flags();
-    if (!(f2&LineModel::FLAG_POINTS)) return 0; // no points associated with this line
+    if (!(f2&LineCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS)) return 0; // no points associated with this line
     DistanceGrid* grid1 = e1.getGrid();
     const bool useXForm = e1.isTransformed();
     const Vector3& t1 = e1.getTranslation();
@@ -740,7 +740,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     int nresult = 0;
     for (unsigned int iP = 0; iP < 2; ++iP)
     {
-        if (!(f2&(LineModel::FLAG_P1 << iP))) continue;
+        if (!(f2&(LineCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1 << iP))) continue;
 
         Vector3 p2 = e2.p(iP);
         DistanceGrid::Coord p1;
