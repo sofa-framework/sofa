@@ -144,7 +144,10 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<MState *>(context->getMechanicalState()) == nullptr) return false;
+        if (dynamic_cast<sofa::core::behavior::MechanicalState<TDataTypes> *>(context->getMechanicalState()) == nullptr) {
+            arg->logError(std::string("No mechanical state with the datatype '") + TDataTypes::Name() + "' found in the context node.");
+            return false;
+        }
         return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
