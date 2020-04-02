@@ -117,7 +117,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             if (surfaceOnVolume) // In the case of deleting a volume from a surface an volumique collision model is needed (only tetra available for the moment)
             {
 #if 0
-                model = sofa::core::objectmodel::New<TetrahedronModel>();
+                model = sofa::core::objectmodel::New<TetrahedronCollisionModel>();
                 //model->setContext(topo_curr->getContext());
                 topo_curr->getContext()->addObject(model);
 #endif

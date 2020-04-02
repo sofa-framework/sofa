@@ -70,7 +70,7 @@ void BruteForceDetection::reinit()
     }
     else
     {
-        if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeModel>();
+        if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeCollisionModel>();
         boxModel->resize(1);
         boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
     }

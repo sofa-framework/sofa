@@ -50,43 +50,43 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
     if (addSelf)
     {
         if (intersection->usePointPoint.getValue())
-            intersection->intersectors.add<PointModel, PointModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
         else
-            intersection->intersectors.ignore<PointModel, PointModel>();
+            intersection->intersectors.ignore<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
 
         if(intersection->useLinePoint.getValue())
-            intersection->intersectors.add<LineModel, PointModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
         else
-            intersection->intersectors.ignore<LineModel, PointModel>();
+            intersection->intersectors.ignore<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
 
         if(intersection->useLineLine.getValue())
-            intersection->intersectors.add<LineModel, LineModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
         else
-            intersection->intersectors.ignore<LineModel, LineModel>();
+            intersection->intersectors.ignore<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
 
-        intersection->intersectors.add<TriangleModel, PointModel, MeshMinProximityIntersection>(this);
-        intersection->intersectors.ignore<TriangleModel, LineModel>();
-        intersection->intersectors.ignore<TriangleModel, TriangleModel>();
-        intersection->intersectors.add<CapsuleModel, TriangleModel, MeshMinProximityIntersection>(this);
-        intersection->intersectors.add<CapsuleModel, LineModel, MeshMinProximityIntersection>(this);
+        intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+        intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
+        intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
+        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
 
         if (intersection->useSphereTriangle.getValue())
         {
-            intersection->intersectors.add<SphereModel, PointModel, MeshMinProximityIntersection>(this);
-            intersection->intersectors.add<RigidSphereModel, PointModel, MeshMinProximityIntersection>(this);
-            intersection->intersectors.add<TriangleModel, SphereModel, MeshMinProximityIntersection>(this);
-            intersection->intersectors.add<TriangleModel, RigidSphereModel, MeshMinProximityIntersection>(this);
-            intersection->intersectors.add<LineModel, SphereModel, MeshMinProximityIntersection>(this);
-            intersection->intersectors.add<LineModel, RigidSphereModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, MeshMinProximityIntersection>(this);
         }
         else
         {
-            intersection->intersectors.ignore<SphereModel, PointModel>();
-            intersection->intersectors.ignore<RigidSphereModel, PointModel>();
-            intersection->intersectors.ignore<LineModel, SphereModel>();
-            intersection->intersectors.ignore<LineModel, RigidSphereModel>();
-            intersection->intersectors.ignore<TriangleModel, SphereModel>();
-            intersection->intersectors.ignore<TriangleModel, RigidSphereModel>();
+            intersection->intersectors.ignore<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
+            intersection->intersectors.ignore<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
+            intersection->intersectors.ignore<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
+            intersection->intersectors.ignore<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>();
+            intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
+            intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>();
         }
     }
 }

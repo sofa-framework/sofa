@@ -183,7 +183,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if(m_componentstate!=ComponentState::Valid)
         return ;
 
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
@@ -223,7 +223,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
     if(m_componentstate!=ComponentState::Valid)
         return ;
 
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)

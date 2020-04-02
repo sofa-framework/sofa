@@ -47,7 +47,7 @@ SpatialGridPointModel::SpatialGridPointModel()
 
 void SpatialGridPointModel::init()
 {
-    this->PointModel::init();
+    this->PointCollisionModel<sofa::defaulttype::Vec3Types>::init();
     this->getContext()->get(grid);
 
     if (grid==NULL)
@@ -77,14 +77,14 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
 {
     if (!grid)
     {
-        this->PointModel::computeBoundingTree(maxDepth);
+        this->PointCollisionModel<sofa::defaulttype::Vec3Types>::computeBoundingTree(maxDepth);
         return;
     }
     int lscale = d_leafScale.getValue();
     if (lscale > Grid::GRIDDIM_LOG2) lscale = Grid::GRIDDIM_LOG2;
     int ldim = (1<<lscale);
     int nleaf = Grid::GRIDDIM/ldim;
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
@@ -221,8 +221,8 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
         if (cells.size() > (unsigned int)parent+1)
         {
             cells.resize(parent+1);
-            CubeModel* prevCubeModel = cubeModel;
-            cubeModel = cubeModel->createPrevious<CubeModel>();
+            CubeCollisionModel* prevCubeModel = cubeModel;
+            cubeModel = cubeModel->createPrevious<CubeCollisionModel>();
             cubeModel->resize(0);
             for (unsigned int i=0; i<cells.size(); ++i)
             {
@@ -236,10 +236,10 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
         }
         ++depth;
     }
-    CubeModel* root = cubeModel->createPrevious<CubeModel>();
-    while (dynamic_cast<CubeModel*>(root->getPrevious()) != NULL)
+    CubeCollisionModel* root = cubeModel->createPrevious<CubeCollisionModel>();
+    while (dynamic_cast<CubeCollisionModel*>(root->getPrevious()) != NULL)
     {
-        root = dynamic_cast<CubeModel*>(root->getPrevious());
+        root = dynamic_cast<CubeCollisionModel*>(root->getPrevious());
     }
     root->resize(0);
     root->addCube(Cube(cubeModel,0), Cube(cubeModel,cubeModel->getSize()));

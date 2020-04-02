@@ -53,8 +53,7 @@ int TriangleModelInRegularGridClass = core::RegisterObject ( "collision model us
         .add< TriangleModelInRegularGrid >()
         ;
 
-TriangleModelInRegularGrid::TriangleModelInRegularGrid()
-    :TriangleModel()
+TriangleModelInRegularGrid::TriangleModelInRegularGrid() : TriangleCollisionModel<sofa::defaulttype::Vec3Types>()
 {
 
 }
@@ -68,7 +67,7 @@ TriangleModelInRegularGrid::~TriangleModelInRegularGrid()
 
 void TriangleModelInRegularGrid::init()
 {
-    TriangleModel::init();
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::init();
 
     _topology = this->getContext()->getMeshTopology();
     m_mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
@@ -107,13 +106,13 @@ void TriangleModelInRegularGrid::init()
         msg_info() << "Using the " << _higher_topo->getClassName() << " \"" << _higher_topo->getName() << "\" to compute the bounding trees.";
     }
     else {
-        msg_info() << "Keeping the TriangleModel to compute the bounding trees.";
+        msg_info() << "Keeping the TriangleCollisionModel<sofa::defaulttype::Vec3Types> to compute the bounding trees.";
     }
 }
 
 void TriangleModelInRegularGrid::computeBoundingTree ( int )
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     updateFromTopology();
     if ( m_needsUpdate && !cubeModel->empty() ) cubeModel->resize ( 0 );
     if ( !isMoving() && !cubeModel->empty() && !m_needsUpdate ) return; // No need to recompute BBox if immobile

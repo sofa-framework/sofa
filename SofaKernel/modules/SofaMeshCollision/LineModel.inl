@@ -93,7 +93,7 @@ void LineCollisionModel<DataTypes>::init()
 
     if (!bmt)
     {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". LineModel requires a MeshTopology";
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". LineCollisionModel<sofa::defaulttype::Vec3Types> requires a MeshTopology";
         sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
@@ -473,7 +473,7 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionMo
 template<class DataTypes>
 void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     updateFromTopology();
     if (needsUpdate) cubeModel->resize(0);
     if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
@@ -516,7 +516,7 @@ void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 template<class DataTypes>
 void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     updateFromTopology();
     if (needsUpdate) cubeModel->resize(0);
     if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile

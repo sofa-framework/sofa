@@ -189,7 +189,7 @@ public:
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
     Topology* topology;
-    PointModel* mpoints;
+    PointCollisionModel<sofa::defaulttype::Vec3Types>* mpoints;
     int meshRevision;
     LineLocalMinDistanceFilter *m_lmdFilter;
 
@@ -262,7 +262,7 @@ template<class DataTypes>
 inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 template <class TDataTypes> using TLineModel [[deprecated("The TLineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] = LineCollisionModel<TDataTypes>;
-using  LineModel [[deprecated("The LineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] = LineCollisionModel<sofa::defaulttype::Vec3Types>;
+using  LineModel [[deprecated("The LineModel is now deprecated, please use LineCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = LineCollisionModel<sofa::defaulttype::Vec3Types>;
 using Line = TLine<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP)

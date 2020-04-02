@@ -194,7 +194,7 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
 
 void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     if (!mstate || !_topology) return;
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 

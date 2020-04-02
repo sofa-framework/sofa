@@ -122,7 +122,7 @@ unsigned int CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >:
 template <class MyReal>
 void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int ncap = _mstate->getSize();
 
     bool updated = false;

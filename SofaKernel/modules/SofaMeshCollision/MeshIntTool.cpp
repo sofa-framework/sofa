@@ -220,21 +220,21 @@ int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const Vecto
         if (pAB < 0.000001 && pAC < 0.0000001)
         {
             // closest point is A
-            if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)) return 0; // this corner is not considered
             alpha = 0.0;
             beta = 0.0;
         }
         else if (pAB < 0.999999 && beta < 0.000001)
         {
             // closest point is on AB
-            if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)) return 0; // this edge is not considered
             alpha = pAB;
             beta = 0.0;
         }
         else if (pAC < 0.999999 && alpha < 0.000001)
         {
             // closest point is on AC
-            if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)) return 0; // this edge is not considered
             alpha = 0.0;
             beta = pAC;
         }
@@ -246,21 +246,21 @@ int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const Vecto
             if (pBC < 0.000001)
             {
                 // closest point is B
-                if (!(flags&TriangleModel::FLAG_P2)) return 0; // this edge is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)) return 0; // this edge is not considered
                 alpha = 1.0;
                 beta = 0.0;
             }
             else if (pBC > 0.999999)
             {
                 // closest point is C
-                if (!(flags&TriangleModel::FLAG_P3)) return 0; // this edge is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)) return 0; // this edge is not considered
                 alpha = 0.0;
                 beta = 1.0;
             }
             else
             {
                 // closest point is on BC
-                if (!(flags&TriangleModel::FLAG_E23)) return 0; // this edge is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23)) return 0; // this edge is not considered
                 alpha = 1.0-pBC;
                 beta = pBC;
             }
@@ -355,21 +355,21 @@ int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vect
         if (pAB < 0.000001 && pAC < 0.0000001)
         {
             // closest point is A
-            if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)) return 0; // this corner is not considered
             alpha = 0.0;
             beta = 0.0;
         }
         else if (pAB < 0.999999 && beta < 0.000001)
         {
             // closest point is on AB
-            if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)) return 0; // this edge is not considered
             alpha = pAB;
             beta = 0.0;
         }
         else if (pAC < 0.999999 && alpha < 0.000001)
         {
             // closest point is on AC
-            if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)) return 0; // this edge is not considered
             alpha = 0.0;
             beta = pAC;
         }
@@ -381,21 +381,21 @@ int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vect
             if (pBC < 0.000001)
             {
                 // closest point is B
-                if (!(flags&TriangleModel::FLAG_P2)) return 0; // this edge is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)) return 0; // this edge is not considered
                 alpha = 1.0;
                 beta = 0.0;
             }
             else if (pBC > 0.999999)
             {
                 // closest point is C
-                if (!(flags&TriangleModel::FLAG_P3)) return 0; // this edge is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)) return 0; // this edge is not considered
                 alpha = 0.0;
                 beta = 1.0;
             }
             else
             {
                 // closest point is on BC
-                if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)) return 0; // this edge is not considered
                 alpha = 1.0-pBC;
                 beta = pBC;
             }

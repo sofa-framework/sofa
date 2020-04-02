@@ -34,13 +34,13 @@ namespace collision
 
 using namespace defaulttype;
 
-ContactMapperCreator< ContactMapper<LineModel> > LineContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<TriangleModel> > TriangleContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<CapsuleModel> > CapsuleContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleContactMapperClass("default",true);
 
-template class SOFA_MESH_COLLISION_API ContactMapper<LineModel, sofa::defaulttype::Vec3Types>;
-template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel, sofa::defaulttype::Vec3Types>;
-template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel, sofa::defaulttype::Vec3Types>;
+template class SOFA_MESH_COLLISION_API ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class SOFA_MESH_COLLISION_API ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 
 } // namespace collision
 

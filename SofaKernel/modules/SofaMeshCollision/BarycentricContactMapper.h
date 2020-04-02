@@ -125,7 +125,7 @@ public:
 
 /// Mapper for LineModel
 template<class DataTypes>
-class ContactMapper<LineModel, DataTypes> : public BarycentricContactMapper<LineModel, DataTypes>
+class ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public BarycentricContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -144,7 +144,7 @@ public:
 
 /// Mapper for TriangleModel
 template<class DataTypes>
-class ContactMapper<TriangleModel, DataTypes> : public BarycentricContactMapper<TriangleModel, DataTypes>
+class ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public BarycentricContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -162,7 +162,7 @@ public:
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
             {
-                msg_error("ContactMapper<TriangleModel>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
+                msg_error("ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
                                                               << "model="<<this->model->getName()<<" size="<<this->model->getSize() ;
                 return -1;
             }
@@ -183,7 +183,7 @@ public:
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
             {
-                msg_error("ContactMapper<TriangleModel>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
+                msg_error("ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
                             << "model="<<this->model->getName()<<" size="<<this->model->getSize() ;
                 return -1;
             }
@@ -196,7 +196,7 @@ public:
 
 
 template <class DataTypes>
-class ContactMapper<CapsuleModel, DataTypes> : public BarycentricContactMapper<CapsuleModel, DataTypes>{
+class ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public BarycentricContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>{
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
@@ -220,18 +220,18 @@ public:
 };
 
 #if !defined(SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP)
-extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 
 #  ifdef _MSC_VER
 // Manual declaration of non-specialized members, to avoid warnings from MSVC.
-extern template SOFA_MESH_COLLISION_API void BarycentricContactMapper<LineModel, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<LineModel, defaulttype::Vec3Types>::createMapping(const char*);
-extern template SOFA_MESH_COLLISION_API void BarycentricContactMapper<TriangleModel, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<TriangleModel, defaulttype::Vec3Types>::createMapping(const char*);
-extern template SOFA_MESH_COLLISION_API void BarycentricContactMapper<CapsuleModel, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<CapsuleModel, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_MESH_COLLISION_API void BarycentricContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_MESH_COLLISION_API void BarycentricContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_MESH_COLLISION_API void BarycentricContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::createMapping(const char*);
 #  endif // _MSC_VER
 #endif
 

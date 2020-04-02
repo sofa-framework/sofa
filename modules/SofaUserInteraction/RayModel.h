@@ -153,7 +153,7 @@ inline void Ray::setL(SReal newL)
     model->length[index] = newL;
 }
 
-using RayModel [[deprecated("The TriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] = RayCollisionModel;
+using RayModel [[deprecated("The RayModel is now deprecated, please use RayCollisionModel instead. Compatibility stops at v20.06")]] = RayCollisionModel;
 
 } // namespace collision
 
