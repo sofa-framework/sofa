@@ -175,7 +175,7 @@ protected:
     template<int C>
     int addPoint(OutVecCoord& out, OutVecDeriv* normals, const GridEntry& g, int x,int y,int z, OutReal v0, OutReal v1, OutReal iso)
     {
-        int p = out.size();
+        int p = int(out.size());
         OutCoord pos = OutCoord((OutReal)x,(OutReal)y,(OutReal)z);
         OutReal interp = (iso-v0)/(v1-v0);
         pos[C] += interp;

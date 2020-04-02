@@ -184,7 +184,7 @@ void SPHFluidSurfaceMapping<In,Out>::createFaces(OutVecCoord& out, OutVecDeriv* 
     {
         if (addFace(cells[edgecell[tri[0]]]->data.p[edgepts[tri[0]]],
                 cells[edgecell[tri[1]]]->data.p[edgepts[tri[1]]],
-                cells[edgecell[tri[2]]]->data.p[edgepts[tri[2]]], out.size())<0)
+                cells[edgecell[tri[2]]]->data.p[edgepts[tri[2]]], int(out.size()))<0)
         {
             msg_error() << "  mk=0x" << std::hex << mk << std::dec << " p1=" << tri[0] << " p2=" << tri[1] << " p3=" << tri[2];
             for (int e = 0; e < 12; e++)
@@ -230,7 +230,7 @@ int SPHFluidSurfaceMapping<In, Out>::addFace(int p1, int p2, int p3, int nbp)
         (unsigned)p3<(unsigned)nbp)
     {
         SeqTriangles& triangles = *seqTriangles.beginEdit();
-        int f = triangles.size();
+        int f = int(triangles.size());
         triangles.push_back(Triangle(p1, p3, p2));
         seqTriangles.endEdit();
         return f;
