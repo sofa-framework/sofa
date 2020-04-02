@@ -61,4 +61,11 @@ add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopolog
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscForceField/SofaMiscForceField_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscForceField/SofaMiscForceField_test)
 
 # SofaComponent* tests
-add_subdirectory(${CMAKE_SOURCE_DIR}/applications/collections/SofaComponentBase/SofaComponentBase_test ${SOFA_EXT_MODULES_BINARY_DIR}/applications/collections/SofaComponentBase/SofaComponentBase_test)
+# add_subdirectory(${CMAKE_SOURCE_DIR}/applications/collections/SofaComponentBase/SofaComponentBase_test ${SOFA_EXT_MODULES_BINARY_DIR}/applications/collections/SofaComponentBase/SofaComponentBase_test)
+
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFABASE_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFABASE_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(${CMAKE_SOURCE_DIR}/SofaKernel/SofaBase SofaBase_test )
+endif()

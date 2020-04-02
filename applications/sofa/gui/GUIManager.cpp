@@ -23,11 +23,11 @@
 
 #include "GUIManager.h"
 #include "BaseGUI.h"
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaBase/initBase.h>
+#include <SofaCommon/initCommon.h>
+#include <SofaGeneral/initGeneral.h>
+#include <SofaAdvanced/initAdvanced.h>
+#include <SofaMisc/initMisc.h>
 #include <SofaSimulationCommon/init.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
@@ -197,11 +197,11 @@ int GUIManager::Init(const char* argv0, const char* name)
     static bool first = true;
     if (first)
     {
-        sofa::component::initComponentBase();
-        sofa::component::initComponentCommon();
-        sofa::component::initComponentGeneral();
-        sofa::component::initComponentAdvanced();
-        sofa::component::initComponentMisc();
+        sofa::component::initBase();
+        sofa::component::initCommon();
+        sofa::component::initGeneral();
+        sofa::component::initAdvanced();
+        sofa::component::initMisc();
 
         first = false;
     }

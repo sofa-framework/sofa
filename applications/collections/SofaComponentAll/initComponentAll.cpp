@@ -22,11 +22,11 @@
 #include <sofa/helper/system/config.h>
 #include <SofaComponentAll/initComponentAll.h>
 
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaBase/initBase.h>
+#include <SofaCommon/initCommon.h>
+#include <SofaGeneral/initGeneral.h>
+#include <SofaAdvanced/initAdvanced.h>
+#include <SofaMisc/initMisc.h>
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -57,11 +57,11 @@ void initExternalModule()
     msg_deprecated("SofaAllCommonComponents") << "This plugin was renamed into SofaComponentAll. Backward compatiblity will be stopped at SOFA v20.06";
 #endif
 
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initBase();
+    sofa::component::initCommon();
+    sofa::component::initGeneral();
+    sofa::component::initAdvanced();
+    sofa::component::initMisc();
 }
 
 const char* getModuleName()
