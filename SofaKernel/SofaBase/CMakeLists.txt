@@ -64,14 +64,7 @@ sofa_generate_package(
     VERSION ${SOFABASE_VERSION}
     TARGETS ${PROJECT_NAME} 
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}/${PROJECT_NAME}"
-)
-
-## SofaBase/config.h
-# configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
-# install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
-
-## CMake package configurations files
-sofa_write_package_config_files(SofaBase ${SOFABASE_VERSION})
+    )
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled

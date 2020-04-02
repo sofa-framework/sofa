@@ -57,11 +57,4 @@ sofa_generate_package(
     VERSION ${SOFAMISC_VERSION}
     TARGETS ${PROJECT_NAME}
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}/${PROJECT_NAME}"
-)
-
-## SofaMisc/config.h
-# configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
-# install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
-
-## CMake package configurations files
-sofa_write_package_config_files(SofaMisc ${SOFAMISC_VERSION})
+    )

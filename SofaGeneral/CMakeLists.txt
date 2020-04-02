@@ -83,6 +83,3 @@ sofa_generate_package(
 # SofaGeneral/config.h
 # configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
 # install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
-
-# CMake package configurations files
-sofa_write_package_config_files(SofaGeneral ${SOFAGENERAL_VERSION})
