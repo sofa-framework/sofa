@@ -11,11 +11,9 @@ set(SOURCE_FILES
 
 list(APPEND HEADER_FILES
     MeshTetraStuffing.h
-    AddResourceRepository.h
     )
 list(APPEND SOURCE_FILES
     MeshTetraStuffing.cpp
-    AddResourceRepository.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

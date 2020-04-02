@@ -25,7 +25,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaBase/config.h>
+#include <SofaBaseUtils/config.h>
 
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -52,7 +52,7 @@ namespace logging
 {
 
 /// A sofa component to add a MessageHandler to the main logger
-class SOFA_SOFABASE_API MessageHandlerComponent : public core::objectmodel::BaseObject
+class SOFA_BASE_UTILS_API MessageHandlerComponent : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(MessageHandlerComponent, core::objectmodel::BaseObject);
@@ -73,7 +73,7 @@ public:
 
 
 /// A sofa component to add a FileMessageHandlerComponent to the main logger
-class SOFA_SOFABASE_API FileMessageHandlerComponent : public core::objectmodel::BaseObject
+class SOFA_BASE_UTILS_API FileMessageHandlerComponent : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(FileMessageHandlerComponent, core::objectmodel::BaseObject) ;

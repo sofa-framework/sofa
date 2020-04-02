@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_CPP
 
-#include <SofaMiscExtra/AddResourceRepository.h>
+#include <SofaBaseUtils/AddResourceRepository.h>
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileSystem.h>

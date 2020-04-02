@@ -20,7 +20,6 @@ list(APPEND HEADER_FILES
     MouseButtonSetting.h
     PauseAnimation.h
     PauseAnimationOnEvent.h
-    RequiredPlugin.h
     SofaDefaultPathSetting.h
     StatsSetting.h
     ViewerSetting.h
@@ -42,7 +41,6 @@ list(APPEND SOURCE_FILES
     MouseButtonSetting.cpp
     PauseAnimation.cpp
     PauseAnimationOnEvent.cpp
-    RequiredPlugin.cpp
     SofaDefaultPathSetting.cpp
     StatsSetting.cpp
     ViewerSetting.cpp

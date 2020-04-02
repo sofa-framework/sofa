@@ -19,73 +19,59 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_H
-#define SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_H
+#ifndef REQUIREDPLUGIN_H_
+#define REQUIREDPLUGIN_H_
 
-#include <SofaMisc/config.h>
+#include <SofaBaseUtils/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/helper/system/FileRepository.h>
-using sofa::helper::system::FileRepository;
-
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/MechanicalParams.h>
+#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace misc
 {
 
-
-class SOFA_MISC_EXTRA_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
+class SOFA_BASE_UTILS_API RequiredPlugin : public core::objectmodel::BaseObject
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseAddResourceRepository, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
+    sofa::core::objectmodel::Data<helper::vector<std::string> > d_pluginName; ///< plugin name (or several names if you need to load different plugins or a plugin with several alternate names)
+    sofa::core::objectmodel::Data<helper::vector<helper::fixed_array<std::string,2> > > d_suffixMap; ///< standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa with a non standard way of differenciating versions), using ! to represent empty suffix
+
+    sofa::core::objectmodel::Data<bool> d_stopAfterFirstNameFound; ///< Stop after the first plugin name that is loaded successfully
+    sofa::core::objectmodel::Data<bool> d_stopAfterFirstSuffixFound; ///< For each plugin name, stop after the first suffix that is loaded successfully
+    sofa::core::objectmodel::Data<bool> d_requireOne; ///< Display an error message if no plugin names were successfully loaded
+    sofa::core::objectmodel::Data<bool> d_requireAll; ///< Display an error message if any plugin names failed to be loaded
 
 protected:
-    BaseAddResourceRepository();
-    ~BaseAddResourceRepository() override;
-
-    FileRepository* m_repository;
+    RequiredPlugin();
+    ~RequiredPlugin() override {}
 
 public:
-    //cannot be a DataFilename
-    Data<std::string> d_repositoryPath; ///< Path to add to the pool of resources
 
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
-    void cleanup() override;
 
-private:
-    std::string m_currentAddedPath;
+    void loadPlugin();
 
-    virtual FileRepository* getFileRepository() = 0;
 };
 
+}
 
-/// Add a new path to DataRepository
-class AddDataRepository: public BaseAddResourceRepository
-{
-public:
-    SOFA_CLASS(AddDataRepository, BaseAddResourceRepository);
+}
 
-protected:
-    FileRepository* getFileRepository() override { return &sofa::helper::system::DataRepository; }
-};
+}
 
-
-/// Add a new path to PluginRepository
-class AddPluginRepository: public BaseAddResourceRepository
-{
-public:
-    SOFA_CLASS(AddPluginRepository, BaseAddResourceRepository);
-
-protected:
-    FileRepository* getFileRepository() override { return &sofa::helper::system::PluginRepository; }
-};
-
-
-} // namespace misc
-} // namespace component
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_H
+#endif /* REQUIREDPLUGIN_H_ */

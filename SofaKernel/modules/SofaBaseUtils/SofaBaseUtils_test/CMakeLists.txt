@@ -6,6 +6,8 @@ set(SOURCE_FILES
         MessageHandlerComponent_test.cpp
         MakeAliasComponent_test.cpp
         MakeDataAliasComponent_test.cpp
+        RequiredPlugin_test.cpp
+        AddResourceRepository_test.cpp
 )
 
 find_package(SofaTest REQUIRED)

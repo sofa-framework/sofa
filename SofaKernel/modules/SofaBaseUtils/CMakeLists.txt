@@ -12,6 +12,8 @@ set(HEADER_FILES
     ${SOFABASEUTILS_SRC}/MakeAliasComponent.h
     ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.h
     ${SOFABASEUTILS_SRC}/InfoComponent.h
+    ${SOFABASEUTILS_SRC}/RequiredPlugin.h
+    ${SOFABASEUTILS_SRC}/AddResourceRepository.h
 )
 
 set(SOURCE_FILES
@@ -20,6 +22,8 @@ set(SOURCE_FILES
     ${SOFABASEUTILS_SRC}/MakeAliasComponent.cpp
     ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.cpp
     ${SOFABASEUTILS_SRC}/InfoComponent.cpp
+    ${SOFABASEUTILS_SRC}/RequiredPlugin.cpp
+    ${SOFABASEUTILS_SRC}/AddResourceRepository.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

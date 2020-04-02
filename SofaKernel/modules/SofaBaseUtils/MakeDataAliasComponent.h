@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaBase/config.h>
+#include <SofaBaseUtils/config.h>
 
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -42,7 +42,7 @@ namespace makedataaliascomponent
 {
 
 /// A component to add alias to other components.
-class SOFA_SOFABASE_API MakeDataAliasComponent : public core::objectmodel::BaseObject
+class SOFA_BASE_UTILS_API MakeDataAliasComponent : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(MakeDataAliasComponent, core::objectmodel::BaseObject);

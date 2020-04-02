@@ -26,7 +26,7 @@
 #pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaBase/config.h>
+#include <SofaBaseUtils/config.h>
 
 namespace sofa
 {
@@ -43,7 +43,7 @@ using sofa::core::objectmodel::BaseObject ;
 
 /// Despite this component does absolutely nothin... it is very usefull as it can be used to
 /// retain information scene graph.
-class SOFA_SOFABASE_API InfoComponent : public BaseObject
+class SOFA_BASE_UTILS_API InfoComponent : public BaseObject
 {
 public:
     SOFA_CLASS(InfoComponent, BaseObject);
