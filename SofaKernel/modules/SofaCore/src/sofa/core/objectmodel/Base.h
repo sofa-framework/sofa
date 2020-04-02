@@ -586,13 +586,13 @@ namespace logging
     inline bool notMuted(const sofa::core::objectmodel::Base* t){ return t->notMuted(); }
     inline bool notMuted(sofa::core::objectmodel::Base* t){ return t->notMuted(); }
 
-    class SOFA_CORE_API SofaComponentInfo : public ComponentInfo
+    class SOFA_CORE_API SofaInfo : public ComponentInfo
     {
     public:
         const sofa::core::objectmodel::Base* m_component ;
         std::string                          m_name;
 
-        SofaComponentInfo(const sofa::core::objectmodel::Base* c);
+        SofaInfo(const sofa::core::objectmodel::Base* c);
         const std::string& name() const { return m_name; }
         std::ostream& toStream(std::ostream &out) const
         {
@@ -604,7 +604,7 @@ namespace logging
     /// This construct a new ComponentInfo object from a Base object.
     inline ComponentInfo::SPtr getComponentInfo(const sofa::core::objectmodel::Base* t)
     {
-        return ComponentInfo::SPtr( new SofaComponentInfo(t) ) ;
+        return ComponentInfo::SPtr( new SofaInfo(t) ) ;
     }
 } // logging
 } // helper

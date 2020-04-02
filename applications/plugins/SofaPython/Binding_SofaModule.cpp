@@ -44,7 +44,7 @@
 
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::ComponentInfo ;
-using sofa::helper::logging::SofaComponentInfo ;
+using sofa::helper::logging::SofaInfo ;
 #include <sofa/helper/Utils.h>
 #include "SceneLoaderPY.h"
 
@@ -403,7 +403,7 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
             action(ComponentInfo::SPtr(new ComponentInfo(PyString_AsString(py_emitter))), PyString_AsString(py_message), PythonEnvironment::getPythonCallingPointAsFileInfo() );
         }else if (PyObject_IsInstance(py_emitter, reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(Base)))) {
             Base* base=(((PySPtr<Base>*)py_emitter)->object).get();
-            action(ComponentInfo::SPtr(new SofaComponentInfo(base)), PyString_AsString(py_message), PythonEnvironment::getPythonCallingPointAsFileInfo() );
+            action(ComponentInfo::SPtr(new SofaInfo(base)), PyString_AsString(py_message), PythonEnvironment::getPythonCallingPointAsFileInfo() );
         }else{
             PyErr_SetString(PyExc_TypeError, "The first parameter must be a string or a Sofa.Base");
             return NULL;
@@ -433,7 +433,7 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
                    PyString_AsString(py_message),  SOFA_FILE_INFO_COPIED_FROM(filename, lineno));
         }else if (PyObject_IsInstance(py_emitter, reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(Base)))) {
             Base* base=(((PySPtr<Base>*)py_emitter)->object).get();
-            action(ComponentInfo::SPtr(new SofaComponentInfo(base)),
+            action(ComponentInfo::SPtr(new SofaInfo(base)),
                    PyString_AsString(py_message),  SOFA_FILE_INFO_COPIED_FROM(filename, lineno));
         }else{
             PyErr_SetString(PyExc_TypeError, "The first parameter must be a string or a Sofa.Base");

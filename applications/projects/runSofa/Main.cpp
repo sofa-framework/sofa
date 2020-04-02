@@ -47,11 +47,11 @@ using sofa::simulation::Node;
 #include <SofaGraphComponent/SceneCheckerListener.h>
 using sofa::simulation::scenechecking::SceneCheckerListener;
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaCommon/initCommon.h>
+#include <SofaBase/initBase.h>
+#include <SofaGeneral/initGeneral.h>
+#include <SofaAdvanced/initAdvanced.h>
+#include <SofaMisc/initMisc.h>
 
 #include <SofaGeneralLoader/ReadState.h>
 #include <SofaValidation/CompareState.h>
@@ -413,11 +413,11 @@ int main(int argc, char** argv)
 #ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::init();
 #endif
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initBase();
+    sofa::component::initCommon();
+    sofa::component::initGeneral();
+    sofa::component::initAdvanced();
+    sofa::component::initMisc();
 
 #ifdef SOFA_HAVE_DAG
     if (simulationType == "tree")

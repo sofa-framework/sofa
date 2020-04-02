@@ -29,8 +29,8 @@
 #include <SofaSimulationTree/init.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
+#include <SofaCommon/initCommon.h>
+#include <SofaBase/initBase.h>
 
 #include <boost/program_options.hpp>
 
@@ -102,8 +102,8 @@ void fallingDrapExample(sofa::simulation::Node::SPtr root)
 int main(int argc, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
+    sofa::component::initBase();
+    sofa::component::initCommon();
 
     bool showHelp = false;
     unsigned int idExample = 0;

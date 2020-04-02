@@ -41,7 +41,7 @@ namespace {
     static struct raii {
       raii() {
           PluginManager::getInstance().loadPlugin("SceneCreator") ;
-          PluginManager::getInstance().loadPlugin("SofaComponentAll") ;
+          PluginManager::getInstance().loadPlugin("SofaAll") ;
       }
     } singleton;
 }

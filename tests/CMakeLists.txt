@@ -26,6 +26,7 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseLinearSolver/SofaBase
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseMechanics/SofaBaseMechanics_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseMechanics/SofaBaseMechanics_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseTopology/SofaBaseTopology_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseTopology/SofaBaseTopology_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseVisual/SofaBaseVisual_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseVisual/SofaBaseVisual_test)
+add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseUtils/SofaBaseUtils_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseVisual/SofaBaseUtils_test)
 
 # SofaCommon tests
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaDeformable/SofaDeformable_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaDeformable/SofaDeformable_test)
@@ -54,18 +55,8 @@ add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGraphComponent/SofaGraphComp
 
 # SofaMisc tests
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscFem/SofaMiscFem_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscFem/SofaMiscFem_test)
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMisc/SofaMisc_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMisc/SofaMisc_test)
+add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscExtra/SofaMiscExtra_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscExtra/SofaMiscExtra_test)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscMapping/SofaMiscMapping_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscMapping/SofaMiscMapping_test)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscSolver/SofaMiscSolver_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscSolver/SofaMiscSolver_test)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscTopology/SofaMiscTopology_test)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscForceField/SofaMiscForceField_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaMisc/SofaMiscForceField/SofaMiscForceField_test)
-
-# SofaComponent* tests
-# add_subdirectory(${CMAKE_SOURCE_DIR}/applications/collections/SofaComponentBase/SofaComponentBase_test ${SOFA_EXT_MODULES_BINARY_DIR}/applications/collections/SofaComponentBase/SofaComponentBase_test)
-
-# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(SOFABASE_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(SOFABASE_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(${CMAKE_SOURCE_DIR}/SofaKernel/SofaBase SofaBase_test )
-endif()

@@ -14,5 +14,6 @@ find_package(SofaTest REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain)
+add_definitions("-DSOFABASEUTILS_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

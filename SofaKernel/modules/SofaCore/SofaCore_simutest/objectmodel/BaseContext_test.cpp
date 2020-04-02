@@ -31,7 +31,7 @@ using sofa::core::objectmodel::BaseContext ;
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
-#include <SofaComponentBase/InfoComponent.h>
+#include <SofaBaseUtils/InfoComponent.h>
 using sofa::component::InfoComponent;
 
 class BaseContext_test: public BaseSimulationTest
@@ -40,7 +40,7 @@ public:
     void testGetObjects()
     {
         EXPECT_MSG_NOEMIT(Error, Warning) ;
-        importPlugin("SofaComponentAll") ;
+        importPlugin("SofaAll") ;
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"

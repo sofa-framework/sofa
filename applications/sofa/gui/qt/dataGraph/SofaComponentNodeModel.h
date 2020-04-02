@@ -29,11 +29,11 @@ namespace sofa
 
 /// The class can potentially incapsulate any user data which
 /// need to be transferred within the Node Editor graph
-class SofaComponentNodeData : public NodeData
+class SofaNodeData : public NodeData
 {
 public:
-    SofaComponentNodeData();
-    SofaComponentNodeData(sofa::core::objectmodel::BaseData* bData);
+    SofaNodeData();
+    SofaNodeData(sofa::core::objectmodel::BaseData* bData);
 
     NodeDataType type() const override;
   
@@ -51,18 +51,18 @@ static const char* ignoredData[] = { "name", "printLog", "tags", "bbox", "listen
 * This Class is a NodeDataModel specialisation to represent a Sofa component on the QtNodes graph.
 * It will take a SOFA BaseObject as target and parse all Data, storing Data, Links and connections with parents components.
 */
-class SofaComponentNodeModel : public NodeDataModel
+class SofaNodeModel : public NodeDataModel
 {
     Q_OBJECT
 
 public:
     /// Default empty Object constructor with 0 Data
-    SofaComponentNodeModel(std::string name = "EmptyNode");
+    SofaNodeModel(std::string name = "EmptyNode");
 
     /// constructor with a Sofa BaseObject as target
-    SofaComponentNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject, bool debugMode = false);
+    SofaNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject, bool debugMode = false);
 
-    virtual ~SofaComponentNodeModel() {}
+    virtual ~SofaNodeModel() {}
 
     /// Interface for caption.
     QString caption() const override {return m_caption;}
@@ -114,8 +114,8 @@ protected:
     /// Vector of Data/port hold by this component/Node. vector of pair{DataName, DataType}
     std::vector < std::pair < QString, QString> > m_data;
 
-    /// vector of SofaComponentNodeData class holding pointer to the Data. To replace @sa m_data when api is validated.
-    std::vector < std::shared_ptr<SofaComponentNodeData> > m_Nodedata;
+    /// vector of SofaNodeData class holding pointer to the Data. To replace @sa m_data when api is validated.
+    std::vector < std::shared_ptr<SofaNodeData> > m_Nodedata;
 
     /// Map to store all connection between this node and other. map.key = this data name, map.value = pair{ComponentName, DataName}
     std::map <QString, std::pair < QString, QString> > m_dataConnections;

@@ -21,11 +21,11 @@
 ******************************************************************************/
 #include <SofaSimulationTree/init.h>
 #include <SofaSimulationTree/TreeSimulation.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaBase/initBase.h>
+#include <SofaCommon/initCommon.h>
+#include <SofaGeneral/initGeneral.h>
+#include <SofaAdvanced/initAdvanced.h>
+#include <SofaMisc/initMisc.h>
 
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace;
@@ -42,11 +42,11 @@ int main(int /*argc*/, char** /*argv*/)
 
     std::cout << "Before A" << std::endl ;
 
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initBase();
+    sofa::component::initCommon();
+    sofa::component::initGeneral();
+    sofa::component::initAdvanced();
+    sofa::component::initMisc();
 
     std::cout << "Before" << std::endl ;
     std::vector<ObjectFactory::ClassEntry::SPtr> result;

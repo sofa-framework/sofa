@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "generateDoc.h"
-#include <SofaComponentMain/init.h>
+#include <SofaMain/init.h>
 #include <SofaSimulationTree/init.h>
 #include <iostream>
 #include <fstream>

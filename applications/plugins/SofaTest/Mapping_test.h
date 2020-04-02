@@ -30,11 +30,11 @@
 
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaBase/initBase.h>
+#include <SofaCommon/initCommon.h>
+#include <SofaGeneral/initGeneral.h>
+#include <SofaAdvanced/initAdvanced.h>
+#include <SofaMisc/initMisc.h>
 
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -132,11 +132,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::component::initComponentBase();
-        sofa::component::initComponentCommon();
-        sofa::component::initComponentGeneral();
-        sofa::component::initComponentAdvanced();
-        sofa::component::initComponentMisc();
+        sofa::component::initBase();
+        sofa::component::initCommon();
+        sofa::component::initGeneral();
+        sofa::component::initAdvanced();
+        sofa::component::initMisc();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Parent node
@@ -152,11 +152,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::component::initComponentBase();
-        sofa::component::initComponentCommon();
-        sofa::component::initComponentGeneral();
-        sofa::component::initComponentAdvanced();
-        sofa::component::initComponentMisc();
+        sofa::component::initBase();
+        sofa::component::initCommon();
+        sofa::component::initGeneral();
+        sofa::component::initAdvanced();
+        sofa::component::initMisc();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene

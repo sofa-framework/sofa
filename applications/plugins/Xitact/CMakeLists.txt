@@ -24,7 +24,7 @@ find_package(SofaGui REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_XITACTPLUGIN")
-target_link_libraries(${PROJECT_NAME} SofaComponentMain SofaGui SofaGuiQt XiRobot SofaOpenglVisual)
+target_link_libraries(${PROJECT_NAME} SofaMain SofaGui SofaGuiQt XiRobot SofaOpenglVisual)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}

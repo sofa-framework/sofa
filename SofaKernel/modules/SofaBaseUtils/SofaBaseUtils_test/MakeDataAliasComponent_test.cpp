@@ -36,9 +36,9 @@ using sofa::simulation::Node ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaComponentBase/initComponentBase.h>
+#include <SofaBase/initBase.h>
 
-#include <SofaComponentBase/MakeDataAliasComponent.h>
+#include <SofaBaseUtils/MakeDataAliasComponent.h>
 using sofa::component::MakeDataAliasComponent ;
 
 //TODO(dmarchal): all these lines are ugly...this is too much for simple initialization stuff.
@@ -65,7 +65,7 @@ MessageHandler* defaultHandler=nullptr ;
 Simulation* theSimulation = nullptr ;
 
 bool doInit(){
-    sofa::component::initComponentBase();
+    sofa::component::initBase();
     return true;
 }
 

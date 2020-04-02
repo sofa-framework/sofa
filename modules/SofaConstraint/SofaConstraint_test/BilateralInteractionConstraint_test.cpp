@@ -68,7 +68,7 @@ struct BilateralInteractionConstraint_test : public NumericTest<>
     /// Create the context for the tests.
     void SetUp()
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll");
+        sofa::simpleapi::importPlugin("SofaAll");
         sofa::simpleapi::importPlugin("SofaMiscCollision");
         sofa::simpleapi::importPlugin("SofaOpenglVisual");
         if(simulation==nullptr)

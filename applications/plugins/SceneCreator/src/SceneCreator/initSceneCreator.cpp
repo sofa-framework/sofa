@@ -49,7 +49,7 @@ void initExternalModule()
 
     /// Required for DefaultCollisionGroupManager
     PluginManager::getInstance().loadPlugin("SofaMiscCollision") ;
-    PluginManager::getInstance().loadPlugin("SofaComponentAll") ;
+    PluginManager::getInstance().loadPlugin("SofaAll") ;
 }
 
 const char* getModuleName()

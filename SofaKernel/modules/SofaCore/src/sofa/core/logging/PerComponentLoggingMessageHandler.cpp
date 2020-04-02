@@ -37,7 +37,7 @@ namespace percomponentloggingmessagehandler
 
 void PerComponentLoggingMessageHandler::process(Message& m)
 {
-    SofaComponentInfo* nfo = dynamic_cast<SofaComponentInfo*>( m.componentInfo().get() ) ;
+    SofaInfo* nfo = dynamic_cast<SofaInfo*>( m.componentInfo().get() ) ;
     if(nfo != nullptr)
     {
         nfo->m_component->addMessage( m ) ;

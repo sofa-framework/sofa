@@ -223,7 +223,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${README_FILES})
 
-target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SofaMisc)
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)

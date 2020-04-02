@@ -26,7 +26,7 @@
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 
-#include <SofaMisc/AddResourceRepository.h>
+#include <SofaBaseUtils/AddResourceRepository.h>
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
@@ -44,7 +44,7 @@ struct AddResourceRepository_test : public Sofa_test<>
 
     void SetUp()
     {
-        m_testRepoDir = std::string(MISC_TEST_RESOURCES_DIR) + std::string("/repo");
+        m_testRepoDir = std::string(SOFABASEUTILS_TEST_RESOURCES_DIR) + std::string("/repo");
     }
 
     void buildScene(const std::string& repoType, const std::string& repoPath)

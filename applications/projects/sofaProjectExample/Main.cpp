@@ -43,7 +43,7 @@
 
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
-#include <SofaComponentMain/init.h>
+#include <SofaMain/init.h>
 
 #include <sofa/core/objectmodel/Context.h>
 

@@ -33,7 +33,7 @@ set(SOURCE_FILES
 find_package(SofaMisc REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaSimulationGraph SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SofaSimulationGraph SofaBase SofaCommon SofaGeneral SofaAdvanced SofaMisc)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFASIMPLEGUI_VERSION})

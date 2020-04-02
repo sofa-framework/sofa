@@ -18,7 +18,7 @@ find_package(SofaGeneral REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_ExternalBehaviorModel")
-target_link_libraries(${PROJECT_NAME} SofaComponentGeneral)
+target_link_libraries(${PROJECT_NAME} SofaGeneral)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 sofa_generate_package(

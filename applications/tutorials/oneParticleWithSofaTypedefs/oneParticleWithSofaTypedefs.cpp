@@ -29,11 +29,11 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaCommon/initCommon.h>
+#include <SofaBase/initBase.h>
+#include <SofaGeneral/initGeneral.h>
+#include <SofaAdvanced/initAdvanced.h>
+#include <SofaMisc/initMisc.h>
 
 using namespace sofa::simulation::tree;
 using namespace sofa::component::odesolver;
@@ -75,11 +75,11 @@ int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
     sofa::simulation::tree::init();
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initBase();
+    sofa::component::initCommon();
+    sofa::component::initGeneral();
+    sofa::component::initAdvanced();
+    sofa::component::initMisc();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 

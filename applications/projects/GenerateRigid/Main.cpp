@@ -23,9 +23,9 @@
 #include <iostream>
 #include <fstream>
 
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaGeneral/initGeneral.h>
+#include <SofaAdvanced/initAdvanced.h>
+#include <SofaMisc/initMisc.h>
 
 using namespace sofa::defaulttype;
 
@@ -38,9 +38,9 @@ int main(int argc, char** argv)
     }
 
 
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initGeneral();
+    sofa::component::initAdvanced();
+    sofa::component::initMisc();
 
 //////// SCALE //////
     Vector3 scale(1, 1, 1);

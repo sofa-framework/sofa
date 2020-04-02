@@ -30,7 +30,7 @@
 #include <sofa/helper/logging/Message.h>
 
 #include <sofa/core/objectmodel/Base.h>
-using sofa::helper::logging::SofaComponentInfo ;
+using sofa::helper::logging::SofaInfo ;
 
 #include <sofa/helper/system/console.h>
 #include <sofa/helper/fixed_array.h>
@@ -219,7 +219,7 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
 
     setColor(out, m.type()) << getPrefixText(m.type());
 
-    SofaComponentInfo* nfo = dynamic_cast<SofaComponentInfo*>(m.componentInfo().get()) ;
+    SofaInfo* nfo = dynamic_cast<SofaInfo*>(m.componentInfo().get()) ;
     if( nfo != nullptr )
     {
         const std::string& classname= nfo->sender();

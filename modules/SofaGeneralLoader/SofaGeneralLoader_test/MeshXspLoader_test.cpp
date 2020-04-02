@@ -31,7 +31,7 @@ public:
     /// Run seven steps of simulation then check results
     bool testDefaultBehavior()
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll") ;
+        sofa::simpleapi::importPlugin("SofaAll") ;
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 
@@ -45,7 +45,7 @@ public:
     /// Run seven steps of simulation then check results
     bool testInvalidFile()
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll") ;
+        sofa::simpleapi::importPlugin("SofaAll") ;
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 
