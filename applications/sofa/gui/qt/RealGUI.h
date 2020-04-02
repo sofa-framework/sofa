@@ -74,8 +74,9 @@ class BaseViewer;
 
 namespace qt
 {
-
+#ifdef SOFAGUIQT_HAVE_DOCBROWSER
 class DocBrowser ;
+#endif
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
 class QSofaRecorder;
@@ -232,7 +233,9 @@ private:
     float object_Scale[2];
     bool saveReloadFile;
     DisplayFlagsDataWidget*  displayFlag  {nullptr};
+#ifdef SOFAGUIQT_HAVE_DOCBROWSER
     DocBrowser*              m_docbrowser {nullptr};
+#endif
     bool animationState;
     int frameCounter;
     unsigned int m_viewerMSAANbSampling;

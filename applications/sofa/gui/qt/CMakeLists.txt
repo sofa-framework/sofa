@@ -5,15 +5,30 @@ project(SofaGuiQt)
 set(QT_TARGETS "")
 set(QT_USE_IMPORTED_TARGETS 1)
 set(QT5_NO_LINK_QTMAIN 1)
-sofa_find_package(Qt5 COMPONENTS Core Gui OpenGL WebEngine WebEngineWidgets QUIET)
+sofa_find_package(Qt5 COMPONENTS Core Gui OpenGL QUIET)
+
 if(NOT Qt5Core_FOUND)
     message(SEND_ERROR "SofaGuiQt: Qt5 is required and was not found.\n"
         "Add Qt5 directory to CMAKE_PREFIX_PATH or disable SofaGuiQt by setting SOFAGUI_QT to OFF.")
 endif()
-set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::WebEngine Qt5::WebEngineWidgets)
+set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL)
+
 sofa_find_package(Qt5 COMPONENTS Charts QUIET BOTH_SCOPES)
 if(Qt5Charts_FOUND)
     set(QT_TARGETS ${QT_TARGETS} Qt5::Charts)
+endif()
+
+#QDocBrowser
+option(SOFAGUIQT_ENABLE_DOCBROWSER "Build the QDocBrowser. Qt5WebEngine is needed." OFF)
+if (SOFAGUIQT_ENABLE_DOCBROWSER)
+    sofa_find_package(Qt5 COMPONENTS WebEngine WebEngineWidgets REQUIRED BOTH_SCOPES)
+else()
+    sofa_find_package(Qt5 COMPONENTS WebEngine WebEngineWidgets QUIET BOTH_SCOPES)
+endif()
+sofa_set_01(SOFAGUIQT_HAVE_DOCBROWSER VALUE ${SOFAGUIQT_ENABLE_DOCBROWSER} BOTH_SCOPES)
+
+if (Qt5WebEngine_FOUND)
+    set(QT_TARGETS ${QT_TARGETS} Qt5::WebEngine Qt5::WebEngineWidgets)
 endif()
 
 # QtViewer and QGLViewer
@@ -63,6 +78,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
 
+
+
 #NodeEditor
 option(SOFAGUIQT_ENABLE_NODEGRAPH "Build the Node graph representation. NodeEditor library is needed." OFF)
 if (SOFAGUIQT_ENABLE_NODEGRAPH)
@@ -100,8 +117,7 @@ set(MOC_HEADER_FILES
     SofaMouseManager.h    
     SofaVideoRecorderManager.h
     SofaPluginManager.h
-    WDoubleLineEdit.h
-    panels/QDocBrowser.h
+    WDoubleLineEdit.h    
     )
 set(HEADER_FILES
     SofaGuiQt.h.in # = config.h.in
@@ -152,8 +168,7 @@ set(SOURCE_FILES
     TableDataWidget.cpp
     WDoubleLineEdit.cpp
     viewer/SofaViewer.cpp
-    viewer/VisualModelPolicy.cpp
-    panels/QDocBrowser.cpp
+    viewer/VisualModelPolicy.cpp    
 )
 set(UI_FILES
     BaseGenGraphForm.ui
@@ -232,6 +247,13 @@ if(Qt5Charts_FOUND)
     list(APPEND UI_FILES WindowProfiler.ui)
 else()
     message(STATUS "SofaGuiQt: QtCharts not found, SofaWindowProfiler will not be built.")
+endif()
+
+if(Qt5WebEngine_FOUND)
+    list(APPEND MOC_HEADER_FILES panels/QDocBrowser.h)
+    list(APPEND SOURCE_FILES panels/QDocBrowser.cpp)
+else()
+    message(STATUS "SofaGuiQt: Qt5WebEngine not found, QDocBrowser will not be built.")
 endif()
 
 
