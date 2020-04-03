@@ -35,8 +35,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #=============================================================================
 
-message(STATUS "Checking for package 'CGAL'")
-
 # Blank out CGAL_FIND_VERSION temporarily or else find_package(CGAL ...)
 # (below) will fail.
 set(CGAL_FIND_VERSION_TMP ${CGAL_FIND_VERSION})
@@ -84,9 +82,7 @@ if (MPFR_LIBRARIES)
 endif()
 
 # Try compiling and running test program
-if (DOLFIN_SKIP_BUILD_TESTS)
-  set(CGAL_TEST_RUNS TRUE)
-elseif (CGAL_INCLUDE_DIRS AND CGAL_LIBRARIES)
+if (CGAL_INCLUDE_DIRS AND CGAL_LIBRARIES)
 
   # Set flags for building test program
   set(CMAKE_REQUIRED_INCLUDES ${CGAL_INCLUDE_DIRS})

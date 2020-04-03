@@ -31,8 +31,8 @@ set(README_FILES CGALPlugin.txt)
 # Add CGAL dependencies
 find_package(SofaFramework REQUIRED)
 
-# Check if CImg plugin is build, If yes add more files
-find_package(image QUIET)
+# Check if image plugin is build, If yes add more files to create mesh on top of ImageContainer
+sofa_find_package(image QUIET)
 if(image_FOUND)
     list(APPEND HEADER_FILES ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromImage.h)
     list(APPEND HEADER_FILES ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromImage.inl)
@@ -55,12 +55,6 @@ if (CGAL_VERSION VERSION_GREATER 4.9) # if CGAL >= 4.10
     add_definitions(-DCGAL_MESH_3_VERBOSE=0)
 endif()
 
-
-if(WIN32)
-#    sofa_copy_libraries(${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARIES})
-#    sofa_install_libraries(${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARIES})
-endif()
-
 # Create the plugin library.
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
@@ -78,18 +72,18 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${GMP_INCLUDE_DIR} ${MPFR_INCL
 
 if(CImgPlugin_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC ${CGAL_ImageIO_LIBRARY} image)
-    #target_include_directories(${PROJECT_NAME} PUBLIC ${CImg_INCLUDE_DIRS})
 else()
     target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY})
 endif()
 
 
-if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
-    if(SofaTest_FOUND)
-        add_subdirectory(CGALPlugin_test)
-    endif()
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(CGALPLUGIN_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(CGALPLUGIN_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(CGALPlugin_test)
 endif()
+
 
 # Install rules for the library and the headers; CMake package configurations files
 sofa_generate_package(
