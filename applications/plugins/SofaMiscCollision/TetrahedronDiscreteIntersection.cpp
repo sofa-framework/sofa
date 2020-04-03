@@ -47,8 +47,8 @@ IntersectorCreator<DiscreteIntersection, TetrahedronDiscreteIntersection> Tetrah
 TetrahedronDiscreteIntersection::TetrahedronDiscreteIntersection(DiscreteIntersection* object)
     : intersection(object)
 {
-    intersection->intersectors.add<TetrahedronModel, PointModel,       TetrahedronDiscreteIntersection>  (this);
-    intersection->intersectors.add<RayModel, TetrahedronModel,         TetrahedronDiscreteIntersection>  (this);
+    intersection->intersectors.add<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>,       TetrahedronDiscreteIntersection>  (this);
+    intersection->intersectors.add<RayCollisionModel, TetrahedronCollisionModel,         TetrahedronDiscreteIntersection>  (this);
 }
 
 bool TetrahedronDiscreteIntersection::testIntersection(Tetrahedron&, Point&)

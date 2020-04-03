@@ -2,7 +2,7 @@
 #define COMPLIANT_ASSEMBLED_SYSTEM_H
 
 #include <Compliant/config.h>
-#include <Eigen/SparseCore>
+#include <Eigen/Sparse>
 #include <Eigen/Core>
 #include <sofa/helper/system/config.h>
 #include <sofa/simulation/VectorOperations.h>

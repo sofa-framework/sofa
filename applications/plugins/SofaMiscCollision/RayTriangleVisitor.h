@@ -55,7 +55,7 @@ public:
 
     // generic
     RayTriangleVisitor(const core::ExecParams* params = core::ExecParams::defaultInstance());
-    virtual void processTriangleModel(simulation::Node* node, component::collision::TriangleModel* obj);
+    virtual void processTriangleModel(simulation::Node* node, component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* obj);
     virtual void processVisualModel(simulation::Node* node, component::visualmodel::VisualModelImpl* obj);
     Result processNodeTopDown(simulation::Node* node) override;
     bool isThreadSafe() const override { return true; }

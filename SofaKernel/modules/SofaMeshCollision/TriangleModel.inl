@@ -84,7 +84,7 @@ void TriangleCollisionModel<DataTypes>::init()
 
     if (!m_topology)
     {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TriangleModel requires a Triangular Topology";
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TriangleCollisionModel<sofa::defaulttype::Vec3Types> requires a Triangular Topology";
         sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
@@ -99,7 +99,7 @@ void TriangleCollisionModel<DataTypes>::init()
     bool modelsOk = true;
     if (m_mstate == nullptr)
     {
-        msg_error() << "No MechanicalObject found. TriangleModel requires a Vec3 Mechanical Model in the same Node.";
+        msg_error() << "No MechanicalObject found. TriangleCollisionModel<sofa::defaulttype::Vec3Types> requires a Vec3 Mechanical Model in the same Node.";
         modelsOk = false;
     }
 
@@ -253,7 +253,7 @@ bool TriangleCollisionModel<DataTypes>::canCollideWithElement(int index, Collisi
 template<class DataTypes>
 void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
 
     // check first that topology didn't changed
     if (m_topology->getRevision() != m_topologyRevision)
@@ -315,7 +315,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 template<class DataTypes>
 void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
 
     // check first that topology didn't changed
     if (m_topology->getRevision() != m_topologyRevision)

@@ -105,7 +105,10 @@ public:
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         if (context->getMechanicalState() == nullptr)
+        {
+            arg->logError("No mechanical state found in the context node.");
             return false;
+        }
         return BaseObject::canCreate(obj, context, arg);
     }
 

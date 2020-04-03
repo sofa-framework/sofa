@@ -175,20 +175,20 @@ public:
 
         if (stin == nullptr)
         {
-            msg_error(context) << "Creation of " << className(obj) << " topology mapping failed as input topology model is missing or invalid.";
+            arg->logError("Data attribute 'input' does not point to a valid mesh topology and none can be found in the parent node context.");
             return false;
         }
 
         if (stout == nullptr)
         {
-            msg_error(context) << "Creation of " << className(obj) << " topology mapping failed as output topology model is missing or invalid.";
+            arg->logError("Data attribute 'output' does not point to a valid mesh topology and none can be found in the current node context.");
             return false;
         }
 
-        if (static_cast<BaseObject*>(stin) == static_cast<BaseObject*>(stout))
+        if (dynamic_cast<BaseObject*>(stin) == dynamic_cast<BaseObject*>(stout))
         {
             // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
-            msg_error(context) << "Creation of " << className(obj) << " topology mapping failed as the same object \"" << stin->getName() << "\" is linked as input and output.";
+            arg->logError("Both the input mesh and the output mesh points to the same mesh topology ('"+stin->getName()+"').");
             return false;
         }
 

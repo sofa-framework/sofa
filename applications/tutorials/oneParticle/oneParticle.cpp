@@ -104,7 +104,7 @@ int main(int argc, char** argv)
 
     // this currently reveals a bug
 //    // attach a collision surface to the particle
-//    SphereModel::SPtr sphere = New<SphereModel>();
+//    SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphere = New<SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
 //    particule_node->addObject(sphere);
 //    sphere->defaultRadius.setValue(0.1);
 

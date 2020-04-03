@@ -38,6 +38,8 @@
 
 #include <sofa/simulation/Simulation.h>
 
+#include <Eigen/Dense>
+
 #include <cstring>
 #include <iostream>
 #include <cassert>

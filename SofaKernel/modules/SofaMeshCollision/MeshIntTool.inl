@@ -167,12 +167,12 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SRe
     int old_n = n;
     n = 0;
 
-    if (tri_flg&TriangleModel::FLAG_E12)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p1,tri_p2,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P1),!(tri_flg&TriangleModel::FLAG_P2));
-    if (tri_flg&TriangleModel::FLAG_E23)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p2,tri_p3,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P2),!(tri_flg&TriangleModel::FLAG_P3));
-    if (tri_flg&TriangleModel::FLAG_E31)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p3,tri_p1,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P3),!(tri_flg&TriangleModel::FLAG_P1));
+    if (tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)
+        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p1,tri_p2,alarmDist,contactDist,contacts,!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1),!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2));
+    if (tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23)
+        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p2,tri_p3,alarmDist,contactDist,contacts,!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2),!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3));
+    if (tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)
+        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p3,tri_p1,alarmDist,contactDist,contacts,!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3),!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1));
 
     for(OutputVector::iterator detection = contacts->end()-n ; detection != contacts->end() ; ++detection){
         detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);

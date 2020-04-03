@@ -277,7 +277,7 @@ void IncrSAP::reinit()
     }
     else
     {
-        if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeModel>();
+        if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeCollisionModel>();
         boxModel->resize(1);
         boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
     }
@@ -304,7 +304,7 @@ inline void IncrSAP::addCollisionModel(core::CollisionModel *cm)
         _colliding_elems.add(cm->getLast(),intersectionMethod);
         _nothing_added = false;
 
-        CubeModel * cube_model = dynamic_cast<CubeModel *>(cm->getLast()->getPrevious());
+        CubeCollisionModel * cube_model = dynamic_cast<CubeCollisionModel *>(cm->getLast()->getPrevious());
         assert(cube_model->getPrevious() == cm->getFirst());
 
         int old_size = _boxes.size();

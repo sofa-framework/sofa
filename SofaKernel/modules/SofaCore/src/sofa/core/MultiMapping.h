@@ -217,9 +217,27 @@ public:
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         std::string input  = arg->getAttribute("input","");
-        if( input.empty() || !LinkFromModels::CheckPaths( input, context ) ) return false;
+        if (input.empty()) {
+            arg->logError("The 'input' data attribute is empty. It should contain a valid path "
+                          "to one or more mechanical states of type '" + std::string(TIn::Name()) + "'.");
+            return false;
+        } else if (!LinkFromModels::CheckPaths( input, context )) {
+            arg->logError("The 'input' data attribute does not contain a valid path to one or more mechanical "
+                          "states of type '" + std::string(TIn::Name()) + "'.");
+            return false;
+        }
+
         std::string output = arg->getAttribute("output","");
-        if( output.empty() || !LinkToModels::CheckPaths( output, context ) ) return false;
+        if (output.empty()) {
+            arg->logError("The 'output' data attribute is empty. It should contain a valid path "
+                          "to one or more mechanical states. of type '" + std::string(TOut::Name()) + "'.");
+            return false;
+        } else if (!LinkToModels::CheckPaths( output, context )) {
+            arg->logError("The 'output' data attribute does not contain a valid path to one or more mechanical "
+                          "states of type '" + std::string(TOut::Name()) + "'.");
+            return false;
+        }
+
         return BaseMapping::canCreate(obj, context, arg);
     }
 

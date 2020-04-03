@@ -195,7 +195,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         return;
     }
 
-    int i0 = this->mstate->getSize();    
+    size_t i0 = this->mstate->getSize();
     if (i0 == 1) // ignore the first point if it is the only one
     {
         i0 = 0;
@@ -208,7 +208,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         }
     }
 
-    int nbParticlesToCreate = (int)((time - m_lastTime) / d_delay.getValue());    
+    size_t nbParticlesToCreate = (int)((time - m_lastTime) / d_delay.getValue());    
     if (nbParticlesToCreate > 0)
     {
         msg_info() << "ParticleSource: animate begin time= " << time << " | size: " << i0 << sendl;
@@ -228,10 +228,10 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
 
             //int lastparticle = i0 + i * N;
 
-            int lp0 = _lastparticles.empty() ? 0 : _lastparticles.size() / 2;
+            size_t lp0 = _lastparticles.empty() ? 0 : _lastparticles.size() / 2;
             if (lp0 > 0)
             {
-                int shift = _lastparticles.size() - lp0;
+                size_t shift = _lastparticles.size() - lp0;
                 Deriv dpos = v0 * d_delay.getValue();
                 for (int s = 0; s < lp0; s++)
                 {
@@ -249,8 +249,9 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
 
                 for (unsigned int c = 0; c < p.size(); c++)
                     p[c] += d_radius.getValue()[c] * rrand();
+               
                 m_lastpos.push_back(p);
-                _lastparticles.push_back(i0 + newX.size());
+                _lastparticles.push_back((unsigned int)(i0 + newX.size()));
                 newX.push_back(p + v0 * (time - m_lastTime)); // account for particle initial motion
                 newV.push_back(v0);
             }
@@ -268,7 +269,16 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         // Particles creation.
         if (pointMod != nullptr)
         {
-            int n = i0 + nbParticlesToCreate - this->mstate->getSize();
+            size_t n = i0 + nbParticlesToCreate;
+            if (n < this->mstate->getSize())
+            {
+                msg_error() << "Less particle to create than the number of dof in the current mstate: " << n << " vs " << this->mstate->getSize();
+                n = 0;
+            }
+            else
+            {
+                n -= this->mstate->getSize();
+            }            
             pointMod->addPoints(n);
         }
         else

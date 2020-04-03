@@ -115,7 +115,7 @@ private:
 
     Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
-    CubeModel::SPtr boxModel;
+    CubeCollisionModel::SPtr boxModel;
 
     std::vector<DSAPBox> _boxes;//boxes
     EndPointList _end_points;//end points of _boxes

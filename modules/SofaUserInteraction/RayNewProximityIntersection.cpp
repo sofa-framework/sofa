@@ -51,13 +51,13 @@ RayNewProximityIntersection::RayNewProximityIntersection(NewProximityIntersectio
 {
     if (addSelf)
     {
-        intersection->intersectors.ignore<RayModel, PointModel>();
-        intersection->intersectors.ignore<RayModel, LineModel>();
+        intersection->intersectors.ignore<RayCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
+        intersection->intersectors.ignore<RayCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
 
         // why rigidsphere has a different collision detection compared to RayDiscreteIntersection?
-        intersection->intersectors.add<RayModel, RigidSphereModel, RayNewProximityIntersection>(this);
+        intersection->intersectors.add<RayCollisionModel, RigidSphereModel, RayNewProximityIntersection>(this);
 
-        intersection->intersectors.add<RayModel, TriangleModel, RayNewProximityIntersection>(this);
+        intersection->intersectors.add<RayCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RayNewProximityIntersection>(this);
     }
 }
 

@@ -119,13 +119,6 @@ public:
     virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv1 &c1, DataMatrixDeriv2 &c2, unsigned int &cIndex
             , const DataVecCoord1 &x1, const DataVecCoord2 &x2) = 0;
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        return BaseInteractionConstraint::canCreate(obj, context, arg);
-    }
 
     /// Construction method called by ObjectFactory.
     template<class T>

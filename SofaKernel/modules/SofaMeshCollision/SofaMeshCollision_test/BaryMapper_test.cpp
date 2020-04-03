@@ -31,7 +31,7 @@ using core::objectmodel::New;
 
 typedef sofa::component::topology::MeshTopology MeshTopology;
 typedef sofa::simulation::Node::SPtr NodePtr;
-typedef sofa::component::collision::TriangleModel TriangleModel;
+typedef sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> TriangleModel;
 typedef sofa::defaulttype::Vec3Types DataTypes;
 typedef DataTypes::VecCoord VecCoord;
 

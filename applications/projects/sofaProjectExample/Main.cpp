@@ -270,7 +270,7 @@ int main(int argc, char** argv)
 
     MechanicalObject3d::SPtr cylSurfMechanicalObject = New<MechanicalObject3d>();
 
-    TriangleModel::SPtr triangleModel = New<TriangleModel>();
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr triangleModel = New<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
 
     typedef BarycentricMapping< Vec3dTypes, Vec3dTypes > BarycentricMechanicalMapping3d_to_3d;
     BarycentricMechanicalMapping3d_to_3d::SPtr cylSurfBarycentricMapping = New<BarycentricMechanicalMapping3d_to_3d>(mechanicalObject.get(), cylSurfMechanicalObject.get());

@@ -116,9 +116,9 @@ public:
         sofa::component::collision::NewProximityIntersection::init();
         intersectors.add<CudaSphereModel, CudaSphereModel,   DiscreteIntersection>(this);
         RayDiscreteIntersection* rayIntersector = new RayDiscreteIntersection(this, false);
-        intersectors.add<RayModel,        CudaSphereModel,   RayDiscreteIntersection>(rayIntersector);
+        intersectors.add<RayCollisionModel,        CudaSphereModel,   RayDiscreteIntersection>(rayIntersector);
         MeshNewProximityIntersection* meshIntersector = new MeshNewProximityIntersection(this, false);
-        intersectors.add<TriangleModel,   CudaSphereModel,   MeshNewProximityIntersection>(meshIntersector);
+        intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>,   CudaSphereModel,   MeshNewProximityIntersection>(meshIntersector);
     }
 
 };

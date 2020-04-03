@@ -8,6 +8,7 @@ set(REGISTRATION_HAVE_IMAGE @REGISTRATION_HAVE_IMAGE@)
 
 find_package(SofaGui REQUIRED)
 find_package(image QUIET)
+find_package(Eigen3 REQUIRED)
 
 if(REGISTRATION_HAVE_SOFAMISCCOLLISION)
     find_package(SofaMiscCollision QUIET REQUIRED)
