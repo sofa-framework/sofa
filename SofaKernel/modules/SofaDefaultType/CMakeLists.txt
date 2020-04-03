@@ -10,6 +10,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/DataTypeInfo.h
     ${SRC_ROOT}/Frame.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
+    ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
     ${SRC_ROOT}/Mat.h
     ${SRC_ROOT}/MatSym.h
     ${SRC_ROOT}/Mat_solve_Cholesky.h
@@ -17,13 +18,10 @@ set(HEADER_FILES
     ${SRC_ROOT}/Mat_solve_SVD.h
     ${SRC_ROOT}/Quat.h
     ${SRC_ROOT}/Quat.inl
-    # ${SRC_ROOT}/RigidInertia.h
-    # ${SRC_ROOT}/RigidInertia.inl
     ${SRC_ROOT}/RigidTypes.h
     ${SRC_ROOT}/RigidVec6Types.h
     ${SRC_ROOT}/SolidTypes.h
     ${SRC_ROOT}/SolidTypes.inl
-    # ${SRC_ROOT}/SparseConstraintTypes.h
     ${SRC_ROOT}/TemplatesAliases.h
     ${SRC_ROOT}/TopologyTypes.h
     ${SRC_ROOT}/Vec.h
@@ -35,25 +33,20 @@ set(HEADER_FILES
     ${SRC_ROOT}/Color.h
 )
 
-if(EIGEN3_FOUND OR Eigen3_FOUND)
-    list(APPEND HEADER_FILES 
-         ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
-        )
-endif()
-
 set(SOURCE_FILES
     ${SRC_ROOT}/BaseMatrix.cpp
     ${SRC_ROOT}/BoundingBox.cpp
     ${SRC_ROOT}/Frame.cpp
-    # ${SRC_ROOT}/RigidInertia.cpp
     ${SRC_ROOT}/SolidTypes.cpp
     ${SRC_ROOT}/TemplatesAliases.cpp
     ${SRC_ROOT}/init.cpp
 )
 
+find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)
+target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DEFAULTTYPE")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")

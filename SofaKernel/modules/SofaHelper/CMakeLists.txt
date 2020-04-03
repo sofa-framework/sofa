@@ -25,7 +25,7 @@ if(SOFA_BUILD_TESTS)
     sofa_find_package(GTest CONFIG BOTH_SCOPES)
 endif()
 # Eigen (header only)
-sofa_find_package(Eigen3 REQUIRED BOTH_SCOPES)
+find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
 sofa_find_package(Json 3.1.2 REQUIRED BOTH_SCOPES)
 
@@ -414,26 +414,7 @@ if(SOFA_BUILD_TESTS AND GTest_FOUND)
 endif()
 
 # Eigen (header only)
-if(EIGEN3_FOUND)
-    install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen
-        COMPONENT headers
-        DESTINATION "include/extlibs/Eigen"
-        PATTERN "*.in" EXCLUDE
-        PATTERN "*.txt" EXCLUDE
-        PATTERN "*.cpp" EXCLUDE
-        )
-    install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/unsupported/Eigen
-        COMPONENT headers
-        DESTINATION "include/extlibs/Eigen/unsupported/Eigen"
-        PATTERN "*.in" EXCLUDE
-        PATTERN "*.txt" EXCLUDE
-        PATTERN "*.cpp" EXCLUDE
-        )
-    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
-        "$<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>"
-        "$<INSTALL_INTERFACE:include/extlibs/Eigen>"
-        )
-endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 # Json (header only) needed by AdvancedTimer
 if(JSON_FOUND)

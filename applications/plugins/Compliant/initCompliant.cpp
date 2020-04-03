@@ -59,9 +59,6 @@ void initExternalModule()
 
         component::collision::CompliantSolverMerger::add();
 
-        // previous Eigen versions have a critical bug (v.noalias()+=w does not work in some situations)
-        static_assert( EIGEN_WORLD_VERSION>=3 && EIGEN_MAJOR_VERSION>=2 && EIGEN_MINOR_VERSION>=5, "" );
-
 #if COMPLIANT_HAVE_SOFAPYTHON
         static std::string docstring=R"(
                 Compliant module.
