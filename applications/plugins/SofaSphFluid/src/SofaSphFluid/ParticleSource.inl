@@ -221,7 +221,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         newX.reserve(nbParticlesToCreate * m_numberParticles);
         newV.reserve(nbParticlesToCreate * m_numberParticles);
         const Deriv v0 = d_velocity.getValue();
-        for (int i = 0; i < nbParticlesToCreate; i++)
+        for (size_t i = 0; i < nbParticlesToCreate; i++)
         {
             m_lastTime += d_delay.getValue();
             m_maxdist += d_delay.getValue() * d_velocity.getValue().norm() / d_scale.getValue();
@@ -233,7 +233,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
             {
                 size_t shift = _lastparticles.size() - lp0;
                 Deriv dpos = v0 * d_delay.getValue();
-                for (int s = 0; s < lp0; s++)
+                for (size_t s = 0; s < lp0; s++)
                 {
                     _lastparticles[s] = _lastparticles[s + shift];
                     m_lastpos[s] = m_lastpos[s + shift] + dpos;
@@ -243,7 +243,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
             _lastparticles.resize(lp0);
             m_lastpos.resize(lp0);
 
-            for (int s = 0; s < m_numberParticles; s++)
+            for (size_t s = 0; s < m_numberParticles; s++)
             {
                 Coord p = d_center.getValue()[s] * d_scale.getValue() + d_translation.getValue();
 
@@ -288,7 +288,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
 
         helper::WriteAccessor< Data<VecCoord> > x = *this->mstate->write(core::VecCoordId::position());
         helper::WriteAccessor< Data<VecDeriv> > v = *this->mstate->write(core::VecDerivId::velocity());
-        for (int s = 0; s < nbParticlesToCreate; ++s)
+        for (size_t s = 0; s < nbParticlesToCreate; ++s)
         {
             x[i0 + s] = newX[s];
             v[i0 + s] = newV[s];
