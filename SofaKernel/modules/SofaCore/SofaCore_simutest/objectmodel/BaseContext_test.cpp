@@ -40,7 +40,7 @@ public:
     void testGetObjects()
     {
         EXPECT_MSG_NOEMIT(Error, Warning) ;
-        importPlugin("SofaAll") ;
+        importPlugin("SofaComponentAll") ;
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"

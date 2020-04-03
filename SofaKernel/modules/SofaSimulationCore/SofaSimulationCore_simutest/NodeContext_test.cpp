@@ -44,7 +44,7 @@ public:
 
     NodeContext_test()
     {
-        importPlugin("SofaAll") ;
+        importPlugin("SofaComponentAll") ;
     }
 
     void testGetNodeObjects()

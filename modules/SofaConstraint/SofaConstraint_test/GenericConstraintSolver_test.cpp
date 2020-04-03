@@ -34,7 +34,7 @@ struct GenericConstraintSolver_test : BaseSimulationTest
 {
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaAll");
+        sofa::simpleapi::importPlugin("SofaComponentAll");
         sofa::simpleapi::importPlugin("SofaMiscCollision");
     }
 
@@ -42,7 +42,7 @@ struct GenericConstraintSolver_test : BaseSimulationTest
     {
         SceneInstance sceneinstance("xml",
                     "<Node>\n"
-                    "   <RequiredPlugin name='SofaAll'/>"
+                    "   <RequiredPlugin name='SofaComponentAll'/>"
                     "   <RequiredPlugin name='SofaMiscCollision'/>"
                     "   <FreeMotionAnimationLoop />\n"
                     "   <GenericConstraintSolver name='solver' constraintForces='-1 -1 -1' computeConstraintForces='True' maxIt='1000' tolerance='0.001' />\n"

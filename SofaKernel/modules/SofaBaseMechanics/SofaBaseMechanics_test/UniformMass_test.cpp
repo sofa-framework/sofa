@@ -84,7 +84,7 @@ struct UniformMassTest :  public BaseTest
 
     virtual void SetUp()
     {
-        sofa::simpleapi::importPlugin("SofaAll") ;
+        sofa::simpleapi::importPlugin("SofaComponentAll") ;
 
         todo = true ;
         initBaseMechanics();
