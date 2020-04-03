@@ -28,7 +28,8 @@ set(SOURCE_FILES
 set(README_FILES CGALPlugin.txt)
 
 
-# Add CGAL dependencies
+
+# Add SOFA dependencies
 find_package(SofaFramework REQUIRED)
 
 # Check if image plugin is build, If yes add more files to create mesh on top of ImageContainer
