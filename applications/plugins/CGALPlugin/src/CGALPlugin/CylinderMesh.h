@@ -92,7 +92,8 @@ public:
 
     //Parameters
     Real m_interval;
-    int m_nbVertices, m_nbCenters, m_nbBDCenters, m_nbTetras;
+    int m_nbVertices, m_nbCenters, m_nbBDCenters;
+    size_t m_nbTetras;
     int n, m, a;
     Real d, l, t;
     std::map<Index, int> m_ptID;

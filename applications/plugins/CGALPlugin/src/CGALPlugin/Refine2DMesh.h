@@ -27,10 +27,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/DataEngine.h>
-
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/core/objectmodel/Data.h>
 
 namespace cgal
 {
@@ -69,17 +66,8 @@ public:
     void reinit() override;
 
     void doUpdate() override;
-    void draw();
+    void draw(const sofa::core::visual::VisualParams*) override;
 
-    virtual std::string getTemplateName() const
-      {
-        return templateName(this);
-      }
-
-    static std::string templateName(const Refine2DMesh<DataTypes>* = NULL)
-    {
-      return DataTypes::Name();
-    }
 
     //Inputs
     Data<VecCoord> d_points;
@@ -108,7 +96,7 @@ public:
 };
 
 #if !defined(CGALPLUGIN_REFINE2DMESH_CPP)
-template class SOFA_CGALPLUGIN_API Refine2DMesh<defaulttype::Vec3Types>;
+template class SOFA_CGALPLUGIN_API Refine2DMesh<sofa::defaulttype::Vec3Types>;
 #endif
 
 } //cgal

@@ -36,4 +36,4 @@ int Refine2DMeshClass = sofa::core::RegisterObject("Refine 2D mesh using Delauna
     .add< Refine2DMesh<Vec3Types> >()
 ;
 
-template class SOFA_CGALPLUGIN_API Refine2DMesh<Vec3Types>;
+template class SOFA_CGALPLUGIN_API cgal::Refine2DMesh<Vec3Types>;

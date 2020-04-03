@@ -25,6 +25,8 @@
 #pragma once
 
 #include <CGALPlugin/Refine2DMesh.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 #define CGAL_MESH_2_VERBOSE
 
@@ -196,7 +198,7 @@ namespace cgal
 		{
 			CGAL_assertion( ! cdt.is_infinite( vi));
 			
-			mapping[vi] = newPoints.size();
+			mapping[vi] = (unsigned int)(newPoints.size());
 			Point p(CGAL::to_double(vi->point().x()), CGAL::to_double(vi->point().y()), 0.0);
 			newPoints.push_back(p);
 		}
@@ -374,41 +376,37 @@ namespace cgal
 	}
 	
 	template <class DataTypes>
-	void Refine2DMesh<DataTypes>::draw()
+	void Refine2DMesh<DataTypes>::draw(const sofa::core::visual::VisualParams* vparams)
 	{
 		if (p_viewSeedPoints.getValue())
 		{
-			glDisable(GL_LIGHTING);
-			
+            vparams->drawTool()->saveLastState();
+
 			const VecCoord& seeds = d_seedPoints.getValue();
-			glPointSize(5);
-			glColor3f(0.0, 0.0, 1.0);
-			glBegin(GL_POINTS);
-			for (unsigned int i=0 ; i<seeds.size() ; i++)
-			sofa::helper::gl::glVertexT(seeds[i]);
-			glEnd();
-			
-			glPointSize(1);
-			glEnable(GL_LIGHTING);
+            sofa::helper::vector<sofa::defaulttype::Vec3> points;
+            sofa::defaulttype::RGBAColor color(0.0, 0.0, 1.0, 1);
+
+            for (unsigned int i = 0; i < seeds.size(); i++)
+                points.push_back(seeds[i]);
+                
+            vparams->drawTool()->drawPoints(points, 5, color);
+            vparams->drawTool()->restoreLastState();
 		}
 		
 		if (p_viewRegionPoints.getValue())
 		{
-			glDisable(GL_LIGHTING);
-			
-			const VecCoord& regions = d_regionPoints.getValue();
-			glPointSize(5);
-			glColor3f(1.0, 0.0, 0.0);
-			glBegin(GL_POINTS);
-			for (unsigned int i=0 ; i<regions.size() ; i++)
-			sofa::helper::gl::glVertexT(regions[i]);
-			glEnd();
-			
-			glPointSize(1);
-			glEnable(GL_LIGHTING);
+            vparams->drawTool()->saveLastState();
+
+            const VecCoord& regions = d_regionPoints.getValue();
+            sofa::helper::vector<sofa::defaulttype::Vec3> points;
+            sofa::defaulttype::RGBAColor color(1.0, 0.0, 0.0, 1);
+
+            for (unsigned int i = 0; i < regions.size(); i++)
+                points.push_back(regions[i]);
+
+            vparams->drawTool()->drawPoints(points, 5, color);
+            vparams->drawTool()->restoreLastState();
 		}
-		
-		
 	}
 	
 } //cgal

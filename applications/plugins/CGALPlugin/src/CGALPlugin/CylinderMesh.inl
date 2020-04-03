@@ -71,10 +71,10 @@ void CylinderMesh<DataTypes>::doUpdate()
         return;
     }
     m_interval = d / n;
-    m = ceil(l/m_interval);
+    m = int(ceil(l/m_interval));
     l = m_interval * m;
     t = m_interval / 2;
-    a = ceil((d/2) / (sqrt(2)*t)); //parameters for cutting the corner
+    a = int(ceil((d/2) / (sqrt(2)*t))); //parameters for cutting the corner
 
     msg_info() << "diameter = " << d;
     msg_info() << "length = " << l;
