@@ -188,7 +188,7 @@ class TDetectionOutputVector<sofa::gpu::cuda::CudaRigidDistanceGridCollisionMode
 };
 
 template<>
-class TDetectionOutputVector<sofa::gpu::cuda::sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
+class TDetectionOutputVector<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
 {
 };
 
