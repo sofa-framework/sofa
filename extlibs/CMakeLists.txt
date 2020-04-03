@@ -8,12 +8,6 @@ set(EXTLIBS_TARGETS
 
 ######## SofaKernel/extlibs ########
 
-# Eigen (header-only): see SofaKernel/cmake/Modules/FindEigen3.cmake
-set(EIGEN3_ROOT "${SOFA_KERNEL_SOURCE_DIR}/extlibs/eigen" CACHE PATH "Eigen directory (containing Eigen/src/...)")
-# Clone eigen repository into extlibs
-# This eigen will be used by default. Change EIGEN3_ROOT to use another eigen.
-sofa_add_subdirectory_external(${SOFA_KERNEL_SOURCE_DIR}/extlibs/eigen eigen3 ON FETCH_ONLY)
-
 # Nlohmann JSON (header-only): see SofaKernel/cmake/Modules/FindJson.cmake
 set(JSON_ROOT "${SOFA_KERNEL_SOURCE_DIR}/extlibs/json" CACHE PATH "Nlohmann JSON directory")
 
