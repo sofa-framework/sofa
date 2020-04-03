@@ -55,6 +55,7 @@ public:
     virtual bool doRemoveObject(core::objectmodel::BaseObject::SPtr obj) override;
 
     /// Move an object from a node to another node
+    using Node::doMoveObject;
     virtual void doMoveObject(core::objectmodel::BaseObject::SPtr obj);
 
     /// Test if the given node is a parent of this node.
