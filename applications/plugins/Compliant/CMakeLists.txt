@@ -259,7 +259,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
-target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaMisc SofaSimulationGraph SofaMiscCollision)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver SofaUserInteraction SofaMisc SofaSimulationGraph SofaMiscCollision)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Compliant")

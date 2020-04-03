@@ -224,7 +224,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${README_FILES})
 
-target_link_libraries(${PROJECT_NAME} SofaMisc)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMisc)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 if(image_FOUND)
