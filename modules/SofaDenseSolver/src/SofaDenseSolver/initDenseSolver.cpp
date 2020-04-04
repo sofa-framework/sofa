@@ -67,7 +67,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return "1.0";
+    return sofa_tostring(SOFADENSESOLVER_VERSION);
 }
 
 const char* getModuleLicense()
