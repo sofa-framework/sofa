@@ -14,9 +14,9 @@
 		<SphereCollisionModel template="Vec3d" name="tSphereModel46"  radius="1" />
 	</Node>
 	<Node 	 name="gNode4"  gravity="0 0 -9.81"  >
-		<MechanicalObject template="Rigid" name="mObject37"  position="0 0 -10 0.577 0.577 0 0.577"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
-		<UniformMass template="Rigid" name="uniformMass0" />
-		<FixedConstraint template="Rigid" name="fixedConstraint0"  indices="0" />
-		<TOBBModel template="Rigid" name="tOBBModel16" />
+		<MechanicalObject template="Rigid3d" name="mObject37"  position="0 0 -10 0.577 0.577 0 0.577"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
+		<UniformMass template="Rigid3d" name="uniformMass0" />
+		<FixedConstraint template="Rigid3d" name="fixedConstraint0"  indices="0" />
+		<TOBBModel template="Rigid3d" name="tOBBModel16" />
 	</Node>
 </Node>

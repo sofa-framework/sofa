@@ -74,7 +74,7 @@
 
     <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -1   0 0 -0.8   0 0 -0.6  0 0 -0.4   0 0 -0.2   0 0 0    0 0 0.2   0 0 0.4  0 0 0.6  0 0 0.8  0 0 1" printLog="false"/> 
     <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Rigid" name="parent"  showObject="true" src="@merged" />
+    <MechanicalObject template="Rigid3d" name="parent"  showObject="true" src="@merged" />
 
 <!--linear weights-->
 <MeshTopology name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>

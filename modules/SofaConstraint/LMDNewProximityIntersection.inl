@@ -237,7 +237,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             ///////////////////////
             // closest point is A
             ///////////////////////
-            if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)) return 0; // this corner is not considered
             alpha = 0.0;
             beta = 0.0;
             //p = p1 + AB * alpha + AC * beta;
@@ -255,7 +255,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             ///////////////////////////
             // closest point is on AB : convention edgesIndices 0
             ///////////////////////////
-            if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)) return 0; // this edge is not considered
             alpha = pAB;
             beta = 0.0;
             pq = q-p1 - AB*alpha;// p= p1 + AB * alpha + AC * beta;
@@ -270,7 +270,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             ///////////////////////////
             // closest point is on AC: convention edgesIndices 2
             ///////////////////////////
-            if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)) return 0; // this edge is not considered
             alpha = 0.0;
             beta = pAC;
             pq = q-p1 - AC*beta;// p= p1 + AB * alpha + AC * beta;
@@ -290,7 +290,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
                 //////////////////////
                 // closest point is B
                 //////////////////////
-                if (!(flags&TriangleModel::FLAG_P2)) return 0; // this point is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)) return 0; // this point is not considered
                 alpha = 1.0;
                 beta = 0.0;
                 pq = q-p2;
@@ -303,7 +303,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             else if (pBC > 0.999999)
             {
                 // closest point is C
-                if (!(flags&TriangleModel::FLAG_P3)) return 0; // this point is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)) return 0; // this point is not considered
                 alpha = 0.0;
                 beta = 1.0;
                 pq = q-p3;
@@ -318,7 +318,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
                 ///////////////////////////
                 // closest point is on BC: convention edgesIndices 1
                 ///////////////////////////
-                if (!(flags&TriangleModel::FLAG_E23)) return 0; // this edge is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23)) return 0; // this edge is not considered
                 alpha = 1.0-pBC;
                 beta = pBC;
                 pq = q-p1 - AB * alpha - AC * beta;

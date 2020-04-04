@@ -69,24 +69,24 @@ LocalMinDistance::LocalMinDistance()
 
 void LocalMinDistance::init()
 {
-    intersectors.add<CubeModel, CubeModel, LocalMinDistance>(this);
-    intersectors.add<SphereModel, SphereModel, LocalMinDistance>(this); // sphere-sphere is always activated
-    intersectors.add<SphereModel, PointModel, LocalMinDistance>(this); // sphere-point is always activated
+    intersectors.add<CubeCollisionModel, CubeCollisionModel, LocalMinDistance>(this);
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this); // sphere-sphere is always activated
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this); // sphere-point is always activated
 
-    intersectors.add<PointModel, PointModel, LocalMinDistance>(this); // point-point is always activated
-    intersectors.add<LineModel, LineModel, LocalMinDistance>(this);
-    intersectors.add<LineModel, PointModel, LocalMinDistance>(this);
-    intersectors.add<LineModel, SphereModel, LocalMinDistance>(this);
-    intersectors.add<TriangleModel, PointModel, LocalMinDistance>(this);
-    intersectors.add<TriangleModel, SphereModel, LocalMinDistance>(this);
+    intersectors.add<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this); // point-point is always activated
+    intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+    intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+    intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+    intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+    intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
 
-    intersectors.ignore<TriangleModel, LineModel>();			// never the case with LMD
-    intersectors.ignore<TriangleModel, TriangleModel>();		// never the case with LMD
+    intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>();			// never the case with LMD
+    intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();		// never the case with LMD
 
-    intersectors.ignore<RayModel, PointModel>();
-    intersectors.ignore<RayModel, LineModel>();
-    intersectors.add<RayModel, TriangleModel, LocalMinDistance>(this);
-    intersectors.add<RayModel, SphereModel, LocalMinDistance>(this);
+    intersectors.ignore<RayCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
+    intersectors.ignore<RayCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
+    intersectors.add<RayCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+    intersectors.add<RayCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
     IntersectorFactory::getInstance()->addIntersectors(this);
 
     BaseProximityIntersection::init();
@@ -1230,7 +1230,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
     Vector3 pt = p.p();
 
     sofa::simulation::Node* node = dynamic_cast<sofa::simulation::Node*>(p.getCollisionModel()->getContext());
-    if ( !(node->get< LineModel >()) )
+    if ( !(node->get< LineCollisionModel<sofa::defaulttype::Vec3Types> >()) )
         return true;
 
     BaseMeshTopology* topology = p.getCollisionModel()->getCollisionTopology();
@@ -1266,7 +1266,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
     if (nMean.norm()> 0.0000000001)
     {
         /// validity test with nMean, except if bothSide
-        PointModel *pM = p.getCollisionModel();
+        PointCollisionModel<sofa::defaulttype::Vec3Types> *pM = p.getCollisionModel();
         bool bothSide_computation = pM->bothSide.getValue();
         nMean.normalize();
         if (dot(nMean, PQ) < -angleCone.getValue()*PQ.norm() && !bothSide_computation)
@@ -1299,7 +1299,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
     if (!filterIntersection.getValue())
         return true;
 
-    LineModel *lM = l.getCollisionModel();
+    LineCollisionModel<sofa::defaulttype::Vec3Types> *lM = l.getCollisionModel();
     bool bothSide_computation = lM->bothSide.getValue();
 
     Vector3 nMean;
@@ -1399,7 +1399,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
 
 bool LocalMinDistance::testValidity(Triangle &t, const Vector3 &PQ)
 {
-    TriangleModel *tM = t.getCollisionModel();
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types> *tM = t.getCollisionModel();
     bool bothSide_computation = tM->d_bothSide.getValue();
 
     if (!filterIntersection.getValue()  || bothSide_computation)

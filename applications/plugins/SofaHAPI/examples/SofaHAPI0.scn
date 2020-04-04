@@ -2,7 +2,7 @@
 <Node 	name="Root" gravity="0 0 0" time="0" animate="0"   >
     <RequiredPlugin name="SofaOpenglVisual"/>
   <Node name="Haptics">
-    <MechanicalObject name="State" template="Rigid" position="0 0 0  0 0 0 1" />
+    <MechanicalObject name="State" template="Rigid3d" position="0 0 0  0 0 0 1" />
     <HAPIHapticsDevice name="HAPI" printLog="1" drawDevice="1" scale="100" />
   </Node>
   <OglModel filename="mesh/floorFlat.obj" />

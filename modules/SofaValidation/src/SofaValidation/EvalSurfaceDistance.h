@@ -76,13 +76,13 @@ protected:
     VecCoord xproj;
 
     /// Point model of first object
-    sofa::component::collision::PointModel *pointsCM;
+    sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types> *pointsCM;
     /// Surface model of second object
-    sofa::component::collision::TriangleModel *surfaceCM;
+    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> *surfaceCM;
 
     sofa::component::collision::NewProximityIntersection::SPtr intersection;
     sofa::component::collision::BruteForceDetection::SPtr detection;
-    typedef core::collision::TDetectionOutputVector< sofa::component::collision::TriangleModel, sofa::component::collision::PointModel> ContactVector;
+    typedef core::collision::TDetectionOutputVector< sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>> ContactVector;
 
 };
 

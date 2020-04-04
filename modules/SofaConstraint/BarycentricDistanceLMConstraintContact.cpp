@@ -36,48 +36,48 @@ namespace collision
 
 using simulation::Node;
 
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<SphereModel, SphereModel> > SphereSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<SphereModel, PointModel> > SpherePointDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<PointModel, PointModel> > PointPointDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<LineModel, PointModel> > LinePointDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<LineModel, LineModel> > LineLineDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<LineModel, SphereModel> > LineSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, SphereModel> > TriangleSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, PointModel> > TrianglePointDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, LineModel> > TriangleLineDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, TriangleModel> > TriangleTriangleDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > SpherePointDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > LinePointDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineLineDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > LineSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TrianglePointDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleLineDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleTriangleDistanceLMConstraintContactClass("distanceLMConstraint",true);
 
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, RigidSphereModel> > TriangleRigidSphereLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, PointModel> > TrianglePointLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, LineModel> > TriangleLineLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, TriangleModel> > TriangleTriangleLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, TriangleModel> > CapsuleTriangleLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, LineModel> > CapsuleLineLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, CapsuleModel> > CapsuleCapsuleLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, SphereModel> > CapsuleSphereLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, RigidSphereModel> > CapsuleRigidSphereLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<OBBModel, OBBModel> > OBBOBBLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, OBBModel> > CapsuleOBBLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<SphereModel, OBBModel> > SphereOBBLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidSphereModel, OBBModel> > RigidSphereOBBLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, OBBModel> > TriangleOBBLMConstraintContactClass("distanceLMConstraint",true);
-
-
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidCapsuleModel, TriangleModel> > RigidCapsuleTriangleLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidCapsuleModel, RigidCapsuleModel> > RigidCapsuleRigidCapsuleLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, RigidCapsuleModel> > CapsuleRigidCapsuleLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidCapsuleModel, SphereModel> > RigidCapsuleSphereLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidCapsuleModel, RigidSphereModel> > RigidCapsuleRigidSphereLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidCapsuleModel, OBBModel> > RigidCapsuleOBBLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel> > TriangleRigidSphereLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TrianglePointLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleLineLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleTriangleLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleTriangleLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleLineLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleCapsuleLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleSphereLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel> > CapsuleRigidSphereLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > OBBOBBLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > CapsuleOBBLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > SphereOBBLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RigidSphereOBBLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > TriangleOBBLMConstraintContactClass("distanceLMConstraint",true);
 
 
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, CylinderModel> > CylinderCylinderLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, TriangleModel> > CylinderTriangleLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, RigidCapsuleModel> > CylinderRigidCapsuleLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, CylinderModel> > CapsuleCylinderLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, SphereModel> > CylinderSphereLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, RigidSphereModel> > CylinderRigidSphereLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, OBBModel> > CylinderOBBLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > RigidCapsuleTriangleLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>> > RigidCapsuleRigidCapsuleLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>> > CapsuleRigidCapsuleLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > RigidCapsuleSphereLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, RigidSphereModel> > RigidCapsuleRigidSphereLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RigidCapsuleOBBLMConstraintContactClassClass("distanceLMConstraint",true);
+
+
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, CylinderCollisionModel<sofa::defaulttype::Rigid3Types>> > CylinderCylinderLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > CylinderTriangleLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>> > CylinderRigidCapsuleLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CylinderCollisionModel<sofa::defaulttype::Rigid3Types>> > CapsuleCylinderLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > CylinderSphereLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, RigidSphereModel> > CylinderRigidSphereLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > CylinderOBBLMConstraintContactClassClass("distanceLMConstraint",true);
 
 } // namespace collision
 

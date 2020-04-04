@@ -172,7 +172,7 @@ int main(int argc, char** argv)
         }
     }
 
-    // Add plugins and modules dirs to PluginRepository
+    // Add plugins dir to PluginRepository
     if ( FileSystem::isDirectory(Utils::getSofaPathPrefix()+"/plugins") )
     {
         PluginRepository.addFirstPath(Utils::getSofaPathPrefix()+"/plugins");

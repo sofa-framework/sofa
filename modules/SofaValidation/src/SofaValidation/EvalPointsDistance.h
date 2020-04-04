@@ -120,10 +120,15 @@ public:
     {
         std::string object1 = arg->getAttribute("object1","@./");
         std::string object2 = arg->getAttribute("object2","@./");
-        if (!LinkMState::CheckPath(object1, context))
+        if (!LinkMState::CheckPath(object1, context)) {
+            arg->logError("Data attribute 'object1' must point to a valid object.");
             return false;
-        if (!LinkMState::CheckPath(object2, context))
+        }
+
+        if (!LinkMState::CheckPath(object2, context)) {
+            arg->logError("Data attribute 'object2' must point to a valid object.");
             return false;
+        }
 
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }

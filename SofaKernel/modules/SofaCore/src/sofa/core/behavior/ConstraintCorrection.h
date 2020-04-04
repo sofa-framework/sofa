@@ -149,8 +149,10 @@ public:
     template< class T >
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast< MechanicalState<DataTypes>* >(context->getMechanicalState()) == nullptr)
+        if (dynamic_cast< MechanicalState<DataTypes>* >(context->getMechanicalState()) == nullptr) {
+            arg->logError("No mechanical state with the datatype '" + std::string(DataTypes::Name()) + "' found in the context node.");
             return false;
+        }
 
         return BaseObject::canCreate(obj, context, arg);
     }

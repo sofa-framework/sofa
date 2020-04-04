@@ -2,7 +2,7 @@
 <Node 	name="Root" gravity="0 0 0" dt="1"  >
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
-<!--    <MechanicalObject  template="Rigid" position="0 -1 0 0 0 0 1    0 0 0 0 0 0 1    0 1 0 0 0 0 1"  name="parent"  /> -->
+<!--    <MechanicalObject  template="Rigid3d" position="0 -1 0 0 0 0 1    0 0 0 0 0 0 1    0 1 0 0 0 0 1"  name="parent"  /> -->
 <!--
     <MechanicalObject  template="Vec3d" position="0 0 1   0 1 0   1 0 0   -1 -1 0 "  name="parent"  />
     <ShepardShapeFunction position="@parent.rest_position" power="2"/>

@@ -176,14 +176,14 @@ public:
 
 /// Mapper for PointModel
 template<class DataTypes>
-class ContactMapper<PointModel, DataTypes> : public IdentityContactMapper<PointModel, DataTypes>
+class ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
 };
 
 /// Mapper for SphereModel
 template<class DataTypes>
-class ContactMapper<SphereModel, DataTypes> : public IdentityContactMapper<SphereModel, DataTypes>
+class ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -197,8 +197,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP)
-extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 #endif
 
 } // namespace collision

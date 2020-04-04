@@ -6,6 +6,9 @@ find_package(SofaMiscCollision REQUIRED)
 find_package(SofaGui QUIET)
 sofa_find_package(SofaPython QUIET)
 
+# Previous Eigen versions have a critical bug (v.noalias()+=w does not work in some situations)
+find_package(Eigen3 3.2.5 REQUIRED)
+
 set(HEADER_FILES
     config.h.in
     assembly/AssembledSystem.h
@@ -256,7 +259,8 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
-target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph SofaMiscCollision)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph SofaMiscCollision)
+target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Compliant")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
@@ -264,11 +268,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 
 # linking explicitly with rt looks necessary on some posix (e.g. CentOS)
 if(UNIX AND NOT APPLE)
-    target_link_libraries(${PROJECT_NAME} rt)
+    target_link_libraries(${PROJECT_NAME} PRIVATE rt)
 endif()
 
 if(SofaPython_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaPython)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaPython)
 endif()
 
 if(SOFA_BUILD_TESTS)

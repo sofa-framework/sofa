@@ -413,7 +413,7 @@ void PMLFemForceField::createCollisionModel()
 {
     if (collisionsON)
     {
-        tmodel = New<TriangleModel>();
+        tmodel = New<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
         //lmodel = new LineModel;
         //pmodel = new PointModel;
 

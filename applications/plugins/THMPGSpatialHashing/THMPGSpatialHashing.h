@@ -70,7 +70,7 @@ protected:
 
     //boost::unordered_map<std::pair<core::CollisionModel*,core::CollisionModel*>,CollidingPair> _qsdf;
 
-    sofa::helper::vector<sofa::component::collision::CubeModel*> cubeModels;//AABBs containing the final collision model
+    sofa::helper::vector<sofa::component::collision::CubeCollisionModel*> cubeModels;//AABBs containing the final collision model
     THMPGHashTable _grid;
     SReal _timeStamp;
     SReal _cell_size;

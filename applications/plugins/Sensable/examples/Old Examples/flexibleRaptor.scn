@@ -45,8 +45,8 @@
 	<!-- ADDED: the Mechanical state Controller gathers events from the Omni driver and populates the Mechanical state -->
 	<Node name="Omni">
 		<OmniDriver scale="50" omniVisu="0" orientationBase="0 0 0.707107 0.707107" positionBase="-1 0 2"/>
-		<MechanicalObject template="Rigid" name="DOFs" position="0 0 0  0  0  0  1.0"/>
-		<MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
+		<MechanicalObject template="Rigid3d" name="DOFs" position="0 0 0  0  0  0  1.0"/>
+		<MechanicalStateController template="Rigid3d" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
 		<Node name="VisuAvatar" activated="false" >
 			<MeshObjLoader name="meshLoader_1" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
 			<OglModel name="Visual" src="@meshLoader_1" color="gray"/>
@@ -63,7 +63,7 @@
 	<Node name="Instrument" >
 		<EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
 		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
-		<MechanicalObject name="instrumentState" template="Rigid" />
+		<MechanicalObject name="instrumentState" template="Rigid3d" />
 		<UniformMass name="mass" totalmass="0.05" />
 		<LCPForceFeedback activate="true" forceCoef="0.001"/> <!-- ADDED : Compute a force-feedback for the device -->
 		<UncoupledConstraintCorrection/>

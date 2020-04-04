@@ -8,7 +8,7 @@
 
     <GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" drawDevice="1" drawDeviceFrame="0" positionBase="0 0 0" orientationBase="0 0 0 1"  />
 
-	<MechanicalObject template="Rigid" name="GeomagicMO" position="@GeomagicDevice.positionDevice" />
+	<MechanicalObject template="Rigid3d" name="GeomagicMO" position="@GeomagicDevice.positionDevice" />
 
     <!-- Example of an instrument controlled with the Geomagic device -->
     <Node name="mapping">

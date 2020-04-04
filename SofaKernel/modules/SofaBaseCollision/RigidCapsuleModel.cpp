@@ -40,7 +40,6 @@ int RigidCapsuleCollisionModelClass = core::RegisterObject("Collision model whic
 
         .addAlias("RigidCapsule")
         .addAlias("RigidCapsuleModel")
-
         .addAlias("RigidCapsuleCollisionModel")
         ;
 
