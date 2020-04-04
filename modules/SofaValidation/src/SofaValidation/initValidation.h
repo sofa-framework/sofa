@@ -21,11 +21,3 @@
 ******************************************************************************/
 #pragma once
 #include <SofaValidation/config.h>
-
-namespace sofa::component
-{
-
-void SOFA_SOFAVALIDATION_API initValidation();
-
-} // namespace sofa::component
-

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include<SofaValidation/initValidation.h>
+
 #include<SofaDeformable/initDeformable.h>
 #include<SofaMiscSolver/initMiscSolver.h>
 
@@ -28,7 +28,6 @@ namespace {
     static struct raii {
       raii()
       {
-        sofa::component::initValidation() ;
         sofa::component::initDeformable() ;
         sofa::component::initMiscSolver() ;
       }
