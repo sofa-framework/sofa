@@ -297,7 +297,7 @@ public:
     public:
         CudaPointCollisionModel* model1;
         CudaRigidDistanceGridCollisionModel* model2;
-        SphereRigidTest(CudaPointCollisionModel* model1, CudaRigidDistanceGridCollisionModel* model2);
+        SphereRigidTest(sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types> *model1, CudaRigidDistanceGridCollisionModel* model2);
         bool useGPU() { return true; }
         /// Returns how many tests are required
         virtual int init();
