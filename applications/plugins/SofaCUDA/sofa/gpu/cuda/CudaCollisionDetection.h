@@ -295,7 +295,7 @@ public:
     class SphereRigidTest : public Test
     {
     public:
-        CudaPointCollisionModel* model1;
+        sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>* model1;
         CudaRigidDistanceGridCollisionModel* model2;
         SphereRigidTest(sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types> *model1, CudaRigidDistanceGridCollisionModel* model2);
         bool useGPU() { return true; }
