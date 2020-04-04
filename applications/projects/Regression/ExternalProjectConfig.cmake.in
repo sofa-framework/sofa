@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 2.8.2)
 
 include(ExternalProject)
 ExternalProject_Add(Regression
-    GIT_REPOSITORY https://github.com/sofa-framework/regression
-    GIT_TAG ca388cf402244e5196d2b46da69ed2f5a92fbdb1 
+    GIT_REPOSITORY https://github.com/fredroy/regression
+    GIT_TAG 4fa0cd3b56358c89b5e943d67d7cbc47c9648e45 
     SOURCE_DIR "${CMAKE_SOURCE_DIR}/applications/projects/Regression"
     BINARY_DIR ""
     CONFIGURE_COMMAND ""

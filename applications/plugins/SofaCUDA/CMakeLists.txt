@@ -324,6 +324,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
 target_link_libraries(${PROJECT_NAME} SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaComponentAdvanced SofaComponentMisc SofaValidation)
 
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+
 if(NOT SOFA_NO_OPENGL)
     target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
 endif()
@@ -352,6 +354,7 @@ if(SofaSphFluid_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaSphFluid)
 endif()
 
+
 ## SofaCUDANvccFlags.cmake
 # Build tree
 configure_file(SofaCUDANvccFlags.cmake ${CMAKE_BINARY_DIR}/cmake/SofaCUDANvccFlags.cmake COPYONLY)
@@ -363,4 +366,3 @@ sofa_create_package(SofaCUDA ${SOFACUDA_VERSION} SofaCUDA SofaCUDA)
 
 ## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
