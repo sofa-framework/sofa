@@ -22,12 +22,5 @@
 #pragma once
 #include <SofaDenseSolver/config.h>
 
-namespace sofa::component
-{
-
-void SOFA_SOFADENSESOLVER_API initDenseSolver();
-
-
-} // namespace sofa::component
 
 

@@ -52,7 +52,7 @@ if(SofaDenseSolver_FOUND)
         HexahedronCompositeFEMMapping.cpp
         )
 else()
-    message(WARNING "SofaDenseSolver not found, disabling HexahedronCompositeFEMForceFieldAndMass compilation.")
+    message(STATUS "SofaDenseSolver not found, disabling HexahedronCompositeFEMForceFieldAndMass compilation.")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

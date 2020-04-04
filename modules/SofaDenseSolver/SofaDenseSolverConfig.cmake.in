@@ -1,8 +1,8 @@
 # CMake package configuration file for the SofaDenseSolver module
 @PACKAGE_INIT@
 
-sofa_find_package(Newmat REQUIRED)
-sofa_find_package(SofaBase REQUIRED)
+find_package(Newmat REQUIRED)
+find_package(SofaBase REQUIRED)
 
 ### Is the target existing ?
 if(NOT TARGET SofaDenseSolver)
