@@ -358,7 +358,7 @@ void CudaCollisionDetection::RigidRigidTest::fillContacts(DetectionOutputVector&
 }
 */
 
-CudaCollisionDetection::SphereRigidTest::SphereRigidTest(CudaPointCollisionModel *model1, CudaRigidDistanceGridCollisionModel* model2 )
+CudaCollisionDetection::SphereRigidTest::SphereRigidTest(sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types> *model1, CudaRigidDistanceGridCollisionModel* model2 )
     : model1(model1), model2(model2)
 {
     std::cout << "CudaCollisionDetection::SphereRigidTest "<<model1->getClassName()<<" - "<<model2->getClassName()<<std::endl;
