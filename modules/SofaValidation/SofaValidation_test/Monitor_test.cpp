@@ -139,6 +139,7 @@ struct Monitor_test : public sofa::Sofa_test<>
                 "<Node name='root' gravity='0 -9.81 0'>"
                 "<DefaultAnimationLoop/>"
                 "<Node name='node'>"
+                "<RequiredPlugin name = 'SofaValidation' />"
                 "<EulerImplicit rayleighStiffness='0' printLog='false' rayleighMass='0.1'/>"
                 "<CGLinearSolver iterations='100' threshold='0.00000001' "
                 "tolerance='1e-5'/>"
