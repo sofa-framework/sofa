@@ -13,7 +13,7 @@ Instrument Control, and Python script
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
 
     <Node name="InstrControl">
-        <MechanicalObject template="Rigid" name="DOFs" position="0.05 0.5 -7.65  0 0 0 1" />
+        <MechanicalObject template="Rigid3d" name="DOFs" position="0.05 0.5 -7.65  0 0 0 1" />
         <PythonScriptController filename="keyboardControl.py" classname="KeyboardControl"/>
 
         <Node name="RefModel">
@@ -26,7 +26,7 @@ Instrument Control, and Python script
     <Node name="Instrument">
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
-        <MechanicalObject name="instrumentState" template="Rigid" position="0.05 0.5 -7.65  0 0 0 1" />
+        <MechanicalObject name="instrumentState" template="Rigid3d" position="0.05 0.5 -7.65  0 0 0 1" />
         <UniformMass name="mass" totalMass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <UncoupledConstraintCorrection />
         <Node name="VisualModel">

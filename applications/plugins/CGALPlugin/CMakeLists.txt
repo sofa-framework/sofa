@@ -30,6 +30,7 @@ set(README_FILES CGALPlugin.txt)
 
 ### Dependencies
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
 find_package(SofaFramework REQUIRED)
 find_package(CImgPlugin QUIET)
@@ -45,8 +46,7 @@ else ()
 endif()
 
 
-## CGAL dependencies
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
+
 find_package(MPFR REQUIRED)
 find_package(GMP REQUIRED)
 find_package(Boost QUIET REQUIRED COMPONENTS system thread)

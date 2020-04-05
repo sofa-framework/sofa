@@ -25,7 +25,9 @@
 *******************************************************************************/
 
 #include <QDialog>
+#include <QWebEngineView>
 #include <sofa/gui/qt/SofaGuiQt.h>
+#include <iostream>
 
 ////////////////////////////// FORWARD DECLARATION ////////////////////////////
 class QLineEdit ;
@@ -47,6 +49,18 @@ namespace gui
 namespace qt
 {
 
+class SofaEnrichedPage : public QWebEnginePage
+{
+    Q_OBJECT
+public:
+    SofaEnrichedPage(QObject* parent = 0) ;
+    bool isSofaTarget(const QUrl &url) ;
+
+    bool acceptNavigationRequest(const QUrl & url, QWebEnginePage::NavigationType type, bool);
+signals:
+    void linkClicked(const QUrl&);
+};
+
 class SOFA_SOFAGUIQT_API DocBrowser : public QDialog
 {
 Q_OBJECT
@@ -56,9 +70,10 @@ public:
     ~DocBrowser() override ;
 
     void loadHtml(const std::string& filename) ;
-    void showEvent(QShowEvent*) override ;
+    virtual void showEvent(QShowEvent*) override ;
 
 public slots:
+    void onLinkClicked(const QUrl& url) ;
     void goToPrev() ;
     void goTo(const QUrl& u) ;
     void goToHome() ;
@@ -72,9 +87,9 @@ private:
     /// history of sofa scene execution.
     BrowserHistory* m_browserhistory ;
 
-    QLineEdit*      m_lineEdit;
-    QTextBrowser*   m_htmlPage;
-    RealGUI*        m_realgui ;
+    QLineEdit*        m_lineEdit;
+    QWebEngineView*   m_htmlPage;
+    RealGUI*          m_realgui ;
 } ;
 
 }

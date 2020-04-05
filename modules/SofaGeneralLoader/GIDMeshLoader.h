@@ -51,12 +51,6 @@ public :
 public :
 	bool load() override;
 
-	template <class T>
-	static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-	{
-		return BaseLoader::canCreate (obj, context, arg);
-	}
-
 protected :
 	enum ElementType{ LINEAR, TRIANGLE, QUADRILATERAL, TETRAHEDRA, HEXAHEDRA, PRISM, PYRAMID, SPHERE, CIRCLE };
 

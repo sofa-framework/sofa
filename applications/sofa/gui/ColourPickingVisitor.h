@@ -38,9 +38,9 @@ namespace gui
 {
 
 void SOFA_SOFAGUI_API decodeCollisionElement( const sofa::defaulttype::Vec4f colour, sofa::component::collision::BodyPicked& body );
-void SOFA_SOFAGUI_API decodePosition( sofa::component::collision::BodyPicked& body, const sofa::defaulttype::Vec4f colour, const component::collision::TriangleModel* model,
+void SOFA_SOFAGUI_API decodePosition( sofa::component::collision::BodyPicked& body, const sofa::defaulttype::Vec4f colour, const component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index);
-void SOFA_SOFAGUI_API decodePosition( sofa::component::collision::BodyPicked& body, const sofa::defaulttype::Vec4f colour, const component::collision::SphereModel* model,
+void SOFA_SOFAGUI_API decodePosition( sofa::component::collision::BodyPicked& body, const sofa::defaulttype::Vec4f colour, const component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index);
 
 
@@ -85,8 +85,8 @@ public:
 
 private:
 
-    void processTriangleModel(simulation::Node*, sofa::component::collision::TriangleModel* );
-    void processSphereModel(simulation::Node*, sofa::component::collision::SphereModel*);
+    void processTriangleModel(simulation::Node*, sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* );
+    void processSphereModel(simulation::Node*, sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>*);
 
     const core::visual::VisualParams* vparams;
     ColourCode method;

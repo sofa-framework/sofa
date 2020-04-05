@@ -29,19 +29,19 @@
 		</Node>
 		<Node name="CollisionModel" >
 			<Node>
-				<MechanicalObject  template="Rigid"/>
+				<MechanicalObject  template="Rigid3d"/>
 				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
 			</Node>
 			<Node>
-				<MechanicalObject  template="Rigid" dy="-0.3" dz="-2"/>
+				<MechanicalObject  template="Rigid3d" dy="-0.3" dz="-2"/>
 				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
 			</Node>
 			<Node>
-				<MechanicalObject  template="Rigid" dy="-8" dz="0.5"/>
+				<MechanicalObject  template="Rigid3d" dy="-8" dz="0.5"/>
 				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
 			</Node>
 			<Node>
-				<MechanicalObject  template="Rigid" dy="-8" dz="-1.5"/>
+				<MechanicalObject  template="Rigid3d" dy="-8" dz="-1.5"/>
 				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
 			</Node>
 		</Node>
@@ -49,8 +49,8 @@
 
 	<!-- ADDED: the Mechanical state Controller gathers events from the Omni driver and populates the Mechanical state -->
 	<Node name="Omni">
-		<MechanicalObject template="Rigid" name="DOFs" position="0 -4 0  0 0 0 1"/>
-		<MechanicalStateController template="Rigid" listening="true"  mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
+		<MechanicalObject template="Rigid3d" name="DOFs" position="0 -4 0  0 0 0 1"/>
+		<MechanicalStateController template="Rigid3d" listening="true"  mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
 		<Node name="VisuAvatar">
 			<MeshObjLoader name="meshLoader_1" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
 			<OglModel name="Visual" src="@meshLoader_1" color="gray" />
@@ -80,7 +80,7 @@
 	<Node name="Instrument" >
 		<EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
 		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
-		<MechanicalObject name="instrumentState" template="Rigid" position="0 -4 0  0 0 0 1"/>
+		<MechanicalObject name="instrumentState" template="Rigid3d" position="0 -4 0  0 0 0 1"/>
 		<UniformMass name="mass" totalmass="0.05" />
 		<EnslavementForceFeedback activate="true" stiffness="3.0"/> <!-- ADDED : Compute a force-feedback for the device -->
 		<Node name="VisualModel" >

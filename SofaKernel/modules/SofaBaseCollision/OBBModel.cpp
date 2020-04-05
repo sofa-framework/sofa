@@ -37,15 +37,14 @@ using namespace sofa::core::collision;
 using namespace helper;
 
 int OBBModelClass = core::RegisterObject("Collision model which represents a set of OBBs")
-        .add<  TOBBModel<Rigid3Types> >()
+        .add<  OBBCollisionModel<Rigid3Types> >()
 
         .addAlias("OBB")
         .addAlias("OBBModel")
-//.addAlias("OBBMesh")
-//.addAlias("OBBSet")
+        .addAlias("TOBBModel")
         ;
 
-template class SOFA_BASE_COLLISION_API TOBBModel<defaulttype::Rigid3Types>;
+template class SOFA_BASE_COLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
 template class SOFA_BASE_COLLISION_API TOBB<defaulttype::Rigid3Types>;
 
 

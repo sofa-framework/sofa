@@ -115,18 +115,6 @@ public:
 
     void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
 
-    /// Pre-construction check method called by ObjectFactory.
-#if 0
-    template<class T>
-    static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
-    {
-        /*if (getOdeSolver(context) == nullptr)
-            return false;
-        */
-        return Inherit::canCreate(obj, context, arg);
-    }
-#endif //
-
 protected:
 
     sofa::core::behavior::OdeSolver* odesolver;

@@ -8,7 +8,7 @@
   
   <!---0.116834 0.743145 0 -0.658851--> 
   <Node name='rigid'>
-    <MechanicalObject template='Rigid' name='DOFs' position='0 0 0 0.116834 0.743145 0 -0.658851   0 1 0 0 0 0 1   1 0.5 0 0 0 0 1   1 0.5 0.5 0 0 0 1' showObject='0'/>
+    <MechanicalObject template='Rigid3d' name='DOFs' position='0 0 0 0.116834 0.743145 0 -0.658851   0 1 0 0 0 0 1   1 0.5 0 0 0 0 1   1 0.5 0.5 0 0 0 1' showObject='0'/>
     <FixedConstraint indices='0 1'/>
   </Node>  <!--/rigid--> 
   

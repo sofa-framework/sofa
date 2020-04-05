@@ -140,7 +140,7 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionM
 template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
@@ -176,7 +176,7 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)

@@ -13,12 +13,12 @@
 		<EulerImplicitSolver name="eulerImplicitSolver1" />
 		<LULinearSolver template="NewMat" name="lULinearSolver0" />
 		<HaptionDriver name="haptionDriver1"  listening="1"  haptionVisu="0"  positionBase="0 0 0 0 0 -0.707 0.707" />
-		<MechanicalStateController template="Rigid" name="mechanicalStateController1"  buttonDeviceState="@haptionDriver1.state_button"  mainDirection="0 0 -1" />
-		<MechanicalObject template="Rigid" name="instrumentState"  listening="1"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001" />
-		<UniformMass template="Rigid" name="uniformMass2"  totalmass="0.1" />
-		<LinearSolverConstraintCorrection template="Rigid" name="linearSolverConstraintCorrection4" />
-		<LCPForceFeedback template="Rigid" name="lCPForceFeedback5"  listening="1"  activate="1"  forceCoef="0.1" />
-		<RestShapeSpringsForceField template="Rigid" name="restShapeSpringsForceField4"  stiffness="200"  angularStiffness="200" />
+		<MechanicalStateController template="Rigid3d" name="mechanicalStateController1"  buttonDeviceState="@haptionDriver1.state_button"  mainDirection="0 0 -1" />
+		<MechanicalObject template="Rigid3d" name="instrumentState"  listening="1"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001" />
+		<UniformMass template="Rigid3d" name="uniformMass2"  totalmass="0.1" />
+		<LinearSolverConstraintCorrection template="Rigid3d" name="linearSolverConstraintCorrection4" />
+		<LCPForceFeedback template="Rigid3d" name="lCPForceFeedback5"  listening="1"  activate="1"  forceCoef="0.1" />
+		<RestShapeSpringsForceField template="Rigid3d" name="restShapeSpringsForceField4"  stiffness="200"  angularStiffness="200" />
 		<Node 	name="visual" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<MeshObjLoader name="meshLoader_2" filename="mesh/dental_instrument.obj"  translation="-1.2 -1.6 3.55"  rotation="180 0 150"  scale3d="1 1 1" handleSeams="1" />
 			<OglModel template="ExtVec3f" name="InstrumentVisualModel" src="@meshLoader_2"  material="Default Diffuse 1 0 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
@@ -70,9 +70,9 @@
 	<Node 	name="TORUS" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 		<EulerImplicitSolver name="cg_odesolver"  printLog="0"  rayleighStiffness="0.001"  rayleighMass="30" />
 		<CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  iterations="25"  tolerance="1e-009"  threshold="1e-015" />
-		<MechanicalObject template="Rigid" name="mechanicalObject2"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  translation="10 0 0"  scale3d="1 1 1" />
-		<UniformMass template="Rigid" name="uniformMass1"  mass="0.01 1 [1 0 0,0 1 0,0 0 1]" />
-		<UncoupledConstraintCorrection template="Rigid" name="uncoupledConstraintCorrection1" />
+		<MechanicalObject template="Rigid3d" name="mechanicalObject2"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  translation="10 0 0"  scale3d="1 1 1" />
+		<UniformMass template="Rigid3d" name="uniformMass1"  mass="0.01 1 [1 0 0,0 1 0,0 0 1]" />
+		<UncoupledConstraintCorrection template="Rigid3d" name="uncoupledConstraintCorrection1" />
 		<Node 	name="Visu" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj"  rotation="90 0 0"  scale3d="1 1 1" handleSeams="1" />
 			<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_3"  material="Default Diffuse 1 1 0.498039 0.247059 1 Ambient 1 0.2 0.0980392 0.0470588 1 Specular 0 1 0.498039 0.247059 1 Emissive 0 1 0.498039 0.247059 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />

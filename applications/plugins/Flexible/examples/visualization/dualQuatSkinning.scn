@@ -24,7 +24,7 @@
         <VoronoiShapeFunction name="SF" position="@merged.position" src="@image" method="0" nbRef="4" />
 
         <Node name="Rigid"   >
-            <MechanicalObject template="Rigid" name="dofr" showObject="true" showObjectScale="0.7" position="@../merged.position1" />    
+            <MechanicalObject template="Rigid3d" name="dofr" showObject="true" showObjectScale="0.7" position="@../merged.position1" />    
 
             <Node name="Affine"   >
                 <MechanicalObject template="Affine" name="dofa" showObject="true" showObjectScale="1.5" position="@../../merged.position2" />
@@ -89,7 +89,7 @@
         <VoronoiShapeFunction name="SF_cpu" position="@merged_cpu.position" src="@image_cpu" method="0" nbRef="4" />
         
         <Node name="Rigid_cpu"   >
-            <MechanicalObject template="Rigid" name="dof_cpu" showObject="true" showObjectScale="0.7" position="@../merged_cpu.position1" />
+            <MechanicalObject template="Rigid3d" name="dof_cpu" showObject="true" showObjectScale="0.7" position="@../merged_cpu.position1" />
             
             <Node name="Affine_cpu"   >
                 <MechanicalObject template="Affine" name="dof_cpu" showObject="true" showObjectScale="1.5" position="@../../merged_cpu.position2" />
@@ -135,10 +135,10 @@
     </Node> -->
     
     <Node name="Floor"  >
-        <MechanicalObject template="Rigid" name="mObjectGround"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  reserve="1" />
-        <OBBModel template="Rigid" name="sol" extents="100 1 100" simulated="0" moving="0" contactFriction="0.5" contactRestitution="0.5"/>
+        <MechanicalObject template="Rigid3d" name="mObjectGround"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  reserve="1" />
+        <OBBModel template="Rigid3d" name="sol" extents="100 1 100" simulated="0" moving="0" contactFriction="0.5" contactRestitution="0.5"/>
         <RigidMass mass="1000" inertia="166.7 166.7 166.7" />
-        <FixedConstraint template="Rigid" name="fixedConstraint0" indices="0"/>
+        <FixedConstraint template="Rigid3d" name="fixedConstraint0" indices="0"/>
     </Node>
 
 </Node>

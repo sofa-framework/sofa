@@ -36,10 +36,10 @@ namespace collision
 {
 
 
-class TriangleModelInRegularGrid : public TriangleModel
+class TriangleModelInRegularGrid : public TriangleCollisionModel<sofa::defaulttype::Vec3Types>
 {
 public:
-    SOFA_CLASS(TriangleModelInRegularGrid, TriangleModel);
+    SOFA_CLASS(TriangleModelInRegularGrid, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
 
     void init() override;
     void computeBoundingTree ( int maxDepth=0 ) override;

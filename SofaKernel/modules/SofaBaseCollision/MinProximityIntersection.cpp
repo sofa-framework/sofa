@@ -71,17 +71,17 @@ MinProximityIntersection::MinProximityIntersection()
 
 void MinProximityIntersection::init()
 {
-    intersectors.add<CubeModel, CubeModel, MinProximityIntersection>(this);
-    intersectors.add<SphereModel, SphereModel, MinProximityIntersection>(this);
-    intersectors.add<CapsuleModel,CapsuleModel, MinProximityIntersection> (this);
-    intersectors.add<CapsuleModel,SphereModel, MinProximityIntersection> (this);
-    intersectors.add<OBBModel,OBBModel, MinProximityIntersection> (this);
-    intersectors.add<CapsuleModel,OBBModel, MinProximityIntersection> (this);
-    intersectors.add<SphereModel,OBBModel, MinProximityIntersection> (this);
+    intersectors.add<CubeCollisionModel, CubeCollisionModel, MinProximityIntersection>(this);
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MinProximityIntersection>(this);
+    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, MinProximityIntersection> (this);
+    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,SphereCollisionModel<sofa::defaulttype::Vec3Types>, MinProximityIntersection> (this);
+    intersectors.add<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
+    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
     intersectors.add<RigidSphereModel,RigidSphereModel, MinProximityIntersection> (this);
-    intersectors.add<SphereModel,RigidSphereModel, MinProximityIntersection> (this);
-    intersectors.add<CapsuleModel,RigidSphereModel, MinProximityIntersection> (this);
-    intersectors.add<RigidSphereModel,OBBModel, MinProximityIntersection> (this);
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, MinProximityIntersection> (this);
+    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, MinProximityIntersection> (this);
+    intersectors.add<RigidSphereModel,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 

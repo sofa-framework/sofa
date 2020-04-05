@@ -149,7 +149,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"TCapsuleModel", Removed("v19.12", "v20.06")},
 
     {"RigidCapsule", Removed("v19.12", "v20.06")},
-    {"RigidCapsuleModel", Removed("v19.12", "v20.06")},
+    {"CapsuleModel", Removed("v19.12", "v20.06")},
 
     {"Cube", Removed("v19.12", "v20.06")},
     {"CubeModel", Removed("v19.12", "v20.06")},

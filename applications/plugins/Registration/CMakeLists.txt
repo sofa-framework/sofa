@@ -5,6 +5,7 @@ find_package(SofaGui REQUIRED)
 sofa_find_package(SofaMiscCollision REQUIRED)
 sofa_find_package(SofaDistanceGrid QUIET)
 sofa_find_package(image QUIET)
+find_package(Eigen3 REQUIRED)
 
 set(HEADER_FILES
     config.h.in
@@ -53,6 +54,7 @@ sofa_set_python_directory(Registration "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaOpenglVisual SofaLoader SofaMiscForceField SofaGeneralEngine)
+target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC image)

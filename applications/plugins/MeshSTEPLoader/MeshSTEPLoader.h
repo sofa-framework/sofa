@@ -61,7 +61,10 @@
 
 #include <TopTools_DataMapOfIntegerShape.hxx>
 #include <BRepTools.hxx>
+#include <Standard_Version.hxx>
+#if ( OCC_VERSION_MAJOR < 7 || OCC_VERSION_MAJOR == 7 && OCC_VERSION_MINOR < 4 ) // OCC_VERSION < 7.4
 #include <BRepMesh.hxx>
+#endif
 #include <Poly_Triangulation.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Array1OfTriangle.hxx>

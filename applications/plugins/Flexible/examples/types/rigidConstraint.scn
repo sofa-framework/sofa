@@ -150,7 +150,7 @@
 <!-- fixedPosition = USER POSITIONS OF FRAMES -->
           <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/> 
           <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-          <MechanicalObject template="Rigid" name="dof" showObject="true" showObjectScale="0.7" src="@merged" />
+          <MechanicalObject template="Rigid3d" name="dof" showObject="true" showObjectScale="0.7" src="@merged" />
 
           <VoronoiShapeFunction name="SF" position="@dof.rest_position" src="@image" method="0" nbRef="4" />
 <!--  <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="6 -1 -1"/>  -->

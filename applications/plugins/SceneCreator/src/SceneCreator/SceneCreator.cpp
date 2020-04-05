@@ -150,25 +150,25 @@ Node::SPtr createObstacle(Node::SPtr  parent, const std::string &filenameCollisi
                                 {"rotation", str(rotation)}
                             });
 
-    simpleapi::createObject(nodeFixed, "TriangleModel", {
+    simpleapi::createObject(nodeFixed, "TriangleCollisionModel", {
                                 {"name", "Collision Fixed"},
                                 {"simulated", "false"},
                                 {"moving", "false"},
                             });
 
-    simpleapi::createObject(nodeFixed, "LineModel", {
+    simpleapi::createObject(nodeFixed, "LineCollisionModel", {
                                 {"name", "Collision Fixed"},
                                 {"simulated", "false"},
                                 {"moving", "false"},
                             });
 
-    simpleapi::createObject(nodeFixed, "PointModel", {
+    simpleapi::createObject(nodeFixed, "PointCollisionModel", {
                                 {"name", "Collision Fixed"},
                                 {"simulated", "false"},
                                 {"moving", "false"},
                             });
 
-    simpleapi::createObject(nodeFixed, "LineModel", {
+    simpleapi::createObject(nodeFixed, "LineCollisionModel", {
                                 {"name", "Collision Fixed"},
                                 {"simulated", "false"},
                                 {"moving", "false"},
@@ -321,12 +321,12 @@ Node::SPtr createVisualNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
 void addCollisionModels(Node::SPtr parent, const std::vector<std::string> &elements)
 {
     std::map<std::string, std::string> alias = {
-        {"Triangle", "TriangleModel"},
-        {"Line", "LineModel"},
-        {"Point", "PointModel"},
-        {"Sphere", "SphereModel"},
-        {"Capsule", "CapsuleModel"},
-        {"OBB", "OBBModel"}};
+        {"Triangle", "TriangleCollisionModel"},
+        {"Line", "LineCollisionModel"},
+        {"Point", "PointCollisionModel"},
+        {"Sphere", "SphereCollisionModel"},
+        {"Capsule", "CapsuleCollisionModel"},
+        {"OBB", "OBBCollisionModel"}};
 
     for (auto& element : elements)
     {

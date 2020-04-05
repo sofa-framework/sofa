@@ -63,7 +63,7 @@ public:
     Data<unsigned int> d_debugFBO;
     Data<float> d_spriteRadius;
     Data<float> d_spriteThickness;
-    Data<unsigned int> d_spriteBlurRadius;
+    Data<float> d_spriteBlurRadius;
     Data<float> d_spriteBlurScale;
     Data<float> d_spriteBlurDepthFalloff;
     Data<sofa::defaulttype::RGBAColor> d_spriteDiffuseColor;

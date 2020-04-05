@@ -90,8 +90,11 @@ public:
     template<class T>
     static bool canCreate(T* obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMeshTopologyLink() == nullptr)
+        if (context->getMeshTopologyLink() == nullptr) {
+            arg->logError("No mesh topology found in the context node.");
             return false;
+        }
+
         return BaseObject::canCreate(obj, context, arg);
     }
 

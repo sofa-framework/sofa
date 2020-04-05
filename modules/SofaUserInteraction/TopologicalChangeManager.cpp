@@ -66,7 +66,7 @@ TopologicalChangeManager::~TopologicalChangeManager()
 {
 }
 
-int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const helper::vector<int>& indices) const
+int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<int>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getCollisionTopology();
@@ -174,7 +174,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
 }
 
 
-int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collision::PointModel* model, const helper::vector<int>& indices) const
+int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<int>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getCollisionTopology();
@@ -298,7 +298,7 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
 }
 
 
-int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const helper::vector<int>& indices) const
+int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<int>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getCollisionTopology();
@@ -394,17 +394,17 @@ int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisio
 
 int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<int>& indices) const
 {
-    if(dynamic_cast<TriangleModel*>(model)!= nullptr)
+    if(dynamic_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(model)!= nullptr)
     {
-        return removeItemsFromTriangleModel(static_cast<TriangleModel*>(model), indices);
+        return removeItemsFromTriangleModel(static_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(model), indices);
     }
-    if (dynamic_cast<PointModel*>(model) != nullptr)
+    if (dynamic_cast<PointCollisionModel<sofa::defaulttype::Vec3Types>*>(model) != nullptr)
     {
-        return removeItemsFromPointModel(static_cast<PointModel*>(model), indices);
+        return removeItemsFromPointModel(static_cast<PointCollisionModel<sofa::defaulttype::Vec3Types>*>(model), indices);
     }
-    else if(dynamic_cast<SphereModel*>(model)!= nullptr)
+    else if(dynamic_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(model)!= nullptr)
     {
-        return removeItemsFromSphereModel(static_cast<SphereModel*>(model), indices);
+        return removeItemsFromSphereModel(static_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(model), indices);
     }
     else
         return 0;
@@ -416,7 +416,7 @@ int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisio
 bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem, defaulttype::Vector3& pos, const bool firstInput, int snapingValue, int snapingBorderValue)
 {
     Triangle triangle(elem);
-    TriangleModel* model = triangle.getCollisionModel();
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model = triangle.getCollisionModel();
 
     if (model != nullptr)
     {
@@ -462,8 +462,8 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel
         int snapingValue, int snapingBorderValue)
 {
 
-    TriangleModel* firstCollisionModel = dynamic_cast< TriangleModel* >(firstModel);
-    TriangleModel* secondCollisionModel = dynamic_cast< TriangleModel* >(secondModel);
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>* firstCollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(firstModel);
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>* secondCollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(secondModel);
     if (!firstCollisionModel || firstCollisionModel != secondCollisionModel) return false;
     return incisionTriangleModel(firstCollisionModel,  idxA, firstPoint,
             secondCollisionModel, idxB, secondPoint,
@@ -473,15 +473,15 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel
 
 
 // Perform incision in triangulation
-bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel , core::topology::BaseMeshTopology::TriangleID idxA, const Vector3& firstPoint,
-        TriangleModel *secondModel, core::topology::BaseMeshTopology::TriangleID idxB, const Vector3& secondPoint,
+bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa::defaulttype::Vec3Types> *firstModel , core::topology::BaseMeshTopology::TriangleID idxA, const Vector3& firstPoint,
+        TriangleCollisionModel<sofa::defaulttype::Vec3Types> *secondModel, core::topology::BaseMeshTopology::TriangleID idxB, const Vector3& secondPoint,
         int snapingValue, int snapingBorderValue)
 {
 
     // -- STEP 1: looking for collision model and topology components
 
-    TriangleModel* firstCollisionModel = dynamic_cast< TriangleModel* >(firstModel);
-    TriangleModel* secondCollisionModel = dynamic_cast< TriangleModel* >(secondModel);
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>* firstCollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(firstModel);
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>* secondCollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(secondModel);
 
     Triangle firstTriangle(firstCollisionModel, idxA);
     Triangle secondTriangle(secondCollisionModel, idxB);

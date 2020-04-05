@@ -74,7 +74,7 @@ public:
     Data< defaulttype::Vec<2,int> > d_localRange;
     Data< helper::vector<int> >     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
 
-    Data<bool> d_handleTopoChange; ///< The mass and totalMass are recomputed on particles add/remove.
+    Data<bool> d_handleTopologicalChanges; ///< The mass and totalMass are recomputed on particles add/remove.
     Data<bool> d_preserveTotalMass; ///< Prevent totalMass from decreasing when removing particles.
 
     ////////////////////////// Inherited attributes ////////////////////////////

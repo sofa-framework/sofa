@@ -49,12 +49,6 @@ protected:
 public:
     bool load() override;
 
-    template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        return BaseLoader::canCreate (obj, context, arg);
-    }
-
 protected:
     bool readOBJ (std::ifstream &file, const char* filename);
     bool readMTL (const char* filename, helper::vector <sofa::helper::types::Material>& d_materials);

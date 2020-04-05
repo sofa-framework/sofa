@@ -30,7 +30,7 @@ public:
 	SOFA_CLASS(SOFA_TEMPLATE(TBulletCylinderModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TCylinderModel, TDataTypes));
 
 	
-    //typedef typename GCylinderModel::DataTypes DataTypes;
+    //typedef typename GCylinderCollisionModel<sofa::defaulttype::Rigid3Types>::DataTypes DataTypes;
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
