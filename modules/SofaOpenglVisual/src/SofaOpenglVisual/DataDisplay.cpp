@@ -61,8 +61,8 @@ DataDisplay::DataDisplay()
     , f_pointQuadData(initData(&f_pointQuadData, "pointQuadData", "Data associated with nodes per quad"))
     , f_colorNaN(initData(&f_colorNaN, defaulttype::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
     , d_userRange(initData(&d_userRange, defaulttype::Vec2f(1,-1), "userRange", "Clamp to this values (if max>min)"))
-    , d_currentMin(initData(&d_currentMin, 0.f, "currentMin", "Current min range"))
-    , d_currentMax(initData(&d_currentMax, 0.f, "currentMax", "Current max range"))
+    , d_currentMin(initData(&d_currentMin, Real(0.0), "currentMin", "Current min range"))
+    , d_currentMax(initData(&d_currentMax, Real(0.0), "currentMax", "Current max range"))
     , d_shininess(initData(&d_shininess, -1.f, "shininess", "Shininess for rendering point-based data [0,128].  <0 means no specularity"))
     , state(nullptr)
     , m_topology(nullptr)
@@ -257,7 +257,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         if( !triData.empty() )
         {
             // Triangles
-            int nbTriangles = m_topology->getNbTriangles();
+            size_t nbTriangles = m_topology->getNbTriangles();
             for (int i=0; i<nbTriangles; i++)
             {
                 Vec4f color = isnan(triData[i])
@@ -274,7 +274,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             glEnable( GL_LIGHTING );
             // Triangles
-            int nbTriangles = m_topology->getNbTriangles();
+            size_t nbTriangles = m_topology->getNbTriangles();
             glBegin(GL_TRIANGLES);
             for (int i=0; i<nbTriangles; i++)
             {
@@ -308,7 +308,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         if( !quadData.empty() )
         {
             glDisable( GL_LIGHTING );
-            int nbQuads = m_topology->getNbQuads();
+            size_t nbQuads = m_topology->getNbQuads();
             for (int i=0; i<nbQuads; i++)
             {
                 Vec4f color = isnan(quadData[i])
@@ -324,7 +324,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         else if( !pointQuadData.empty() )
         {
             glEnable( GL_LIGHTING );
-            int nbQuads = m_topology->getNbQuads();
+            size_t nbQuads = m_topology->getNbQuads();
             glBegin(GL_QUADS);
             for (int i=0; i<nbQuads; i++)
             {
