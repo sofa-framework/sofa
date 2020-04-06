@@ -180,7 +180,7 @@ void ProjectToPointConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
+    helper::WriteAccessor<DataVecDeriv> res ( resData );
     const SetIndexArray & indices = f_indices.getValue();
     if( f_fixAll.getValue() )
     {
@@ -205,7 +205,7 @@ void ProjectToPointConstraint<DataTypes>::projectResponse(const core::Mechanical
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
-    helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
+    helper::WriteAccessor<DataMatrixDeriv> c ( cData );
     const SetIndexArray & indices = f_indices.getValue();
 
     MatrixDerivRowIterator rowIt = c->begin();
@@ -244,7 +244,7 @@ void ProjectToPointConstraint<DataTypes>::projectVelocity(const core::Mechanical
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
-    helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
+    helper::WriteAccessor<DataVecCoord> res ( xData );
     const SetIndexArray & indices = f_indices.getValue();
     if( f_fixAll.getValue() )
     {
