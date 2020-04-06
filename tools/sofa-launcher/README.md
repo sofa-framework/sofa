@@ -16,23 +16,35 @@ Example:
 This application is controlled via a json configuration file
 ```json
 {
-         "files"       : ["example.scn", "example.py"],    /// The sofa files with your scene
-         "variables"   : [{                                /// Some values in your scene can be changed automatically in each run of your scene
-                                "GRAVITYXML"   : "1 2 3",  /// You can use any name as $MYVALUE...it depend on what you put in your scene.
-                                "nbIterations" : 1000      /// in my example scene I replace the $GRAVITYXML with a different value at each run
-                         },
-                         {
-                                "GRAVITYXML"   : "2 3 4",
-                                "nbIterations" : 1000
-                         }
-                         ],
-         "launcher"    : "parallel",            /// Indicate to launch the simulations in parallel (other choice are sequential or ssh)
-         "numjobs"     : 5,                     /// with a maximum of 5 simulation in parallel
-         "resultsstyle" : "results.thtml",      /// Name of the report file template (here html but it could be anything else (eg latex array:)))
-         "resultsfile"  : "results.html",       /// The file generated from the template and the results
+  "files": [
+    "example.scn",
+    "example.py"
+  ],
+  "variables": [
+    {
+      "GRAVITYXML": "1 2 3",
+      "nbIterations": 1000
+    },
+    {
+      "GRAVITYXML": "2 3 4",
+      "nbIterations": 1000
+    }
+  ],
+  "launcher": "parallel",
+  "numjobs": 5,
+  "resultsstyle": "results.thtml",
+  "resultsfile": "results.html"
 }
 ```
-
+with:
+- files: The sofa files with your scene
+- variables: Some values in your scene can be changed automatically in each run of your scene  
+             You can use any name as $MYVALUE...it depend on what you put in your scene.  
+             in my example scene I replace the $GRAVITYXML with a different value at each run
+- launcher: Indicate to launch the simulations in parallel (other choice are sequential or ssh)
+- numjobs: with a maximum of 5 simulation in parallel
+- resultsstyle: Name of the report file template, here html but it could be anything else (eg latex array)
+- resultsfile: The file generated from the template and the results
 
 NB:
 - To run the distributed version of the launcher you need all hosts to share directories as well as being able to login using ssh+key (no password login).
