@@ -1456,11 +1456,11 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
 {
 
     {
-        helper::ReadAccessor< Data<VecDeriv> > extForces_rA( params, *this->read(core::ConstVecDerivId::externalForce()) );
+        helper::ReadAccessor< Data<VecDeriv> > extForces_rA( *this->read(core::ConstVecDerivId::externalForce()) );
 
         if (!extForces_rA.empty())
         {
-            helper::WriteAccessor< Data<VecDeriv> > f_wA ( params, *this->write(fId) );
+            helper::WriteAccessor< Data<VecDeriv> > f_wA ( *this->write(fId) );
 
             for (unsigned int i=0; i < extForces_rA.size(); i++)
             {
@@ -2244,13 +2244,13 @@ void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params, const
             && ops[1].second.size()==3
             )
     {
-        helper::ReadAccessor< Data<VecCoord> > v11( params, *this->read(core::ConstVecCoordId(ops[0].second[0].first.getId(this))) );
-        helper::ReadAccessor< Data<VecCoord> > v21( params, *this->read(core::ConstVecCoordId(ops[1].second[0].first.getId(this))) );
-        helper::ReadAccessor< Data<VecCoord> > v22( params, *this->read(core::ConstVecCoordId(ops[1].second[1].first.getId(this))) );
-        helper::ReadAccessor< Data<VecDeriv> > v23( params, *this->read(core::ConstVecDerivId(ops[1].second[2].first.getId(this))) );
+        helper::ReadAccessor< Data<VecCoord> > v11( *this->read(core::ConstVecCoordId(ops[0].second[0].first.getId(this))) );
+        helper::ReadAccessor< Data<VecCoord> > v21( *this->read(core::ConstVecCoordId(ops[1].second[0].first.getId(this))) );
+        helper::ReadAccessor< Data<VecCoord> > v22( *this->read(core::ConstVecCoordId(ops[1].second[1].first.getId(this))) );
+        helper::ReadAccessor< Data<VecDeriv> > v23( *this->read(core::ConstVecDerivId(ops[1].second[2].first.getId(this))) );
 
-        helper::WriteAccessor< Data<VecCoord> > previousPos( params, *this->write(core::VecCoordId(ops[0].first.getId(this))) );
-        helper::WriteAccessor< Data<VecCoord> > newPos( params, *this->write(core::VecCoordId(ops[1].first.getId(this))) );
+        helper::WriteAccessor< Data<VecCoord> > previousPos( *this->write(core::VecCoordId(ops[0].first.getId(this))) );
+        helper::WriteAccessor< Data<VecCoord> > newPos( *this->write(core::VecCoordId(ops[1].first.getId(this))) );
 
         const unsigned int n = v11.size();
         const Real f_1 = (Real)(ops[1].second[0].second);
