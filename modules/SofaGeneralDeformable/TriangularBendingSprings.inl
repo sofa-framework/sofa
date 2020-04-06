@@ -494,7 +494,7 @@ void TriangularBendingSprings<DataTypes>::init()
         return;
     }
 
-    if (m_topology->getNbTriangles()==0)
+    if (m_topology->d_componentstate.getValue() == sofa::core::objectmodel::ComponentState::Invalid || m_topology->getNbTriangles()==0)
     {
         msg_error() << " object must have a Triangular Set Topology.";
         sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
