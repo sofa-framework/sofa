@@ -47,7 +47,8 @@ endif()
 ## CGAL dependencies
 find_package(MPFR REQUIRED)
 find_package(GMP REQUIRED)
-#find_package(Boost QUIET COMPONENTS system thread)
+# Boost dependency
+sofa_find_package(Boost QUIET REQUIRED COMPONENTS system thread BOTH_SCOPES)
 
 # Get CGAL version
 message(STATUS "CGAL VERSION ${CGAL_MAJOR_VERSION}.${CGAL_MINOR_VERSION}")

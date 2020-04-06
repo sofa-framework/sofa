@@ -2,17 +2,26 @@
 
 @PACKAGE_INIT@
 
+set(CGALPLUGIN_HAVE_IMAGE @CGALPLUGIN_HAVE_IMAGE@)
+set(CGALPLUGIN_HAVE_BOOST_THREAD @CGALPLUGIN_HAVE_BOOST_THREAD@)
+set(CGALPLUGIN_HAVE_BOOST_SYSTEM @CGALPLUGIN_HAVE_BOOST_SYSTEM@)
+
 find_package(SofaFramework REQUIRED)
 find_package(CGAL REQUIRED)
 find_package(MPFR REQUIRED)
 find_package(GMP REQUIRED)
-find_package(Boost QUIET REQUIRED COMPONENTS system thread)
+find_package(Boost REQUIRED COMPONENTS system thread)
 
-if(NOT TARGET CGALPlugin)
-	include("${CMAKE_CURRENT_LIST_DIR}/CGALPluginTargets.cmake")
+if(CGALPLUGIN_HAVE_IMAGE)
+    find_package(CGAL QUIET REQUIRED COMPONENTS ImageIO)
+else()
+    find_package(CGAL QUIET REQUIRED)
+endif()
+if(CGALPLUGIN_HAVE_BOOST_SYSTEM)
+    find_package(Boost QUIET REQUIRED COMPONENTS system)
+endif()
+if(CGALPLUGIN_HAVE_BOOST_THREAD)
+    find_package(Boost QUIET REQUIRED COMPONENTS thread)
 endif()
 
 check_required_components(CGALPlugin)
-
-set(CGALPlugin_LIBRARIES CGALPlugin)
-set(CGALPlugin_INCLUDE_DIRS @PACKAGE_CGALPLUGIN_INCLUDE_DIR@)
