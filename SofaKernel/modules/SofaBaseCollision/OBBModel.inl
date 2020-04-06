@@ -445,7 +445,7 @@ inline void TOBB<DataTypes>::showVertices()const{
 }
 
 template <class DataTypes>
-void TOBBModel<DataTypes>::computeBBox(const core::ExecParams*, bool onlyVisible)
+void OBBCollisionModel<DataTypes>::computeBBox(const core::ExecParams*, bool onlyVisible)
 {
     if( !onlyVisible ) return;
 
@@ -465,8 +465,8 @@ void TOBBModel<DataTypes>::computeBBox(const core::ExecParams*, bool onlyVisible
         {
             for (int c=0; c<3; c++)
             {
-                if (p[j][c] > maxBBox[c]) maxBBox[c] = (Real)p[j][c];
-                if (p[j][c] < minBBox[c]) minBBox[c] = (Real)p[j][c];
+                if (p[j][c] > maxBBox[c]) maxBBox[c] = Real(p[j][c]);
+                if (p[j][c] < minBBox[c]) minBBox[c] = Real(p[j][c]);
             }
         }
     }
