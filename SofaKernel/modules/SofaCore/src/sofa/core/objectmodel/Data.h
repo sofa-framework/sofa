@@ -383,7 +383,7 @@ public:
         updateIfDirty();
         m_counter++;
         m_isSet = true;
-        setDirtyOutputs();
+        BaseData::setDirtyOutputs();
         return m_value.beginEdit();
     }
 
@@ -391,14 +391,14 @@ public:
     {
         m_counter++;
         m_isSet=true;
-        setDirtyOutputs();
+        BaseData::setDirtyOutputs();
         return m_value.beginEdit();
     }
 
     inline void endEdit()
     {
         m_value.endEdit();
-        notifyEndEdit();
+        BaseData::notifyEndEdit();
     }
 
     /// @warning writeOnly (the Data is not updated before being set)
@@ -414,31 +414,36 @@ public:
         return m_value.getValue();
     }
 
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     inline void endEdit(const core::ExecParams*)
     {
         endEdit();
     }
 
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     inline T* beginWriteOnly(const core::ExecParams*)
     {
         return beginWriteOnly();
     }
 
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     inline T* beginEdit(const core::ExecParams*)
     {
         return beginEdit();
     }
 
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     inline void setValue(const core::ExecParams*, const T& value)
     {
         setValue(value);
     }
 
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
     inline const T& getValue(const core::ExecParams*) const
     {
         return getValue();
@@ -461,7 +466,7 @@ public:
             m_value = d->m_value;
             m_counter++;
             m_isSet = true;
-            setDirtyOutputs();
+            BaseData::setDirtyOutputs();
         }
     }
 
@@ -645,10 +650,10 @@ public:
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
     ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
 
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     ReadAccessor(const core::ExecParams*, const data_container_type& d) : Inherit(d.getValue()) {}
 
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     ReadAccessor(const core::ExecParams*, const data_container_type* d) : Inherit(d->getValue()) {}
 };
 
@@ -681,10 +686,10 @@ public:
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
     WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d) {}
 
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     WriteAccessor(const core::ExecParams*, data_container_type& d) : WriteAccessor(d) {}
 
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     WriteAccessor(const core::ExecParams*, data_container_type* d) : WriteAccessor(d) {}
     ~WriteAccessor() { data.endEdit(); }
 };
@@ -712,10 +717,10 @@ public:
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     WriteOnlyAccessor(const core::ExecParams*, data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
 
-    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 };
 
