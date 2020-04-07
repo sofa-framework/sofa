@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/accessor.h>
+#include <sofa/helper/BackTrace.h>
 namespace sofa
 {
 
@@ -380,25 +381,43 @@ public:
     /// BeginEdit method if it is only to write the value
     inline T* beginEdit()
     {
+        if(m_isThereAnActiveTransaction)
+        {
+            sofa::helper::BackTrace::dump();
+            msg_error("Data") << "Invalid beginEdit" ;
+        }
         updateIfDirty();
         m_counter++;
         m_isSet = true;
         BaseData::setDirtyOutputs();
+        m_isThereAnActiveTransaction=true;
         return m_value.beginEdit();
     }
 
     inline T* beginWriteOnly()
     {
+        if(m_isThereAnActiveTransaction)
+        {
+            sofa::helper::BackTrace::dump();
+            msg_error("Data") << "Invalid beginWriteOnly" ;
+        }
         m_counter++;
         m_isSet=true;
         BaseData::setDirtyOutputs();
+        m_isThereAnActiveTransaction=true;
         return m_value.beginEdit();
     }
 
     inline void endEdit()
     {
+        if(!m_isThereAnActiveTransaction)
+        {
+            sofa::helper::BackTrace::dump();
+            msg_error("Data") << "Invalid endEdit" ;
+        }
         m_value.endEdit();
         BaseData::notifyEndEdit();
+        m_isThereAnActiveTransaction=false;
     }
 
     /// @warning writeOnly (the Data is not updated before being set)
@@ -502,6 +521,7 @@ protected:
 
     /// Value
     ValueType m_value;
+    bool m_isThereAnActiveTransaction {false};
 
 private:
     Data(const Data& );
