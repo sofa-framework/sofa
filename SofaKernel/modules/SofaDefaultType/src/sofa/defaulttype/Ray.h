@@ -2,7 +2,9 @@
 
 #include "Vec.h"
 
-namespace sofa::defaulttype
+namespace sofa
+{    
+namespace defaulttype
 {
 
 /// Representation of rays.
@@ -31,5 +33,5 @@ private:
     Vec3 m_origin;
     Vec3 m_direction;
 };
-    
-} // namespace sofa::defaulttype
+} /// namespace defaulttype   
+} /// namespace sofa
