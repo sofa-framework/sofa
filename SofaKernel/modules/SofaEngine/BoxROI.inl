@@ -1050,8 +1050,8 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
     if(m_componentstate==ComponentState::Invalid)
         return ;
 
-    const vector<Vec6>&  alignedBoxes =d_alignedBoxes.getValue(params);
-    const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue(params);
+    const vector<Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
+    const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue();
 
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::lowest();
@@ -1088,7 +1088,7 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
         }
     }
 
-    this->f_bbox.setValue(params,TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 

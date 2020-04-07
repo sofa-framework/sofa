@@ -39,10 +39,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
-#ifdef SOFA_SMP
-#include <Multigraph.h>
-#endif
-
 #include <cmath>
 #include <cstdlib>
 #include <cstdio>
@@ -62,9 +58,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
-#ifdef SOFA_SMP
-class MainLoopTask;
-#endif
 
 class SimpleGUI : public sofa::gui::BaseGUI
 {
@@ -105,9 +98,6 @@ public:
     // glut callbacks
 
     static SimpleGUI* instance;
-#ifdef SOFA_SMP
-    Iterative::Multigraph<MainLoopTask> *mg;
-#endif
     static void glut_display();
     static void glut_reshape(int w, int h);
     static void glut_keyboard(unsigned char k, int x, int y);
@@ -157,7 +147,6 @@ private:
     int 			_background;
     float			_zoomSpeed;
     float			_panSpeed;
-    //Transformation	_sceneTransform;
     Vector3			_previousEyePos;
     GLUquadricObj*	_arrow;
     GLUquadricObj*	_tube;

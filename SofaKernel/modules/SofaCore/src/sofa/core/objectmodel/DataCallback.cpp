@@ -43,7 +43,7 @@ void DataCallback::addCallback(std::function<void(void)> f)
     m_callbacks.push_back(f);
 }
 
-void DataCallback::notifyEndEdit(const core::ExecParams* params)
+void DataCallback::notifyEndEdit()
 {
     if (!m_updating)
     {
@@ -51,7 +51,7 @@ void DataCallback::notifyEndEdit(const core::ExecParams* params)
         for (auto& callback : m_callbacks)
             callback();
 
-        sofa::core::objectmodel::DDGNode::notifyEndEdit(params);
+        sofa::core::objectmodel::DDGNode::notifyEndEdit();
         m_updating = false;
     }
     else

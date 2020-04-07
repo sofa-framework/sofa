@@ -177,7 +177,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     }
 
     // Compute J
-    this->computeJ(W, cparams->readJ(this->mstate)->getValue(cparams));
+    this->computeJ(W, cparams->readJ(this->mstate)->getValue());
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     for (unsigned i = 0; i < linearsolvers.size(); i++)
@@ -244,7 +244,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection(const 
         auto v = sofa::helper::write(v_d, cparams);
         auto dx = sofa::helper::write(dx_d, cparams);
 
-        const VecDeriv& correction = correction_d.getValue(cparams);
+        const VecDeriv& correction = correction_d.getValue();
         const VecCoord& x_free = cparams->readX(mstate)->getValue();
         const VecDeriv& v_free = cparams->readV(mstate)->getValue();
 
@@ -272,7 +272,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyPositionCorrection(cons
         auto x  = sofa::helper::write(x_d, cparams);
         auto dx = sofa::helper::write(dx_d, cparams);
 
-        const VecDeriv& correction = correction_d.getValue(cparams);
+        const VecDeriv& correction = correction_d.getValue();
         const VecCoord& x_free = cparams->readX(mstate)->getValue();
 
         const double positionFactor = odesolver->getPositionIntegrationFactor();
@@ -296,7 +296,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyVelocityCorrection(cons
         auto v  = sofa::helper::write(v_d,cparams);
         auto dv = sofa::helper::write(dv_d, cparams); 
 
-        const VecDeriv& correction = correction_d.getValue(cparams);
+        const VecDeriv& correction = correction_d.getValue();
         const VecDeriv& v_free = cparams->readV(mstate)->getValue();
 
         const double velocityFactor = odesolver->getVelocityIntegrationFactor();

@@ -445,7 +445,7 @@ inline void TOBB<DataTypes>::showVertices()const{
 }
 
 template <class DataTypes>
-void OBBCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+void OBBCollisionModel<DataTypes>::computeBBox(const core::ExecParams*, bool onlyVisible)
 {
     if( !onlyVisible ) return;
 
@@ -465,13 +465,13 @@ void OBBCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, b
         {
             for (int c=0; c<3; c++)
             {
-                if (p[j][c] > maxBBox[c]) maxBBox[c] = (Real)p[j][c];
-                if (p[j][c] < minBBox[c]) minBBox[c] = (Real)p[j][c];
+                if (p[j][c] > maxBBox[c]) maxBBox[c] = Real(p[j][c]);
+                if (p[j][c] < minBBox[c]) minBBox[c] = Real(p[j][c]);
             }
         }
     }
 
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 
 }
 

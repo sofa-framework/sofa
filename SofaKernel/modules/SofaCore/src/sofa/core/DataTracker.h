@@ -204,13 +204,13 @@ namespace core
 
         /// The trick is here, this function is called as soon as the input data changes
         /// and can then trigger the callback
-        void setDirtyValue(const core::ExecParams* params = nullptr) override
+        void setDirtyValue() override
         {
             m_functor( this );
 
             // the input needs to be inform their output (including this DataTrackerFunctor)
             // are not dirty, to be sure they will call setDirtyValue when they are modified
-            cleanDirtyOutputsOfInputs(params);
+            cleanDirtyOutputsOfInputs();
         }
 
 
