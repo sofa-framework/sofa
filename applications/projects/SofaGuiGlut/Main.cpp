@@ -33,22 +33,14 @@ using std::vector;
 
 #include "SimpleGUI.h"
 
-#if SOFAHELPER_HAVE_BOOST // TODO: SOFAGUIGLUT_HAVE_BOOST_THREAD
-#include "MultithreadGUI.h"
-#endif
-
 #include <sofa/helper/ArgumentParser.h>
 #include <SofaSimulationCommon/common.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #include <SofaSimulationCommon/init.h>
-#ifdef SOFA_HAVE_DAG
 #include <SofaSimulationGraph/init.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
-#endif
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/TreeSimulation.h>
 using sofa::simulation::Node;
 
 #include <SofaComponentCommon/initComponentCommon.h>
@@ -155,19 +147,10 @@ int main(int argc, char** argv)
     bool        noAutoloadPlugins = false;
     bool        temporaryFile = false;
 
-#if defined(SOFA_HAVE_DAG)
     string simulationType = "dag";
-#else
-    string simulationType = "tree";
-#endif
 
     vector<string> plugins;
     vector<string> files;
-#ifdef SOFA_SMP
-    string nProcs="";
-    bool        disableStealing = false;
-    bool        affinity = false;
-#endif
     string colorsStatus = "auto";
     string messageHandler = "auto";
     bool enableInteraction = false ;
@@ -178,13 +161,6 @@ int main(int argc, char** argv)
     gui_help += ")";
 
     ArgumentParser* argParser = new ArgumentParser(argc, argv);
-
-#ifdef SOFA_SMP
-    argParser->addArgument(boost::program_options::value<bool>(&disableStealing)->default_value(false)->implicit_value(true),           "disableStealing,w", "Disable Work Stealing")
-    argParser->addArgument(boost::program_options::value<std::string>(&nProcs)->default_value(""),                                      "nprocs", "Number of processor")
-    argParser->addArgument(boost::program_options::value<bool>(&affinity)->default_value(false)->implicit_value(true),                  "affinity", "Enable aFfinity base Work Stealing")
-#endif
-
 
     argParser->addArgument(boost::program_options::value<bool>(&showHelp)->default_value(false)->implicit_value(true), "help,h", "Display this help message");
     argParser->addArgument(boost::program_options::value<bool>(&startAnim)->default_value(false)->implicit_value(true), "start,a", "start the animation loop");
@@ -207,10 +183,7 @@ int main(int argc, char** argv)
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
-    sofa::simulation::tree::init();
-#ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::init();
-#endif
     sofa::component::initComponentBase();
     sofa::component::initComponentCommon();
     sofa::component::initComponentGeneral();
@@ -219,14 +192,7 @@ int main(int argc, char** argv)
 
     glutInit(&argc, argv);
 
-#ifdef SOFA_HAVE_DAG
-    if (simulationType == "tree")
-        sofa::simulation::setSimulation(new TreeSimulation());
-    else
-        sofa::simulation::setSimulation(new DAGSimulation());
-#else //SOFA_HAVE_DAG
-    sofa::simulation::setSimulation(new TreeSimulation());
-#endif
+    sofa::simulation::setSimulation(new DAGSimulation());
 
     if (colorsStatus == "unset") {
         // If the parameter is unset, check the environment variable
@@ -368,9 +334,6 @@ int main(int argc, char** argv)
         sofa::simulation::getSimulation()->unload(groot);
 
     sofa::simulation::common::cleanup();
-    sofa::simulation::tree::cleanup();
-#ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::cleanup();
-#endif
     return 0;
 }

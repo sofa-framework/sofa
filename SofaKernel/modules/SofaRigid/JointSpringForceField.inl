@@ -482,7 +482,7 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
             if (v1[c] < minBBox[c]) minBBox[c] = (Real)v1[c];
         }
     }
-    this->f_bbox.setValue(params, sofa::defaulttype::TBoundingBox<Real>(minBBox, maxBBox));
+    this->f_bbox.setValue( sofa::defaulttype::TBoundingBox<Real>(minBBox, maxBBox));
 }
 
 template <class DataTypes>

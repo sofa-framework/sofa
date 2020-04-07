@@ -370,7 +370,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    defaulttype::Vec3d normal; normal = d_planeNormal.getValue(params);
+    defaulttype::Vec3d normal; normal = d_planeNormal.getValue();
     SReal size=d_drawSize.getValue();
 
     // find a first vector inside the plane
@@ -400,7 +400,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
             if (corners[i][c] < minBBox[c]) minBBox[c] = (Real)corners[i][c];
         }
     }
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 } // namespace forcefield

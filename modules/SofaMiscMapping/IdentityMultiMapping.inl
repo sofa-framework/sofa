@@ -103,7 +103,7 @@ IdentityMultiMapping<TIn, TOut>::~IdentityMultiMapping()
 template <class TIn, class TOut>
 void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
 {
-    OutVecCoord& out = *(dataVecOutPos[0]->beginEdit(mparams));
+    OutVecCoord& out = *(dataVecOutPos[0]->beginEdit());
 
     unsigned offset = 0;
     for(unsigned i=0; i<dataVecInPos.size(); i++ )
@@ -117,13 +117,13 @@ void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparam
         offset += inpos.size();
     }
 
-    dataVecOutPos[0]->endEdit(mparams);
+    dataVecOutPos[0]->endEdit();
 }
 
 template <class TIn, class TOut>
 void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
 {
-    OutVecDeriv& out = *(dataVecOutVel[0]->beginEdit(mparams));
+    OutVecDeriv& out = *(dataVecOutVel[0]->beginEdit());
 
     unsigned offset = 0;
     for(unsigned i=0; i<dataVecInVel.size(); i++ )
@@ -138,7 +138,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mpara
         offset += in.size();
     }
 
-    dataVecOutVel[0]->endEdit(mparams);
+    dataVecOutVel[0]->endEdit();
 }
 
 template <class TIn, class TOut>
@@ -149,7 +149,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
     unsigned offset = 0;
     for(unsigned i=0; i<dataVecOutForce.size(); i++ )
     {
-        InVecDeriv& out = *dataVecOutForce[i]->beginEdit(mparams);
+        InVecDeriv& out = *dataVecOutForce[i]->beginEdit();
 
         for(unsigned int j=0; j<out.size(); j++)
         {
@@ -157,7 +157,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
                 helper::peq( out[j], in[offset+j]);
         }
 
-        dataVecOutForce[i]->endEdit(mparams);
+        dataVecOutForce[i]->endEdit();
 
         offset += out.size();
     }

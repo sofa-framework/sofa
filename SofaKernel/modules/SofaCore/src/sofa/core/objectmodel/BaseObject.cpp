@@ -241,20 +241,6 @@ void BaseObject::removeSlave(BaseObject::SPtr s)
     }
 }
 
-/// Copy the source aspect to the destination aspect for each Data in the component.
-void BaseObject::copyAspect(int destAspect, int srcAspect)
-{
-    Base::copyAspect(destAspect, srcAspect);
-    // copyAspect is no longer recursive to slave objects
-}
-
-/// Release memory allocated for the specified aspect.
-void BaseObject::releaseAspect(int aspect)
-{
-    Base::releaseAspect(aspect);
-    // releaseAspect is no longer recursive to slave objects
-}
-
 void BaseObject::init()
 {
 	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)

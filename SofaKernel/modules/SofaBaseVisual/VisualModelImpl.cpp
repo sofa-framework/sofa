@@ -1132,9 +1132,9 @@ void VisualModelImpl::computeTangents()
     m_vbitangents.endEdit();
 }
 
-void VisualModelImpl::computeBBox(const core::ExecParams* params, bool)
+void VisualModelImpl::computeBBox(const core::ExecParams*, bool)
 {
-    const VecCoord& x = getVertices(); //m_vertices.getValue(params);
+    const VecCoord& x = getVertices(); //m_vertices.getValue();
 
     SReal minBBox[3] = {std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()};
     SReal maxBBox[3] = {-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max()};
@@ -1147,7 +1147,7 @@ void VisualModelImpl::computeBBox(const core::ExecParams* params, bool)
             if (p[c] < minBBox[c]) minBBox[c] = p[c];
         }
     }
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
 
