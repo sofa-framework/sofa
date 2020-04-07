@@ -138,7 +138,7 @@ public:
 
     /// Specify the aspect index of the current thread
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. If the feature was important to you contact sofa-dev. ")]]
-    ExecParams& setAspectID(int v){ return *this; }
+    ExecParams& setAspectID(int /* v */){ return *this; }
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. If the feature was important to you contact sofa-dev. ")]]
     static int currentAspect(){ return 0; }
