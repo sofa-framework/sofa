@@ -383,7 +383,7 @@ public:
     {
         if(m_isThereAnActiveTransaction)
         {
-            msg_error("Data") << "Invalid beginWrite for '" << this->getLinkPath() << "'" << msgendl
+            msg_error("Data") << "Invalid beginWrite for '" << this->getName() << "'" << msgendl
                               << diffStack(sofa::helper::BackTrace::getTrace(6), m_lastBegin) ;
         }
         updateIfDirty();
@@ -411,7 +411,7 @@ public:
     {
         if(m_isThereAnActiveTransaction)
         {
-            msg_error("Data") << "Invalid beginWriteOnly for '" << this->getLinkPath() << "'" << msgendl
+            msg_error("Data") << "Invalid beginWriteOnly for '" << this->getName() << "'" << msgendl
                               << diffStack(sofa::helper::BackTrace::getTrace(6), m_lastBegin) ;
         }
         m_counter++;
@@ -426,7 +426,7 @@ public:
     {
         if(!m_isThereAnActiveTransaction)
         {
-            msg_error("Data") << "Invalid EndEDIT for '" << this->getLinkPath() << "'" << msgendl
+            msg_error("Data") << "Invalid EndEDIT for '" << this->getName() << "'" << msgendl
                               << diffStack(sofa::helper::BackTrace::getTrace(6), m_lastEnd) ;
         }
         m_value.endEdit();
