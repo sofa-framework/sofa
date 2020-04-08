@@ -383,15 +383,15 @@ public:
     {
         if(m_isThereAnActiveTransaction)
         {
-            sofa::helper::BackTrace::dump();
-            msg_error("Data") << "Invalid beginEdit" ;
+            msg_error("Data") << "Invalid beginWrite for '" << this->getLinkPath() << "'" << msgendl
+                              << diffStack(sofa::helper::BackTrace::getTrace(6), m_lastBegin) ;
         }
         updateIfDirty();
         m_counter++;
         m_isSet = true;
         BaseData::setDirtyOutputs();
         m_isThereAnActiveTransaction=true;
-        m_entry = sofa::helper::BackTrace::getTrace(4);
+        m_lastBegin = sofa::helper::BackTrace::getTrace(6);
         return m_value.beginEdit();
     }
 
@@ -400,10 +400,10 @@ public:
         std::stringstream tmp;
         tmp << "Previous call at:" << std::endl;
         for(auto& line : open)
-            tmp << line << std::endl;
+            tmp << "-> " << line << std::endl;
         tmp << "Current call at:" << std::endl;
         for(auto& line : close)
-            tmp << line << std::endl;
+            tmp << "-> " << line << std::endl;
         return tmp.str();
     }
 
@@ -411,14 +411,14 @@ public:
     {
         if(m_isThereAnActiveTransaction)
         {
-            msg_error("Data") << "Invalid beginWriteOnly " << msgendl
-                              << diffStack(sofa::helper::BackTrace::getTrace(), m_entry) ;
+            msg_error("Data") << "Invalid beginWriteOnly for '" << this->getLinkPath() << "'" << msgendl
+                              << diffStack(sofa::helper::BackTrace::getTrace(6), m_lastBegin) ;
         }
         m_counter++;
         m_isSet=true;
         BaseData::setDirtyOutputs();
         m_isThereAnActiveTransaction=true;
-        m_entry = sofa::helper::BackTrace::getTrace(4);
+        m_lastBegin = sofa::helper::BackTrace::getTrace(6);
         return m_value.beginEdit();
     }
 
@@ -426,12 +426,13 @@ public:
     {
         if(!m_isThereAnActiveTransaction)
         {
-            msg_error("Data") << "Invalid EndEDIT " << msgendl
-                              << diffStack(sofa::helper::BackTrace::getTrace(), m_entry) ;
+            msg_error("Data") << "Invalid EndEDIT for '" << this->getLinkPath() << "'" << msgendl
+                              << diffStack(sofa::helper::BackTrace::getTrace(6), m_lastEnd) ;
         }
         m_value.endEdit();
         BaseData::notifyEndEdit();
         m_isThereAnActiveTransaction=false;
+        m_lastEnd=sofa::helper::BackTrace::getTrace(6);
     }
 
     /// @warning writeOnly (the Data is not updated before being set)
@@ -536,7 +537,8 @@ protected:
     /// Value
     ValueType m_value;
     bool m_isThereAnActiveTransaction {false};
-    sofa::helper::BackTrace::StackTrace m_entry;
+    sofa::helper::BackTrace::StackTrace m_lastBegin;
+    sofa::helper::BackTrace::StackTrace m_lastEnd;
 
 private:
     Data(const Data& );
