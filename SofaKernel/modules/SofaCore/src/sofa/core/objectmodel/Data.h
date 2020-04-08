@@ -391,20 +391,34 @@ public:
         m_isSet = true;
         BaseData::setDirtyOutputs();
         m_isThereAnActiveTransaction=true;
+        m_entry = sofa::helper::BackTrace::getTrace(4);
         return m_value.beginEdit();
+    }
+
+    std::string diffStack(const sofa::helper::BackTrace::StackTrace& close, const sofa::helper::BackTrace::StackTrace& open)
+    {
+        std::stringstream tmp;
+        tmp << "Previous call at:" << std::endl;
+        for(auto& line : open)
+            tmp << line << std::endl;
+        tmp << "Current call at:" << std::endl;
+        for(auto& line : close)
+            tmp << line << std::endl;
+        return tmp.str();
     }
 
     inline T* beginWriteOnly()
     {
         if(m_isThereAnActiveTransaction)
         {
-            sofa::helper::BackTrace::dump();
-            msg_error("Data") << "Invalid beginWriteOnly" ;
+            msg_error("Data") << "Invalid beginWriteOnly " << msgendl
+                              << diffStack(sofa::helper::BackTrace::getTrace(), m_entry) ;
         }
         m_counter++;
         m_isSet=true;
         BaseData::setDirtyOutputs();
         m_isThereAnActiveTransaction=true;
+        m_entry = sofa::helper::BackTrace::getTrace(4);
         return m_value.beginEdit();
     }
 
@@ -412,8 +426,8 @@ public:
     {
         if(!m_isThereAnActiveTransaction)
         {
-            sofa::helper::BackTrace::dump();
-            msg_error("Data") << "Invalid endEdit" ;
+            msg_error("Data") << "Invalid EndEDIT " << msgendl
+                              << diffStack(sofa::helper::BackTrace::getTrace(), m_entry) ;
         }
         m_value.endEdit();
         BaseData::notifyEndEdit();
@@ -522,6 +536,7 @@ protected:
     /// Value
     ValueType m_value;
     bool m_isThereAnActiveTransaction {false};
+    sofa::helper::BackTrace::StackTrace m_entry;
 
 private:
     Data(const Data& );
