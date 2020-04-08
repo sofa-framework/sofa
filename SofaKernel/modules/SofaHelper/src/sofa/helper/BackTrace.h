@@ -23,6 +23,8 @@
 #define SOFA_HELPER_BACKTRACE_H
 
 #include <sofa/helper/helper.h>
+#include <vector>
+#include <string>
 
 namespace sofa
 {
@@ -33,6 +35,9 @@ namespace helper
 class SOFA_HELPER_API BackTrace
 {
 public:
+    typedef std::vector<std::string> StackTrace;
+    static StackTrace getTrace(size_t maxEntries=std::numeric_limits<unsigned int>().max());
+
     /// Dump current backtrace to stderr.
     /// Currently only works on Linux. NOOP on other architectures.
     static void dump();
