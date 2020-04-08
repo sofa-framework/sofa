@@ -37,11 +37,11 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaCommon/initCommon.h>
-#include <SofaBase/initBase.h>
-#include <SofaGeneral/initGeneral.h>
-#include <SofaAdvanced/initAdvanced.h>
-#include <SofaMisc/initMisc.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaAdvanced/initSofaAdvanced.h>
+#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
@@ -667,11 +667,11 @@ int main(int argc, char** argv)
 
     glutInit(&argc,argv);
 
-    sofa::component::initBase();
-    sofa::component::initCommon();
-    sofa::component::initGeneral();
-    sofa::component::initAdvanced();
-    sofa::component::initMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaAdvanced();
+    sofa::component::initSofaMisc();
     sofa::gui::initMain();
 
     if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaAdvanced/initAdvanced.h>
-#include <SofaNonUniformFem/initNonUniformFEM.h>
+#pragma once
+#include <SofaAdvanced/config.h>
 
 namespace sofa
 {
@@ -30,18 +29,10 @@ namespace component
 {
 
 
-void initAdvanced()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initNonUniformFEM();
-}
-
+void SOFA_SOFAADVANCED_API initSofaAdvanced();
 
 } // namespace component
 
 } // namespace sofa
+
+

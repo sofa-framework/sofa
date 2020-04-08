@@ -22,11 +22,11 @@
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
 
-#include <SofaCommon/initCommon.h>
-#include <SofaBase/initBase.h>
-#include <SofaGeneral/initGeneral.h>
-#include <SofaAdvanced/initAdvanced.h>
-#include <SofaMisc/initMisc.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaAdvanced/initSofaAdvanced.h>
+#include <SofaMisc/initSofaMisc.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -49,11 +49,11 @@ struct TopologicalChangeProcessor_test: public Sofa_test<>
    void SetUp()
    {
        // Init Sofa
-       sofa::component::initBase();
-       sofa::component::initCommon();
-       sofa::component::initGeneral();
-       sofa::component::initAdvanced();
-       sofa::component::initMisc();
+       sofa::component::initSofaBase();
+       sofa::component::initSofaCommon();
+       sofa::component::initSofaGeneral();
+       sofa::component::initSofaAdvanced();
+       sofa::component::initSofaMisc();
 
        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
        root = simulation::getSimulation()->createNewGraph("root");

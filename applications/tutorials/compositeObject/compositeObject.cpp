@@ -38,11 +38,11 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaBase/initBase.h>
-#include <SofaCommon/initCommon.h>
-#include <SofaGeneral/initGeneral.h>
-#include <SofaAdvanced/initAdvanced.h>
-#include <SofaMisc/initMisc.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaAdvanced/initSofaAdvanced.h>
+#include <SofaMisc/initSofaMisc.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
@@ -247,11 +247,11 @@ int main(int argc, char** argv)
     .option(&verbose,'v',"verbose","print debug info")
     (argc,argv);
 
-    sofa::component::initBase();
-    sofa::component::initCommon();
-    sofa::component::initGeneral();
-    sofa::component::initAdvanced();
-    sofa::component::initMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaAdvanced();
+    sofa::component::initSofaMisc();
     sofa::gui::initMain();
 
     if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;

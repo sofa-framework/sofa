@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <SofaBase/initBase.h>
+#include <SofaBase/initSofaBase.h>
 #include <SofaBaseTopology/initBaseTopology.h>
 #include <SofaBaseMechanics/initBaseMechanics.h>
 #include <SofaBaseCollision/initBaseCollision.h>
@@ -35,7 +35,7 @@ namespace component
 {
 
 
-void initBase()
+void initSofaBase()
 {
     static bool first = true;
     if (first)

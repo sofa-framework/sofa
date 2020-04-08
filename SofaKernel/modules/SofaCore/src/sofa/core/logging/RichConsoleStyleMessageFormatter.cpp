@@ -219,7 +219,7 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
 
     setColor(out, m.type()) << getPrefixText(m.type());
 
-    SofaInfo* nfo = dynamic_cast<SofaInfo*>(m.componentInfo().get()) ;
+    SofaComponentInfo* nfo = dynamic_cast<SofaComponentInfo*>(m.componentInfo().get()) ;
     if( nfo != nullptr )
     {
         const std::string& classname= nfo->sender();

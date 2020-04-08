@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMisc/config.h>
 
+#include <SofaBase/config.h>
 
 namespace sofa
 {
@@ -29,7 +29,7 @@ namespace sofa
 namespace component
 {
 
-void SOFA_SOFAMISC_API initMisc();
+void SOFA_SOFABASE_API initSofaBase();
 
 } // namespace component
 

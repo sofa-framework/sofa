@@ -719,7 +719,7 @@ namespace helper
 namespace logging
 {
 
-SofaInfo::SofaInfo(const sofa::core::objectmodel::Base* c)
+SofaComponentInfo::SofaComponentInfo(const sofa::core::objectmodel::Base* c)
 {
     assert(c!=nullptr) ;
     m_component = c ;

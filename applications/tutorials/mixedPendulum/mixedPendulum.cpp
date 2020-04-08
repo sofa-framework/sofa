@@ -37,11 +37,11 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/accessor.h>
 
-#include <SofaCommon/initCommon.h>
-#include <SofaBase/initBase.h>
-#include <SofaGeneral/initGeneral.h>
-#include <SofaAdvanced/initAdvanced.h>
-#include <SofaMisc/initMisc.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaAdvanced/initSofaAdvanced.h>
+#include <SofaMisc/initSofaMisc.h>
 
 using namespace sofa::simulation::tree;
 typedef sofa::component::odesolver::EulerSolver Solver;
@@ -53,11 +53,11 @@ using sofa::core::VecId;
 int main(int, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::component::initBase();
-    sofa::component::initCommon();
-    sofa::component::initGeneral();
-    sofa::component::initAdvanced();
-    sofa::component::initMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaAdvanced();
+    sofa::component::initSofaMisc();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
     //=========================== Build the scene

@@ -31,11 +31,11 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
-#include <SofaBase/initBase.h>
-#include <SofaCommon/initCommon.h>
-#include <SofaGeneral/initGeneral.h>
-#include <SofaAdvanced/initAdvanced.h>
-#include <SofaMisc/initMisc.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaAdvanced/initSofaAdvanced.h>
+#include <SofaMisc/initSofaMisc.h>
 
 #include <QApplication>
 
@@ -52,11 +52,11 @@ using sofa::helper::Utils;
 int main(int argc, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::component::initBase();
-    sofa::component::initCommon();
-    sofa::component::initGeneral();
-    sofa::component::initAdvanced();
-    sofa::component::initMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaAdvanced();
+    sofa::component::initSofaMisc();
 
     // TODO: create additionnal handlers depending on command-line parameters
 

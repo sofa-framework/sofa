@@ -19,19 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCommon/initCommon.h>
 
-#include <SofaLoader/initLoader.h>
-#include <SofaEngine/initEngine.h>
-#include <SofaRigid/initRigid.h>
-#include <SofaDeformable/initDeformable.h>
-#include <SofaSimpleFem/initSimpleFEM.h>
-#include <SofaObjectInteraction/initObjectInteraction.h>
-#include <SofaMeshCollision/initMeshCollision.h>
-#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
-#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
-#include <SofaObjectInteraction/initObjectInteraction.h>
+#include <SofaMisc/initSofaMisc.h>
+#include <SofaMiscTopology/initMiscTopology.h>
+#include <SofaMiscMapping/initMiscMapping.h>
+#include <SofaMiscForceField/initMiscForcefield.h>
+#include <SofaMiscFem/initMiscFEM.h>
+#include <SofaMiscEngine/initMiscEngine.h>
+#include <SofaMiscSolver/initMiscSolver.h>
+#include <SofaMiscExtra/initMiscExtra.h>
 
 namespace sofa
 {
@@ -40,7 +36,7 @@ namespace component
 {
 
 
-void initCommon()
+void initSofaMisc()
 {
     static bool first = true;
     if (first)
@@ -48,17 +44,13 @@ void initCommon()
         first = false;
     }
 
-    initLoader();
-    initEngine();
-    initRigid();
-    initDeformable();
-    initSimpleFEM();
-    initObjectInteraction();
-    initMeshCollision();
-    initExplicitODESolver();
-    initImplicitODESolver();
-    initEigen2Solver();
-    initObjectInteraction();
+    initMiscTopology();
+    initMiscMapping();
+    initMiscForcefield();
+    initMiscFEM();
+    initMiscEngine();
+    initMiscSolver();
+    initMiscExtra();
 }
 
 } // namespace component

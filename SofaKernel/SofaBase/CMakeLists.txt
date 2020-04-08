@@ -32,11 +32,11 @@ set(SOFABASE_SRC src/${PROJECT_NAME})
 
 set(HEADER_FILES
     ${SOFABASE_SRC}/config.h.in
-    ${SOFABASE_SRC}/initBase.h
+    ${SOFABASE_SRC}/initSofaBase.h
 )
 
 set(SOURCE_FILES
-    ${SOFABASE_SRC}/initBase.cpp
+    ${SOFABASE_SRC}/initSofaBase.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

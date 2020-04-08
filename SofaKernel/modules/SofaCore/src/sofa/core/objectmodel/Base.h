@@ -587,7 +587,7 @@ namespace logging
         const sofa::core::objectmodel::Base* m_component ;
         std::string                          m_name;
 
-        SofaInfo(const sofa::core::objectmodel::Base* c);
+        SofaComponentInfo(const sofa::core::objectmodel::Base* c);
         const std::string& name() const { return m_name; }
         std::ostream& toStream(std::ostream &out) const
         {
@@ -599,7 +599,7 @@ namespace logging
     /// This construct a new ComponentInfo object from a Base object.
     inline ComponentInfo::SPtr getComponentInfo(const sofa::core::objectmodel::Base* t)
     {
-        return ComponentInfo::SPtr( new SofaInfo(t) ) ;
+        return ComponentInfo::SPtr( new SofaComponentInfo(t) ) ;
     }
 } // logging
 } // helper

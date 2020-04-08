@@ -33,7 +33,7 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaGeneral/initGeneral.h>
+#include <SofaGeneral/initSofaGeneral.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
 
 #include <sofa/gui/GUIManager.h>
@@ -244,7 +244,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
     m_Simulation = new sofa::simulation::tree::TreeSimulation();
     sofa::simulation::setSimulation(m_Simulation);
 
-    sofa::component::initGeneral();
+    sofa::component::initSofaGeneral();
 
     sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
             &classVisualModel);

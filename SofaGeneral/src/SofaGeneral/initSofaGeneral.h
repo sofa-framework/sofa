@@ -19,15 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <SofaMisc/initMisc.h>
-#include <SofaMiscTopology/initMiscTopology.h>
-#include <SofaMiscMapping/initMiscMapping.h>
-#include <SofaMiscForceField/initMiscForcefield.h>
-#include <SofaMiscFem/initMiscFEM.h>
-#include <SofaMiscEngine/initMiscEngine.h>
-#include <SofaMiscSolver/initMiscSolver.h>
-#include <SofaMiscExtra/initMiscExtra.h>
+#include <SofaGeneral/config.h>
 
 namespace sofa
 {
@@ -36,23 +30,10 @@ namespace component
 {
 
 
-void initMisc()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initMiscTopology();
-    initMiscMapping();
-    initMiscForcefield();
-    initMiscFEM();
-    initMiscEngine();
-    initMiscSolver();
-    initMiscExtra();
-}
+void SOFA_SOFAGENERAL_API initSofaGeneral();
 
 } // namespace component
 
 } // namespace sofa
+
+

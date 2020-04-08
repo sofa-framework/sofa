@@ -27,11 +27,11 @@ set(SOFAADVANCED_SRC src/${PROJECT_NAME})
 
 set(HEADER_FILES
     ${SOFAADVANCED_SRC}/config.h.in 
-    ${SOFAADVANCED_SRC}/initAdvanced.h
+    ${SOFAADVANCED_SRC}/initSofaAdvanced.h
     )
 
 set(SOURCE_FILES
-    ${SOFAADVANCED_SRC}/initAdvanced.cpp
+    ${SOFAADVANCED_SRC}/initSofaAdvanced.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

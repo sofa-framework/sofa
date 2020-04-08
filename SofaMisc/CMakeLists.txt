@@ -32,11 +32,11 @@ set(SOFAMISC_SRC src/${PROJECT_NAME})
 
 set(HEADER_FILES
     ${SOFAMISC_SRC}/config.h.in 
-    ${SOFAMISC_SRC}/initMisc.h
+    ${SOFAMISC_SRC}/initSofaMisc.h
     )
 
 set(SOURCE_FILES
-    ${SOFAMISC_SRC}/initMisc.cpp
+    ${SOFAMISC_SRC}/initSofaMisc.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

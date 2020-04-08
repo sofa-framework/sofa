@@ -36,11 +36,11 @@ set(SOFACOMMON_SRC src/${PROJECT_NAME})
 
 set(HEADER_FILES
     ${SOFACOMMON_SRC}/config.h.in
-    ${SOFACOMMON_SRC}/initCommon.h
+    ${SOFACOMMON_SRC}/initSofaCommon.h
 )
 
 set(SOURCE_FILES
-    ${SOFACOMMON_SRC}/initCommon.cpp
+    ${SOFACOMMON_SRC}/initSofaCommon.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

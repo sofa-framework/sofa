@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaGeneral/config.h>
 
-#include <SofaGeneral/initGeneral.h>
+#include <SofaGeneral/initSofaGeneral.h>
 #include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
 #include <SofaGeneralDeformable/initGeneralDeformable.h>
 #include <SofaGeneralExplicitOdeSolver/initGeneralExplicitODESolver.h>
@@ -55,7 +55,7 @@ namespace component
 {
 
 
-void initGeneral()
+void initSofaGeneral()
 {
     static bool first = true;
     if (first)
