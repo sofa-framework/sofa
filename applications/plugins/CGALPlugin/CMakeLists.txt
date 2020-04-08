@@ -44,11 +44,6 @@ else()
     find_package(CGAL REQUIRED)
 endif()
 
-## CGAL dependencies
-find_package(MPFR REQUIRED)
-find_package(GMP REQUIRED)
-# Boost dependency
-sofa_find_package(Boost QUIET REQUIRED COMPONENTS system thread BOTH_SCOPES)
 
 # Get CGAL version
 message(STATUS "CGAL VERSION ${CGAL_MAJOR_VERSION}.${CGAL_MINOR_VERSION}")
@@ -64,13 +59,13 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_CGALPLUGIN")
 
 # Link the plugin library to its dependencies (other libraries).
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCommon ${Boost_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${GMP_LIBRARIES} ${MPFR_LIBRARIES} CGAL)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC CGAL)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-target_include_directories(${PROJECT_NAME} PUBLIC ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR} ${CGAL_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${CGAL_INCLUDE_DIRS})
 
 if(CImgPlugin_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC ${CGAL_ImageIO_LIBRARY} image)
