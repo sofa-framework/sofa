@@ -30,7 +30,7 @@
 #include <sofa/helper/logging/Message.h>
 
 #include <sofa/core/objectmodel/Base.h>
-using sofa::helper::logging::SofaInfo ;
+using sofa::helper::logging::SofaComponentInfo;
 
 #include <sofa/helper/system/console.h>
 #include <sofa/helper/fixed_array.h>

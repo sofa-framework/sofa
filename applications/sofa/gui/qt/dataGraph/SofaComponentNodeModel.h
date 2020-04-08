@@ -29,14 +29,14 @@ namespace sofa
 
 /// The class can potentially incapsulate any user data which
 /// need to be transferred within the Node Editor graph
-class SofaNodeData : public NodeData
+class SofaComponentNodeData : public NodeData
 {
 public:
-    SofaNodeData();
-    SofaNodeData(sofa::core::objectmodel::BaseData* bData);
+    SofaComponentNodeData();
+    SofaComponentNodeData(sofa::core::objectmodel::BaseData* bData);
 
     NodeDataType type() const override;
-  
+
     sofa::core::objectmodel::BaseData* getData();
 
 protected:
@@ -51,28 +51,28 @@ static const char* ignoredData[] = { "name", "printLog", "tags", "bbox", "listen
 * This Class is a NodeDataModel specialisation to represent a Sofa component on the QtNodes graph.
 * It will take a SOFA BaseObject as target and parse all Data, storing Data, Links and connections with parents components.
 */
-class SofaNodeModel : public NodeDataModel
+class SofaComponentNodeModel : public NodeDataModel
 {
     Q_OBJECT
 
 public:
     /// Default empty Object constructor with 0 Data
-    SofaNodeModel(std::string name = "EmptyNode");
+    SofaComponentNodeModel(std::string name = "EmptyNode");
 
     /// constructor with a Sofa BaseObject as target
-    SofaNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject, bool debugMode = false);
+    SofaComponentNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject, bool debugMode = false);
 
-    virtual ~SofaNodeModel() {}
+    virtual ~SofaComponentNodeModel() {}
 
     /// Interface for caption.
-    QString caption() const override {return m_caption;}
-    void setCaption(std::string str) {m_caption = QString::fromStdString(str);}
+    QString caption() const override { return m_caption; }
+    void setCaption(std::string str) { m_caption = QString::fromStdString(str); }
 
     /// Interface for name.
     QString name() const override { return m_uniqName; }
 
     /// Return the number of Data.
-    size_t getNbrData() {return m_data.size();}
+    size_t getNbrData() { return m_data.size(); }
 
     /// Return the number of connection with other Node components
     size_t getNbrConnections() { return m_dataConnections.size(); }
@@ -82,7 +82,7 @@ public:
 
     /// Return the PortIndex of a Data given its Name.
     QtNodes::PortIndex getDataInputId(const QString& dataName);
-   
+
     ///Interface for QtNodes
     ///{
     /// Override method to return the number of ports
@@ -98,14 +98,14 @@ public:
     void setInData(std::shared_ptr<NodeData> data, int port) override;
 
     /// Override method for more advance node gui. Not yet used.
-    QWidget * embeddedWidget() override { return nullptr; }
+    QWidget* embeddedWidget() override { return nullptr; }
     ///}
 
 protected:
     /// Internal method to parse all Data of a Sofa component and create the corresponding ports
-    void parseSofaObjectData();    
+    void parseSofaObjectData();
 
-protected:     
+protected:
     QString m_caption; ///< caption to be display on the Graph
     QString m_uniqName; ///< unique name to refer to this node
 
@@ -114,8 +114,8 @@ protected:
     /// Vector of Data/port hold by this component/Node. vector of pair{DataName, DataType}
     std::vector < std::pair < QString, QString> > m_data;
 
-    /// vector of SofaNodeData class holding pointer to the Data. To replace @sa m_data when api is validated.
-    std::vector < std::shared_ptr<SofaNodeData> > m_Nodedata;
+    /// vector of SofaComponentNodeData class holding pointer to the Data. To replace @sa m_data when api is validated.
+    std::vector < std::shared_ptr<SofaComponentNodeData> > m_Nodedata;
 
     /// Map to store all connection between this node and other. map.key = this data name, map.value = pair{ComponentName, DataName}
     std::map <QString, std::pair < QString, QString> > m_dataConnections;

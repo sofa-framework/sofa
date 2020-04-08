@@ -1,48 +1,48 @@
-#include "SofaNodeModel.h"
+#include "SofaComponentNodeModel.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 
-SofaNodeData::SofaNodeData()
+SofaComponentNodeData::SofaComponentNodeData()
     : m_bData(nullptr)
 {
 
 }
 
-SofaNodeData::SofaNodeData(sofa::core::objectmodel::BaseData* bData)
+SofaComponentNodeData::SofaComponentNodeData(sofa::core::objectmodel::BaseData* bData)
     : m_bData(bData)
 {
 
 }
 
-sofa::core::objectmodel::BaseData* SofaNodeData::getData()
+sofa::core::objectmodel::BaseData* SofaComponentNodeData::getData()
 {
     //m_bData->updateIfDirty(); ??
     return m_bData;
 }
 
-NodeDataType SofaNodeData::type() const
+NodeDataType SofaComponentNodeData::type() const
 {
-    return NodeDataType{ "SofaNodeData",
+    return NodeDataType{ "SofaComponentNodeData",
         "My Sofa Node Data" };
 }
 
 
-SofaNodeModel::SofaNodeModel(std::string name)
+SofaComponentNodeModel::SofaComponentNodeModel(std::string name)
     : NodeDataModel()
     , debugNodeGraph(true)
-    , m_SofaObject(nullptr)    
+    , m_SofaObject(nullptr)
 {
     m_uniqName = QString::fromStdString(name);
     m_caption = m_uniqName;
 }
 
-SofaNodeModel::SofaNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject, bool debugMode)
+SofaComponentNodeModel::SofaComponentNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject, bool debugMode)
     : NodeDataModel()
     , debugNodeGraph(debugMode)
     , m_SofaObject(_sofaObject)
-{    
+{
     if (m_SofaObject == nullptr)
     {
-        msg_error("SofaNodeModel") << "Sofa BaseObject is null, Node graph initialisation failed.";
+        msg_error("SofaComponentNodeModel") << "Sofa BaseObject is null, Node graph initialisation failed.";
         m_uniqName = "ErrorNode";
     }
     else
@@ -52,11 +52,11 @@ SofaNodeModel::SofaNodeModel(sofa::core::objectmodel::BaseObject* _sofaObject, b
 }
 
 
-void SofaNodeModel::parseSofaObjectData()
+void SofaComponentNodeModel::parseSofaObjectData()
 {
     if (m_SofaObject == nullptr)
     {
-        msg_error("SofaNodeModel") << "Sofa BaseObject is null, Node graph parseSofaObjectData failed.";
+        msg_error("SofaComponentNodeModel") << "Sofa BaseObject is null, Node graph parseSofaObjectData failed.";
         return;
     }
 
@@ -82,7 +82,7 @@ void SofaNodeModel::parseSofaObjectData()
 
         const std::string valuetype = link->getValueTypeString();
 
-        msg_info_when(debugNodeGraph, "SofaNodeModel") << "## link: " << name << " | link->getSize(): " << link->getSize() << " | valuetype: " << valuetype << " | path: " << link->storePath();
+        msg_info_when(debugNodeGraph, "SofaComponentNodeModel") << "## link: " << name << " | link->getSize(): " << link->getSize() << " | valuetype: " << valuetype << " | path: " << link->storePath();
 
         std::string linkPath = link->getLinkedPath();
         linkPath.erase(0, 1); // remove @
@@ -90,7 +90,7 @@ void SofaNodeModel::parseSofaObjectData()
         if (found != std::string::npos) // remove path
             linkPath.erase(0, found);
 
-        msg_info_when(debugNodeGraph, "SofaNodeModel") << "  # baselink: " << linkPath;
+        msg_info_when(debugNodeGraph, "SofaComponentNodeModel") << "  # baselink: " << linkPath;
         QString parentObject = QString::fromStdString(linkPath);
         m_dataConnections[SObjectName] = std::pair<QString, QString>(parentObject, parentObject);
     }
@@ -121,24 +121,24 @@ void SofaNodeModel::parseSofaObjectData()
 
         sofa::core::objectmodel::BaseData* pData = data->getParent();
         if (pData)
-        {            
+        {
             QString parentObject = QString::fromStdString(pData->getOwner()->getName());
             QString parentData = QString::fromStdString(pData->getName());
-            msg_info_when(debugNodeGraph, "SofaNodeModel") << "- Parent: " << pData->getName() << " owwner: " << pData->getOwner()->getName();
+            msg_info_when(debugNodeGraph, "SofaComponentNodeModel") << "- Parent: " << pData->getName() << " owwner: " << pData->getOwner()->getName();
             m_dataConnections[name] = std::pair<QString, QString>(parentObject, parentData);
         }
 
         if (!group.isEmpty())
         {
-            msg_info_when(debugNodeGraph, "SofaNodeModel") << name.toStdString() << " -> " << data->getGroup();
+            msg_info_when(debugNodeGraph, "SofaComponentNodeModel") << name.toStdString() << " -> " << data->getGroup();
         }
         m_data.push_back(std::pair<QString, QString>(name, QString::fromStdString(data->getValueTypeString())));
-        m_Nodedata.push_back(std::make_shared<SofaNodeData>(data));
+        m_Nodedata.push_back(std::make_shared<SofaComponentNodeData>(data));
     }
 }
 
 
-QtNodes::PortIndex SofaNodeModel::getDataInputId(const QString& dataName)
+QtNodes::PortIndex SofaComponentNodeModel::getDataInputId(const QString& dataName)
 {
     int cpt = 0;
     for (auto data : m_data)
@@ -153,12 +153,12 @@ QtNodes::PortIndex SofaNodeModel::getDataInputId(const QString& dataName)
 }
 
 
-unsigned int SofaNodeModel::nPorts(PortType portType) const
+unsigned int SofaComponentNodeModel::nPorts(PortType portType) const
 {
     return m_data.size();
 }
 
-NodeDataType SofaNodeModel::dataType(PortType portType, PortIndex portIndex) const
+NodeDataType SofaComponentNodeModel::dataType(PortType portType, PortIndex portIndex) const
 {
     if (portIndex >= 0 && portIndex < m_data.size())
     {
@@ -168,28 +168,28 @@ NodeDataType SofaNodeModel::dataType(PortType portType, PortIndex portIndex) con
         return NType;
     }
 
-    return SofaNodeData().type();
+    return SofaComponentNodeData().type();
 }
 
-std::shared_ptr<NodeData> SofaNodeModel::outData(PortIndex port)
+std::shared_ptr<NodeData> SofaComponentNodeModel::outData(PortIndex port)
 {
     // because the first port is the name of the component not stored in m_Nodedata:
     port--;
 
-    if (port>0 && port < m_Nodedata.size())
+    if (port > 0 && port < m_Nodedata.size())
         return m_Nodedata[port];
     else {
-        msg_warning(m_caption.toStdString()) << "Method SofaNodeModel::outData port: " << port << " out of bounds: " << m_Nodedata.size();
+        msg_warning(m_caption.toStdString()) << "Method SofaComponentNodeModel::outData port: " << port << " out of bounds: " << m_Nodedata.size();
         return nullptr;
     }
 }
 
-void SofaNodeModel::setInData(std::shared_ptr<NodeData> data, int port)
+void SofaComponentNodeModel::setInData(std::shared_ptr<NodeData> data, int port)
 {
-    auto parentNodeData = std::dynamic_pointer_cast<SofaNodeData>(data);
+    auto parentNodeData = std::dynamic_pointer_cast<SofaComponentNodeData>(data);
     if (parentNodeData == nullptr)
     {
-        msg_warning(m_caption.toStdString()) << "Method SofaNodeModel::setInData SofaNodeData cast failed.";
+        msg_warning(m_caption.toStdString()) << "Method SofaComponentNodeModel::setInData SofaComponentNodeData cast failed.";
         return;
     }
 
@@ -198,16 +198,16 @@ void SofaNodeModel::setInData(std::shared_ptr<NodeData> data, int port)
 
     if (port < 0 || port >= m_Nodedata.size())
     {
-        msg_warning(m_caption.toStdString()) << "Method SofaNodeModel::setInData port: "<< port << " out of bounds: " << m_Nodedata.size();
+        msg_warning(m_caption.toStdString()) << "Method SofaComponentNodeModel::setInData port: " << port << " out of bounds: " << m_Nodedata.size();
         return;
     }
 
     // here you will implement the Data setParent in SOFA!
-    std::shared_ptr<SofaNodeData> childNodeData = this->m_Nodedata[port];
+    std::shared_ptr<SofaComponentNodeData> childNodeData = this->m_Nodedata[port];
     sofa::core::objectmodel::BaseData* childData = childNodeData->getData();
     sofa::core::objectmodel::BaseData* parentData = parentNodeData->getData();
 
     msg_info_when(debugNodeGraph, m_caption.toStdString()) << "Here connect: {" << parentData->getOwner()->getName() << ", " << parentData->getName() << "} -> {"
         << childData->getOwner()->getName() << ", " << childData->getName() << "}";
-    
+
 }

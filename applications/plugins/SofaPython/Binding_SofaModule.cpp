@@ -44,7 +44,7 @@
 
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::ComponentInfo ;
-using sofa::helper::logging::SofaInfo ;
+using sofa::helper::logging::SofaComponentInfo;
 #include <sofa/helper/Utils.h>
 #include "SceneLoaderPY.h"
 

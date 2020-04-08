@@ -239,12 +239,12 @@ endif()
 if (SOFAGUIQT_ENABLE_NODEGRAPH)
     list(APPEND MOC_HEADER_FILES 
         SofaWindowDataGraph.h
-        dataGraph/SofaNodeModel.h
+        dataGraph/SofaComponentNodeModel.h
         )
 
     list(APPEND SOURCE_FILES 
         SofaWindowDataGraph.cpp
-        dataGraph/SofaNodeModel.cpp
+        dataGraph/SofaComponentNodeModel.cpp
         )
 endif()
 
