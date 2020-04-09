@@ -67,7 +67,7 @@ public:
     /// @name Class reflection system
     /// @{
     typedef TClass<BaseData,DDGNode> MyClass;
-    static const MyClass* GetClass() { return MyClass::get(); }
+    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
     const BaseClass* getClass() const override
     { return GetClass(); }
     /// @}

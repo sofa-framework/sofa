@@ -24,7 +24,7 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-
+#include <sofa/helper/NameDecoder.h>
 
 namespace sofa
 {
@@ -134,7 +134,7 @@ public:
     /// \param force    set to true if this method should override any entry already registered for this name
     /// \param previous (output) previous ClassEntry registered for this name
     bool addAlias(std::string name, std::string target, bool force=false,
-          ClassEntry::SPtr* previous = nullptr);
+                  ClassEntry::SPtr* previous = nullptr);
 
     /// Reset an alias to a previous state
     ///
@@ -230,10 +230,12 @@ public:
         return RealObject::HeaderFileLocation();
     }
 
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
+                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
     virtual std::string shortName(objectmodel::BaseObjectDescription* arg) override
     {
-        RealObject* instance = nullptr;
-        return RealObject::shortName(instance,arg);
+        SOFA_UNUSED(arg);
+        return sofa::helper::NameDecoder::getShortName<RealObject>();
     }
 
 };
@@ -289,9 +291,8 @@ public:
     template<class RealObject>
     RegisterObject& add(bool defaultTemplate=false)
     {
-        RealObject* p = nullptr;
-        std::string classname = RealObject::className(p);
-        std::string templatename = RealObject::templateName(p);
+        std::string classname = sofa::helper::NameDecoder::getClassName<RealObject>();
+        std::string templatename = sofa::helper::NameDecoder::getTemplateName<RealObject>();
 
         if (defaultTemplate)
             entry.defaultTemplate = templatename;

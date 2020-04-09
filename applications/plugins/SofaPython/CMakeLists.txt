@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaPython VERSION 0.1)
 
-set(CMAKE_CXX_STANDARD 11) # Python 2.7 is not compatible with C++17 and later
-
 if(UNIX)
   list(APPEND PYTHON_LIBRARIES dl)
 endif()
@@ -188,6 +186,9 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+target_compile_definitions(${PROJECT_NAME} PUBLIC  "-Dregister=")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "-D_ALLOW_KEYWORD_MACROS")
+
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COMPILER_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
