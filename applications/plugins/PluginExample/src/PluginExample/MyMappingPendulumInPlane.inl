@@ -108,8 +108,10 @@ void MyMappingPendulumInPlane<In, Out>::apply(const core::MechanicalParams* mpar
                                              OutDataVecCoord& out,
                                              const InDataVecCoord& in)
 {
-    VecOutCoord& childPos = *out.beginEdit(mparams);
-    const VecInCoord& parentPos = in.getValue(mparams);
+    SOFA_UNUSED(mparams);
+
+    VecOutCoord& childPos = *out.beginEdit();
+    const VecInCoord& parentPos = in.getValue();
 
     ReadAccessor<Data<vector<OutReal> > > distances (f_length);
     for(unsigned i=0; i<childPos.size(); i++)
@@ -120,7 +122,7 @@ void MyMappingPendulumInPlane<In, Out>::apply(const core::MechanicalParams* mpar
         childPos[i][1] = gap[i][1];
     }
 
-    out.endEdit(mparams);
+    out.endEdit();
 }
 
 template <class In, class Out>
@@ -128,8 +130,10 @@ void MyMappingPendulumInPlane<In, Out>::applyJ(const core::MechanicalParams* mpa
                                               OutDataVecDeriv& out,
                                               const InDataVecDeriv& in)
 {
-    VecOutDeriv& childVel = *out.beginEdit(mparams);
-    const VecInDeriv& parentVel = in.getValue(mparams);
+    SOFA_UNUSED(mparams);
+
+    VecOutDeriv& childVel = *out.beginEdit();
+    const VecInDeriv& parentVel = in.getValue();
 
     for(unsigned i=0; i<childVel.size(); i++)
     {
@@ -140,7 +144,7 @@ void MyMappingPendulumInPlane<In, Out>::applyJ(const core::MechanicalParams* mpa
                  (OutReal)0);
     }
 
-    out.endEdit(mparams);
+    out.endEdit();
 }
 
 template <class In, class Out>
@@ -148,8 +152,10 @@ void MyMappingPendulumInPlane<In, Out>::applyJT(const core::MechanicalParams* mp
                                                InDataVecDeriv& out,
                                                const OutDataVecDeriv& in)
 {
-    VecInDeriv& parentForce = *out.beginEdit(mparams);
-    const VecOutDeriv& childForce = in.getValue(mparams);
+    SOFA_UNUSED(mparams);
+
+    VecInDeriv& parentForce = *out.beginEdit();
+    const VecOutDeriv& childForce = in.getValue();
 
     for(unsigned i=0; i<parentForce.size(); i++)
     {
@@ -157,16 +163,18 @@ void MyMappingPendulumInPlane<In, Out>::applyJT(const core::MechanicalParams* mp
         parentForce[i][0] += -gap[i][1] * childForce[i][0] + gap[i][0] * childForce[i][1] ;
     }
 
-    out.endEdit(mparams);
+    out.endEdit();
 }
 
 template <class In, class Out>
-void MyMappingPendulumInPlane<In, Out>::applyJT(const core::ConstraintParams* mparams,
+void MyMappingPendulumInPlane<In, Out>::applyJT(const core::ConstraintParams* cparams,
                                                InDataMatrixDeriv& out,
                                                const OutDataMatrixDeriv& in)
 {
-    MatrixInDeriv& parentJacobians = *out.beginEdit(mparams);
-    const MatrixOutDeriv& childJacobians = in.getValue(mparams);
+    SOFA_UNUSED(cparams);
+
+    MatrixInDeriv& parentJacobians = *out.beginEdit();
+    const MatrixOutDeriv& childJacobians = in.getValue();
 
     for (typename Out::MatrixDeriv::RowConstIterator childJacobian = childJacobians.begin(); childJacobian != childJacobians.end(); ++childJacobian)
     {
@@ -181,7 +189,7 @@ void MyMappingPendulumInPlane<In, Out>::applyJT(const core::ConstraintParams* mp
         }
     }
 
-    out.endEdit(mparams);
+    out.endEdit();
 }
 
 template <class In, class Out>

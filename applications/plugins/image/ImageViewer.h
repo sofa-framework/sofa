@@ -423,9 +423,12 @@ public:
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
     }
 
-    void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ ) override
+    void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override
     {
-        //        if( onlyVisible) return;
+        SOFA_UNUSED(params);
+        SOFA_UNUSED(onlyVisible);
+        //if( onlyVisible) return;
+
         defaulttype::Vec<8,defaulttype::Vector3> c;
         getCorners(c);
 

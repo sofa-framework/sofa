@@ -111,6 +111,8 @@ void ParticleSource<DataTypes>::reset()
 template<class DataTypes>
 void ParticleSource<DataTypes>::projectResponse(const sofa::core::MechanicalParams* mparams, DataVecDeriv& dxData)
 {
+    SOFA_UNUSED(mparams);
+
     if (!this->mstate || m_lastparticles.getValue().empty()) {
         return;
     }
@@ -120,19 +122,21 @@ void ParticleSource<DataTypes>::projectResponse(const sofa::core::MechanicalPara
         return;
     }
 
-    VecDeriv& dx = *dxData.beginEdit(mparams);
+    VecDeriv& dx = *dxData.beginEdit();
     helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;
     for (unsigned int s = 0; s<_lastparticles.size(); s++)
     {
         dx[_lastparticles[s]] = Deriv();
     }    
-    dxData.endEdit(mparams);
+    dxData.endEdit();
 }
 
 
 template<class DataTypes>
 void ParticleSource<DataTypes>::projectPosition(const sofa::core::MechanicalParams* mparams, DataVecCoord& xData)
 {
+    SOFA_UNUSED(mparams);
+
     if (!this->mstate || m_lastparticles.getValue().empty()) {
         return;
     }
@@ -143,7 +147,7 @@ void ParticleSource<DataTypes>::projectPosition(const sofa::core::MechanicalPara
     }
 
     // constraint the most recent particles
-    VecCoord& x = *xData.beginEdit(mparams);       
+    VecCoord& x = *xData.beginEdit();
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
     helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;    
     msg_info() << "projectPosition: " << _lastparticles;
@@ -152,13 +156,15 @@ void ParticleSource<DataTypes>::projectPosition(const sofa::core::MechanicalPara
         x[_lastparticles[s]] = m_lastpos[s];
         x[_lastparticles[s]] += dpos; // account for particle initial motion
     }
-    xData.endEdit(mparams);
+    xData.endEdit();
 }
 
 
 template<class DataTypes>
 void ParticleSource<DataTypes>::projectVelocity(const sofa::core::MechanicalParams* mparams, DataVecDeriv&  vData)
-{    
+{
+    SOFA_UNUSED(mparams);
+
     if (!this->mstate || m_lastparticles.getValue().empty()) {
         return;
     }
@@ -169,14 +175,14 @@ void ParticleSource<DataTypes>::projectVelocity(const sofa::core::MechanicalPara
     }
     
     // constraint the most recent particles with the initial Velocity
-    VecDeriv& res = *vData.beginEdit(mparams);    
+    VecDeriv& res = *vData.beginEdit();
     Deriv v0 = d_velocity.getValue();
     helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;
     for (unsigned int s = 0; s<_lastparticles.size(); s++)
     {
         res[_lastparticles[s]] = v0;
     }
-    vData.endEdit(mparams);
+    vData.endEdit();
 }
 
 
