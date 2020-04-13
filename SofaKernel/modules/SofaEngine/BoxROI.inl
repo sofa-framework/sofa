@@ -1044,6 +1044,8 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 template <class DataTypes>
 void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( onlyVisible && !d_drawBoxes.getValue() )
         return;
 

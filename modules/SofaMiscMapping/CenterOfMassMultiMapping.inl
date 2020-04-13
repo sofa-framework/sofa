@@ -92,6 +92,8 @@ public :
 template <class TIn, class TOut>
 void CenterOfMassMultiMapping< TIn, TOut >::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
 {
+    SOFA_UNUSED(mparams);
+
     typedef typename InVecCoord::iterator iter_coord;
 
     //Not optimized at all...
@@ -125,6 +127,8 @@ void CenterOfMassMultiMapping< TIn, TOut >::apply(const core::MechanicalParams* 
 template <class TIn, class TOut>
 void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
 {
+    SOFA_UNUSED(mparams);
+
     typedef typename InVecDeriv::iterator iter_deriv;
 
     //Not optimized at all...
@@ -159,6 +163,8 @@ void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const core::MechanicalParams*
 template < class TIn, class TOut >
 void CenterOfMassMultiMapping< TIn, TOut >::applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
+    SOFA_UNUSED(mparams);
+
     //Not optimized at all...
     helper::vector<InVecDeriv*> outDeriv;
     for(unsigned int i=0; i<dataVecOutForce.size(); i++)

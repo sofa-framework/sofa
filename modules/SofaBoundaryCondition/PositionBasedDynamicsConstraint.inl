@@ -90,6 +90,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::reset()
 template <class DataTypes>
 void PositionBasedDynamicsConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataMatrixDeriv> c ( cData );
 }
 
@@ -98,6 +99,8 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectJacobianMatrix(const cor
 template <class DataTypes>
 void PositionBasedDynamicsConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
+    SOFA_UNUSED(mparams);
+
     helper::WriteAccessor<DataVecDeriv> res (vData );
     helper::ReadAccessor<DataVecDeriv> vel ( velocity );
 
@@ -108,6 +111,8 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectVelocity(const core::Mec
 template <class DataTypes>
 void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
+    SOFA_UNUSED(mparams);
+
     helper::WriteAccessor<DataVecCoord> res ( xData );
     helper::WriteAccessor<DataVecDeriv> vel ( velocity );
     helper::WriteAccessor<DataVecCoord> old_pos ( old_position );

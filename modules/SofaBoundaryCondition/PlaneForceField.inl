@@ -362,6 +362,8 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 template <class DataTypes>
 void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if (onlyVisible && !d_drawIsEnabled.getValue())
         return;
 

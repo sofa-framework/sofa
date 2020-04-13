@@ -95,6 +95,8 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(
         const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos)
 //apply(const vecOutVecCoord& outPos, const vecConstIn1VecCoord& inPos1 , const vecConstIn2VecCoord& inPos2 )
 {
+    SOFA_UNUSED(mparams);
+
     assert( dataVecOutPos.size() == 1); // we are dealing with a many to one mapping.
     typedef typename helper::vector<In1Coord>::iterator iter_coord1;
     typedef typename helper::vector<In2Coord>::iterator iter_coord2;
@@ -158,6 +160,8 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(
         const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel)
 //applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const In1VecDeriv*>& inDeriv1, const helper::vector<const In2VecDeriv*>& inDeriv2)
 {
+    SOFA_UNUSED(mparams);
+
     assert( dataVecOutVel.size() == 1 );
     typedef typename helper::vector<In1Deriv>::iterator                     iter_deriv1;
     typedef typename helper::vector<In2Deriv>::iterator                     iter_deriv2;
@@ -222,6 +226,8 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJT(
         const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
 //applyJT( const helper::vector<typename In1::VecDeriv*>& outDeriv1 ,const helper::vector<typename In2::VecDeriv*>& outDeriv2 , const helper::vector<const typename Out::VecDeriv*>& inDeriv )
 {
+    SOFA_UNUSED(mparams);
+
     assert( dataVecOut1Force.size() == 1 );
 
     //Not optimized at all...

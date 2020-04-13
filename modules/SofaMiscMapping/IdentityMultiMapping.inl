@@ -103,6 +103,8 @@ IdentityMultiMapping<TIn, TOut>::~IdentityMultiMapping()
 template <class TIn, class TOut>
 void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
 {
+    SOFA_UNUSED(mparams);
+
     OutVecCoord& out = *(dataVecOutPos[0]->beginEdit());
 
     unsigned offset = 0;
@@ -123,6 +125,8 @@ void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparam
 template <class TIn, class TOut>
 void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
 {
+    SOFA_UNUSED(mparams);
+
     OutVecDeriv& out = *(dataVecOutVel[0]->beginEdit());
 
     unsigned offset = 0;
@@ -144,6 +148,8 @@ void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mpara
 template <class TIn, class TOut>
 void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
+    SOFA_UNUSED(mparams);
+
     const OutVecDeriv& in = dataVecInForce[0]->getValue();
 
     unsigned offset = 0;

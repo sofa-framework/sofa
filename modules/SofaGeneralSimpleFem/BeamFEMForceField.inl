@@ -704,6 +704,8 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( !onlyVisible ) return;
 
 

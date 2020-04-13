@@ -594,6 +594,8 @@ void LineCollisionModel<DataTypes>::setFilter(LineLocalMinDistanceFilter *lmdFil
 template<class DataTypes>
 void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( !onlyVisible ) return;
 
     static const Real max_real = std::numeric_limits<Real>::max();

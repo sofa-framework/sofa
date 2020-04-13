@@ -210,6 +210,8 @@ public:
 
     void apply(const core::MechanicalParams *mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos) override
     {
+        SOFA_UNUSED(mparams);
+
         //Not optimized at all...
         helper::vector<OutVecCoord*> vecOutPos;
         for(unsigned int i=0; i<dataVecOutPos.size(); i++)
@@ -229,6 +231,8 @@ public:
 
     void applyJ(const core::MechanicalParams *mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel) override
     {
+        SOFA_UNUSED(mparams);
+
         //Not optimized at all...
         helper::vector<OutVecDeriv*> vecOutVel;
         for(unsigned int i=0; i<dataVecOutVel.size(); i++)
@@ -248,6 +252,8 @@ public:
 
     void applyJT(const core::MechanicalParams *mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override
     {
+        SOFA_UNUSED(mparams);
+
         //Not optimized at all...
         helper::vector<InVecDeriv*> vecOutForce;
         for(unsigned int i=0; i<dataVecOutForce.size(); i++)

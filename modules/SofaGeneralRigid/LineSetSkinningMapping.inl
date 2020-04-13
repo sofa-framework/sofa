@@ -230,6 +230,8 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
+    SOFA_UNUSED(mparams);
+
     OutVecCoord& out = *outData.beginEdit();
     const InVecCoord& in = inData.getValue();
 
@@ -249,6 +251,8 @@ void LineSetSkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParam
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
+    SOFA_UNUSED(mparams);
+
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     OutVecDeriv& out = *outData.beginEdit();
     const InVecDeriv& in = inData.getValue();
@@ -269,6 +273,8 @@ void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalPara
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
+    SOFA_UNUSED(mparams);
+
     InVecDeriv& out = *outData.beginEdit();
     const OutVecDeriv& in = inData.getValue();
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
@@ -313,6 +319,8 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalPar
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintParams* mparams, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
 {
+    SOFA_UNUSED(mparams);
+
     InMatrixDeriv& out = *outData.beginEdit();
     const OutMatrixDeriv& in = inData.getValue();
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();

@@ -23,6 +23,8 @@ UniformConstraint<DataTypes>::UniformConstraint()
 template< class DataTypes >
 void UniformConstraint<DataTypes>::buildConstraintMatrix(const sofa::core::ConstraintParams* cParams, DataMatrixDeriv & c, unsigned int &cIndex, const DataVecCoord &x)
 {
+    SOFA_UNUSED(cParams);
+
     const std::size_t N = Deriv::size(); // MatrixDeriv is a container of Deriv types.
 
     auto& jacobian = sofa::helper::write(c).wref();
@@ -91,6 +93,7 @@ void UniformConstraint<DataTypes>::getConstraintViolation(const sofa::core::Cons
 template< class DataTypes >
 void UniformConstraint<DataTypes>::getConstraintResolution(const sofa::core::ConstraintParams* cParams, std::vector<sofa::core::behavior::ConstraintResolution*>& crVector, unsigned int& offset)
 {
+    SOFA_UNUSED(cParams);
 
     if (d_iterative.getValue())
     {

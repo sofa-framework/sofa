@@ -393,6 +393,8 @@ void PointCollisionModel<DataTypes>::setFilter(PointLocalMinDistanceFilter *lmdF
 template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( !onlyVisible ) return;
 
     const int npoints = mstate->getSize();

@@ -1171,6 +1171,8 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( !onlyVisible ) return;
 
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::VecCoordId::position());
