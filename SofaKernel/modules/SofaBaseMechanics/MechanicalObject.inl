@@ -1454,6 +1454,7 @@ void MechanicalObject<DataTypes>::endIntegration(const core::ExecParams* /*param
 template <class DataTypes>
 void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params, core::VecDerivId fId)
 {
+    SOFA_UNUSED(params);
 
     {
         helper::ReadAccessor< Data<VecDeriv> > extForces_rA( *this->read(core::ConstVecDerivId::externalForce()) );
@@ -1692,6 +1693,8 @@ void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* /* params */, c
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecCoordId v)
 {
+    SOFA_UNUSED(params);
+
     if (v.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX)
     {
         Data<VecCoord>* vec_d = this->write(v);
@@ -1705,7 +1708,7 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::V
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecDerivId v)
 {
-
+    SOFA_UNUSED(params);
 
     if (v.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX)
     {
@@ -1720,6 +1723,8 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::V
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecCoordId v)
 {
+    SOFA_UNUSED(params);
+
     Data<VecCoord>* vec_d = this->write(v);
 
     if ( !vec_d->isSet() /*&& v.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX*/ )
@@ -1732,6 +1737,8 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core:
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecDerivId v)
 {
+    SOFA_UNUSED(params);
+
     Data<VecDeriv>* vec_d = this->write(v);
 
     if ( !vec_d->isSet() /*&& v.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX*/ )
@@ -1744,6 +1751,8 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core:
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params, core::VecCoordId vId)
 {
+    SOFA_UNUSED(params);
+
     if (vId.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX)
     {
         Data< VecCoord >* vec_d = this->write(vId);
@@ -1759,6 +1768,8 @@ void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params, core::Ve
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params, core::VecDerivId vId)
 {
+    SOFA_UNUSED(params);
+
     if (vId.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX)
     {
         Data< VecDeriv >* vec_d = this->write(vId);
@@ -1804,7 +1815,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                                       core::ConstVecId a,
                                       core::ConstVecId b, SReal f)
 {
-
+    SOFA_UNUSED(params);
 
     if(v.isNull())
     {
@@ -2341,6 +2352,8 @@ typedef std::size_t nat;
 template <class DataTypes>
 SReal MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, core::ConstVecId a, unsigned l)
 {
+    SOFA_UNUSED(params);
+
     Real r = 0.0;
 
     if (a.type == sofa::core::V_COORD )
@@ -2373,6 +2386,8 @@ SReal MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, core::Co
 template <class DataTypes>
 SReal MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::ConstVecId a )
 {
+    SOFA_UNUSED(params);
+
     Real r = 0.0;
 
     if (a.type == sofa::core::V_COORD )
@@ -2406,6 +2421,8 @@ SReal MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::Co
 template <class DataTypes>
 size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params, core::ConstVecId v)
 {
+    SOFA_UNUSED(params);
+
     if (v.type == sofa::core::V_COORD)
     {
         const VecCoord &vv = this->read(core::ConstVecCoordId(v))->getValue();
@@ -2509,8 +2526,10 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, core::VecDerivId fid)
 {
+    SOFA_UNUSED(params);
+
     {
-        helper::WriteOnlyAccessor< Data<VecDeriv> > f( params, *this->write(fid) );
+        helper::WriteOnlyAccessor< Data<VecDeriv> > f( *this->write(fid) );
         for (unsigned i = 0; i < f.size(); ++i)
 //          if( this->forceMask.getEntry(i) ) // safe getter or not?
                 f[i] = Deriv();
@@ -2520,8 +2539,10 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, cor
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core::VecDerivId aId)
 {
+    SOFA_UNUSED(params);
+
     {
-        helper::WriteOnlyAccessor< Data<VecDeriv> > a( params, *this->write(aId) );
+        helper::WriteOnlyAccessor< Data<VecDeriv> > a( *this->write(aId) );
         for (unsigned i = 0; i < a.size(); ++i)
         {
             a[i] = Deriv();
@@ -2533,13 +2554,13 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint(const core::ConstraintParams* cParams)
 {
     Data<MatrixDeriv>& c_data = *this->write(cParams->j().getId(this));
-    MatrixDeriv *c = c_data.beginEdit(cParams);
+    MatrixDeriv *c = c_data.beginEdit();
     c->clear();
-    c_data.endEdit(cParams);
+    c_data.endEdit();
     Data<MatrixDeriv>& m_data = *this->write(core::MatrixDerivId::mappingJacobian());
-    MatrixDeriv *m = m_data.beginEdit(cParams);
+    MatrixDeriv *m = m_data.beginEdit();
     m->clear();
-    m_data.endEdit(cParams);
+    m_data.endEdit();
 }
 
 template <class DataTypes>
