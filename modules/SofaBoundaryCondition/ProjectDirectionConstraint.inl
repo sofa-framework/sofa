@@ -222,6 +222,8 @@ void ProjectDirectionConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Ba
 template <class DataTypes>
 void ProjectDirectionConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
+
     helper::WriteAccessor<DataVecDeriv> res ( resData );
     jacobian.mult(res.wref(),res.ref());
 }

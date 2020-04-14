@@ -134,6 +134,8 @@ void SubsetMultiMapping<TIn, TOut>::addPoint( int from, int index)
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
 {
+    SOFA_UNUSED(mparams);
+
     OutVecCoord& out = *(dataVecOutPos[0]->beginEdit());
 
     for(unsigned i=0; i<out.size(); i++)
@@ -151,6 +153,8 @@ void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
 {
+    SOFA_UNUSED(mparams);
+
     OutVecDeriv& out = *(dataVecOutVel[0]->beginEdit());
 
     for(unsigned i=0; i<out.size(); i++)
@@ -216,6 +220,8 @@ void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cpa
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
+    SOFA_UNUSED(mparams);
+
     const OutDataVecDeriv* cderData = dataVecInForce[0];
     const OutVecDeriv& cder = cderData->getValue();
 

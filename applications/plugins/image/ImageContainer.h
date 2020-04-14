@@ -532,6 +532,8 @@ protected:
 
     void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override
     {
+        SOFA_UNUSED(params);
+
         if( onlyVisible && !drawBB.getValue()) return;
 
         defaulttype::Vec<8,defaulttype::Vector3> c;

@@ -275,6 +275,8 @@ typename SphereCollisionModel<DataTypes>::Real SphereCollisionModel<DataTypes>::
 template<class DataTypes>
 void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if(m_componentstate!=ComponentState::Valid)
         return ;
 

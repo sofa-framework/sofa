@@ -457,6 +457,8 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  params, bool /* onlyVisible */)
 {
+    SOFA_UNUSED(params);
+
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::lowest(); //not min() !
     Real maxBBox[3] = { min_real,min_real,min_real };

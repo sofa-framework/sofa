@@ -1245,6 +1245,8 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessPolar( Vecto
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
 	if( !onlyVisible ) return;
 
 	helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::VecCoordId::position());

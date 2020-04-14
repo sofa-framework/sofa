@@ -201,6 +201,8 @@ void SkinningMapping<TIn, TOut>::setWeights(const helper::vector<sofa::helper::S
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
+    SOFA_UNUSED(mparams);
+
     OutVecCoord& out = *outData.beginEdit();
     const InVecCoord& in = inData.getValue();
 
@@ -244,7 +246,9 @@ void SkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mpar
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
-    OutVecDeriv& out = *outData.beginWriteOnly(mparams);
+    SOFA_UNUSED(mparams);
+
+    OutVecDeriv& out = *outData.beginWriteOnly();
     const InVecDeriv& in = inData.getValue();
 
     unsigned int nbref=nbRef.getValue()[0];
@@ -273,6 +277,8 @@ void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mpa
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
+    SOFA_UNUSED(mparams);
+
     InVecDeriv& out = *outData.beginEdit();
     const OutVecDeriv& in = inData.getValue();
 
@@ -307,6 +313,8 @@ void SkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mp
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* cparams, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
 {
+    SOFA_UNUSED(cparams);
+
     InMatrixDeriv& parentJacobians = *outData.beginEdit();
     const OutMatrixDeriv& childJacobians = inData.getValue();
 

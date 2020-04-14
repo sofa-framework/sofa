@@ -65,6 +65,8 @@ template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid
 template <>
 void PositionBasedDynamicsConstraint<Rigid3Types>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
+    SOFA_UNUSED(mparams);
+
     helper::WriteAccessor<DataVecCoord> res ( xData );
     helper::ReadAccessor<DataVecCoord> tpos = position ;
     helper::WriteAccessor<DataVecDeriv> vel ( velocity );
