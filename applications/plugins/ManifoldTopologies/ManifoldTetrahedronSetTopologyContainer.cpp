@@ -113,7 +113,6 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
     {
 
         sofa::helper::vector <unsigned int> &shell = getTetrahedraAroundEdgeForModification (edgeIndex);
-        sofa::helper::vector <unsigned int>::iterator it;
         sofa::helper::vector < sofa::helper::vector <unsigned int> > vertexTofind;
         sofa::helper::vector <unsigned int> goodShell;
         unsigned int firstVertex =0;

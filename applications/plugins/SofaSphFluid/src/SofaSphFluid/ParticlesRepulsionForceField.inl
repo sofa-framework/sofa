@@ -81,7 +81,7 @@ void ParticlesRepulsionForceField<DataTypes>::addForce(const core::MechanicalPar
     // Initialization
     f.resize(n);
     particles.resize(n);
-    for (int i=0; i<n; i++)
+    for (size_t i=0; i<n; i++)
     {
         particles[i].neighbors.clear();
     }
@@ -90,10 +90,10 @@ void ParticlesRepulsionForceField<DataTypes>::addForce(const core::MechanicalPar
     // This is an O(n2) step, except if a hash-grid is used to optimize it
     if (grid == nullptr)
     {
-        for (int i=0; i<n; i++)
+        for (size_t i=0; i<n; i++)
         {
             const Coord& ri = x[i];
-            for (int j=i+1; j<n; j++)
+            for (size_t j=i+1; j<n; j++)
             {
                 const Coord& rj = x[j];
                 Real r2 = (rj-ri).norm2();
@@ -109,7 +109,7 @@ void ParticlesRepulsionForceField<DataTypes>::addForce(const core::MechanicalPar
     }
 
     // Compute the forces
-    for (int i=0; i<n; i++)
+    for (size_t i=0; i<n; i++)
     {
         Particle& Pi = particles[i];
 
@@ -155,7 +155,7 @@ void ParticlesRepulsionForceField<DataTypes>::addDForce(const core::MechanicalPa
     df.resize(dx.size());
 
     // Compute the forces
-    for (int i=0; i<n; i++)
+    for (size_t i=0; i<n; i++)
     {
         Particle& Pi = particles[i];
 

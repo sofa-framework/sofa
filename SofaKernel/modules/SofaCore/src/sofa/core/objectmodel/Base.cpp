@@ -171,32 +171,6 @@ void Base::addAlias( BaseLink* link, const char* alias)
     m_aliasLink.insert(std::make_pair(std::string(alias),link));
 }
 
-/// Copy the source aspect to the destination aspect for each Data in the component.
-void Base::copyAspect(int destAspect, int srcAspect)
-{
-    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
-    {
-        (*iData)->copyAspect(destAspect, srcAspect);
-    }
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
-    {
-        (*iLink)->copyAspect(destAspect, srcAspect);
-    }
-}
-
-/// Release memory allocated for the specified aspect.
-void Base::releaseAspect(int aspect)
-{
-    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
-    {
-        (*iData)->releaseAspect(aspect);
-    }
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
-    {
-        (*iLink)->releaseAspect(aspect);
-    }
-}
-
 /// Get the type name of this object (i.e. class and template types)
 std::string Base::getTypeName() const
 {

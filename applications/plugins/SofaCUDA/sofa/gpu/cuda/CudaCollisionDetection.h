@@ -188,12 +188,12 @@ class TDetectionOutputVector<sofa::gpu::cuda::CudaRigidDistanceGridCollisionMode
 };
 
 template<>
-class TDetectionOutputVector<sofa::gpu::cuda::CudaSphereModel,sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
+class TDetectionOutputVector<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
 {
 };
 
 template<>
-class TDetectionOutputVector<sofa::gpu::cuda::CudaPointModel,sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
+class TDetectionOutputVector<sofa::gpu::cuda::CudaPointCollisionModel,sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
 {
 };
 
@@ -295,9 +295,9 @@ public:
     class SphereRigidTest : public Test
     {
     public:
-        CudaSphereModel* model1;
+        sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>* model1;
         CudaRigidDistanceGridCollisionModel* model2;
-        SphereRigidTest(CudaSphereModel* model1, CudaRigidDistanceGridCollisionModel* model2);
+        SphereRigidTest(sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types> *model1, CudaRigidDistanceGridCollisionModel* model2);
         bool useGPU() { return true; }
         /// Returns how many tests are required
         virtual int init();
@@ -310,9 +310,9 @@ public:
     class PointRigidTest : public Test
     {
     public:
-        CudaPointModel* model1;
+        CudaPointCollisionModel* model1;
         CudaRigidDistanceGridCollisionModel* model2;
-        PointRigidTest(CudaPointModel* model1, CudaRigidDistanceGridCollisionModel* model2);
+        PointRigidTest(CudaPointCollisionModel* model1, CudaRigidDistanceGridCollisionModel* model2);
         bool useGPU() { return true; }
         /// Returns how many tests are required
         virtual int init();

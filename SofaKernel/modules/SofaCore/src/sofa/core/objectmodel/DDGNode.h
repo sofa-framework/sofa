@@ -164,42 +164,38 @@ public:
     virtual void update() = 0;
 
     /// Returns true if the DDGNode needs to be updated
-    bool isDirty(const core::ExecParams* params = nullptr) const
-    {
-        return dirtyFlags[size_t(currentAspect(params))].dirtyValue;
-    }
+    bool isDirty(const core::ExecParams*) const { return isDirty(); }
+    bool isDirty() const { return dirtyFlags.dirtyValue; }
 
     /// Indicate the value needs to be updated
-    virtual void setDirtyValue(const core::ExecParams* params = nullptr);
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    virtual void setDirtyValue(const core::ExecParams*) final { return setDirtyValue(); }
+    virtual void setDirtyValue();
 
     /// Indicate the outputs needs to be updated. This method must be called after changing the value of this node.
-    virtual void setDirtyOutputs(const core::ExecParams* params = nullptr);
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    virtual void setDirtyOutputs(const core::ExecParams*) final { setDirtyOutputs(); }
+    virtual void setDirtyOutputs();
 
     /// Set dirty flag to false
-    void cleanDirty(const core::ExecParams* params = nullptr);
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    void cleanDirty(const core::ExecParams*){ cleanDirty(); }
+    void cleanDirty();
 
     /// Notify links that the DGNode has been modified
-    virtual void notifyEndEdit(const core::ExecParams* params = 0);
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    virtual void notifyEndEdit(const core::ExecParams*) final { notifyEndEdit(); }
+    virtual void notifyEndEdit();
 
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
-    void updateIfDirty(const core::ExecParams* params = nullptr) const
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    void updateIfDirty(const core::ExecParams*) const { updateIfDirty(); }
+    void updateIfDirty() const
     {
-        if (isDirty(params))
+        if (isDirty())
         {
             const_cast <DDGNode*> (this)->update();
         }
-    }
-
-    /// Copy the value of an aspect into another one.
-    virtual void copyAspect(int destAspect, int srcAspect);
-
-    static int currentAspect()
-    {
-        return core::ExecParams::currentAspect();
-    }
-    static int currentAspect(const core::ExecParams* params)
-    {
-        return core::ExecParams::currentAspect(params);
     }
 
     virtual const std::string& getName() const = 0;
@@ -220,8 +216,6 @@ protected:
         return BaseLink::InitLink<DDGNode>(this, name, help);
     }
 
-    //std::list<DDGNode*> inputs;
-    //std::list<DDGNode*> outputs;
     DDGLink inputs;
     DDGLink outputs;
 
@@ -246,7 +240,8 @@ protected:
     }
 
     /// the dirtyOutputs flags of all the inputs will be set to false
-    void cleanDirtyOutputsOfInputs(const core::ExecParams* params);
+    void cleanDirtyOutputsOfInputs(const core::ExecParams*) { cleanDirtyOutputsOfInputs(); }
+    void cleanDirtyOutputsOfInputs();
 
 private:
 
@@ -257,7 +252,7 @@ private:
         bool dirtyValue;
         bool dirtyOutputs;
     };
-    helper::fixed_array<DirtyFlags, SOFA_DATA_MAX_ASPECTS> dirtyFlags;
+    DirtyFlags dirtyFlags;
 };
 
 } // namespace objectmodel

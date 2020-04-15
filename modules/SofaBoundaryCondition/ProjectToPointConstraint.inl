@@ -180,9 +180,11 @@ void ProjectToPointConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
-    if( f_fixAll.getValue(mparams) )
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecDeriv> res ( resData );
+    const SetIndexArray & indices = f_indices.getValue();
+    if( f_fixAll.getValue() )
     {
         // fix everything
         typename VecDeriv::iterator it;
@@ -205,13 +207,15 @@ void ProjectToPointConstraint<DataTypes>::projectResponse(const core::Mechanical
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
-    helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataMatrixDeriv> c ( cData );
+    const SetIndexArray & indices = f_indices.getValue();
 
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();
 
-    if( f_fixAll.getValue(mparams) )
+    if( f_fixAll.getValue() )
     {
         // fix everything
         while (rowIt != rowItEnd)
@@ -244,9 +248,11 @@ void ProjectToPointConstraint<DataTypes>::projectVelocity(const core::Mechanical
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
-    helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
-    if( f_fixAll.getValue(mparams) )
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecCoord> res ( xData );
+    const SetIndexArray & indices = f_indices.getValue();
+    if( f_fixAll.getValue() )
     {
         // fix everything
         typename VecCoord::iterator it;

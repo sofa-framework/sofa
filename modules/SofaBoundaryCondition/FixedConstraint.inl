@@ -220,8 +220,10 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
-    const SetIndexArray & indices = d_indices.getValue(mparams);
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecDeriv> res (resData );
+    const SetIndexArray & indices = d_indices.getValue();
 
     if( d_fixAll.getValue() )
     {
@@ -244,8 +246,10 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
-    helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
-    const SetIndexArray & indices = d_indices.getValue(mparams);
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataMatrixDeriv> c (cData );
+    const SetIndexArray & indices = d_indices.getValue();
 
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();
@@ -279,9 +283,11 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
+    SOFA_UNUSED(mparams);
+
     if(!d_projectVelocity.getValue()) return;
     const SetIndexArray & indices = this->d_indices.getValue();
-    helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
+    helper::WriteAccessor<DataVecDeriv> res (vData );
 
     if( d_fixAll.getValue() )    // fix everyting
     {

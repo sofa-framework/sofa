@@ -207,13 +207,13 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
 
         using sofa::helper::lifecycle::ComponentChange;
         using sofa::helper::lifecycle::uncreatableComponents;
-        if( uncreatableComponents.find(classname) != uncreatableComponents.end() )
-        {
-            arg->logError( uncreatableComponents.at(classname).getMessage() );
-        }
-        else if(it == registry.end())
+        if(it == registry.end())
         {
             arg->logError("The object is not in the factory.");
+            if( uncreatableComponents.find(classname) != uncreatableComponents.end() )
+            {
+                arg->logError( uncreatableComponents.at(classname).getMessage() );
+            }
         }
         else
         {

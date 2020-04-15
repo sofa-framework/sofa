@@ -194,7 +194,9 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 template <class BasicMapping>
 void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
-    OutVecCoord& out = *outData.beginEdit(mparams);
+    SOFA_UNUSED(mparams);
+
+    OutVecCoord& out = *outData.beginEdit();
     const InVecCoord& in = inData.getValue();
 
     // les deplacements des noeuds grossiers
@@ -261,7 +263,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::Mecha
 
     }
 
-    outData.endEdit(mparams);
+    outData.endEdit();
 
 
 
@@ -271,7 +273,9 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::Mecha
 template <class BasicMapping>
 void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
-    OutVecDeriv& out = *outData.beginEdit(mparams);
+    SOFA_UNUSED(mparams);
+
+    OutVecDeriv& out = *outData.beginEdit();
     const InVecDeriv& in = inData.getValue();
 
     // les deplacements des noeuds grossiers
@@ -319,14 +323,16 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::Mech
             out[i] += (fineDisplacements[ finehexa[w] ]  * _finestBarycentricCoord[i].second[w] );
         }
     }
-    outData.endEdit(mparams);
+    outData.endEdit();
 }
 
 
 template <class BasicMapping>
 void HexahedronCompositeFEMMapping<BasicMapping>::applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
-    InVecDeriv& out = *outData.beginEdit(mparams);
+    SOFA_UNUSED(mparams);
+
+    InVecDeriv& out = *outData.beginEdit();
     const OutVecDeriv& in = inData.getValue();
 
     // les forces des noeuds fins
@@ -362,7 +368,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT( const sofa::core::Mec
         }
     }
 
-    outData.endEdit(mparams);
+    outData.endEdit();
 }
 
 

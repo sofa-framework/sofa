@@ -594,6 +594,8 @@ void LineCollisionModel<DataTypes>::setFilter(LineLocalMinDistanceFilter *lmdFil
 template<class DataTypes>
 void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( !onlyVisible ) return;
 
     static const Real max_real = std::numeric_limits<Real>::max();
@@ -617,7 +619,7 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
         }
     }
 
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 } // namespace collision

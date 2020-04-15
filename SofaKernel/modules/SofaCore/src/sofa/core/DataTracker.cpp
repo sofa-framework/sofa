@@ -75,9 +75,9 @@ void DataTrackerDDGNode::addOutputs(std::initializer_list<sofa::core::objectmode
         addOutput(d);
 }
 
-void DataTrackerDDGNode::cleanDirty(const core::ExecParams* params)
+void DataTrackerDDGNode::cleanDirty(const core::ExecParams*)
 {
-    core::objectmodel::DDGNode::cleanDirty(params);
+    core::objectmodel::DDGNode::cleanDirty();
 
     /// it is also time to clean the tracked Data
     m_dataTracker.clean();

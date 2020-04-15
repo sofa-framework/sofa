@@ -475,7 +475,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         {
 
             drawcenters.push_back(c[i]);
-            drawradii.push_back((float)(r[i] * 0.5));
+            drawradii.push_back(float(r[i]));
             
             if (edgeAngle.getValue() > 0)
             {

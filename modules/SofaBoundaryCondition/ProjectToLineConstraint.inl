@@ -213,7 +213,9 @@ void ProjectToLineConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseM
 template <class DataTypes>
 void ProjectToLineConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecDeriv> res ( resData );
     jacobian.mult(res.wref(),res.ref());
 }
 
