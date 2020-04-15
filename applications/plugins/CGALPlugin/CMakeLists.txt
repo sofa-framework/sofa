@@ -65,12 +65,10 @@ target_link_libraries(${PROJECT_NAME} PUBLIC CGAL)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-target_include_directories(${PROJECT_NAME} PUBLIC ${CGAL_INCLUDE_DIRS})
 
-if(CImgPlugin_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${CGAL_ImageIO_LIBRARY} image)
-else()
-    target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PUBLIC CGAL::CGAL)
+if(image_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC CGAL::CGAL_ImageIO image)
 endif()
 
 
