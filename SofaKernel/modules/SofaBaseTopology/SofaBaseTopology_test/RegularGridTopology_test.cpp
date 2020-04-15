@@ -17,7 +17,7 @@ struct RegularGridTopology_test :
     bool regularGridPosition();
     bool regularGridFindPoint();
 
-    bool regularGridSize(const std::vector<int>& p);
+    bool regularGridSize(const std::vector<int>& p, bool fromTriangleList);
 };
 
 
@@ -44,7 +44,7 @@ bool RegularGridTopology_test::regularGridCreation()
     return true;
 }
 
-bool RegularGridTopology_test::regularGridSize(const std::vector<int>& p)
+bool RegularGridTopology_test::regularGridSize(const std::vector<int>& p, bool fromTriangleList)
 {
     int nx=p[0];
     int ny=p[1];
@@ -52,6 +52,7 @@ bool RegularGridTopology_test::regularGridSize(const std::vector<int>& p)
 
     /// Creating a good Grid in 3D
     RegularGridTopology::SPtr regGrid =New<RegularGridTopology>(nx, ny, nz);
+    regGrid->d_computeTriangleList.setValue(fromTriangleList);
     regGrid->init();
 
     /// The input was not valid...the default data should be used.
@@ -64,11 +65,19 @@ bool RegularGridTopology_test::regularGridSize(const std::vector<int>& p)
     /// check topology
     int nbHexa = (nx-1)*(ny-1)*(nz-1);
     int nbQuads = (nx-1)*(ny-1)*nz+(nx-1)*ny*(nz-1)+nx*(ny-1)*(nz-1);
-    int nbEgdes = (nx-1)*ny*nz + nx*(ny-1)*nz + nx*ny*(nz-1);
 
     /// Dimmension invariant assumption
     EXPECT_EQ(regGrid->getNbPoints(), nx*ny*nz);
-    EXPECT_EQ(regGrid->getNbEdges(), nbEgdes);
+    if(fromTriangleList)
+    {
+        int nbEgdes = (nx-1)*ny*nz + nx*(ny-1)*nz + nx*ny*(nz-1) + nbQuads;
+        EXPECT_EQ(regGrid->getNbEdges(), nbEgdes);
+    }
+    else
+    {
+        int nbEgdes = (nx-1)*ny*nz+nx*(ny-1)*nz+nx*ny*(nz-1);
+        EXPECT_EQ(regGrid->getNbEdges(), nbEgdes);
+    }
 
     /// Compute the dimmension.
     int d=(p[0]==1)+(p[1]==1)+(p[2]==1) ; /// Check if there is reduced dimmension
@@ -207,18 +216,32 @@ std::vector<std::vector<int>> dimvalues={
     {-2,1,1, 1, 1},
 };
 
+TEST_P(RegularGridTopology_test, regularGridSizeComputeEdgeFromTriangle )
+{
+    /// We check if this test should returns a warning.
+    if(GetParam()[3]==1){
+        {
+            EXPECT_MSG_EMIT(Warning) ;
+            ASSERT_TRUE( regularGridSize(GetParam(), true) );
+        }
+    }else{
+        ASSERT_TRUE( regularGridSize(GetParam(), true) );
+    }
+}
+
 TEST_P(RegularGridTopology_test, regularGridSize )
 {
     /// We check if this test should returns a warning.
     if(GetParam()[3]==1){
         {
             EXPECT_MSG_EMIT(Warning) ;
-            ASSERT_TRUE( regularGridSize(GetParam()) );
+            ASSERT_TRUE( regularGridSize(GetParam(), false) );
         }
     }else{
-        ASSERT_TRUE( regularGridSize(GetParam()) );
+        ASSERT_TRUE( regularGridSize(GetParam(), false) );
     }
 }
+
 INSTANTIATE_TEST_CASE_P(regularGridSize3D,
                         RegularGridTopology_test,
                         ::testing::ValuesIn(dimvalues));
