@@ -272,6 +272,8 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::Vis
     }
     glEnd();
     glPointSize(1);
+#else
+    SOFA_UNUSED(vparams);
 #endif // SOFA_NO_OPENGL
 }
 
