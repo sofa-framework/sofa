@@ -158,12 +158,12 @@ bool RegularGridTopology_test::regularGridFindPoint()
                 );
     grid->init();
 
-    EXPECT_EQ(grid->findPoint(Coordinates{ .4, .4, .4 }),
-        -1); // No margin set means anything position rounded to a valid
+    EXPECT_EQ(grid->findPoint(Coordinates{ .4, .4, .4 }), -1);
+    // No margin set means anything position rounded to a valid
     // node will be returned
     EXPECT_EQ(grid->findPoint(Coordinates{ .51, .51, .51 }), 0);
-    EXPECT_EQ(grid->findPoint(Coordinates{ .51, .51, .51 }, Epsilon(0.01)),
-        -1); // Margin set means anything within a radius of 0.01*cell_size
+    EXPECT_EQ(grid->findPoint(Coordinates{ .51, .51, .51 }, Epsilon(0.01)), -1);
+    // Margin set means anything within a radius of 0.01*cell_size
     // will be returned
     EXPECT_EQ(grid->findPoint(Coordinates{ 1., 1., 1. }), 0); // First node of the grid
     EXPECT_EQ(grid->findPoint(Coordinates{ 4., 4., 4. }), 63); // Last node of the grid
@@ -236,10 +236,8 @@ TEST_P(RegularGridTopology_test, regularGridSizeComputeEdgeFromTriangle)
     /// We check if this test should returns a warning.
     if (GetParam()[3] == 1)
     {
-        {
-            EXPECT_MSG_EMIT(Warning);
-            ASSERT_TRUE(regularGridSize(GetParam(), true));
-        }
+        EXPECT_MSG_EMIT(Warning);
+        ASSERT_TRUE(regularGridSize(GetParam(), true));
     }
     else
     {
