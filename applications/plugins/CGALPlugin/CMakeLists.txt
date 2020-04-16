@@ -14,8 +14,7 @@ set(HEADER_FILES
     ${PLUGIN_CGAL_SRC_DIR}/CylinderMesh.inl
     ${PLUGIN_CGAL_SRC_DIR}/Refine2DMesh.h
     ${PLUGIN_CGAL_SRC_DIR}/Refine2DMesh.inl
-)
-
+    )
 set(SOURCE_FILES
     ${PLUGIN_CGAL_SRC_DIR}/initCGALPlugin.cpp
     ${PLUGIN_CGAL_SRC_DIR}/DecimateMesh.cpp
@@ -23,33 +22,23 @@ set(SOURCE_FILES
     ${PLUGIN_CGAL_SRC_DIR}/TriangularConvexHull3D.cpp
     ${PLUGIN_CGAL_SRC_DIR}/CylinderMesh.cpp
     ${PLUGIN_CGAL_SRC_DIR}/Refine2DMesh.cpp
-)
-
+    )
 set(README_FILES CGALPlugin.txt)
 
-
-
-# Add SOFA dependencies
+# Dependencies
 find_package(SofaFramework REQUIRED)
+find_package(SofaSimulation REQUIRED)
+find_package(CGAL REQUIRED)
+message(STATUS "CGAL VERSION = ${CGAL_VERSION}")
 
 # Check if image plugin is build, If yes add more files to create mesh on top of ImageContainer
 sofa_find_package(image QUIET)
 if(image_FOUND)
+    find_package(CGAL REQUIRED COMPONENTS ImageIO)
+    
     list(APPEND HEADER_FILES ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromImage.h)
     list(APPEND HEADER_FILES ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromImage.inl)
     list(APPEND SOURCE_FILES ${PLUGIN_CGAL_SRC_DIR}/MeshGenerationFromImage.cpp)
-    
-    find_package(CGAL REQUIRED COMPONENTS ImageIO)
-else()
-    find_package(CGAL REQUIRED)
-endif()
-
-
-# Get CGAL version
-message(STATUS "CGAL VERSION ${CGAL_MAJOR_VERSION}.${CGAL_MINOR_VERSION}")
-set(CGAL_VERSION ${CGAL_MAJOR_VERSION}.${CGAL_MINOR_VERSION})
-if (CGAL_VERSION VERSION_GREATER 4.9) # if CGAL >= 4.10
-    add_definitions(-DCGAL_MESH_3_VERBOSE=0)
 endif()
 
 # Create the plugin library.
@@ -57,28 +46,20 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 
 # Set define dllimport/dllexport mechanism on Windows.
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_CGALPLUGIN")
+if(CGAL_VERSION VERSION_GREATER 4.9) # if CGAL >= 4.10
+    target_compile_definitions(${PROJECT_NAME} PUBLIC "-DCGAL_MESH_3_VERBOSE=0")
+endif()
 
 # Link the plugin library to its dependencies (other libraries).
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCommon)
-target_link_libraries(${PROJECT_NAME} PUBLIC CGAL)
+target_link_libraries(${PROJECT_NAME} PUBLIC CGAL::CGAL)
+if(image_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC image CGAL::CGAL_ImageIO)
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-
-target_link_libraries(${PROJECT_NAME} PUBLIC CGAL::CGAL)
-if(image_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC CGAL::CGAL_ImageIO image)
-endif()
-
-
-# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(CGALPLUGIN_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(CGALPLUGIN_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(CGALPlugin_test)
-endif()
-
 
 # Install rules for the library and the headers; CMake package configurations files
 sofa_generate_package(
@@ -89,3 +70,10 @@ sofa_generate_package(
     INCLUDE_INSTALL_DIR "CGALPlugin"
     RELOCATABLE "plugins"
     )
+
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(CGALPLUGIN_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(CGALPLUGIN_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(CGALPlugin_test)
+endif()

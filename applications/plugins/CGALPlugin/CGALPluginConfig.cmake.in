@@ -5,12 +5,11 @@
 set(CGALPLUGIN_HAVE_IMAGE @CGALPLUGIN_HAVE_IMAGE@)
 
 find_package(SofaFramework REQUIRED)
-find_package(CGAL REQUIRED)
+find_package(SofaSimulation REQUIRED)
+find_package(CGAL QUIET REQUIRED)
 
 if(CGALPLUGIN_HAVE_IMAGE)
     find_package(CGAL QUIET REQUIRED COMPONENTS ImageIO)
-else()
-    find_package(CGAL QUIET REQUIRED)
 endif()
 
 check_required_components(CGALPlugin)
