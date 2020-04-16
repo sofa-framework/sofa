@@ -26,8 +26,8 @@ using sofa::simulation::common::init ;
 #include <SofaSimulationGraph/init.h>
 using sofa::simulation::graph::init ;
 
-#include <SofaComponentBase/initComponentBase.h>
-using sofa::component::initComponentBase ;
+#include <SofaBase/initSofaBase.h>
+using sofa::component::initBase ;
 */
 
 #include <sofa/core/objectmodel/BaseObjectDescription.h>

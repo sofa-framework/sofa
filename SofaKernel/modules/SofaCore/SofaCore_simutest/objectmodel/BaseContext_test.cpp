@@ -31,7 +31,7 @@ using sofa::core::objectmodel::BaseContext ;
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
-#include <SofaComponentBase/InfoComponent.h>
+#include <SofaBaseUtils/InfoComponent.h>
 using sofa::component::InfoComponent;
 
 class BaseContext_test: public BaseSimulationTest

@@ -31,9 +31,33 @@ foreach(TARGET ${SOFACOMMON_TARGETS})
     set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFACOMMON_VERSION})
 endforeach()
 
-## SofaCommon/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
 
-## CMake package configurations files
-sofa_write_package_config_files(SofaCommon ${SOFACOMMON_VERSION})
+set(SOFACOMMON_SRC src/${PROJECT_NAME})
+
+set(HEADER_FILES
+    ${SOFACOMMON_SRC}/config.h.in
+    ${SOFACOMMON_SRC}/initSofaCommon.h
+)
+
+set(SOURCE_FILES
+    ${SOFACOMMON_SRC}/initSofaCommon.cpp
+)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+foreach(target ${SOFACOMMON_TARGETS})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${target})
+endforeach()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFACOMMON")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/SofaKernel>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX _d)
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION  ${SOFACOMMON_VERSION})
+
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${SOFACOMMON_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}/${PROJECT_NAME}"
+    )

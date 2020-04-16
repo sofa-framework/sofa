@@ -36,7 +36,7 @@ public:
     SofaComponentNodeData(sofa::core::objectmodel::BaseData* bData);
 
     NodeDataType type() const override;
-  
+
     sofa::core::objectmodel::BaseData* getData();
 
 protected:
@@ -65,14 +65,14 @@ public:
     virtual ~SofaComponentNodeModel() {}
 
     /// Interface for caption.
-    QString caption() const override {return m_caption;}
-    void setCaption(std::string str) {m_caption = QString::fromStdString(str);}
+    QString caption() const override { return m_caption; }
+    void setCaption(std::string str) { m_caption = QString::fromStdString(str); }
 
     /// Interface for name.
     QString name() const override { return m_uniqName; }
 
     /// Return the number of Data.
-    size_t getNbrData() {return m_data.size();}
+    size_t getNbrData() { return m_data.size(); }
 
     /// Return the number of connection with other Node components
     size_t getNbrConnections() { return m_dataConnections.size(); }
@@ -82,7 +82,7 @@ public:
 
     /// Return the PortIndex of a Data given its Name.
     QtNodes::PortIndex getDataInputId(const QString& dataName);
-   
+
     ///Interface for QtNodes
     ///{
     /// Override method to return the number of ports
@@ -98,14 +98,14 @@ public:
     void setInData(std::shared_ptr<NodeData> data, int port) override;
 
     /// Override method for more advance node gui. Not yet used.
-    QWidget * embeddedWidget() override { return nullptr; }
+    QWidget* embeddedWidget() override { return nullptr; }
     ///}
 
 protected:
     /// Internal method to parse all Data of a Sofa component and create the corresponding ports
-    void parseSofaObjectData();    
+    void parseSofaObjectData();
 
-protected:     
+protected:
     QString m_caption; ///< caption to be display on the Graph
     QString m_uniqName; ///< unique name to refer to this node
 

@@ -7,7 +7,7 @@ find_package(SofaAdvanced)
 find_package(SofaMisc)
 
 add_executable(${PROJECT_NAME} myCfExport.cpp)
-target_link_libraries(${PROJECT_NAME} SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} SofaGeneral SofaAdvanced SofaMisc SofaSimulationGraph)
 # if(UNIX)
 #     target_link_libraries(${PROJECT_NAME} dl)
 # endif()

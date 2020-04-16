@@ -17,7 +17,7 @@ find_package(SofaBase REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_ManualMapping")
-target_link_libraries(${PROJECT_NAME} SofaComponentBase)
+target_link_libraries(${PROJECT_NAME} SofaBase)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 sofa_generate_package(
