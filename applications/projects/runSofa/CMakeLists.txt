@@ -31,14 +31,29 @@ if(APPLE)
     set_source_files_properties(${RC_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 endif()
 
-if(APPLE AND SOFA_BUILD_APP_BUNDLE)
-    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RC_FILES} ${RESOURCE_FILES} Main.cpp runSofa_config.h.in)
-    set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/runSofa.plist")
-else()
-    add_executable(${PROJECT_NAME} ${RC_FILES} ${RESOURCE_FILES} Main.cpp runSofa_config.h.in)
-endif()
+set(HEADER_FILES
+    runSofa_config.h.in
+    runSofaValidation.h
+)
+
+set(SOURCE_FILES
+    Main.cpp
+)
 
 find_package(SofaValidation QUIET)
+
+if(SofaValidation_FOUND)
+    list(APPEND SOURCE_FILES runSofaValidation.cpp)
+else()
+    list(APPEND SOURCE_FILES runSofaNoValidation.cpp)
+endif()
+
+if(APPLE AND SOFA_BUILD_APP_BUNDLE)
+    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RC_FILES} ${RESOURCE_FILES} ${HEADER_FILES} ${SOURCE_FILES})
+    set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/runSofa.plist")
+else()
+    add_executable(${PROJECT_NAME} ${RC_FILES} ${RESOURCE_FILES} ${HEADER_FILES} ${SOURCE_FILES})
+endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC "CONFIG_PLUGIN_FILENAME=${_configPluginFileName}")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "DEFAULT_CONFIG_PLUGIN_FILENAME=${_defaultConfigPluginFileName}")
