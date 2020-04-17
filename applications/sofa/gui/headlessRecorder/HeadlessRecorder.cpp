@@ -346,9 +346,7 @@ int HeadlessRecorder::mainLoop()
         }
         else
         {
-            //TODO(hugtalbot 2020-04-17): back to zero since sleep(0.01) creates implicit
-            //conversion from 'double' to 'unsigned int' changes value from 0.01 to 0
-            sleep(0);
+            sofa::helper::system::thread::CTime::sleep(10);
         }
     }
     msg_info("HeadlessRecorder") << "Recording time: " << recordTimeInSeconds << " seconds at: " << fps << " fps.";
