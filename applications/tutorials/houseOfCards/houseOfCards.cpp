@@ -34,11 +34,11 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaAdvanced/initSofaAdvanced.h>
+#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <SofaConstraint/LMConstraintSolver.h>
@@ -189,11 +189,11 @@ Node::SPtr createHouseOfCards(Node::SPtr root,  unsigned int size, SReal distanc
 int main(int argc, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaAdvanced();
+    sofa::component::initSofaMisc();
     sofa::gui::initMain();
 
     unsigned int sizeHouseOfCards=4;

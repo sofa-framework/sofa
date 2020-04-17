@@ -275,6 +275,8 @@ typename SphereCollisionModel<DataTypes>::Real SphereCollisionModel<DataTypes>::
 template<class DataTypes>
 void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if(m_componentstate!=ComponentState::Valid)
         return ;
 
@@ -300,7 +302,7 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
         }
     }
 
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 

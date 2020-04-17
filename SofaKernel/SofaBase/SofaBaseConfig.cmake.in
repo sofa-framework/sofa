@@ -4,6 +4,7 @@
 
 set(SOFABASE_TARGETS @SOFABASE_TARGETS@)
 
+find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
 
 # Eigen3 is required by SofaBaseTopology

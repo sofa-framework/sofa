@@ -149,11 +149,6 @@ public:
     virtual void addSlave(BaseObject::SPtr s);
 
     virtual void removeSlave(BaseObject::SPtr s);
-
-    void copyAspect(int destAspect, int srcAspect) override;
-
-    void releaseAspect(int aspect) override;
-
     /// @}
 
     /// @name Component accessors

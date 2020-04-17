@@ -170,8 +170,6 @@ private:
 
 public:
 
-
-
     /// Accessor to the object name
     const std::string& getName() const
     {
@@ -333,9 +331,6 @@ public:
         return (result != nullptr);
     }
 
-    virtual void copyAspect(int destAspect, int srcAspect);
-
-    virtual void releaseAspect(int aspect);
     /// @}
 
     /// @name tags

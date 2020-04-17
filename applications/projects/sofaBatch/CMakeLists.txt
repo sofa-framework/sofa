@@ -12,7 +12,7 @@ else()
 endif()
 
 add_executable(${PROJECT_NAME} sofaBatch.cpp)
-target_link_libraries(${PROJECT_NAME} SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SofaGeneral SofaAdvanced SofaMisc)
 if(UNIX)
     target_link_libraries(${PROJECT_NAME} dl)
 endif()

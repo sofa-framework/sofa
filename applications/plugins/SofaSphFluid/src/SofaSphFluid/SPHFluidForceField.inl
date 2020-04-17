@@ -146,7 +146,7 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
 
     size_t n = x.size();
     m_particles.resize(n);
-    for (int i=0; i<n; i++) {
+    for (size_t i=0; i<n; i++) {
         m_particles[i].neighbors.clear();
     }
 
@@ -172,10 +172,10 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
 
         });
 #else
-        for (int i = 0; i<n; i++)
+        for (size_t i = 0; i<n; i++)
         {
             const Coord& ri = x[i];
-            for (int j = i + 1; j<n; j++)
+            for (size_t j = i + 1; j<n; j++)
             {
                 const Coord& rj = x[j];
                 Real r2 = (rj - ri).norm2();
@@ -197,15 +197,15 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
         if (!d_debugGrid.getValue())
             return;
 
-        for (int i = 0; i < n; i++) {
+        for (size_t i = 0; i < n; i++) {
             m_particles[i].neighbors2.clear();
         }
 
         // Check grid info
-        for (int i=0; i<n; i++)
+        for (size_t i=0; i<n; i++)
         {
             const Coord& ri = x[i];
-            for (int j=i+1; j<n; j++)
+            for (size_t j=i+1; j<n; j++)
             {
                 const Coord& rj = x[j];
                 Real r2 = (rj-ri).norm2();
@@ -216,7 +216,7 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
                 }
             }
         }
-        for (int i=0; i<n; i++)
+        for (size_t i=0; i<n; i++)
         {
             if (m_particles[i].neighbors.size() != m_particles[i].neighbors2.size())
             {
@@ -278,7 +278,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     dforces.clear();
     //int n0 = m_particles.size();
     m_particles.resize(n);
-    for (int i=0; i<n; i++)
+    for (size_t i=0; i<n; i++)
     {
         m_particles[i].density = 0;
         m_particles[i].pressure = 0;
@@ -292,7 +292,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     TKc Kc(h);
 
     // Compute density and pressure
-    for (int i=0; i<n; i++)
+    for (size_t i=0; i<n; i++)
     {
         Particle& Pi = m_particles[i];
         Real density = Pi.density;
@@ -316,7 +316,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     // Compute surface normal and curvature
     if (surfaceTensionT == 1)
     {
-        for (int i=0; i<n; i++)
+        for (size_t i=0; i<n; i++)
         {
             Particle& Pi = m_particles[i];
             for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
@@ -335,7 +335,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
     }
 
     // Compute the forces
-    for (int i = 0; i < n; i++)
+    for (size_t i = 0; i < n; i++)
     {
         const Particle& Pi = m_particles[i];
         // Gravity

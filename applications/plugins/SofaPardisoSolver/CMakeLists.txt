@@ -18,7 +18,7 @@ find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
 find_package(OpenMP REQUIRED)
 
-set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} SofaComponentBase SofaComponentGeneral)
+set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} SofaBase SofaGeneral)
 set(COMPILATION_FLAGS -DSOFA_BUILD_SOFAPARDISOSOLVER )
 
 set ( PARDISO_LIB "" CACHE PATH "set to Pardiso library downloaded from the web" )

@@ -5,7 +5,7 @@
 set(SOFACOMMON_TARGETS @SOFACOMMON_TARGETS@)
 set(SOFAEIGEN2SOLVER_HAVE_OPENMP @SOFAEIGEN2SOLVER_HAVE_OPENMP@)
 
-find_package(SofaBase REQUIRED SofaComponentBase)
+find_package(SofaBase REQUIRED)
 
 # Eigen3 is required by SofaEigen2Solver and SofaRigid
 find_package(Eigen3 QUIET REQUIRED)

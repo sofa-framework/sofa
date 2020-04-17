@@ -31,7 +31,7 @@ using sofa::simulation::Node ;
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
-#include <SofaComponentBase/InfoComponent.h>
+#include <SofaBaseUtils/InfoComponent.h>
 using sofa::component::InfoComponent;
 
 #include <sofa/helper/system/PluginManager.h>

@@ -90,7 +90,8 @@ void PositionBasedDynamicsConstraint<DataTypes>::reset()
 template <class DataTypes>
 void PositionBasedDynamicsConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
-    helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
+    SOFA_UNUSED(mparams);
+    helper::WriteAccessor<DataMatrixDeriv> c ( cData );
 }
 
 
@@ -98,8 +99,10 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectJacobianMatrix(const cor
 template <class DataTypes>
 void PositionBasedDynamicsConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-    helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
-	helper::ReadAccessor<DataVecDeriv> vel ( mparams, velocity );
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecDeriv> res (vData );
+    helper::ReadAccessor<DataVecDeriv> vel ( velocity );
 
     if (vel.size() != res.size()) 	{ msg_error() << "Invalid target position vector size." ;		return; }
     std::copy(vel.begin(),vel.end(),res.begin());
@@ -108,9 +111,11 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectVelocity(const core::Mec
 template <class DataTypes>
 void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
-    helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
-	helper::WriteAccessor<DataVecDeriv> vel ( mparams, velocity );
-	helper::WriteAccessor<DataVecCoord> old_pos ( mparams, old_position );
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecCoord> res ( xData );
+    helper::WriteAccessor<DataVecDeriv> vel ( velocity );
+    helper::WriteAccessor<DataVecCoord> old_pos ( old_position );
     helper::ReadAccessor<DataVecCoord> tpos = position ;
     if (tpos.size() != res.size()) 	{ msg_error() << "Invalid target position vector size." ;		return; }
 

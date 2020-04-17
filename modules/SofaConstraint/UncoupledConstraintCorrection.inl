@@ -269,7 +269,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::defaulttype::BaseMatrix *W)
 {
-    const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue(cparams) ;
+    const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue() ;
     VecReal comp = compliance.getValue();
     Real comp0 = defaultCompliance.getValue();
     const bool verbose = f_verbose.getValue();

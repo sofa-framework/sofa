@@ -60,69 +60,49 @@ TClass<DDGNode,void>::TClass()
     shortName = Base::shortName(ptr);
 }
 
-void DDGNode::setDirtyValue(const core::ExecParams* params)
+void DDGNode::setDirtyValue()
 {
-    bool& dirtyValue = dirtyFlags[size_t(currentAspect(params))].dirtyValue;
+    bool& dirtyValue = dirtyFlags.dirtyValue;
     if (!dirtyValue)
     {
         dirtyValue = true;
-
-#ifdef SOFA_DDG_TRACE
-        // TRACE LOG
-        Base* owner = getOwner();
-        if (owner)
-            owner->sout << "Data " << getName() << " is now dirty." << owner->sendl;
-#endif
-        setDirtyOutputs(params);
+        setDirtyOutputs();
     }
 }
 
-void DDGNode::setDirtyOutputs(const core::ExecParams* params)
+void DDGNode::setDirtyOutputs()
 {
-    bool& dirtyOutputs = dirtyFlags[size_t(currentAspect(params))].dirtyOutputs;
+    bool& dirtyOutputs = dirtyFlags.dirtyOutputs;
     if (!dirtyOutputs)
     {
         dirtyOutputs = true;
-        for(DDGLinkIterator it=outputs.begin(params), itend=outputs.end(params); it != itend; ++it)
+        for(DDGLinkIterator it=outputs.begin(), itend=outputs.end(); it != itend; ++it)
         {
-            (*it)->setDirtyValue(params);
+            (*it)->setDirtyValue();
         }
     }
 }
 
-void DDGNode::cleanDirty(const core::ExecParams* params)
+void DDGNode::cleanDirty()
 {
-    bool& dirtyValue = dirtyFlags[size_t(currentAspect(params))].dirtyValue;
+    bool& dirtyValue = dirtyFlags.dirtyValue;
     if (dirtyValue)
     {
         dirtyValue = false;
-
-#ifdef SOFA_DDG_TRACE
-        Base* owner = getOwner();
-        if (owner)
-            owner->sout << "Data " << getName() << " has been updated." << owner->sendl;
-#endif
-
-        cleanDirtyOutputsOfInputs(params);
+        cleanDirtyOutputsOfInputs();
     }
 }
 
-void DDGNode::notifyEndEdit(const core::ExecParams* params)
+void DDGNode::notifyEndEdit()
 {
-    for(DDGLinkIterator it=outputs.begin(params), itend=outputs.end(params); it != itend; ++it)
-        (*it)->notifyEndEdit(params);
+    for(DDGLinkIterator it=outputs.begin(), itend=outputs.end(); it != itend; ++it)
+        (*it)->notifyEndEdit();
 }
 
-void DDGNode::cleanDirtyOutputsOfInputs(const core::ExecParams* params)
+void DDGNode::cleanDirtyOutputsOfInputs()
 {
-    for(DDGLinkIterator it=inputs.begin(params), itend=inputs.end(params); it != itend; ++it)
-        (*it)->dirtyFlags[size_t(currentAspect(params))].dirtyOutputs = false;
-}
-
-
-void DDGNode::copyAspect(int destAspect, int srcAspect)
-{
-    dirtyFlags[size_t(destAspect)] = dirtyFlags[size_t(srcAspect)];
+    for(DDGLinkIterator it=inputs.begin(), itend=inputs.end(); it != itend; ++it)
+        (*it)->dirtyFlags.dirtyOutputs = false;
 }
 
 void DDGNode::addInput(DDGNode* n)

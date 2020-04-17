@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <cmath>
+#include <sofa/helper/rmath.h>
+using sofa::helper::isEqual;
 
 #include <SofaBaseVisual/BaseCamera.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -263,7 +265,7 @@ bool glhUnProjectf(Real winx, Real winy, Real winz, Real *modelview, Real *proje
     //Objects coordinates
     out = m * in;
 
-    if (out[3] == 0.0)
+    if (isEqual(out[3], 0.0))
         return false;
     out[3] = 1.0 / out[3];
     objectCoordinate[0] = out[0] * out[3];
@@ -323,6 +325,8 @@ BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
     const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
 
     const core::visual::VisualParams::Viewport viewport = vp->viewport();
+    if (viewport.empty() || !vp->drawTool())
+        return Vec3(0,0,0);
 
     double winX = (double)x;
     double winY = (double)viewport[3] - (double)y;
@@ -334,13 +338,34 @@ BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
     this->getModelViewMatrix(modelview);
     this->getProjectionMatrix(projection);
 
+
     float fwinZ = 0.0;
     vp->drawTool()->readPixels(x, int(winY), 1, 1, nullptr, &fwinZ);
 
     double winZ = (double)fwinZ;
     glhUnProjectf<double>(winX, winY, winZ, modelview, projection, viewport, pos);
-
     return Vec3(pos[0], pos[1], pos[2]);
+}
+
+BaseCamera::Vec2 BaseCamera::worldToScreenCoordinates(const BaseCamera::Vec3& pos)
+{
+    const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
+
+    const core::visual::VisualParams::Viewport viewport = vp->viewport();
+    sofa::defaulttype::Vector4 clipSpacePos = {pos.x(), pos.y(), pos.z(), 1.0};
+    sofa::defaulttype::Mat4x4d modelview;
+    sofa::defaulttype::Mat4x4d projection;
+
+    this->getModelViewMatrix(modelview.ptr());
+    this->getProjectionMatrix(projection.ptr());
+
+    clipSpacePos = projection * (modelview * clipSpacePos);
+    if (isEqual(clipSpacePos.w(), 0.0))
+        return Vec2(std::nan(""), std::nan(""));
+
+    sofa::defaulttype::Vec3 ndcSpacePos = sofa::defaulttype::Vec3(clipSpacePos.x(),clipSpacePos.y(), clipSpacePos.z()) * clipSpacePos.w();
+    Vec2 screenCoord = Vec2((ndcSpacePos.x() + 1.0) / 2.0 * viewport[2], (ndcSpacePos.y() + 1.0) / 2.0 * viewport[3]);
+    return screenCoord + Vec2(viewport[0], viewport[1]);
 }
 
 void BaseCamera::getModelViewMatrix(double mat[16])
@@ -544,6 +569,87 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const Vec3 &point, Quat 
 
     updateOutputData();
 }
+
+
+
+
+
+BaseCamera::Vec3 BaseCamera::screenToViewportPoint(const BaseCamera::Vec3& p) const
+{
+    if (p_widthViewport == 0 || p_heightViewport == 0)
+        return Vec3(0, 0, p.z());
+    return Vec3(p.x() / this->p_widthViewport.getValue(),
+                p.y() / this->p_heightViewport.getValue(),
+                p.z());
+}
+BaseCamera::Vec3 BaseCamera::screenToWorldPoint(const BaseCamera::Vec3& p)
+{
+    Vec3 vP = screenToViewportPoint(p);
+    return viewportToWorldPoint(vP);
+}
+
+BaseCamera::Vec3 BaseCamera::viewportToScreenPoint(const BaseCamera::Vec3& p) const
+{
+    return Vec3(p.x() * p_widthViewport.getValue(), p.y() * p_heightViewport.getValue(), p.z());
+}
+BaseCamera::Vec3 BaseCamera::viewportToWorldPoint(const BaseCamera::Vec3& p)
+{
+    Vec3 nsPosition = Vec3(p.x() * 2.0 - 1.0, (1.0 - p.y()) * 2.0 - 1.0, p.z() * 2.0 - 1.0);
+
+    Mat4 glP, glM;
+    getOpenGLProjectionMatrix(glP.ptr());
+    getOpenGLModelViewMatrix(glM.ptr());
+
+    Vec4 vsPosition = glP.inverted().transposed() * Vec4(nsPosition, 1.0);
+    if(isEqual(vsPosition.w(), 0.0))
+    {
+        return Vec3(std::nan(""), std::nan(""), std::nan(""));
+    }
+    vsPosition /= vsPosition.w();
+    Vec4 v = (glM.inverted().transposed() * vsPosition);
+
+    return Vec3(v[0],v[1],v[2]);
+}
+
+BaseCamera::Vec3 BaseCamera::worldToScreenPoint(const BaseCamera::Vec3& p)
+{
+    Mat4 glP, glM;
+    getOpenGLProjectionMatrix(glP.ptr());
+    getOpenGLModelViewMatrix(glM.ptr());
+
+    Vec4 nsPosition = (glP.transposed() * glM.transposed() * Vec4(p, 1.0));
+
+    if(isEqual(nsPosition.w(), 0.0))
+    {
+        return Vec3(std::nan(""), std::nan(""), std::nan(""));
+    }
+
+    nsPosition /= nsPosition.w();
+    return Vec3((nsPosition.x() * 0.5 + 0.5) * p_widthViewport.getValue() + 0.5,
+                p_heightViewport.getValue() - (nsPosition.y() * 0.5 + 0.5) * p_heightViewport.getValue() + 0.5,
+                (nsPosition.z() * 0.5 + 0.5));
+}
+BaseCamera::Vec3 BaseCamera::worldToViewportPoint(const BaseCamera::Vec3& p)
+{
+    Vec3 ssPoint = worldToScreenPoint(p);
+    return Vec3(ssPoint.x() / p_widthViewport.getValue(), ssPoint.y() / p_heightViewport.getValue(), ssPoint.z());
+}
+
+BaseCamera::Ray BaseCamera::viewportPointToRay(const BaseCamera::Vec3& p)
+{
+    return Ray(this->p_position.getValue(), (viewportToWorldPoint(p) - this->p_position.getValue()));
+}
+BaseCamera::Ray BaseCamera::screenPointToRay(const BaseCamera::Vec3& p)
+{
+    return Ray(this->p_position.getValue(), (screenToWorldPoint(p) - this->p_position.getValue()));
+}
+
+BaseCamera::Ray BaseCamera::toRay() const
+{
+    return Ray(this->p_position.getValue(), this->p_lookAt.getValue());
+}
+
+
 
 void BaseCamera::computeZ()
 {
@@ -833,7 +939,33 @@ void BaseCamera::draw(const sofa::core::visual::VisualParams* /*params*/)
 {
 }
 
+void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
+{
+    auto dt = (vparams->drawTool());
+    dt->setPolygonMode(0, true);
+    dt->setLightingEnabled(false);
 
+    Vec3 camPos = getPosition();
+    sofa::defaulttype::Vector3 p1, p2, p3, p4;
+    p1 = viewportToWorldPoint(Vec3(0,0,0.994));
+    p2 = viewportToWorldPoint(Vec3(1,0,0.994));
+    p3 = viewportToWorldPoint(Vec3(1,1,0.994));
+    p4 = viewportToWorldPoint(Vec3(0,1,0.994));
+
+    dt->drawLine(camPos, p1, Vec4(0,0,0,1));
+    dt->drawLine(camPos, p2, Vec4(0,0,0,1));
+    dt->drawLine(camPos, p3, Vec4(0,0,0,1));
+    dt->drawLine(camPos, p4, Vec4(0,0,0,1));
+
+    dt->drawLine(p1, p2, Vec4(0,0,0,1));
+    dt->drawLine(p2, p3, Vec4(0,0,0,1));
+    dt->drawLine(p3, p4, Vec4(0,0,0,1));
+    dt->drawLine(p4, p1, Vec4(0,0,0,1));
+
+    dt->setPolygonMode(0, false);
+    dt->drawTriangles({camPos, p1, p2}, RGBAColor::black());
+    dt->setLightingEnabled(true);
+}
 
 } // namespace visualmodel
 

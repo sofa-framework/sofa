@@ -134,25 +134,29 @@ void ParticleSink<DataTypes>::projectResponse(const sofa::core::MechanicalParams
 template<class DataTypes>
 void ParticleSink<DataTypes>::projectVelocity(const sofa::core::MechanicalParams* mparams, DataVecDeriv&  v )
 {
+    SOFA_UNUSED(mparams);
+
     if (!this->mstate) return;
 
-    VecDeriv& vel = *v.beginEdit(mparams);
+    VecDeriv& vel = *v.beginEdit();
     helper::ReadAccessor< Data<SetIndexArray> > _fixed = this->d_fixed;
     Deriv v0 = Deriv();
     for (unsigned int s = 0; s<_fixed.size(); s++)
     {
         vel[_fixed[s]] = v0;
     }    
-    v.endEdit(mparams);
+    v.endEdit();
 }
 
 
 template<class DataTypes>
 void ParticleSink<DataTypes>::projectPosition(const sofa::core::MechanicalParams* mparams, DataVecCoord& xData)
 {
+    SOFA_UNUSED(mparams);
+
     if (!this->mstate) return;
 
-    VecCoord& x = *xData.beginEdit(mparams);
+    VecCoord& x = *xData.beginEdit();
 
     helper::WriteAccessor< Data< SetIndexArray > > _fixed = d_fixed;
 
@@ -167,7 +171,7 @@ void ParticleSink<DataTypes>::projectPosition(const sofa::core::MechanicalParams
         }
     }
 
-    xData.endEdit(mparams);
+    xData.endEdit();
 }
 
 

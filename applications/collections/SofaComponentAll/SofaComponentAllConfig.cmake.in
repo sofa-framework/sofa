@@ -2,11 +2,11 @@
 
 @PACKAGE_INIT@
 
-find_package(SofaComponentBase REQUIRED)
-find_package(SofaComponentCommon REQUIRED)
-find_package(SofaComponentGeneral REQUIRED)
-find_package(SofaComponentAdvanced REQUIRED)
-find_package(SofaComponentMisc REQUIRED)
+find_package(SofaBase REQUIRED)
+find_package(SofaCommon REQUIRED)
+find_package(SofaGeneral REQUIRED)
+find_package(SofaAdvanced REQUIRED)
+find_package(SofaMisc REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

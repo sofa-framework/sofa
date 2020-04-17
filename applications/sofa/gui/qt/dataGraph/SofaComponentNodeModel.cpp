@@ -29,7 +29,7 @@ NodeDataType SofaComponentNodeData::type() const
 SofaComponentNodeModel::SofaComponentNodeModel(std::string name)
     : NodeDataModel()
     , debugNodeGraph(true)
-    , m_SofaObject(nullptr)    
+    , m_SofaObject(nullptr)
 {
     m_uniqName = QString::fromStdString(name);
     m_caption = m_uniqName;
@@ -39,7 +39,7 @@ SofaComponentNodeModel::SofaComponentNodeModel(sofa::core::objectmodel::BaseObje
     : NodeDataModel()
     , debugNodeGraph(debugMode)
     , m_SofaObject(_sofaObject)
-{    
+{
     if (m_SofaObject == nullptr)
     {
         msg_error("SofaComponentNodeModel") << "Sofa BaseObject is null, Node graph initialisation failed.";
@@ -121,7 +121,7 @@ void SofaComponentNodeModel::parseSofaObjectData()
 
         sofa::core::objectmodel::BaseData* pData = data->getParent();
         if (pData)
-        {            
+        {
             QString parentObject = QString::fromStdString(pData->getOwner()->getName());
             QString parentData = QString::fromStdString(pData->getName());
             msg_info_when(debugNodeGraph, "SofaComponentNodeModel") << "- Parent: " << pData->getName() << " owwner: " << pData->getOwner()->getName();
@@ -176,7 +176,7 @@ std::shared_ptr<NodeData> SofaComponentNodeModel::outData(PortIndex port)
     // because the first port is the name of the component not stored in m_Nodedata:
     port--;
 
-    if (port>0 && port < m_Nodedata.size())
+    if (port > 0 && port < m_Nodedata.size())
         return m_Nodedata[port];
     else {
         msg_warning(m_caption.toStdString()) << "Method SofaComponentNodeModel::outData port: " << port << " out of bounds: " << m_Nodedata.size();
@@ -198,7 +198,7 @@ void SofaComponentNodeModel::setInData(std::shared_ptr<NodeData> data, int port)
 
     if (port < 0 || port >= m_Nodedata.size())
     {
-        msg_warning(m_caption.toStdString()) << "Method SofaComponentNodeModel::setInData port: "<< port << " out of bounds: " << m_Nodedata.size();
+        msg_warning(m_caption.toStdString()) << "Method SofaComponentNodeModel::setInData port: " << port << " out of bounds: " << m_Nodedata.size();
         return;
     }
 
@@ -209,5 +209,5 @@ void SofaComponentNodeModel::setInData(std::shared_ptr<NodeData> data, int port)
 
     msg_info_when(debugNodeGraph, m_caption.toStdString()) << "Here connect: {" << parentData->getOwner()->getName() << ", " << parentData->getName() << "} -> {"
         << childData->getOwner()->getName() << ", " << childData->getName() << "}";
-    
+
 }

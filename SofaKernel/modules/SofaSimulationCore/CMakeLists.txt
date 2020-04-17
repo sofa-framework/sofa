@@ -16,7 +16,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionEndEvent.h
     ${SRC_ROOT}/CollisionVisitor.h
     ${SRC_ROOT}/Colors.h
-    ${SRC_ROOT}/CopyAspectVisitor.h
     ${SRC_ROOT}/DeactivatedNodeVisitor.h
     ${SRC_ROOT}/DefaultAnimationLoop.h
     ${SRC_ROOT}/DefaultVisualManagerLoop.h
@@ -41,7 +40,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/PositionEvent.h
     ${SRC_ROOT}/PrintVisitor.h
     ${SRC_ROOT}/PropagateEventVisitor.h
-    ${SRC_ROOT}/ReleaseAspectVisitor.h
     ${SRC_ROOT}/ResetVisitor.h
     ${SRC_ROOT}/SceneLoaderFactory.h
     ${SRC_ROOT}/Simulation.h
@@ -88,7 +86,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CollisionBeginEvent.cpp
     ${SRC_ROOT}/CollisionEndEvent.cpp
     ${SRC_ROOT}/CollisionVisitor.cpp
-    ${SRC_ROOT}/CopyAspectVisitor.cpp
     ${SRC_ROOT}/DeactivatedNodeVisitor.cpp
     ${SRC_ROOT}/DefaultAnimationLoop.cpp
     ${SRC_ROOT}/DefaultVisualManagerLoop.cpp
@@ -110,7 +107,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/PositionEvent.cpp
     ${SRC_ROOT}/PrintVisitor.cpp
     ${SRC_ROOT}/PropagateEventVisitor.cpp
-    ${SRC_ROOT}/ReleaseAspectVisitor.cpp
     ${SRC_ROOT}/ResetVisitor.cpp
     ${SRC_ROOT}/SceneLoaderFactory.cpp
     ${SRC_ROOT}/Simulation.cpp

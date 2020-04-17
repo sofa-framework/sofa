@@ -443,9 +443,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::EDGESADDED:
         {
             const auto * edgeAdded=static_cast< const EdgesAdded * >( *itBegin );
-            m_outTopoModifier->addEdgesProcess(edgeAdded->edgeArray);
-            m_outTopoModifier->addEdgesWarning(edgeAdded->nEdges, edgeAdded->edgeArray, edgeAdded->edgeIndexArray);
-            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->addEdges(edgeAdded->edgeArray);
             break;
         }
 

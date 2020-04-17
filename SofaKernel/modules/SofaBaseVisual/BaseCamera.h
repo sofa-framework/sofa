@@ -25,6 +25,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Ray.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/Quater.h>
 
@@ -49,7 +50,10 @@ public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
 
     typedef sofa::core::visual::VisualParams::CameraType CameraType;
+    typedef defaulttype::Ray Ray;
+    typedef defaulttype::Vector4 Vec4;
     typedef defaulttype::Vector3 Vec3;
+    typedef defaulttype::Vector2 Vec2;
     typedef defaulttype::Matrix3 Mat3;
     typedef defaulttype::Matrix4 Mat4;
     typedef defaulttype::Quat Quat;
@@ -121,11 +125,27 @@ public:
     void rotateCameraAroundPoint( Quat& rotation, const Vec3& point);
     virtual void rotateWorldAroundPoint( Quat& rotation, const Vec3& point, Quat orientationCam);
 
+    Vec3 screenToViewportPoint(const Vec3& p) const;
+    Vec3 screenToWorldPoint(const Vec3& p);
+
+    Vec3 viewportToScreenPoint(const Vec3& p) const;
+    Vec3 viewportToWorldPoint(const Vec3& p);
+
+    Vec3 worldToScreenPoint(const Vec3& p);
+    Vec3 worldToViewportPoint(const Vec3& p);
+
+    Ray viewportPointToRay(const Vec3&p);
+    Ray screenPointToRay(const Vec3&p);
+
+    Ray toRay() const;
+
+
     Vec3 cameraToWorldCoordinates(const Vec3& p);
     Vec3 worldToCameraCoordinates(const Vec3& p);
     Vec3 cameraToWorldTransform(const Vec3& v);
     Vec3 worldToCameraTransform(const Vec3& v);
     Vec3 screenToWorldCoordinates(int x, int y);
+    Vec2 worldToScreenCoordinates(const Vec3& p);
 
     void fitSphere(const Vec3& center, SReal radius);
     void fitBoundingBox(const Vec3& min,const Vec3& max);
@@ -249,8 +269,10 @@ public:
         return 1.0;
     }
 
-    void draw(const core::visual::VisualParams*) override ;
 
+    void draw(const core::visual::VisualParams*) override ;
+    void computeClippingPlane(const core::visual::VisualParams* vp, double& zNear, double& zFar);
+    virtual void drawCamera(const core::visual::VisualParams*);
 protected:
     void updateOutputData();
 
