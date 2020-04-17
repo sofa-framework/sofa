@@ -19,27 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * TriangularConvexHull3D.cpp
- *
- *  Created on: 27 oct. 2009
- *      Author: froy
- */
-#define CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP
+#define CGALPLUGIN_DECIMETEMESH_CPP
 
 #include <CGALPlugin/config.h>
-#include "TriangularConvexHull3D.inl"
+#include <CGALPlugin/DecimateMesh.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 using namespace sofa::defaulttype;
 using namespace cgal;
 
-int TriangularConvexHull3DClass = sofa::core::RegisterObject("Generate triangular convex hull around points")
-        .add< TriangularConvexHull3D<Vec3Types> >()
+int DecimateMeshClass = sofa::core::RegisterObject("Simplification of a mesh by the process of reducing the number of faces")
+        .add< DecimateMesh<Vec3Types> >()
  
         ;
 
-template class SOFA_CGALPLUGIN_API cgal::TriangularConvexHull3D<Vec3Types>;
+template class SOFA_CGALPLUGIN_API cgal::DecimateMesh<Vec3Types>;
  

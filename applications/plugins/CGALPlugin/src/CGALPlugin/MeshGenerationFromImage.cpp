@@ -19,28 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * MeshGenerationFromPolyhedron.cpp
- *
- *  Created on: 27 oct. 2009
- *      Author: froy
- */
-#define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_CPP
-
+#define CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP
 
 #include <CGALPlugin/config.h>
-#include "MeshGenerationFromPolyhedron.inl"
+#include <CGALPlugin/MeshGenerationFromImage.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 using namespace sofa::defaulttype;
 using namespace cgal;
 
-int MeshGenerationFromPolyhedronClass = sofa::core::RegisterObject("Generate tetrahedral mesh from triangular mesh")
-        .add< MeshGenerationFromPolyhedron<Vec3Types> >()
+int MeshGenerationFromImageClass = sofa::core::RegisterObject("Generate tetrahedral mesh from image")
+        .add< MeshGenerationFromImage<Vec3Types,ImageUC> >()
  
         ;
 
-template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromPolyhedron<Vec3Types>;
- 
+template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3Types, ImageUC>;
+

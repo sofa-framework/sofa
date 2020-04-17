@@ -19,23 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * DecimateMesh.h
- *
- *  Created on: 2nd of June 2010
- *      Author: Olivier
- */
+#pragma once
 
-#ifndef CGALPLUGIN_DECIMATEMESH_H
-#define CGALPLUGIN_DECIMATEMESH_H
-
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
-
+#include <sofa/defaulttype/Vec.h>
 
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polyhedron_3.h>
@@ -158,8 +146,8 @@ public:
 
     void operator()( HDS& hds)
     {
-        unsigned int numVertices = m_vertices.size();
-        unsigned int numTriangles = m_triangles.size();
+        size_t numVertices = m_vertices.size();
+        size_t numTriangles = m_triangles.size();
 
         CGAL::Polyhedron_incremental_builder_3<HalfedgeDS> builder(hds, true);
         builder.begin_surface(numVertices, numTriangles);
@@ -190,12 +178,8 @@ public:
 
 };
 
-
-#if  !defined(CGALPLUGIN_SIMPLIFICATIONMESH_CPP)
+#if !defined(CGALPLUGIN_DECIMETEMESH_CPP)
 extern template class SOFA_CGALPLUGIN_API DecimateMesh<defaulttype::Vec3Types>;
- 
 #endif
 
 } //cgal
-
-#endif /* CGALPLUGIN_DECIMATEMESH_H */

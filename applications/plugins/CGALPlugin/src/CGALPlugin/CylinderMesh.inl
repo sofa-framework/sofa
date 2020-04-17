@@ -19,17 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * CylinderMesh.inl
- *
- *  Created on: 21 mar. 2010
- *      Author: Yiyi
- */
+#pragma once
 
-#ifndef CGALPLUGIN_CYLINDERMESH_INL
-#define CGALPLUGIN_CYLINDERMESH_INL
-#include "CylinderMesh.h"
-
+#include <CGALPlugin/CylinderMesh.h>
+#include <sofa/helper/gl/template.h>
 
 #define MAX(a,b) ( (a)>(b) ? (a):(b))
 #define MIN(a,b) ( (a)<(b) ? (a):(b))
@@ -78,10 +71,10 @@ void CylinderMesh<DataTypes>::doUpdate()
         return;
     }
     m_interval = d / n;
-    m = ceil(l/m_interval);
+    m = int(ceil(l/m_interval));
     l = m_interval * m;
     t = m_interval / 2;
-    a = ceil((d/2) / (sqrt(2)*t)); //parameters for cutting the corner
+    a = int(ceil((d/2) / (sqrt(2)*t))); //parameters for cutting the corner
 
     msg_info() << "diameter = " << d;
     msg_info() << "length = " << l;
@@ -629,5 +622,3 @@ void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams*)
 }
 
 } //cgal
-
-#endif //CGALPLUGIN_CYLINDERMESH_INL

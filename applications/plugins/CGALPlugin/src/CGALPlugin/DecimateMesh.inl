@@ -19,16 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * DecimateMesh.inl
- *
- * Created on: 2nd of June 2010
- * Author: Olivier Comas
- */
+#pragma once
 
-#ifndef CGALPLUGIN_DECIMATEMESH_INL
-#define CGALPLUGIN_DECIMATEMESH_INL
-#include "DecimateMesh.h"
+#include <CGALPlugin/DecimateMesh.h>
 
 #include <iostream>
 #include <fstream>
@@ -318,5 +311,3 @@ bool DecimateMesh<DataTypes>::testVertexAndFindIndex(const Vec3 &vertex, int &in
 
 
 } //cgal
-
-#endif //CGALPLUGIN_DECIMATEMESH_INL

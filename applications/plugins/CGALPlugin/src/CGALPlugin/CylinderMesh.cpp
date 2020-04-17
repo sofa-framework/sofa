@@ -19,66 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define CGALPLUGIN_CYLINDERMESH_CPP
+
 #include <CGALPlugin/config.h>
+#include <CGALPlugin/CylinderMesh.inl>
 
-#include <MeshGenerationFromPolyhedron.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
+using namespace sofa::defaulttype;
+namespace cgal
 {
+int CylinderMeshClass = sofa::core::RegisterObject("Generate a regular tetrahedron mesh of a cylinder")
+    .add<CylinderMesh<Vec3Types> >()
+;
 
-namespace component
-{
-
-//Here are just several convenient functions to help users know what the plugin contains 
-
-extern "C" {
-    SOFA_CGALPLUGIN_API void initExternalModule();
-    SOFA_CGALPLUGIN_API const char* getModuleName();
-    SOFA_CGALPLUGIN_API const char* getModuleVersion();
-    SOFA_CGALPLUGIN_API const char* getModuleLicense();
-    SOFA_CGALPLUGIN_API const char* getModuleDescription();
-    SOFA_CGALPLUGIN_API const char* getModuleComponentList();
+template class SOFA_CGALPLUGIN_API CylinderMesh<Vec3Types>;
+ 
 }
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return "CGAL Plugin";
-}
-
-const char* getModuleVersion()
-{
-    return "0.2";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "Use CGAL functionnalities into SOFA";
-}
-
-const char* getModuleComponentList()
-{
-    return "MeshGenerationFromPolyhedron, TriangularConvexHull3D";
-}
-
-
-
-}
-
-}
-
-

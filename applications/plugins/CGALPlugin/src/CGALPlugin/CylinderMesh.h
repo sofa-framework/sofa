@@ -19,24 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * CylinderMesh.h
- *
- *  Created on: 21 mar. 2010
- *      Author: Yiyi
- */
+#pragma once
 
-#ifndef CGALPLUGIN_CYLINDERMESH_H
-#define CGALPLUGIN_CYLINDERMESH_H
-
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
-
-#include <math.h>
-#include   <algorithm>
 
 namespace cgal
 {
@@ -105,7 +92,8 @@ public:
 
     //Parameters
     Real m_interval;
-    int m_nbVertices, m_nbCenters, m_nbBDCenters, m_nbTetras;
+    int m_nbVertices, m_nbCenters, m_nbBDCenters;
+    size_t m_nbTetras;
     int n, m, a;
     Real d, l, t;
     std::map<Index, int> m_ptID;
@@ -113,11 +101,8 @@ public:
 
 };
 
-#if  !defined(CGALPLUGIN_CYLINDERMESH_CPP)
+#if !defined(CGALPLUGIN_CYLINDERMESH_CPP)
 extern template class SOFA_CGALPLUGIN_API CylinderMesh<defaulttype::Vec3Types>;
- 
 #endif
 
 } //cgal
-
-#endif /* CGALPLUGIN_CYLINDERMESH_H */

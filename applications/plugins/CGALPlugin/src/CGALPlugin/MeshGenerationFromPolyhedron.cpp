@@ -19,27 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * DecimateMesh.cpp
- *
- *  Created on: 2nd of June 2010
- *      Author: Olivier
- */
-#define CGALPLUGIN_DECIMETEMESH_CPP
+#define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_CPP
 
 #include <CGALPlugin/config.h>
-#include "DecimateMesh.inl"
+#include <CGALPlugin/MeshGenerationFromPolyhedron.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 using namespace sofa::defaulttype;
 using namespace cgal;
 
-int DecimateMeshClass = sofa::core::RegisterObject("Simplification of a mesh by the process of reducing the number of faces")
-        .add< DecimateMesh<Vec3Types> >()
+int MeshGenerationFromPolyhedronClass = sofa::core::RegisterObject("Generate tetrahedral mesh from triangular mesh")
+        .add< MeshGenerationFromPolyhedron<Vec3Types> >()
  
         ;
 
-template class SOFA_CGALPLUGIN_API cgal::DecimateMesh<Vec3Types>;
+template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromPolyhedron<Vec3Types>;
  

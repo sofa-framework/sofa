@@ -19,21 +19,65 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP
-
 #include <CGALPlugin/config.h>
-#include "MeshGenerationFromImage.inl"
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <CGALPlugin/MeshGenerationFromPolyhedron.h>
 
-using namespace sofa::defaulttype;
-using namespace cgal;
+namespace sofa
+{
 
-int MeshGenerationFromImageClass = sofa::core::RegisterObject("Generate tetrahedral mesh from image")
-        .add< MeshGenerationFromImage<Vec3Types,ImageUC> >()
- 
-        ;
+namespace component
+{
 
-template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3Types, ImageUC>;
- 
+//Here are just several convenient functions to help users know what the plugin contains 
+
+extern "C" {
+    SOFA_CGALPLUGIN_API void initExternalModule();
+    SOFA_CGALPLUGIN_API const char* getModuleName();
+    SOFA_CGALPLUGIN_API const char* getModuleVersion();
+    SOFA_CGALPLUGIN_API const char* getModuleLicense();
+    SOFA_CGALPLUGIN_API const char* getModuleDescription();
+    SOFA_CGALPLUGIN_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return "CGAL Plugin";
+}
+
+const char* getModuleVersion()
+{
+    return "0.2";
+}
+
+const char* getModuleLicense()
+{
+    return "GPL";
+}
+
+
+const char* getModuleDescription()
+{
+    return "Use CGAL functionnalities into SOFA";
+}
+
+const char* getModuleComponentList()
+{
+    return "MeshGenerationFromPolyhedron, MeshGenerationFromImage, TriangularConvexHull3D, DecimateMesh, CylinderMesh, Refine2DMesh";
+}
+
+
+
+}
+
+}
+
+

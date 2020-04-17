@@ -19,21 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * TriangularConvexHull3D.h
- *
- *  Created on: 27 oct. 2009
- *      Author: froy
- */
+#pragma once
 
-#ifndef CGALPLUGIN_TRIANGULARCONVEXHULL3D_H
-#define CGALPLUGIN_TRIANGULARCONVEXHULL3D_H
-
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/Data.h>
 
 namespace cgal
 {
@@ -87,11 +77,9 @@ public:
     sofa::core::objectmodel::Data<SeqTriangles> f_triangles; ///< List of triangles
 };
 
-#if  !defined(CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP)
+#if !defined(CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP)
 extern template class SOFA_CGALPLUGIN_API TriangularConvexHull3D<defaulttype::Vec3Types>;
- 
 #endif
 
 } //cgal
 
-#endif /* CGALPLUGIN_TriangularConvexHull3D_H */

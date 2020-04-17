@@ -19,16 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef CGALPLUGIN_MESHGENERATIONFROMIMAGE_H
-#define CGALPLUGIN_MESHGENERATIONFROMIMAGE_H
+#pragma once
 
-#include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include <CGAL/version.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
@@ -41,10 +37,6 @@
 #include <CGAL/refine_mesh_3.h>
 #include <CGAL/Image_3.h>
 #include <CGAL/Weighted_point.h>
-
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/rmath.h>
 
 #include <CImgPlugin/CImgData.h>
 
@@ -177,9 +169,6 @@ public:
 
 #if  !defined(CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP)
 extern template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<sofa::defaulttype::Vec3Types, sofa::defaulttype::ImageUC>;
- 
 #endif
 
 } //cgal
-
-#endif /* CGALPLUGIN_MESHGENERATIONFROMIMAGE_H */
