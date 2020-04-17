@@ -76,7 +76,7 @@ public:
 
     /// The trick is here, this function is called as soon as the input data changes
     /// and can then trigger the callback
-    void notifyEndEdit(const core::ExecParams* params) override ;
+    void notifyEndEdit() override ;
 
     void update() override;
     const std::string& getName() const override ;

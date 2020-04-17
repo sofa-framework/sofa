@@ -34,7 +34,6 @@ std::atomic<int> ExecParams::g_nbThreads(0);
 ExecParams::ExecParamsThreadStorage::ExecParamsThreadStorage(int tid)
     : execMode(EXEC_DEFAULT)
     , threadID(tid)
-    , aspectID(0)
 {
 }
 

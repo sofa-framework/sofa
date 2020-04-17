@@ -420,6 +420,8 @@ int TriangleCollisionModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 template<class DataTypes>
 void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( !onlyVisible ) return;
 
     // check first that topology didn't changed
@@ -451,7 +453,7 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
         }
     }
 
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 

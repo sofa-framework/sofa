@@ -343,47 +343,67 @@ public:
     {
     }
 
-    size_t size(const core::ExecParams* params = nullptr) const
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
+    size_t size(const core::ExecParams*) const { return size(); }
+    size_t size() const
     {
-        return static_cast<size_t>(m_value[core::ExecParams::currentAspect(params)].size());
+        return static_cast<size_t>(m_value.size());
     }
 
-    bool empty(const core::ExecParams* params = nullptr) const
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
+    bool empty(const core::ExecParams* param) const ;
+    bool empty() const
     {
-        return m_value[core::ExecParams::currentAspect(params)].empty();
+        return m_value.empty();
     }
 
-    const Container& getValue(const core::ExecParams* params = nullptr) const
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
+    const Container& getValue(const core::ExecParams*) const { return getValue(); }
+    const Container& getValue() const
     {
-        return m_value[core::ExecParams::currentAspect(params)];
+        return m_value;
     }
 
-    const_iterator begin(const core::ExecParams* params = nullptr) const
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
+    const_iterator begin(const core::ExecParams*) const { return begin(); }
+    const_iterator begin() const
     {
-        return m_value[core::ExecParams::currentAspect(params)].cbegin();
+        return m_value.cbegin();
     }
 
-    const_iterator end(const core::ExecParams* params = nullptr) const
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
+    const_iterator end(const core::ExecParams*) const { return end(); }
+    const_iterator end() const
     {
-        return m_value[core::ExecParams::currentAspect(params)].cend();
+        return m_value.cend();
     }
 
-    const_reverse_iterator rbegin(const core::ExecParams* params = nullptr) const
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
+    const_reverse_iterator rbegin(const core::ExecParams*) const { return rbegin(); }
+    const_reverse_iterator rbegin() const
     {
-        return m_value[core::ExecParams::currentAspect(params)].crbegin();
+        return m_value.crbegin();
     }
 
-    const_reverse_iterator rend(const core::ExecParams* params = nullptr) const
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
+    const_reverse_iterator rend(const core::ExecParams*) const { return rend(); }
+    const_reverse_iterator rend() const
     {
-        return m_value[core::ExecParams::currentAspect(params)].crend();
+        return m_value.crend();
     }
 
     bool add(DestPtr v)
     {
         if (!v) return false;
-        const int aspect = core::ExecParams::currentAspect();
-        unsigned int index = TraitsContainer::add(m_value[aspect],v);
-        this->updateCounter(aspect);
+        unsigned int index = TraitsContainer::add(m_value,v);
+        updateCounter();
         added(v, index);
         return true;
     }
@@ -391,10 +411,9 @@ public:
     bool add(DestPtr v, const std::string& path)
     {
         if (!v && path.empty()) return false;
-        const int aspect = core::ExecParams::currentAspect();
-        unsigned int index = TraitsContainer::add(m_value[aspect],v);
-        TraitsValueType::setPath(m_value[aspect][index],path);
-        this->updateCounter(aspect);
+        unsigned int index = TraitsContainer::add(m_value,v);
+        TraitsValueType::setPath(m_value[index],path);
+        updateCounter();
         added(v, index);
         return true;
     }
@@ -411,24 +430,22 @@ public:
     bool remove(DestPtr v)
     {
         if (!v) return false;
-        const int aspect = core::ExecParams::currentAspect();
-        unsigned int index = TraitsContainer::find(m_value[aspect],v);
-        if (index >= m_value[aspect].size()) return false;
-        TraitsContainer::remove(m_value[aspect],index);
-        this->updateCounter(aspect);
+        unsigned int index = TraitsContainer::find(m_value,v);
+        if (index >= m_value.size()) return false;
+        TraitsContainer::remove(m_value,index);
+        updateCounter();
         removed(v, index);
         return true;
     }
 
     bool removeAt(unsigned int index)
     {
-        const int aspect = core::ExecParams::currentAspect();
-        if (index >= m_value[aspect].size())
+        if (index >= m_value.size())
             return false;
 
-        TraitsContainer::remove(m_value[aspect],index);
-        this->updateCounter(aspect);
-        DestPtr v=m_value[aspect][index];
+        TraitsContainer::remove(m_value,index);
+        updateCounter();
+        DestPtr v=m_value[index];
         removed(v, index);
         return true;
     }
@@ -436,16 +453,15 @@ public:
     bool removePath(const std::string& path)
     {
         if (path.empty()) return false;
-        const int aspect = core::ExecParams::currentAspect();
-        unsigned int n = m_value[aspect].size();
+        unsigned int n = m_value.size();
         for (unsigned int index=0; index<n; ++index)
         {
             std::string p = getPath(index);
             if (p == path)
             {
-                DestPtr v = m_value[aspect][index];
-                TraitsContainer::remove(m_value[aspect],index);
-                this->updateCounter(aspect);
+                DestPtr v = m_value[index];
+                TraitsContainer::remove(m_value,index);
+                updateCounter();
                 removed(v, index);
                 return true;
             }
@@ -470,11 +486,10 @@ public:
 
     std::string getPath(unsigned int index) const
     {
-        const int aspect = core::ExecParams::currentAspect();
-        if (index >= m_value[aspect].size())
+        if (index >= m_value.size())
             return std::string();
         std::string path;
-        const ValueType& value = m_value[aspect][index];
+        const ValueType& value = m_value[index];
         if (!TraitsValueType::path(value, path))
         {
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
@@ -529,7 +544,7 @@ public:
         }
         else
         {
-            Container& container = m_value[core::ExecParams::currentAspect()];
+            Container& container = m_value;
             std::istringstream istr(str.c_str());
             std::string path;
 
@@ -607,20 +622,6 @@ public:
 
     /// @}
 
-    /// Copy the value of an aspect into another one.
-    void copyAspect(int destAspect, int srcAspect) override
-    {
-        BaseLink::copyAspect(destAspect, srcAspect);
-        m_value[destAspect] = m_value[srcAspect];
-    }
-
-    /// Release memory allocated for the specified aspect.
-    void releaseAspect(int aspect) override
-    {
-        BaseLink::releaseAspect(aspect);
-        TraitsContainer::clear(m_value[aspect]);
-    }
-
     sofa::core::objectmodel::Base* getOwnerBase() const override
     {
         return TraitsOwnerCasts::getBase(m_owner);
@@ -638,13 +639,12 @@ public:
 
 protected:
     OwnerType* m_owner;
-    helper::fixed_array<Container, SOFA_DATA_MAX_ASPECTS> m_value;
+    Container m_value;
 
     DestType* getIndex(unsigned int index) const
     {
-        const int aspect = core::ExecParams::currentAspect();
-        if (index < m_value[aspect].size())
-            return TraitsDestPtr::get(TraitsValueType::get(m_value[aspect][index]));
+        if (index < m_value.size())
+            return TraitsDestPtr::get(TraitsValueType::get(m_value[index]));
         else
             return nullptr;
     }
@@ -718,11 +718,10 @@ public:
     {
         if (!this->m_owner) return false;
         bool ok = true;
-        const int aspect = core::ExecParams::currentAspect();
         unsigned int n = static_cast<unsigned int>(this->getSize());
         for (unsigned int i = 0; i<n; ++i)
         {
-            ValueType& value = this->m_value[aspect][i];
+            ValueType& value = this->m_value[i];
             std::string path;
             if (TraitsValueType::path(value, path))
             {
@@ -734,7 +733,7 @@ public:
                     {
                         DestPtr v = ptr;
                         TraitsValueType::set(value,v);
-                        this->updateCounter(aspect);
+                        this->updateCounter();
                         this->added(v, i);
                     }
                     else
@@ -747,11 +746,13 @@ public:
         return ok;
     }
 
-    DestType* get(unsigned int index, const core::ExecParams* params = nullptr) const
+        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+
+    DestType* get(unsigned int index, const core::ExecParams*) const { return get(index); }
+    DestType* get(unsigned int index) const
     {
-        const int aspect = core::ExecParams::currentAspect(params);
-        if (index < this->m_value[aspect].size())
-            return TraitsDestPtr::get(TraitsValueType::get(this->m_value[aspect][index]));
+        if (index < this->m_value.size())
+            return TraitsDestPtr::get(TraitsValueType::get(this->m_value[index]));
         else
             return nullptr;
     }
@@ -797,6 +798,9 @@ public:
     typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
     typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
     typedef typename Inherit::TraitsFindDest TraitsFindDest;
+    using Inherit::updateCounter;
+    using Inherit::m_value;
+    using Inherit::m_owner;
 
     typedef void (OwnerType::*ValidatorFn)(DestPtr before, DestPtr& after);
 
@@ -830,43 +834,40 @@ public:
         return Inherit::getPath(0);
     }
 
-    DestType* get(const core::ExecParams* params = nullptr) const
+    DestType* get(const core::ExecParams*) const { return get(); }
+    DestType* get() const
     {
-        const int aspect = core::ExecParams::currentAspect(params);
-        return TraitsDestPtr::get(TraitsValueType::get(this->m_value[aspect].get()));
+        return TraitsDestPtr::get(TraitsValueType::get(m_value.get()));
     }
 
     void reset()
     {
-        const int aspect = core::ExecParams::currentAspect();
-        ValueType& value = this->m_value[aspect].get();
+        ValueType& value = m_value.get();
         const DestPtr before = TraitsValueType::get(value);
         if (!before) return;
         TraitsValueType::set(value, nullptr);
-        this->updateCounter(aspect);
+        updateCounter();
         changed(before, nullptr);
     }
 
     void set(DestPtr v)
     {
-        const int aspect = core::ExecParams::currentAspect();
-        ValueType& value = this->m_value[aspect].get();
+        ValueType& value = m_value.get();
         const DestPtr before = TraitsValueType::get(value);
         if (v == before) return;
         TraitsValueType::set(value, v);
-        this->updateCounter(aspect);
+        updateCounter();
         changed(before, v);
     }
 
     void set(DestPtr v, const std::string& path)
     {
-        const int aspect = core::ExecParams::currentAspect();
-        ValueType& value = this->m_value[aspect].get();
+        ValueType& value = m_value.get();
         const DestPtr before = TraitsValueType::get(value);
         if (v != before)
             TraitsValueType::set(value, v);
         TraitsValueType::setPath(value, path);
-        this->updateCounter(aspect);
+        updateCounter();
         if (v != before)
             changed(before, v);
     }
@@ -875,8 +876,8 @@ public:
     {
         if (path.empty()) { reset(); return; }
         DestType* ptr = nullptr;
-        if (this->m_owner)
-            TraitsFindDest::findLinkDest(this->m_owner, ptr, path, this);
+        if (m_owner)
+            TraitsFindDest::findLinkDest(m_owner, ptr, path, this);
         set(ptr, path);
     }
 
@@ -884,17 +885,16 @@ public:
     /// @return false if there are broken links
     virtual bool updateLinks()
     {
-        if (!this->m_owner) return false;
+        if (!m_owner) return false;
         bool ok = true;
-        const int aspect = core::ExecParams::currentAspect();
-        ValueType& value = this->m_value[aspect].get();
+        ValueType& value = m_value.get();
         std::string path;
         if (TraitsValueType::path(value, path))
         {
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
             if (!ptr)
             {
-                TraitsFindDest::findLinkDest(this->m_owner, ptr, path, this);
+                TraitsFindDest::findLinkDest(m_owner, ptr, path, this);
                 if (ptr)
                 {
                     set(ptr, path);
@@ -939,9 +939,9 @@ protected:
         if (m_validator)
         {
             DestPtr after = val;
-            (this->m_owner->*m_validator)(nullptr, after);
+            (m_owner->*m_validator)(nullptr, after);
             if (after != val)
-                TraitsValueType::set(this->m_value[core::ExecParams::currentAspect()].get(), after);
+                TraitsValueType::set(m_value.get(), after);
         }
     }
 
@@ -950,9 +950,9 @@ protected:
         if (m_validator)
         {
             DestPtr after = nullptr;
-            (this->m_owner->*m_validator)(val, after);
+            (m_owner->*m_validator)(val, after);
             if (after)
-                TraitsValueType::set(this->m_value[core::ExecParams::currentAspect()].get(), after);
+                TraitsValueType::set(m_value.get(), after);
         }
     }
 
@@ -961,9 +961,9 @@ protected:
         if (m_validator)
         {
             DestPtr after = val;
-            (this->m_owner->*m_validator)(before, after);
+            (m_owner->*m_validator)(before, after);
             if (after != val)
-                TraitsValueType::set(this->m_value[core::ExecParams::currentAspect()].get(), after);
+                TraitsValueType::set(this->m_value.get(), after);
         }
     }
 };

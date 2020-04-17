@@ -5,7 +5,6 @@ project(SofaGraphComponent_test)
 set(SOURCE_FILES ../../empty.cpp)
 
 list(APPEND SOURCE_FILES
-RequiredPlugin_test.cpp
 SceneChecker_test.cpp
 )
 

@@ -210,58 +210,64 @@ public:
 
     void apply(const core::MechanicalParams *mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos) override
     {
+        SOFA_UNUSED(mparams);
+
         //Not optimized at all...
         helper::vector<OutVecCoord*> vecOutPos;
         for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-            vecOutPos.push_back(dataVecOutPos[i]->beginEdit(mparams));
+            vecOutPos.push_back(dataVecOutPos[i]->beginEdit());
 
         helper::vector<const InVecCoord*> vecInPos;
         for(unsigned int i=0; i<dataVecInPos.size(); i++)
-            vecInPos.push_back(&dataVecInPos[i]->getValue(mparams));
+            vecInPos.push_back(&dataVecInPos[i]->getValue());
 
         this->apply(vecOutPos, vecInPos);
 
         //Really Not optimized at all...
         for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-            dataVecOutPos[i]->endEdit(mparams);
+            dataVecOutPos[i]->endEdit();
 
     }
 
     void applyJ(const core::MechanicalParams *mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel) override
     {
+        SOFA_UNUSED(mparams);
+
         //Not optimized at all...
         helper::vector<OutVecDeriv*> vecOutVel;
         for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-            vecOutVel.push_back(dataVecOutVel[i]->beginEdit(mparams));
+            vecOutVel.push_back(dataVecOutVel[i]->beginEdit());
 
         helper::vector<const InVecDeriv*> vecInVel;
         for(unsigned int i=0; i<dataVecInVel.size(); i++)
-            vecInVel.push_back(&dataVecInVel[i]->getValue(mparams));
+            vecInVel.push_back(&dataVecInVel[i]->getValue());
 
         this->applyJ(vecOutVel, vecInVel);
 
         //Really Not optimized at all...
         for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-            dataVecOutVel[i]->endEdit(mparams);
+            dataVecOutVel[i]->endEdit();
 
     }
 
     void applyJT(const core::MechanicalParams *mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override
     {
+        SOFA_UNUSED(mparams);
+
         //Not optimized at all...
         helper::vector<InVecDeriv*> vecOutForce;
         for(unsigned int i=0; i<dataVecOutForce.size(); i++)
-            vecOutForce.push_back(dataVecOutForce[i]->beginEdit(mparams));
+            vecOutForce.push_back(dataVecOutForce[i]->beginEdit());
 
         helper::vector<const OutVecDeriv*> vecInForce;
         for(unsigned int i=0; i<dataVecInForce.size(); i++)
-            vecInForce.push_back(&dataVecInForce[i]->getValue(mparams));
+            vecInForce.push_back(&dataVecInForce[i]->getValue());
 
         this->applyJT(vecOutForce, vecInForce);
 
         //Really Not optimized at all...
         for(unsigned int i=0; i<dataVecOutForce.size(); i++)
-            dataVecOutForce[i]->endEdit(mparams);
+            dataVecOutForce[i]->endEdit();
 
     }
 

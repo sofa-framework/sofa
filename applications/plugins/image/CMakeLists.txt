@@ -119,7 +119,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_IMAGE")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase SofaGeneralVisual CImgPlugin)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaBase SofaGeneralVisual CImgPlugin)
 target_link_libraries(${PROJECT_NAME} DiffusionSolver)
 target_link_libraries(${PROJECT_NAME} newmat)
 

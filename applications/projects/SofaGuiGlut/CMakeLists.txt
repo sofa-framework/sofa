@@ -12,11 +12,6 @@ set(SOURCE_FILES
     SimpleGUI.cpp)
 
 
-if(Boost_FOUND)
-    list(APPEND HEADER_FILES MultithreadGUI.h)
-    list(APPEND SOURCE_FILES MultithreadGUI.cpp)
-endif()
-
 list(APPEND SOURCE_FILES Main.cpp)
 
 find_package(GLUT REQUIRED)

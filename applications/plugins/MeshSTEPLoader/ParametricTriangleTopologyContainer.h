@@ -19,8 +19,8 @@ public:
     typedef defaulttype::Vector2 UV;
     typedef helper::vector<UV> SeqUV;
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
 public:
     Data<SeqUV> d_uv; ///< The uv coordinates for every triangle vertices.

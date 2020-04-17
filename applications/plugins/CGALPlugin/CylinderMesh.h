@@ -81,7 +81,7 @@ public:
     void orientate();
     void draw(const sofa::core::visual::VisualParams*) override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

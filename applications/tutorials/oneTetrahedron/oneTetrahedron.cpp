@@ -33,11 +33,11 @@ using VecCoord3 = sofa::helper::vector<Coord3>;
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaAdvanced/initSofaAdvanced.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 using CGLinearSolver = sofa::component::linearsolver::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector>;
@@ -85,11 +85,11 @@ int main(int argc, char** argv)
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaAdvanced();
+    sofa::component::initSofaMisc();
 
     // The graph root node : gravity already exists in a GNode by default
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());

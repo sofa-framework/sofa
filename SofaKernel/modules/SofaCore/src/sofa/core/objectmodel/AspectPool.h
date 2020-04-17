@@ -35,6 +35,8 @@ namespace sofa
 namespace core
 {
 
+enum { SOFA_DATA_MAX_ASPECTS = 1 };
+
 namespace objectmodel
 {
 
@@ -78,7 +80,6 @@ private:
     const int id;
     std::atomic<int> counter;
 };
-
 
 
 /**

@@ -225,7 +225,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${README_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaComponentMisc SofaValidation SofaBaseVisual)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMisc SofaValidation SofaBaseVisual)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)

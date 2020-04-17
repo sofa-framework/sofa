@@ -80,7 +80,7 @@ private:
         void updateTriangles();
         void updateHexas();
     private:
-        GridTopology* topology;
+        GridTopology* m_topology;
     };
 
 protected:
@@ -184,8 +184,9 @@ public:
     /// Get Cube index, similar to \sa hexa method
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
-	/// Get the actual dimension of this grid using Enum @sa Grid_dimension
-	Grid_dimension getDimensions() const;
+    /// Get the actual dimension of this grid using Enum @sa Grid_dimension
+    Grid_dimension getDimensions() const;
+
 public:
     /// Data storing the size of the grid in the 3 directions
     Data<Vec3i> d_n;
@@ -193,6 +194,7 @@ public:
     /// Data bool to set option to compute topological elements
     Data<bool> d_computeHexaList;
     Data<bool> d_computeQuadList; ///< put true if the list of Quad is needed during init (default=true)
+    Data<bool> d_computeTriangleList; ///< put true if the list of Triangles is needed during init (default=true)
     Data<bool> d_computeEdgeList; ///< put true if the list of Lines is needed during init (default=true)
     Data<bool> d_computePointList; ///< put true if the list of Points is needed during init (default=true)
     /// Data bool to set option to compute texcoords

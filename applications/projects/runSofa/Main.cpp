@@ -48,11 +48,11 @@ using sofa::simulation::Node;
 #include <SofaGraphComponent/SceneCheckerListener.h>
 using sofa::simulation::scenechecking::SceneCheckerListener;
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaAdvanced/initSofaAdvanced.h>
+#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaGeneralLoader/ReadState.h>
 #include <sofa/helper/Factory.h>
@@ -180,8 +180,6 @@ int main(int argc, char** argv)
 
     sofa::helper::BackTrace::autodump();
 
-    ExecParams::defaultInstance()->setAspectID(0);
-
 #ifdef WIN32
     {
         HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -230,11 +228,7 @@ int main(int argc, char** argv)
 
     vector<string> plugins;
     vector<string> files;
-#ifdef SOFA_SMP
-    string nProcs="";
-    bool        disableStealing = false;
-    bool        affinity = false;
-#endif
+
     string colorsStatus = "unset";
     string messageHandler = "auto";
     bool enableInteraction = false ;
@@ -365,29 +359,6 @@ int main(int argc, char** argv)
         "forward extra args to the python interpreter"
     );
 
-#ifdef SOFA_SMP
-    argParser->addArgument(
-        boost::program_options::value<bool>(&disableStealing)
-        ->default_value(false)
-        ->implicit_value(true),
-        "disableStealing,w",
-        "Disable Work Stealing"
-    );
-    argParser->addArgument(
-        boost::program_options::value<std::string>(&nProcs)
-        ->default_value(""),
-        "nprocs",
-        "Number of processor"
-    );
-    argParser->addArgument(
-        boost::program_options::value<bool>(&affinity)
-        ->default_value(false)
-        ->implicit_value(true),
-        "affinity",
-        "Enable aFfinity base Work Stealing"
-    );
-#endif
-
     // example of an option using lambda function which ensure the value passed is > 0
     argParser->addArgument(
         boost::program_options::value<unsigned int>(&nbMSSASamples)
@@ -418,11 +389,11 @@ int main(int argc, char** argv)
 #ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::init();
 #endif
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaAdvanced();
+    sofa::component::initSofaMisc();
 
 #ifdef SOFA_HAVE_DAG
     if (simulationType == "tree")

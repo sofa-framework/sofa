@@ -826,7 +826,6 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
         sofa::helper::vector <unsigned int>& edgesAroundVertex = m_container->getEdgesAroundVertexForModification( listVertex[vertexIndex] );
         sofa::helper::vector <unsigned int>& trianglesAroundVertex = m_container->getTrianglesAroundVertexForModification( listVertex[vertexIndex] );
 
-        sofa::helper::vector <unsigned int>::iterator it;
         sofa::helper::vector < sofa::helper::vector <unsigned int> > vertexTofind;
 
         sofa::helper::vector <unsigned int> goodEdgeShell;

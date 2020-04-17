@@ -532,6 +532,8 @@ protected:
 
     void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override
     {
+        SOFA_UNUSED(params);
+
         if( onlyVisible && !drawBB.getValue()) return;
 
         defaulttype::Vec<8,defaulttype::Vector3> c;
@@ -544,7 +546,7 @@ protected:
                 if(bbmin[j]>c[i][j]) bbmin[j]=c[i][j];
                 if(bbmax[j]<c[i][j]) bbmax[j]=c[i][j];
             }
-        this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
+        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
     }
 
     void draw(const core::visual::VisualParams* vparams) override

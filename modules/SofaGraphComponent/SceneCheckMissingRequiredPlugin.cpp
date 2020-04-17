@@ -26,7 +26,7 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/helper/system/PluginManager.h>
 
-#include "RequiredPlugin.h"
+#include <SofaBaseUtils/RequiredPlugin.h>
 
 namespace sofa
 {

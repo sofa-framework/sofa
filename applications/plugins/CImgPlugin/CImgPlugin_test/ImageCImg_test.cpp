@@ -205,7 +205,8 @@ TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
     bool isLoaded = img.load("imagetest_blackwhite.png");
     ASSERT_TRUE(isLoaded);
 
-    bool isWritten = img.save(sofa::helper::system::DataRepository.getFirstPath() + "/output_bw.png");
+    std::string output_bw_path = sofa::helper::system::DataRepository.getFirstPath() + "/output_bw.png";
+    bool isWritten = img.save(output_bw_path);
     ASSERT_TRUE(isWritten);
 
     delete[] imgdata;
@@ -215,6 +216,8 @@ TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
 
     ImageCImgTestData imgBW("output_bw.png", width, height, bpp, imgdata);
     imgBW.testBench();
+
+    std::remove(output_bw_path.c_str());
 }
 
 }// namespace sofa

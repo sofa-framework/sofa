@@ -291,6 +291,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                         << " [" << t[(j + 1) % 3] << ", " << t[(j + 2) % 3] << "]"
                         << " in triangle " << i;
                     m_edgesInTriangle.clear();
+                    this->d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                     return;
                 }
             }

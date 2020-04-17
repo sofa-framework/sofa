@@ -65,7 +65,7 @@ VisualStyle::VisualStyle()
 void VisualStyle::fwdDraw(VisualParams* vparams)
 {
     backupFlags = vparams->displayFlags();
-    vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, displayFlags.getValue(vparams));
+    vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, displayFlags.getValue());
 }
 
 void VisualStyle::bwdDraw(VisualParams* vparams)

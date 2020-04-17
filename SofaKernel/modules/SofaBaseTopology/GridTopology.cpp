@@ -40,7 +40,7 @@ int GridTopologyClass = core::RegisterObject("Base class fo a regular grid in 3D
 
 
 GridTopology::GridUpdate::GridUpdate(GridTopology *t):
-    topology(t)
+    m_topology(t)
 {
     addInput(&t->d_n);
     addOutput(&t->seqEdges);
@@ -50,11 +50,18 @@ GridTopology::GridUpdate::GridUpdate(GridTopology *t):
 }
 
 void GridTopology::GridUpdate::doUpdate()
-{
-    updateEdges();
-    updateQuads();
-    updateTriangles();
-    updateHexas();
+{   
+    if (m_topology->d_computeHexaList.getValue())
+        updateHexas();
+
+    if (m_topology->d_computeQuadList.getValue())
+        updateQuads();
+    
+    if (m_topology->d_computeTriangleList.getValue())
+        updateTriangles();    
+    
+    if (m_topology->d_computeEdgeList.getValue())
+        updateEdges();
 }
 
 void GridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
@@ -75,35 +82,71 @@ void GridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 
 void GridTopology::GridUpdate::updateEdges()
 {
-    SeqEdges& edges = *topology->seqEdges.beginWriteOnly();
-    const Vec3i& n = topology->d_n.getValue();
+    SeqEdges& edges = *m_topology->seqEdges.beginWriteOnly();
     edges.clear();
-    edges.reserve( (n[0]-1)*n[1]*n[2] +
-            n[0]*(n[1]-1)*n[2] +
-            n[0]*n[1]*(n[2]-1) );
-    // lines along X
-    for (int z=0; z<n[2]; z++)
-        for (int y=0; y<n[1]; y++)
-            for (int x=0; x<n[0]-1; x++)
-                edges.push_back(Edge(topology->point(x,y,z),topology->point(x+1,y,z)));
-    // lines along Y
-    for (int z=0; z<n[2]; z++)
-        for (int y=0; y<n[1]-1; y++)
-            for (int x=0; x<n[0]; x++)
-                edges.push_back(Edge(topology->point(x,y,z),topology->point(x,y+1,z)));
-    // lines along Z
-    for (int z=0; z<n[2]-1; z++)
-        for (int y=0; y<n[1]; y++)
-            for (int x=0; x<n[0]; x++)
-                edges.push_back(Edge(topology->point(x,y,z),topology->point(x,y,z+1)));
-    topology->seqEdges.endEdit();
+    const SeqTriangles& triangles = m_topology->seqTriangles.getValue();
+    if (triangles.empty()) // if has triangles will create edges using triangles, otherwise will use the quads from the grid
+    {
+        const Vec3i& n = m_topology->d_n.getValue();
+        edges.reserve((n[0] - 1)*n[1] * n[2] +
+            n[0] * (n[1] - 1)*n[2] +
+            n[0] * n[1] * (n[2] - 1));
+        // lines along X
+        for (int z = 0; z<n[2]; z++)
+            for (int y = 0; y<n[1]; y++)
+                for (int x = 0; x<n[0] - 1; x++)
+                    edges.push_back(Edge(m_topology->point(x, y, z), m_topology->point(x + 1, y, z)));
+        // lines along Y
+        for (int z = 0; z<n[2]; z++)
+            for (int y = 0; y<n[1] - 1; y++)
+                for (int x = 0; x<n[0]; x++)
+                    edges.push_back(Edge(m_topology->point(x, y, z), m_topology->point(x, y + 1, z)));
+        // lines along Z
+        for (int z = 0; z<n[2] - 1; z++)
+            for (int y = 0; y<n[1]; y++)
+                for (int x = 0; x<n[0]; x++)
+                    edges.push_back(Edge(m_topology->point(x, y, z), m_topology->point(x, y, z + 1)));
+    }
+    else
+    {
+        // Similar algo as createEdgeSetArray in TriangleSetTopologyContainer 
+        // create a temporary map to find redundant edges
+        std::map<Edge, EdgeID> edgeMap;
+        for (size_t i = 0; i<triangles.size(); ++i)
+        {
+            const Triangle &t = triangles[i];
+            for (unsigned int j = 0; j<3; ++j)
+            {
+                const PointID v1 = t[(j + 1) % 3];
+                const PointID v2 = t[(j + 2) % 3];
+
+                // sort vertices in lexicographic order
+                const Edge e = ((v1<v2) ? Edge(v1, v2) : Edge(v2, v1));
+
+                if (edgeMap.find(e) == edgeMap.end())
+                {
+                    // edge not in edgeMap so create a new one
+                    const size_t edgeIndex = edgeMap.size();
+                    edgeMap[e] = (EdgeID)edgeIndex;
+                    //m_edge.push_back(e); Changed to have oriented edges on the border of the triangulation
+                    edges.push_back(Edge(v1, v2));
+                }
+            }
+        }
+    }
+
+    m_topology->seqEdges.endEdit();
 }
 
 void GridTopology::GridUpdate::updateTriangles()
 {
+    // need quads to create the triangulation
+    if (m_topology->seqQuads.getValue().empty())
+        updateQuads();
+
     // base on quads
-    const SeqQuads& quads = topology->seqQuads.getValue();
-    SeqTriangles& triangles = *topology->seqTriangles.beginWriteOnly();
+    const SeqQuads& quads = m_topology->seqQuads.getValue();
+    SeqTriangles& triangles = *m_topology->seqTriangles.beginWriteOnly();
     triangles.clear();
     triangles.reserve(quads.size()*2);
 
@@ -113,58 +156,58 @@ void GridTopology::GridUpdate::updateTriangles()
         triangles.push_back(Triangle(quads[i][0], quads[i][2], quads[i][3]));
     }
 
-    topology->seqTriangles.endEdit();
+    m_topology->seqTriangles.endEdit();
 }
 
 void GridTopology::GridUpdate::updateQuads()
 {
-    SeqQuads& quads = *topology->seqQuads.beginWriteOnly();
-    const Vec3i& n = topology->d_n.getValue();
+    SeqQuads& quads = *m_topology->seqQuads.beginWriteOnly();
+    const Vec3i& n = m_topology->d_n.getValue();
     quads.clear();
     quads.reserve((n[0]-1)*(n[1]-1)*n[2]+(n[0]-1)*n[1]*(n[2]-1)+n[0]*(n[1]-1)*(n[2]-1));
     // quads along XY plane
     for (int z=0; z<n[2]; z++)
         for (int y=0; y<n[1]-1; y++)
             for (int x=0; x<n[0]-1; x++)
-                quads.push_back(Quad(topology->point(x,y,z),
-                        topology->point(x+1,y,z),
-                        topology->point(x+1,y+1,z),
-                        topology->point(x,y+1,z)));
+                quads.push_back(Quad(m_topology->point(x,y,z),
+                        m_topology->point(x+1,y,z),
+                        m_topology->point(x+1,y+1,z),
+                        m_topology->point(x,y+1,z)));
     // quads along XZ plane
     for (int z=0; z<n[2]-1; z++)
         for (int y=0; y<n[1]; y++)
             for (int x=0; x<n[0]-1; x++)
-                quads.push_back(Quad(topology->point(x,y,z),
-                        topology->point(x+1,y,z),
-                        topology->point(x+1,y,z+1),
-                        topology->point(x,y,z+1)));
+                quads.push_back(Quad(m_topology->point(x,y,z),
+                        m_topology->point(x+1,y,z),
+                        m_topology->point(x+1,y,z+1),
+                        m_topology->point(x,y,z+1)));
     // quads along YZ plane
     for (int z=0; z<n[2]-1; z++)
         for (int y=0; y<n[1]-1; y++)
             for (int x=0; x<n[0]; x++)
-                quads.push_back(Quad(topology->point(x,y,z),
-                        topology->point(x,y+1,z),
-                        topology->point(x,y+1,z+1),
-                        topology->point(x,y,z+1)));
+                quads.push_back(Quad(m_topology->point(x,y,z),
+                        m_topology->point(x,y+1,z),
+                        m_topology->point(x,y+1,z+1),
+                        m_topology->point(x,y,z+1)));
 
-    topology->seqQuads.endEdit();
+    m_topology->seqQuads.endEdit();
 }
 
 void GridTopology::GridUpdate::updateHexas()
 {
-    SeqHexahedra& hexahedra = *topology->seqHexahedra.beginWriteOnly();
-    const Vec3i& n = topology->d_n.getValue();
+    SeqHexahedra& hexahedra = *m_topology->seqHexahedra.beginWriteOnly();
+    const Vec3i& n = m_topology->d_n.getValue();
     hexahedra.clear();
     hexahedra.reserve((n[0]-1)*(n[1]-1)*(n[2]-1));
     for (int z=0; z<n[2]-1; z++)
         for (int y=0; y<n[1]-1; y++)
             for (int x=0; x<n[0]-1; x++)
-                hexahedra.push_back(Hexa(topology->point(x  ,y  ,z  ),topology->point(x+1,y  ,z  ),
-                        topology->point(x+1,y+1,z  ),topology->point(x  ,y+1,z  ),
-                        topology->point(x  ,y  ,z+1),topology->point(x+1,y  ,z+1),
-                        topology->point(x+1,y+1,z+1),topology->point(x  ,y+1,z+1)));
+                hexahedra.push_back(Hexa(m_topology->point(x  ,y  ,z  ),m_topology->point(x+1,y  ,z  ),
+                        m_topology->point(x+1,y+1,z  ),m_topology->point(x  ,y+1,z  ),
+                        m_topology->point(x  ,y  ,z+1),m_topology->point(x+1,y  ,z+1),
+                        m_topology->point(x+1,y+1,z+1),m_topology->point(x  ,y+1,z+1)));
 
-    topology->seqHexahedra.endEdit();
+    m_topology->seqHexahedra.endEdit();
 }
 
 /// To avoid duplicating the code in the different variants of the constructor
@@ -175,6 +218,7 @@ GridTopology::GridTopology()
     : d_n(initData(&d_n,Vec3i(2,2,2),"n","grid resolution. (default = 2 2 2)"))
     , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init (default=true)"))
     , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init (default=true)"))
+    , d_computeTriangleList(initData(&d_computeTriangleList, true, "computeTriangleList", "put true if the list of triangle is needed during init (default=true)"))
     , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init (default=true)"))
     , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init (default=true)"))
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation (default=false)."))
@@ -214,7 +258,7 @@ void GridTopology::init()
 
     if (d_computeQuadList.getValue())
         this->computeQuadList();
-
+    
     if (d_computeEdgeList.getValue())
         this->computeEdgeList();
 

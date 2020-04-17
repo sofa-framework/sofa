@@ -42,14 +42,14 @@ BaseData::BaseData(const char* h, DataFlags dataflags) : BaseData(sofa::helper::
 
 BaseData::BaseData(const std::string& h, DataFlags dataflags)
     : help(h), ownerClass(""), group(""), widget("")
-    , m_counters(), m_isSets(), m_dataFlags(dataflags)
+    , m_counter(), m_isSet(), m_dataFlags(dataflags)
     , m_owner(nullptr), m_name("")
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     addLink(&inputs);
     addLink(&outputs);
-    m_counters.assign(0);
-    m_isSets.assign(false);
+    m_counter = 0;
+    m_isSet = false;
     setFlag(FLAG_PERSISTENT, false);
 }
 
@@ -60,13 +60,13 @@ BaseData::BaseData( const char* helpMsg, bool isDisplayed, bool isReadOnly) : Ba
 
 BaseData::BaseData( const std::string& h, bool isDisplayed, bool isReadOnly)
     : help(h), ownerClass(""), group(""), widget("")
-    , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(nullptr), m_name("")
+    , m_counter(), m_isSet(), m_dataFlags(FLAG_DEFAULT), m_owner(nullptr), m_name("")
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     addLink(&inputs);
     addLink(&outputs);
-    m_counters.assign(0);
-    m_isSets.assign(false);
+    m_counter = 0;
+    m_isSet = false;
     setFlag(FLAG_DISPLAYED,isDisplayed);
     setFlag(FLAG_READONLY,isReadOnly);
     setFlag(FLAG_PERSISTENT, false);
@@ -74,14 +74,14 @@ BaseData::BaseData( const std::string& h, bool isDisplayed, bool isReadOnly)
 
 BaseData::BaseData( const BaseInitData& init)
     : help(init.helpMsg), ownerClass(init.ownerClass), group(init.group), widget(init.widget)
-    , m_counters(), m_isSets(), m_dataFlags(init.dataFlags)
+    , m_counter(), m_isSet(), m_dataFlags(init.dataFlags)
     , m_owner(init.owner), m_name(init.name)
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     addLink(&inputs);
     addLink(&outputs);
-    m_counters.assign(0);
-    m_isSets.assign(false);
+    m_counter = 0;
+    m_isSet = false;
 
     if (init.data && init.data != this)
     {
@@ -140,8 +140,8 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
         if (!isCounterValid())
             update();
 
-        m_counters[size_t(currentAspect())]++;
-        m_isSets[size_t(currentAspect())] = true;
+        m_counter++;
+        m_isSet = true;
     }
     return true;
 }
@@ -326,25 +326,6 @@ bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const B
 void BaseData::addLink(BaseLink* l)
 {
     m_vecLink.push_back(l);
-}
-
-void BaseData::copyAspect(int destAspect, int srcAspect)
-{
-    m_counters[size_t(destAspect)] = m_counters[size_t(srcAspect)];
-    m_isSets[size_t(destAspect)] = m_isSets[size_t(srcAspect)];
-    DDGNode::copyAspect(destAspect, srcAspect);
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
-    {
-        (*iLink)->copyAspect(destAspect, srcAspect);
-    }
-}
-
-void BaseData::releaseAspect(int aspect)
-{
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
-    {
-        (*iLink)->releaseAspect(aspect);
-    }
 }
 
 std::string BaseData::decodeTypeName(const std::type_info& t)
