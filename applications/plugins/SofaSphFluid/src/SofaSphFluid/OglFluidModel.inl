@@ -727,6 +727,7 @@ void OglFluidModel<DataTypes>::drawTransparent(const core::visual::VisualParams*
 template<class DataTypes>
 void OglFluidModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
     SOFA_UNUSED(onlyVisible);
     const VecCoord& position = m_positions.getValue();
 	constexpr const SReal max_real { std::numeric_limits<SReal>::max() };
