@@ -10,10 +10,14 @@ set(HEADER_FILES
     MeshSpringForceField.inl
     RestShapeSpringsForceField.h
     RestShapeSpringsForceField.inl
+    PolynomialRestShapeSpringsForceField.h
+    PolynomialRestShapeSpringsForceField.inl
     SpringForceField.h
     SpringForceField.inl
     StiffSpringForceField.h
     StiffSpringForceField.inl
+    PolynomialSpringsForceField.h
+    PolynomialSpringsForceField.inl
     config.h
     initDeformable.h
 )
@@ -22,8 +26,10 @@ set(SOURCE_FILES
     AngularSpringForceField.cpp
     MeshSpringForceField.cpp
     RestShapeSpringsForceField.cpp
+    PolynomialRestShapeSpringsForceField.cpp
     SpringForceField.cpp
     StiffSpringForceField.cpp
+    PolynomialSpringsForceField.cpp
     initDeformable.cpp
 )
 
