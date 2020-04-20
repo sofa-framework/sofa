@@ -82,7 +82,13 @@ public:
 
 
     Data< helper::vector< unsigned int > > points;
+
+    // polynomial data
+    /// Describe set of polynomial coefficients combines in one array.
+    /// The coefficients are put from smaller degree to bigger one, and the free polynomial parameter is also zero (for zero strain we have zero stress).
+    /// For examples the coeffiencts for polynomials with degrees [3, 2, 4] will be put as [ a1, a2, a3, b1, b2, c1, c2, c3, c4]
     Data< VecReal > d_polynomialStiffness;
+    /// Describe set of polynomial degrees fro every spring
     Data< helper::vector<unsigned int> > d_polynomialDegree;
     Data< helper::vector< CPos > > pivotPoints;
     Data< helper::vector< unsigned int > > external_points;
