@@ -9,6 +9,7 @@ find_package(Newmat QUIET)
 if(Newmat_FOUND)
 	sofa_add_module(SofaDenseSolver SofaDenseSolver ON)
 endif()
+sofa_add_module(SofaNonUniformFem SofaNonUniformFem ON)
 
 if(SOFA_NO_OPENGL)
     message("SOFA_NO_OPENGL flag prevents from using the SofaOpenglVisual plugin")

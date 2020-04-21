@@ -1,0 +1,17 @@
+# CMake package configuration file for the SofaNonUniformFem module
+@PACKAGE_INIT@
+
+set(SOFANONUNIFORMFEM_HAVE_SOFADENSESOLVER @SOFANONUNIFORMFEM_HAVE_SOFADENSESOLVER@)
+
+find_package(SofaBase REQUIRED)
+if(SOFANONUNIFORMFEM_HAVE_SOFADENSESOLVER)
+	find_package(SofaDenseSolver REQUIRED)
+endif()
+
+### Is the target existing ?
+if(NOT TARGET SofaNonUniformFem)
+    ### If not we are building out of tree.
+    include("${CMAKE_CURRENT_LIST_DIR}/SofaNonUniformFemTargets.cmake")
+endif()
+
+check_required_components(SofaNonUniformFem)

@@ -232,7 +232,7 @@ endif()
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 add_subdirectory(SofaGeneral)
-add_subdirectory(SofaAdvanced)
+# add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 
 ## Packages
