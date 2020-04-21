@@ -54,32 +54,32 @@ public:
 
 TEST_F(DDGNode_test, addInput)
 {
-    EXPECT_EQ(m_ddgnode1.getOutputs().size(), 0);
-    EXPECT_EQ(m_ddgnode2.getOutputs().size(), 0);
-    EXPECT_EQ(m_ddgnode3.getOutputs().size(), 0);
+    EXPECT_EQ(m_ddgnode1.getOutputs().size(), size_t(0));
+    EXPECT_EQ(m_ddgnode2.getOutputs().size(), size_t(0));
+    EXPECT_EQ(m_ddgnode3.getOutputs().size(), size_t(0));
 
     m_ddgnode1.addInput(&m_ddgnode2);
-    EXPECT_EQ(m_ddgnode1.getInputs().size(), 1);
-    EXPECT_EQ(m_ddgnode2.getOutputs().size(), 1);
+    EXPECT_EQ(m_ddgnode1.getInputs().size(), size_t(1));
+    EXPECT_EQ(m_ddgnode2.getOutputs().size(), size_t(1));
 
     m_ddgnode1.addInput(&m_ddgnode3);
-    EXPECT_EQ(m_ddgnode1.getInputs().size(), 2);
-    EXPECT_EQ(m_ddgnode3.getOutputs().size(), 1);
+    EXPECT_EQ(m_ddgnode1.getInputs().size(), size_t(2));
+    EXPECT_EQ(m_ddgnode3.getOutputs().size(), size_t(1));
 }
 
 TEST_F(DDGNode_test, addOutput)
 {
-    EXPECT_EQ(m_ddgnode1.getOutputs().size(), 0);
-    EXPECT_EQ(m_ddgnode2.getOutputs().size(), 0);
-    EXPECT_EQ(m_ddgnode3.getOutputs().size(), 0);
+    EXPECT_EQ(m_ddgnode1.getOutputs().size(), size_t(0));
+    EXPECT_EQ(m_ddgnode2.getOutputs().size(), size_t(0));
+    EXPECT_EQ(m_ddgnode3.getOutputs().size(), size_t(0));
 
     m_ddgnode1.addOutput(&m_ddgnode2);
-    EXPECT_EQ(m_ddgnode1.getOutputs().size(), 1);
-    EXPECT_EQ(m_ddgnode2.getInputs().size(), 1);
+    EXPECT_EQ(m_ddgnode1.getOutputs().size(), size_t(1));
+    EXPECT_EQ(m_ddgnode2.getInputs().size(), size_t(1));
 
     m_ddgnode1.addOutput(&m_ddgnode3);
-    EXPECT_EQ(m_ddgnode1.getOutputs().size(), 2);
-    EXPECT_EQ(m_ddgnode3.getInputs().size(), 1);
+    EXPECT_EQ(m_ddgnode1.getOutputs().size(), size_t(2));
+    EXPECT_EQ(m_ddgnode3.getInputs().size(), size_t(1));
 }
 
 TEST_F(DDGNode_test, dellInput)
