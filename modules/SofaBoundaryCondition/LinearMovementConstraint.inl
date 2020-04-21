@@ -55,7 +55,7 @@ void LinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(u
 {
     if (lc)
     {
-        lc->removeIndex(unsigned int(pointIndex));
+        lc->removeIndex(pointIndex);
     }
 }
 
