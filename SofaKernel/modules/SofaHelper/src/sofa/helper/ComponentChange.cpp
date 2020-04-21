@@ -122,6 +122,10 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"ExtraMonitor", Pluginized("v20.06", "SofaValidation")},
     {"Monitor", Pluginized("v20.06", "SofaValidation")},
 
+    // SofaDenseSolver was pluginized in #1299
+    {"LULinearSolver", Pluginized("v20.06", "SofaDenseSolver")},
+    //{"NewMatCholeskySolver", Pluginized("v20.06", "SofaDenseSolver")},
+    //{"NewMatCGLinearSolver", Pluginized("v20.06", "SofaDenseSolver")},
 
     /***********************/
     // REMOVED SINCE v20.06

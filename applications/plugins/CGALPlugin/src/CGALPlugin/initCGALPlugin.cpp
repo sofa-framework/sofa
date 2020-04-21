@@ -19,28 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
-
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
-#include <SofaGeneralDeformable/initGeneralDeformable.h>
-#include <SofaGeneralExplicitOdeSolver/initGeneralExplicitODESolver.h>
-#include <SofaGeneralImplicitOdeSolver/initGeneralImplicitODESolver.h>
-#include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaGeneralMeshCollision/initGeneralMeshCollision.h>
-#include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
-#include <SofaGeneralRigid/initGeneralRigid.h>
-#include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
-#include <SofaGeneralTopology/initGeneralTopology.h>
-#include <SofaGeneralVisual/initGeneralVisual.h>
-#include <SofaGeneralEngine/initGeneralEngine.h>
-#include <SofaGraphComponent/initGraphComponent.h>
-#include <SofaTopologyMapping/initTopologyMapping.h>
-#include <SofaBoundaryCondition/initBoundaryCondition.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
+#include <CGALPlugin/config.h>
+#include <CGALPlugin/MeshGenerationFromPolyhedron.h>
 
 namespace sofa
 {
@@ -48,37 +28,56 @@ namespace sofa
 namespace component
 {
 
+//Here are just several convenient functions to help users know what the plugin contains 
 
-void initSofaGeneral()
+extern "C" {
+    SOFA_CGALPLUGIN_API void initExternalModule();
+    SOFA_CGALPLUGIN_API const char* getModuleName();
+    SOFA_CGALPLUGIN_API const char* getModuleVersion();
+    SOFA_CGALPLUGIN_API const char* getModuleLicense();
+    SOFA_CGALPLUGIN_API const char* getModuleDescription();
+    SOFA_CGALPLUGIN_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
     static bool first = true;
     if (first)
     {
         first = false;
     }
+}
 
+const char* getModuleName()
+{
+    return "CGAL Plugin";
+}
 
-    initGeneralAnimationLoop();
-    initGeneralDeformable();
-    initGeneralExplicitODESolver();
-    initGeneralImplicitODESolver();
-    initGeneralLinearSolver();
-    initGeneralLoader();
-    initGeneralMeshCollision();
-    initGeneralObjectInteraction();
-    initGeneralRigid();
-    initGeneralSimpleFEM();
-    initGeneralTopology();
-    initGeneralVisual();
-    initGeneralEngine();
-    initGraphComponent();
-    initTopologyMapping();
-    initBoundaryCondition();
-    initUserInteraction();
-    initConstraint();
+const char* getModuleVersion()
+{
+    return "0.2";
+}
+
+const char* getModuleLicense()
+{
+    return "GPL";
 }
 
 
-} // namespace component
+const char* getModuleDescription()
+{
+    return "Use CGAL functionnalities into SOFA";
+}
 
-} // namespace sofa
+const char* getModuleComponentList()
+{
+    return "MeshGenerationFromPolyhedron, MeshGenerationFromImage, TriangularConvexHull3D, DecimateMesh, CylinderMesh, Refine2DMesh";
+}
+
+
+
+}
+
+}
+
+
