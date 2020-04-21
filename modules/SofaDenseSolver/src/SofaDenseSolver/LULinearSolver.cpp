@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #include <SofaDenseSolver/LULinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaDenseSolver/NewMatMatrix.h>
@@ -29,13 +26,7 @@
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 using namespace sofa::defaulttype;
@@ -199,9 +190,4 @@ int LULinearSolverClass = core::RegisterObject("Linear system solver using the c
         .add< LULinearSolver<NewMatSymmetricBandMatrix,NewMatVector> >()
         ;
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::linearsolver

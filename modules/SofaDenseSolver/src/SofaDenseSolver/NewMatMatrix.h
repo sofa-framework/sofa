@@ -19,22 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_NEWMATMATRIX_H
-#define SOFA_COMPONENT_LINEARSOLVER_NEWMATMATRIX_H
-#include "config.h"
+#pragma once
+
+#include <SofaDenseSolver/config.h>
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
-#include "NewMatVector.h"
+#include <SofaDenseSolver/NewMatVector.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 //TODO(dmarchal) this should be unified with the way we handle message and error in sofa.
@@ -467,32 +461,6 @@ inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::add(Index i, Index j, do
         M::element(i,j) += v;
 }
 
-
-//template<>
-//class MatrixLinearSolverInternalData< component::linearsolver::NewMatVector >
-//{
-//public:
-//	typedef NewMatVector::Real Real;
-//    typedef SparseMatrix<Real> JMatrixType;
-//    typedef defaulttype::BaseMatrix ResMatrixType;
-
-//    Data<int> bandWidth;
-//    MatrixLinearSolverInternalData(core::objectmodel::BaseObject* o)
-//    : bandWidth( o->initData(&bandWidth, 11, "bandWidth", "width of the band on each side of the diagonal (i.e. total values per lines is 2*bandWidth+1)"))
-//    {}
-//};
-
-//template<>
-//inline component::linearsolver::TNewMatMatrix<NEWMAT::SymmetricBandMatrix>* MatrixLinearSolver< component::linearsolver::TNewMatMatrix<NEWMAT::SymmetricBandMatrix> , component::linearsolver::NewMatVector >::createMatrix()
-//{
-//    return new component::linearsolver::TNewMatMatrix<NEWMAT::SymmetricBandMatrix>(this->internalData.bandWidth.getValue());
-//}
+} // namespace sofa::component::linearsolver
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
