@@ -39,7 +39,7 @@ list(APPEND SOURCE_FILES
     SparseGridRamificationTopology.cpp
     )
 
-find_package(SofaDenseSolver QUIET)
+sofa_find_package(SofaDenseSolver QUIET BOTH_SCOPES)
 if(SofaDenseSolver_FOUND)
     list(APPEND HEADER_FILES
         HexahedronCompositeFEMForceFieldAndMass.h
