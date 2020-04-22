@@ -68,9 +68,12 @@ public:
 
     void doUpdate() override;
 
-    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
-    /// More details on the name customization infrastructure is in NameDecoder.h
-    static const std::string GetCustomTemplateName()
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const MergeVectors<VecT>* = nullptr)
     {
         return Data<Value>::templateName();
     }

@@ -106,6 +106,16 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const PointSetGeometryAlgorithms<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
     /** \brief Called by the MechanicalObject state change callback to initialize added
      * points according to the topology (topology element & local coordinates) 
      */

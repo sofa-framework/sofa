@@ -208,6 +208,16 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const ForceField<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
     template<class T>
     static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
     {

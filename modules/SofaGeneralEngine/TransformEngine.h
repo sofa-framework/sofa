@@ -61,8 +61,18 @@ protected:
     ~TransformEngine() override {}
 public:
     void init() override;
+
     void reinit() override;
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const TransformEngine<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }    
 protected:
     void doUpdate() override;
 
@@ -76,6 +86,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP)
+
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec1Types>;
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2Types>;
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3Types>;

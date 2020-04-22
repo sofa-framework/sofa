@@ -362,6 +362,10 @@ public:
     */
     Data<unsigned int> nFrames; ///< The number of frames of the sequence to be loaded. Default is the entire sequence.
 
+
+    virtual std::string getTemplateName() const	override { return templateName(this); }
+    static std::string templateName(const ImageContainer<ImageTypes>* = NULL) {	return ImageTypes::Name(); }
+
     ImageContainer() : Inherited()
       , image(initData(&image,ImageTypes(),"image","image"))
       , transform(initData(&transform, "transform" , "12-param vector for trans, rot, scale, ..."))

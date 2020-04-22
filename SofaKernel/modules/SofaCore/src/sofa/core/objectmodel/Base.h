@@ -184,24 +184,24 @@ public:
     /// Get the type name of this object (i.e. class and template types)
     /// Since #PR 1283, the signature has changed to "final" so it is not possible
     /// to override the getTypeName() method.
-    virtual std::string getTypeName() const final ;
+    virtual std::string getTypeName() const ;
 
     /// Get the class name of this object
     /// Since #PR 1283, the signature has changed to "final" so it is not possible
     /// to override the getClassName() method. To specify custom class name you need
     /// to implement a single static std::string GetCustomClassName(){} method.
-    virtual std::string getClassName() const final ;
+    virtual std::string getClassName() const ;
 
     /// Get the template type names (if any) used to instantiate this object
     /// Since #PR 1283, the signature has changed to "final" so it is not possible
     /// to override the getClassName() method. To specify custom class name you need
     /// to implement a single static std::string GetCustomTemplateName(){} method.
-    virtual std::string getTemplateName() const final ;
+    virtual std::string getTemplateName() const ;
 
     /// Get the template type names (if any) used to instantiate this object
     /// Since #PR 1283, the signature has changed to "final" so it is not possible
     /// to override the getNameSpaceName() method.
-    virtual std::string getNameSpaceName() const final;
+    virtual std::string getNameSpaceName() const ;
 
     /// Set the source filename (where the component is implemented)
     void setDefinitionSourceFileName(const std::string& sourceFileName);
@@ -431,7 +431,7 @@ public:
     static std::string typeName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
-        return T::GetClass()->typeName;
+        return sofa::helper::NameDecoder::decodeTypeName(typeid(T));
     }
 
     /// Helper method to get the class name of a type derived from this class
@@ -445,7 +445,7 @@ public:
     static std::string className(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
-        return T::GetClass()->className;
+        return sofa::helper::NameDecoder::decodeClassName(typeid(T));
     }
 
     /// Helper method to get the namespace name of a type derived from this class
@@ -459,7 +459,7 @@ public:
     static std::string namespaceName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
-        return T::GetClass()->namespaceName;
+        return sofa::helper::NameDecoder::decodeNamespaceName(typeid(T));
     }
 
     /// Helper method to get the template name of a type derived from this class
@@ -473,7 +473,7 @@ public:
     static std::string templateName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
-        return T::GetClass()->templateName;
+        return sofa::helper::NameDecoder::decodeTemplateName(typeid(T));
     }
 
     /// Helper method to get the shortname of a type derived from this class.
@@ -486,7 +486,7 @@ public:
     static std::string shortName(const T* ptr = nullptr, BaseObjectDescription* = nullptr )
     {
         SOFA_UNUSED(ptr);
-        return T::GetClass()->shortName;
+        return sofa::helper::NameDecoder::shortName(sofa::helper::NameDecoder::getClassName<T>());
     }
 
     /// @name componentstate

@@ -62,6 +62,9 @@ public:
     //Parameter
     Data<Real> p_defaultValue; ///< Default value for indices out of ROIs
 
+    virtual std::string getTemplateName() const    override {        return templateName(this);    }
+    static std::string templateName(const ROIValueMapper* = nullptr)    {        return std::string();    }
+
     void init() override
     {
         addInput(&nbROIs);

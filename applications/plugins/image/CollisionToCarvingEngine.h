@@ -95,6 +95,9 @@ public:
 	waImageo* out;
 	waTransform* outT;
 
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
+    static std::string templateName(const CollisionToCarvingEngine<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
+
     CollisionToCarvingEngine()    :   Inherited()
 		, inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
 		, inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))

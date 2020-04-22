@@ -96,6 +96,9 @@ public:
     sofa::core::objectmodel::DataFileName input_filename; ///< import precomputed clusters
     sofa::core::objectmodel::DataFileName output_filename; ///< export clusters
 
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
+    static std::string templateName(const ClusteringEngine<DataTypes>* = nullptr) {   return DataTypes::Name(); }
+
 private:
     sofa::core::behavior::MechanicalState<DataTypes>* mstate;
     sofa::core::topology::BaseMeshTopology* topo;

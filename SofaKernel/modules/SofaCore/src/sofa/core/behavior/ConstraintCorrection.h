@@ -157,6 +157,16 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const ConstraintCorrection<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
     MechanicalState<DataTypes> *getMState() const
     {
         return mstate;

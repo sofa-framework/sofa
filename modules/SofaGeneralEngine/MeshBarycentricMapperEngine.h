@@ -79,6 +79,16 @@ public:
 
     void addPointInCube(const int /*cubeIndex*/, const SReal* /*baryCoords*/);
 
+
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const MeshBarycentricMapperEngine<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
     bool initialized;
     Data<std::string> InputMeshName; ///< Name and path of Input mesh Topology
     Data<VecCoord> InputPositions; ///< Initial positions of the master points

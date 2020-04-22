@@ -259,7 +259,13 @@ void GenerateRigidMass<DataTypes, MassType>::generateRigid()
 }
 
 template <class DataTypes, class MassType>
-std::string GenerateRigidMass<DataTypes, MassType>::GetCustomTemplateName()
+std::string GenerateRigidMass<DataTypes, MassType>::getTemplateName() const
+{
+    return templateName(this);
+}
+
+template <class DataTypes, class MassType>
+std::string GenerateRigidMass<DataTypes, MassType>::templateName(const GenerateRigidMass<DataTypes, MassType>*)
 {
     return DataTypes::Name();
 }

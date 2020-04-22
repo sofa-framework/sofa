@@ -81,6 +81,16 @@ public:
     /// write in gnuplot files the Monitored desired data (velocities,positions,forces)
     virtual void exportGnuplot ( Real time );
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const Monitor<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
     /// Editable Data
     Data< helper::vector<unsigned int> > d_indices;
 
@@ -116,6 +126,7 @@ protected:
     const VecDeriv * m_V; ///< velocities of the mechanical object monitored;
     const VecDeriv * m_F; ///< forces of the mechanical object monitored;
 
+
     double m_internalDt; ///< use for trajectoriesPrecision (save value only if trajectoriesPrecision <= internalDt)
 
     sofa::helper::vector < sofa::helper::vector<Coord> > m_savedPos; ///< store all the monitored positions, for trajectories display
@@ -125,6 +136,7 @@ protected:
 extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec3Types>;
 extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec6Types>;
 extern template class SOFA_VALIDATION_API Monitor<defaulttype::Rigid3Types>;
+
 #endif
 
 

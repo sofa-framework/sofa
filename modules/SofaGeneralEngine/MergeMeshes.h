@@ -69,6 +69,16 @@ public:
 
     void doUpdate() override;
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const MergeMeshes<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
     Data<unsigned int> f_nbMeshes; ///< number of meshes to merge
 
     helper::vector<Data<VecCoord>*> vf_positions;

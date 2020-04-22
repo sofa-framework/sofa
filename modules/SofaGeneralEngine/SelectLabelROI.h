@@ -59,10 +59,8 @@ public:
     //Output
     Data<helper::vector<Index> > d_indices; ///< selected point/cell indices
 
-    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
-    /// so we need to override that by implementing GetCustomTemplateName() function
-    /// More details on the name customization infrastructure is in NameDecoder.h
-    static const std::string GetCustomTemplateName(){  return sofa::defaulttype::DataTypeName<T>::name();    }
+    virtual std::string getTemplateName() const    override {        return templateName(this);    }
+    static std::string templateName(const SelectLabelROI* = nullptr)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
 
     void init() override
     {

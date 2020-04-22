@@ -330,7 +330,7 @@ void BaseData::addLink(BaseLink* l)
 
 std::string BaseData::decodeTypeName(const std::type_info& t)
 {
-    return BaseClass::decodeTypeName(t);
+    return sofa::helper::NameDecoder::decodeTypeName(t);
 }
 
 } // namespace objectmodel

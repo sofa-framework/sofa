@@ -172,18 +172,6 @@ TEST_F(BaseClass_test, checkStaticClassName  )
     ASSERT_EQ(BaseObject::className<sofa::numbered_namespace_123::NumberedClass456>(),"NumberedClass456");
 }
 
-TEST_F(BaseClass_test, checkStaticGetCustomClassName  )
-{
-    ASSERT_EQ(BaseObject::className<decltype(m_ptr4)>(),"ClassWithACustomName") ;
-    ASSERT_EQ(BaseObject::className<sofa::numbered_namespace_123::CustomName123>(),"ClassWithACustomName") ;
-}
-
-
-TEST_F(BaseClass_test, checkStaticGetCustomTemplateName  )
-{
-    ASSERT_EQ(BaseObject::templateName<sofa::numbered_namespace_123::CustomName123>(),"ClassWithACustomTemplate") ;
-}
-
 TEST_F(BaseClass_test, checkDynamicClassName  )
 {
     EXPECT_EQ(m_ptr1.getClassName(),"EmptyObject") ;

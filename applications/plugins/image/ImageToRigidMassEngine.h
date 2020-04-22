@@ -82,6 +82,10 @@ public:
     Data< bool > d_mult; ///< multiply density by image intensity?
     //@}
 
+
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
+    static std::string templateName(const ImageToRigidMassEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
+
     ImageToRigidMassEngine()    :   Inherited()
       , image(initData(&image,ImageTypes(),"image",""))
       , transform(initData(&transform,TransformType(),"transform",""))

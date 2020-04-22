@@ -327,6 +327,17 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
+
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const DiagonalMass<DataTypes, TMassType>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
     //Temporary function to warn the user when old attribute names are used
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {

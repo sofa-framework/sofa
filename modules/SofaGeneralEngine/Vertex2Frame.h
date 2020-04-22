@@ -64,6 +64,16 @@ public:
 
     void doUpdate() override;
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const Vertex2Frame<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
 protected:
     typename sofa::core::behavior::MechanicalState<DataTypes>::SPtr m_mstate;
     Data< helper::vector<CPos> > d_vertices; ///< Vertices of the mesh loaded
@@ -85,6 +95,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)
 extern template class SOFA_GENERAL_ENGINE_API Vertex2Frame<defaulttype::Rigid3Types>;
+ 
 #endif
 
 } // namespace engine

@@ -115,6 +115,16 @@ public:
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const LCPForceFeedback<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
     /// Overide method to lock or unlock the force feedback computation. According to parameter, value == true (resp. false) will lock (resp. unlock) mutex @sa lockForce
     void setLock(bool value) override;
 

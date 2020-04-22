@@ -72,6 +72,19 @@ public:
     void handleEvent(core::objectmodel::Event *event) override;
     void onBeginAnimationStep(const double /*dt*/);
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+
+    static std::string templateName(const AverageCoord<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
+
+
 protected:
     sofa::core::behavior::MechanicalState<DataTypes> *mstate;
 };

@@ -180,6 +180,16 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const OBBCollisionModel<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
     /**
       *Returns the axis of the local frame at i-th dimension of the OBB at index index.
       */

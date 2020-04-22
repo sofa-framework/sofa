@@ -104,8 +104,8 @@ protected:
         ASSERT_EQ(data.m_numSprings, size_t(5)) << "Wrong number of 'springs'";
         for(unsigned int i=0;i<5;i++)
         {
-            ASSERT_EQ(std::get<0>(data.m_springs[i]), int(i)+0);
-            ASSERT_EQ(std::get<1>(data.m_springs[i]), int(i)+1);
+            ASSERT_EQ(std::get<0>(data.m_springs[i]), i+0);
+            ASSERT_EQ(std::get<1>(data.m_springs[i]), i+1);
         }
         EXPECT_FALSE(data.m_hasGravity);
         EXPECT_FALSE(data.m_hasViscosity);

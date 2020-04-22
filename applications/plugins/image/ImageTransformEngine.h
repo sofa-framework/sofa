@@ -65,6 +65,9 @@ public:
     Data<Real> scale; ///< scale
     Data<bool> inverse; ///< true to apply inverse transformation
 
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
+    static std::string templateName(const ImageTransformEngine* = NULL) { return std::string();  }
+
     ImageTransformEngine()    :   Inherited()
       , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
       , outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))

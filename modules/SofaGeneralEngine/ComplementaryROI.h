@@ -71,6 +71,10 @@ public:
     void init() override;
     void reinit() override;
 
+    virtual std::string getTemplateName() const override;
+
+    static std::string templateName(const ComplementaryROI<DataTypes>* = nullptr);
+
 protected:
 
     /// inputs

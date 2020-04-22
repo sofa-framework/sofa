@@ -129,9 +129,5 @@ TEST_F(Base_test , testGetClassName)
     EXPECT_EQ(b->getClassName(), "MyFakeClassName");
     EXPECT_EQ(b->getTypeName(), "CustomBaseObjectTStdRigidTypes<3,double>>");
     EXPECT_EQ(b->getTemplateName(), Rigid3Types::Name());
-
-    EXPECT_EQ(Base::className<CustomBaseObjectT<Rigid3Types>>(), "MyFakeClassName");
-    EXPECT_EQ(Base::typeName<CustomBaseObjectT<Rigid3Types>>(), "CustomBaseObjectTStdRigidTypes<3,double>>");
-    EXPECT_EQ(Base::namespaceName<CustomBaseObjectT<Rigid3Types>>(), "customns");
 }
 

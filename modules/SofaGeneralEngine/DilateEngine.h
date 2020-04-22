@@ -69,6 +69,16 @@ public:
     void reinit() override;
     void doUpdate() override;
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const DilateEngine<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
 protected:
     Data<VecCoord> d_inputX; ///< input position
     Data<VecCoord> d_outputX; ///< ouput position
@@ -82,6 +92,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP)
 extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace engine

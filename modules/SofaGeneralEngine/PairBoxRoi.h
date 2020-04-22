@@ -101,6 +101,17 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const PairBoxROI<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
+
 protected:
     bool isPointInBox(const CPos& p, const Vec6& b);
     bool isPointInBox(const PointID& pid, const Vec6& b);

@@ -126,6 +126,10 @@ public:
 
     Data<bool> worldGridAligned; ///< perform rasterization on a world aligned grid using nbVoxels and voxelSize
 
+
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
+    static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
+
     MeshToImageEngine()    :   Inherited()
       , voxelSize(initData(&voxelSize,helper::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
       , nbVoxels(initData(&nbVoxels,defaulttype::Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))

@@ -59,10 +59,14 @@ public:
     Data<std::string>   d_dataname            ; ///< The data field for which to create an alias.
     Data<std::string>   d_alias               ; ///< The alias of the data field.
 
-    /// Returns the sofa class name. By default the name of the c++ class is exposed... but
-    /// Here we want it to be MakeAlias so we need to customize it.
-    /// More details on the name customization infrastructure is in NameDecoder.h
-    static std::string GetCustomClassName()
+    /// Inherited virtual function from Base
+    static std::string className(const MakeDataAliasComponent* ptr)
+    {
+        SOFA_UNUSED(ptr);
+        return "MakeDataAlias" ;
+    }
+
+    virtual std::string getClassName() const override
     {
         return "MakeDataAlias" ;
     }

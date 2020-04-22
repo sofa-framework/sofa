@@ -69,10 +69,15 @@ public:
     Data< VecCoord > normals;       ///< result
     Data<bool> invertNormals; ///< Swap normals
     Data<bool> useAngles; ///< Use incident angles to weight faces normal contributions at each vertex
+
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
+    static std::string templateName(const NormalsFromPoints<DataTypes>* = nullptr) { return DataTypes::Name();    }
+
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)
-extern template class SOFA_GENERAL_ENGINE_API NormalsFromPoints<defaulttype::Vec3Types>; 
+extern template class SOFA_GENERAL_ENGINE_API NormalsFromPoints<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

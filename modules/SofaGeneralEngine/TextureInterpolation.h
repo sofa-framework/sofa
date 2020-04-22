@@ -72,6 +72,16 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const TextureInterpolation<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
 protected:
 
     /// input state vector
@@ -108,6 +118,7 @@ protected:
 extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec1Types>;
 extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec2Types>;
 extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

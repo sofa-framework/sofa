@@ -138,6 +138,10 @@ public:
         if (sofa::simulation::AnimateBeginEvent::checkEventType(event) && _update.getValue().getSelectedId()==EVERY_TIMESTEP)
             update();
     }
+
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
+    static std::string templateName(const ImageTransform<ImageTypes>* = NULL) { return ImageTypes::Name(); }
+
 };
 
 

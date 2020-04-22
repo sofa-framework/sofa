@@ -76,6 +76,9 @@ public:
     Data< ImageTypes > outputImage;
     Data< TransformType > outputTransform;
 
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
+    static std::string templateName(const ImageAccumulator<ImageTypes>* = NULL) { return ImageTypes::Name(); }
+
     ImageAccumulator()    :   Inherited()
         , accumulate(initData(&accumulate,false,"accumulate","accumulate ?"))
         , inputImage(initData(&inputImage,ImageTypes(),"inputImage",""))

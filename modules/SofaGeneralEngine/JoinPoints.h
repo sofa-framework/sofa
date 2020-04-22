@@ -61,6 +61,16 @@ public:
     void reinit() override;
     void doUpdate() override;
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const JoinPoints<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
     //Input
     Data<VecCoord > f_points; ///< Points
     Data<Real> f_distance ; ///< Distance to merge points

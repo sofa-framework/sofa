@@ -104,10 +104,12 @@ public:
 #endif
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
-    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
-    /// so we need to override that by implementing GetCustomTemplateName() function
-    /// More details on the name customization infrastructure is in NameDecoder.h
-    static const std::string GetCustomTemplateName()
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const PrecomputedLinearSolver<TMatrix,TVector>* = nullptr)
     {
         return TVector::Name();
     }

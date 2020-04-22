@@ -188,6 +188,15 @@ public:
 
         return obj;
     }
+    std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+    static std::string templateName(const Distances<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
 
 private:
     Data<std::string> fileDistance; ///< file containing the result of the computation of the distances
@@ -223,7 +232,9 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DISTANCES_CPP)
-extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3Types>; 
+extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3Types>;
+//extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3Types>;
+ 
 #endif
 
 } // namespace engine

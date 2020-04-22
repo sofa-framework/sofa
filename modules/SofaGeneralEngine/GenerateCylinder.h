@@ -70,6 +70,16 @@ public:
 
     void doUpdate() override;
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const GenerateCylinder<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
 public:
     Data<VecCoord> f_outputTetrahedraPositions; ///< ouput tetrahedra position
 	Data<VecCoord> f_outputTrianglesPositions; ///< ouput triangle positions

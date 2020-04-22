@@ -513,6 +513,9 @@ public:
 	Data< bool > showFaces; ///< show the faces of cubes
 
     /**@}*/
+
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
+    static std::string templateName(const ImageSampler<ImageTypes>* = NULL) { return ImageTypes::Name();    }
     ImageSampler()    :   Inherited()
         , image(initData(&image,ImageTypes(),"image",""))
         , transform(initData(&transform,TransformType(),"transform",""))

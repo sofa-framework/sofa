@@ -69,6 +69,16 @@ public:
 
     void draw( const core::visual::VisualParams* ) override;
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const ExtrudeQuadsAndGenerateHexas<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
     bool                                             initialized;
     Data<bool>                                       isVisible; ///< is Visible ?
     Data<Coord>                                      f_scale; ///< Apply a scaling factor to the extruded mesh

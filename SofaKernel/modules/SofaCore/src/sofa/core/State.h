@@ -144,6 +144,17 @@ public:
 
     /// @}
 
+
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const State<DataTypes>* = nullptr)
+    {
+        return TDataTypes::Name();
+    }
+
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };
 

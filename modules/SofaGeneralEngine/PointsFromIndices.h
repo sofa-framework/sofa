@@ -64,6 +64,16 @@ public:
 
     void doUpdate() override;
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const PointsFromIndices<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
+
     Data<VecCoord> f_X; ///< Position coordinates of the degrees of freedom
     Data<SetIndex> f_indices; ///< Indices of the points
     Data<VecCoord> f_indices_position; ///< Coordinates of the points contained in indices

@@ -66,6 +66,15 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const PointSetTopologyAlgorithms<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
 private:
     PointSetTopologyContainer*					m_container;
     PointSetTopologyModifier*					m_modifier;
@@ -78,6 +87,8 @@ extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaultt
 extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec1Types>;
 extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Rigid3Types>;
 extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Rigid2Types>;
+
+
 #endif
 
 } // namespace topology

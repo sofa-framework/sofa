@@ -58,6 +58,9 @@ public:
     Data< imCoord > dimxyzct;
     Data< ImageTypes > image;
 
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
+    static std::string templateName(const GenerateImage<ImageTypes>* = NULL) { return ImageTypes::Name(); }
+
     GenerateImage()    :   Inherited()
       , dimxyzct(initData(&dimxyzct,"dim","dimensions (x,y,z,c,t)",""))
       , image(initData(&image,ImageTypes(),"image",""))

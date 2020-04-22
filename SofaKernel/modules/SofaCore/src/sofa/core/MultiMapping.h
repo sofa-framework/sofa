@@ -192,6 +192,14 @@ public:
     void disable() override;
 
 
+
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const MultiMapping<TIn, TOut>* = nullptr);
+
     template<class T>
     static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
     {

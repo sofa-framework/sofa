@@ -59,7 +59,7 @@ else()
 endif()
 
 target_include_directories(gtest
-    SYSTEM PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" # for src/gtest.cc -> src/gtest-internal-inl.h
     )
 target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include/extlibs/GTest/include>")

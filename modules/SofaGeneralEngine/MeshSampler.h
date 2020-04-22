@@ -84,6 +84,8 @@ public:
     Data< VI > outputIndices;       ///< selected point indices
     Data< VecCoord > outputPosition;       ///< selected point coordinates
 
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
+    static std::string templateName(const MeshSampler<DataTypes>* = nullptr) {   return DataTypes::Name(); }
 
 private:
     // recursively add farthest point from already selected points

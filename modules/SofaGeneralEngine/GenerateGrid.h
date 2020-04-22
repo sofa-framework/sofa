@@ -75,6 +75,15 @@ public:
 
     void doUpdate() override;
 
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const GenerateGrid<DataTypes>* = nullptr)
+    {
+        return DataTypes::Name();
+    }
 
 public:
     Data<VecCoord> d_outputX; ///< ouput position
