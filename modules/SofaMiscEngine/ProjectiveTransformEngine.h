@@ -68,16 +68,6 @@ public:
 
     void doUpdate() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const ProjectiveTransformEngine<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
 protected:
     Data<VecCoord> f_inputX;   ///< input position
     Data<VecCoord> f_outputX;  ///< output position: Z=focal_distance
@@ -86,9 +76,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)
-
 extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
-
 #endif
 
 } // namespace engine

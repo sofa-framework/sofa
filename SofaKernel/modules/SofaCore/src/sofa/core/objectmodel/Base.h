@@ -184,24 +184,24 @@ public:
     /// Get the type name of this object (i.e. class and template types)
     /// Since #PR 1283, the signature has changed to "final" so it is not possible
     /// to override the getTypeName() method.
-    virtual std::string getTypeName() const;
+    virtual std::string getTypeName() const final ;
 
     /// Get the class name of this object
     /// Since #PR 1283, the signature has changed to "final" so it is not possible
     /// to override the getClassName() method. To specify custom class name you need
     /// to implement a single static std::string GetCustomClassName(){} method.
-    virtual std::string getClassName() const;
+    virtual std::string getClassName() const final ;
 
     /// Get the template type names (if any) used to instantiate this object
     /// Since #PR 1283, the signature has changed to "final" so it is not possible
     /// to override the getClassName() method. To specify custom class name you need
     /// to implement a single static std::string GetCustomTemplateName(){} method.
-    virtual std::string getTemplateName() const;
+    virtual std::string getTemplateName() const final ;
 
     /// Get the template type names (if any) used to instantiate this object
     /// Since #PR 1283, the signature has changed to "final" so it is not possible
     /// to override the getNameSpaceName() method.
-    virtual std::string getNameSpaceName() const;
+    virtual std::string getNameSpaceName() const final;
 
     /// Set the source filename (where the component is implemented)
     void setDefinitionSourceFileName(const std::string& sourceFileName);

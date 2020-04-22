@@ -62,16 +62,6 @@ public:
 
     void doUpdate() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const MergePoints<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     bool           initDone;
 
     Data<VecCoord> f_X1; ///< position coordinates of the degrees of freedom of the first object

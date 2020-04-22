@@ -82,15 +82,6 @@ public:
         }
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const DevMonitor<TDataTypes>* = nullptr)
-    {
-        return TDataTypes::Name();
-    }
 protected:
     double lastTime;
     double timestamp;

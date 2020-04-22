@@ -85,9 +85,6 @@ public:
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles; ///< output triangles
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MarchingCubesEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
-
     MarchingCubesEngine()    :   Inherited()
         , isoValue(initData(&isoValue,(Real)(1.0),"isoValue","pixel value to extract isosurface"))
         , subdiv(initData(&subdiv,defaulttype::Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))

@@ -172,16 +172,6 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const ProjectiveConstraintSet<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
 protected:
     SingleLink<ProjectiveConstraintSet<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
 };

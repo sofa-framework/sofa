@@ -90,9 +90,6 @@ public:
     Data<ImageTypes> image; ///< Image
     Data<TransformType> transform; ///< Transform
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MergeImages<ImageTypes>* = NULL) { return ImageTypes::Name(); }
-
     MergeImages()    :   Inherited()
         , overlap ( initData ( &overlap,"overlap","method for handling overlapping regions" ) )
         , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )

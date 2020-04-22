@@ -294,14 +294,6 @@ bool Mapping<In,Out>::setTo(BaseState* to)
 }
 
 template <class In, class Out>
-std::string Mapping<In,Out>::templateName(const Mapping<In, Out>* /*mapping*/)
-{
-    //	return std::string("Mapping<") + In::Name() + std::string(",") + Out::Name() + std::string(">");
-    return In::Name() + std::string(",") + Out::Name();
-}
-
-
-template <class In, class Out>
 void Mapping<In,Out>::updateForceMask()
 {
     assert( maskFrom /*&& SOFA_CLASS_METHOD*/ );

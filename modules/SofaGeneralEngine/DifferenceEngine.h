@@ -59,17 +59,6 @@ public:
 
     void doUpdate() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const DifferenceEngine<TDataType>* = nullptr)
-    {
-        return defaulttype::DataTypeInfo<TDataType>::name();
-    }
-
-
 protected:
 
     Data<VecData> d_input; ///< input vector

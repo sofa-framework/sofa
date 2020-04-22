@@ -78,16 +78,6 @@ public:
 
     void doUpdate() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const GenerateSphere<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
 public:
     Data<VecCoord> f_outputTetrahedraPositions; ///< Output tetrahedra positions
     Data<SeqTetrahedra> f_tetrahedra; ///< Output tetrahedra

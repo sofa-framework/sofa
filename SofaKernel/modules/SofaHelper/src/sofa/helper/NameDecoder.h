@@ -296,7 +296,7 @@ std::string GetSofaTypeTemplateName(const std::string prefix)
 {
     if constexpr (HasName<T>::value )
             return prefix + T::Name();
-    return prefix + sofa::helper::NameDecoder::decodeTypeName(typeid(T));
+    return prefix + sofa::helper::NameDecoder::decodeClassName(typeid(T));
 }
 
 }
