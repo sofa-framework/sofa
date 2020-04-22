@@ -536,8 +536,6 @@ const TriangleSetTopologyContainer::TrianglesAroundVertex& TriangleSetTopologyCo
 {
     if (id < m_trianglesAroundVertex.size())
         return m_trianglesAroundVertex[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "TrianglesAroundVertex array access out of bounds: " << id << " >= " << m_trianglesAroundVertex.size();
 
     return InvalidSet;
 }
@@ -546,8 +544,6 @@ const TriangleSetTopologyContainer::TrianglesAroundEdge& TriangleSetTopologyCont
 {
     if (id < m_trianglesAroundEdge.size())
         return m_trianglesAroundEdge[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "TrianglesAroundEdge array access out of bounds: " << id << " >= " << m_trianglesAroundEdge.size();
 
     return InvalidSet;
 }
@@ -556,8 +552,6 @@ const TriangleSetTopologyContainer::EdgesInTriangle &TriangleSetTopologyContaine
 {
     if (id < m_edgesInTriangle.size())
         return m_edgesInTriangle[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "EdgesInTriangle array access out of bounds: " << id << " >= " << m_edgesInTriangle.size();
 
     return InvalidTriangle;
 }

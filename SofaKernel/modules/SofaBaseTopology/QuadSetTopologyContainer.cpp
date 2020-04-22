@@ -279,9 +279,6 @@ QuadSetTopologyContainer::QuadID QuadSetTopologyContainer::getQuadIndex(PointID 
 {
     if(!hasQuadsAroundVertex())
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "QuadsAroundVertex array is empty with " << getNbPoints() << " vertices.";
-
         return InvalidID;
     }
 
@@ -335,25 +332,16 @@ size_t QuadSetTopologyContainer::getNumberOfElements() const
 
 const sofa::helper::vector< QuadSetTopologyContainer::QuadsAroundVertex > &QuadSetTopologyContainer::getQuadsAroundVertexArray()
 {
-    if(CHECK_TOPOLOGY)	// this method should only be called when the shell array exists
-        msg_warning_when(!hasQuadsAroundVertex()) << "QuadsAroundVertex shell array is empty.";
-
     return m_quadsAroundVertex;
 }
 
 const sofa::helper::vector< QuadSetTopologyContainer::QuadsAroundEdge > &QuadSetTopologyContainer::getQuadsAroundEdgeArray()
 {
-    if(CHECK_TOPOLOGY)	// this method should only be called when the shell array exists
-        msg_warning_when(!hasQuadsAroundEdge()) << "QuadsAroundEdge shell array is empty.";
-
     return m_quadsAroundEdge;
 }
 
 const sofa::helper::vector< QuadSetTopologyContainer::EdgesInQuad> &QuadSetTopologyContainer::getEdgesInQuadArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(m_edgesInQuad.empty()) << "EdgesInQuad shell array is empty.";
-
     return m_edgesInQuad;
 }
 
@@ -361,8 +349,6 @@ const QuadSetTopologyContainer::QuadsAroundVertex& QuadSetTopologyContainer::get
 {
     if (id < m_quadsAroundVertex.size())
         return m_quadsAroundVertex[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "QuadsAroundVertex array access out of bounds: " << id << " >= " << m_quadsAroundVertex.size();
 
     return InvalidSet;
 }
@@ -371,8 +357,6 @@ const QuadSetTopologyContainer::QuadsAroundEdge& QuadSetTopologyContainer::getQu
 {
     if (id < m_quadsAroundEdge.size())
         return m_quadsAroundEdge[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "QuadsAroundEdge array access out of bounds: " << id << " >= " << m_quadsAroundEdge.size();
 
     return InvalidSet;
 }
@@ -381,8 +365,6 @@ const QuadSetTopologyContainer::EdgesInQuad &QuadSetTopologyContainer::getEdgesI
 {
     if (id < m_edgesInQuad.size())
         return m_edgesInQuad[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "EdgesInQuad array access out of bounds: " << id << " >= " << m_edgesInQuad.size();
 
     return InvalidQuad;
 }

@@ -166,9 +166,6 @@ const sofa::helper::vector<EdgeSetTopologyContainer::Edge> &EdgeSetTopologyConta
 
 const sofa::helper::vector<EdgeSetTopologyContainer::Edge> &EdgeSetTopologyContainer::getEdgeArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasEdges() && getNbPoints()>0) << "Edge array is empty with " << getNbPoints() << " vertices.";
-
     return d_edge.getValue();
 }
 
@@ -176,9 +173,6 @@ EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID 
 {
     if (!hasEdges())
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "Edge array is empty with " << getNbPoints() << " vertices.";
-
         return InvalidID;
     }
 
@@ -281,9 +275,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
 
     if (nbr == 0)
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "Can't compute connexity as there are no edges";
-
+        msg_warning() << "Can't compute connexity as there are no edges";
         return false;
     }
 
@@ -305,9 +297,7 @@ size_t EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 
     if (nbr == 0)
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "Can't compute connexity as there are no edges";
-
+        msg_warning() << "Can't compute connexity as there are no edges";
         return 0;
     }
 
@@ -389,9 +379,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getConnected
         if (elemPreviousFront.empty())
         {
             end = true;
-			if(CHECK_TOPOLOGY)
-				msg_error() << "Loop for computing connexity has reach end.";
-
+            msg_warning() << "Loop to compute connexity has reach end before processing all elements. This means the mesh is not fully connected.";
         }
 
         // iterate
@@ -527,8 +515,6 @@ const EdgeSetTopologyContainer::EdgesAroundVertex& EdgeSetTopologyContainer::get
 {
     if(id < m_edgesAroundVertex.size())
         return m_edgesAroundVertex[id];
-    else if(CHECK_TOPOLOGY)
-        msg_error() << "EdgesAroundVertex array access out of bounds: " << id << " >= " << m_edgesAroundVertex.size();
 
     return InvalidSet;
 }
