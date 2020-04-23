@@ -107,7 +107,7 @@ template<class T>
 class HasDeprecatedShortName
 {
 public:
-    enum { value = reinterpret_cast<void*>(T::template shortName<T>) != reinterpret_cast<void*>(T::BaseType::template shortName<T>) };
+    enum { value = &T::template shortName<T> != &T::BaseType::template shortName<T> };
 };
 
 template<class T>

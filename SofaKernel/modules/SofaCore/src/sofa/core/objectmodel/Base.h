@@ -483,8 +483,6 @@ public:
     /// \code  std::string type = Base::shortNam<B>(); \endcode
     /// This way derived classes can redefine the shortName method
     template< class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
     static std::string shortName(const T* ptr = nullptr, BaseObjectDescription* = nullptr )
     {
         SOFA_UNUSED(ptr);
