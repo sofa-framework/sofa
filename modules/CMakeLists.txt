@@ -18,4 +18,4 @@ else()
 endif()
 
 ### All the other targets visible in "modules" are not real module
-### and are contained in the SofaGeneral, SofaMisc, SofaAdvanced
+### and are contained in the SofaGeneral, SofaMisc
