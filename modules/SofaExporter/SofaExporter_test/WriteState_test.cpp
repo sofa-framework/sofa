@@ -36,6 +36,10 @@ using sofa::helper::testing::BaseTest;
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaExporter/WriteState.h>
 
+#include <SofaBase/initSofaBase.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaGeneral/initSofaGeneral.h>
+
 namespace sofa {
 
     using namespace component;
@@ -72,6 +76,9 @@ namespace sofa {
         /// Create the context for the scene
         void SetUp()
         {
+            sofa::component::initSofaBase();
+            sofa::component::initSofaCommon();
+            sofa::component::initSofaGeneral();
             // Init simulation
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
             root = simulation::getSimulation()->createNewGraph("root");

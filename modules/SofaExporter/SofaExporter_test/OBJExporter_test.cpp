@@ -57,6 +57,11 @@ public:
     /// remove the file created...
     std::vector<std::string> dataPath ;
 
+    void SetUp() override
+    {
+        sofa::simulation::setSimulation(new DAGSimulation());
+    }
+
     void TearDown()
     {
         for(auto& pathToRemove : dataPath)
