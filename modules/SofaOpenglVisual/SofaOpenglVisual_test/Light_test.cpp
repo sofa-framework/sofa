@@ -4,8 +4,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -46,7 +46,7 @@ int initMessage(){
 
 int messageInited = initMessage();
 
-class TestLight : public Sofa_test<> {
+class TestLight : public BaseTest {
 public:
     void checkSpotLightValidAttributes();
     void checkDirectionalLightValidAttributes();
@@ -77,7 +77,8 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("light1") ;
     ASSERT_NE(lm, nullptr) ;
 
-    clearSceneGraph();
+    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::getSimulation()->createNewGraph("");
 }
 
 void TestLight::checkPositionalLightValidAttributes()
@@ -119,7 +120,8 @@ void TestLight::checkPositionalLightValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    clearSceneGraph();
+    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::getSimulation()->createNewGraph("");
 }
 
 void TestLight::checkDirectionalLightValidAttributes()
@@ -161,7 +163,8 @@ void TestLight::checkDirectionalLightValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    clearSceneGraph();
+    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::getSimulation()->createNewGraph("");
 }
 
 void TestLight::checkSpotLightValidAttributes()
@@ -211,7 +214,7 @@ void TestLight::checkSpotLightValidAttributes()
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
     sofa::simulation::getSimulation()->unload(root);
-
+    sofa::simulation::getSimulation()->createNewGraph("");
 }
 
 

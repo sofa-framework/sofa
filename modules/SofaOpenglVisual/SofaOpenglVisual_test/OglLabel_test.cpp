@@ -25,8 +25,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -48,7 +48,7 @@ using sofa::defaulttype::RGBAColor ;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
-class OglLabelTest : public Sofa_test<>
+class OglLabelTest : public BaseTest
 {
 public:
     void SetUp(){
@@ -83,6 +83,9 @@ public:
 
         EXPECT_TRUE(ogllabel->d_selectContrastingColor.getValue()) ;
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
+
+        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::getSimulation()->createNewGraph("");
     }
 
 
@@ -112,6 +115,9 @@ public:
 
         EXPECT_TRUE(ogllabel->d_selectContrastingColor.getValue()) ;
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
+
+        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::getSimulation()->createNewGraph("");
     }
 
     void checkAttributes()
@@ -141,6 +147,9 @@ public:
 
         for(auto& attrname : attrnames)
             EXPECT_NE( lm->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
+
+        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::getSimulation()->createNewGraph("");
     }
 };
 
