@@ -234,6 +234,14 @@ add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 add_subdirectory(SofaGeneral)
 add_subdirectory(SofaMisc)
 
+# This is all the applications GUI stuff. As there is a dependency to this one
+# In scene creator and SofaPython...it is located here.
+add_subdirectory(SofaGui)
+
+# SofaTest, modules depend on SofaPython, so we add SofaPython before.
+# and SofaPython needs SofaGui...
+sofa_add_plugin(applications/plugins/SofaPython SofaPython)
+
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
@@ -252,13 +260,6 @@ endif()
 ## Customized collections
 # SofaComponentAll is a convenient collection to get all Sofa features
 add_subdirectory(applications/collections)
-
-# This is all the applications GUI stuff. As there is a dependency to this one
-# In scene creator and SofaPython...it is located here.
-add_subdirectory(SofaGui)
-
-# SofaTest, modules depend on SofaPython, so we add SofaPython before.
-sofa_add_plugin(applications/plugins/SofaPython SofaPython)
 
 ## Scene creator option
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
