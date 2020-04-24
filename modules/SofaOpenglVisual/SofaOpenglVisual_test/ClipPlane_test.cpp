@@ -22,6 +22,8 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
+#include <SofaBaseMechanics/initBaseMechanics.h>
+
 #include <SofaSimulationGraph/SimpleApi.h>
 
 namespace cliplane_test
@@ -39,6 +41,12 @@ int messageInited = initMessage();
 
 class TestClipPlane : public BaseTest {
 public:
+    void SetUp() override
+    {
+        sofa::component::initBaseMechanics();
+        sofa::simulation::setSimulation(new DAGSimulation());
+    }
+
     void checkClipPlaneValidAttributes();
     void checkClipPlaneAttributesValues(const std::string& dataname, const std::string& value);
 };

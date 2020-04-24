@@ -25,6 +25,8 @@ using sofa::helper::BackTrace ;
 #include <SofaOpenglVisual/OglModel.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <SofaBaseMechanics/initBaseMechanics.h>
+
 #include <SofaSimulationGraph/SimpleApi.h>
 
 namespace light_test
@@ -48,6 +50,13 @@ int messageInited = initMessage();
 
 class TestLight : public BaseTest {
 public:
+
+    void SetUp() override
+    {
+        sofa::component::initBaseMechanics();
+        sofa::simulation::setSimulation(new DAGSimulation());
+    }
+
     void checkSpotLightValidAttributes();
     void checkDirectionalLightValidAttributes();
     void checkPositionalLightValidAttributes();

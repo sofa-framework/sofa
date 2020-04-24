@@ -47,11 +47,19 @@ using sofa::helper::logging::MessageDispatcher ;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
+#include <SofaBaseMechanics/initBaseMechanics.h>
+
 #include <SofaSimulationGraph/SimpleApi.h>
 
 namespace sofa {
 
-struct TestLightManager : public BaseTest {
+struct TestLightManager : public BaseTest 
+{
+    void SetUp() override
+    {
+        sofa::component::initBaseMechanics();
+        sofa::simulation::setSimulation(new DAGSimulation());
+    }
 };
 
 void checkAttributes()

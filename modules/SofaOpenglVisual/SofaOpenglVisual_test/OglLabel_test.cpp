@@ -46,14 +46,17 @@ using sofa::component::visualmodel::OglLabel ;
 #include <sofa/defaulttype/RGBAColor.h>
 using sofa::defaulttype::RGBAColor ;
 
+#include <SofaBaseMechanics/initBaseMechanics.h>
+
 #include <SofaSimulationGraph/SimpleApi.h>
 
 class OglLabelTest : public BaseTest
 {
 public:
-    void SetUp(){
-        sofa::simpleapi::importPlugin("SofaOpenglVisual");
-
+    void SetUp()
+    {
+        sofa::component::initBaseMechanics();
+        sofa::simulation::setSimulation(new DAGSimulation());
     }
 
     void checkExcludingAttributes()
