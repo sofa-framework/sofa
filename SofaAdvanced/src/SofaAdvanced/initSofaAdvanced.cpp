@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <SofaAdvanced/initSofaAdvanced.h>
-#include <SofaNonUniformFem/initNonUniformFEM.h>
 
 namespace sofa
 {
@@ -37,8 +36,6 @@ void initSofaAdvanced()
     {
         first = false;
     }
-
-    initNonUniformFEM();
 }
 
 

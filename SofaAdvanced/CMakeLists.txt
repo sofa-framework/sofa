@@ -12,14 +12,13 @@ set(SOFAADVANCED_TARGETS
     SofaNonUniformFem
 )
 
+message(DEPRECATION "SofaAdvanced collection is deprecated, please directly use its modules in your project(s). It contains the following module(s): ${SOFAADVANCED_TARGETS}")
+
 foreach(TARGET ${SOFAADVANCED_TARGETS})
-    add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-    target_include_directories(${TARGET} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
-    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
-    set_target_properties(${TARGET} PROPERTIES FOLDER SofaAdvanced) # IDE folder
-    set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFAADVANCED_VERSION})
+    find_package(${TARGET} QUIET)
+    if(NOT ${TARGET}_FOUND)
+        sofa_force_add_outofree_module(../modules/${TARGET} ${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET} ON)
+    endif()
 endforeach()
 
 

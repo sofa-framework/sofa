@@ -234,7 +234,23 @@ add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 add_subdirectory(SofaGeneral)
 add_subdirectory(SofaMisc)
 
-## Packages
+## Modules
+## in the consortium convention a module is a similar to a plugin the difference is that
+## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(modules)
+
+## Collections
+## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
+# SofaAdvanced is legacy and deprecated since 20.06
+set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS SofaAdvanced)
+option(SOFA_BUILD_DEPRECATED_COLLECTIONS "Build legacy collections (${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})." ON)
+if(SOFA_BUILD_DEPRECATED_COLLECTIONS)
+    foreach(deprecated_collection ${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})
+        add_subdirectory(${deprecated_collection})
+    endforeach()
+endif()
+## Customized collections
+# SofaComponentAll is a convenient collection to get all Sofa features
 add_subdirectory(applications/collections)
 
 # This is all the applications GUI stuff. As there is a dependency to this one
@@ -266,11 +282,6 @@ if(SOFA_BUILD_TESTS)
     # Library used to write high level tests involving many components.
     add_subdirectory(applications/plugins/SofaTest)
 endif()
-
-## Modules
-## in the consortium convention a module is a similar to a plugin the difference is that
-## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
-add_subdirectory(modules)
 
 if(SOFA_BUILD_TESTS)
     # Tests for all the modules, written using SofaTest.
