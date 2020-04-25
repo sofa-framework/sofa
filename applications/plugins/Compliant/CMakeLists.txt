@@ -7,7 +7,7 @@ find_package(SofaGui QUIET)
 sofa_find_package(SofaPython QUIET)
 
 # Previous Eigen versions have a critical bug (v.noalias()+=w does not work in some situations)
-find_package(Eigen3 3.2.5 REQUIRED)
+find_package(Eigen3 3.2.5 QUIET NO_MODULE  REQUIRED)
 
 set(HEADER_FILES
     config.h.in

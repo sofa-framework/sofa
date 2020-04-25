@@ -58,7 +58,7 @@ if(SOFAHELPER_HAVE_GTEST)
 endif()
 
 # Eigen3 is required by SofaDefaultType and SofaHelper
-find_package(Eigen3 QUIET REQUIRED)
+find_package(Eigen3 QUIET NO_MODULE REQUIRED)
 
 foreach(target SofaHelper SofaDefaultType SofaCore)
     if(NOT TARGET ${target})
