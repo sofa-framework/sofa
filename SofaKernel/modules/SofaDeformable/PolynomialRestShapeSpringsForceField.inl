@@ -241,6 +241,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
         recomputeIndices();
     }
 
+    msg_info() << "\n\nNew step:\n";
     if ( d_polynomialDegree.getValue().size() != m_indices.size() )
     {
         msg_warning() << "WARNING : stiffness is not defined on each point, first stiffness is used";
@@ -274,7 +275,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
             m_weightedCoordinateDifference[i] = m_weightedCoordinateDifference[i] / m_directionSpringLength[i];
 
             f1[index] -=  forceValue * m_weightedCoordinateDifference[i];
-            msg_info() << "Applied force value: " << forceValue * m_weightedCoordinateDifference[i];
+            msg_info() << "Applied force value: " << -forceValue * m_weightedCoordinateDifference[i];
 
             ComputeJacobian(0, i);
         }
@@ -311,7 +312,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
             m_weightedCoordinateDifference[i] = m_weightedCoordinateDifference[i] / m_directionSpringLength[i];
 
             f1[index] -= forceValue * m_weightedCoordinateDifference[i];
-            msg_info() << "Applied force value: " << forceValue * m_weightedCoordinateDifference[i];
+            msg_info() << "Applied force value: " << -forceValue * m_weightedCoordinateDifference[i];
 
             ComputeJacobian(i, i);
         }
@@ -376,7 +377,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addDForce(const core::Mech
         const JacobianVector& jacobVector = m_differential[index];
         for(unsigned int coordIndex = 0; coordIndex < Coord::total_size; coordIndex++)
         {
-            df1[m_indices[index]][coordIndex] += jacobVector[coordIndex] * dx1[m_indices[index]][coordIndex] * kFactor;
+            df1[m_indices[index]][coordIndex] -= jacobVector[coordIndex] * dx1[m_indices[index]][coordIndex] * kFactor;
         }
     }
 }
