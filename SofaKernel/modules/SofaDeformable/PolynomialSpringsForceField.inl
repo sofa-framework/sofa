@@ -22,9 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_INL
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_INL
-
+#pragma once
 
 #include <sofa/core/behavior/ForceField.inl>
 #include "PolynomialSpringsForceField.h"
@@ -73,7 +71,7 @@ PolynomialSpringsForceField<DataTypes>::PolynomialSpringsForceField(MechanicalSt
     , d_showArrowSize(initData(&d_showArrowSize, 0.01f, "showArrowSize","size of the axis"))
     , d_springColor(initData(&d_springColor, defaulttype::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f), "springColor", "spring color"))
     , d_showIndicesScale(initData(&d_showIndicesScale, (float)0.02, "showIndicesScale", "Scale for indices display. (default=0.02)"))
-    , Dimension(Coord::total_size)
+    , m_dimension(Coord::total_size)
 {
 }
 
@@ -138,12 +136,12 @@ void PolynomialSpringsForceField<DataTypes>::bwdInit()
         m_polynomialsMap.push_back(polynomial);
     }
 
-    // msg_info() << "Polynomial data: ";
-    // for (size_t degreeIndex = 0; degreeIndex < vPolynomialDegree.size(); degreeIndex++) {
-    //     for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[degreeIndex]; polynomialIndex++) {
-    //         msg_info() << m_polynomialsMap[degreeIndex][polynomialIndex] << " ";
-    //     }
-    // }
+    msg_info() << "Polynomial data: ";
+    for (size_t degreeIndex = 0; degreeIndex < vPolynomialDegree.size(); degreeIndex++) {
+        for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[degreeIndex]; polynomialIndex++) {
+            msg_info() << m_polynomialsMap[degreeIndex][polynomialIndex] << " ";
+        }
+    }
 
     this->f_listening.setValue(true);
 }
@@ -163,7 +161,7 @@ void PolynomialSpringsForceField<DataTypes>::recomputeIndices()
 
     if (m_firstObjectIndices.size() == 0)
     {
-        // msg_info() << "default case: points = all points ";
+        msg_info() << "default case for object 1: points = all points";
         for (unsigned int i = 0; i < (unsigned)this->mstate1->getSize(); i++) {
             m_firstObjectIndices.push_back(i);
         }
@@ -171,7 +169,7 @@ void PolynomialSpringsForceField<DataTypes>::recomputeIndices()
 
     if (m_secondObjectIndices.size()==0)
     {
-        // msg_info() << "default case: points = all points ";
+        msg_info() << "default case for object 2: points = all points";
         for (unsigned int i = 0; i < (unsigned)this->mstate2->getSize(); i++) {
             m_secondObjectIndices.push_back(i);
         }
@@ -198,10 +196,8 @@ void PolynomialSpringsForceField<DataTypes>::addForce(const core::MechanicalPara
 
     VecDeriv&       f1 = *data_f1.beginEdit();
     const VecCoord& p1 =  data_p1.getValue();
-    //const VecDeriv& v1 =  data_v1.getValue();
     VecDeriv&       f2 = *data_f2.beginEdit();
     const VecCoord& p2 =  data_p2.getValue();
-    //const VecDeriv& v2 =  data_v2.getValue();
 
     f1.resize(p1.size());
     f2.resize(p2.size());
@@ -213,97 +209,72 @@ void PolynomialSpringsForceField<DataTypes>::addForce(const core::MechanicalPara
 
     Real compressionValue = d_compressible.getValue() ? -1.0 : 0.0;
 
-    if ( d_polynomialDegree.getValue().size() != m_firstObjectIndices.size() )
+    if (d_polynomialDegree.getValue().size() != m_firstObjectIndices.size())
     {
-        // msg_warning() << "WARNING : stiffness is not defined on each point, first stiffness is used";
-
+        msg_warning() << "WARNING : stiffness is not defined on each point, first stiffness is used";
         for (unsigned int i = 0; i < m_firstObjectIndices.size(); i++)
         {
             const unsigned int firstIndex = m_firstObjectIndices[i];
             const unsigned int secondIndex = m_secondObjectIndices[i];
 
             Deriv dx = p2[secondIndex] - p1[firstIndex];
-            // msg_info() << "dx value";
-            // msg_info() << dx;
+            msg_info() << "dx value" << dx;
+
             // compute stress value
             m_weightedCoordinateDifference[i] = dx;
             m_springLength[i] = dx.norm();
-            // msg_info() << "Spring length";
-            // msg_info() << springLength[i];
+            msg_info() << "Spring length" << m_springLength[i];
             if (m_computeSpringsZeroLength[i] == 1) {
                 m_initialSpringLength[i] = m_springLength[i];
-                // msg_info() << "Spring zero length";
-                // msg_info() << zeroLength[i] <<;
+                msg_info() << "Spring zero length" << m_initialSpringLength[i];
                 m_computeSpringsZeroLength[i] = 0;
             }
             m_weightedCoordinateDifference[i] = m_weightedCoordinateDifference[i] / m_springLength[i];
-            // msg_info() << "Weighted coordinate difference";
-            // msg_info() << weightedCoordinateDifference[i];
+            msg_info() << "Weighted coordinate difference" << m_weightedCoordinateDifference[i];
 
             m_strainValue[i] = std::fabs(m_springLength[i] - m_initialSpringLength[i]) / m_initialSpringLength[i];
             double forceValue = PolynomialValue(0, m_strainValue[i]);
             m_strainSign[i] = m_springLength[i] - m_initialSpringLength[i] >= 0 ? 1.0 : compressionValue;
-
-            // msg_info() << "Strain sign";
-            // msg_info() << strainSign[i];
-
-            // msg_info() << "Strain value";
-            // msg_info() << strainValue[i];
-
-            // msg_info() << "Force value";
-            // msg_info() << forceValue;
-
-            // msg_info() << "Applied force value";
-            // msg_info() << forceValue * strainSign[i] * weightedCoordinateDifference[i];
+            msg_info() << "Strain sign" << m_strainSign[i];
+            msg_info() << "Strain value" << m_strainValue[i];
+            msg_info() << "Force value" << forceValue;
 
             f1[firstIndex] += forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
             f2[secondIndex] += -forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
+            msg_info() << "Applied force value" << forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
 
             ComputeJacobian(0, i);
         }
     }
     else
     {
-        // msg_info() << "\n\n\n\nShow forces results";
         for (unsigned int i = 0; i < m_firstObjectIndices.size(); i++)
         {
             const unsigned int firstIndex = m_firstObjectIndices[i];
             const unsigned int secondIndex = m_secondObjectIndices[i];
 
             Deriv dx = p2[secondIndex] - p1[firstIndex];
-            // msg_info() << "dx value";
-            // msg_info() << dx;
+            msg_info() << "dx value" << dx;
             m_weightedCoordinateDifference[i] = dx;
             m_springLength[i] = dx.norm();
-            // msg_info() << "Spring length value";
-            // msg_info() << springLength[i];
+            msg_info() << "Spring length value" << m_springLength[i];
             if (m_computeSpringsZeroLength[i] == 1) {
                 m_initialSpringLength[i] = m_springLength[i];
-                // msg_info() << "Spring zero length";
-                // msg_info() << zeroLength[i];
+                msg_info() << "Spring zero length" << m_initialSpringLength[i];
                 m_computeSpringsZeroLength[i] = 0;
             }
             m_weightedCoordinateDifference[i] = m_weightedCoordinateDifference[i] / m_springLength[i];
 
-
             m_strainValue[i] = std::fabs(m_springLength[i] - m_initialSpringLength[i]) / m_initialSpringLength[i];
             double forceValue = PolynomialValue(i, m_strainValue[i]);
             m_strainSign[i] = m_springLength[i] - m_initialSpringLength[i] >= 0 ? 1.0 : compressionValue;
-
-            // msg_info() << "Strain sign";
-            // msg_info() << strainSign[i];
-
-            // msg_info() << "Strain value";
-            // msg_info() << strainValue;
-
-            // msg_info() << "Force value";
-            // msg_info() << forceValue;
-
-            // msg_info() << "Applied force value";
-            // msg_info() << forceValue * strainSign[i] * weightedСoordinateDifference[i];
+            msg_info() << "Strain sign" << m_strainSign[i];
+            msg_info() << "Strain value" << m_strainValue[i];
+            msg_info() << "Force value" << forceValue;
 
             f1[firstIndex] += forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
             f2[secondIndex] += -forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
+            msg_info() << "Applied force value" << forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
 
             ComputeJacobian(i, i);
         }
@@ -315,25 +286,25 @@ void PolynomialSpringsForceField<DataTypes>::addForce(const core::MechanicalPara
 template<class DataTypes>
 void PolynomialSpringsForceField<DataTypes>::ComputeJacobian(unsigned int stiffnessIndex, unsigned int springIndex)
 {
-    // msg_info() << "\n\nCompute derivative: ";
-    // msg_info() << "spring length: " << m_springLength[springIndex];
+    msg_info() << "\n\nCompute derivative: ";
+    msg_info() << "spring length: " << m_springLength[springIndex];
     // Compute stiffness dF/dX for nonlinear case
 
-    // msg_info() << "weighted difference: " << m_weightedCoordinateDifference[springIndex][0] << " " <<
-    //                m_weightedCoordinateDifference[springIndex][1] << " " << m_weightedCoordinateDifference[springIndex][2];
+    msg_info() << "weighted difference: " << m_weightedCoordinateDifference[springIndex][0] << " "
+               << m_weightedCoordinateDifference[springIndex][1] << " " << m_weightedCoordinateDifference[springIndex][2];
 
     // compute polynomial result
     double polynomialForceRes = PolynomialValue(stiffnessIndex, m_strainValue[springIndex]) / m_springLength[springIndex];
-    // msg_info() << "PolynomialForceRes: " << polynomialForceRes;
+    msg_info() << "PolynomialForceRes: " << polynomialForceRes;
 
     double polynomialDerivativeRes = PolynomialDerivativeValue(stiffnessIndex, m_strainValue[springIndex]) / m_initialSpringLength[springIndex];
-    // msg_info() << "PolynomialDerivativeRes: " << polynomialDerivativeRes;
+    msg_info() << "PolynomialDerivativeRes: " << polynomialDerivativeRes;
 
     // compute data for Jacobian matrix
     JacobianMatrix& jacobMatrix = m_differential[springIndex];
-    for(unsigned int firstIndex = 0; firstIndex < Dimension; firstIndex++)
+    for(unsigned int firstIndex = 0; firstIndex < m_dimension; firstIndex++)
     {
-        for(unsigned int secondIndex = 0; secondIndex < Dimension; secondIndex++)
+        for(unsigned int secondIndex = 0; secondIndex < m_dimension; secondIndex++)
         {
             jacobMatrix[firstIndex][secondIndex] = (polynomialDerivativeRes - polynomialForceRes) *
                     m_weightedCoordinateDifference[springIndex][firstIndex] * m_weightedCoordinateDifference[springIndex][secondIndex];
@@ -341,14 +312,13 @@ void PolynomialSpringsForceField<DataTypes>::ComputeJacobian(unsigned int stiffn
         jacobMatrix[firstIndex][firstIndex] += polynomialForceRes;
     }
 
-    //for(unsigned int firstIndex = 0; firstIndex < Dimension; firstIndex++)
-    //{
-    //    for(unsigned int secondIndex = 0; secondIndex < Dimension; secondIndex++)
-    //    {
-    //        msg_info() << "for indices " << firstIndex << " and " << secondIndex << " the values is: " <<
-    //                                                                          jacobMatrix[firstIndex][secondIndex];
-    //    }
-    //}
+    for(unsigned int firstIndex = 0; firstIndex < m_dimension; firstIndex++)
+    {
+        for(unsigned int secondIndex = 0; secondIndex < m_dimension; secondIndex++)
+        {
+            msg_info() << "for indices " << firstIndex << " and " << secondIndex << " the values is: " << jacobMatrix[firstIndex][secondIndex];
+        }
+    }
 }
 
 
@@ -361,17 +331,14 @@ void PolynomialSpringsForceField<DataTypes>::addDForce(const core::MechanicalPar
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
 
-    if (this->f_printLog.getValue())
-        std::cout << "[" <<  this->getName() << "]: addDforce" << std::endl;
+    msg_info() << "[" <<  this->getName() << "]: addDforce";
 
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-
-    // msg_info() << "\n\nDerivative values: ";
     for (unsigned int index = 0; index < m_firstObjectIndices.size(); index++)
     {
         const JacobianMatrix& jacobMatrix = m_differential[index];
         Deriv forceDelta = jacobMatrix * (dx2[m_secondObjectIndices[index]] - dx1[m_firstObjectIndices[index]]);
-        // msg_info() << "Spring stiffness derivative: " << forceDelta;
+        msg_info() << "Spring stiffness derivative: " << forceDelta;
 
         df1[m_firstObjectIndices[index]] += forceDelta * kFactor;
         df2[m_secondObjectIndices[index]] -= forceDelta * kFactor;
@@ -435,11 +402,10 @@ void PolynomialSpringsForceField<DataTypes>::draw(const core::visual::VisualPara
 
 
 template<class DataTypes>
-void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */,
+void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams,
                                                           const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
-    if (this->f_printLog.getValue())
-        msg_info() << "[" <<  this->getName() << "]: addKToMatrix";
+    msg_info() << "[" <<  this->getName() << "]: addKToMatrix";
 
     sofa::helper::AdvancedTimer::stepBegin("restShapeSpringAddKToMatrix");
 
@@ -460,22 +426,18 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
             secondIndex = m_secondObjectIndices[index];
             const JacobianMatrix& jacobMatrix = m_differential[index];
 
-            // msg_info() << "\n\nDerivative values: ";
-            for(unsigned int i = 0; i < Dimension; i++)
+            for(unsigned int i = 0; i < m_dimension; i++)
             {
-                for (unsigned int j = 0; j < Dimension; j++)
+                for (unsigned int j = 0; j < m_dimension; j++)
                 {
                     Real stiffnessDeriv = jacobMatrix[i][j] * kFact;
-                    // msg_info() << "Spring stiffness derivative: " << stiffnessDeriv;
-                    mat->add(offset + Dimension * firstIndex + i, offset + Dimension * firstIndex + j, -stiffnessDeriv);
-                    mat->add(offset + Dimension * firstIndex + i, offset + Dimension * secondIndex + j, stiffnessDeriv);
-                    mat->add(offset + Dimension * secondIndex + i, offset + Dimension * firstIndex + j, stiffnessDeriv);
-                    mat->add(offset + Dimension * secondIndex + i, offset + Dimension * secondIndex + j, -stiffnessDeriv);
+                    mat->add(offset + m_dimension * firstIndex + i, offset + m_dimension * firstIndex + j, -stiffnessDeriv);
+                    mat->add(offset + m_dimension * firstIndex + i, offset + m_dimension * secondIndex + j, stiffnessDeriv);
+                    mat->add(offset + m_dimension * secondIndex + i, offset + m_dimension * firstIndex + j, stiffnessDeriv);
+                    mat->add(offset + m_dimension * secondIndex + i, offset + m_dimension * secondIndex + j, -stiffnessDeriv);
                 }
             }
         }
-        // msg_info() << "Draw matrix";
-        // msg_info() << *mat;
     } else {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref11 = matrix->getMatrix(this->mstate1);
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref22 = matrix->getMatrix(this->mstate2);
@@ -489,17 +451,15 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
             secondIndex = m_secondObjectIndices[index];
             const JacobianMatrix& jacobMatrix = m_differential[index];
 
-            // msg_info() << "\n\nDerivative values: ";
-            for(unsigned int i = 0; i < Dimension; i++)
+            for(unsigned int i = 0; i < m_dimension; i++)
             {
-                for (unsigned int j = 0; j < Dimension; j++)
+                for (unsigned int j = 0; j < m_dimension; j++)
                 {
                     Real stiffnessDeriv = jacobMatrix[i][j] * kFact;
-                    // msg_info() << "Spring stiffness derivative: " << stiffnessDeriv;
-                    mref11.matrix->add(mref11.offset + Dimension * firstIndex + i, mref11.offset + Dimension * firstIndex + j, -stiffnessDeriv);
-                    mref12.matrix->add(mref12.offRow + Dimension * firstIndex + i, mref12.offCol + Dimension * secondIndex + j, stiffnessDeriv);
-                    mref21.matrix->add(mref21.offRow + Dimension * secondIndex + i, mref21.offCol + Dimension * firstIndex + j, stiffnessDeriv);
-                    mref22.matrix->add(mref22.offset + Dimension * secondIndex + i, mref22.offset + Dimension * secondIndex + j, -stiffnessDeriv);
+                    mref11.matrix->add(mref11.offset + m_dimension * firstIndex + i, mref11.offset + m_dimension * firstIndex + j, -stiffnessDeriv);
+                    mref12.matrix->add(mref12.offRow + m_dimension * firstIndex + i, mref12.offCol + m_dimension * secondIndex + j, stiffnessDeriv);
+                    mref21.matrix->add(mref21.offRow + m_dimension * secondIndex + i, mref21.offCol + m_dimension * firstIndex + j, stiffnessDeriv);
+                    mref22.matrix->add(mref22.offset + m_dimension * secondIndex + i, mref22.offset + m_dimension * secondIndex + j, -stiffnessDeriv);
                 }
             }
         }
@@ -535,15 +495,15 @@ void PolynomialSpringsForceField<DataTypes>::addSubKToMatrix(const core::Mechani
             for (unsigned s = 0; s < addSubIndex.size() && !contains; s++) if (firstIndex == addSubIndex[s]) contains = true;
             if (!contains) continue;
 
-            for(unsigned int i = 0; i < Dimension; i++)
+            for(unsigned int i = 0; i < m_dimension; i++)
             {
-                for (unsigned int j = 0; j < Dimension; j++)
+                for (unsigned int j = 0; j < m_dimension; j++)
                 {
                     Real stiffnessDeriv = jacobMatrix[i][j] * kFact;
-                    mat->add(offset + Dimension * firstIndex + i, offset + Dimension * firstIndex + j, -stiffnessDeriv);
-                    mat->add(offset + Dimension * firstIndex + i, offset + Dimension * secondIndex + j, stiffnessDeriv);
-                    mat->add(offset + Dimension * secondIndex + i, offset + Dimension * firstIndex + j, stiffnessDeriv);
-                    mat->add(offset + Dimension * secondIndex + i, offset + Dimension * secondIndex + j, -stiffnessDeriv);
+                    mat->add(offset + m_dimension * firstIndex + i, offset + m_dimension * firstIndex + j, -stiffnessDeriv);
+                    mat->add(offset + m_dimension * firstIndex + i, offset + m_dimension * secondIndex + j, stiffnessDeriv);
+                    mat->add(offset + m_dimension * secondIndex + i, offset + m_dimension * firstIndex + j, stiffnessDeriv);
+                    mat->add(offset + m_dimension * secondIndex + i, offset + m_dimension * secondIndex + j, -stiffnessDeriv);
                 }
             }
         }
@@ -564,15 +524,15 @@ void PolynomialSpringsForceField<DataTypes>::addSubKToMatrix(const core::Mechani
             for (unsigned s = 0; s < addSubIndex.size() && !contains; s++) if (firstIndex == addSubIndex[s]) contains = true;
             if (!contains) continue;
 
-            for(unsigned int i = 0; i < Dimension; i++)
+            for(unsigned int i = 0; i < m_dimension; i++)
             {
-                for (unsigned int j = 0; j < Dimension; j++)
+                for (unsigned int j = 0; j < m_dimension; j++)
                 {
                     Real stiffnessDeriv = jacobMatrix[i][j] * kFact;
-                    mref11.matrix->add(mref11.offset + Dimension * firstIndex + i, mref11.offset + Dimension * firstIndex + j, -stiffnessDeriv);
-                    mref12.matrix->add(mref12.offRow + Dimension * firstIndex + i, mref12.offCol + Dimension * secondIndex + j, stiffnessDeriv);
-                    mref21.matrix->add(mref21.offRow + Dimension * secondIndex + i, mref21.offCol + Dimension * firstIndex + j, stiffnessDeriv);
-                    mref22.matrix->add(mref22.offset + Dimension * secondIndex + i, mref22.offset + Dimension * secondIndex + j, -stiffnessDeriv);
+                    mref11.matrix->add(mref11.offset + m_dimension * firstIndex + i, mref11.offset + m_dimension * firstIndex + j, -stiffnessDeriv);
+                    mref12.matrix->add(mref12.offRow + m_dimension * firstIndex + i, mref12.offCol + m_dimension * secondIndex + j, stiffnessDeriv);
+                    mref21.matrix->add(mref21.offRow + m_dimension * secondIndex + i, mref21.offCol + m_dimension * firstIndex + j, stiffnessDeriv);
+                    mref22.matrix->add(mref22.offset + m_dimension * secondIndex + i, mref22.offset + m_dimension * secondIndex + j, -stiffnessDeriv);
                 }
             }
         }
@@ -593,10 +553,11 @@ double PolynomialSpringsForceField<DataTypes>::PolynomialValue(unsigned int spri
         highOrderStrain *= strainValue;
         result += vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex]] * highOrderStrain;
     }
-    // msg_info() << "Polynomial data: ";
-    //for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[springIndex]; polynomialIndex++) {
-    //    msg_info() << vPolynomialStiffness[m_polynomialsMap[springIndex][polynomialIndex]] << " ";
-    //}
+
+    msg_info() << "Polynomial data: ";
+    for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[springIndex]; polynomialIndex++) {
+        msg_info() << vPolynomialStiffness[m_polynomialsMap[springIndex][polynomialIndex]] << " ";
+    }
 
     return result;
 }
@@ -612,13 +573,13 @@ double PolynomialSpringsForceField<DataTypes>::PolynomialDerivativeValue(unsigne
     double result = 0.0;
     for (size_t degreeIndex = 1; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
         result += degreeIndex * vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex - 1]] * highOrderStrain;
-        // msg_info() << "Result: " << result;
         highOrderStrain *= strainValue;
     }
-    // msg_info() << "Polynomial derivative data: ";
-    //for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[springIndex]; polynomialIndex++) {
-    //    msg_info() << vPolynomialStiffness[m_polynomialsMap[springIndex][polynomialIndex]] << " ";
-    //}
+
+    msg_info() << "Polynomial derivative data: ";
+    for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[springIndex]; polynomialIndex++) {
+        msg_info() << vPolynomialStiffness[m_polynomialsMap[springIndex][polynomialIndex]] << " ";
+    }
 
     return result;
 }
@@ -631,4 +592,3 @@ double PolynomialSpringsForceField<DataTypes>::PolynomialDerivativeValue(unsigne
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_INL

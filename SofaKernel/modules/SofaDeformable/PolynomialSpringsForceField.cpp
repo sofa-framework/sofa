@@ -56,3 +56,4 @@ template class SOFA_DEFORMABLE_API PolynomialSpringsForceField<Vec3Types>;
 } // namespace component
 
 } // namespace sofa
+
