@@ -209,6 +209,7 @@ void PolynomialSpringsForceField<DataTypes>::addForce(const core::MechanicalPara
 
     Real compressionValue = d_compressible.getValue() ? -1.0 : 0.0;
 
+    msg_info() << "\n\nNew step:\n";
     if (d_polynomialDegree.getValue().size() != m_firstObjectIndices.size())
     {
         msg_warning() << "WARNING : stiffness is not defined on each point, first stiffness is used";
@@ -570,7 +571,7 @@ double PolynomialSpringsForceField<DataTypes>::PolynomialDerivativeValue(unsigne
     double highOrderStrain = 1.0;
     double result = 0.0;
     for (size_t degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
-        result += (degreeIndex + 1) * vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex - 1]] * highOrderStrain;
+        result += (degreeIndex + 1) * vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex]] * highOrderStrain;
         highOrderStrain *= strainValue;
         msg_info() << "Degree:" << (degreeIndex + 1) << ", result: " << result;
     }
