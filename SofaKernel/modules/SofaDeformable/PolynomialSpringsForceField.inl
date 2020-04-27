@@ -218,30 +218,30 @@ void PolynomialSpringsForceField<DataTypes>::addForce(const core::MechanicalPara
             const unsigned int secondIndex = m_secondObjectIndices[i];
 
             Deriv dx = p2[secondIndex] - p1[firstIndex];
-            msg_info() << "dx value" << dx;
+            msg_info() << "dx value: " << dx;
 
             // compute stress value
             m_weightedCoordinateDifference[i] = dx;
             m_springLength[i] = dx.norm();
-            msg_info() << "Spring length" << m_springLength[i];
+            msg_info() << "Spring length: " << m_springLength[i];
             if (m_computeSpringsZeroLength[i] == 1) {
                 m_initialSpringLength[i] = m_springLength[i];
-                msg_info() << "Spring zero length" << m_initialSpringLength[i];
+                msg_info() << "Spring zero length: " << m_initialSpringLength[i];
                 m_computeSpringsZeroLength[i] = 0;
             }
             m_weightedCoordinateDifference[i] = m_weightedCoordinateDifference[i] / m_springLength[i];
-            msg_info() << "Weighted coordinate difference" << m_weightedCoordinateDifference[i];
+            msg_info() << "Weighted coordinate difference: " << m_weightedCoordinateDifference[i];
 
             m_strainValue[i] = std::fabs(m_springLength[i] - m_initialSpringLength[i]) / m_initialSpringLength[i];
             double forceValue = PolynomialValue(0, m_strainValue[i]);
             m_strainSign[i] = m_springLength[i] - m_initialSpringLength[i] >= 0 ? 1.0 : compressionValue;
-            msg_info() << "Strain sign" << m_strainSign[i];
-            msg_info() << "Strain value" << m_strainValue[i];
-            msg_info() << "Force value" << forceValue;
+            msg_info() << "Strain sign: " << m_strainSign[i];
+            msg_info() << "Strain value: " << m_strainValue[i];
+            msg_info() << "Force value: " << forceValue;
 
             f1[firstIndex] += forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
             f2[secondIndex] += -forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
-            msg_info() << "Applied force value" << forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
+            msg_info() << "Applied force value: " << forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
 
             ComputeJacobian(0, i);
         }
@@ -254,13 +254,13 @@ void PolynomialSpringsForceField<DataTypes>::addForce(const core::MechanicalPara
             const unsigned int secondIndex = m_secondObjectIndices[i];
 
             Deriv dx = p2[secondIndex] - p1[firstIndex];
-            msg_info() << "dx value" << dx;
+            msg_info() << "dx value: " << dx;
             m_weightedCoordinateDifference[i] = dx;
             m_springLength[i] = dx.norm();
-            msg_info() << "Spring length value" << m_springLength[i];
+            msg_info() << "Spring length value: " << m_springLength[i];
             if (m_computeSpringsZeroLength[i] == 1) {
                 m_initialSpringLength[i] = m_springLength[i];
-                msg_info() << "Spring zero length" << m_initialSpringLength[i];
+                msg_info() << "Spring zero length: " << m_initialSpringLength[i];
                 m_computeSpringsZeroLength[i] = 0;
             }
             m_weightedCoordinateDifference[i] = m_weightedCoordinateDifference[i] / m_springLength[i];
@@ -268,13 +268,13 @@ void PolynomialSpringsForceField<DataTypes>::addForce(const core::MechanicalPara
             m_strainValue[i] = std::fabs(m_springLength[i] - m_initialSpringLength[i]) / m_initialSpringLength[i];
             double forceValue = PolynomialValue(i, m_strainValue[i]);
             m_strainSign[i] = m_springLength[i] - m_initialSpringLength[i] >= 0 ? 1.0 : compressionValue;
-            msg_info() << "Strain sign" << m_strainSign[i];
-            msg_info() << "Strain value" << m_strainValue[i];
-            msg_info() << "Force value" << forceValue;
+            msg_info() << "Strain sign: " << m_strainSign[i];
+            msg_info() << "Strain value: " << m_strainValue[i];
+            msg_info() << "Force value: " << forceValue;
 
             f1[firstIndex] += forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
             f2[secondIndex] += -forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
-            msg_info() << "Applied force value" << forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
+            msg_info() << "Applied force value: " << forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
 
             ComputeJacobian(i, i);
         }
@@ -547,16 +547,13 @@ double PolynomialSpringsForceField<DataTypes>::PolynomialValue(unsigned int spri
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
     helper::ReadAccessor<Data<helper::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
+    msg_info() << "Polynomial data: ";
     double highOrderStrain = 1.0;
     double result = 0.0;
     for (size_t degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
         highOrderStrain *= strainValue;
         result += vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex]] * highOrderStrain;
-    }
-
-    msg_info() << "Polynomial data: ";
-    for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[springIndex]; polynomialIndex++) {
-        msg_info() << vPolynomialStiffness[m_polynomialsMap[springIndex][polynomialIndex]] << " ";
+        msg_info() << "Degree:" << (degreeIndex + 1) << ", result: " << result;
     }
 
     return result;
@@ -569,16 +566,13 @@ double PolynomialSpringsForceField<DataTypes>::PolynomialDerivativeValue(unsigne
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
     helper::ReadAccessor<Data<helper::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
+    msg_info() << "Polynomial derivative data: ";
     double highOrderStrain = 1.0;
     double result = 0.0;
-    for (size_t degreeIndex = 1; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
-        result += degreeIndex * vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex - 1]] * highOrderStrain;
+    for (size_t degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
+        result += (degreeIndex + 1) * vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex - 1]] * highOrderStrain;
         highOrderStrain *= strainValue;
-    }
-
-    msg_info() << "Polynomial derivative data: ";
-    for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[springIndex]; polynomialIndex++) {
-        msg_info() << vPolynomialStiffness[m_polynomialsMap[springIndex][polynomialIndex]] << " ";
+        msg_info() << "Degree:" << (degreeIndex + 1) << ", result: " << result;
     }
 
     return result;

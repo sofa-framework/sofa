@@ -311,7 +311,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
             m_weightedCoordinateDifference[i] = m_weightedCoordinateDifference[i] / m_directionSpringLength[i];
 
             f1[index] -= forceValue * m_weightedCoordinateDifference[i];
-            msg_info() << "Applied force value" << forceValue * m_weightedCoordinateDifference[i];
+            msg_info() << "Applied force value: " << forceValue * m_weightedCoordinateDifference[i];
 
             ComputeJacobian(i, i);
         }
@@ -497,16 +497,13 @@ double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialValue(unsigned
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
     helper::ReadAccessor<Data<helper::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
+    msg_info() << "Polynomial data: ";
     double highOrderStrain = 1.0;
     double result = 0.0;
     for (size_t degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
         highOrderStrain *= strainValue;
         result += vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex]] * highOrderStrain;
-    }
-
-    msg_info() << "Polynomial data: ";
-    for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[springIndex]; polynomialIndex++) {
-        msg_info() << vPolynomialStiffness[m_polynomialsMap[springIndex][polynomialIndex]] << " ";
+        msg_info() << "Degree:" << (degreeIndex + 1) << ", result: " << result;
     }
 
     return result;
@@ -519,16 +516,13 @@ double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialDerivativeValu
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
     helper::ReadAccessor<Data<helper::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
+    msg_info() << "Polynomial derivative data: ";
     double highOrderStrain = 1.0;
     double result = 0.0;
-    for (size_t degreeIndex = 1; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
-        result += degreeIndex * vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex - 1]] * highOrderStrain;
+    for (size_t degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
+        result += (degreeIndex + 1) * vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex - 1]] * highOrderStrain;
         highOrderStrain *= strainValue;
-    }
-
-    msg_info() << "Polynomial derivative data: ";
-    for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[springIndex]; polynomialIndex++) {
-        msg_info() << vPolynomialStiffness[m_polynomialsMap[springIndex][polynomialIndex]] << " ";
+        msg_info() << "Degree:" << (degreeIndex + 1) << ", result: " << result;
     }
 
     return result;
