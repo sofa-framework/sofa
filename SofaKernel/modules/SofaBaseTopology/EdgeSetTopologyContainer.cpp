@@ -275,7 +275,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
 
     if (nbr == 0)
     {
-        msg_warning() << "Can't compute connexity as there are no edges";
+        msg_error() << "CheckConnexity: Can't compute connexity as there are no edges";
         return false;
     }
 
@@ -283,7 +283,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-		msg_warning() << "Warning: in computing connexity, edges are missings. There is more than one connexe component.";
+		msg_warning() << "CheckConnexity: Edges are missings. There is more than one connexe component.";
         return false;
     }
 
@@ -297,7 +297,7 @@ size_t EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 
     if (nbr == 0)
     {
-        msg_warning() << "Can't compute connexity as there are no edges";
+        msg_error() << "Can't getNumberOfConnectedComponent as there are no edges";
         return 0;
     }
 

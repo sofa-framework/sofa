@@ -909,9 +909,7 @@ bool HexahedronSetTopologyContainer::checkConnexity()
 
     if (nbr == 0)
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Can't compute connexity as there are no Hexahedra";
-
+        msg_error() << "CheckConnexity: Can't compute connexity as there are no Hexahedra";
         return false;
     }
 
@@ -919,7 +917,7 @@ bool HexahedronSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_warning() << "Hexahedra are missings. There is more than one connexe component.";
+        msg_warning() << "CheckConnexity: Hexahedra are missings. There is more than one connexe component.";
         return false;
     }
 
@@ -933,9 +931,7 @@ size_t HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
 
     if (nbr == 0)
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Can't compute connexity as there are no Hexahedra";
-
+        msg_error() << "Can't getNumberOfConnectedComponent as there are no Hexahedra";
         return 0;
     }
 
@@ -1017,9 +1013,7 @@ const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::
         if (elemPreviousFront.empty())
         {
             end = true;
-			if (CHECK_TOPOLOGY)
-				msg_error() << "Loop for computing connexity has reach end.";
-
+			msg_error() << "Loop for computing connexity has reach end.";
         }
 
         // iterate

@@ -766,9 +766,7 @@ bool TriangleSetTopologyContainer::checkConnexity()
 
     if (nbr == 0)
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "Can't compute connexity as there are no triangles";
-
+        msg_error() << "CheckConnexity: Can't compute connexity as there are no triangles";
         return false;
     }
 
@@ -776,7 +774,7 @@ bool TriangleSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_warning() << "Computing connexity, triangles are missings. There is more than one connexe component.";
+        msg_warning() << "CheckConnexity: Triangles are missings. There is more than one connexe component.";
         return false;
     }
     return true;
@@ -789,9 +787,7 @@ size_t TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 
     if (nbr == 0)
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "Can't compute connexity as there are no triangles";
-
+        msg_error() << "Can't getNumberOfConnectedComponent as there are no triangles";
         return 0;
     }
 

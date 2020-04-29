@@ -841,9 +841,7 @@ bool TetrahedronSetTopologyContainer::checkConnexity()
 
     if (nbr == 0)
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "Can't compute connexity as there are no tetrahedra";
-
+        msg_error() << "CheckConnexity: Can't compute connexity as there are no tetrahedra";
         return false;
     }
 
@@ -851,7 +849,7 @@ bool TetrahedronSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_warning() << "In computing connexity, tetrahedra are missings. There is more than one connexe component.";
+        msg_warning() << "CheckConnexity: Tetrahedra are missings. There is more than one connexe component.";
         return false;
     }
 
@@ -865,9 +863,7 @@ size_t TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
 
     if (nbr == 0)
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "Can't compute connexity as there are no tetrahedra";
-
+        msg_error() << "Can't getNumberOfConnectedComponent as there are no tetrahedra";
         return 0;
     }
 
@@ -949,9 +945,7 @@ const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContaine
         if (elemPreviousFront.empty())
         {
             end = true;
-            if(CHECK_TOPOLOGY)
-                msg_warning() << "Loop for computing connexity has reach end.";
-
+            msg_warning() << "Loop for computing connexity has reach end.";
         }
 
         // iterate

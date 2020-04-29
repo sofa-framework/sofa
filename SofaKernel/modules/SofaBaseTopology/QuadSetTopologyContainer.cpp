@@ -500,9 +500,7 @@ bool QuadSetTopologyContainer::checkConnexity()
 
     if (nbr == 0)
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Can't compute connexity as there are no Quads";
-
+        msg_error() << "CheckConnexity: Can't compute connexity as there are no Quads";
         return false;
     }
 
@@ -510,7 +508,7 @@ bool QuadSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-		msg_error() << "In computing connexity, Quads are missings. There is more than one connexe component.";
+        msg_warning() << "CheckConnexity: Quads are missings. There is more than one connexe component.";
         return false;
     }
 
@@ -524,9 +522,7 @@ size_t QuadSetTopologyContainer::getNumberOfConnectedComponent()
 
     if (nbr == 0)
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Can't compute connexity as there are no Quads";
-
+        msg_error() << "Can't getNumberOfConnectedComponent as there are no Quads";
         return 0;
     }
 
@@ -608,9 +604,7 @@ const QuadSetTopologyContainer::VecQuadID QuadSetTopologyContainer::getConnected
         if (elemPreviousFront.empty())
         {
             end = true;
-			if (CHECK_TOPOLOGY)
-				msg_error() << "Loop for computing connexity has reach end.";
-
+            msg_error() << "Loop for computing connexity has reach end.";
         }
 
         // iterate
