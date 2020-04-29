@@ -242,9 +242,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<Quad
 {
     if(!m_container->hasQuads()) // this method should only be called when quads exist
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Quad array is empty.";
-
+        msg_error() << "Quad array is empty.";
         return;
     }
 
