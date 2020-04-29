@@ -505,9 +505,6 @@ size_t EdgeSetTopologyContainer::getNumberOfElements() const
 
 const sofa::helper::vector< sofa::helper::vector<EdgeSetTopologyContainer::EdgeID> > &EdgeSetTopologyContainer::getEdgesAroundVertexArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(m_edgesAroundVertex.empty()) << "EdgesAroundVertex shell array is empty.";
-
     return m_edgesAroundVertex;
 }
 

@@ -260,9 +260,6 @@ void QuadSetTopologyContainer::createEdgesInQuadArray()
 
 const sofa::helper::vector<QuadSetTopologyContainer::Quad> &QuadSetTopologyContainer::getQuadArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasQuads() && getNbPoints()>0) << "Quad array is empty with " << getNbPoints() << " vertices.";
-
     return d_quad.getValue();
 }
 

@@ -445,9 +445,6 @@ void TriangleSetTopologyContainer::reOrientateTriangle(TriangleID id)
 
 const sofa::helper::vector<TriangleSetTopologyContainer::Triangle> & TriangleSetTopologyContainer::getTriangleArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasTriangles() && getNbPoints()>0) << "Triangle array is empty with " << getNbPoints() << " vertices.";
-
     return d_triangle.getValue();
 }
 
@@ -510,25 +507,16 @@ size_t TriangleSetTopologyContainer::getNumberOfElements() const
 
 const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundVertex > &TriangleSetTopologyContainer::getTrianglesAroundVertexArray()
 {
-    if(CHECK_TOPOLOGY)	// this method should only be called when the shell array exists
-        msg_warning_when(!hasTrianglesAroundVertex()) << "TrianglesAroundVertex shell array is empty.";
-
     return m_trianglesAroundVertex;
 }
 
 const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundEdge > &TriangleSetTopologyContainer::getTrianglesAroundEdgeArray()
 {
-    if(CHECK_TOPOLOGY)	// this method should only be called when the shell array exists
-        msg_warning_when(!hasTrianglesAroundEdge()) << "TrianglesAroundEdge shell array is empty.";
-
     return m_trianglesAroundEdge;
 }
 
 const sofa::helper::vector<TriangleSetTopologyContainer::EdgesInTriangle> &TriangleSetTopologyContainer::getEdgesInTriangleArray()
 {
-    if(CHECK_TOPOLOGY) // this method should only be called when the shell array exists
-        msg_warning_when(m_edgesInTriangle.empty()) << "EdgesInTriangle shell array is empty.";
-
     return m_edgesInTriangle;
 }
 

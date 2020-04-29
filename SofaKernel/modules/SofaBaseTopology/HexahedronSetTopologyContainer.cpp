@@ -471,10 +471,7 @@ void HexahedronSetTopologyContainer::createHexahedraAroundQuadArray()
 
 const sofa::helper::vector<HexahedronSetTopologyContainer::Hexahedron> &HexahedronSetTopologyContainer::getHexahedronArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasHexahedra() && getNbPoints()>0) << "Hexahedron array is empty with " << getNbPoints() << " vertices.";
-
-    return d_hexahedron.getValue ();
+    return d_hexahedron.getValue();
 }
 
 core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
@@ -575,33 +572,21 @@ size_t HexahedronSetTopologyContainer::getNumberOfElements() const
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundVertex > &HexahedronSetTopologyContainer::getHexahedraAroundVertexArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasHexahedraAroundVertex()) << "HexahedraAroundVertex shell array is empty.";
-
     return m_hexahedraAroundVertex;
 }
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundEdge > &HexahedronSetTopologyContainer::getHexahedraAroundEdgeArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasHexahedraAroundEdge()) << "HexahedraAroundEdge shell array is empty.";
-
     return m_hexahedraAroundEdge;
 }
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundQuad > &HexahedronSetTopologyContainer::getHexahedraAroundQuadArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasHexahedraAroundQuad()) << "HexahedraAroundQuad shell array is empty.";
-
     return m_hexahedraAroundQuad;
 }
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::EdgesInHexahedron> &HexahedronSetTopologyContainer::getEdgesInHexahedronArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasEdgesInHexahedron()) << "EdgesInHexahedron shell array is empty.";
-
     return m_edgesInHexahedron;
 }
 
@@ -679,9 +664,6 @@ QuadSetTopologyContainer::QuadID HexahedronSetTopologyContainer::getNextAdjacent
 
 const sofa::helper::vector< QuadSetTopologyContainer::QuadsInHexahedron> &HexahedronSetTopologyContainer::getQuadsInHexahedronArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasQuadsInHexahedron()) << "QuadsInHexahedron shell array is empty.";
-
     return m_quadsInHexahedron;
 }
 
@@ -689,8 +671,6 @@ const HexahedronSetTopologyContainer::HexahedraAroundVertex &HexahedronSetTopolo
 {
     if (id < m_hexahedraAroundVertex.size())
         return m_hexahedraAroundVertex[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "HexahedraAroundVertex array access out of bounds: " << id << " >= " << m_hexahedraAroundVertex.size();
 
     return InvalidSet;
 }
@@ -699,8 +679,6 @@ const HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopology
 {
     if (id < m_hexahedraAroundEdge.size())
         return m_hexahedraAroundEdge[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "HexahedraAroundEdge array access out of bounds: " << id << " >= " << m_hexahedraAroundEdge.size();
 
     return InvalidSet;
 }
@@ -709,8 +687,6 @@ const HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopology
 {
     if (id < m_hexahedraAroundQuad.size())
         return m_hexahedraAroundQuad[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "HexahedraAroundQuad array access out of bounds: " << id << " >= " << m_hexahedraAroundQuad.size();
 
     return InvalidSet;
 }
@@ -719,8 +695,6 @@ const QuadSetTopologyContainer::EdgesInHexahedron &HexahedronSetTopologyContaine
 {
     if (id < m_edgesInHexahedron.size())
         return m_edgesInHexahedron[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "EdgesInHexahedron array access out of bounds: " << id << " >= " << m_edgesInHexahedron.size();
 
     return InvalidEdgesInHexahedron;
 }
@@ -729,8 +703,6 @@ const QuadSetTopologyContainer::QuadsInHexahedron &HexahedronSetTopologyContaine
 {
     if (id < m_quadsInHexahedron.size())
         return m_quadsInHexahedron[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "QuadsInHexahedron array access out of bounds: " << id << " >= " << m_quadsInHexahedron.size();
 
     return InvalidQuadsInHexahedron;
 }
