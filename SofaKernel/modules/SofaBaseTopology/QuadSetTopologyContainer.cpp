@@ -553,15 +553,13 @@ size_t QuadSetTopologyContainer::getNumberOfConnectedComponent()
 
 const QuadSetTopologyContainer::VecQuadID QuadSetTopologyContainer::getConnectedElement(QuadID elem)
 {
+    VecQuadID elemAll;
     if(!hasQuadsAroundVertex())	// this method should only be called when the shell array exists
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Quad vertex shell array is empty.";
-
-        createQuadsAroundVertexArray();
+        msg_warning() << "getElementAroundElements: QuadsAroundVertexArray is empty. Be sure to call createQuadsAroundVertexArray first.";
+        return elemAll;
     }
 
-    VecQuadID elemAll;
     VecQuadID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     size_t cpt = 0;
@@ -622,10 +620,8 @@ const QuadSetTopologyContainer::VecQuadID QuadSetTopologyContainer::getElementAr
 
     if (!hasQuadsAroundVertex())
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Quad vertex shell array is empty.";
-
-        createQuadsAroundVertexArray();
+        msg_warning() << "getElementAroundElements: QuadsAroundVertexArray is empty. Be sure to call createQuadsAroundVertexArray first.";
+        return elems;
     }
 
     Quad the_quad = this->getQuad(elem);
@@ -661,16 +657,13 @@ const QuadSetTopologyContainer::VecQuadID QuadSetTopologyContainer::getElementAr
 const QuadSetTopologyContainer::VecQuadID QuadSetTopologyContainer::getElementAroundElements(VecQuadID elems)
 {
     VecQuadID elemAll;
-    VecQuadID elemTmp;
-
     if (!hasQuadsAroundVertex())
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Quad vertex shell array is empty.";
-
-        createQuadsAroundVertexArray();
+        msg_warning() << "getElementAroundElements: QuadsAroundVertexArray is empty. Be sure to call createQuadsAroundVertexArray first.";
+        return elemAll;
     }
 
+    VecQuadID elemTmp;
     for (size_t i = 0; i <elems.size(); ++i) // for each QuadId of input vector
     {
         VecQuadID elemTmp2 = this->getElementAroundElement(elems[i]);

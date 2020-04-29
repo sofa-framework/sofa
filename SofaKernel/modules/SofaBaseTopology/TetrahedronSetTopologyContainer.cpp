@@ -894,15 +894,13 @@ size_t TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
 
 const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContainer::getConnectedElement(TetraID elem)
 {
+    VecTetraID elemAll;
     if(!hasTetrahedraAroundVertex())	// this method should only be called when the shell array exists
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "Tetrahedra vertex shell array is empty.";
-
-        createTetrahedraAroundVertexArray();
+        msg_warning() << "getElementAroundElements: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
+        return elemAll;
     }
-
-    VecTetraID elemAll;
+    
     VecTetraID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     size_t cpt = 0;
@@ -960,13 +958,10 @@ const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContaine
 const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContainer::getElementAroundElement(TetraID elem)
 {
     VecTetraID elems;
-
     if (!hasTetrahedraAroundVertex())
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "Tetrahedra vertex shell array is empty.";
-
-        createTetrahedraAroundVertexArray();
+        msg_warning() << "getElementAroundElements: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
+        return elems;
     }
 
     Tetra the_tetra = this->getTetra(elem);
@@ -1002,16 +997,13 @@ const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContaine
 const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContainer::getElementAroundElements(VecTetraID elems)
 {
     VecTetraID elemAll;
-    VecTetraID elemTmp;
-
     if (!hasTetrahedraAroundVertex())
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "Tetrahedra vertex shell array is empty.";
-
-        createTetrahedraAroundVertexArray();
+        msg_warning() << "getElementAroundElements: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
+        return elemAll;
     }
 
+    VecTetraID elemTmp;
     for (size_t i = 0; i <elems.size(); ++i) // for each TetraID of input vector
     {
         VecTetraID elemTmp2 = this->getElementAroundElement(elems[i]);

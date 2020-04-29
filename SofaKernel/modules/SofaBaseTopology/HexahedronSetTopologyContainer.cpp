@@ -962,15 +962,13 @@ size_t HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
 
 const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::getConnectedElement(HexaID elem)
 {
+    VecHexaID elemAll;
     if(!hasHexahedraAroundVertex())	// this method should only be called when the shell array exists
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Hexahedron vertex shell array is empty.";
-
-        createHexahedraAroundVertexArray();
+        msg_warning() << "getConnectedElement: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
+        return elemAll;
     }
 
-    VecHexaID elemAll;
     VecHexaID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     size_t cpt = 0;
@@ -1031,10 +1029,8 @@ const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::
 
     if (!hasHexahedraAroundVertex())
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Hexahedron vertex shell array is empty.";
-
-        createHexahedraAroundVertexArray();
+        msg_warning() << "getElementAroundElement: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
+        return elems;
     }
 
     Hexahedron the_hexa = this->getHexahedron(elem);
@@ -1070,16 +1066,13 @@ const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::
 const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::getElementAroundElements(VecHexaID elems)
 {
     VecHexaID elemAll;
-    VecHexaID elemTmp;
-
     if (!hasHexahedraAroundVertex())
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Hexahedron vertex shell array is empty.";
-
-        createHexahedraAroundVertexArray();
+        msg_warning() << "getElementAroundElements: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
+        return elemAll;
     }
 
+    VecHexaID elemTmp;
     for (size_t i = 0; i <elems.size(); ++i) // for each HexaID of input vector
     {
         VecHexaID elemTmp2 = this->getElementAroundElement(elems[i]);

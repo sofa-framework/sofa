@@ -817,15 +817,13 @@ size_t TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 
 const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::getConnectedElement(TriangleID elem)
 {
+    VecTriangleID elemAll;
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "Triangle vertex shell array is empty.";
-
-        createTrianglesAroundVertexArray();
+        msg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
+        return elemAll;
     }
 
-    VecTriangleID elemAll;
     VecTriangleID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     size_t cpt = 0;
@@ -885,10 +883,8 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
 
     if (!hasTrianglesAroundVertex())
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "Triangle vertex shell array is empty.";
-
-        createTrianglesAroundVertexArray();
+        msg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
+        return elems;
     }
 
     Triangle the_tri = this->getTriangle(elem);
@@ -923,16 +919,13 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
 const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::getElementAroundElements(VecTriangleID elems)
 {
     VecTriangleID elemAll;
-    VecTriangleID elemTmp;
-
     if (!hasTrianglesAroundVertex())
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "Triangle vertex shell array is empty.";
-
-        createTrianglesAroundVertexArray();
+        msg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
+        return elemAll;
     }
 
+    VecTriangleID elemTmp;
     for (size_t i = 0; i <elems.size(); ++i) // for each triangleId of input vector
     {
         VecTriangleID elemTmp2 = this->getElementAroundElement(elems[i]);

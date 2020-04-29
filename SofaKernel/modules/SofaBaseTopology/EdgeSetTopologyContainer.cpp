@@ -328,15 +328,13 @@ size_t EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 
 const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getConnectedElement(EdgeID elem)
 {
+    VecEdgeID elemAll;
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "EdgesAroundVertex shell array is empty.";
-
-        createEdgesAroundVertexArray();
+        msg_warning() << "getConnectedElement: EdgesAroundVertex is empty. Be sure to call createEdgesAroundVertexArray first.";
+        return elemAll;
     }
-
-    VecEdgeID elemAll;
+    
     VecEdgeID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     size_t cpt = 0;
@@ -397,10 +395,8 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 
     if (!hasEdgesAroundVertex())
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "Edge vertex shell array is empty.";
-
-        createEdgesAroundVertexArray();
+    	msg_warning() << "getElementAroundElement: Edge vertex shell array is empty. Be sure to call createEdgesAroundVertexArray first.";
+        return elems;
     }
 
     Edge the_edge = this->getEdge(elem);
@@ -440,16 +436,13 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAroundElements(VecEdgeID elems)
 {
     VecEdgeID elemAll;
-    VecEdgeID elemTmp;
-
     if (!hasEdgesAroundVertex())
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "Edge vertex shell array is empty.";
-
-        createEdgesAroundVertexArray();
+        msg_warning() << "getElementAroundElements: EdgesAroundVertexArray is empty. Be sure to call createEdgesAroundVertexArray first.";
+        return elemAll;
     }
 
+    VecEdgeID elemTmp;
     for (size_t i = 0; i <elems.size(); ++i) // for each edgeId of input vector
     {
         VecEdgeID elemTmp2 = this->getElementAroundElement(elems[i]);
