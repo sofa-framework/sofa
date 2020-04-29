@@ -463,9 +463,6 @@ TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriang
 {
     if(!hasTrianglesAroundVertex())
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "TrianglesAroundVertex array is empty with " << getNbPoints() << " vertices.";
-
         return InvalidID;
     }
 
@@ -573,9 +570,7 @@ const sofa::helper::vector <TriangleSetTopologyContainer::TriangleID>& TriangleS
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "A border element list is empty.";
-
+        msg_warning() << "getTrianglesOnBorder: trianglesOnBorder array is empty. Be sure to call createElementsOnBorder first.";
         createElementsOnBorder();
     }
 
@@ -587,9 +582,7 @@ const sofa::helper::vector <TriangleSetTopologyContainer::EdgeID>& TriangleSetTo
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "A border element list is empty.";
-
+        msg_warning() << "getEdgesOnBorder: edgesOnBorder array is empty. Be sure to call createElementsOnBorder first.";
         createElementsOnBorder();
     }
 
@@ -601,9 +594,7 @@ const sofa::helper::vector <TriangleSetTopologyContainer::PointID>& TriangleSetT
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "A border element list is empty.";
-
+        msg_warning() << "getPointsOnBorder: pointsOnBorder array is empty. Be sure to call createElementsOnBorder first.";
         createElementsOnBorder();
     }
 

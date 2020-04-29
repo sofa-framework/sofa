@@ -479,9 +479,6 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
 {
     if(!hasHexahedraAroundVertex())
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "HexahedraAroundVertex array is empty with " << getNbPoints() << " vertices.";
-
         return InvalidID;
     }
 

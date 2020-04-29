@@ -1059,15 +1059,11 @@ const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContaine
     VecTetraID elems;
     if (!hasTetrahedraAroundTriangle())
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "In getOppositeElement: TetrahedraAroundTriangle shell array is empty.";
         return elems;
     }
 
     if (!hasTrianglesInTetrahedron())
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "In getOppositeElement: TrianglesInTetrahedron shell array is empty.";
         return elems;
     }
 
