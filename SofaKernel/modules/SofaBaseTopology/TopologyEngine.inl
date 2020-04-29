@@ -98,9 +98,7 @@ void TopologyEngineImpl< VecT>::registerTopology(sofa::core::topology::BaseMeshT
 
     if (m_topology == nullptr)
     {
-        if (CHECK_TOPOLOGY)
-            msg_error() <<"Topology is not dynamic";
-
+        msg_error() <<"Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
         return;
     }
     else
@@ -113,9 +111,7 @@ void TopologyEngineImpl< VecT>::registerTopology()
 {
     if (m_topology == nullptr)
     {
-        if (CHECK_TOPOLOGY)
-            msg_error() <<"Topology is not dynamic";
-
+        msg_error() << "Current topology is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
         return;
     }
     else
@@ -147,9 +143,7 @@ void TopologyEngineImpl< VecT>::linkToPointDataArray()
 
     if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as PointSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as PointSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Point Data Array.";
         return;
     }
 
@@ -168,9 +162,7 @@ void TopologyEngineImpl< VecT>::linkToEdgeDataArray()
 
     if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as EdgeSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as EdgeSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Edge Data Array.";
         return;
     }
 
@@ -189,9 +181,7 @@ void TopologyEngineImpl< VecT>::linkToTriangleDataArray()
 
     if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as TriangleSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as TriangleSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Triangle Data Array.";
         return;
     }
 
@@ -210,9 +200,7 @@ void TopologyEngineImpl< VecT>::linkToQuadDataArray()
 
     if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as QuadSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as QuadSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Quad Data Array.";
         return;
     }
 
@@ -231,9 +219,7 @@ void TopologyEngineImpl< VecT>::linkToTetrahedronDataArray()
 
     if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as TetrahedronSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as TetrahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Tetrahedron Data Array.";
         return;
     }
 
@@ -252,9 +238,7 @@ void TopologyEngineImpl< VecT>::linkToHexahedronDataArray()
 
     if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as HexahedronSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as HexahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";
         return;
     }
 

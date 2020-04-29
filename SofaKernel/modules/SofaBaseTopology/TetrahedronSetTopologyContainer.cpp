@@ -1197,8 +1197,7 @@ void TetrahedronSetTopologyContainer::setTetrahedronTopologyToDirty()
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        if (CHECK_TOPOLOGY)
-            msg_info() << "Tetrahedron Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Tetrahedron Topology Set dirty engine: " << topoEngine->name;
     }
 }
 
@@ -1212,8 +1211,7 @@ void TetrahedronSetTopologyContainer::cleanTetrahedronTopologyFromDirty()
     {
         if ((*it)->isDirty())
         {
-            if (CHECK_TOPOLOGY)
-                msg_warning() << "Tetrahedron Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Tetrahedron Topology update did not clean engine: " << (*it)->name;
             (*it)->cleanDirty();
         }
     }

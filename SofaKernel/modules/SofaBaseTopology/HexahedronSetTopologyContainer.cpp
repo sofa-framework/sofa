@@ -1240,8 +1240,7 @@ void HexahedronSetTopologyContainer::setHexahedronTopologyToDirty()
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        if (CHECK_TOPOLOGY)
-            msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->name;
     }
 }
 
@@ -1255,8 +1254,7 @@ void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
     {
         if ((*it)->isDirty())
         {
-            if (CHECK_TOPOLOGY)
-                msg_warning() << "Hexahedron Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Hexahedron Topology update did not clean engine: " << (*it)->name;
             (*it)->cleanDirty();
         }
     }

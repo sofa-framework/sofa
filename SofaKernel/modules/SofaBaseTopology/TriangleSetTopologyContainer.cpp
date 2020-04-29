@@ -1072,8 +1072,7 @@ void TriangleSetTopologyContainer::setTriangleTopologyToDirty()
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        if (CHECK_TOPOLOGY)
-            msg_info() << "Triangle Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Triangle Topology Set dirty engine: " << topoEngine->name;
     }
 }
 
@@ -1087,8 +1086,7 @@ void TriangleSetTopologyContainer::cleanTriangleTopologyFromDirty()
     {
         if ((*it)->isDirty())
         {
-            if (CHECK_TOPOLOGY)
-                msg_warning() << "Triangle Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Triangle Topology update did not clean engine: " << (*it)->name;
             (*it)->cleanDirty();
         }
     }
