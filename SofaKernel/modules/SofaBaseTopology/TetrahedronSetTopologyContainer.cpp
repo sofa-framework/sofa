@@ -200,8 +200,7 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
                         foundEdge=true;
                     }
                 }
-                if (CHECK_TOPOLOGY)
-                    msg_warning_when(!foundEdge) << " In getTetrahedronArray, cannot find edge for tetrahedron " << i << "and edge "<< j;
+                msg_warning_when(!foundEdge) << " In getTetrahedronArray, cannot find edge for tetrahedron " << i << "and edge "<< j;
             }
         }
     }
@@ -480,8 +479,7 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
 
     assert(out3.size()==0 || out3.size()==1);
 
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(out3.size() > 1) << "More than one Tetrahedron found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "]";
+    msg_warning_when(out3.size() > 1) << "More than one Tetrahedron found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "]";
 
     if (out3.size()==1)
         return (int) (out3[0]);

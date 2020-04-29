@@ -428,11 +428,10 @@ void TriangleSetTopologyContainer::reOrientateTriangle(TriangleID id)
 {
     if (id >= (TriangleID)this->getNbTriangles())
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "Triangle ID out of bounds.";
-
+        msg_warning() << "Triangle ID out of bounds.";
         return;
     }
+
     Triangle& tri = (*d_triangle.beginEdit())[id];
     PointID tmp = tri[1];
     tri[1] = tri[2];
@@ -483,8 +482,8 @@ TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriang
     sofa::helper::vector<TriangleID>::iterator result2;
     result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
     out2.erase(result2,out2.end());
-    if (CHECK_TOPOLOGY)
-        msg_warning_when(out2.size() > 1) << "More than one triangle found for indices: [" << v1 << "; " << v2 << "; " << v3 << "]";
+    
+    msg_warning_when(out2.size() > 1) << "More than one triangle found for indices: [" << v1 << "; " << v2 << "; " << v3 << "]";
 
     if (out2.size()==1)
         return (int) (out2[0]);
@@ -837,9 +836,7 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
         if (elemPreviousFront.empty())
         {
             end = true;
-            if (CHECK_TOPOLOGY)
-                msg_error() << "Loop for computing connexity has reach end.";
-
+            msg_error() << "Loop for computing connexity has reach end.";
         }
 
         // iterate

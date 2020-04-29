@@ -536,8 +536,7 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
     result7 = std::set_intersection(set8.begin(),set8.end(),out6.begin(),out6.end(),out7.begin());
     out7.erase(result7,out7.end());
 
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(out7.size() > 1) << "More than one Hexahedron found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "; "
+    msg_warning_when(out7.size() > 1) << "More than one Hexahedron found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "; "
                          << v5 << "; " << v6 << "; " << v7 << "; " << v8 << "]";
 
     assert(out7.size()==0 || out7.size()==1);
@@ -633,9 +632,7 @@ QuadSetTopologyContainer::QuadID HexahedronSetTopologyContainer::getNextAdjacent
 
     if (QaroundE.size() < 2)
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "GetNextAdjacentQuad: no quad around edge: " << the_edgeID;
-
+    	msg_error() << "GetNextAdjacentQuad: no quad around edge: " << the_edgeID;
         return nextQuad;
     }
     else if (QaroundE.size() == 2)
