@@ -257,11 +257,8 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArra
         if (shell.size() == 1)
         {
             //Check if triangle has the good orientation
-            if (CHECK_TOPOLOGY)
-            {
-                int test = getTriangleTetrahedronOrientation (m_tetrahedron[ shell[0] ], m_triangle[ triangleIndex ]);
-                msg_info() << "Border test: " << test;
-            }
+            int test = getTriangleTetrahedronOrientation (m_tetrahedron[ shell[0] ], m_triangle[ triangleIndex ]);
+            msg_info() << "Border test: " << test;
         }
         else if (shell.size() == 2)
         {
@@ -287,16 +284,11 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArra
 
 bool ManifoldTetrahedronSetTopologyContainer::checkTopology() const
 {
-    if (CHECK_TOPOLOGY)
-    {
-        bool ret = true;
+    bool ret = true;
 
-        // To be implemented later later....
+    // To be implemented later later....
 
-        return ret && TetrahedronSetTopologyContainer::checkTopology();
-    }
-    else
-        return true;
+    return ret && TetrahedronSetTopologyContainer::checkTopology();
 }
 
 
@@ -327,7 +319,7 @@ int ManifoldTetrahedronSetTopologyContainer::getTetrahedronOrientation (const Te
         it = mapPosition.find (t_test[i]);
         if (it == mapPosition.end())
         {
-            msg_error_when(CHECK_TOPOLOGY) << "GetTetrahedronOrientation: reference and testing tetrahedrons are not composed by the same vertices.";
+            msg_error() << "GetTetrahedronOrientation: reference and testing tetrahedrons are not composed by the same vertices.";
             return -1;
         }
         positionsChange[(*it).second] = i;
@@ -391,7 +383,7 @@ int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (
         it = mapPosition.find (tri[i]);
         if (it == mapPosition.end())
         {
-            msg_error_when(CHECK_TOPOLOGY) << "GetTriangleTetrahedronOrientation: tetrahedrons and triangle are not composed by the same vertices.";
+            msg_error() << "GetTriangleTetrahedronOrientation: tetrahedrons and triangle are not composed by the same vertices.";
             return -1;
         }
         positionsChange[i] = (*it).second;
