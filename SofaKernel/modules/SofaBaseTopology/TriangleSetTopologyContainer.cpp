@@ -615,20 +615,11 @@ TriangleSetTopologyContainer::TrianglesAroundEdge &TriangleSetTopologyContainer:
 {
     if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "Triangle edge shell array is empty.";
-
+        msg_warning() << "getTrianglesAroundEdgeForModification: TrianglesAroundEdgeArray is empty. Be sure to call createTrianglesAroundEdgeArray first.";
         createTrianglesAroundEdgeArray();
     }
 
-    if( i >= m_trianglesAroundEdge.size())
-    {
-        if (CHECK_TOPOLOGY)
-            msg_error() << "Index out of bounds.";
-
-        createTrianglesAroundEdgeArray();
-    }
-
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_trianglesAroundEdge[i];
 }
 
@@ -636,20 +627,11 @@ TriangleSetTopologyContainer::TrianglesAroundVertex &TriangleSetTopologyContaine
 {
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
-        if (CHECK_TOPOLOGY)
-            msg_warning() << "Triangle vertex shell array is empty.";
-
+        msg_warning() << "getTrianglesAroundVertexForModification: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
         createTrianglesAroundVertexArray();
     }
 
-    if( i >= m_trianglesAroundVertex.size())
-    {
-        if (CHECK_TOPOLOGY)
-            msg_error() << "Index out of bounds.";
-
-        createTrianglesAroundVertexArray();
-    }
-
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_trianglesAroundVertex[i];
 }
 

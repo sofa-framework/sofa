@@ -398,20 +398,11 @@ QuadSetTopologyContainer::QuadsAroundEdge &QuadSetTopologyContainer::getQuadsAro
 {
     if(!hasQuadsAroundEdge())	// this method should only be called when the shell array exists
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Quad edge shell array is empty.";
-
+        msg_warning() << "getQuadsAroundEdgeForModification: QuadsAroundEdgeArray is empty. Be sure to call createQuadsAroundEdgeArray first.";
         createQuadsAroundEdgeArray();
     }
 
-    if( i >= m_quadsAroundEdge.size())
-    {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Index out of bounds.";
-
-        createQuadsAroundEdgeArray();
-    }
-
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_quadsAroundEdge[i];
 }
 
@@ -419,20 +410,11 @@ QuadSetTopologyContainer::QuadsAroundVertex &QuadSetTopologyContainer::getQuadsA
 {
     if(!hasQuadsAroundVertex())	// this method should only be called when the shell array exists
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Quad vertex shell array is empty.";
-
+        msg_warning() << "getQuadsAroundVertexForModification: QuadsAroundVertexArray is empty. Be sure to call createQuadsAroundVertexArray first.";
         createQuadsAroundVertexArray();
     }
 
-    if( i >= m_quadsAroundVertex.size())
-    {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Index out of bounds.";
-
-        createQuadsAroundVertexArray();
-    }
-
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_quadsAroundVertex[i];
 }
 

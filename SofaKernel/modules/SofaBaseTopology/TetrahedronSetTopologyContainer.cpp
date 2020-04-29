@@ -631,30 +631,42 @@ int TetrahedronSetTopologyContainer::getTriangleIndexInTetrahedron(const Triangl
 TetrahedronSetTopologyContainer::TetrahedraAroundEdge &TetrahedronSetTopologyContainer::getTetrahedraAroundEdgeForModification(const EdgeID i)
 {
     if (!hasTetrahedraAroundEdge())
+    {
+        msg_warning() << "getTetrahedraAroundEdgeForModification: TetrahedraAroundEdgeArray is empty. Be sure to call createTetrahedraAroundEdgeArray first.";
         createTetrahedraAroundEdgeArray();
+    }
 
     assert(i < m_tetrahedraAroundEdge.size());
 
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_tetrahedraAroundEdge[i];
 }
 
 TetrahedronSetTopologyContainer::TetrahedraAroundVertex &TetrahedronSetTopologyContainer::getTetrahedraAroundVertexForModification(const PointID i)
 {
     if (!hasTetrahedraAroundVertex())
+    {
+        msg_warning() << "getTetrahedraAroundVertexForModification: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
         createTetrahedraAroundVertexArray();
+    }
 
     assert(i < m_tetrahedraAroundVertex.size());
 
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_tetrahedraAroundVertex[i];
 }
 
 TetrahedronSetTopologyContainer::TetrahedraAroundTriangle &TetrahedronSetTopologyContainer::getTetrahedraAroundTriangleForModification(const TriangleID i)
 {
     if (!hasTetrahedraAroundTriangle())
+    {
+        msg_warning() << "getTetrahedraAroundTriangleForModification: TetrahedraAroundTriangleArray is empty. Be sure to call createTetrahedraAroundTriangleArray first.";
         createTetrahedraAroundTriangleArray();
+    }
 
     assert(i < m_tetrahedraAroundTriangle.size());
 
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_tetrahedraAroundTriangle[i];
 }
 

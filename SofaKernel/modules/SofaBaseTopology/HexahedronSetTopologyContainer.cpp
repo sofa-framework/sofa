@@ -781,31 +781,43 @@ int HexahedronSetTopologyContainer::getQuadIndexInHexahedron(const QuadsInHexahe
 
 HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopologyContainer::getHexahedraAroundEdgeForModification(const EdgeID i)
 {
-    if(CHECK_TOPOLOGY && !hasHexahedraAroundEdge())
+    if(!hasHexahedraAroundEdge())
+    {
+        msg_warning() << "getHexahedraAroundEdgeForModification: HexahedraAroundEdgeArray is empty. Be sure to call createHexahedraAroundEdgeArray first.";
         createHexahedraAroundEdgeArray();
+    }
 
     assert( i < m_hexahedraAroundEdge.size());
 
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_hexahedraAroundEdge[i];
 }
 
 HexahedronSetTopologyContainer::HexahedraAroundVertex &HexahedronSetTopologyContainer::getHexahedraAroundVertexForModification(const PointID i)
 {
-    if(CHECK_TOPOLOGY && !hasHexahedraAroundVertex())
+    if(!hasHexahedraAroundVertex())
+    {
+        msg_warning() << "getHexahedraAroundVertexForModification: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
         createHexahedraAroundVertexArray();
+    }
 
     assert( i < m_hexahedraAroundVertex.size());
 
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_hexahedraAroundVertex[i];
 }
 
 HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopologyContainer::getHexahedraAroundQuadForModification(const QuadID i)
 {
-    if(CHECK_TOPOLOGY && !hasHexahedraAroundQuad())
+    if(!hasHexahedraAroundQuad())
+    {
+        msg_warning() << "getHexahedraAroundQuadForModification: HexahedraAroundQuadArray is empty. Be sure to call createHexahedraAroundQuadArray first.";
         createHexahedraAroundQuadArray();
+    }
 
     assert( i < m_hexahedraAroundQuad.size());
 
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_hexahedraAroundQuad[i];
 }
 

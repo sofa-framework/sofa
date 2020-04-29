@@ -513,12 +513,11 @@ sofa::helper::vector< EdgeSetTopologyContainer::EdgeID > &EdgeSetTopologyContain
 {
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "Edge vertex shell array is empty.";
-
+        msg_warning() << "getEdgesAroundVertexForModification: EdgesAroundVertexArray is empty. Be sure to call createEdgesAroundVertexArray first.";
         createEdgesAroundVertexArray();
     }
 
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_edgesAroundVertex[i];
 }
 
