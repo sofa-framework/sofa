@@ -172,8 +172,9 @@ protected:
     virtual void displayDataGraph(sofa::core::objectmodel::BaseData& my_Data);
 
 public:
+    Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points    
 
-    Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points
+    Data<bool> d_checkTopology; ///< Bool parameter to activate internal topology checks in several methods 
 
 protected:
 
