@@ -10,9 +10,5 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGTestMain PluginExample)
-target_compile_definitions(${PROJECT_NAME}
-    PRIVATE "SOFAEXPORTER_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/files/\""
-    PRIVATE "SOFAEXPORTER_BUILD_DIR=\"${CMAKE_BINARY_DIR}/\""
-    )
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
