@@ -19,19 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef PLUGINEXAMPLE_MYMAPPINGPENDULUMINPLANE_H
-#define PLUGINEXAMPLE_MYMAPPINGPENDULUMINPLANE_H
+#pragma once
 
 #include <sofa/core/Mapping.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
 
 
-namespace sofa
-{
-namespace component
-{
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using helper::vector;
@@ -68,7 +63,7 @@ public:
 
 protected:
     MyMappingPendulumInPlane();
-    ~MyMappingPendulumInPlane();
+    virtual ~MyMappingPendulumInPlane();
 
 public:
     Data<vector<OutReal> > f_length; ///< distances from the fixed point to the end of the pendulum
@@ -87,8 +82,5 @@ protected:
     vector<Vec2> gap;
 };
 
-} // namespace mapping
-} // namespace component
-} // namespace sofa
+} // namespace sofa::component::mapping
 
-#endif // PLUGINEXAMPLE_MYMAPPINGPENDULUMINPLANE_H

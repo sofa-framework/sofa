@@ -1,29 +1,30 @@
 cmake_minimum_required(VERSION 3.1)
-project(PluginExample VERSION 1.0)
+project(PluginExample VERSION 1.0 LANGUAGES CXX)
 
 # Find and load CMake configuration of packages containing this plugin's dependencies
+find_package(SofaGui REQUIRED) # Dependency to SofaGuiQt
 find_package(SofaGui REQUIRED) # Dependency to SofaGuiQt
 sofa_find_package(Qt5 COMPONENTS Core) # Dependency to Qt5Core
 
 # List all files
-set(PLUGINEXEMPLE_SRC_DIR src/PluginExample)
+set(PLUGINEXAMPLE_SRC_DIR src/PluginExample)
 set(HEADER_FILES
-    ${PLUGINEXEMPLE_SRC_DIR}/config.h.in
-    ${PLUGINEXEMPLE_SRC_DIR}/MyBehaviorModel.h
-    ${PLUGINEXEMPLE_SRC_DIR}/MyMappingPendulumInPlane.h
-    ${PLUGINEXEMPLE_SRC_DIR}/MyMappingPendulumInPlane.inl
-    ${PLUGINEXEMPLE_SRC_DIR}/MyProjectiveConstraintSet.h
-    ${PLUGINEXEMPLE_SRC_DIR}/MyProjectiveConstraintSet.inl
+    ${PLUGINEXAMPLE_SRC_DIR}/config.h.in
+    ${PLUGINEXAMPLE_SRC_DIR}/MyBehaviorModel.h
+    ${PLUGINEXAMPLE_SRC_DIR}/MyMappingPendulumInPlane.h
+    ${PLUGINEXAMPLE_SRC_DIR}/MyMappingPendulumInPlane.inl
+    ${PLUGINEXAMPLE_SRC_DIR}/MyProjectiveConstraintSet.h
+    ${PLUGINEXAMPLE_SRC_DIR}/MyProjectiveConstraintSet.inl
     )
 set(HEADER_FILES_TO_MOC
-    ${PLUGINEXEMPLE_SRC_DIR}/MyDataWidgetUnsigned.h
+    ${PLUGINEXAMPLE_SRC_DIR}/MyDataWidgetUnsigned.h
     )
 set(SOURCE_FILES
-    ${PLUGINEXEMPLE_SRC_DIR}/initPlugin.cpp
-    ${PLUGINEXEMPLE_SRC_DIR}/MyBehaviorModel.cpp
-    ${PLUGINEXEMPLE_SRC_DIR}/MyDataWidgetUnsigned.cpp
-    ${PLUGINEXEMPLE_SRC_DIR}/MyMappingPendulumInPlane.cpp
-    ${PLUGINEXEMPLE_SRC_DIR}/MyProjectiveConstraintSet.cpp
+    ${PLUGINEXAMPLE_SRC_DIR}/initPlugin.cpp
+    ${PLUGINEXAMPLE_SRC_DIR}/MyBehaviorModel.cpp
+    ${PLUGINEXAMPLE_SRC_DIR}/MyDataWidgetUnsigned.cpp
+    ${PLUGINEXAMPLE_SRC_DIR}/MyMappingPendulumInPlane.cpp
+    ${PLUGINEXAMPLE_SRC_DIR}/MyProjectiveConstraintSet.cpp
     )
 set(README_FILES
     PluginExample.txt
@@ -59,7 +60,7 @@ sofa_generate_package(
     NAME ${PROJECT_NAME}
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
-    INCLUDE_SOURCE_DIR ${PLUGINEXEMPLE_SRC_DIR}
+    INCLUDE_SOURCE_DIR ${PLUGINEXAMPLE_SRC_DIR}
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     RELOCATABLE "plugins"
     )

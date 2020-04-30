@@ -19,18 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "MyProjectiveConstraintSet.inl"
+#include <PluginExample/MyProjectiveConstraintSet.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using namespace sofa::defaulttype;
@@ -40,16 +34,11 @@ int MyProjectiveConstraintSetClass = core::RegisterObject("just an example of te
     .add< MyProjectiveConstraintSet<Vec3Types> >()
     .add< MyProjectiveConstraintSet<Vec1Types> >()
     .add< MyProjectiveConstraintSet<Rigid3Types> >()
-
-    ;
+;
 
 template class MyProjectiveConstraintSet<Rigid3Types>;
 template class MyProjectiveConstraintSet<Vec3Types>;
 
 
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::projectiveconstraintset

@@ -19,8 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include "MyMappingPendulumInPlane.h"
+#include <PluginExample/MyMappingPendulumInPlane.h>
+
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
@@ -29,13 +31,7 @@ using std::cerr;
 using std::endl;
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using helper::ReadAccessor;
@@ -202,20 +198,11 @@ void MyMappingPendulumInPlane<In, Out>::applyDJT(const core::MechanicalParams* m
     ReadAccessor<Data<VecInDeriv> > parentDx (*mparams->readDx(this->fromModel));
     InReal kfactor = (InReal)mparams->kFactor();
 
-//    serr<<"MyMappingPendulumInPlane2<In, Out>::applyDJT"<< sendl;
     for(unsigned i=0; i<parentForce.size(); i++)
     {
         parentForce[i][0] -= (gap[i][0] * childForce[i][0] +  gap[i][1] * childForce[i][1]) * parentDx[i][0] * kfactor;
-//        serr<<"MyMappingPendulumInPlane2<In, Out>::applyDJT, gap[i] = "<< gap[i] << sendl;
-//        serr<<"MyMappingPendulumInPlane2<In, Out>::applyDJT, childForce[i] = "<< childForce[i] << sendl;
-//        serr<<"MyMappingPendulumInPlane2<In, Out>::applyDJT, parent displacement = "<< parentDx[i][0] << sendl;
-//        serr<<"MyMappingPendulumInPlane2<In, Out>::applyDJT, parent force -= "<< (gap[i][0] * childForce[i][0] +  gap[i][1] * childForce[i][1]) * parentDx[i][0] << sendl;
     }
 }
 
 
-}	//mapping
-
-}	//component
-
-}	//sofa
+}	// namespace sofa::component::mapping 
