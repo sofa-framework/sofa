@@ -19,16 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <PluginExample/config.h>
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-#define PLUGINEXAMPLE_VERSION @PROJECT_VERSION@
+extern "C" {
+    SOFA_PLUGINEXAMPLE_API void initExternalModule();
+    SOFA_PLUGINEXAMPLE_API const char* getModuleName();
+    SOFA_PLUGINEXAMPLE_API const char* getModuleVersion();
+    SOFA_PLUGINEXAMPLE_API const char* getModuleLicense();
+    SOFA_PLUGINEXAMPLE_API const char* getModuleDescription();
+    SOFA_PLUGINEXAMPLE_API const char* getModuleComponentList();
+}
 
-#ifdef SOFA_BUILD_PLUGINEXAMPLE
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_PLUGINEXAMPLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_PLUGINEXAMPLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
+
+const char* getModuleVersion()
+{
+    return sofa_tostring(PLUGINEXAMPLE_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "Simple example of a Sofa plugin.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 

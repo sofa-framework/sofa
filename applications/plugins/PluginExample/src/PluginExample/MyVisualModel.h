@@ -21,14 +21,37 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <PluginExample/config.h>
 
-#define PLUGINEXAMPLE_VERSION @PROJECT_VERSION@
+#include <sofa/core/BehaviorModel.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 
-#ifdef SOFA_BUILD_PLUGINEXAMPLE
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_PLUGINEXAMPLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_PLUGINEXAMPLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+
+namespace sofa::component::visualmodel
+{
+
+/**
+ * This VisualModel does not do anything but have a dependency on a module (SofaBaseVisual).
+ */
+class SOFA_PLUGINEXAMPLE_API MyVisualModel : public sofa::component::visualmodel::VisualModelImpl
+{
+
+public:
+    SOFA_CLASS(MyVisualModel, sofa::component::visualmodel::VisualModelImpl);
+
+protected:
+    MyVisualModel();
+    virtual ~MyVisualModel() override;
+
+public:
+    void init() override;
+    void reinit() override;
+
+    void updateBuffers() {}
+
+protected:
+};
+
+
+} // sofa::component::visualmodel
 

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <PluginExample/config.h>
+
 #include <sofa/core/BehaviorModel.h>
 
 

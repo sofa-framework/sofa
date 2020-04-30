@@ -19,40 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <PluginExample/config.h>
+#include <PluginExample/MyVisualModel.h>
 
-extern "C" {
+#include <sofa/core/ObjectFactory.h>
 
-SOFA_PLUGINEXAMPLE_API void initExternalModule()
+
+namespace sofa::component::visualmodel
 {
-    // Nothing to initialize
-}
 
-SOFA_PLUGINEXAMPLE_API const char* getModuleName()
+MyVisualModel::MyVisualModel()
 {
-    return "PluginExample";
 }
 
-SOFA_PLUGINEXAMPLE_API const char* getModuleVersion()
+
+MyVisualModel::~MyVisualModel()
 {
-    return "0.2";
 }
 
-SOFA_PLUGINEXAMPLE_API const char* getModuleLicense()
+void MyVisualModel::init()
 {
-    return "LGPL";
 }
 
-SOFA_PLUGINEXAMPLE_API const char* getModuleDescription()
+void MyVisualModel::reinit()
 {
-    return "Simple example of a Sofa plugin";
 }
 
-SOFA_PLUGINEXAMPLE_API const char* getModuleComponentList()
-{
-    return "MyBehaviorModel, MyMappingPendulumInPlane, MyProjectiveConstraintSet";
-}
+int MyVisualModelClass = core::RegisterObject("Dummy visual component.").add< MyVisualModel >();
 
-}
 
+} // namespace sofa::component::visualmodel
 
