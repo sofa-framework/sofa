@@ -38,8 +38,8 @@ int MyMappingPendulumInPlaneClass = core::RegisterObject("Mapping from an angle 
     .add< MyMappingPendulumInPlane<Vec1Types, Vec2Types> >()
 ;
 
-template class MyMappingPendulumInPlane<Vec1Types, Vec3Types>;
-template class MyMappingPendulumInPlane<Vec1Types, Vec2Types>;
+template class SOFA_PLUGINEXAMPLE_API MyMappingPendulumInPlane<Vec1Types, Vec3Types>;
+template class SOFA_PLUGINEXAMPLE_API MyMappingPendulumInPlane<Vec1Types, Vec2Types>;
 
 
 

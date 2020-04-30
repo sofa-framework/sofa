@@ -36,8 +36,8 @@ int MyProjectiveConstraintSetClass = core::RegisterObject("just an example of te
     .add< MyProjectiveConstraintSet<Rigid3Types> >()
 ;
 
-template class MyProjectiveConstraintSet<Rigid3Types>;
-template class MyProjectiveConstraintSet<Vec3Types>;
+template class SOFA_PLUGINEXAMPLE_API MyProjectiveConstraintSet<Rigid3Types>;
+template class SOFA_PLUGINEXAMPLE_API MyProjectiveConstraintSet<Vec3Types>;
 
 
 

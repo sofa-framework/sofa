@@ -32,7 +32,7 @@ namespace sofa::component::behaviormodel
 /**
  * This BehaviorModel does nothing but contain a custom data widget.
  */
-class MyBehaviorModel : public sofa::core::BehaviorModel
+class SOFA_PLUGINEXAMPLE_API MyBehaviorModel : public sofa::core::BehaviorModel
 {
 
 public:
@@ -47,7 +47,6 @@ public:
     void reinit() override;
     void updatePosition(double dt) override;
 
-protected:
     Data<unsigned> d_customUnsignedData; ///< Example of unsigned data with custom widget
     Data<unsigned> d_regularUnsignedData; ///< Example of unsigned data with standard widget
 };

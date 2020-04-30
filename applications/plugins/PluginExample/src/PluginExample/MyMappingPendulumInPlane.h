@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 
+#include <PluginExample/config.h>
+
 #include <sofa/core/Mapping.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -66,7 +68,7 @@ protected:
     virtual ~MyMappingPendulumInPlane();
 
 public:
-    Data<vector<OutReal> > f_length; ///< distances from the fixed point to the end of the pendulum
+    Data<vector<OutReal> > d_length; ///< distances from the fixed point to the end of the pendulum
 
     virtual void init() override;
     virtual void draw(const core::visual::VisualParams*) override;

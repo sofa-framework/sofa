@@ -39,7 +39,7 @@ namespace sofa::gui::qt
  * in the gui. In the .cpp file this widget is registered to represent
  * myData from MyBehaviorModel in the gui.
  **/
-class MyDataWidgetUnsigned : public TDataWidget<unsigned>
+class SOFA_PLUGINEXAMPLE_API MyDataWidgetUnsigned : public TDataWidget<unsigned>
 {
     Q_OBJECT
 public :

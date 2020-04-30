@@ -43,7 +43,7 @@ using defaulttype::Vector3;
 template <class In, class Out>
 MyMappingPendulumInPlane<In, Out>::MyMappingPendulumInPlane():
     Inherit(),
-    f_length(initData(&f_length, "lengths", "distances from the fixed point to the end of the pendulum"))
+    d_length(initData(&d_length, "lengths", "distances from the fixed point to the end of the pendulum"))
 {
 }
 
@@ -58,7 +58,7 @@ void MyMappingPendulumInPlane<In, Out>::init()
 {
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     WriteAccessor<Data<VecInCoord> > in (*this->fromModel->write(core::VecCoordId::position()));
-    WriteAccessor<Data<vector<OutReal> > > distances (f_length);
+    WriteAccessor<Data<vector<OutReal> > > distances (d_length);
     if (distances.size() != out.size()) // values not read from file
     {
         in.resize(out.size());
@@ -109,7 +109,7 @@ void MyMappingPendulumInPlane<In, Out>::apply(const core::MechanicalParams* mpar
     VecOutCoord& childPos = *out.beginEdit();
     const VecInCoord& parentPos = in.getValue();
 
-    ReadAccessor<Data<vector<OutReal> > > distances (f_length);
+    ReadAccessor<Data<vector<OutReal> > > distances (d_length);
     for(unsigned i=0; i<childPos.size(); i++)
     {
         gap[i] = Vec2(distances[i] * cos(parentPos[i][0]),
