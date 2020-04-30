@@ -3,8 +3,11 @@
 @PACKAGE_INIT@
 
 find_package(SofaSimulation REQUIRED)
-find_package(SofaMisc REQUIRED)
-find_package(Eigen3 QUIET REQUIRED)
+find_package(Eigen3 REQUIRED)
+
+if(SCENECREATOR_HAVE_SOFASPARSESOLVER)
+	find_package(SofaSparseSolver REQUIRED)
+endif()
 
 if(NOT TARGET SceneCreator)
 	include("${CMAKE_CURRENT_LIST_DIR}/SceneCreatorTargets.cmake")

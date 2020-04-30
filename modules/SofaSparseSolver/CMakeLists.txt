@@ -5,64 +5,36 @@ project(SofaSparseSolver VERSION 1.0 LANGUAGES CXX)
 find_package(SofaBase REQUIRED) # SofaGeneralLinearSolver
 find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaSimpleFem
 find_package(SofaGeneral REQUIRED) # SofaGeneralLinearSolver
-sofa_find_package(Metis QUIET)
-sofa_find_package(CSparse QUIET)
 
-# Config
+add_subdirectory(extlibs/csparse)
+find_package(metis QUIET) # Unix users can have an installed version of metis
+if(NOT metis_FOUND)
+    message(STATUS "SofaSparseSolver: metis library not found, will use built-in metis library.")
+    add_subdirectory(extlibs/metis-5.1.0)
+endif()
+
+# Sources
 set(HEADER_FILES
     src/SofaSparseSolver/config.h.in
+    src/SofaSparseSolver/PrecomputedLinearSolver.h
+    src/SofaSparseSolver/PrecomputedLinearSolver.inl
+    src/SofaSparseSolver/SparseLDLSolver.h
+    src/SofaSparseSolver/SparseLDLSolver.inl
+    src/SofaSparseSolver/SparseLDLSolverImpl.h
+    src/SofaSparseSolver/SparseCholeskySolver.h
+    src/SofaSparseSolver/SparseLUSolver.h
     )
 set(SOURCE_FILES
     src/SofaSparseSolver/initSparseSolver.cpp
-    )
-
-# Sources
-list(APPEND HEADER_FILES
-    src/SofaSparseSolver/PrecomputedLinearSolver.h
-    src/SofaSparseSolver/PrecomputedLinearSolver.inl
-    )
-list(APPEND SOURCE_FILES
     src/SofaSparseSolver/PrecomputedLinearSolver.cpp
+    src/SofaSparseSolver/SparseLDLSolver.cpp
+    src/SofaSparseSolver/SparseCholeskySolver.cpp
+    src/SofaSparseSolver/SparseLUSolver.cpp
     )
-
-# Metis solvers
-if(Metis_FOUND)
-    list(APPEND HEADER_FILES
-        src/SofaSparseSolver/SparseLDLSolver.h
-        src/SofaSparseSolver/SparseLDLSolver.inl
-        src/SofaSparseSolver/SparseLDLSolverImpl.h
-        )
-    list(APPEND SOURCE_FILES
-        src/SofaSparseSolver/SparseLDLSolver.cpp
-        )
-    message(STATUS "-- metis was found, SparseLDLSolver will be built")
-else()
-    message(STATUS "-- metis was not found, SparseLDLSolver won't be built")
-endif()
-
-# CSparse solvers
-if(CSparse_FOUND)
-    list(APPEND HEADER_FILES
-        src/SofaSparseSolver/SparseCholeskySolver.h
-        src/SofaSparseSolver/SparseLUSolver.h
-        )
-    list(APPEND SOURCE_FILES
-        src/SofaSparseSolver/SparseCholeskySolver.cpp
-        src/SofaSparseSolver/SparseLUSolver.cpp
-        )
-    message(STATUS "-- csparse was found, SparseLUSolver and SparseCholeskySolver will be built")
-else()
-    message(STATUS "-- csparse was not found, SparseLUSolver and SparseCholeskySolver won't be built")
-endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver SofaImplicitOdeSolver SofaSimpleFem)
-if(Metis_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC metis)
-endif()
-if(CSparse_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC csparse)
-endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC metis csparse)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFASPARSESOLVER")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
@@ -76,4 +48,4 @@ sofa_generate_package(
     INCLUDE_SOURCE_DIR "src/SofaSparseSolver"
     INCLUDE_INSTALL_DIR "SofaSparseSolver"
     RELOCATABLE "plugins"
-    )
+)
