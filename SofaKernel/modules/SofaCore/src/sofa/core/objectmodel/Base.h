@@ -465,8 +465,8 @@ public:
     ///   Methods related to component state
     /// @{
 
-    ComponentState getComponentState() const { return d_componentstate.getValue() ; }
-    bool isComponentStateValid() const { return d_componentstate == ComponentState::Valid; }
+    ComponentState getComponentState() const { return d_componentState.getValue() ; }
+    bool isComponentStateValid() const { return d_componentState == ComponentState::Valid; }
 
     ///@}
 
@@ -493,11 +493,10 @@ public:
 
     Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
 
-    Data< ComponentState >  d_componentstate; ///< the object state
+    Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< the object state
 
-    /// TODO @marques bruno: uncomment once c++17 is enabled in SOFA 
-    // [[deprecated("m_componentstate was renamed to d_componentstate. Please upgrade your code")]]
-    Data< ComponentState >& m_componentstate{d_componentstate}; ///< the object state
+    [[deprecated("m_componentstate was renamed to d_componentState. Please upgrade your code")]]
+    Data< sofa::core::objectmodel::ComponentState >& m_componentstate{d_componentState}; ///< the object state
 
 
     std::string m_definitionSourceFileName        {""};
