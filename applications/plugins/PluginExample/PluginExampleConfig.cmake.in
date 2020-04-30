@@ -2,8 +2,15 @@
 
 @PACKAGE_INIT@
 
-find_package(SofaGui REQUIRED)
-find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(SofaBase REQUIRED)
+
+if(SOFAEXPORTER_HAVE_SOFAGUI)
+	find_package(SofaGui REQUIRED)
+endif()
+
+if(SOFAEXPORTER_HAVE_QT5CORE)
+	find_package(Qt5 COMPONENTS Core REQUIRED)
+endif()
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

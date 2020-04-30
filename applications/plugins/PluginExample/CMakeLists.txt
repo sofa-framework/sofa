@@ -5,7 +5,7 @@ project(PluginExample VERSION 1.0 LANGUAGES CXX)
 ## Mandatory dependencies
 find_package(SofaBase REQUIRED) # Dependency to SofaBaseVisual
 ## Optional dependencies
-find_package(SofaGui) # Dependency to SofaGuiQt
+sofa_find_package(SofaGui) # Dependency to SofaGuiQt
 sofa_find_package(Qt5 COMPONENTS Core) # Dependency to Qt5Core (needed for qt5_wrap_cpp)
 
 # List all files
