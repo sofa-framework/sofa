@@ -1760,10 +1760,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         currentStressPoint = _prevStresses[i][gaussPointIt];
 
         // Plastic modulus
-        //double eqLastStress = equivalentStress(currentStressPoint);
-        //double tangentModulus = m_ConstitutiveLaw->getTangentModulusFromStress(eqLastStress); //TO DO: check for definition of H' in Hugues 1984
-        double tangentModulus = 34628588874.0;
-        double plasticModulus = tangentModulus / (1 - tangentModulus / E);
+        double plasticModulus = computeConstPlasticModulus();
 
         // Be
         Be = bd[i]._BeMatrices[gaussPointIt];
@@ -1821,34 +1818,88 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         }
         else // _useConsistentTangentOperator = true
         {
-            //Computation of matrix H as in Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
-            VectTensor4 H = VectTensor4::Zero();
-            VectTensor4 I = VectTensor4::Identity();
-            VoigtTensor2 elasticPredictor = _elasticPredictors[i][gaussPointIt];
-
-            VectTensor2 vectGradient = voigtToVect2(gradient);
-            VectTensor4 vectC = voigtToVect4(C);
-            double yieldStress = beamsData.getValue()[i]._localYieldStresses[gaussPointIt];
-            // NB: the gradient is the same between the elastic predictor and the new stress
-            double DeltaLambda = vonMisesYield(elasticPredictor, yieldStress) / (vectGradient.transpose()*vectC*vectGradient);
-            VectTensor4 vectHessian = vonMisesHessian(elasticPredictor, yieldStress);
-
-            VectTensor4 M = (I + DeltaLambda*vectC*vectHessian);
-            // M is symmetric positive definite, we perform Cholesky decomposition to invert it
-            VectTensor4 invertedM = M.llt().solve(I);
-            H = invertedM*vectC;
-
-            if (gradient.isZero() || pointMechanicalState[gaussPointIt] != PLASTIC)
+            if (pointMechanicalState[gaussPointIt] != PLASTIC)
                 Cep = C; //TO DO: is that correct ?
-            else if (gradient.isZero())
-                Cep = vectToVoigt4(H);
             else
             {
-                VectTensor4 consistentCep = VectTensor4::Zero();
-                Eigen::Matrix<double, 1, 9> gradTH = vectGradient.transpose()*H;
-                consistentCep = H - (H*vectGradient*gradTH) / (gradTH*vectGradient);
-                Cep = vectToVoigt4(consistentCep);
-            }
+                if (!_isPerfectlyPlastic.getValue())
+                {
+                    //Computation of matrix H as in Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
+                    VectTensor4 H = VectTensor4::Zero();
+                    VectTensor4 I = VectTensor4::Identity();
+                    VoigtTensor2 elasticPredictor = _elasticPredictors[i][gaussPointIt];
+
+                    VectTensor2 vectGradient = voigtToVect2(gradient);
+                    VectTensor4 vectC = voigtToVect4(C);
+                    double yieldStress = beamsData.getValue()[i]._localYieldStresses[gaussPointIt];
+                    double DeltaLambda = vonMisesYield(elasticPredictor, yieldStress) / (vectGradient.transpose()*vectC*vectGradient);
+                    VectTensor4 vectHessian = vonMisesHessian(elasticPredictor, yieldStress);
+
+                    VectTensor4 M = (I + DeltaLambda*vectC*vectHessian);
+                    // M is symmetric positive definite, we perform Cholesky decomposition to invert it
+                    VectTensor4 invertedM = M.llt().solve(I);
+                    H = invertedM*vectC;
+
+                    //Computation of Cep
+                    if (gradient.isZero())
+                        Cep = vectToVoigt4(H);
+                    else
+                    {
+                        VectTensor4 consistentCep = VectTensor4::Zero();
+                        Eigen::Matrix<double, 1, 9> gradTH = vectGradient.transpose()*H;
+                        consistentCep = H - (H*vectGradient*gradTH) / ((gradTH*vectGradient) + plasticModulus);
+                        Cep = vectToVoigt4(consistentCep);
+
+                        ////DEBUG : comparison with classic tangent operator
+                        //VoigtTensor2 normal = helper::rsqrt(2.0 / 3.0)*gradient;
+                        //VectTensor2 vectNormal = voigtToVect2(normal);
+                        //VectTensor4 vectCep2 = VectTensor4::Zero();
+                        //VectTensor2 CN = vectC*vectNormal;
+                        //vectCep2 = vectC - (CN*CN.transpose()) / (vectNormal.transpose()*CN + (2.0 / 3.0)*plasticModulus);
+                        //double diffCep = (vectCep2 - consistentCep).norm();
+                        //std::cout << "Norme de la difference dans le calcul de Cep : " << diffCep << std::endl;
+                    }
+                }
+                else
+                {
+                    //Computation of matrix H as in Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
+                    VectTensor4 H = VectTensor4::Zero();
+                    VectTensor4 I = VectTensor4::Identity();
+                    VoigtTensor2 elasticPredictor = _elasticPredictors[i][gaussPointIt];
+
+                    VectTensor2 vectGradient = voigtToVect2(gradient);
+                    VectTensor4 vectC = voigtToVect4(C);
+                    double yieldStress = beamsData.getValue()[i]._localYieldStresses[gaussPointIt];
+                    // NB: the gradient is the same between the elastic predictor and the new stress
+                    double DeltaLambda = vonMisesYield(elasticPredictor, yieldStress) / (vectGradient.transpose()*vectC*vectGradient);
+                    VectTensor4 vectHessian = vonMisesHessian(elasticPredictor, yieldStress);
+
+                    VectTensor4 M = (I + DeltaLambda*vectC*vectHessian);
+                    // M is symmetric positive definite, we perform Cholesky decomposition to invert it
+                    VectTensor4 invertedM = M.llt().solve(I);
+                    H = invertedM*vectC;
+
+                    //Computation of Cep
+                    if (gradient.isZero())
+                        Cep = vectToVoigt4(H);
+                    else
+                    {
+                        VectTensor4 consistentCep = VectTensor4::Zero();
+                        Eigen::Matrix<double, 1, 9> gradTH = vectGradient.transpose()*H;
+                        consistentCep = H - (H*vectGradient*gradTH) / (gradTH*vectGradient);
+                        Cep = vectToVoigt4(consistentCep);
+
+                        ////DEBUG : comparison with classic tangent operator
+                        //VoigtTensor2 normal = helper::rsqrt(2.0 / 3.0)*gradient;
+                        //VectTensor2 vectNormal = voigtToVect2(normal);
+                        //VectTensor4 vectCep2 = VectTensor4::Zero();
+                        //VectTensor2 CN = vectC*vectNormal;
+                        //vectCep2 = vectC - (CN*CN.transpose()) / (vectNormal.transpose()*CN);
+                        //double diffCep = (vectCep2 - consistentCep).norm();
+                        //std::cout << "Norme de la difference dans le calcul de Cep : " << diffCep << std::endl;
+                    }
+                } // end if _isPerfectlyPlastic = true
+            } // end if pointMechanicalState[gaussPointIt] == PLASTIC
         } // end if _useConsistentTangentOperator = true
 
         tangentStiffness += (w1*w2*w3)*beTCBeMult(Be.transpose(), Cep, nu, E);
@@ -2027,7 +2078,28 @@ void MultiBeamForceField<DataTypes>::computeDisplacementIncrement(const VecCoord
 
 /********************* Stress computation - auxiliary methods ******************/
 
-// Krabbenhoft implementation (perfectly plastic and linear isotropic hardening)
+
+template< class DataTypes>
+double MultiBeamForceField<DataTypes>::computePlasticModulusFromStress(const Eigen::Matrix<double, 6, 1> &stressState)
+{
+    const double eqStress = equivalentStress(stressState);
+    double plasticModulus = m_ConstitutiveLaw->getTangentModulusFromStress(eqStress); //TO DO: check for definition of H' in Hugues 1984
+    return plasticModulus;
+}
+
+template< class DataTypes>
+double MultiBeamForceField<DataTypes>::computePlasticModulusFromStrain(int index, int gaussPointId)
+{
+    const Real effPlasticStrain = beamsData.getValue()[index]._effectivePlasticStrains[gaussPointId];
+    double plasticModulus = m_ConstitutiveLaw->getTangentModulusFromStrain(effPlasticStrain); //TO DO: check for definition of H' in Hugues 1984
+    return plasticModulus;
+}
+
+template< class DataTypes>
+double MultiBeamForceField<DataTypes>::computeConstPlasticModulus()
+{
+    return 34628588874.0; // TO DO: look for proper constant, from Hugues 1984 definition of H'
+}
 
 template< class DataTypes>
 void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 12, 1> &internalForces,
@@ -2774,13 +2846,7 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
             const double nu = beamsData.getValue()[index]._nu;
             const double mu = E / (2 * (1 + nu)); // Lame coefficient
 
-            //const double eqTrialStress = equivalentStress(xiTrial);
-            //const Real effPlasticStrain = bd[index]._effectivePlasticStrains[gaussPointIt];
-            //double tangentModulus = m_ConstitutiveLaw->getTangentModulusFromStrain(effPlasticStrain); //TO DO: check for definition of H' in Hugues 1984
-            //tangentModulus = m_ConstitutiveLaw->getTangentModulusFromStress(eqTrialStress); //TO DO: check for definition of H' in Hugues 1984
-            //tangentModulus = 34628588874.0;
-            //const double plasticModulus = tangentModulus / (1 - tangentModulus / E);
-            double H = 34628588874.0; // TO DO: look for proper constant, from Hugues 1984 definition of H'
+            double H = computeConstPlasticModulus();
 
             // Computation of the plastic multiplier
             double plasticMultiplier = (xiTrialNorm - helper::rsqrt(2.0 / 3.0)*yieldStress) / ( mu*helper::rsqrt(6.0) * (1 + H / (3 * mu)));
@@ -2843,10 +2909,7 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
             //VectTensor2 vectShiftedGradient = voigtToVect2(shiftedGradient);
 
             //// Plastic modulus
-            ////double eqLastStress = equivalentStress(lastStress);
-            ////double tangentModulus = m_ConstitutiveLaw->getTangentModulusFromStress(eqLastStress); //TO DO: check for definition of H' in Hugues 1984
-            //double tangentModulus = 34628588874.0;
-            //double plasticModulus = tangentModulus / (1 - tangentModulus / E);
+            //double plasticModulus = computeConstPlasticModulus();
             //
             //// Jacobian
             //Eigen::Matrix<double, 10, 10> J = Eigen::Matrix<double, 10, 10>::Zero();

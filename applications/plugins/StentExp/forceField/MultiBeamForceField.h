@@ -309,6 +309,11 @@ protected:
     void computeStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &initialStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
                                 double &lambdaIncrement, MechanicalState &pointMechanicalState, const Displacement &lastDisp);
 
+    // Plastic modulus
+    double computePlasticModulusFromStress(const Eigen::Matrix<double, 6, 1> &stressState);
+    double computePlasticModulusFromStrain(int index, int gaussPointId);
+    double computeConstPlasticModulus();
+
     void computeElasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
     void computePlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
     void computePostPlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
