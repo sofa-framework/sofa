@@ -27,7 +27,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
-#include <openctm/openctm.h>
+#include "openctm.h" 
 
 namespace sofa
 {

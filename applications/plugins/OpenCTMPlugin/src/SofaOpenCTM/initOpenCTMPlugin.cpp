@@ -19,10 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OPENCTM_PLUGIN_OPENCTMLOADER_H
-#define OPENCTM_PLUGIN_OPENCTMLOADER_H
-
-#include <sofa/core/loader/MeshLoader.h>
 #include <OpenCTMPlugin/config.h>
 
 namespace sofa
@@ -31,48 +27,52 @@ namespace sofa
 namespace component
 {
 
-namespace loader
+//Here are just several convenient functions to help user to know what contains the plugin
+
+extern "C" {
+    SOFA_OPENCTM_API void initExternalModule();
+    SOFA_OPENCTM_API const char* getModuleName();
+    SOFA_OPENCTM_API const char* getModuleVersion();
+    SOFA_OPENCTM_API const char* getModuleLicense();
+    SOFA_OPENCTM_API const char* getModuleDescription();
+    SOFA_OPENCTM_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
-
-/**
- * OpenCTMLoader class interfaces OpenCTM mesh reader with SOFA loader components.
- * For more information about the class API see doc: http://openctm.sourceforge.net/apidocs/
- *
- *  Created on: July 25th 2015
- *      Author: epernod
- */
-class SOFA_OPENCTMPLUGIN_API OpenCTMLoader : public sofa::core::loader::MeshLoader
-{
-public:
-    SOFA_CLASS(OpenCTMLoader,sofa::core::loader::MeshLoader);
-protected:
-    /// Default constructor of the component
-    OpenCTMLoader();
-
-public:
-    /// Main Load method inherites from \sa sofa::core::loader::MeshLoader::load()
-    virtual bool load();
-
-    template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    static bool first = true;
+    if (first)
     {
-        return BaseLoader::canCreate (obj, context, arg);
+        first = false;
     }
+}
 
-protected:
-    /// Main internal method, implement the loading of OpenCTM mesh file.
-    bool readOpenCTM(const char* filename);
+const char* getModuleName()
+{
+    return "OpenCTM Plugin";
+}
 
-public:
-    // Data buffer for texture coordinates
-    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords; ///< Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data
-};
+const char* getModuleVersion()
+{
+    return "0.1";
+}
 
+const char* getModuleLicense()
+{
+    return "Licence ZLIB";
+}
 
-} // namespace loader
+const char* getModuleDescription()
+{
+    return "OpenCTM mesh format compatibility into SOFA";
+}
 
-} // namespace component
+const char* getModuleComponentList()
+{
+    return "OpenCTMLoader, OpenCTMExporter";
+}
 
-} // namespace sofa
+}
 
-#endif //OPENCTM_PLUGIN_OPENCTMLOADER_H
+}
+

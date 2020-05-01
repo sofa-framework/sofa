@@ -1,23 +1,44 @@
 cmake_minimum_required(VERSION 3.1)
-projetc(OpenCTMPlugin)
+project(OpenCTMPlugin VERSION 0.1)
+
+find_package(SofaBase REQUIRED)
+find_package(OpenCTM REQUIRED)
+
+set(OPENCTM_SRC_DIR src/SofaOpenCTM)
 
 set(HEADER_FILES
-    OpenCTMExporter.h
-    OpenCTMLoader.h
-    config.h
+    ${OPENCTM_SRC_DIR}/config.h.in
+    ${OPENCTM_SRC_DIR}/OpenCTMExporter.h
+    ${OPENCTM_SRC_DIR}/OpenCTMLoader.h
 )
 
 set(SOURCE_FILES
-    OpenCTMExporter.cpp
-    OpenCTMLoader.cpp
-    initOpenCTMPlugin.cpp
+    ${OPENCTM_SRC_DIR}/OpenCTMExporter.cpp
+    ${OPENCTM_SRC_DIR}/OpenCTMLoader.cpp
+    ${OPENCTM_SRC_DIR}/initOpenCTMPlugin.cpp
 )
 
 set(README_FILES OpenCTMPlugin.txt)
 
-find_package(OpenCTM REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-include_directories("${OPENCTM_INCLUDE_PATH}")
-add_definitions("-DSOFA_BUILD_OPENCTMPLUGIN")
-target_linker_libraries(${PROJECT_NAME} SofaBaseTopology ${OPENCTM_LIBRARY})
+
+# Set define dllimport/dllexport mechanism on Windows.
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_OPENCTMPLUGIN")
+
+target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaOpenglVisual ${OPENCTM_LIBRARY})
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${OPENCTM_INCLUDE_PATH}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+
+
+## Install rules for the library; CMake package configurations files
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    INCLUDE_SOURCE_DIR ${OPENCTM_SRC_DIR}
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    RELOCATABLE "plugins"
+    )

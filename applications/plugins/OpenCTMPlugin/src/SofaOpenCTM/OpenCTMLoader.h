@@ -19,15 +19,60 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OPENCTMPLUGIN_CONFIG_H
-#define OPENCTMPLUGIN_CONFIG_H
+#ifndef OPENCTM_PLUGIN_OPENCTMLOADER_H
+#define OPENCTM_PLUGIN_OPENCTMLOADER_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/core/loader/MeshLoader.h>
+#include <OpenCTMPlugin/config.h>
 
-#ifdef SOFA_BUILD_OPENCTMPLUGIN
-#  define SOFA_OPENCTMPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_OPENCTMPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa
+{
 
-#endif
+namespace component
+{
+
+namespace loader
+{
+
+/**
+ * OpenCTMLoader class interfaces OpenCTM mesh reader with SOFA loader components.
+ * For more information about the class API see doc: http://openctm.sourceforge.net/apidocs/
+ *
+ *  Created on: July 25th 2015
+ *      Author: epernod
+ */
+class SOFA_OPENCTM_API OpenCTMLoader : public sofa::core::loader::MeshLoader
+{
+public:
+    SOFA_CLASS(OpenCTMLoader,sofa::core::loader::MeshLoader);
+protected:
+    /// Default constructor of the component
+    OpenCTMLoader();
+
+public:
+    /// Main Load method inherites from \sa sofa::core::loader::MeshLoader::load()
+    virtual bool load();
+
+    template <class T>
+    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    {
+        return BaseLoader::canCreate (obj, context, arg);
+    }
+
+protected:
+    /// Main internal method, implement the loading of OpenCTM mesh file.
+    bool readOpenCTM(const char* filename);
+
+public:
+    // Data buffer for texture coordinates
+    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords; ///< Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data
+};
+
+
+} // namespace loader
+
+} // namespace component
+
+} // namespace sofa
+
+#endif //OPENCTM_PLUGIN_OPENCTMLOADER_H
