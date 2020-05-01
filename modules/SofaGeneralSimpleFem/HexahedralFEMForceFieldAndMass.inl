@@ -61,12 +61,12 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::init( )
     if(this->_topology == nullptr)
     {
         msg_error() << "ERROR(HexahedralFEMForceField): object must have a HexahedronSetTopology.";
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     this->reinit();
-    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template<class DataTypes>
