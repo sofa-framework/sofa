@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_SceneColladaLoader_H
-#define SOFA_COMPONENT_LOADER_SceneColladaLoader_H
+#ifndef SOFA_ASSIMPLOADER_SceneColladaLoader_H
+#define SOFA_ASSIMPLOADER_SceneColladaLoader_H
 
-#include <ColladaSceneLoader/config.h>
+#include <SofaAssimp/config.h>
 #include <sofa/core/loader/SceneLoader.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/simulation/Node.h>
@@ -44,7 +44,7 @@ namespace loader
 /**
 	current limitation : one animation per scene
 */
-class SOFA_COLLADASCENELOADER_API SceneColladaLoader : public sofa::core::loader::SceneLoader
+class SOFA_ASSIMP_API SceneColladaLoader : public sofa::core::loader::SceneLoader
 {
 public:
     SOFA_CLASS(SceneColladaLoader,sofa::core::loader::SceneLoader);
