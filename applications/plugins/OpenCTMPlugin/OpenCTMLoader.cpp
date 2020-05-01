@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include "OpenCTMLoader.h"
-
-#include <openctm/openctm.h>
+#include <fstream>
+#include <openctm.h>
 
 namespace sofa
 {
@@ -80,7 +80,7 @@ bool OpenCTMLoader::readOpenCTM(const char *filename)
     const CTMuint  * indices = ctm.GetIntegerArray(CTM_INDICES);
 
     // Filling vertices buffer
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
     my_positions.fastResize(vertCount);
     for (unsigned int i=0; i<vertCount; ++i)
     {
@@ -88,10 +88,10 @@ bool OpenCTMLoader::readOpenCTM(const char *filename)
         my_positions[i][1] = ctmVertices[i*3 + 1];
         my_positions[i][2] = ctmVertices[i*3 + 2];
     }
-    positions.endEdit();
+    d_positions.endEdit();
 
     // Filling triangles buffer
-    helper::vector<Triangle>& my_triangles = *(triangles.beginEdit());
+    helper::vector<Triangle>& my_triangles = *(d_triangles.beginEdit());
     my_triangles.fastResize(triCount);
     for (unsigned int i=0; i<triCount; ++i)
     {
@@ -99,12 +99,12 @@ bool OpenCTMLoader::readOpenCTM(const char *filename)
         my_triangles[i][1] = indices[i*3 + 1];
         my_triangles[i][2] = indices[i*3 + 2];
     }
-    triangles.endEdit();
+    d_triangles.endEdit();
 
     // Checking if mesh containes normals, otherwise fill empty buffer (NB seems mendatory for mecaObj)
     if (ctm.GetInteger(CTM_HAS_NORMALS) == CTM_TRUE)
     {
-        helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_normals   = *(normals.beginEdit());
+        helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_normals   = *(d_normals.beginEdit());
         my_normals.fastResize(vertCount);
 
         // Access the mesh normals        
@@ -115,7 +115,7 @@ bool OpenCTMLoader::readOpenCTM(const char *filename)
             my_normals[i][1] = ctmNormals[i*3 + 1];
             my_normals[i][2] = ctmNormals[i*3 + 2];
         }
-        normals.endEdit();
+        d_normals.endEdit();
     }
 
     // Checking if mesh containes texture coordinates. Only one set of UV is handled in SOFA
