@@ -94,6 +94,7 @@ endif()
 
 find_package(OpenCL REQUIRED)
 find_package(SofaGeneral REQUIRED)
+find_package(SofaSphFluid REQUIRED)
 
 message(WARNING "SofaOpenCL: TODO: don't use absolute path (SOFA_SRC_DIR)")
 
