@@ -33,7 +33,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAASSIMP")
 
-target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARY} SofaLoader SofaOpenglVisual SofaBoundaryCondition SofaGeneralRigid SofaMeshCollision)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${ASSIMP_LIBRARY} SofaLoader SofaOpenglVisual SofaBoundaryCondition SofaGeneralRigid SofaMeshCollision)
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC image)
 endif()
