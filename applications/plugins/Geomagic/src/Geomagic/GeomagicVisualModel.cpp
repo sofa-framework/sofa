@@ -38,11 +38,11 @@ namespace controller
 const char* GeomagicVisualModel::visualNodeNames[NVISUALNODE] =
 {
     "stylus",
-    "joint 2",
-    "joint 1",
-    "arm 2",
-    "arm 1",
-    "joint 0",
+    "joint_2",
+    "joint_1",
+    "arm_2",
+    "arm_1",
+    "joint_0",
     "base"
 };
 const char* GeomagicVisualModel::visualNodeFiles[NVISUALNODE] =
@@ -81,19 +81,18 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
 
     for (int i = 0; i<NVISUALNODE; i++)
     {
-        visualNode[i].visu = NULL;
-        visualNode[i].mapping = NULL;
+        visualNode[i].visu = nullptr;
+        visualNode[i].mapping = nullptr;
+        visualNode[i].loader = nullptr;
     }
 
     //create a specific node containing rigid position for visual models
-    //sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
-    //m_omniVisualNode = rootContext->createChild("omniVisu " + d_deviceName.getValue());
-    m_omniVisualNode = node->createChild("omniVisu " + _deviceName);
+    m_omniVisualNode = node->createChild("GeomagicVisualModel " + _deviceName);
     m_omniVisualNode->updateContext();
 
     rigidDOF = sofa::core::objectmodel::New<component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> >();
     m_omniVisualNode->addObject(rigidDOF);
-    rigidDOF->name.setValue("rigidDOF");
+    rigidDOF->name.setValue("DeviceRigidDOF");
 
     VecCoord& posDOF = *(rigidDOF->x.beginEdit());
     posDOF.resize(NVISUALNODE + 1);
@@ -107,43 +106,43 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
     for (int i = 0; i<NVISUALNODE; i++)
     {
         visualNode[i].node = m_omniVisualNode->createChild(visualNodeNames[i]);
+        std::string sectionName(visualNodeNames[i]);
 
-        if (visualNode[i].visu == NULL && visualNode[i].mapping == NULL)
-        {
+        // load mesh model 
+        visualNode[i].loader = sofa::core::objectmodel::New<sofa::component::loader::MeshObjLoader>();
+        visualNode[i].node->addObject(visualNode[i].loader);
+        visualNode[i].loader->setName(sectionName + "_loader");
+        visualNode[i].loader->setFilename(visualNodeFiles[i]);
+        visualNode[i].loader->load();
+        visualNode[i].loader->init();
 
-            // create the visual model and add it to the graph //
-            visualNode[i].visu = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
-            visualNode[i].node->addObject(visualNode[i].visu);
-            visualNode[i].visu->name.setValue("VisualParticles");
-            visualNode[i].visu->fileMesh.setValue(visualNodeFiles[i]);
+        // create the visual model and add it to the graph //
+        visualNode[i].visu = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
+        visualNode[i].node->addObject(visualNode[i].visu);
+        visualNode[i].visu->setName(sectionName + "_visualModel");
+        visualNode[i].visu->m_positions.setParent(&visualNode[i].loader->d_positions);
+        visualNode[i].visu->m_edges.setParent(&visualNode[i].loader->d_edges);
+        visualNode[i].visu->m_triangles.setParent(&visualNode[i].loader->d_triangles);
+        visualNode[i].visu->m_quads.setParent(&visualNode[i].loader->d_quads);
+        visualNode[i].visu->m_vtexcoords.setParent(&visualNode[i].loader->d_texCoords);
+        
+        visualNode[i].visu->init();
+        visualNode[i].visu->initVisual();
+        visualNode[i].visu->updateVisual();
 
-            visualNode[i].visu->init();
-            visualNode[i].visu->initVisual();
-            visualNode[i].visu->updateVisual();
-
-            // create the visual mapping and at it to the graph //
-            visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3Types, Vec3Types > >();
-            visualNode[i].node->addObject(visualNode[i].mapping);
-            visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
-            visualNode[i].mapping->name.setValue("RigidMapping");
-            visualNode[i].mapping->f_mapConstraints.setValue(false);
-            visualNode[i].mapping->f_mapForces.setValue(false);
-            visualNode[i].mapping->f_mapMasses.setValue(false);
-            visualNode[i].mapping->index.setValue(i + 1);
-            visualNode[i].mapping->init();
-        }
-        if (i<NVISUALNODE)
-            m_omniVisualNode->removeChild(visualNode[i].node);
+        // create the visual mapping and at it to the graph //
+        visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3Types, Vec3Types > >();
+        visualNode[i].node->addObject(visualNode[i].mapping);
+        visualNode[i].mapping->setName(sectionName + "_rigidMapping");
+        visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
+        visualNode[i].mapping->f_mapConstraints.setValue(false);
+        visualNode[i].mapping->f_mapForces.setValue(false);
+        visualNode[i].mapping->f_mapMasses.setValue(false);
+        visualNode[i].mapping->index.setValue(i + 1);
+        visualNode[i].mapping->init();
     }
 
     m_omniVisualNode->updateContext();
-
-    for (int i = 0; i<NVISUALNODE; i++)
-    {
-        visualNode[i].node->updateContext();
-    }
-
-    m_initDisplayDone = true;
 
     for (int j = 0; j<NVISUALNODE; j++)
     {
@@ -151,7 +150,10 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
         for (size_t i = 0; i<scaleMapping.size(); i++)
             scaleMapping[i] *= (float)(_scale);
         visualNode[j].mapping->points.endEdit();
+        visualNode[j].node->updateContext();
     }
+
+    m_initDisplayDone = true;
 }
 
 

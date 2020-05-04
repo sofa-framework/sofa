@@ -25,6 +25,7 @@
 //Geomagic include
 #include <Geomagic/config.h>
 #include <SofaOpenglVisual/OglModel.h>
+#include <SofaLoader/MeshObjLoader.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/SolidTypes.h>
@@ -59,7 +60,8 @@ public:
     struct VisualComponent
     {
         simulation::Node::SPtr node;
-        sofa::component::visualmodel::OglModel::SPtr visu;
+        sofa::component::loader::MeshObjLoader::SPtr loader;
+        sofa::component::visualmodel::OglModel::SPtr visu;        
         sofa::component::mapping::RigidMapping< Rigid3Types , Vec3Types  >::SPtr mapping;
     };
 
