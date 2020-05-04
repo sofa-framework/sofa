@@ -24,11 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/ScriptEvent.h>
-#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <Geomagic/GeomagicVisualModel.h>
@@ -499,7 +495,7 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->disableLighting();
 
-        GeomagicDriver::Coord & posDevice = *d_posDevice.beginEdit();
+        const GeomagicDriver::Coord& posDevice = d_posDevice.getValue();
 
         float glRadius = (float)d_scale.getValue()*0.1f;
         vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(Vector3(2,0,0)*d_scale.getValue()), glRadius, Vec4f(1,0,0,1) );

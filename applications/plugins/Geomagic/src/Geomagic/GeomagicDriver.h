@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GEOMAGIC_GEOMAGICDRIVER_H
-#define SOFA_GEOMAGIC_GEOMAGICDRIVER_H
+#ifndef SOFA_GEOMAGIC_DRIVER_H
+#define SOFA_GEOMAGIC_DRIVER_H
 
 //Geomagic include
 #include <sofa/helper/LCPcalc.h>
@@ -156,4 +156,4 @@ public:
 
 } // namespace sofa
 
-#endif // SOFA_GEOMAGIC_GEOMAGICDRIVER_H
+#endif // SOFA_GEOMAGIC_DRIVER_H

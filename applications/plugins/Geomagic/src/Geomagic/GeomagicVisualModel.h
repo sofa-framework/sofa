@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GEOMAGIC_GEOMAGICVISUALMODEL_H
-#define SOFA_GEOMAGIC_GEOMAGICVISUALMODEL_H
+#ifndef SOFA_GEOMAGIC_VISUALMODEL_H
+#define SOFA_GEOMAGIC_VISUALMODEL_H
 
 //Geomagic include
 #include <Geomagic/config.h>
@@ -119,4 +119,4 @@ private:
 
 } // namespace sofa
 
-#endif // SOFA_GEOMAGIC_GEOMAGICVISUALMODEL_H
+#endif // SOFA_GEOMAGIC_VISUALMODEL_H
