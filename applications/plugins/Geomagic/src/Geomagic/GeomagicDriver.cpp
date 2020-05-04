@@ -180,7 +180,6 @@ GeomagicDriver::GeomagicDriver()
     , m_errorDevice(0)
     , m_isInContact(false)
     , m_hHD(UINT_MAX)
-    , m_GeomagicVisualModel(nullptr)
 {
     this->f_listening.setValue(true);
     m_forceFeedback = NULL;
@@ -301,8 +300,8 @@ void GeomagicDriver::initDevice(int cptInitPass)
     if (!d_omniVisu.getValue())
         return;
 
-    if (m_GeomagicVisualModel == nullptr)
-        m_GeomagicVisualModel = new GeomagicVisualModel();
+    if (m_GeomagicVisualModel.get() == nullptr)
+        m_GeomagicVisualModel = std::make_unique<GeomagicVisualModel>();
 
     if (m_GeomagicVisualModel) {
         sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());

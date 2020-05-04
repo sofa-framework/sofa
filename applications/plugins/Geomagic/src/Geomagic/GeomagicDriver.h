@@ -140,7 +140,7 @@ private:
         int buttonState;
     };
 
-    GeomagicVisualModel* m_GeomagicVisualModel;
+    std::unique_ptr<GeomagicVisualModel> m_GeomagicVisualModel;
 
 public:
     OmniData m_omniData;
