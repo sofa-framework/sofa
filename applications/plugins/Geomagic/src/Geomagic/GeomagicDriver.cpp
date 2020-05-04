@@ -183,6 +183,7 @@ GeomagicDriver::GeomagicDriver()
 {
     this->f_listening.setValue(true);
     m_forceFeedback = NULL;
+    m_GeomagicVisualModel = std::make_unique<GeomagicVisualModel>();
 }
 
 GeomagicDriver::~GeomagicDriver()
@@ -295,19 +296,6 @@ void GeomagicDriver::initDevice(int cptInitPass)
         return;
     }
     updatePosition();
-
-
-    if (!d_omniVisu.getValue())
-        return;
-
-    if (m_GeomagicVisualModel.get() == nullptr)
-        m_GeomagicVisualModel = std::make_unique<GeomagicVisualModel>();
-
-    if (m_GeomagicVisualModel) {
-        sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
-        m_GeomagicVisualModel->initDisplay(rootContext, d_deviceName.getValue(), d_scale.getValue());
-        m_GeomagicVisualModel->activateDisplay(true);
-    }
 }
 
 Mat<4,4, GLdouble> GeomagicDriver::compute_dh_Matrix(double teta,double alpha, double a, double d)
@@ -405,9 +393,23 @@ void GeomagicDriver::updatePosition()
     d_posDevice.endEdit();
     d_angle.endEdit();
 
+
     if (d_omniVisu.getValue() && m_GeomagicVisualModel != nullptr)
     {
+        if (!m_GeomagicVisualModel->isDisplayInitiate()) // first time, need to init visualModel first
+        {
+            sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
+            m_GeomagicVisualModel->initDisplay(rootContext, d_deviceName.getValue(), d_scale.getValue());            
+        }
+
+        if (!m_GeomagicVisualModel->isDisplayActivated())
+            m_GeomagicVisualModel->activateDisplay(true);
+
         m_GeomagicVisualModel->updateDisplay(d_posDevice.getValue(), m_omniData.angle1, m_omniData.angle2);
+    }
+    else if (d_omniVisu.getValue() == false && m_GeomagicVisualModel && m_GeomagicVisualModel->isDisplayActivated())
+    {
+        m_GeomagicVisualModel->activateDisplay(false);
     }
 }
 
