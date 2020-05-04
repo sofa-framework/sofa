@@ -134,7 +134,7 @@ using sofa::helper::system::FileSystem;
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
-#ifdef SOFAGUIQT_HAVE_DOCBROWSER
+#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
 #include "panels/QDocBrowser.h"
 using sofa::gui::qt::DocBrowser;
 #endif
@@ -353,7 +353,7 @@ RealGUI::RealGUI ( const char* viewername)
       recentlyOpenedFilesManager(sofa::gui::BaseGUI::getConfigDirectoryPath() + "/runSofa.ini"),
       saveReloadFile(false),
       displayFlag(nullptr),
-#ifdef SOFAGUIQT_HAVE_DOCBROWSER
+#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
       m_docbrowser(nullptr),
 #endif
       animationState(false),
@@ -488,7 +488,7 @@ RealGUI::RealGUI ( const char* viewername)
         getQtViewer()->getQWidget()->installEventFilter(this);
 #endif
 
-#ifdef SOFAGUIQT_HAVE_DOCBROWSER
+#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
     m_docbrowser = new DocBrowser(this);
     /// Signal to the realGUI that the visibility has changed (eg: to update the menu bar)
     connect(m_docbrowser, SIGNAL(visibilityChanged(bool)), this, SLOT(docBrowserVisibilityChanged(bool)));
@@ -819,7 +819,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
         setSceneWithoutMonitor(mSimulation, filename.c_str(), temporaryFile);
     else{
         setScene(mSimulation, filename.c_str(), temporaryFile);
-#ifdef SOFAGUIQT_HAVE_DOCBROWSER
+#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
         m_docbrowser->loadHtml( filename ) ;
 #endif
     }
@@ -973,7 +973,7 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
             recentlyOpenedFilesManager.openFile(filename);
         saveReloadFile=temporaryFile;
         setTitle ( filename );
-#ifdef SOFAGUIQT_HAVE_DOCBROWSER
+#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
         m_docbrowser->loadHtml( filename );
 #endif
     }
@@ -1028,7 +1028,7 @@ void RealGUI::setScene(Node::SPtr root, const char* filename, bool temporaryFile
         FileMonitor::addFile(filename, m_filelistener);
     }
     setSceneWithoutMonitor(root, filename, temporaryFile) ;
-#ifdef SOFAGUIQT_HAVE_DOCBROWSER
+#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
     m_docbrowser->loadHtml( filename ) ;
 #endif
 }
@@ -1172,7 +1172,7 @@ void RealGUI::editGnuplotDirectory()
 
 void RealGUI::showDocBrowser()
 {
-#ifdef SOFAGUIQT_HAVE_DOCBROWSER
+#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
     m_docbrowser->flipVisibility();
 #else
     msg_warning("RealGUI") << "Doc browser has been disabled because Qt5WebEngine is not available";

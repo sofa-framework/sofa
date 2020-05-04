@@ -74,7 +74,7 @@ class BaseViewer;
 
 namespace qt
 {
-#ifdef SOFAGUIQT_HAVE_DOCBROWSER
+#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
 class DocBrowser ;
 #endif
 
@@ -233,7 +233,7 @@ private:
     float object_Scale[2];
     bool saveReloadFile;
     DisplayFlagsDataWidget*  displayFlag  {nullptr};
-#ifdef SOFAGUIQT_HAVE_DOCBROWSER
+#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
     DocBrowser*              m_docbrowser {nullptr};
 #endif
     bool animationState;
