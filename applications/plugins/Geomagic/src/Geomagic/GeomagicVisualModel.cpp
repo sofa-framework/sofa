@@ -58,6 +58,9 @@ const char* GeomagicVisualModel::visualNodeFiles[NVISUALNODE] =
 
 
 GeomagicVisualModel::GeomagicVisualModel()
+    : m_displayActived(false)
+    , m_initDisplayDone(false)
+    , m_scale(1.0)
 {
 
 }
@@ -74,7 +77,6 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
     //resize vectors
     m_posDeviceVisu.resize(NVISUALNODE + 1);
 
-    m_visuActive = false;
     m_scale = _scale;
 
     for (int i = 0; i<NVISUALNODE; i++)
@@ -141,7 +143,7 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
         visualNode[i].node->updateContext();
     }
 
-    m_initVisuDone = true;
+    m_initDisplayDone = true;
 
     for (int j = 0; j<NVISUALNODE; j++)
     {
@@ -153,7 +155,19 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
 }
 
 
-void GeomagicVisualModel::updateVisulation(const GeomagicDriver::Coord& posDevice, HDdouble angle1[3], HDdouble angle2[3])
+void GeomagicVisualModel::activateDisplay(bool value)
+{ 
+    m_displayActived = value; 
+
+    //delete omnivisual
+    for (int i = 0; i<NVISUALNODE; i++)
+    {
+        m_omniVisualNode->setActive(m_displayActived);
+    }   
+}
+
+
+void GeomagicVisualModel::updateDisplay(const GeomagicDriver::Coord& posDevice, HDdouble angle1[3], HDdouble angle2[3])
 {
     sofa::defaulttype::SolidTypes<double>::Transform tampon;
     m_posDeviceVisu[0] = posDevice;
@@ -209,21 +223,17 @@ void GeomagicVisualModel::updateVisulation(const GeomagicDriver::Coord& posDevic
 
 void GeomagicVisualModel::drawDevice(bool button1Status, bool button2Status)
 {
-    if (!m_initVisuDone)
+    if (!m_initDisplayDone || !m_displayActived)
         return;
 
-    //Reactivate visual node
-    if (!m_visuActive)
-    {
-        m_visuActive = true;
+    m_displayActived = true;
 
-        for (int i = 0; i<NVISUALNODE; i++)
-        {
-            m_omniVisualNode->addChild(visualNode[i].node);
-            visualNode[i].node->updateContext();
-        }
-        m_omniVisualNode->updateContext();
+    for (int i = 0; i<NVISUALNODE; i++)
+    {
+        m_omniVisualNode->addChild(visualNode[i].node);
+        visualNode[i].node->updateContext();
     }
+    m_omniVisualNode->updateContext();
 
     VecCoord& posDOF = *(rigidDOF->x.beginEdit());
     posDOF.resize(m_posDeviceVisu.size());

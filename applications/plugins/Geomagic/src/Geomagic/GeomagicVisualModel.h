@@ -30,6 +30,10 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+//Visualization
+#include <SofaRigid/RigidMapping.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+
 #include <Geomagic/GeomagicDriver.h>
 
 namespace sofa 
@@ -41,16 +45,13 @@ namespace component
 namespace controller
 {
 
-//using namespace sofa::defaulttype;
-//using core::objectmodel::Data;
-
-#define NBJOINT 6
 using namespace sofa::defaulttype;
 
-
+/**
+* Class used by GeomagicDriver to display the Geomagic device position and motion using visual models in the 3D scene.
+*/
 class SOFA_GEOMAGIC_API GeomagicVisualModel
 {
-
 public:
     typedef RigidTypes::Coord Coord;
     typedef RigidTypes::VecCoord VecCoord;
@@ -66,14 +67,24 @@ public:
     GeomagicVisualModel();
 	virtual ~GeomagicVisualModel();
 
+    /// Main Method to init the visual component tree of OGLModels. Called by Geomagic InitDevice() if drawVisual is on.
     void initDisplay(sofa::simulation::Node::SPtr node, const std::string& _deviceName, double _scale);
-    void updateVisulation(const GeomagicDriver::Coord& posDevice, HDdouble angle1[3], HDdouble angle2[3]);
+
+    /// Method to update the visualNode using the current device position and the angles of the different node of the device. Updated by Geomagic UpdatePosition()
+    void updateDisplay(const GeomagicDriver::Coord& posDevice, HDdouble angle1[3], HDdouble angle2[3]);
+
+    /// Method called by Geomagic Draw method to display the geomagic OglModel
     void drawDevice(bool button1Status = false, bool button2Status = false);
 
+    /// Get status if visualisation is activated
+    bool isDisplayActivated() const { return m_displayActived; }
+    /// Activate or not the visualisation
+    void activateDisplay(bool value);
 
-    bool isVisuActivated() { return m_visuActive; }
-    bool isVisuInitiate() { return m_initVisuDone; }
+    /// Get status if visualisation is init
+    bool isDisplayInitiate() const { return m_initDisplayDone; }
 
+protected:
     /// variable pour affichage graphique
     enum
     {
@@ -95,8 +106,8 @@ public:
     VecCoord m_posDeviceVisu; ///< position of the hpatic devices for rendering. first pos is equal to d_posDevice
 
 private:
-    bool m_visuActive; ///< Internal boolean to detect activation switch of the draw
-    bool m_initVisuDone; ///< Internal boolean activated only if visu initialization done without return
+    bool m_displayActived; ///< Internal boolean to detect activation switch of the draw
+    bool m_initDisplayDone; ///< Internal boolean activated only if visu initialization done without return
     double m_scale;
 };
 

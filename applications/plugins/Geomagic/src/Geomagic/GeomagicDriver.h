@@ -29,7 +29,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Quater.h>
 
-#include <SofaOpenglVisual/OglModel.h>
 
 #include <Geomagic/config.h>
 #include <SofaUserInteraction/Controller.h>
@@ -51,11 +50,6 @@
 #include <HD/hdDefines.h>
 #include <HD/hdExport.h>
 #include <HD/hdScheduler.h>
-
-//Visualization
-#include <SofaRigid/RigidMapping.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-
 
 namespace sofa {
 
@@ -84,12 +78,6 @@ public:
 
     typedef defaulttype::Vec4f Vec4f;
     typedef defaulttype::Vector3 Vector3;
-    //struct VisualComponent
-    //{
-    //    simulation::Node::SPtr node;
-    //    sofa::component::visualmodel::OglModel::SPtr visu;
-    //    sofa::component::mapping::RigidMapping< Rigid3Types , Vec3Types  >::SPtr mapping;
-    //};
 
     Data< std::string > d_deviceName; ///< Name of device Configuration
     Data<Vec3d> d_positionBase; ///< Position of the interface base in the scene world coordinates
@@ -131,29 +119,10 @@ public:
     void clearDevice();
     ForceFeedback::SPtr m_forceFeedback;
 
-    ///// variable pour affichage graphique
-    //enum
-    //{
-    //    VN_stylus = 0,
-    //    VN_joint2 = 1,
-    //    VN_joint1 = 2,
-    //    VN_arm2   = 3,
-    //    VN_arm1   = 4,
-    //    VN_joint0 = 5,
-    //    VN_base   = 6,
-    //    NVISUALNODE = 7
-    //};
-
-    //VisualComponent visualNode[NVISUALNODE];
-    //static const char* visualNodeNames[NVISUALNODE];
-    //static const char* visualNodeFiles[NVISUALNODE];
-//    simulation::Node::SPtr m_omniVisualNode;
-
-    bool m_visuActive; ///< Internal boolean to detect activation switch of the draw
-    bool m_initVisuDone; ///< Internal boolean activated only if visu initialization done without return
     int m_errorDevice; ///< Int detecting any error coming from device / detection
     bool m_simulationStarted; /// <Boolean storing hte information if Sofa has started the simulation (changed by AnimateBeginEvent)
     bool m_isInContact;
+
 private:
     void handleEvent(core::objectmodel::Event *) override;
     void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;

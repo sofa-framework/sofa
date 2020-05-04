@@ -231,7 +231,6 @@ void GeomagicDriver::bwdInit()
 
 void GeomagicDriver::initDevice(int cptInitPass)
 {
-    m_initVisuDone = false;
     m_errorDevice = 0;
     HDErrorInfo error;
 
@@ -255,9 +254,6 @@ void GeomagicDriver::initDevice(int cptInitPass)
         msg_error() << "Failed to initialize the device ID: " << m_hHD << " | Name: '" << d_deviceName.getValue().c_str() << "' | Error code returned: " << m_errorDevice;
         d_omniVisu.setValue(false);
 
-        //init the positionDevice data to avoid any crash in the scene
-        //m_posDeviceVisu.clear();
-        //m_posDeviceVisu.resize(1);
         return;
     }
 
@@ -311,6 +307,7 @@ void GeomagicDriver::initDevice(int cptInitPass)
     if (m_GeomagicVisualModel) {
         sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
         m_GeomagicVisualModel->initDisplay(rootContext, d_deviceName.getValue(), d_scale.getValue());
+        m_GeomagicVisualModel->activateDisplay(true);
     }
 }
 
@@ -411,7 +408,7 @@ void GeomagicDriver::updatePosition()
 
     if (d_omniVisu.getValue() && m_GeomagicVisualModel != nullptr)
     {
-        m_GeomagicVisualModel->updateVisulation(d_posDevice.getValue(), m_omniData.angle1, m_omniData.angle2);
+        m_GeomagicVisualModel->updateDisplay(d_posDevice.getValue(), m_omniData.angle1, m_omniData.angle2);
     }
 }
 
