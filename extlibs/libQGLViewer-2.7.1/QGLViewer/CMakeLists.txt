@@ -101,5 +101,5 @@ sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${PROJECT_VERSION} TARGETS ${
 # Qt deployment
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     include(windeployqt)
-    windeployqt(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin ${CMAKE_INSTALL_PREFIX}/bin)
+    windeployqt(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin bin)
 endif()
