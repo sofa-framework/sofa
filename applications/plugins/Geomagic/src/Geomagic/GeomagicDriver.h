@@ -66,6 +66,8 @@ namespace controller {
 using namespace sofa::defaulttype;
 using core::objectmodel::Data;
 
+class GeomagicVisualModel;
+
 #define NBJOINT 6
 
 /**
@@ -82,12 +84,12 @@ public:
 
     typedef defaulttype::Vec4f Vec4f;
     typedef defaulttype::Vector3 Vector3;
-    struct VisualComponent
-    {
-        simulation::Node::SPtr node;
-        sofa::component::visualmodel::OglModel::SPtr visu;
-        sofa::component::mapping::RigidMapping< Rigid3Types , Vec3Types  >::SPtr mapping;
-    };
+    //struct VisualComponent
+    //{
+    //    simulation::Node::SPtr node;
+    //    sofa::component::visualmodel::OglModel::SPtr visu;
+    //    sofa::component::mapping::RigidMapping< Rigid3Types , Vec3Types  >::SPtr mapping;
+    //};
 
     Data< std::string > d_deviceName; ///< Name of device Configuration
     Data<Vec3d> d_positionBase; ///< Position of the interface base in the scene world coordinates
@@ -113,7 +115,7 @@ public:
     Data<double> d_maxInputForceFeedback; ///< Maximum value of the normed input force feedback for device security
 
     Data<bool> d_manualStart; /// < Bool to unactive the automatic start of the device at init. initDevice need to be called manually. False by default.
-    VecCoord m_posDeviceVisu; ///< position of the hpatic devices for rendering. first pos is equal to d_posDevice
+    
 
     GeomagicDriver();
 
@@ -129,24 +131,23 @@ public:
     void clearDevice();
     ForceFeedback::SPtr m_forceFeedback;
 
-    /// variable pour affichage graphique
-    enum
-    {
-        VN_stylus = 0,
-        VN_joint2 = 1,
-        VN_joint1 = 2,
-        VN_arm2   = 3,
-        VN_arm1   = 4,
-        VN_joint0 = 5,
-        VN_base   = 6,
-        NVISUALNODE = 7
-    };
+    ///// variable pour affichage graphique
+    //enum
+    //{
+    //    VN_stylus = 0,
+    //    VN_joint2 = 1,
+    //    VN_joint1 = 2,
+    //    VN_arm2   = 3,
+    //    VN_arm1   = 4,
+    //    VN_joint0 = 5,
+    //    VN_base   = 6,
+    //    NVISUALNODE = 7
+    //};
 
-    VisualComponent visualNode[NVISUALNODE];
-    static const char* visualNodeNames[NVISUALNODE];
-    static const char* visualNodeFiles[NVISUALNODE];
-    simulation::Node::SPtr m_omniVisualNode;
-    component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>::SPtr rigidDOF;
+    //VisualComponent visualNode[NVISUALNODE];
+    //static const char* visualNodeNames[NVISUALNODE];
+    //static const char* visualNodeFiles[NVISUALNODE];
+//    simulation::Node::SPtr m_omniVisualNode;
 
     bool m_visuActive; ///< Internal boolean to detect activation switch of the draw
     bool m_initVisuDone; ///< Internal boolean activated only if visu initialization done without return
@@ -169,6 +170,8 @@ private:
         HDdouble transform[16];
         int buttonState;
     };
+
+    GeomagicVisualModel* m_GeomagicVisualModel;
 
 public:
     OmniData m_omniData;
