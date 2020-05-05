@@ -19,111 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_DDGNODE_H
-#define SOFA_CORE_OBJECTMODEL_DDGNODE_H
+#pragma once
 
 #include <sofa/core/core.h>
-#include <sofa/core/objectmodel/Link.h>
-#include <sofa/core/objectmodel/BaseClass.h>
-#include <sofa/helper/NameDecoder.h>
-#include <list>
+#include <sofa/helper/stable_vector.h>
 
-namespace sofa
+namespace sofa::core
+{
+    class ExecParams;
+}
+
+namespace sofa::core::objectmodel
 {
 
-namespace core
-{
-
-namespace objectmodel
-{
-
-class Base;
-class BaseData;
 class DDGNode;
-class BaseObjectDescription;
-
-template<>
-class LinkTraitsPtrCasts<DDGNode>
-{
-public:
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::DDGNode* n);
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::DDGNode* n);
-};
 
 /**
- *  \brief Abstract base to manage data dependencies. BaseData and DataEngine inherites from this class
- *
+ *  \brief A DDGNode is a vertex in the data dependencies graph.
+ * The data dependency graph is used to update the data when
+ * some of other changes and it is at the root of the implementation
+ * of the data update mecanisme as well as DataEngines.
  */
 class SOFA_CORE_API DDGNode
 {
 public:
-
-    typedef MultiLink<DDGNode, DDGNode, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_DATALINK> DDGLink;
-    typedef DDGLink::Container DDGLinkContainer;
-    typedef DDGLink::const_iterator DDGLinkIterator;
+    typedef sofa::helper::stable_vector<DDGNode*> DDGLinkContainer;
+    typedef DDGLinkContainer::const_iterator DDGLinkIterator;
 
     /// Constructor
     DDGNode();
 
     /// Destructor. Automatically remove remaining links
     virtual ~DDGNode();
-
-    /// @name Class reflection system
-    /// @{
-    typedef TClass<DDGNode> MyClass;
-    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
-    virtual const BaseClass* getClass() const
-    { return GetClass(); }
-
-    template<class T>
-    static void dynamicCast(T*& ptr, Base* /*b*/)
-    {
-        ptr = nullptr; // DDGNode does not derive from Base
-    }
-
-    /// Helper method to get the type name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
-    /// This way derived classes can redefine the typeName method
-    template<class T>
-    static std::string typeName(const T* ptr= nullptr)
-    {
-        return BaseClass::defaultTypeName(ptr);
-    }
-
-    /// Helper method to get the class name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::className(ptr); \endcode
-    /// This way derived classes can redefine the className method
-    template<class T>
-    static std::string className(const T* ptr= nullptr)
-    {
-        return sofa::helper::NameDecoder::getClassName<T>();
-    }
-
-    /// Helper method to get the namespace name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::namespaceName(ptr); \endcode
-    /// This way derived classes can redefine the namespaceName method
-    template<class T>
-    static std::string namespaceName(const T* ptr= nullptr)
-    {
-        return sofa::helper::NameDecoder::getNamespaceName<T>();
-    }
-
-    /// Helper method to get the template name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::templateName(ptr); \endcode
-    /// This way derived classes can redefine the templateName method
-    template<class T>
-    static std::string templateName(const T* ptr= nullptr)
-    {
-        return sofa::helper::NameDecoder::getTemplateName<T>();
-    }
 
     /// Add a new input to this node
     void addInput(DDGNode* n);
@@ -147,6 +74,7 @@ public:
     virtual void update() = 0;
 
     /// Returns true if the DDGNode needs to be updated
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     bool isDirty(const core::ExecParams*) const { return isDirty(); }
     bool isDirty() const { return dirtyFlags.dirtyValue; }
 
@@ -173,56 +101,19 @@ public:
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     void updateIfDirty(const core::ExecParams*) const { updateIfDirty(); }
-    void updateIfDirty() const
-    {
-        if (isDirty())
-        {
-            const_cast <DDGNode*> (this)->update();
-        }
-    }
-
-    virtual const std::string& getName() const = 0;
-
-    virtual Base* getOwner() const = 0;
-
-    virtual BaseData* getData() const = 0;
-
-    virtual bool findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link);
-
-    void addLink(BaseLink* l);
+    void updateIfDirty() const;
 
 protected:
+    DDGLinkContainer inputs;
+    DDGLinkContainer outputs;
 
-    BaseLink::InitLink<DDGNode>
-    initLink(const char* name, const char* help)
-    {
-        return BaseLink::InitLink<DDGNode>(this, name, help);
-    }
-
-    DDGLink inputs;
-    DDGLink outputs;
-
-    virtual void doAddInput(DDGNode* n)
-    {
-        inputs.add(n);
-    }
-
-    virtual void doDelInput(DDGNode* n)
-    {
-        inputs.remove(n);
-    }
-
-    virtual void doAddOutput(DDGNode* n)
-    {
-        outputs.add(n);
-    }
-
-    virtual void doDelOutput(DDGNode* n)
-    {
-        outputs.remove(n);
-    }
+    virtual void doAddInput(DDGNode* n);
+    virtual void doDelInput(DDGNode* n);
+    virtual void doAddOutput(DDGNode* n);
+    virtual void doDelOutput(DDGNode* n);
 
     /// the dirtyOutputs flags of all the inputs will be set to false
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     void cleanDirtyOutputsOfInputs(const core::ExecParams*) { cleanDirtyOutputsOfInputs(); }
     void cleanDirtyOutputsOfInputs();
 
@@ -230,18 +121,11 @@ private:
 
     struct DirtyFlags
     {
-        DirtyFlags() : dirtyValue(false), dirtyOutputs(false) {}
-
-        bool dirtyValue;
-        bool dirtyOutputs;
+        bool dirtyValue {false};
+        bool dirtyOutputs {false};
     };
     DirtyFlags dirtyFlags;
 };
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
-
-} // namespace sofa
-
-#endif

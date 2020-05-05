@@ -46,9 +46,7 @@ public:
     /// @{
     typedef TClass<TData<T>,BaseData> MyClass;
     static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
-    const BaseClass* getClass() const override
-    { return GetClass(); }
-
+    const BaseClass* getClass() const { return GetClass(); }
     static std::string templateName(const TData<T>* = nullptr)
     {
         T* ptr = nullptr;

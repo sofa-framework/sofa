@@ -22,7 +22,14 @@
 #ifndef SOFA_CORE_DATATRACKER_H
 #define SOFA_CORE_DATATRACKER_H
 
+#include <functional>
+#include <map>
 #include <sofa/core/objectmodel/DDGNode.h>
+namespace sofa::core::objectmodel
+{
+    class Base;
+    class BaseData;
+}
 
 namespace sofa
 {
@@ -170,17 +177,6 @@ namespace core
         /// Calls the callback when one of the data has changed.
         void update() override;
 
-        /// This method is needed by DDGNode
-        const std::string& getName() const override
-        {
-            static const std::string emptyName ="";
-            return emptyName;
-        }
-        /// This method is needed by DDGNode
-        objectmodel::Base* getOwner() const override { return nullptr; }
-        /// This method is needed by DDGNode
-        objectmodel::BaseData* getData() const override { return nullptr; }
-
     protected:
         std::vector<std::function<void(DataTrackerEngine*)>> m_callbacks;
     };
@@ -216,16 +212,6 @@ namespace core
 
         /// This method is needed by DDGNode
         void update() override{}
-        /// This method is needed by DDGNode
-        const std::string& getName() const override
-        {
-            static const std::string emptyName ="";
-            return emptyName;
-        }
-        /// This method is needed by DDGNode
-        objectmodel::Base* getOwner() const override { return nullptr; }
-        /// This method is needed by DDGNode
-        objectmodel::BaseData* getData() const override { return nullptr; }
 
     private:
 
