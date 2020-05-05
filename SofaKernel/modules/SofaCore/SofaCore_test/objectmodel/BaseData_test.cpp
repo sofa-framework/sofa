@@ -19,64 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseClass.h>
+/******************************************************************************
+ * Contributors:                                                              *
+ *    - damien.marchal@univ-lille.fr                                          *
+ *****************************************************************************/
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject ;
 
-namespace sofa
-{
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
 
-namespace core
-{
+#include <sofa/core/objectmodel/BaseData.h>
+using sofa::core::objectmodel::BaseData;
 
-namespace objectmodel
+class MyData : public BaseData
 {
+public:
+    MyData() : BaseData(BaseInitData()) {}
+    virtual bool read(const std::string&){return true;}
+    virtual void printValue(std::ostream&) const {return;}
+    virtual std::string getValueString() const {return "";}
+    virtual std::string getValueTypeString() const {return "";}
+    virtual const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const {return nullptr;}
+    virtual const void* getValueVoidPtr() const {return nullptr;}
+    virtual void* beginEditVoidPtr(){return nullptr;}
+    virtual void* beginWriteOnlyVoidPtr(){return nullptr;}
+    virtual void endEditVoidPtr(){}
+};
 
-BaseClass* DeprecatedBaseClass::GetSingleton()
+class MyObject : public BaseObject
 {
-    static DeprecatedBaseClass dpc;
-    return &dpc;
+public:
+    SOFA_CLASS(MyObject, BaseObject);
+    MyData myData;
+    MyObject() :
+        myData() {}
+};
+
+class BaseData_test: public BaseTest
+{
+public:
+    MyObject m_object;
+};
+
+TEST_F(BaseData_test, setGetName)
+{
+    m_object.myData.setName("data1");
+    ASSERT_EQ(m_object.myData.getName(), "data1");
 }
-
-
-BaseClass::BaseClass()
-{
-}
-
-BaseClass::~BaseClass()
-{
-}
-
-DeprecatedBaseClass::DeprecatedBaseClass()
-{
-    namespaceName= "DeprecatedBaseClass::namespace";
-    className = "DeprecatedBaseClass::classname";
-    templateName = "DeprecatedBaseClass::templatename";
-    shortName = "DeprecatedBaseClass::shortname";
-}
-
-std::string BaseClass::decodeFullName(const std::type_info& t)
-{
-    return sofa::helper::NameDecoder::decodeFullName(t);
-}
-
-std::string BaseClass::decodeTypeName(const std::type_info& t)
-{
-    return sofa::helper::NameDecoder::decodeTypeName(t);
-}
-
-std::string BaseClass::decodeClassName(const std::type_info& t)
-{
-    return sofa::helper::NameDecoder::decodeClassName(t);
-}
-
-std::string BaseClass::decodeNamespaceName(const std::type_info& t)
-{
-    return sofa::helper::NameDecoder::decodeNamespaceName(t);
-}
-
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-

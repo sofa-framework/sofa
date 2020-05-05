@@ -84,11 +84,11 @@ OmniDriverEmu::OmniDriverEmu()
     , omniVisu(initData(&omniVisu, false, "omniVisu", "Visualize the position of the interface in the virtual scene"))
     , simuFreq(initData(&simuFreq, 1000, "simuFreq", "frequency of the \"simulated Omni\""))
     , simulateTranslation(initData(&simulateTranslation, false, "simulateTranslation", "do very naive \"translation simulation\" of omni, with constant orientation <0 0 0 1>"))
-    , thTimer(NULL)
+    , thTimer(nullptr)
     , trajPts(initData(&trajPts, "trajPoints","Trajectory positions"))
     , trajTim(initData(&trajTim, "trajTiming","Trajectory timing"))
-    , visu_base(NULL)
-    , visu_end(NULL)
+    , visu_base(nullptr)
+    , visu_end(nullptr)
     , currentToolIndex(0)
     , isToolControlled(true)
 {
@@ -102,7 +102,7 @@ OmniDriverEmu::OmniDriverEmu()
 
 OmniDriverEmu::~OmniDriverEmu()
 {
-    if (thTimer != NULL)
+    if (thTimer != nullptr)
         delete thTimer;
 }
 
@@ -374,7 +374,7 @@ void OmniDriverEmu::bwdInit()
         thTimer = new(helper::system::thread::CTime);
 
 #ifndef WIN32
-    if ( pthread_create( &hapSimuThread, NULL, hapticSimuExecute, (void*)this) == 0 )
+    if ( pthread_create( &hapSimuThread, nullptr, hapticSimuExecute, static_cast<void*>(this)) == 0 )
     {
         msg_info() << "OmniDriver : Thread created for Omni simulation." ;
         omniSimThreadCreated=true;
@@ -635,7 +635,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
 }
 
 
-int OmniDriverEmuClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
+static int OmniDriverEmuClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
         .add< OmniDriverEmu >();
 
 } // namespace controller

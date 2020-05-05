@@ -368,7 +368,7 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
 
         addDescriptionItem(groupItem, "Class", QString::fromStdString(base->getClassName()));
 
-        std::string namespacename = core::objectmodel::BaseClass::decodeNamespaceName(typeid(*base));
+        std::string namespacename = sofa::helper::NameDecoder::decodeNamespaceName(typeid(*base));
         if (!namespacename.empty())
             addDescriptionItem(groupItem, "Namespace", QString::fromStdString(namespacename));
 

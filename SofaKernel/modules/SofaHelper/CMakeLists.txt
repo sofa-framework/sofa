@@ -55,6 +55,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MarchingCubeUtility.h
     ${SRC_ROOT}/MatEigen.h
     ${SRC_ROOT}/MemoryManager.h
+    ${SRC_ROOT}/NameDecoder.h
     ${SRC_ROOT}/OptionsGroup.h
     ${SRC_ROOT}/OwnershipSPtr.h
     ${SRC_ROOT}/StateMask.h
@@ -170,6 +171,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/GenerateRigid.cpp
     ${SRC_ROOT}/LCPcalc.cpp
     ${SRC_ROOT}/MarchingCubeUtility.cpp
+    ${SRC_ROOT}/NameDecoder.cpp
     ${SRC_ROOT}/OptionsGroup.cpp
     ${SRC_ROOT}/StateMask.cpp
     ${SRC_ROOT}/SVector.cpp
@@ -337,7 +339,6 @@ endif()
 # PluginManager.cpp, at the expense of being much less visible compare to having it in the generated
 # SofaFramework/config.h
 set_property(SOURCE ${SRC_ROOT}/system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
-
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")

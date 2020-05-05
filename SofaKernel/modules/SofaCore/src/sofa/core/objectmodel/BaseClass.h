@@ -23,6 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASECLASS_H
 
 #include <sofa/core/core.h>
+#include <sofa/helper/NameDecoder.h>
 #include <sofa/core/objectmodel/SPtr.h>
 #include <map>
 
@@ -36,6 +37,7 @@ namespace objectmodel
 {
 
 class Base;
+using sofa::helper::NameDecoder;
 
 /**
  *  \brief Class hierarchy reflection base class
@@ -57,10 +59,10 @@ public:
     /// @todo the names could be hashed for faster comparisons
 
     std::string namespaceName;
+    std::string typeName;
     std::string className;
     std::string templateName;
     std::string shortName;
-    //std::string targetName;
     helper::vector<const BaseClass*> parents;
 
     /// returns true iff c is a parent class of this
@@ -95,52 +97,55 @@ public:
     }
 
     virtual void* dynamicCast(Base* obj) const = 0;
-
     virtual bool isInstance(Base* obj) const = 0;
 
+    ///////////////////////////////// DEPRECATED //////////////////////////////////////////////////
     /// Helper method to decode the type name
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
+                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
     static std::string decodeFullName(const std::type_info& t);
 
     /// Helper method to decode the type name to a more readable form if possible
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
+            "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
     static std::string decodeTypeName(const std::type_info& t);
 
     /// Helper method to extract the class name (removing namespaces and templates)
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
+    "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
     static std::string decodeClassName(const std::type_info& t);
 
     /// Helper method to extract the namespace (removing class name and templates)
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
+                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
     static std::string decodeNamespaceName(const std::type_info& t);
 
     /// Helper method to extract the template name (removing namespaces and class name)
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
+    "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
     static std::string decodeTemplateName(const std::type_info& t);
 
     /// Helper method to get the type name
     template<class T>
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
+                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
     static std::string defaultTypeName(const T* = nullptr)
     {
-        return decodeTypeName(typeid(T));
-    }
-
-    /// Helper method to get the class name
-    template<class T>
-    static std::string defaultClassName(const T* = nullptr)
-    {
-        return decodeClassName(typeid(T));
-    }
-
-    /// Helper method to get the namespace name
-    template<class T>
-    static std::string defaultNamespaceName(const T* = nullptr)
-    {
-        return decodeNamespaceName(typeid(T));
-    }
-
-    /// Helper method to get the template name
-    template<class T>
-    static std::string defaultTemplateName(const T* = nullptr)
-    {
-        return decodeTemplateName(typeid(T));
+        return sofa::helper::NameDecoder::decodeTypeName(typeid(T));
     }
 };
+
+class SOFA_CORE_API DeprecatedBaseClass : public BaseClass
+{
+public:
+    DeprecatedBaseClass();
+
+    void* dynamicCast(Base*) const override { return nullptr; }
+    bool isInstance(Base*) const override { return false; }
+
+    static BaseClass* GetSingleton();
+};
+
 
 // To specify template classes in C macro parameters, we can't write any commas, hence templates with more than 2 parameters have to use the following macros
 #define SOFA_TEMPLATE(Class,P1) Class<P1>
@@ -265,47 +270,45 @@ public:
 // Do not use this macro directly, use SOFA_ABSTRACT_CLASS instead
 #define SOFA_ABSTRACT_CLASS_DECL                                        \
     typedef MyType* Ptr;                                                \
+    friend class sofa::helper::NameDecoder;                             \
+    static std::string GetDefaultTemplateName(){ return sofa::helper::NameDecoder::DefaultTypeTemplateName<MyType>::Get(); } \
     using SPtr = sofa::core::sptr<MyType>;                              \
-                                                                        \
-    static const MyClass* GetClass() { return MyClass::get(); }         \
+    static const ::sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }   \
     virtual const ::sofa::core::objectmodel::BaseClass* getClass() const override \
-    { return GetClass(); }                                              \
+{ return GetClass(); }                                              \
     static const char* HeaderFileLocation() { return __FILE__; }        \
     template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
     initData(::sofa::core::objectmodel::Data<SOFA_T>* field, const char* name, const char* help,   \
-             ::sofa::core::objectmodel::BaseData::DataFlags dataflags)  \
-    {                                                                   \
-        ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
-        this->initData0(field, res, name, help, dataflags);             \
-        res.ownerClass = GetClass()->className.c_str();                 \
-        return res;                                                     \
-    }                                                                   \
+    ::sofa::core::objectmodel::BaseData::DataFlags dataflags)  \
+{                                                                   \
+    ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
+    this->initData0(field, res, name, help, dataflags);             \
+    return res;                                                     \
+}                                                                   \
     template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
     initData(::sofa::core::objectmodel::Data<SOFA_T>* field, const char* name, const char* help,   \
-             bool isDisplayed=true, bool isReadOnly=false)              \
-    {                                                                   \
-        ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
-        this->initData0(field, res, name, help,                         \
-                        isDisplayed, isReadOnly);                       \
-        res.ownerClass = GetClass()->className.c_str();                 \
-        return res;                                                     \
-    }                                                                   \
+    bool isDisplayed=true, bool isReadOnly=false)              \
+{                                                                   \
+    ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
+    this->initData0(field, res, name, help,                         \
+    isDisplayed, isReadOnly);                       \
+    return res;                                                     \
+}                                                                   \
     template<class SOFA_T> typename ::sofa::core::objectmodel::Data<SOFA_T>::InitData initData(    \
-        ::sofa::core::objectmodel::Data<SOFA_T>* field, const SOFA_T& value, const char* name,     \
-        const char* help, bool isDisplayed=true, bool isReadOnly=false) \
-    {                                                                   \
-        typename ::sofa::core::objectmodel::Data<SOFA_T>::InitData res; \
-        this->initData0(field, res, value, name, help,                  \
-                        isDisplayed, isReadOnly);                       \
-        res.ownerClass = GetClass()->className.c_str();                 \
-        return res;                                                     \
-    }                                                                   \
+    ::sofa::core::objectmodel::Data<SOFA_T>* field, const SOFA_T& value, const char* name,     \
+    const char* help, bool isDisplayed=true, bool isReadOnly=false) \
+{                                                                   \
+    typename ::sofa::core::objectmodel::Data<SOFA_T>::InitData res; \
+    this->initData0(field, res, value, name, help,                  \
+    isDisplayed, isReadOnly);                       \
+    return res;                                                     \
+}                                                                   \
     ::sofa::core::objectmodel::BaseLink::InitLink<MyType>               \
     initLink(const char* name, const char* help)                        \
-    {                                                                   \
-        return ::sofa::core::objectmodel::BaseLink::InitLink<MyType>    \
-            (this, name, help);                                         \
-    }                                                                   \
+{                                                                   \
+    return ::sofa::core::objectmodel::BaseLink::InitLink<MyType>    \
+    (this, name, help);                                             \
+}                                                                   \
     using Inherit1::sout;                                               \
     using Inherit1::serr;                                               \
     using Inherit1::sendl
@@ -313,9 +316,8 @@ public:
 // Do not use this macro directly, use SOFA_CLASS instead
 #define SOFA_CLASS_DECL                                        \
     SOFA_ABSTRACT_CLASS_DECL;                                  \
-                                                               \
+    \
     friend class sofa::core::objectmodel::New<MyType>
-
 
 template <class Parents>
 class TClassParents
@@ -371,14 +373,12 @@ class TClass : public BaseClass
 protected:
     TClass()
     {
-        T* ptr = nullptr;
-        namespaceName = T::namespaceName(ptr);
-        className = T::className(ptr);
-        templateName = T::templateName(ptr);
-        shortName = T::shortName(ptr);
-//#ifdef SOFA_TARGET
-//        targetName = sofa_tostring(SOFA_TARGET);
-//#endif
+        typeName = NameDecoder::getTypeName<T>();
+        namespaceName = NameDecoder::getNamespaceName<T>();
+        className = NameDecoder::getClassName<T>();
+        templateName = NameDecoder::getTemplateName<T>();
+        shortName = NameDecoder::getShortName<T>();
+
         parents.resize(TClassParents<Parents>::nb());
         for (int i=0; i<TClassParents<Parents>::nb(); ++i)
             parents[i] = TClassParents<Parents>::get(i);
@@ -399,10 +399,10 @@ protected:
 
 public:
 
-    static const TClass<T, Parents>* get()
+    static const BaseClass* get()
     {
-        static TClass<T, Parents> *singleton = new TClass<T, Parents>;
-        return singleton;
+        static TClass<T, Parents> *theClass=new TClass<T, Parents>();
+        return theClass;
     }
 };
 

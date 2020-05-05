@@ -23,9 +23,8 @@
 #ifndef SOFA_HELPER_TYPES_MATERIAL_H_
 #define SOFA_HELPER_TYPES_MATERIAL_H_
 
-#include <sofa/core/core.h>
-#include <sofa/defaulttype/RGBAColor.h>
-#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/helper/helper.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -40,10 +39,10 @@ class SOFA_HELPER_API Material
 {
 public:
     std::string 	name;		        /* name of material */
-    defaulttype::RGBAColor  diffuse ;	/* diffuse component */
-    defaulttype::RGBAColor  ambient ;	/* ambient component */
-    defaulttype::RGBAColor  specular;	/* specular component */
-    defaulttype::RGBAColor  emissive;	/* emmissive component */
+    RGBAColor  diffuse ;	/* diffuse component */
+    RGBAColor  ambient ;	/* ambient component */
+    RGBAColor  specular;	/* specular component */
+    RGBAColor  emissive;	/* emmissive component */
     float  shininess;	                /* specular exponent */
     bool   useDiffuse;
     bool   useSpecular;
