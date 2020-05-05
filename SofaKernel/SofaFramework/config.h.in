@@ -43,6 +43,8 @@
 
 #cmakedefine SOFA_WITH_DEVTOOLS
 
+#pragma GCC diagnostic ignored "-Wpadded"
+
 #ifdef _MSC_VER
 #define EIGEN_DONT_ALIGN
 #endif // _MSC_VER

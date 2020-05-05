@@ -32,6 +32,34 @@ using sofa::core::objectmodel::ComponentState;
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject;
+
+using sofa::defaulttype::Rigid3Types;
+using sofa::defaulttype::Vec3Types;
+
+namespace customns
+{
+class CustomBaseObject : public BaseObject
+{
+public:
+    SOFA_CLASS(CustomBaseObject, BaseObject);
+};
+
+template<class D>
+class CustomBaseObjectT : public BaseObject
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(CustomBaseObjectT, D), BaseObject);
+
+    static const std::string GetCustomClassName() { return "MyFakeClassName"; }
+};
+
+}
+
+using customns::CustomBaseObject;
+using customns::CustomBaseObjectT;
+
 class Base_test: public BaseSimulationTest
 {
 public:
@@ -67,5 +95,39 @@ public:
 TEST_F(Base_test , testComponentState )
 {
     this->testComponentState();
+}
+
+TEST_F(Base_test , testBaseClass)
+{
+    EXPECT_EQ(CustomBaseObject::GetClass()->className, "CustomBaseObject");
+    EXPECT_EQ(CustomBaseObject::GetClass()->templateName, "");
+    EXPECT_EQ(CustomBaseObject::GetClass()->shortName, "customBaseObject");
+
+    EXPECT_EQ(CustomBaseObjectT<Rigid3Types>::GetClass()->className, "MyFakeClassName");
+    EXPECT_EQ(CustomBaseObjectT<Rigid3Types>::GetClass()->templateName, Rigid3Types::Name());
+    EXPECT_EQ(CustomBaseObjectT<Rigid3Types>::GetClass()->shortName, "myFakeClassName");
+
+    EXPECT_EQ(CustomBaseObjectT<Vec3Types>::GetClass()->className, "MyFakeClassName");
+    EXPECT_EQ(CustomBaseObjectT<Vec3Types>::GetClass()->templateName, Vec3Types::Name());
+    EXPECT_EQ(CustomBaseObjectT<Vec3Types>::GetClass()->shortName, "myFakeClassName");
+}
+
+TEST_F(Base_test , testGetClassName)
+{
+    CustomBaseObject o;
+    EXPECT_EQ(o.getClassName(), "CustomBaseObject");
+    EXPECT_EQ(o.getTemplateName(), "");
+    EXPECT_EQ(o.getTypeName(), "CustomBaseObject");
+    EXPECT_EQ(o.getClass()->className, "CustomBaseObject");
+
+    CustomBaseObjectT<Rigid3Types> ot;
+    EXPECT_EQ(ot.getClassName(), "MyFakeClassName");
+    EXPECT_EQ(ot.getTypeName(), "CustomBaseObjectTStdRigidTypes<3,double>>");
+    EXPECT_EQ(ot.getTemplateName(), Rigid3Types::Name());
+
+    Base* b = &ot;
+    EXPECT_EQ(b->getClassName(), "MyFakeClassName");
+    EXPECT_EQ(b->getTypeName(), "CustomBaseObjectTStdRigidTypes<3,double>>");
+    EXPECT_EQ(b->getTemplateName(), Rigid3Types::Name());
 }
 

@@ -218,7 +218,7 @@ bool BaseViewer::load()
         if (!visualStyle)
         {
             visualStyle = sofa::core::objectmodel::New<component::visualmodel::VisualStyle>();
-            visualStyle->setName(core::objectmodel::Base::shortName(visualStyle.get()));
+            visualStyle->setName(sofa::helper::NameDecoder::getShortName<decltype(visualStyle.get())>());
 
             core::visual::DisplayFlags* displayFlags = visualStyle->displayFlags.beginEdit();
             displayFlags->setShowVisualModels(sofa::core::visual::tristate::true_value);

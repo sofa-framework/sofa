@@ -64,8 +64,7 @@ ComponentLibrary::ComponentLibrary( const std::string &componentN, const std::st
             possiblePaths.push_back(exampleFiles[i]);
     }
 
-    std::string nameSpace = sofa::core::objectmodel::BaseClass::decodeNamespaceName(entry->creatorMap.begin()->second->type());
-
+    std::string nameSpace = sofa::helper::NameDecoder::decodeNamespaceName(entry->creatorMap.begin()->second->type());
 
     description += std::string("</H2>");
 
