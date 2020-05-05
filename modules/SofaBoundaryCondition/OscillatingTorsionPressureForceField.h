@@ -60,7 +60,7 @@ protected:
     class TrianglePressureInformation
     {
     public:
-        Real area;
+        Real area {0.0};
 
         TrianglePressureInformation() {}
         TrianglePressureInformation(const TrianglePressureInformation &e)
@@ -106,7 +106,8 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void setDminAndDmax(const SReal _dmin, const SReal _dmax){dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);}
+    void setDminAndDmax(const SReal _dmin, const SReal _dmax){dmin.setValue(static_cast<Real>(_dmin));
+                                                              dmax.setValue(static_cast<Real>(_dmax));}
     void setAxis(const Coord n) { axis.setValue(n);}
     void setMoment(Real x) { moment.setValue( x ); }
 

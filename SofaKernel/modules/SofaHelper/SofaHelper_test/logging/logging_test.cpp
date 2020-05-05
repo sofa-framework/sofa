@@ -527,7 +527,7 @@ TEST(LoggingTest, checkLoggingMessageHandler)
 
     if( loggingFrame.size() != 3 )
     {
-        EXPECT_EQ( loggingFrame.size(), 3) ;
+        EXPECT_EQ( loggingFrame.size(), size_t(3)) ;
         for(auto& message : loggingFrame)
         {
             std::cout << message << std::endl ;
