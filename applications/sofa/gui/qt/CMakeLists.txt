@@ -18,9 +18,10 @@ if(Qt5Charts_FOUND)
     set(QT_TARGETS ${QT_TARGETS} Qt5::Charts)
 endif()
 
-#QDocBrowser
-option(SOFAGUIQT_ENABLE_QDOCBROWSER "Build the QDocBrowser. Qt5WebEngine is needed." OFF)
-if (SOFAGUIQT_ENABLE_QDOCBROWSER)
+# QDocBrowser
+find_package(Qt5 COMPONENTS WebEngine QUIET) # if found, then QDocBrowser will be ON by default
+option(SOFAGUIQT_ENABLE_QDOCBROWSER "Build the QDocBrowser. Qt5WebEngine is needed." ${Qt5WebEngine_FOUND})
+if(SOFAGUIQT_ENABLE_QDOCBROWSER)
     sofa_find_package(Qt5 COMPONENTS WebEngine WebEngineWidgets REQUIRED BOTH_SCOPES)
     set(QT_TARGETS ${QT_TARGETS} Qt5::WebEngine Qt5::WebEngineWidgets)
 endif()
