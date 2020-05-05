@@ -46,9 +46,7 @@ public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    //typedef double Real;
     typedef typename std::pair< Coord,Real > TData;
-
 
     Data < double > f_period; ///< period between outputs
     Data< sofa::helper::vector< unsigned int > > f_indices; ///< Indices of the points which will be monitored

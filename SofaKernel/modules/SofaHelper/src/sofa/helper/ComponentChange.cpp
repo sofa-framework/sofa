@@ -109,6 +109,10 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"VisualManagerPass", Pluginized("v19.06", "SofaOpenglVisual")},
     {"VisualmanagerSecondaryPass", Pluginized("v19.06", "SofaOpenglVisual")},
 
+    // SofaDenseSolver was pluginized in #1299
+    {"LULinearSolver", Pluginized("v20.06", "SofaDenseSolver")},
+    //{"NewMatCholeskySolver", Pluginized("v20.06", "SofaDenseSolver")},
+    //{"NewMatCGLinearSolver", Pluginized("v20.06", "SofaDenseSolver")},
 
     /***********************/
     // REMOVED SINCE v20.06

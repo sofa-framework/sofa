@@ -346,7 +346,7 @@ int HeadlessRecorder::mainLoop()
         }
         else
         {
-            sleep(0.01);
+            sofa::helper::system::thread::CTime::sleep(10);
         }
     }
     msg_info("HeadlessRecorder") << "Recording time: " << recordTimeInSeconds << " seconds at: " << fps << " fps.";

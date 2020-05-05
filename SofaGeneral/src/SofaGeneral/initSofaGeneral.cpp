@@ -41,11 +41,6 @@
 #include <SofaBoundaryCondition/initBoundaryCondition.h>
 #include <SofaUserInteraction/initUserInteraction.h>
 #include <SofaConstraint/initConstraint.h>
-
-#if SOFAGENERAL_HAVE_SOFADENSESOLVER
-#include <SofaDenseSolver/initDenseSolver.h>
-#endif
-
 #include <SofaEigen2Solver/initEigen2Solver.h>
 
 namespace sofa
@@ -83,9 +78,6 @@ void initSofaGeneral()
     initBoundaryCondition();
     initUserInteraction();
     initConstraint();
-#if SOFAGENERAL_HAVE_SOFADENSESOLVER
-    initDenseSolver();
-#endif
 }
 
 

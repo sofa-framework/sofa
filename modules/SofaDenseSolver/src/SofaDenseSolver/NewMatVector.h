@@ -19,22 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_NEWMATVECTOR_H
-#define SOFA_COMPONENT_LINEARSOLVER_NEWMATVECTOR_H
-#include "config.h"
+#pragma once
+
+#include <SofaDenseSolver/config.h>
 
 #include <newmat/newmat.h>
 #define WANT_STREAM
 #include <newmat/newmatio.h>
 #include <sofa/defaulttype/BaseVector.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 class NewMatVector : public NEWMAT::ColumnVector, public defaulttype::BaseVector
@@ -161,10 +155,4 @@ public:
 
 };
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver
