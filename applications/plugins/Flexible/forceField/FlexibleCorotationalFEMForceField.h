@@ -44,9 +44,6 @@ public:
 
     SOFA_CLASS2(SOFA_TEMPLATE(FlexibleCorotationalFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes),SOFA_TEMPLATE(shapefunction::BarycentricShapeFunction,core::behavior::ShapeFunction3));
 
-    virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName( const FlexibleCorotationalFEMForceField<DataTypes>* = NULL) { return DataTypes::Name(); }
-
     /** @name  Input types    */
     //@{
     typedef typename DataTypes::Real Real;

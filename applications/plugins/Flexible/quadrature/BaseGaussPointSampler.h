@@ -102,9 +102,6 @@ public:
     Data< float > showIndicesScale; ///< Indices samples scale
     //@}
 
-    virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const BaseGaussPointSampler* = NULL) { return std::string(); }
-
     BaseGaussPointSampler()    :   Inherited()
       , f_method ( initData ( &f_method,"method","quadrature method" ) )
       , f_position(initData(&f_position,SeqPositions(),"position","output sample positions"))

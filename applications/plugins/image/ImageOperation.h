@@ -72,9 +72,6 @@ public:
 
     Data< ImageTypes > outputImage;
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageOperation<ImageTypes>* = NULL) { return ImageTypes::Name(); }
-
     ImageOperation()    :   Inherited()
       , operation ( initData ( &operation,"operation","operation" ) )
       , inputImage1(initData(&inputImage1,ImageTypes(),"inputImage1",""))

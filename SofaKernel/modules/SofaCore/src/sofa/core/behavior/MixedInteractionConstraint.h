@@ -134,12 +134,10 @@ public:
         return obj;
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const MixedInteractionConstraint<DataTypes1,DataTypes2>* = nullptr)
+    //TODO(dmarchal: 20/04/2020): Have a carefull look that we really want this customize pattern and it is not
+    // a bug.
+    /// Overriding this function is needed otherwise the template returned would be of type DataTypes1::Name()+","+DataType2::Name().
+    static std::string GetCustomTemplateName()
     {
         return DataTypes1::Name();
     }

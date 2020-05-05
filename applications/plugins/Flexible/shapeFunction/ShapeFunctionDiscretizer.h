@@ -89,10 +89,6 @@ public:
     BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
     //@}
 
-
-    virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const ShapeFunctionDiscretizer<ImageTypes>* = NULL) { return ImageTypes::Name(); }
-
     ShapeFunctionDiscretizer()    :   Inherited()
       , f_image(initData(&f_image,ImageTypes(),"image",""))
       , f_transform(initData(&f_transform,TransformType(),"transform",""))

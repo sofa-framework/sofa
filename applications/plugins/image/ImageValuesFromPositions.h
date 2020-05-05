@@ -152,10 +152,6 @@ public:
     Data< valuesType > values;  ///< output interpolated values
     Data< Real > outValue; ///< default value outside image
 
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageValuesFromPositions<ImageTypes>* = NULL) { return ImageTypes::Name();    }
-
     ImageValuesFromPositions()    :   Inherited()
         , image(initData(&image,ImageTypes(),"image",""))
         , transform(initData(&transform,TransformType(),"transform",""))

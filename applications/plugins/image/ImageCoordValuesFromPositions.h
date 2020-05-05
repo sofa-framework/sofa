@@ -175,9 +175,6 @@ public:
 
     Data< bool > addPosition; ///< add positions to interpolated values (to get translated positions)
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageCoordValuesFromPositions<ImageTypes>* = NULL) { return ImageTypes::Name();    }
-
     ImageCoordValuesFromPositions()    :   Inherited()
       , image(initData(&image,ImageTypes(),"image",""))
       , transform(initData(&transform,TransformType(),"transform",""))

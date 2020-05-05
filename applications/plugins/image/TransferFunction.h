@@ -127,9 +127,6 @@ public:
 
     Data< OutImageTypes > outputImage;
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const TransferFunction<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
-
     TransferFunction()    :   Inherited()
       , filter ( initData ( &filter,"filter","Filter" ) )
       , param ( initData ( &param,"param","Parameters" ) )

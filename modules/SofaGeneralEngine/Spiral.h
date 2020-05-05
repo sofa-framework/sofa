@@ -67,24 +67,13 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const Spiral<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
     Data<VecCoord> f_X; ///< Position coordinates of the degrees of freedom
     Data<Real> curvature; ///< Spiral curvature factor
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SPIRAL_CPP)
-extern template class SOFA_GENERAL_ENGINE_API Spiral<defaulttype::Vec3Types>;
- 
+extern template class SOFA_GENERAL_ENGINE_API Spiral<defaulttype::Vec3Types>; 
 #endif
 
 } // namespace engine

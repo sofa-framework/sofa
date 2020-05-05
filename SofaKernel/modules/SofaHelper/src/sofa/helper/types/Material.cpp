@@ -136,7 +136,7 @@ Material & Material::operator= (const Material& mat) {
 
 } // namespace loader
 
-} // namespace core
+} // namespace coreWhat 
 
 } // namespace sofa
 

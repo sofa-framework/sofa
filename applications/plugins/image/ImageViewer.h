@@ -139,10 +139,7 @@ public:
     Data <bool> display; ///< Boolean to activate/desactivate the display of the image
 
     typedef component::visualmodel::VisualModelImpl VisuModelType;
-    
-    std::string getTemplateName() const  override {	return templateName(this);	}
-    static std::string templateName(const ImageViewer<ImageTypes>* = NULL)	{ return ImageTypes::Name(); }
-    
+
     ImageViewer() : Inherited()
       , image(initData(&image,ImageTypes(),"image","input image"))
       , showSlicedModels(initData(&showSlicedModels, false, "slicedModels", "display visual models on cutPlanes"))

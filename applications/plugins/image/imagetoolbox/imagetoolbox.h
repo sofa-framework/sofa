@@ -120,10 +120,7 @@ public:
     
      typedef sofa::component::engine::LabelImageToolBox Label;
     typedef helper::vector<Label*> VecLabel;
-        
-    std::string getTemplateName() const  override {	return templateName(this);	}
-    static std::string templateName(const ImageToolBox<ImageTypes>* = NULL)	{ return ImageTypes::Name(); }
-    
+
     ImageToolBox() : Inherited()
       , image(initData(&image,ImageTypes(),"image","input image"))
       , toolbox(initData(&toolbox, "toolbox",""))
