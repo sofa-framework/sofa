@@ -117,13 +117,18 @@ public:
     void updateButtonStates(bool emitEvent);
     void initDevice(int cptInitPass = 0);
     void clearDevice();
+
+    // Pointer to the forceFeedBack component
     ForceFeedback::SPtr m_forceFeedback;
+    // link to the forceFeedBack component, if not set will search through graph and take first one encountered
+    SingleLink<GeomagicDriver, ForceFeedback, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_forceFeedback;
 
     int m_errorDevice; ///< Int detecting any error coming from device / detection
     bool m_simulationStarted; /// <Boolean storing hte information if Sofa has started the simulation (changed by AnimateBeginEvent)
     bool m_isInContact;
 
 private:
+
     void handleEvent(core::objectmodel::Event *) override;
     void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;
     void getMatrix( Mat<4,4, GLdouble> & M, int index, double teta);
@@ -140,8 +145,9 @@ private:
         int buttonState;
     };
 
+    // Pointer to the Geomagic visual model to draw device in scene
     std::unique_ptr<GeomagicVisualModel> m_GeomagicVisualModel;
-
+   
 public:
     OmniData m_omniData;
     OmniData m_simuData;

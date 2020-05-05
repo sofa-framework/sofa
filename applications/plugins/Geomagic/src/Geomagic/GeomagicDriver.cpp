@@ -173,6 +173,7 @@ GeomagicDriver::GeomagicDriver()
     , d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback","Maximum value of the normed input force feedback for device security"))
     , d_manualStart(initData(&d_manualStart, false, "manualStart", "If true, will not automatically initDevice at component init phase."))
     , m_simulationStarted(false)
+    , l_forceFeedback(initLink("forceFeedBack", "link to the forceFeedBack component, if not set will search through graph and take first one encountered."))
     , m_errorDevice(0)
     , m_isInContact(false)
     , m_hHD(UINT_MAX)
@@ -217,8 +218,20 @@ void GeomagicDriver::bwdInit()
     if(m_errorDevice != 0)
         return;
 
-    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-    m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
+    if (l_forceFeedback.empty())
+    {
+        simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
+        m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
+    }
+    else
+    {
+        m_forceFeedback = l_forceFeedback.get();
+    }
+
+    if (!m_forceFeedback.get())
+    {
+        msg_warning() << "No forceFeedBack component found in the scene. Only the motion of the haptic tool will be simulated.";
+    }
 
     if (d_manualStart.getValue() == false)
         initDevice();
