@@ -244,12 +244,6 @@ void Multi2Mapping<In1,In2,Out>::init()
 }
 
 template < class In1, class In2, class Out >
-std::string Multi2Mapping<In1,In2,Out>::templateName(const Multi2Mapping<In1, In2, Out>* /*mapping*/)
-{
-    return std::string(In1::Name()) + "," + In2::Name() + "," + Out::Name();
-}
-
-template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::disable()
 {
 }

@@ -216,10 +216,6 @@ public:
      Data< helper::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
     //@}
 
-    virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>* = NULL) { return ShapeFunctionTypes_::Name()+std::string(",")+ImageTypes_::Name(); }
-
-
     /// interpolate weights and their derivatives at a spatial position
     void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const int cell=-1) override
     {

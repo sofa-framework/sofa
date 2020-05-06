@@ -101,16 +101,6 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const MeshROI<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
 protected:
     bool checkSameOrder(const CPos& A, const CPos& B, const CPos& pt, const CPos& norm);
     bool isPointInMesh(const CPos& p);

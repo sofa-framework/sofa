@@ -179,12 +179,6 @@ void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams, MultiVecDeri
 }// MultiMapping::applyJT
 
 template <class In, class Out>
-std::string MultiMapping<In,Out>::templateName(const MultiMapping<In, Out>* /*mapping*/)
-{
-    return In::Name() + std::string(",") + Out::Name();
-}
-
-template <class In, class Out>
 void MultiMapping<In,Out>::disable()
 {
 }

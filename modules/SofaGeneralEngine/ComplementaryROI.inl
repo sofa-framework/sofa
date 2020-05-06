@@ -135,18 +135,6 @@ void ComplementaryROI<DataTypes>::doUpdate()
     msg_info() << "Created ROI containing " << indices.size() << " points not in " << nbSet << " sets" ;
 }
 
-template <class DataTypes>
-string ComplementaryROI<DataTypes>::getTemplateName() const
-{
-    return templateName(this);
-}
-
-template <class DataTypes>
-string ComplementaryROI<DataTypes>::templateName(const ComplementaryROI<DataTypes>*)
-{
-    return DataTypes::Name();
-}
-
 } // namespace engine
 
 } // namespace component

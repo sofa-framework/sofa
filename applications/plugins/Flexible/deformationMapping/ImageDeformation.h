@@ -96,10 +96,6 @@ public:
     Data< ImageTypes > outputImage;
     Data< TransformType > outputTransform;
 
-
-    virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const ImageDeformation<ImageTypes>* = NULL) { return ImageTypes::Name(); }
-
     ImageDeformation()    :   Inherited()
         , deformationMethod ( initData ( &deformationMethod,"deformationMethod","" ) )
         , interpolation ( initData ( &interpolation,"interpolation","" ) )

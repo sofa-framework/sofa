@@ -86,9 +86,6 @@ public:
     Data< VVI > cluster; ///< input2 (clusters)
     Data< VecCoord > targetPosition;       ///< result
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ShapeMatching<DataTypes>* = nullptr)    {    return DataTypes::Name();    }
-
 private:
     sofa::core::behavior::MechanicalState<DataTypes>* mstate;
     sofa::core::topology::BaseMeshTopology* topo;

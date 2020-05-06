@@ -88,9 +88,6 @@ public:
         }
     }
 
-    static std::string templateName(const AffineMass<DataTypes>* = NULL) { return DataTypes::Name(); }
-    virtual std::string getTemplateName() const override { return templateName(this); }
-
     void addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override
     {
         if( factor == 1.0 ) d_massMatrix.getValue().addMult( f, dx );
