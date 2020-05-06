@@ -244,7 +244,7 @@ else()
     message(STATUS "SofaGuiQt: QtCharts not found, SofaWindowProfiler will not be built.")
 endif()
 
-if(Qt5WebEngine_FOUND)
+if(SOFAGUIQT_ENABLE_QDOCBROWSER)
     list(APPEND MOC_HEADER_FILES panels/QDocBrowser.h)
     list(APPEND SOURCE_FILES panels/QDocBrowser.cpp)
 else()
