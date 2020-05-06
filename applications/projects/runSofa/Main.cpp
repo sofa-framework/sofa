@@ -29,7 +29,6 @@ using std::string;
 #include <vector>
 using std::vector;
 
-#include <runSofa_config.h>
 #include <runSofaValidation.h>
 
 #include <sofa/helper/ArgumentParser.h>
