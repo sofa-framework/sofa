@@ -5,8 +5,13 @@ sofa_add_module(SofaSparseSolver SofaSparseSolver ON)      #
 sofa_add_module(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
 sofa_add_module(SofaHaptics SofaHaptics ON)
 
+find_package(Newmat QUIET)
+if(Newmat_FOUND)
+	sofa_add_module(SofaDenseSolver SofaDenseSolver ON)
+endif()
+
 if(SOFA_NO_OPENGL)
-    message("SOFA_NO_OPENGL flag prevents from using the SofaCUDA, SofaSimpleGUI and VolumetricRendering plugins")
+    message("SOFA_NO_OPENGL flag prevents from using the SofaOpenglVisual plugin")
 else()
     sofa_add_module(SofaOpenglVisual SofaOpenglVisual ON)
 endif()

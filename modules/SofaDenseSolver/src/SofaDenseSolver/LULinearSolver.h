@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_LULINEARSOLVER_H
-#define SOFA_COMPONENT_LINEARSOLVER_LULINEARSOLVER_H
-#include "config.h"
+#pragma once
+
+#include <SofaDenseSolver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
@@ -29,13 +29,7 @@
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <cmath>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 /// Linear system solver using the default (LU factorization) algorithm
@@ -75,10 +69,4 @@ public:
 
 };
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver
