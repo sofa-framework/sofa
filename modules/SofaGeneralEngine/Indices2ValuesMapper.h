@@ -60,16 +60,6 @@ public:
     void reinit() override;
     void doUpdate() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const Indices2ValuesMapper<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     //Input
     Data<sofa::helper::vector<Real> > f_inputValues; ///< Already existing values (can be empty) 
     Data<sofa::helper::vector<Real> > f_indices; ///< Indices to map value on 

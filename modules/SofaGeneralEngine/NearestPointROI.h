@@ -84,18 +84,7 @@ public:
 
     void init() override;
     void reinit() override;
-
     void doUpdate() override;
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const NearestPointROI<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
 };
 
 

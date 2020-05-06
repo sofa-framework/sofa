@@ -71,16 +71,6 @@ public:
     Data<bool> showInput; ///< showInput
     Data<bool> showOutput; ///< showOutput
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SmoothMeshEngine<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     /// Link to be set to the topology container in the component graph.
     SingleLink<SmoothMeshEngine<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
@@ -91,7 +81,6 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)
 extern template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<defaulttype::Vec3Types>;
- 
 #endif
 
 } // namespace engine

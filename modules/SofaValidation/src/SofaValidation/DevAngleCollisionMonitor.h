@@ -99,16 +99,6 @@ public:
         return obj;
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const DevAngleCollisionMonitor<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
 protected:
     /// First model mechanical state
     core::behavior::MechanicalState<DataTypes> *mstate1;

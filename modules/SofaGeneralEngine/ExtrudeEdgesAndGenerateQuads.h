@@ -67,16 +67,6 @@ public:
     void reinit() override;
     void doUpdate() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const ExtrudeEdgesAndGenerateQuads<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     bool                                             initialized;
     Data<Coord>                                      d_direction; ///< Direction along which to extrude the curve
     Data<Real>                                       d_thickness;

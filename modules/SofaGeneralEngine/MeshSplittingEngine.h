@@ -86,9 +86,6 @@ public:
     Data< helper::vector<unsigned int> > indexPairs;
     helper::vectorData<SeqPositions> position;
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MeshSplittingEngine<DataTypes>* = nullptr) { return DataTypes::Name();    }
-
 protected:
 
     MeshSplittingEngine();

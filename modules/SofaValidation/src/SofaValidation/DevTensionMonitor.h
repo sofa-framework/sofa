@@ -85,25 +85,13 @@ public:
         return obj;
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const DevTensionMonitor<TDataTypes>* = nullptr)
-    {
-        return TDataTypes::Name();
-    }
 protected:
-
     core::behavior::MechanicalState<DataTypes> *mstate;
-
 };
 
 
 #if  !defined(SOFA_COMPONENT_MISC_DEVTENSIONMONITOR_CPP)
 extern template class SOFA_SOFAVALIDATION_API DevTensionMonitor<defaulttype::Rigid3Types>;
-
 #endif
 
 } // namespace sofa::component::misc
