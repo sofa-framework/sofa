@@ -25,6 +25,7 @@
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
+#include <sofa/helper/NameDecoder.h>
 #include <list>
 
 namespace sofa
@@ -70,7 +71,7 @@ public:
     /// @name Class reflection system
     /// @{
     typedef TClass<DDGNode> MyClass;
-    static const MyClass* GetClass() { return MyClass::get(); }
+    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const
     { return GetClass(); }
 
@@ -99,7 +100,7 @@ public:
     template<class T>
     static std::string className(const T* ptr= nullptr)
     {
-        return BaseClass::defaultClassName(ptr);
+        return sofa::helper::NameDecoder::getClassName<T>();
     }
 
     /// Helper method to get the namespace name of a type derived from this class
@@ -110,7 +111,7 @@ public:
     template<class T>
     static std::string namespaceName(const T* ptr= nullptr)
     {
-        return BaseClass::defaultNamespaceName(ptr);
+        return sofa::helper::NameDecoder::getNamespaceName<T>();
     }
 
     /// Helper method to get the template name of a type derived from this class
@@ -121,26 +122,8 @@ public:
     template<class T>
     static std::string templateName(const T* ptr= nullptr)
     {
-        return BaseClass::defaultTemplateName(ptr);
+        return sofa::helper::NameDecoder::getTemplateName<T>();
     }
-
-    /// Helper method to get the shortname of a type derived from this class.
-    /// The default implementation return the class name.
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::shortName(ptr); \endcode
-    /// This way derived classes can redefine the shortName method
-    template< class T>
-    static std::string shortName( const T* ptr = nullptr, BaseObjectDescription* = nullptr )
-    {
-        std::string shortname = T::className(ptr);
-        if( !shortname.empty() )
-        {
-            *shortname.begin() = char(::tolower(*shortname.begin()));
-        }
-        return shortname;
-    }
-    /// @}
 
     /// Add a new input to this node
     void addInput(DDGNode* n);

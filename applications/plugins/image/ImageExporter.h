@@ -240,10 +240,6 @@ public:
     Data<bool> exportAtBegin; ///< export file at the initialization
     Data<bool> exportAtEnd; ///< export file when the simulation is finished
 
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageExporter<ImageTypes>* = NULL) { return ImageTypes::Name(); }
-
     ImageExporter()	: Inherited()
         , image(initData(&image,ImageTypes(),"image","image"))
         , transform(initData(&transform, TransformType(), "transform" , ""))

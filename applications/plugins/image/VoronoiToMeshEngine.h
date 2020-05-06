@@ -90,9 +90,6 @@ public:
 
     Data< Real > minLength; ///< minimun edge length in pixels
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const VoronoiToMeshEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
-
     VoronoiToMeshEngine()    :   Inherited()
       , showMesh(initData(&showMesh,false,"showMesh","show reconstructed mesh"))
       , image(initData(&image,ImageTypes(),"image","Voronoi image"))

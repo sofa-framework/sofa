@@ -138,16 +138,6 @@ public:
         return obj;
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const LMConstraint<DataTypes1,DataTypes2>* = nullptr)
-    {
-        return DataTypes1::Name() + std::string(",") + DataTypes2::Name();
-    }
-
 protected:
     MechanicalState<DataTypes1> *constrainedObject1;
     MechanicalState<DataTypes2> *constrainedObject2;

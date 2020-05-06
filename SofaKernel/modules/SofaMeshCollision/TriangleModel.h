@@ -219,16 +219,6 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const TriangleCollisionModel<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
     sofa::core::topology::BaseMeshTopology* getCollisionTopology() override

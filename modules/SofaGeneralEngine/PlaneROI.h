@@ -105,17 +105,6 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const PlaneROI<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
-
 protected:
     bool isPointInPlane(const CPos& p);
     bool isPointInPlane(const PointID& pid);
@@ -124,7 +113,6 @@ protected:
     bool isTetrahedronInPlane(const Tetra& t);
 
     void computePlane(unsigned int planeIndex);
-
 
 public:
     //Input

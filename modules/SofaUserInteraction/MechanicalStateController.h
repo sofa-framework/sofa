@@ -146,16 +146,6 @@ public:
      * @brief Apply the controller modifications to the controlled MechanicalState.
      */
     void applyController(void);
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const MechanicalStateController<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
 protected:
 
     Data< unsigned int > index; ///< Controlled DOF index.
@@ -179,13 +169,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP)
-//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec3Types>;
-//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec2Types>;
 extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec1Types>;
-//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec6Types>;
 extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Rigid3Types>;
-//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Rigid2Types>;
-
 #endif
 
 } // namespace controller

@@ -94,9 +94,6 @@ public:
 	InternalData m_internalData;
     //@}
 
-    virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const BaseShapeFunction<ShapeFunctionTypes>* = NULL) { return ShapeFunctionTypes::Name(); }
-
     BaseMechanicalState* _state;
 
     void init() override

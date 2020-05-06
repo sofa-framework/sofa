@@ -108,16 +108,6 @@ public:
     void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex) override;
     void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order) override;
 
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const DOFBlockerLMConstraint<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const override
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();

@@ -140,16 +140,6 @@ public:
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const EvalPointsDistance<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     void setPathToMS1(const std::string &o) { mstate1.setPath(o); }
     void setPathToMS2(const std::string &o) { mstate2.setPath(o); }
     void setPeriod(const double& _dt)      { f_period.setValue(_dt); }

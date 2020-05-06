@@ -55,7 +55,7 @@ void LinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(u
 {
     if (lc)
     {
-        lc->removeIndex((unsigned int) pointIndex);
+        lc->removeIndex(pointIndex);
     }
 }
 
@@ -66,8 +66,8 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
     , m_keyMovements(  initData(&m_keyMovements,"movements","movements corresponding to the key times") )
-    , d_relativeMovements( initData(&d_relativeMovements, (bool)true, "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
-    , showMovement( initData(&showMovement, (bool)false, "showMovement", "Visualization of the movement to be applied to constrained dofs."))
+    , d_relativeMovements( initData(&d_relativeMovements, bool(true), "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
+    , showMovement( initData(&showMovement, bool(false), "showMovement", "Visualization of the movement to be applied to constrained dofs."))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_pointHandler(nullptr)
 {
@@ -181,7 +181,7 @@ template <class DataTypes>
 template <class DataDeriv>
 void LinearMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
 {
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = static_cast<Real>(this->getContext()->getTime());
     if ((cT != currentTime) || !finished)
     {
         findKeyTimes();
@@ -210,7 +210,7 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> dx = vData;
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = static_cast<Real>(this->getContext()->getTime());
     if ((cT != currentTime) || !finished)
     {
         findKeyTimes();
@@ -233,7 +233,7 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = static_cast<Real>(this->getContext()->getTime());
 
     //initialize initial Dofs positions, if it's not done
     if (x0.size() == 0)
@@ -332,7 +332,7 @@ void LinearMovementConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::findKeyTimes()
 {
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = static_cast<Real>(this->getContext()->getTime());
     finished = false;
 
     if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())

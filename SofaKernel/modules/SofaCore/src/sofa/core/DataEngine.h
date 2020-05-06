@@ -115,7 +115,7 @@ public:
     template<class T>
     static std::string className(const T* ptr= nullptr)
     {
-        return core::objectmodel::BaseObject::className(ptr);
+        return sofa::helper::NameDecoder::getClassName<T>();
     }
 
     /// Helper method to get the namespace name of a type derived from this class

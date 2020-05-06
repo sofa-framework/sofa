@@ -53,11 +53,10 @@ DDGNode::~DDGNode()
 template<>
 TClass<DDGNode,void>::TClass()
 {
-    DDGNode* ptr = nullptr;
-    namespaceName = Base::namespaceName(ptr);
-    className = Base::className(ptr);
-    templateName = Base::templateName(ptr);
-    shortName = Base::shortName(ptr);
+    namespaceName = sofa::helper::NameDecoder::getNamespaceName<DDGNode>();
+    className = sofa::helper::NameDecoder::getClassName<DDGNode>();
+    templateName = sofa::helper::NameDecoder::getTemplateName<DDGNode>();
+    shortName = sofa::helper::NameDecoder::getShortName<DDGNode>();
 }
 
 void DDGNode::setDirtyValue()

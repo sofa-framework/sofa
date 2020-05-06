@@ -165,16 +165,6 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const CapsuleCollisionModel<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
     {
         return l_topology.get();

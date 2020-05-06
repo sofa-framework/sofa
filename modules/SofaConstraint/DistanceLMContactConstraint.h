@@ -92,16 +92,6 @@ public:
     void addContact(unsigned m1, unsigned m2);
     void draw(const core::visual::VisualParams* vparams) override;
 
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-    static std::string templateName(const DistanceLMContactConstraint<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
-
 protected :
 
     /// Each scalar constraint (up to three per contact) has an associated index
