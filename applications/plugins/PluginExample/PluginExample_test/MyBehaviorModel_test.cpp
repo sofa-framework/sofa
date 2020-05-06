@@ -19,37 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <vector>
+using std::vector;
 
-#include <PluginExample/MyProjectiveConstraintSet.h>
+#include <PluginExample/MyBehaviorModel.h>
 
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
 
-namespace sofa::component::projectiveconstraintset
+using testing::Types;
+
+namespace {
+
+class MyBehaviorModel_test : public BaseTest,
+                             public ::testing::WithParamInterface<unsigned>
 {
+public:
+    using MyBehaviorModel = sofa::component::behaviormodel::MyBehaviorModel;
 
-template <class DataTypes>
-MyProjectiveConstraintSet<DataTypes>::MyProjectiveConstraintSet()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-{
+    void TearDown()
+    {
+
+    }
+
+    void SetUp()
+    {
+        m_behaviorModel = sofa::core::objectmodel::New< MyBehaviorModel >();
+    }
+
+    void dummyTest(unsigned param)
+    {
+        m_behaviorModel->d_regularUnsignedData.setValue(param);
+        auto regularUnsignedDataFromBehaviorModel = sofa::helper::getReadAccessor(m_behaviorModel->d_regularUnsignedData);
+
+        EXPECT_EQ(regularUnsignedDataFromBehaviorModel, param);
+    }
+
+private:
+    MyBehaviorModel::SPtr m_behaviorModel;
+
+};
+
+std::vector<unsigned> params = {
+    { 1 },
+    { 2 },
+    { 3 }
+};
+
+/// run the tests
+TEST_P(MyBehaviorModel_test, dummyTest) {
+    unsigned param = GetParam();
+    dummyTest(param);
 }
 
 
-template <class DataTypes>
-MyProjectiveConstraintSet<DataTypes>::~MyProjectiveConstraintSet()
-{
 }
-
-template <class DataTypes>
-void MyProjectiveConstraintSet<DataTypes>::init()
-{
-    Inherit::init();
-}
-
-template <class DataTypes>
-void MyProjectiveConstraintSet<DataTypes>::reinit()
-{
-}
-
-
-
-} // namespace sofa::component::projectiveconstraintset

@@ -19,37 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <PluginExample/config.h>
 
-#include <PluginExample/MyProjectiveConstraintSet.h>
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-
-namespace sofa::component::projectiveconstraintset
-{
-
-template <class DataTypes>
-MyProjectiveConstraintSet<DataTypes>::MyProjectiveConstraintSet()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-{
+extern "C" {
+    SOFA_PLUGINEXAMPLE_API void initExternalModule();
+    SOFA_PLUGINEXAMPLE_API const char* getModuleName();
+    SOFA_PLUGINEXAMPLE_API const char* getModuleVersion();
+    SOFA_PLUGINEXAMPLE_API const char* getModuleLicense();
+    SOFA_PLUGINEXAMPLE_API const char* getModuleDescription();
+    SOFA_PLUGINEXAMPLE_API const char* getModuleComponentList();
 }
 
-
-template <class DataTypes>
-MyProjectiveConstraintSet<DataTypes>::~MyProjectiveConstraintSet()
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
 }
 
-template <class DataTypes>
-void MyProjectiveConstraintSet<DataTypes>::init()
+const char* getModuleName()
 {
-    Inherit::init();
+    return sofa_tostring(SOFA_TARGET);
 }
 
-template <class DataTypes>
-void MyProjectiveConstraintSet<DataTypes>::reinit()
+const char* getModuleVersion()
 {
+    return sofa_tostring(PLUGINEXAMPLE_VERSION);
 }
 
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
+const char* getModuleDescription()
+{
+    return "Simple example of a Sofa plugin.";
+}
 
-} // namespace sofa::component::projectiveconstraintset
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
