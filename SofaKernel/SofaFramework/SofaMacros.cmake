@@ -162,47 +162,6 @@ macro(sofa_add_application directory app_name)
     sofa_add_generic( ${directory} ${app_name} "Application" ${ARGV2} )
 endmacro()
 
-### sofa_add_generic with out of tree binary directory and force option
-# Only useful for the deprecated collection mechanism (SofaAdvanced, etc)
-# TODO: remove once there are not more deprecated collection (20.12 maybe?)
-macro(sofa_force_add_outofree_module directory name bindirectory active)
-    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-        set(type "Module")
-        string(TOUPPER ${type}_${name} option)
-        string(TOLOWER ${type} type_lower)
-
-        unset(${option} CACHE)
-        option(${option} "Build the ${name} ${type_lower}." ${active})
-        if(${option})
-            message("Force adding ${type_lower} ${name}")
-            add_subdirectory(${directory} ${bindirectory})
-            # Check if the target has been successfully added
-            if(TARGET ${name})
-                set_target_properties(${name} PROPERTIES FOLDER ${type}s) # IDE folder
-                set_target_properties(${name} PROPERTIES DEBUG_POSTFIX "_d")
-            endif()
-        endif()
-
-        # Add current target in the internal list only if not present already
-        get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)
-        get_property(_allTargetNames GLOBAL PROPERTY __GlobalTargetNameList__)
-
-        # if(NOT ${name} IN_LIST _allTargets) # ONLY CMAKE >= 3.3 and policy to NEW
-        list (FIND _allTargets ${name} _index)
-        if(NOT ${_index} GREATER -1)
-            set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${name})
-        endif()
-
-        #if(NOT ${option} IN_LIST _allTargetNames)# ONLY CMAKE >= 3.3 and policy to NEW
-        list (FIND _allTargetNames ${option} _index)
-        if(NOT ${_index} GREATER -1)
-            set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
-        endif()
-    else()
-        message("The ${type_lower} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
-    endif()
-endmacro()
-
 ### External projects management
 # Thanks to http://crascit.com/2015/07/25/cmake-gtest/
 #

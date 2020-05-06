@@ -12,15 +12,18 @@ set(SOFAADVANCED_TARGETS
     SofaNonUniformFem
 )
 
-message(DEPRECATION "SofaAdvanced collection is deprecated, please directly use its modules in your project(s). It contains the following module(s): ${SOFAADVANCED_TARGETS}")
+message(DEPRECATION "${PROJECT_NAME} collection is deprecated, please directly use its modules in your project(s). It contains the following module(s): ${SOFAADVANCED_TARGETS}")
 
 foreach(TARGET ${SOFAADVANCED_TARGETS})
     find_package(${TARGET} QUIET)
     if(NOT ${TARGET}_FOUND)
-        sofa_force_add_outofree_module(../modules/${TARGET} ${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET} ON)
+        string(TOUPPER module_${TARGET} MODULE_TO_CHECK)
+        list(APPEND LIST_MODULES_TO_CHECK ${MODULE_TO_CHECK})
     endif()
 endforeach()
-
+if(LIST_MODULES_TO_CHECK)
+    message(FATAL_ERROR "If you still want to use the ${PROJECT_NAME} collection, please enable the following cmake option(s): ${LIST_MODULES_TO_CHECK}")
+endif()
 
 set(SOFAADVANCED_SRC src/${PROJECT_NAME})
 
