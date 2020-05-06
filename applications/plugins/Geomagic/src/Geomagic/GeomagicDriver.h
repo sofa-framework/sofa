@@ -84,11 +84,6 @@ public:
     Data<Quat> d_orientationBase; ///< Orientation of the interface base in the scene world coordinates
     Data<Quat> d_orientationTool; ///< Orientation of the tool
 
-    Data<Vector6> d_dh_theta; ///< Denavit theta
-    Data<Vector6> d_dh_alpha; ///< Denavit alpha
-    Data<Vector6> d_dh_d; ///< Denavit d
-    Data<Vector6> d_dh_a; ///< Denavit a
-
     Data<Vector6> d_angle; ///< Angluar values of joint (rad)
     Data<double> d_scale; ///< Default scale applied to the Phantom Coordinates
     Data<double> d_forceScale; ///< Default forceScale applied to the force feedback. 
@@ -131,10 +126,7 @@ private:
 
     void handleEvent(core::objectmodel::Event *) override;
     void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;
-    void getMatrix( Mat<4,4, GLdouble> & M, int index, double teta);
 
-    Mat<4,4, GLdouble> compute_dh_Matrix(double theta,double alpha, double a, double d);
-    Mat<4,4, GLdouble> m_dh_matrices[NBJOINT];
 
     //These data are written by the omni they cnnot be accessed in the simulation loop
     struct OmniData

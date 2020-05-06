@@ -156,10 +156,6 @@ GeomagicDriver::GeomagicDriver()
     , d_positionBase(initData(&d_positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
     , d_orientationBase(initData(&d_orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
     , d_orientationTool(initData(&d_orientationTool, Quat(0,0,0,1), "orientationTool","Orientation of the tool"))
-    , d_dh_theta(initData(&d_dh_theta, Vec6d(0,0,0,M_PI/2,M_PI/2,M_PI/2), "dh_teta","Denavit theta"))
-    , d_dh_alpha(initData(&d_dh_alpha, Vec6d(0,-M_PI/2,0,M_PI/2,-M_PI/2,M_PI/2), "dh_alpha","Denavit alpha"))
-    , d_dh_d(initData(&d_dh_d, Vec6d(0,0,0,0,13.3333,0), "dh_d","Denavit d"))
-    , d_dh_a(initData(&d_dh_a, Vec6d(0,0,13.3333,0,0,0), "dh_a","Denavit a"))
     , d_angle(initData(&d_angle, "angle","Angluar values of joint (rad)"))
     , d_scale(initData(&d_scale, 1.0, "scale","Default scale applied to the Phantom Coordinates"))
     , d_forceScale(initData(&d_forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
@@ -307,56 +303,10 @@ void GeomagicDriver::initDevice(int cptInitPass)
     updatePosition();
 }
 
-Mat<4,4, GLdouble> GeomagicDriver::compute_dh_Matrix(double teta,double alpha, double a, double d)
-{
-    Mat<4,4, GLdouble> M;
-
-    const double dh_ct = cos(teta);
-    const double dh_st = sin(teta);
-    const double dh_ca = cos(alpha);
-    const double dh_sa = sin(alpha);
-    const double dh_a = a;
-    const double dh_d = d;
-
-    M[0][0] = dh_ct;
-    M[0][1] = -dh_st*dh_ca;
-    M[0][2] = dh_st*dh_sa;
-    M[0][3] = dh_a*dh_ct;
-
-    M[1][0] = dh_st;
-    M[1][1] = dh_ct*dh_ca;
-    M[1][2] = -dh_ct*dh_sa;
-    M[1][3] = dh_a*dh_st;
-
-    M[2][0] = 0;
-    M[2][1] = dh_sa;
-    M[2][2] = dh_ca;
-    M[2][3] = dh_d;
-
-    M[3][0] = 0;
-    M[3][1] = 0;
-    M[3][2] = 0;
-    M[3][3] = 1;
-
-    return M;
-}
-
 
 void GeomagicDriver::reinit()
 {
-    if(m_errorDevice != 0)
-    {
-        Quat * q_b = d_orientationBase.beginEdit();
-        q_b->normalize();
-        d_orientationBase.endEdit();
 
-        Quat * q_t = d_orientationTool.beginEdit();
-        q_t->normalize();
-        d_orientationTool.endEdit();
-
-        for (int i=0;i<NBJOINT;i++) 
-            m_dh_matrices[i] = compute_dh_Matrix(d_dh_theta.getValue()[i],d_dh_alpha.getValue()[i],d_dh_a.getValue()[i],d_dh_d.getValue()[i]);
-    }
 }
 
 void GeomagicDriver::updatePosition()
@@ -469,33 +419,6 @@ void GeomagicDriver::updateButtonStates(bool emitEvent)
     }  
 }
 
-void GeomagicDriver::getMatrix(Mat<4,4, GLdouble> & M1, int index, double teta)
-{
-    const double ct = cos(teta);
-    const double st = sin(teta);
-
-    const Mat<4,4, GLdouble> & M = m_dh_matrices[index];
-
-    M1[0][0] =  M[0][0]*ct + M[0][1]*st;
-    M1[0][1] = -M[0][0]*st + M[0][1]*ct;
-    M1[0][2] =  M[0][2];
-    M1[0][3] =  M[0][3];
-
-    M1[1][0] =  M[1][0]*ct + M[1][1]*st;
-    M1[1][1] = -M[1][0]*st + M[1][1]*ct;
-    M1[1][2] =  M[1][2];
-    M1[1][3] =  M[1][3];
-
-    M1[2][0] =  M[2][0]*ct + M[2][1]*st;
-    M1[2][1] = -M[2][0]*st + M[2][1]*ct;
-    M1[2][2] =  M[2][2];
-    M1[2][3] =  M[2][3];
-
-    M1[3][0] =  M[3][0]*ct + M[3][1]*st;
-    M1[3][1] = -M[3][0]*st + M[3][1]*ct;
-    M1[3][2] =  M[3][2];
-    M1[3][3] =  M[3][3];
-}
 
 void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 {
