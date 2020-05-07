@@ -101,8 +101,6 @@ namespace loader
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
 virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
 
-
-
 namespace sofa
 {
 

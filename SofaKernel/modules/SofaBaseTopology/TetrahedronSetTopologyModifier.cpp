@@ -104,7 +104,7 @@ void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::helper::vector<Te
 
 void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 {
-	if (CHECK_TOPOLOGY)
+	if (m_container->d_checkTopology.getValue())
 	{
 		// check if the 3 vertices are different
 		assert(t[0] != t[1]);

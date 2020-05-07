@@ -60,9 +60,6 @@ namespace sofa {
                     }
                 }
 
-//                cerr<<"CauchyStrainMappingTest::runTest, f="<< f << endl;
-//                cerr<<"CauchyStrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
-
                 return Inherited::runTest(xin,xout,xin,expectedChildCoords);
 
         }

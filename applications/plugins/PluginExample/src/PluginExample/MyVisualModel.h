@@ -21,35 +21,37 @@
 ******************************************************************************/
 #pragma once
 
-#include <PluginExample/MyProjectiveConstraintSet.h>
+#include <PluginExample/config.h>
+
+#include <sofa/core/BehaviorModel.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 
 
-namespace sofa::component::projectiveconstraintset
+namespace sofa::component::visualmodel
 {
 
-template <class DataTypes>
-MyProjectiveConstraintSet<DataTypes>::MyProjectiveConstraintSet()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
+/**
+ * This VisualModel does not do anything but have a dependency on a module (SofaBaseVisual).
+ */
+class SOFA_PLUGINEXAMPLE_API MyVisualModel : public sofa::component::visualmodel::VisualModelImpl
 {
-}
+
+public:
+    SOFA_CLASS(MyVisualModel, sofa::component::visualmodel::VisualModelImpl);
+
+protected:
+    MyVisualModel();
+    virtual ~MyVisualModel() override;
+
+public:
+    void init() override;
+    void reinit() override;
+
+    void updateBuffers() {}
+
+protected:
+};
 
 
-template <class DataTypes>
-MyProjectiveConstraintSet<DataTypes>::~MyProjectiveConstraintSet()
-{
-}
+} // sofa::component::visualmodel
 
-template <class DataTypes>
-void MyProjectiveConstraintSet<DataTypes>::init()
-{
-    Inherit::init();
-}
-
-template <class DataTypes>
-void MyProjectiveConstraintSet<DataTypes>::reinit()
-{
-}
-
-
-
-} // namespace sofa::component::projectiveconstraintset
