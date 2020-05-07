@@ -110,7 +110,8 @@ public:
     virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
     void updatePosition();
     void updateButtonStates(bool emitEvent);
-    void initDevice(int cptInitPass = 0);
+
+    void initDevice();
     void clearDevice();
 
     // Pointer to the forceFeedBack component

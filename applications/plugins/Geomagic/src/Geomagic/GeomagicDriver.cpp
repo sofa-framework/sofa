@@ -57,14 +57,6 @@ static const Mat<4,4, GLdouble> initialTransform = getInitialTransform();
 
 using namespace sofa::defaulttype;
 
-void printError(const HDErrorInfo *error, const char *message)
-{
-    msg_error("GeomagicDriver::HD_DEVICE_ERROR") << hdGetErrorString(error->errorCode);
-    msg_error("GeomagicDriver::HD_DEVICE_ERROR") << "HHD: "<< error->hHD;
-    msg_error("GeomagicDriver::HD_DEVICE_ERROR") << "Error Code: "<< error->hHD;
-    msg_error("GeomagicDriver::HD_DEVICE_ERROR") << "Internal Error Code: "<< error->internalErrorCode;
-    msg_error("GeomagicDriver::HD_DEVICE_ERROR") << "Message: " << message;
-}
 
 HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * pUserData)
 {
@@ -72,6 +64,26 @@ HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * pUserData)
     driver->m_simuData = driver->m_omniData;
         return HD_CALLBACK_CONTINUE;
 }
+
+
+// Method to get the first error on the deck and if logError is not set to false will pop up full error message before returning the error code.
+// Return HD_SUCCESS == 0 if no error.
+HDerror catchHDError(bool logError = true)
+{
+    HDErrorInfo error;
+    if (HD_DEVICE_ERROR(error = hdGetError()))
+    {
+        if (logError)
+        {
+            msg_error("GeomagicDriver::HDError") << "Device ID " << error.hHD << " returns error code " << error.errorCode
+                << ": " << hdGetErrorString(error.errorCode);
+        }
+        return error.errorCode;
+    }
+
+    return HD_SUCCESS;
+}
+
 
 HDCallbackCode HDCALLBACK stateCallback(void * userData)
 {
@@ -172,48 +184,24 @@ GeomagicDriver::GeomagicDriver()
     , l_forceFeedback(initLink("forceFeedBack", "link to the forceFeedBack component, if not set will search through graph and take first one encountered."))
     , m_errorDevice(0)
     , m_isInContact(false)
-    , m_hHD(UINT_MAX)
+    , m_hHD(HD_INVALID_HANDLE)
 {
     this->f_listening.setValue(true);
     m_forceFeedback = NULL;
     m_GeomagicVisualModel = std::make_unique<GeomagicVisualModel>();
 }
 
+
 GeomagicDriver::~GeomagicDriver()
 {
     clearDevice();
 }
 
+
 //executed once at the start of Sofa, initialization of all variables excepts haptics-related ones
 void GeomagicDriver::init()
 {
-    
-}
-
-void GeomagicDriver::clearDevice()
-{
-    hdMakeCurrentDevice(m_hHD);
-
-    if (!m_hStateHandles.empty()) {
-        hdStopScheduler();
-    }
-
-
-    for (std::vector< HDSchedulerHandle >::iterator i = m_hStateHandles.begin();
-        i != m_hStateHandles.end(); ++i)
-    {
-        hdUnschedule(*i);
-    }
-    m_hStateHandles.clear();
-
-    hdDisableDevice(m_hHD);
-}
-
-void GeomagicDriver::bwdInit()
-{
-    if(m_errorDevice != 0)
-        return;
-
+    // 1- retrieve ForceFeedback component pointer
     if (l_forceFeedback.empty())
     {
         simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
@@ -229,55 +217,130 @@ void GeomagicDriver::bwdInit()
         msg_warning() << "No forceFeedBack component found in the scene. Only the motion of the haptic tool will be simulated.";
     }
 
+
+    // 2- init device and Hd scheduler
     if (d_manualStart.getValue() == false)
         initDevice();
 }
 
 
-void GeomagicDriver::initDevice(int cptInitPass)
+void GeomagicDriver::clearDevice()
+{
+    hdMakeCurrentDevice(m_hHD);
+
+    // stop scheduler first only if some works are registered
+    if (!m_hStateHandles.empty()) {
+        hdStopScheduler();
+    }
+
+    // unschedule valid tasks
+    for (auto schedulerHandle : m_hStateHandles)
+    {
+        if (schedulerHandle != HD_INVALID_HANDLE) {
+            hdUnschedule(schedulerHandle);
+        }
+    }
+    m_hStateHandles.clear();
+
+    // clear device if valid
+    if (m_hHD != HD_INVALID_HANDLE)
+    {
+        hdDisableDevice(m_hHD);
+        m_hHD = HD_INVALID_HANDLE;
+    }
+}
+
+
+void GeomagicDriver::bwdInit()
+{
+    if(m_errorDevice != 0)
+        return;
+        
+   // initDevice();
+    
+}
+
+
+void GeomagicDriver::initDevice()
 {
     m_errorDevice = 0;
     HDErrorInfo error;
-
     HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
+    
+    // 2.1- init device
     m_hHD = hdInitDevice(d_deviceName.getValue().c_str());
 
-    if (HD_DEVICE_ERROR(error = hdGetError()))
-    {        
-        m_errorDevice = error.errorCode;
-        if (m_errorDevice == 769) // double initialisation, will try to close and reinit device
+    // loop here in case of already used device
+    if (catchHDError(false) == HD_DEVICE_ALREADY_INITIATED)
+    {
+        // double initialisation, this can occure if device has not been release due to bad program exit
+        msg_warning() << "Device has already been initialized. Will clear driver and reinit the device properly.";
+        
+        // Will Try clear and reinit device (10 times max): get device id in the current HD servo loop and try to release it and iterate on init
+        HDerror tmpError = HD_DEVICE_ALREADY_INITIATED;
+        int securityLoop = 0;
+        while (tmpError == HD_DEVICE_ALREADY_INITIATED && securityLoop < 10)
         {
-            msg_warning() << "Device has already been initialized. Will clear driver and reinit the device properly.";
+            // release device
             m_hHD = hdGetCurrentDevice();
-            if (m_hHD != UINT_MAX && cptInitPass < 10) // Try clear and reinit device (10 times max)
+            if (m_hHD != HD_INVALID_HANDLE)
             {
-                clearDevice();
-                return initDevice(cptInitPass++);
+                hdDisableDevice(m_hHD);
+                m_hHD = HD_INVALID_HANDLE;
             }
+
+            // init device
+            m_hHD = hdInitDevice(d_deviceName.getValue().c_str());
+            tmpError = catchHDError(false);
         }
 
-        msg_error() << "Failed to initialize the device ID: " << m_hHD << " | Name: '" << d_deviceName.getValue().c_str() << "' | Error code returned: " << m_errorDevice;
-        d_omniVisu.setValue(false);
-
+        if (tmpError != HD_SUCCESS) // failed
+        {
+            m_hHD = HD_INVALID_HANDLE;
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
+    }
+    
+    // 2.2- check device calibration
+    if (hdCheckCalibration() != HD_CALIBRATION_OK)
+    {
+        // Possible values are : HD_CALIBRATION_OK || HD_CALIBRATION_NEEDS_UPDATE || HD_CALIBRATION_NEEDS_MANUAL_INPUT
+        msg_error() << "GeomagicDriver initialisation failed becase device " << d_deviceName.getValue() << " is not calibrated. Calibration should be done before using Geomagic device in SOFA simulation.";
         return;
     }
-
-    hdMakeCurrentDevice(m_hHD);
+    
+    // 2.3- Start scheduler
     hdEnable(HD_FORCE_OUTPUT);
+    hdEnable(HD_MAX_FORCE_CLAMPING);
+    hdEnable(HD_SOFTWARE_FORCE_LIMIT);
+    
+    hdStartScheduler();
 
+    if (catchHDError())
+    {
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+    
+
+    //hdMakeCurrentDevice(m_hHD);
+
+    // 2.4- Add tasks in the scheduler using callback functions
     hStateHandle = hdScheduleAsynchronous(stateCallback, this, HD_MAX_SCHEDULER_PRIORITY);
     m_hStateHandles.push_back(hStateHandle);
 
     hStateHandle = hdScheduleAsynchronous(copyDeviceDataCallback, this, HD_MIN_SCHEDULER_PRIORITY);
     m_hStateHandles.push_back(hStateHandle);
 
-    if (HD_DEVICE_ERROR(error = hdGetError()))
+    if (catchHDError())
     {
-        printError(&error, "Error with the device Default PHANToM");
-        m_errorDevice = error.errorCode;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
+    // 2.5- Set max forceFeedback security. 
+    // TODO check if this can be replaced by: HD_MAX_FORCE_CLAMPING and HD_SOFTWARE_FORCE_LIMIT
     if (d_maxInputForceFeedback.isSet())
     {
         msg_info() << "maxInputForceFeedback value (" << d_maxInputForceFeedback.getValue() << ") is set, carefully set the max force regarding your haptic device";
@@ -288,18 +351,9 @@ void GeomagicDriver::initDevice(int cptInitPass)
             d_maxInputForceFeedback.setValue(0.0);
         }
     }
-
-    reinit();
-
-    hdStartScheduler();
-
-    if (HD_DEVICE_ERROR(error = hdGetError()))
-    {
-        msg_info() << "Failed to start the scheduler";
-        m_errorDevice = error.errorCode;
-        if (m_hStateHandles.size()) m_hStateHandles[0] = HD_INVALID_HANDLE;
-        return;
-    }
+    
+    // 2.6- Need to wait several ms for the scheduler to be well launched and retrieving correct device information before updating information on the SOFA side.
+    Sleep(42);        
     updatePosition();
 }
 
