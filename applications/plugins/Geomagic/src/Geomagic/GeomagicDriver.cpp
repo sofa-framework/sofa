@@ -54,11 +54,11 @@ HDerror catchHDError(bool logError = true)
 }
 
 
-// Callback method to be executed by HD scheduler to copy the data from haptic own struct @sa m_omniData to SOFA one @sa m_simuData.
+// Callback method to be executed by HD scheduler to copy the data from haptic own struct @sa m_hapticData to SOFA one @sa m_simuData.
 HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * pUserData)
 {
     GeomagicDriver * driver = (GeomagicDriver *)pUserData;
-    driver->m_simuData = driver->m_omniData;
+    driver->m_simuData = driver->m_hapticData;
     return HD_CALLBACK_CONTINUE;
 }
 
@@ -75,11 +75,11 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     hdBeginFrame(driver->m_hHD);
     if (HD_DEVICE_ERROR(error = hdGetError())) return HD_CALLBACK_CONTINUE;
 
-    hdGetDoublev(HD_CURRENT_TRANSFORM, driver->m_omniData.transform);
+    hdGetDoublev(HD_CURRENT_TRANSFORM, driver->m_hapticData.transform);
 
     //angles
-    hdGetDoublev(HD_CURRENT_JOINT_ANGLES,driver->m_omniData.angle1);
-    hdGetDoublev(HD_CURRENT_GIMBAL_ANGLES,driver->m_omniData.angle2);
+    hdGetDoublev(HD_CURRENT_JOINT_ANGLES,driver->m_hapticData.angle1);
+    hdGetDoublev(HD_CURRENT_GIMBAL_ANGLES,driver->m_hapticData.angle2);
 
     // Will only update the device position data and don't retrieve forceFeeedback
     if (!driver->m_simulationStarted) {
@@ -88,13 +88,13 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     }
 
     // button status
-    hdGetIntegerv(HD_CURRENT_BUTTONS, &driver->m_omniData.buttonState);
+    hdGetIntegerv(HD_CURRENT_BUTTONS, &driver->m_hapticData.buttonState);
 
 
     Vector3 currentForce;
     if (driver->m_forceFeedback)
     {
-        Vector3 pos(driver->m_omniData.transform[12+0]*0.1,driver->m_omniData.transform[12+1]*0.1,driver->m_omniData.transform[12+2]*0.1);
+        Vector3 pos(driver->m_hapticData.transform[12+0]*0.1,driver->m_hapticData.transform[12+1]*0.1,driver->m_hapticData.transform[12+2]*0.1);
         Vector3 pos_in_world = driver->d_positionBase.getValue() + driver->d_orientationBase.getValue().rotate(pos*driver->d_scale.getValue());
 
         driver->m_forceFeedback->computeForce(pos_in_world[0],pos_in_world[1],pos_in_world[2], 0, 0, 0, 0, currentForce[0], currentForce[1], currentForce[2]);
@@ -387,7 +387,7 @@ void GeomagicDriver::updatePosition()
         if (!m_GeomagicVisualModel->isDisplayActivated())
             m_GeomagicVisualModel->activateDisplay(true);
 
-        m_GeomagicVisualModel->updateDisplay(d_posDevice.getValue(), m_omniData.angle1, m_omniData.angle2);
+        m_GeomagicVisualModel->updateDisplay(d_posDevice.getValue(), m_hapticData.angle1, m_hapticData.angle2);
     }
     else if (d_omniVisu.getValue() == false && m_GeomagicVisualModel && m_GeomagicVisualModel->isDisplayActivated())
     {

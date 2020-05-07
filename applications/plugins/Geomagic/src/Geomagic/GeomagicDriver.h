@@ -43,7 +43,7 @@ class GeomagicVisualModel;
 
 /**
 * Class providing a driver API to handle Geomagic haptic device and the servo loop scheduler.
-* Position and angles of the device will be retrieve inside @sa m_omniData during a callback method executed by HD scheduler.
+* Position and angles of the device will be retrieve inside @sa m_hapticData during a callback method executed by HD scheduler.
 * This callback is also setting force to the device if a ForceFeedBack component is used in the simulation scene.
 * Those data are then copied inside @sa m_simuData and used to update Device position in SOFA world in method @sa updatePosition()
 */
@@ -117,7 +117,7 @@ protected:
    
 public:
     ///These data are written by the omni they cnnot be accessed in the simulation loop
-    struct OmniData
+    struct DeviceData
     {
         HDdouble angle1[3];
         HDdouble angle2[3];
@@ -128,8 +128,8 @@ public:
     // Public members exchanged between Driver and HD scheduler
     bool m_simulationStarted; ///< Boolean to warn scheduler when SOFA has started the simulation (changed by AnimateBeginEvent)
     bool m_isInContact; ///< Boolean to warn SOFA side when scheduler has computer contact (forcefeedback no null)
-    OmniData m_omniData; ///< data structure used by scheduler
-    OmniData m_simuData; ///< data structure used by SOFA loop, values are copied from @sa m_omniData
+    DeviceData m_hapticData; ///< data structure used by scheduler
+    DeviceData m_simuData; ///< data structure used by SOFA loop, values are copied from @sa m_hapticData
     HHD m_hHD; ///< ID the device
     std::vector< HDSchedulerHandle > m_hStateHandles; ///< List of ref to the workers scheduled
 };
