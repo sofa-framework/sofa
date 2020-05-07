@@ -19,31 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GEOMAGIC_EMULATOR_H
-#define SOFA_GEOMAGIC_EMULATOR_H
+#pragma once
 
 #include <Geomagic/config.h>
-
-#include <sofa/helper/LCPcalc.h>
-#include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
-#include <SofaUserInteraction/Controller.h>
-#include <SofaHaptics/ForceFeedback.h>
+#include <Geomagic/GeomagicDriver.h>
 
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/simulation/InitTasks.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
 
-
-namespace sofa 
-{
-
-namespace component 
-{
-
-namespace controller 
+namespace sofa::component::controller
 {
 
 using namespace sofa::defaulttype;
@@ -70,45 +55,35 @@ private:
 /**
 * Geomagic emulator class
 */
-class SOFA_GEOMAGIC_API GeomagicEmulator : public Controller
+class SOFA_GEOMAGIC_API GeomagicEmulator : public GeomagicDriver
 {
 
 public:
-    SOFA_CLASS(GeomagicEmulator, Controller);
+    SOFA_CLASS(GeomagicEmulator, GeomagicDriver);
     typedef RigidTypes::Coord Coord;
     typedef RigidTypes::VecCoord VecCoord;
-    typedef SolidTypes<double>::Transform Transform;
-
-    typedef defaulttype::Vec4f Vec4f;
-    typedef defaulttype::Vector3 Vector3;
-
-
-    Data< std::string > d_deviceName; ///< Name of device Configuration
-    Data<Vec3> d_positionBase; ///< Position of the interface base in the scene world coordinates
-    Data<Quat> d_orientationTool; ///< Orientation of the tool
-    Data<double> d_scale; ///< Default scale applied to the Phantom Coordinates
-    Data<double> d_forceScale; ///< Default forceScale applied to the force feedback. 
-    Data< Coord > d_posDevice; ///< position of the base of the part of the device    
-    
-    Data<bool> d_button_1; ///< Button state 1
-    Data<bool> d_button_2; ///< Button state 2
-    Data<std::string> d_toolNodeName;
-    Data <SReal> d_speedFactor; /// < factor to increase/decrease the movements speed
-    Data<double> d_maxInputForceFeedback; ///< Maximum value of the normed input force feedback for device security
 
     GeomagicEmulator();
-	virtual ~GeomagicEmulator();
+    
+    //virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
 
-    virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
+
+    /// Public method to init tool. Can be called from thirdparty if @sa d_manualStart is set to true
+    virtual void initDevice();
+
+    /// Method to clear sheduler and free device. Called by default at driver destruction
+    virtual void clearDevice();
+
+
+
+    Data <SReal> d_speedFactor; /// < factor to increase/decrease the movements speed
+
+
+    
 
     void updatePosition();
     void updateButtonStates(bool emitEvent);
-    void initDevice(int cptInitPass = 0);
-    void clearDevice();
-    ForceFeedback::SPtr m_forceFeedback;
-
+    
 
     void applyTranslation(sofa::defaulttype::Vec3 translation);
     void worldToLocal(sofa::defaulttype::Vec3& vector);
@@ -119,12 +94,6 @@ public:
     void moveRight();
     void moveForward();
     void moveBackward();
-
-    simulation::Node::SPtr m_omniVisualNode;
-    component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>::SPtr rigidDOF;
-
-    int m_errorDevice; ///< Int detecting any error coming from device / detection
-    bool m_isInContact;
 
     sofa::helper::fixed_array<bool, 2> oldStates;
 
@@ -138,8 +107,6 @@ public:
     */
     void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kEvent);
 
-
-private:
     void handleEvent(core::objectmodel::Event *) override;
     
 
@@ -155,10 +122,4 @@ public:
     Vec3 m_toolPosition;
 };
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_GEOMAGIC_EMULATOR_H
+} // sofa::component::controller

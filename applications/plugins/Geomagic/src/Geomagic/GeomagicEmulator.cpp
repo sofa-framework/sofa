@@ -31,6 +31,7 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <Geomagic/GeomagicVisualModel.h>
 
 namespace sofa
 {
@@ -95,8 +96,7 @@ GeomagicEmulatorTask::MemoryAlloc GeomagicEmulatorTask::run()
     m_driver->m_toolForceFeedBack = currentForce * m_driver->d_forceScale.getValue();
     m_driver->m_isInContact = contact;    
     m_driver->m_toolPosition = m_driver->d_positionBase.getValue() + currentForce * m_driver->d_forceScale.getValue();
-//    std::cout << "# m_toolPosition: " << m_driver->m_toolPosition << " | " << m_driver->d_positionBase.getValue() << std::endl;
-    //msg_info(m_driver) << "computeForce end: ";
+
     m_driver->lockPosition.unlock();      
 
     if (m_driver->m_terminate == false)
@@ -110,38 +110,19 @@ GeomagicEmulatorTask::MemoryAlloc GeomagicEmulatorTask::run()
 
 //constructeur
 GeomagicEmulator::GeomagicEmulator()
-    : d_deviceName(initData(&d_deviceName, std::string("Default Device"), "deviceName","Name of device Configuration"))
-    , d_positionBase(initData(&d_positionBase, Vec3d(0, 0, 0), "positionBase", "Position of the interface base in the scene world coordinates"))
-    , d_orientationTool(initData(&d_orientationTool, Quat(0, 0, 0, 1), "orientationTool", "Orientation of the tool"))
-    , d_scale(initData(&d_scale, 1.0, "scale","Default scale applied to the Phantom Coordinates"))
-    , d_forceScale(initData(&d_forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
-    , d_posDevice(initData(&d_posDevice, "positionDevice", "position of the base of the part of the device"))
-    , d_button_1(initData(&d_button_1,"button1","Button state 1"))
-    , d_button_2(initData(&d_button_2,"button2","Button state 2"))    
-    , d_toolNodeName(initData(&d_toolNodeName, "toolNodeName", "Node of the tool to activate deactivate"))
+    : GeomagicDriver()
     , d_speedFactor(initData(&d_speedFactor, SReal(1.0), "speedFactor", "factor to increase/decrease the movements speed"))
-    , d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(10.0), "maxInputForceFeedback", "Maximum value of the normed input force feedback for device security"))
-    , m_isInContact(false)
     , _taskScheduler(nullptr)
     , m_terminate(false)
  {
     this->f_listening.setValue(true);
-    m_forceFeedback = NULL;
+    m_forceFeedback = nullptr;
+    m_GeomagicVisualModel = std::make_unique<GeomagicVisualModel>();
 
     oldStates[0] = false;
     oldStates[1] = false;
 }
 
-GeomagicEmulator::~GeomagicEmulator()
-{
-    clearDevice();
-}
-
-//executed once at the start of Sofa, initialization of all variables excepts haptics-related ones
-void GeomagicEmulator::init()
-{
-    
-}
 
 void GeomagicEmulator::clearDevice()
 {
@@ -156,33 +137,14 @@ void GeomagicEmulator::clearDevice()
 
 
 
-void GeomagicEmulator::bwdInit()
+void GeomagicEmulator::initDevice()
 {
-    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-    m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
-    
-    initDevice();
-}
-
-
-
-void GeomagicEmulator::initDevice(int cptInitPass)
-{
-    //HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
-    //m_hHD = 1;
     std::cout << "GeomagicEmulator::initDevice" << std::endl;
     unsigned int mNbThread = 2;
 
     _taskScheduler = sofa::simulation::TaskScheduler::getInstance();
     _taskScheduler->init(mNbThread);
     _taskScheduler->addTask(new GeomagicEmulatorTask(this, &_simStepStatus));
-
-    //hdMakeCurrentDevice(m_hHD);
-    //hdEnable(HD_FORCE_OUTPUT);
-    //hStateHandle = hdScheduleAsynchronous(stateEmulated, this, HD_MAX_SCHEDULER_PRIORITY);
-    //m_hStateHandles.push_back(hStateHandle);
-    
-    //hdStartScheduler();
 
     updatePosition();
 }
@@ -403,11 +365,11 @@ void GeomagicEmulator::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *k
 
 
 
-void GeomagicEmulator::draw(const sofa::core::visual::VisualParams* vparams)
-{
-    vparams->drawTool()->drawSphere(m_toolPosition, 0.1f, defaulttype::Vec4f(1.0, 1.0, 1.0, 1.0));
-    vparams->drawTool()->drawLine(m_toolPosition, m_toolPosition + m_toolForceFeedBack, defaulttype::Vec4f(1.0, 0.0, 0.0f, 1.0));
-}
+//void GeomagicEmulator::draw(const sofa::core::visual::VisualParams* vparams)
+//{
+//    vparams->drawTool()->drawSphere(m_toolPosition, 0.1f, defaulttype::Vec4f(1.0, 1.0, 1.0, 1.0));
+//    vparams->drawTool()->drawLine(m_toolPosition, m_toolPosition + m_toolForceFeedBack, defaulttype::Vec4f(1.0, 0.0, 0.0f, 1.0));
+//}
 
 
 

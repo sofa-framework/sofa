@@ -171,6 +171,7 @@ void GeomagicVisualModel::activateDisplay(bool value)
 
 void GeomagicVisualModel::updateDisplay(const GeomagicDriver::Coord& posDevice, HDdouble angle1[3], HDdouble angle2[3])
 {
+    //std::cout << "GeomagicVisualModel::updateDisplay()" << std::endl;
     sofa::defaulttype::SolidTypes<double>::Transform tampon;
     m_posDeviceVisu[0] = posDevice;
     tampon.set(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getOrientation());
@@ -214,12 +215,12 @@ void GeomagicVisualModel::updateDisplay(const GeomagicDriver::Coord& posDevice, 
     m_posDeviceVisu[1 + VN_base] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
 
-    // update the omni visual node positions directly from rifig positions
+    // update the omni visual node positions through the mappings
     m_omniVisualNode->updateContext();
     for (int i = 0; i<NVISUALNODE; i++)
     {
         visualNode[i].node->updateContext();
-    }
+    }    
 
     VecCoord& posDOF = *(rigidDOF->x.beginEdit());
     posDOF.resize(m_posDeviceVisu.size());
@@ -230,11 +231,13 @@ void GeomagicVisualModel::updateDisplay(const GeomagicDriver::Coord& posDevice, 
     }
     rigidDOF->x.endEdit();
 
-    /*if (m_omniVisualNode)
+    if (m_omniVisualNode)
     {
         sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(m_omniVisualNode.get());
         sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(m_omniVisualNode.get());
-    }*/
+    }
+
+   // std::cout << "GeomagicVisualModel::updateDisplay() END" << std::endl;
 }
 
 
@@ -261,8 +264,7 @@ void GeomagicVisualModel::drawDevice(bool button1Status, bool button2Status)
     {
         color = "red";
     }
-    visualNode[0].visu->setColor(color);
-  
+    visualNode[0].visu->setColor(color);  
 }
 
 

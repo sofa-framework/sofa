@@ -66,10 +66,10 @@ public:
     void computeBBox(const core::ExecParams*  params, bool onlyVisible = false) override;
 
     /// Public method to init tool. Can be called from thirdparty if @sa d_manualStart is set to true
-    void initDevice();
+    virtual void initDevice();
     
     /// Method to clear sheduler and free device. Called by default at driver destruction
-    void clearDevice();
+    virtual void clearDevice();
 
 
 protected:
