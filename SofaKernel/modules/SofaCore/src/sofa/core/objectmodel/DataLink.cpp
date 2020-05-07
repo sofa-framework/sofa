@@ -46,7 +46,7 @@ void DataLink::unSet()
     m_dest->updateIfDirty();
 
     /// Then disconnect the dependency graph
-    m_owner.getDDGNode()->delInput(m_dest->getDDGNode());
+    m_owner.delInput(m_dest);
 
     /// Finalize the unsetting.
     m_dest=nullptr;
@@ -56,11 +56,11 @@ void DataLink::set(BaseData* dest)
 {
     /// Disconnect the previous data link.
     if(m_dest)
-        m_owner.getDDGNode()->delInput(m_dest->getDDGNode());
+        m_owner.delInput(m_dest);
     m_dest=dest;
 
     /// Connect the new data link.
-    m_owner.getDDGNode()->addInput(m_dest->getDDGNode());
+    m_owner.addInput(m_dest);
 }
 
 } ///namespace sofa::core::objectmodel
