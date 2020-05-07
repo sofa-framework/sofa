@@ -37,24 +37,6 @@ namespace component
 
 namespace controller
 {
-
-
-static Mat<4,4, GLdouble> getInitialTransform() {
-    Mat<4,4, GLdouble> M;
-
-    const sofa::defaulttype::SolidTypes<double>::Transform transformOmni1(Vector3(0,0,0),Quat(Vector3(1,0,0),-M_PI/2));
-    const sofa::defaulttype::SolidTypes<double>::Transform transformOmni2(Vector3(0,0,2.3483),Quat(Vector3(0,0,1),-M_PI/2));
-    const sofa::defaulttype::SolidTypes<double>::Transform transformOmni3(Vector3(-16.8473,0,0),Quat(Vector3(1,0,0),M_PI));
-
-    sofa::defaulttype::SolidTypes<double>::Transform T = transformOmni1*transformOmni2*transformOmni3;
-    T.writeOpenGlMatrix((double*) M.ptr());
-
-    return M;
-}
-
-//change the axis of the omni
-static const Mat<4,4, GLdouble> initialTransform = getInitialTransform();
-
 using namespace sofa::defaulttype;
 
 
@@ -251,16 +233,6 @@ void GeomagicDriver::clearDevice()
 }
 
 
-void GeomagicDriver::bwdInit()
-{
-    if(m_errorDevice != 0)
-        return;
-        
-   // initDevice();
-    
-}
-
-
 void GeomagicDriver::initDevice()
 {
     m_errorDevice = 0;
@@ -358,11 +330,6 @@ void GeomagicDriver::initDevice()
 }
 
 
-void GeomagicDriver::reinit()
-{
-
-}
-
 void GeomagicDriver::updatePosition()
 {
     Mat3x3d mrot;
@@ -376,7 +343,7 @@ void GeomagicDriver::updatePosition()
     const double & scale = d_scale.getValue();
 
     // update button state
-    updateButtonStates(d_emitButtonEvent.getValue());
+    updateButtonStates();
 
     //copy angle
     angle[0] = m_simuData.angle1[0];
@@ -427,7 +394,7 @@ void GeomagicDriver::updatePosition()
 }
 
 
-void GeomagicDriver::updateButtonStates(bool emitEvent)
+void GeomagicDriver::updateButtonStates()
 {
     int nbrButton = 2;
     sofa::helper::fixed_array<bool, 2> buttons;
@@ -447,7 +414,7 @@ void GeomagicDriver::updateButtonStates(bool emitEvent)
     d_button_2.setValue(buttons[1]);
 
     // emit event if requested
-    if (!emitEvent)
+    if (!d_emitButtonEvent.getValue())
         return;
 
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());

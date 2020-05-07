@@ -74,10 +74,8 @@ public:
     SOFA_CLASS(GeomagicDriver, Controller);
     typedef RigidTypes::Coord Coord;
     typedef RigidTypes::VecCoord VecCoord;
-    typedef SolidTypes<double>::Transform Transform;
 
-    typedef defaulttype::Vec4f Vec4f;
-    typedef defaulttype::Vector3 Vector3;
+    void updateButtonStates();
 
     Data< std::string > d_deviceName; ///< Name of device Configuration
     Data<Vec3d> d_positionBase; ///< Position of the interface base in the scene world coordinates
@@ -105,11 +103,8 @@ public:
 	virtual ~GeomagicDriver();
 
     virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void reinit() override;
     virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
     void updatePosition();
-    void updateButtonStates(bool emitEvent);
 
     void initDevice();
     void clearDevice();
