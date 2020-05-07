@@ -282,7 +282,7 @@ struct BoundingBoxTypeInfo
     };  ///< 1 if copying the data can be done with a memcpy
     enum
     {
-        SimpleLayout = 0
+        SimpleLayout = 1
     };  ///< 1 if the layout in memory is simply N values of the same base type
     enum
     {
