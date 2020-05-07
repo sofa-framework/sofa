@@ -25,27 +25,14 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/ScriptEvent.h>
-#include <sofa/helper/system/thread/CTime.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <Geomagic/GeomagicVisualModel.h>
 
-namespace sofa
+namespace sofa::component::controller
 {
-
-namespace component
-{
-
-namespace controller
-{
+    
 using namespace sofa::defaulttype;
-
-
-HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * pUserData)
-{
-    GeomagicDriver * driver = (GeomagicDriver * ) pUserData;
-    driver->m_simuData = driver->m_omniData;
-        return HD_CALLBACK_CONTINUE;
-}
 
 
 // Method to get the first error on the deck and if logError is not set to false will pop up full error message before returning the error code.
@@ -67,13 +54,20 @@ HDerror catchHDError(bool logError = true)
 }
 
 
+// Callback method to be executed by HD scheduler to copy the data from haptic own struct @sa m_omniData to SOFA one @sa m_simuData.
+HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * pUserData)
+{
+    GeomagicDriver * driver = (GeomagicDriver *)pUserData;
+    driver->m_simuData = driver->m_omniData;
+    return HD_CALLBACK_CONTINUE;
+}
+
+
+// Callback method to get the tool position and angles and compute the Force to apply to the tool
 HDCallbackCode HDCALLBACK stateCallback(void * userData)
 {
     HDErrorInfo error;
     GeomagicDriver * driver = (GeomagicDriver * ) userData;
-
-    if (!driver->m_simulationStarted)
-        return HD_CALLBACK_CONTINUE;
 
     hdMakeCurrentDevice(driver->m_hHD);
     if (HD_DEVICE_ERROR(error = hdGetError())) return HD_CALLBACK_CONTINUE;
@@ -81,15 +75,23 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     hdBeginFrame(driver->m_hHD);
     if (HD_DEVICE_ERROR(error = hdGetError())) return HD_CALLBACK_CONTINUE;
 
-    hdGetIntegerv(HD_CURRENT_BUTTONS, &driver->m_omniData.buttonState);
     hdGetDoublev(HD_CURRENT_TRANSFORM, driver->m_omniData.transform);
 
     //angles
     hdGetDoublev(HD_CURRENT_JOINT_ANGLES,driver->m_omniData.angle1);
     hdGetDoublev(HD_CURRENT_GIMBAL_ANGLES,driver->m_omniData.angle2);
 
-    Vector3 currentForce;
+    // Will only update the device position data and don't retrieve forceFeeedback
+    if (!driver->m_simulationStarted) {
+        hdEndFrame(driver->m_hHD);
+        return HD_CALLBACK_CONTINUE;
+    }
 
+    // button status
+    hdGetIntegerv(HD_CURRENT_BUTTONS, &driver->m_omniData.buttonState);
+
+
+    Vector3 currentForce;
     if (driver->m_forceFeedback)
     {
         Vector3 pos(driver->m_omniData.transform[12+0]*0.1,driver->m_omniData.transform[12+1]*0.1,driver->m_omniData.transform[12+2]*0.1);
@@ -144,32 +146,33 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     return HD_CALLBACK_CONTINUE;
 }
 
+
 //constructeur
 GeomagicDriver::GeomagicDriver()
     : d_deviceName(initData(&d_deviceName, std::string("Default Device"), "deviceName","Name of device Configuration"))
-    , d_positionBase(initData(&d_positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
-    , d_orientationBase(initData(&d_orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
-    , d_orientationTool(initData(&d_orientationTool, Quat(0,0,0,1), "orientationTool","Orientation of the tool"))
-    , d_angle(initData(&d_angle, "angle","Angluar values of joint (rad)"))
-    , d_scale(initData(&d_scale, 1.0, "scale","Default scale applied to the Phantom Coordinates"))
-    , d_forceScale(initData(&d_forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
+    , d_positionBase(initData(&d_positionBase, Vec3d(0,0,0), "positionBase","Position of the device base in the SOFA scene world coordinates"))
+    , d_orientationBase(initData(&d_orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the device base in the SOFA scene world coordinates"))
+    , d_orientationTool(initData(&d_orientationTool, Quat(0,0,0,1), "orientationTool","Orientation of the tool in the SOFA scene world coordinates"))
+    , d_scale(initData(&d_scale, 1.0, "scale", "Default scale applied to the Device coordinates"))
+    , d_forceScale(initData(&d_forceScale, 1.0, "forceScale", "Default forceScale applied to the force feedback. "))
+    , d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback", "Maximum value of the normed input force feedback for device security"))
+    , d_inputForceFeedback(initData(&d_inputForceFeedback, Vec3d(0, 0, 0), "inputForceFeedback", "Input force feedback in case of no LCPForceFeedback is found (manual setting)"))
+    , d_manualStart(initData(&d_manualStart, false, "manualStart", "If true, will not automatically initDevice at component init phase."))
+    , d_emitButtonEvent(initData(&d_emitButtonEvent, false, "emitButtonEvent", "If true, will send event through the graph when button are pushed/released"))
     , d_frameVisu(initData(&d_frameVisu, false, "drawDeviceFrame", "Visualize the frame corresponding to the device tooltip"))
-    , d_omniVisu(initData(&d_omniVisu, false, "drawDevice", "Visualize the Geomagic device in the virtual scene"))
+    , d_omniVisu(initData(&d_omniVisu, false, "drawDevice", "Visualize the Geomagic device in the virtual scene"))    
     , d_posDevice(initData(&d_posDevice, "positionDevice", "position of the base of the part of the device"))
+    , d_angle(initData(&d_angle, "angle", "Angluar values of joint (rad)"))
     , d_button_1(initData(&d_button_1,"button1","Button state 1"))
     , d_button_2(initData(&d_button_2,"button2","Button state 2"))
-    , d_emitButtonEvent(initData(&d_emitButtonEvent, false, "emitButtonEvent", "If true, will send event through the graph when button are pushed/released"))
-    , d_inputForceFeedback(initData(&d_inputForceFeedback, Vec3d(0,0,0), "inputForceFeedback","Input force feedback in case of no LCPForceFeedback is found (manual setting)"))
-    , d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback","Maximum value of the normed input force feedback for device security"))
-    , d_manualStart(initData(&d_manualStart, false, "manualStart", "If true, will not automatically initDevice at component init phase."))
-    , m_simulationStarted(false)
     , l_forceFeedback(initLink("forceFeedBack", "link to the forceFeedBack component, if not set will search through graph and take first one encountered."))
     , m_errorDevice(0)
+    , m_simulationStarted(false)
     , m_isInContact(false)
     , m_hHD(HD_INVALID_HANDLE)
 {
     this->f_listening.setValue(true);
-    m_forceFeedback = NULL;
+    m_forceFeedback = nullptr;
     m_GeomagicVisualModel = std::make_unique<GeomagicVisualModel>();
 }
 
@@ -236,7 +239,6 @@ void GeomagicDriver::clearDevice()
 void GeomagicDriver::initDevice()
 {
     m_errorDevice = 0;
-    HDErrorInfo error;
     HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
     
     // 2.1- init device
@@ -508,8 +510,4 @@ int GeomagicDriverClass = core::RegisterObject("Driver allowing interfacing with
 .addAlias("DefaultHapticsDevice")
 ;
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::controller
