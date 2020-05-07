@@ -64,9 +64,6 @@ public:
     typedef RigidTypes::VecCoord VecCoord;
 
     GeomagicEmulator();
-    
-    //virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
-
 
     /// Public method to init tool. Can be called from thirdparty if @sa d_manualStart is set to true
     virtual void initDevice();
@@ -76,39 +73,24 @@ public:
 
 
 
-    Data <SReal> d_speedFactor; /// < factor to increase/decrease the movements speed
-
-
-    
-
-    void updatePosition();
-    void updateButtonStates(bool emitEvent);
-    
+    Data <SReal> d_speedFactor; /// < factor to increase/decrease the movements speed    
 
     void applyTranslation(sofa::defaulttype::Vec3 translation);
     void worldToLocal(sofa::defaulttype::Vec3& vector);
 
-    void moveUp();
-    void moveDown();
-    void moveLeft();
-    void moveRight();
-    void moveForward();
-    void moveBackward();
+    void moveJoint1(SReal value);
+    void moveJoint2(SReal value);
+    void moveJoint3(SReal value);
+    void moveGimbalAngle1(SReal value);
+    void moveGimbalAngle2(SReal value);
+    void moveGimbalAngle3(SReal value);
+
+    void computeTransform();
 
     sofa::helper::fixed_array<bool, 2> oldStates;
 
-    /**
-    * @brief Key Press event callback.
-    */
-    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *kEvent);
-
-    /**
-    * @brief Key Release event callback.
-    */
-    void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kEvent);
-
-    void handleEvent(core::objectmodel::Event *) override;
     
+    void handleEvent(core::objectmodel::Event *) override;    
 
 public:
     sofa::simulation::TaskScheduler* _taskScheduler;
