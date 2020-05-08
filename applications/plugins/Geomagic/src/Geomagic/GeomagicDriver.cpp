@@ -164,9 +164,8 @@ GeomagicDriver::GeomagicDriver()
     , d_posDevice(initData(&d_posDevice, "positionDevice", "position of the base of the part of the device"))
     , d_angle(initData(&d_angle, "angle", "Angluar values of joint (rad)"))
     , d_button_1(initData(&d_button_1,"button1","Button state 1"))
-    , d_button_2(initData(&d_button_2,"button2","Button state 2"))
+    , d_button_2(initData(&d_button_2,"button2","Button state 2"))    
     , l_forceFeedback(initLink("forceFeedBack", "link to the forceFeedBack component, if not set will search through graph and take first one encountered."))
-    , m_errorDevice(0)
     , m_simulationStarted(false)
     , m_isInContact(false)
     , m_hHD(HD_INVALID_HANDLE)
@@ -174,6 +173,7 @@ GeomagicDriver::GeomagicDriver()
     this->f_listening.setValue(true);
     m_forceFeedback = nullptr;
     m_GeomagicVisualModel = std::make_unique<GeomagicVisualModel>();
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
 }
 
 
@@ -214,8 +214,9 @@ void GeomagicDriver::clearDevice()
     hdMakeCurrentDevice(m_hHD);
 
     // stop scheduler first only if some works are registered
-    if (!m_hStateHandles.empty()) {
+    if (!m_hStateHandles.empty() && s_schedulerRunning) {
         hdStopScheduler();
+        s_schedulerRunning = false;
     }
 
     // unschedule valid tasks
@@ -238,8 +239,13 @@ void GeomagicDriver::clearDevice()
 
 void GeomagicDriver::initDevice()
 {
-    m_errorDevice = 0;
     HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
+
+    if (s_schedulerRunning) // need to stop scheduler if already running before any init
+    {
+        hdStopScheduler();
+        s_schedulerRunning = false;
+    }
     
     // 2.1- init device
     m_hHD = hdInitDevice(d_deviceName.getValue().c_str());
@@ -290,6 +296,7 @@ void GeomagicDriver::initDevice()
     hdEnable(HD_SOFTWARE_FORCE_LIMIT);
     
     hdStartScheduler();
+    s_schedulerRunning = true;
 
     if (catchHDError())
     {
@@ -329,13 +336,13 @@ void GeomagicDriver::initDevice()
     // 2.6- Need to wait several ms for the scheduler to be well launched and retrieving correct device information before updating information on the SOFA side.
     Sleep(42);        
     updatePosition();
+
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
 void GeomagicDriver::updatePosition()
 {
-    Mat3x3d mrot;
-
     Vector6 & angle = *d_angle.beginEdit();
     GeomagicDriver::Coord & posDevice = *d_posDevice.beginEdit();
 
@@ -362,10 +369,12 @@ void GeomagicDriver::updatePosition()
     position[2] = m_simuData.transform[12+2] * 0.1;
 
     //copy rotation of the tool
-    Quat orientation;
+    Mat3x3d mrot;    
     for (int u=0; u<3; u++)
         for (int j=0; j<3; j++)
             mrot[u][j] = m_simuData.transform[j*4+u];
+
+    Quat orientation;
     orientation.fromMatrix(mrot);
 
     //compute the position of the tool (according to positionbase, orientation base and the scale
@@ -445,7 +454,7 @@ void GeomagicDriver::updateButtonStates()
 
 void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 {
-    if(m_errorDevice != 0)
+    if (sofa::core::objectmodel::BaseObject::d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     vparams->drawTool()->saveLastState();
@@ -471,9 +480,6 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 
 void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  )
 {
-    if(m_errorDevice != 0)
-        return;
-
     SReal minBBox[3] = {1e10,1e10,1e10};
     SReal maxBBox[3] = {-1e10,-1e10,-1e10};
 
@@ -491,11 +497,11 @@ void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  )
 
 void GeomagicDriver::handleEvent(core::objectmodel::Event *event)
 {
-    if(m_errorDevice != 0)
-        return;
-
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
+        if (sofa::core::objectmodel::BaseObject::d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+            return;
+
         if (m_hStateHandles.size() && m_hStateHandles[0] == HD_INVALID_HANDLE)
             return;
 

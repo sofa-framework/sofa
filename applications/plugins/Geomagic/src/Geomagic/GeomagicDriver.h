@@ -110,7 +110,9 @@ public:
     // link to the forceFeedBack component, if not set will search through graph and take first one encountered
     SingleLink<GeomagicDriver, ForceFeedback, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_forceFeedback;
 
-    int m_errorDevice; ///< Int detecting any error coming from device / detection    
+    /// This static bool is used to know if HD scheduler is already running. No mechanism provided by Hd lib.
+    inline static bool s_schedulerRunning = false;
+
 protected:
     // Pointer to the Geomagic visual model to draw device in scene
     std::unique_ptr<GeomagicVisualModel> m_GeomagicVisualModel;
