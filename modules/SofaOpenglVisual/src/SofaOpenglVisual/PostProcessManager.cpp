@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * PostProcessManager.cpp
- *
- *  Created on: 12 janv. 2009
- *      Author: froy
- */
-
 #include "PostProcessManager.h"
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>

@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * DevMonitorManager.h
- *
- *  Created on: Nov 21, 2008
- *      Author: paul
- */
-
 #ifndef DEVMONITORMANAGER_H_
 #define DEVMONITORMANAGER_H_
 #include "config.h"

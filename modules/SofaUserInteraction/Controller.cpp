@@ -19,18 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation : Controller
-//
-// Description:
-//
-//
-// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/core/visual/VisualParams.h>
 

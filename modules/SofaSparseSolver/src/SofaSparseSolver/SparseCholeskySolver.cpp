@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP
 #include <SofaSparseSolver/SparseCholeskySolver.h>
 #include <sofa/core/visual/VisualParams.h>

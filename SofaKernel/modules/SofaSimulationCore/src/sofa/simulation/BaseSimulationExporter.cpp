@@ -19,10 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
- *  Contributors:
- *    - damien.marchal@univ-lille1.fr
- *****************************************************************************/
 #include <sofa/simulation/BaseSimulationExporter.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>

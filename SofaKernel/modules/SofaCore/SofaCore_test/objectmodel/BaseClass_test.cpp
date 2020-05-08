@@ -19,11 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
- * Contributors:                                                              *
- *    - apalliyali1@hamad.qa                                                  *
- *    - damien.marchal@univ-lille.fr                                          *
- *****************************************************************************/
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 

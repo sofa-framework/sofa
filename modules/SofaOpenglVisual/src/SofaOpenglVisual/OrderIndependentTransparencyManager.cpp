@@ -19,18 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: OrderIndependentTransparencyManager
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaOpenglVisual/OrderIndependentTransparencyManager.h>
 #include <sofa/core/visual/VisualParams.h>

@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: MechanicalComputeEnergyVisitor
-//
-// Description:
-//
-//
-// Author: Francois Faure, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_SIMULATION_MECHANICALCOMPUTEENERGYACTION_H
 #define SOFA_SIMULATION_MECHANICALCOMPUTEENERGYACTION_H
 

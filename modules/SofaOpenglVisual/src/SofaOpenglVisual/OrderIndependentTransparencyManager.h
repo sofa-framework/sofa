@@ -19,18 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: OrderIndependentTransparencyManager
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
 #ifndef SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
 #define SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
 

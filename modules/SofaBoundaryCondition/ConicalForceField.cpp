@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: ConicalForceField
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #define SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP
 #include <SofaBoundaryCondition/ConicalForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>

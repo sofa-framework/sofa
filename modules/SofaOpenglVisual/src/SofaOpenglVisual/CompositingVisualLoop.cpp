@@ -19,14 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * CompositingVisualLoop.cpp
- *
- *  Created on: 16 janv. 2012
- *      Author: Jeremy Ringard
- */
-
-
 #include <SofaOpenglVisual/CompositingVisualLoop.h>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaBaseVisual/VisualStyle.h>

@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-// Author: Pierre-Jean Bensoussan, Digtal Trainers, (C) 2008
-
 #include <sofa/core/objectmodel/JoystickEvent.h>
 #include <cassert>
 #include <cstring> // for nullptr

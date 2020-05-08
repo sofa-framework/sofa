@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * VTKExporter.h
- *
- *  Created on: 9 sept. 2009
- *      Author: froy
- */
-
 #ifndef VTKEXPORTER_H_
 #define VTKEXPORTER_H_
 #include <SofaExporter/config.h>

@@ -19,16 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/* OBJExporter.h
- *
- *  Created on: 9 sept. 2009
- *
- *  Contributors:
- *    - froy
- *    - damien.marchal@univ-lille1.fr
- *
- ************************************************************************************/
-
 #ifndef OBJEXPORTER_H_
 #define OBJEXPORTER_H_
 #include <SofaExporter/config.h>

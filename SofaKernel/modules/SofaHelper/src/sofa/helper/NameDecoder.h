@@ -19,11 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
- * Contributors:
- *      - damien.marchal@univ-lille.fr
- *      - jean-nicolas.brunet@inria.fr
- *****************************************************************************/
 #pragma once
 
 #include <string>

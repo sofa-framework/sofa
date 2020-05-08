@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
 #define SOFA_COMPONENT_LINEARSOLVER_PRECOMPUTEDLINEARSOLVER_CPP
 
 #include <SofaSparseSolver/PrecomputedLinearSolver.inl>

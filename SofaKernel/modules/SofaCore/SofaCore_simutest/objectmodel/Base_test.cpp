@@ -19,11 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
- * Contributors:
- *     - damien.marchal@univ-lille.fr
- *****************************************************************************/
-
 #include <sofa/core/objectmodel/Base.h>
 using sofa::core::objectmodel::Base ;
 using sofa::core::objectmodel::ComponentState;

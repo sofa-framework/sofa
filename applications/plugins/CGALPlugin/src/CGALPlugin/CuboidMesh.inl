@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * CuboidMesh.inl
- *
- *  Created on: 12 sep. 2011
- *      Author: Yiyi
- */
-
 #ifndef CGALPLUGIN_CUBOIDMESH_INL
 #define CGALPLUGIN_CUBOIDMESH_INL
 #include "CuboidMesh.h"

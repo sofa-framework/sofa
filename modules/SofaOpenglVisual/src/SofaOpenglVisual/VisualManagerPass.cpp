@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * VisualManagerPass.cpp
- *
- *  Created on: 16 janv. 2012
- *      Author: Jeremy Ringard
- */
-
 #include <SofaOpenglVisual/VisualManagerPass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VisualVisitor.h>

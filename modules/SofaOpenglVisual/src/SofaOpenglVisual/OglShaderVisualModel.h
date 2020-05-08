@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * GlslModel.h
- *
- *  Created on: 9 févr. 2009
- *      Author: froy
- */
-
 #ifndef OGLSHADERVISUALMODEL_H_
 #define OGLSHADERVISUALMODEL_H_
 #include "config.h"

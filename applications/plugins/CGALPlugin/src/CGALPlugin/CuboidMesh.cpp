@@ -19,12 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * CylinderMesh.cpp
- *
- *  Created on: 12 sep. 2011
- *      Author: Yiyi
- */
 #define CGALPLUGIN_CUBOIDMESH_CPP
 
 #include <CGALPlugin/config.h>

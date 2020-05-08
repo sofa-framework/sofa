@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: ConicalForceField
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_H
 #include "config.h"

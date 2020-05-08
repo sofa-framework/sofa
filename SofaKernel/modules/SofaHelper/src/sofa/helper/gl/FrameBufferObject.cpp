@@ -19,12 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * FrameBufferObject.cpp
- *
- *  Created on: 6 janv. 2009
- *      Author: froy
- */
 #include <cassert>
 #include <sofa/helper/gl/FrameBufferObject.h>
 

@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
-
 #ifndef SOFA_CORE_OBJECTMODEL_MOUSEEVENT_H
 #define SOFA_CORE_OBJECTMODEL_MOUSEEVENT_H
 

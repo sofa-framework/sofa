@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-// Author: Pierre-Jean Bensoussan, Digtal Trainers, (C) 2008
-
 #include <sofa/core/objectmodel/MouseEvent.h>
 
 namespace sofa

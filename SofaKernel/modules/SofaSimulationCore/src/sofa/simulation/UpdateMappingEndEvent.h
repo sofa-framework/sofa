@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: UpdateMappingEndEvent
-//
-// Description:
-//
-//
-// Author: Jeremie Allard, MGH/CIMIT, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_SIMULATION_UPDATEMAPPINGENDEVENT_H
 #define SOFA_SIMULATION_UPDATEMAPPINGENDEVENT_H
 

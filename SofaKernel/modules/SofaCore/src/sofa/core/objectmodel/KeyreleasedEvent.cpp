@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-// Author: Juan Pablo de la Plata, INRIA Futurs, (C) 2006
-
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 namespace sofa

@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <SofaBaseCollision/ContactListener.h>
 
 #include <sofa/core/collision/NarrowPhaseDetection.h>

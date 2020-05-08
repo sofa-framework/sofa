@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * CompositingVisualLoop.h
- *
- *  Created on: 16 janv. 2012
- *      Author: Jeremy Ringard
- */
-
 #ifndef SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
 #define SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
 #include "config.h"

@@ -19,11 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
- * Contributors:
- *     - damien.marchal@univ-lille1.fr
- *****************************************************************************/
-
 #include <sofa/core/objectmodel/BaseContext.h>
 using sofa::core::objectmodel::BaseContext ;
 

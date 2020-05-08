@@ -19,10 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
-* Contributors:                                                               *
-*     - damien.marchal@univ-lille1.fr                                         *
-******************************************************************************/
 #pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>

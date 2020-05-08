@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * PostProcessManager.h
- *
- *  Created on: 12 janv. 2009
- *      Author: froy
- */
-
 #ifndef SOFA_COMPONENT_POSTPROCESSMANAGER_H_
 #define SOFA_COMPONENT_POSTPROCESSMANAGER_H_
 #include "config.h"

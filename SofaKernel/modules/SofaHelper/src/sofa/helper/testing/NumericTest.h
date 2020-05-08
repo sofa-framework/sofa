@@ -19,11 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
- * Contributors:
- *    - françois.faure
- *    - damien.marchal@univ-lille1.fr
- ******************************************************************************/
 #ifndef SOFA_HELPER_NUMERICTEST_H
 #define SOFA_HELPER_NUMERICTEST_H
 

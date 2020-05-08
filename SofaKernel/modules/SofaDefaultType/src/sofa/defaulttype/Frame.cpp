@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/* Francois Faure, INRIA-UJF, 2006
- */
 #include <sofa/defaulttype/Frame.h>
 #include <iostream>
 using std::endl;

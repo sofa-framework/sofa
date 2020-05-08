@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * DevMonitorManager.cpp
- *
- *  Created on: Nov 21, 2008
- *      Author: paul
- */
-
 #include "DevMonitorManager.h"
 #include <sofa/core/ObjectFactory.h>
 

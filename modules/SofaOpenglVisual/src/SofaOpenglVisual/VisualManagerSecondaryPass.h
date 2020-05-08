@@ -19,12 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * VisualManagerSecondaryPass.h
- *
- *  Created on: 18 fev. 2012
- *      Author: Jeremy Ringard
- */
 #ifndef SOFA_COMPONENT_VISUALMANAGER_SECONDARY_PASS_H
 #define SOFA_COMPONENT_VISUALMANAGER_SECONDARY_PASS_H
 #include "config.h"

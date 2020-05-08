@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
 

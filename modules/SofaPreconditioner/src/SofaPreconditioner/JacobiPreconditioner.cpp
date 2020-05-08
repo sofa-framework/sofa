@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
 #include <SofaPreconditioner/JacobiPreconditioner.inl>
 #include <sofa/core/ObjectFactory.h>
 

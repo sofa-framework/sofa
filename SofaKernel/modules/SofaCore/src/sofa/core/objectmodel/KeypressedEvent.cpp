@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-// Author: Francois Faure, UJF-Grenoble/INRIA, (C) 2006
-
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
 namespace sofa

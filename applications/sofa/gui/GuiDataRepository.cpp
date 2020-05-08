@@ -19,11 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
-* Contributors:
-*   - damien.marchal@univ-lille1.fr
-*******************************************************************************/
-
 #include "GuiDataRepository.h"
 #include <sofa/helper/Utils.h>
 

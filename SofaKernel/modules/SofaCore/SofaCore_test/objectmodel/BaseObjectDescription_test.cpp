@@ -19,16 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * #include <SofaSimulationCommon/init.h>
-using sofa::simulation::common::init ;
-
-#include <SofaSimulationGraph/init.h>
-using sofa::simulation::graph::init ;
-
-#include <SofaBase/initSofaBase.h>
-using sofa::component::initBase ;
-*/
 
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 using sofa::core::objectmodel::BaseObjectDescription ;

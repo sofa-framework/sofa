@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Matthieu Nesme, INRIA, (C) 2012
 #define SOFA_COMPONENT_LINEARSOLVER_MINRESLINEARSOLVER_CPP
 #include <SofaGeneralLinearSolver/MinResLinearSolver.inl>
 

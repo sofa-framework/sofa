@@ -19,11 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
-* Contributors:
-*   - damien.marchal@univ-lille1.fr
-*******************************************************************************/
-
 #include <sofa/helper/system/FileRepository.h>
 
 namespace sofa

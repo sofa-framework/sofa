@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2011
-//
-// Copyright: See COPYING file that comes with this distribution
 #include <SofaEigen2Solver/SVDLinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>

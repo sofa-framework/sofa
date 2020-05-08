@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * OglShaderVisualModel.cpp
- *
- *  Created on: 9 févr. 2009
- *      Author: froy
- */
-
 #include <SofaOpenglVisual/OglShaderVisualModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>

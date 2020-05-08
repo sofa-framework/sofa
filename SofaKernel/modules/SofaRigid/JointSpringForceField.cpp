@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
 #define SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP
 
 #include <SofaRigid/JointSpringForceField.inl>

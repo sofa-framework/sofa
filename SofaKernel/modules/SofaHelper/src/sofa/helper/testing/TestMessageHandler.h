@@ -19,10 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
- * Contributors:
- *    - damien.marchal@univ-lille1.fr
- ******************************************************************************/
 #ifndef TESTMESSAGEHANDLER_H
 #define TESTMESSAGEHANDLER_H
 

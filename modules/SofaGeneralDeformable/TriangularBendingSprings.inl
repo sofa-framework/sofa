@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: TriangularBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_INL
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_INL
 

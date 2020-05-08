@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * VTKExporter.cpp
- *
- *  Created on: 9 sept. 2009
- *      Author: froy
- */
-
 #include "VTKExporter.h"
 
 #include <sstream>

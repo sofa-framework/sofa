@@ -19,10 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
- *  Contributors:
- *    - damien.marchal@univ-lille1.fr
- *****************************************************************************/
 #ifndef SOFA_CORE_EXPORTER_BASEEXPORTER_H
 #define SOFA_CORE_EXPORTER_BASEEXPORTER_H
 

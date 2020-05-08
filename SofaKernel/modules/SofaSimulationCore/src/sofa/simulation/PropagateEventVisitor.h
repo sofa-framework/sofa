@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: PropagateEventVisitor
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_SIMULATION_PROPAGATEEVENTACTION_H
 #define SOFA_SIMULATION_PROPAGATEEVENTACTION_H
 

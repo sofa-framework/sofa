@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: WriteStateVisitor
-//
-// Description:
-//
-//
-// Author: Francois Faure, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #include <sofa/simulation/WriteStateVisitor.h>
 #include <sofa/defaulttype/Vec.h>
 

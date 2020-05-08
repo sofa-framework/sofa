@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-// Author: Francois Faure, INRIA-UJF, (C) 2006
-
 #ifndef SOFA_DEFAULTTYPE_SOLIDTYPES_H
 #define SOFA_DEFAULTTYPE_SOLIDTYPES_H
 

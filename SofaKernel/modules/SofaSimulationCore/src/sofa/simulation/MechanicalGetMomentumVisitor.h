@@ -19,15 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: MechanicalGetMomentumVisitor
-//
-// Description:
-//
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
 #define SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
 

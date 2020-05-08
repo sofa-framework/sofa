@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Herve Delingette, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #include "VariationalSymplecticSolver.h"
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>

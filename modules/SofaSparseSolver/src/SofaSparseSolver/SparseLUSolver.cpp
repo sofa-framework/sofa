@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
 #include <SofaSparseSolver/SparseLUSolver.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>

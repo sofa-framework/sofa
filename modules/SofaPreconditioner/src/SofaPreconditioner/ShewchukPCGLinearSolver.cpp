@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaPreconditioner/ShewchukPCGLinearSolver.h>

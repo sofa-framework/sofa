@@ -19,18 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Models: MechanicalStateController
-//
-// Description:
-//
-//
-// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
 #ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_INL
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_INL
 

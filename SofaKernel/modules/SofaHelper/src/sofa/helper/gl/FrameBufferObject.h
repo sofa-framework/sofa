@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * FrameBufferObject.h
- *
- *  Created on: 6 janv. 2009
- *      Author: froy
- */
-
 #ifndef FRAMEBUFFEROBJECT_H_
 #define FRAMEBUFFEROBJECT_H_
 

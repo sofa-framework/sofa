@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * VisualManagerPass.h
- *
- *  Created on: 16 janv. 2012
- *      Author: Jeremy Ringard
- */
-
 #ifndef SOFA_COMPONENT_VISUALMANAGERPASS_H
 #define SOFA_COMPONENT_VISUALMANAGERPASS_H
 #include "config.h"

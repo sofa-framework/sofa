@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-/* Francois Faure, 2013 */
 #include <SofaTest/Mapping_test.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>

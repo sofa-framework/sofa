@@ -19,15 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * OBJExporter.cpp
- *
- *  Created on: 9 sept. 2009
- *  Contributors:
- *       - froy
- *       - damien.marchal@univ-lille1.fr
- ***********************************************************************************/
-
 #include "OBJExporter.h"
 
 #include <sstream>

@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * RandomGenerator.h
- *
- *  Created on: 25 mai 2009
- *      Author: froy
- */
-
 #ifndef RANDOMGENERATOR_H_
 #define RANDOMGENERATOR_H_
 

@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: Shader
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #include <SofaOpenglVisual/OglShader.h>
 #include <SofaOpenglVisual/CompositingVisualLoop.h>
 #include <sofa/core/visual/VisualParams.h>

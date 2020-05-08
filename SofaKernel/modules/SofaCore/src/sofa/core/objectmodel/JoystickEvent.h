@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
-
-// This file is a work based on the open source release of VGSDK.
-//
-// VGSDK - Copyright (C) 2008, Nicolas Papier.
-// Distributed under the terms of the GNU Library General Public License (LGPL)
-// as published by the Free Software Foundation.
-// Author Nicolas Papier
-// Author Guillaume Brocker
-
 #ifndef SOFA_CORE_OBJECTMODEL_JOYSTICKEVENT_H
 #define SOFA_CORE_OBJECTMODEL_JOYSTICKEVENT_H
 
