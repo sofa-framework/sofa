@@ -183,6 +183,10 @@ public:
     {
         p_minBBox.setValue(min);
         p_maxBBox.setValue(max);
+
+        sceneCenter = (min + max)*0.5;
+        sceneRadius = 0.5*(max - min).norm();
+
         computeZ();
     }
 
