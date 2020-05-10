@@ -20,8 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <algorithm>
+#include <iostream>
+#include <cassert>
 #include <sofa/core/objectmodel/DDGNode.h>
-
+#include <sofa/helper/BackTrace.h>
 namespace sofa::core::objectmodel
 {
 
@@ -33,9 +35,13 @@ DDGNode::DDGNode()
 DDGNode::~DDGNode()
 {
     for(auto it : inputs)
+    {
         it->doDelOutput(this);
+    }
     for(auto it : outputs)
+    {
         it->doDelInput(this);
+    }
 }
 
 void DDGNode::setDirtyValue()
@@ -85,6 +91,11 @@ void DDGNode::cleanDirtyOutputsOfInputs()
 
 void DDGNode::addInput(DDGNode* n)
 {
+    if(std::find(inputs.begin(), inputs.end(), n) == inputs.end())
+    {
+        assert(false && "trying to add a DDGNode that is already in the input set.");
+        return;
+    }
     doAddInput(n);
     n->doAddOutput(this);
     setDirtyValue();
@@ -92,12 +103,21 @@ void DDGNode::addInput(DDGNode* n)
 
 void DDGNode::delInput(DDGNode* n)
 {
+    /// It is not allowed to remove an entry that is not in the set.
+    assert(std::find(inputs.begin(), inputs.end(), n) != inputs.end());
+
     doDelInput(n);
     n->doDelOutput(this);
 }
 
 void DDGNode::addOutput(DDGNode* n)
 {
+    if(std::find(outputs.begin(), outputs.end(), n) != outputs.end())
+    {
+        assert(false && "trying to add a DDGNode that is already in the output set.");
+        return;
+    }
+
     doAddOutput(n);
     n->doAddInput(this);
     n->setDirtyValue();
@@ -105,6 +125,9 @@ void DDGNode::addOutput(DDGNode* n)
 
 void DDGNode::delOutput(DDGNode* n)
 {
+    /// It is not allowed to remove an entry that is not in the set.
+    assert(std::find(outputs.begin(), outputs.end(), n) != outputs.end());
+
     doDelOutput(n);
     n->doDelInput(this);
 }

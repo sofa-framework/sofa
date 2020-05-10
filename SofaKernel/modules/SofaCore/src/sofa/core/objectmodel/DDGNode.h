@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/core.h>
 #include <sofa/helper/stable_vector.h>
+#include <sofa/core/core.h>
 
 namespace sofa::core
 {
