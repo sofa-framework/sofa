@@ -12,7 +12,11 @@ set(SOFAADVANCED_TARGETS
     SofaNonUniformFem
 )
 
-message(DEPRECATION "${PROJECT_NAME} collection is deprecated, please directly use its modules in your project(s). It contains the following module(s): ${SOFAADVANCED_TARGETS}")
+message(DEPRECATION
+    " ${PROJECT_NAME} is deprecated.\n"
+    " You should now explicitely find (find_package) and link (target_link_library) each module you need within: \n"
+    " ${SOFAADVANCED_TARGETS}"
+    )
 
 foreach(TARGET ${SOFAADVANCED_TARGETS})
     find_package(${TARGET} QUIET)
@@ -22,7 +26,10 @@ foreach(TARGET ${SOFAADVANCED_TARGETS})
     endif()
 endforeach()
 if(LIST_MODULES_TO_CHECK)
-    message(FATAL_ERROR "If you still want to use the ${PROJECT_NAME} collection, please enable the following cmake option(s): ${LIST_MODULES_TO_CHECK}")
+    message(FATAL_ERROR
+        " If you still want to use ${PROJECT_NAME}, please enable the following CMake option(s): \n"
+        " ${LIST_MODULES_TO_CHECK}"
+        )
 endif()
 
 set(SOFAADVANCED_SRC src/${PROJECT_NAME})
