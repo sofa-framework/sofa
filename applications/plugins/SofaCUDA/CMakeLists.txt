@@ -175,6 +175,7 @@ set(README_FILES SofaCUDA.txt)
 find_package(SofaMisc REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(VolumetricRendering QUIET)
+find_package(SofaValidation REQUIRED)
 
 if(VolumetricRendering_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
@@ -317,7 +318,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
-target_link_libraries(${PROJECT_NAME} SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaMisc)
+target_link_libraries(${PROJECT_NAME} SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaAdvanced SofaMisc SofaValidation)
+
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 if(NOT SOFA_NO_OPENGL)
     target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
@@ -347,6 +350,7 @@ if(SofaSphFluid_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaSphFluid)
 endif()
 
+
 ## SofaCUDANvccFlags.cmake
 # Build tree
 configure_file(SofaCUDANvccFlags.cmake ${CMAKE_BINARY_DIR}/cmake/SofaCUDANvccFlags.cmake COPYONLY)
@@ -364,4 +368,3 @@ sofa_generate_package(
 
 ## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-

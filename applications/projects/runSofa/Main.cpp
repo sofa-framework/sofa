@@ -29,6 +29,7 @@ using std::string;
 #include <vector>
 using std::vector;
 
+#include <runSofaValidation.h>
 
 #include <sofa/helper/ArgumentParser.h>
 #include <SofaSimulationCommon/common.h>
@@ -53,7 +54,6 @@ using sofa::simulation::scenechecking::SceneCheckerListener;
 #include <SofaMisc/initSofaMisc.h>
 
 #include <SofaGeneralLoader/ReadState.h>
-#include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/cast.h>
 #include <sofa/helper/BackTrace.h>
@@ -74,7 +74,6 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
 
-using sofa::component::misc::CompareStateCreator;
 using sofa::component::misc::ReadStateActivator;
 using sofa::simulation::tree::TreeSimulation;
 using sofa::simulation::graph::DAGSimulation;
@@ -122,26 +121,6 @@ using sofa::helper::logging::ExceptionMessageHandler;
 #define TOSTRING(x) STRINGIFY(x)
 
 
-void loadVerificationData(string& directory, string& filename, Node* node)
-{
-    msg_info("") << "loadVerificationData from " << directory << " and file " << filename ;
-
-    string refFile;
-
-    refFile += directory;
-    refFile += '/';
-    refFile += SetDirectory::GetFileName(filename.c_str());
-
-    msg_info("") << "loadVerificationData " << refFile ;
-
-    CompareStateCreator compareVisitor(ExecParams::defaultInstance());
-    compareVisitor.setCreateInMapping(true);
-    compareVisitor.setSceneName(refFile);
-    compareVisitor.execute(node);
-
-    ReadStateActivator v_read(ExecParams::defaultInstance(), true);
-    v_read.execute(node);
-}
 
 void addGUIParameters(ArgumentParser* argumentParser)
 {
@@ -521,7 +500,7 @@ int main(int argc, char** argv)
 
     if (!verif.empty())
     {
-        loadVerificationData(verif, fileName, groot.get());
+        runSofa::Validation::execute(verif, fileName, groot.get());
     }
 
     if( computationTimeAtBegin )

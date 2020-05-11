@@ -1,5 +1,7 @@
 <!-- Use of DataDisplay to show distances from rest shape  -->
 <Node name="root" gravity="0 0 -1" dt="0.05">
+    <RequiredPlugin name="SofaValidation"/>
+    
     <VisualStyle displayFlags="showVisual hideBehavior hideCollision hideMapping" />
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />

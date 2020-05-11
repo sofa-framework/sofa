@@ -4,6 +4,7 @@ sofa_add_module(SofaExporter SofaExporter ON)
 sofa_add_module(SofaSparseSolver SofaSparseSolver ON)      #
 sofa_add_module(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
 sofa_add_module(SofaHaptics SofaHaptics ON)
+sofa_add_module(SofaValidation SofaValidation ON)
 
 find_package(Newmat QUIET)
 if(Newmat_FOUND)
