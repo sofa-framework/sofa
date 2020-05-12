@@ -36,15 +36,12 @@ namespace objectmodel
 
 void BaseData::update()
 {
-    std::cout << "DDGNodeBaseData::update(BEGIN)" << std::endl;
-
     updateDirtyInputs();
 
     if(hasParent())
         copyValue(getParent());
 
     cleanDirty();
-    std::cout << "DDGNodeBaseData::update(END)" << std::endl;
 }
 
 

@@ -255,14 +255,15 @@ namespace sofa {
 template<>
 void DataEngine_test< TestDataEngine<component::engine::JoinPoints<defaulttype::Vec3Types> > >::preInit()
 {
-    m_engineInput->findData("points")->read("0.0 0.0 0.0");
+    std::cout <<  "=====================NOEW READING POINT " << std::endl;
+    ASSERT_TRUE( m_engineInput->findData("points")->read("0.0 0.0 0.0"));
 }
 
 template<>
 void DataEngine_test< TestDataEngine<component::engine::RandomPointDistributionInSurface<defaulttype::Vec3Types> > >::preInit()
 {
-    m_engineInput->findData("vertices")->read("-0.5 -0.5 -0.5  1 0 0  0 1 0  0 0 1");
-    m_engineInput->findData("triangles")->read("0 2 1  0 1 3  0 3 2   1 2 3");
+    ASSERT_TRUE(m_engineInput->findData("vertices")->read("-0.5 -0.5 -0.5  1 0 0  0 1 0  0 0 1"));
+    ASSERT_TRUE(m_engineInput->findData("triangles")->read("0 2 1  0 1 3  0 3 2   1 2 3"));
 }
 
 // testing every engines of SofaEngine here

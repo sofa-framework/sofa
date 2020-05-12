@@ -273,14 +273,9 @@ public:
     ///     - unlink the connected parent(if any)
     inline T* beginEdit()
     {
-        std::cout << "BEGINEDIT " << getName() << std::endl;
         if(m_parentData.isSet())
         {
-            std::cout << "BEGINEDIT. " << std::endl;
-
             updateIfDirty();
-            std::cout << "UNLINK. =>X2" << std::endl;
-
             //m_parentData.unSet();
         }
         m_counter++;
@@ -295,13 +290,10 @@ public:
     ///     - unlink the connected parent(if any)
     inline T* beginWriteOnly()
     {
-        std::cout << "BEGINWRITEONLY: =>" << getName() << std::endl;
-
         /// If there is a link we disconnect it.
         /// without updating its value
         if(m_parentData.isSet())
         {
-            std::cout << "BEGINWRITEONLY: Unlink " << m_parentData.get()->getName() << std::endl;
             m_parentData.unSet();
             cleanDirty();
         }
@@ -334,7 +326,6 @@ public:
 
     inline const T& getValue() const
     {
-        std::cout << "Data::getValue: " << getName() << std::endl;
         updateIfDirty();
         return m_value.getValue();
     }
@@ -342,7 +333,6 @@ public:
     /// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
     const void* getValueVoidPtr() const override
     {
-        std::cout << "GET VALUEVOID PTR " << getName() << std::endl;
         return &(getValue());
     }
 

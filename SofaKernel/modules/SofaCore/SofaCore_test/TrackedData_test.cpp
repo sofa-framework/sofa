@@ -190,23 +190,23 @@ protected:
     {
         ++s_updateCounter;
 
-//        /// get the list of inputs for this DDGNode
-//        const core::DataTrackerEngine::DDGLinkContainer& inputs = dataTrackerEngine->getInputs();
+        /// get the list of inputs for this DDGNode
+        const core::DataTrackerEngine::DDGLinkContainer& inputs = dataTrackerEngine->getInputs();
 
-//        /// get the list of outputs for this DDGNode
-//        const core::DataTrackerEngine::DDGLinkContainer& outputs = dataTrackerEngine->getOutputs();
+        /// get the list of outputs for this DDGNode
+        const core::DataTrackerEngine::DDGLinkContainer& outputs = dataTrackerEngine->getOutputs();
 
-//        /// we known who is who from the order Data were added to the DataTrackerEngine
-//        bool input = static_cast<Data< bool >*>( inputs[0] )->getValue();
-//        bool input2 = static_cast<Data< bool >*>( inputs[1] )->getValue();
+        /// we known who is who from the order Data were added to the DataTrackerEngine
+        bool input = static_cast<Data< bool >*>( inputs[0] )->getValue();
+        bool input2 = static_cast<Data< bool >*>( inputs[1] )->getValue();
 
-//        dataTrackerEngine->cleanDirty();
+        dataTrackerEngine->cleanDirty();
 
-//        Data< bool >* output = static_cast<Data< bool >*>( outputs[0] );
-//        Data< bool >* output2 = static_cast<Data< bool >*>( outputs[1] );
+        Data< bool >* output = static_cast<Data< bool >*>( outputs[0] );
+        Data< bool >* output2 = static_cast<Data< bool >*>( outputs[1] );
 
-        //output->setValue( input );
-        //output2->setValue( input2 );
+        output->setValue( input );
+        output2->setValue( input2 );
     }
 
 };
@@ -287,20 +287,20 @@ struct DataTrackerEngine_test: public BaseTest
     {
         ++updateCounter;
 
-//        // get the list of inputs for this DDGNode
-//        const core::DataTrackerEngine::DDGLinkContainer& inputs = dataTrackerEngine->getInputs();
-//        // get the list of outputs for this DDGNode
-//        const core::DataTrackerEngine::DDGLinkContainer& outputs = dataTrackerEngine->getOutputs();
+        // get the list of inputs for this DDGNode
+        const core::DataTrackerEngine::DDGLinkContainer& inputs = dataTrackerEngine->getInputs();
+        // get the list of outputs for this DDGNode
+        const core::DataTrackerEngine::DDGLinkContainer& outputs = dataTrackerEngine->getOutputs();
 
-//        // we known who is who from the order Data were added to the DataTrackerEngine
-//        bool input = static_cast<Data< bool >*>( inputs[0] )->getValue();
+        // we known who is who from the order Data were added to the DataTrackerEngine
+        bool input = static_cast<Data< bool >*>( inputs[0] )->getValue();
 
-//        dataTrackerEngine->cleanDirty();
+        dataTrackerEngine->cleanDirty();
 
 
-//        Data< bool >* output = static_cast<Data< bool >*>( outputs[0] );
+        Data< bool >* output = static_cast<Data< bool >*>( outputs[0] );
 
-//        output->setValue( input );
+        output->setValue( input );
     }
 
 
@@ -369,8 +369,8 @@ struct DataTrackerFunctor_test: public BaseTest
 
         void operator() ( core::DataTrackerFunctor<MyDataFunctor>* tracker )
         {
-            //core::objectmodel::BaseData* data = down_cast<core::objectmodel::BaseData>( tracker->getInputs()[0] );
-            //msg_info("MyDataFunctor")<<"Data "<<data->getName()<<" just changed for the "<<++m_counter<<"-th time";
+            core::objectmodel::BaseData* data = down_cast<core::objectmodel::BaseData>( tracker->getInputs()[0] );
+            msg_info("MyDataFunctor")<<"Data "<<data->getName()<<" just changed for the "<<++m_counter<<"-th time";
         }
 
         unsigned m_counter;
@@ -423,11 +423,11 @@ struct DataTrackerFunctor_test: public BaseTest
 
         // example with an accessor
         {
-        helper::WriteOnlyAccessor<core::objectmodel::Data<bool>> acc( testObject.myData );  // the functor is triggered as soon as the edition begins
-        ASSERT_EQ( 5u, myDataFunctor.m_counter );
-        *acc = false;  // the functor is not triggered
-        *acc = true; // the functor is not triggered
-        ASSERT_EQ( 5u, myDataFunctor.m_counter );
+            helper::WriteOnlyAccessor<core::objectmodel::Data<bool>> acc( testObject.myData );  // the functor is triggered as soon as the edition begins
+            ASSERT_EQ( 5u, myDataFunctor.m_counter );
+            *acc = false;  // the functor is not triggered
+            *acc = true; // the functor is not triggered
+            ASSERT_EQ( 5u, myDataFunctor.m_counter );
         }
 
     }
