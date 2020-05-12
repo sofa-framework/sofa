@@ -3,6 +3,10 @@ project(SofaOpenCL)
 
 set(SOFAOPENCL_VERSION 0.1)
 
+find_package(OpenCL REQUIRED)
+find_package(SofaGeneral REQUIRED)
+sofa_find_package(SofaSphFluid)
+
 set(HEADER_FILES
     CPUSPHFluidForceField.h
     CPUSPHFluidForceFieldWithOpenCL.h
@@ -72,7 +76,7 @@ set(OTHER_FILES
     kernels/oclRadixSort/RadixSort.cl
     kernels/oclRadixSort/Scan_b.cl
 )
-find_package(SofaSphFluid QUIET)
+
 if(SofaSphFluid_FOUND)
     list(APPEND HEADER_FILES
         OpenCLSPHFluidForceField.h
@@ -92,10 +96,6 @@ else()
 endif()
 
 
-find_package(OpenCL REQUIRED)
-find_package(SofaGeneral REQUIRED)
-find_package(SofaSphFluid REQUIRED)
-
 message(WARNING "SofaOpenCL: TODO: don't use absolute path (SOFA_SRC_DIR)")
 
 include_directories(${OPENCL_INCLUDE_DIRS})
@@ -107,6 +107,7 @@ target_link_libraries(${PROJECT_NAME} ${OPENCL_LIBRARIES} SofaHelper SofaEngine 
 if(SofaSphFluid_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaSphFluid) # taucs taucs_mt system-taucs)
 endif()
+
 sofa_generate_package(
     NAME ${PROJECT_NAME}
     TARGETS ${PROJECT_NAME}
