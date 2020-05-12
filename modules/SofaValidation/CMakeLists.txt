@@ -1,52 +1,73 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaValidation)
+project(SofaValidation VERSION 1.0 LANGUAGES CXX)
+
+find_package(SofaBase REQUIRED)
+find_package(SofaCommon REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
+set(SOFAVALIDATION_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    CompareState.h
-    CompareTopology.h
-    DataController.h
-    DataMonitor.h
-    DevAngleCollisionMonitor.h
-    DevAngleCollisionMonitor.inl
-    DevMonitor.h
-    DevMonitorManager.h
-    DevTensionMonitor.h
-    DevTensionMonitor.inl
-    EvalPointsDistance.h
-    EvalPointsDistance.inl
-    EvalSurfaceDistance.h
-    EvalSurfaceDistance.inl
-    ExtraMonitor.h
-    ExtraMonitor.inl
-    Monitor.h
-    Monitor.inl
-    config.h
-    initValidation.h
+    ${SOFAVALIDATION_SRC}/config.h.in
+    ${SOFAVALIDATION_SRC}/initValidation.h
+    ${SOFAVALIDATION_SRC}/CompareState.h
+    ${SOFAVALIDATION_SRC}/CompareTopology.h
+    ${SOFAVALIDATION_SRC}/DataController.h
+    ${SOFAVALIDATION_SRC}/DataMonitor.h
+    ${SOFAVALIDATION_SRC}/DevAngleCollisionMonitor.h
+    ${SOFAVALIDATION_SRC}/DevAngleCollisionMonitor.inl
+    ${SOFAVALIDATION_SRC}/DevMonitor.h
+    ${SOFAVALIDATION_SRC}/DevMonitorManager.h
+    ${SOFAVALIDATION_SRC}/DevTensionMonitor.h
+    ${SOFAVALIDATION_SRC}/DevTensionMonitor.inl
+    ${SOFAVALIDATION_SRC}/EvalPointsDistance.h
+    ${SOFAVALIDATION_SRC}/EvalPointsDistance.inl
+    ${SOFAVALIDATION_SRC}/EvalSurfaceDistance.h
+    ${SOFAVALIDATION_SRC}/EvalSurfaceDistance.inl
+    ${SOFAVALIDATION_SRC}/ExtraMonitor.h
+    ${SOFAVALIDATION_SRC}/ExtraMonitor.inl
+    ${SOFAVALIDATION_SRC}/Monitor.h
+    ${SOFAVALIDATION_SRC}/Monitor.inl
     )
 
 set(SOURCE_FILES
-    CompareState.cpp
-    CompareTopology.cpp
-    DataController.cpp
-    DataMonitor.cpp
-    DevAngleCollisionMonitor.cpp
-    DevMonitorManager.cpp
-    DevTensionMonitor.cpp
-    EvalPointsDistance.cpp
-    EvalSurfaceDistance.cpp
-    ExtraMonitor.cpp
-    Monitor.cpp
-    initValidation.cpp
+    ${SOFAVALIDATION_SRC}/initValidation.cpp
+    ${SOFAVALIDATION_SRC}/CompareState.cpp
+    ${SOFAVALIDATION_SRC}/CompareTopology.cpp
+    ${SOFAVALIDATION_SRC}/DataController.cpp
+    ${SOFAVALIDATION_SRC}/DataMonitor.cpp
+    ${SOFAVALIDATION_SRC}/DevAngleCollisionMonitor.cpp
+    ${SOFAVALIDATION_SRC}/DevMonitorManager.cpp
+    ${SOFAVALIDATION_SRC}/DevTensionMonitor.cpp
+    ${SOFAVALIDATION_SRC}/EvalPointsDistance.cpp
+    ${SOFAVALIDATION_SRC}/EvalSurfaceDistance.cpp
+    ${SOFAVALIDATION_SRC}/ExtraMonitor.cpp
+    ${SOFAVALIDATION_SRC}/Monitor.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseCollision SofaLoader SofaMeshCollision SofaGeneralLoader)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_VALIDATION")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAVALIDATION")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} "SofaGeneral/${PROJECT_NAME}")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/>")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX _d)
 
-## Add test project
-if(SOFA_BUILD_TESTS)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "${SOFAVALIDATION_SRC}"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+)
+
+## Tests
+cmake_dependent_option(SOFAVALIDATION_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAVALIDATION_BUILD_TESTS)
+    enable_testing()
     add_subdirectory(SofaValidation_test)
 endif()
+

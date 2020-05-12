@@ -30,7 +30,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/simulation/Node.h>
-#include <SofaValidation/Monitor.h>
 #include <sofa/gui/qt/QTransformationWidget.h>
 #if SOFAGUIQT_HAVE_QWT
 #include <sofa/gui/qt/QEnergyStatWidget.h>

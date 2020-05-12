@@ -36,7 +36,6 @@ namespace sofa
 {
 
 using namespace core::objectmodel;
-using namespace sofa::component::misc;
 
 namespace gui
 {

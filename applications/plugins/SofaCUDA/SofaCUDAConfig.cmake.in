@@ -11,6 +11,7 @@ set(SOFACUDA_ARCH @SOFACUDA_ARCH@)
 
 find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)
+find_package(SofaValidation REQUIRED)
 find_package(CUDA REQUIRED)
 
 if(NOT TARGET SofaCUDA)
