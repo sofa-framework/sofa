@@ -172,16 +172,6 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const CapsuleCollisionModel<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     Data<VecReal > & writeRadii();
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;

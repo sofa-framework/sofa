@@ -96,15 +96,6 @@ public:
         else return false;
     }
 
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-    static std::string templateName(const DistanceLMConstraint<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     //Edges involving a distance constraint
     Data< SeqEdges > vecConstraint; ///< List of the edges to constrain
 

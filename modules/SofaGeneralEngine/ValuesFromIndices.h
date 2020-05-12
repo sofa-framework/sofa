@@ -71,12 +71,10 @@ public:
     Data<VecValue> f_out; ///< Output values corresponding to the indices
     Data<std::string> f_outStr; ///< Output values corresponding to the indices, converted as a string
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const ValuesFromIndices<T>* = nullptr)
+    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
+    /// so we need to override that by implementing GetCustomTemplateName() function
+    /// More details on the name customization infrastructure is in NameDecoder.h
+    static const std::string GetCustomTemplateName()
     {
         return sofa::defaulttype::DataTypeName<T>::name();
     }

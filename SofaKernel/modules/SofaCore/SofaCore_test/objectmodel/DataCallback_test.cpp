@@ -166,7 +166,7 @@ TEST_F(DataCallback_test, testDataCallbackExample_1)
     });
 
     a.setValue(5);
-    EXPECT_EQ(results.size(), 2);
+    EXPECT_EQ(results.size(), size_t(2));
     EXPECT_EQ(results[0], 5);
     EXPECT_EQ(results[1], 0);
 

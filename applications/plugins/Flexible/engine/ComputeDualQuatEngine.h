@@ -38,20 +38,6 @@ public:
     // Constructor
     ComputeDualQuatEngine();
 
-
-    // To simplify the template name in the xml file
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-
-    // To simplify the template name in the xml file
-    static std::string templateName(const ComputeDualQuatEngine<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
     // Update the engine
     void doUpdate() override;
 

@@ -68,9 +68,6 @@ public:
     Data< DistTypes > d_nodeWeights; ///< weights of the selected node
     //@}
 
-    virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const ImageShapeFunctionSelectNode<ImageTypes>* = NULL) { return ImageTypes::Name(); }
-
     ImageShapeFunctionSelectNode()
         : d_weights(initData(&d_weights,DistTypes(),"shapeFunctionWeights","shapeFunction weights image"))
         , d_indices(initData(&d_indices,IndTypes(),"shapeFunctionIndices","shapeFunction indices image"))

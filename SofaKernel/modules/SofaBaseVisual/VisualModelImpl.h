@@ -400,14 +400,11 @@ public:
     /// This method should update them
     void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex, int& count) override;
 
-    virtual std::string getTemplateName() const override
+    /// Returns the sofa class name. By default the name of the c++ class is exposed...
+    /// More details on the name customization infrastructure is in NameDecoder.h
+    static std::string GetCustomTemplateName()
     {
-        return Vec3State::getTemplateName();
-    }
-
-    static std::string templateName(const VisualModelImpl* p = nullptr)
-    {
-        return Vec3State::templateName(p);
+        return sofa::helper::NameDecoder::getTemplateName<Vec3State>();
     }
 
     /// Utility method to compute tangent from vertices and texture coordinates.

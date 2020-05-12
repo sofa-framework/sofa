@@ -74,9 +74,6 @@ public:
     Data< SeqTriangles > triangles; ///< Triangles of mesh subset
     Data< SeqQuads > quads; ///< Quads of mesh subset
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MeshSubsetEngine<DataTypes>* = nullptr) { return DataTypes::Name();    }
-
 protected:
     MeshSubsetEngine();
     ~MeshSubsetEngine() override;

@@ -66,9 +66,6 @@ public:
     Data< OutImageTypes > outputImage;
     Data<helper::SVector<helper::SVector<To> > > VoxelData; ///< Data associed to each non null input voxel
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageDataDisplay<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
-
     ImageDataDisplay()    :   Inherited()
       , inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
       , outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))

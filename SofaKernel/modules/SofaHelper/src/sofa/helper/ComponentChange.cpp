@@ -109,6 +109,19 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"VisualManagerPass", Pluginized("v19.06", "SofaOpenglVisual")},
     {"VisualmanagerSecondaryPass", Pluginized("v19.06", "SofaOpenglVisual")},
 
+    // SofaValidation was pluginized in #1302
+    {"CompareState", Pluginized("v20.06", "SofaValidation")},
+    {"CompareTopology", Pluginized("v20.06", "SofaValidation")},
+    {"DataController", Pluginized("v20.06", "SofaValidation")},
+    {"DataMonitor", Pluginized("v20.06", "SofaValidation")},
+    {"DevAngleCollisionMonitor", Pluginized("v20.06", "SofaValidation")},
+    {"DevMonitorManager", Pluginized("v20.06", "SofaValidation")},
+    {"DevTensionMonitor", Pluginized("v20.06", "SofaValidation")},
+    {"EvalPointsDistance", Pluginized("v20.06", "SofaValidation")},
+    {"EvalSurfaceDistance", Pluginized("v20.06", "SofaValidation")},
+    {"ExtraMonitor", Pluginized("v20.06", "SofaValidation")},
+    {"Monitor", Pluginized("v20.06", "SofaValidation")},
+
     // SofaDenseSolver was pluginized in #1299
     {"LULinearSolver", Pluginized("v20.06", "SofaDenseSolver")},
     //{"NewMatCholeskySolver", Pluginized("v20.06", "SofaDenseSolver")},

@@ -70,17 +70,6 @@ public:
     Data<std::string> p_mapGroupModulus; ///< Mapping between groups and modulus
     Data<Real> p_defaultModulus; ///< Default value if the primitive is not in a group
     Data<helper::vector<Real> > p_groupMod; ///< list of young modulus for each group
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const GroupFilterYoungModulus<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP)

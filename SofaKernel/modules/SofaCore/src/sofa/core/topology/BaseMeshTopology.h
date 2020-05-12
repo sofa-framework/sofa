@@ -269,7 +269,11 @@ public:
     /// get information about connexity of the mesh
     /// @{
     /// Checks if the topology has only one connected component. @return Return true if so.
-    virtual bool checkConnexity() {return true;}
+    virtual bool checkConnexity() { return true; }
+
+    /// Checks if the topology is coherent. @return true if so. Should be override by child class.
+    virtual bool checkTopology() const { return true; }
+
     /// Returns the number of connected component.
     virtual size_t getNumberOfConnectedComponent() {return 0;}
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
