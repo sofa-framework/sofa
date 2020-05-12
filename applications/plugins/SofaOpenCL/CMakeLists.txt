@@ -5,7 +5,7 @@ set(SOFAOPENCL_VERSION 0.1)
 
 find_package(OpenCL REQUIRED)
 find_package(SofaGeneral REQUIRED)
-sofa_find_package(SofaSphFluid)
+sofa_find_package(SofaSphFluid QUIET)
 
 set(HEADER_FILES
     CPUSPHFluidForceField.h
