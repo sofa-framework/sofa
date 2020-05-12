@@ -127,6 +127,19 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     //{"NewMatCholeskySolver", Pluginized("v20.06", "SofaDenseSolver")},
     //{"NewMatCGLinearSolver", Pluginized("v20.06", "SofaDenseSolver")},
 
+    // SofaDenseSolver was pluginized in #1344
+    {"DynamicSparseGridGeometryAlgorithms", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"DynamicSparseGridTopologyAlgorithms", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"DynamicSparseGridTopologyContainer", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"DynamicSparseGridTopologyModifier", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"HexahedronCompositeFEMForceFieldAndMass", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"HexahedronCompositeFEMMapping", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"MultilevelHexahedronSetTopologyContainer", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"NonUniformHexahedralFEMForceFieldAndMass", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"NonUniformHexahedronFEMForceFieldAndMass", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"SparseGridMultipleTopology", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"SparseGridRamificationTopology", Pluginized("v20.06", "SofaNonUniformFem")},
+
     /***********************/
     // REMOVED SINCE v20.06
 

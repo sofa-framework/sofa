@@ -162,7 +162,6 @@ macro(sofa_add_application directory app_name)
     sofa_add_generic( ${directory} ${app_name} "Application" ${ARGV2} )
 endmacro()
 
-
 ### External projects management
 # Thanks to http://crascit.com/2015/07/25/cmake-gtest/
 #

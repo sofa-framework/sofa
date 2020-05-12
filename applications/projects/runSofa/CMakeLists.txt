@@ -58,7 +58,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BIN
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/>")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "CONFIG_PLUGIN_FILENAME=${_configPluginFileName}")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "DEFAULT_CONFIG_PLUGIN_FILENAME=${_defaultConfigPluginFileName}")
-target_link_libraries(${PROJECT_NAME} SofaAdvanced SofaMisc)
+target_link_libraries(${PROJECT_NAME} SofaMisc)
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} SofaGuiMain)
 
