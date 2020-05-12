@@ -115,6 +115,7 @@ public:
     template<class T>
     static std::string className(const T* ptr= nullptr)
     {
+        SOFA_UNUSED(ptr);
         return sofa::helper::NameDecoder::getClassName<T>();
     }
 

@@ -100,6 +100,7 @@ public:
     template<class T>
     static std::string className(const T* ptr= nullptr)
     {
+        SOFA_UNUSED(ptr);
         return sofa::helper::NameDecoder::getClassName<T>();
     }
 
@@ -111,6 +112,7 @@ public:
     template<class T>
     static std::string namespaceName(const T* ptr= nullptr)
     {
+        SOFA_UNUSED(ptr);
         return sofa::helper::NameDecoder::getNamespaceName<T>();
     }
 
@@ -122,6 +124,7 @@ public:
     template<class T>
     static std::string templateName(const T* ptr= nullptr)
     {
+        SOFA_UNUSED(ptr);
         return sofa::helper::NameDecoder::getTemplateName<T>();
     }
 
