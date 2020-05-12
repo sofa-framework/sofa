@@ -63,7 +63,7 @@ using customns::CustomBaseObjectT;
 class Base_test: public BaseSimulationTest
 {
 public:
-    virtual ~Base_test(){}
+    virtual ~Base_test(){}    
     void testComponentState()
     {
         EXPECT_MSG_NOEMIT(Error, Warning) ;
@@ -129,5 +129,33 @@ TEST_F(Base_test , testGetClassName)
     EXPECT_EQ(b->getClassName(), "MyFakeClassName");
     EXPECT_EQ(b->getTypeName(), "CustomBaseObjectTStdRigidTypes<3,double>>");
     EXPECT_EQ(b->getTemplateName(), Rigid3Types::Name());
+}
+
+TEST_F(Base_test , testFindDataFromPath )
+{
+    CustomBaseObject o;
+    EXPECT_NE(o.findDataFromPath(".name"), nullptr);
+}
+
+TEST_F(Base_test , testFindBaseFromPath)
+{
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    importPlugin("SofaComponentAll") ;
+    std::stringstream scene ;
+    scene << "<?xml version='1.0'?>"
+             "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+             "   <Node name='child1'>                                                    \n"
+             "      <MechanicalObject />                                                 \n"
+             "      <Node name='child2'>                                                 \n"
+             "      </Node>                                                              \n"
+             "   </Node>                                                                 \n"
+             "</Node>                                                                    \n" ;
+
+    SceneInstance c("xml", scene.str()) ;
+    c.initScene() ;
+
+    Node* root = c.root.get() ;
+    ASSERT_NE(root, nullptr) ;
+    //EXPECT_EQ(root[""])
 }
 

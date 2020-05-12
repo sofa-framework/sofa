@@ -102,14 +102,12 @@ namespace core
         /// for the DDGNode and for all the tracked Data
         virtual void cleanDirty(const core::ExecParams* params = nullptr);
 
-
         /// utility function to ensure all inputs are up-to-date
         /// can be useful for particulary complex DDGNode
         /// with a lot input/output imbricated access
         void updateAllInputsIfDirty();
 
     protected:
-
         /// @name Tracking Data mechanism
         /// each Data added to the DataTracker
         /// is tracked to be able to check if its value changed

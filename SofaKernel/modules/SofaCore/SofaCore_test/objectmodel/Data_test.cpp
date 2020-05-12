@@ -20,9 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/vectorData.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/types/RGBAColor.h>
+#include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
 
@@ -34,17 +33,37 @@ using namespace core::objectmodel;
 class Data_test : public BaseTest
 {
 public:
-    Data<int> dataInt;
+    Data<int> dataInt1;
+    Data<int> dataInt2;
     Data<float> dataFloat;
+    Data<double> dataDouble;
     Data<bool> dataBool;
     Data<sofa::defaulttype::Vec3> dataVec3;
     Data<sofa::helper::vector<sofa::defaulttype::Vec3>> dataVectorVec3;
     Data<sofa::helper::vector<sofa::helper::types::RGBAColor>> dataVectorColor;
+
+    void SetUp() override
+    {
+        dataInt1.setName("dataInt1");
+        dataInt2.setName("dataInt2");
+    }
+
+    void TearDown() override
+    {
+        dataInt1.unSetParent();
+        dataInt2.unSetParent();
+    }
 };
+
+TEST_F(Data_test, getValueTypeInfoEquality)
+{
+    EXPECT_EQ(dataInt1.getValueTypeInfo(), dataInt2.getValueTypeInfo());
+    EXPECT_EQ(dataFloat.getValueTypeInfo(), Data<float>::GetValueTypeInfo());
+}
 
 TEST_F(Data_test, getValueTypeString)
 {
-    EXPECT_EQ(dataInt.getValueTypeString(), "int");
+    EXPECT_EQ(dataInt1.getValueTypeString(), "int");
     EXPECT_EQ(dataFloat.getValueTypeString(), "float");
     EXPECT_EQ(dataBool.getValueTypeString(), "bool");
     EXPECT_EQ(dataVec3.getValueTypeString(), "Vec3d");
@@ -54,7 +73,7 @@ TEST_F(Data_test, getValueTypeString)
 
 TEST_F(Data_test, getNameWithValueTypeInfo)
 {
-    EXPECT_EQ(dataInt.getValueTypeInfo()->name(), "int");
+    EXPECT_EQ(dataInt1.getValueTypeInfo()->name(), "int");
     EXPECT_EQ(dataFloat.getValueTypeInfo()->name(), "float");
     EXPECT_EQ(dataBool.getValueTypeInfo()->name(), "bool");
     EXPECT_EQ(dataVec3.getValueTypeInfo()->name(), "Vec3d");
@@ -62,120 +81,67 @@ TEST_F(Data_test, getNameWithValueTypeInfo)
     EXPECT_EQ(dataVectorColor.getValueTypeInfo()->name(), "vector<RGBAColor>");
 }
 
-/**  Test suite for data link.
-Create two datas and a link between them.
-Set the value of data1 and check if the boolean is dirty of data2 is true and that the value of data2 is right.
-  */
-struct DataLink_test: public BaseTest
+TEST_F(Data_test, setValue)
 {
-    Data<int> data1;
-    Data<int> data2;
-
-    /// Create a link between the two datas
-    void SetUp() override
-    {
-        // Link
-        data2.setParent(&data1);
-    }
-
-    // Test if the output is updated only if necessary
-    void testDataLink()
-    {
-        data1.setValue(1);
-        ASSERT_FALSE(data1.isDirty());
-        ASSERT_TRUE(data2.isDirty());
-        ASSERT_TRUE(data2.getValue()!=0);
-
-    }
-
-};
-
-
-/////////////////////////////////////
-
-
-TEST_F(DataLink_test , testDataLink )
-{
-    this->testDataLink();
+    dataInt1.setValue(1);
+    EXPECT_EQ(dataInt1.getValue(), 1);
+    dataInt1.setValue(2);
+    EXPECT_EQ(dataInt1.getValue(), 2);
 }
 
-/** Test suite for vectorData
- *
- * @author Thomas Lemaire @date 2014
- */
-struct vectorData_test: public ::testing::Test
+TEST_F(Data_test, isDirty)
 {
-    Data<int> data1;
-    helper::vectorData<int> vDataInt;
-
-    vectorData_test()
-        : vDataInt(nullptr,"","")
-    { }
-
-    void SetUp() override
-    {}
-
-    void test_resize()
-    {
-        vDataInt.resize(3);
-        ASSERT_EQ(vDataInt.size(),3u);
-        vDataInt.resize(10);
-        ASSERT_EQ(vDataInt.size(),10u);
-        vDataInt.resize(8);
-        ASSERT_EQ(vDataInt.size(),8u);
-    }
-
-    void test_link()
-    {
-        vDataInt.resize(5);
-        vDataInt[3]->setParent(&data1);
-        data1.setValue(1);
-        ASSERT_EQ(vDataInt[3]->getValue(),1);
-    }
-
-};
-
-TEST_F(vectorData_test , test_resize )
-{
-    this->test_resize();
+    EXPECT_FALSE(dataInt1.isDirty());
+    dataInt1.setValue(1);
+    EXPECT_FALSE(dataInt1.isDirty());
 }
-TEST_F(vectorData_test , test_link )
+
+TEST_F(Data_test, getCounter)
 {
-    this->test_link();
+    auto c = dataInt1.getCounter();
+    dataInt1.setValue(1);
+    EXPECT_EQ(c+1, dataInt1.getCounter());
+}
+
+TEST_F(Data_test, setParent)
+{
+    ASSERT_FALSE(dataInt1.hasParent());
+    ASSERT_FALSE(dataInt2.hasParent());
+    dataInt2.setParent(&dataInt1);
+    ASSERT_FALSE(dataInt1.hasParent());
+    ASSERT_TRUE(dataInt2.hasParent());
+}
+
+/// This test is checking if a parent data has its dirty flag correctly setted-up
+/// when it is setted.
+TEST_F(Data_test, setParentWithInit)
+{
+    dataInt1.setValue(1);
+    dataInt2.setValue(0);
+    dataInt2.setParent(&dataInt1);
+    ASSERT_FALSE(dataInt1.isDirty());
+    ASSERT_TRUE(dataInt2.isDirty());
+
+    ASSERT_EQ(dataInt1.getValue(), 1);
+    ASSERT_EQ(dataInt2.getValue(), 1);
+
+    ASSERT_FALSE(dataInt1.isDirty());
+    ASSERT_FALSE(dataInt2.isDirty());
 }
 
 
-/////////////////////////////////
-
-
-/** Test suite for DataFileNameVector
- *
- * @author M Nesme @date 2016
- */
-struct DataFileNameVector_test: public ::testing::Test
+TEST_F(Data_test, setValueWithParent)
 {
-    DataFileNameVector dataFileNameVector;
+    dataInt1.setValue(1);
+    dataInt2.setValue(0);
+    dataInt2.setParent(&dataInt1);
 
-    DataFileNameVector_test()
-        : dataFileNameVector()
-    { }
-
-    void SetUp() override
-    {}
-
-};
-
-TEST_F(DataFileNameVector_test , setValueAsString_spaces )
-{
-    dataFileNameVector.setValueAsString( "['"+std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
-    ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
+    dataInt2.setValue(-1);
+    ASSERT_FALSE(dataInt2.hasParent());
+    ASSERT_EQ(dataInt2.getValue(),-1);
+    dataInt1.setValue(1);
+    ASSERT_FALSE(dataInt2.hasParent());
+    ASSERT_EQ(dataInt2.getValue(),-1);
 }
 
-TEST_F(DataFileNameVector_test , read_spaces )
-{
-    dataFileNameVector.read( "['" + std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
-    ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
-}
-
-
-}// namespace sofa
+} /// namespace sofa

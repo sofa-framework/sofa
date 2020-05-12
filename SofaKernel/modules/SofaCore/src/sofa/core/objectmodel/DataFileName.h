@@ -118,11 +118,11 @@ public:
         return m_extension;
     }
 
-    virtual void update()
+    /*virtual void update()
     {
         this->Inherit::update();
         this->updatePath();
-    }
+    }*/
 
 protected:
     void updatePath();
@@ -144,12 +144,12 @@ public:
     typedef sofa::core::objectmodel::Data<sofa::helper::SVector<std::string> > Inherit;
 
     DataFileNameVector( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
-        : Inherit(helpMsg, isDisplayed, isReadOnly)
+        : Inherit(sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly)
     {
     }
 
     DataFileNameVector( const sofa::helper::vector<std::string>& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
-        : Inherit(value, helpMsg, isDisplayed, isReadOnly)
+        : Inherit(value, sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly)
     {
         updatePath();
     }
@@ -228,11 +228,11 @@ public:
         return fullpath[i];
     }
 
-    virtual void update()
+    /*virtual void update()
     {
         this->Inherit::update();
         this->updatePath();
-    }
+    }*/
 
 protected:
     void updatePath();

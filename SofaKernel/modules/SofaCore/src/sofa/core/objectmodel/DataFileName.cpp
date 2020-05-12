@@ -49,8 +49,8 @@ bool DataFileName::read(const std::string& s )
 void DataFileName::updatePath()
 {
     DataFileName* parentDataFileName = nullptr;
-    if (parentData)
-        parentDataFileName = dynamic_cast<DataFileName*>(parentData.get());
+    if (m_parentData.get())
+        parentDataFileName = dynamic_cast<DataFileName*>(m_parentData.get());
 
     if (parentDataFileName)
     {
@@ -92,9 +92,9 @@ void DataFileName::updatePath()
 void DataFileNameVector::updatePath()
 {
     DataFileNameVector* parentDataFileNameVector = nullptr;
-    if (parentData)
+    if (m_parentData.get())
     {
-        parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.get());
+        parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(m_parentData.get());
     }
     fullpath = m_value.getValue();
     if (!fullpath.empty())

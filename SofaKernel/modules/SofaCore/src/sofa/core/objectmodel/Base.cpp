@@ -353,6 +353,32 @@ std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
     return result;
 }
 
+bool parseString(const std::string& path, std::string& pathStr, std::string& dataStr)
+{
+    return false;
+}
+
+BaseData* Base::findDataFromPath(const std::string& path)
+{
+    std::string pathStr, dataStr;
+    if (!parseString(path, pathStr, dataStr))
+        return nullptr;
+
+    /// If there is no path prefix then we get the data in the current Base object.
+    if (pathStr.empty() || pathStr == std::string("[]"))
+        return findData(dataStr);
+
+    Base* obj = findBaseFromPath(pathStr);
+    if (!obj)
+        return nullptr;
+    return obj->findData(dataStr);
+}
+
+Base* Base::findBaseFromPath(const std::string& path)
+{
+    return nullptr;
+}
+
 bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)
 {
     std::string pathStr, dataStr;
@@ -408,26 +434,27 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
         // test if data is a link and can be linked
         if (value.length() > 0 && value[0] == '@' && dataVec[d]->canBeLinked())
         {
-            if (!dataVec[d]->setParent(value))
+            BaseData* parent = findDataFromPath(value);
+            if (!dataVec[d]->setParent(parent))
             {
-                BaseData* data = nullptr;
-                BaseLink* bl = nullptr;
-                dataVec[d]->findDataLinkDest(data, value, bl);
-                if (data != nullptr && dynamic_cast<EmptyData*>(data) != nullptr)
-                {
-                    Base* owner = data->getOwner();
-                    DDGNode* o = dynamic_cast<DDGNode*>(owner);
-                    o->delOutput(data);
-                    owner->removeData(data);
-                    BaseData* newBD = dataVec[d]->getNewInstance();
-                    newBD->setName(data->getName());
-                    owner->addData(newBD);
-                    newBD->setGroup("Outputs");
-                    o->addOutput(newBD);
-                    dataVec[d]->setParent(newBD);
-                    ok = true;
-                    continue;
-                }
+//                BaseData* data = nullptr;
+//                BaseLink* bl = nullptr;
+//                dataVec[d]->findDataLinkDest(data, value, bl);
+//                if (data != nullptr && dynamic_cast<EmptyData*>(data) != nullptr)
+//                {
+//                    Base* owner = data->getOwner();
+//                    DDGNode* o = dynamic_cast<DDGNode*>(owner);
+//                    o->delOutput(data);
+//                    owner->removeData(data);
+//                    BaseData* newBD = dataVec[d]->getNewInstance();
+//                    newBD->setName(data->getName());
+//                    owner->addData(newBD);
+//                    newBD->setGroup("Outputs");
+//                    o->addOutput(newBD);
+//                    dataVec[d]->setParent(newBD);
+//                    ok = true;
+//                    continue;
+//                }
                 msg_warning()<<"Could not setup Data link between "<< value << " and " << attribute << "." ;
                 ok = false;
                 continue;

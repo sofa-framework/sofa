@@ -91,11 +91,6 @@ void DDGNode::cleanDirtyOutputsOfInputs()
 
 void DDGNode::addInput(DDGNode* n)
 {
-    if(std::find(inputs.begin(), inputs.end(), n) == inputs.end())
-    {
-        assert(false && "trying to add a DDGNode that is already in the input set.");
-        return;
-    }
     doAddInput(n);
     n->doAddOutput(this);
     setDirtyValue();
@@ -103,21 +98,12 @@ void DDGNode::addInput(DDGNode* n)
 
 void DDGNode::delInput(DDGNode* n)
 {
-    /// It is not allowed to remove an entry that is not in the set.
-    assert(std::find(inputs.begin(), inputs.end(), n) != inputs.end());
-
     doDelInput(n);
     n->doDelOutput(this);
 }
 
 void DDGNode::addOutput(DDGNode* n)
 {
-    if(std::find(outputs.begin(), outputs.end(), n) != outputs.end())
-    {
-        assert(false && "trying to add a DDGNode that is already in the output set.");
-        return;
-    }
-
     doAddOutput(n);
     n->doAddInput(this);
     n->setDirtyValue();
@@ -125,9 +111,6 @@ void DDGNode::addOutput(DDGNode* n)
 
 void DDGNode::delOutput(DDGNode* n)
 {
-    /// It is not allowed to remove an entry that is not in the set.
-    assert(std::find(outputs.begin(), outputs.end(), n) != outputs.end());
-
     doDelOutput(n);
     n->doDelInput(this);
 }
@@ -157,7 +140,10 @@ void DDGNode::doAddInput(DDGNode* n)
 
 void DDGNode::doDelInput(DDGNode* n)
 {
-    inputs.erase(std::remove(inputs.begin(), inputs.end(), n));
+    auto it = std::find(inputs.begin(), inputs.end(), n);
+    if(it == inputs.end())
+        return;
+    inputs.erase(it);
 }
 
 void DDGNode::doAddOutput(DDGNode* n)
@@ -167,8 +153,19 @@ void DDGNode::doAddOutput(DDGNode* n)
 
 void DDGNode::doDelOutput(DDGNode* n)
 {
-    outputs.erase(std::remove(outputs.begin(), outputs.end(), n));
+    auto it = std::find(outputs.begin(), outputs.end(), n);
+    if(it == outputs.end())
+        return;
+    outputs.erase(it);
 }
 
+void DDGNode::updateDirtyInputs()
+{
+    for(auto& it : inputs)
+    {
+        if(it->isDirty())
+            it->update();
+    }
+}
 
 } /// namespace sofa::core::objectmodel

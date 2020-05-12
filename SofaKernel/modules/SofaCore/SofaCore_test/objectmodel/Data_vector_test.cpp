@@ -19,50 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/vectorData.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
-#include <PluginExample/config.h>
+namespace sofa {
 
-#include <sofa/gui/qt/DataWidget.h>
+using namespace core::objectmodel;
 
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QSlider>
-#include <QString>
-
-
-namespace sofa::gui::qt
+/** Test suite for vectorData
+ *
+ * @author Thomas Lemaire @date 2014
+ */
+struct vectorData_test: public ::testing::Test
 {
+    Data<int> data1;
+    helper::vectorData<int> vDataInt;
 
-/**
- * \brief Customization of the representation of Data<unsigned> types
- * in the gui. In the .cpp file this widget is registered to represent
- * myData from MyBehaviorModel in the gui.
- **/
-class SOFA_PLUGINEXAMPLE_API MyDataWidgetUnsigned : public TDataWidget<unsigned>
-{
-    Q_OBJECT
-public :
-    // The class constructor takes a Data<unsigned> since it creates
-    // a widget for a that particular data type.
-    MyDataWidgetUnsigned(QWidget* parent, const char* name, core::objectmodel::Data<unsigned> *data):
-        TDataWidget<unsigned>(parent, name,data) {};
+    vectorData_test()
+        : vDataInt(nullptr,"","")
+    { }
 
-    // In this method we  create the widgets and perform the signal / slots
-    // connections.
-    virtual bool createWidgets();
-    virtual void setDataReadOnly(bool readOnly);
-protected slots:
-    void change();
-protected:
-    ///Implements how update the widgets knowing the data value.
-    virtual void readFromData();
-    ///Implements how to update the data, knowing the widget value.
-    virtual void writeToData();
-    QSlider *m_qslider;
-    QLabel *m_label1;
-    QLabel *m_label2;
+    void SetUp() override
+    {}
+
+    void test_resize()
+    {
+        vDataInt.resize(3);
+        ASSERT_EQ(vDataInt.size(),3u);
+        vDataInt.resize(10);
+        ASSERT_EQ(vDataInt.size(),10u);
+        vDataInt.resize(8);
+        ASSERT_EQ(vDataInt.size(),8u);
+    }
+
+    void test_link()
+    {
+        vDataInt.resize(5);
+        vDataInt[3]->setParent(&data1);
+        data1.setValue(1);
+        ASSERT_EQ(vDataInt[3]->getValue(),1);
+    }
+
 };
 
-
-} // namespace sofa::gui::qt
+TEST_F(vectorData_test , test_resize )
+{
+    this->test_resize();
+}
+TEST_F(vectorData_test , test_link )
+{
+    this->test_link();
+}
+}// namespace sofa

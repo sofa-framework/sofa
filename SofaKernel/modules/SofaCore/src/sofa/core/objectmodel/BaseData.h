@@ -23,10 +23,11 @@
 #define SOFA_CORE_OBJECTMODEL_BASEDATA_H
 
 #include <sofa/core/core.h>
+#include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/DDGNode.h>
-#include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/Link.h>
-
+#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/core/objectmodel/DataLink.h>
 namespace sofa
 {
 
@@ -43,7 +44,7 @@ class BaseData;
  *  \brief Abstract base class for Data.
  *
  */
-class SOFA_CORE_API BaseData : public DDGNode
+class SOFA_CORE_API BaseData : public sofa::core::objectmodel::DDGNode
 {
 public:
     /// Flags that describe some properties of a Data, and that can be OR'd together.
@@ -55,7 +56,7 @@ public:
         FLAG_DISPLAYED  = 1 << 1, ///< The Data will be displayed in GUIs.
         FLAG_PERSISTENT = 1 << 2, ///< The Data contains persistent information.
         FLAG_AUTOLINK   = 1 << 3, ///< The Data should be autolinked when using the src="..." syntax.
-        FLAG_REQUIRED = 1 << 4, ///< True if the Data has to be set for the owner component to be valid (a warning is displayed at init otherwise)
+        FLAG_REQUIRED = 1 << 4, ///< True if the Data has to be set for the owner component to be valid (a warning is displayed at init otherwise) 
         FLAG_ANIMATION_INSTANCE = 1 << 10,
         FLAG_VISUAL_INSTANCE = 1 << 11,
         FLAG_HAPTICS_INSTANCE = 1 << 12,
@@ -66,29 +67,16 @@ public:
     /// Default value used for flags.
     enum { FLAG_DEFAULT = FLAG_DISPLAYED | FLAG_PERSISTENT | FLAG_AUTOLINK };
 
-    /// @name Class reflection system
-    /// @{
-    typedef TClass<BaseData> MyClass;
-    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
-    const BaseClass* getClass() const
-    { return GetClass(); }    
-    template<class T>
-    static void dynamicCast(T*& ptr, Base* /*b*/)
-    {
-        ptr = nullptr; // BaseData does not derive from Base
-    }/// @}
-
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
     class BaseInitData
     {
     public:
-        BaseInitData() : data(nullptr), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(nullptr), name(""), ownerClass(""), group(""), widget("") {}
+        BaseInitData() : data(nullptr), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(nullptr), name(""), group(""), widget("") {}
         BaseData* data;
         std::string helpMsg;
         DataFlags dataFlags;
         Base* owner;
         std::string name;
-        std::string ownerClass;
         std::string group;
         std::string widget;
     };
@@ -104,10 +92,6 @@ public:
      */
     BaseData(const std::string& helpMsg, DataFlags flags = FLAG_DEFAULT);
 
-    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped.
-    //[[deprecated("Replaced with one with std::string instead of char* version")]]
-    BaseData(const char* helpMsg, DataFlags flags = FLAG_DEFAULT);
-
     /** Constructor.
      *  \param helpMsg A help message that describes this %Data.
      *  \param isDisplayed Whether this %Data should be displayed in GUIs.
@@ -115,12 +99,10 @@ public:
      */
     BaseData(const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false);
 
-    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped.
-    //[[deprecated("Replaced with one with std::string instead of char* version")]]
-    BaseData(const char* helpMsg, bool isDisplayed=true, bool isReadOnly=false);
-
     /// Destructor.
-    ~BaseData() override;
+    virtual ~BaseData();
+
+    void update() override ;
 
     /// Assign a value to this %Data from a string representation.
     /// \return true on success.
@@ -154,6 +136,7 @@ public:
     /// returned by getValueTypeInfo().
     /// \warning You must call endEditVoidPtr() once you're done modifying the value.
     virtual void* beginEditVoidPtr() = 0;
+    virtual void* beginWriteOnlyVoidPtr() = 0;
 
     /// Must be called after beginEditVoidPtr(), after you are finished modifying this %Data.
     virtual void endEditVoidPtr() = 0;
@@ -170,12 +153,6 @@ public:
     /// Set the help message.
     void setHelp(const std::string& val) { help = val; }
 
-    /// Get owner class
-    const std::string& getOwnerClass() const { return ownerClass; }
-
-    /// Set owner class
-    void setOwnerClass(const char* val) { ownerClass = val; }
-
     /// Get group
     const std::string& getGroup() const { return group; }
 
@@ -186,10 +163,7 @@ public:
     const std::string& getWidget() const { return widget; }
 
     /// Set widget
-    void setWidget(const char* val) { widget = val; }
-
-    /// True if the counter of modification gives valid information.
-    virtual bool isCounterValid() const = 0;
+    void setWidget(const std::string& val) { widget = val; }
 
     /// @name Flags
     /// @{
@@ -224,7 +198,8 @@ public:
     /// @}
 
     /// If we use the Data as a link and not as value directly
-    std::string getLinkPath() const { return parentBaseData.getPath(); }
+    std::string getLinkPath() const { return m_parentData.get()->getLinkPath(); }
+
     /// Return whether this %Data can be used as a linkPath.
     ///
     /// True by default.
@@ -233,17 +208,13 @@ public:
 
     /// Return the Base component owning this %Data.
     Base* getOwner() const { return m_owner; }
+
     /// Set the owner of this %Data.
     void setOwner(Base* o) { m_owner=o; }
 
-    /// This method is needed by DDGNode
-    BaseData* getData() const
-    {
-        return const_cast<BaseData*>(this);
-    }
-
     /// Return the name of this %Data within the Base component
     const std::string& getName() const { return m_name; }
+
     /// Set the name of this %Data.
     ///
     /// This method should not be called directly, the %Data registration methods in Base should be used instead.
@@ -267,6 +238,7 @@ public:
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    [[deprecated("Aspects have been removed. If the feature was of interest for you, please contact sofa-framework")]]
     void forceSet(const core::ExecParams*) { forceSet(); }
     void forceSet() { m_isSet = true; }
 
@@ -279,62 +251,28 @@ public:
     /// @}
 
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.
-    bool setParent(BaseData* parent, const std::string& path = std::string());
-    bool setParent(const std::string& path);
+    //[[deprecated("2020-03-20: BaseData cleaning")]]
+    //bool setParent(BaseData* parent, const std::string& path);
+    bool setParent(BaseData* parent);
+    //bool setParent(const std::string& path);
 
     /// Check if a given Data can be linked as a parent of this data
-    virtual bool validParent(BaseData* parent);
+    [[deprecated("2020-03-20: BaseData cleaning")]]
+    virtual bool validParent(BaseData* parent){ return canBeParent(parent); }
+    virtual bool canBeParent(BaseData* parent);
 
-    BaseData* getParent() const { return parentBaseData.get(); }
-
-    /// Update the value of this %Data
-    void update() override;
-
-    /// @name Links management
-    /// @{
-
-    typedef std::vector<BaseLink*> VecLink;
-    /// Accessor to the vector containing all the fields of this object
-    const VecLink& getLinks() const { return m_vecLink; }
-
-    virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
-
-    template<class DataT>
-    bool findDataLinkDest(DataT*& ptr, const std::string& path, const BaseLink* link)
-    {
-        BaseData* base = nullptr;
-        if (!findDataLinkDest(base, path, link)) return false;
-        ptr = dynamic_cast<DataT*>(base);
-        return (ptr != nullptr);
-    }
-
-    /// Add a link.
-    void addLink(BaseLink* l);
+    void unSetParent(){ m_parentData.unSet(); }
+    BaseData* getParent() const { return m_parentData.get(); }
+    bool hasParent(){ return m_parentData.isSet(); }
 
 protected:
-
-    BaseLink::InitLink<BaseData>
-    initLink(const std::string& name, const std::string& help)
-    {
-        return BaseLink::InitLink<BaseData>(this, name, help);
-    }
-
-    /// List of links
-    VecLink m_vecLink;
-
-    /// @}
-
-    virtual void doSetParent(BaseData* parent);
-
-    void doDelInput(DDGNode* n) override;
+    void doSetParent(BaseData* parent);
 
     /// Update this %Data from the value of its parent
     virtual bool updateFromParentValue(const BaseData* parent);
 
     /// Help message
     std::string help {""};
-    /// Owner class
-    std::string ownerClass {""} ;
     /// group
     std::string group {""};
     /// widget
@@ -350,23 +288,40 @@ protected:
     /// Data name within the Base component
     std::string m_name;
 
-    /// Parent Data
-    SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentBaseData;
+    DataLink m_parentData;
 
-    /// Helper method to decode the type name to a more readable form if possible
-    static std::string decodeTypeName(const std::type_info& t);
+private:
+    BaseData();
 
 public:
 
+    //////////////////////// DEPRECATED STUFF //////////////////////////////////////////////////////
+    /// Helper method to decode the type name to a more readable form if possible
+    [[deprecated("2020-03-25: Decode typename have been removed, please contact sofa-framework")]]
+    static std::string decodeTypeName(const std::type_info&){ return "deprecated function"; }
+
     /// Helper method to get the type name of type T
     template<class T>
+    [[deprecated("2020-03-25: Decode typename have been removed, please contact sofa-framework")]]
     static std::string typeName(const T* = nullptr)
     {
         if (defaulttype::DataTypeInfo<T>::ValidInfo)
             return defaulttype::DataTypeName<T>::name();
         else
-            return decodeTypeName(typeid(T));
+            return "deprecated function";
     }
+
+    [[deprecated("2020-03-25: This methods has been removed as there is an alternative to it")]]
+    const std::string& getOwnerClass() const ;
+
+    [[deprecated("2020-03-25: This methods has been removed as it is not needed anymore.")]]
+    void setOwnerClass(const char*) {}
+
+    [[deprecated("2019-10-08: Replaced with one with std::string instead of char* version")]]
+    BaseData(const char* helpMsg, DataFlags flags = FLAG_DEFAULT);
+
+    [[deprecated("2019-10-08: Replaced with one with std::string instead of char* version")]]
+    BaseData(const char* helpMsg, bool isDisplayed=true, bool isReadOnly=false);
 };
 
 template<class Type>
@@ -389,7 +344,8 @@ public:
  *  as verifications and changes notifications can be handled in the accessor's
  *  constructor and destructor instead of at each item access.
  */
-class WriteAccessWithRawPtr
+class [[deprecated("2020-03-25: Replaced with Read/Write accessor that alreay have the feature")]]
+WriteAccessWithRawPtr
 {
 public:
     WriteAccessWithRawPtr(BaseData* data)

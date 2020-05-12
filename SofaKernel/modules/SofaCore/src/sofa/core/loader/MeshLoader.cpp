@@ -81,7 +81,6 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_rotation.setAutoLink(false);
     d_scale.setAutoLink(false);
     d_transformation.setAutoLink(false);
-    d_transformation.setDirtyValue();
 
     d_positions.setPersistent(false);
     d_polylines.setPersistent(false);

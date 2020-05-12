@@ -19,50 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <PluginExample/config.h>
-
-#include <sofa/gui/qt/DataWidget.h>
-
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QSlider>
-#include <QString>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 
-namespace sofa::gui::qt
+namespace sofa {
+
+using namespace core::objectmodel;
+
+/** Test suite for DataFileNameVector
+ *
+ * @author M Nesme @date 2016
+ */
+struct DataFileNameVector_test: public ::testing::Test
 {
+    DataFileNameVector dataFileNameVector;
 
-/**
- * \brief Customization of the representation of Data<unsigned> types
- * in the gui. In the .cpp file this widget is registered to represent
- * myData from MyBehaviorModel in the gui.
- **/
-class SOFA_PLUGINEXAMPLE_API MyDataWidgetUnsigned : public TDataWidget<unsigned>
-{
-    Q_OBJECT
-public :
-    // The class constructor takes a Data<unsigned> since it creates
-    // a widget for a that particular data type.
-    MyDataWidgetUnsigned(QWidget* parent, const char* name, core::objectmodel::Data<unsigned> *data):
-        TDataWidget<unsigned>(parent, name,data) {};
+    DataFileNameVector_test()
+        : dataFileNameVector()
+    { }
 
-    // In this method we  create the widgets and perform the signal / slots
-    // connections.
-    virtual bool createWidgets();
-    virtual void setDataReadOnly(bool readOnly);
-protected slots:
-    void change();
-protected:
-    ///Implements how update the widgets knowing the data value.
-    virtual void readFromData();
-    ///Implements how to update the data, knowing the widget value.
-    virtual void writeToData();
-    QSlider *m_qslider;
-    QLabel *m_label1;
-    QLabel *m_label2;
 };
 
+TEST_F(DataFileNameVector_test , setValueAsString_spaces )
+{
+    dataFileNameVector.setValueAsString( "['"+std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
+}
 
-} // namespace sofa::gui::qt
+TEST_F(DataFileNameVector_test , read_spaces )
+{
+    dataFileNameVector.read( "['" + std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
+}
+
+
+}// namespace sofa

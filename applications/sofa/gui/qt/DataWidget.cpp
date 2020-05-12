@@ -245,7 +245,8 @@ void QDisplayDataInfoWidget::linkModification()
 }
 void QDisplayDataInfoWidget::linkEdited()
 {
-    data->setParent(linkpath_edit->text().toStdString() );
+    BaseData* tmp = data->getOwner()->findDataFromPath(linkpath_edit->text().toStdString());
+    data->setParent( tmp );
 }
 
 void QDisplayDataInfoWidget::formatHelperString(const std::string& helper, std::string& final_text)

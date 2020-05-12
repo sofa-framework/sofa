@@ -949,7 +949,7 @@ class RadioDataWidget : public TDataWidget<sofa::helper::OptionsGroup >
     Q_OBJECT
 public :
 
-    ///The class constructor takes a TData<RadioTrick> since it creates
+    ///The class constructor takes a Data<RadioTrick> since it creates
     ///a widget for a that particular data type.
     RadioDataWidget(QWidget* parent, const char* name,
             core::objectmodel::Data<sofa::helper::OptionsGroup >* m_data)

@@ -19,58 +19,95 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_OBJECTMODEL_DATA_CPP
+#pragma once
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/Data.inl>
 
-namespace sofa
+namespace sofa::core::objectmodel
 {
 
-namespace core
+/// General case for printing default value
+template<class T>
+inline
+void Data<T>::printValue( std::ostream& out) const
 {
+    out << getValue() << " ";
+}
 
-namespace objectmodel
+/// General case for printing default value
+template<class T>
+inline
+std::string Data<T>::getValueString() const
 {
+    std::ostringstream out;
+    out << getValue();
+    return out.str();
+}
 
-/// Specialization for reading strings
-template<>
-bool SOFA_CORE_API Data<std::string>::read( const std::string& str )
+template<class T>
+inline
+std::string Data<T>::getValueTypeString() const
 {
-    setValue(str);
+    return getValueTypeInfo()->name();
+}
+
+template <class T>
+bool Data<T>::read(const std::string& s)
+{
+    if (s.empty())
+    {
+        bool resized = getValueTypeInfo()->setSize( beginEdit(), 0 );
+        endEdit();
+        return resized;
+    }
+    std::istringstream istr( s.c_str() );
+    istr >> *beginEdit();
+    endEdit();
+    if( istr.fail() )
+    {
+        return false;
+    }
     return true;
 }
 
-/// Specialization for reading booleans
-template<>
-bool SOFA_CORE_API Data<bool>::read( const std::string& str )
+template <class T>
+bool Data<T>::copyValue(const Data<T>* parent)
 {
-    if (str.empty())
-        return false;
-    bool val;
-    if (str[0] == 'T' || str[0] == 't')
-        val = true;
-    else if (str[0] == 'F' || str[0] == 'f')
-        val = false;
-    else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
-        val = (atoi(str.c_str()) != 0);
-    else
-        return false;
-    setValue(val);
+    setValue(parent->getValue());
     return true;
 }
 
-template class SOFA_CORE_API Data< std::string >;
-template class SOFA_CORE_API Data< sofa::helper::vector<std::string> >;
-template class SOFA_CORE_API Data< bool >;
-template class SOFA_CORE_API Data< double >;
-template class SOFA_CORE_API Data< int >;
-template class SOFA_CORE_API Data< unsigned int >;
+template <class T>
+bool Data<T>::copyValue(const BaseData* parent)
+{
+    const Data<T>* p = dynamic_cast<const Data<T>*>(parent);
+    if (p)
+    {
+        setValue(p->getValue());
+        return true;
+    }
+    return BaseData::copyValue(parent);
+}
 
-} // objectmodel
+template <class T>
+bool Data<T>::canBeParent(BaseData* parent)
+{
+    if (dynamic_cast<Data<T>*>(parent))
+        return true;
+    return BaseData::canBeParent(parent);
+}
 
-} // core
 
-} // sofa
+//template <class T>
+//bool Data<T>::updateFromParentValue(const BaseData* parent)
+//{
+//    if (parent == parentData.get())
+//    {
+//        copyValue(parentData.get());
+//        return true;
+//    }
+//    else
+//        return BaseData::updateFromParentValue(parent);
+//}
 
-
+} /// namespace sofa::core::objectmodel

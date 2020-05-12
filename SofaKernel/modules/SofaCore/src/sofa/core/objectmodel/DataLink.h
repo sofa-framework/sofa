@@ -21,48 +21,43 @@
 ******************************************************************************/
 #pragma once
 
-#include <PluginExample/config.h>
+#include <cassert>
+#include <sofa/core/core.h>
 
-#include <sofa/gui/qt/DataWidget.h>
-
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QSlider>
-#include <QString>
-
-
-namespace sofa::gui::qt
+namespace sofa::core::objectmodel
 {
+
+class BaseData;
+class DDGNode;
 
 /**
- * \brief Customization of the representation of Data<unsigned> types
- * in the gui. In the .cpp file this widget is registered to represent
- * myData from MyBehaviorModel in the gui.
- **/
-class SOFA_PLUGINEXAMPLE_API MyDataWidgetUnsigned : public TDataWidget<unsigned>
+ *  \brief Store a link between Data.
+ *  If this happens an edge is added in the DDG.
+ */
+class SOFA_CORE_API DataLink
 {
-    Q_OBJECT
-public :
-    // The class constructor takes a Data<unsigned> since it creates
-    // a widget for a that particular data type.
-    MyDataWidgetUnsigned(QWidget* parent, const char* name, core::objectmodel::Data<unsigned> *data):
-        TDataWidget<unsigned>(parent, name,data) {};
+public:
+    DataLink(BaseData& owner);
+    virtual ~DataLink();
 
-    // In this method we  create the widgets and perform the signal / slots
-    // connections.
-    virtual bool createWidgets();
-    virtual void setDataReadOnly(bool readOnly);
-protected slots:
-    void change();
-protected:
-    ///Implements how update the widgets knowing the data value.
-    virtual void readFromData();
-    ///Implements how to update the data, knowing the widget value.
-    virtual void writeToData();
-    QSlider *m_qslider;
-    QLabel *m_label1;
-    QLabel *m_label2;
+    BaseData& m_owner;
+    BaseData* m_dest {nullptr};
+
+    void set(BaseData* dest);
+
+    BaseData& getOwner() const {return m_owner;}
+    BaseData* get() const {return m_dest;}
+
+    bool m_isPersistant {false};
+
+    bool isSet(){ return m_dest != nullptr; }
+    void unSet();
+
+    void setPersistent(bool b) { m_isPersistant = b; }
+    bool isPersistent() const { return m_isPersistant; }
+
+    // DDGNode* m_ddgnode;
 };
 
+} /// namespace sofa::core::objectmodel
 
-} // namespace sofa::gui::qt

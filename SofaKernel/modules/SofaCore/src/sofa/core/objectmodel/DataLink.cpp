@@ -19,50 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <PluginExample/config.h>
+#include <sofa/core/objectmodel/DataLink.h>
+#include <sofa/core/objectmodel/BaseData.h>
 
-#include <sofa/gui/qt/DataWidget.h>
-
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QSlider>
-#include <QString>
-
-
-namespace sofa::gui::qt
+namespace sofa::core::objectmodel
 {
 
-/**
- * \brief Customization of the representation of Data<unsigned> types
- * in the gui. In the .cpp file this widget is registered to represent
- * myData from MyBehaviorModel in the gui.
- **/
-class SOFA_PLUGINEXAMPLE_API MyDataWidgetUnsigned : public TDataWidget<unsigned>
+
+DataLink::DataLink(BaseData& owner) :
+    m_owner(owner)
+  , m_dest(nullptr)
 {
-    Q_OBJECT
-public :
-    // The class constructor takes a Data<unsigned> since it creates
-    // a widget for a that particular data type.
-    MyDataWidgetUnsigned(QWidget* parent, const char* name, core::objectmodel::Data<unsigned> *data):
-        TDataWidget<unsigned>(parent, name,data) {};
+}
 
-    // In this method we  create the widgets and perform the signal / slots
-    // connections.
-    virtual bool createWidgets();
-    virtual void setDataReadOnly(bool readOnly);
-protected slots:
-    void change();
-protected:
-    ///Implements how update the widgets knowing the data value.
-    virtual void readFromData();
-    ///Implements how to update the data, knowing the widget value.
-    virtual void writeToData();
-    QSlider *m_qslider;
-    QLabel *m_label1;
-    QLabel *m_label2;
-};
+DataLink::~DataLink(){}
 
+void DataLink::unSet()
+{
+    assert(isSet());
 
-} // namespace sofa::gui::qt
+    if(!isSet())
+        return;
+
+    /// First retrieve from the parent the last know value.
+    m_dest->updateIfDirty();
+
+    /// Then disconnect the dependency graph
+    m_owner.delInput(m_dest);
+
+    /// Finalize the unsetting.
+    m_dest=nullptr;
+}
+
+void DataLink::set(BaseData* dest)
+{
+    /// Disconnect the previous data link.
+    if(m_dest)
+        m_owner.delInput(m_dest);
+    m_dest=dest;
+
+    /// Connect the new data link.
+    m_owner.addInput(m_dest);
+}
+
+} ///namespace sofa::core::objectmodel

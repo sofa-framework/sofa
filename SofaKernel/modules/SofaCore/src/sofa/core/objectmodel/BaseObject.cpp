@@ -169,8 +169,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
             }
             else
             {
-                std::string linkPath = valueString+"."+(*it_map).first;
-                data->setParent( (*it_map).second, linkPath);
+                data->setParent( (*it_map).second );
             }
         }
     }

@@ -101,7 +101,7 @@ struct DataEngine_test : public Sofa_test<>
         const DDGLinkContainer& engine_inputs = m_engine->DDGNode::getInputs();
         const DDGLinkContainer& parent_inputs = m_engineInput->DDGNode::getInputs();
         for( unsigned i=0, iend=engine_inputs.size() ; i<iend ; ++i )
-            static_cast<core::objectmodel::BaseData*>(engine_inputs[i])->setParent(static_cast<core::objectmodel::BaseData*>(parent_inputs[i]));
+            static_cast<core::objectmodel::BaseData*>(engine_inputs[i]->getUserData())->setParent(static_cast<core::objectmodel::BaseData*>(parent_inputs[i]->getUserData()));
     }
 
 

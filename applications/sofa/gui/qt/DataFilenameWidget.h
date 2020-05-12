@@ -68,7 +68,7 @@ protected slots :
 //      public:
 //        DataDirectoryWidget(QWidget* parent,
 //                            const char* name,
-//                            core::objectmodel::TData<std::string>* data)
+//                            core::objectmodel::Data<std::string>* data)
 //        :DataFileNameWidget(parent,name,data)
 //        {}
 

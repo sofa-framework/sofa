@@ -56,6 +56,12 @@ namespace core
  * }
  *
  */
+class DDGNodeDataEngine : public sofa::core::objectmodel::DDGNode
+{
+public:
+
+};
+
 class SOFA_CORE_API DataEngine : public core::DataTrackerDDGNode, public virtual core::objectmodel::BaseObject
 {
 public:
@@ -91,9 +97,11 @@ public:
     /// Add a new input to this engine
     /// Automatically adds the input fields to the datatracker
     void addInput(sofa::core::objectmodel::BaseData* data);
+    void delInput(sofa::core::objectmodel::BaseData *data);
 
     /// Add a new output to this engine
     void addOutput(objectmodel::BaseData* n);
+    void delOutput(sofa::core::objectmodel::BaseData *data);
 };
 
 } // namespace core
