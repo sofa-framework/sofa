@@ -357,7 +357,7 @@ std::string FileRepository::getTempPath() const
     // conversion
     char buf[255] = {0};
     if ( !WideCharToMultiByte(CP_UTF8, 0, wbuf, -1, buf, 255, 0, 0) ) {
-        msg_error(this) << "widechar to multibyte encoding failed";
+        msg_error("FileRepository") << "widechar to multibyte encoding failed";
     }
     retval = std::string(buf);
 #else
@@ -369,7 +369,7 @@ std::string FileRepository::getTempPath() const
     retval = std::string(folder);
 
 #else
-    msg_error(this) << "FileRepository::getTempPath() NOT DEFINED ON THIS PLATFORM\n";
+    msg_error("FileRepository") << "FileRepository::getTempPath() not supported on this platform!";
 #endif
 
 #endif
