@@ -24,7 +24,6 @@
 
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/BaseConstraint.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <fstream>
 
 
@@ -249,7 +248,7 @@ SReal Mass<DataTypes>::getElementMass(unsigned int ) const
 template <class DataTypes>
 void Mass<DataTypes>::getElementMass(unsigned int , defaulttype::BaseMatrix *m) const
 {
-    static const defaulttype::BaseMatrix::Index dimension = (defaulttype::BaseMatrix::Index) defaulttype::DataTypeInfo<Coord>::size();
+    static const defaulttype::BaseMatrix::Index dimension = (defaulttype::BaseMatrix::Index) Coord::total_size;
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();

@@ -85,7 +85,7 @@ protected:
 		  typedef typename VecDeriv::value_type value_type;
 		  typedef typename defaulttype::DataTypeInfo<value_type>::ValueType real_type;
 		  
-		  static const unsigned size = defaulttype::DataTypeInfo<value_type>::Size;
+          static const unsigned size = value_type::total_size;
 		  
 		  typedef Eigen::Matrix< real_type, Eigen::Dynamic, 1 > matrix_type;
 

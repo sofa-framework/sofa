@@ -27,6 +27,10 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <functional>
 #include <limits>
+#include <complex>
+#include <type_traits>
+
+
 
 #define EQUALITY_THRESHOLD 1e-6
 
@@ -35,6 +39,10 @@ namespace sofa
 
 namespace defaulttype
 {
+
+template<class T> struct is_scalar : std::false_type {};
+template<class T> struct is_scalar<std::is_integral<T>> : std::true_type {};
+template<class T> struct is_scalar<std::is_floating_point<T>> : std::true_type {};
 
 enum NoInit { NOINIT }; ///< use when calling Vec or Mat constructor to skip initialization of values to 0
 
@@ -474,10 +482,10 @@ public:
     // operators then simply call them with the right types.
 
     /// Multiplication by a scalar f.
-    template<class real2>
+    template<class real2, typename std::enable_if<std::is_scalar<real2>::value>::type* = nullptr>
     Vec<N,real> mulscalar(real2 f) const
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        static_assert(DataTypeInfo<real2>::ValidInfo, "");
         Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]*(real)f;
@@ -494,10 +502,10 @@ public:
     Vec<N,real> operator*(unsigned long long f) const {  return mulscalar(f);  }
 
     /// In-place multiplication by a scalar f.
-    template<class real2>
+    template<class real2, typename std::enable_if<std::is_scalar<real2>::value>::type* = nullptr>
     void eqmulscalar(real2 f)
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        static_assert(DataTypeInfo<real2>::ValidInfo, "");
         for (int i=0; i<N; i++)
             this->elems[i]*=(real)f;
     }
@@ -512,10 +520,10 @@ public:
     void operator*=(unsigned long long f) {  eqmulscalar(f);  }
 
     /// Division by a scalar f.
-    template<class real2>
+    template<class real2, typename std::enable_if<std::is_scalar<real2>::value>::type* = nullptr>
     Vec<N,real> divscalar(real2 f) const
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        static_assert(DataTypeInfo<real2>::ValidInfo, "");
         Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]/(real)f;
@@ -532,10 +540,10 @@ public:
     Vec<N,real> operator/(unsigned long long f) const {  return divscalar(f);  }
 
     /// In-place division by a scalar f.
-    template<class real2>
+    template<class real2, typename std::enable_if<std::is_scalar<real2>::value>::type* = nullptr>
     void eqdivscalar(real2 f)
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        static_assert(DataTypeInfo<real2>::ValidInfo, "");
         for (int i=0; i<N; i++)
             this->elems[i]/=(real)f;
     }

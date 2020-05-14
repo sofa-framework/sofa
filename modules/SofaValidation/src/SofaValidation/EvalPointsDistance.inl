@@ -22,7 +22,6 @@
 #pragma once
 
 #include "EvalPointsDistance.h"
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>

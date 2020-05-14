@@ -60,7 +60,7 @@ namespace defaulttype
     \code{.cpp}
     template<DataType>
     MyComponent::someMethod(DataType& data) {
-        const size_t dim = defaulttype::DataTypeInfo<Coord>::size();
+        const size_t dim = Coord::total_size;
         for(size_t i = 0; i < dim; ++i) {
             DataTypeInfo<DataType>::ValueType value;
             DataTypeInfo<Coord>::getValue(data, i, value);

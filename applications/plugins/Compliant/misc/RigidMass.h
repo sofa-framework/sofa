@@ -249,7 +249,7 @@ public:
                               const sofa::core::behavior::MultiMatrixAccessor* matrix) override {
 		
 		sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix( this->mstate );
-		const unsigned size = defaulttype::DataTypeInfo<typename DataTypes::Deriv>::size();
+        const unsigned size = typename DataTypes::Deriv::total_size;
 
         real mFactor = (real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
 		

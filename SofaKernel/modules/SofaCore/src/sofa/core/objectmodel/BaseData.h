@@ -24,6 +24,7 @@
 
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/DDGNode.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {

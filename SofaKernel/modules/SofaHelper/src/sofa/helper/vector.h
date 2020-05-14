@@ -33,7 +33,6 @@
 
 #include <sofa/helper/helper.h>
 #include <sofa/helper/MemoryManager.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/logging/Messaging.h>
 
 #if !defined(NDEBUG) && !defined(SOFA_NO_VECTOR_ACCESS_FAILURE)

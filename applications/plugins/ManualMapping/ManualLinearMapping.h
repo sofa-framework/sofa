@@ -72,11 +72,11 @@ public:
 
     enum
     {
-        NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size
+        NIn = InDeriv::total_size
     };
     enum
     {
-        NOut = sofa::defaulttype::DataTypeInfo<Deriv>::Size
+        NOut = Deriv::total_size
     };
 
 

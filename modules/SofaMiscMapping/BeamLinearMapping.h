@@ -63,8 +63,8 @@ public:
 
     typedef typename Coord::value_type Real;
     enum { N    = OutDataTypes::spatial_dimensions               };
-    enum { NIn  = sofa::defaulttype::DataTypeInfo<InDeriv>::Size };
-    enum { NOut = sofa::defaulttype::DataTypeInfo<Deriv>::Size   };
+    enum { NIn  = InDeriv::total_size };
+    enum { NOut = Deriv::total_size };
     typedef defaulttype::Mat<N, N, Real> Mat;
     typedef defaulttype::Vec<N, Real> Vector;
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;

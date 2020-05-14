@@ -28,8 +28,6 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-#include <sofa/defaulttype/DataTypeInfo.h>
-
 
 namespace sofa
 {

@@ -886,7 +886,7 @@ void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * des
     if (src.type == sofa::core::V_COORD)
     {
         helper::ReadAccessor< Data<VecCoord> > vSrc = *this->read(sofa::core::ConstVecCoordId(src));
-        const unsigned int coordDim = sofa::defaulttype::DataTypeInfo<Coord>::size();
+        const unsigned int coordDim = Coord::total_size;
 
         for (unsigned int i = 0; i < vSrc.size(); i++)
         {
@@ -903,7 +903,7 @@ void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * des
     else
     {
         helper::ReadAccessor< Data<VecDeriv> > vSrc = *this->read(sofa::core::ConstVecDerivId(src));
-        const unsigned int derivDim = defaulttype::DataTypeInfo<Deriv>::size();
+        const unsigned int derivDim = Deriv::total_size;
 
         for (unsigned int i = 0; i < vSrc.size(); i++)
         {
@@ -925,7 +925,7 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, con
     if (dest.type == sofa::core::V_COORD)
     {
         helper::WriteOnlyAccessor< Data<VecCoord> > vDest = *this->write(sofa::core::VecCoordId(dest));
-        const unsigned int coordDim = defaulttype::DataTypeInfo<Coord>::size();
+        const unsigned int coordDim = Coord::total_size;
 
         for (unsigned int i = 0; i < vDest.size(); i++)
         {
@@ -942,7 +942,7 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, con
     else
     {
         helper::WriteOnlyAccessor< Data<VecDeriv> > vDest = *this->write(sofa::core::VecDerivId(dest));
-        const unsigned int derivDim = sofa::defaulttype::DataTypeInfo<Deriv>::size();
+        const unsigned int derivDim = Deriv::total_size;
 
         for (unsigned int i = 0; i < vDest.size(); i++)
         {
@@ -964,7 +964,7 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
     if (src.type == sofa::core::V_COORD)
     {
         helper::ReadAccessor< Data<VecCoord> > vSrc = *this->read(core::ConstVecCoordId(src));
-        const unsigned int coordDim = defaulttype::DataTypeInfo<Coord>::size();
+        const unsigned int coordDim = Coord::total_size;
 
         for (unsigned int i = 0; i < vSrc.size(); i++)
         {
@@ -981,7 +981,7 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
     else
     {
         helper::ReadAccessor< Data<VecDeriv> > vSrc = *this->read(core::ConstVecDerivId(src));
-        const unsigned int derivDim = defaulttype::DataTypeInfo<Deriv>::size();
+        const unsigned int derivDim = Deriv::total_size;
 
         for (unsigned int i = 0; i < vSrc.size(); i++)
         {
@@ -1003,7 +1003,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(sofa::core::VecId de
     if (dest.type == sofa::core::V_COORD)
     {
         helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
-        const unsigned int coordDim = defaulttype::DataTypeInfo<Coord>::size();
+        const unsigned int coordDim = Coord::total_size;
 
         for (unsigned int i = 0; i < vDest.size(); i++)
         {
@@ -1020,7 +1020,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(sofa::core::VecId de
     else
     {
         helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(core::VecDerivId(dest));
-        const unsigned int derivDim = defaulttype::DataTypeInfo<Deriv>::size();
+        const unsigned int derivDim = Deriv::total_size;
 
         for (unsigned int i = 0; i < vDest.size(); i++)
         {
@@ -1042,7 +1042,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(sofa::core::Vec
     if (dest.type == sofa::core::V_COORD)
     {
         helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
-        const unsigned int coordDim = defaulttype::DataTypeInfo<Coord>::size();
+        const unsigned int coordDim = Coord::total_size;
         const unsigned int nbEntries = src->size()/coordDim;
         for (unsigned int i=0; i<nbEntries; i++)
         {
@@ -1059,7 +1059,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(sofa::core::Vec
     {
         helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(core::VecDerivId(dest));
 
-        const unsigned int derivDim = defaulttype::DataTypeInfo<Deriv>::size();
+        const unsigned int derivDim = Deriv::total_size;
         const unsigned int nbEntries = src->size()/derivDim;
         for (unsigned int i=0; i<nbEntries; i++)
         {
@@ -2621,7 +2621,7 @@ void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::help
 template <class DataTypes>
 std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const
 {
-    const unsigned int dimensionDeriv = defaulttype::DataTypeInfo< Deriv >::size();
+    const unsigned int dimensionDeriv = Deriv::total_size;
     assert( indices.size() > 0 );
     assert( dimensionDeriv > 0 );
 
@@ -2834,8 +2834,8 @@ template <class DataTypes>
 bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* params */, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
                                                 std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles)
 {
-    if (defaulttype::DataTypeInfo<Coord>::size() == 2 || defaulttype::DataTypeInfo<Coord>::size() == 3
-            || (defaulttype::DataTypeInfo<Coord>::size() == 7 && defaulttype::DataTypeInfo<Deriv>::size() == 6))
+    if (Coord::total_size == 2 || Coord::total_size == 3
+            || (Coord::total_size == 7 && Deriv::total_size == 6))
         // TODO: this verification is awful and should be done by template specialization
     {
         // seems to be valid DOFs

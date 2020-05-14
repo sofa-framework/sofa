@@ -24,7 +24,6 @@
 
 #include <SofaMiscForceField/MeshMatrixMass.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
@@ -1965,7 +1964,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
     size_t nbEdges=m_topology->getNbEdges();
     size_t v0,v1;
 
-    const int N = defaulttype::DataTypeInfo<Deriv>::size();
+    const int N = Deriv::total_size;
     AddMToMatrixFunctor<Deriv,MassType> calc;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = r.matrix;
@@ -2054,7 +2053,7 @@ SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index) co
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
 {
-    static const defaulttype::BaseMatrix::Index dimension = defaulttype::BaseMatrix::Index(defaulttype::DataTypeInfo<Deriv>::size());
+    static const defaulttype::BaseMatrix::Index dimension = defaulttype::BaseMatrix::Index(Deriv::total_size);
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();

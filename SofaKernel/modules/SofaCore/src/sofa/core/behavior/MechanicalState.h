@@ -79,8 +79,8 @@ public:
 protected:
     ~MechanicalState() override {}
 public:
-    size_t getCoordDimension() const override { return defaulttype::DataTypeInfo<Coord>::size(); }
-    size_t getDerivDimension() const override { return defaulttype::DataTypeInfo<Deriv>::size(); }
+    size_t getCoordDimension() const override { return Coord::total_size; }
+    size_t getDerivDimension() const override { return Deriv::total_size; }
 
     /// Get the indices of the particles located in the given bounding box
     virtual void getIndicesInSpace(sofa::helper::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
@@ -100,7 +100,7 @@ public:
 		switch(src.type) {
 		case V_COORD: {
 			helper::ReadAccessor< Data<VecCoord> > vec = this->read(ConstVecCoordId(src));
-			const size_t dim = defaulttype::DataTypeInfo<Coord>::size();
+            const size_t dim = Coord::total_size;
 			assert( n == dim * size );
 			
 			for(size_t i = 0; i < size; ++i) {
@@ -112,7 +112,7 @@ public:
 		}; break;
 		case V_DERIV: {
             helper::ReadAccessor< Data<VecDeriv> > vec = this->read(ConstVecDerivId(src));
-            const size_t dim = defaulttype::DataTypeInfo<Deriv>::size();
+            const size_t dim = Deriv::total_size;
             assert( n == dim * size );
 			
             for(size_t i = 0; i < size; ++i) {
@@ -136,7 +136,7 @@ public:
 		switch(dst.type) {
 		case V_COORD: {
             helper::WriteOnlyAccessor< Data<VecCoord> > vec = this->write(VecCoordId(dst));
-			const size_t dim = defaulttype::DataTypeInfo<Coord>::size();
+            const size_t dim = Coord::total_size;
 			assert( n == dim * size );
 			
 			for(size_t i = 0; i < size; ++i) {
@@ -148,7 +148,7 @@ public:
 		}; break;
 		case V_DERIV: {
             helper::WriteOnlyAccessor< Data<VecDeriv> > vec = this->write(VecDerivId(dst));
-			const size_t dim = defaulttype::DataTypeInfo<Deriv>::size();
+            const size_t dim = Deriv::total_size;
 			assert( n == dim * size );
 			
 			for(size_t i = 0; i < size; ++i) {
@@ -172,7 +172,7 @@ public:
         switch(dst.type) {
         case V_COORD: {
             helper::WriteAccessor< Data<VecCoord> > vec = this->write(VecCoordId(dst));
-            const size_t dim = defaulttype::DataTypeInfo<Coord>::size();
+            const size_t dim = Coord::total_size;
             assert( n == dim * size );
 
             for(size_t i = 0; i < size; ++i) {
@@ -187,7 +187,7 @@ public:
         }; break;
         case V_DERIV: {
             helper::WriteAccessor< Data<VecDeriv> > vec = this->write(VecDerivId(dst));
-            const size_t dim = defaulttype::DataTypeInfo<Deriv>::size();
+            const size_t dim = Deriv::total_size;
             assert( n == dim * size );
 
             for(size_t i = 0; i < size; ++i) {

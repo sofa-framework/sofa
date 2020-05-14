@@ -130,7 +130,7 @@ template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix *m) const
 {
     const VecReal& comp = compliance.getValue();
-    const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
+    const unsigned int dimension = Deriv::total_size;
     const unsigned int numDofs = comp.size() / 7;
 
     m->resize(dimension * numDofs, dimension * numDofs);

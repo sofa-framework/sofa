@@ -25,6 +25,7 @@
 #include <cstring>
 #include <algorithm>
 #include <numeric>
+#include <math.h>
 
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
@@ -87,7 +88,7 @@ protected:
                 float totalRef = std::accumulate(data, data + total, 0, std::plus<unsigned int>());
                 float totalTest = std::accumulate(testdata, testdata + total, 0, std::plus<unsigned int>());
 
-                res = fabs(totalRef - totalTest)/total < PIXEL_TOLERANCE;
+                res = std::fabs(totalRef - totalTest)/total < PIXEL_TOLERANCE;
 
             }
             else

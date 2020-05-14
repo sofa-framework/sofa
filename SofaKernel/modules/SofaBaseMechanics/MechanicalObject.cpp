@@ -81,7 +81,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(
     {
 
         helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        const unsigned int coordDim = Coord::total_size;
         const unsigned int nbEntries = src->size()/coordDim;
 
         for (unsigned int i=0; i<nbEntries; i++)
@@ -116,7 +116,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(
     {
         helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(core::VecDerivId(dest));
 
-        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        const unsigned int derivDim = Deriv::total_size;
         const unsigned int nbEntries = src->size()/derivDim;
         for (unsigned int i=0; i<nbEntries; i++)
         {
@@ -139,7 +139,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core:
     if (dest.type == sofa::core::V_COORD)
     {
         helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        const unsigned int coordDim = Coord::total_size;
 
         for (unsigned int i=0; i<vDest.size(); i++)
         {
@@ -173,7 +173,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core:
     else
     {
         helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(core::VecDerivId(dest));
-        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        const unsigned int derivDim = Deriv::total_size;
         for (unsigned int i=0; i<vDest.size(); i++)
         {
             for (unsigned int j=0; j<derivDim; j++)

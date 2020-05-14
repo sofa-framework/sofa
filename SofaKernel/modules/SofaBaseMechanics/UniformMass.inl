@@ -28,7 +28,6 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -63,7 +62,6 @@ using core::ConstVecCoordId;
 using defaulttype::BaseVector;
 using defaulttype::Vec;
 using defaulttype::Vec3d;
-using defaulttype::DataTypeInfo;
 using defaulttype::BaseMatrix;
 
 
@@ -628,7 +626,7 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mpa
 {
     const MassType& m = d_vertexMass.getValue();
 
-    const size_t N = DataTypeInfo<Deriv>::size();
+    const size_t N = Deriv::total_size;
 
     AddMToMatrixFunctor<Deriv,MassType> calc;
     MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate);
@@ -654,7 +652,7 @@ void UniformMass<DataTypes, MassType>::getElementMass ( unsigned int  index ,
 {
     SOFA_UNUSED(index);
 
-    static const BaseMatrix::Index dimension = BaseMatrix::Index(DataTypeInfo<Deriv>::size());
+    static const BaseMatrix::Index dimension = BaseMatrix::Index(Deriv::total_size);
     if ( m->rowSize() != dimension || m->colSize() != dimension )
         m->resize ( dimension, dimension );
 
