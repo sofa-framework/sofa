@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaCore_simutest)
 
 find_package(SofaBase REQUIRED)
+find_package(SofaComponentAll REQUIRED)
 
 set(SOURCE_FILES
     objectmodel/Base_test.cpp
