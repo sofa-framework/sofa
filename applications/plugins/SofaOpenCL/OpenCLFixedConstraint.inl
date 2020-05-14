@@ -193,7 +193,7 @@ template <>
 void FixedConstraintInternalData<gpu::opencl::OpenCLVec3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
     Data& data = *m->data;
-    if (m->f_fixAll.getValue())
+    if (m->d_fixAll.getValue())
         FixedConstraintOpenCL3f_projectResponseContiguous(dx.size(), dx.deviceWrite());
     else if (data.minIndex >= 0)
         FixedConstraintOpenCL3f_projectResponseContiguous(data.maxIndex-data.minIndex+1, OpenCLMemoryManager<float>::deviceOffset(dx.deviceWrite(),3*data.minIndex));
@@ -205,7 +205,7 @@ template <>
 void FixedConstraintInternalData<gpu::opencl::OpenCLVec3f1Types>::projectResponse(Main* m, VecDeriv& dx)
 {
     Data& data = *m->data;
-    if (m->f_fixAll.getValue())
+    if (m->d_fixAll.getValue())
         FixedConstraintOpenCL3f1_projectResponseContiguous(dx.size(), dx.deviceWrite());
     else if (data.minIndex >= 0)
         FixedConstraintOpenCL3f1_projectResponseContiguous(data.maxIndex-data.minIndex+1,  OpenCLMemoryManager<float>::deviceOffset(dx.deviceWrite(),4*data.minIndex));
@@ -217,7 +217,7 @@ template <>
 void FixedConstraintInternalData<gpu::opencl::OpenCLVec3dTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
     Data& data = *m->data;
-    if (m->f_fixAll.getValue())
+    if (m->d_fixAll.getValue())
         FixedConstraintOpenCL3d_projectResponseContiguous(dx.size(), dx.deviceWrite());
     else if (data.minIndex >= 0)
         FixedConstraintOpenCL3d_projectResponseContiguous(data.maxIndex-data.minIndex+1,  OpenCLMemoryManager<double>::deviceOffset(dx.deviceWrite(),3*data.minIndex));
@@ -229,7 +229,7 @@ template <>
 void FixedConstraintInternalData<gpu::opencl::OpenCLVec3d1Types>::projectResponse(Main* m, VecDeriv& dx)
 {
     Data& data = *m->data;
-    if (m->f_fixAll.getValue())
+    if (m->d_fixAll.getValue())
         FixedConstraintOpenCL3d1_projectResponseContiguous(dx.size(), dx.deviceWrite());
     else if (data.minIndex >= 0)
         FixedConstraintOpenCL3d1_projectResponseContiguous(data.maxIndex-data.minIndex+1,  OpenCLMemoryManager<double>::deviceOffset(dx.deviceWrite(),4*data.minIndex));
