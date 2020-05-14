@@ -232,18 +232,20 @@ endif()
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 add_subdirectory(SofaGeneral)
-add_subdirectory(SofaMisc)
 
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
 add_subdirectory(modules)
 
+# Sofa misc requires some targets defined in modules
+add_subdirectory(SofaMisc)
+
 # This is all the applications GUI stuff. As there is a dependency to this one
 # In scene creator and SofaPython...it is located here.
 add_subdirectory(SofaGui)
 
-# SofaTest, modules depend on SofaPython, so we add SofaPython before.
+# SofaTest depend on SofaPython, so we add SofaPython before.
 # and SofaPython needs SofaGui...
 sofa_add_plugin(applications/plugins/SofaPython SofaPython)
 
