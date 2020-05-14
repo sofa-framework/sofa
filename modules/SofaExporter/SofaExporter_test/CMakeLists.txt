@@ -16,7 +16,7 @@ set(SOURCE_FILES
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaGTestMain SofaExporter SofaGeneralImplicitOdeSolver SofaBaseMechanics SofaBaseLinearSolver SofaImplicitOdeSolver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaGTestMain SofaExporter SofaGeneralImplicitOdeSolver SofaBaseMechanics SofaBaseLinearSolver SofaImplicitOdeSolver SofaBase SofaCommon SofaGeneral)
 target_compile_definitions(${PROJECT_NAME}
     PRIVATE "SOFAEXPORTER_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/files/\""
     PRIVATE "SOFAEXPORTER_BUILD_DIR=\"${CMAKE_BINARY_DIR}/\""
