@@ -5,7 +5,7 @@ find_package(SofaGui REQUIRED)
 sofa_find_package(SofaMiscCollision REQUIRED)
 sofa_find_package(SofaDistanceGrid QUIET)
 sofa_find_package(image QUIET)
-find_package(Eigen3 QUIET NO_MODULE REQUIRED)
+find_package(Eigen3 QUIET REQUIRED)
 
 set(HEADER_FILES
     config.h.in

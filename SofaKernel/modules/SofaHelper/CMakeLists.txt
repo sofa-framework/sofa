@@ -25,7 +25,7 @@ if(SOFA_BUILD_TESTS)
     sofa_find_package(GTest CONFIG BOTH_SCOPES)
 endif()
 # Eigen (header only)
-find_package(Eigen3 QUIET NO_MODULE REQUIRED)
+find_package(Eigen3 QUIET REQUIRED)
 # Json (header only) needed by AdvancedTimer
 sofa_find_package(Json 3.1.2 REQUIRED BOTH_SCOPES)
 

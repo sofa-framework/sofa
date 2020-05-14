@@ -31,7 +31,7 @@ set(SOURCE_FILES
 
 
 find_package(SofaMisc REQUIRED)
-find_package(Eigen3 QUIET NO_MODULE REQUIRED)
+find_package(Eigen3 QUIET REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationGraph SofaBase SofaCommon SofaGeneral SofaMisc)

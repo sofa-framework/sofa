@@ -3,7 +3,7 @@ project(SceneCreator VERSION 0.1)
 
 find_package(SofaSimulation REQUIRED)
 sofa_find_package(SofaSparseSolver QUIET)
-find_package(Eigen3 NO_MODULE REQUIRED)
+find_package(Eigen3 QUIET REQUIRED)
 
 set(HEADER_FILES
     config.h.in

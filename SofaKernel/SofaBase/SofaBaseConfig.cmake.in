@@ -8,7 +8,7 @@ find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
 
 # Eigen3 is required by SofaBaseTopology
-find_package(Eigen3 QUIET NO_MODULE REQUIRED)
+find_package(Eigen3 QUIET REQUIRED)
 
 foreach(target ${SOFABASE_TARGETS})
     if(NOT TARGET ${target})

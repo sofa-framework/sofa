@@ -6,7 +6,7 @@ find_package(SofaValidation REQUIRED)
 sofa_find_package(SofaPython REQUIRED)
 sofa_find_package(image QUIET)
 sofa_find_package(SofaHighOrderTopology QUIET)
-find_package(Eigen3 QUIET NO_MODULE REQUIRED)
+find_package(Eigen3 QUIET REQUIRED)
 
 set(HEADER_FILES
     config.h.in
