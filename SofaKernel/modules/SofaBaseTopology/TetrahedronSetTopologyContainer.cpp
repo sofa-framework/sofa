@@ -630,7 +630,7 @@ TetrahedronSetTopologyContainer::TetrahedraAroundEdge &TetrahedronSetTopologyCon
 {
     if (!hasTetrahedraAroundEdge())
     {
-        msg_warning() << "getTetrahedraAroundEdgeForModification: TetrahedraAroundEdgeArray is empty. Be sure to call createTetrahedraAroundEdgeArray first.";
+        dmsg_warning() << "getTetrahedraAroundEdgeForModification: TetrahedraAroundEdgeArray is empty. Be sure to call createTetrahedraAroundEdgeArray first.";
         createTetrahedraAroundEdgeArray();
     }
 
@@ -644,7 +644,7 @@ TetrahedronSetTopologyContainer::TetrahedraAroundVertex &TetrahedronSetTopologyC
 {
     if (!hasTetrahedraAroundVertex())
     {
-        msg_warning() << "getTetrahedraAroundVertexForModification: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
+        dmsg_warning() << "getTetrahedraAroundVertexForModification: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
         createTetrahedraAroundVertexArray();
     }
 
@@ -658,7 +658,7 @@ TetrahedronSetTopologyContainer::TetrahedraAroundTriangle &TetrahedronSetTopolog
 {
     if (!hasTetrahedraAroundTriangle())
     {
-        msg_warning() << "getTetrahedraAroundTriangleForModification: TetrahedraAroundTriangleArray is empty. Be sure to call createTetrahedraAroundTriangleArray first.";
+        dmsg_warning() << "getTetrahedraAroundTriangleForModification: TetrahedraAroundTriangleArray is empty. Be sure to call createTetrahedraAroundTriangleArray first.";
         createTetrahedraAroundTriangleArray();
     }
 
@@ -905,7 +905,7 @@ const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContaine
     VecTetraID elemAll;
     if(!hasTetrahedraAroundVertex())	// this method should only be called when the shell array exists
     {
-        msg_warning() << "getElementAroundElements: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
+        dmsg_warning() << "getElementAroundElements: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
         return elemAll;
     }
     
@@ -968,7 +968,7 @@ const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContaine
     VecTetraID elems;
     if (!hasTetrahedraAroundVertex())
     {
-        msg_warning() << "getElementAroundElements: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
+        dmsg_warning() << "getElementAroundElements: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
         return elems;
     }
 
@@ -1007,7 +1007,7 @@ const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContaine
     VecTetraID elemAll;
     if (!hasTetrahedraAroundVertex())
     {
-        msg_warning() << "getElementAroundElements: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
+        dmsg_warning() << "getElementAroundElements: TetrahedraAroundVertexArray is empty. Be sure to call createTetrahedraAroundVertexArray first.";
         return elemAll;
     }
 

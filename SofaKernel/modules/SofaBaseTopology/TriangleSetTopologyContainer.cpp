@@ -569,7 +569,7 @@ const sofa::helper::vector <TriangleSetTopologyContainer::TriangleID>& TriangleS
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
-        msg_warning() << "getTrianglesOnBorder: trianglesOnBorder array is empty. Be sure to call createElementsOnBorder first.";
+        dmsg_warning() << "getTrianglesOnBorder: trianglesOnBorder array is empty. Be sure to call createElementsOnBorder first.";
         createElementsOnBorder();
     }
 
@@ -581,7 +581,7 @@ const sofa::helper::vector <TriangleSetTopologyContainer::EdgeID>& TriangleSetTo
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
-        msg_warning() << "getEdgesOnBorder: edgesOnBorder array is empty. Be sure to call createElementsOnBorder first.";
+        dmsg_warning() << "getEdgesOnBorder: edgesOnBorder array is empty. Be sure to call createElementsOnBorder first.";
         createElementsOnBorder();
     }
 
@@ -593,7 +593,7 @@ const sofa::helper::vector <TriangleSetTopologyContainer::PointID>& TriangleSetT
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
-        msg_warning() << "getPointsOnBorder: pointsOnBorder array is empty. Be sure to call createElementsOnBorder first.";
+        dmsg_warning() << "getPointsOnBorder: pointsOnBorder array is empty. Be sure to call createElementsOnBorder first.";
         createElementsOnBorder();
     }
 
@@ -605,7 +605,7 @@ TriangleSetTopologyContainer::TrianglesAroundEdge &TriangleSetTopologyContainer:
 {
     if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
     {
-        msg_warning() << "getTrianglesAroundEdgeForModification: TrianglesAroundEdgeArray is empty. Be sure to call createTrianglesAroundEdgeArray first.";
+        dmsg_warning() << "getTrianglesAroundEdgeForModification: TrianglesAroundEdgeArray is empty. Be sure to call createTrianglesAroundEdgeArray first.";
         createTrianglesAroundEdgeArray();
     }
 
@@ -617,7 +617,7 @@ TriangleSetTopologyContainer::TrianglesAroundVertex &TriangleSetTopologyContaine
 {
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
-        msg_warning() << "getTrianglesAroundVertexForModification: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
+        dmsg_warning() << "getTrianglesAroundVertexForModification: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
         createTrianglesAroundVertexArray();
     }
 
@@ -790,7 +790,7 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
     VecTriangleID elemAll;
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
-        msg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
+        dmsg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
         return elemAll;
     }
 
@@ -851,7 +851,7 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
 
     if (!hasTrianglesAroundVertex())
     {
-        msg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
+        dmsg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
         return elems;
     }
 
@@ -889,7 +889,7 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
     VecTriangleID elemAll;
     if (!hasTrianglesAroundVertex())
     {
-        msg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
+        dmsg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
         return elemAll;
     }
 

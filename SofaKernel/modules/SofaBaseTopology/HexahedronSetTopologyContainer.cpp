@@ -777,7 +777,7 @@ HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopologyContai
 {
     if(!hasHexahedraAroundEdge())
     {
-        msg_warning() << "getHexahedraAroundEdgeForModification: HexahedraAroundEdgeArray is empty. Be sure to call createHexahedraAroundEdgeArray first.";
+        dmsg_warning() << "getHexahedraAroundEdgeForModification: HexahedraAroundEdgeArray is empty. Be sure to call createHexahedraAroundEdgeArray first.";
         createHexahedraAroundEdgeArray();
     }
 
@@ -791,7 +791,7 @@ HexahedronSetTopologyContainer::HexahedraAroundVertex &HexahedronSetTopologyCont
 {
     if(!hasHexahedraAroundVertex())
     {
-        msg_warning() << "getHexahedraAroundVertexForModification: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
+        dmsg_warning() << "getHexahedraAroundVertexForModification: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
         createHexahedraAroundVertexArray();
     }
 
@@ -805,7 +805,7 @@ HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopologyContai
 {
     if(!hasHexahedraAroundQuad())
     {
-        msg_warning() << "getHexahedraAroundQuadForModification: HexahedraAroundQuadArray is empty. Be sure to call createHexahedraAroundQuadArray first.";
+        dmsg_warning() << "getHexahedraAroundQuadForModification: HexahedraAroundQuadArray is empty. Be sure to call createHexahedraAroundQuadArray first.";
         createHexahedraAroundQuadArray();
     }
 
@@ -970,7 +970,7 @@ const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::
     VecHexaID elemAll;
     if(!hasHexahedraAroundVertex())	// this method should only be called when the shell array exists
     {
-        msg_warning() << "getConnectedElement: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
+        dmsg_warning() << "getConnectedElement: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
         return elemAll;
     }
 
@@ -1034,7 +1034,7 @@ const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::
 
     if (!hasHexahedraAroundVertex())
     {
-        msg_warning() << "getElementAroundElement: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
+        dmsg_warning() << "getElementAroundElement: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
         return elems;
     }
 
@@ -1073,7 +1073,7 @@ const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::
     VecHexaID elemAll;
     if (!hasHexahedraAroundVertex())
     {
-        msg_warning() << "getElementAroundElements: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
+        dmsg_warning() << "getElementAroundElements: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
         return elemAll;
     }
 

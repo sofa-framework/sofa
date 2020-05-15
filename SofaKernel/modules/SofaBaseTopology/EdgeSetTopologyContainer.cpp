@@ -329,7 +329,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getConnected
     VecEdgeID elemAll;
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
-        msg_warning() << "getConnectedElement: EdgesAroundVertex is empty. Be sure to call createEdgesAroundVertexArray first.";
+        dmsg_warning() << "getConnectedElement: EdgesAroundVertex is empty. Be sure to call createEdgesAroundVertexArray first.";
         return elemAll;
     }
     
@@ -393,7 +393,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 
     if (!hasEdgesAroundVertex())
     {
-    	msg_warning() << "getElementAroundElement: Edge vertex shell array is empty. Be sure to call createEdgesAroundVertexArray first.";
+    	dmsg_warning() << "getElementAroundElement: Edge vertex shell array is empty. Be sure to call createEdgesAroundVertexArray first.";
         return elems;
     }
 
@@ -436,7 +436,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
     VecEdgeID elemAll;
     if (!hasEdgesAroundVertex())
     {
-        msg_warning() << "getElementAroundElements: EdgesAroundVertexArray is empty. Be sure to call createEdgesAroundVertexArray first.";
+        dmsg_warning() << "getElementAroundElements: EdgesAroundVertexArray is empty. Be sure to call createEdgesAroundVertexArray first.";
         return elemAll;
     }
 
@@ -511,7 +511,7 @@ sofa::helper::vector< EdgeSetTopologyContainer::EdgeID > &EdgeSetTopologyContain
 {
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
-        msg_warning() << "getEdgesAroundVertexForModification: EdgesAroundVertexArray is empty. Be sure to call createEdgesAroundVertexArray first.";
+        dmsg_warning() << "getEdgesAroundVertexForModification: EdgesAroundVertexArray is empty. Be sure to call createEdgesAroundVertexArray first.";
         createEdgesAroundVertexArray();
     }
 

@@ -1684,7 +1684,7 @@ const vector< MeshTopology::EdgesAroundVertex >& MeshTopology::getEdgesAroundVer
 {
     if (m_edgesAroundVertex.empty())	// this method should only be called when the array exists.
     {
-        msg_warning() << "GetEdgesAroundVertexArray: EdgesAroundVertex array is empty. Be sure to call createEdgesAroundVertexArray first.";
+        dmsg_warning() << "GetEdgesAroundVertexArray: EdgesAroundVertex array is empty. Be sure to call createEdgesAroundVertexArray first.";
         createEdgesAroundVertexArray();
     }
 
@@ -1695,7 +1695,7 @@ const vector< MeshTopology::EdgesInTriangle >& MeshTopology::getEdgesInTriangleA
 {
     if(m_edgesInTriangle.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetEdgesInTriangleArray: EdgesInTriangle array is empty. Be sure to call createEdgesInTriangleArray first.";
+        dmsg_warning() << "GetEdgesInTriangleArray: EdgesInTriangle array is empty. Be sure to call createEdgesInTriangleArray first.";
         createEdgesInTriangleArray();
     }
 
@@ -1706,7 +1706,7 @@ const vector< MeshTopology::TrianglesAroundVertex >& MeshTopology::getTrianglesA
 {
     if(m_trianglesAroundVertex.empty())	// this method should only be called when the array exists.
     {
-        msg_warning() << "GetTrianglesAroundVertexArray: TrianglesAroundVertex array is empty. Be sure to call createTrianglesAroundVertexArray first.";
+        dmsg_warning() << "GetTrianglesAroundVertexArray: TrianglesAroundVertex array is empty. Be sure to call createTrianglesAroundVertexArray first.";
         createTrianglesAroundVertexArray();
     }
 
@@ -1717,7 +1717,7 @@ const vector< MeshTopology::TrianglesAroundEdge >& MeshTopology::getTrianglesAro
 {
     if(m_trianglesAroundEdge.empty())	// this method should only be called when the array exists.
     {
-        msg_warning() << "GetTrianglesAroundEdgeArray: TrianglesAroundEdge array is empty. Be sure to call createTrianglesAroundEdgeArray first.";
+        dmsg_warning() << "GetTrianglesAroundEdgeArray: TrianglesAroundEdge array is empty. Be sure to call createTrianglesAroundEdgeArray first.";
         createTrianglesAroundEdgeArray();
     }
 
@@ -1731,7 +1731,7 @@ const vector< MeshTopology::EdgesInQuad >& MeshTopology::getEdgesInQuadArray()
 {
     if(m_edgesInQuad.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetEdgesInQuadArray: EdgesInQuad array is empty. Be sure to call createEdgesInQuadArray first.";
+        dmsg_warning() << "GetEdgesInQuadArray: EdgesInQuad array is empty. Be sure to call createEdgesInQuadArray first.";
         createEdgesInQuadArray();
     }
 
@@ -1742,7 +1742,7 @@ const vector< MeshTopology::QuadsAroundVertex >& MeshTopology::getQuadsAroundVer
 {
     if(m_quadsAroundVertex.empty())	// this method should only be called when the array exists.
     {
-        msg_warning() << "GetQuadsAroundVertexArray: QuadsAroundVertex array is empty. Be sure to call createQuadsAroundVertexArray first.";
+        dmsg_warning() << "GetQuadsAroundVertexArray: QuadsAroundVertex array is empty. Be sure to call createQuadsAroundVertexArray first.";
         createQuadsAroundVertexArray();
     }
 
@@ -1753,7 +1753,7 @@ const vector< MeshTopology::QuadsAroundEdge >& MeshTopology::getQuadsAroundEdgeA
 {
     if(m_quadsAroundEdge.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetQuadsAroundEdgeArray: QuadsAroundEdge array is empty. Be sure to call createQuadsAroundEdgeArray first.";
+        dmsg_warning() << "GetQuadsAroundEdgeArray: QuadsAroundEdge array is empty. Be sure to call createQuadsAroundEdgeArray first.";
         createQuadsAroundEdgeArray();
     }
 
@@ -1768,7 +1768,7 @@ const vector< MeshTopology::EdgesInTetrahedron >& MeshTopology::getEdgesInTetrah
 {
     if (m_edgesInTetrahedron.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetEdgesInTetrahedronArray: EdgesInTetrahedron array is empty. Be sure to call createEdgesInTetrahedronArray first.";
+        dmsg_warning() << "GetEdgesInTetrahedronArray: EdgesInTetrahedron array is empty. Be sure to call createEdgesInTetrahedronArray first.";
         createEdgesInTetrahedronArray();
     }
 
@@ -1779,7 +1779,7 @@ const vector< MeshTopology::TrianglesInTetrahedron >& MeshTopology::getTriangles
 {
     if (m_trianglesInTetrahedron.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetTrianglesInTetrahedronArray: TrianglesInTetrahedron array is empty. Be sure to call createTrianglesInTetrahedronArray first.";
+        dmsg_warning() << "GetTrianglesInTetrahedronArray: TrianglesInTetrahedron array is empty. Be sure to call createTrianglesInTetrahedronArray first.";
         createTrianglesInTetrahedronArray();
     }
 
@@ -1790,7 +1790,7 @@ const vector< MeshTopology::TetrahedraAroundVertex >& MeshTopology::getTetrahedr
 {
     if (m_tetrahedraAroundVertex.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetTetrahedraAroundVertexArray: TetrahedraAroundVertex array is empty. Be sure to call createTetrahedraAroundVertexArray first.";
+        dmsg_warning() << "GetTetrahedraAroundVertexArray: TetrahedraAroundVertex array is empty. Be sure to call createTetrahedraAroundVertexArray first.";
         createTetrahedraAroundVertexArray();
     }
 
@@ -1801,7 +1801,7 @@ const vector< MeshTopology::TetrahedraAroundEdge >& MeshTopology::getTetrahedraA
 {
     if (m_tetrahedraAroundEdge.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetTetrahedraAroundEdgeArray: TetrahedraAroundEdge array is empty. Be sure to call createTetrahedraAroundEdgeArray first.";
+        dmsg_warning() << "GetTetrahedraAroundEdgeArray: TetrahedraAroundEdge array is empty. Be sure to call createTetrahedraAroundEdgeArray first.";
         createTetrahedraAroundEdgeArray();
     }
     return m_tetrahedraAroundEdge;
@@ -1811,7 +1811,7 @@ const vector< MeshTopology::TetrahedraAroundTriangle >& MeshTopology::getTetrahe
 {
     if (m_tetrahedraAroundTriangle.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetTetrahedraAroundTriangleArray: TetrahedraAroundTriangle array is empty. Be sure to call createTetrahedraAroundTriangleArray first.";
+        dmsg_warning() << "GetTetrahedraAroundTriangleArray: TetrahedraAroundTriangle array is empty. Be sure to call createTetrahedraAroundTriangleArray first.";
         createTetrahedraAroundTriangleArray();
     }
 
@@ -1825,7 +1825,7 @@ const vector< MeshTopology::EdgesInHexahedron >& MeshTopology::getEdgesInHexahed
 {
     if (m_edgesInHexahedron.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetEdgesInHexahedronArray: EdgesInHexahedron array is empty. Be sure to call createEdgesInHexahedronArray first.";
+        dmsg_warning() << "GetEdgesInHexahedronArray: EdgesInHexahedron array is empty. Be sure to call createEdgesInHexahedronArray first.";
         createEdgesInHexahedronArray();
     }
 
@@ -1836,7 +1836,7 @@ const vector< MeshTopology::QuadsInHexahedron >& MeshTopology::getQuadsInHexahed
 {
     if (m_quadsInHexahedron.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetQuadsInHexahedronArray: QuadsInHexahedron array is empty. Be sure to call createQuadsInHexahedronArray first.";
+        dmsg_warning() << "GetQuadsInHexahedronArray: QuadsInHexahedron array is empty. Be sure to call createQuadsInHexahedronArray first.";
         createQuadsInHexahedronArray();
     }
 
@@ -1847,7 +1847,7 @@ const vector< MeshTopology::HexahedraAroundVertex >& MeshTopology::getHexahedraA
 {
     if (m_hexahedraAroundVertex.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetHexahedraAroundVertexArray: HexahedraAroundVertex array is empty. Be sure to call createHexahedraAroundVertexArray first.";
+        dmsg_warning() << "GetHexahedraAroundVertexArray: HexahedraAroundVertex array is empty. Be sure to call createHexahedraAroundVertexArray first.";
         createHexahedraAroundVertexArray();
     }
 
@@ -1858,7 +1858,7 @@ const vector< MeshTopology::HexahedraAroundEdge >& MeshTopology::getHexahedraAro
 {
     if (m_hexahedraAroundEdge.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetHexahedraAroundEdgeArray: HexahedraAroundEdge array is empty. Be sure to call createHexahedraAroundEdgeArray first.";
+        dmsg_warning() << "GetHexahedraAroundEdgeArray: HexahedraAroundEdge array is empty. Be sure to call createHexahedraAroundEdgeArray first.";
         createHexahedraAroundEdgeArray();
     }
 
@@ -1869,7 +1869,7 @@ const vector< MeshTopology::HexahedraAroundQuad >& MeshTopology::getHexahedraAro
 {
     if (m_hexahedraAroundQuad.empty()) // this method should only be called when the array exists.
     {
-        msg_warning() << "GetHexahedraAroundQuadArray: HexahedraAroundQuad array is empty. Be sure to call createHexahedraAroundQuadArray first.";
+        dmsg_warning() << "GetHexahedraAroundQuadArray: HexahedraAroundQuad array is empty. Be sure to call createHexahedraAroundQuadArray first.";
         createHexahedraAroundQuadArray();
     }
 
