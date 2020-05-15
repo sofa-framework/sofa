@@ -77,9 +77,6 @@ public:
     Data< SeqPositions > closingPosition; ///< Vertices of the closing parts
     Data< SeqTriangles > closingTriangles; ///< Triangles of the closing parts
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MeshClosingEngine<DataTypes>* = nullptr) { return DataTypes::Name();    }
-
 protected:
 
     MeshClosingEngine()    : Inherited()

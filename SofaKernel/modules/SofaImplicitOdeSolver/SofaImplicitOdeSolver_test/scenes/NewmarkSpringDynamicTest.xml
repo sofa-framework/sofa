@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	 name="root"  gravity="0 -10 0"  dt="0.01"  time="0"  animate="0"  >
+	<RequiredPlugin  name='SofaValidation'/>
         <NewmarkImplicitSolver name="default0"  tags="meca" rayleighStiffness="0" rayleighMass="0"/>
         <CGLinearSolver template="GraphScattered" name="cGLinearSolver1" iterations="3000"  tolerance="1e-09"  threshold="1e-9"/>
 

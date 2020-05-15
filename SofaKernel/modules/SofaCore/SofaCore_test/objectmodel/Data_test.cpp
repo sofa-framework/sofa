@@ -22,7 +22,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vectorData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
 
@@ -30,6 +30,37 @@ using sofa::helper::testing::BaseTest ;
 namespace sofa {
 
 using namespace core::objectmodel;
+
+class Data_test : public BaseTest
+{
+public:
+    Data<int> dataInt;
+    Data<float> dataFloat;
+    Data<bool> dataBool;
+    Data<sofa::defaulttype::Vec3> dataVec3;
+    Data<sofa::helper::vector<sofa::defaulttype::Vec3>> dataVectorVec3;
+    Data<sofa::helper::vector<sofa::helper::types::RGBAColor>> dataVectorColor;
+};
+
+TEST_F(Data_test, getValueTypeString)
+{
+    EXPECT_EQ(dataInt.getValueTypeString(), "int");
+    EXPECT_EQ(dataFloat.getValueTypeString(), "float");
+    EXPECT_EQ(dataBool.getValueTypeString(), "bool");
+    EXPECT_EQ(dataVec3.getValueTypeString(), "Vec3d");
+    EXPECT_EQ(dataVectorVec3.getValueTypeString(), "vector<Vec3d>");
+    EXPECT_EQ(dataVectorColor.getValueTypeString(), "vector<RGBAColor>");
+}
+
+TEST_F(Data_test, getNameWithValueTypeInfo)
+{
+    EXPECT_EQ(dataInt.getValueTypeInfo()->name(), "int");
+    EXPECT_EQ(dataFloat.getValueTypeInfo()->name(), "float");
+    EXPECT_EQ(dataBool.getValueTypeInfo()->name(), "bool");
+    EXPECT_EQ(dataVec3.getValueTypeInfo()->name(), "Vec3d");
+    EXPECT_EQ(dataVectorVec3.getValueTypeInfo()->name(), "vector<Vec3d>");
+    EXPECT_EQ(dataVectorColor.getValueTypeInfo()->name(), "vector<RGBAColor>");
+}
 
 /**  Test suite for data link.
 Create two datas and a link between them.
@@ -86,12 +117,12 @@ struct vectorData_test: public ::testing::Test
 
     void test_resize()
     {
-       vDataInt.resize(3);
-       ASSERT_EQ(vDataInt.size(),3u);
-       vDataInt.resize(10);
-       ASSERT_EQ(vDataInt.size(),10u);
-       vDataInt.resize(8);
-       ASSERT_EQ(vDataInt.size(),8u);
+        vDataInt.resize(3);
+        ASSERT_EQ(vDataInt.size(),3u);
+        vDataInt.resize(10);
+        ASSERT_EQ(vDataInt.size(),10u);
+        vDataInt.resize(8);
+        ASSERT_EQ(vDataInt.size(),8u);
     }
 
     void test_link()

@@ -92,19 +92,6 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const ProximityROI<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
-
-protected:
-
 public:
     //Input
     Data< helper::vector<Vec3> > centers; ///< Center(s) of the sphere(s)

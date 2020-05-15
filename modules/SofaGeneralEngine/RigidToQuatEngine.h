@@ -69,16 +69,6 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const RigidToQuatEngine<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     //
     Data<helper::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
     Data<helper::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
@@ -88,7 +78,6 @@ public:
 
 #if  !defined(RIGIDTOQUATENGINE_CPP)
 extern template class SOFA_GENERAL_ENGINE_API RigidToQuatEngine<defaulttype::Vec3Types>;
- 
 #endif
 
 } // namespace engine

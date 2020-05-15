@@ -163,7 +163,7 @@ void Simulation::init ( Node* root )
                         <<root->getContext()->sendl;
 
         DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
-        aloop->setName(sofa::core::objectmodel::BaseObject::shortName(aloop.get()));
+        aloop->setName(sofa::helper::NameDecoder::shortName(aloop->getClassName()));
         root->addObject(aloop);
     }
 
@@ -174,7 +174,7 @@ void Simulation::init ( Node* root )
                         <<root->getContext()->sendl;
 
         DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
-        vloop->setName(sofa::core::objectmodel::BaseObject::shortName(vloop.get()));
+        vloop->setName(sofa::helper::NameDecoder::shortName(vloop->getClassName()));
         root->addObject(vloop);
     }
 

@@ -53,33 +53,17 @@ public:
     ~SumEngine() override {}
 
     void init() override;
-
     void reinit() override;
-
     void doUpdate() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SumEngine<TDataType>* = nullptr)
-    {
-        return defaulttype::DataTypeInfo<TDataType>::name();
-    }
-
-
 protected:
-
     Data<VecData> d_input; ///< input vector
     Data<DataType> d_output; ///< output sum
-
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SumEngine_CPP)
 extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec1d>;
 extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec3d>;
-
 #endif
 
 } // namespace engine
