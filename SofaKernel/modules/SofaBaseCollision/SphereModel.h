@@ -165,17 +165,6 @@ public:
         return obj;
     }
 
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SphereCollisionModel<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     //TODO(dmarchal) guideline de sofa.
     Data< VecReal > radius; ///< Radius of each sphere
     Data< SReal > defaultRadius; ///< Default Radius

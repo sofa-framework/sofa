@@ -123,16 +123,6 @@ public:
         return BaseObject::create(tObj, context, arg);
     }
 
-    virtual string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static string templateName(const BoxROI<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
 public:
     //Input
     Data<vector<Vec6> >  d_alignedBoxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax

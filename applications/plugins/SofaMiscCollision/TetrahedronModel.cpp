@@ -54,6 +54,8 @@ TetrahedronCollisionModel::TetrahedronCollisionModel()
     : tetra(nullptr)
     , mstate(nullptr)
     , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
+    , m_topologyRevision(-1)
 {
     enum_type = TETRAHEDRON_TYPE;
 }
@@ -73,10 +75,10 @@ void TetrahedronCollisionModel::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    _topology = l_topology.get();
+    m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-    if (!_topology)
+    if (!m_topology)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TetrahedronCollisionModel requires a BaseMeshTopology";
         sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
@@ -92,15 +94,25 @@ void TetrahedronCollisionModel::init()
         return;
     }
 
-    tetra = &_topology->getTetrahedra();
-    resize(tetra->size());
-
+    updateFromTopology();
 }
 
-void TetrahedronCollisionModel::handleTopologyChange()
+
+void TetrahedronCollisionModel::updateFromTopology()
 {
-    resize(_topology->getNbTetrahedra());
+    int revision = m_topology->getRevision();
+    if (revision == m_topologyRevision)
+        return;
+    
+    if (m_topology->getNbTetrahedra() != elems.size())
+    {
+        tetra = &m_topology->getTetrahedra();
+        resize(tetra->size());
+    }
+
+    m_topologyRevision = revision;
 }
+
 
 void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector<sofa::defaulttype::Vector3>& tetraVertices, std::vector<sofa::defaulttype::Vector3>& normalVertices)
 {
@@ -161,7 +173,7 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams,i
 void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     vparams->drawTool()->saveLastState();
-    if (mstate && _topology && vparams->displayFlags().getShowCollisionModels())
+    if (mstate && m_topology && vparams->displayFlags().getShowCollisionModels())
     {
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, true);
@@ -195,8 +207,10 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
 void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    if (!mstate || !_topology) return;
+    if (!mstate || !m_topology) return;
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+
+    updateFromTopology();
 
     Vector3 minElem, maxElem;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();

@@ -602,7 +602,7 @@ void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams*)
         glDisable(GL_LIGHTING);
         glColor3f(0, 0, 0);
         glBegin(GL_LINES);
-        for(int i = 0; i < /*4*/m_nbTetras; ++i)
+        for(size_t i = 0; i < /*4*/m_nbTetras; ++i)
         {
 //        unsigned int i = 1;
             for(int j = 0; j < 3; ++j)

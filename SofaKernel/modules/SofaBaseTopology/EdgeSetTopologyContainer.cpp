@@ -225,44 +225,42 @@ int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<
 
 bool EdgeSetTopologyContainer::checkTopology() const
 {
-	if (CHECK_TOPOLOGY)
-	{
-		bool ret = true;
+    if (!d_checkTopology.getValue())
+        return true;
 
-        if (hasEdgesAroundVertex())
-		{
-			helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-			std::set<int> edgeSet;
+    bool ret = true;
 
-            // loop on all edges around vertex
-            for (size_t i = 0; i < m_edgesAroundVertex.size(); ++i)
-			{
-				const sofa::helper::vector<EdgeID> &es = m_edgesAroundVertex[i];
-				for (size_t j = 0; j < es.size(); ++j)
-				{
-                    const Edge& edge = m_edge[es[j]];
-                    if (!(edge[0] == i || edge[1] == i))
-					{
-                        msg_error() << "EdgeSetTopologyContainer::checkTopology() failed: edge " << es[j] << ": [" << edge << "] not around vertex: " << i;
-						ret = false;
-					}
+    if (hasEdgesAroundVertex())
+    {
+        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+        std::set<int> edgeSet;
 
-                    // count number of edge
-                    edgeSet.insert(es[j]);
-				}
-			}
+        // loop on all edges around vertex
+        for (size_t i = 0; i < m_edgesAroundVertex.size(); ++i)
+        {
+            const sofa::helper::vector<EdgeID> &es = m_edgesAroundVertex[i];
+            for (size_t j = 0; j < es.size(); ++j)
+            {
+                const Edge& edge = m_edge[es[j]];
+                if (!(edge[0] == i || edge[1] == i))
+                {
+                    msg_error() << "EdgeSetTopologyContainer::checkTopology() failed: edge " << es[j] << ": [" << edge << "] not around vertex: " << i;
+                    ret = false;
+                }
 
-			if (edgeSet.size() != m_edge.size())
-			{
-                msg_error() << "EdgeSetTopologyContainer::checkTopology() failed: found " << edgeSet.size() << " edges in m_edgesAroundVertex out of " << m_edge.size();
-				ret = false;
+                // count number of edge
+                edgeSet.insert(es[j]);
             }
         }
 
-		return ret && PointSetTopologyContainer::checkTopology();
-	}
+        if (edgeSet.size() != m_edge.size())
+        {
+            msg_error() << "EdgeSetTopologyContainer::checkTopology() failed: found " << edgeSet.size() << " edges in m_edgesAroundVertex out of " << m_edge.size();
+            ret = false;
+        }
+    }
 
-    return true;
+    return ret && PointSetTopologyContainer::checkTopology();
 }
 
 

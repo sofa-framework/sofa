@@ -96,9 +96,6 @@ public:
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles; ///< output triangles
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const DepthMapToMeshEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
-
     DepthMapToMeshEngine()    :   Inherited()
         , depthFactor(initData(&depthFactor,(Real)(1.0),"depthFactor","Intensity to depth factor"))
         , minThreshold(initData(&minThreshold,(Real)(0.1),"minThreshold","minimal depth for point creation"))

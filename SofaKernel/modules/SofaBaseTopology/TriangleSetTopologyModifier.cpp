@@ -168,7 +168,7 @@ void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector
 void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 {
 
-	if (CHECK_TOPOLOGY)
+	if (m_container->d_checkTopology.getValue())
 	{
 		// check if the 3 vertices are different
 		if ((t[0] == t[1]) || (t[0] == t[2]) || (t[1] == t[2]))

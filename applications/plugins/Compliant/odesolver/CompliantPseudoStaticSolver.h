@@ -43,9 +43,10 @@ class CompliantPseudoStaticSolver : public CompliantOdeSolver {
                        SReal dt,
                        core::MultiVecCoordId posId,
                        core::MultiVecDerivId velId) override;
-
-    virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const CompliantPseudoStaticSolver<CompliantOdeSolver>* x= NULL) { return CompliantOdeSolver::className( (CompliantOdeSolver*)x ); }
+    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
+    /// so we need to override that by implementing GetCustomTemplateName() function
+    /// More details on the name customization infrastructure is in NameDecoder.h
+    static const std::string GetCustomTemplateName() { return sofa::helper::NameDecoder::getClassName<CompliantOdeSolver>(); }
 };
 
 }

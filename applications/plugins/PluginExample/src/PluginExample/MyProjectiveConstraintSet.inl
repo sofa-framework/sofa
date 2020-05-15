@@ -19,24 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include "MyProjectiveConstraintSet.h"
+#include <PluginExample/MyProjectiveConstraintSet.h>
 
 
-namespace sofa
+namespace sofa::component::projectiveconstraintset
 {
-
-namespace component
-{
-
-namespace projectiveconstraintset
-{
-
-
 
 template <class DataTypes>
 MyProjectiveConstraintSet<DataTypes>::MyProjectiveConstraintSet()
-    :core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
 {
 }
 
@@ -59,8 +52,4 @@ void MyProjectiveConstraintSet<DataTypes>::reinit()
 
 
 
-}	//constraint
-
-}	//component
-
-}	//sofa
+} // namespace sofa::component::projectiveconstraintset

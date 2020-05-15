@@ -97,7 +97,7 @@ void QuadSetTopologyModifier::addQuads(const sofa::helper::vector<Quad> &quads,
 
 void QuadSetTopologyModifier::addQuadProcess(Quad t)
 {
-	if (CHECK_TOPOLOGY)
+	if (m_container->d_checkTopology.getValue())
 	{
 		// check if the 4 vertices are different
 		if ((t[0] == t[1]) || (t[0] == t[2]) || (t[0] == t[3])

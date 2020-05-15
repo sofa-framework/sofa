@@ -818,88 +818,87 @@ HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopologyContai
 
 bool HexahedronSetTopologyContainer::checkTopology() const
 {
-	if (CHECK_TOPOLOGY)
+    if (!d_checkTopology.getValue())
+        return true;
+
+	bool ret = true;
+	helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+	if (hasHexahedraAroundVertex())
 	{
-		bool ret = true;
-		helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
-		if (hasHexahedraAroundVertex())
+		for (size_t i = 0; i < m_hexahedraAroundVertex.size(); ++i)
 		{
-			for (size_t i = 0; i < m_hexahedraAroundVertex.size(); ++i)
+			const sofa::helper::vector<HexahedronID> &tvs = m_hexahedraAroundVertex[i];
+			for (size_t j = 0; j < tvs.size(); ++j)
 			{
-				const sofa::helper::vector<HexahedronID> &tvs = m_hexahedraAroundVertex[i];
-				for (size_t j = 0; j < tvs.size(); ++j)
-				{
-					bool check_hexa_vertex_shell = (m_hexahedron[tvs[j]][0] == i)
-						|| (m_hexahedron[tvs[j]][1] == i)
-						|| (m_hexahedron[tvs[j]][2] == i)
-						|| (m_hexahedron[tvs[j]][3] == i)
-						|| (m_hexahedron[tvs[j]][4] == i)
-						|| (m_hexahedron[tvs[j]][5] == i)
-						|| (m_hexahedron[tvs[j]][6] == i)
-						|| (m_hexahedron[tvs[j]][7] == i);
+				bool check_hexa_vertex_shell = (m_hexahedron[tvs[j]][0] == i)
+					|| (m_hexahedron[tvs[j]][1] == i)
+					|| (m_hexahedron[tvs[j]][2] == i)
+					|| (m_hexahedron[tvs[j]][3] == i)
+					|| (m_hexahedron[tvs[j]][4] == i)
+					|| (m_hexahedron[tvs[j]][5] == i)
+					|| (m_hexahedron[tvs[j]][6] == i)
+					|| (m_hexahedron[tvs[j]][7] == i);
 
-					if (!check_hexa_vertex_shell)
-					{
-						msg_error() << "*** CHECK FAILED : check_hexa_vertex_shell, i = " << i << " , j = " << j;
-						ret = false;
-					}
+				if (!check_hexa_vertex_shell)
+				{
+					msg_error() << "*** CHECK FAILED : check_hexa_vertex_shell, i = " << i << " , j = " << j;
+					ret = false;
 				}
 			}
 		}
-
-		if (hasHexahedraAroundEdge())
-		{
-			for (size_t i = 0; i < m_hexahedraAroundEdge.size(); ++i)
-			{
-				const sofa::helper::vector<HexahedronID> &tes = m_hexahedraAroundEdge[i];
-				for (size_t j = 0; j < tes.size(); ++j)
-				{
-					bool check_hexa_edge_shell = (m_edgesInHexahedron[tes[j]][0] == i)
-						|| (m_edgesInHexahedron[tes[j]][1] == i)
-						|| (m_edgesInHexahedron[tes[j]][2] == i)
-						|| (m_edgesInHexahedron[tes[j]][3] == i)
-						|| (m_edgesInHexahedron[tes[j]][4] == i)
-						|| (m_edgesInHexahedron[tes[j]][5] == i)
-						|| (m_edgesInHexahedron[tes[j]][6] == i)
-						|| (m_edgesInHexahedron[tes[j]][7] == i)
-						|| (m_edgesInHexahedron[tes[j]][8] == i)
-						|| (m_edgesInHexahedron[tes[j]][9] == i)
-						|| (m_edgesInHexahedron[tes[j]][10] == i)
-						|| (m_edgesInHexahedron[tes[j]][11] == i);
-					if (!check_hexa_edge_shell)
-					{
-						msg_error() << "*** CHECK FAILED : check_hexa_edge_shell, i = " << i << " , j = " << j;
-						ret = false;
-					}
-				}
-			}
-		}
-
-		if (hasHexahedraAroundQuad())
-		{
-			for (size_t i = 0; i < m_hexahedraAroundQuad.size(); ++i)
-			{
-				const sofa::helper::vector<HexahedronID> &tes = m_hexahedraAroundQuad[i];
-				for (size_t j = 0; j < tes.size(); ++j)
-				{
-					bool check_hexa_quad_shell = (m_quadsInHexahedron[tes[j]][0] == i)
-						|| (m_quadsInHexahedron[tes[j]][1] == i)
-						|| (m_quadsInHexahedron[tes[j]][2] == i)
-						|| (m_quadsInHexahedron[tes[j]][3] == i)
-						|| (m_quadsInHexahedron[tes[j]][4] == i)
-						|| (m_quadsInHexahedron[tes[j]][5] == i);
-					if (!check_hexa_quad_shell)
-					{
-						msg_error() << "*** CHECK FAILED : check_hexa_quad_shell, i = " << i << " , j = " << j;
-						ret = false;
-					}
-				}
-			}
-		}
-
-		return ret && QuadSetTopologyContainer::checkTopology();
 	}
-    return true;
+
+	if (hasHexahedraAroundEdge())
+	{
+		for (size_t i = 0; i < m_hexahedraAroundEdge.size(); ++i)
+		{
+			const sofa::helper::vector<HexahedronID> &tes = m_hexahedraAroundEdge[i];
+			for (size_t j = 0; j < tes.size(); ++j)
+			{
+				bool check_hexa_edge_shell = (m_edgesInHexahedron[tes[j]][0] == i)
+					|| (m_edgesInHexahedron[tes[j]][1] == i)
+					|| (m_edgesInHexahedron[tes[j]][2] == i)
+					|| (m_edgesInHexahedron[tes[j]][3] == i)
+					|| (m_edgesInHexahedron[tes[j]][4] == i)
+					|| (m_edgesInHexahedron[tes[j]][5] == i)
+					|| (m_edgesInHexahedron[tes[j]][6] == i)
+					|| (m_edgesInHexahedron[tes[j]][7] == i)
+					|| (m_edgesInHexahedron[tes[j]][8] == i)
+					|| (m_edgesInHexahedron[tes[j]][9] == i)
+					|| (m_edgesInHexahedron[tes[j]][10] == i)
+					|| (m_edgesInHexahedron[tes[j]][11] == i);
+				if (!check_hexa_edge_shell)
+				{
+					msg_error() << "*** CHECK FAILED : check_hexa_edge_shell, i = " << i << " , j = " << j;
+					ret = false;
+				}
+			}
+		}
+	}
+
+	if (hasHexahedraAroundQuad())
+	{
+		for (size_t i = 0; i < m_hexahedraAroundQuad.size(); ++i)
+		{
+			const sofa::helper::vector<HexahedronID> &tes = m_hexahedraAroundQuad[i];
+			for (size_t j = 0; j < tes.size(); ++j)
+			{
+				bool check_hexa_quad_shell = (m_quadsInHexahedron[tes[j]][0] == i)
+					|| (m_quadsInHexahedron[tes[j]][1] == i)
+					|| (m_quadsInHexahedron[tes[j]][2] == i)
+					|| (m_quadsInHexahedron[tes[j]][3] == i)
+					|| (m_quadsInHexahedron[tes[j]][4] == i)
+					|| (m_quadsInHexahedron[tes[j]][5] == i);
+				if (!check_hexa_quad_shell)
+				{
+					msg_error() << "*** CHECK FAILED : check_hexa_quad_shell, i = " << i << " , j = " << j;
+					ret = false;
+				}
+			}
+		}
+	}
+
+	return ret && QuadSetTopologyContainer::checkTopology();
 }
 
 

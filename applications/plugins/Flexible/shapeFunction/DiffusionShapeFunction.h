@@ -430,8 +430,6 @@ public:
 
     //@}
 
-    virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const DiffusionShapeFunction<ShapeFunctionTypes_,ImageTypes_>* = NULL) { return ShapeFunctionTypes_::Name()+std::string(",")+ImageTypes_::Name(); }
 
 
     virtual void init() override

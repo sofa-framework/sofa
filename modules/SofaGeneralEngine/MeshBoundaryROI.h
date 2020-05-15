@@ -62,9 +62,6 @@ public:
     /// outputs
     Data< SetIndex > d_indices;
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MeshBoundaryROI* = nullptr) { return std::string();    }
-
 protected:
 
     MeshBoundaryROI()    : Inherited()

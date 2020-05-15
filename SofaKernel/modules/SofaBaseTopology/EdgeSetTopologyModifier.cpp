@@ -66,7 +66,7 @@ void EdgeSetTopologyModifier::init()
 
 void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 {
-	if (CHECK_TOPOLOGY)
+	if (m_container->d_checkTopology.getValue())
 	{
 		// check if the 2 vertices are different
 		if (e[0] == e[1])
