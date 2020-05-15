@@ -8,6 +8,9 @@ set(SOFAMISCFEM_HAVE_NEWMAT @SOFAMISCFEM_HAVE_NEWMAT@)
 
 find_package(SofaGeneral REQUIRED)
 
+# Required by SofaMiscEngine
+find_package(SofaNonUniformFem REQUIRED)
+
 if(SOFAMISCTOPOLOGY_HAVE_ZLIB)
     find_package(ZLIB QUIET REQUIRED)
 endif()
