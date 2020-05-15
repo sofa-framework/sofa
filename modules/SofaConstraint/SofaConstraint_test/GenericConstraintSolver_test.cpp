@@ -48,7 +48,7 @@ struct GenericConstraintSolver_test : BaseSimulationTest
                     "   <GenericConstraintSolver name='solver' constraintForces='-1 -1 -1' computeConstraintForces='True' maxIt='1000' tolerance='0.001' />\n"
                     "   <Node name='collision'>\n"
                     "         <MechanicalObject />\n"
-                    "         <UncoupledConstraintCorrection />\n"
+                    "         <UncoupledConstraintCorrection useOdeSolverIntegrationFactors='0' />\n"
                     "   </Node>\n"
                     "</Node>\n"
                     );
