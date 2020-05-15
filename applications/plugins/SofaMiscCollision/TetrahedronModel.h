@@ -103,11 +103,15 @@ protected:
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
+
+    int m_topologyRevision; ///< internal revision number to check if topology has changed.
 
 protected:
 
     TetrahedronCollisionModel();
+
+    virtual void updateFromTopology();
     void addTetraToDraw(const Tetrahedron& t, std::vector<sofa::defaulttype::Vector3>& tetraVertices, std::vector<sofa::defaulttype::Vector3>& normalVertices);
 public:
     void init() override;
@@ -123,8 +127,6 @@ public:
     void draw(const core::visual::VisualParams*,int index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
-
-    void handleTopologyChange() override;
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
 

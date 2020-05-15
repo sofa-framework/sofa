@@ -112,15 +112,11 @@ namespace cgal
 		
 		typedef CGAL::Delaunay_mesh_size_criteria_2<CDT> Criteria;
 		
-		typedef CDT::Point_iterator Point_iterator;
 		typedef CDT::Vertex_iterator Vertex_iterator;
 		typedef CDT::Face_iterator Face_iterator;
-		typedef CDT::Finite_faces_iterator Finite_faces_iterator;
 		typedef CDT::Vertex_handle Vertex_handle;
 		typedef CDT::Face_handle Face_handle;
 		typedef CDT::Point CGALPoint;
-		typedef CDT::Vertex Vertex;
-		typedef CDT::Face Face;
 		
 		
 		helper::ReadAccessor< Data< VecCoord > > points = d_points;

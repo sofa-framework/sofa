@@ -34,7 +34,6 @@
 #include <cstring>
 #include <cmath>
 
-#include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
 
 #include <sofa/helper/system/thread/CTime.h>

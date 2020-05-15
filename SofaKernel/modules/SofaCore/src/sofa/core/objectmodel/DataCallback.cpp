@@ -60,22 +60,6 @@ void DataCallback::notifyEndEdit()
     }
 }
 
-const std::string& DataCallback::getName() const
-{
-    static std::string s="";
-    return s;
-}
-
-sofa::core::objectmodel::Base* DataCallback::getOwner() const
-{
-    return nullptr;
-}
-
-sofa::core::objectmodel::BaseData* DataCallback::getData() const
-{
-    return nullptr;
-}
-
 void DataCallback::update()
 {
 

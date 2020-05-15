@@ -61,10 +61,10 @@ template class IdentityMapping< OpenCLVec3fTypes, OpenCLVec3dTypes>;
 template class IdentityMapping< OpenCLVec3dTypes, OpenCLVec3fTypes>;
 template class IdentityMapping< OpenCLVec3dTypes, OpenCLVec3dTypes>;
 template class IdentityMapping< OpenCLVec3dTypes, Vec3fTypes>;
-template class IdentityMapping< OpenCLVec3Types, Vec3Types>;
+template class IdentityMapping< OpenCLVec3dTypes, Vec3Types>;
 
 template class IdentityMapping< Vec3fTypes, OpenCLVec3dTypes>;
-template class IdentityMapping< Vec3Types, OpenCLVec3Types>;
+template class IdentityMapping< Vec3Types, OpenCLVec3dTypes>;
 
 
 template class IdentityMapping< OpenCLVec3d1Types, Vec3fTypes>;
@@ -108,10 +108,10 @@ int IdentityMappingOpenCLClass = core::RegisterObject("Supports GPU-side computa
         .add< IdentityMapping< OpenCLVec3dTypes, OpenCLVec3fTypes> >()
         .add< IdentityMapping< OpenCLVec3dTypes, OpenCLVec3dTypes> >()
         .add< IdentityMapping< OpenCLVec3dTypes, Vec3fTypes> >()
-        .add< IdentityMapping< OpenCLVec3Types, Vec3Types> >()
+        .add< IdentityMapping< OpenCLVec3dTypes, Vec3Types> >()
 
         .add< IdentityMapping< Vec3fTypes, OpenCLVec3dTypes> >()
-        .add< IdentityMapping< Vec3Types, OpenCLVec3Types> >()
+        .add< IdentityMapping< Vec3dTypes, OpenCLVec3Types> >()
 
         .add< IdentityMapping< OpenCLVec3d1Types, Vec3fTypes> >()
         .add< IdentityMapping< OpenCLVec3f1Types, OpenCLVec3f1Types> >()

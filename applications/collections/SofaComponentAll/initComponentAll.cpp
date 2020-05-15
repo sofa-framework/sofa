@@ -25,7 +25,6 @@
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaAdvanced/initSofaAdvanced.h>
 #include <SofaMisc/initSofaMisc.h>
 
 #include <sofa/helper/logging/Messaging.h>
@@ -60,7 +59,6 @@ void initExternalModule()
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaAdvanced();
     sofa::component::initSofaMisc();
 }
 

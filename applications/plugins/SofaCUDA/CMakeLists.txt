@@ -172,7 +172,6 @@ endif()
 
 set(README_FILES SofaCUDA.txt)
 
-find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(VolumetricRendering QUIET)

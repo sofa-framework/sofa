@@ -12,16 +12,25 @@ set(SOFAADVANCED_TARGETS
     SofaNonUniformFem
 )
 
-foreach(TARGET ${SOFAADVANCED_TARGETS})
-    add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-    target_include_directories(${TARGET} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
-    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
-    set_target_properties(${TARGET} PROPERTIES FOLDER SofaAdvanced) # IDE folder
-    set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFAADVANCED_VERSION})
-endforeach()
+message(DEPRECATION
+    " ${PROJECT_NAME} is deprecated.\n"
+    " You should now explicitely find (find_package) and link (target_link_library) each module you need within: \n"
+    " ${SOFAADVANCED_TARGETS}"
+    )
 
+foreach(TARGET ${SOFAADVANCED_TARGETS})
+    find_package(${TARGET} QUIET)
+    if(NOT ${TARGET}_FOUND)
+        string(TOUPPER module_${TARGET} MODULE_TO_CHECK)
+        list(APPEND LIST_MODULES_TO_CHECK ${MODULE_TO_CHECK})
+    endif()
+endforeach()
+if(LIST_MODULES_TO_CHECK)
+    message(FATAL_ERROR
+        " If you still want to use ${PROJECT_NAME}, please enable the following CMake option(s): \n"
+        " ${LIST_MODULES_TO_CHECK}"
+        )
+endif()
 
 set(SOFAADVANCED_SRC src/${PROJECT_NAME})
 

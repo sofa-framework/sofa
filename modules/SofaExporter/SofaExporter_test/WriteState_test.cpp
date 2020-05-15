@@ -24,8 +24,9 @@
 #include <iterator>
 #include <algorithm>
 
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
@@ -35,6 +36,10 @@
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaExporter/WriteState.h>
 
+#include <SofaBase/initSofaBase.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaGeneral/initSofaGeneral.h>
+
 namespace sofa {
 
     using namespace component;
@@ -43,7 +48,7 @@ namespace sofa {
 
 
     template <typename _DataTypes>
-    struct WriteState_test : public Sofa_test<typename _DataTypes::Real>
+    struct WriteState_test : public BaseTest
     {
         typedef _DataTypes DataTypes;
         typedef typename DataTypes::CPos CPos;
@@ -71,6 +76,9 @@ namespace sofa {
         /// Create the context for the scene
         void SetUp()
         {
+            sofa::component::initSofaBase();
+            sofa::component::initSofaCommon();
+            sofa::component::initSofaGeneral();
             // Init simulation
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
             root = simulation::getSimulation()->createNewGraph("root");

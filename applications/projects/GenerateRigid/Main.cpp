@@ -24,7 +24,6 @@
 #include <fstream>
 
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaAdvanced/initSofaAdvanced.h>
 #include <SofaMisc/initSofaMisc.h>
 
 using namespace sofa::defaulttype;
@@ -39,7 +38,6 @@ int main(int argc, char** argv)
 
 
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaAdvanced();
     sofa::component::initSofaMisc();
 
 //////// SCALE //////

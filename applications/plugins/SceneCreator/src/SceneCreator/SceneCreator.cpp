@@ -107,7 +107,7 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Implicit_SparseLDL")
     {
-        if(SCENECREATOR_HAVE_METIS)
+        if(SCENECREATOR_HAVE_SOFASPARSESOLVER)
         {
             simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
                                                                   {"rayleighStiffness","0.01"},

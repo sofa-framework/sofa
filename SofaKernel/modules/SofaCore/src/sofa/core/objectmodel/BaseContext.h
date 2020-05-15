@@ -62,13 +62,6 @@ public:
     SOFA_CLASS(BaseContext, Base);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseContext)
 
-    /// @name Types defined for local coordinate system handling
-    /// @{
-
-//    typedef SolidTypes::Rot Quat;
-//    typedef SolidTypes::Mat Mat33;
-    /// @}
-
     typedef defaulttype::Vector3 Vec3;
 
 protected:

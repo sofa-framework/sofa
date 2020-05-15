@@ -115,7 +115,7 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
     , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
     , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
-    , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, false, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
+    , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, true, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_pOdeSolver(nullptr)
 {

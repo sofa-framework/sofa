@@ -46,8 +46,6 @@ BaseData::BaseData(const std::string& h, DataFlags dataflags)
     , m_owner(nullptr), m_name("")
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
-    addLink(&inputs);
-    addLink(&outputs);
     m_counter = 0;
     m_isSet = false;
     setFlag(FLAG_PERSISTENT, false);
@@ -63,8 +61,6 @@ BaseData::BaseData( const std::string& h, bool isDisplayed, bool isReadOnly)
     , m_counter(), m_isSet(), m_dataFlags(FLAG_DEFAULT), m_owner(nullptr), m_name("")
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
-    addLink(&inputs);
-    addLink(&outputs);
     m_counter = 0;
     m_isSet = false;
     setFlag(FLAG_DISPLAYED,isDisplayed);
@@ -78,8 +74,6 @@ BaseData::BaseData( const BaseInitData& init)
     , m_owner(init.owner), m_name(init.name)
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
-    addLink(&inputs);
-    addLink(&outputs);
     m_counter = 0;
     m_isSet = false;
 
@@ -303,11 +297,6 @@ bool BaseData::copyValue(const BaseData* parent)
     if (updateFromParentValue(parent))
         return true;
     return false;
-}
-
-bool BaseData::findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link)
-{
-    return DDGNode::findDataLinkDest(ptr, path, link);
 }
 
 bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)

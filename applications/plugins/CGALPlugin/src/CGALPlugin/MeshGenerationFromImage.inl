@@ -378,24 +378,24 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::doUpdate()
             if (bbmax[c]-bbmin[c] > bbmax[axis]-bbmin[axis]) axis=c;
         msg_info(this) << "Ordering along the " << (char)('X'+axis) << " axis.";
         helper::vector< std::pair<float,int> > sortArray;
-        for (int i=0; i<nbp; ++i)
+        for (size_t i=0; i<nbp; ++i)
             sortArray.push_back(std::make_pair((float)newPoints[i][axis], i));
         std::sort(sortArray.begin(), sortArray.end(), compare_pair_first<float,int>);
         helper::vector<int> old2newP;
         old2newP.resize(nbp);
         VecCoord oldPoints = newPoints.ref();
-        for (int i=0; i<nbp; ++i)
+        for (size_t i=0; i<nbp; ++i)
         {
             newPoints[i] = oldPoints[sortArray[i].second];
             old2newP[sortArray[i].second] = i;
         }
-        for (int e=0; e<nbe; ++e)
+        for (size_t e=0; e<nbe; ++e)
         {
             for (int i=0; i<4; i++)
                 tetrahedra[e][i] = old2newP[tetrahedra[e][i]];
         }
         helper::vector< std::pair<int,int> > sortArray2;
-        for (int e=0; e<nbe; ++e)
+        for (size_t e=0; e<nbe; ++e)
         {
             unsigned int p = tetrahedra[e][0];
             for (int i=0; i<4; i++)
@@ -405,7 +405,7 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::doUpdate()
         std::sort(sortArray2.begin(), sortArray2.end(), compare_pair_first<int,int>);
         SeqTetrahedra oldTetrahedra = tetrahedra.ref();
         vector<int> oldTetraDomains = tetraDomain.ref();
-        for (int i=0; i<nbe; ++i)
+        for (size_t i=0; i<nbe; ++i)
         {
             tetrahedra[i] = oldTetrahedra[sortArray2[i].second];
             tetraDomain[i] = oldTetraDomains[sortArray2[i].second];

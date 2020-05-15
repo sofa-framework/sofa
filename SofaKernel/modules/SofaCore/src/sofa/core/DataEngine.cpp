@@ -30,8 +30,6 @@ namespace core
 
 DataEngine::DataEngine()
 {
-    addLink(&(this->core::objectmodel::DDGNode::inputs));
-    addLink(&(this->core::objectmodel::DDGNode::outputs));
 }
 
 DataEngine::~DataEngine()

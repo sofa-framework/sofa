@@ -110,7 +110,7 @@ public:
     /** \brief Checks if the Topology is coherent
      *
      */
-    virtual bool checkTopology() const;
+    bool checkTopology() const override;
 
     /** \brief add one DOF in this topology (simply increment the number of DOF)
      *

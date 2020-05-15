@@ -6,7 +6,6 @@ project(SofaGui)
 ## Sofa
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
-find_package(SofaAdvanced REQUIRED)
 
 set(SOFAGUI_TARGETS "")
 
