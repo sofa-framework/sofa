@@ -20,17 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
-#include "OpenCTMLoader.h"
+#include <SofaOpenCTM/OpenCTMLoader.h>
 #include <fstream>
 #include <openctm.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 using namespace sofa::defaulttype;
@@ -136,10 +130,4 @@ bool OpenCTMLoader::readOpenCTM(const char *filename)
     return true;
 }
 
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::loader

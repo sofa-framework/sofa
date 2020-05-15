@@ -21,21 +21,15 @@
 ******************************************************************************/
 
 #include <sofa/core/ObjectFactory.h>
-#include "OpenCTMExporter.h"
+#include <SofaOpenCTM/OpenCTMExporter.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
-#include "openctm.h" 
+#include <openctm.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 int OpenCTMExporterClass = core::RegisterObject("Export current topology under OpenCTM file format")
@@ -272,8 +266,4 @@ void OpenCTMExporter::bwdInit()
         writeOpenCTM();
 }
 
-}
-
-}
-
-}
+} // namespace sofa::component::misc
