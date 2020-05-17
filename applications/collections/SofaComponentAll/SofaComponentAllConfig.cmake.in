@@ -5,7 +5,6 @@
 find_package(SofaBase REQUIRED)
 find_package(SofaCommon REQUIRED)
 find_package(SofaGeneral REQUIRED)
-find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)

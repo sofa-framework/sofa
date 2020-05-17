@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,11 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//========================================================
-// Yet another command line parser.
-// Francois Faure, iMAGIS-GRAVIR, May 2001
-//========================================================
-
 #ifndef SOFA_HELPER_ARGUMENTPARSER_H
 #define SOFA_HELPER_ARGUMENTPARSER_H
 
@@ -66,7 +61,6 @@ public:
      *  @param      argc from command line
      *  @param      argv from command line
      ****************************************************************************************/
-
     ArgumentParser(int argc, char **argv);
     ~ArgumentParser();
 
@@ -80,7 +74,6 @@ public:
      *  @param      name argument name such as "help,h" after the comma it's a character use as short name
      *  @param      help describing the argument
      ****************************************************************************************/
-
     void addArgument(const value_semantic* s, const std::string name, const std::string help);
     /**
      *****************************************************************************************

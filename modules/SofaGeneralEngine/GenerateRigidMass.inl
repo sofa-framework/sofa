@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -259,13 +259,7 @@ void GenerateRigidMass<DataTypes, MassType>::generateRigid()
 }
 
 template <class DataTypes, class MassType>
-std::string GenerateRigidMass<DataTypes, MassType>::getTemplateName() const
-{
-    return templateName(this);
-}
-
-template <class DataTypes, class MassType>
-std::string GenerateRigidMass<DataTypes, MassType>::templateName(const GenerateRigidMass<DataTypes, MassType>*)
+std::string GenerateRigidMass<DataTypes, MassType>::GetCustomTemplateName()
 {
     return DataTypes::Name();
 }

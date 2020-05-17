@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,16 +69,6 @@ public:
     void reinit() override;
     void doUpdate() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const DilateEngine<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
 protected:
     Data<VecCoord> d_inputX; ///< input position
     Data<VecCoord> d_outputX; ///< ouput position
@@ -92,7 +82,6 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP)
 extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3Types>;
-
 #endif
 
 } // namespace engine

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -166,7 +166,7 @@ TEST_F(DataCallback_test, testDataCallbackExample_1)
     });
 
     a.setValue(5);
-    EXPECT_EQ(results.size(), 2);
+    EXPECT_EQ(results.size(), size_t(2));
     EXPECT_EQ(results[0], 5);
     EXPECT_EQ(results[1], 0);
 

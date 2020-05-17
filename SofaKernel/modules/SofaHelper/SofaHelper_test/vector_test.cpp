@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,14 +76,14 @@ void vector_test<T>::checkVector(const std::vector<std::string>& params)
     /// means a problem will be un-noticed.
     EXPECT_EQ( result, out.str() ) ;
 
-    if (errtype == "Error")
+    if (errtype == "Error"){
         EXPECT_NE( counter.getMessageCountFor(Message::Error), numMessage ) ;
-    else if (errtype == "Warning")
+    }else if (errtype == "Warning"){
         EXPECT_NE( counter.getMessageCountFor(Message::Warning), numMessage ) ;
-    else if (errtype == "None")
+    }else if (errtype == "None"){
         EXPECT_EQ( counter.getMessageCountFor(Message::Warning)+
                    counter.getMessageCountFor(Message::Error), numMessage ) ;
-
+    }
 
     MessageDispatcher::rmHandler( &counter ) ;
 }

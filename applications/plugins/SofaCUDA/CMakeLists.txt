@@ -172,10 +172,10 @@ endif()
 
 set(README_FILES SofaCUDA.txt)
 
-find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(VolumetricRendering QUIET)
+find_package(SofaValidation REQUIRED)
 
 if(VolumetricRendering_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
@@ -286,10 +286,7 @@ endif()
 
 option(SOFACUDA_PRECISE "Use IEEE 754-compliant floating point operations." OFF)
 
-set(SOFACUDA_ARCH "sm_20" CACHE STRING "GPU architecture, as passed to nvcc with the -arch option.")
-
 include(SofaCUDANvccFlags.cmake)
-
 
 # nvcc uses a "host code compiler" to compile CPU code, specified by CUDA_HOST_COMPILER.
 # With some versions of CMake, CUDA_HOST_COMPILER defaults to CMAKE_C_COMPILER,
@@ -321,7 +318,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
-target_link_libraries(${PROJECT_NAME} SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaAdvanced SofaMisc)
+target_link_libraries(${PROJECT_NAME} SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaAdvanced SofaMisc SofaValidation)
+
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 if(NOT SOFA_NO_OPENGL)
     target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
@@ -351,6 +350,7 @@ if(SofaSphFluid_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaSphFluid)
 endif()
 
+
 ## SofaCUDANvccFlags.cmake
 # Build tree
 configure_file(SofaCUDANvccFlags.cmake ${CMAKE_BINARY_DIR}/cmake/SofaCUDANvccFlags.cmake COPYONLY)
@@ -358,8 +358,13 @@ configure_file(SofaCUDANvccFlags.cmake ${CMAKE_BINARY_DIR}/cmake/SofaCUDANvccFla
 install(FILES SofaCUDANvccFlags.cmake DESTINATION lib/cmake/SofaCUDA)
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(SofaCUDA ${SOFACUDA_VERSION} SofaCUDA SofaCUDA)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${SOFACUDA_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+)
 
 ## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-

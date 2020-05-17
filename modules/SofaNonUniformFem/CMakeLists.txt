@@ -1,56 +1,61 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaNonUniformFem)
+project(SofaNonUniformFem VERSION 1.0 LANGUAGES CXX)
+
+find_package(SofaBase REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
+set(SOFANONUNIFORMFEM_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    config.h
-    initNonUniformFEM.h
+    ${SOFANONUNIFORMFEM_SRC}/config.h.in
+    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFEM.h
     )
 
 set(SOURCE_FILES
-    initNonUniformFEM.cpp
+    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFEM.cpp
     )
 
 list(APPEND HEADER_FILES
-    DynamicSparseGridGeometryAlgorithms.h
-    DynamicSparseGridGeometryAlgorithms.inl
-    DynamicSparseGridTopologyAlgorithms.h
-    DynamicSparseGridTopologyContainer.h
-    DynamicSparseGridTopologyModifier.h
-    MultilevelHexahedronSetTopologyContainer.h
-    NonUniformHexahedralFEMForceFieldAndMass.h
-    NonUniformHexahedralFEMForceFieldAndMass.inl
-    NonUniformHexahedronFEMForceFieldAndMass.h
-    NonUniformHexahedronFEMForceFieldAndMass.inl
-    # NonUniformHexahedronFEMForceFieldDensity.h
-    # NonUniformHexahedronFEMForceFieldDensity.inl
-    SparseGridMultipleTopology.h
-    SparseGridRamificationTopology.h
+    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridGeometryAlgorithms.h
+    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridGeometryAlgorithms.inl
+    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyAlgorithms.h
+    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyContainer.h
+    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyModifier.h
+    ${SOFANONUNIFORMFEM_SRC}/MultilevelHexahedronSetTopologyContainer.h
+    ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedralFEMForceFieldAndMass.h
+    ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedralFEMForceFieldAndMass.inl
+    ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldAndMass.h
+    ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldAndMass.inl
+    # ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldDensity.h
+    # ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldDensity.inl
+    ${SOFANONUNIFORMFEM_SRC}/SparseGridMultipleTopology.h
+    ${SOFANONUNIFORMFEM_SRC}/SparseGridRamificationTopology.h
     )
 list(APPEND SOURCE_FILES
-    DynamicSparseGridGeometryAlgorithms.cpp
-    DynamicSparseGridTopologyAlgorithms.cpp
-    DynamicSparseGridTopologyContainer.cpp
-    DynamicSparseGridTopologyModifier.cpp
-    MultilevelHexahedronSetTopologyContainer.cpp
-    NonUniformHexahedralFEMForceFieldAndMass.cpp
-    NonUniformHexahedronFEMForceFieldAndMass.cpp
-    # NonUniformHexahedronFEMForceFieldDensity.cpp
-    SparseGridMultipleTopology.cpp
-    SparseGridRamificationTopology.cpp
+    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridGeometryAlgorithms.cpp
+    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyAlgorithms.cpp
+    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyContainer.cpp
+    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyModifier.cpp
+    ${SOFANONUNIFORMFEM_SRC}/MultilevelHexahedronSetTopologyContainer.cpp
+    ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedralFEMForceFieldAndMass.cpp
+    ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldAndMass.cpp
+    # ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldDensity.cpp
+    ${SOFANONUNIFORMFEM_SRC}/SparseGridMultipleTopology.cpp
+    ${SOFANONUNIFORMFEM_SRC}/SparseGridRamificationTopology.cpp
     )
 
-sofa_find_package(SofaDenseSolver QUIET BOTH_SCOPES)
+sofa_find_package(SofaDenseSolver QUIET)
 if(SofaDenseSolver_FOUND)
     list(APPEND HEADER_FILES
-        HexahedronCompositeFEMForceFieldAndMass.h
-        HexahedronCompositeFEMForceFieldAndMass.inl
-        HexahedronCompositeFEMMapping.h
-        HexahedronCompositeFEMMapping.inl
-        )
+        ${SOFANONUNIFORMFEM_SRC}/HexahedronCompositeFEMForceFieldAndMass.h
+        ${SOFANONUNIFORMFEM_SRC}/HexahedronCompositeFEMForceFieldAndMass.inl
+        ${SOFANONUNIFORMFEM_SRC}/HexahedronCompositeFEMMapping.h
+        ${SOFANONUNIFORMFEM_SRC}/HexahedronCompositeFEMMapping.inl
+    )
     list(APPEND SOURCE_FILES
-        HexahedronCompositeFEMForceFieldAndMass.cpp
-        HexahedronCompositeFEMMapping.cpp
-        )
+        ${SOFANONUNIFORMFEM_SRC}/HexahedronCompositeFEMForceFieldAndMass.cpp
+        ${SOFANONUNIFORMFEM_SRC}/HexahedronCompositeFEMMapping.cpp
+    )
 else()
     message(STATUS "SofaDenseSolver not found, disabling HexahedronCompositeFEMForceFieldAndMass compilation.")
 endif()
@@ -60,7 +65,19 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaGeneralSimpleFem 
 if(SofaDenseSolver_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaDenseSolver)
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_NON_UNIFORM_FEM")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFANONUNIFORMFEM")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaAdvanced ${PROJECT_NAME} "SofaAdvanced/${PROJECT_NAME}")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX _d)
+
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "src/${PROJECT_NAME}"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+)

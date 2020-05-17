@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,16 +87,16 @@ void SPHFluidForceFieldInternalData<gpu::opencl::OpenCLVec3fTypes>::Kernels_addD
 template <>
 void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
-    if (grid == NULL) return;
+    if (m_grid == NULL) return;
 
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    grid->updateGrid(x);
-    data.fillParams(this, kernelType.getValue());
+    m_grid->updateGrid(x);
+    data.fillParams(this, d_kernelType.getValue());
     f.resize(x.size());
-    Grid::Grid* g = grid->getGrid();
+    Grid::Grid* g = m_grid->getGrid();
     data.pos4.recreate(x.size());
     data.Kernels_computeDensity(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
@@ -115,7 +115,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::Me
 {
     //?
     return;
-    if (grid == NULL) return;
+    if (m_grid == NULL) return;
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -125,7 +125,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::Me
     const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     data.fillParams(this, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());
-    Grid::Grid* g = grid->getGrid();
+    Grid::Grid* g = m_grid->getGrid();
     data.Kernels_addDForce(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
@@ -155,16 +155,16 @@ void SPHFluidForceFieldInternalData<gpu::opencl::OpenCLVec3dTypes>::Kernels_addD
 template <>
 void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
-    if (grid == NULL) return;
+    if (m_grid == NULL) return;
 
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    grid->updateGrid(x);
-    data.fillParams(this, kernelType.getValue());
+    m_grid->updateGrid(x);
+    data.fillParams(this, d_kernelType.getValue());
     f.resize(x.size());
-    Grid::Grid* g = grid->getGrid();
+    Grid::Grid* g = m_grid->getGrid();
     data.pos4.recreate(x.size());
     data.Kernels_computeDensity(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
@@ -179,14 +179,14 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addForce(const core::Mec
 template <>
 void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    if (grid == NULL) return;
+    if (m_grid == NULL) return;
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
     //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     data.fillParams(this, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());
-    Grid::Grid* g = grid->getGrid();
+    Grid::Grid* g = m_grid->getGrid();
     data.Kernels_addDForce(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
@@ -198,34 +198,41 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::draw(const sofa::core::v
 {
     if(!vparams->displayFlags().getShowForceFields())return;
 //if (!getContext()->getShowForceFields()) return;
-    //if (grid != NULL)
-    //	grid->draw(vparams);
+    //if (m_grid != NULL)
+    //	m_grid->draw(vparams);
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const gpu::opencl::OpenCLVector<defaulttype::Vec4f> pos4 = this->data.pos4;
     if (pos4.empty()) return;
-    glDisable(GL_LIGHTING);
-    glColor3f(0,1,1);
-    glDisable(GL_BLEND);
-    glDepthMask(1);
-    glPointSize(5);
-    glBegin(GL_POINTS);
-    for (unsigned int i=0; i<pos4.size(); i++)
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+    vparams->drawTool()->disableBlending();
+    vparams->drawTool()->enableDepthTest();
+
+    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::defaulttype::Vector3> vertices;
+
+    for (unsigned int i = 0; i < m_particles.size(); i++)
     {
-        float density = pos4[i][3];
-        float f = (float)(density / density0.getValue());
-        f = 1+10*(f-1);
+        Particle& Pi = m_particles[i];
+        float f = (float)(Pi.density / d_density0.getValue());
+        f = 1 + 10 * (f - 1);
         if (f < 1)
         {
-            glColor3f(0,1-f,f);
+            colorVector.push_back(sofa::defaulttype::Vec4f(0, 1 - f, f, 1));
         }
         else
         {
-            glColor3f(f-1,0,2-f);
+            colorVector.push_back(sofa::defaulttype::Vec4f(f - 1, 0, 2 - f, 1));
         }
-        helper::gl::glVertexT(x[i]);
+        vertices.push_back(sofa::defaulttype::Vector3(x[i]));
     }
-    glEnd();
-    glPointSize(1);
+
+    vparams->drawTool()->drawPoints(vertices, 5, colorVector);
+    vertices.clear();
+    colorVector.clear();
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef PLUGINEXAMPLE_MYDATAWIDGETUNSIGNED_H
-#define PLUGINEXAMPLE_MYDATAWIDGETUNSIGNED_H
+#pragma once
 
 #include <PluginExample/config.h>
 
@@ -32,22 +31,15 @@
 #include <QString>
 
 
-namespace sofa
+namespace sofa::gui::qt
 {
-
-namespace gui
-{
-
-namespace qt
-{
-
 
 /**
  * \brief Customization of the representation of Data<unsigned> types
  * in the gui. In the .cpp file this widget is registered to represent
  * myData from MyBehaviorModel in the gui.
  **/
-class MyDataWidgetUnsigned : public TDataWidget<unsigned>
+class SOFA_PLUGINEXAMPLE_API MyDataWidgetUnsigned : public TDataWidget<unsigned>
 {
     Q_OBJECT
 public :
@@ -67,17 +59,10 @@ protected:
     virtual void readFromData();
     ///Implements how to update the data, knowing the widget value.
     virtual void writeToData();
-    QSlider *qslider;
-    QLabel *label1;
-    QLabel *label2;
+    QSlider *m_qslider;
+    QLabel *m_label1;
+    QLabel *m_label2;
 };
 
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-
-#endif // PLUGINEXAMPLE_MYDATAWIDGETUNSIGNED_H
+} // namespace sofa::gui::qt
