@@ -67,14 +67,17 @@ check-all-deps() {
         libpng=""
         dependencies="$( otool -L $lib | tail -n +2 | perl -p -e 's/^[\t ]+(.*) \(.*$/\1/g' )"
 
-        if echo "$dependencies" | grep --quiet --invert-match "/Qt" &&
-           echo "$dependencies" | grep --quiet --invert-match "/libboost" &&
-           echo "$dependencies" | grep --quiet --invert-match "/libicu" &&
-           echo "$dependencies" | grep --quiet --invert-match "/libGLEW" &&
-           echo "$dependencies" | grep --quiet --invert-match "/libjpeg" &&
-           echo "$dependencies" | grep --quiet --invert-match "/libpng"; then
-            # no lib to fixup in dependencies
-            continue
+        is_fixup_needed="false"
+        if echo "$dependencies" | grep --quiet "/Qt"       ||
+           echo "$dependencies" | grep --quiet "/libboost" ||
+           echo "$dependencies" | grep --quiet "/libicu"   ||
+           echo "$dependencies" | grep --quiet "/libGLEW"  ||
+           echo "$dependencies" | grep --quiet "/libjpeg"  ||
+           echo "$dependencies" | grep --quiet "/libpng"   ; then
+            is_fixup_needed="true"
+        fi
+        if [[ "$is_fixup_needed" == "false" ]]; then
+            continue # skip this lib
         fi
 
         (echo "$dependencies") | while read dep; do
