@@ -337,7 +337,7 @@ struct BoundingBoxTypeInfo
         return ((ValueType*)&data)[index];
     }
 
-    static double setScalarValue (const void* data, size_t index, double value)
+    static void setScalarValue (const void* data, size_t index, double value)
     {
         ((ValueType*)&data)[index] = value;
     }
