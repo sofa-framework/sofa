@@ -28,15 +28,10 @@ if(SofaOpenglVisual_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
 endif()
 
-# TODO: remove SofaAllCommonComponents backward compatibility at SOFA v20.06
-add_library(SofaAllCommonComponents SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(SofaAllCommonComponents ${PROJECT_NAME})
-set_target_properties(SofaAllCommonComponents PROPERTIES COMPILE_FLAGS "-DSOFACOMPONENTALL_USING_DEPRECATED_NAME")
-
 ## Install rules for the library and headers; CMake package configurations files
 sofa_generate_package(
-    NAME SofaComponentAll
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
-    TARGETS ${PROJECT_NAME} SofaAllCommonComponents
     INCLUDE_INSTALL_DIR "SofaComponentAll/SofaComponentAll"
     )
