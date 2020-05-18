@@ -57,7 +57,7 @@ struct MousePosition
 
 class PickHandler;
 
-class SOFA_SOFAGUI_API Operation
+class SOFA_SOFAGUICOMMON_API Operation
 {
     friend class OperationFactory;
 public:
@@ -98,7 +98,7 @@ private:
     std::string id;
 };
 
-class SOFA_SOFAGUI_API AttachOperation : public Operation
+class SOFA_SOFAGUICOMMON_API AttachOperation : public Operation
 {
 public:
     AttachOperation(sofa::component::configurationsetting::AttachBodyButtonSetting::SPtr s = sofa::core::objectmodel::New<sofa::component::configurationsetting::AttachBodyButtonSetting>()) : Operation(s), setting(s)
@@ -123,7 +123,7 @@ protected:
 };
 
 
-class SOFA_SOFAGUI_API ConstraintAttachOperation : public sofa::gui::AttachOperation
+class SOFA_SOFAGUICOMMON_API ConstraintAttachOperation : public sofa::gui::AttachOperation
 {
 public:
     static std::string getDescription() { return "Attach an object to the mouse using a bilateral interaction constraint"; }
@@ -131,7 +131,7 @@ protected:
     virtual std::string defaultPerformerType() { return "ConstraintAttachBody"; }
 };
 
-class SOFA_SOFAGUI_API FixOperation : public Operation
+class SOFA_SOFAGUICOMMON_API FixOperation : public Operation
 {
 public:
     FixOperation() : setting(sofa::core::objectmodel::New<sofa::component::configurationsetting::FixPickedParticleButtonSetting>())
@@ -150,7 +150,7 @@ protected:
     sofa::component::configurationsetting::FixPickedParticleButtonSetting::SPtr setting;
 };
 
-class SOFA_SOFAGUI_API AddFrameOperation : public Operation
+class SOFA_SOFAGUICOMMON_API AddFrameOperation : public Operation
 {
 public:
     static std::string getDescription() {return "Add a Frame to a Skinned model";}
@@ -159,7 +159,7 @@ protected:
     void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 };
 
-class SOFA_SOFAGUI_API AddRecordedCameraOperation : public Operation
+class SOFA_SOFAGUICOMMON_API AddRecordedCameraOperation : public Operation
 {
 public:
 	AddRecordedCameraOperation() : setting(sofa::core::objectmodel::New<sofa::component::configurationsetting::AddRecordedCameraButtonSetting>())
@@ -171,7 +171,7 @@ protected:
 	sofa::component::configurationsetting::AddRecordedCameraButtonSetting::SPtr setting;
 };
 
-class SOFA_SOFAGUI_API StartNavigationOperation : public Operation
+class SOFA_SOFAGUICOMMON_API StartNavigationOperation : public Operation
 {
 public:
 	StartNavigationOperation() : setting(sofa::core::objectmodel::New<sofa::component::configurationsetting::StartNavigationButtonSetting>())
@@ -183,7 +183,7 @@ protected:
 	sofa::component::configurationsetting::StartNavigationButtonSetting::SPtr setting;
 };
 
-class SOFA_SOFAGUI_API InciseOperation : public Operation
+class SOFA_SOFAGUICOMMON_API InciseOperation : public Operation
 {
 public:
     InciseOperation():startPerformer(nullptr), cpt (0) {}
@@ -217,7 +217,7 @@ protected:
     bool keepPoint;
 };
 
-class SOFA_SOFAGUI_API TopologyOperation : public Operation
+class SOFA_SOFAGUICOMMON_API TopologyOperation : public Operation
 {
 public:
     TopologyOperation():scale (0.0), volumicMesh (0), firstClick(1) {}
@@ -246,7 +246,7 @@ protected:
 };
 
 
-class SOFA_SOFAGUI_API AddSutureOperation : public Operation
+class SOFA_SOFAGUICOMMON_API AddSutureOperation : public Operation
 {
 public:
     AddSutureOperation():stiffness(10.0), damping(1.0) {}

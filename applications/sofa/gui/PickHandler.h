@@ -65,7 +65,7 @@ public:
     virtual void render(ColourPickingVisitor::ColourCode code ) = 0;
 };
 
-class SOFA_SOFAGUI_API PickHandler
+class SOFA_SOFAGUICOMMON_API PickHandler
 {
     typedef sofa::component::collision::RayCollisionModel MouseCollisionModel;
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;

@@ -32,7 +32,7 @@ namespace sofa
 {
 namespace gui
 {
-class SOFA_SOFAGUI_API FilesRecentlyOpenedManager
+class SOFA_SOFAGUICOMMON_API FilesRecentlyOpenedManager
 {
 public:
     FilesRecentlyOpenedManager(const std::string &configFile);

@@ -81,7 +81,7 @@ namespace helper
 {
 
 template < >
-class SOFA_SOFAGUI_API BaseCreator< sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument&>
+class SOFA_SOFAGUICOMMON_API BaseCreator< sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument&>
 {
 public:
     virtual ~BaseCreator() { }
@@ -92,7 +92,7 @@ public:
 };
 
 
-class SOFA_SOFAGUI_API SofaViewerFactory : public sofa::helper::Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >
+class SOFA_SOFAGUICOMMON_API SofaViewerFactory : public sofa::helper::Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >
 {
 public:
     typedef sofa::helper::Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& > Inherited;
@@ -163,7 +163,7 @@ public:
 };
 
 #if  !defined(SOFA_BUILD_SOFAGUI)
-extern template class SOFA_SOFAGUI_API Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >;
+extern template class SOFA_SOFAGUICOMMON_API Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >;
 #endif
 
 

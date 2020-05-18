@@ -52,7 +52,7 @@ public:
 
 
 
-class SOFA_SOFAGUI_API OperationFactory
+class SOFA_SOFAGUICOMMON_API OperationFactory
 {
 public:
     typedef std::map< std::string, OperationCreator* > RegisterStorage;
@@ -92,7 +92,7 @@ public:
 
 };
 
-class SOFA_SOFAGUI_API RegisterOperation
+class SOFA_SOFAGUICOMMON_API RegisterOperation
 {
 public:
     std::string name;

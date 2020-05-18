@@ -40,7 +40,7 @@ namespace gui
 class BaseGUI;
 
 
-class SOFA_SOFAGUI_API GUIManager
+class SOFA_SOFAGUICOMMON_API GUIManager
 {
 public:
     typedef BaseGUI* CreateGUIFn(const char* name, sofa::simulation::Node::SPtr groot, const char* filename);

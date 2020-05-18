@@ -35,7 +35,7 @@ namespace sofa
 namespace gui
 {
 
-class SOFA_SOFAGUI_API BatchGUI : public BaseGUI
+class SOFA_SOFAGUICOMMON_API BatchGUI : public BaseGUI
 {
 
 public:

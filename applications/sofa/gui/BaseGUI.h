@@ -41,7 +41,7 @@ namespace gui
 
 class BaseViewer;
 
-class SOFA_SOFAGUI_API BaseGUI
+class SOFA_SOFAGUICOMMON_API BaseGUI
 {
 
 public:

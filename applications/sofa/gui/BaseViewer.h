@@ -71,7 +71,7 @@ enum
 };
 
 
-class SOFA_SOFAGUI_API BaseViewer
+class SOFA_SOFAGUICOMMON_API BaseViewer
 {
 
 public:
