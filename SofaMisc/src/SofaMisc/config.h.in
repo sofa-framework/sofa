@@ -22,7 +22,7 @@
 #ifndef SOFAMISC_CONFIG_H
 #define SOFAMISC_CONFIG_H
 
-#include <SofaGeneral/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_SOFAMISC
 #  define SOFA_TARGET SofaMisc

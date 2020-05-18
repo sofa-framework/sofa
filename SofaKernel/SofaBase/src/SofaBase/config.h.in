@@ -22,7 +22,7 @@
 #ifndef SOFABASE_CONFIG_H
 #define SOFABASE_CONFIG_H
 
-#include <sofa/simulation/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_SOFABASE
 #  define SOFA_TARGET SofaBase

@@ -22,7 +22,7 @@
 #ifndef SOFACOMMON_CONFIG_H
 #define SOFACOMMON_CONFIG_H
 
-#include <SofaBase/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_SOFACOMMON
 #  define  SOFA_TARGET    SofaCommon

@@ -1,7 +1,7 @@
 #ifndef SOFAGUIMAIN_CONFIG_H
 #define SOFAGUIMAIN_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #cmakedefine01 SOFAGUIMAIN_HAVE_SOFAGUIQT
 #cmakedefine01 SOFAGUIMAIN_HAVE_SOFAHEADLESSRECORDER
