@@ -4,44 +4,46 @@ project(SofaMiscCollision VERSION 1.0)
 sofa_find_package(SofaSphFluid QUIET)
 sofa_find_package(SofaDistanceGrid QUIET)
 
+set(SRC_ROOT src/SofaMiscCollision)
+
 set(HEADER_FILES
-    config.h.in
-    initMiscCollision.h
+    ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/initMiscCollision.h
     )
 
 set(SOURCE_FILES
-    initMiscCollision.cpp
+    ${SRC_ROOT}/initMiscCollision.cpp
     )
 
 set(EXTRA_FILES
-    README.md
+    ${SRC_ROOT}/README.md
     )
 
 list(APPEND HEADER_FILES
-    BarycentricStickContact.h
-    BarycentricStickContact.inl
-    DefaultCollisionGroupManager.h
-    RayTriangleVisitor.h
-    RuleBasedContactManager.h
-    SolverMerger.h
-    TetrahedronDiscreteIntersection.h
-    TetrahedronModel.h
-    TriangleModelInRegularGrid.h
+    ${SRC_ROOT}/BarycentricStickContact.h
+    ${SRC_ROOT}/BarycentricStickContact.inl
+    ${SRC_ROOT}/DefaultCollisionGroupManager.h
+    ${SRC_ROOT}/RayTriangleVisitor.h
+    ${SRC_ROOT}/RuleBasedContactManager.h
+    ${SRC_ROOT}/SolverMerger.h
+    ${SRC_ROOT}/TetrahedronDiscreteIntersection.h
+    ${SRC_ROOT}/TetrahedronModel.h
+    ${SRC_ROOT}/TriangleModelInRegularGrid.h
     )
 
 list(APPEND SOURCE_FILES
-    BarycentricStickContact.cpp
-    DefaultCollisionGroupManager.cpp
-    RayTriangleVisitor.cpp
-    RuleBasedContactManager.cpp
-    SolverMerger.cpp
-    TetrahedronBarycentricPenalityContact.cpp
-    TetrahedronDiscreteIntersection.cpp
-    TetrahedronFrictionContact.cpp
-    TetrahedronModel.cpp
-    TetrahedronRayContact.cpp
-    TriangleModelInRegularGrid.cpp
-    TetrahedronBarycentricDistanceLMConstraintContact.cpp
+    ${SRC_ROOT}/BarycentricStickContact.cpp
+    ${SRC_ROOT}/DefaultCollisionGroupManager.cpp
+    ${SRC_ROOT}/RayTriangleVisitor.cpp
+    ${SRC_ROOT}/RuleBasedContactManager.cpp
+    ${SRC_ROOT}/SolverMerger.cpp
+    ${SRC_ROOT}/TetrahedronBarycentricPenalityContact.cpp
+    ${SRC_ROOT}/TetrahedronDiscreteIntersection.cpp
+    ${SRC_ROOT}/TetrahedronFrictionContact.cpp
+    ${SRC_ROOT}/TetrahedronModel.cpp
+    ${SRC_ROOT}/TetrahedronRayContact.cpp
+    ${SRC_ROOT}/TriangleModelInRegularGrid.cpp
+    ${SRC_ROOT}/TetrahedronBarycentricDistanceLMConstraintContact.cpp
     )
 message(STATUS "SofaMiscModule: build all maintained sofa components.")
 
@@ -72,14 +74,16 @@ endif()
 if(SofaDistanceGrid_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaDistanceGrid)
 endif()
-
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_COLLISION")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 sofa_generate_package(
     NAME ${PROJECT_NAME}
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
+    INCLUDE_SOURCE_DIR src
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     RELOCATABLE "plugins"
     )
