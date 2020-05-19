@@ -835,18 +835,22 @@ function(sofa_install_libraries)
         endif()
     endforeach()
 
-    PARSE_LIBRARY_LIST(${lib_paths}
-        FOUND   parseOk
-        DEBUG   LIBRARIES_DEBUG
-        OPT     LIBRARIES_RELEASE
-        GENERAL LIBRARIES_GENERAL)
+    if(lib_paths)
+        PARSE_LIBRARY_LIST(${lib_paths}
+            FOUND   parseOk
+            DEBUG   LIBRARIES_DEBUG
+            OPT     LIBRARIES_RELEASE
+            GENERAL LIBRARIES_GENERAL)
 
-    if(parseOk)
-        if(CMAKE_BUILD_TYPE MATCHES DEBUG)
-            set(lib_paths ${LIBRARIES_DEBUG})
-        else()
-            set(lib_paths ${LIBRARIES_RELEASE})
+        if(parseOk)
+            if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+                set(lib_paths ${LIBRARIES_DEBUG})
+            else()
+                set(lib_paths ${LIBRARIES_RELEASE})
+            endif()
         endif()
+    else()
+        message(WARNING "sofa_install_libraries: no lib found with ${ARGV}")
     endif()
 
     foreach(lib_path ${lib_paths})

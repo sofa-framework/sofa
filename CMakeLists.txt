@@ -46,12 +46,6 @@ if(APPLE AND SOFA_BUILD_APP_BUNDLE)
 endif()
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
-# Use packaging.cmake configuration (used for Continuous Delivery)
-if(SOFA_BUILD_RELEASE_PACKAGE)
-    message("Using package.cmake")
-    include("package.cmake")
-endif()
-
 # Remove generated CMake files, this prevents CMake from finding packages that
 # were disabled (like, unchecked in cmake-gui) after being built once.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/cmake)
