@@ -171,7 +171,6 @@ void GeomagicVisualModel::activateDisplay(bool value)
 
 void GeomagicVisualModel::updateDisplay(const GeomagicDriver::Coord& posDevice, HDdouble angle1[3], HDdouble angle2[3])
 {
-    //std::cout << "GeomagicVisualModel::updateDisplay()" << std::endl;
     sofa::defaulttype::SolidTypes<double>::Transform tampon;
     m_posDeviceVisu[0] = posDevice;
     tampon.set(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getOrientation());
@@ -236,8 +235,6 @@ void GeomagicVisualModel::updateDisplay(const GeomagicDriver::Coord& posDevice, 
         sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(m_omniVisualNode.get());
         sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(m_omniVisualNode.get());
     }
-
-   // std::cout << "GeomagicVisualModel::updateDisplay() END" << std::endl;
 }
 
 
