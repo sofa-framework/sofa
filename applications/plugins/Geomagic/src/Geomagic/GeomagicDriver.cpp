@@ -24,14 +24,10 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/ScriptEvent.h>
-#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <Geomagic/GeomagicVisualModel.h>
 
 namespace sofa
 {
@@ -41,28 +37,6 @@ namespace component
 
 namespace controller
 {
-
-
-const char* GeomagicDriver::visualNodeNames[NVISUALNODE] =
-{
-    "stylus",
-    "joint 2",
-    "joint 1",
-    "arm 2",
-    "arm 1",
-    "joint 0",
-    "base"
-};
-const char* GeomagicDriver::visualNodeFiles[NVISUALNODE] =
-{
-    "mesh/stylusO.obj",
-    "mesh/articulation5O.obj",
-    "mesh/articulation4O.obj",
-    "mesh/articulation3O.obj",
-    "mesh/articulation2O.obj",
-    "mesh/articulation1O.obj",
-    "mesh/BASEO.obj"
-};
 
 
 static Mat<4,4, GLdouble> getInitialTransform() {
@@ -199,12 +173,14 @@ GeomagicDriver::GeomagicDriver()
     , d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback","Maximum value of the normed input force feedback for device security"))
     , d_manualStart(initData(&d_manualStart, false, "manualStart", "If true, will not automatically initDevice at component init phase."))
     , m_simulationStarted(false)
+    , l_forceFeedback(initLink("forceFeedBack", "link to the forceFeedBack component, if not set will search through graph and take first one encountered."))
     , m_errorDevice(0)
     , m_isInContact(false)
     , m_hHD(UINT_MAX)
 {
     this->f_listening.setValue(true);
     m_forceFeedback = NULL;
+    m_GeomagicVisualModel = std::make_unique<GeomagicVisualModel>();
 }
 
 GeomagicDriver::~GeomagicDriver()
@@ -242,8 +218,20 @@ void GeomagicDriver::bwdInit()
     if(m_errorDevice != 0)
         return;
 
-    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-    m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
+    if (l_forceFeedback.empty())
+    {
+        simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
+        m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
+    }
+    else
+    {
+        m_forceFeedback = l_forceFeedback.get();
+    }
+
+    if (!m_forceFeedback.get())
+    {
+        msg_warning() << "No forceFeedBack component found in the scene. Only the motion of the haptic tool will be simulated.";
+    }
 
     if (d_manualStart.getValue() == false)
         initDevice();
@@ -252,7 +240,6 @@ void GeomagicDriver::bwdInit()
 
 void GeomagicDriver::initDevice(int cptInitPass)
 {
-    m_initVisuDone = false;
     m_errorDevice = 0;
     HDErrorInfo error;
 
@@ -276,9 +263,6 @@ void GeomagicDriver::initDevice(int cptInitPass)
         msg_error() << "Failed to initialize the device ID: " << m_hHD << " | Name: '" << d_deviceName.getValue().c_str() << "' | Error code returned: " << m_errorDevice;
         d_omniVisu.setValue(false);
 
-        //init the positionDevice data to avoid any crash in the scene
-        m_posDeviceVisu.clear();
-        m_posDeviceVisu.resize(1);
         return;
     }
 
@@ -321,89 +305,6 @@ void GeomagicDriver::initDevice(int cptInitPass)
         return;
     }
     updatePosition();
-
-
-    if (!d_omniVisu.getValue())
-        return;
-
-    //Initialization of the visual components
-    //resize vectors
-    m_posDeviceVisu.resize(NVISUALNODE + 1);
-
-    m_visuActive = false;
-
-    for (int i = 0; i<NVISUALNODE; i++)
-    {
-        visualNode[i].visu = NULL;
-        visualNode[i].mapping = NULL;
-    }
-
-    //create a specific node containing rigid position for visual models
-    sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
-    m_omniVisualNode = rootContext->createChild("omniVisu " + d_deviceName.getValue());
-    m_omniVisualNode->updateContext();
-
-    rigidDOF = sofa::core::objectmodel::New<component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> >();
-    m_omniVisualNode->addObject(rigidDOF);
-    rigidDOF->name.setValue("rigidDOF");
-
-    VecCoord& posDOF = *(rigidDOF->x.beginEdit());
-    posDOF.resize(NVISUALNODE + 1);
-    rigidDOF->x.endEdit();
-
-    rigidDOF->init();
-    m_omniVisualNode->updateContext();
-
-
-    //creation of subnodes for each part of the device visualization
-    for (int i = 0; i<NVISUALNODE; i++)
-    {
-        visualNode[i].node = m_omniVisualNode->createChild(visualNodeNames[i]);
-
-        if (visualNode[i].visu == NULL && visualNode[i].mapping == NULL)
-        {
-
-            // create the visual model and add it to the graph //
-            visualNode[i].visu = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
-            visualNode[i].node->addObject(visualNode[i].visu);
-            visualNode[i].visu->name.setValue("VisualParticles");
-            visualNode[i].visu->fileMesh.setValue(visualNodeFiles[i]);
-
-            visualNode[i].visu->init();
-            visualNode[i].visu->initVisual();
-            visualNode[i].visu->updateVisual();
-
-            // create the visual mapping and at it to the graph //
-            visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3Types, Vec3Types > >();
-            visualNode[i].node->addObject(visualNode[i].mapping);
-            visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
-            visualNode[i].mapping->name.setValue("RigidMapping");
-            visualNode[i].mapping->f_mapConstraints.setValue(false);
-            visualNode[i].mapping->f_mapForces.setValue(false);
-            visualNode[i].mapping->f_mapMasses.setValue(false);
-            visualNode[i].mapping->index.setValue(i + 1);
-            visualNode[i].mapping->init();
-        }
-        if (i<NVISUALNODE)
-            m_omniVisualNode->removeChild(visualNode[i].node);
-    }
-
-    m_omniVisualNode->updateContext();
-
-    for (int i = 0; i<NVISUALNODE; i++)
-    {
-        visualNode[i].node->updateContext();
-    }
-
-    m_initVisuDone = true;
-
-    for (int j = 0; j<NVISUALNODE; j++)
-    {
-        sofa::helper::vector< sofa::defaulttype::Vec3 > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
-        for (size_t i = 0; i<scaleMapping.size(); i++)
-            scaleMapping[i] *= (float)(d_scale.getValue());
-        visualNode[j].mapping->points.endEdit();
-    }
 }
 
 Mat<4,4, GLdouble> GeomagicDriver::compute_dh_Matrix(double teta,double alpha, double a, double d)
@@ -463,7 +364,7 @@ void GeomagicDriver::updatePosition()
     Mat3x3d mrot;
 
     Vector6 & angle = *d_angle.beginEdit();
-    GeomagicDriver::Coord & posDevice = *d_posDevice.beginEdit();    
+    GeomagicDriver::Coord & posDevice = *d_posDevice.beginEdit();
 
     const Vector3 & positionBase = d_positionBase.getValue();
     const Quat & orientationBase = d_orientationBase.getValue();
@@ -498,59 +399,27 @@ void GeomagicDriver::updatePosition()
     posDevice.getCenter() = positionBase + orientationBase.rotate(position*scale);
     posDevice.getOrientation() = orientationBase * orientation * orientationTool;
 
-    if(m_initVisuDone && d_omniVisu.getValue())
-    {
-        sofa::defaulttype::SolidTypes<double>::Transform tampon;
-        m_posDeviceVisu[0] = posDevice;
-        tampon.set(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getOrientation());
-
-        //get position stylus
-        m_posDeviceVisu[1+VN_stylus] = Coord(tampon.getOrigin(), tampon.getOrientation());
-
-        //get pos joint 2
-        sofa::helper::Quater<double> quarter2(Vec3d(0.0,0.0,1.0),m_simuData.angle2[2]);
-        sofa::defaulttype::SolidTypes<double>::Transform transform_segr2(Vec3d(0.0,0.0,0.0),quarter2);
-        tampon*=transform_segr2;
-        m_posDeviceVisu[1+VN_joint2] = Coord(tampon.getOrigin(), tampon.getOrientation());
-
-        //get pos joint 1
-        sofa::helper::Quater<double> quarter3(Vec3d(1.0,0.0,0.0),m_simuData.angle2[1]);
-        sofa::defaulttype::SolidTypes<double>::Transform transform_segr3(Vec3d(0.0,0.0,0.0),quarter3);
-        tampon*=transform_segr3;
-        m_posDeviceVisu[1+VN_joint1] = Coord(tampon.getOrigin(), tampon.getOrientation());
-
-        //get pos arm 2
-        sofa::helper::Quater<double> quarter4(Vec3d(0.0,1.0,0.0),-m_simuData.angle2[0]);
-        sofa::defaulttype::SolidTypes<double>::Transform transform_segr4(Vec3d(0.0,0.0,0.0),quarter4);
-        tampon*=transform_segr4;
-        m_posDeviceVisu[1+VN_arm2] = Coord(tampon.getOrigin(), tampon.getOrientation());
-        //get pos arm 1
-        sofa::helper::Quater<double> quarter5(Vec3d(1.0,0.0,0.0),-(M_PI/2)+m_simuData.angle1[2]-m_simuData.angle1[1]);
-        sofa::defaulttype::SolidTypes<double>::Transform transform_segr5(Vec3d(0.0,13.33*d_scale.getValue(),0.0),quarter5);
-        tampon*=transform_segr5;
-        m_posDeviceVisu[1+VN_arm1] = Coord(tampon.getOrigin(), tampon.getOrientation());
-
-        //get pos joint 0
-        sofa::helper::Quater<double> quarter6(Vec3d(1.0,0.0,0.0),m_simuData.angle1[1]);
-        sofa::defaulttype::SolidTypes<double>::Transform transform_segr6(Vec3d(0.0,13.33*d_scale.getValue(),0.0),quarter6);
-        tampon*=transform_segr6;
-        m_posDeviceVisu[1+VN_joint0] = Coord(tampon.getOrigin(), tampon.getOrientation());
-
-        //get pos base
-        sofa::helper::Quater<double> quarter7(Vec3d(0.0,0.0,1.0),m_simuData.angle1[0]);
-        sofa::defaulttype::SolidTypes<double>::Transform transform_segr7(Vec3d(0.0,0.0,0.0),quarter7);
-        tampon*=transform_segr7;
-        m_posDeviceVisu[1+VN_base] = Coord(tampon.getOrigin(), tampon.getOrientation());
-
-        // update the omni visual node positions through the mappings
-        if (m_omniVisualNode)
-        {
-            sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(m_omniVisualNode.get());
-            sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(m_omniVisualNode.get());
-        }
-    }
     d_posDevice.endEdit();
     d_angle.endEdit();
+
+
+    if (d_omniVisu.getValue() && m_GeomagicVisualModel != nullptr)
+    {
+        if (!m_GeomagicVisualModel->isDisplayInitiate()) // first time, need to init visualModel first
+        {
+            sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
+            m_GeomagicVisualModel->initDisplay(rootContext, d_deviceName.getValue(), d_scale.getValue());            
+        }
+
+        if (!m_GeomagicVisualModel->isDisplayActivated())
+            m_GeomagicVisualModel->activateDisplay(true);
+
+        m_GeomagicVisualModel->updateDisplay(d_posDevice.getValue(), m_omniData.angle1, m_omniData.angle2);
+    }
+    else if (d_omniVisu.getValue() == false && m_GeomagicVisualModel && m_GeomagicVisualModel->isDisplayActivated())
+    {
+        m_GeomagicVisualModel->activateDisplay(false);
+    }
 }
 
 
@@ -635,75 +504,24 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 
     vparams->drawTool()->saveLastState();
 
-    if (d_frameVisu.getValue() && m_initVisuDone)
+    if (d_frameVisu.getValue())
     {
         vparams->drawTool()->disableLighting();
 
+        const GeomagicDriver::Coord& posDevice = d_posDevice.getValue();
+
         float glRadius = (float)d_scale.getValue()*0.1f;
-        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(2,0,0)*d_scale.getValue()), glRadius, Vec4f(1,0,0,1) );
-        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(0,2,0)*d_scale.getValue()), glRadius, Vec4f(0,1,0,1) );
-        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(0,0,2)*d_scale.getValue()), glRadius, Vec4f(0,0,1,1) );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(Vector3(2,0,0)*d_scale.getValue()), glRadius, Vec4f(1,0,0,1) );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(Vector3(0,2,0)*d_scale.getValue()), glRadius, Vec4f(0,1,0,1) );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(Vector3(0,0,2)*d_scale.getValue()), glRadius, Vec4f(0,0,1,1) );
     }
 
-    if (d_omniVisu.getValue() && m_initVisuDone)
-    {
-        //Reactivate visual node
-        if(!m_visuActive)
-        {
-            m_visuActive = true;
-
-            for(int i=0; i<NVISUALNODE; i++)
-            {
-                m_omniVisualNode->addChild(visualNode[i].node);
-                visualNode[i].node->updateContext();
-            }
-            m_omniVisualNode->updateContext();
-        }
-
-        VecCoord& posDOF =*(rigidDOF->x.beginEdit());
-        posDOF.resize(m_posDeviceVisu.size());
-        for(int i=0; i<NVISUALNODE+1; i++)
-        {
-            posDOF[i].getCenter() = m_posDeviceVisu[i].getCenter();
-            posDOF[i].getOrientation() = m_posDeviceVisu[i].getOrientation();
-        }
-
-        //if buttons pressed, change stylus color
-        std::string color = "grey";
-        if(d_button_1.getValue())
-        {
-            if(d_button_2.getValue())
-            {
-                color = "yellow";
-            }
-            else
-            {
-                color = "blue";
-            }
-        }
-        else if(d_button_2.getValue())
-        {
-            color = "red";
-        }
-        visualNode[0].visu->setColor(color);
-
-        rigidDOF->x.endEdit();
-    }
-    else
-    {
-        if(m_visuActive)
-        {
-            m_visuActive = false;
-            //delete omnivisual
-            for(int i=0; i<NVISUALNODE; i++)
-            {
-                m_omniVisualNode->removeChild(visualNode[i].node);
-            }
-        }
-    }
+    if (d_omniVisu.getValue() && m_GeomagicVisualModel != nullptr)
+        m_GeomagicVisualModel->drawDevice(d_button_1.getValue(), d_button_2.getValue());
 
     vparams->drawTool()->restoreLastState();
 }
+
 
 void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  )
 {
@@ -724,6 +542,7 @@ void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  )
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
+
 void GeomagicDriver::handleEvent(core::objectmodel::Event *event)
 {
     if(m_errorDevice != 0)
@@ -738,6 +557,7 @@ void GeomagicDriver::handleEvent(core::objectmodel::Event *event)
         updatePosition();
     }
 }
+
 
 int GeomagicDriverClass = core::RegisterObject("Driver allowing interfacing with Geomagic haptic devices.")
 .add< GeomagicDriver >()
