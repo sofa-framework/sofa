@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -75,8 +75,6 @@ public:
     virtual void computeElementMasses( ); ///< compute the mass matrices
     virtual void computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, SReal stiffnessFactor=1.0); ///< compute the mass matrix of an element
     Real integrateMass( int signx, int signy, int signz, Real l0, Real l1, Real l2 );
-
-    virtual std::string getTemplateName() const override;
 
     // -- Mass interface
      void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;

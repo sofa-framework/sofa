@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,8 +64,7 @@ ComponentLibrary::ComponentLibrary( const std::string &componentN, const std::st
             possiblePaths.push_back(exampleFiles[i]);
     }
 
-    std::string nameSpace = sofa::core::objectmodel::BaseClass::decodeNamespaceName(entry->creatorMap.begin()->second->type());
-
+    std::string nameSpace = sofa::helper::NameDecoder::decodeNamespaceName(entry->creatorMap.begin()->second->type());
 
     description += std::string("</H2>");
 

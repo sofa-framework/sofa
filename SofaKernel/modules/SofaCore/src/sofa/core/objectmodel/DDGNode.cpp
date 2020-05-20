@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,45 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <algorithm>
+#include <iostream>
+#include <cassert>
 #include <sofa/core/objectmodel/DDGNode.h>
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/DataEngine.h>
-
-//#define SOFA_DDG_TRACE
-
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+#include <sofa/helper/BackTrace.h>
+namespace sofa::core::objectmodel
 {
 
 /// Constructor
 DDGNode::DDGNode()
-    : inputs(initLink("inputs", "Links to inputs Data"))
-    , outputs(initLink("outputs", "Links to outputs Data"))
 {
 }
 
 DDGNode::~DDGNode()
 {
-    for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
-        (*it)->doDelOutput(this);
-    for(DDGLinkIterator it=outputs.begin(); it!=outputs.end(); ++it)
-        (*it)->doDelInput(this);
-}
-
-template<>
-TClass<DDGNode,void>::TClass()
-{
-    DDGNode* ptr = nullptr;
-    namespaceName = Base::namespaceName(ptr);
-    className = Base::className(ptr);
-    templateName = Base::templateName(ptr);
-    shortName = Base::shortName(ptr);
+    for(auto it : inputs)
+    {
+        it->doDelOutput(this);
+    }
+    for(auto it : outputs)
+    {
+        it->doDelInput(this);
+    }
 }
 
 void DDGNode::setDirtyValue()
@@ -95,18 +79,23 @@ void DDGNode::cleanDirty()
 
 void DDGNode::notifyEndEdit()
 {
-    for(DDGLinkIterator it=outputs.begin(), itend=outputs.end(); it != itend; ++it)
-        (*it)->notifyEndEdit();
+    for(auto it : outputs)
+        it->notifyEndEdit();
 }
 
 void DDGNode::cleanDirtyOutputsOfInputs()
 {
-    for(DDGLinkIterator it=inputs.begin(), itend=inputs.end(); it != itend; ++it)
-        (*it)->dirtyFlags.dirtyOutputs = false;
+    for(auto it : inputs)
+        it->dirtyFlags.dirtyOutputs = false;
 }
 
 void DDGNode::addInput(DDGNode* n)
 {
+    if(std::find(inputs.begin(), inputs.end(), n) != inputs.end())
+    {
+        assert(false && "trying to add a DDGNode that is already in the input set.");
+        return;
+    }
     doAddInput(n);
     n->doAddOutput(this);
     setDirtyValue();
@@ -114,12 +103,21 @@ void DDGNode::addInput(DDGNode* n)
 
 void DDGNode::delInput(DDGNode* n)
 {
+    /// It is not allowed to remove an entry that is not in the set.
+    assert(std::find(inputs.begin(), inputs.end(), n) != inputs.end());
+
     doDelInput(n);
     n->doDelOutput(this);
 }
 
 void DDGNode::addOutput(DDGNode* n)
 {
+    if(std::find(outputs.begin(), outputs.end(), n) != outputs.end())
+    {
+        assert(false && "trying to add a DDGNode that is already in the output set.");
+        return;
+    }
+
     doAddOutput(n);
     n->doAddInput(this);
     n->setDirtyValue();
@@ -127,97 +125,50 @@ void DDGNode::addOutput(DDGNode* n)
 
 void DDGNode::delOutput(DDGNode* n)
 {
+    /// It is not allowed to remove an entry that is not in the set.
+    assert(std::find(outputs.begin(), outputs.end(), n) != outputs.end());
+
     doDelOutput(n);
     n->doDelInput(this);
 }
 
 const DDGNode::DDGLinkContainer& DDGNode::getInputs()
 {
-    return inputs.getValue();
+    return inputs;
 }
 
 const DDGNode::DDGLinkContainer& DDGNode::getOutputs()
 {
-    return outputs.getValue();
+    return outputs;
 }
 
-sofa::core::objectmodel::Base* LinkTraitsPtrCasts<DDGNode>::getBase(sofa::core::objectmodel::DDGNode* n)
+void DDGNode::updateIfDirty() const
 {
-    if (!n) return nullptr;
-    return n->getOwner();
-    //sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
-    //if (d) return d->getOwner();
-    //return dynamic_cast<sofa::core::objectmodel::Base*>(n);
+    if (isDirty())
+    {
+        const_cast <DDGNode*> (this)->update();
+    }
 }
 
-sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<DDGNode>::getData(sofa::core::objectmodel::DDGNode* n)
+void DDGNode::doAddInput(DDGNode* n)
 {
-    if (!n) return nullptr;
-    return n->getData();
-    //return dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
+    inputs.push_back(n);
 }
 
-bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link)
+void DDGNode::doDelInput(DDGNode* n)
 {
-    std::string pathStr, dataStr(" "); // non-empty data to specify that a data name is optionnal for DDGNode (as it can be a DataEngine)
-    if (link)
-    {
-        if (!link->parseString(path, &pathStr, &dataStr))
-            return false;
-    }
-    else
-    {
-        if (!BaseLink::ParseString(path, &pathStr, &dataStr, this->getOwner()))
-            return false;
-    }
-    bool self = (pathStr.empty() || pathStr == "[]");
-    if (dataStr == "") // no Data -> we look for a DataEngine
-    {
-        if (self)
-        {
-            ptr = this;
-            return true;
-        }
-        else
-        {
-            Base* owner = this->getOwner();
-            DataEngine* obj = nullptr;
-            if (!owner)
-                return false;
-            if (!owner->findLinkDest(obj, path, link))
-                return false;
-            ptr = obj;
-            return true;
-        }
-    }
-    Base* owner = this->getOwner();
-    if (!owner)
-        return false;
-    if (self)
-    {
-        ptr = owner->findData(dataStr);
-        return (ptr != nullptr);
-    }
-    else
-    {
-        Base* obj = nullptr;
-        if (!owner->findLinkDest(obj, BaseLink::CreateString(pathStr), link))
-            return false;
-        if (!obj)
-            return false;
-        ptr = obj->findData(dataStr);
-        return (ptr != nullptr);
-    }
+    inputs.erase(std::remove(inputs.begin(), inputs.end(), n));
 }
 
-void DDGNode::addLink(BaseLink* /*l*/)
+void DDGNode::doAddOutput(DDGNode* n)
 {
-    // the inputs and outputs links in DDGNode is manually added
-    // once the link vectors are constructed in Base or BaseData
+    outputs.push_back(n);
 }
 
-} // namespace objectmodel
+void DDGNode::doDelOutput(DDGNode* n)
+{
+    outputs.erase(std::remove(outputs.begin(), outputs.end(), n));
+}
 
-} // namespace core
 
-} // namespace sofa
+} /// namespace sofa::core::objectmodel

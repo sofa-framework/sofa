@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,20 +63,20 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkEigenSparseMatrixLowLeveAPI)
     EXPECT_EQ(3, nonZero_2);
 
     int nonZero_3 = *(outerIndexPtr + 3 + 1) - *(outerIndexPtr + 3);
-    EXPECT_EQ(0, nonZero_3);
+    EXPECT_EQ(int(0), nonZero_3);
 
     int nonZero_4 = *(outerIndexPtr + 4 + 1) - *(outerIndexPtr + 4);
     EXPECT_EQ(2, nonZero_4);
 
-    EXPECT_EQ(0,*(innerIndexPtr + 0));
-    EXPECT_EQ(1,*(innerIndexPtr + 1));
-    EXPECT_EQ(0,*(innerIndexPtr + 2));
-    EXPECT_EQ(4,*(innerIndexPtr + 3));
-    EXPECT_EQ(0,*(innerIndexPtr + 4));
-    EXPECT_EQ(1,*(innerIndexPtr + 5));
-    EXPECT_EQ(4,*(innerIndexPtr + 6));
-    EXPECT_EQ(2,*(innerIndexPtr + 7));
-    EXPECT_EQ(4,*(innerIndexPtr + 8));
+    EXPECT_EQ(int(0),*(innerIndexPtr + 0));
+    EXPECT_EQ(int(1),*(innerIndexPtr + 1));
+    EXPECT_EQ(int(0),*(innerIndexPtr + 2));
+    EXPECT_EQ(int(4),*(innerIndexPtr + 3));
+    EXPECT_EQ(int(0),*(innerIndexPtr + 4));
+    EXPECT_EQ(int(1),*(innerIndexPtr + 5));
+    EXPECT_EQ(int(4),*(innerIndexPtr + 6));
+    EXPECT_EQ(int(2),*(innerIndexPtr + 7));
+    EXPECT_EQ(int(4),*(innerIndexPtr + 8));
 
     EXPECT_EQ(matEntries.size(), mat.nonZeros());
     

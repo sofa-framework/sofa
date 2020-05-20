@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,10 +81,6 @@ public:
     Data< Real > d_density; ///< density (in kg/m^3)
     Data< bool > d_mult; ///< multiply density by image intensity?
     //@}
-
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageToRigidMassEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
     ImageToRigidMassEngine()    :   Inherited()
       , image(initData(&image,ImageTypes(),"image",""))

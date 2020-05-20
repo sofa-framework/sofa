@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "MyMappingPendulumInPlane.inl"
+#include <PluginExample/MyMappingPendulumInPlane.inl>
 
 #include <sofa/core/Mapping.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -27,13 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -42,16 +36,12 @@ using namespace sofa::defaulttype;
 int MyMappingPendulumInPlaneClass = core::RegisterObject("Mapping from an angle to a point in 2D")
     .add< MyMappingPendulumInPlane<Vec1Types, Vec3Types> >()
     .add< MyMappingPendulumInPlane<Vec1Types, Vec2Types> >()
+;
 
-    ;
-
-template class MyMappingPendulumInPlane<Vec1Types, Vec3Types>;
-template class MyMappingPendulumInPlane<Vec1Types, Vec2Types>;
-
+template class SOFA_PLUGINEXAMPLE_API MyMappingPendulumInPlane<Vec1Types, Vec3Types>;
+template class SOFA_PLUGINEXAMPLE_API MyMappingPendulumInPlane<Vec1Types, Vec2Types>;
 
 
-}	//mapping
 
-}	//component
+} // namespace sofa::component::mapping
 
-}	//sofa

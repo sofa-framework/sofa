@@ -3,8 +3,8 @@
 
 
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -120,10 +120,7 @@ public:
     
      typedef sofa::component::engine::LabelImageToolBox Label;
     typedef helper::vector<Label*> VecLabel;
-        
-    std::string getTemplateName() const  override {	return templateName(this);	}
-    static std::string templateName(const ImageToolBox<ImageTypes>* = NULL)	{ return ImageTypes::Name(); }
-    
+
     ImageToolBox() : Inherited()
       , image(initData(&image,ImageTypes(),"image","input image"))
       , toolbox(initData(&toolbox, "toolbox",""))

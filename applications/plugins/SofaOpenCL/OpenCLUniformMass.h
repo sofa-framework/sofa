@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,14 +36,47 @@ namespace mass
 
 
 // -- Mass interface
+    // float
 template <>
-void UniformMass<gpu::opencl::OpenCLVec3Types, SReal>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
+void UniformMass<gpu::opencl::OpenCLVec3Types, float>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
 
 template <>
-void UniformMass<gpu::opencl::OpenCLVec3Types, SReal>::accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f);
+void UniformMass<gpu::opencl::OpenCLVec3Types, float>::accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f);
 
 template <>
-void UniformMass<gpu::opencl::OpenCLVec3Types, SReal>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+void UniformMass<gpu::opencl::OpenCLVec3Types, float>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+
+//template <>
+//bool UniformMass<gpu::opencl::OpenCLVec3Types, SReal>::addBBox(SReal* minBBox, SReal* maxBBox);
+
+template <>
+double UniformMass<gpu::opencl::OpenCLRigid3fTypes, sofa::defaulttype::Rigid3fMass>::getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
+
+template <>
+double UniformMass<gpu::opencl::OpenCLRigid3fTypes, sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int) const;
+
+template <>
+void UniformMass<gpu::opencl::OpenCLRigid3fTypes, sofa::defaulttype::Rigid3fMass>::draw(const sofa::core::visual::VisualParams* vparams);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+
+
+// double 
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3dTypes, SReal>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3dTypes, SReal>::accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3dTypes, SReal>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
 //template <>
 //bool UniformMass<gpu::opencl::OpenCLVec3Types, SReal>::addBBox(SReal* minBBox, SReal* maxBBox);

@@ -273,7 +273,7 @@ namespace mass
 template <> SOFA_Flexible_API
 void UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dMass>::constructor_message()
 {
-    serr << "UniformMass on '" << this->templateName() << "' is for debug purpose only and should NOT be used for simulation" << sendl;
+    serr << "UniformMass on '" << GetClass()->templateName << "' is for debug purpose only and should NOT be used for simulation" << sendl;
 }
 template <> SOFA_Flexible_API
 void UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dMass>::draw(const core::visual::VisualParams* /*vparams*/)

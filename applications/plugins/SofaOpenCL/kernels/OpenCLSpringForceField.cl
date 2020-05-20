@@ -54,7 +54,10 @@ __kernel void SpringForceField3t_addForce(
         GPUSpring spring = *springs;
         --spring.index;
         springs+=BSIZE;
-        GPUSpring2 spring2 = *(const GPUSpring2*)springs;
+        GPUSpring2 spring2 ;//= *(const GPUSpring2*)springs;
+        spring2.kd = springs->ks;
+        long i = springs->index;
+        spring2.initpos = *((Real*)&i);
         springs+=BSIZE;
         if (spring.index != -1)
         {
@@ -363,7 +366,11 @@ __kernel void SpringForceField3t_addExternalForce(
         GPUSpring spring = *springs;
         --spring.index;
         springs+=BSIZE;
-        GPUSpring2 spring2 = *(const GPUSpring2*)springs;
+        GPUSpring2 spring2 ;//= *(const GPUSpring2*)springs;
+        spring2.kd = springs->ks;
+        long i = springs->index;
+        spring2.initpos = *((Real*)&i);
+
         springs+=BSIZE;
         if (spring.index != -1)
         {

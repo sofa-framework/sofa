@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,26 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "MyBehaviorModel.h"
+#include <PluginExample/MyBehaviorModel.h>
 
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
+namespace sofa::component::behaviormodel
 {
 
-namespace component
+MyBehaviorModel::MyBehaviorModel()
+    : d_customUnsignedData(initData(&d_customUnsignedData, unsigned(1),"Custom Unsigned Data","Example of unsigned data with custom widget"))
+    , d_regularUnsignedData(initData(&d_regularUnsignedData, unsigned(1),"Unsigned Data","Example of unsigned data with standard widget"))
 {
-
-namespace behaviormodel
-{
-
-
-MyBehaviorModel::MyBehaviorModel():
-    customUnsignedData(initData(&customUnsignedData, (unsigned)1,"Custom Unsigned Data","Example of unsigned data with custom widget")),
-    regularUnsignedData(initData(&regularUnsignedData, (unsigned)1,"Unsigned Data","Example of unsigned data with standard widget"))
-{
-    customUnsignedData.setWidget("widget_myData");
+    d_customUnsignedData.setWidget("widget_myData");
 }
 
 
@@ -54,15 +47,13 @@ void MyBehaviorModel::reinit()
 {
 }
 
-void MyBehaviorModel::updatePosition(double /*dt*/)
+void MyBehaviorModel::updatePosition(double dt)
 {
+    SOFA_UNUSED(dt);
 }
 
 int MyBehaviorModelClass = core::RegisterObject("Dummy component with a custom widget.").add< MyBehaviorModel >();
 
 
-} // namespace behaviormodel
+} // namespace sofa::component::behaviormodel
 
-} // namespace component
-
-} // namespace sofa

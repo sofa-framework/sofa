@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -74,8 +74,9 @@ class BaseViewer;
 
 namespace qt
 {
-
+#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
 class DocBrowser ;
+#endif
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
 class QSofaRecorder;
@@ -232,7 +233,9 @@ private:
     float object_Scale[2];
     bool saveReloadFile;
     DisplayFlagsDataWidget*  displayFlag  {nullptr};
+#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
     DocBrowser*              m_docbrowser {nullptr};
+#endif
     bool animationState;
     int frameCounter;
     unsigned int m_viewerMSAANbSampling;

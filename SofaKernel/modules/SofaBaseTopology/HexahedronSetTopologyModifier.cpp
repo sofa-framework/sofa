@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -98,7 +98,7 @@ void HexahedronSetTopologyModifier::addHexahedra(const sofa::helper::vector<Hexa
 
 void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 {
-	if (CHECK_TOPOLOGY)
+	if (m_container->d_checkTopology.getValue())
 	{
 		// check if the 8 vertices are different
 		assert(t[0] != t[1]); assert(t[0] != t[2]); assert(t[0] != t[3]); assert(t[0] != t[4]); assert(t[0] != t[5]); assert(t[0] != t[6]); assert(t[0] != t[7]);
