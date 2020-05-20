@@ -471,10 +471,7 @@ void HexahedronSetTopologyContainer::createHexahedraAroundQuadArray()
 
 const sofa::helper::vector<HexahedronSetTopologyContainer::Hexahedron> &HexahedronSetTopologyContainer::getHexahedronArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasHexahedra() && getNbPoints()>0) << "Hexahedron array is empty with " << getNbPoints() << " vertices.";
-
-    return d_hexahedron.getValue ();
+    return d_hexahedron.getValue();
 }
 
 core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
@@ -482,9 +479,6 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
 {
     if(!hasHexahedraAroundVertex())
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "HexahedraAroundVertex array is empty with " << getNbPoints() << " vertices.";
-
         return InvalidID;
     }
 
@@ -542,8 +536,7 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
     result7 = std::set_intersection(set8.begin(),set8.end(),out6.begin(),out6.end(),out7.begin());
     out7.erase(result7,out7.end());
 
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(out7.size() > 1) << "More than one Hexahedron found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "; "
+    msg_warning_when(out7.size() > 1) << "More than one Hexahedron found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "; "
                          << v5 << "; " << v6 << "; " << v7 << "; " << v8 << "]";
 
     assert(out7.size()==0 || out7.size()==1);
@@ -575,33 +568,21 @@ size_t HexahedronSetTopologyContainer::getNumberOfElements() const
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundVertex > &HexahedronSetTopologyContainer::getHexahedraAroundVertexArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasHexahedraAroundVertex()) << "HexahedraAroundVertex shell array is empty.";
-
     return m_hexahedraAroundVertex;
 }
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundEdge > &HexahedronSetTopologyContainer::getHexahedraAroundEdgeArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasHexahedraAroundEdge()) << "HexahedraAroundEdge shell array is empty.";
-
     return m_hexahedraAroundEdge;
 }
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundQuad > &HexahedronSetTopologyContainer::getHexahedraAroundQuadArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasHexahedraAroundQuad()) << "HexahedraAroundQuad shell array is empty.";
-
     return m_hexahedraAroundQuad;
 }
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::EdgesInHexahedron> &HexahedronSetTopologyContainer::getEdgesInHexahedronArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasEdgesInHexahedron()) << "EdgesInHexahedron shell array is empty.";
-
     return m_edgesInHexahedron;
 }
 
@@ -651,9 +632,7 @@ QuadSetTopologyContainer::QuadID HexahedronSetTopologyContainer::getNextAdjacent
 
     if (QaroundE.size() < 2)
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "GetNextAdjacentQuad: no quad around edge: " << the_edgeID;
-
+    	msg_error() << "GetNextAdjacentQuad: no quad around edge: " << the_edgeID;
         return nextQuad;
     }
     else if (QaroundE.size() == 2)
@@ -679,9 +658,6 @@ QuadSetTopologyContainer::QuadID HexahedronSetTopologyContainer::getNextAdjacent
 
 const sofa::helper::vector< QuadSetTopologyContainer::QuadsInHexahedron> &HexahedronSetTopologyContainer::getQuadsInHexahedronArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasQuadsInHexahedron()) << "QuadsInHexahedron shell array is empty.";
-
     return m_quadsInHexahedron;
 }
 
@@ -689,8 +665,6 @@ const HexahedronSetTopologyContainer::HexahedraAroundVertex &HexahedronSetTopolo
 {
     if (id < m_hexahedraAroundVertex.size())
         return m_hexahedraAroundVertex[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "HexahedraAroundVertex array access out of bounds: " << id << " >= " << m_hexahedraAroundVertex.size();
 
     return InvalidSet;
 }
@@ -699,8 +673,6 @@ const HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopology
 {
     if (id < m_hexahedraAroundEdge.size())
         return m_hexahedraAroundEdge[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "HexahedraAroundEdge array access out of bounds: " << id << " >= " << m_hexahedraAroundEdge.size();
 
     return InvalidSet;
 }
@@ -709,8 +681,6 @@ const HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopology
 {
     if (id < m_hexahedraAroundQuad.size())
         return m_hexahedraAroundQuad[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "HexahedraAroundQuad array access out of bounds: " << id << " >= " << m_hexahedraAroundQuad.size();
 
     return InvalidSet;
 }
@@ -719,8 +689,6 @@ const QuadSetTopologyContainer::EdgesInHexahedron &HexahedronSetTopologyContaine
 {
     if (id < m_edgesInHexahedron.size())
         return m_edgesInHexahedron[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "EdgesInHexahedron array access out of bounds: " << id << " >= " << m_edgesInHexahedron.size();
 
     return InvalidEdgesInHexahedron;
 }
@@ -729,8 +697,6 @@ const QuadSetTopologyContainer::QuadsInHexahedron &HexahedronSetTopologyContaine
 {
     if (id < m_quadsInHexahedron.size())
         return m_quadsInHexahedron[id];
-    else if (CHECK_TOPOLOGY)
-        msg_error() << "QuadsInHexahedron array access out of bounds: " << id << " >= " << m_quadsInHexahedron.size();
 
     return InvalidQuadsInHexahedron;
 }
@@ -809,31 +775,43 @@ int HexahedronSetTopologyContainer::getQuadIndexInHexahedron(const QuadsInHexahe
 
 HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopologyContainer::getHexahedraAroundEdgeForModification(const EdgeID i)
 {
-    if(CHECK_TOPOLOGY && !hasHexahedraAroundEdge())
+    if(!hasHexahedraAroundEdge())
+    {
+        dmsg_warning() << "getHexahedraAroundEdgeForModification: HexahedraAroundEdgeArray is empty. Be sure to call createHexahedraAroundEdgeArray first.";
         createHexahedraAroundEdgeArray();
+    }
 
     assert( i < m_hexahedraAroundEdge.size());
 
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_hexahedraAroundEdge[i];
 }
 
 HexahedronSetTopologyContainer::HexahedraAroundVertex &HexahedronSetTopologyContainer::getHexahedraAroundVertexForModification(const PointID i)
 {
-    if(CHECK_TOPOLOGY && !hasHexahedraAroundVertex())
+    if(!hasHexahedraAroundVertex())
+    {
+        dmsg_warning() << "getHexahedraAroundVertexForModification: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
         createHexahedraAroundVertexArray();
+    }
 
     assert( i < m_hexahedraAroundVertex.size());
 
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_hexahedraAroundVertex[i];
 }
 
 HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopologyContainer::getHexahedraAroundQuadForModification(const QuadID i)
 {
-    if(CHECK_TOPOLOGY && !hasHexahedraAroundQuad())
+    if(!hasHexahedraAroundQuad())
+    {
+        dmsg_warning() << "getHexahedraAroundQuadForModification: HexahedraAroundQuadArray is empty. Be sure to call createHexahedraAroundQuadArray first.";
         createHexahedraAroundQuadArray();
+    }
 
     assert( i < m_hexahedraAroundQuad.size());
 
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_hexahedraAroundQuad[i];
 }
 
@@ -936,9 +914,7 @@ bool HexahedronSetTopologyContainer::checkConnexity()
 
     if (nbr == 0)
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Can't compute connexity as there are no Hexahedra";
-
+        msg_error() << "CheckConnexity: Can't compute connexity as there are no Hexahedra";
         return false;
     }
 
@@ -946,7 +922,7 @@ bool HexahedronSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_warning() << "Hexahedra are missings. There is more than one connexe component.";
+        msg_warning() << "CheckConnexity: Hexahedra are missings. There is more than one connexe component.";
         return false;
     }
 
@@ -960,9 +936,7 @@ size_t HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
 
     if (nbr == 0)
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Can't compute connexity as there are no Hexahedra";
-
+        msg_error() << "Can't getNumberOfConnectedComponent as there are no Hexahedra";
         return 0;
     }
 
@@ -993,15 +967,13 @@ size_t HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
 
 const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::getConnectedElement(HexaID elem)
 {
+    VecHexaID elemAll;
     if(!hasHexahedraAroundVertex())	// this method should only be called when the shell array exists
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Hexahedron vertex shell array is empty.";
-
-        createHexahedraAroundVertexArray();
+        dmsg_warning() << "getConnectedElement: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
+        return elemAll;
     }
 
-    VecHexaID elemAll;
     VecHexaID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     size_t cpt = 0;
@@ -1044,9 +1016,7 @@ const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::
         if (elemPreviousFront.empty())
         {
             end = true;
-			if (CHECK_TOPOLOGY)
-				msg_error() << "Loop for computing connexity has reach end.";
-
+			msg_error() << "Loop for computing connexity has reach end.";
         }
 
         // iterate
@@ -1064,10 +1034,8 @@ const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::
 
     if (!hasHexahedraAroundVertex())
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Hexahedron vertex shell array is empty.";
-
-        createHexahedraAroundVertexArray();
+        dmsg_warning() << "getElementAroundElement: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
+        return elems;
     }
 
     Hexahedron the_hexa = this->getHexahedron(elem);
@@ -1103,16 +1071,13 @@ const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::
 const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::getElementAroundElements(VecHexaID elems)
 {
     VecHexaID elemAll;
-    VecHexaID elemTmp;
-
     if (!hasHexahedraAroundVertex())
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Hexahedron vertex shell array is empty.";
-
-        createHexahedraAroundVertexArray();
+        dmsg_warning() << "getElementAroundElements: HexahedraAroundVertexArray is empty. Be sure to call createHexahedraAroundVertexArray first.";
+        return elemAll;
     }
 
+    VecHexaID elemTmp;
     for (size_t i = 0; i <elems.size(); ++i) // for each HexaID of input vector
     {
         VecHexaID elemTmp2 = this->getElementAroundElement(elems[i]);
@@ -1239,8 +1204,7 @@ void HexahedronSetTopologyContainer::setHexahedronTopologyToDirty()
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        if (CHECK_TOPOLOGY)
-            msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->name;
     }
 }
 
@@ -1254,8 +1218,7 @@ void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
     {
         if ((*it)->isDirty())
         {
-            if (CHECK_TOPOLOGY)
-                msg_warning() << "Hexahedron Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Hexahedron Topology update did not clean engine: " << (*it)->name;
             (*it)->cleanDirty();
         }
     }
