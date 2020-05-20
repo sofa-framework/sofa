@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -217,8 +217,7 @@ void PointSetTopologyContainer::setPointTopologyToDirty()
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        if (CHECK_TOPOLOGY)
-            msg_info() << "Point Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Point Topology Set dirty engine: " << topoEngine->name;
     }
 }
 
@@ -232,8 +231,7 @@ void PointSetTopologyContainer::cleanPointTopologyFromDirty()
     {
         if ((*it)->isDirty())
         {
-            if (CHECK_TOPOLOGY)
-                msg_warning() << "Point Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Point Topology update did not clean engine: " << (*it)->name;
             (*it)->cleanDirty();
         }
     }
@@ -278,10 +276,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
             }
 
             sofa::core::objectmodel::BaseData* data = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
-            if (CHECK_TOPOLOGY)
-            {
-                msg_warning_when(data) << "Data alone linked: " << data->getName();
-            }
+            msg_warning_when(data) << "Data alone linked: " << data->getName();
         }
 
         _outs.clear();

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -91,6 +91,11 @@ void DDGNode::cleanDirtyOutputsOfInputs()
 
 void DDGNode::addInput(DDGNode* n)
 {
+    if(std::find(inputs.begin(), inputs.end(), n) != inputs.end())
+    {
+        assert(false && "trying to add a DDGNode that is already in the input set.");
+        return;
+    }
     doAddInput(n);
     n->doAddOutput(this);
     setDirtyValue();
@@ -98,12 +103,21 @@ void DDGNode::addInput(DDGNode* n)
 
 void DDGNode::delInput(DDGNode* n)
 {
+    /// It is not allowed to remove an entry that is not in the set.
+    assert(std::find(inputs.begin(), inputs.end(), n) != inputs.end());
+
     doDelInput(n);
     n->doDelOutput(this);
 }
 
 void DDGNode::addOutput(DDGNode* n)
 {
+    if(std::find(outputs.begin(), outputs.end(), n) != outputs.end())
+    {
+        assert(false && "trying to add a DDGNode that is already in the output set.");
+        return;
+    }
+
     doAddOutput(n);
     n->doAddInput(this);
     n->setDirtyValue();
@@ -111,6 +125,9 @@ void DDGNode::addOutput(DDGNode* n)
 
 void DDGNode::delOutput(DDGNode* n)
 {
+    /// It is not allowed to remove an entry that is not in the set.
+    assert(std::find(outputs.begin(), outputs.end(), n) != outputs.end());
+
     doDelOutput(n);
     n->doDelInput(this);
 }

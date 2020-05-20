@@ -1,5 +1,6 @@
 <Node name="root" gravity="0 0 0" dt="0.05">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
@@ -18,7 +19,7 @@
         <DiagonalMass template="Vec3d" name="default3" massDensity="0.5" />
         <FixedPlaneConstraint template="Vec3d" name="default4" direction="0 0 1" dmin="-0.1" dmax="0.1" />
         <FixedConstraint template="Vec3d" name="default5" indices="0" />
-        <TetrahedronModel />
+        <TetrahedronCollisionModel />
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="360" assembling="0" />
         <Node name="T" gravity="0 -9.81 0">
             <TriangleSetTopologyContainer name="Container" tags="meca" />
