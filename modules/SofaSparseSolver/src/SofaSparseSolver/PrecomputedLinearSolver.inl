@@ -105,6 +105,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
         loadMatrixWithCSparse(M);
         if (use_file.getValue()) internalData.writeFile(ss.str().c_str(),systemSize);
 #else
+        SOFA_UNUSED(M);
         msg_error()<< "CSPARSE support is required to invert the matrix";
 #endif
     }
