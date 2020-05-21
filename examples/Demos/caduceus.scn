@@ -31,7 +31,7 @@
         <MechanicalObject name="dofs"  scale="1" dy="2" position="@grid.position"  tags="NoPicking" />
         <UniformMass totalMass="1.0" />
         <HexahedronFEMForceField name="FEM" youngModulus="30000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
-        <UncoupledConstraintCorrection />
+        <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
 
         <Node name="Collis">
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
