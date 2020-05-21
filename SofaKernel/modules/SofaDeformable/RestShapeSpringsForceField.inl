@@ -204,6 +204,7 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     if (m_indices.empty())
     {
         // no point are defined, default case: points = all points
+        msg_warning() << "No point are defined. Change to default case: points = all points";
         for (unsigned int i = 0; i < (unsigned)this->mstate->getSize(); i++)
         {
             m_indices.push_back(i);

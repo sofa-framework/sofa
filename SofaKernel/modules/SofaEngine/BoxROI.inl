@@ -591,7 +591,10 @@ void BoxROI<DataTypes>::doUpdate()
     WriteOnlyAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
     WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = d_quadInROI;
 
-
+    if(!d_doUpdate.getValue()){
+        return ;
+    }
+    
     // Clear lists
     indices.clear();
     edgeIndices.clear();
@@ -613,9 +616,6 @@ void BoxROI<DataTypes>::doUpdate()
         return ;
     }
 
-    if(!d_doUpdate.getValue()){
-        return ;
-    }
     if (d_X0.getValue().size() == 0)
     {
         msg_warning() << "No rest position yet defined. Box might not work properly. \n"
