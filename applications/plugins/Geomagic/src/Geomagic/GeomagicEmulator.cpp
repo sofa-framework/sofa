@@ -106,11 +106,7 @@ GeomagicEmulatorTask::MemoryAlloc GeomagicEmulatorTask::run()
     if (m_driver->m_terminate == false)
     {
         TaskScheduler::getInstance()->addTask(new GeomagicEmulatorTask(m_driver, &m_driver->_simStepStatus));
-#ifndef WIN32
-        usleep(100);
-#else
-        Sleep(100);
-#endif
+        std::this_thread::sleep_for(100);
     }
 
     return MemoryAlloc::Dynamic;
@@ -137,11 +133,7 @@ void GeomagicEmulator::clearDevice()
     m_terminate = true;
     while (_simStepStatus.isBusy())
     {
-#ifndef WIN32
-        usleep(1);
-#else
-        Sleep(1);
-#endif
+        std::this_thread::sleep_for(1);
     }
     _taskScheduler->stop();
 }
@@ -175,11 +167,7 @@ void GeomagicEmulator::initDevice()
     }
 
     // 2.6- Need to wait several ms for the scheduler to be well launched and retrieving correct device information before updating information on the SOFA side.
-#ifndef WIN32
-        usleep(42);
-#else
-        Sleep(42);
-#endif
+    std::this_thread::sleep_for(42);
     updatePosition();
 }
 
