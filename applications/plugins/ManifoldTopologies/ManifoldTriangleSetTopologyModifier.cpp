@@ -503,19 +503,16 @@ bool ManifoldTriangleSetTopologyModifier::addTrianglesPreconditions( const sofa:
     // For manifold classes all shells have to be present while adding triangles. As it is not obliged in upper class. It is done here.
     if(!m_container->hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
-        msg_warning_when(m_container->d_checkTopology.getValue()) << "AddPrecondition] Triangle vertex shell array is empty.";
         m_container->createTrianglesAroundVertexArray();
     }
 
     if(!m_container->hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
     {
-        msg_warning_when(m_container->d_checkTopology.getValue()) << "AddPrecondition] Triangle edge shell array is empty.";
         m_container->createTrianglesAroundEdgeArray();
     }
 
     if(!m_container->hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
-        msg_warning_when(m_container->d_checkTopology.getValue()) << "AddPrecondition] Edge vertex shell array is empty.";
         m_container->createEdgesAroundVertexArray();
     }
 
@@ -817,7 +814,7 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
         // Check if the vertex really exist
         if ( (int)listVertex[ vertexIndex ] >= m_container->getNbPoints())
         {
-            msg_warning_when(m_container->d_checkTopology.getValue()) << "ReorderingTopologyOnROI: vertex: "<< listVertex[ vertexIndex ] << " is out of bound";
+            msg_warning() << "ReorderingTopologyOnROI: vertex: "<< listVertex[ vertexIndex ] << " is out of bound";
             continue;
         }
 
@@ -966,7 +963,7 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
             }
             else
             {
-                msg_warning_when(m_container->d_checkTopology.getValue()) << "ReorderingTopologyOnROI: vertex "<< listVertex[vertexIndex] << "is on the border but last edge not found.";
+                msg_warning() << "ReorderingTopologyOnROI: vertex "<< listVertex[vertexIndex] << "is on the border but last edge not found.";
             }
         }
 
