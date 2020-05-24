@@ -189,13 +189,12 @@ set(SOFA_INCLUDE_DIRS
 ##
 ## SOFA group the components by functionality and maturity state.
 ## 50 new groups are contained in 5 different categories:
-## BASE, COMMON, GENERAL, ADVANCED and MISC.
+## BASE, COMMON, GENERAL and MISC.
 ##
 ## 1- collect all library name to search in the SOFA_LIBS_NAME list splitted into 5 parts
 ##    * the SOFA LIBS BASE LIST
 ##    * the SOFA COMMON LIST
 ##    * THE SOFA GENERAL LIST
-##    * THE SOFA ADVANCED LIST
 ##    * THE SOFA MISC LIST
 ## 2- for each library :
 ##    * get it CMAKE_SOFA_LIB_NAME and it associate REAL_SOFA_LIB_NAME
@@ -229,7 +228,6 @@ list(APPEND SOFA_LIB_COMPONENT_NAME
     SofaComponentCommon       SOFA_LIB_COMPONENT_COMMON
     SofaComponentGeneral      SOFA_LIB_COMPONENT_GENERAL
     #SofaComponentMiscDev      SOFA_LIB_COMPONENT_MISC_DEV
-    SofaComponentAdvanced     SOFA_LIB_COMPONENT_ADVANCED
     #SofaComponentAdvancedDev  SOFA_LIB_COMPONENT_ADVANCED_DEV
     )
 list(LENGTH SOFA_LIB_COMPONENT_NAME sofaLibComponentList)

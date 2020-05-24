@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -110,7 +110,7 @@ public:
     /** \brief Checks if the Topology is coherent
      *
      */
-    virtual bool checkTopology() const;
+    bool checkTopology() const override;
 
     /** \brief add one DOF in this topology (simply increment the number of DOF)
      *
@@ -172,8 +172,9 @@ protected:
     virtual void displayDataGraph(sofa::core::objectmodel::BaseData& my_Data);
 
 public:
+    Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points    
 
-    Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points
+    Data<bool> d_checkTopology; ///< Bool parameter to activate internal topology checks in several methods 
 
 protected:
 

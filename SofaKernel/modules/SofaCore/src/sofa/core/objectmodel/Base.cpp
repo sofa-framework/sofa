@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,8 +45,6 @@ namespace objectmodel
 
 using std::string;
 static const std::string unnamed_label=std::string("unnamed");
-
-
 
 Base::Base()
     : ref_counter(0)
@@ -174,24 +172,25 @@ void Base::addAlias( BaseLink* link, const char* alias)
 /// Get the type name of this object (i.e. class and template types)
 std::string Base::getTypeName() const
 {
-    std::string c = getClassName();
-    std::string t = getTemplateName();
-    if (t.empty())
-        return c;
-    else
-        return c + std::string("<") + t + std::string(">");
+    return getClass()->typeName;
 }
 
 /// Get the class name of this object
 std::string Base::getClassName() const
 {
-    return BaseClass::decodeClassName(typeid(*this));
+    return getClass()->className;
 }
 
 /// Get the template type names (if any) used to instantiate this object
 std::string Base::getTemplateName() const
 {
-    return BaseClass::decodeTemplateName(typeid(*this));
+    return getClass()->templateName;
+}
+
+/// Get the template type names (if any) used to instantiate this object
+std::string Base::getNameSpaceName() const
+{
+    return getClass()->namespaceName;
 }
 
 void Base::setName(const std::string& na)

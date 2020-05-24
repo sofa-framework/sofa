@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,16 +59,6 @@ public:
     void init() override;
     void reinit() override;
     void doUpdate() override;
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const Indices2ValuesMapper<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
 
     //Input
     Data<sofa::helper::vector<Real> > f_inputValues; ///< Already existing values (can be empty) 

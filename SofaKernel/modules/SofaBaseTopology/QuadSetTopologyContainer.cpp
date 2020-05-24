@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -460,53 +460,51 @@ QuadSetTopologyContainer::QuadsAroundVertex &QuadSetTopologyContainer::getQuadsA
 
 bool QuadSetTopologyContainer::checkTopology() const
 {
-	if (CHECK_TOPOLOGY)
+    if (!d_checkTopology.getValue())
+        return true;
+
+	bool ret = true;
+	helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
+
+	if (hasQuadsAroundVertex())
 	{
-		bool ret = true;
-		helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
-
-		if (hasQuadsAroundVertex())
+		for (size_t i = 0; i < m_quadsAroundVertex.size(); ++i)
 		{
-			for (size_t i = 0; i < m_quadsAroundVertex.size(); ++i)
+			const sofa::helper::vector<QuadID> &tvs = m_quadsAroundVertex[i];
+			for (size_t j = 0; j < tvs.size(); ++j)
 			{
-				const sofa::helper::vector<QuadID> &tvs = m_quadsAroundVertex[i];
-				for (size_t j = 0; j < tvs.size(); ++j)
+				if ((m_quad[tvs[j]][0] != i)
+					&& (m_quad[tvs[j]][1] != i)
+					&& (m_quad[tvs[j]][2] != i)
+					&& (m_quad[tvs[j]][3] != i))
 				{
-					if ((m_quad[tvs[j]][0] != i)
-						&& (m_quad[tvs[j]][1] != i)
-						&& (m_quad[tvs[j]][2] != i)
-						&& (m_quad[tvs[j]][3] != i))
-					{
-						ret = false;
-						msg_error() << "*** CHECK FAILED : check_quad_vertex_shell, i = " << i << " , j = " << j;
-					}
+					ret = false;
+					msg_error() << "*** CHECK FAILED : check_quad_vertex_shell, i = " << i << " , j = " << j;
 				}
 			}
 		}
-
-		if (hasQuadsAroundEdge())
-		{
-			for (size_t i = 0; i < m_quadsAroundEdge.size(); ++i)
-			{
-				const sofa::helper::vector<QuadID> &tes = m_quadsAroundEdge[i];
-				for (size_t j = 0; j < tes.size(); ++j)
-				{
-					if ((m_edgesInQuad[tes[j]][0] != i)
-						&& (m_edgesInQuad[tes[j]][1] != i)
-						&& (m_edgesInQuad[tes[j]][2] != i)
-						&& (m_edgesInQuad[tes[j]][3] != i))
-					{
-						ret = false;
-						msg_error() << "*** CHECK FAILED : check_quad_edge_shell, i = " << i << " , j = " << j;
-					}
-				}
-			}
-		}
-
-		return ret && EdgeSetTopologyContainer::checkTopology();
 	}
-	
-	return true;
+
+	if (hasQuadsAroundEdge())
+	{
+		for (size_t i = 0; i < m_quadsAroundEdge.size(); ++i)
+		{
+			const sofa::helper::vector<QuadID> &tes = m_quadsAroundEdge[i];
+			for (size_t j = 0; j < tes.size(); ++j)
+			{
+				if ((m_edgesInQuad[tes[j]][0] != i)
+					&& (m_edgesInQuad[tes[j]][1] != i)
+					&& (m_edgesInQuad[tes[j]][2] != i)
+					&& (m_edgesInQuad[tes[j]][3] != i))
+				{
+					ret = false;
+					msg_error() << "*** CHECK FAILED : check_quad_edge_shell, i = " << i << " , j = " << j;
+				}
+			}
+		}
+	}
+
+	return ret && EdgeSetTopologyContainer::checkTopology();
 }
 
 

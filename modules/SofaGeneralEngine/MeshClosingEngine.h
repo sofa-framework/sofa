@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,9 +76,6 @@ public:
     Data< VecSeqIndex > indices; ///< Index lists of the closing parts
     Data< SeqPositions > closingPosition; ///< Vertices of the closing parts
     Data< SeqTriangles > closingTriangles; ///< Triangles of the closing parts
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MeshClosingEngine<DataTypes>* = nullptr) { return DataTypes::Name();    }
 
 protected:
 

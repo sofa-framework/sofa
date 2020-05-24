@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,6 +63,7 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
 
 PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
     : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
+    , d_checkTopology (initData(&d_checkTopology, false, "checkTopology", "Parameter to activate internal topology checks (might slow down the simulation)"))
     , m_pointTopologyDirty(false)
     , nbPoints (initData(&nbPoints, (unsigned int )npoints, "nbPoints", "Number of points"))
     , points(initData(&points, "points","List of point indices"))

@@ -767,7 +767,10 @@ using namespace core::behavior;
             Data<bool> data;
             data.read( propagate_lambdasChar );
             if( data.getValue() )
-                constraint_forces.beginWriteOnly()->setSelectedItem(3); constraint_forces.endEdit();
+            {
+                constraint_forces.beginWriteOnly()->setSelectedItem(3);
+                constraint_forces.endEdit();
+            }
         }
     }
 

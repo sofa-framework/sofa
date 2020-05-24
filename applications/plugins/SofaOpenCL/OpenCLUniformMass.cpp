@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,9 +40,12 @@ namespace opencl
 {
 
 int UniformMassOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
-        .add< component::mass::UniformMass<OpenCLVec3Types,double> >()
+        .add< component::mass::UniformMass<OpenCLVec3Types, float> >()
+        .add< component::mass::UniformMass<OpenCLVec3f1Types, float> >()
+        .add< component::mass::UniformMass<OpenCLRigid3fTypes, sofa::defaulttype::Rigid3fMass> >()
+        .add< component::mass::UniformMass<OpenCLVec3dTypes,double> >()
         .add< component::mass::UniformMass<OpenCLVec3d1Types,double> >()
-        .add< component::mass::UniformMass<OpenCLRigid3Types,sofa::defaulttype::Rigid3Mass> >()
+        .add< component::mass::UniformMass<OpenCLRigid3dTypes,sofa::defaulttype::Rigid3Mass> >()
 
         ;
 

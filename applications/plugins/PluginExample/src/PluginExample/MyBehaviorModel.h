@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,27 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef PLUGINEXAMPLE_MYBEHAVIORMODEL_H
-#define PLUGINEXAMPLE_MYBEHAVIORMODEL_H
+#pragma once
 
 #include <PluginExample/config.h>
+
 #include <sofa/core/BehaviorModel.h>
 
 
-namespace sofa
+namespace sofa::component::behaviormodel
 {
-
-namespace component
-{
-
-namespace behaviormodel
-{
-
 
 /**
  * This BehaviorModel does nothing but contain a custom data widget.
  */
-class MyBehaviorModel : public sofa::core::BehaviorModel
+class SOFA_PLUGINEXAMPLE_API MyBehaviorModel : public sofa::core::BehaviorModel
 {
 
 public:
@@ -47,24 +40,17 @@ public:
 
 protected:
     MyBehaviorModel();
-    ~MyBehaviorModel() override;
+    virtual ~MyBehaviorModel() override;
 
 public:
     void init() override;
     void reinit() override;
     void updatePosition(double dt) override;
 
-protected:
-    Data<unsigned> customUnsignedData; ///< Example of unsigned data with custom widget
-    Data<unsigned> regularUnsignedData; ///< Example of unsigned data with standard widget
+    Data<unsigned> d_customUnsignedData; ///< Example of unsigned data with custom widget
+    Data<unsigned> d_regularUnsignedData; ///< Example of unsigned data with standard widget
 };
 
 
-} // namespace behaviormodel
+} // sofa::component::behaviormodel
 
-} // namespace component
-
-} // namespace sofa
-
-
-#endif // PLUGINEXAMPLE_MYBEHAVIORMODEL_H

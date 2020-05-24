@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,7 +52,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapper<In,Out>::getJ(int outSize
 {
     SOFA_UNUSED(outSize);
     SOFA_UNUSED(inSize);
-    dmsg_error() << " getJ() NOT IMPLEMENTED BY " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*this)) ;
+    dmsg_error() << " getJ() NOT IMPLEMENTED BY " << sofa::helper::NameDecoder::decodeClassName(typeid(*this)) ;
     return nullptr;
 }
 

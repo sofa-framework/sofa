@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,6 +24,8 @@
 
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/DDGNode.h>
+#include <sofa/core/objectmodel/BaseClass.h>
+#include <sofa/core/objectmodel/Link.h>
 
 namespace sofa
 {
@@ -66,11 +68,15 @@ public:
 
     /// @name Class reflection system
     /// @{
-    typedef TClass<BaseData,DDGNode> MyClass;
-    static const MyClass* GetClass() { return MyClass::get(); }
-    const BaseClass* getClass() const override
-    { return GetClass(); }
-    /// @}
+    typedef TClass<BaseData> MyClass;
+    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
+    const BaseClass* getClass() const
+    { return GetClass(); }    
+    template<class T>
+    static void dynamicCast(T*& ptr, Base* /*b*/)
+    {
+        ptr = nullptr; // BaseData does not derive from Base
+    }/// @}
 
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
     class BaseInitData
@@ -226,18 +232,18 @@ public:
     virtual bool canBeLinked() const { return true; }
 
     /// Return the Base component owning this %Data.
-    Base* getOwner() const override { return m_owner; }
+    Base* getOwner() const { return m_owner; }
     /// Set the owner of this %Data.
     void setOwner(Base* o) { m_owner=o; }
 
     /// This method is needed by DDGNode
-    BaseData* getData() const override
+    BaseData* getData() const
     {
         return const_cast<BaseData*>(this);
     }
 
     /// Return the name of this %Data within the Base component
-    const std::string& getName() const override { return m_name; }
+    const std::string& getName() const { return m_name; }
     /// Set the name of this %Data.
     ///
     /// This method should not be called directly, the %Data registration methods in Base should be used instead.
@@ -290,8 +296,6 @@ public:
     typedef std::vector<BaseLink*> VecLink;
     /// Accessor to the vector containing all the fields of this object
     const VecLink& getLinks() const { return m_vecLink; }
-
-    virtual bool findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link) override;
 
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
 

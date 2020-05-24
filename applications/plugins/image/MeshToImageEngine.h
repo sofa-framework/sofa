@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -125,10 +125,6 @@ public:
     Data<bool> gridSnap; ///< align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)
 
     Data<bool> worldGridAligned; ///< perform rasterization on a world aligned grid using nbVoxels and voxelSize
-
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
     MeshToImageEngine()    :   Inherited()
       , voxelSize(initData(&voxelSize,helper::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))

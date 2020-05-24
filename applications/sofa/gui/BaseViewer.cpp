@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -218,7 +218,7 @@ bool BaseViewer::load()
         if (!visualStyle)
         {
             visualStyle = sofa::core::objectmodel::New<component::visualmodel::VisualStyle>();
-            visualStyle->setName(core::objectmodel::Base::shortName(visualStyle.get()));
+            visualStyle->setName(sofa::helper::NameDecoder::getShortName<decltype(visualStyle.get())>());
 
             core::visual::DisplayFlags* displayFlags = visualStyle->displayFlags.beginEdit();
             displayFlags->setShowVisualModels(sofa::core::visual::tristate::true_value);
