@@ -334,7 +334,7 @@ void GeomagicDriver::initDevice()
     }
     
     // 2.6- Need to wait several ms for the scheduler to be well launched and retrieving correct device information before updating information on the SOFA side.
-    std::this_thread::sleep_for(42);
+    std::this_thread::sleep_for(std::chrono::milliseconds(42));
     updatePosition();
 
     sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Valid);
