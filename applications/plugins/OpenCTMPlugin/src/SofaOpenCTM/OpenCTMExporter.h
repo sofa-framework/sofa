@@ -38,7 +38,7 @@ namespace sofa::component::misc
  * OpenCTMExporter class interfaces OpenCTM mesh writer with SOFA components.
  * For more information about the class API see doc: http://openctm.sourceforge.net/apidocs/
  */
-class SOFA_OPENCTM_API OpenCTMExporter : public core::objectmodel::BaseObject
+class SOFA_SOFAOPENCTM_API OpenCTMExporter : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(OpenCTMExporter, core::objectmodel::BaseObject);

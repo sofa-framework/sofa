@@ -4,18 +4,18 @@ project(OpenCTMPlugin VERSION 0.1)
 find_package(SofaBase REQUIRED)
 find_package(OpenCTM REQUIRED)
 
-set(OPENCTM_SRC_DIR src/SofaOpenCTM)
+set(SOfA_OPENCTM_SRC_DIR src/SofaOpenCTM)
 
 set(HEADER_FILES
-    ${OPENCTM_SRC_DIR}/config.h.in
-    ${OPENCTM_SRC_DIR}/OpenCTMExporter.h
-    ${OPENCTM_SRC_DIR}/OpenCTMLoader.h
+    ${SOfA_OPENCTM_SRC_DIR}/config.h.in
+    ${SOfA_OPENCTM_SRC_DIR}/OpenCTMExporter.h
+    ${SOfA_OPENCTM_SRC_DIR}/OpenCTMLoader.h
 )
 
 set(SOURCE_FILES
-    ${OPENCTM_SRC_DIR}/OpenCTMExporter.cpp
-    ${OPENCTM_SRC_DIR}/OpenCTMLoader.cpp
-    ${OPENCTM_SRC_DIR}/initOpenCTMPlugin.cpp
+    ${SOfA_OPENCTM_SRC_DIR}/OpenCTMExporter.cpp
+    ${SOfA_OPENCTM_SRC_DIR}/OpenCTMLoader.cpp
+    ${SOfA_OPENCTM_SRC_DIR}/initOpenCTMPlugin.cpp
 )
 
 set(README_FILES OpenCTMPlugin.txt)
@@ -23,7 +23,7 @@ set(README_FILES OpenCTMPlugin.txt)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 # Set define dllimport/dllexport mechanism on Windows.
-target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_OPENCTMPLUGIN")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAOPENCTMPLUGIN")
 
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaOpenglVisual ${OPENCTM_LIBRARY})
 
@@ -38,7 +38,7 @@ sofa_generate_package(
     NAME ${PROJECT_NAME}
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
-    INCLUDE_SOURCE_DIR ${OPENCTM_SRC_DIR}
+    INCLUDE_SOURCE_DIR ${SOfA_OPENCTM_SRC_DIR}
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     RELOCATABLE "plugins"
     )

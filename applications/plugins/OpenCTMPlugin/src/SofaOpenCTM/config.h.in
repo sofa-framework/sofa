@@ -19,15 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_OPENCTM_CONFIG_H
-#define SOFA_OPENCTM_CONFIG_H
+#pragma once
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_OPENCTMPLUGIN
-#  define SOFA_OPENCTM_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_SOFAOPENCTMPLUGIN
+#  define SOFA_SOFAOPENCTM_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_OPENCTM_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
+#  define SOFA_SOFAOPENCTM_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif

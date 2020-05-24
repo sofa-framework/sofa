@@ -30,12 +30,12 @@ namespace component
 //Here are just several convenient functions to help user to know what contains the plugin
 
 extern "C" {
-    SOFA_OPENCTM_API void initExternalModule();
-    SOFA_OPENCTM_API const char* getModuleName();
-    SOFA_OPENCTM_API const char* getModuleVersion();
-    SOFA_OPENCTM_API const char* getModuleLicense();
-    SOFA_OPENCTM_API const char* getModuleDescription();
-    SOFA_OPENCTM_API const char* getModuleComponentList();
+    SOFA_SOFAOPENCTM_API void initExternalModule();
+    SOFA_SOFAOPENCTM_API const char* getModuleName();
+    SOFA_SOFAOPENCTM_API const char* getModuleVersion();
+    SOFA_SOFAOPENCTM_API const char* getModuleLicense();
+    SOFA_SOFAOPENCTM_API const char* getModuleDescription();
+    SOFA_SOFAOPENCTM_API const char* getModuleComponentList();
 }
 
 void initExternalModule()

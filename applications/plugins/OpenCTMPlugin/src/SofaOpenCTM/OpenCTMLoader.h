@@ -31,7 +31,7 @@ namespace sofa::component::loader
  * OpenCTMLoader class interfaces OpenCTM mesh reader with SOFA loader components.
  * For more information about the class API see doc: http://openctm.sourceforge.net/apidocs/
  */
-class SOFA_OPENCTM_API OpenCTMLoader : public sofa::core::loader::MeshLoader
+class SOFA_SOFAOPENCTM_API OpenCTMLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(OpenCTMLoader,sofa::core::loader::MeshLoader);
