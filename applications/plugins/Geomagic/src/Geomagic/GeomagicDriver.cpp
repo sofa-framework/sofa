@@ -28,6 +28,8 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <Geomagic/GeomagicVisualModel.h>
+#include <thread>
+#include <chrono>
 
 namespace sofa::component::controller
 {
