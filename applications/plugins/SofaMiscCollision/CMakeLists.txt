@@ -48,21 +48,21 @@ list(APPEND SOURCE_FILES
 message(STATUS "SofaMiscModule: build all maintained sofa components.")
 
 if(SofaSphFluid_FOUND)
-    list(APPEND HEADER_FILES SpatialGridPointModel.h)
-    list(APPEND SOURCE_FILES SpatialGridPointModel.cpp)
+    list(APPEND HEADER_FILES ${SRC_ROOT}/SpatialGridPointModel.h)
+    list(APPEND SOURCE_FILES ${SRC_ROOT}/SpatialGridPointModel.cpp)
     message(STATUS "SofaMiscCollision: optional dependency SofaSphFluid found activing: <SpatialGridPointModel>")
 else()
     message(STATUS "SofaMiscCollision: optional dependency SofaSphFluid not found de-activing: <SpatialGridPointModel>")
 endif()
 
 if(SOFA_HAVE_SMP)
-    list(APPEND HEADER_FILES ParallelCollisionPipeline.h)
-    list(APPEND SOURCE_FILES ParallelCollisionPipeline.cpp)
+    list(APPEND HEADER_FILES ${SRC_ROOT}/ParallelCollisionPipeline.h)
+    list(APPEND SOURCE_FILES ${SRC_ROOT}/ParallelCollisionPipeline.cpp)
 endif()
 
 if(SofaDistanceGrid_FOUND)
-    list(APPEND SOURCE_FILES FrictionContact_DistanceGrid.cpp)
-    list(APPEND SOURCE_FILES BarycentricDistanceLMConstraintContact_DistanceGrid.cpp)
+    list(APPEND SOURCE_FILES ${SRC_ROOT}/FrictionContact_DistanceGrid.cpp)
+    list(APPEND SOURCE_FILES ${SRC_ROOT}/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
