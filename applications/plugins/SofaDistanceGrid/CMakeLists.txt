@@ -40,15 +40,12 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFADISTANCEGRID")
-
 if(MiniFlowVR_FOUND)
     target_link_libraries(${PROJECT_NAME} PRIVATE miniFlowVR) # Private because not exported in API
     message(STATUS "SofaDistanceGrid: MiniFlowVR found.")
 else()
     message(STATUS "SofaDistanceGrid: MiniFlowVR not found, some features will not be compiled.")
 endif()
-
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)
