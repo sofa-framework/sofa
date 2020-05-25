@@ -48,8 +48,7 @@ find_package(Eigen3 REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DEFAULTTYPE")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DEFAULTTYPE")
 
 sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework" "src")
 

@@ -71,13 +71,9 @@ set(SOFAHAPI_DEPENDENCY_INCLUDE_DIR ${HAPI_INCLUDE_DIR}
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction SofaHaptics ${HAPI_LIBRARIES} ${H3DUTIL_LIBRARIES})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAHAPI_DEPENDENCY_INCLUDE_DIR}>")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAHAPI_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAHAPI")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 ## Install rules for the library and the header; CMake package configurations files
 sofa_generate_package(NAME SofaHAPI VERSION ${SOFAHAPI_VERSION} TARGETS SofaHAPI INCLUDE_INSTALL_DIR SofaHAPI)

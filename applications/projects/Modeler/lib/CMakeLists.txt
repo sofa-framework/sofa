@@ -58,9 +58,7 @@ endif()
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiMain SofaBase SofaCommon SofaGeneral SofaMisc ${EXT_QT_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml) # Public because needed by Modeler (exec)
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${EXT_QT_INCLUDES}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 sofa_generate_package(
     NAME ${PROJECT_NAME}

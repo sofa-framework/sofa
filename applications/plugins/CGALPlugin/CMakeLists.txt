@@ -57,16 +57,13 @@ if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC image CGAL::CGAL_ImageIO)
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 # Install rules for the library and the headers; CMake package configurations files
 sofa_generate_package(
     NAME ${PROJECT_NAME}
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
-    INCLUDE_SOURCE_DIR "src/CGALPlugin"
+    INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "CGALPlugin"
     RELOCATABLE "plugins"
     )

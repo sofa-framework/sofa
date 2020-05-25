@@ -312,10 +312,7 @@ cuda_include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 cuda_include_directories("${CMAKE_BINARY_DIR}/include")
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWSOPTIONS})
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
 target_link_libraries(${PROJECT_NAME} SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaAdvanced SofaMisc SofaValidation)
@@ -334,7 +331,6 @@ if(MiniFlowVR_FOUND)
     target_link_libraries(${PROJECT_NAME} miniFlowVR)
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 if(SOFACUDA_CUBLAS)
     cuda_add_cublas_to_target(${PROJECT_NAME})

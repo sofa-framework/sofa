@@ -41,7 +41,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFADISTANCEGRID")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 if(MiniFlowVR_FOUND)
     target_link_libraries(${PROJECT_NAME} PRIVATE miniFlowVR) # Private because not exported in API
@@ -50,8 +49,6 @@ else()
     message(STATUS "SofaDistanceGrid: MiniFlowVR not found, some features will not be compiled.")
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)

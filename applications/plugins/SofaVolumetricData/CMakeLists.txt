@@ -32,10 +32,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision ${SOFAADVANCED_DEPENDENCY_LINK})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package(SofaVolumetricData ${SOFAVOLUMETRICDATA_VERSION} ${PROJECT_NAME} SofaVolumetricData)

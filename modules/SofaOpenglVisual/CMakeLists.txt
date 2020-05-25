@@ -80,15 +80,12 @@ set(EXTRA_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon)
-target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAOPENGLVISUAL")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 sofa_generate_package(
     NAME ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
-    INCLUDE_SOURCE_DIR "src/SofaOpenglVisual"
+    INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaOpenglVisual"
     RELOCATABLE "plugins"
     )

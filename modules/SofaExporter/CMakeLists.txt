@@ -69,16 +69,12 @@ endif()
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaPython)
 endif()
-target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_EXPORTER")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 sofa_generate_package(
     NAME SofaExporter
     VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
-    INCLUDE_SOURCE_DIR "${SRC_ROOT}"
+    INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaExporter"
     RELOCATABLE "plugins"
     )

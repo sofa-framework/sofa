@@ -65,7 +65,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem)
 if(Newmat_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_FEM")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 sofa_install_targets(SofaMisc ${PROJECT_NAME} "SofaMisc/${PROJECT_NAME}")

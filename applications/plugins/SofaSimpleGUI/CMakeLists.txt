@@ -38,9 +38,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationGraph SofaBase SofaCo
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFASIMPLEGUI_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFASIMPLEGUI")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package(SofaSimpleGUI ${SOFASIMPLEGUI_VERSION} ${PROJECT_NAME} SofaSimpleGUI)

@@ -47,8 +47,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES
 target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAIMPLICITFIELD")
 target_link_libraries(${PROJECT_NAME} PRIVATE SofaDistanceGrid)
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_generate_package(

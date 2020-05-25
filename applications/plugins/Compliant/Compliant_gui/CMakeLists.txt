@@ -28,6 +28,5 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${MOC_FILES})
 add_definitions("-DSOFA_BUILD_COMPLIANT_GUI")
 target_link_libraries(${PROJECT_NAME} SofaGuiMain Compliant SofaOpenglVisual)
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 sofa_install_targets(Compliant ${PROJECT_NAME} ${PROJECT_NAME})

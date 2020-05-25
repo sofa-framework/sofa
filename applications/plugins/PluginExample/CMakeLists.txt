@@ -62,13 +62,10 @@ endif()
 
 # If using the build of this plugin with "find_package(PluginExample)",
 # then discover includes from '${CMAKE_CURRENT_SOURCE_DIR}/src' to reach all source headers
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 # and from '${CMAKE_BINARY_DIR}/include' to reach the configured files like config.h
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
 
 # If using the install of this plugin with "find_package(PluginExample)",
 # then discover includes from 'include' directory.
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 # Create package Config, Version & Target files.
 # Deploy the headers, resources, scenes & examples.

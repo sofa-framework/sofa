@@ -25,8 +25,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SCENECREATOR")
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 ## Install rules for the library; CMake package configurations files
 sofa_generate_package(
@@ -34,7 +32,7 @@ sofa_generate_package(
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
     RELOCATABLE "plugins"
-    INCLUDE_SOURCE_DIR "src/SceneCreator"
+    INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SceneCreator"
     )
 

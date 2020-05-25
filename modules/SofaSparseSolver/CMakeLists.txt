@@ -38,16 +38,11 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver SofaImplicitOdeSolver SofaSimpleFem)
 target_link_libraries(${PROJECT_NAME} PUBLIC metis csparse)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFASPARSESOLVER")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-
 sofa_generate_package(
     NAME SofaSparseSolver
     VERSION ${PROJECT_VERSION}
     TARGETS SofaSparseSolver
-    INCLUDE_SOURCE_DIR "${SRC_ROOT}"
+    INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaSparseSolver"
     RELOCATABLE "plugins"
 )

@@ -20,9 +20,7 @@ find_package(Boost QUIET COMPONENTS thread REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SENSABLEEMULATIONPLUGIN")
 target_link_libraries(${PROJECT_NAME} SofaHaptics SofaOpenglVisual ${Boost_LIBRARIES})
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 # Seems to be required by boost::asio
 if(UNIX)

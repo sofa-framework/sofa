@@ -33,9 +33,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_GEOMAGIC")
 target_link_libraries(${PROJECT_NAME} SofaHelper SofaUserInteraction SofaHaptics SofaOpenglVisual ${OPENHAPTICS_LIBRARIES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${OPENHAPTICS_INCLUDE_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 ## Install rules for the library; CMake package configurations files
 sofa_generate_package(

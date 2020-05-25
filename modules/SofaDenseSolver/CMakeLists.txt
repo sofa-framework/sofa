@@ -30,18 +30,14 @@ list(APPEND SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFADENSESOLVER")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/>")
 
 sofa_generate_package(
     NAME ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
-    INCLUDE_SOURCE_DIR "src/SofaDenseSolver"
+    INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaDenseSolver"
     RELOCATABLE "plugins"
 )

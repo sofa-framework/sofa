@@ -124,8 +124,5 @@ list(APPEND SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaEigen2Solver)
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION  "${SOFAGENERAL_VERSION}")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BOUNDARY_CONDITION")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 sofa_install_targets(SofaGeneral ${PROJECT_NAME} "SofaGeneral/${PROJECT_NAME}")

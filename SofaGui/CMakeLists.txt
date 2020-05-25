@@ -28,7 +28,7 @@ list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 option(SOFAGUI_QT "Compile the Qt GUI" ON)
 if(SOFAGUI_QT)
     list(APPEND SOFAGUI_TARGETS SofaGuiQt)
-    add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
+    add_subdirectory(../applications/sofa/gui/SofaGuiQt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
 endif()
 sofa_set_01(SOFAGUI_HAVE_SOFAGUIQT VALUE ${SOFAGUI_QT}) # see config.h.in
 
@@ -38,7 +38,7 @@ if(NOT SOFA_NO_OPENGL)
     option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
     if(SOFAGUI_HEADLESS_RECORDER)
         list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
-        add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
+        add_subdirectory(../applications/sofa/gui/SofaHeadlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
     endif()
     sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${SOFAGUI_HEADLESS_RECORDER}) # see config.h.in
 endif()
@@ -46,14 +46,6 @@ endif()
 ## SofaGuiMain
 list(APPEND SOFAGUI_TARGETS SofaGuiMain)
 add_subdirectory(../applications/sofa/gui/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
-
-## IDE folder
-foreach(TARGET ${SOFAGUI_TARGETS})
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../applications>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
-    target_include_directories(${TARGET} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
-endforeach()
-
 
 set(SOFAGUI_SRC src/${PROJECT_NAME})
 set(HEADER_FILES
@@ -66,15 +58,11 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGUI_TARGETS})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUI")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
 sofa_generate_package(
     NAME ${PROJECT_NAME}
     VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME}
-    INCLUDE_SOURCE_DIR "${SOFAGUI_SRC}"
+    INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     )
