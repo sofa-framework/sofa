@@ -21,14 +21,14 @@ endif()
 ### Sub-projects
 
 ## SofaGuiCommon
-add_subdirectory(../applications/sofa/gui/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
+add_subdirectory(../modules/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
 list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 
 ## SofaGuiQt
 option(SOFAGUI_QT "Compile the Qt GUI" ON)
 if(SOFAGUI_QT)
     list(APPEND SOFAGUI_TARGETS SofaGuiQt)
-    add_subdirectory(../applications/sofa/gui/SofaGuiQt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
+    add_subdirectory(../modules/SofaGuiQt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
 endif()
 sofa_set_01(SOFAGUI_HAVE_SOFAGUIQT VALUE ${SOFAGUI_QT}) # see config.h.in
 
@@ -38,14 +38,14 @@ if(NOT SOFA_NO_OPENGL)
     option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
     if(SOFAGUI_HEADLESS_RECORDER)
         list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
-        add_subdirectory(../applications/sofa/gui/SofaHeadlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
+        add_subdirectory(../modules/SofaHeadlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
     endif()
     sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${SOFAGUI_HEADLESS_RECORDER}) # see config.h.in
 endif()
 
 ## SofaGuiMain
 list(APPEND SOFAGUI_TARGETS SofaGuiMain)
-add_subdirectory(../applications/sofa/gui/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
+add_subdirectory(../modules/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
 
 set(SOFAGUI_SRC src/${PROJECT_NAME})
 set(HEADER_FILES
