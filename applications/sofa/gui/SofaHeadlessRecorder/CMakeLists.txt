@@ -27,7 +27,7 @@ else()
     message(SEND_ERROR "Can't find X11 libraries.")
 endif()
 
-set(SRC_ROOT src/sofa/gui/headlessRecorder)
+set(SRC_ROOT src/${PROJECT_NAME})
 
 set(HEADER_FILES
     ${SRC_ROOT}/HeadlessRecorder.h
@@ -46,4 +46,4 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${FFMPEG_LIBRARIES} ${X11_LIBRARIES})
 
-sofa_install_targets(SofaGui SofaHeadlessRecorder "SofaGui" "src")
+sofa_install_targets(SofaGui ${PROJECT_NAME} "SofaGui" "src")
