@@ -27,23 +27,23 @@ else()
     message(SEND_ERROR "Can't find X11 libraries.")
 endif()
 
+set(SRC_ROOT src/sofa/gui/headlessRecorder)
 
 set(HEADER_FILES
-    HeadlessRecorder.h
-    VideoRecorderFFMpeg.h)
+    ${SRC_ROOT}/HeadlessRecorder.h
+    ${SRC_ROOT}/VideoRecorderFFMpeg.h)
 
 set(SOURCE_FILES
-    HeadlessRecorder.cpp
-    VideoRecorderFFMpeg.cpp)
+    ${SRC_ROOT}/HeadlessRecorder.cpp
+    ${SRC_ROOT}/VideoRecorderFFMpeg.cpp)
 
 if(SOFA_BUILD_TESTS)
-    configure_file(headlessRecorder_test ${CMAKE_BINARY_DIR}/bin/headlessRecorder_test COPYONLY)
+    configure_file(${SRC_ROOT}/headlessRecorder_test.sh ${CMAKE_BINARY_DIR}/bin/headlessRecorder_test COPYONLY)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${FFMPEG_LIBRARIES} ${X11_LIBRARIES})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIHEADLESSRECORDER")
 
-sofa_install_targets(SofaGui SofaHeadlessRecorder "")
+sofa_install_targets(SofaGui SofaHeadlessRecorder "SofaGui" "src")

@@ -85,168 +85,170 @@ sofa_set_01(SOFAGUIQT_HAVE_NODEEDITOR VALUE ${SOFAGUIQT_ENABLE_NODEGRAPH} BOTH_S
 # FFMPEG_exec
 sofa_find_package(FFMPEG_exec BOTH_SCOPES)
 
+set(SRC_ROOT src/sofa/gui/qt)
+
 set(MOC_HEADER_FILES
-    AddObject.h
-    DataFilenameWidget.h
-    DataWidget.h
-    DisplayFlagsDataWidget.h
-    GenGraphForm.h
-    LinkWidget.h
-    MaterialDataWidget.h
-    RGBAColorDataWidget.h
-    ModifyObject.h
-    QDataDescriptionWidget.h
-    QDisplayDataWidget.h
-    QDisplayLinkWidget.h
-    QDisplayPropertyWidget.h
-    QRGBAColorPicker.h
-    QModelViewTableUpdater.h
-    QMouseOperations.h
-    QMouseWheelAdjustementGuard.h
-    QSofaListView.h
-    QSofaStatWidget.h
-    QTabulationModifyObject.h
-    QTransformationWidget.h
-    RealGUI.h
-    SimpleDataWidget.h
-    SofaMouseManager.h    
-    SofaVideoRecorderManager.h
-    SofaPluginManager.h
-    WDoubleLineEdit.h    
+    ${SRC_ROOT}/AddObject.h
+    ${SRC_ROOT}/DataFilenameWidget.h
+    ${SRC_ROOT}/DataWidget.h
+    ${SRC_ROOT}/DisplayFlagsDataWidget.h
+    ${SRC_ROOT}/GenGraphForm.h
+    ${SRC_ROOT}/LinkWidget.h
+    ${SRC_ROOT}/MaterialDataWidget.h
+    ${SRC_ROOT}/RGBAColorDataWidget.h
+    ${SRC_ROOT}/ModifyObject.h
+    ${SRC_ROOT}/QDataDescriptionWidget.h
+    ${SRC_ROOT}/QDisplayDataWidget.h
+    ${SRC_ROOT}/QDisplayLinkWidget.h
+    ${SRC_ROOT}/QDisplayPropertyWidget.h
+    ${SRC_ROOT}/QRGBAColorPicker.h
+    ${SRC_ROOT}/QModelViewTableUpdater.h
+    ${SRC_ROOT}/QMouseOperations.h
+    ${SRC_ROOT}/QMouseWheelAdjustementGuard.h
+    ${SRC_ROOT}/QSofaListView.h
+    ${SRC_ROOT}/QSofaStatWidget.h
+    ${SRC_ROOT}/QTabulationModifyObject.h
+    ${SRC_ROOT}/QTransformationWidget.h
+    ${SRC_ROOT}/RealGUI.h
+    ${SRC_ROOT}/SimpleDataWidget.h
+    ${SRC_ROOT}/SofaMouseManager.h    
+    ${SRC_ROOT}/SofaVideoRecorderManager.h
+    ${SRC_ROOT}/SofaPluginManager.h
+    ${SRC_ROOT}/WDoubleLineEdit.h    
     )
 set(HEADER_FILES
-    SofaGuiQt.h.in # = config.h.in
-    FileManagement.h
-    GraphListenerQListView.h
-    PickHandlerCallBacks.h
-    QMenuFilesRecentlyOpened.h
-    QModelViewTableDataContainer.h
-    StructDataWidget.h
-    TableDataWidget.h
-    viewer/SofaViewer.h
-    viewer/EngineBackend.h
-    viewer/VisualModelPolicy.h
-    GenericWidget.h
+    ${SRC_ROOT}/SofaGuiQt.h.in # = config.h.in
+    ${SRC_ROOT}/FileManagement.h
+    ${SRC_ROOT}/GraphListenerQListView.h
+    ${SRC_ROOT}/PickHandlerCallBacks.h
+    ${SRC_ROOT}/QMenuFilesRecentlyOpened.h
+    ${SRC_ROOT}/QModelViewTableDataContainer.h
+    ${SRC_ROOT}/StructDataWidget.h
+    ${SRC_ROOT}/TableDataWidget.h
+    ${SRC_ROOT}/viewer/SofaViewer.h
+    ${SRC_ROOT}/viewer/EngineBackend.h
+    ${SRC_ROOT}/viewer/VisualModelPolicy.h
+    ${SRC_ROOT}/GenericWidget.h
     )
 set(SOURCE_FILES
-    AddObject.cpp
-    DataFilenameWidget.cpp
-    DataWidget.cpp
-    DisplayFlagsDataWidget.cpp
-    FileManagement.cpp
-    GenGraphForm.cpp
-    GraphListenerQListView.cpp
-    LinkWidget.cpp
-    MaterialDataWidget.cpp
-    RGBAColorDataWidget.cpp
-    ModifyObject.cpp
-    PickHandlerCallBacks.cpp
-    QDataDescriptionWidget.cpp
-    QDisplayDataWidget.cpp
-    QDisplayLinkWidget.cpp
-    QDisplayPropertyWidget.cpp
-    QRGBAColorPicker.cpp
-    QMenuFilesRecentlyOpened.cpp
-    QModelViewTableUpdater.cpp
-    QMouseOperations.cpp
-    QMouseWheelAdjustementGuard.cpp
-    QSofaListView.cpp
-    QSofaStatWidget.cpp
-    QTabulationModifyObject.cpp
-    QTransformationWidget.cpp
-    RealGUI.cpp
-    SimpleDataWidget.cpp
-    SofaMouseManager.cpp
-    SofaPluginManager.cpp
-    SofaVideoRecorderManager.cpp    
-    StructDataWidget.cpp
-    TableDataWidget.cpp
-    WDoubleLineEdit.cpp
-    viewer/SofaViewer.cpp
-    viewer/VisualModelPolicy.cpp    
+    ${SRC_ROOT}/AddObject.cpp
+    ${SRC_ROOT}/DataFilenameWidget.cpp
+    ${SRC_ROOT}/DataWidget.cpp
+    ${SRC_ROOT}/DisplayFlagsDataWidget.cpp
+    ${SRC_ROOT}/FileManagement.cpp
+    ${SRC_ROOT}/GenGraphForm.cpp
+    ${SRC_ROOT}/GraphListenerQListView.cpp
+    ${SRC_ROOT}/LinkWidget.cpp
+    ${SRC_ROOT}/MaterialDataWidget.cpp
+    ${SRC_ROOT}/RGBAColorDataWidget.cpp
+    ${SRC_ROOT}/ModifyObject.cpp
+    ${SRC_ROOT}/PickHandlerCallBacks.cpp
+    ${SRC_ROOT}/QDataDescriptionWidget.cpp
+    ${SRC_ROOT}/QDisplayDataWidget.cpp
+    ${SRC_ROOT}/QDisplayLinkWidget.cpp
+    ${SRC_ROOT}/QDisplayPropertyWidget.cpp
+    ${SRC_ROOT}/QRGBAColorPicker.cpp
+    ${SRC_ROOT}/QMenuFilesRecentlyOpened.cpp
+    ${SRC_ROOT}/QModelViewTableUpdater.cpp
+    ${SRC_ROOT}/QMouseOperations.cpp
+    ${SRC_ROOT}/QMouseWheelAdjustementGuard.cpp
+    ${SRC_ROOT}/QSofaListView.cpp
+    ${SRC_ROOT}/QSofaStatWidget.cpp
+    ${SRC_ROOT}/QTabulationModifyObject.cpp
+    ${SRC_ROOT}/QTransformationWidget.cpp
+    ${SRC_ROOT}/RealGUI.cpp
+    ${SRC_ROOT}/SimpleDataWidget.cpp
+    ${SRC_ROOT}/SofaMouseManager.cpp
+    ${SRC_ROOT}/SofaPluginManager.cpp
+    ${SRC_ROOT}/SofaVideoRecorderManager.cpp    
+    ${SRC_ROOT}/StructDataWidget.cpp
+    ${SRC_ROOT}/TableDataWidget.cpp
+    ${SRC_ROOT}/WDoubleLineEdit.cpp
+    ${SRC_ROOT}/viewer/SofaViewer.cpp
+    ${SRC_ROOT}/viewer/VisualModelPolicy.cpp    
 )
 set(UI_FILES
-    BaseGenGraphForm.ui
-    DialogAddObject.ui
-    GUI.ui
-    MouseManager.ui
-    PluginManager.ui
-    VideoRecorderManager.ui    
+    ${SRC_ROOT}/BaseGenGraphForm.ui
+    ${SRC_ROOT}/DialogAddObject.ui
+    ${SRC_ROOT}/GUI.ui
+    ${SRC_ROOT}/MouseManager.ui
+    ${SRC_ROOT}/PluginManager.ui
+    ${SRC_ROOT}/VideoRecorderManager.ui    
 )
 
 if(SOFA_DUMP_VISITOR_INFO)
     list(APPEND MOC_HEADER_FILES
-         WindowVisitor.h
-         QVisitorControlPanel.h
-         PieWidget.h
-         )
+        ${SRC_ROOT}/WindowVisitor.h
+        ${SRC_ROOT}/QVisitorControlPanel.h
+        ${SRC_ROOT}/PieWidget.h
+        )
     list(APPEND HEADER_FILES
-         GraphVisitor.h
-         )
+        ${SRC_ROOT}/GraphVisitor.h
+        )
     list(APPEND SOURCE_FILES
-         GraphVisitor.cpp
-         WindowVisitor.cpp
-         QVisitorControlPanel.cpp
-         PieWidget.cpp
-         )
+        ${SRC_ROOT}/GraphVisitor.cpp
+        ${SRC_ROOT}/WindowVisitor.cpp
+        ${SRC_ROOT}/QVisitorControlPanel.cpp
+        ${SRC_ROOT}/PieWidget.cpp
+        )
     list(APPEND UI_FILES
-        VisitorGUI.ui
+        ${SRC_ROOT}/VisitorGUI.ui
         )
 endif()
 
 if(NOT SOFA_NO_OPENGL)
     list(APPEND HEADER_FILES
-        GLPickHandler.h
-        viewer/GLBackend.h
-        viewer/OglModelPolicy.h
+        ${SRC_ROOT}/GLPickHandler.h
+        ${SRC_ROOT}/viewer/GLBackend.h
+        ${SRC_ROOT}/viewer/OglModelPolicy.h
         )
     list(APPEND SOURCE_FILES
-        GLPickHandler.cpp
-        viewer/GLBackend.cpp
-        viewer/OglModelPolicy.cpp
+        ${SRC_ROOT}/GLPickHandler.cpp
+        ${SRC_ROOT}/viewer/GLBackend.cpp
+        ${SRC_ROOT}/viewer/OglModelPolicy.cpp
         )
 
     # QtViewer
     if(SOFAGUI_QTVIEWER)
-        list(APPEND MOC_HEADER_FILES viewer/qt/QtViewer.h)
-        list(APPEND SOURCE_FILES viewer/qt/QtViewer.cpp)
+        list(APPEND MOC_HEADER_FILES ${SRC_ROOT}/viewer/qt/QtViewer.h)
+        list(APPEND SOURCE_FILES ${SRC_ROOT}/viewer/qt/QtViewer.cpp)
     endif()
 
     # QGLViewer
     if(SOFAGUI_QGLVIEWER)
-        list(APPEND MOC_HEADER_FILES viewer/qgl/QtGLViewer.h)
-        list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
+        list(APPEND MOC_HEADER_FILES ${SRC_ROOT}/viewer/qgl/QtGLViewer.h)
+        list(APPEND SOURCE_FILES ${SRC_ROOT}/viewer/qgl/QtGLViewer.cpp)
     endif()
 endif()
 
 # QWT
 if(SOFAGUI_ENABLE_QWT)
     list(APPEND MOC_HEADER_FILES
-         GraphDataWidget.h
-         QGraphStatWidget.h
-         QEnergyStatWidget.h
-         QMomentumStatWidget.h
-         )
+        ${SRC_ROOT}/GraphDataWidget.h
+        ${SRC_ROOT}/QGraphStatWidget.h
+        ${SRC_ROOT}/QEnergyStatWidget.h
+        ${SRC_ROOT}/QMomentumStatWidget.h
+        )
     list(APPEND SOURCE_FILES
-         GraphDataWidget.cpp
-         QGraphStatWidget.cpp
-         QEnergyStatWidget.cpp
-         QMomentumStatWidget.cpp
-         )
+        ${SRC_ROOT}/GraphDataWidget.cpp
+        ${SRC_ROOT}/QGraphStatWidget.cpp
+        ${SRC_ROOT}/QEnergyStatWidget.cpp
+        ${SRC_ROOT}/QMomentumStatWidget.cpp
+        )
 endif()
 
 # QtCharts
 if(Qt5Charts_FOUND)
-    list(APPEND MOC_HEADER_FILES SofaWindowProfiler.h)
-    list(APPEND SOURCE_FILES SofaWindowProfiler.cpp)
-    list(APPEND UI_FILES WindowProfiler.ui)
+    list(APPEND MOC_HEADER_FILES ${SRC_ROOT}/SofaWindowProfiler.h)
+    list(APPEND SOURCE_FILES ${SRC_ROOT}/SofaWindowProfiler.cpp)
+    list(APPEND UI_FILES ${SRC_ROOT}/WindowProfiler.ui)
 else()
     message(STATUS "SofaGuiQt: QtCharts not found, SofaWindowProfiler will not be built.")
 endif()
 
 if(SOFAGUIQT_ENABLE_QDOCBROWSER)
-    list(APPEND MOC_HEADER_FILES panels/QDocBrowser.h)
-    list(APPEND SOURCE_FILES panels/QDocBrowser.cpp)
+    list(APPEND MOC_HEADER_FILES ${SRC_ROOT}/panels/QDocBrowser.h)
+    list(APPEND SOURCE_FILES ${SRC_ROOT}/panels/QDocBrowser.cpp)
 else()
     message(STATUS "SofaGuiQt: Qt5WebEngine not found, QDocBrowser will not be built.")
 endif()
@@ -255,13 +257,13 @@ endif()
 #NodeEditor
 if (SOFAGUIQT_ENABLE_NODEGRAPH)
     list(APPEND MOC_HEADER_FILES 
-        SofaWindowDataGraph.h
-        dataGraph/SofaComponentNodeModel.h
+        ${SRC_ROOT}/SofaWindowDataGraph.h
+        ${SRC_ROOT}/dataGraph/SofaComponentNodeModel.h
         )
 
     list(APPEND SOURCE_FILES 
-        SofaWindowDataGraph.cpp
-        dataGraph/SofaComponentNodeModel.cpp
+        ${SRC_ROOT}/SofaWindowDataGraph.cpp
+        ${SRC_ROOT}/dataGraph/SofaComponentNodeModel.cpp
         )
 endif()
 
@@ -293,7 +295,6 @@ if(NODEEDITOR_FOUND)
     target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${NODEEDITOR_INCLUDE_PATH}>")
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
 
 # FFMPEG
 if(FFMPEG_EXEC_FOUND)
@@ -301,7 +302,7 @@ if(FFMPEG_EXEC_FOUND)
 endif()
 
 # Create build and install versions of .ini file for resources finding
-set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${SRC_ROOT}/resources")
 set(FFMPEG_EXEC_PATH "${FFMPEG_EXEC_FILE}") # absolute path for build dir, see .ini file
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/${PROJECT_NAME}.ini")
 set(RESOURCES_DIR "../share/sofa/gui/qt")
@@ -310,9 +311,9 @@ set(FFMPEG_EXEC_PATH "../bin/${FFMPEG_EXEC_FILENAME}") # relative path for insta
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
 
-install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/qt" COMPONENT resources)
+install(DIRECTORY "${SRC_ROOT}/resources/" DESTINATION "share/sofa/gui/qt" COMPONENT resources)
 
-sofa_install_targets(SofaGui SofaGuiQt "SofaGui/sofa/gui/qt")
+sofa_install_targets(SofaGui SofaGuiQt "SofaGui" "src")
 
 # Qt deployment
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)

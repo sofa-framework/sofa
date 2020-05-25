@@ -21,14 +21,14 @@
 ******************************************************************************/
 #include <SofaGui/config.h>
 #include "Main.h"
-#include "GUIManager.h"
+#include <sofa/gui/GUIManager.h>
 
-#include "BatchGUI.h"
+#include <sofa/gui/BatchGUI.h>
 #if SOFAGUI_HAVE_SOFAGUIQT
-#include "qt/RealGUI.h"
+#include <sofa/gui/qt/RealGUI.h>
 #endif
 #if SOFAGUI_HAVE_SOFAHEADLESSRECORDER
-#include "headlessRecorder/HeadlessRecorder.h"
+#include <SofaHeadlessRecorder/HeadlessRecorder.h>
 #endif
 
 namespace sofa

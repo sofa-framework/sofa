@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SofaPluginManager.h"
-#include "../BaseGUI.h"
 #include "FileManagement.h"
+#include <sofa/gui/BaseGUI.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/PluginManager.h>
