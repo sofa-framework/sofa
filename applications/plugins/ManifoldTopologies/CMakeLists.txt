@@ -35,7 +35,6 @@ set(README_FILES ManifoldTopologies.txt)
 find_package(SofaBase REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
 
 sofa_generate_package(

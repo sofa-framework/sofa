@@ -24,7 +24,7 @@
 
 #include <SofaBase/config.h>
 
-#ifdef SOFA_BUILD_MANIFOLD_TOPOLOGIES
+#ifdef SOFA_BUILD_MANIFOLDTOPOLOGIES
 #  define SOFA_TARGET ManifoldTopologies
 #  define SOFA_MANIFOLD_TOPOLOGIES_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
