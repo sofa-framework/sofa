@@ -259,9 +259,9 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_${PROJECT_NAME}")
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver SofaUserInteraction SofaMisc SofaSimulationGraph SofaMiscCollision)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
-
 
 # linking explicitly with rt looks necessary on some posix (e.g. CentOS)
 if(UNIX AND NOT APPLE)
