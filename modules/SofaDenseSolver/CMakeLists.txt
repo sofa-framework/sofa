@@ -31,8 +31,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/>")
-
 sofa_generate_package(
     NAME ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
