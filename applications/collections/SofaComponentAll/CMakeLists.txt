@@ -30,5 +30,5 @@ sofa_generate_package(
     NAME ${PROJECT_NAME}
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
-    INCLUDE_INSTALL_DIR "SofaComponentAll/SofaComponentAll"
+    INCLUDE_INSTALL_DIR "SofaComponentAll"
     )

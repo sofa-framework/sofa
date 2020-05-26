@@ -558,10 +558,14 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
 
     set(include_source_dir "${CMAKE_CURRENT_SOURCE_DIR}")
     set(optional_argv3 "${ARGV3}")
-    if(optional_argv3 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${optional_argv3}")
+    if(optional_argv3)
         # ARGV3 is a non-breaking additional argument to handle INCLUDE_SOURCE_DIR (see sofa_generate_package)
         # TODO: add a real argument "include_source_dir" to this macro
-        set(include_source_dir "${CMAKE_CURRENT_SOURCE_DIR}/${optional_argv3}")
+        if(IS_ABSOLUTE "${optional_argv3}")
+            set(include_source_dir "${optional_argv3}")
+        else()
+            set(include_source_dir "${CMAKE_CURRENT_SOURCE_DIR}/${optional_argv3}")
+        endif()
     endif()
 
     set(example_install_dir "share/sofa/examples/${package_name}")
@@ -597,6 +601,9 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
         string(TOUPPER "${target}" SOFA_TARGET_NAME_UPPER)
 
         if(target MATCHES "^Sofa")
+            # TODO: Deprecate this backward compatibility and replace all the macros
+            # with old style: SofaModuleName -> SOFA_BUILD_MODULE_NAME + SOFA_MODULE_NAME_API
+            # by new style: SofaModuleName -> SOFA_BUILD_SOFAMODULENAME + SOFA_SOFAMODULENAME_API
             string(REPLACE "Sofa" "" sofa_target_oldname "${target}")
             string(REGEX REPLACE "([A-Z])" "_\\1" sofa_target_oldname "${sofa_target_oldname}")
             string(TOUPPER "${sofa_target_oldname}" sofa_target_oldname_upper)
@@ -607,23 +614,13 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
         # Set target include directories (if not already set manually)
         get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
         if(NOT optional_argv3)
-            # Old and ugly way
             #message(WARNING "${target}: flat source tree forces to set '..' as include directory.")
             set(include_source_root "${CMAKE_CURRENT_SOURCE_DIR}/..")
         else()
             set(include_source_root "${include_source_dir}")
-#            string(REGEX REPLACE "${include_install_dir}/?$" "" include_source_root "${include_source_dir}")
-#            file(TO_CMAKE_PATH "${include_source_root}" include_source_root)
         endif()
-        # For build time: if no include dir based on source dir, add the default one
-#        if(NOT target_include_dirs MATCHES "BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}")
-            target_include_directories(${target} PUBLIC "$<BUILD_INTERFACE:${include_source_root}>")
-#        endif()
-        # For build time: if no include dir based on build dir, add the default one
-#        if(NOT target_include_dirs MATCHES "BUILD_INTERFACE:${CMAKE_BINARY_DIR}")
-            target_include_directories(${target} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${package_name}>")
-#        endif()
-        # For install time: always add the default one
+        target_include_directories(${target} PUBLIC "$<BUILD_INTERFACE:${include_source_root}>")
+        target_include_directories(${target} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${package_name}>")
         if(relocatable_arg)
             target_include_directories(${target} PUBLIC "$<INSTALL_INTERFACE:include>")
         elseif(include_install_dir MATCHES "^${package_name}")
@@ -631,10 +628,10 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
         else()
             target_include_directories(${target} PUBLIC "$<INSTALL_INTERFACE:include/${include_install_dir}>")
         endif()
-        if(NOT "${include_source_root}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}/..")
-            get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
-            message("${target}: target_include_directories: ${target_include_dirs}")
-        endif()
+#        if(NOT "${include_source_root}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}/..")
+#            get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
+#            message("${target}: target_include_directories: ${target_include_dirs}")
+#        endif()
 
         # Configure and install headers
         get_target_property(target_sources ${target} SOURCES)
@@ -668,7 +665,7 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             # Finalize dirs
             set(header_build_dir "include/${include_install_dir}/${header_relative_dir_for_build}")
             if(relocatable_arg)
-#                set(header_install_dir "include/${include_install_dir}/${header_relative_dir}")
+                #set(header_install_dir "include/${include_install_dir}/${header_relative_dir}")
                 set(header_install_dir "include/${header_relative_dir}")
             else()
                 # install dir headers tree = build dir headers tree
@@ -705,6 +702,17 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
                 DESTINATION "${example_install_dir}"
                 COMPONENT resources)
     endif()
+
+    # Install info files (README, license, etc.)
+    file(GLOB txt_files "*.txt" RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} LIST_DIRECTORIES false)
+    list(FILTER txt_files EXCLUDE REGEX "CMakeLists.txt")
+    file(GLOB md_files "*.md" RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} LIST_DIRECTORIES false)
+    if(relocatable_arg)
+        set(info_install_dir ".")
+    else()
+        set(info_install_dir "include/${include_install_dir}")
+    endif()
+    install(FILES ${txt_files} ${md_files} DESTINATION "${info_install_dir}" COMPONENT headers)
 
     # RELOCATABLE optional arg
     if(relocatable_arg)
@@ -880,9 +888,11 @@ macro(sofa_create_package package_name version the_targets include_install_dir)
     # ARGV4 is a non-breaking additional argument to handle INCLUDE_SOURCE_DIR (see sofa_generate_package)
     # TODO: add a real argument "include_source_dir" to this macro
     sofa_generate_package(
-        NAME "${package_name}" VERSION "${version}"
+        NAME "${package_name}"
+        VERSION "${version}"
         TARGETS "${the_targets}"
-        INCLUDE_INSTALL_DIR "${include_install_dir}" INCLUDE_SOURCE_DIR "${ARGV4}"
+        INCLUDE_INSTALL_DIR "${include_install_dir}"
+        INCLUDE_SOURCE_DIR "${ARGV4}"
         EXAMPLE_INSTALL_DIR "${ARGV5}"
         )
 endmacro()
