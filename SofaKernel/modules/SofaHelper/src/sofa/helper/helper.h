@@ -19,15 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_VERSION_H
-#define SOFA_VERSION_H
+#ifndef SOFA_HELPER_HELPER_H
+#define SOFA_HELPER_HELPER_H
 
-#cmakedefine SOFA_VERSION_STR @SOFA_VERSION_STR@
+// Backward compatibility header
+// Will be removed at v20.12
 
-// We use version numbers based on the date: yy.mm.p (year, month, patch).
-// - SOFA_VERSION / 10000 is the year number
-// - SOFA_VERSION / 100 % 100 is the month number
-// - SOFA_VERSION % 100 is the patch number
-#cmakedefine SOFA_VERSION @SOFA_VERSION@
+#include <sofa/helper/config.h>
 
 #endif

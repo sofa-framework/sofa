@@ -85,6 +85,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/collision/IntersectorFactory.h
     ${SRC_ROOT}/collision/NarrowPhaseDetection.h
     ${SRC_ROOT}/collision/Pipeline.h
+    ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/core.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/loader/BaseLoader.h
@@ -252,21 +253,12 @@ if(NOT SOFA_NO_OPENGL)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/visual/DrawToolGL.cpp)
 endif()
 
-
-
-# # TODO?
-# if(SOFA-MISC_SUPPORT_MOVING_FRAMES)
-#     list(APPEND HEADER_FILES behavior/InertiaForce.h)
-# endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CORE")
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/core" ${SRC_ROOT})
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework" "src")
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaCore_test)

@@ -22,7 +22,7 @@
 #ifndef MultiThreadingTask_h__
 #define MultiThreadingTask_h__
 
-#include <sofa/config.h>
+#include <sofa/simulation/config.h>
 
 #include <atomic>
 #include <mutex>

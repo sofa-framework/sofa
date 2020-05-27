@@ -1,6 +1,6 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,12 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_CORE_H
-#define SOFA_CORE_CORE_H
+#include "initSofaFramework.h"
 
-// Backward compatibility header
-// Will be removed at v20.12
+#include <sofa/core/init.h>
+#include <sofa/defaulttype/init.h>
+#include <sofa/helper/init.h>
+#include <sofa/simulation/init.h>
 
-#include <sofa/core/config.h>
+namespace sofa
+{
 
-#endif
+void initSofaFramework()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+
+    sofa::core::init();
+    sofa::defaulttype::init();
+    sofa::helper::init();
+    sofa::simulation::core::init();
+}
+
+} // namespace sofa

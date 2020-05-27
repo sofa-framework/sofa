@@ -33,7 +33,8 @@ set(SRC_ROOT "src/sofa/helper")
 
 # HEADERS + SOURCES
 set(HEADER_FILES
-    ${SRC_ROOT}/helper.h.in # = config.h.in
+    ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/helper.h
     ${SRC_ROOT}/AdvancedTimer.h
     ${SRC_ROOT}/ArgumentParser.h
     ${SRC_ROOT}/BackTrace.h
@@ -338,8 +339,6 @@ endif()
 # SofaFramework/config.h
 set_property(SOURCE ${SRC_ROOT}/system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
 # Compile options
 if(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -424,7 +423,7 @@ if(JSON_FOUND)
         )
 endif()
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/helper" ${SRC_ROOT})
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework" "src")
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaHelper_test)

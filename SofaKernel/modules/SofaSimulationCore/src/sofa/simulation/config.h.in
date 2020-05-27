@@ -19,12 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_CORE_H
-#define SOFA_CORE_CORE_H
+#ifndef SOFA_SIMULATION_CORE_CONFIG_H
+#define SOFA_SIMULATION_CORE_CONFIG_H
 
-// Backward compatibility header
-// Will be removed at v20.12
+#include <sofa/config.h>
 
-#include <sofa/core/config.h>
+#define SOFA_HAVE_DAG
+
+#ifdef SOFA_BUILD_SIMULATION_CORE
+#   define SOFA_TARGET SofaSimulationCore
+#	define SOFA_SIMULATION_CORE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_SIMULATION_CORE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

@@ -29,6 +29,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/Vec3Types.h
     ${SRC_ROOT}/VecTypes.h
     ${SRC_ROOT}/defaulttype.h
+    ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/Color.h
 )
@@ -49,10 +50,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DEFAULTTYPE")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/defaulttype" ${SRC_ROOT})
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework" "src")
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaDefaultType_test)

@@ -19,12 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_CORE_H
-#define SOFA_CORE_CORE_H
+#ifndef SOFA_HELPER_CONFIG_H
+#define SOFA_HELPER_CONFIG_H
 
-// Backward compatibility header
-// Will be removed at v20.12
+#include <sofa/config.h>
 
-#include <sofa/core/config.h>
+#cmakedefine01 SOFAHELPER_HAVE_BOOST
+#cmakedefine01 SOFAHELPER_HAVE_BOOST_THREAD
+#cmakedefine01 SOFAHELPER_HAVE_BOOST_SYSTEM
+#cmakedefine01 SOFAHELPER_HAVE_BOOST_FILESYSTEM
+#cmakedefine01 SOFAHELPER_HAVE_BOOST_PROGRAM_OPTIONS
+
+#cmakedefine01 SOFAHELPER_HAVE_OPENGL
+
+#cmakedefine01 SOFAHELPER_HAVE_GLEW
+
+#cmakedefine01 SOFAHELPER_HAVE_GTEST
+
+#ifdef SOFA_BUILD_HELPER
+#   define SOFA_TARGET SofaHelper
+#	define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

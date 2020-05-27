@@ -1,6 +1,6 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,21 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_HELPER_H
-#define SOFA_HELPER_HELPER_H
+#pragma once
 
 #include <sofa/config.h>
 
-#cmakedefine01 SOFAHELPER_HAVE_BOOST
-#cmakedefine01 SOFAHELPER_HAVE_BOOST_THREAD
-#cmakedefine01 SOFAHELPER_HAVE_BOOST_SYSTEM
-#cmakedefine01 SOFAHELPER_HAVE_BOOST_FILESYSTEM
-#cmakedefine01 SOFAHELPER_HAVE_BOOST_PROGRAM_OPTIONS
+namespace sofa
+{
 
-#cmakedefine01 SOFAHELPER_HAVE_OPENGL
+void SOFA_SOFAFRAMEWORK_API initSofaFramework();
 
-#cmakedefine01 SOFAHELPER_HAVE_GLEW
+} // namespace sofa
 
-#cmakedefine01 SOFAHELPER_HAVE_GTEST
 
-#endif

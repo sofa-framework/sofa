@@ -28,6 +28,8 @@
 #include <sofa/config/build_option_threading.h>
 #include <sofa/config/build_option_bbox.h>
 
+#include <cstddef> // For nullptr
+
 // fixes CGAL plugin build errors (default value: 5)
 #define BOOST_PARAMETER_MAX_ARITY 12
 
@@ -57,37 +59,86 @@ typedef float SReal;
 typedef double SReal;
 #endif
 
+
+#if defined(_WIN32)
+#  ifndef NOMINMAX
+#    define NOMINMAX
+#  endif
+#endif
+
+// snprintf() has been provided since MSVC++ 14 (Visual Studio 2015).  For other
+// versions, it is simply #defined to _snprintf().
+#if (defined(_MSC_VER) && _MSC_VER < 1900)
+#  define snprintf _snprintf
+#endif
+
+#ifdef _WIN32
+#  include <windows.h>
+#endif
+
+#ifdef BOOST_NO_EXCEPTIONS
+#  include<exception>
+
+namespace boost
+{
+    inline void throw_exception(std::exception const & e)
+    {
+        return;
+    }
+}
+#endif // BOOST_NO_EXCEPTIONS
+
+
+#ifdef _MSC_VER
+#  ifndef _USE_MATH_DEFINES
+#    define _USE_MATH_DEFINES 1 // required to get M_PI from math.h
+#  endif
+// Visual C++ does not include stdint.h
+typedef signed __int8		int8_t;
+typedef signed __int16		int16_t;
+typedef signed __int32		int32_t;
+typedef signed __int64		int64_t;
+typedef unsigned __int8		uint8_t;
+typedef unsigned __int16	uint16_t;
+typedef unsigned __int32	uint32_t;
+typedef unsigned __int64	uint64_t;
+#else
+#  include <stdint.h>
+#endif
+
+#define sofa_do_concat2(a,b) a ## b
+#define sofa_do_concat(a,b) sofa_do_concat2(a,b)
+#define sofa_concat(a,b) sofa_do_concat(a,b)
+
+#define sofa_do_tostring(a) #a
+#define sofa_tostring(a) sofa_do_tostring(a)
+
+#define SOFA_DECL_CLASS(name) ///extern "C" { int sofa_concat(class_,name) = 0; }
+#define SOFA_LINK_CLASS(name) ///extern "C" { extern int sofa_concat(class_,name); int sofa_concat(link_,name) = sofa_concat(class_,name); }
+
+// Prevent compiler warnings about 'unused variables'.
+// This should be used when a parameter name is needed (e.g. for
+// documentation purposes) even if it is not used in the code.
+#define SOFA_UNUSED(x) (void)(x)
+
+// utility for debug tracing
+#ifdef _MSC_VER
+    #define SOFA_CLASS_METHOD ( std::string(this->getClassName()) + "::" + __FUNCTION__ + " " )
+#else
+    #define SOFA_CLASS_METHOD ( std::string(this->getClassName()) + "::" + __func__ + " " )
+#endif
+
+
 // The SOFA_EXTERN_TEMPLATE macro was used to control the use of extern templates in Sofa.
 // It has been cleaned out in 41e0ab98bbb6e22b053b24e7bbdd31c8636336c9 "[ALL] Remove SOFA_EXTERN_TEMPLATE".
 // Macro definition is kept to avoid breaking all external plugins.
 #define SOFA_EXTERN_TEMPLATE
 
-#ifdef SOFA_BUILD_HELPER
-#   define SOFA_TARGET SofaHelper
-#	define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_SOFAFRAMEWORK
+#   define SOFA_TARGET SofaFramework
+#	define SOFA_SOFAFRAMEWORK_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#	define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#ifdef SOFA_BUILD_DEFAULTTYPE
-#   define SOFA_TARGET SofaDefaulttype
-#	define SOFA_DEFAULTTYPE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_DEFAULTTYPE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#ifdef SOFA_BUILD_CORE
-#   define SOFA_TARGET   SofaCore
-#	define SOFA_CORE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_CORE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#ifdef SOFA_BUILD_SIMULATION_CORE
-#   define SOFA_TARGET SofaSimulationCore
-#	define SOFA_SIMULATION_CORE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SIMULATION_CORE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#	define SOFA_SOFAFRAMEWORK_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #endif

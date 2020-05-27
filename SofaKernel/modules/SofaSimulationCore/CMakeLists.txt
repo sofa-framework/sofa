@@ -4,6 +4,8 @@ project(SofaSimulationCore)
 set(SRC_ROOT "src/sofa/simulation")
 
 set(HEADER_FILES
+    ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/simulationcore.h
     ${SRC_ROOT}/AnimateBeginEvent.h
     ${SRC_ROOT}/AnimateEndEvent.h
     ${SRC_ROOT}/AnimateVisitor.h
@@ -148,7 +150,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SIMULATION_CORE")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 
 # is this a compiler/linker version specific problem?
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
@@ -157,7 +158,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread" )
 endif()
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/simulation" ${SRC_ROOT})
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework" "src")
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaSimulationCore_test)

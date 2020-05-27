@@ -22,6 +22,9 @@
 #ifndef SOFA_DEFAULTTYPE_DEFAULTTYPE_H
 #define SOFA_DEFAULTTYPE_DEFAULTTYPE_H
 
-#include <sofa/config.h>
+// Backward compatibility header
+// Will be removed at v20.12
+
+#include <sofa/defaulttype/config.h>
 
 #endif
