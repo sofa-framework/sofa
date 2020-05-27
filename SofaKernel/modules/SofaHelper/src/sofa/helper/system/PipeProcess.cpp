@@ -221,8 +221,6 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
                     }
                 }
             }
-            if (!busy)
-                Sleep(0);
         }
         CloseHandle(fds[0][0]);
         CloseHandle(fds[1][0]);

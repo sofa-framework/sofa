@@ -24,6 +24,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <boost/program_options.hpp>
+#include <thread>
 
 namespace sofa
 {
@@ -346,7 +347,7 @@ int HeadlessRecorder::mainLoop()
         }
         else
         {
-            sofa::helper::system::thread::CTime::sleep(10);
+            std::this_thread::sleep_for(10);
         }
     }
     msg_info("HeadlessRecorder") << "Recording time: " << recordTimeInSeconds << " seconds at: " << fps << " fps.";

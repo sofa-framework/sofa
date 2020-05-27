@@ -22,6 +22,8 @@
  #include <gtest/gtest.h>
 #include <exception>
 #include <algorithm>
+#include <thread>
+#include <chrono>
 
 #include <vector>
 using std::vector ;
@@ -45,6 +47,7 @@ using sofa::helper::system::FileMonitor ;
 #include <sofa/helper/system/thread/CTime.h>
 using sofa::helper::system::thread::CTime ;
 using sofa::helper::system::thread::ctime_t ;
+
 
 #ifdef WIN32
 #include <windows.h>
@@ -75,7 +78,7 @@ void waitUntilFileExists(const std::string& filename, double timeout)
     ctime_t time = CTime::getTime() ;
     while( !FileSystem::exists(filename)
            && CTime::toSecond(CTime::getTime()-time) < timeout ){
-        CTime::sleep(0.1) ;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
@@ -83,13 +86,13 @@ void waitABit()
 {
     // on windows we use file date, which resoution is assumed (by us) to be below this value in ms
 #ifdef WIN32
-    Sleep(100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 #endif
 #ifdef __APPLE__
-    // sleep(1);
+    // std::this_thread::sleep_for(1);
 #endif
 #ifdef __linux__
-    //  sleep(1);
+    //  std::this_thread::sleep_for(1);
 #endif
 }
 

@@ -49,6 +49,8 @@
 #include <boost/thread.hpp>
 #endif
 
+#include <thread>
+
 namespace sofa
 {
 
@@ -494,7 +496,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 #ifdef SOFA_HAVE_BOOST
             boost::thread::yield();
 #else
-            sofa::helper::system::thread::CTime::sleep(0);
+            std::this_thread::sleep_for(0);
 #endif
         }
 
