@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include "HeadlessRecorder.h"
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/Utils.h>
+using sofa::helper::Utils;
 
 #include <boost/program_options.hpp>
 
@@ -602,6 +604,15 @@ void HeadlessRecorder::record()
     {
         if (initVideoRecorder)
         {
+            std::string ffmpeg_exec_path = "";
+            const std::string ffmpegIniFilePath = Utils::getSofaPathTo("etc/SofaHeadlessRecorder.ini");
+            std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(ffmpegIniFilePath);
+            if (iniFileValues.find("FFMPEG_EXEC_PATH") != iniFileValues.end())
+            {
+                // get absolute path of FFMPEG executable
+                ffmpeg_exec_path = SetDirectory::GetRelativeFromProcess( iniFileValues["FFMPEG_EXEC_PATH"].c_str() );
+            }
+
             std::string videoFilename = fileName;
             int bitrate = 100000000;
             videoFilename.append(".avi");
@@ -609,7 +620,7 @@ void HeadlessRecorder::record()
             //m_videorecorder = std::unique_ptr<VideoRecorderFFmpeg>(new VideoRecorderFFmpeg(fps, width, height, videoFilename.c_str(), AV_CODEC_ID_H264));
             //std::string codec = "yuv420p";
             std::string codec = "yuv444p";
-            m_videorecorder.init(videoFilename, width, height, fps, bitrate, codec);
+            m_videorecorder.init(ffmpeg_exec_path, videoFilename, width, height, fps, bitrate, codec);
             //m_videorecorder->start();
             initVideoRecorder = false;
         }
