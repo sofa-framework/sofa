@@ -9,6 +9,7 @@ find_package(SofaGeneral REQUIRED)
 set(SRC_ROOT src/sofa/gui)
 
 set(HEADER_FILES
+    ${SRC_ROOT}/config.h
     ${SRC_ROOT}/BaseGUI.h
     ${SRC_ROOT}/BaseViewer.h
     ${SRC_ROOT}/BatchGUI.h

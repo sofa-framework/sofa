@@ -19,12 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_SOFAGUI_H
-#define SOFA_GUI_SOFAGUI_H
+#ifndef SOFA_GUI_CONFIG_H
+#define SOFA_GUI_CONFIG_H
 
-// Backward compatibility header
-// Will be removed at v20.12
+#include <SofaGui/config.h>
 
-#include <sofa/gui/config.h>
+#ifdef SOFA_BUILD_SOFAGUICOMMON
+#   define SOFA_TARGET SofaGuiCommon
+#	define SOFA_SOFAGUICOMMON_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_SOFAGUICOMMON_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif
