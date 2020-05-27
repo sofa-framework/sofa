@@ -22,6 +22,9 @@
 #ifndef SOFA_SIMULATION_TREE_TREE_H
 #define SOFA_SIMULATION_TREE_TREE_H
 
-#include <sofa/simulation/config.h>
+// Backward compatibility header
+// Will be removed at v20.12
+
+#include <SofaSimulationTree/config.h>
 
 #endif

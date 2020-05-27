@@ -19,12 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_GRAPH_GRAPH_H
-#define SOFA_SIMULATION_GRAPH_GRAPH_H
+#ifndef SOFA_SIMULATION_GRAPH_CONFIG_H
+#define SOFA_SIMULATION_GRAPH_CONFIG_H
 
-// Backward compatibility header
-// Will be removed at v20.12
+#include <SofaSimulation/config.h>
 
-#include <SofaSimulationGraph/config.h>
+#ifdef SOFA_BUILD_SIMULATION_GRAPH
+#   define SOFA_TARGET SofaSimulationGraph
+#	define SOFA_SIMULATION_GRAPH_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_SIMULATION_GRAPH_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

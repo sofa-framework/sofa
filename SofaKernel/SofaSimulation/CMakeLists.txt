@@ -1,35 +1,39 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaSimulation)
 
-## Dependencies
-find_package(SofaFramework REQUIRED)
-
-## Version
-set(SOFASIMULATION_VERSION ${SofaFramework_VERSION})
-
-## Subdirectories
-add_subdirectory(../modules/SofaSimulationCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon)
-add_subdirectory(../modules/SofaSimulationTree ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree)
-add_subdirectory(../modules/SofaSimulationGraph ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph)
-
 set(SOFASIMULATION_TARGETS
     SofaSimulationCommon
     SofaSimulationGraph
     SofaSimulationTree
-)
+    )
 
 foreach(TARGET ${SOFASIMULATION_TARGETS})
+    add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>") # For sofa/simulation/config.h
+    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>") # For SofaSimulation/config.h
     target_include_directories(${TARGET} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
-    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
-    set_target_properties(${TARGET} PROPERTIES FOLDER SofaSimulation) # IDE folder
-    set_target_properties(${TARGET} PROPERTIES VERSION ${SOFASIMULATION_VERSION})
 endforeach()
 
-## sofa/simulation/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h" DESTINATION include/${PROJECT_NAME}/sofa/simulation COMPONENT headers)
+set(SRC_ROOT src/SofaSimulation)
+set(HEADER_FILES
+    ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/initSofaSimulation.h
+    )
+set(SOURCE_FILES
+    ${SRC_ROOT}/initSofaSimulation.cpp
+    )
 
-## CMake package configurations files
-sofa_write_package_config_files(SofaSimulation ${SOFASIMULATION_VERSION})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFASIMULATION_TARGETS})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFASIMULATION")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "${SRC_ROOT}"
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    )

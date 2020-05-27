@@ -22,6 +22,9 @@
 #ifndef SOFA_SIMULATION_COMMON_COMMON_H
 #define SOFA_SIMULATION_COMMON_COMMON_H
 
-#include <sofa/simulation/config.h>
+// Backward compatibility header
+// Will be removed at v20.12
+
+#include <SofaSimulationCommon/config.h>
 
 #endif

@@ -1,6 +1,6 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,12 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_GRAPH_GRAPH_H
-#define SOFA_SIMULATION_GRAPH_GRAPH_H
+#pragma once
 
-// Backward compatibility header
-// Will be removed at v20.12
+#include <SofaSimulation/config.h>
 
-#include <SofaSimulationGraph/config.h>
+namespace sofa
+{
 
-#endif
+void SOFA_SOFASIMULATION_API initSofaSimulation();
+
+} // namespace sofa
+
+
