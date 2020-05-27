@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscTopology)
 
+find_package(SofaBase REQUIRED) # SofaBaseTopology
 sofa_find_package(ZLIB BOTH_SCOPES)
 
 set(HEADER_FILES

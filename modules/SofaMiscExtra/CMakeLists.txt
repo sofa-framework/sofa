@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscExtra)
 
+find_package(SofaGeneral REQUIRED) # SofaGeneralMeshCollision SofaTopologyMapping
+
 set(HEADER_FILES
     initMiscExtra.h
     )

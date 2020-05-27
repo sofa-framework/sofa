@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscSolver)
 
+find_package(SofaSimulation REQUIRED) # SofaSimulationTree
+
 set(HEADER_FILES
     DampVelocitySolver.h
     NewmarkImplicitSolver.h
@@ -13,8 +15,6 @@ set(SOURCE_FILES
     NewmarkImplicitSolver.cpp
     initMiscSolver.cpp
 )
-
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)

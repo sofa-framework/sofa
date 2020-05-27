@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscForceField)
 
+find_package(SofaFramework REQUIRED) # SofaHelper
+find_package(SofaCommon REQUIRED) # SofaDeformable
+find_package(SofaGeneral REQUIRED) # SofaBoundaryCondition SofaGeneralTopology
+
 set(HEADER_FILES
     config.h
     initMiscForcefield.h
