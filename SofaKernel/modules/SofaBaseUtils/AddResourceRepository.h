@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_H
 #define SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_H
 
-#include <SofaMisc/config.h>
+#include <SofaBaseUtils/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/system/FileRepository.h>
