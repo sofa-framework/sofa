@@ -23,6 +23,8 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/Utils.h>
 using sofa::helper::Utils;
+#include <sofa/helper/system/SetDirectory.h>
+using sofa::helper::system::SetDirectory;
 
 #include <boost/program_options.hpp>
 
