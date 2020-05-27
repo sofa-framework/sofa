@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_EXPORTER_BASEEXPORTER_H
 #define SOFA_CORE_EXPORTER_BASEEXPORTER_H
 
-#include <sofa/simulation/simulationcore.h>
+#include <sofa/simulation/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
