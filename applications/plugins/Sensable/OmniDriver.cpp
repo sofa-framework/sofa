@@ -50,6 +50,7 @@
 #endif
 
 #include <thread>
+#include <chrono>
 
 namespace sofa
 {
@@ -496,7 +497,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 #ifdef SOFA_HAVE_BOOST
             boost::thread::yield();
 #else
-            std::this_thread::sleep_for(0);
+            std::this_thread::sleep_for(std::chrono::milliseconds(0));
 #endif
         }
 
