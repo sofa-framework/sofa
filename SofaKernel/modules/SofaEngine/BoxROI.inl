@@ -572,27 +572,32 @@ bool BoxROI<DataTypes>::isQuadInBoxesStrict(const Quad& q)
 template <class DataTypes>
 void BoxROI<DataTypes>::doUpdate()
 {
-    // Check whether an element can partially be inside the box or if all of its nodes must be inside
-    bool strict = d_strict.getValue();
+    if(m_componentstate==ComponentState::Invalid){
+        return ;
+    }
 
-    // Write accessor for topological element indices in BOX
-    SetIndex& indices = *d_indices.beginWriteOnly();
-    SetIndex& edgeIndices = *d_edgeIndices.beginWriteOnly();
-    SetIndex& triangleIndices = *d_triangleIndices.beginWriteOnly();
-    SetIndex& tetrahedronIndices = *d_tetrahedronIndices.beginWriteOnly();
-    SetIndex& hexahedronIndices = *d_hexahedronIndices.beginWriteOnly();
-    SetIndex& quadIndices = *d_quadIndices.beginWriteOnly();
 
-    // Write accessor for toplogical element in BOX
-    WriteOnlyAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
-    WriteOnlyAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
-    WriteOnlyAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
-    WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
-    WriteOnlyAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
-    WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = d_quadInROI;
+    if(d_doUpdate.getValue()){
 
-    if(d_doUpdate.getValue())
-    {
+        // Check whether an element can partially be inside the box or if all of its nodes must be inside
+        bool strict = d_strict.getValue();
+
+        // Write accessor for topological element indices in BOX
+        SetIndex& indices = *d_indices.beginWriteOnly();
+        SetIndex& edgeIndices = *d_edgeIndices.beginWriteOnly();
+        SetIndex& triangleIndices = *d_triangleIndices.beginWriteOnly();
+        SetIndex& tetrahedronIndices = *d_tetrahedronIndices.beginWriteOnly();
+        SetIndex& hexahedronIndices = *d_hexahedronIndices.beginWriteOnly();
+        SetIndex& quadIndices = *d_quadIndices.beginWriteOnly();
+
+        // Write accessor for toplogical element in BOX
+        WriteOnlyAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
+        WriteOnlyAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
+        WriteOnlyAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
+        WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
+        WriteOnlyAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
+        WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = d_quadInROI;
+
         // Clear lists
         indices.clear();
         edgeIndices.clear();
@@ -609,10 +614,6 @@ void BoxROI<DataTypes>::doUpdate()
         hexahedraInROI.clear();
         quadInROI.clear();
 
-
-        if(m_componentstate==ComponentState::Invalid){
-            return ;
-        }
 
         if (d_X0.getValue().size() == 0)
         {
