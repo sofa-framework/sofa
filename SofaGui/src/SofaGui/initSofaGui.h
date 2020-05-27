@@ -1,6 +1,6 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,15 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGUI_CONFIG_H
-#define SOFAGUI_CONFIG_H
+#pragma once
 
-#include <sofa/config.h>
+#include <SofaGui/config.h>
 
-#cmakedefine01 SOFAGUI_HAVE_SOFAHEADLESSRECORDER
+namespace sofa
+{
 
-#cmakedefine01 SOFAGUI_HAVE_SOFAGUIQT
+namespace gui
+{
 
-#cmakedefine SOFA_GUI_QT_OPENGL
+void SOFA_SOFAGUI_API initSofaGui();
 
-#endif
+} // namespace gui
+
+} // namespace sofa
+
+
