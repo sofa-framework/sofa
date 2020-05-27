@@ -117,7 +117,8 @@ set(MOC_HEADER_FILES
     ${SRC_ROOT}/WDoubleLineEdit.h    
     )
 set(HEADER_FILES
-    ${SRC_ROOT}/SofaGuiQt.h.in # = config.h.in
+    ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/SofaGuiQt.h
     ${SRC_ROOT}/FileManagement.h
     ${SRC_ROOT}/GraphListenerQListView.h
     ${SRC_ROOT}/PickHandlerCallBacks.h

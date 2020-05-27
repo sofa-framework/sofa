@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_SOFAGUIQT_H
-#define SOFA_GUI_QT_SOFAGUIQT_H
+#ifndef SOFA_GUI_QT_CONFIG_H
+#define SOFA_GUI_QT_CONFIG_H
 
-#include <sofa/config.h>
+#include <SofaGui/config.h>
 
 #cmakedefine01 SOFAGUIQT_HAVE_QTVIEWER
 #cmakedefine01 SOFAGUIQT_HAVE_QGLVIEWER
