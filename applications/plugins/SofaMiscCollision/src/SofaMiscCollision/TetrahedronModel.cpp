@@ -53,9 +53,9 @@ int TetrahedronCollisionModelClass = core::RegisterObject("collision model using
 TetrahedronCollisionModel::TetrahedronCollisionModel()
     : tetra(nullptr)
     , mstate(nullptr)
-    , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
     , m_topologyRevision(-1)
+    , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = TETRAHEDRON_TYPE;
 }

@@ -14,10 +14,14 @@ set(GEOMAGIC_SRC_DIR src/Geomagic)
 set(HEADER_FILES
     ${GEOMAGIC_SRC_DIR}/config.h.in
     ${GEOMAGIC_SRC_DIR}/GeomagicDriver.h
+    ${GEOMAGIC_SRC_DIR}/GeomagicEmulator.h
+    ${GEOMAGIC_SRC_DIR}/GeomagicVisualModel.h
 )
 
 set(SOURCE_FILES	  
     ${GEOMAGIC_SRC_DIR}/GeomagicDriver.cpp
+    ${GEOMAGIC_SRC_DIR}/GeomagicEmulator.cpp
+    ${GEOMAGIC_SRC_DIR}/GeomagicVisualModel.cpp
     ${GEOMAGIC_SRC_DIR}/initPlugin.cpp
 )
 
@@ -30,7 +34,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_GEOMAGIC")
 
 # Link the plugin library to its dependencies (other libraries).
-target_link_libraries(${PROJECT_NAME} SofaHelper SofaUserInteraction SofaHaptics SofaOpenglVisual ${OPENHAPTICS_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} SofaHelper SofaUserInteraction SofaHaptics SofaLoader SofaOpenglVisual ${OPENHAPTICS_LIBRARIES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${OPENHAPTICS_INCLUDE_DIR}>")
 

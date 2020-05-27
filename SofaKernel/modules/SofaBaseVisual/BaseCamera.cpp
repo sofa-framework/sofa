@@ -655,16 +655,6 @@ void BaseCamera::computeZ()
 {
     if (p_computeZClip.getValue())
     {
-        double zNear = 1e10;
-        double zFar = -1e10;
-
-        const Vec3 & minBBox = p_minBBox.getValue();
-        const Vec3 & maxBBox = p_maxBBox.getValue();
-
-        //get the same zFar and zNear calculations as QGLViewer
-        sceneCenter = (minBBox + maxBBox)*0.5;
-        sceneRadius = 0.5*(maxBBox - minBBox).norm();
-
         //modelview transform
         defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
 
@@ -674,9 +664,8 @@ void BaseCamera::computeZ()
         double zClippingCoeff = 5;
         double zNearCoeff = 0.01;
 
-
-        zNear = distanceCamToCenter - sceneRadius;
-        zFar = (zNear + 2 * sceneRadius) * 1.1;
+        double zNear = distanceCamToCenter - sceneRadius;
+        double zFar = (zNear + 2 * sceneRadius) * 1.1;
         zNear = zNear * zNearCoeff;
 
         double zMin = zNearCoeff * zClippingCoeff * sceneRadius;
