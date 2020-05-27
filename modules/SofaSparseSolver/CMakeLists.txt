@@ -13,23 +13,25 @@ if(NOT metis_FOUND)
     add_subdirectory(extlibs/metis-5.1.0)
 endif()
 
+set(SRC_ROOT src/SofaSparseSolver)
+
 # Sources
 set(HEADER_FILES
-    src/SofaSparseSolver/config.h.in
-    src/SofaSparseSolver/PrecomputedLinearSolver.h
-    src/SofaSparseSolver/PrecomputedLinearSolver.inl
-    src/SofaSparseSolver/SparseLDLSolver.h
-    src/SofaSparseSolver/SparseLDLSolver.inl
-    src/SofaSparseSolver/SparseLDLSolverImpl.h
-    src/SofaSparseSolver/SparseCholeskySolver.h
-    src/SofaSparseSolver/SparseLUSolver.h
+    ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/PrecomputedLinearSolver.h
+    ${SRC_ROOT}/PrecomputedLinearSolver.inl
+    ${SRC_ROOT}/SparseLDLSolver.h
+    ${SRC_ROOT}/SparseLDLSolver.inl
+    ${SRC_ROOT}/SparseLDLSolverImpl.h
+    ${SRC_ROOT}/SparseCholeskySolver.h
+    ${SRC_ROOT}/SparseLUSolver.h
     )
 set(SOURCE_FILES
-    src/SofaSparseSolver/initSparseSolver.cpp
-    src/SofaSparseSolver/PrecomputedLinearSolver.cpp
-    src/SofaSparseSolver/SparseLDLSolver.cpp
-    src/SofaSparseSolver/SparseCholeskySolver.cpp
-    src/SofaSparseSolver/SparseLUSolver.cpp
+    ${SRC_ROOT}/initSparseSolver.cpp
+    ${SRC_ROOT}/PrecomputedLinearSolver.cpp
+    ${SRC_ROOT}/SparseLDLSolver.cpp
+    ${SRC_ROOT}/SparseCholeskySolver.cpp
+    ${SRC_ROOT}/SparseLUSolver.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
@@ -38,14 +40,14 @@ target_link_libraries(${PROJECT_NAME} PUBLIC metis csparse)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFASPARSESOLVER")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 sofa_generate_package(
     NAME SofaSparseSolver
     VERSION ${PROJECT_VERSION}
     TARGETS SofaSparseSolver
-    INCLUDE_SOURCE_DIR "src/SofaSparseSolver"
+    INCLUDE_SOURCE_DIR "${SRC_ROOT}"
     INCLUDE_INSTALL_DIR "SofaSparseSolver"
     RELOCATABLE "plugins"
 )

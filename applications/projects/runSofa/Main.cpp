@@ -95,10 +95,6 @@ using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 
 #include <sofa/helper/AdvancedTimer.h>
 
-#ifdef WIN32
-#include <windows.h>
-#endif
-
 #include <sofa/gui/GuiDataRepository.h>
 using sofa::gui::GuiDataRepository ;
 
@@ -116,9 +112,6 @@ using sofa::helper::logging::ClangMessageHandler ;
 using sofa::helper::logging::ExceptionMessageHandler;
 
 #include <boost/program_options.hpp>
-
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
 
 
 
@@ -439,8 +432,8 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    std::string configPluginPath = TOSTRING(CONFIG_PLUGIN_FILENAME);
-    std::string defaultConfigPluginPath = TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
+    std::string configPluginPath = sofa_tostring(CONFIG_PLUGIN_FILENAME);
+    std::string defaultConfigPluginPath = sofa_tostring(DEFAULT_CONFIG_PLUGIN_FILENAME);
 
     if (!noAutoloadPlugins)
     {
