@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,8 +65,6 @@ void ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray()
 {
     if(!hasEdges())	//  this method should only be called when edges exist
     {
-        msg_warning_when(CHECK_TOPOLOGY) << "Edge array is empty.";
-
         createEdgeSetArray();
     }
 
@@ -120,7 +118,7 @@ int ManifoldEdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper:
 
 bool ManifoldEdgeSetTopologyContainer::checkTopology() const
 {
-    if (!CHECK_TOPOLOGY)
+    if (!d_checkTopology.getValue())
         return true;
 
     bool ret = true;

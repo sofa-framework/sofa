@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,15 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
- * Contributors:                                                              *
- *    - damien.marchal@univ-lille1.fr                                         *
- *****************************************************************************/
 #include <vector>
 using std::vector;
 
 #include <string>
 using std::string;
+
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -44,17 +43,20 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-#include <SofaTest/Sofa_test.h>
-
 #include <boost/filesystem.hpp>
 namespace{
 std::string tempdir = boost::filesystem::temp_directory_path().string() ;
 
 
-class OBJExporter_test : public sofa::Sofa_test<>{
+class OBJExporter_test : public BaseTest {
 public:
     /// remove the file created...
     std::vector<std::string> dataPath ;
+
+    void SetUp() override
+    {
+        sofa::simulation::setSimulation(new DAGSimulation());
+    }
 
     void TearDown()
     {

@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.005" gravity="10 0 0" >
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaHaptics'/>
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
     <RequiredPlugin name="Geomagic plugin" pluginName="Geomagic" />
     
@@ -22,9 +23,9 @@
             <MeshObjLoader filename="Demos/Dentistry/data/mesh/skull_and_teeth_coarse.obj"  name="loader"/>
             <MeshTopology src="@loader" name="ToothCollisionModel"  />
             <MechanicalObject src="@loader" name="toothState" />        
-            <TriangleCollisionModel name="tooth" contactStiffness="100" simulated="0" moving="0"/>
-            <LineCollisionModel name="tooth" contactStiffness="100" simulated="0" moving="0"/>    
-            <PointCollisionModel name="tooth" contactStiffness="100" simulated="0" moving="0"/>   
+            <TriangleCollisionModel contactStiffness="100" simulated="0" moving="0"/>
+            <LineCollisionModel contactStiffness="100" simulated="0" moving="0"/>    
+            <PointCollisionModel contactStiffness="100" simulated="0" moving="0"/>   
         </Node>
     </Node>
     
@@ -54,8 +55,8 @@
             <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
             <MeshTopology src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
-            <LineCollisionModel name="instrument" contactStiffness="10" />
-            <PointCollisionModel name="instrument" contactStiffness="10" /> 
+            <LineCollisionModel contactStiffness="10" />
+            <PointCollisionModel contactStiffness="10" /> 
             <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
         </Node>        
     </Node>  

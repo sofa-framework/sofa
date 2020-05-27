@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -107,7 +107,7 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Implicit_SparseLDL")
     {
-        if(SCENECREATOR_HAVE_METIS)
+        if(SCENECREATOR_HAVE_SOFASPARSESOLVER)
         {
             simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
                                                                   {"rayleighStiffness","0.01"},

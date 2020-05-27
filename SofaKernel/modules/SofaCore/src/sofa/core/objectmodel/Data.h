@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,10 +45,8 @@ public:
     /// @name Class reflection system
     /// @{
     typedef TClass<TData<T>,BaseData> MyClass;
-    static const MyClass* GetClass() { return MyClass::get(); }
-    const BaseClass* getClass() const override
-    { return GetClass(); }
-
+    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
+    const BaseClass* getClass() const { return GetClass(); }
     static std::string templateName(const TData<T>* = nullptr)
     {
         T* ptr = nullptr;
@@ -300,7 +298,7 @@ public:
     /// @name Class reflection system
     /// @{
     typedef TClass<Data<T>, TData<T> > MyClass;
-    static const MyClass* GetClass() { return MyClass::get(); }
+    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const
     { return GetClass(); }
 
@@ -415,35 +413,30 @@ public:
     }
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
     inline void endEdit(const core::ExecParams*)
     {
         endEdit();
     }
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
     inline T* beginWriteOnly(const core::ExecParams*)
     {
         return beginWriteOnly();
     }
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
     inline T* beginEdit(const core::ExecParams*)
     {
         return beginEdit();
     }
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
     inline void setValue(const core::ExecParams*, const T& value)
     {
         setValue(value);
     }
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
     inline const T& getValue(const core::ExecParams*) const
     {
         return getValue();

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_INL
 #define SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_INL
 #include <SofaPreconditioner/SSORPreconditioner.h>

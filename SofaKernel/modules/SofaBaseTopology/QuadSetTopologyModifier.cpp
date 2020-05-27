@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -97,7 +97,7 @@ void QuadSetTopologyModifier::addQuads(const sofa::helper::vector<Quad> &quads,
 
 void QuadSetTopologyModifier::addQuadProcess(Quad t)
 {
-	if (CHECK_TOPOLOGY)
+	if (m_container->d_checkTopology.getValue())
 	{
 		// check if the 4 vertices are different
 		if ((t[0] == t[1]) || (t[0] == t[2]) || (t[0] == t[3])
@@ -242,9 +242,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<Quad
 {
     if(!m_container->hasQuads()) // this method should only be called when quads exist
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Quad array is empty.";
-
+        msg_error() << "Quad array is empty.";
         return;
     }
 

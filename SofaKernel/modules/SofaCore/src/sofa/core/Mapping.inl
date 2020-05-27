@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -265,7 +265,7 @@ bool Mapping<In,Out>::setFrom(BaseState* from)
     State<In>* in = dynamic_cast< State<In>* >(from);
     if( !in )
     {
-        msg_error() << "setFrom " << from->getName() << " should be of type " << State<In>::template typeName< State<In> >();
+        msg_error() << "setFrom " << from->getName() << " should be of type " << sofa::helper::NameDecoder::getTypeName<State<In>>();
         return false;
     }
 
@@ -281,7 +281,7 @@ bool Mapping<In,Out>::setTo(BaseState* to)
     State<Out>* out = dynamic_cast< State<Out>* >(to);
     if( !out )
     {
-        msg_error() << "setTo " << to->getName() << " should be of type " << State<Out>::template typeName< State<Out> >();
+        msg_error() << "setTo " << to->getName() << " should be of type " << sofa::helper::NameDecoder::getTypeName< State<Out> >();
         return false;
     }
 
@@ -292,14 +292,6 @@ bool Mapping<In,Out>::setTo(BaseState* to)
 
     return true;
 }
-
-template <class In, class Out>
-std::string Mapping<In,Out>::templateName(const Mapping<In, Out>* /*mapping*/)
-{
-    //	return std::string("Mapping<") + In::Name() + std::string(",") + Out::Name() + std::string(">");
-    return In::Name() + std::string(",") + Out::Name();
-}
-
 
 template <class In, class Out>
 void Mapping<In,Out>::updateForceMask()

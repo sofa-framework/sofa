@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -182,14 +182,6 @@ typename HexahedronFEMForceFieldAndMass<DataTypes>::Real HexahedronFEMForceField
 
     return (Real)(t1*t3/72.0+t2*t3/72.0+t9*t3/216.0+t3/24.0+1.0/8.0+t9/72.0+t1/24.0+t2/24.0)*d_density.getValue();
 }
-
-
-template<class DataTypes>
-std::string HexahedronFEMForceFieldAndMass<DataTypes>::getTemplateName() const
-{
-    return HexahedronFEMForceFieldT::getTemplateName();
-}
-
 
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor)

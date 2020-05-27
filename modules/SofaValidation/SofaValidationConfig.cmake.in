@@ -1,0 +1,14 @@
+# CMake package configuration file for the SofaValidation module
+@PACKAGE_INIT@
+
+find_package(SofaBase REQUIRED)
+find_package(SofaCommon REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
+### Is the target existing ?
+if(NOT TARGET SofaValidation)
+    ### If not we are building out of tree.
+    include("${CMAKE_CURRENT_LIST_DIR}/SofaValidationTargets.cmake")
+endif()
+
+check_required_components(SofaValidation)

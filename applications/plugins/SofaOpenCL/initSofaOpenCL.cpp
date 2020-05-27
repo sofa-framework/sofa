@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,17 +21,29 @@
 ******************************************************************************/
 #include "config.h"
 
+#include "myopencl.h"
+
 namespace sofa
 {
 
 namespace component
 {
 
+extern "C" {
+    SOFAOPENCL_API void initExternalModule();
+    SOFAOPENCL_API const char* getModuleName();
+    SOFAOPENCL_API const char* getModuleVersion();
+    SOFAOPENCL_API const char* getModuleLicense();
+    SOFAOPENCL_API const char* getModuleDescription();
+    SOFAOPENCL_API const char* getModuleComponentList();
+}
+
 void initExternalModule()
 {
     static bool first = true;
     if (first)
     {
+        sofa::gpu::opencl::myopenclInit();
         first = false;
     }
 }

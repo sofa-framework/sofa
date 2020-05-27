@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,8 +59,10 @@ public:
     //Output
     Data<helper::vector<Index> > d_indices; ///< selected point/cell indices
 
-    virtual std::string getTemplateName() const    override {        return templateName(this);    }
-    static std::string templateName(const SelectLabelROI* = nullptr)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
+    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
+    /// so we need to override that by implementing GetCustomTemplateName() function
+    /// More details on the name customization infrastructure is in NameDecoder.h
+    static const std::string GetCustomTemplateName(){  return sofa::defaulttype::DataTypeName<T>::name();    }
 
     void init() override
     {

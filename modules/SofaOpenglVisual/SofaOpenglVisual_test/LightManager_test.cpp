@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -46,14 +47,19 @@ using sofa::helper::logging::MessageDispatcher ;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message ;
+#include <SofaBaseMechanics/initBaseMechanics.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
 namespace sofa {
 
-struct TestLightManager : public Sofa_test<> {
+struct TestLightManager : public BaseTest 
+{
+    void SetUp() override
+    {
+        sofa::component::initBaseMechanics();
+        sofa::simulation::setSimulation(new DAGSimulation());
+    }
 };
 
 void checkAttributes()
@@ -84,6 +90,9 @@ void checkAttributes()
 
     for(auto& attrname : attrnames)
         EXPECT_NE( lm->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
+
+    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::getSimulation()->createNewGraph("");
 }
 
 

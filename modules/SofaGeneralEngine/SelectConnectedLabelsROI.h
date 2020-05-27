@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,8 +62,9 @@ public:
     //Output
     Data<helper::vector<Index> > d_indices; ///< selected point/cell indices
 
-    virtual std::string getTemplateName() const    override {        return templateName(this);    }
-    static std::string templateName(const SelectConnectedLabelsROI* = NULL)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
+    static std::string GetCustomTemplateName(){       return sofa::defaulttype::DataTypeName<T>::name();    }
 
     SelectConnectedLabelsROI(): Inherited()
       , d_nbLabels ( initData ( &d_nbLabels,(unsigned int)0,"nbLabels","number of label lists" ) )

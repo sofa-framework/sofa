@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,16 +37,12 @@ class GetDownObjectsVisitor : public Visitor
 {
 public:
 
-    GetDownObjectsVisitor(const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags)
-        : Visitor( core::ExecParams::defaultInstance() )
-        , _class_info(class_info)
-        , _container(container)
-        , _tags(tags)
-    {}
+    GetDownObjectsVisitor(const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags);
+    ~GetDownObjectsVisitor() override;
 
     Result processNodeTopDown(simulation::Node* node) override
     {
-        ((const DAGNode*)node)->getLocalObjects( _class_info, _container, _tags );
+        static_cast<const DAGNode*>(node)->getLocalObjects( _class_info, _container, _tags );
         return RESULT_CONTINUE;
     }
 
@@ -58,27 +54,30 @@ public:
     const char* getCategoryName() const override { return "GetDownObjectsVisitor"; }
     const char* getClassName()    const override { return "GetDownObjectsVisitor"; }
 
-
 protected:
-
     const sofa::core::objectmodel::ClassInfo& _class_info;
     DAGNode::GetObjectsCallBack& _container;
     const sofa::core::objectmodel::TagSet& _tags;
 };
 
+GetDownObjectsVisitor::GetDownObjectsVisitor(const sofa::core::objectmodel::ClassInfo& class_info,
+                                             DAGNode::GetObjectsCallBack& container,
+                                             const sofa::core::objectmodel::TagSet& tags)
+    : Visitor( core::ExecParams::defaultInstance() )
+    , _class_info(class_info)
+    , _container(container)
+    , _tags(tags)
+{}
+
+GetDownObjectsVisitor::~GetDownObjectsVisitor(){}
 
 /// get all up objects respecting specified class_info and tags
 class GetUpObjectsVisitor : public Visitor
 {
 public:
 
-    GetUpObjectsVisitor(DAGNode* searchNode, const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags)
-        : Visitor( core::ExecParams::defaultInstance() )
-        , _searchNode( searchNode )
-        , _class_info(class_info)
-        , _container(container)
-        , _tags(tags)
-    {}
+    GetUpObjectsVisitor(DAGNode* searchNode, const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags);
+    ~GetUpObjectsVisitor() override;
 
     Result processNodeTopDown(simulation::Node* node) override
     {
@@ -111,6 +110,19 @@ protected:
     const sofa::core::objectmodel::TagSet& _tags;
 
 };
+
+GetUpObjectsVisitor::GetUpObjectsVisitor(DAGNode* searchNode,
+                                         const sofa::core::objectmodel::ClassInfo& class_info,
+                                         DAGNode::GetObjectsCallBack& container,
+                                         const sofa::core::objectmodel::TagSet& tags)
+    : Visitor( core::ExecParams::defaultInstance() )
+    , _searchNode( searchNode )
+    , _class_info(class_info)
+    , _container(container)
+    , _tags(tags)
+{}
+
+GetUpObjectsVisitor::~GetUpObjectsVisitor(){}
 
 DAGNode::DAGNode(const std::string& name, DAGNode* parent)
     : simulation::Node(name)
@@ -386,6 +398,7 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
         case SearchUp:
             this->getLocalObjects( class_info, container, tags ); // add locals then SearchParents
             // no break here, we want to execute the SearchParents code.
+            [[fallthrough]];
         case SearchParents:
         {
             // a visitor executed from top but only run for this' parents will enforce the selected object unicity due even with diamond graph setups

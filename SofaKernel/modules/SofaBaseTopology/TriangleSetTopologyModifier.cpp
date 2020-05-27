@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -168,7 +168,7 @@ void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector
 void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 {
 
-	if (CHECK_TOPOLOGY)
+	if (m_container->d_checkTopology.getValue())
 	{
 		// check if the 3 vertices are different
 		if ((t[0] == t[1]) || (t[0] == t[2]) || (t[1] == t[2]))
@@ -377,9 +377,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
 
     if(!m_container->hasTriangles()) // this method should only be called when triangles exist
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Triangle array is empty.";
-
+		msg_error() << "Triangle array is empty.";
         return;
     }
 

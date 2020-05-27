@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -239,10 +239,6 @@ public:
     Data<unsigned int> exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
     Data<bool> exportAtBegin; ///< export file at the initialization
     Data<bool> exportAtEnd; ///< export file when the simulation is finished
-
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageExporter<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
     ImageExporter()	: Inherited()
         , image(initData(&image,ImageTypes(),"image","image"))

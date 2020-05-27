@@ -55,6 +55,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MarchingCubeUtility.h
     ${SRC_ROOT}/MatEigen.h
     ${SRC_ROOT}/MemoryManager.h
+    ${SRC_ROOT}/NameDecoder.h
     ${SRC_ROOT}/OptionsGroup.h
     ${SRC_ROOT}/OwnershipSPtr.h
     ${SRC_ROOT}/StateMask.h
@@ -170,6 +171,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/GenerateRigid.cpp
     ${SRC_ROOT}/LCPcalc.cpp
     ${SRC_ROOT}/MarchingCubeUtility.cpp
+    ${SRC_ROOT}/NameDecoder.cpp
     ${SRC_ROOT}/OptionsGroup.cpp
     ${SRC_ROOT}/StateMask.cpp
     ${SRC_ROOT}/SVector.cpp
@@ -269,7 +271,6 @@ if(NOT SOFA_NO_OPENGL)
         ${SRC_ROOT}/gl/Capture.h
         ${SRC_ROOT}/gl/Color.h
         ${SRC_ROOT}/gl/RAII.h
-        ${SRC_ROOT}/gl/glfont.h
         ${SRC_ROOT}/gl/template.h
         ${SRC_ROOT}/system/gl.h
         ${SRC_ROOT}/system/glu.h
@@ -294,7 +295,6 @@ if(NOT SOFA_NO_OPENGL)
         ${SRC_ROOT}/gl/Texture.cpp
         ${SRC_ROOT}/gl/VideoRecorderFFMPEG.cpp
         ${SRC_ROOT}/gl/Color.cpp
-        ${SRC_ROOT}/gl/glfont.cpp
         ${SRC_ROOT}/system/gl.cpp
     )
     if(GLEW_FOUND)
@@ -337,7 +337,6 @@ endif()
 # PluginManager.cpp, at the expense of being much less visible compare to having it in the generated
 # SofaFramework/config.h
 set_property(SOURCE ${SRC_ROOT}/system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
-
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
@@ -361,13 +360,6 @@ endif()
 # System libs
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
-    # X11 functions are used in glfont.cpp
-    sofa_find_package(X11 REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_X11_LIB})
-    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
-        "$<BUILD_INTERFACE:${X11_X11_INCLUDE_PATH}>"
-        # No INSTALL_INTERFACE include dir => dev user will need to find_package this dependency
-        )
 elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
     find_library(ICONV iconv)

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
-
+#include <list>
 #include <sofa/core/sptr.h>
 
 #include <deque>
@@ -101,8 +101,6 @@ namespace loader
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
 virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
 
-
-
 namespace sofa
 {
 
@@ -123,13 +121,12 @@ namespace objectmodel
 class SOFA_CORE_API Base
 {
 public:
-
     typedef Base* Ptr;
 
     using SPtr = sptr<Base>;
     
-    typedef TClass< Base, void > MyClass;
-    static const MyClass* GetClass() { return MyClass::get(); }
+    using MyClass = TClass< Base, void >;
+    static const BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
 
     template<class T>
@@ -183,13 +180,26 @@ public:
     void setName(const std::string& n, int counter);
 
     /// Get the type name of this object (i.e. class and template types)
-    virtual std::string getTypeName() const;
+    /// Since #PR 1283, the signature has changed to "final" so it is not possible
+    /// to override the getTypeName() method.
+    virtual std::string getTypeName() const ;
 
     /// Get the class name of this object
-    virtual std::string getClassName() const;
+    /// Since #PR 1283, the signature has changed to "final" so it is not possible
+    /// to override the getClassName() method. To specify custom class name you need
+    /// to implement a single static std::string GetCustomClassName(){} method.
+    virtual std::string getClassName() const ;
 
     /// Get the template type names (if any) used to instantiate this object
-    virtual std::string getTemplateName() const;
+    /// Since #PR 1283, the signature has changed to "final" so it is not possible
+    /// to override the getClassName() method. To specify custom class name you need
+    /// to implement a single static std::string GetCustomTemplateName(){} method.
+    virtual std::string getTemplateName() const ;
+
+    /// Get the template type names (if any) used to instantiate this object
+    /// Since #PR 1283, the signature has changed to "final" so it is not possible
+    /// to override the getNameSpaceName() method.
+    virtual std::string getNameSpaceName() const ;
 
     /// Set the source filename (where the component is implemented)
     void setDefinitionSourceFileName(const std::string& sourceFileName);
@@ -398,7 +408,15 @@ protected:
         res.value = value;
     }
 
+
+
 public:
+
+    /// Helper method & type for the NameDecoder class to it can detect inherited instances
+    /// The following code is only needed since #PR1283 to smooth the deprecation process.
+    /// Remove that after the 01.01.2021.
+    bool IsInheritingFromBase(){return true;}
+    typedef Base BaseType;
 
     /// Helper method to get the type name of a type derived from this class
     ///
@@ -406,59 +424,67 @@ public:
     /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
-    static std::string typeName(const T* ptr= nullptr)
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
+                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    static std::string typeName(const T* ptr = nullptr)
     {
-        return BaseClass::defaultTypeName(ptr);
+        SOFA_UNUSED(ptr);
+        return sofa::helper::NameDecoder::decodeTypeName(typeid(T));
     }
 
     /// Helper method to get the class name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::className(ptr); \endcode
+    /// \code  std::string type = Base::className<B>(); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
-    static std::string className(const T* ptr= nullptr)
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
+                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    static std::string className(const T* ptr = nullptr)
     {
-        return BaseClass::defaultClassName(ptr);
+        SOFA_UNUSED(ptr);
+        return sofa::helper::NameDecoder::decodeClassName(typeid(T));
     }
 
     /// Helper method to get the namespace name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::namespaceName(ptr); \endcode
+    /// \code  std::string type = Base::namespaceName<T>(); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
-    static std::string namespaceName(const T* ptr= nullptr)
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
+                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    static std::string namespaceName(const T* ptr = nullptr)
     {
-        return BaseClass::defaultNamespaceName(ptr);
+        SOFA_UNUSED(ptr);
+        return sofa::helper::NameDecoder::decodeNamespaceName(typeid(T));
     }
 
     /// Helper method to get the template name of a type derived from this class
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::templateName(ptr); \endcode
+    /// \code  std::string type = Base::templateName<B>); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
-    static std::string templateName(const T* ptr= nullptr)
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
+                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    static std::string templateName(const T* ptr = nullptr)
     {
-        return BaseClass::defaultTemplateName(ptr);
+        SOFA_UNUSED(ptr);
+        return sofa::helper::NameDecoder::decodeTemplateName(typeid(T));
     }
 
     /// Helper method to get the shortname of a type derived from this class.
     /// The default implementation return the class name.
     ///
     /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::shortName(ptr); \endcode
+    /// \code  std::string type = Base::shortNam<B>(); \endcode
     /// This way derived classes can redefine the shortName method
     template< class T>
-    static std::string shortName( const T* ptr = nullptr, BaseObjectDescription* = nullptr )
+    static std::string shortName(const T* ptr = nullptr, BaseObjectDescription* = nullptr )
     {
-        std::string shortname = T::className(ptr);
-        if( !shortname.empty() )
-        {
-            *shortname.begin() = char(::tolower(*shortname.begin()));
-        }
-        return shortname;
+        SOFA_UNUSED(ptr);
+        return sofa::helper::NameDecoder::shortName(sofa::helper::NameDecoder::getClassName<T>());
     }
 
     /// @name componentstate
@@ -563,6 +589,7 @@ public:
 
     /// @}
 };
+
 
 } // namespace objectmodel
 
