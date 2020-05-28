@@ -23,7 +23,14 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 ### Dependencies
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
-find_package(Assimp REQUIRED)
+find_package(Assimp QUIET)
+
+if (NOT assimp_FOUND)
+    find_package(AssimpSofa REQUIRED)
+    if (NOT assimp_FOUND)
+        message(FATAL_ERROR "Could not find assimp library in system library nor in custom directories")
+    endif()
+endif()
 
 sofa_find_package(Flexible QUIET)
 sofa_find_package(image QUIET)
