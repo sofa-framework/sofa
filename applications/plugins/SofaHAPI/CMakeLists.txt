@@ -77,7 +77,3 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAHAPI_VERSION})
 
 ## Install rules for the library and the header; CMake package configurations files
 sofa_generate_package(NAME SofaHAPI VERSION ${SOFAHAPI_VERSION} TARGETS SofaHAPI INCLUDE_INSTALL_DIR SofaHAPI)
-
-## Install rules for the resources
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
