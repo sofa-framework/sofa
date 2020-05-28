@@ -36,7 +36,7 @@ namespace gui
 namespace qt
 {
 
-class SofaPluginManager: public QDialog, public Ui_PluginManager
+class SOFA_SOFAGUIQT_API SofaPluginManager: public QDialog, public Ui_PluginManager
 {
     Q_OBJECT
 public:
