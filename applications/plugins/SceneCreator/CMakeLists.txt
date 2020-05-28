@@ -6,7 +6,7 @@ sofa_find_package(SofaSparseSolver QUIET)
 find_package(Eigen3 REQUIRED)
 
 set(HEADER_FILES
-    config.h.in
+    src/SceneCreator/config.h.in
     src/SceneCreator/GetAssembledSizeVisitor.h
     src/SceneCreator/GetVectorVisitor.h
     src/SceneCreator/SceneCreator.h
@@ -21,7 +21,7 @@ set(SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationGraph SofaEigen2Solver)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SCENECREATOR")
 
