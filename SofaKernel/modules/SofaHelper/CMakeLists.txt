@@ -386,7 +386,9 @@ if(NOT SOFA_NO_OPENGL)
 
     if(GLEW_FOUND)
         target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW)
-        sofa_install_libraries(TARGETS GLEW::GLEW)
+        if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
+            sofa_install_libraries(TARGETS GLEW::GLEW)
+        endif()
     else()
         message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
     endif()
@@ -398,7 +400,9 @@ if(Boost_FOUND)
     if(Boost_THREAD_FOUND)
         target_link_libraries(${PROJECT_NAME} PUBLIC Boost::thread)
     endif()
-    sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
+    if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
+        sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
+    endif()
 endif()
 
 # GTest
