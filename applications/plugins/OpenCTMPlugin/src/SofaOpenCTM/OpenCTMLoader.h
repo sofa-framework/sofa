@@ -19,29 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OPENCTM_PLUGIN_OPENCTMLOADER_H
-#define OPENCTM_PLUGIN_OPENCTMLOADER_H
+#pragma once
 
 #include <sofa/core/loader/MeshLoader.h>
 #include <OpenCTMPlugin/config.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 /**
  * OpenCTMLoader class interfaces OpenCTM mesh reader with SOFA loader components.
  * For more information about the class API see doc: http://openctm.sourceforge.net/apidocs/
- *
- *  Created on: July 25th 2015
- *      Author: epernod
  */
-class SOFA_OPENCTMPLUGIN_API OpenCTMLoader : public sofa::core::loader::MeshLoader
+class SOFA_SOFAOPENCTM_API OpenCTMLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(OpenCTMLoader,sofa::core::loader::MeshLoader);
@@ -69,10 +59,4 @@ public:
 };
 
 
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //OPENCTM_PLUGIN_OPENCTMLOADER_H
+} // namespace sofa::component::loader

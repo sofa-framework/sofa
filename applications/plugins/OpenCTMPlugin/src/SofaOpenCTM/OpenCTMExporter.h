@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef OPENCTM_PLUGIN_OPENCTMEXPORTER_H
-#define OPENCTM_PLUGIN_OPENCTMEXPORTER_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -33,23 +31,14 @@
 
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 /**
  * OpenCTMExporter class interfaces OpenCTM mesh writer with SOFA components.
  * For more information about the class API see doc: http://openctm.sourceforge.net/apidocs/
- *
- *  Created on: July 27th 2015
- *      Author: epernod
  */
-class SOFA_OPENCTMPLUGIN_API OpenCTMExporter : public core::objectmodel::BaseObject
+class SOFA_SOFAOPENCTM_API OpenCTMExporter : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(OpenCTMExporter, core::objectmodel::BaseObject);
@@ -91,10 +80,4 @@ private:
 
 };
 
-}
-
-}
-
-}
-
-#endif /* OPENCTM_PLUGIN_OPENCTMEXPORTER_H */
+} // namespace sofa::component::misc
