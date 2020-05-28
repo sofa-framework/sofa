@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaOpenglVisual VERSION 1.0 LANGUAGES CXX)
 
+if(SOFA_NO_OPENGL)
+    message(FATAL_ERROR "SOFA_NO_OPENGL flag prevents from using the SofaOpenglVisual plugin")
+endif()
+
 find_package(SofaBase REQUIRED)
 find_package(SofaSimulation REQUIRED)
 
