@@ -31,6 +31,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
 target_link_libraries(${PROJECT_NAME} ${OPENCASCADE_LIBRARIES})
 include_directories(${OPENCASCADE_INCLUDE_DIR})
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 if(WIN32)
     # required for OpenCASCADE

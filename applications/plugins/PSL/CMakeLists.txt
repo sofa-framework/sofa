@@ -88,6 +88,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationGraph SofaPython)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/..")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PSL")
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT PSL_libraries
