@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(TestPlugin)
+project(TestPlugin VERSION 0.7)
 
 
 set(HEADER_FILES
@@ -17,9 +17,8 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaDefaultType)
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT TestPlugin_libraries
-        EXPORT TestPluginTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME}
+    )
