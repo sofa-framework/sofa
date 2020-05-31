@@ -33,6 +33,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <Geomagic/GeomagicVisualModel.h>
 
+#include <chrono>
+#include <thread>
+
 namespace sofa
 {
 

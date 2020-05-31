@@ -34,6 +34,8 @@ using sofa::helper::system::thread::ctime_t ;
 #include <list>
 #include <string>
 #include <map>
+#include <chrono>
+#include <thread>
 
 //////////////////// Windows Header ///////////////////////////////////////////////
 #include <windows.h>
@@ -170,7 +172,7 @@ int FileMonitor::updates(int timeout)
             }
         }
         if(!hadEvent)
-            CTime::sleep(0.05);
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
     return 0;

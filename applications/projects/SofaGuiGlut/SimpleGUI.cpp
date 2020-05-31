@@ -37,6 +37,7 @@
 #include <sofa/helper/gl/RAII.h>
 
 #include <sofa/helper/system/thread/CTime.h>
+#include <thread>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BoundingBox.h>
@@ -198,7 +199,7 @@ void SimpleGUI::glut_idle()
         if (instance->getScene() && instance->getScene()->getContext()->getAnimate())
             instance->step();
         else
-            CTime::sleep(0.01);
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         instance->animate();
     }
 }
