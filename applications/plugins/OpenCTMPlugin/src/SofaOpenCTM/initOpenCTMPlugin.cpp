@@ -19,15 +19,60 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OPENCTMPLUGIN_CONFIG_H
-#define OPENCTMPLUGIN_CONFIG_H
+#include <OpenCTMPlugin/config.h>
 
-#include <sofa/helper/system/config.h>
+namespace sofa
+{
 
-#ifdef SOFA_BUILD_OPENCTMPLUGIN
-#  define SOFA_OPENCTMPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_OPENCTMPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace component
+{
 
-#endif
+//Here are just several convenient functions to help user to know what contains the plugin
+
+extern "C" {
+    SOFA_SOFAOPENCTM_API void initExternalModule();
+    SOFA_SOFAOPENCTM_API const char* getModuleName();
+    SOFA_SOFAOPENCTM_API const char* getModuleVersion();
+    SOFA_SOFAOPENCTM_API const char* getModuleLicense();
+    SOFA_SOFAOPENCTM_API const char* getModuleDescription();
+    SOFA_SOFAOPENCTM_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return "OpenCTM Plugin";
+}
+
+const char* getModuleVersion()
+{
+    return "0.1";
+}
+
+const char* getModuleLicense()
+{
+    return "Licence ZLIB";
+}
+
+const char* getModuleDescription()
+{
+    return "OpenCTM mesh format compatibility into SOFA";
+}
+
+const char* getModuleComponentList()
+{
+    return "OpenCTMLoader, OpenCTMExporter";
+}
+
+}
+
+}
+

@@ -25,6 +25,8 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
+#include <chrono>
+#include <thread>
 
 namespace sofa
 {
@@ -87,7 +89,7 @@ void LeapMotionDriver::init()
             for (unsigned int n=0; n<15 && !leapConnected; n++)
             {
                 std::cout << ".";
-                sofa::helper::system::thread::CTime::sleep(0.1);
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 leapConnected = getLeapController()->isConnected();
             }
             std::cout << "." << std::endl;
