@@ -97,9 +97,9 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     }
     cpt++;
 
-    msg_info() << "NewmarkImplicitSolver, aPrevious = " << a;
-    msg_info() << "NewmarkImplicitSolver, xPrevious = " << pos;
-    msg_info() << "NewmarkImplicitSolver, vPrevious = " << vel;
+    msg_info() << "aPrevious = " << a;
+    msg_info() << "xPrevious = " << pos;
+    msg_info() << "vPrevious = " << vel;
 
 
     // 2. Compute right hand term of equation on a_{t+h}
@@ -118,9 +118,9 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     // b += -h K v
     mop.addMBKv(b, -rM, 1,rK+h);
 
-    msg_info() << "NewmarkImplicitSolver, b = " << b;
+    msg_info() << "b = " << b;
     mop.projectResponse(b);          // b is projected to the constrained space
-    msg_info() << "NewmarkImplicitSolver, projected b = " << b;
+    msg_info() << "projected b = " << b;
 
 
     // 3. Solve system of equations on a_{t+h}
@@ -129,9 +129,9 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
     matrix = MechanicalMatrix::K * (-h*h*beta - h*rK*gamma) + MechanicalMatrix::B*(-h)*gamma + MechanicalMatrix::M * (1 + h*gamma*rM);
 
-    msg_info()<<"NewmarkImplicitSolver, matrix = "<< MechanicalMatrix::K *(-h*h*beta + -h*rK*gamma) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix<<sendl;
+    msg_info()<<"matrix = "<< MechanicalMatrix::K *(-h*h*beta + -h*rK*gamma) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix<<sendl;
     matrix.solve(aResult, b);
-    msg_info() << "NewmarkImplicitSolver, a1 = " << aResult;
+    msg_info() << "a1 = " << aResult;
 
 
     // 4. Compute the new position and velocity
@@ -173,8 +173,8 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
         newVel *= exp(-h*d_velocityDamping.getValue());
 
 
-    msg_info() << "NewmarkImplicitSolver, final x = " << newPos;
-    msg_info() << "NewmarkImplicitSolver, final v = " << newVel;
+    msg_info() << "final x = " << newPos;
+    msg_info() << "final v = " << newVel;
 
     // Increment
     a.eq(aResult);
