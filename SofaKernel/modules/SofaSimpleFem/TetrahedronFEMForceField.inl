@@ -1716,6 +1716,7 @@ void TetrahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, b
 {
     if( !onlyVisible ) return;
 
+    if (!this->mstate) return;
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::VecCoordId::position());
 
     static const Real max_real = std::numeric_limits<Real>::max();
