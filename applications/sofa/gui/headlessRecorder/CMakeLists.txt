@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaHeadlessRecorder)
 
 # FFMPEG
-find_package(FFMPEG_exec REQUIRED)
+find_package(FFMPEG_exec)
 
 # X11
 sofa_find_package(X11 QUIET)
