@@ -24,7 +24,7 @@
 #define SOFA_GUI_QT_LINKWIDGET_H
 
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>

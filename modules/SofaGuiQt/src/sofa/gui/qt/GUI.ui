@@ -829,7 +829,7 @@
  </widget>
  <layoutdefault spacing="2" margin="5"/>
  <includes>
-  <include location="local">sofa/gui/qt/SofaGuiQt.h</include>
+  <include location="local">sofa/gui/qt/config.h</include>
  </includes>
  <resources/>
  <connections>

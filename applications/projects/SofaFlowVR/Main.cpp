@@ -58,7 +58,7 @@
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
 #endif
 
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/config.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 

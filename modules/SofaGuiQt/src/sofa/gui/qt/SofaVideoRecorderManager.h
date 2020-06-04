@@ -24,7 +24,7 @@
 #define SOFA_GUI_QT_VIDEORECORDERMANAGER_H
 
 #include <ui_VideoRecorderManager.h>
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 
 #include <vector>
 

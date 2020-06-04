@@ -26,7 +26,7 @@
 
 #include <QDialog>
 #include <QWebEngineView>
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 #include <iostream>
 
 ////////////////////////////// FORWARD DECLARATION ////////////////////////////

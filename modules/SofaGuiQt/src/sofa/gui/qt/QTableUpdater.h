@@ -24,7 +24,7 @@
 #define SOFA_GUI_QT_QTABLEUPDATER_H
 
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 
 
 #include <qspinbox.h>

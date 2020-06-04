@@ -22,7 +22,7 @@
 #ifndef ADDOBJECT_H
 #define ADDOBJECT_H
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 
 #include <ui_DialogAddObject.h>
 #include <vector>

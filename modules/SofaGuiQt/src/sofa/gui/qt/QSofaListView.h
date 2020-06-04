@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_QT_QSOFALISTVIEW_H
 #define SOFA_GUI_QT_QSOFALISTVIEW_H
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 
 #include <QWidget>
 #include <QTreeWidget>
@@ -31,7 +31,7 @@
 #include <QPushButton>
 
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>

@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_QGLVIEWER_QTVIEWER_H
 #define SOFA_GUI_QGLVIEWER_QTVIEWER_H
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 
 #include <sofa/helper/system/gl.h>
 #include <qgl.h>

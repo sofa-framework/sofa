@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_GLPICKHANDLER_H
 #define SOFA_GUI_GLPICKHANDLER_H
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 #include <sofa/gui/OperationFactory.h>
 
 #include <sofa/gui/PickHandler.h>

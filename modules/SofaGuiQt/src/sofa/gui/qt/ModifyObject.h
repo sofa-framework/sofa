@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_QT_MODIFYOBJECT_H
 #define SOFA_GUI_QT_MODIFYOBJECT_H
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/defaulttype/Vec.h>

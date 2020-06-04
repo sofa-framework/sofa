@@ -27,7 +27,7 @@
 
 #include <SofaGui/config.h>
 #include <ui_GUI.h>
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 #include "GraphListenerQListView.h"
 #include "QMenuFilesRecentlyOpened.h"
 #include "PickHandlerCallBacks.h"

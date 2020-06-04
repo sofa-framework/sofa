@@ -23,7 +23,7 @@
 #define SOFA_GUI_VIEWER_QT_QMENUFILESRECENTLYOPENED_H
 
 #include <sofa/gui/FilesRecentlyOpenedManager.h>
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 
 #include <QMenu>
 

@@ -23,7 +23,7 @@
 #ifndef __WDOUBLELINEEDIT__
 #define __WDOUBLELINEEDIT__
 /* -------------------------------------------------------- */
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 #include <qvalidator.h>
 #include <qlineedit.h>
 

@@ -24,7 +24,7 @@
 #define GRAPHLISTENERQTreeWidget_H
 
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 
 #include <QAbstractItemView>
 #include <QTreeWidget>

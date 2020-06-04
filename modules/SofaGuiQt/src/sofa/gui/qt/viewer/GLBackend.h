@@ -22,7 +22,7 @@
 #ifndef SOFA_GLBACKEND_H
 #define SOFA_GLBACKEND_H
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 
 #include <sofa/gui/qt/viewer/EngineBackend.h>
 #include <sofa/gui/PickHandler.h>

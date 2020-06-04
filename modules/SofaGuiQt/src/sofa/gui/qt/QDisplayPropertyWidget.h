@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_QT_QDISPLAYPROPERTYWIDGET_H
 #define SOFA_GUI_QT_QDISPLAYPROPERTYWIDGET_H
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 #include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 

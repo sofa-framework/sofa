@@ -24,7 +24,7 @@
 
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/qt/PickHandlerCallBacks.h>
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 #include <sofa/gui/qt/SofaVideoRecorderManager.h>
 #include <sofa/gui/qt/viewer/EngineBackend.h>
 

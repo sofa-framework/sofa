@@ -29,7 +29,7 @@
 #include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
 #include <SofaGraphComponent/AttachBodyButtonSetting.h>
 #include <SofaGraphComponent/FixPickedParticleButtonSetting.h>
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/config.h>
 #include <sofa/helper/cast.h>
 
 namespace sofa

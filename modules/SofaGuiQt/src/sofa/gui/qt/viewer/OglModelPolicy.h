@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_QT_VIEWER_OGLMODELPOLICY_H
 #define SOFA_GUI_QT_VIEWER_OGLMODELPOLICY_H
 
-#include <sofa/gui/qt/SofaGuiQt.h>
+#include <sofa/gui/qt/config.h>
 
 #include <sofa/gui/qt/viewer/SofaViewer.h>
 #include <sofa/gui/qt/viewer/VisualModelPolicy.h>
