@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMPLEAPI_H
 #define SOFA_SIMPLEAPI_H
 
-#include <SofaSimulationGraph/graph.h>
+#include <SofaSimulationGraph/config.h>
 #include <string>
 #include <sstream>
 #include <map>

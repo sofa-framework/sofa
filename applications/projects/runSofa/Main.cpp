@@ -32,7 +32,7 @@ using std::vector;
 #include <runSofaValidation.h>
 
 #include <sofa/helper/ArgumentParser.h>
-#include <SofaSimulationCommon/common.h>
+#include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
