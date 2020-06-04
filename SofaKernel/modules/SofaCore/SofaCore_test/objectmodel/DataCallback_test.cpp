@@ -48,19 +48,19 @@ struct DataCallback_test: public BaseTest
         {
             msg_info("DataCallback_test") << "TestObject : Value of objdata1 changed : "
                                           << this->d_objdata1.getValue();
-            msg_warning("DataCallback_test") << "TestObject : Value of objdata2 did not changed : "
+            msg_warning("DataCallback_test") << "TestObject : Value of objdata2 did not change : "
                                            << this->d_objdata2.getValue();
         }
         void printData2()
         {
             msg_advice("DataCallback_test") << "TestObject : Value of objdata2 changed : "
                                           << this->d_objdata2.getValue();
-            msg_error("DataCallback_test") << "TestObject : Value of objdata1 did not changed : "
+            msg_error("DataCallback_test") << "TestObject : Value of objdata1 did not change : "
                                            << this->d_objdata1.getValue();
         }
         void printDataAll()
         {
-            msg_fatal("DataCallback_test") << "TestObject : Value of objdata1 or objdata2 changed : "
+            msg_fatal("DataCallback_test") << "TestObject : Value of objdata1 or objdata2 change : "
                                           << this->d_objdata1.getValue() << " | "
                                           << this->d_objdata2.getValue();
         }

@@ -58,7 +58,6 @@ Base::Base()
 {
     name.setOwnerClass("Base");
     name.setAutoLink(false);
-    name.setReadOnly(true);
     d_componentstate.setAutoLink(false);
     d_componentstate.setReadOnly(true);
     d_componentstate.setOwnerClass("Base");
@@ -68,10 +67,15 @@ Base::Base()
     f_tags.setAutoLink(false);
     f_bbox.setOwnerClass("Base");
     f_bbox.setReadOnly(true);
-    f_bbox.setPersistent(false);
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
+
+    /// name change => component state update
+    addUpdateCallback("name", {&name}, [this](){
+        /// Increment the state counter but without changing the state.
+        return m_componentstate.getValue();
+    }, {&m_componentstate});
 }
 
 Base::~Base()
@@ -89,6 +93,25 @@ void Base::release()
     {
         delete this;
     }
+}
+
+
+void Base::addUpdateCallback(const std::string& name,
+                             std::initializer_list<DDGNode*> inputs,
+                             std::function<sofa::core::objectmodel::ComponentState(void)> func,
+                             std::initializer_list<DDGNode*> outputs)
+{
+    auto& engine = m_internalEngine[name];
+    engine.addInputs(inputs);
+    engine.addCallback([func, name](){
+                return func();
+    });
+    engine.addOutputs(outputs);
+
+    for(auto& i : engine.getInputs())
+        if( i == &d_componentstate )
+            return;
+    engine.addOutput(&d_componentstate);
 }
 
 /// Helper method used by initData()
@@ -193,6 +216,12 @@ std::string Base::getNameSpaceName() const
     return getClass()->namespaceName;
 }
 
+
+std::string Base::getPathName() const
+{
+    return "";
+}
+
 void Base::setName(const std::string& na)
 {
     name.setValue(na);
@@ -293,8 +322,7 @@ void Base::removeTag(Tag t)
 void Base::removeData(BaseData* d)
 {
     m_vecData.erase(std::find(m_vecData.begin(), m_vecData.end(), d));
-    typedef MapData::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(d->getName());
+    auto range = m_aliasData.equal_range(d->getName());
     m_aliasData.erase(range.first, range.second);
 }
 
@@ -305,8 +333,7 @@ BaseData* Base::findData( const std::string &name ) const
     //Search in the aliases
     if(m_aliasData.size())
     {
-        typedef MapData::const_iterator mapIterator;
-        std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
+        auto range = m_aliasData.equal_range(name);
         if (range.first != range.second)
             return range.first->second;
         else
@@ -320,9 +347,8 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 {
     std::vector<BaseData*> result;
     //Search in the aliases
-    typedef MapData::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
-    for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
+    auto range = m_aliasData.equal_range(name);
+    for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
 }
@@ -333,8 +359,7 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 BaseLink* Base::findLink( const std::string &name ) const
 {
     //Search in the aliases
-    typedef MapLink::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
+    auto range = m_aliasLink.equal_range(name);
     if (range.first != range.second)
         return range.first->second;
     else
@@ -346,9 +371,8 @@ std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
 {
     std::vector<BaseLink*> result;
     //Search in the aliases
-    typedef MapLink::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
-    for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
+    auto range = m_aliasLink.equal_range(name);
+    for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
 }
@@ -403,6 +427,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
         return false; // no field found
     }
     bool ok = true;
+
     for (unsigned int d=0; d<dataVec.size(); ++d)
     {
         // test if data is a link and can be linked

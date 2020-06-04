@@ -26,6 +26,7 @@
 #include <map>
 #include <vector>
 #include <sofa/core/objectmodel/DDGNode.h>
+#include "objectmodel/ComponentState.h"
 namespace sofa::core::objectmodel
 {
     class Base;
@@ -95,9 +96,9 @@ namespace core
         void operator=(const DataTrackerDDGNode&);
 
     public:
-        /// Create a DataCallback object associated with multiple Data.
-        void addInputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas);
-        void addOutputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas);
+        /// Create a DataCallback object associated with multiple Nodes.
+        void addInputs(std::initializer_list<sofa::core::objectmodel::DDGNode*> datas);
+        void addOutputs(std::initializer_list<sofa::core::objectmodel::DDGNode*> datas);
 
         /// Set dirty flag to false
         /// for the DDGNode and for all the tracked Data
@@ -173,13 +174,15 @@ namespace core
     public:
         /// set the update function to call
         /// when asking for an output and any input changed.
-        void addCallback(std::function<void(DataTrackerEngine*)> f);
+        void addCallback(std::function<sofa::core::objectmodel::ComponentState(void)> f);
 
         /// Calls the callback when one of the data has changed.
         void update() override;
 
     protected:
-        std::vector<std::function<void(DataTrackerEngine*)>> m_callbacks;
+        std::vector<std::function<sofa::core::objectmodel::ComponentState(void)>> m_callbacks;
+        std::string m_name {""};
+        sofa::core::objectmodel::Base* m_owner {nullptr};
     };
 
 

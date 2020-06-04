@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include "DataTracker.h"
 #include "objectmodel/BaseData.h"
+#include "objectmodel/Base.h"
 
 namespace sofa
 {
@@ -63,15 +64,15 @@ void DataTracker::clean()
 
 
 ////////////////////
-void DataTrackerDDGNode::addInputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas)
+void DataTrackerDDGNode::addInputs(std::initializer_list<sofa::core::objectmodel::DDGNode*> datas)
 {
-    for(sofa::core::objectmodel::BaseData* d : datas)
+    for(sofa::core::objectmodel::DDGNode* d : datas)
         addInput(d);
 }
 
-void DataTrackerDDGNode::addOutputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas)
+void DataTrackerDDGNode::addOutputs(std::initializer_list<sofa::core::objectmodel::DDGNode*> datas)
 {
-    for(sofa::core::objectmodel::BaseData* d : datas)
+    for(sofa::core::objectmodel::DDGNode* d : datas)
         addOutput(d);
 }
 
@@ -92,17 +93,24 @@ void DataTrackerDDGNode::updateAllInputsIfDirty()
     }
 }
 ///////////////////////
-void DataTrackerEngine::addCallback( std::function<void(DataTrackerEngine*)> f)
+void DataTrackerEngine::addCallback( std::function<sofa::core::objectmodel::ComponentState(void)> f)
 {
     m_callbacks.push_back(f);
 }
 
 void DataTrackerEngine::update()
 {
+    updateAllInputsIfDirty();
+    sofa::core::objectmodel::ComponentState cs = sofa::core::objectmodel::ComponentState::Valid;
     for(auto& callback : m_callbacks)
     {
-        callback(this);
+        sofa::core::objectmodel::ComponentState state = callback();
+        if (state != sofa::core::objectmodel::ComponentState::Valid)
+            cs = state;
     }
+    if (m_owner)
+        m_owner->d_componentstate.setValue(cs);
+    cleanDirty();
 }
 
 

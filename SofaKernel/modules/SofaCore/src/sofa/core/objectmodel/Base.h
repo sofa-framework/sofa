@@ -25,6 +25,7 @@
 #include <sofa/helper/StringUtils.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/DataTracker.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <list>
@@ -33,6 +34,7 @@
 #include <deque>
 
 #include <sofa/core/objectmodel/ComponentState.h>
+#include <sofa/core/DataTracker.h>
 
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
@@ -167,6 +169,13 @@ private:
 
 public:
 
+    std::map<std::string, sofa::core::DataTrackerEngine> m_internalEngine;
+
+    void addUpdateCallback(const std::string& name,
+                           std::initializer_list<DDGNode*> inputs,
+                           std::function<sofa::core::objectmodel::ComponentState(void)> function,
+                           std::initializer_list<DDGNode*> outputs);
+
     /// Accessor to the object name
     const std::string& getName() const
     {
@@ -200,6 +209,8 @@ public:
     /// Since #PR 1283, the signature has changed to "final" so it is not possible
     /// to override the getNameSpaceName() method.
     virtual std::string getNameSpaceName() const ;
+
+    virtual std::string getPathName() const;
 
     /// Set the source filename (where the component is implemented)
     void setDefinitionSourceFileName(const std::string& sourceFileName);
@@ -296,6 +307,7 @@ public:
     /// Note that this method should only be called if the Data was not initialized with the initData method
     void addData(BaseData* f, const std::string& name);
 
+
     /// Add a data field.
     /// Note that this method should only be called if the Data was not initialized with the initData method
     void addData(BaseData* f);
@@ -310,16 +322,16 @@ public:
     /// Add a link.
     void addLink(BaseLink* l);
 
-    /// Remove a link.
-    void removeLink(BaseLink* l);
-
     /// Add an alias to a Link
     void addAlias( BaseLink* link, const char* alias);
 
+
     typedef helper::vector<BaseData*> VecData;
     typedef std::multimap<std::string, BaseData*> MapData;
+
     typedef helper::vector<BaseLink*> VecLink;
     typedef std::multimap<std::string, BaseLink*> MapLink;
+
 
     /// Accessor to the vector containing all the fields of this object
     const VecData& getDataFields() const { return m_vecData; }

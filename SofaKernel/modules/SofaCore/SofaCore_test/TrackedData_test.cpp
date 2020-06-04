@@ -103,29 +103,30 @@ protected:
 
 struct DataTracker_test: public ::testing::Test
 {
-    TestObject testObject;
+    TestObject::SPtr testObject;
 
     void SetUp() override
     {
-        testObject.init();
+        testObject = sofa::core::objectmodel::New<TestObject>();
+        testObject->init();
     }
 
     /// to test tracked Data
     void testTrackedData()
     {
         // input did not change, it is not dirtied, so neither its associated DataTracker
-        testObject.updateData();
-        ASSERT_TRUE(testObject.depend_on_input.getValue()==TestObject::NO_CHANGED);
+        testObject->updateData();
+        ASSERT_TRUE(testObject->depend_on_input.getValue()==TestObject::NO_CHANGED);
 
         // modifying input sets it as dirty, so its associated DataTracker too
-        testObject.input.setValue(true);
-        testObject.updateData();
-        ASSERT_TRUE(testObject.depend_on_input.getValue()==TestObject::CHANGED);
+        testObject->input.setValue(true);
+        testObject->updateData();
+        ASSERT_TRUE(testObject->depend_on_input.getValue()==TestObject::CHANGED);
 
-        testObject.input.setValue(false);
-        testObject.input.cleanDirty();
-        testObject.updateData();
-        ASSERT_TRUE(testObject.depend_on_input.getValue()==TestObject::CHANGED);
+        testObject->input.setValue(false);
+        testObject->input.cleanDirty();
+        testObject->updateData();
+        ASSERT_TRUE(testObject->depend_on_input.getValue()==TestObject::CHANGED);
     }
 
 };
@@ -170,10 +171,9 @@ public:
         , depend_on_input(initData(&depend_on_input,"depend_on_input","depend_on_input"))
         , depend_on_input2(initData(&depend_on_input2,"depend_on_input2","depend_on_input2"))
     {
-        m_dataTracker.addInputs({&input,&input2}); // several inputs can be added
-        m_dataTracker.addOutputs({&depend_on_input, &depend_on_input2}); // several output can be added
-        m_dataTracker.addCallback( &TestObject2::myUpdate );
-        m_dataTracker.setDirtyValue();
+        addUpdateCallback("TestObject2Engine", {&input, &input2}
+                          , std::bind(&TestObject2::myUpdate, this)
+                          , {&depend_on_input, &depend_on_input2});
     }
 
     ~TestObject2() override {}
@@ -186,26 +186,13 @@ protected:
     core::DataTrackerEngine m_dataTracker;
 
 
-    static void myUpdate( core::DataTrackerEngine* dataTrackerEngine )
+    sofa::core::objectmodel::ComponentState myUpdate()
     {
         ++s_updateCounter;
 
-        // get the list of inputs for this DDGNode
-        const core::DataTrackerEngine::DDGLinkContainer& inputs = dataTrackerEngine->getInputs();
-        // get the list of outputs for this DDGNode
-        const core::DataTrackerEngine::DDGLinkContainer& outputs = dataTrackerEngine->getOutputs();
-
-        // we known who is who from the order Data were added to the DataTrackerEngine
-        bool input = static_cast<Data< bool >*>( inputs[0] )->getValue();
-        bool input2 = static_cast<Data< bool >*>( inputs[1] )->getValue();
-
-        dataTrackerEngine->cleanDirty();
-
-        Data< bool >* output = static_cast<Data< bool >*>( outputs[0] );
-        Data< bool >* output2 = static_cast<Data< bool >*>( outputs[1] );
-
-        output->setValue( input );
-        output2->setValue( input2 );
+        depend_on_input.setValue(input.getValue());
+        depend_on_input2.setValue(input2.getValue());
+        return sofa::core::objectmodel::ComponentState::Valid;
     }
 
 };
@@ -228,6 +215,7 @@ struct DataTrackerEngine_test: public BaseTest
 {
 
     static unsigned updateCounter;
+    core::DataTrackerEngine dataTracker;
     void SetUp() override
     {
         updateCounter = 0;
@@ -281,39 +269,19 @@ struct DataTrackerEngine_test: public BaseTest
 
     }
 
-
-    static void myUpdate( core::DataTrackerEngine* dataTrackerEngine )
-    {
-        ++updateCounter;
-
-        // get the list of inputs for this DDGNode
-        const core::DataTrackerEngine::DDGLinkContainer& inputs = dataTrackerEngine->getInputs();
-        // get the list of outputs for this DDGNode
-        const core::DataTrackerEngine::DDGLinkContainer& outputs = dataTrackerEngine->getOutputs();
-
-        // we known who is who from the order Data were added to the DataTrackerEngine
-        bool input = static_cast<Data< bool >*>( inputs[0] )->getValue();
-
-        dataTrackerEngine->cleanDirty();
-
-
-        Data< bool >* output = static_cast<Data< bool >*>( outputs[0] );
-
-        output->setValue( input );
-    }
-
-
     /// to test DataTrackerEngine between Data in separated components
     void testBetweenComponents()
     {
-
-
         DummyObject testObject, testObject2;
 
-        core::DataTrackerEngine dataTracker;
         dataTracker.addInput(&testObject.myData); // several inputs can be added
         dataTracker.addOutput(&testObject2.myData); // several output can be added
-        dataTracker.addCallback( &DataTrackerEngine_test::myUpdate );
+        dataTracker.addCallback([&](){
+            ++updateCounter;
+            testObject2.myData.setValue(testObject.myData.getValue());
+            return sofa::core::objectmodel::ComponentState::Valid;
+        });
+
         dataTracker.setDirtyValue();
         unsigned localCounter = 0u;
 
