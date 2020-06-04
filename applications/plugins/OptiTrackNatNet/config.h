@@ -22,7 +22,11 @@
 #ifndef OPTITRACKNATNET_CONFIG_H
 #define OPTITRACKNATNET_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#ifdef _WIN32
+#  define WIN32_LEAN_AND_MEAN
+#endif
+
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_OPTITRACKNATNET
 #  define SOFA_OPTITRACKNATNET_API SOFA_EXPORT_DYNAMIC_LIBRARY
