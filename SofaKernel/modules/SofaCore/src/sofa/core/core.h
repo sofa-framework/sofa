@@ -23,8 +23,9 @@
 #define SOFA_CORE_CORE_H
 
 // Backward compatibility header
-// Will be removed at v20.12
 
 #include <sofa/core/config.h>
+
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/core/config.h")
 
 #endif

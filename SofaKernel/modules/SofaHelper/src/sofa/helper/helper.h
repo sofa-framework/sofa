@@ -23,8 +23,9 @@
 #define SOFA_HELPER_HELPER_H
 
 // Backward compatibility header
-// Will be removed at v20.12
 
 #include <sofa/helper/config.h>
+
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/helper/config.h")
 
 #endif

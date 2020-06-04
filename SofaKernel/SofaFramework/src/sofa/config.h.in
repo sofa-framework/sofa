@@ -113,8 +113,20 @@ typedef unsigned __int64	uint64_t;
 #define sofa_do_tostring(a) #a
 #define sofa_tostring(a) sofa_do_tostring(a)
 
-#define SOFA_DECL_CLASS(name) ///extern "C" { int sofa_concat(class_,name) = 0; }
-#define SOFA_LINK_CLASS(name) ///extern "C" { extern int sofa_concat(class_,name); int sofa_concat(link_,name) = sofa_concat(class_,name); }
+#ifdef _WIN32
+#  define SOFA_PRAGMA_MESSAGE(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): " #text))
+#  define SOFA_PRAGMA_WARNING(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): warning: " #text))
+#else
+#  define SOFA_DO_PRAGMA(x) _Pragma(#x)
+#  define SOFA_PRAGMA_MESSAGE(text) SOFA_DO_PRAGMA(message #text)
+#  define SOFA_PRAGMA_WARNING(text) SOFA_DO_PRAGMA(GCC warning #text)
+#endif
+#define SOFA_DEPRECATED_HEADER(untilVersion, newHeader) SOFA_PRAGMA_WARNING( \
+    This header is deprecated and will be removed at SOFA untilVersion.      \
+    To fix this warning you must include newHeader instead. )
+
+#define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
+#define SOFA_LINK_CLASS(name) // extern "C" { extern int sofa_concat(class_,name); int sofa_concat(link_,name) = sofa_concat(class_,name); }
 
 // Prevent compiler warnings about 'unused variables'.
 // This should be used when a parameter name is needed (e.g. for

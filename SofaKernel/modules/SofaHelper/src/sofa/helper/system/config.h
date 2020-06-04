@@ -22,6 +22,10 @@
 #ifndef SOFA_HELPER_SYSTEM_CONFIG_H
 #define SOFA_HELPER_SYSTEM_CONFIG_H
 
-#include <sofa/helper/helper.h>
+// Backward compatibility header
+
+#include <sofa/helper/config.h>
+
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/helper/config.h")
 
 #endif // SOFA_HELPER_SYSTEM_CONFIG_H

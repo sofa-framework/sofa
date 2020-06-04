@@ -23,8 +23,9 @@
 #define SOFA_GUI_QT_SOFAGUIQT_H
 
 // Backward compatibility header
-// Will be removed at v20.12
 
 #include <sofa/gui/qt/config.h>
+
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/gui/qt/config.h")
 
 #endif
