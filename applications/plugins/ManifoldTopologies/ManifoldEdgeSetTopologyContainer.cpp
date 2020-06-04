@@ -54,23 +54,22 @@ void ManifoldEdgeSetTopologyContainer::init()
     // load edges
     EdgeSetTopologyContainer::init();
 
-    // the edgesAroundVertex is needed to recognize if the edgeSet is manifold
-    createEdgesAroundVertexArray();
-
-    computeConnectedComponent();
-    checkTopology();
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+    if (!m_edge.empty())
+    {
+        computeConnectedComponent();
+        checkTopology();
+    }
 }
 
 void ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray()
 {
+    // first clear potential previous buffer
+    clearEdgesAroundVertex();
+
     if(!hasEdges())	//  this method should only be called when edges exist
     {
         createEdgeSetArray();
-    }
-
-    if(hasEdgesAroundVertex())
-    {
-        clearEdgesAroundVertex();
     }
 
     m_edgesAroundVertex.resize( getNbPoints() );
