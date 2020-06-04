@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASEDATA_H
 #define SOFA_CORE_OBJECTMODEL_BASEDATA_H
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/Link.h>

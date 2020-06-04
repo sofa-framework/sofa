@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_INIT_H
 #define SOFA_CORE_INIT_H
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 
 namespace sofa
 {

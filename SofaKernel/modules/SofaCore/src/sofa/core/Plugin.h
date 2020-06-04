@@ -49,7 +49,7 @@ public: 							\
     }
 
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 
 
 namespace sofa

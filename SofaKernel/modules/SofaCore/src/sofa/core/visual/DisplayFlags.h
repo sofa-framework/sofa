@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_VISUAL_DISPLAYFLAGS_H
 #define SOFA_CORE_VISUAL_DISPLAYFLAGS_H
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 #include <sofa/helper/vector.h>
 #include <map>
 

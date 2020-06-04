@@ -23,7 +23,7 @@
 #define SOFA_DEFAULTTYPE_BASEMATRIX_H
 
 #include <sofa/helper/system/config.h>
-#include <sofa/defaulttype/defaulttype.h>
+#include <sofa/defaulttype/config.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/logging/Messaging.h>

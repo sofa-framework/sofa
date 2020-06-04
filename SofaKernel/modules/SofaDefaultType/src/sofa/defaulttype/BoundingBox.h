@@ -23,7 +23,7 @@
 #define SOFA_DEFAULTTYPE_BOUNDINGBOX_H
 
 #include <utility> /// for std::pair
-#include <sofa/defaulttype/defaulttype.h>
+#include <sofa/defaulttype/config.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa

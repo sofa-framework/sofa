@@ -36,7 +36,7 @@
 #include <set>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 
 
 

@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_DATA_H
 #define SOFA_CORE_OBJECTMODEL_DATA_H
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/accessor.h>

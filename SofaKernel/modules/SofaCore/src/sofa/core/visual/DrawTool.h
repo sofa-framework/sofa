@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_GL_DRAWTOOL_H
 #define SOFA_HELPER_GL_DRAWTOOL_H
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/types/RGBAColor.h>
 

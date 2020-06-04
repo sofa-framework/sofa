@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_TEMPLATESALIASES_H
 #define SOFA_HELPER_TEMPLATESALIASES_H
-#include <sofa/defaulttype/defaulttype.h>
+#include <sofa/defaulttype/config.h>
 #include <string>
 
 namespace sofa
