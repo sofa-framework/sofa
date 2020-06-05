@@ -24,4 +24,10 @@
 
 #include <SofaBase/config.h>
 
+#ifdef SOFA_BUILD_BASE_VISUAL
+#  define SOFA_BASE_VISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_VISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

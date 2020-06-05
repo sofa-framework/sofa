@@ -24,4 +24,10 @@
 
 #include <SofaCommon/config.h>
 
+#ifdef SOFA_BUILD_LOADER
+#  define SOFA_LOADER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_LOADER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif
