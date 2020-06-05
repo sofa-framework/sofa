@@ -19,17 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMisc/Misc.h>
-#include <sofa/core/Plugin.h>
+#pragma once
+#include <SofaMisc/config.h>
 
-class MiscPlugin: public sofa::core::Plugin {
-public:
-    MiscPlugin(): Plugin("Misc") {
-        setDescription("");
-        setVersion("");
-        setLicense("LGPL");
-        setAuthors("The SOFA Team");
-    }
-};
-
-SOFA_PLUGIN(MiscPlugin);
+#ifdef SOFA_BUILD_MISC_EXTRA
+#  define SOFA_TARGET SofaMiscExtra
+#  define SOFA_MISC_EXTRA_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_MISC_EXTRA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

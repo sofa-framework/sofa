@@ -4,6 +4,7 @@ project(SofaMiscExtra)
 find_package(SofaGeneral REQUIRED) # SofaGeneralMeshCollision SofaTopologyMapping
 
 set(HEADER_FILES
+    config.h
     initMiscExtra.h
     )
 
