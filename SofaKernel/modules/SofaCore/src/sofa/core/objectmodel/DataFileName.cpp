@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/Base.h>
 
@@ -33,6 +34,8 @@ namespace core
 
 namespace objectmodel
 {
+
+namespace fs = sofa::helper::system;
 
 DataFileNameVector::~DataFileNameVector()
 {
@@ -54,38 +57,52 @@ void DataFileName::updatePath()
 
     if (parentDataFileName)
     {
-        m_fullpath = parentDataFileName->getFullPath();
-        if (this->m_owner)
-            this->m_owner->sout << "Updated DataFileName " << this->getName() << " with path " << m_fullpath << this->m_owner->sendl;
-        m_relativepath = parentDataFileName->getRelativePath();
-        m_extension = parentDataFileName->getExtension();
+        std::string fullpath = parentDataFileName->getFullPath();
+        if (isDirectory() != parentDataFileName->isDirectory())
+        {
+            msg_error(this->getName()) << "This DataFileName only accepts " << (isDirectory() ? "directories" : "files");
+        }
+        else
+        {
+            m_fullpath = fullpath;
+            m_relativepath = parentDataFileName->getRelativePath();
+            m_extension = parentDataFileName->getExtension();
+        }
     }
     else
     {
         // Update the fullpath.
-        m_fullpath = m_value.getValue();
-        if (!m_fullpath.empty())
-            DataRepository.findFile(m_fullpath,"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
+        std::string fullpath = m_value.getValue();
+        if (!fullpath.empty())
+            DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
 
-        // Update the relative path.
-        for(const std::string& path : DataRepository.getPaths() )
+        if (isDirectory() != fs::FileSystem::isDirectory(fullpath))
         {
-            if( m_fullpath.find(path) == 0 )
-            {
-                m_relativepath=DataRepository.relativeToPath(m_fullpath, path,
-                                                             false /*option for backward compatibility*/);
-                break;
-            }
+            msg_error(this->getName()) << "This DataFileName only accepts " << (isDirectory() ? "directories" : "files");
         }
-        if (m_relativepath.empty())
-            m_relativepath = m_value.getValue();
-
-        // Compute the file extension if found.
-        std::size_t found = m_relativepath.find_last_of(".");        
-        if (found != m_relativepath.npos)
-            m_extension = m_relativepath.substr(found + 1);
         else
-            m_extension = "";
+        {
+            m_fullpath = fullpath;
+            // Update the relative path.
+            for(const std::string& path : DataRepository.getPaths() )
+            {
+                if( m_fullpath.find(path) == 0 )
+                {
+                    m_relativepath=DataRepository.relativeToPath(m_fullpath, path,
+                                                                 false /*option for backward compatibility*/);
+                    break;
+                }
+            }
+            if (m_relativepath.empty())
+                m_relativepath = m_value.getValue();
+
+            // Compute the file extension if found.
+            std::size_t found = m_relativepath.find_last_of(".");
+            if (found != m_relativepath.npos)
+                m_extension = m_relativepath.substr(found + 1);
+            else
+                m_extension = "";
+        }
     }
 }
 
@@ -95,20 +112,33 @@ void DataFileNameVector::updatePath()
     if (parentData)
     {
         parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.get());
+        if (isDirectory() != parentDataFileNameVector->isDirectory())
+        {
+            msg_error(this->getName()) << "Cannot retrieve DataFileNames from Parent value: this DataFileName only accepts " << (isDirectory() ? "directories" : "files");
+            return;
+        }
     }
-    fullpath = m_value.getValue();
-    if (!fullpath.empty())
-        for (unsigned int i=0 ; i<fullpath.size() ; i++)
+    m_fullpath = m_value.getValue();
+    if (!m_fullpath.empty())
+    {
+        for (unsigned int i=0 ; i<m_fullpath.size() ; i++)
         {
             if (parentDataFileNameVector)
             {
-                fullpath[i] = parentDataFileNameVector->getFullPath(i);
+                m_fullpath[i] = parentDataFileNameVector->getFullPath(i);
             }
             else
             {
-                helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
+                helper::system::DataRepository.findFile(m_fullpath[i],"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
+                if (isDirectory() != fs::FileSystem::isDirectory(m_fullpath[i]))
+                {
+                    msg_error(this->getName()) << "This DataFileName only accepts " << (isDirectory() ? "directories" : "files");
+                    m_fullpath[i] = "";
+                }
+
             }
         }
+    }
 }
 
 } // namespace objectmodel
