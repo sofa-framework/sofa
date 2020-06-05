@@ -44,12 +44,14 @@ public:
     typedef sofa::core::objectmodel::Data<std::string> Inherit;
 
     DataFileName( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
-        : Inherit(helpMsg, isDisplayed, isReadOnly)
+        : Inherit(helpMsg, isDisplayed, isReadOnly),
+          m_isDir(false)
     {
     }
 
     DataFileName( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
-        : Inherit(value, helpMsg, isDisplayed, isReadOnly)
+        : Inherit(value, helpMsg, isDisplayed, isReadOnly),
+        m_isDir(false)
     {
         updatePath();
     }
@@ -58,7 +60,8 @@ public:
         this constructor should be used through the initData() methods
      */
     explicit DataFileName(const BaseData::BaseInitData& init)
-        : Inherit(init)
+        : Inherit(init),
+          m_isDir(false)
     {
     }
 
@@ -66,7 +69,8 @@ public:
         this constructor should be used through the initData() methods
      */
     explicit DataFileName(const Inherit::InitData& init)
-        : Inherit(init)
+        : Inherit(init),
+          m_isDir(false)
     {
         updatePath();
     }
@@ -92,6 +96,17 @@ public:
         *beginEdit()=v;
         endEdit();
     }
+
+    void setIsDirectory(bool isDir)
+    {
+        m_isDir = isDir;
+    }
+
+    bool isDirectory()
+    {
+        return m_isDir;
+    }
+
     virtual void virtualEndEdit() { endEdit(); }
     virtual void virtualSetValue(const std::string& v) { setValue(v); }
     virtual bool read(const std::string& s );
@@ -130,6 +145,7 @@ protected:
     std::string m_fullpath;
     std::string m_relativepath;
     std::string m_extension;
+    bool        m_isDir; //< used to determine how file dialogs should be opened
 
 private:
     DataFileName(const Inherit& d);
