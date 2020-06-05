@@ -172,9 +172,9 @@ public:
     std::map<std::string, sofa::core::DataTrackerEngine> m_internalEngine;
 
     void addUpdateCallback(const std::string& name,
-                           std::initializer_list<DDGNode*> inputs,
+                           std::initializer_list<BaseData*> inputs,
                            std::function<sofa::core::objectmodel::ComponentState(void)> function,
-                           std::initializer_list<DDGNode*> outputs);
+                           std::initializer_list<BaseData*> outputs);
 
     /// Accessor to the object name
     const std::string& getName() const

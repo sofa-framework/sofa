@@ -58,7 +58,7 @@ public:
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 
-    void TearDown()
+    void TearDown() override
     {
         for(auto& pathToRemove : dataPath)
         {
