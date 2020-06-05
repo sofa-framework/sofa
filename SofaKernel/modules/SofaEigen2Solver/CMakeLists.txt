@@ -8,7 +8,7 @@ set(HEADER_FILES
     EigenVector.h
     EigenVectorWrapper.h
     SVDLinearSolver.h
-    config.h
+    config.h.in
     initEigen2Solver.h
 )
 

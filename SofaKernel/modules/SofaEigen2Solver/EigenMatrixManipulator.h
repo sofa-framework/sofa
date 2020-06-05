@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EIGENMATRIXMANIPULATOR_H
 #define SOFA_COMPONENT_LINEARSOLVER_EIGENMATRIXMANIPULATOR_H
-#include "config.h"
+#include <SofaEigen2Solver/config.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/vector.h>

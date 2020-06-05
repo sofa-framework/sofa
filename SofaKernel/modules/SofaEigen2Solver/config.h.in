@@ -24,6 +24,8 @@
 
 #include <SofaCommon/config.h>
 
+#cmakedefine01 SOFAEIGEN2SOLVER_HAVE_OPENMP
+
 #ifdef SOFA_BUILD_EIGEN2_SOLVER
 #  define SOFA_EIGEN2_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
