@@ -38,9 +38,4 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDeformable SofaBoundaryCondition SofaMiscTopology SofaGeneralTopology)
 
-# target_compile_definitions needs to be done manually because
-# defaults are SOFA_BUILD_MISC_FORCE_FIELD and SOFA_BUILD_SOFAMISCFORCEFIELD
-# See sofa_install_targets in SofaMacros.cmake
-target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_MISC_FORCEFIELD")
-
 sofa_install_targets(SofaMisc ${PROJECT_NAME} "SofaMisc/${PROJECT_NAME}")
