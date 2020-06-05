@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_SOFAOPENCTM
 #  define SOFA_SOFAOPENCTM_API SOFA_EXPORT_DYNAMIC_LIBRARY

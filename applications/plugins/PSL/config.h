@@ -22,7 +22,7 @@
 #ifndef PSL_CONFIG_H
 #define PSL_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_PSL
 #define SOFA_TARGET PSL

@@ -22,7 +22,7 @@
 #ifndef SOFAASSIMP_CONFIG_H
 #define SOFAASSIMP_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #define ASSIMP_PLUGIN_MAJOR_VERSION ${ASSIMP_PLUGIN_MAJOR_VERSION}
 #define ASSIMP_PLUGIN_MINOR_VERSION ${ASSIMP_PLUGIN_MINOR_VERSION}

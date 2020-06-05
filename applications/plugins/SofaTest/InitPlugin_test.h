@@ -23,7 +23,7 @@
 #define INITPlugin_Test_H
 
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_TEST
 #define SOFA_SOFATEST_API SOFA_EXPORT_DYNAMIC_LIBRARY

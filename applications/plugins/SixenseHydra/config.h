@@ -22,7 +22,7 @@
 #ifndef SIXENSEHYDRA_CONFIG_H
 #define SIXENSEHYDRA_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_SIXENSE_HYDRA
 #  define SOFA_SIXENSE_HYDRA_API SOFA_EXPORT_DYNAMIC_LIBRARY

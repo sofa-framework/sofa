@@ -22,7 +22,7 @@
 #ifndef XITACT_CONFIG_H
 #define XITACT_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_XITACTPLUGIN
 #  define SOFA_XITACTPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY

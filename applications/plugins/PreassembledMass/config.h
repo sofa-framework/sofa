@@ -22,7 +22,7 @@
 #ifndef PREASSEMBLEDMASS_CONFIG_H
 #define PREASSEMBLEDMASS_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_PreassembledMass
 #define SOFA_PreassembledMass_API SOFA_EXPORT_DYNAMIC_LIBRARY

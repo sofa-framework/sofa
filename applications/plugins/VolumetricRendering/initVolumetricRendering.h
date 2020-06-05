@@ -23,7 +23,7 @@
 #define INITLEAPMOTION_H
 
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 
 #ifndef WIN32

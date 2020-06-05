@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_SYSTEM_ATOMIC_H
 #define SOFA_HELPER_SYSTEM_ATOMIC_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/helper/config.h>
 
 #if defined(SOFA_USE_ASM_ATOMIC)
 #include <asm/atomic.h>

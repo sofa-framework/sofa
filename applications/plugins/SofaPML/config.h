@@ -22,7 +22,7 @@
 #ifndef SOFAPML_CONFIG_H
 #define SOFAPML_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_FILEMANAGER_PML
 #  define SOFA_BUILD_FILEMANAGER_PML_API SOFA_EXPORT_DYNAMIC_LIBRARY
