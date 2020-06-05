@@ -92,7 +92,9 @@ void QuadSetTopologyContainer::initTopology()
 
 void QuadSetTopologyContainer::createQuadSetArray()
 {
-    msg_error() << "createQuadSetArray method must be implemented by a child topology.";
+	if (CHECK_TOPOLOGY)
+        msg_error() << "createQuadSetArray method must be implemented by a child topology.";
+
 }
 
 void QuadSetTopologyContainer::createQuadsAroundVertexArray()

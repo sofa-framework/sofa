@@ -294,6 +294,11 @@ void TriangleSetTopologyModifier::addPointsProcess(const size_t nPoints)
 
 void TriangleSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
 {
+    if(!m_container->hasEdges())
+    {
+        m_container->createEdgeSetArray();
+    }
+
     // start by calling the parent's method.
     EdgeSetTopologyModifier::addEdgesProcess( edges );
 

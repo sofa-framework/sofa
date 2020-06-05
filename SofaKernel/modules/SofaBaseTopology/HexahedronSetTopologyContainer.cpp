@@ -105,7 +105,8 @@ void HexahedronSetTopologyContainer::initTopology()
 
 void HexahedronSetTopologyContainer::createHexahedronSetArray()
 {
-    msg_error() << "createHexahedronSetArray method must be implemented by a child topology.";
+	if (CHECK_TOPOLOGY)
+        msg_error() << "createHexahedronSetArray method must be implemented by a child topology.";
 }
 
 void HexahedronSetTopologyContainer::createEdgeSetArray()
