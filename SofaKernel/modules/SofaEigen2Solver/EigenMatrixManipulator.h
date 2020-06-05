@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_LINEARSOLVER_EIGENMATRIXMANIPULATOR_H
 #include <SofaEigen2Solver/config.h>
 
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/vector.h>
 
 #include <Eigen/Core>

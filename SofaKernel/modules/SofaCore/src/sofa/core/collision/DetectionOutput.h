@@ -23,7 +23,6 @@
 #define SOFA_CORE_COLLISION_DETECTIONOUTPUT_H
 
 #include <sofa/core/config.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>

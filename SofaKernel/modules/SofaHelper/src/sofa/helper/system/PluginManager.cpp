@@ -26,7 +26,6 @@
 using sofa::helper::system::FileSystem;
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/system/config.h>
 
 #include <boost/filesystem.hpp>
 #include <fstream>

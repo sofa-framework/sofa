@@ -1,7 +1,6 @@
 #ifndef UTILS_TYPES_H
 #define UTILS_TYPES_H
 
-#include <sofa/helper/system/config.h>
 
 #include <Eigen/SparseCore>
 #include <Eigen/Core>

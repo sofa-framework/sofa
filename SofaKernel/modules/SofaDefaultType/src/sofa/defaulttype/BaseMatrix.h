@@ -22,7 +22,6 @@
 #ifndef SOFA_DEFAULTTYPE_BASEMATRIX_H
 #define SOFA_DEFAULTTYPE_BASEMATRIX_H
 
-#include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/config.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Mat.h>

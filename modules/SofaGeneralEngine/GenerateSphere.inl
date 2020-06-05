@@ -24,7 +24,6 @@
 
 #include "GenerateSphere.h"
 #include <sofa/helper/rmath.h> //M_PI
-#include <sofa/helper/system/config.h>
 
 namespace sofa
 {

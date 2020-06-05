@@ -4,7 +4,6 @@
 #include <Compliant/config.h>
 #include <Eigen/Sparse>
 #include <Eigen/Core>
-#include <sofa/helper/system/config.h>
 #include <sofa/simulation/VectorOperations.h>
 
 #include "../constraint/BaseConstraintValue.h"

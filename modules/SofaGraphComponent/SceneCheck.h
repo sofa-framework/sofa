@@ -23,7 +23,6 @@
 #define SOFA_SIMULATION_SCENECHECKS_H
 
 #include "config.h"
-#include <sofa/helper/system/config.h>
 #include <iostream>
 #include <string>
 #include <map>

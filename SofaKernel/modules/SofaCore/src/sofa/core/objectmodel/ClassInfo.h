@@ -23,7 +23,6 @@
 #define SOFA_CORE_OBJECTMODEL_CLASSINFO_H
 
 #include <sofa/core/config.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/TypeInfo.h>
 #include <string>
 #include <map>

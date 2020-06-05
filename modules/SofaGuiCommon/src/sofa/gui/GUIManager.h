@@ -23,7 +23,6 @@
 #define SOFA_GUI_GUIMANAGER_H
 
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/simulation/Node.h>
 #include "SofaGUI.h"
 #include <vector>

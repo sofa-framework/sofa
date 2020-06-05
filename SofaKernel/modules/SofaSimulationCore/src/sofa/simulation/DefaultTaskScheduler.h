@@ -23,7 +23,6 @@
 #define DefaultTaskScheduler_h__
 
 #include <sofa/config.h>
-#include <sofa/helper/system/config.h>
 
 #include <sofa/simulation/TaskScheduler.h>
 

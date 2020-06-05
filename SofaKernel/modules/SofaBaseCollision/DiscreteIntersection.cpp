@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP
-#include <sofa/helper/system/config.h>
 
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <sofa/core/ObjectFactory.h>

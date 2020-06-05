@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_H
 #include <SofaSphFluid/config.h>
 
-#include <sofa/helper/system/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <SofaSphFluid/SpatialGridContainer.h>

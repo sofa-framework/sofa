@@ -21,7 +21,6 @@
 ******************************************************************************/
 
 #include <SofaHAPI/config.h>
-#include <sofa/helper/system/config.h>
 
 namespace sofa
 {

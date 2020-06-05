@@ -24,7 +24,6 @@
 
 #include <sofa/gui/qt/config.h>
 
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <qgl.h>

@@ -22,7 +22,6 @@
 #ifndef SOFA_COMPONENT_COLLISION_MESHNEWPROXIMITYINTERSECTION_INL
 #define SOFA_COMPONENT_COLLISION_MESHNEWPROXIMITYINTERSECTION_INL
 
-#include <sofa/helper/system/config.h>
 #include <SofaMeshCollision/MeshNewProximityIntersection.h>
 #include <SofaBaseCollision/NewProximityIntersection.inl>
 #include <sofa/core/visual/VisualParams.h>

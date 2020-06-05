@@ -23,7 +23,6 @@
 #include "Structure.h"
 #include "StructuralComponent.h"
 
-#include <sofa/helper/system/config.h>
 
 class CellProperties;
 
