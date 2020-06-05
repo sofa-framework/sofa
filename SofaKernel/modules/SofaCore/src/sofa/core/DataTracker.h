@@ -96,9 +96,9 @@ namespace core
         void operator=(const DataTrackerDDGNode&);
 
     public:
-        /// Create a DataCallback object associated with multiple Nodes.
-        void addInputs(std::initializer_list<sofa::core::objectmodel::DDGNode*> datas);
-        void addOutputs(std::initializer_list<sofa::core::objectmodel::DDGNode*> datas);
+        /// Create a DataCallback object associated with multiple Data fields.
+        void addInputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas);
+        void addOutputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas);
 
         /// Set dirty flag to false
         /// for the DDGNode and for all the tracked Data
