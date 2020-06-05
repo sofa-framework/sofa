@@ -9,11 +9,11 @@ set(SOFADENSESOLVER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFADENSESOLVER_SRC}/config.h.in
-    ${SOFADENSESOLVER_SRC}/initDenseSolver.h
+    ${SOFADENSESOLVER_SRC}/initSofaDenseSolver.h
     )
 
 set(SOURCE_FILES
-    ${SOFADENSESOLVER_SRC}/initDenseSolver.cpp
+    ${SOFADENSESOLVER_SRC}/initSofaDenseSolver.cpp
     )
 
 list(APPEND HEADER_FILES

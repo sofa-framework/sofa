@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaDenseSolver/initDenseSolver.h>
+#include <SofaDenseSolver/initSofaDenseSolver.h>
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <SofaDenseSolver/NewMatMatrix.h>
