@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_MESHOBJLOADER_H
-#define SOFA_COMPONENT_LOADER_MESHOBJLOADER_H
-#include "config.h"
-
+#pragma once
+#include <SofaLoader/config.h>
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/helper/types/Material.h>
-
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
-{
-
-namespace loader
-{
+using sofa::core::objectmodel::BaseData;
 
 class SOFA_LOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
 {
@@ -53,6 +46,7 @@ protected:
     bool readOBJ (std::ifstream &file, const char* filename);
     bool readMTL (const char* filename, helper::vector <sofa::helper::types::Material>& d_materials);
     void addGroup (const sofa::core::loader::PrimitiveGroup& g);
+    void clearBuffers();
 
     std::string textureName;
     FaceType faceType;
@@ -85,12 +79,5 @@ public:
 };
 
 
+} // namespace sofa::component::loader
 
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif

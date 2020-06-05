@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_MESHSTLLOADER_H
-#define SOFA_COMPONENT_LOADER_MESHSTLLOADER_H
+#pragma once
 #include <SofaGeneralLoader/config.h>
-
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 // Format doc: http://en.wikipedia.org/wiki/STL_(file_format)
@@ -60,13 +52,5 @@ public:
 
 };
 
+} // namespace sofa::component::loader
 
-
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif

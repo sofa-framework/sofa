@@ -39,8 +39,15 @@ BaseAddResourceRepository::BaseAddResourceRepository()
     : Inherit1()
     , m_repository(nullptr)
     , d_repositoryPath(initData(&d_repositoryPath, "path", "Path to add to the pool of resources"))
-    , m_currentAddedPath()
+    , m_currentAddedPath("")
 {
+    d_repositoryPath.setIsDirectory(true);
+    addUpdateCallback("path", {&d_repositoryPath}, [this]()
+    {
+        if (this->parse())
+            return sofa::core::objectmodel::ComponentState::Valid;
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }, {});
 }
 
 BaseAddResourceRepository::~BaseAddResourceRepository()
@@ -48,10 +55,8 @@ BaseAddResourceRepository::~BaseAddResourceRepository()
 
 }
 
-void BaseAddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+bool BaseAddResourceRepository::parse()
 {
-    Inherit1::parse(arg);
-
     m_repository = getFileRepository();
 
     std::string tmpAddedPath;
@@ -68,21 +73,39 @@ void BaseAddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescrip
     if (!sofa::helper::system::FileSystem::exists(tmpAddedPath))
     {
         msg_error(this) << tmpAddedPath + " does not exist !";
-        return;
+        return false;
     }
     //third, check if it is really a directory
     if (!sofa::helper::system::FileSystem::isDirectory(tmpAddedPath))
     {
         msg_error(this) << tmpAddedPath + " is not a valid directory !";
-        return;
+        return false;
     }
 
+    if (!m_currentAddedPath.empty())
+        m_repository->removePath(m_currentAddedPath);
+
     m_currentAddedPath = FileSystem::cleanPath(tmpAddedPath);
+    if (m_currentAddedPath != d_repositoryPath.getValue())
+        d_repositoryPath.setValue(m_currentAddedPath);
+
     m_repository->addLastPath(m_currentAddedPath);
     msg_info(this) << "Added path: " << m_currentAddedPath;
 
     if(this->f_printLog.getValue())
         m_repository->print();
+    return true;
+}
+
+
+void BaseAddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherit1::parse(arg);
+
+    if (parse())
+        m_componentstate.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    else
+        m_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 }
 
 void BaseAddResourceRepository::cleanup()
@@ -92,12 +115,12 @@ void BaseAddResourceRepository::cleanup()
 }
 
 
-int AddDataRepositoryClass = core::RegisterObject("Add a path to DataRepository")
+static int AddDataRepositoryClass = core::RegisterObject("Add a path to DataRepository")
     .add< AddDataRepository >()
     .addAlias("AddResourceRepository") // Backward compatibility
     ;
 
-int AddPluginRepositoryClass = core::RegisterObject("Add a path to PluginRepository")
+static int AddPluginRepositoryClass = core::RegisterObject("Add a path to PluginRepository")
     .add< AddPluginRepository >();
 
 

@@ -83,18 +83,6 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_transformation.setAutoLink(false);
     d_transformation.setDirtyValue();
 
-    d_positions.setPersistent(false);
-    d_polylines.setPersistent(false);
-    d_edges.setPersistent(false);
-    d_triangles.setPersistent(false);
-    d_quads.setPersistent(false);
-    d_polygons.setPersistent(false);
-    d_tetrahedra.setPersistent(false);
-    d_hexahedra.setPersistent(false);
-    d_pentahedra.setPersistent(false);
-    d_pyramids.setPersistent(false);
-    d_normals.setPersistent(false);
-
     d_positions.setGroup("Vectors");
     d_polylines.setGroup("Vectors");
     d_edges.setGroup("Vectors");

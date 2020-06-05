@@ -19,23 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_MeshVTKLoader_H
-#define SOFA_COMPONENT_LOADER_MeshVTKLoader_H
+#pragma once
 #include "config.h"
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
+namespace sofa::component::loader
 {
-
-namespace component
-{
-
-namespace loader
-{
-
-
 
 namespace basevtkreader{
     class BaseVTKReader ;
@@ -73,10 +64,5 @@ protected:
     bool setInputsData();
 };
 
-} // namespace loader
+} /// namespace sofa::component::loader
 
-} // namespace component
-
-} // namespace sofa
-
-#endif
