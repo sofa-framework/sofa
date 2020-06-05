@@ -31,7 +31,7 @@
 #include <typeinfo>
 #include <cstdio>
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/MemoryManager.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/logging/Messaging.h>

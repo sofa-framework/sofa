@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_INTEGER_ID_H
 #define SOFA_HELPER_INTEGER_ID_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
 #include <limits>

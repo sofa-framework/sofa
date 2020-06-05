@@ -23,7 +23,7 @@
 #define SOFA_HELPER_GL_TRANSFORMATION_H
 
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

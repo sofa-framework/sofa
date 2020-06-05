@@ -58,7 +58,7 @@
 
 #endif
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/system/config.h>
 
 namespace sofa {

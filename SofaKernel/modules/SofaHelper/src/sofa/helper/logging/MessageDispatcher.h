@@ -26,7 +26,7 @@
 #ifndef MESSAGEDISPATCHER_H
 #define MESSAGEDISPATCHER_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include "Message.h"
 #include <vector>
 #include <sofa/helper/system/SofaOStream.h>

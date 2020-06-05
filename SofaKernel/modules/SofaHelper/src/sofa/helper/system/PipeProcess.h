@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

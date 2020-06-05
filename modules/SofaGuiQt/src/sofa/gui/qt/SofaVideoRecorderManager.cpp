@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SofaVideoRecorderManager.h"
-#include <sofa/helper/helper.h>
 #include <iostream>
 
 namespace sofa
