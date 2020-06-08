@@ -67,10 +67,8 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     : QWidget(parent)
 {
     //Build codec list
-#if SOFAGUIQT_HAVE_FFMPEG_EXEC
     listCodecs.push_back(Codec("mp4", "yuv420p", "Video: h264   (Windows Media Player, QuickTime and compatible with most other players) "));
     listCodecs.push_back(Codec("mp4", "yuv444p", "Video: h264   (VLC media player) "));
-#endif 
 
     QVBoxLayout *layout=new QVBoxLayout(this);
 
@@ -92,10 +90,8 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     HLayoutBitrate->addWidget (labelBitrate);
     HLayoutBitrate->addWidget (bitrateSpinBox);
 
-#if SOFAGUIQT_HAVE_FFMPEG_EXEC
-    labelBitrate->setVisible(false);
-    bitrateSpinBox->setVisible(false);
-#endif
+//    labelBitrate->setVisible(false);
+//    bitrateSpinBox->setVisible(false);
 
     layout->addLayout(HLayoutCodec);
     layout->addLayout(HLayoutBitrate);
@@ -113,11 +109,7 @@ SofaVideoRecorderManager::SofaVideoRecorderManager(QWidget *parent)
     internalAddWidget(VideoRecorderOptionGroupBox, captureOptionsWidget);
     internalAddWidget(VideoRecorderOptionGroupBox, movieOptionsWidget);
 
-#if SOFAGUIQT_HAVE_FFMPEG_EXEC
     MovieRecordingTypeRadioButton->setChecked(true);
-#else
-    MovieRecordingTypeRadioButton->setHidden(true);
-#endif
     onChangeRecordingType();
 }
 
