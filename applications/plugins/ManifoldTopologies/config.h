@@ -22,7 +22,7 @@
 #ifndef MANIFOLDTOPOLOGIES_CONFIG_H
 #define MANIFOLDTOPOLOGIES_CONFIG_H
 
-#include <SofaBase/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_MANIFOLDTOPOLOGIES
 #  define SOFA_TARGET ManifoldTopologies
