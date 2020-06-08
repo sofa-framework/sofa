@@ -31,33 +31,6 @@ namespace component
 namespace collision
 {
 
-
-/******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
-
-
 inline EndPointID & ISAPBox::min(int dim){return *(_min[dim]);}
 inline const EndPointID & ISAPBox::min(int dim)const{return *(_min[dim]);}
 
@@ -739,10 +712,10 @@ void IncrSAP::updateMovingBoxes(){
             //FIRST CREATING CONTACTS THEN DELETING, this order is very important, it doesn't work in the other sens
             //MOVING MAX FOREWARD
             if((max_moving = cur_box.maxMoving(dim,_alarmDist_d2))){
-                cur_box.updatedMax(dim,updated_max,_alarmDist_d2);//we don't update directly update the max of the box but a copy of it, because when
-                                                    //moving an end point, only one end point can change its value. In this case, we could
-                                                    //update the value of the max but not move it, it would mean that the max could not be at its right place and when moving
-                                                    //the min backward (below), the list would not be sorted...
+                cur_box.updatedMax(dim,updated_max,_alarmDist_d2);  //we don't directly update the max of the box but a copy of it, because when
+                                                                    //moving an end point, only one end point can change its value. In this case, we could
+                                                                    //update the value of the max but not move it, it would mean that the max could not be at its right place and when moving
+                                                                    //the min backward (below), the list would not be sorted...
                 cur_end_point_max = &(cur_box.max(dim));
                 it_max = _end_points[dim].begin() + cur_end_point_max->ID;
                 base_it_max = it_max;
@@ -756,8 +729,8 @@ void IncrSAP::updateMovingBoxes(){
                     --prev_it_max;
 
                 if(next_it_max != _end_points[dim].end() && inferior(*next_it_max,&updated_max)){//moving the max foreward
-                    cur_end_point_max->value = updated_max.value;//the real update of the end point (belonging to the end point list) is done
-                                                                 //here because this end point will be put at its right place
+                    cur_end_point_max->value = updated_max.value;   //the real update of the end point (belonging to the end point list) is done
+                                                                    //here because this end point will be put at its right place
                     moveMaxForward(dim,cur_end_point_max,it_max,next_it_max);
                     max_updated = true;
                 }//after, cases when the end point is at its right place

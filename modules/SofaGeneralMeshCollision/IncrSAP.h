@@ -58,7 +58,7 @@ class EndPointID;
   *ISAPBox is a simple bounding box. It contains a Cube which contains only one final
   *CollisionElement and pointers to min and max EndPoints along the three dimensions. min and max end points
   *are respectively min and max coordinates of the cube on a coordinate axis.
-  *The between end poinsts (_min, _max) and the field cube is that cube is always updated whereas
+  *The between end points (_min, _max) and the field cube is that cube is always updated whereas
   *_min and _max are stored values of the cube end points at previous time step.
   */
 class SOFA_GENERAL_MESH_COLLISION_API ISAPBox{
@@ -153,8 +153,8 @@ public:
 };
 
 /**
-  *Implementation of incremental sweep and prune. i.e. collision are stored and updated which should speed up
-  *the collision detection compared to the DirectSAP.
+  *Implementation of incremental sweep and prune. i.e. collision primitives are stored and updated
+  *which should speed up the collision detection compared to the DirectSAP.
   */
 class SOFA_GENERAL_MESH_COLLISION_API IncrSAP :
     public core::collision::BroadPhaseDetection,
@@ -211,7 +211,7 @@ private:
     void reinitDetection();
 
     /**
-      *Used in initialisatio of IncrSAP. It clears all the IncrSAP fields.
+      *Used in initialisation of IncrSAP. It clears all the IncrSAP fields.
       */
     void purge();
 
