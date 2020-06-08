@@ -1,11 +1,7 @@
 # CMake package configuration file for SofaFramework
+cmake_minimum_required(VERSION 3.12)
 
 @PACKAGE_INIT@
-
-# CMake policies
-if(POLICY CMP0072)
-    cmake_policy(SET CMP0072 NEW) # Use  GLVND libraries for OpenGL and GLX when available
-endif()
 
 get_filename_component(SOFA_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
 

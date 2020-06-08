@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaPardisoSolver)
 
 set(SOFAPARDISOSOLVER_MAJOR_VERSION 0)

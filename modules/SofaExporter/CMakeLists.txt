@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaExporter VERSION 1.0 LANGUAGES CXX)
 
 find_package(SofaSimulation REQUIRED)

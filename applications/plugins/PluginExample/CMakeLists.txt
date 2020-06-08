@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(PluginExample VERSION 1.0 LANGUAGES CXX)
 
 # Find and load CMake configuration of packages containing this plugin's dependencies

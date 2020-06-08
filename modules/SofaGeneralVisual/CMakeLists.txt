@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaGeneralVisual)
 
 set(HEADER_FILES

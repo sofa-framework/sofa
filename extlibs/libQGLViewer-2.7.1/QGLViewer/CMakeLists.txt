@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(QGLViewer VERSION 2.7.1)
 
 sofa_find_package(OpenGL REQUIRED)
