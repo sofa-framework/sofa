@@ -26,7 +26,7 @@
 
 #include <string>
 
-#include "SofaGUI.h"
+#include <sofa/gui/config.h>
 
 namespace sofa
 {

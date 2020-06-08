@@ -24,7 +24,7 @@
 
 #include "sofa/config.h"
 
-#include "SofaGUI.h"
+#include <sofa/gui/config.h>
 
 #include "ColourPickingVisitor.h"
 

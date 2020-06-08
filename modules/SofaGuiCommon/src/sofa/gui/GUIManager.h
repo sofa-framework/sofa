@@ -24,7 +24,7 @@
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/Node.h>
-#include "SofaGUI.h"
+#include <sofa/gui/config.h>
 #include <vector>
 #include <string>
 #include <list>

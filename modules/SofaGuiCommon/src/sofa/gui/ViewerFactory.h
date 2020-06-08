@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_VIEWERFACTORY_H
 #define SOFA_GUI_VIEWERFACTORY_H
 
-#include "SofaGUI.h"
+#include <sofa/gui/config.h>
 #include <sofa/helper/Factory.inl>
 #include "BaseViewer.h"
 

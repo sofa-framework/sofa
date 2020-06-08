@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_BASEGUI_H
 #define SOFA_GUI_BASEGUI_H
 
-#include "SofaGUI.h"
+#include <sofa/gui/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/Vec.h>
 #include <SofaGraphComponent/ViewerSetting.h>

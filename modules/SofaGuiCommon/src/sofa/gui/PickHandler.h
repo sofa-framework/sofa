@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_PICKHANDLER_H
 #define SOFA_GUI_PICKHANDLER_H
 
-#include "SofaGUI.h"
+#include <sofa/gui/config.h>
 #include "OperationFactory.h"
 
 #include <sofa/gui/ColourPickingVisitor.h>

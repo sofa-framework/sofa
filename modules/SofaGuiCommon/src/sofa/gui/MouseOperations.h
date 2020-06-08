@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_MOUSEOPERATIONS_H
 #define SOFA_GUI_MOUSEOPERATIONS_H
 
-#include "SofaGUI.h"
+#include <sofa/gui/config.h>
 #include <iostream>
 #include <vector>
 

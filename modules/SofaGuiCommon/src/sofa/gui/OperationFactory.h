@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_GUI_OPERATIONFACTORY_H
 #define SOFA_GUI_OPERATIONFACTORY_H
-#include "SofaGUI.h"
+#include <sofa/gui/config.h>
 #include <sofa/gui/MouseOperations.h>
 
 #include <iostream>
