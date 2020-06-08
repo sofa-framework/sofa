@@ -109,6 +109,11 @@ macro(sofa_add_generic directory name type)
         if(${option})
             message("Adding ${type_lower} ${name}")
             add_subdirectory(${directory})
+            #Check if the target has been successfully added
+            if(TARGET ${name})
+                set_target_properties(${name} PROPERTIES FOLDER ${type}s) # IDE folder
+                set_target_properties(${name} PROPERTIES DEBUG_POSTFIX "_d")
+            endif()
         endif()
 
         # Add current target in the internal list only if not present already
@@ -588,6 +593,9 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
 
     foreach(target ${the_targets}) # Most of the time there is only one target
         # Set target properties
+        if(NOT "${target}" STREQUAL "${package_name}") # Target is inside a package
+            set_target_properties(${target} PROPERTIES FOLDER ${package_name}) # IDE folder
+        endif()
         set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
         set(version ${${target}_VERSION})
         if(version VERSION_GREATER "0.0")
@@ -651,7 +659,7 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             # Optimize build dir
             set(header_relative_dir_for_build "${header_relative_dir}")
             string(REPLACE "../" "" header_relative_dir_for_build "${header_relative_dir_for_build}") # keep out-of-tree headers
-            if("${target}" STREQUAL "${package_name}") # We are in a package
+            if("${target}" STREQUAL "${package_name}") # Target is a package
                 if("${header_relative_dir_for_build}" STREQUAL "") # Headers are not in a subdirectory
                     set(header_relative_dir_for_build "${target}")
                 endif()
