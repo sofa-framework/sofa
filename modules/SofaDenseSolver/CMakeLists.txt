@@ -37,5 +37,4 @@ sofa_generate_package(
     TARGETS ${PROJECT_NAME}
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaDenseSolver"
-    RELOCATABLE "plugins"
 )
