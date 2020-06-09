@@ -8,6 +8,7 @@ set(SOFABASE_TARGETS
     SofaBaseTopology
     SofaBaseVisual
     SofaBaseUtils
+    SofaEigen2Solver
     )
 
 foreach(TARGET ${SOFABASE_TARGETS})

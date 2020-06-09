@@ -22,7 +22,7 @@
 #ifndef SOFAEIGEN2SOLVER_CONFIG_H
 #define SOFAEIGEN2SOLVER_CONFIG_H
 
-#include <SofaCommon/config.h>
+#include <SofaBase/config.h>
 
 #cmakedefine01 SOFAEIGEN2SOLVER_HAVE_OPENMP
 
