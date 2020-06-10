@@ -5,6 +5,8 @@ sofa_find_package(TinyXML REQUIRED)
 
 set(HEADER_FILES
     config.h.in
+    common.h
+    init.h
     FindByTypeVisitor.h
     SceneLoaderPHP.h
     SceneLoaderXML.h
