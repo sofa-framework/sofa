@@ -30,8 +30,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
 
-#include <SofaDeformable/StiffSpringForceField.h>
-
 #include <SofaBaseMechanics/MechanicalObject.h>
 typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
 
@@ -45,9 +43,6 @@ namespace sofa
 {
 namespace modeling {
 using sofa::defaulttype::Vec3Types;
-
-using sofa::component::interactionforcefield::StiffSpringForceField ;
-typedef StiffSpringForceField<Vec3Types>   StiffSpringForceField3;
 
 
 /////////////////// IMPORTING THE DEPENDENCIES INTO THE NAMESPACE ///////////////////////////
