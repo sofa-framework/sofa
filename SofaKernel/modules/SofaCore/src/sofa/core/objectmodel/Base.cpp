@@ -216,12 +216,6 @@ std::string Base::getNameSpaceName() const
     return getClass()->namespaceName;
 }
 
-
-std::string Base::getPathName() const
-{
-    return "";
-}
-
 void Base::setName(const std::string& na)
 {
     name.setValue(na);

@@ -210,8 +210,6 @@ public:
     /// to override the getNameSpaceName() method.
     virtual std::string getNameSpaceName() const ;
 
-    virtual std::string getPathName() const;
-
     /// Set the source filename (where the component is implemented)
     void setDefinitionSourceFileName(const std::string& sourceFileName);
 
