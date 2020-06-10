@@ -18,6 +18,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/Mat_solve_SVD.h
     ${SRC_ROOT}/Quat.h
     ${SRC_ROOT}/Quat.inl
+    ${SRC_ROOT}/RGBAColor.h
     ${SRC_ROOT}/RigidTypes.h
     ${SRC_ROOT}/RigidVec6Types.h
     ${SRC_ROOT}/SolidTypes.h
