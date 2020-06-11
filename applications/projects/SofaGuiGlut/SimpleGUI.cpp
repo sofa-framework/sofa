@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -34,10 +34,10 @@
 #include <cstring>
 #include <cmath>
 
-#include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
 
 #include <sofa/helper/system/thread/CTime.h>
+#include <thread>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BoundingBox.h>
@@ -199,7 +199,7 @@ void SimpleGUI::glut_idle()
         if (instance->getScene() && instance->getScene()->getContext()->getAnimate())
             instance->step();
         else
-            CTime::sleep(0.01);
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         instance->animate();
     }
 }

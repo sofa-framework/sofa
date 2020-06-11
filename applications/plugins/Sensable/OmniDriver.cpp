@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,6 +48,9 @@
 #ifdef SOFA_HAVE_BOOST
 #include <boost/thread.hpp>
 #endif
+
+#include <thread>
+#include <chrono>
 
 namespace sofa
 {
@@ -494,7 +497,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 #ifdef SOFA_HAVE_BOOST
             boost::thread::yield();
 #else
-            sofa::helper::system::thread::CTime::sleep(0);
+            std::this_thread::sleep_for(std::chrono::milliseconds(0));
 #endif
         }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,13 +61,6 @@ class SOFA_CORE_API BaseContext : public virtual Base
 public:
     SOFA_CLASS(BaseContext, Base);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseContext)
-
-    /// @name Types defined for local coordinate system handling
-    /// @{
-
-//    typedef SolidTypes::Rot Quat;
-//    typedef SolidTypes::Mat Mat33;
-    /// @}
 
     typedef defaulttype::Vector3 Vec3;
 

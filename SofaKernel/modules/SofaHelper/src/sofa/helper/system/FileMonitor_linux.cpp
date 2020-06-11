@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,6 +33,8 @@
 //////////////////// C++ Header ///////////////////////////////////////////////
 #include <algorithm>
 #include <iostream>
+#include <chrono>
+#include <thread>
 #include <vector>
 #include <string>
 #include <map>
@@ -232,7 +234,7 @@ int FileMonitor::updates(int timeout)
         // its tasks. The 10000 is a value that work on my system :(
         // Arg non pitié je peux pas laisser ça en l'état c'est trop moche.
         // Promis demain je trouve un meilleur solution (ou pas).
-        usleep(30000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(30));
         int length = 0 ;
         char buffer[BUF_LEN];
         int buffer_i = 0 ;

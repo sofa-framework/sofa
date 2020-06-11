@@ -271,7 +271,6 @@ if(NOT SOFA_NO_OPENGL)
         ${SRC_ROOT}/gl/Capture.h
         ${SRC_ROOT}/gl/Color.h
         ${SRC_ROOT}/gl/RAII.h
-        ${SRC_ROOT}/gl/glfont.h
         ${SRC_ROOT}/gl/template.h
         ${SRC_ROOT}/system/gl.h
         ${SRC_ROOT}/system/glu.h
@@ -296,7 +295,6 @@ if(NOT SOFA_NO_OPENGL)
         ${SRC_ROOT}/gl/Texture.cpp
         ${SRC_ROOT}/gl/VideoRecorderFFMPEG.cpp
         ${SRC_ROOT}/gl/Color.cpp
-        ${SRC_ROOT}/gl/glfont.cpp
         ${SRC_ROOT}/system/gl.cpp
     )
     if(GLEW_FOUND)
@@ -362,13 +360,6 @@ endif()
 # System libs
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
-    # X11 functions are used in glfont.cpp
-    sofa_find_package(X11 REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_X11_LIB})
-    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
-        "$<BUILD_INTERFACE:${X11_X11_INCLUDE_PATH}>"
-        # No INSTALL_INTERFACE include dir => dev user will need to find_package this dependency
-        )
 elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
     find_library(ICONV iconv)
@@ -395,7 +386,9 @@ if(NOT SOFA_NO_OPENGL)
 
     if(GLEW_FOUND)
         target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW)
-        sofa_install_libraries(TARGETS GLEW::GLEW)
+        if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
+            sofa_install_libraries(TARGETS GLEW::GLEW)
+        endif()
     else()
         message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
     endif()
@@ -407,7 +400,9 @@ if(Boost_FOUND)
     if(Boost_THREAD_FOUND)
         target_link_libraries(${PROJECT_NAME} PUBLIC Boost::thread)
     endif()
-    sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
+    if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
+        sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
+    endif()
 endif()
 
 # GTest

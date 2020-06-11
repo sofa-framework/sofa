@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscEngine)
 
+find_package(SofaNonUniformFem REQUIRED)
+
 set(HEADER_FILES
     config.h
     initMiscEngine.h

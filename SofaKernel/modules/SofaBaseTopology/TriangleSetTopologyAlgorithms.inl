@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -901,9 +901,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 }
                 if(!test)
                 {
-					if (CHECK_TOPOLOGY)
-						msg_error() << "SplitAlongPath: error in POINT::EDGE case, the edge between these points has not been found.";
-
+                    msg_error() << "SplitAlongPath: POINT::EDGE case, the edge between these points has not been found.";
                     error = true;
                 }
 
@@ -941,9 +939,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 if (vertxInTriangle == -1)
                 {
-					if (CHECK_TOPOLOGY)
-						msg_error() << "SplitAlongPath: error in triangle in POINT::EDGE case";
-
+					msg_error() << "SplitAlongPath: vertxInTriangle not found in POINT::EDGE case";
                     error = true;
 
                     break;
@@ -1033,9 +1029,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 if (vertxInTriangle == -1)
                 {
-					if (CHECK_TOPOLOGY)
-						msg_error() << " Error: SplitAlongPath: error in triangle in EDGE::POINT case";
-
+                    msg_error() << " Error: SplitAlongPath: vertxInTriangle not found in EDGE::POINT case";
                     error = true;
                     break;
                 }
@@ -1140,9 +1134,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 if (edgeInTriangle == -1)
                 {
-					if (CHECK_TOPOLOGY)
-						msg_error() << " Error: SplitAlongPath: error in triangle in EDGE::TRIANGLE case";
-
+                    msg_error() << " Error: SplitAlongPath: edgeInTriangle not found in EDGE::TRIANGLE case";
                     error = true;
                     break;
                 }
@@ -1220,9 +1212,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 if (edgeInTriangle == -1)
                 {
-					if (CHECK_TOPOLOGY)
-						msg_error() << " Error: SplitAlongPath: error in triangle in TRIANGLE::EDGE case";
-
+                    msg_error() << " Error: SplitAlongPath: edgeInTriangle not found in TRIANGLE::EDGE case";
                     error = true;
                     break;
                 }
@@ -1258,9 +1248,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 if (triangleIDSecond != triangleIDFirst)
                 {
-					if (CHECK_TOPOLOGY)
-						msg_error() << " Error: SplitAlongPath: incision not in the mesh plan not supported yet, in TRIANGLE::TRIANGLE case";
-
+                    msg_error() << "SplitAlongPath: incision not in the mesh plan not supported yet, in TRIANGLE::TRIANGLE case";
                     error = true;
                     break;
                 }
@@ -1442,9 +1430,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
         if (error)
         {
-			if (CHECK_TOPOLOGY)
-				msg_error() << "ERROR: in the incision path. ";
-
+            msg_error() << "ERROR: in the incision path. ";
             return -1;
         }
     }
@@ -1900,8 +1886,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (PointID pa, Coord
 
                 if ((indices_list[1] == theEdge) && (topoPath_list[1] == core::topology::EDGE)) // Only keep this one? or need to project?
                 {
-					if(CHECK_TOPOLOGY)
-						msg_info() <<"************* Just wonder if it is possible!!";
+                    msg_warning() << "Unexpected case reached: where indices_list[1] == theEdge and is an Edge. Report this issue.";
                     topoPath_list.erase (topoPath_list.begin());
                     indices_list.erase (indices_list.begin());
                     coords_list.erase (coords_list.begin());
@@ -2005,7 +1990,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (PointID pa, Coord
 
                 if ((indices_list[indices_list.size()-2] == theEdge) && (topoPath_list[topoPath_list.size()-2] == core::topology::EDGE)) // Only keep this one? or need to projection?
                 {
-                    msg_error() <<"************* Just wonder if it is possible!!";
+                    msg_warning() << "Unexpected case reached: where indices_list[1] == theEdge and topoPath_list[1] is an Edge. Report this issue.";
                     topoPath_list.pop_back();
                     indices_list.pop_back();
                     coords_list.pop_back();

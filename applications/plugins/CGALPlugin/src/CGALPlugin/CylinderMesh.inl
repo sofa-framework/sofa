@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -602,7 +602,7 @@ void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams*)
         glDisable(GL_LIGHTING);
         glColor3f(0, 0, 0);
         glBegin(GL_LINES);
-        for(int i = 0; i < /*4*/m_nbTetras; ++i)
+        for(size_t i = 0; i < /*4*/m_nbTetras; ++i)
         {
 //        unsigned int i = 1;
             for(int j = 0; j < 3; ++j)

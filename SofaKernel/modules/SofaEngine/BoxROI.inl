@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -572,161 +572,161 @@ bool BoxROI<DataTypes>::isQuadInBoxesStrict(const Quad& q)
 template <class DataTypes>
 void BoxROI<DataTypes>::doUpdate()
 {
-    // Check whether an element can partially be inside the box or if all of its nodes must be inside
-    bool strict = d_strict.getValue();
-
-    // Write accessor for topological element indices in BOX
-    SetIndex& indices = *d_indices.beginWriteOnly();
-    SetIndex& edgeIndices = *d_edgeIndices.beginWriteOnly();
-    SetIndex& triangleIndices = *d_triangleIndices.beginWriteOnly();
-    SetIndex& tetrahedronIndices = *d_tetrahedronIndices.beginWriteOnly();
-    SetIndex& hexahedronIndices = *d_hexahedronIndices.beginWriteOnly();
-    SetIndex& quadIndices = *d_quadIndices.beginWriteOnly();
-
-    // Write accessor for toplogical element in BOX
-    WriteOnlyAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
-    WriteOnlyAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
-    WriteOnlyAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
-    WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
-    WriteOnlyAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
-    WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = d_quadInROI;
-
-
-    // Clear lists
-    indices.clear();
-    edgeIndices.clear();
-    triangleIndices.clear();
-    tetrahedronIndices.clear();
-    hexahedronIndices.clear();
-    quadIndices.clear();
-
-
-    pointsInROI.clear();
-    edgesInROI.clear();
-    trianglesInROI.clear();
-    tetrahedraInROI.clear();
-    hexahedraInROI.clear();
-    quadInROI.clear();
-
-
     if(m_componentstate==ComponentState::Invalid){
         return ;
     }
 
-    if(!d_doUpdate.getValue()){
-        return ;
-    }
-    if (d_X0.getValue().size() == 0)
-    {
-        msg_warning() << "No rest position yet defined. Box might not work properly. \n"
-                         "This may be caused by an early call of init() on the box before  \n"
-                         "the mesh or the MechanicalObject of the node was initialized too";
-        return;
-    }
 
-    const vector<Vec6>&  alignedBoxes  = d_alignedBoxes.getValue();
-    const vector<Vec10>& orientedBoxes = d_orientedBoxes.getValue();
+    if(d_doUpdate.getValue()){
 
-    if (alignedBoxes.empty() && orientedBoxes.empty()) { return; }
+        // Check whether an element can partially be inside the box or if all of its nodes must be inside
+        bool strict = d_strict.getValue();
+
+        // Write accessor for topological element indices in BOX
+        SetIndex& indices = *d_indices.beginWriteOnly();
+        SetIndex& edgeIndices = *d_edgeIndices.beginWriteOnly();
+        SetIndex& triangleIndices = *d_triangleIndices.beginWriteOnly();
+        SetIndex& tetrahedronIndices = *d_tetrahedronIndices.beginWriteOnly();
+        SetIndex& hexahedronIndices = *d_hexahedronIndices.beginWriteOnly();
+        SetIndex& quadIndices = *d_quadIndices.beginWriteOnly();
+
+        // Write accessor for toplogical element in BOX
+        WriteOnlyAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
+        WriteOnlyAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
+        WriteOnlyAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
+        WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
+        WriteOnlyAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
+        WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = d_quadInROI;
+
+        // Clear lists
+        indices.clear();
+        edgeIndices.clear();
+        triangleIndices.clear();
+        tetrahedronIndices.clear();
+        hexahedronIndices.clear();
+        quadIndices.clear();
 
 
-    // Read accessor for input topology
-    ReadAccessor< Data<vector<Edge> > > edges = d_edges;
-    ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
-    ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
-    ReadAccessor< Data<vector<Hexa> > > hexahedra = d_hexahedra;
-    ReadAccessor< Data<vector<Quad> > > quad = d_quad;
-
-    const VecCoord& x0 = d_X0.getValue();
+        pointsInROI.clear();
+        edgesInROI.clear();
+        trianglesInROI.clear();
+        tetrahedraInROI.clear();
+        hexahedraInROI.clear();
+        quadInROI.clear();
 
 
-    //Points
-    for( unsigned i=0; i<x0.size(); ++i )
-    {
-        if (isPointInBoxes(i))
+        if (d_X0.getValue().size() == 0)
         {
-            indices.push_back(i);
-            pointsInROI.push_back(x0[i]);
+            msg_warning() << "No rest position yet defined. Box might not work properly. \n"
+                            "This may be caused by an early call of init() on the box before  \n"
+                            "the mesh or the MechanicalObject of the node was initialized too";
+            return;
         }
-    }
 
-    //Edges
-    if (d_computeEdges.getValue())
-    {
-        for(unsigned int i=0 ; i<edges.size() ; i++)
+        const vector<Vec6>&  alignedBoxes  = d_alignedBoxes.getValue();
+        const vector<Vec10>& orientedBoxes = d_orientedBoxes.getValue();
+
+        if (alignedBoxes.empty() && orientedBoxes.empty()) { return; }
+
+
+        // Read accessor for input topology
+        ReadAccessor< Data<vector<Edge> > > edges = d_edges;
+        ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
+        ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
+        ReadAccessor< Data<vector<Hexa> > > hexahedra = d_hexahedra;
+        ReadAccessor< Data<vector<Quad> > > quad = d_quad;
+
+        const VecCoord& x0 = d_X0.getValue();
+
+
+        //Points
+        for( unsigned i=0; i<x0.size(); ++i )
         {
-            Edge e = edges[i];
-            bool is_in_box = (strict) ? isEdgeInBoxesStrict(e) : isEdgeInBoxes(e);
-            if (is_in_box)
+            if (isPointInBoxes(i))
             {
-                edgeIndices.push_back(i);
-                edgesInROI.push_back(e);
+                indices.push_back(i);
+                pointsInROI.push_back(x0[i]);
             }
         }
-    }
 
-    //Triangles
-    if (d_computeTriangles.getValue())
-    {
-        for(unsigned int i=0 ; i<triangles.size() ; i++)
+        //Edges
+        if (d_computeEdges.getValue())
         {
-            Triangle t = triangles[i];
-            bool is_in_box = (strict) ? isTriangleInBoxesStrict(t) : isTriangleInBoxes(t);
-            if (is_in_box)
+            for(unsigned int i=0 ; i<edges.size() ; i++)
             {
-                triangleIndices.push_back(i);
-                trianglesInROI.push_back(t);
+                Edge e = edges[i];
+                bool is_in_box = (strict) ? isEdgeInBoxesStrict(e) : isEdgeInBoxes(e);
+                if (is_in_box)
+                {
+                    edgeIndices.push_back(i);
+                    edgesInROI.push_back(e);
+                }
             }
         }
-    }
 
-    //Tetrahedra
-    if (d_computeTetrahedra.getValue())
-    {
-        for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
+        //Triangles
+        if (d_computeTriangles.getValue())
         {
-            Tetra t = tetrahedra[i];
-            bool is_in_box = (strict) ? isTetrahedronInBoxesStrict(t) : isTetrahedronInBoxes(t);
-            if (is_in_box)
+            for(unsigned int i=0 ; i<triangles.size() ; i++)
             {
-                tetrahedronIndices.push_back(i);
-                tetrahedraInROI.push_back(t);
+                Triangle t = triangles[i];
+                bool is_in_box = (strict) ? isTriangleInBoxesStrict(t) : isTriangleInBoxes(t);
+                if (is_in_box)
+                {
+                    triangleIndices.push_back(i);
+                    trianglesInROI.push_back(t);
+                }
             }
         }
-    }
 
-    //Hexahedra
-    if (d_computeHexahedra.getValue())
-    {
-        for(unsigned int i=0 ; i<hexahedra.size() ; i++)
+        //Tetrahedra
+        if (d_computeTetrahedra.getValue())
         {
-            Hexa t = hexahedra[i];
-            bool is_in_box = (strict) ? isHexahedronInBoxesStrict(t) : isHexahedronInBoxes(t);
-            if (is_in_box)
+            for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
             {
-                hexahedronIndices.push_back(i);
-                hexahedraInROI.push_back(t);
+                Tetra t = tetrahedra[i];
+                bool is_in_box = (strict) ? isTetrahedronInBoxesStrict(t) : isTetrahedronInBoxes(t);
+                if (is_in_box)
+                {
+                    tetrahedronIndices.push_back(i);
+                    tetrahedraInROI.push_back(t);
+                }
             }
         }
-    }
 
-    //Quads
-    if (d_computeQuad.getValue())
-    {
-        for(unsigned int i=0 ; i<quad.size() ; i++)
+        //Hexahedra
+        if (d_computeHexahedra.getValue())
         {
-            Quad q = quad[i];
-            bool is_in_box = (strict) ? isQuadInBoxesStrict(q) : isQuadInBoxes(q);
-            if (is_in_box)
+            for(unsigned int i=0 ; i<hexahedra.size() ; i++)
             {
-                quadIndices.push_back(i);
-                quadInROI.push_back(q);
+                Hexa t = hexahedra[i];
+                bool is_in_box = (strict) ? isHexahedronInBoxesStrict(t) : isHexahedronInBoxes(t);
+                if (is_in_box)
+                {
+                    hexahedronIndices.push_back(i);
+                    hexahedraInROI.push_back(t);
+                }
             }
         }
+
+        //Quads
+        if (d_computeQuad.getValue())
+        {
+            for(unsigned int i=0 ; i<quad.size() ; i++)
+            {
+                Quad q = quad[i];
+                bool is_in_box = (strict) ? isQuadInBoxesStrict(q) : isQuadInBoxes(q);
+                if (is_in_box)
+                {
+                    quadIndices.push_back(i);
+                    quadInROI.push_back(q);
+                }
+            }
+        }
+
+
+        d_nbIndices.setValue(indices.size());
     }
-
-
-    d_nbIndices.setValue(indices.size());
 
     d_indices.endEdit();
     d_edgeIndices.endEdit();
@@ -1120,11 +1120,7 @@ void BoxROI<DataTypes>::getPointsFromOrientedBox(const Vec10& box, vector<Vec3>&
 template<class DataTypes>
 void BoxROI<DataTypes>::handleEvent(Event *event)
 {
-    if (AnimateBeginEvent::checkEventType(event))
-    {
-        setDirtyValue();
-        update();
-    }
+    SOFA_UNUSED(event);
 }
 
 } // namespace boxroi
