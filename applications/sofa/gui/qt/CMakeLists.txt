@@ -278,6 +278,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaLoader SofaMiscForceField)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${QT_TARGETS})
 
+if(SOFA_DUMP_VISITOR_INFO)
+    target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml)
+endif()
+
 if(SOFAGUI_ENABLE_QWT)
     target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
 endif()
