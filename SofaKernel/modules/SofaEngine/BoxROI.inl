@@ -706,7 +706,6 @@ void BoxROI<DataTypes>::doUpdate()
             {
                 hexahedronIndices.push_back(i);
                 hexahedraInROI.push_back(t);
-                break;
             }
         }
     }
