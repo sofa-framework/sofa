@@ -113,7 +113,6 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     uint32_t nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);
 
-    my_triangles.resize( nbrFacet ); // exact size
     my_normals.resize( nbrFacet ); // exact size
     my_positions.reserve( nbrFacet * 3 ); // max size
 
@@ -135,10 +134,13 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // temporaries
     sofa::defaulttype::Vec3f vertex, normal;
 
+    // clear before filling it
+    my_triangles.clear();
+
     // Parsing facets
     for (uint32_t i = 0; i<nbrFacet; ++i)
     {
-        Triangle& the_tri = my_triangles[i];
+        Triangle the_tri;
 
         // Normal:
         dataFile.read((char*)&normal[0], 4);
@@ -185,8 +187,9 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
                     the_tri[j] = my_positions.size()-1;
                 }
             }
-
         }
+
+        this->addTriangle(&my_triangles, the_tri);
 
         // Attribute byte count
         uint16_t count;
@@ -197,6 +200,9 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 //        if (position == length)
 //            break;
     }
+
+    if(my_triangles.size() != (size_t)nbrFacet)
+        msg_error() << "Size mismatch between triangle vector and facetSize";
 
     this->d_positions.endEdit();
     this->d_triangles.endEdit();
@@ -279,7 +285,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
         }
         else if (bufferWord == "endfacet")
         {
-            my_triangles.push_back(the_tri);
+            this->addTriangle(&my_triangles, the_tri);
             vertexCounter = 0;
         }
         else if (bufferWord == "endsolid" || bufferWord == "end")

@@ -733,7 +733,6 @@ void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, const Triang
     {
         Triangle revertP;
         std::reverse_copy(p.begin(), p.end(), revertP.begin());
-
         pTriangles->push_back(revertP);
     }
     else
@@ -832,30 +831,42 @@ void MeshLoader::copyMeshToData(sofa::helper::io::Mesh* _mesh)
 {
     // copy vertices
     helper::vector<sofa::defaulttype::Vec3>& my_positions = *(d_positions.beginEdit());
-    my_positions = _mesh->getVertices();
+    helper::vector<sofa::defaulttype::Vec3> allVertices = _mesh->getVertices();
+    for(size_t i=0; i<allVertices.size(); i++)
+        this->addPosition(&my_positions, allVertices[i]);
     d_positions.endEdit();
 
     // copy 2D topoogy
     helper::vector<Edge>& my_edges = *(d_edges.beginEdit());
-    my_edges = _mesh->getEdges();
+    helper::vector<Edge> allEdges = _mesh->getEdges();
+    for(size_t i=0; i<allEdges.size(); i++)
+        this->addEdge(&my_edges, allEdges[i]);
     d_edges.endEdit();
 
     helper::vector<Triangle>& my_triangles = *(d_triangles.beginEdit());
-    my_triangles = _mesh->getTriangles();
+    helper::vector<Triangle> allTriangles = _mesh->getTriangles();
+    for(size_t i=0; i<allTriangles.size(); i++)
+        this->addTriangle(&my_triangles, allTriangles[i]);
     d_triangles.endEdit();
 
     helper::vector<Quad>& my_quads = *(d_quads.beginEdit());
-    my_quads = _mesh->getQuads();
+    helper::vector<Quad> allQuads = _mesh->getQuads();
+    for(size_t i=0; i<allQuads.size(); i++)
+        this->addQuad(&my_quads, allQuads[i]);
     d_quads.endEdit();
 
 
     // copy 3D elements
     helper::vector<Tetrahedron>& my_tetrahedra = *(d_tetrahedra.beginEdit());
-    my_tetrahedra = _mesh->getTetrahedra();
+    helper::vector<Tetrahedron> allTets = _mesh->getTetrahedra();
+    for(size_t i=0; i<allTets.size(); i++)
+        this->addTetrahedron(&my_tetrahedra, allTets[i]);
     d_tetrahedra.endEdit();
 
     helper::vector<Hexahedron>& my_hexahedra = *(d_hexahedra.beginEdit());
-    my_hexahedra = _mesh->getHexahedra();
+    helper::vector<Hexahedron> allHexs = _mesh->getHexahedra();
+    for(size_t i=0; i<allHexs.size(); i++)
+        this->addHexahedron(&my_hexahedra, allHexs[i]);
     d_hexahedra.endEdit();
 
     // copy groups
