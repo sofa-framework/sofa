@@ -21,7 +21,7 @@ set(SOURCE_FILES
 
 find_package(Eigen3 REQUIRED)
 
-if (SOFA_OPENMP AND "${Eigen3_VERSION}" VERSION_LESS 3.2.9)
+if (SOFA_OPENMP AND "${EIGEN3_VERSION}" VERSION_LESS 3.2.9)
     sofa_find_package(OpenMP BOTH_SCOPES) # will set/update SOFAEIGEN2SOLVER_HAVE_OPENMP
 endif()
 
