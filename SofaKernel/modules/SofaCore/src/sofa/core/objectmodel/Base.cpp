@@ -101,16 +101,21 @@ void Base::addUpdateCallback(const std::string& name,
                              std::function<sofa::core::objectmodel::ComponentState(void)> func,
                              std::initializer_list<BaseData*> outputs)
 {
+    // But what if 2 callback functions return 2 different states?
+    // won't the 2nd overwrite the state set by the second, potentially masking the invalidity of the component?
     auto& engine = m_internalEngine[name];
+    engine.setOwner(this);
     engine.addInputs(inputs);
-    engine.addCallback([func, name](){
-                return func();
+    engine.setCallback([func, name]() {
+        return func();
     });
     engine.addOutputs(outputs);
 
     for(auto& i : engine.getInputs())
-        if( i == &d_componentstate )
-            return;
+        if( i == &d_componentstate ) {
+            msg_error(this) << "The componentstate cannot be set as an input of a callbackEngine.";
+            engine.delInput(&d_componentstate);
+        }
     engine.addOutput(&d_componentstate);
 }
 

@@ -113,6 +113,18 @@ void DataTrackerEngine::update()
     cleanDirty();
 }
 
+void CallbackEngine::setCallback( std::function<sofa::core::objectmodel::ComponentState(void)> f)
+{
+    m_callback = f;
+}
+
+void CallbackEngine::update()
+{
+    updateAllInputsIfDirty();
+    m_owner->d_componentstate.setValue(m_callback()); // but what if the state of the component was invalid for a reason that doesn't depend on this update?
+    cleanDirty();
+}
+
 
 }
 
