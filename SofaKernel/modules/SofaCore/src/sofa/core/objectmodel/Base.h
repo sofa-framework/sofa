@@ -169,7 +169,7 @@ private:
 
 public:
 
-    std::map<std::string, sofa::core::DataTrackerEngine> m_internalEngine;
+    std::map<std::string, sofa::core::CallbackEngine> m_internalEngine;
 
     void addUpdateCallback(const std::string& name,
                            std::initializer_list<BaseData*> inputs,

@@ -185,7 +185,22 @@ namespace core
         sofa::core::objectmodel::Base* m_owner {nullptr};
     };
 
+    class SOFA_CORE_API CallbackEngine : public DataTrackerDDGNode
+    {
+    public:
+        /// set the update function to call
+        /// when asking for an output and any input changed.
+        void setCallback(std::function<sofa::core::objectmodel::ComponentState(void)> f);
 
+        /// Calls the callback when one of the data has changed.
+        void update() override;
+
+        inline void setOwner(sofa::core::objectmodel::Base* owner) { m_owner = owner; }
+
+    protected:
+        std::function<sofa::core::objectmodel::ComponentState(void)> m_callback;
+        sofa::core::objectmodel::Base* m_owner {nullptr};
+    };
 /////////////////////////
 
 
