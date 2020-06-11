@@ -221,7 +221,6 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
 
     //material.setDisplayed(false);
     addAlias(&fileMesh, "fileMesh");
-    fileMesh.setAutoLink(false);
 
     m_vertices2     .setGroup("Vector");
     m_vnormals      .setGroup("Vector");

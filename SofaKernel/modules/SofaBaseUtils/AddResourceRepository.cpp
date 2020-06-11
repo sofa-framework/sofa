@@ -44,7 +44,7 @@ BaseAddResourceRepository::BaseAddResourceRepository()
     d_repositoryPath.setIsDirectory(true);
     addUpdateCallback("path", {&d_repositoryPath}, [this]()
     {
-        if (this->parse())
+        if (this->updateRepositoryPath())
             return sofa::core::objectmodel::ComponentState::Valid;
         return sofa::core::objectmodel::ComponentState::Invalid;
     }, {});
@@ -55,7 +55,7 @@ BaseAddResourceRepository::~BaseAddResourceRepository()
 
 }
 
-bool BaseAddResourceRepository::parse()
+bool BaseAddResourceRepository::updateRepositoryPath()
 {
     m_repository = getFileRepository();
 
@@ -101,11 +101,7 @@ bool BaseAddResourceRepository::parse()
 void BaseAddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     Inherit1::parse(arg);
-
-    if (parse())
-        m_componentstate.setValue(sofa::core::objectmodel::ComponentState::Valid);
-    else
-        m_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    updateRepositoryPath();
 }
 
 void BaseAddResourceRepository::cleanup()
