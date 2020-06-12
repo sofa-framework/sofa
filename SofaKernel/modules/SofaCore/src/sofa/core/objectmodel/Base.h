@@ -167,14 +167,15 @@ private:
         p->release();
     }
 
-public:
-
+private:
     std::map<std::string, sofa::core::CallbackEngine> m_internalEngine;
 
+public:
     void addUpdateCallback(const std::string& name,
                            std::initializer_list<BaseData*> inputs,
                            std::function<sofa::core::objectmodel::ComponentState(void)> function,
                            std::initializer_list<BaseData*> outputs);
+    void addOutputToCallbackEngine(const std::string& name, BaseData* output);
 
     /// Accessor to the object name
     const std::string& getName() const
