@@ -119,6 +119,13 @@ void Base::addUpdateCallback(const std::string& name,
     engine.addOutput(&d_componentstate);
 }
 
+void Base::addOutputToCallbackEngine(const std::string& name, BaseData* output)
+{
+    if (m_internalEngine.find(name) != m_internalEngine.end())
+        m_internalEngine[name].addOutputs({output});
+}
+
+
 /// Helper method used by initData()
 void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed, bool isReadOnly )
 {
