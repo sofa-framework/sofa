@@ -73,8 +73,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
 
-
-
 #NodeEditor
 option(SOFAGUIQT_ENABLE_NODEGRAPH "Build the Node graph representation. NodeEditor library is needed." OFF)
 if (SOFAGUIQT_ENABLE_NODEGRAPH)
@@ -84,6 +82,11 @@ sofa_set_01(SOFAGUIQT_HAVE_NODEEDITOR VALUE ${SOFAGUIQT_ENABLE_NODEGRAPH} BOTH_S
 
 # FFMPEG_exec
 sofa_find_package(FFMPEG_exec BOTH_SCOPES)
+
+# TinyXML
+if(SOFA_DUMP_VISITOR_INFO)
+    sofa_find_package(TinyXML REQUIRED BOTH_SCOPES)
+endif()
 
 set(MOC_HEADER_FILES
     AddObject.h
@@ -277,6 +280,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaLoader SofaMiscForceField)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${QT_TARGETS})
+
+if(SOFA_DUMP_VISITOR_INFO)
+    target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml)
+endif()
 
 if(SOFAGUI_ENABLE_QWT)
     target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
