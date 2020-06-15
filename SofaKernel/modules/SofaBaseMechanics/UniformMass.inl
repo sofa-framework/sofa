@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_INL
-#define SOFA_COMPONENT_MASS_UNIFORMMASS_INL
+#pragma once
 
 #include <SofaBaseMechanics/UniformMass.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -36,13 +35,7 @@
 #include <cstring>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 using helper::WriteAccessor;
@@ -718,10 +711,4 @@ void UniformMass<DataTypes, MassType>::loadRigidMass( const std::string&  filena
                          "  - use a Rigid mechanical object instead of a VecXX one." ;
 }
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_MASS_UNIFORMMASS_INL
+} // namespace sofa::component::mass

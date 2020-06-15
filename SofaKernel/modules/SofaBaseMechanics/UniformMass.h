@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_H
-#define SOFA_COMPONENT_MASS_UNIFORMMASS_H
+#pragma once
+
 #include "config.h"
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -30,13 +30,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 template <class DataTypes, class TMassType>
@@ -233,11 +227,5 @@ extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Rigid2Typ
 
 #endif
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mass
 
