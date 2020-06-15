@@ -803,6 +803,7 @@ function(sofa_set_install_relocatable target install_dir)
                 || true
             )
     endif()
+    set_target_properties(${target}_relocatable_install PROPERTIES FOLDER "relocatable_install")
 endfunction()
 
 

@@ -23,7 +23,7 @@
 #define SOFA_CONFIG_SHAREDLIBRARY_DEFINES_H
 
 #ifndef WIN32
-#	define SOFA_EXPORT_DYNAMIC_LIBRARY
+#	define SOFA_EXPORT_DYNAMIC_LIBRARY __attribute__ ((visibility ("default")))
 #   define SOFA_IMPORT_DYNAMIC_LIBRARY
 #else
 #	define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
