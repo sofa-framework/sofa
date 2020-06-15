@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_DIAGONALMASS_H
-#define SOFA_COMPONENT_MASS_DIAGONALMASS_H
+#pragma once
+
 #include "config.h"
-
-
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
@@ -43,13 +41,7 @@
 
 #include <sofa/core/objectmodel/DataFileName.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 template<class DataTypes, class TMassType>
@@ -396,10 +388,4 @@ extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid2Ty
 
 #endif
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mass
