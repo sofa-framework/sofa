@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H
+#pragma once
+
 #include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
-
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/defaulttype/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 /// Apply constant forces to given degrees of freedom.
@@ -56,7 +49,7 @@ public:
 
     typedef sofa::component::topology::PointSubsetData< VecIndex > SetIndex;
 
-public:
+
     /// indices of the points the force applies to
     SetIndex d_indices;
 
@@ -84,7 +77,6 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<ConstantForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-public:
     /// Init function
     void init() override;
 
@@ -155,10 +147,4 @@ extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defau
 
 #endif
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H
+} // namespace sofa::component::forcefield
