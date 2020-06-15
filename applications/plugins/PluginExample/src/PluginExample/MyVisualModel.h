@@ -47,7 +47,7 @@ public:
     void init() override;
     void reinit() override;
 
-    void updateBuffers() {}
+    void updateBuffers() override {}
 
 protected:
 };
