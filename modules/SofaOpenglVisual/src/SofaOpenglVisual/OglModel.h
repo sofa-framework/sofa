@@ -127,6 +127,7 @@ public:
     bool hasTransparent() override;
     bool hasTexture();
 
+    bool m_isDirty{true};
 public:
     bool isUseEdges()	{ return useEdges; }
     bool isUseTriangles()	{ return useTriangles; }
@@ -151,6 +152,7 @@ public:
     void updateEdgesIndicesBuffer();
     void updateTrianglesIndicesBuffer();
     void updateQuadsIndicesBuffer();
+    void deleteBuffers();
 };
 
 typedef sofa::defaulttype::Vec<3,GLfloat> GLVec3f;

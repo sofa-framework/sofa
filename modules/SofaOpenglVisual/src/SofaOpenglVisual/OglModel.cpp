@@ -95,9 +95,23 @@ OglModel::OglModel()
     primitiveTypeOptions->setNames(4, "DEFAULT", "LINES_ADJACENCY", "PATCHES", "POINTS");
     primitiveTypeOptions->setSelectedItem(0);
     primitiveType.endEdit();
+
+   addUpdateCallback("topology", {&m_edges, &m_quads, &m_triangles},
+                     [&]() -> sofa::core::objectmodel::ComponentState
+   {
+       m_componentstate = sofa::core::objectmodel::ComponentState::Loading;
+       clearLoggedMessages();
+       deleteBuffers();
+       init();
+       reinit();
+       initVisual();
+       updateBuffers();
+       return sofa::core::objectmodel::ComponentState::Valid;
+
+   }, {&m_componentstate});
 }
 
-OglModel::~OglModel()
+void OglModel::deleteBuffers()
 {
     if (tex!=nullptr) delete tex;
 
@@ -126,7 +140,11 @@ OglModel::~OglModel()
     {
         glDeleteBuffers(1,&iboQuads);
     }
+}
 
+OglModel::~OglModel()
+{
+    deleteBuffers();
 }
 
 void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
@@ -360,6 +378,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if (!vparams->displayFlags().getShowVisualModels())
         return;
 
+
     if(!isEnabled.getValue())
         return;
 
@@ -370,13 +389,15 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+
+
+
     const VecCoord& vertices = this->getVertices();
     const VecDeriv& vnormals = this->getVnormals();
     const VecTexCoord& vtexcoords= this->getVtexcoords();
     const VecCoord& vtangents= this->getVtangents();
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
-
 
     glEnable(GL_LIGHTING);
 
@@ -596,6 +617,8 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glPopMatrix();
         }
     }
+
+
 }
 
 bool OglModel::hasTransparent()
