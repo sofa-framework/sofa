@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "config.h"
+#include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologySubsetData.h>

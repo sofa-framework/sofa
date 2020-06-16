@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "config.h"
+#include <SofaBaseMechanics/config.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
