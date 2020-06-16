@@ -554,7 +554,7 @@ bool MeshVTKLoader::setInputsData()
 
         BaseData* basedata = reader->inputPointDataVector[i]->createSofaData();
         this->addData(basedata, dataname);
-        m_internalEngine["filename"].addOutput(basedata);
+        addOutputToCallbackEngine("filename", basedata);
 
     }
 
@@ -564,7 +564,7 @@ bool MeshVTKLoader::setInputsData()
         const char* dataname = reader->inputCellDataVector[i]->name.c_str();
         BaseData* basedata = reader->inputCellDataVector[i]->createSofaData();
         this->addData(basedata, dataname);
-        m_internalEngine["filename"].addOutput(basedata);
+        addOutputToCallbackEngine("filename", basedata);
     }
 
     return true;

@@ -228,7 +228,7 @@ public:
     virtual bool read(const std::string& s )
     {
         bool ret = Inherit::read(s);
-        if (ret || fullpath.empty()) updatePath();
+        if (ret || m_fullpath.empty()) updatePath();
         return ret;
     }
 
@@ -236,12 +236,12 @@ public:
     virtual const std::string& getFullPath(unsigned int i) const
     {
         this->updateIfDirty();
-        return fullpath[i];
+        return m_fullpath[i];
     }
     virtual const std::string& getAbsolutePath(unsigned int i) const
     {
         this->updateIfDirty();
-        return fullpath[i];
+        return m_fullpath[i];
     }
 
     virtual void update()
@@ -250,10 +250,21 @@ public:
         this->updatePath();
     }
 
+    void setIsDirectory(bool isDir)
+    {
+        m_isDir = isDir;
+    }
+
+    bool isDirectory()
+    {
+        return m_isDir;
+    }
+
 protected:
     void updatePath();
 
-    sofa::helper::vector<std::string> fullpath;
+    sofa::helper::vector<std::string> m_fullpath;
+    bool m_isDir; //< used to determine how file dialogs should be opened
 
 private:
     DataFileNameVector(const Inherit& d);

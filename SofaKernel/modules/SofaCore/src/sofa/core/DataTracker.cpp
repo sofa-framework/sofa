@@ -66,13 +66,15 @@ void DataTracker::clean()
 ////////////////////
 void DataTrackerDDGNode::addInputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas)
 {
-    for(sofa::core::objectmodel::DDGNode* d : datas)
+    for(sofa::core::objectmodel::BaseData* d : datas) {
+        m_dataTracker.trackData(*d);
         addInput(d);
+    }
 }
 
 void DataTrackerDDGNode::addOutputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas)
 {
-    for(sofa::core::objectmodel::DDGNode* d : datas)
+    for(sofa::core::objectmodel::BaseData* d : datas)
         addOutput(d);
 }
 
