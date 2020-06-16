@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SofaWindowDataGraph.h"
-#include "dataGraph/SofaNodeModel.h"
+#include "dataGraph/SofaComponentNodeModel.h"
 
 #include <QGridLayout>
 
@@ -57,11 +57,11 @@ static std::shared_ptr<DataModelRegistry> registerDataModels()
     std::vector<sofa::core::ClassEntry::SPtr> results;
     sofa::core::ObjectFactory::getInstance()->getAllEntries(results);
 
-    ret->registerModel<SofaNodeModel>();
+    ret->registerModel<SofaComponentNodeModel>();
     //for (auto compo : results)
     //{
     //    std::cout << compo->className << std::endl;
-    //    ret->registerModel<SofaNodeModel>(QString::fromStdString(compo->className));
+    //    ret->registerModel<SofaComponentNodeModel>(QString::fromStdString(compo->className));
     //}
  
 
@@ -217,10 +217,10 @@ size_t SofaWindowDataGraph::addSimulationObject(sofa::core::objectmodel::BaseObj
     const std::string& name = bObject->getClassName() + " - " + bObject->getName();
     msg_info_when(debugNodeGraph, "SofaWindowDataGraph") << "addSimulationObject: " << name;
     
-    QtNodes::Node& fromNode = m_graphScene->createNode(std::make_unique<SofaNodeModel>(bObject, debugNodeGraph));
+    QtNodes::Node& fromNode = m_graphScene->createNode(std::make_unique<SofaComponentNodeModel>(bObject, debugNodeGraph));
     fromNode.setObjectName(QString::fromStdString(bObject->getName()));
     
-    SofaNodeModel* model = dynamic_cast<SofaNodeModel*>(fromNode.nodeDataModel());
+    SofaComponentNodeModel* model = dynamic_cast<SofaComponentNodeModel*>(fromNode.nodeDataModel());
     model->setCaption(name);
 
     auto& fromNgo = fromNode.nodeGraphicsObject();    
@@ -238,7 +238,7 @@ void SofaWindowDataGraph::connectNodeData()
     for (auto node : nodes)
     {
         // get connections
-        SofaNodeModel* childNode = dynamic_cast<SofaNodeModel*>(node->nodeDataModel());
+        SofaComponentNodeModel* childNode = dynamic_cast<SofaComponentNodeModel*>(node->nodeDataModel());
         
         if (childNode->getNbrConnections() == 0)
             continue;
@@ -254,7 +254,7 @@ void SofaWindowDataGraph::connectNodeData()
                 if (pObjName.compare(connection.second.first) == 0)
                 {
                     parentFound = true;
-                    SofaNodeModel* parentNode = dynamic_cast<SofaNodeModel*>(pNode->nodeDataModel());
+                    SofaComponentNodeModel* parentNode = dynamic_cast<SofaComponentNodeModel*>(pNode->nodeDataModel());
                     QtNodes::PortIndex parentId = parentNode->getDataInputId(connection.second.second);
                     QtNodes::PortIndex childId = childNode->getDataInputId(connection.first);
 
