@@ -134,8 +134,8 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // temporaries
     sofa::defaulttype::Vec3f vertex, normal;
 
-    // clear before filling it
-    my_triangles.clear();
+    // reserve vector before filling it
+    my_triangles.reserve( nbrFacet );
 
     // Parsing facets
     for (uint32_t i = 0; i<nbrFacet; ++i)
@@ -194,15 +194,13 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
         // Attribute byte count
         uint16_t count;
         dataFile.read((char*)&count, 2);
-
-        // Security: // checked once before reading in debug mode
-//        position = dataFile.tellg();
-//        if (position == length)
-//            break;
     }
 
     if(my_triangles.size() != (size_t)nbrFacet)
+    {
         msg_error() << "Size mismatch between triangle vector and facetSize";
+        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+    }
 
     this->d_positions.endEdit();
     this->d_triangles.endEdit();
