@@ -110,8 +110,7 @@ void DataTrackerEngine::update()
         return;
     for(auto& callback : m_callbacks)
     {
-        sofa::core::objectmodel::ComponentState state = callback();
-        m_owner->d_componentstate.setValue(cs);
+        m_owner->d_componentstate.setValue(callback());
     }
     cleanDirty();
 }
