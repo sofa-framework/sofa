@@ -133,7 +133,7 @@ namespace core
     /// Similar behavior than a DataEngine, but this is NOT a component
     /// and can be used everywhere.
     ///
-    /// Note that it contains a DataTrackerDDGNode (m_dataTracker)
+    /// Note that it contains a DataTracker (m_dataTracker)
     /// to be able to check precisly which input changed if needed.
     ///
     ///
@@ -146,30 +146,45 @@ namespace core
     ///    addOutput // indicate all outputs
     ///    setDirtyValue(); // the engine must start dirty (of course, no output are up-to-date)
     ///
+    ///  DataTrackerCallback is usually created using the "addUpdateCallback()" method from Base.
+    ///  Thus the context is usually passed to the lambda making all public & private
+    ///  attributes & methods of the component accessible within the callback function.
+    ///  example:
     ///
-    /// void UpdateCallback( DataTrackerEngine* dataTrackerEngine )
-    /// {
-    ///      // get the list of inputs for this DDGNode
-    ///      const core::DataTrackerEngine::DDGLinkContainer& inputs = dataTrackerEngine->getInputs();
-    ///      // get the list of outputs for this DDGNode
-    ///      const core::DataTrackerEngine::DDGLinkContainer& outputs = dataTrackerEngine->getOutputs();
+    ///  addUpdateCallback("name", {&name}, [this](DataTracker& tracker){
+    ///       // Increment the state counter but without changing the state.
+    ///       return m_componentstate.getValue();
+    ///  }, {&m_componentstate});
     ///
-    ///      // we known who is who from the order Data were added to the DataTrackerEngine
-    ///      static_cast<Data< FirstInputType >*>( inputs[0] );
+    ///  A member function with the same signature - core::objectmodel::CompoentState(DataTracker&) - can
+    ///  also be used.
     ///
-    ///      // all inputs must be updated
-    ///      // can be done by Data::getValue, ReadAccessor, Data::updateIfDirty, DataTrackerDDGNode::updateAllInputsIfDirty
+    ///  The update of the inputs is done for you before calling the callback,
+    ///  and they are also cleaned for you after the call. Thus there's no need
+    ///  to manually call updateAllInputsIfDirty() or cleanDirty() (see implementation of update()
     ///
-    ///      // must be called AFTER updating all inputs, otherwise a modified input will set the engine to dirty again.
-    ///      // must be called BEFORE read access to an output, otherwise read-accessing the output will call update
-    ///      dataTrackerEngine->cleanDirty();
-    ///
-    ///      // FINALLY access and set outputs
-    ///      // Note that a write-only access has better performance and is enough in 99% engines   Data::beginWriteOnly, WriteOnlyAccessor
-    ///      // A read access is possible, in that case, be careful the cleanDirty is called before the read-access
-    /// }
-    ///
-    class SOFA_CORE_API DataTrackerEngine : public DataTrackerDDGNode
+    class SOFA_CORE_API DataTrackerCallback : public DataTrackerDDGNode
+    {
+    public:
+        /// set the update function to call
+        /// when asking for an output and any input changed.
+        void setCallback(std::function<sofa::core::objectmodel::ComponentState(const DataTracker&)> f);
+
+        /// Calls the callback when one of the data has changed.
+        void update() override;
+
+        inline void setOwner(sofa::core::objectmodel::Base* owner) { m_owner = owner; }
+
+    protected:
+        std::function<sofa::core::objectmodel::ComponentState(const DataTracker&)> m_callback;
+        sofa::core::objectmodel::Base* m_owner {nullptr};
+    };
+
+
+    ///////////////////////
+
+    class [[deprecated("2020-06-17: DataTrackerEngine has been deprecated, use DataTrackerCallback instead. DataTrackerCallback only supports 1 callback at a time, but multiple DataTrackerCallbacks can be created within a single component")]]
+    SOFA_CORE_API DataTrackerEngine : public DataTrackerDDGNode
     {
     public:
         /// set the update function to call
@@ -185,23 +200,7 @@ namespace core
         sofa::core::objectmodel::Base* m_owner {nullptr};
     };
 
-    class SOFA_CORE_API CallbackEngine : public DataTrackerDDGNode
-    {
-    public:
-        /// set the update function to call
-        /// when asking for an output and any input changed.
-        void setCallback(std::function<sofa::core::objectmodel::ComponentState(void)> f);
-
-        /// Calls the callback when one of the data has changed.
-        void update() override;
-
-        inline void setOwner(sofa::core::objectmodel::Base* owner) { m_owner = owner; }
-
-    protected:
-        std::function<sofa::core::objectmodel::ComponentState(void)> m_callback;
-        sofa::core::objectmodel::Base* m_owner {nullptr};
-    };
-/////////////////////////
+    /////////////////////////
 
 
 

@@ -172,7 +172,7 @@ public:
         , depend_on_input2(initData(&depend_on_input2,"depend_on_input2","depend_on_input2"))
     {
         addUpdateCallback("TestObject2Engine", {&input, &input2}
-                          , std::bind(&TestObject2::myUpdate, this)
+                          , std::bind(&TestObject2::myUpdate, this, std::placeholders::_1)
                           , {&depend_on_input, &depend_on_input2});
     }
 
@@ -183,11 +183,9 @@ public:
 
 protected:
 
-    core::DataTrackerEngine m_dataTracker;
-
-
-    sofa::core::objectmodel::ComponentState myUpdate()
+    sofa::core::objectmodel::ComponentState myUpdate(const core::DataTracker& tracker)
     {
+        SOFA_UNUSED(tracker);
         ++s_updateCounter;
 
         depend_on_input.setValue(input.getValue());
@@ -215,7 +213,7 @@ struct DataTrackerEngine_test: public BaseTest
 {
 
     static unsigned updateCounter;
-    core::DataTrackerEngine dataTracker;
+    core::DataTrackerCallback dataTracker;
     void SetUp() override
     {
         updateCounter = 0;
@@ -276,7 +274,7 @@ struct DataTrackerEngine_test: public BaseTest
 
         dataTracker.addInput(&testObject.myData); // several inputs can be added
         dataTracker.addOutput(&testObject2.myData); // several output can be added
-        dataTracker.addCallback([&](){
+        dataTracker.setCallback([&](const core::DataTracker&){
             ++updateCounter;
             testObject2.myData.setValue(testObject.myData.getValue());
             return sofa::core::objectmodel::ComponentState::Valid;
