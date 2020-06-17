@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,12 +25,6 @@
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseTopologyEngine.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-
-#ifndef NDEBUG
-#define CHECK_TOPOLOGY true
-#else
-#define CHECK_TOPOLOGY false
-#endif
 
 namespace sofa
 {
@@ -269,7 +263,11 @@ public:
     /// get information about connexity of the mesh
     /// @{
     /// Checks if the topology has only one connected component. @return Return true if so.
-    virtual bool checkConnexity() {return true;}
+    virtual bool checkConnexity() { return true; }
+
+    /// Checks if the topology is coherent. @return true if so. Should be override by child class.
+    virtual bool checkTopology() const { return true; }
+
     /// Returns the number of connected component.
     virtual size_t getNumberOfConnectedComponent() {return 0;}
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)

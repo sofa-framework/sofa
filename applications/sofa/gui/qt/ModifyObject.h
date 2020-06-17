@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -29,7 +29,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/simulation/Node.h>
-#include <SofaValidation/Monitor.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>
 
 #include <QDialog>

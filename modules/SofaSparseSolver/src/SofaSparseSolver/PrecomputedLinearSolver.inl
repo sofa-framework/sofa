@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 #define SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 
@@ -108,6 +105,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
         loadMatrixWithCSparse(M);
         if (use_file.getValue()) internalData.writeFile(ss.str().c_str(),systemSize);
 #else
+        SOFA_UNUSED(M);
         msg_error()<< "CSPARSE support is required to invert the matrix";
 #endif
     }

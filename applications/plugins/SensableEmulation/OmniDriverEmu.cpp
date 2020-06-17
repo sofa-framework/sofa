@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,6 +44,9 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
+#include <chrono>
+#include <thread>
+
 #ifndef WIN32
 #  include <pthread.h>
 #else
@@ -84,11 +87,11 @@ OmniDriverEmu::OmniDriverEmu()
     , omniVisu(initData(&omniVisu, false, "omniVisu", "Visualize the position of the interface in the virtual scene"))
     , simuFreq(initData(&simuFreq, 1000, "simuFreq", "frequency of the \"simulated Omni\""))
     , simulateTranslation(initData(&simulateTranslation, false, "simulateTranslation", "do very naive \"translation simulation\" of omni, with constant orientation <0 0 0 1>"))
-    , thTimer(NULL)
+    , thTimer(nullptr)
     , trajPts(initData(&trajPts, "trajPoints","Trajectory positions"))
     , trajTim(initData(&trajTim, "trajTiming","Trajectory timing"))
-    , visu_base(NULL)
-    , visu_end(NULL)
+    , visu_base(nullptr)
+    , visu_end(nullptr)
     , currentToolIndex(0)
     , isToolControlled(true)
 {
@@ -102,7 +105,7 @@ OmniDriverEmu::OmniDriverEmu()
 
 OmniDriverEmu::~OmniDriverEmu()
 {
-    if (thTimer != NULL)
+    if (thTimer != nullptr)
         delete thTimer;
 }
 
@@ -301,17 +304,11 @@ void *hapticSimuExecute( void *ptr )
 
             endTime = (double)omniDrv->thTimer->getTime();  //[s]
             totalTime = (endTime - startTime);  // [us]
-            timeToSleep = int( (requiredTime - totalTime) - timeCorrection); //  [us]
+            timeToSleep = int( ((requiredTime - totalTime) - timeCorrection) * timeScale); //  [us]
 
             if (timeToSleep > 0)
             {
-#ifndef WIN32
-                // Microseconds sleep
-                usleep(1000000.0 * timeScale * timeToSleep);
-#else
-                // Milliseconds sleep
-                Sleep(static_cast<DWORD>(1000.0 * timeScale * timeToSleep));
-#endif
+                std::this_thread::sleep_for(std::chrono::seconds(timeToSleep));
             }
             else
             {
@@ -325,11 +322,8 @@ void *hapticSimuExecute( void *ptr )
                 msg_info(omniDrv) << "Running Asynchro without action" ;
                 oneTimeMessage = 1;
             }
-#ifndef WIN32
-            usleep(10000);
-#else
-            Sleep(static_cast<DWORD>(10000));
-#endif
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
     }
 }
@@ -374,7 +368,7 @@ void OmniDriverEmu::bwdInit()
         thTimer = new(helper::system::thread::CTime);
 
 #ifndef WIN32
-    if ( pthread_create( &hapSimuThread, NULL, hapticSimuExecute, (void*)this) == 0 )
+    if ( pthread_create( &hapSimuThread, nullptr, hapticSimuExecute, static_cast<void*>(this)) == 0 )
     {
         msg_info() << "OmniDriver : Thread created for Omni simulation." ;
         omniSimThreadCreated=true;
@@ -635,7 +629,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
 }
 
 
-int OmniDriverEmuClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
+static int OmniDriverEmuClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
         .add< OmniDriverEmu >();
 
 } // namespace controller

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,18 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "MyProjectiveConstraintSet.inl"
+#include <PluginExample/MyProjectiveConstraintSet.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using namespace sofa::defaulttype;
@@ -40,16 +34,11 @@ int MyProjectiveConstraintSetClass = core::RegisterObject("just an example of te
     .add< MyProjectiveConstraintSet<Vec3Types> >()
     .add< MyProjectiveConstraintSet<Vec1Types> >()
     .add< MyProjectiveConstraintSet<Rigid3Types> >()
+;
 
-    ;
-
-template class MyProjectiveConstraintSet<Rigid3Types>;
-template class MyProjectiveConstraintSet<Vec3Types>;
-
+template class SOFA_PLUGINEXAMPLE_API MyProjectiveConstraintSet<Rigid3Types>;
+template class SOFA_PLUGINEXAMPLE_API MyProjectiveConstraintSet<Vec3Types>;
 
 
-} // namespace projectiveconstraintset
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::projectiveconstraintset

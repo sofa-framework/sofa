@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -109,6 +109,36 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"VisualManagerPass", Pluginized("v19.06", "SofaOpenglVisual")},
     {"VisualmanagerSecondaryPass", Pluginized("v19.06", "SofaOpenglVisual")},
 
+    // SofaValidation was pluginized in #1302
+    {"CompareState", Pluginized("v20.06", "SofaValidation")},
+    {"CompareTopology", Pluginized("v20.06", "SofaValidation")},
+    {"DataController", Pluginized("v20.06", "SofaValidation")},
+    {"DataMonitor", Pluginized("v20.06", "SofaValidation")},
+    {"DevAngleCollisionMonitor", Pluginized("v20.06", "SofaValidation")},
+    {"DevMonitorManager", Pluginized("v20.06", "SofaValidation")},
+    {"DevTensionMonitor", Pluginized("v20.06", "SofaValidation")},
+    {"EvalPointsDistance", Pluginized("v20.06", "SofaValidation")},
+    {"EvalSurfaceDistance", Pluginized("v20.06", "SofaValidation")},
+    {"ExtraMonitor", Pluginized("v20.06", "SofaValidation")},
+    {"Monitor", Pluginized("v20.06", "SofaValidation")},
+
+    // SofaDenseSolver was pluginized in #1299
+    {"LULinearSolver", Pluginized("v20.06", "SofaDenseSolver")},
+    //{"NewMatCholeskySolver", Pluginized("v20.06", "SofaDenseSolver")},
+    //{"NewMatCGLinearSolver", Pluginized("v20.06", "SofaDenseSolver")},
+
+    // SofaDenseSolver was pluginized in #1344
+    {"DynamicSparseGridGeometryAlgorithms", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"DynamicSparseGridTopologyAlgorithms", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"DynamicSparseGridTopologyContainer", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"DynamicSparseGridTopologyModifier", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"HexahedronCompositeFEMForceFieldAndMass", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"HexahedronCompositeFEMMapping", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"MultilevelHexahedronSetTopologyContainer", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"NonUniformHexahedralFEMForceFieldAndMass", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"NonUniformHexahedronFEMForceFieldAndMass", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"SparseGridMultipleTopology", Pluginized("v20.06", "SofaNonUniformFem")},
+    {"SparseGridRamificationTopology", Pluginized("v20.06", "SofaNonUniformFem")},
 
     /***********************/
     // REMOVED SINCE v20.06

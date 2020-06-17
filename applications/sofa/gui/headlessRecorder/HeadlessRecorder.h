@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -46,6 +46,9 @@
 // SCREENSHOT
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/system/SetDirectory.h>
+
+#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
+#include <sofa/helper/gl/Capture.h>
 
 namespace sofa
 {
@@ -98,7 +101,6 @@ private:
     void record();
     bool canRecord();
     bool keepFrame();
-    void screenshotPNG(std::string fileName);
 
     void displayOBJs();
     void drawScene();
@@ -111,7 +113,7 @@ private:
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
-    std::unique_ptr<VideoRecorderFFmpeg> videorecorder;
+    sofa::helper::gl::VideoRecorderFFMPEG m_videorecorder;
     int m_nFrames;
 
     GLuint fbo;
@@ -120,8 +122,10 @@ private:
     double lastModelviewMatrix[16];
     bool initTexturesDone;
     bool initVideoRecorder;
+    sofa::helper::gl::Capture m_screencapture;
 
-    static int width, height, fps;
+    static GLsizei width, height;
+    static unsigned int fps;
     static std::string fileName;
     static bool saveAsScreenShot, saveAsVideo;
     static HeadlessRecorder instance;

@@ -45,6 +45,7 @@ endif()
 
 add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
+find_package(CImgPlugin REQUIRED)
 find_package(image QUIET)
 
 if(image_FOUND)
@@ -56,7 +57,7 @@ endif()
 
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} Flexible SofaTest SofaGTestMain)
+target_link_libraries(${PROJECT_NAME} Flexible SofaTest SofaGTestMain CImgPlugin)
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)

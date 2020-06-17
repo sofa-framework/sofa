@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -262,7 +262,9 @@ public:
         v->execute( this->getContext() );
     }
 
-    static std::string templateName(const MatrixLinearSolver<Matrix,Vector,ThreadManager>* = nullptr)
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
+    static std::string GetCustomTemplateName()
     {
         return ThreadManager::Name()+Matrix::Name();
     }
@@ -271,12 +273,6 @@ public:
     {
         return ThreadManager::isAsyncSolver();
     }
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
 
     void invert(Matrix& /*M*/) override {}
 

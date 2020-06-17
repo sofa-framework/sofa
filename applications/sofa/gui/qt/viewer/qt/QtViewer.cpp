@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -1013,7 +1013,7 @@ void QtViewer::calcProjection(int width, int height)
     if (!currentCamera)
         return;
 
-    if (groot && (!groot->f_bbox.getValue().isValid() || m_bShowAxis))
+    if (groot && (groot->f_bbox.getValue().isValid() || m_bShowAxis))
     {
         vparams->sceneBBox() = groot->f_bbox.getValue();
         currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());

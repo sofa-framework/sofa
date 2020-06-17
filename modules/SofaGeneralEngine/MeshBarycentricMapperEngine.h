@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_H
-#define SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_H
+#pragma once
+
 #include "config.h"
-
-
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -32,18 +30,11 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
+namespace sofa::component::engine
 {
-
-namespace component
-{
-
-namespace engine
-{
-
-/**
- * This class extrudes a surface
- */
+ /*
+  * This engine computes barycentric coefficients from an input set of topology (and positions) and some other (mapped) positions
+  */
 template <class DataTypes>
 class MeshBarycentricMapperEngine : public core::DataEngine
 {
@@ -56,61 +47,34 @@ public:
     typedef typename sofa::helper::vector<unsigned int>  VecIndices;
 
 protected:
-
     MeshBarycentricMapperEngine();
 
-    ~MeshBarycentricMapperEngine() override {}
 public:
+    virtual ~MeshBarycentricMapperEngine() override {}
+
     void init() override;
-
     void reinit() override;
-
     void doUpdate() override;
-
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void addPointInLine(const int /*lineIndex*/, const SReal* /*baryCoords*/);
+    void addPointInLine(const int lineIndex, const SReal* baryCoords);
+    void addPointInTriangle(const int triangleIndex, const SReal* baryCoords, const unsigned int pointIndex);
+    void addPointInQuad(const int quadIndex, const SReal* baryCoords);
+    void addPointInTetra(const int tetraIndex, const SReal* baryCoords, const unsigned int pointIndex);
+    void addPointInCube(const int cubeIndex, const SReal* baryCoords);
 
-    void addPointInTriangle(const int /*triangleIndex*/, const SReal* /*baryCoords*/, const unsigned int /*pointIndex*/);
+    Data<VecCoord> d_inputPositions; ///< Initial positions of the master points
+    Data<VecCoord> d_mappedPointPositions; ///< Initial positions of the mapped points
+    Data<VecCoord> d_barycentricPositions; ///< Output : Barycentric positions of the mapped points
+    Data< VecIndices> d_tableElements; ///< Output : Table that provides the element index to which each input point belongs
+    Data<bool> d_bComputeLinearInterpolation; ///< if true, computes a linear interpolation (debug)
 
-    void addPointInQuad(const int /*quadIndex*/, const SReal* /*baryCoords*/);
-
-    void addPointInTetra(const int /*tetraIndex*/, const SReal* /*baryCoords*/, const unsigned int /*pointIndex*/);
-
-    void addPointInCube(const int /*cubeIndex*/, const SReal* /*baryCoords*/);
-
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const MeshBarycentricMapperEngine<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-    bool initialized;
-    Data<std::string> InputMeshName; ///< Name and path of Input mesh Topology
-    Data<VecCoord> InputPositions; ///< Initial positions of the master points
-    Data<VecCoord> MappedPointPositions; ///< Initial positions of the mapped points
-    Data<VecCoord> BarycentricPositions; ///< Output : Barycentric positions of the mapped points
-    Data< VecIndices> TableElements; ///< Output : Table that provides the element index to which each input point belongs
-    Data<bool> computeLinearInterpolation; ///< if true, computes a linear interpolation (debug)
-
-    Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices; ///< Indices of a linear interpolation
-    Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues; ///< Values of a linear interpolation
+    Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > d_interpolationIndices; ///< Indices of a linear interpolation
+    Data< sofa::helper::vector<sofa::helper::vector< Real > > > d_interpolationValues; ///< Values of a linear interpolation
+    
+    SingleLink<MeshBarycentricMapperEngine<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology; ///< Name and path of Input mesh Topology
 
 private:
-
-    void clear1d ( int reserve );
-    void clear2d ( int reserve );
-    void clear3d ( int reserve );
-
-    sofa::core::topology::BaseMeshTopology* TopoInput ;
-
-    VecCoord* baryPos ;
-    VecIndices* tableElts;
-
     sofa::helper::vector<sofa::helper::vector< unsigned int > >* linearInterpolIndices;
     sofa::helper::vector<sofa::helper::vector< Real > >* linearInterpolValues;
 };
@@ -122,10 +86,5 @@ extern template class SOFA_GENERAL_ENGINE_API MeshBarycentricMapperEngine<defaul
  
 #endif
 
-} // namespace engine
+} // namespace sofa::component::engine
 
-} // namespace component
-
-} // namespace sofa
-
-#endif

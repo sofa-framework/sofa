@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -58,10 +58,7 @@ void GLBackend::setPickingMethod(sofa::gui::PickHandler* pick, sofa::component::
 void GLBackend::setPrefix(const std::string& prefix)
 {
     m_capture.setPrefix(prefix);
-
-#if SOFAGUIQT_HAVE_FFMPEG_EXEC
     m_videoRecorderFFMPEG.setPrefix(prefix);
-#endif // SOFAGUIQT_HAVE_FFMPEG_EXEC
 }
 
 const std::string GLBackend::screenshotName()
@@ -89,8 +86,7 @@ void GLBackend::setBackgroundImage(helper::io::Image* image)
 bool GLBackend::initRecorder( int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codecExtension, const std::string& codecName)
 {
     bool res = true;
-#if SOFAGUIQT_HAVE_FFMPEG_EXEC
-    std::string ffmpeg_exec_path = "NO_FFMPEG_EXECUTABLE";
+    std::string ffmpeg_exec_path = "";
     const std::string ffmpegIniFilePath = Utils::getSofaPathTo("etc/SofaGuiQt.ini");
     std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(ffmpegIniFilePath);
     if (iniFileValues.find("FFMPEG_EXEC_PATH") != iniFileValues.end())
@@ -102,30 +98,18 @@ bool GLBackend::initRecorder( int width, int height, unsigned int framerate, uns
     std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, codecExtension);
 
     res = m_videoRecorderFFMPEG.init(ffmpeg_exec_path, videoFilename, width, height, framerate, bitrate, codecName);
-#else
-   SOFA_UNUSED(width);
-   SOFA_UNUSED(height);
-   SOFA_UNUSED(framerate);
-   SOFA_UNUSED(bitrate);
-   SOFA_UNUSED(codecExtension);
-   SOFA_UNUSED(codecName);
-#endif // SOFAGUIQT_HAVE_FFMPEG_EXEC
 
     return res;
 }
 
 void GLBackend::endRecorder()
 {
-#if SOFAGUIQT_HAVE_FFMPEG_EXEC
     m_videoRecorderFFMPEG.finishVideo();
-#endif //SOFAGUIQT_HAVE_FFMPEG_EXEC
 }
 
 void GLBackend::addFrameRecorder()
 {
-#if SOFAGUIQT_HAVE_FFMPEG_EXEC
     m_videoRecorderFFMPEG.addFrame();
-#endif //SOFAGUIQT_HAVE_FFMPEG_EXEC
 }
 
 void GLBackend::drawBackgroundImage(const int screenWidth, const int screenHeight)

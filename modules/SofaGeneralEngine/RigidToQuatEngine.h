@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,16 +69,6 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const RigidToQuatEngine<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     //
     Data<helper::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
     Data<helper::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
@@ -88,7 +78,6 @@ public:
 
 #if  !defined(RIGIDTOQUATENGINE_CPP)
 extern template class SOFA_GENERAL_ENGINE_API RigidToQuatEngine<defaulttype::Vec3Types>;
- 
 #endif
 
 } // namespace engine

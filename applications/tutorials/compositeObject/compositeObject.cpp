@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -41,7 +41,6 @@
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaAdvanced/initSofaAdvanced.h>
 #include <SofaMisc/initSofaMisc.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
@@ -250,7 +249,6 @@ int main(int argc, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaAdvanced();
     sofa::component::initSofaMisc();
     sofa::gui::initMain();
 

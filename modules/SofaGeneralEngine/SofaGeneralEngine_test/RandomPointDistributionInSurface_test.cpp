@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,6 +22,7 @@
 
 #include <SofaTest/Sofa_test.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <thread>
 
 #include <SofaGeneralEngine/RandomPointDistributionInSurface.h>
 using sofa::component::engine::RandomPointDistributionInSurface;
@@ -189,7 +190,7 @@ TYPED_TEST(RandomPointDistributionInSurface_test, seeds)
 
     // true random seeds
     this->generate(vertices, triangles, 0.1, 0, nbPoints, outputPoints1);
-    sofa::helper::system::thread::CTime::sleep(1.1); // wait a bit in order to change seed  
+    std::this_thread::sleep_for(std::chrono::milliseconds(1100));; // wait a bit in order to change seed
     this->generate(vertices, triangles, 0.1, 0, nbPoints, outputPoints2);
     ASSERT_EQ(outputPoints1.size(), nbPoints);
     ASSERT_EQ(outputPoints2.size(), nbPoints);

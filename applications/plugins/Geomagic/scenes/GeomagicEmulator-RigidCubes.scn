@@ -1,0 +1,92 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin name="Geomagic plugin" pluginName="Geomagic" />
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name='SofaHaptics'/>
+    
+    <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
+    <BruteForceDetection name="detection" />
+    <DefaultContactManager name="response" response="FrictionContact" />
+    <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
+    <FreeMotionAnimationLoop/>
+    
+    <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
+    
+	<GeomagicEmulator name="GeomagicDevice" deviceName="Default Device" scale="1" positionBase="0 0 0" orientationBase="0 0.707 0 -0.707"
+    drawDevice="1" drawDeviceFrame="1" forceFeedBack="@Instrument/LCPFF1"/>	
+	
+	<Node name="CubeStatic1">
+		<MeshObjLoader name="loaderC" filename="mesh/cube.obj" scale3d="4 6 1" translation="-2 -2 -8" />
+        <MechanicalObject name="Cube"  position="@loaderC.position" />     
+		<MeshTopology name="grid" src="@loaderC" />
+		<TriangleCollisionModel simulated="0" moving="0" bothSide="false" group="1"/>
+		<LineCollisionModel simulated="0" moving="0" group="1"/>
+		<PointCollisionModel simulated="0" moving="0" group="1"/>
+		<Node name="CubeVisu">
+			<OglModel name="CubeVisualModel"/>
+			<IdentityMapping input="@../" output="@CubeVisualModel" />
+		</Node>
+    </Node>
+    
+    <Node name="CubeStatic2">
+		<MeshObjLoader name="loaderC2" filename="mesh/cube.obj" scale3d="4 6 1" translation="-2 -2 8" />
+        <MechanicalObject position="@loaderC2.position"/>
+        <MeshTopology name="grid" src="@loaderC2" />
+		
+        <TriangleCollisionModel bothSide="false"/>
+		<LineCollisionModel />
+		<PointCollisionModel />
+        <Node name="Cube2Visu">
+			<OglModel name="Cube2VisualModel"/>
+			<IdentityMapping input="@../" output="@Cube2VisualModel" />
+		</Node>
+    </Node>
+	
+	<Node name="Floor">
+        <MeshObjLoader name="loaderF" filename="mesh/cube.obj" scale3d="20 0.5 20" translation="0 -10 0"/>
+        <MeshTopology src="@loaderF" />
+        <MechanicalObject src="@loaderF" />
+        <TriangleCollisionModel simulated="0" moving="0" bothSide="false" group="1"/>
+        <LineCollisionModel simulated="0" moving="0" group="1" />
+        <PointCollisionModel simulated="0" moving="0" group="1"/>
+		<Node name="VisuFloor" >
+            <OglModel name="FloorVisualModel"/>
+            <IdentityMapping input="@../" output="@FloorVisualModel" />
+        </Node>
+    </Node>
+
+	
+    <!-- ADDED: the Mechanical state Controller gathers events from the Omni driver and populates the Mechanical state -->
+    <Node name="Omni">
+        <MechanicalObject template="Rigid3" name="DOFs" position="@GeomagicDevice.positionDevice"/>
+        <MechanicalStateController template="Rigid3" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
+    </Node>
+	
+	<Node name="Instrument" >
+        <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
+        <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
+        
+		<MechanicalObject name="instrumentState" template="Rigid3" />
+		<UniformMass name="mass" totalMass="0.05" />
+		
+		<RestShapeSpringsForceField stiffness='1000000' angularStiffness='1000000' external_rest_shape='@../Omni/DOFs' points='0' external_points='0'/>
+        <LCPForceFeedback name="LCPFF1" activate="true" forceCoef="0.1"/> 
+        <UncoupledConstraintCorrection/>
+		
+		<Node name="VisuTool" >
+            <MeshObjLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
+            <OglModel name="InstrumentVisualModel" src="@meshLoader_1" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
+            <RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
+        </Node>
+		
+        <Node name="CollisionModel" >
+            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+            <MeshTopology src="@loader" name="InstrumentCollisionModel" />
+            <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
+            <LineCollisionModel contactStiffness="100"/>			
+            <PointCollisionModel contactStiffness="100"/>
+            <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />		
+        </Node>       
+    </Node> 
+
+</Node>

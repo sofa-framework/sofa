@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,6 @@
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaAdvanced/initSofaAdvanced.h>
 #include <SofaMisc/initSofaMisc.h>
 
 #include <sofa/simulation/Simulation.h>
@@ -50,7 +49,6 @@ struct LoadScene_test: public Sofa_test<>
        sofa::component::initSofaBase();
        sofa::component::initSofaCommon();
        sofa::component::initSofaGeneral();
-       sofa::component::initSofaAdvanced();
        sofa::component::initSofaMisc();
 
        simulation::Simulation* simulation;

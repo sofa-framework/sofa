@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -259,9 +259,11 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (m_topology->getRevision() != m_topologyRevision)
         updateFromTopology();
 
-    if (m_needsUpdate && !cubeModel->empty()) cubeModel->resize(0);
+    if (m_needsUpdate && !cubeModel->empty())
+        cubeModel->resize(0);
 
-    if (!isMoving() && !cubeModel->empty() && !m_needsUpdate) return; // No need to recompute BBox if immobile nor if mesh didn't change.
+    if (!isMoving() && !cubeModel->empty() && !m_needsUpdate)
+        return; // No need to recompute BBox if immobile nor if mesh didn't change.
 
     // set to false to avoid excesive loop
     m_needsUpdate=false;

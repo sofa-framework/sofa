@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -261,8 +261,8 @@ void DataEngine_test< TestDataEngine<component::engine::JoinPoints<defaulttype::
 template<>
 void DataEngine_test< TestDataEngine<component::engine::RandomPointDistributionInSurface<defaulttype::Vec3Types> > >::preInit()
 {
-    m_engineInput->findData("vertices")->read("1 -0.5 -0.5 -0.5  1 0 0  0 1 0  0 0 1");
-    m_engineInput->findData("triangles")->read("0 1 2 0 1 3  0 2 3  1 2 3");
+    m_engineInput->findData("vertices")->read("-0.5 -0.5 -0.5  1 0 0  0 1 0  0 0 1");
+    m_engineInput->findData("triangles")->read("0 2 1  0 1 3  0 3 2   1 2 3");
 }
 
 // testing every engines of SofaEngine here

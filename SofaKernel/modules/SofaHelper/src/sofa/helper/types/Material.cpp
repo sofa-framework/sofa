@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,10 +32,10 @@ namespace types
 
     void Material::setColor(float r, float g, float b, float a)
     {
-        ambient = defaulttype::RGBAColor(r*0.2f,g*0.2f,b*0.2f,a);
-        diffuse = defaulttype::RGBAColor(r,g,b,a);
-        specular = defaulttype::RGBAColor(r,g,b,a);
-        emissive = defaulttype::RGBAColor(r,g,b,a);
+        ambient = RGBAColor(r*0.2f,g*0.2f,b*0.2f,a);
+        diffuse = RGBAColor(r,g,b,a);
+        specular = RGBAColor(r,g,b,a);
+        emissive = RGBAColor(r,g,b,a);
     }
 
     SOFA_HELPER_API std::ostream&  operator << (std::ostream& out, const Material& m )
@@ -67,10 +67,10 @@ namespace types
 
      Material::Material()
 {
-    ambient =  defaulttype::RGBAColor( 0.2f,0.2f,0.2f,1.0f);
-    diffuse =  defaulttype::RGBAColor( 0.75f,0.75f,0.75f,1.0f);
-    specular =  defaulttype::RGBAColor( 1.0f,1.0f,1.0f,1.0f);
-    emissive =  defaulttype::RGBAColor( 0.0f,0.0f,0.0f,0.0f);
+    ambient =  RGBAColor( 0.2f,0.2f,0.2f,1.0f);
+    diffuse =  RGBAColor( 0.75f,0.75f,0.75f,1.0f);
+    specular =  RGBAColor( 1.0f,1.0f,1.0f,1.0f);
+    emissive =  RGBAColor( 0.0f,0.0f,0.0f,0.0f);
 
     shininess =  45.0f;
     name = "Default";

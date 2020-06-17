@@ -1,30 +1,17 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: licenseUpdater.sh <src-dir> <license> <year> <version>"
+    echo "Usage: licenseUpdater.sh <src-dir> <license>"
     echo "  src-dir: all files in this folder will be affected"
     echo "  license: choose in ['auto', 'LGPL', 'GPL']"
-    echo "  year: YYYY formatted year for the copyright"
-    echo "  version: SOFA version"
 }
 
-if [[ "$#" = 4 ]]; then
+if [[ "$#" = 2 ]]; then
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     SRC_DIR="$(cd "$1" && pwd)"
     LICENSE="$2"
-    YEAR="$3"
-    VERSION="$4"
-
-    VERSION_TAG="____VERSION_NUMBER____"
-    YEAR_TAG="YYYY"
 else
     usage; exit 1
-fi
-
-if [ ${#VERSION} -gt ${#VERSION_TAG} ]; then
-    echo "ERROR: <version> length can be ${#VERSION_TAG} chars max."; exit 1
-elif [ ${#YEAR} -gt ${#YEAR_TAG} ]; then
-    echo "ERROR: <year> length can be ${#YEAR_TAG} chars max."; exit 1
 fi
 
 if [ ! -d "$SRC_DIR" ]; then
@@ -37,7 +24,7 @@ files-to-update() {
 
 get-license() {
     file="$1"
-    if grep -q "*       SOFA, Simulation Open-Framework Architecture," "$file"; then
+    if grep -q -E "\*[ ]+SOFA, Simulation Open-Framework Architecture" "$file"; then
         if grep -q "GNU Lesser General Public License" "$file" && grep -q "GNU General Public License" "$file"; then
             echo "multiple";
         elif grep -q "GNU Lesser General Public License" "$file"; then
@@ -50,31 +37,6 @@ get-license() {
     else
         echo "none";
     fi
-}
-
-set-year() {
-    echo "$(perl -p -e "s/$YEAR_TAG/$YEAR/g" $1)"
-}
-
-set-version() {
-    local tag_size=${#VERSION_TAG}
-    local version="$VERSION"
-    local version_size=${#version}
-
-    while [ $version_size -lt $tag_size ]; do
-        version+=' '
-        version_size=${#version}
-    done
-
-    echo "$(perl -p -e "s/$VERSION_TAG/$version/g" $1)"
-}
-
-# prepare-header <file>
-prepare-header() {
-    if [ ! -e "$1" ]; then
-        echo "$1: file not found."; exit 1
-    fi
-    set-year "$1" | set-version
 }
 
 escape-for-perl() {
@@ -96,8 +58,8 @@ main() {
         if [ ! -e "$SCRIPT_DIR/LGPL_header.template" ] || [ ! -e "$SCRIPT_DIR/GPL_header.template" ]; then
             echo "ERROR: missing LGPL_header.template and/or GPL_header.template in $SCRIPT_DIR"; exit 1
         fi
-        LGPL_HEADER="$(prepare-header $SCRIPT_DIR/LGPL_header.template)"
-        GPL_HEADER="$(prepare-header $SCRIPT_DIR/GPL_header.template)"
+        LGPL_HEADER="$(cat $SCRIPT_DIR/LGPL_header.template)"
+        GPL_HEADER="$(cat $SCRIPT_DIR/GPL_header.template)"
     else
         file="${SCRIPT_DIR}/${LICENSE}_header.template"
         if [ ! -e "$file" ]; then
@@ -128,7 +90,7 @@ main() {
                     echo "$file updated with GPL"
                     ;;
                 *)
-                    echo "WARNING: $file not changed. Licence detected: $current_license"
+                    echo "WARNING: $file not changed. License detected: $current_license"
                     ;;
             esac
         else # [ $LICENSE != "auto" ]
@@ -141,7 +103,7 @@ main() {
                     # echo "$file set to $LICENSE"
                     ;;
                 "multiple")
-                    echo "WARNING: $file not changed. Licence detected: multiple"
+                    echo "WARNING: $file not changed. License detected: multiple"
                     ;;
                 *)
                     update-header "$LICENSE_HEADER" "$file"

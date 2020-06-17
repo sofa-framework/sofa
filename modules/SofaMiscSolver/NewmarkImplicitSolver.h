@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,13 +62,12 @@ protected:
 
 public:
     SOFA_CLASS(NewmarkImplicitSolver, sofa::core::behavior::OdeSolver);
-    Data<double> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness
-    Data<double> f_rayleighMass; ///< Rayleigh damping coefficient related to mass
-    Data<double> f_velocityDamping; ///< Velocity decay coefficient (no decay if null)
-    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<double> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness
+    Data<double> d_rayleighMass; ///< Rayleigh damping coefficient related to mass
+    Data<double> d_velocityDamping; ///< Velocity decay coefficient (no decay if null)
 
-    Data<double> f_gamma; ///< Newmark scheme gamma coefficient
-    Data<double> f_beta; ///< Newmark scheme beta coefficient
+    Data<double> d_gamma; ///< Newmark scheme gamma coefficient
+    Data<double> d_beta; ///< Newmark scheme beta coefficient
 
     Data<bool> d_threadSafeVisitor;
 

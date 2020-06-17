@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -204,6 +204,7 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     if (m_indices.empty())
     {
         // no point are defined, default case: points = all points
+        msg_info() << "No point are defined. Change to default case: points = all points";
         for (unsigned int i = 0; i < (unsigned)this->mstate->getSize(); i++)
         {
             m_indices.push_back(i);

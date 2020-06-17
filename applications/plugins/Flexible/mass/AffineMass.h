@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,9 +87,6 @@ public:
             d_massMatrix.endEdit();
         }
     }
-
-    static std::string templateName(const AffineMass<DataTypes>* = NULL) { return DataTypes::Name(); }
-    virtual std::string getTemplateName() const override { return templateName(this); }
 
     void addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override
     {

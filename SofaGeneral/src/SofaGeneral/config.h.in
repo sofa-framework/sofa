@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -89,13 +89,6 @@
 #  define SOFA_GENERAL_SIMPLE_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_VALIDATION
-#  define SOFA_TARGET SofaValidation
-#  define SOFA_VALIDATION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_VALIDATION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 #ifdef SOFA_BUILD_EXPORTER
 #  define SOFA_TARGET SofaExporter
 #  define SOFA_SOFAEXPORTER_API SOFA_EXPORT_DYNAMIC_LIBRARY
@@ -171,13 +164,6 @@
 #  define SOFA_CONSTRAINT_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_CONSTRAINT_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#ifdef SOFA_BUILD_DENSE_SOLVER
-#  define SOFA_TARGET SofaDenseSolver
-#  define SOFA_DENSE_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_DENSE_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #ifdef SOFA_BUILD_PARDISO_SOLVER

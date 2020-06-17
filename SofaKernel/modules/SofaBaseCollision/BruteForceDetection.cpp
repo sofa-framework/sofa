@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,6 +81,8 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
     if (cm->empty())
         return;
 
+    // If a box is defined, check that both collision models are inside the box
+    // If both models are outside, ignore them
     if (boxModel)
     {
         bool swapModels = false;
@@ -106,12 +108,14 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
             {
                 cmPairs.push_back(std::make_pair(cm, cm));
             }
-
     }
+
+    // Browse all other collision models to check if there is a potential collision (conservative check)
     for (sofa::helper::vector<core::CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
     {
         core::CollisionModel* cm2 = *it;
 
+        // ignore this pair if both are NOT simulated (inactive)
         if (!cm->isSimulated() && !cm2->isSimulated())
         {
             continue;
@@ -127,27 +131,6 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
 
         core::CollisionModel* cm1 = (swapModels?cm2:cm);
         cm2 = (swapModels?cm:cm2);
-
-        // // Here we assume multiple root elements are present in both models
-        // bool collisionDetected = false;
-        // core::CollisionElementIterator begin1 = cm->begin();
-        // core::CollisionElementIterator end1 = cm->end();
-        // core::CollisionElementIterator begin2 = cm2->begin();
-        // core::CollisionElementIterator end2 = cm2->end();
-        // for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
-        // {
-        //     for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
-        //     {
-        //         //if (!it1->canCollideWith(it2)) continue;
-        //         if (intersector->canIntersect(it1, it2))
-        //         {
-        //             collisionDetected = true;
-        //             break;
-        //         }
-        //     }
-        //     if (collisionDetected) break;
-        // }
-        // if (collisionDetected)
 
         // Here we assume a single root element is present in both models
         if (intersector->canIntersect(cm1->begin(), cm2->begin()))

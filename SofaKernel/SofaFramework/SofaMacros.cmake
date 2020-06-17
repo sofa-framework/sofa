@@ -162,7 +162,6 @@ macro(sofa_add_application directory app_name)
     sofa_add_generic( ${directory} ${app_name} "Application" ${ARGV2} )
 endmacro()
 
-
 ### External projects management
 # Thanks to http://crascit.com/2015/07/25/cmake-gtest/
 #
@@ -706,6 +705,7 @@ function(sofa_set_install_relocatable target install_dir)
                 || true
             )
     endif()
+    set_target_properties(${target}_relocatable_install PROPERTIES FOLDER "relocatable_install")
 endfunction()
 
 
@@ -945,7 +945,8 @@ function(sofa_copy_libraries)
             if(EXISTS ${SHARED_LIB})
                 if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (Visual Studio)
                     foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                        configure_file(${SHARED_LIB} "${runtime_output_dir}/${CONFIG}" COPYONLY)
+                        file(MAKE_DIRECTORY "${runtime_output_dir}/${CONFIG}")
+                        configure_file(${SHARED_LIB} "${runtime_output_dir}/${CONFIG}/" COPYONLY)
                     endforeach()
                 else()                        # Single-config generator (nmake, ninja)
                     configure_file(${SHARED_LIB} "${runtime_output_dir}" COPYONLY)
