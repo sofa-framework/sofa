@@ -76,7 +76,7 @@ void DataFileName::updatePath()
         if (!fullpath.empty())
             DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
 
-        if (isDirectory() != fs::FileSystem::isDirectory(fullpath))
+        if (isDirectory() != fs::FileSystem::isDirectory(fullpath) && fs::FileSystem::exists(fullpath))
         {
             msg_error(this->getName()) << "This DataFileName only accepts " << (isDirectory() ? "directories" : "files");
         }
@@ -130,7 +130,7 @@ void DataFileNameVector::updatePath()
             else
             {
                 helper::system::DataRepository.findFile(m_fullpath[i],"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
-                if (isDirectory() != fs::FileSystem::isDirectory(m_fullpath[i]))
+                if (isDirectory() != fs::FileSystem::isDirectory(m_fullpath[i]) && fs::FileSystem::exists(m_fullpath[i]))
                 {
                     msg_error(this->getName()) << "This DataFileName only accepts " << (isDirectory() ? "directories" : "files");
                     m_fullpath[i] = "";
