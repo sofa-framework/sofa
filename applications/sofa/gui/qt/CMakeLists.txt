@@ -295,7 +295,7 @@ if(NOT SOFA_NO_OPENGL)
 endif()
 
 if(SOFAGUIQT_ENABLE_NODEGRAPH)
-    target_link_libraries(${PROJECT_NAME} PUBLIC nodes)
+    target_link_libraries(${PROJECT_NAME} PUBLIC NodeEditor::nodes)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
