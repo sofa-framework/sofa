@@ -100,18 +100,19 @@ void DataTrackerEngine::addCallback( std::function<sofa::core::objectmodel::Comp
     m_callbacks.push_back(f);
 }
 
+/// Each callback in the engine is called, setting its owner's component state to the value returned by the last callback.
+/// Because each callback overwrites the state of the same component, it is important that within a component, all
+/// callbacks perform the same checks to determine the value of the ComponentState.
 void DataTrackerEngine::update()
 {
     updateAllInputsIfDirty();
-    sofa::core::objectmodel::ComponentState cs = sofa::core::objectmodel::ComponentState::Valid;
+    if (!m_owner)
+        return;
     for(auto& callback : m_callbacks)
     {
         sofa::core::objectmodel::ComponentState state = callback();
-        if (state != sofa::core::objectmodel::ComponentState::Valid)
-            cs = state;
-    }
-    if (m_owner)
         m_owner->d_componentstate.setValue(cs);
+    }
     cleanDirty();
 }
 
