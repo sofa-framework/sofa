@@ -25,6 +25,7 @@
 #include <SofaGui/config.h>
 
 #ifdef SOFA_BUILD_GUIMAIN
+#   define SOFA_TARGET SofaGuiMain
 #	define SOFA_GUIMAIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #	define SOFA_GUIMAIN_API SOFA_IMPORT_DYNAMIC_LIBRARY

@@ -25,6 +25,7 @@
 #include <SofaCommon/config.h>
 
 #ifdef SOFA_BUILD_DEFORMABLE
+#  define SOFA_TARGET SofaDeformable
 #  define SOFA_DEFORMABLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_DEFORMABLE_API SOFA_IMPORT_DYNAMIC_LIBRARY

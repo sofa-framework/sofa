@@ -25,6 +25,7 @@
 #include <sofa/config.h>
 
 #ifdef SOFA_BUILD_ExternalBehaviorModel
+#  define SOFA_TARGET ExternalBehaviorModel
 #  define SOFA_ExternalBehaviorModel_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_ExternalBehaviorModel_API  SOFA_IMPORT_DYNAMIC_LIBRARY

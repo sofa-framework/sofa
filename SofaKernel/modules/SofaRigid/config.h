@@ -25,6 +25,7 @@
 #include <SofaCommon/config.h>
 
 #ifdef SOFA_BUILD_RIGID
+#  define SOFA_TARGET SofaRigid
 #  define SOFA_RIGID_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_RIGID_API SOFA_IMPORT_DYNAMIC_LIBRARY

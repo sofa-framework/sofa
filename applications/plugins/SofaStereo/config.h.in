@@ -4,6 +4,7 @@
 #include <sofa/config.h>
 
 #ifdef SOFA_BUILD_PLUGIN_STEREO
+#  define SOFA_TARGET SofaStereo
 #define SOFA_STEREO_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #define SOFA_STEREO_API  SOFA_IMPORT_DYNAMIC_LIBRARY

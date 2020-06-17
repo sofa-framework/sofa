@@ -25,7 +25,7 @@
 #include <sofa/config.h>
 
 #ifdef SOFA_BUILD_DEFAULTTYPE
-#   define SOFA_TARGET SofaDefaulttype
+#   define SOFA_TARGET SofaDefaultType
 #	define SOFA_DEFAULTTYPE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #	define SOFA_DEFAULTTYPE_API SOFA_IMPORT_DYNAMIC_LIBRARY

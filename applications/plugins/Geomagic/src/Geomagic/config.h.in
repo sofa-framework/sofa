@@ -25,6 +25,7 @@
 #include <sofa/config.h>
 
 #ifdef SOFA_BUILD_GEOMAGIC
+#  define SOFA_TARGET Geomagic
 #  define SOFA_GEOMAGIC_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_GEOMAGIC_API SOFA_IMPORT_DYNAMIC_LIBRARY
