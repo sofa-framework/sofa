@@ -34,6 +34,12 @@ namespace core
 namespace objectmodel
 {
 
+enum PathType {
+    FILE,
+    DIRECTORY,
+    BOTH
+};
+
 /**
  *  \brief Data specialized to store filenames, potentially relative to the current directory at the time it was specified.
  *
@@ -41,17 +47,19 @@ namespace objectmodel
 class SOFA_CORE_API DataFileName : public sofa::core::objectmodel::Data<std::string>
 {
 public:
+
+
     typedef sofa::core::objectmodel::Data<std::string> Inherit;
 
     DataFileName( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(helpMsg, isDisplayed, isReadOnly),
-          m_isDir(false)
+          m_pathType(FILE)
     {
     }
 
     DataFileName( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(value, helpMsg, isDisplayed, isReadOnly),
-        m_isDir(false)
+        m_pathType(FILE)
     {
         updatePath();
     }
@@ -61,7 +69,7 @@ public:
      */
     explicit DataFileName(const BaseData::BaseInitData& init)
         : Inherit(init),
-          m_isDir(false)
+          m_pathType(FILE)
     {
     }
 
@@ -70,7 +78,7 @@ public:
      */
     explicit DataFileName(const Inherit::InitData& init)
         : Inherit(init),
-          m_isDir(false)
+          m_pathType(FILE)
     {
         updatePath();
     }
@@ -97,14 +105,14 @@ public:
         endEdit();
     }
 
-    void setIsDirectory(bool isDir)
+    void setPathType(PathType pathType)
     {
-        m_isDir = isDir;
+        m_pathType = pathType;
     }
 
-    bool isDirectory()
+    PathType getPathType()
     {
-        return m_isDir;
+        return m_pathType;
     }
 
     virtual void virtualEndEdit() { endEdit(); }
@@ -140,12 +148,13 @@ public:
     }
 
 protected:
+
     void updatePath();
 
     std::string m_fullpath;
     std::string m_relativepath;
     std::string m_extension;
-    bool        m_isDir; //< used to determine how file dialogs should be opened
+    PathType    m_pathType; //< used to determine how file dialogs should be opened
 
 private:
     DataFileName(const Inherit& d);
@@ -159,13 +168,15 @@ class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< s
 public:
     typedef sofa::core::objectmodel::Data<sofa::helper::SVector<std::string> > Inherit;
 
-    DataFileNameVector( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
-        : Inherit(helpMsg, isDisplayed, isReadOnly)
+    DataFileNameVector( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
+        : Inherit(helpMsg, isDisplayed, isReadOnly),
+          m_pathType(DIRECTORY)
     {
     }
 
     DataFileNameVector( const sofa::helper::vector<std::string>& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
-        : Inherit(value, helpMsg, isDisplayed, isReadOnly)
+        : Inherit(value, helpMsg, isDisplayed, isReadOnly),
+          m_pathType(DIRECTORY)
     {
         updatePath();
     }
@@ -174,7 +185,8 @@ public:
         this constructor should be used through the initData() methods
      */
     explicit DataFileNameVector(const BaseData::BaseInitData& init)
-        : Inherit(init)
+        : Inherit(init),
+          m_pathType(DIRECTORY)
     {
     }
 
@@ -182,7 +194,8 @@ public:
         this constructor should be used through the initData() methods
      */
     explicit DataFileNameVector(const Inherit::InitData& init)
-        : Inherit(init)
+        : Inherit(init),
+          m_pathType(DIRECTORY)
     {
         updatePath();
     }
@@ -250,21 +263,21 @@ public:
         this->updatePath();
     }
 
-    void setIsDirectory(bool isDir)
+    void setPathType(PathType pathType)
     {
-        m_isDir = isDir;
+        m_pathType = pathType;
     }
 
-    bool isDirectory()
+    PathType getPathType()
     {
-        return m_isDir;
+        return m_pathType;
     }
 
 protected:
     void updatePath();
 
     sofa::helper::vector<std::string> m_fullpath;
-    bool m_isDir; //< used to determine how file dialogs should be opened
+    PathType m_pathType; //< used to determine how file dialogs should be opened
 
 private:
     DataFileNameVector(const Inherit& d);
