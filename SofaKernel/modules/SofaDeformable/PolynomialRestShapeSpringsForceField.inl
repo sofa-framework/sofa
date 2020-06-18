@@ -411,7 +411,6 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
 
     vparams->drawTool()->drawLines(points, 5, d_springColor.getValue());
 
-    vparams->drawTool()->restoreLastState();
 
 
     // draw connected point indices
@@ -426,6 +425,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
     }
 
     vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+    vparams->drawTool()->restoreLastState();
 }
 
 

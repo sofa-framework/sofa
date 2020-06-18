@@ -241,7 +241,7 @@ void PolynomialSpringsForceField<DataTypes>::addForce(const core::MechanicalPara
             msg_info() << "Force value: " << forceValue;
 
             f1[firstIndex] += forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
-            f2[secondIndex] += -forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
+            f2[secondIndex] -= forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
             msg_info() << "Applied force value: " << forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
 
             ComputeJacobian(0, i);
@@ -274,7 +274,7 @@ void PolynomialSpringsForceField<DataTypes>::addForce(const core::MechanicalPara
             msg_info() << "Force value: " << forceValue;
 
             f1[firstIndex] += forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
-            f2[secondIndex] += -forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
+            f2[secondIndex] -= forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
             msg_info() << "Applied force value: " << forceValue * m_strainSign[i] * m_weightedCoordinateDifference[i];
 
             ComputeJacobian(i, i);
@@ -352,6 +352,9 @@ void PolynomialSpringsForceField<DataTypes>::draw(const core::visual::VisualPara
 {
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields()))
         return;
+
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
@@ -394,10 +397,16 @@ void PolynomialSpringsForceField<DataTypes>::draw(const core::visual::VisualPara
     helper::vector<defaulttype::Vector3> positions;
     for (size_t i = 0; i < firstObjectIndices.size(); i++) {
         const unsigned int index = firstObjectIndices[i];
+        positions.push_back(defaulttype::Vector3(p1[index][0], p1[index][1], p1[index][2] ));
+    }
+    for (size_t i = 0; i < secondObjectIndices.size(); i++) {
+        const unsigned int index = secondObjectIndices[i];
         positions.push_back(defaulttype::Vector3(p2[index][0], p2[index][1], p2[index][2] ));
     }
 
-     vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+    vparams->drawTool()->drawPoints(positions, scale, color);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 
