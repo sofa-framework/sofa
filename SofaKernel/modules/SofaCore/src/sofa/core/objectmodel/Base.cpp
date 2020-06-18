@@ -72,7 +72,7 @@ Base::Base()
     sendl.setParent(this);
 
     /// name change => component state update
-    addUpdateCallback("name", {&name}, [this](){
+    addUpdateCallback("name", {&name}, [this](const DataTracker&){
         /// Increment the state counter but without changing the state.
         return m_componentstate.getValue();
     }, {&m_componentstate});
@@ -98,7 +98,7 @@ void Base::release()
 
 void Base::addUpdateCallback(const std::string& name,
                              std::initializer_list<BaseData*> inputs,
-                             std::function<sofa::core::objectmodel::ComponentState(void)> func,
+                             std::function<sofa::core::objectmodel::ComponentState(const DataTracker&)> func,
                              std::initializer_list<BaseData*> outputs)
 {
     // But what if 2 callback functions return 2 different states?
@@ -106,8 +106,8 @@ void Base::addUpdateCallback(const std::string& name,
     auto& engine = m_internalEngine[name];
     engine.setOwner(this);
     engine.addInputs(inputs);
-    engine.setCallback([func, name]() {
-        return func();
+    engine.setCallback([func, name](const DataTracker& tracker) {
+        return func(tracker);
     });
     engine.addOutputs(outputs);
 
@@ -119,7 +119,7 @@ void Base::addUpdateCallback(const std::string& name,
     engine.addOutput(&d_componentstate);
 }
 
-void Base::addOutputToCallbackEngine(const std::string& name, BaseData* output)
+void Base::addOutputToCallback(const std::string& name, BaseData* output)
 {
     if (m_internalEngine.find(name) != m_internalEngine.end())
         m_internalEngine[name].addOutputs({output});
