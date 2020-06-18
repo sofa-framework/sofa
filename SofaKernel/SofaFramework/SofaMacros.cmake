@@ -99,10 +99,9 @@ macro(sofa_add_generic directory name type)
         # optional parameter to activate/desactivate the option
         #  e.g.  sofa_add_application( path/MYAPP MYAPP APPLICATION ON)
         set(active OFF)
-        if(${ARGV3})
-            if( ${ARGV3} STREQUAL ON )
-                set(active ON)
-            endif()
+        set(optional_argv3 "${ARGV3}")
+        if(optional_argv3)
+            set(active ${optional_argv3})
         endif()
 
         option(${option} "Build the ${name} ${type_lower}." ${active})
