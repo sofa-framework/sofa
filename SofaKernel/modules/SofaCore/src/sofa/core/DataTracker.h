@@ -182,12 +182,12 @@ namespace core
 
 
     ///////////////////////
-#define SOFA_DEPRECATED_CORE_API(str) SOFA_CORE_API [[deprecated(str)]]
 
-    class SOFA_DEPRECATED_CORE_API("2020-06-17: DataTrackerEngine has been deprecated, use DataTrackerCallback instead. DataTrackerCallback only supports 1 callback at a time, but multiple DataTrackerCallbacks can be created within a single component")
-    DataTrackerEngine : public DataTrackerDDGNode
+    class SOFA_CORE_API DataTrackerEngine : public DataTrackerDDGNode
     {
     public:
+        [[deprecated("2020-06-17: DataTrackerEngine has been deprecated, use DataTrackerCallback instead. DataTrackerCallback only supports 1 callback at a time, but multiple DataTrackerCallbacks can be created within a single component")]]
+        DataTrackerEngine() : DataTrackerDDGNode() {}
         /// set the update function to call
         /// when asking for an output and any input changed.
         void addCallback(std::function<sofa::core::objectmodel::ComponentState(void)> f);
