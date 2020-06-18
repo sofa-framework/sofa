@@ -170,13 +170,13 @@ public:
 
     DataFileNameVector( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : Inherit(helpMsg, isDisplayed, isReadOnly),
-          m_pathType(DIRECTORY)
+          m_pathType(FILE)
     {
     }
 
     DataFileNameVector( const sofa::helper::vector<std::string>& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(value, helpMsg, isDisplayed, isReadOnly),
-          m_pathType(DIRECTORY)
+          m_pathType(FILE)
     {
         updatePath();
     }
@@ -186,7 +186,7 @@ public:
      */
     explicit DataFileNameVector(const BaseData::BaseInitData& init)
         : Inherit(init),
-          m_pathType(DIRECTORY)
+          m_pathType(FILE)
     {
     }
 
@@ -195,7 +195,7 @@ public:
      */
     explicit DataFileNameVector(const Inherit::InitData& init)
         : Inherit(init),
-          m_pathType(DIRECTORY)
+          m_pathType(FILE)
     {
         updatePath();
     }
