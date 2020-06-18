@@ -183,8 +183,8 @@ namespace core
 
     ///////////////////////
 
-    class [[deprecated("2020-06-17: DataTrackerEngine has been deprecated, use DataTrackerCallback instead. DataTrackerCallback only supports 1 callback at a time, but multiple DataTrackerCallbacks can be created within a single component")]]
-    SOFA_CORE_API DataTrackerEngine : public DataTrackerDDGNode
+    class SOFA_CORE_API [[deprecated("2020-06-17: DataTrackerEngine has been deprecated, use DataTrackerCallback instead. DataTrackerCallback only supports 1 callback at a time, but multiple DataTrackerCallbacks can be created within a single component")]]
+    DataTrackerEngine : public DataTrackerDDGNode
     {
     public:
         /// set the update function to call
