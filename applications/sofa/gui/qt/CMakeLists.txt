@@ -74,10 +74,9 @@ endif()
 option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
 
 # NodeEditor
-sofa_find_package(NodeEditor QUIET BOTH_SCOPES)
-option(SOFAGUIQT_ENABLE_NODEGRAPH "Build the Node graph representation. NodeEditor library is needed." ${NodeEditor_FOUND})
+option(SOFAGUIQT_ENABLE_NODEGRAPH "Build the Node graph representation. NodeEditor library is needed." OFF)
 if(SOFAGUIQT_ENABLE_NODEGRAPH)
-    find_package(NodeEditor REQUIRED)
+    sofa_find_package(NodeEditor REQUIRED BOTH_SCOPES)
 endif()
 
 # FFMPEG_exec
