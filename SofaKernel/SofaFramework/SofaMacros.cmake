@@ -645,10 +645,6 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
                 target_include_directories(${target} PUBLIC "$<INSTALL_INTERFACE:include/${include_install_dir}>")
             endif()
         endif()
-#        if(NOT "${include_source_root}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}/..")
-#            get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
-#            message("${target}: target_include_directories: ${target_include_dirs}")
-#        endif()
 
         # Configure and install headers
         get_target_property(target_sources ${target} SOURCES)
