@@ -18,7 +18,7 @@ if(HAS_PLUGINS_CMAKE_PREFIX_PATH EQUAL -1)
 endif()
 
 list(APPEND CMAKE_INCLUDE_PATH "${SOFA_ROOT}/include/extlibs/WinDepPack")
-list(APPEND CMAKE_MODULE_PATH "${SOFA_ROOT}/cmake/Modules")
+list(APPEND CMAKE_MODULE_PATH "${SOFA_ROOT}/lib/cmake/Modules")
 
 include(SofaMacros)
 

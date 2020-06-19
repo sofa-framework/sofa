@@ -71,6 +71,14 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
 list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
 
+install(FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindEigen3.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/macdeployqt.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/windeployqt.cmake"
+    DESTINATION lib/cmake/Modules
+    COMPONENT headers
+    )
+
 include(SofaMacros)
 
 ## RPATH
