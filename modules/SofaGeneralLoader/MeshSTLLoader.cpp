@@ -47,8 +47,9 @@ MeshSTLLoader::MeshSTLLoader() : MeshLoader()
     , d_mergePositionUsingMap(initData(&d_mergePositionUsingMap, true, "mergePositionUsingMap","Since positions are duplicated in a STL, they have to be merged. Using a map to do so will temporarily duplicate memory but should be more efficient. Disable it if memory is really an issue."))
 {
     /// name filename => component state update + change of all data field...but not visible ?
-    addUpdateCallback("filename", {&m_filename}, [this]()
+    addUpdateCallback("filename", {&m_filename}, [this](const core::DataTracker& t)
     {
+        SOFA_UNUSED(t);
         if(load())
         {
             clearLoggedMessages();

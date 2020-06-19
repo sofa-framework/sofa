@@ -73,8 +73,9 @@ MeshObjLoader::MeshObjLoader()
     d_vertNormIdx.setGroup("Geometry");
 
     /// name filename => component state update + change of all data field...but not visible ?
-    addUpdateCallback("filename", {&m_filename}, [this]()
+    addUpdateCallback("filename", {&m_filename}, [this](const core::DataTracker& t)
     {
+        SOFA_UNUSED(t);
         if(load()){
             clearLoggedMessages();
             return sofa::core::objectmodel::ComponentState::Valid;

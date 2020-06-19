@@ -41,9 +41,10 @@ BaseAddResourceRepository::BaseAddResourceRepository()
     , d_repositoryPath(initData(&d_repositoryPath, "path", "Path to add to the pool of resources"))
     , m_currentAddedPath("")
 {
-    d_repositoryPath.setIsDirectory(true);
-    addUpdateCallback("path", {&d_repositoryPath}, [this]()
+    d_repositoryPath.setPathType(core::objectmodel::PathType::DIRECTORY);
+    addUpdateCallback("path", {&d_repositoryPath}, [this](const core::DataTracker& tracker)
     {
+        SOFA_UNUSED(tracker);
         if (this->updateRepositoryPath())
             return sofa::core::objectmodel::ComponentState::Valid;
         return sofa::core::objectmodel::ComponentState::Invalid;

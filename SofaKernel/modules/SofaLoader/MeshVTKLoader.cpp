@@ -83,7 +83,8 @@ MeshVTKLoader::MeshVTKLoader() : MeshLoader()
   , reader(nullptr)
 {
     /// name filename => component state update + change of all data field...but not visible ?
-    addUpdateCallback("filename", {&m_filename}, [this](){
+    addUpdateCallback("filename", {&m_filename}, [this](const core::DataTracker& t){
+        SOFA_UNUSED(t);
         if(load()){
             clearLoggedMessages();
             return sofa::core::objectmodel::ComponentState::Valid;
@@ -554,7 +555,7 @@ bool MeshVTKLoader::setInputsData()
 
         BaseData* basedata = reader->inputPointDataVector[i]->createSofaData();
         this->addData(basedata, dataname);
-        addOutputToCallbackEngine("filename", basedata);
+        addOutputToCallback("filename", basedata);
 
     }
 
@@ -564,7 +565,7 @@ bool MeshVTKLoader::setInputsData()
         const char* dataname = reader->inputCellDataVector[i]->name.c_str();
         BaseData* basedata = reader->inputCellDataVector[i]->createSofaData();
         this->addData(basedata, dataname);
-        addOutputToCallbackEngine("filename", basedata);
+        addOutputToCallback("filename", basedata);
     }
 
     return true;
