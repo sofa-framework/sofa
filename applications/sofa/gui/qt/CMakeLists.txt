@@ -73,12 +73,12 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
 
-#NodeEditor
-option(SOFAGUIQT_ENABLE_NODEGRAPH "Build the Node graph representation. NodeEditor library is needed." OFF)
-if (SOFAGUIQT_ENABLE_NODEGRAPH)
+# NodeEditor
+sofa_find_package(NodeEditor QUIET BOTH_SCOPES)
+option(SOFAGUIQT_ENABLE_NODEGRAPH "Build the Node graph representation. NodeEditor library is needed." ${NodeEditor_FOUND})
+if(SOFAGUIQT_ENABLE_NODEGRAPH)
     find_package(NodeEditor REQUIRED)
 endif()
-sofa_set_01(SOFAGUIQT_HAVE_NODEEDITOR VALUE ${SOFAGUIQT_ENABLE_NODEGRAPH} BOTH_SCOPES)
 
 # FFMPEG_exec
 sofa_find_package(FFMPEG_exec BOTH_SCOPES)
