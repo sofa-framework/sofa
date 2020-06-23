@@ -298,6 +298,9 @@ endif()
 
 if(SOFAGUIQT_ENABLE_NODEGRAPH)
     target_link_libraries(${PROJECT_NAME} PUBLIC NodeEditor::nodes)
+    if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
+        sofa_install_libraries(TARGETS NodeEditor::nodes)
+    endif()
 endif()
 
 
