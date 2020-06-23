@@ -63,7 +63,7 @@ template<> double FullVector<bool>::norm() const
     return helper::rsqrt(r);
 }
 
-template SOFA_BASE_LINEAR_SOLVER_API class FullVector<bool>;
+template class SOFA_BASE_LINEAR_SOLVER_API FullVector<bool>;
 
 } // namespace linearsolver
 

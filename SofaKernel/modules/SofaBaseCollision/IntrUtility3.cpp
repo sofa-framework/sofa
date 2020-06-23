@@ -44,7 +44,7 @@ template class SOFA_BASE_COLLISION_API FindContactSet<TOBB<Rigid3Types> >;
 template SOFA_BASE_COLLISION_API void ClipConvexPolygonAgainstPlane<double> (const Vec<3,double>&, double,int&, Vec<3,double>*);
 template SOFA_BASE_COLLISION_API Vec<3,double> GetPointFromIndex<double> (int, const MyBox<double>&);
 template SOFA_BASE_COLLISION_API Vec<3,Rigid3Types::Real> getPointFromIndex<Rigid3Types> (int index, const TOBB<Rigid3Types>& box);
-template SOFA_BASE_COLLISION_API class CapIntrConfiguration<double>;
+template class SOFA_BASE_COLLISION_API CapIntrConfiguration<double>;
 
 //----------------------------------------------------------------------------
 

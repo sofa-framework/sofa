@@ -58,7 +58,7 @@ public:
 protected:
 };
 
-typedef SOFA_SOFAGUIQT_API CustomPolicySofaViewer< OglModelPolicy > OglModelSofaViewer;
+typedef CustomPolicySofaViewer< OglModelPolicy > OglModelSofaViewer;
 
 } // namespace viewer
 } // namespace qt
