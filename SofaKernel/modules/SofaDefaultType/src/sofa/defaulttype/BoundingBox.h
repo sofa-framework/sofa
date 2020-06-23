@@ -322,14 +322,14 @@ struct BoundingBoxTypeInfo
     static void getValue(const DataType & data, size_t index,
                          T & value) /// since TypeInfos abstract all containers as 1D arrays, T here is of ValueType
     {
-        value = ((ValueType*)&data)[index];
+        value = static_cast<T>(((ValueType*)&data)[index]);
     }
 
     template <typename T>
     static void setValue(DataType & data, size_t index,
                          const T & value)
     {
-        ((ValueType*)&data)[index] = value;
+        ((ValueType*)&data)[index] = static_cast<ValueType>(value);
     }
 
     static double getScalarValue (const void* data, size_t index)
