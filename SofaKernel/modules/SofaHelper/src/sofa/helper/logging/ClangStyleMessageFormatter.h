@@ -27,7 +27,7 @@
 #define CLANGSTYLEMESSAGEFORMATTER_H
 #include <sstream>
 #include "MessageFormatter.h"
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

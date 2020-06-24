@@ -25,7 +25,6 @@
 #include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RGBAColor.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
 #include <cassert>
 #include <iostream>

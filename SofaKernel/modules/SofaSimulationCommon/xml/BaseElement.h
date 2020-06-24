@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <SofaSimulationCommon/common.h>
+#include <SofaSimulationCommon/config.h>
 #include <string>
 #include <list>
 #include <map>

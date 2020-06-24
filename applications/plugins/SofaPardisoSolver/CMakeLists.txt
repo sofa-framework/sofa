@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaPardisoSolver)
 
 set(SOFAPARDISOSOLVER_MAJOR_VERSION 0)
@@ -41,13 +41,9 @@ set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} ${PARDISO_LIB} gfortran blas lapa
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPARDISOSOLVER_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COMPILATION_FLAGS}")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 target_link_libraries(${PROJECT_NAME} ${LINKER_DEPENDENCIES})
 

@@ -22,7 +22,7 @@
 #ifndef HELPER_SYSTEM_LOCALE_H
 #define HELPER_SYSTEM_LOCALE_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 #include <clocale>
 #include <string>

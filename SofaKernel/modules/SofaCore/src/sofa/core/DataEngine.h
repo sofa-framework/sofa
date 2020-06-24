@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_DATAENGINE_H
 #define SOFA_CORE_DATAENGINE_H
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/DataTracker.h>
 

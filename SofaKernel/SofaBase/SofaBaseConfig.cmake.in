@@ -3,12 +3,18 @@
 @PACKAGE_INIT@
 
 set(SOFABASE_TARGETS @SOFABASE_TARGETS@)
+set(SOFAEIGEN2SOLVER_HAVE_OPENMP @SOFAEIGEN2SOLVER_HAVE_OPENMP@)
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
 
-# Eigen3 is required by SofaBaseTopology
+# Eigen3 is required by SofaBaseTopology and SofaEigen2Solver
 find_package(Eigen3 QUIET REQUIRED)
+
+# OpenMP might be required by SofaEigen2Solver
+if (SOFAEIGEN2SOLVER_HAVE_OPENMP AND NOT TARGET OpenMP::OpenMP_CXX)
+    find_package(OpenMP QUIET REQUIRED)
+endif()
 
 foreach(target ${SOFABASE_TARGETS})
     if(NOT TARGET ${target})

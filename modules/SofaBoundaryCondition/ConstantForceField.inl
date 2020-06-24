@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_INL
 
 #include <SofaBoundaryCondition/ConstantForceField.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>

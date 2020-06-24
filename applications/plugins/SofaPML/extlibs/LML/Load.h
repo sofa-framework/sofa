@@ -25,7 +25,6 @@
 #include "Unit.h"
 
 #include "xmlio.h"
-#include <sofa/helper/system/config.h>
 
 /** Class that describes a load to be used in the simulation.
   * This load  can have different types Translation, Rotation, Force and Pressure.

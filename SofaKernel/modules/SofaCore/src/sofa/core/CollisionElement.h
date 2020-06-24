@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_CORE_COLLISIONELEMENT_H
 #define SOFA_CORE_COLLISIONELEMENT_H
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 
 #include <cstddef>
 #include <vector>

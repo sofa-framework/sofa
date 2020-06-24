@@ -25,7 +25,6 @@
 #include "PhysicalProperties/AtomProperties.h"
 #include <RenderingMode.h>  
 #include <cstring>
-#include <sofa/helper/system/config.h>
 
 /** An atom has an unique index in the physical model object, a 3D position, and different basic properties.
   * It is the most basic structure composing a physical model.

@@ -42,9 +42,9 @@ namespace collision
 /**
  *  \brief It is a Ray Trace based collision detection algorithm
  *
- *   For each point in one object, we trace a ray following de oposite of the point's normal
- *    up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
- * colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
+ *   For each point in one object, we trace a ray following the oposite of the point's normal
+ *   up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
+ *   colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
  */
 class SOFA_USER_INTERACTION_API RayTraceDetection :public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection

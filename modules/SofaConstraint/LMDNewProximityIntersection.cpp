@@ -34,7 +34,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
-#include <sofa/helper/system/config.h>
 
 #include <iostream>
 #include <algorithm>

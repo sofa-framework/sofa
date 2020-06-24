@@ -50,90 +50,74 @@ echo "Fixing up libs manually ..."
 
 check-all-deps() {
     mode="$1"
+    pass="$2"
 
     (
     find "$INSTALL_DIR" -type f -name "Qt*" -path "*/Qt*.framework/Versions/*/Qt*" | grep -v "Headers"
     find "$INSTALL_DIR" -type f -name "*.dylib"
     find "$INSTALL_DIR" -type f -name "runSofa" -path "*/bin/*"
     ) | while read lib; do
+        echo "  Checking (pass $pass) $lib"
 
-        libboost=""
         libqt=""
+        libboost=""
         libicu=""
         libglew=""
         libjpeg=""
         libpng=""
+        dependencies="$( otool -L $lib | tail -n +2 | perl -p -e 's/^[\t ]+(.*) \(.*$/\1/g' )"
 
-        echo "  Checking $lib"
+        is_fixup_needed="false"
+        if echo "$dependencies" | grep --quiet "/Qt"       ||
+           echo "$dependencies" | grep --quiet "/libboost" ||
+           echo "$dependencies" | grep --quiet "/libicu"   ||
+           echo "$dependencies" | grep --quiet "/libGLEW"  ||
+           echo "$dependencies" | grep --quiet "/libjpeg"  ||
+           echo "$dependencies" | grep --quiet "/libpng"   ; then
+            is_fixup_needed="true"
+        fi
+        if [[ "$is_fixup_needed" == "false" ]]; then
+            continue # skip this lib
+        fi
 
-        (otool -L $lib | tail -n +2 | perl -p -e 's/^[\t ]+(.*) \(.*$/\1/g') | while read dep; do
-            libboost="$(echo $dep | egrep -o "/libboost_[^\/]*?\.dylib" | cut -c2-)"
-            libqt="$(echo $dep | egrep -o "/Qt[A-Za-z]*$" | cut -c2-)"
-            libicu="$(echo $dep | egrep -o "/libicu[^\/]*?\.dylib$" | cut -c2-)"
-            libglew="$(echo $dep | egrep -o "/libGLEW[^\/]*?\.dylib$" | cut -c2-)"
-            libjpeg="$(echo $dep | egrep -o "/libjpeg[^\/]*?\.dylib$" | cut -c2-)"
-            libpng="$(echo $dep | egrep -o "/libpng[^\/]*?\.dylib$" | cut -c2-)"
-            
-            if [ -n "$libboost" ]; then
-                if [[ "$mode" == "copy" ]]; then
-                    if [ -e $dep ] && [ ! -e $INSTALL_DIR/lib/$libboost ]; then
-                        echo "    cp -Rf $dep $INSTALL_DIR/lib"
-                        cp -Rf $dep $INSTALL_DIR/lib
-                    fi
-                elif [[ "$mode" == "fixup" ]]; then
-                    #echo "install_name_tool -change $dep @rpath/$libboost $lib"
-                    install_name_tool -change $dep @rpath/$libboost $lib
+        (echo "$dependencies") | while read dep; do
+            if libqt="$(echo $dep | egrep -o "/Qt[A-Za-z]*$" | cut -c2-)" && [ -n "$libqt" ]; then
+                libname="$libqt"
+            elif libboost="$(echo $dep | egrep -o "/libboost_[^\/]*?\.dylib" | cut -c2-)" && [ -n "$libboost" ]; then
+                libname="$libboost"
+            elif libicu="$(echo $dep | egrep -o "/libicu[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libicu" ]; then
+                libname="$libicu"
+            elif libglew="$(echo $dep | egrep -o "/libGLEW[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libglew" ]; then
+                libname="$libglew"
+            elif libjpeg="$(echo $dep | egrep -o "/libjpeg[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libjpeg" ]; then
+                libname="$libjpeg"
+            elif libpng="$(echo $dep | egrep -o "/libpng[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libpng" ]; then
+                libname="$libpng"
+            else
+                # this dep is not a lib to fixup
+                continue
+            fi
+
+            if [[ "$mode" == "copy" ]]; then
+                if [ -n "$libqt" ]; then
+                    originlib="$QT_DIR/lib/$libqt.framework"
+                    destlib="$INSTALL_DIR/lib/$libqt.framework"
+                else
+                    originlib="$dep"
+                    destlib="$INSTALL_DIR/lib/$libname"
                 fi
-            elif [ -n "$libqt" ]; then
-                if [[ "$mode" == "copy" ]]; then
-                    if [ -e $QT_DIR/lib/$libqt.framework ] && [ ! -e $INSTALL_DIR/lib/$libqt.framework ]; then
-                        echo "    cp -Rf $QT_DIR/lib/$libqt.framework $INSTALL_DIR/lib"
-                        cp -Rf $QT_DIR/lib/$libqt.framework $INSTALL_DIR/lib
-                    fi
-                elif [[ "$mode" == "fixup" ]]; then
-                    #echo "install_name_tool -change $dep @rpath/$libqt.framework/$libqt $lib"
-                    install_name_tool -change $dep @rpath/$libqt.framework/$libqt $lib
+                if [ -e $originlib ] && [ ! -e $destlib ]; then
+                    echo "    cp -Rf $dep $INSTALL_DIR/lib"
+                    cp -Rf $originlib $INSTALL_DIR/lib
                 fi
-            elif [ -n "$libicu" ]; then
-                if [[ "$mode" == "copy" ]]; then
-                    if [ -e $dep ] && [ ! -e $INSTALL_DIR/lib/$libicu ]; then
-                        echo "    cp -Rf $dep $INSTALL_DIR/lib"
-                        cp -Rf $dep $INSTALL_DIR/lib
-                    fi
-                elif [[ "$mode" == "fixup" ]]; then
-                    #echo "install_name_tool -change $dep @rpath/$libicu $lib"
-                    install_name_tool -change $dep @rpath/$libicu $lib
+            elif [[ "$mode" == "fixup" ]]; then
+                if [ -n "$libqt" ]; then
+                    rpathlib="$libqt.framework/$libqt"
+                else
+                    rpathlib="$libname"
                 fi
-            elif [ -n "$libglew" ]; then
-                if [[ "$mode" == "copy" ]]; then
-                    if [ -e $dep ] && [ ! -e $INSTALL_DIR/lib/$libglew ]; then
-                        echo "    cp -Rf $dep $INSTALL_DIR/lib"
-                        cp -Rf $dep $INSTALL_DIR/lib
-                    fi
-                elif [[ "$mode" == "fixup" ]]; then
-                    #echo "install_name_tool -change $dep @rpath/$libglew $lib"
-                    install_name_tool -change $dep @rpath/$libglew $lib
-                fi
-            elif [ -n "$libjpeg" ]; then
-                if [[ "$mode" == "copy" ]]; then
-                    if [ -e $dep ] && [ ! -e $INSTALL_DIR/lib/$libjpeg ]; then
-                        echo "    cp -Rf $dep $INSTALL_DIR/lib"
-                        cp -Rf $dep $INSTALL_DIR/lib
-                    fi
-                elif [[ "$mode" == "fixup" ]]; then
-                    #echo "install_name_tool -change $dep @rpath/$libjpeg $lib"
-                    install_name_tool -change $dep @rpath/$libjpeg $lib
-                fi
-            elif [ -n "$libpng" ]; then
-                if [[ "$mode" == "copy" ]]; then
-                    if [ -e $dep ] && [ ! -e $INSTALL_DIR/lib/$libpng ]; then
-                        echo "    cp -Rf $dep $INSTALL_DIR/lib"
-                        cp -Rf $dep $INSTALL_DIR/lib
-                    fi
-                elif [[ "$mode" == "fixup" ]]; then
-                    #echo "install_name_tool -change $dep @rpath/$libpng $lib"
-                    install_name_tool -change $dep @rpath/$libpng $lib
-                fi
+                #echo "install_name_tool -change $dep @rpath/$rpathlib $lib"
+                install_name_tool -change $dep @rpath/$rpathlib $lib
             fi
         done
     done
@@ -144,18 +128,18 @@ if [ -d "$BUNDLE_DIR" ]; then
     chmod -R 755 $BUNDLE_DIR/Contents/MacOS/lib
 
     INSTALL_DIR=$BUNDLE_DIR
-    check-all-deps "fixup"
+    check-all-deps "fixup" "1/1"
 
     # remove duplicated libs
-    ls $BUNDLE_DIR/Contents/Frameworks | while read lib_name; do
-        rm -rf $BUNDLE_DIR/Contents/MacOS/lib/$lib_name
+    ls $BUNDLE_DIR/Contents/Frameworks | while read libname; do
+        rm -rf $BUNDLE_DIR/Contents/MacOS/lib/$libname
     done
 else
-    check-all-deps "copy"
-    check-all-deps "copy"
-    check-all-deps "copy"
+    check-all-deps "copy" "1/4"
+    check-all-deps "copy" "2/4"
+    check-all-deps "copy" "3/4"
     chmod -R 755 $INSTALL_DIR/lib
-    check-all-deps "fixup"
+    check-all-deps "fixup" "4/4"
 fi
 
 echo "Done."

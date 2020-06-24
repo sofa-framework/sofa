@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaGui)
 
 ### Dependencies
@@ -21,14 +21,14 @@ endif()
 ### Sub-projects
 
 ## SofaGuiCommon
-add_subdirectory(../applications/sofa/gui/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
+add_subdirectory(../modules/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
 list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 
 ## SofaGuiQt
 option(SOFAGUI_QT "Compile the Qt GUI" ON)
 if(SOFAGUI_QT)
     list(APPEND SOFAGUI_TARGETS SofaGuiQt)
-    add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
+    add_subdirectory(../modules/SofaGuiQt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
 endif()
 sofa_set_01(SOFAGUI_HAVE_SOFAGUIQT VALUE ${SOFAGUI_QT}) # see config.h.in
 
@@ -38,29 +38,31 @@ if(NOT SOFA_NO_OPENGL)
     option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
     if(SOFAGUI_HEADLESS_RECORDER)
         list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
-        add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
+        add_subdirectory(../modules/SofaHeadlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
     endif()
     sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${SOFAGUI_HEADLESS_RECORDER}) # see config.h.in
 endif()
 
 ## SofaGuiMain
 list(APPEND SOFAGUI_TARGETS SofaGuiMain)
-add_subdirectory(../applications/sofa/gui/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
+add_subdirectory(../modules/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
 
-## IDE folder
-foreach(TARGET ${SOFAGUI_TARGETS})
-    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGui")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../applications>")
-    target_include_directories(${TARGET} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
-    # target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${QT_INCLUDES}>")
-    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX "_d")
-    set_target_properties(${TARGET} PROPERTIES VERSION ${SOFAGUI_VERSION})
-endforeach()
+set(SOFAGUI_SRC src/${PROJECT_NAME})
+set(HEADER_FILES
+    ${SOFAGUI_SRC}/config.h.in
+    ${SOFAGUI_SRC}/initSofaGui.h
+    )
+set(SOURCE_FILES
+    ${SOFAGUI_SRC}/initSofaGui.cpp
+    )
 
-## SofaGui/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGUI_TARGETS})
 
-## CMake package configurations files
-sofa_write_package_config_files(SofaGui ${SOFAGUI_VERSION})
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    )

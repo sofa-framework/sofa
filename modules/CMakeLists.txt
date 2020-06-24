@@ -1,5 +1,6 @@
-### These are real modules. If you need components from there you
-### need to first add find_package(XXX) in your CMakeLists.txt
+# These are real modules. If you need components from there you
+# need to first add find_package(XXX) in your CMakeLists.txt
+
 sofa_add_module(SofaExporter SofaExporter ON)
 sofa_add_module(SofaSparseSolver SofaSparseSolver ON)      #
 sofa_add_module(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
@@ -7,16 +8,15 @@ sofa_add_module(SofaHaptics SofaHaptics ON)
 sofa_add_module(SofaValidation SofaValidation ON)
 
 find_package(Newmat QUIET)
-if(Newmat_FOUND)
-	sofa_add_module(SofaDenseSolver SofaDenseSolver ON)
-endif()
+sofa_add_module(SofaDenseSolver SofaDenseSolver ${Newmat_FOUND})
+
 sofa_add_module(SofaNonUniformFem SofaNonUniformFem ON)
 
 if(SOFA_NO_OPENGL)
-    message("SOFA_NO_OPENGL flag prevents from using the SofaOpenglVisual plugin")
+    sofa_add_module(SofaOpenglVisual SofaOpenglVisual OFF)
 else()
     sofa_add_module(SofaOpenglVisual SofaOpenglVisual ON)
 endif()
 
-### All the other targets visible in "modules" are not real module
-### and are contained in the SofaGeneral, SofaMisc
+# All the other targets visible in "modules" are not real module
+# and are contained in packages (SofaGeneral, SofaAdvanced, SofaMisc, SofaGui).

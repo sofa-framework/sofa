@@ -22,7 +22,7 @@
 #ifndef SOFA_DEFAULTTYPE_FRAME_H
 #define SOFA_DEFAULTTYPE_FRAME_H
 
-#include <sofa/defaulttype/defaulttype.h>
+#include <sofa/defaulttype/config.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

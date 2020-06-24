@@ -24,4 +24,11 @@
 
 #include <SofaGeneral/config.h>
 
+#ifdef SOFA_BUILD_TOPOLOGY_MAPPING
+#  define SOFA_TARGET SofaTopologyMapping
+#  define SOFA_TOPOLOGY_MAPPING_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_TOPOLOGY_MAPPING_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

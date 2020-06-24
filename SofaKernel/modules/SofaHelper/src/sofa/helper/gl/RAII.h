@@ -25,7 +25,7 @@
 #ifndef SOFA_NO_OPENGL
 
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 /* Opengl Resource Acquisition Is Initialisation */
 /* with this tool, we know at any moment what is the state of the openGL machine */

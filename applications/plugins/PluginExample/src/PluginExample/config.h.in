@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/config.h>
 
 #define PLUGINEXAMPLE_VERSION @PROJECT_VERSION@
 

@@ -3,18 +3,11 @@
 @PACKAGE_INIT@
 
 set(SOFACOMMON_TARGETS @SOFACOMMON_TARGETS@)
-set(SOFAEIGEN2SOLVER_HAVE_OPENMP @SOFAEIGEN2SOLVER_HAVE_OPENMP@)
 
 find_package(SofaBase REQUIRED)
 
-# Eigen3 is required by SofaEigen2Solver and SofaRigid
+# Eigen3 is required by SofaRigid
 find_package(Eigen3 QUIET REQUIRED)
-
-# OpenMP might be required by SofaEigen2Solver
-if (SOFAEIGEN2SOLVER_HAVE_OPENMP AND NOT TARGET OpenMP::OpenMP_CXX)
-    find_package(OpenMP QUIET REQUIRED)
-endif()
-
 
 foreach(target ${SOFACOMMON_TARGETS})
     if(NOT TARGET ${target})

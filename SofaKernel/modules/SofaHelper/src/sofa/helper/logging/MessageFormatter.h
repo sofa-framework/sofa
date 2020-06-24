@@ -27,7 +27,7 @@
 #define MESSAGEFORMATTER_H
 
 #include <sstream>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/system/console.h>
 
 namespace sofa

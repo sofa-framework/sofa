@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_COMMON_XML_XML_H
 #define SOFA_SIMULATION_COMMON_XML_XML_H
 
-#include <SofaSimulationCommon/common.h>
+#include <SofaSimulationCommon/config.h>
 #include <SofaSimulationCommon/xml/Element.h>
 
 class TiXmlDocument;

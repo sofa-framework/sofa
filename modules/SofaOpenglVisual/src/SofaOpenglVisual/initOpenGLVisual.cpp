@@ -23,7 +23,6 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::RegisterObject;
 
-#include <sofa/helper/system/config.h>
 #include <SofaOpenglVisual/initOpenGLVisual.h>
 
 #include <SofaOpenglVisual/OglModel.h>

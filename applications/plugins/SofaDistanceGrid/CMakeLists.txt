@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaDistanceGrid VERSION 1.0)
 
 find_package(SofaMiscCollision REQUIRED)
@@ -40,18 +40,12 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFADISTANCEGRID")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-
 if(MiniFlowVR_FOUND)
     target_link_libraries(${PROJECT_NAME} PRIVATE miniFlowVR) # Private because not exported in API
     message(STATUS "SofaDistanceGrid: MiniFlowVR found.")
 else()
     message(STATUS "SofaDistanceGrid: MiniFlowVR not found, some features will not be compiled.")
 endif()
-
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)

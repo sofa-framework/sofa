@@ -22,9 +22,10 @@
 #ifndef MESHSTEPLOADER_CONFIG_H
 #define MESHSTEPLOADER_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_MeshSTEPLoader
+#  define SOFA_TARGET MeshSTEPLoader
 #  define SOFA_MeshSTEPLoader_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_MeshSTEPLoader_API  SOFA_IMPORT_DYNAMIC_LIBRARY

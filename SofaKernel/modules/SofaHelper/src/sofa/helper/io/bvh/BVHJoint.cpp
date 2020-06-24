@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/io/bvh/BVHJoint.h>
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>

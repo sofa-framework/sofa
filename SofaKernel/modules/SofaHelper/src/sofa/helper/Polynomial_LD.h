@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_POLYNOMIAL_LD_H
 #define SOFA_HELPER_POLYNOMIAL_LD_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

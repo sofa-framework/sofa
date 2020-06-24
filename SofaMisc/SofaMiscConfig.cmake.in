@@ -6,7 +6,11 @@ set(SOFAMISC_TARGETS @SOFAMISC_TARGETS@)
 set(SOFAMISCTOPOLOGY_HAVE_ZLIB @SOFAMISCTOPOLOGY_HAVE_ZLIB@)
 set(SOFAMISCFEM_HAVE_NEWMAT @SOFAMISCFEM_HAVE_NEWMAT@)
 
-find_package(SofaGeneral REQUIRED)
+find_package(SofaFramework QUIET REQUIRED) # SofaHelper (SofaMiscForceField)
+find_package(SofaSimulation QUIET REQUIRED) # SofaSimulationTree (SofaMiscSolver)
+find_package(SofaBase QUIET REQUIRED) # SofaBaseTopology (SofaMiscTopology)
+find_package(SofaCommon QUIET REQUIRED) # SofaSimpleFem (SofaMiscFem), SofaDeformable (SofaMiscForceField), SofaSimpleFem SofaRigid (SofaMiscMapping)
+find_package(SofaGeneral QUIET REQUIRED) #  SofaGeneralMeshCollision SofaTopologyMapping (SofaMiscExtra), SofaBoundaryCondition SofaGeneralTopology (SofaMiscForceField)
 
 # Required by SofaMiscEngine
 find_package(SofaNonUniformFem REQUIRED)

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
 macro(sofa_generate_plugin_config config_filename)
     # Generate default list of plugins (according to the options)

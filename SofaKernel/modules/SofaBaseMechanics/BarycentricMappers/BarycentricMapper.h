@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_H
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_H
 
+#include <SofaBaseMechanics/config.h>
 #include <sofa/core/Mapping.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -139,8 +140,6 @@ private:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3dTypes, Vec3dTypes >;
-
-
 #endif
 
 }

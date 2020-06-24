@@ -22,7 +22,7 @@
 #ifndef SOFAADVANCED_CONFIG_H
 #define SOFAADVANCED_CONFIG_H
 
-#include <SofaCommon/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_SOFAADVANCED
 #  define SOFA_TARGET SofaAdvanced

@@ -23,7 +23,7 @@
 #define INITRIGIDSCALE_H
 
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_RIGIDSCALE
 #define SOFA_RIGIDSCALE_API SOFA_EXPORT_DYNAMIC_LIBRARY

@@ -24,4 +24,11 @@
 
 #include <SofaGeneral/config.h>
 
+#ifdef SOFA_BUILD_GENERAL_ANIMATION_LOOP
+#  define SOFA_TARGET SofaGeneralAnimationLoop
+#  define SOFA_GENERAL_ANIMATION_LOOP_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_GENERAL_ANIMATION_LOOP_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

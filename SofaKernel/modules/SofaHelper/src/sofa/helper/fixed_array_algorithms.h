@@ -1,7 +1,7 @@
 #ifndef SOFA_HELPER_FIXED_ARRAY_ALGORITHMS_H
 #define SOFA_HELPER_FIXED_ARRAY_ALGORITHMS_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/fixed_array.h>
 namespace sofa
