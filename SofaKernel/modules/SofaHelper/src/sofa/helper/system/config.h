@@ -22,82 +22,10 @@
 #ifndef SOFA_HELPER_SYSTEM_CONFIG_H
 #define SOFA_HELPER_SYSTEM_CONFIG_H
 
-#include <sofa/helper/helper.h>
+// Backward compatibility header
 
-#include <cstddef>              // For nullptr
+#include <sofa/helper/config.h>
 
-#if defined(_WIN32)
-#  ifndef NOMINMAX
-#    define NOMINMAX
-#  endif
-#endif
-
-// snprintf() has been provided since MSVC++ 14 (Visual Studio 2015).  For other
-// versions, it is simply #defined to _snprintf().
-#if (defined(_MSC_VER) && _MSC_VER < 1900)
-#  define snprintf _snprintf
-#endif
-
-#ifdef _WIN32
-#  include <windows.h>
-#endif
-
-#ifdef BOOST_NO_EXCEPTIONS
-#  include<exception>
-
-namespace boost
-{
-	inline void throw_exception(std::exception const & e)
-	{
-		return;
-	}
-}
-#endif // BOOST_NO_EXCEPTIONS
-
-
-#ifdef _MSC_VER
-#  ifndef _USE_MATH_DEFINES
-#    define _USE_MATH_DEFINES 1 // required to get M_PI from math.h
-#  endif
-// Visual C++ does not include stdint.h
-typedef signed __int8		int8_t;
-typedef signed __int16		int16_t;
-typedef signed __int32		int32_t;
-typedef signed __int64		int64_t;
-typedef unsigned __int8		uint8_t;
-typedef unsigned __int16	uint16_t;
-typedef unsigned __int32	uint32_t;
-typedef unsigned __int64	uint64_t;
-#else
-#  include <stdint.h>
-#endif
-
-#ifdef SOFA_FLOAT
-typedef float SReal;
-#else
-typedef double SReal;
-#endif
-
-#define sofa_do_concat2(a,b) a ## b
-#define sofa_do_concat(a,b) sofa_do_concat2(a,b)
-#define sofa_concat(a,b) sofa_do_concat(a,b)
-
-#define sofa_tostring(a) sofa_do_tostring(a)
-#define sofa_do_tostring(a) #a
-
-#define SOFA_DECL_CLASS(name) ///extern "C" { int sofa_concat(class_,name) = 0; }
-#define SOFA_LINK_CLASS(name) ///extern "C" { extern int sofa_concat(class_,name); int sofa_concat(link_,name) = sofa_concat(class_,name); }
-
-// Prevent compiler warnings about 'unused variables'.
-// This should be used when a parameter name is needed (e.g. for
-// documentation purposes) even if it is not used in the code.
-#define SOFA_UNUSED(x) (void)(x)
-
-// utility for debug tracing
-#ifdef _MSC_VER
-    #define SOFA_CLASS_METHOD ( std::string(this->getClassName()) + "::" + __FUNCTION__ + " " )
-#else
-    #define SOFA_CLASS_METHOD ( std::string(this->getClassName()) + "::" + __func__ + " " )
-#endif
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/helper/config.h")
 
 #endif // SOFA_HELPER_SYSTEM_CONFIG_H

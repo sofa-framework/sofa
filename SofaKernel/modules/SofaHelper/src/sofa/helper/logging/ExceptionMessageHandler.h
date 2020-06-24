@@ -27,7 +27,7 @@
 #define EXCEPTIONMESSAGEHANDLER_H
 
 #include "MessageHandler.h"
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

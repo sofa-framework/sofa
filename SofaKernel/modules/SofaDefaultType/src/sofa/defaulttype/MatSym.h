@@ -22,7 +22,6 @@
 #ifndef SOFA_DEFAULTTYPE_MATSYM_H
 #define SOFA_DEFAULTTYPE_MATSYM_H
 
-#include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Vec.h>
 #include <cassert>
 #include <iostream>

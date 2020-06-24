@@ -22,7 +22,7 @@
 #ifndef IMAGE_GUI_CONFIG_H
 #define IMAGE_GUI_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #define BUILD_ALL_IMAGE_TYPES // comment to reduce compilation time
 

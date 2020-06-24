@@ -24,4 +24,11 @@
 
 #include <SofaGeneral/config.h>
 
+#ifdef SOFA_BUILD_USER_INTERACTION
+#  define SOFA_TARGET SofaUserInteraction
+#  define SOFA_USER_INTERACTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_USER_INTERACTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

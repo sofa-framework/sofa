@@ -24,4 +24,11 @@
 
 #include <SofaGeneral/config.h>
 
+#ifdef SOFA_BUILD_BOUNDARY_CONDITION
+#  define SOFA_TARGET SofaBoundaryCondition
+#  define SOFA_BOUNDARY_CONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BOUNDARY_CONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

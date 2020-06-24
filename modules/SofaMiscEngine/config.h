@@ -24,4 +24,11 @@
 
 #include <SofaMisc/config.h>
 
+#ifdef SOFA_BUILD_MISC_ENGINE
+#  define SOFA_TARGET SofaMiscEngine
+#  define SOFA_MISC_ENGINE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_MISC_ENGINE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_PLUGINMANAGER_H
 #define SOFA_CORE_PLUGINMANAGER_H
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 #include <sofa/helper/system/DynamicLibrary.h>
 #include <sofa/helper/system/FileSystem.h>
 

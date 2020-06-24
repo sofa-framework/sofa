@@ -1,9 +1,12 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaSimulationCommon)
 
 sofa_find_package(TinyXML REQUIRED)
 
 set(HEADER_FILES
+    config.h.in
+    common.h
+    init.h
     FindByTypeVisitor.h
     SceneLoaderPHP.h
     SceneLoaderXML.h
@@ -36,7 +39,5 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml) # Private because not exported in API
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SIMULATION_COMMON")
 
 sofa_install_targets(SofaSimulation ${PROJECT_NAME} "SofaSimulation/${PROJECT_NAME}")

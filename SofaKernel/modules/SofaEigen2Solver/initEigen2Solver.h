@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_EIGEN2_SOLVER_INIT_H
 #define SOFA_COMPONENT_EIGEN2_SOLVER_INIT_H
-#include "config.h"
+#include <SofaEigen2Solver/config.h>
 
 namespace sofa
 {

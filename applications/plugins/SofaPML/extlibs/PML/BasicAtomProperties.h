@@ -24,7 +24,6 @@
 
 #include "PhysicalModelIO.h"
 #include "StructureProperties.h"
-#include <sofa/helper/system/config.h>
 
 /**
   * This class is the basic Atom Properties class.

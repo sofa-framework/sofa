@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include <SofaComponentAll/initComponentAll.h>
 
 #include <SofaBase/initSofaBase.h>
@@ -50,11 +49,6 @@ void initExternalModule()
     static bool first = true;
     if(!first) return;
     first = false;
-
-/// TODO: remove SofaAllCommonComponents backward compatibility at SOFA v20.06
-#ifdef SOFACOMPONENTALL_USING_DEPRECATED_NAME
-    msg_deprecated("SofaAllCommonComponents") << "This plugin was renamed into SofaComponentAll. Backward compatiblity will be stopped at SOFA v20.06";
-#endif
 
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();

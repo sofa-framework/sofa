@@ -24,4 +24,11 @@
 
 #include <SofaGeneral/config.h>
 
+#ifdef SOFA_BUILD_CONSTRAINT
+#  define SOFA_TARGET SofaConstraint
+#  define SOFA_CONSTRAINT_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_CONSTRAINT_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

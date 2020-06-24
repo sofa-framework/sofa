@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SimpleGUI.h"
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/MechanicalVisitor.h>

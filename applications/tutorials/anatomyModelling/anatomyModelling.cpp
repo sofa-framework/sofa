@@ -29,7 +29,7 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/PluginManager.h>
 
-#include <SofaSimulationGraph/graph.h>
+#include <SofaSimulationGraph/config.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 

@@ -30,7 +30,6 @@
 #include <sofa/helper/Quater.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/OptionsGroup.h>
 
 #include "BackgroundSetting.h"

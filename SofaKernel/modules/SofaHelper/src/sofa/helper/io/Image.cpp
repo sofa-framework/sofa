@@ -21,7 +21,6 @@
 ******************************************************************************/
 #define SOFA_HELPER_IO_IMAGE_CPP
 #include <sofa/helper/io/Image.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.inl>
 #include <cstdio>
 #include <cstring>

@@ -26,7 +26,7 @@
 #include <vector>
 #include <map>
 #include <sstream>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

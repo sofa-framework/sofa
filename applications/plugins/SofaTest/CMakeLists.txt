@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaTest VERSION 0.1)
 
 set(HEADER_FILES
@@ -66,12 +66,6 @@ if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
 target_link_libraries(${PROJECT_NAME} SceneCreator SofaBase SofaCommon SofaGeneral SofaMisc)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_TEST -DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_generate_package(

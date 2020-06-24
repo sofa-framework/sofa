@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_SYSTEM_PLUGINMANAGER_H
 #define SOFA_HELPER_SYSTEM_PLUGINMANAGER_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/system/DynamicLibrary.h>
 #include <vector>
 #include <map>

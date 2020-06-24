@@ -1,7 +1,7 @@
 #ifndef INITCIMGPLUGIN_H
 #define INITCIMGPLUGIN_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #cmakedefine01 CIMGPLUGIN_HAVE_JPEG
 #cmakedefine01 CIMGPLUGIN_HAVE_TIFF

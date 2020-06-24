@@ -27,7 +27,7 @@
 #define MESSAGEHANDLER_H
 #include <sstream>
 #include <string>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

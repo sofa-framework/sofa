@@ -21,7 +21,6 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_INL
 #define SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_INL
-#include <sofa/helper/system/config.h>
 #include <SofaGeneralMeshCollision/MeshDiscreteIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>

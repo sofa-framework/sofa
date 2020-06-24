@@ -22,7 +22,7 @@
 #ifndef SOFA_EULERIAN_FLUID_EULERIAN_FLUID_H
 #define SOFA_EULERIAN_FLUID_EULERIAN_FLUID_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_EULERIAN_FLUID
 #  define SOFA_EULERIAN_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY

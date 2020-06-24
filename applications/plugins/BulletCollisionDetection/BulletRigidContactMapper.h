@@ -1,7 +1,6 @@
 #ifndef BULLET_RIGID_CONTACT_MAPPER_H
 #define BULLET_RIGID_CONTACT_MAPPER_H
 
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>

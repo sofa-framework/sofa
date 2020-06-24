@@ -24,4 +24,11 @@
 
 #include <SofaGeneral/config.h>
 
+#ifdef SOFA_BUILD_GENERAL_ENGINE
+#  define SOFA_TARGET SofaGeneralEngine
+#  define SOFA_GENERAL_ENGINE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_GENERAL_ENGINE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

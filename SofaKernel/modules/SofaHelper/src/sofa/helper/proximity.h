@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_COLLISION_PROXIMITY_H
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

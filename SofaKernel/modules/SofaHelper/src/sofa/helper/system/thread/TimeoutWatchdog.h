@@ -23,7 +23,7 @@
 #ifndef SOFA_HELPER_SYSTEM_THREAD_TIMEOUTWATCHDOG
 #define SOFA_HELPER_SYSTEM_THREAD_TIMEOUTWATCHDOG
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <boost/thread/thread.hpp>
 
 namespace sofa

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaBaseMechanics)
 
 set(HEADER_FILES
@@ -71,7 +71,6 @@ set(SOURCE_FILES
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BASE_MECHANICS")
+target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaEigen2Solver)
 
 sofa_install_targets(SofaBase ${PROJECT_NAME} "SofaBase/${PROJECT_NAME}")

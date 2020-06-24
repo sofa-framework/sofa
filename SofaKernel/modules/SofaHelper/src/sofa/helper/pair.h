@@ -1,7 +1,7 @@
 #ifndef SOFA_HELPER_PAIR_H
 #define SOFA_HELPER_PAIR_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 #include <utility>
 #include <iostream>

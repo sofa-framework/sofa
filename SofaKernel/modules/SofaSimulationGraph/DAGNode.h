@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_GRAPH_DAGNODE_H
 #define SOFA_SIMULATION_GRAPH_DAGNODE_H
 
-#include <SofaSimulationGraph/graph.h>
+#include <SofaSimulationGraph/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/simulation/Visitor.h>

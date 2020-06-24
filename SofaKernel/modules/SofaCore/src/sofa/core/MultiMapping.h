@@ -23,7 +23,7 @@
 #define SOFA_CORE_MULTIMAPPING_H
 
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 
 namespace sofa
 {

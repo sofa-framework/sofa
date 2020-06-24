@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_TREE_GNODE_H
 #define SOFA_SIMULATION_TREE_GNODE_H
 
-#include <SofaSimulationTree/tree.h>
+#include <SofaSimulationTree/config.h>
 #include <sofa/simulation/Node.h>
 
 

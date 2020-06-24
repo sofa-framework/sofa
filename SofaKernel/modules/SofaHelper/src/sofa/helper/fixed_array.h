@@ -48,8 +48,7 @@
 #ifndef SOFA_HELPER_FIXED_ARRAY_H
 #define SOFA_HELPER_FIXED_ARRAY_H
 
-#include <sofa/helper/system/config.h>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 #include <cstddef>
 #include <stdexcept>

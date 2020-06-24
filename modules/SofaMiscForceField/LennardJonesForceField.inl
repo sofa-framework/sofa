@@ -25,7 +25,6 @@
 #include <SofaMiscForceField/LennardJonesForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/system/config.h>
 #include <cmath>
 #include <iostream>
 

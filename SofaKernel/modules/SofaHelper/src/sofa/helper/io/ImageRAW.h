@@ -25,7 +25,6 @@
 #include <sofa/helper/io/Image.h>
 #include <string>
 
-#include <sofa/helper/system/config.h>
 
 namespace sofa
 {

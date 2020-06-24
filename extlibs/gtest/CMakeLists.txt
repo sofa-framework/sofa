@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(gtest VERSION 2.6.2 LANGUAGES CXX C)
 
 ## Options
@@ -31,6 +31,20 @@ set(HEADER_FILES
     include/gtest/gtest-spi.h
     include/gtest/gtest-test-part.h
     include/gtest/gtest-typed-test.h
+    include/gtest/internal/gtest-death-test-internal.h
+    include/gtest/internal/gtest-filepath.h
+    include/gtest/internal/gtest-internal.h
+    include/gtest/internal/gtest-linked_ptr.h
+    include/gtest/internal/gtest-param-util-generated.h
+    include/gtest/internal/gtest-param-util.h
+    include/gtest/internal/gtest-port-arch.h
+    include/gtest/internal/gtest-port.h
+    include/gtest/internal/gtest-string.h
+    include/gtest/internal/gtest-tuple.h
+    include/gtest/internal/gtest-type-util.h
+    include/gtest/internal/custom/gtest-port.h
+    include/gtest/internal/custom/gtest-printers.h
+    include/gtest/internal/custom/gtest.h
 )
 
 set(SOURCE_FILES
@@ -62,7 +76,12 @@ target_include_directories(gtest
     SYSTEM PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" # for src/gtest.cc -> src/gtest-internal-inl.h
     )
-target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include/extlibs/GTest/include>")
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_generate_package(NAME GTest VERSION ${PROJECT_VERSION} TARGETS "gtest" INCLUDE_INSTALL_DIR "extlibs/GTest")
+sofa_generate_package(
+    NAME GTest
+    VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "include"
+    INCLUDE_INSTALL_DIR "extlibs/GTest"
+    )

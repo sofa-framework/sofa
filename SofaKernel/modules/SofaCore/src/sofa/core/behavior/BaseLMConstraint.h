@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_CONSTRAINT_BASELMCONSTRAINT_H
 
 #include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 
 namespace sofa
 {

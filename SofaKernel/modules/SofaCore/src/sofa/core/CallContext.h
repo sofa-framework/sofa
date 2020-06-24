@@ -28,7 +28,7 @@
 #include <kaapi_processor.h>
 #endif
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 
 namespace sofa
 {

@@ -34,7 +34,7 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/config.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/glut.h>

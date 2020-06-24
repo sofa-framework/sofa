@@ -22,7 +22,7 @@
 #ifndef SOFAOPENGLVISUAL_CONFIG_H
 #define SOFAOPENGLVISUAL_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_SOFAOPENGLVISUAL
 #  define SOFA_TARGET SofaOpenglVisual

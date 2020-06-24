@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_SCENELOADERXML_H
 #define SOFA_SIMULATION_SCENELOADERXML_H
 
-#include <SofaSimulationCommon/common.h>
+#include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <SofaSimulationCommon/xml/BaseElement.h>
 

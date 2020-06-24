@@ -22,6 +22,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_TAG_H
 #define SOFA_CORE_OBJECTMODEL_TAG_H
 
+#include <sofa/core/config.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa

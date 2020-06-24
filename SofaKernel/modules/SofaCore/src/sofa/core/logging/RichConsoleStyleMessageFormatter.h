@@ -25,6 +25,8 @@
 ******************************************************************************/
 #ifndef RICHCONSOLESTYLEMESSAGEFORMATTER_H
 #define RICHCONSOLESTYLEMESSAGEFORMATTER_H
+
+#include <sofa/core/config.h>
 #include <sofa/helper/logging/MessageFormatter.h>
 
 namespace sofa

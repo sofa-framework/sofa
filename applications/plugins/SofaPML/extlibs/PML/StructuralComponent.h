@@ -33,7 +33,6 @@
 #include "Component.h"
 #include "Structure.h"
 
-#include <sofa/helper/system/config.h>
 class Object3D;
 #include <PhysicalProperties/StructuralComponentProperties.h>
 

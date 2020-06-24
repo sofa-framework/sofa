@@ -26,7 +26,6 @@
 #include <string>
 #include <cassert>
 
-#include <sofa/helper/system/config.h>
 
 namespace sofa
 {

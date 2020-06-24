@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_INIT_H
 #define SOFA_HELPER_INIT_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 #include <string>
 

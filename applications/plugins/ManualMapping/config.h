@@ -22,9 +22,10 @@
 #ifndef MANUALMAPPING_CONFIG_H
 #define MANUALMAPPING_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_ManualMapping
+#  define SOFA_TARGET ManualMapping
 #  define SOFA_ManualMapping_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_ManualMapping_API SOFA_IMPORT_DYNAMIC_LIBRARY

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SVDLinearSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_SVDLinearSOLVER_H
-#include "config.h"
+#include <SofaEigen2Solver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>

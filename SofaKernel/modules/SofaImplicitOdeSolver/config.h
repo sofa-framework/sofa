@@ -24,4 +24,11 @@
 
 #include <SofaCommon/config.h>
 
+#ifdef SOFA_BUILD_IMPLICIT_ODE_SOLVER
+#  define SOFA_TARGET SofaImplicitOdeSolver
+#  define SOFA_IMPLICIT_ODE_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_IMPLICIT_ODE_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

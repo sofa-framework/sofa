@@ -32,7 +32,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/Multi2Mapping.inl>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 #include <sofa/core/VecId.h>
 
 #include "Flexible/shapeFunction/BaseShapeFunction.h"

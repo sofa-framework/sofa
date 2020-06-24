@@ -27,7 +27,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <cstring>
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

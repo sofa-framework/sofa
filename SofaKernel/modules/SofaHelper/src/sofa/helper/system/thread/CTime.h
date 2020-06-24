@@ -23,7 +23,7 @@
 #define SOFA_HELPER_SYSTEM_THREAD_CTIME_H
 
 #include <ctime>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 #ifdef WIN32
 # include <windows.h>

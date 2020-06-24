@@ -25,7 +25,6 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/system/config.h>
 
 namespace sofa
 {

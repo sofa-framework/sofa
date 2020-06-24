@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
 find_package(SofaFramework)
 
@@ -31,7 +31,6 @@ sofa_add_plugin(OptiTrackNatNet OptiTrackNatNet)
 sofa_add_plugin(SixenseHydra SixenseHydra)
 sofa_add_plugin(SofaOpenCL SofaOpenCL)
 sofa_add_plugin(Xitact Xitact)
-sofa_add_plugin(EmptyCmakePlugin EmptyCmakePlugin)
 sofa_add_plugin(Haption Haption)
 sofa_add_plugin(ManualMapping ManualMapping)
 sofa_add_plugin(PersistentContact PersistentContact)

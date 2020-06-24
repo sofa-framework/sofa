@@ -22,7 +22,7 @@
 #ifndef SOFA_DEFAULTTYPE_INIT_H
 #define SOFA_DEFAULTTYPE_INIT_H
 
-#include <sofa/defaulttype/defaulttype.h>
+#include <sofa/defaulttype/config.h>
 
 namespace sofa
 {

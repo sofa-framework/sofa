@@ -25,7 +25,6 @@
 #include <SofaSphFluid/ParticlesRepulsionForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaSphFluid/SpatialGridContainer.inl>
-#include <sofa/helper/system/config.h>
 #include <cmath>
 #include <iostream>
 
