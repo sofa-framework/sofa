@@ -979,8 +979,8 @@ bool XMLVTKReader::readFile(const char* filename)
 
     //read VTK data format type
     const char* datasetFormatStrTemp = pElem->Attribute("type");
-    checkErrorMsg(datasetFormatStrTemp, "Dataset format not defined")
-            string datasetFormatStr = string(datasetFormatStrTemp);
+    checkErrorMsg(datasetFormatStrTemp, "Dataset format not defined");
+    string datasetFormatStr = string(datasetFormatStrTemp);
     VTKDatasetFormat datasetFormat;
 
     if (datasetFormatStr.compare("UnstructuredGrid") == 0)
