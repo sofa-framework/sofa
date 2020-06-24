@@ -199,7 +199,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     if(my_triangles.size() != (size_t)nbrFacet)
     {
         msg_error() << "Size mismatch between triangle vector and facetSize";
-        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        return false;
     }
 
     this->d_positions.endEdit();
