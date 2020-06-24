@@ -82,15 +82,6 @@ protected:
 MeshVTKLoader::MeshVTKLoader() : MeshLoader()
   , reader(nullptr)
 {
-    /// name filename => component state update + change of all data field...but not visible ?
-    addUpdateCallback("filename", {&m_filename}, [this](const core::DataTracker& t){
-        SOFA_UNUSED(t);
-        if(load()){
-            clearLoggedMessages();
-            return sofa::core::objectmodel::ComponentState::Valid;
-        }
-        return sofa::core::objectmodel::ComponentState::Invalid;
-    }, {&d_polylines, &d_edges, &d_triangles, &d_quads, &d_tetrahedra, &d_hexahedra, &d_normals, &d_positions, &d_highOrderEdgePositions});
 }
 
 MeshVTKLoader::VTKFileType MeshVTKLoader::detectFileType(const char* filename)
@@ -555,7 +546,7 @@ bool MeshVTKLoader::setInputsData()
 
         BaseData* basedata = reader->inputPointDataVector[i]->createSofaData();
         this->addData(basedata, dataname);
-        addOutputToCallback("filename", basedata);
+        addOutputsToCallback("filename", {basedata});
 
     }
 
@@ -565,12 +556,16 @@ bool MeshVTKLoader::setInputsData()
         const char* dataname = reader->inputCellDataVector[i]->name.c_str();
         BaseData* basedata = reader->inputCellDataVector[i]->createSofaData();
         this->addData(basedata, dataname);
-        addOutputToCallback("filename", basedata);
+        addOutputsToCallback("filename", {basedata});
     }
 
     return true;
 }
 
+void MeshVTKLoader::doClearBuffers()
+{
+    // Should clear data fields added by setInputsData(), Preferably without using abstractTypeInfo...
+}
 
 //Legacy VTK Loader
 bool LegacyVTKReader::readFile(const char* filename)

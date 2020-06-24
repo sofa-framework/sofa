@@ -117,6 +117,12 @@ bool MeshGmshLoader::load()
     return fileRead;
 }
 
+
+void MeshGmshLoader::doClearBuffers()
+{
+    /// Nothing to do if no output is added to the "filename" dataTrackerEngine.
+}
+
 void MeshGmshLoader::addInGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group,int tag,int /*eid*/) {
     for (unsigned i=0;i<group.size();i++) {
         if (tag == group[i].p0) {

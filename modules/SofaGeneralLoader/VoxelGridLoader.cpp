@@ -258,6 +258,11 @@ bool VoxelGridLoader::load ()
         return false;
 }
 
+void VoxelGridLoader::clearBuffers()
+{
+    // Nothing to do, clear is called in load()
+}
+
 helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, const Vec3i& res, const int hsize ) const
 {
     helper::io::Image* image = nullptr;

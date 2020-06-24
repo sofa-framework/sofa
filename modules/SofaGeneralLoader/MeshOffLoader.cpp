@@ -71,7 +71,7 @@ bool MeshOffLoader::load()
     return fileRead;
 }
 
-
+void MeshOffLoader::doClearBuffers() {}
 
 bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
 {

@@ -49,6 +49,11 @@ GridMeshCreator::GridMeshCreator(): MeshLoader()
 {
 }
 
+void GridMeshCreator::doClearBuffers()
+{
+
+}
+
 
 void GridMeshCreator::insertUniqueEdge( unsigned a, unsigned b )
 {

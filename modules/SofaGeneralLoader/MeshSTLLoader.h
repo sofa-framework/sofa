@@ -43,6 +43,7 @@ protected:
 
     // binary
     bool readBinarySTL(const char* filename);
+    void doClearBuffers() override;
 
 public:
     //Add Data here

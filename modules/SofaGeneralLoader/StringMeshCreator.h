@@ -53,6 +53,8 @@ public:
 
 protected:
     StringMeshCreator();
+
+    void doClearBuffers() override;
 };
 
 

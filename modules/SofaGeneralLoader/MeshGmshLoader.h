@@ -43,6 +43,8 @@ public:
 
 protected:
 
+    void doClearBuffers() override;
+
     bool readGmsh(std::ifstream &file, const unsigned int gmshFormat);
 
     void addInGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group,int tag,int eid);

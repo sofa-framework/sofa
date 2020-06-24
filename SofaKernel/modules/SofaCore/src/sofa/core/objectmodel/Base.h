@@ -167,7 +167,7 @@ private:
         p->release();
     }
 
-private:
+protected:
     std::map<std::string, sofa::core::DataTrackerCallback> m_internalEngine;
 
 public:
@@ -175,7 +175,7 @@ public:
                            std::initializer_list<BaseData*> inputs,
                            std::function<sofa::core::objectmodel::ComponentState(const DataTracker&)> function,
                            std::initializer_list<BaseData*> outputs);
-    void addOutputToCallback(const std::string& name, BaseData* output);
+    void addOutputsToCallback(const std::string& name, std::initializer_list<BaseData*> outputs);
 
     /// Accessor to the object name
     const std::string& getName() const

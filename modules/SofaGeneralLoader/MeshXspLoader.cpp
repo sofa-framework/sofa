@@ -98,6 +98,12 @@ bool MeshXspLoader::load()
     return XspLoader::Load(m_filename.getValue(), data);
 }
 
+
+void MeshXspLoader::doClearBuffers()
+{
+    /// Nothing to do if no output is added to the "filename" dataTrackerEngine.
+}
+
 int MeshXspLoaderClass = core::RegisterObject("Specific mesh loader for Xsp file format.")
         .add< MeshXspLoader >();
 } /// namespace loader

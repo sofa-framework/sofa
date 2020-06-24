@@ -46,7 +46,7 @@ protected:
     bool readOBJ (std::ifstream &file, const char* filename);
     bool readMTL (const char* filename, helper::vector <sofa::helper::types::Material>& d_materials);
     void addGroup (const sofa::core::loader::PrimitiveGroup& g);
-    void clearBuffers();
+    void doClearBuffers() override;
 
     std::string textureName;
     FaceType faceType;

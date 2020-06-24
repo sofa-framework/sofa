@@ -108,8 +108,57 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_trianglesGroups.setGroup("Groups");
     d_pentahedraGroups.setGroup("Groups");
     d_tetrahedraGroups.setGroup("Groups");
+
+    /// name filename => component state update + change of all data field...but not visible ?
+    addUpdateCallback("filename", {&m_filename}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        if(load()){
+            clearLoggedMessages();
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
+        clearBuffers();
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }, {&d_positions, &d_normals,
+        &d_edges, &d_triangles, &d_quads, &d_tetrahedra, &d_hexahedra, &d_pentahedra, &d_pyramids,
+        &d_polylines, &d_polygons,
+        &d_highOrderEdgePositions, &d_highOrderTrianglePositions, &d_highOrderQuadPositions, &d_highOrderHexahedronPositions, &d_highOrderTetrahedronPositions,
+        &d_edgesGroups, &d_quadsGroups, &d_polygonsGroups, &d_pyramidsGroups, &d_hexahedraGroups, &d_trianglesGroups, &d_pentahedraGroups, &d_tetrahedraGroups}
+    );
 }
 
+void MeshLoader::clearBuffers()
+{
+    getWriteOnlyAccessor(d_positions).clear();
+    getWriteOnlyAccessor(d_normals).clear();
+
+    getWriteOnlyAccessor(d_edges).clear();
+    getWriteOnlyAccessor(d_triangles).clear();
+    getWriteOnlyAccessor(d_quads).clear();
+    getWriteOnlyAccessor(d_tetrahedra).clear();
+    getWriteOnlyAccessor(d_hexahedra).clear();
+    getWriteOnlyAccessor(d_pentahedra).clear();
+    getWriteOnlyAccessor(d_pyramids).clear();
+    getWriteOnlyAccessor(d_polygons).clear();
+    getWriteOnlyAccessor(d_polylines).clear();
+
+    getWriteOnlyAccessor(d_highOrderEdgePositions).clear();
+    getWriteOnlyAccessor(d_highOrderTrianglePositions).clear();
+    getWriteOnlyAccessor(d_highOrderQuadPositions).clear();
+    getWriteOnlyAccessor(d_highOrderTetrahedronPositions).clear();
+    getWriteOnlyAccessor(d_highOrderHexahedronPositions).clear();
+
+    getWriteOnlyAccessor(d_edgesGroups).clear();
+    getWriteOnlyAccessor(d_trianglesGroups).clear();
+    getWriteOnlyAccessor(d_quadsGroups).clear();
+    getWriteOnlyAccessor(d_tetrahedraGroups).clear();
+    getWriteOnlyAccessor(d_hexahedraGroups).clear();
+    getWriteOnlyAccessor(d_pentahedraGroups).clear();
+    getWriteOnlyAccessor(d_pyramidsGroups).clear();
+    getWriteOnlyAccessor(d_polygonsGroups).clear();
+
+    doClearBuffers();
+}
 
 void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {

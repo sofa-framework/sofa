@@ -119,10 +119,10 @@ void Base::addUpdateCallback(const std::string& name,
     engine.addOutput(&d_componentstate);
 }
 
-void Base::addOutputToCallback(const std::string& name, BaseData* output)
+void Base::addOutputsToCallback(const std::string& name, std::initializer_list<BaseData*> outputs)
 {
     if (m_internalEngine.find(name) != m_internalEngine.end())
-        m_internalEngine[name].addOutputs({output});
+        m_internalEngine[name].addOutputs(outputs);
 }
 
 

@@ -78,6 +78,15 @@ bool MeshSTEPLoader::load()
     return fileRead;
 }
 
+void MeshSTEPLoader::doClearBuffers()
+{
+    helper::getWriteOnlyAccessor(&_uv).clear();
+    helper::getWriteOnlyAccessor(&_indicesComponents).clear();
+    _debug(false);
+    _aDeflection(0.1);
+    _keepDuplicate(true);
+}
+
 bool MeshSTEPLoader::readSTEP(const char* fileName)
 {
     dmsg_info() << "MeshSTEPLoader::readSTEP";

@@ -42,6 +42,8 @@ public:
     {
         return true;
     }
+
+    void doClearBuffers() override {}
 };
 
 /** Test suite for MeshLoader

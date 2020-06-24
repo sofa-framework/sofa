@@ -48,6 +48,12 @@ SphereLoader::SphereLoader()
     addAlias(&positions,"sphere_centers");
 }
 
+void SphereLoader::clearBuffers()
+{
+    radius.beginEdit()->clear();
+    radius.endEdit();
+}
+
 
 
 bool SphereLoader::load()

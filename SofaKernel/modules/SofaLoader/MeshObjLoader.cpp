@@ -72,19 +72,9 @@ MeshObjLoader::MeshObjLoader()
     d_vertPosIdx.setGroup("Geometry");
     d_vertNormIdx.setGroup("Geometry");
 
-    /// name filename => component state update + change of all data field...but not visible ?
-    addUpdateCallback("filename", {&m_filename}, [this](const core::DataTracker& t)
-    {
-        SOFA_UNUSED(t);
-        if(load()){
-            clearLoggedMessages();
-            return sofa::core::objectmodel::ComponentState::Valid;
-        }
-        clearBuffers();
-        return sofa::core::objectmodel::ComponentState::Invalid;
-    }, {&d_positions, &d_texCoordsList, &d_normalsList,
+    addOutputsToCallback("filename", {&d_texCoordsList, &d_normalsList,
         &d_material, &d_materials, &d_faceList, &d_normalsIndexList,
-        &d_texIndexList, &d_edges, &d_triangles, &d_quads});
+        &d_texIndexList});
 }
 
 MeshObjLoader::~MeshObjLoader()
@@ -119,9 +109,8 @@ bool MeshObjLoader::load()
 /// \brief MeshObjLoader::clearBuffers
 /// Clear all the buffer containing the data loaded from the file.
 ///
-void MeshObjLoader::clearBuffers()
+void MeshObjLoader::doClearBuffers()
 {
-    getWriteOnlyAccessor(d_positions).clear();
     getWriteOnlyAccessor(d_texCoordsList).clear();
     getWriteOnlyAccessor(d_normalsList).clear();
 
@@ -130,13 +119,6 @@ void MeshObjLoader::clearBuffers()
     getWriteOnlyAccessor(d_faceList)->clear();
     getWriteOnlyAccessor(d_normalsIndexList)->clear();
     getWriteOnlyAccessor(d_texIndexList)->clear();
-    getWriteOnlyAccessor(d_edges).clear();
-    getWriteOnlyAccessor(d_triangles).clear();
-    getWriteOnlyAccessor(d_quads).clear();
-
-    getWriteOnlyAccessor(d_edgesGroups).clear();
-    getWriteOnlyAccessor(d_trianglesGroups).clear();
-    getWriteOnlyAccessor(d_quadsGroups).clear();
 }
 
 void MeshObjLoader::addGroup (const PrimitiveGroup& g)

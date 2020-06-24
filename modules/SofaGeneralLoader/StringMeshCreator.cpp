@@ -48,6 +48,11 @@ StringMeshCreator::StringMeshCreator(): MeshLoader()
 {
 }
 
+void StringMeshCreator::doClearBuffers()
+{
+
+}
+
 
 bool StringMeshCreator::load()
 {

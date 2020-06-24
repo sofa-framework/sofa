@@ -43,6 +43,7 @@ public:
 
 protected:
 
+    void doClearBuffers() override;
     bool readOFF(std::ifstream &file, const char* filename);
 
 

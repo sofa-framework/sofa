@@ -46,17 +46,6 @@ MeshSTLLoader::MeshSTLLoader() : MeshLoader()
     , _forceBinary(initData(&_forceBinary, false, "forceBinary","Force reading in binary mode. Even in first keyword of the file is solid."))
     , d_mergePositionUsingMap(initData(&d_mergePositionUsingMap, true, "mergePositionUsingMap","Since positions are duplicated in a STL, they have to be merged. Using a map to do so will temporarily duplicate memory but should be more efficient. Disable it if memory is really an issue."))
 {
-    /// name filename => component state update + change of all data field...but not visible ?
-    addUpdateCallback("filename", {&m_filename}, [this](const core::DataTracker& t)
-    {
-        SOFA_UNUSED(t);
-        if(load())
-        {
-            clearLoggedMessages();
-            return sofa::core::objectmodel::ComponentState::Valid;
-        }
-        return sofa::core::objectmodel::ComponentState::Invalid;
-    }, {&d_positions, &d_edges, &d_triangles, &d_quads});
 }
 
 
@@ -317,6 +306,11 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
     dmsg_info() << "done!" ;
 
     return true;
+}
+
+void MeshSTLLoader::doClearBuffers()
+{
+    /// Nothing to do if no output is added to the "filename" dataTrackerEngine.
 }
 
 } /// namespace sofa::component::loader

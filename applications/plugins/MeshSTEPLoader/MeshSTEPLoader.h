@@ -103,6 +103,8 @@ public:
     }
 
 protected:
+    void doClearBuffers() override;
+
     // Read STEP file and classify the type of object
     bool readSTEP(const char* fileName);
 

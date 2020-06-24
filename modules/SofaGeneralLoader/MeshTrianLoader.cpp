@@ -80,6 +80,16 @@ bool MeshTrianLoader::load()
     return fileRead;
 }
 
+void MeshTrianLoader::doClearBuffers()
+{
+    neighborTable.beginEdit()->clear();
+    neighborTable.endEdit();
+    edgesOnBorder.beginEdit()->clear();
+    edgesOnBorder.endEdit();
+    trianglesOnBorderList.beginEdit()->clear();
+    trianglesOnBorderList.endEdit();
+}
+
 
 
 bool MeshTrianLoader::readTrian (const char* filename)

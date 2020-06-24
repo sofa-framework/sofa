@@ -62,6 +62,8 @@ protected:
     BaseVTKReader* reader;
     bool setInputsMesh();
     bool setInputsData();
+
+    void doClearBuffers() override;
 };
 
 } /// namespace sofa::component::loader

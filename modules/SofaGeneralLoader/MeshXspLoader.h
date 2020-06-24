@@ -44,6 +44,8 @@ public:
 
 protected:
     MeshXspLoader();
+
+    void doClearBuffers() override;
 };
 
 

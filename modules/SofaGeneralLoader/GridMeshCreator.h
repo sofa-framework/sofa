@@ -54,6 +54,7 @@ public:
 protected:
     GridMeshCreator();
 
+    void doClearBuffers() override;
     ///< index of a vertex, given its integer coordinates (between 0 and resolution) in the plane.
     unsigned vert( unsigned x, unsigned y) { return x + y*resolution.getValue()[0]; }
 
