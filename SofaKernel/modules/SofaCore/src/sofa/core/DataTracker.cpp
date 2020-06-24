@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include "DataTracker.h"
 #include "objectmodel/BaseData.h"
+#include "objectmodel/Base.h"
 
 namespace sofa
 {
@@ -65,8 +66,10 @@ void DataTracker::clean()
 ////////////////////
 void DataTrackerDDGNode::addInputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas)
 {
-    for(sofa::core::objectmodel::BaseData* d : datas)
+    for(sofa::core::objectmodel::BaseData* d : datas) {
+        m_dataTracker.trackData(*d);
         addInput(d);
+    }
 }
 
 void DataTrackerDDGNode::addOutputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas)
@@ -91,19 +94,46 @@ void DataTrackerDDGNode::updateAllInputsIfDirty()
         static_cast<core::objectmodel::BaseData*>(input)->updateIfDirty();
     }
 }
+
 ///////////////////////
-void DataTrackerEngine::addCallback( std::function<void(DataTrackerEngine*)> f)
+
+void DataTrackerCallback::setCallback( std::function<sofa::core::objectmodel::ComponentState(const DataTracker&)> f)
+{
+    m_callback = f;
+}
+
+void DataTrackerCallback::update()
+{
+    updateAllInputsIfDirty();
+
+    auto cs = m_callback(m_dataTracker);
+    if (m_owner)
+        m_owner->d_componentstate.setValue(cs); // but what if the state of the component was invalid for a reason that doesn't depend on this update?
+    cleanDirty();
+}
+
+
+void DataTrackerEngine::addCallback( std::function<sofa::core::objectmodel::ComponentState(void)> f)
 {
     m_callbacks.push_back(f);
 }
 
+/// Each callback in the engine is called, setting its owner's component state to the value returned by the last callback.
+/// Because each callback overwrites the state of the same component, it is important that within a component, all
+/// callbacks perform the same checks to determine the value of the ComponentState.
 void DataTrackerEngine::update()
 {
+    updateAllInputsIfDirty();
+    core::objectmodel::ComponentState cs;
+
     for(auto& callback : m_callbacks)
-    {
-        callback(this);
-    }
+        cs = callback();
+
+    if (m_owner)
+        m_owner->d_componentstate.setValue(cs);
+    cleanDirty();
 }
+
 
 
 }
