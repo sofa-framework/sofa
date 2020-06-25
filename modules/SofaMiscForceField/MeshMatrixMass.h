@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_MESHMATRIXMASS_H
-#define SOFA_COMPONENT_MASS_MESHMATRIXMASS_H
-#include "config.h"
+#pragma once
 
-
+#include <SofaMiscForceField/config.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
@@ -31,16 +29,13 @@
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/RigidTypes.h>
+
 //VERY IMPORTANT FOR GRAPHS
 #include <sofa/helper/map.h>
-
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+
+namespace sofa::component::topology
 {
 	/// forward declaration to avoid adding includes in .h
 	template< class DataTypes> class EdgeSetGeometryAlgorithms;
@@ -50,7 +45,8 @@ namespace topology
 	template< class DataTypes> class HexahedronSetGeometryAlgorithms;
 }
 
-namespace mass
+
+namespace sofa::component::mass
 {
 
 template<class DataTypes, class TMassType>
@@ -437,10 +433,4 @@ extern template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<defaulttype::Vec1
 
 #endif
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mass

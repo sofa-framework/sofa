@@ -20,31 +20,23 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_CPP
+
 #include <SofaBaseMechanics/UniformMass.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
-using sofa::helper::system::TemporaryLocale ;
-
 #include <sstream>
 
+using sofa::helper::system::TemporaryLocale ;
 using std::string ;
 using std::ostringstream ;
-
 using sofa::component::mass::Vec3d ;
 using sofa::helper::system::DataRepository ;
-
 using namespace sofa::defaulttype;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 static void skipToEOL(FILE* f)
@@ -550,8 +542,4 @@ template class SOFA_BASE_MECHANICS_API UniformMass<Rigid2Types,Rigid2Mass>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mass
