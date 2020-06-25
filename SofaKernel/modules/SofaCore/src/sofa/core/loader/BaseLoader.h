@@ -43,7 +43,6 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(BaseLoader)
 
     virtual bool load() = 0;
-    virtual void clearBuffers() = 0;
     virtual bool canLoad() ;
 
     void parse(objectmodel::BaseObjectDescription *arg) override ;

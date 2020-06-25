@@ -91,7 +91,7 @@ public:
 
     void reinit() override;
 
-    void clearBuffers() final;
+    virtual void clearBuffers() final;
     virtual void doClearBuffers() = 0;
     /// Apply Homogeneous transformation to the positions
     virtual void applyTransformation (sofa::defaulttype::Matrix4 const& T);

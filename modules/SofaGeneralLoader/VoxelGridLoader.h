@@ -48,7 +48,6 @@ protected:
     VoxelGridLoader();
     ~VoxelGridLoader() override;
 
-    void clearBuffers() override;
 public:
     void init() override;
 

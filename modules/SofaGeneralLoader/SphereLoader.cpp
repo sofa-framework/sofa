@@ -48,16 +48,11 @@ SphereLoader::SphereLoader()
     addAlias(&positions,"sphere_centers");
 }
 
-void SphereLoader::clearBuffers()
+bool SphereLoader::load()
 {
     radius.beginEdit()->clear();
     radius.endEdit();
-}
 
-
-
-bool SphereLoader::load()
-{
     // Make sure that fscanf() uses a dot '.' as the decimal separator.
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 

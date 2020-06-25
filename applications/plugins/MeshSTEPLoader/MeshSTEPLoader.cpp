@@ -80,8 +80,10 @@ bool MeshSTEPLoader::load()
 
 void MeshSTEPLoader::doClearBuffers()
 {
-    helper::getWriteOnlyAccessor(&_uv).clear();
-    helper::getWriteOnlyAccessor(&_indicesComponents).clear();
+    _uv.beginEdit()->clear();
+    _uv.endEdit();
+    _indicesComponents.beginEdit()->clear();
+    _indicesComponents.endEdit();
     _debug(false);
     _aDeflection(0.1);
     _keepDuplicate(true);
