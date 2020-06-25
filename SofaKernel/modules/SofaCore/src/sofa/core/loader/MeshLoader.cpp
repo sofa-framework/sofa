@@ -21,6 +21,9 @@
 ******************************************************************************/
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <fstream>
+
 #include <cstdlib>
 
 namespace sofa
@@ -117,7 +120,6 @@ MeshLoader::MeshLoader() : BaseLoader()
             clearLoggedMessages();
             return sofa::core::objectmodel::ComponentState::Valid;
         }
-        clearBuffers();
         return sofa::core::objectmodel::ComponentState::Invalid;
     }, {&d_positions, &d_normals,
         &d_edges, &d_triangles, &d_quads, &d_tetrahedra, &d_hexahedra, &d_pentahedra, &d_pyramids,
@@ -221,6 +223,19 @@ void MeshLoader::reinit()
     }
 
     updateMesh();
+}
+
+bool MeshLoader::load()
+{
+    // Clear previously loaded buffers
+    clearBuffers();
+
+    bool loaded = doLoad();
+
+    // Clear (potentially) partially filled buffers
+    if (!loaded)
+        clearBuffers();
+    return loaded;
 }
 
 

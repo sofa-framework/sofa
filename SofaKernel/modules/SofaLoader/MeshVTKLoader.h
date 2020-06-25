@@ -50,7 +50,7 @@ public:
     core::objectmodel::BaseData* tetrasData;
     core::objectmodel::BaseData* hexasData;
 
-    bool load() override;
+    bool doLoad() override;
 
 protected:
     enum VTKFileType { NONE, LEGACY, XML };

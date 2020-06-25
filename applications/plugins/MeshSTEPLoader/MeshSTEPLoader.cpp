@@ -59,6 +59,7 @@ bool MeshSTEPLoader::load()
 {
     dmsg_info() << "Loading STEP file: " << m_filename;
 
+    clearBuffers();
     bool fileRead = false;
 
     // Loading file
@@ -75,6 +76,7 @@ bool MeshSTEPLoader::load()
     fileRead = this->readSTEP(filename);
     file.close();
 
+    if (!fileRead) clearBuffers();
     return fileRead;
 }
 

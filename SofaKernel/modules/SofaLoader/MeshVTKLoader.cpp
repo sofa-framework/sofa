@@ -123,19 +123,9 @@ MeshVTKLoader::VTKFileType MeshVTKLoader::detectFileType(const char* filename)
     }
 }
 
-bool MeshVTKLoader::load()
+bool MeshVTKLoader::doLoad()
 {
     msg_info() << "Loading VTK file: " << m_filename ;
-
-    getWriteOnlyAccessor(d_polylines).clear();
-    getWriteOnlyAccessor(d_edges).clear();
-    getWriteOnlyAccessor(d_triangles).clear();
-    getWriteOnlyAccessor(d_quads).clear();
-    getWriteOnlyAccessor(d_tetrahedra).clear();
-    getWriteOnlyAccessor(d_hexahedra).clear();
-    getWriteOnlyAccessor(d_normals).clear();
-    getWriteOnlyAccessor(d_positions).clear();
-    getWriteOnlyAccessor(d_highOrderEdgePositions).clear();
 
     bool fileRead = false;
 

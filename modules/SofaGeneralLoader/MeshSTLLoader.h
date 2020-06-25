@@ -33,8 +33,6 @@ public:
     SOFA_CLASS(MeshSTLLoader,sofa::core::loader::MeshLoader);
 protected:
     MeshSTLLoader();
-public:
-    bool load() override;
 
 protected:
 
@@ -43,7 +41,10 @@ protected:
 
     // binary
     bool readBinarySTL(const char* filename);
+
+private:
     void doClearBuffers() override;
+    bool doLoad() override;
 
 public:
     //Add Data here

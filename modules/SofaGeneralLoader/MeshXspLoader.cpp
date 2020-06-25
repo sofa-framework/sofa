@@ -92,7 +92,7 @@ MeshXspLoadDataHook::~MeshXspLoadDataHook() {}
 
 MeshXspLoader::MeshXspLoader() : MeshLoader() {}
 
-bool MeshXspLoader::load()
+bool MeshXspLoader::doLoad()
 {
     MeshXspLoadDataHook data(this);
     return XspLoader::Load(m_filename.getValue(), data);

@@ -40,7 +40,7 @@ int MeshOffLoaderClass = core::RegisterObject("Specific mesh loader for Off file
         .add< MeshOffLoader >()
         ;
 
-bool MeshOffLoader::load()
+bool MeshOffLoader::doLoad()
 {
     msg_info() << "Loading OFF file: " << m_filename;
 

@@ -44,7 +44,7 @@ int MeshGmshLoaderClass = core::RegisterObject("Specific mesh loader for Gmsh fi
         .add< MeshGmshLoader >()
         ;
 
-bool MeshGmshLoader::load()
+bool MeshGmshLoader::doLoad()
 {
     string cmd;
     bool fileRead = false;

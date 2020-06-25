@@ -54,7 +54,7 @@ void StringMeshCreator::doClearBuffers()
 }
 
 
-bool StringMeshCreator::load()
+bool StringMeshCreator::doLoad()
 {
     helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (d_positions);
     unsigned numX = resolution.getValue();

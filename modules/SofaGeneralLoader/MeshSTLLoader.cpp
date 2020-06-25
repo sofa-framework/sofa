@@ -49,19 +49,13 @@ MeshSTLLoader::MeshSTLLoader() : MeshLoader()
 }
 
 
-bool MeshSTLLoader::load()
+bool MeshSTLLoader::doLoad()
 {
-    // Clear all previous buffers
-    getWriteOnlyAccessor(d_positions).clear();
-    getWriteOnlyAccessor(d_edges).clear();
-    getWriteOnlyAccessor(d_triangles).clear();
-    getWriteOnlyAccessor(d_normals).clear();
-
     const char* filename = m_filename.getFullPath().c_str();
     std::string sfilename(filename);
     if (!sofa::helper::system::DataRepository.findFile(sfilename))
     {
-        msg_error() << "File " << filename << " not found ";
+        msg_error(this) << "File " << filename << " not found ";
         return false;
     }
 
@@ -69,23 +63,27 @@ bool MeshSTLLoader::load()
     if (!file.good())
     {
         file.close();
-        msg_error() << "Cannot read file '" << filename << "'.";
+        msg_error(this) << "Cannot read file '" << filename << "'.";
         return false;
     }
 
+    bool ret = false;
     if( _forceBinary.getValue() )
-        return this->readBinarySTL(filename); // -- Reading binary file
-
-    std::string test;
-    file >> test;
-
-    if ( test == "solid" )
-        return this->readSTL(file);
+        ret = this->readBinarySTL(filename); // -- Reading binary file
     else
     {
-        file.close(); // no longer need for an ascii-open file
-        return this->readBinarySTL(filename); // -- Reading binary file
+        std::string test;
+        file >> test;
+
+        if ( test == "solid" )
+            ret = this->readSTL(file);
+        else
+        {
+            file.close(); // no longer need for an ascii-open file
+            ret = this->readBinarySTL(filename); // -- Reading binary file
+        }
     }
+    return ret;
 }
 
 bool isBinarySTLValid(const char* filename, const MeshSTLLoader* _this)

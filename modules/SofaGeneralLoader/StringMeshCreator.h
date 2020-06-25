@@ -47,7 +47,7 @@ public:
     SOFA_CLASS(StringMeshCreator,sofa::core::loader::MeshLoader);
     virtual std::string type() { return "This object is procedurally created"; }
     bool canLoad() override { return true; }
-    bool load() override; ///< create the string
+    bool doLoad() override; ///< create the string
 
     Data< unsigned > resolution;  ///< Number of vertices (more than 1)
 

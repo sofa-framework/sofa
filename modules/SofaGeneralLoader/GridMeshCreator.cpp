@@ -87,7 +87,7 @@ void GridMeshCreator::insertQuad(unsigned a, unsigned b, unsigned c, unsigned d)
 }
 
 
-bool GridMeshCreator::load()
+bool GridMeshCreator::doLoad()
 {
     helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (d_positions);
     unsigned numX = resolution.getValue()[0], numY=resolution.getValue()[1];
@@ -153,7 +153,6 @@ bool GridMeshCreator::load()
     d_edges.endEdit();
 
     return true;
-
 }
 
 

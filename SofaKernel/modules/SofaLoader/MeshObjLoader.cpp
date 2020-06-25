@@ -82,7 +82,7 @@ MeshObjLoader::~MeshObjLoader()
 
 }
 
-bool MeshObjLoader::load()
+bool MeshObjLoader::doLoad()
 {
     dmsg_info() << "Loading OBJ file: " << m_filename;
 
