@@ -10,11 +10,17 @@ sofa_add_plugin(SofaSphFluid SofaSphFluid)
 sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON) # Contains DefaultCollisionGroupManager
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollision
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
-sofa_add_plugin(SofaVolumetricData SofaVolumetricData) # Depends on SofaDistanceGrid and SofaImplicitField
+sofa_add_plugin(SofaVolumetricData SofaVolumetricData) # Depends on SofaDistanceGrid, SofaImplicitField
 sofa_add_plugin(MultiThreading MultiThreading)
 sofa_add_plugin(DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
 sofa_add_plugin(image image)           # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
 sofa_add_plugin(Compliant Compliant)
+
+if(NOT SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
+    # Added here because all plugins above may have a soft dependency on SofaPython
+    sofa_add_plugin(SofaPython SofaPython)
+endif()
+
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
 sofa_add_plugin(Flexible Flexible)     # Depends on image, CImgPlugin, SofaHighOrderTopology (soft)
 sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
@@ -45,7 +51,6 @@ sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(SofaAssimp SofaAssimp)
 
-# SOFA_WITH_EXPERIMENTAL_FEATURES_17_12
 sofa_add_plugin_experimental(PSL PSL)
 
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))

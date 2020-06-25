@@ -242,9 +242,15 @@ add_subdirectory(SofaMisc)
 # In scene creator and SofaPython...it is located here.
 add_subdirectory(SofaGui)
 
-# SofaTest depend on SofaPython, so we add SofaPython before.
-# and SofaPython needs SofaGui...
-sofa_add_plugin(applications/plugins/SofaPython SofaPython)
+# This option is useful to compile SOFA + internal plugins without SofaPython soft dependencies (SofaExporter, SofaTest, Compliant, image, ...)
+# it simplifies binaries generation and future cohabitation between SofaPython and SofaPython3
+option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to SofaPython" ON)
+if(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
+    # SofaTest depend on SofaPython, so we add SofaPython before.
+    # and SofaPython needs SofaGui...
+    sofa_add_plugin(applications/plugins/SofaPython SofaPython)
+    sofa_add_module(modules/SofaExporter SofaExporter ON)
+endif()
 
 ## Collections
 ## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
@@ -283,18 +289,19 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(applications/plugins/SofaTest)
 endif()
 
+## Plugins
+add_subdirectory(applications/plugins)
+
 if(SOFA_BUILD_TESTS)
     # Tests for all the modules, written using SofaTest.
     add_subdirectory(tests)
-    # SofaPython_test is a special case, because it depends on
-    # SofaTest, which depends on SofaPython...
-    if(PLUGIN_SOFAPYTHON)
-        add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
-    endif()
 endif()
 
-## Plugins
-add_subdirectory(applications/plugins)
+if(SOFA_BUILD_TESTS AND PLUGIN_SOFAPYTHON)
+    # SofaPython_test is a special case, because it depends on
+    # SofaTest, which may depend on SofaPython...
+    add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
+endif()
 
 ## Applications
 add_subdirectory(applications/projects)
