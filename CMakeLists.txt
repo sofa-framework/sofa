@@ -160,7 +160,7 @@ option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL
 
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
-if(SOFA_BUILD_TESTS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     # Enable testing features of cmake, like the add_test() command.
     enable_testing()
     add_subdirectory(extlibs/gtest)
@@ -222,7 +222,7 @@ add_subdirectory(extlibs)
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-if(SOFA_BUILD_TESTS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     # Depends on SofaSimulation
     add_subdirectory(tools/SofaGTestMain)
 endif()
@@ -284,7 +284,7 @@ if(SOFA_BUILD_SCENECREATOR)
 endif()
 
 # Tests : define subdirectories
-if(SOFA_BUILD_TESTS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     # Library used to write high level tests involving many components.
     add_subdirectory(applications/plugins/SofaTest)
 endif()
