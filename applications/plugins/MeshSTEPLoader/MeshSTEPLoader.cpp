@@ -55,11 +55,10 @@ MeshSTEPLoader::MeshSTEPLoader():MeshLoader()
     _indicesComponents.setPersistent(false);
 }
 
-bool MeshSTEPLoader::load()
+bool MeshSTEPLoader::doLoad()
 {
     dmsg_info() << "Loading STEP file: " << m_filename;
 
-    clearBuffers();
     bool fileRead = false;
 
     // Loading file
@@ -76,7 +75,6 @@ bool MeshSTEPLoader::load()
     fileRead = this->readSTEP(filename);
     file.close();
 
-    if (!fileRead) clearBuffers();
     return fileRead;
 }
 
