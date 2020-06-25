@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_CPP
+
 #include <SofaBaseMechanics/DiagonalMass.inl>
 #include <sofa/core/ObjectFactory.h>
 
@@ -27,14 +28,9 @@ using sofa::core::visual::VisualParams ;
 using sofa::core::MechanicalParams ;
 using sofa::helper::ReadAccessor ;
 
-namespace sofa
+namespace sofa::component::mass
 {
 
-namespace component
-{
-
-namespace mass
-{
 using sofa::core::objectmodel::ComponentState ;
 
 using namespace sofa::defaulttype;
@@ -328,9 +324,4 @@ template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid2Types,Rigid2Mass>;
 
 
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mass
