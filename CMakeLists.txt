@@ -273,7 +273,7 @@ option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plug
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
 
 # Activate SceneCreator when required
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS OR SOFA_BUILD_RELEASE_PACKAGE)
     set(SOFA_BUILD_SCENECREATOR ON CACHE BOOL "" FORCE)
 endif()
 
