@@ -19,7 +19,7 @@ set(SOURCE_FILES
     init.cpp
 )
 
-if(SOFA_BUILD_TESTS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     list(APPEND HEADER_FILES testing/BaseSimulationTest.h)
     list(APPEND SOURCE_FILES testing/BaseSimulationTest.cpp)
 endif()
