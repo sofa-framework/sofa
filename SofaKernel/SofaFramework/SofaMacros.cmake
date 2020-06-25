@@ -145,7 +145,10 @@ endmacro()
 
 macro(sofa_add_plugin_experimental directory plugin_name)
     sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
-    message("-- ${plugin_name} is an experimental feature, use it at your own risk.")
+    string(TOUPPER "PLUGIN_${plugin_name}" option)
+    if(${option})
+        message("-- ${plugin_name} is an experimental feature, use it at your own risk.")
+    endif()
 endmacro()
 
 macro(sofa_add_module directory module_name)
@@ -154,7 +157,10 @@ endmacro()
 
 macro(sofa_add_module_experimental directory module_name)
     sofa_add_generic( ${directory} ${module_name} "Module" ${ARGV2} )
-    message("-- ${module_name} is an experimental feature, use it at your own risk.")
+    string(TOUPPER "MODULE_${module_name}" option)
+    if(${option})
+        message("-- ${module_name} is an experimental feature, use it at your own risk.")
+    endif()
 endmacro()
 
 macro(sofa_add_application directory app_name)
