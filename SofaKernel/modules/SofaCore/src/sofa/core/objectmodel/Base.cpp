@@ -116,7 +116,8 @@ void Base::addUpdateCallback(const std::string& name,
             msg_error(this) << "The componentstate cannot be set as an input of a callbackEngine.";
             engine.delInput(&d_componentstate);
         }
-    engine.addOutput(&d_componentstate);
+    if(std::find(engine.getOutputs().begin(), engine.getOutputs().end(), &d_componentstate) == engine.getOutputs().end())
+        engine.addOutput(&d_componentstate);
 }
 
 void Base::addOutputsToCallback(const std::string& name, std::initializer_list<BaseData*> outputs)

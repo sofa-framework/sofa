@@ -84,9 +84,9 @@ void MeshSTEPLoader::doClearBuffers()
     _uv.endEdit();
     _indicesComponents.beginEdit()->clear();
     _indicesComponents.endEdit();
-    _debug(false);
-    _aDeflection(0.1);
-    _keepDuplicate(true);
+    _debug.setValue(false);
+    _aDeflection.setValue(0.1);
+    _keepDuplicate.setValue(true);
 }
 
 bool MeshSTEPLoader::readSTEP(const char* fileName)

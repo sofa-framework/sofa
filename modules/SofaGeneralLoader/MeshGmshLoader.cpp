@@ -47,15 +47,16 @@ int MeshGmshLoaderClass = core::RegisterObject("Specific mesh loader for Gmsh fi
 bool MeshGmshLoader::doLoad()
 {
     string cmd;
-    bool fileRead = false;
     unsigned int gmshFormat = 0;
 
+    if (!canLoad())
+    {
+        msg_error(this) << "Can't load file " << m_filename.getFullPath().c_str();
+        return false;
+    }
     // -- Loading file
     const char* filename = m_filename.getFullPath().c_str();
     std::ifstream file(filename);
-
-    if (!canLoad())
-        return false;
 
     // -- Looking for Gmsh version of this file.
     std::getline(file, cmd); //Version
@@ -106,6 +107,7 @@ bool MeshGmshLoader::doLoad()
 
         copyMeshToData(_mesh);
         delete _mesh;
+        return true;
     }
     else //if it enter this "else", it means there is a problem before in the factory or in canLoad()
     {
@@ -113,8 +115,6 @@ bool MeshGmshLoader::doLoad()
         file.close();
         return false;
     }
-
-    return fileRead;
 }
 
 
