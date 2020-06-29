@@ -37,10 +37,11 @@ ____________________________________________________________
 ### Breaking
 
 **Architecture**
+- [All] CMake and includes massive clean [#1397](https://github.com/sofa-framework/sofa/pull/1397)
 - [CMake] Remove the use of an internal Eigen3 version and instead use the one installed on the system. [#1281](https://github.com/sofa-framework/sofa/pull/1281)
+- [CMake] Remove Collections [#1314](https://github.com/sofa-framework/sofa/pull/1314)
 - [Modularization] SofaNonUniformFem + SofaAdvanced removal [#1344](https://github.com/sofa-framework/sofa/pull/1344)
 - [Modularization] SofaValidation [#1302](https://github.com/sofa-framework/sofa/pull/1302)
-- [CMake] Remove Collections [#1314](https://github.com/sofa-framework/sofa/pull/1314)
 
 **Modules**
 - [All] BaseClass reflection refactoring [#1283](https://github.com/sofa-framework/sofa/pull/1283)
@@ -52,11 +53,12 @@ ____________________________________________________________
 - **[SofaBaseMechanics]** Change data name: handleTopologicalChanges in UniformM [#1291](https://github.com/sofa-framework/sofa/pull/1291)
 - **[SofaCore/Visual]** Add new functions in drawTool (BREAKING) [#1252](https://github.com/sofa-framework/sofa/pull/1252)
 - [SofaGeneralEngine] Refresh MeshBarycentricMapperEngine [#1404](https://github.com/sofa-framework/sofa/pull/1404)
+- **[SofaCore]** ADD directory DataFileNames [#1407](https://github.com/sofa-framework/sofa/pull/1407)
 - **[SofaKernel]** Refactor DDGNode [#1372](https://github.com/sofa-framework/sofa/pull/1372)
 - **[SofaKernel]** Totally remove the macro CHECK_TOPOLOGY from BaseMeshTopology [#1399](https://github.com/sofa-framework/sofa/pull/1399)
 - **[SofaKernel]** Update EulerExplicitSolver [#1260](https://github.com/sofa-framework/sofa/pull/1260)
 - **[SofaKernel]** implement activer's code at CollisionModel. [#1259](https://github.com/sofa-framework/sofa/pull/1259)
-
+ 
 **Plugins**
 - [SofaCUDA] Arch auto-detection for nvcc [#1336](https://github.com/sofa-framework/sofa/pull/1336)
 
@@ -69,6 +71,7 @@ ____________________________________________________________
 **Modules**
 - **[SofaBaseVisual]** Add camera gizmo in base camera [#1253](https://github.com/sofa-framework/sofa/pull/1253)
 - **[SofaCore]** Remove warning in ExecParam [#1325](https://github.com/sofa-framework/sofa/pull/1325)
+- **[SofaCore]** ADD: DataCallback system in Base [#1406](https://github.com/sofa-framework/sofa/pull/1406)
 - **[SofaDefaultType]** Add a Ray type. [#1251](https://github.com/sofa-framework/sofa/pull/1251)
 - **[SofaHelper]** Add the obj id to labels when available [#1256](https://github.com/sofa-framework/sofa/pull/1256)
 - **[SofaHelper]** Add auto-friendly getWriteAccessors/getReadAcessor... [#1254](https://github.com/sofa-framework/sofa/pull/1254)
@@ -81,6 +84,9 @@ ____________________________________________________________
 - [plugins] Fix warnings for option compilation [#1316](https://github.com/sofa-framework/sofa/pull/1316)
 - [sofa-launcher] Change doc on sofa-launcher to markdown [#1311](https://github.com/sofa-framework/sofa/pull/1311)
 - [SofaCUDA] Compilation without OpenGL [#1242](https://github.com/sofa-framework/sofa/pull/1242)
+
+**Examples / Scenes**
+- [examples] Add a scene illustrating ShewchukPCG [#1420](https://github.com/sofa-framework/sofa/pull/1420)
 
 
 ### Bug Fixes
@@ -102,6 +108,7 @@ ____________________________________________________________
 - **[SofaEngine]** Fix Engine_test [#1338](https://github.com/sofa-framework/sofa/pull/1338)
 - **[SofaFramework]** Windows/VS: Remove warnings flags from definitions [#1368](https://github.com/sofa-framework/sofa/pull/1368)
 - [SofaGuiQt] Fix compilation for SOFA_DUMP_VISITOR_INFO [#1415](https://github.com/sofa-framework/sofa/pull/1415)
+- [SofaGuiQt] Fix node graph [#1424](https://github.com/sofa-framework/sofa/pull/1424)
 - [SofaHeadlessRecorder] Update headless recorder to use the new ffmpeg recorder [#1396](https://github.com/sofa-framework/sofa/pull/1396)
 - **[SofaHelper]** AdvancedTimer wasn't using the good timer ids for the label assignments [#1244](https://github.com/sofa-framework/sofa/pull/1244)
 - **[SofaHelper]** Fix unloading with PluginManager [#1274](https://github.com/sofa-framework/sofa/pull/1274)
@@ -132,11 +139,14 @@ ____________________________________________________________
 - [examples] Fix caduceus [#1392](https://github.com/sofa-framework/sofa/pull/1392)
 - [examples] Update the scene StandardTetrahedralFEMForceField.scn [#1064](https://github.com/sofa-framework/sofa/pull/1064)
 
+
 ### Cleanings
 
 **Architecture**
 
 **Modules**
+- [All] Clean namespace for some classes [#1422](https://github.com/sofa-framework/sofa/pull/1422)
+- [All] Fix warnings due to visibility attribute [#1421](https://github.com/sofa-framework/sofa/pull/1421)
 - [All] Clean due to doc [#1398](https://github.com/sofa-framework/sofa/pull/1398)
 - [All] Clean warnings [#1376](https://github.com/sofa-framework/sofa/pull/1376)
 - [All] Fix minor warnings [#1388](https://github.com/sofa-framework/sofa/pull/1388)
@@ -150,8 +160,10 @@ ____________________________________________________________
 - [All] Update header for cleaner future management [#1375](https://github.com/sofa-framework/sofa/pull/1375)
 - [All] replace all serr by msg_error/msg_warning [#1236](https://github.com/sofa-framework/sofa/pull/1236)
 - [SofaConstraint] Set the use of integration factor true by default [#1369](https://github.com/sofa-framework/sofa/pull/1369)
+- **[SofaDefaultType]** BoundingBox : Remove annoying warnings [#1425](https://github.com/sofa-framework/sofa/pull/1425)
 - [SofaGeneralEngine] Fix draw of the sphere in SphereROI [#1318](https://github.com/sofa-framework/sofa/pull/1318)
 - [SofaGeneralEngine] Remove remaining BoxROI after SofaEngine move [#1333](https://github.com/sofa-framework/sofa/pull/1333)
+- [SofaGeneralLoader] Allow flip normals in Gmsh and STL loaders [#1418](https://github.com/sofa-framework/sofa/pull/1418)
 - [SofaGui] Pass QDocBrowser as an option [#1315](https://github.com/sofa-framework/sofa/pull/1315)
 - **[SofaKernel]** Add Data bool d_checkTopology in Topology container to replace the use of CHECK_TOPOLOGY macro [#1351](https://github.com/sofa-framework/sofa/pull/1351)
 - **[SofaKernel]** Clean occurrences of CHECK_TOPOLOGY macro in code [#1352](https://github.com/sofa-framework/sofa/pull/1352)
