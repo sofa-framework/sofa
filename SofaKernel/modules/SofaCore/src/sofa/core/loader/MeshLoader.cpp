@@ -896,86 +896,31 @@ void MeshLoader::addPyramid(helper::vector< Pyramid >* pPyramids, const Pyramid&
 void MeshLoader::copyMeshToData(sofa::helper::io::Mesh* _mesh)
 {
     // copy vertices
-    helper::vector<sofa::defaulttype::Vec3>& my_positions = *(d_positions.beginEdit());
-    const helper::vector<sofa::defaulttype::Vec3>& allVertices = _mesh->getVertices();
-    for(size_t i=0; i<allVertices.size(); i++)
-        this->addPosition(&my_positions, allVertices[i]);
-    d_positions.endEdit();
-
-    // copy 2D topoogy
-    helper::vector<Edge>& my_edges = *(d_edges.beginEdit());
-    const helper::vector<Edge>& allEdges = _mesh->getEdges();
-    for(size_t i=0; i<allEdges.size(); i++)
-        this->addEdge(&my_edges, allEdges[i]);
-    d_edges.endEdit();
-
-    helper::vector<Triangle>& my_triangles = *(d_triangles.beginEdit());
-    const helper::vector<Triangle>& allTriangles = _mesh->getTriangles();
-    for(size_t i=0; i<allTriangles.size(); i++)
-        this->addTriangle(&my_triangles, allTriangles[i]);
-    d_triangles.endEdit();
-
-    helper::vector<Quad>& my_quads = *(d_quads.beginEdit());
-    const helper::vector<Quad>& allQuads = _mesh->getQuads();
-    for(size_t i=0; i<allQuads.size(); i++)
-        this->addQuad(&my_quads, allQuads[i]);
-    d_quads.endEdit();
-
+    d_positions.setValue(_mesh->getVertices());
 
     // copy 3D elements
-    helper::vector<Tetrahedron>& my_tetrahedra = *(d_tetrahedra.beginEdit());
-    const helper::vector<Tetrahedron>& allTets = _mesh->getTetrahedra();
-    for(size_t i=0; i<allTets.size(); i++)
-        this->addTetrahedron(&my_tetrahedra, allTets[i]);
-    d_tetrahedra.endEdit();
+    d_edges.setValue(_mesh->getEdges());
+    d_triangles.setValue(_mesh->getTriangles());
+    d_quads.setValue(_mesh->getQuads());
 
-    helper::vector<Hexahedron>& my_hexahedra = *(d_hexahedra.beginEdit());
-    const helper::vector<Hexahedron>& allHexs = _mesh->getHexahedra();
-    for(size_t i=0; i<allHexs.size(); i++)
-        this->addHexahedron(&my_hexahedra, allHexs[i]);
-    d_hexahedra.endEdit();
+    // copy 3D elements
+    d_tetrahedra.setValue(_mesh->getTetrahedra());
+    d_hexahedra.setValue(_mesh->getHexahedra());
 
     // copy groups
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_edgesGroups = *(d_edgesGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_trianglesGroups = *(d_trianglesGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_quadsGroups = *(d_quadsGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_polygonsGroups = *(d_polygonsGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_tetrahedraGroups = *(d_tetrahedraGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_hexahedraGroups = *(d_hexahedraGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_pentahedraGroups = *(d_pentahedraGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_pyramidsGroups = *(d_pyramidsGroups.beginEdit());
-
-    my_edgesGroups = _mesh->getEdgesGroups();
-    my_trianglesGroups = _mesh->getTrianglesGroups();
-    my_quadsGroups = _mesh->getQuadsGroups();
-    my_polygonsGroups = _mesh->getPolygonsGroups();
-    my_tetrahedraGroups = _mesh->getTetrahedraGroups();
-    my_hexahedraGroups = _mesh->getHexahedraGroups();
-    my_pentahedraGroups = _mesh->getPentahedraGroups();
-    my_pyramidsGroups = _mesh->getPyramidsGroups();
-
-    d_edgesGroups.endEdit();
-    d_trianglesGroups.endEdit();
-    d_quadsGroups.endEdit();
-    d_polygonsGroups.endEdit();
-    d_tetrahedraGroups.endEdit();
-    d_hexahedraGroups.endEdit();
-    d_pentahedraGroups.endEdit();
-    d_pyramidsGroups.endEdit();
+    d_edgesGroups.setValue(_mesh->getEdgesGroups());
+    d_trianglesGroups.setValue(_mesh->getTrianglesGroups());
+    d_quadsGroups.setValue(_mesh->getQuadsGroups());
+    d_polygonsGroups.setValue(_mesh->getPolygonsGroups());
+    d_tetrahedraGroups.setValue(_mesh->getTetrahedraGroups());
+    d_hexahedraGroups.setValue(_mesh->getHexahedraGroups());
+    d_pentahedraGroups.setValue(_mesh->getPentahedraGroups());
+    d_pyramidsGroups.setValue(_mesh->getPyramidsGroups());
 
     // copy high order
-    helper::vector<HighOrderEdgePosition >& my_highOrderEdgePositions = *(d_highOrderEdgePositions.beginEdit());
-    helper::vector<HighOrderTrianglePosition >& my_highOrderTrianglePositions = *(d_highOrderTrianglePositions.beginEdit());
-    helper::vector<HighOrderQuadPosition >& my_highOrderQuadPositions = *(d_highOrderQuadPositions.beginEdit());
-
-    my_highOrderEdgePositions = _mesh->getHighOrderEdgePositions();
-    my_highOrderTrianglePositions = _mesh->getHighOrderTrianglePositions();
-    my_highOrderQuadPositions = _mesh->getHighOrderQuadPositions();
-
-    d_highOrderEdgePositions.endEdit();
-    d_highOrderTrianglePositions.endEdit();
-    d_highOrderQuadPositions.endEdit();
-
+    d_highOrderEdgePositions.setValue(_mesh->getHighOrderEdgePositions());
+    d_highOrderTrianglePositions.setValue(_mesh->getHighOrderTrianglePositions());
+    d_highOrderQuadPositions.setValue(_mesh->getHighOrderQuadPositions());
 }
 
 } // namespace loader
