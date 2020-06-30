@@ -352,6 +352,8 @@ endif()
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt" "This folder will be automatically scanned by the Plugin Manager.")
 install(DIRECTORY ${CMAKE_BINARY_DIR}/plugins/ DESTINATION plugins COMPONENT resources)
 
+# Post-install scripts (must be the last add_subdirectory)
+add_subdirectory(tools/postinstall-fixup)
 
 #######################
 # CPack configuration #
