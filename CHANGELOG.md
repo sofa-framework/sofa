@@ -112,6 +112,7 @@ ____________________________________________________________
 - [SofaHeadlessRecorder] Update headless recorder to use the new ffmpeg recorder [#1396](https://github.com/sofa-framework/sofa/pull/1396)
 - **[SofaHelper]** AdvancedTimer wasn't using the good timer ids for the label assignments [#1244](https://github.com/sofa-framework/sofa/pull/1244)
 - **[SofaHelper]** Fix unloading with PluginManager [#1274](https://github.com/sofa-framework/sofa/pull/1274)
+- **[SofaHelper]** Fix fixed_array compilation with VS2019 [#1426](https://github.com/sofa-framework/sofa/pull/1426)
 - **[SofaKernel]** Fix hexahedra detection in BoxROI [#1417](https://github.com/sofa-framework/sofa/pull/1417)
 - **[SofaKernel]** Fix minor bug in BoxROI and add warning message in RestShapeSpringsForceField [#1391](https://github.com/sofa-framework/sofa/pull/1391)
 - **[SofaKernel]** Fixes a bug where the camera was not moving with the Qt viewer [#1377](https://github.com/sofa-framework/sofa/pull/1377)
