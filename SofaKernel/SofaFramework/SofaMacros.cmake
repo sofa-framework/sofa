@@ -213,7 +213,7 @@ function(sofa_add_generic_external directory name type)
         message("Fetching ${type_lower} ${name}")
 
         if(NOT EXISTS ${fetched_dir})
-            file(MAKE_DIRECTORY ${fetched_dir})
+            file(MAKE_DIRECTORY "${fetched_dir}/")
         endif()
 
         # Download and unpack at configure time
@@ -617,8 +617,8 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             # TODO: Deprecate this backward compatibility and replace all the macros
             # with old style: SofaModuleName -> SOFA_BUILD_MODULE_NAME + SOFA_MODULE_NAME_API
             # by new style: SofaModuleName -> SOFA_BUILD_SOFAMODULENAME + SOFA_SOFAMODULENAME_API
-            string(REPLACE "Sofa" "" sofa_target_oldname "${target}")
-            string(REGEX REPLACE "([A-Z])" "_\\1" sofa_target_oldname "${sofa_target_oldname}")
+            string(REGEX REPLACE "([^A-Z])([A-Z])" "\\1_\\2" sofa_target_oldname "${target}")
+            string(REPLACE "Sofa" "" sofa_target_oldname "${sofa_target_oldname}")
             string(TOUPPER "${sofa_target_oldname}" sofa_target_oldname_upper)
             target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD${sofa_target_oldname_upper}")
         endif()
@@ -1044,17 +1044,17 @@ function(sofa_copy_libraries)
             if(NOT EXISTS runtime_output_dir)
                 # make sure runtime_output_dir exists before calling configure_file COPYONLY
                 # otherwise it will not be treated as a directory
-                file(MAKE_DIRECTORY ${runtime_output_dir})
+                file(MAKE_DIRECTORY "${runtime_output_dir}/")
             endif()
 
             if(EXISTS ${SHARED_LIB})
                 if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (Visual Studio)
                     foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                        file(MAKE_DIRECTORY "${runtime_output_dir}/${CONFIG}")
+                        file(MAKE_DIRECTORY "${runtime_output_dir}/${CONFIG}/")
                         configure_file(${SHARED_LIB} "${runtime_output_dir}/${CONFIG}/" COPYONLY)
                     endforeach()
                 else()                        # Single-config generator (nmake, ninja)
-                    configure_file(${SHARED_LIB} "${runtime_output_dir}" COPYONLY)
+                    configure_file(${SHARED_LIB} "${runtime_output_dir}/" COPYONLY)
                 endif()
             endif()
         endif()
