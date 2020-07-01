@@ -32,7 +32,7 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
                 COMPONENT applications)
         endif()
     elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
-        install(CODE "execute_process(COMMAND /bin/bash
+        install(CODE "execute_process(COMMAND bash
             \"${CMAKE_CURRENT_LIST_DIR}/windows-postinstall-fixup.sh\"
             \"${CMAKE_BINARY_DIR}\"
             \"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
