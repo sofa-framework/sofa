@@ -14,6 +14,22 @@ else
     usage; exit 1
 fi
 
+# Keep plugin_list as short as possible
+echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
+for plugin in \
+        SofaExporter       \
+        SofaSparseSolver   \
+        SofaPreconditioner \
+        SofaValidation     \
+        SofaDenseSolver    \
+        SofaNonUniformFem  \
+        SofaOpenglVisual   \
+        CImgPlugin         \
+        SofaMiscCollision  \
+    ; do
+    grep "$plugin" "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
+done
+
 echo "Fixing up libs..."
 
 # Why are these folders installed in plugins?
