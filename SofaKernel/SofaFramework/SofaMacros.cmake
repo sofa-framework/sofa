@@ -654,7 +654,7 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
 
         # Configure and install headers
         get_target_property(target_sources ${target} SOURCES)
-        list(FILTER target_sources INCLUDE REGEX ".*(\.h\.in|\.h|\.inl)$") # keep only headers
+        list(FILTER target_sources INCLUDE REGEX ".*(\\.h\\.in|\\.h|\\.inl)$") # keep only headers
         foreach(header_file ${target_sources})
             if(NOT IS_ABSOLUTE "${header_file}")
                 set(header_file "${CMAKE_CURRENT_SOURCE_DIR}/${header_file}")
@@ -694,7 +694,7 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
 
             # Configure and install
             get_target_property(public_header ${target} PUBLIC_HEADER)
-            if(header_file MATCHES ".*\.h\.in$")
+            if(header_file MATCHES ".*\\.h\\.in$")
                 # header to configure and install
                 file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/${header_build_dir}/${header_filename}.h" configured_file)
                 configure_file("${header_file}" "${configured_file}")
