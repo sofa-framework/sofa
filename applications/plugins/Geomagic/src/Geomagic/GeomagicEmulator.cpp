@@ -36,13 +36,7 @@
 #include <chrono>
 #include <thread>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 GeomagicEmulatorTask::GeomagicEmulatorTask(GeomagicEmulator* ptr, CpuTask::Status* pStatus)
@@ -275,8 +269,4 @@ int GeomagicEmulatorClass = core::RegisterObject("Driver allowing interfacing wi
 .add< GeomagicEmulator >()
 ;
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::controller

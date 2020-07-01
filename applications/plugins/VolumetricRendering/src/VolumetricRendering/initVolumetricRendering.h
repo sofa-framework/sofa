@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITLEAPMOTION_H
-#define INITLEAPMOTION_H
-
+#pragma once
 
 #include <sofa/config.h>
 
@@ -29,15 +27,13 @@
 #ifndef WIN32
         #define SOFA_EXPORT_DYNAMIC_LIBRARY
         #define SOFA_IMPORT_DYNAMIC_LIBRARY
-        #define SOFA_LEAPMOTION_API
+        #define SOFA_VOLUMETRICRENDERING_API
 #else
         #ifdef SOFA_BUILD_LEAPMOTION
                 #define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-                #define SOFA_LEAPMOTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+                #define SOFA_VOLUMETRICRENDERING_API SOFA_EXPORT_DYNAMIC_LIBRARY
         #else
                 #define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-                #define SOFA_LEAPMOTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+                #define SOFA_VOLUMETRICRENDERING_API SOFA_IMPORT_DYNAMIC_LIBRARY
         #endif
 #endif // not WIN32
-
-#endif // INITLEAPMOTION_H

@@ -19,64 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_VISUALMODEL_OGLTETRAHEDRALMODEL_CPP
 
-#include <VolumetricRendering/config.h>
+#include <VolumetricRendering/OglTetrahedralModel.inl>
 
-namespace sofa
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::visualmodel
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
 
-//Here are just several convenient functions to help user to know what contains the plugin
+int OglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for OpenGL display")
+        .add< OglTetrahedralModel<Vec3Types> >()
+        ;
 
-extern "C" {
-    SOFA_VOLUMETRICRENDERING_API void initExternalModule();
-    SOFA_VOLUMETRICRENDERING_API const char* getModuleName();
-    SOFA_VOLUMETRICRENDERING_API const char* getModuleVersion();
-    SOFA_VOLUMETRICRENDERING_API const char* getModuleLicense();
-    SOFA_VOLUMETRICRENDERING_API const char* getModuleDescription();
-    SOFA_VOLUMETRICRENDERING_API const char* getModuleComponentList();
+template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<Vec3Types>;
+
 }
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return "VolumetricRendering";
-}
-
-const char* getModuleVersion()
-{
-    return "0.1";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "A plugin for volumetric rendering (tetrahedron, hexahedron)";
-}
-
-const char* getModuleComponentList()
-{
-    return "OglTetrahedralModel";
-}
-
-
-
-} // namespace component
-
-} // namespace sofa
-
