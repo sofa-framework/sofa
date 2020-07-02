@@ -24,6 +24,7 @@ for plugin in \
         SofaDenseSolver    \
         SofaNonUniformFem  \
         SofaOpenglVisual   \
+        SofaSphFluid       \
         CImgPlugin         \
         SofaMiscCollision  \
     ; do
