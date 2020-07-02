@@ -682,13 +682,15 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             endif()
 
             # Finalize dirs
-            set(header_build_dir "include/${include_install_dir}/${header_relative_dir_for_build}")
             if(relocatable_arg)
-                #set(header_install_dir "include/${include_install_dir}/${header_relative_dir}")
-                set(header_install_dir "include/${header_relative_dir}")
+                if(header_relative_dir)
+                    set(header_install_dir "include/${header_relative_dir}")
+                else()
+                    set(header_install_dir "include/${include_install_dir}")
+                endif()
             else()
                 # install dir headers tree = build dir headers tree
-                set(header_install_dir "${header_build_dir}")
+                set(header_install_dir "include/${include_install_dir}/${header_relative_dir_for_build}")
             endif()
             file(TO_CMAKE_PATH "${header_install_dir}" header_install_dir)
 
@@ -696,7 +698,7 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             get_target_property(public_header ${target} PUBLIC_HEADER)
             if(header_file MATCHES ".*\\.h\\.in$")
                 # header to configure and install
-                file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/${header_build_dir}/${header_filename}.h" configured_file)
+                file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/include/${include_install_dir}/${header_relative_dir_for_build}/${header_filename}.h" configured_file)
                 configure_file("${header_file}" "${configured_file}")
                 install(FILES "${configured_file}" DESTINATION "${header_install_dir}" COMPONENT headers)
                 #message("configured_file = ${configured_file}")
