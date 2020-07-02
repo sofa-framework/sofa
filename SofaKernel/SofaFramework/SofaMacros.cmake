@@ -683,13 +683,9 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
 
             # Finalize dirs
             if(relocatable_arg)
-                if(header_relative_dir)
-                    set(header_install_dir "include/${header_relative_dir}")
-                else()
-                    set(header_install_dir "include/${include_install_dir}")
-                endif()
+                set(header_install_dir "include/${header_relative_dir_for_build}")
             else()
-                # install dir headers tree = build dir headers tree
+                # headers install-dir tree = headers build-dir tree
                 set(header_install_dir "include/${include_install_dir}/${header_relative_dir_for_build}")
             endif()
             file(TO_CMAKE_PATH "${header_install_dir}" header_install_dir)
@@ -707,7 +703,7 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
                 # header to install
                 install(FILES ${header_file} DESTINATION "${header_install_dir}" COMPONENT headers)
                 #message("header_file = ${header_file}")
-                #message("header_install_dir = ${header_install_dir}")
+                #message("header_install_dir = ${header_install_dir}\n")
             endif()
         endforeach()
     endforeach()
