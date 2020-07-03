@@ -24,6 +24,9 @@ add_library(${PROJECT_NAME} SHARED  ${HEADER_FILES} ${SOURCE_FILES} ${README_FIL
 
 target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual )
 
+# Add the include DIR from OpenHaptics to target
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${OPENHAPTICS_INCLUDE_DIR}>")
+
 # Install rules for the library and the headers; CMake package configurations files
 sofa_generate_package(
     NAME ${PROJECT_NAME}
