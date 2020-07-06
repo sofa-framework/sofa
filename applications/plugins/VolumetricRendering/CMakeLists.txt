@@ -8,7 +8,6 @@ find_package(SofaOpenglVisual REQUIRED)
 
 set(HEADER_FILES
     src/VolumetricRendering/config.h.in
-    src/VolumetricRendering/initVolumetricRendering.h
     src/VolumetricRendering/OglTetrahedralModel.h
     src/VolumetricRendering/OglTetrahedralModel.inl
     src/VolumetricRendering/OglVolumetricModel.h
@@ -20,7 +19,7 @@ set(SOURCE_FILES
     src/VolumetricRendering/OglVolumetricModel.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED  ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} SHARED  ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual )
 

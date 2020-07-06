@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <VolumetricRendering/initVolumetricRendering.h>
+#include <VolumetricRendering/config.h>
 
 namespace sofa::component
 {
