@@ -77,16 +77,16 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< helper::vector< unsigned int > > points; ///< points controlled by the rest shape springs
-    Data< VecReal > stiffness; ///< stiffness values between the actual position and the rest shape position
-    Data< VecReal > angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
-    Data< helper::vector< CPos > > pivotPoints; ///< global pivot points used when translations instead of the rigid mass centers
-    Data< helper::vector< unsigned int > > external_points; ///< points from the external Mechancial State that define the rest shape springs
-    Data< bool > recompute_indices; ///< Recompute indices (should be false for BBOX)
-    Data< bool > drawSpring; ///< draw Spring
-    Data< defaulttype::RGBAColor > springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
+    Data< helper::vector< unsigned int > > d_points; ///< points controlled by the rest shape springs
+    Data< VecReal > d_stiffness; ///< stiffness values between the actual position and the rest shape position
+    Data< VecReal > d_angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
+    Data< helper::vector< CPos > > d_pivotPoints; ///< global pivot points used when translations instead of the rigid mass centers
+    Data< helper::vector< unsigned int > > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
+    Data< bool > d_recompute_indices; ///< Recompute indices (should be false for BBOX)
+    Data< bool > d_drawSpring; ///< draw Spring
+    Data< defaulttype::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
 
-    SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> restMState;
+    SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
 protected:
