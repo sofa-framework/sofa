@@ -21,27 +21,19 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_VISUALMODEL_OGLTETRAHEDRALMODEL_CPP
 
-#include "OglTetrahedralModel.inl"
+#include <VolumetricRendering/OglTetrahedralModel.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+namespace sofa::component::visualmodel
 {
 
 using namespace sofa::defaulttype;
 
 int OglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for OpenGL display")
         .add< OglTetrahedralModel<Vec3Types> >()
-
         ;
 
 template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<Vec3Types>;
 
-
-}
-}
 }
