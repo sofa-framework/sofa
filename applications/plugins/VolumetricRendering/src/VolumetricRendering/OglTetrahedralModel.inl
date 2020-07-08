@@ -280,8 +280,6 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
     }
 
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    //core::topology::BaseMeshTopology::SeqHexahedra::const_iterator it;
-    core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
 
 #ifdef GL_LINES_ADJACENCY_EXT
 

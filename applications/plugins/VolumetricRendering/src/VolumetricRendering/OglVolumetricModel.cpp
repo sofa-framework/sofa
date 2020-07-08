@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define OGLVOLUMETRICMODEL_CPP_
 
-#include "OglVolumetricModel.h"
+#include <VolumetricRendering/OglVolumetricModel.h>
 
 #include <sstream>
 #include <limits>
@@ -32,13 +32,8 @@
 #include <sofa/defaulttype/BoundingBox.h>
 #include <SofaOpenglVisual/OglAttribute.inl>
 
-namespace sofa
+namespace sofa::component::visualmodel
 {
-namespace component
-{
-namespace visualmodel
-{
-
 
 int OglVolumetricModelClass = sofa::core::RegisterObject("Volumetric model for OpenGL display")
 .add < OglVolumetricModel >();
@@ -516,9 +511,4 @@ void OglVolumetricModel::updateVertexBuffer()
 
 }
 
-} // namespace visualmodel
-
-} // namesapce component
-
-} // namespace sofa
-
+} // namespace sofa::component::visualmodel

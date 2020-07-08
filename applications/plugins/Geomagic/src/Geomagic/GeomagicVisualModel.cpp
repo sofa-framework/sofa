@@ -25,15 +25,8 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 
-namespace sofa
+namespace sofa::component::controller
 {
-
-namespace component
-{
-
-namespace controller
-{
-
 
 const char* GeomagicVisualModel::visualNodeNames[NVISUALNODE] =
 {
@@ -265,8 +258,4 @@ void GeomagicVisualModel::drawDevice(bool button1Status, bool button2Status)
 }
 
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::controller
