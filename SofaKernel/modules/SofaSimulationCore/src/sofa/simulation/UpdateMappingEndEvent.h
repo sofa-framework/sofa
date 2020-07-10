@@ -23,7 +23,7 @@
 #define SOFA_SIMULATION_UPDATEMAPPINGENDEVENT_H
 
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/simulationcore.h>
+#include <sofa/simulation/config.h>
 
 namespace sofa
 {
