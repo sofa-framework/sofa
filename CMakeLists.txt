@@ -184,6 +184,10 @@ endif()
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
+# This option is useful to compile SOFA + internal plugins without SofaPython soft dependencies (SofaExporter, SofaTest, Compliant, image, ...)
+# it simplifies binaries generation and future cohabitation between SofaPython and SofaPython3
+option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to SofaPython" ON)
+
 ### Sofa using type double or float or both
 set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
     "Type used for floating point values in SOFA. It actually determines:
@@ -219,7 +223,6 @@ endif()
 add_subdirectory(extlibs)
 
 ### Main Sofa subdirectories
-
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
@@ -242,9 +245,6 @@ add_subdirectory(SofaMisc)
 # In scene creator and SofaPython...it is located here.
 add_subdirectory(SofaGui)
 
-# This option is useful to compile SOFA + internal plugins without SofaPython soft dependencies (SofaExporter, SofaTest, Compliant, image, ...)
-# it simplifies binaries generation and future cohabitation between SofaPython and SofaPython3
-option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to SofaPython" ON)
 if(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
     # SofaTest depend on SofaPython, so we add SofaPython before.
     # and SofaPython needs SofaGui...
