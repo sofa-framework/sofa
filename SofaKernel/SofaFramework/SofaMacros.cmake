@@ -175,7 +175,7 @@ endmacro()
 #
 function(sofa_add_generic_external directory name type)
     set(optionArgs FETCH_ONLY)
-    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     # Make directory absolute
     if(NOT IS_ABSOLUTE "${directory}")
@@ -283,7 +283,7 @@ endmacro()
 macro(sofa_install_pythonscripts)
     set(oneValueArgs PLUGIN_NAME PYTHONSCRIPTS_SOURCE_DIR PYTHONSCRIPTS_INSTALL_DIR)
     set(multiValueArgs TARGETS)
-    cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     # Required arguments
     foreach(arg ARG_PLUGIN_NAME ARG_PYTHONSCRIPTS_SOURCE_DIR)
@@ -352,7 +352,7 @@ function(sofa_add_pybind11_module)
     set(options)
     set(oneValueArgs TARGET OUTPUT NAME)
     set(multiValueArgs SOURCES DEPENDS)
-    cmake_parse_arguments("" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
     include_directories(${CMAKE_CURRENT_SOURCE_DIR})
     set(PYBIND11_CPP_STANDARD -std=c++11)
     pybind11_add_module(${_TARGET} SHARED ${_SOURCES} NO_EXTRAS)
@@ -392,7 +392,7 @@ function(sofa_add_python_module)
     set(options)
     set(oneValueArgs TARGET OUTPUT CYTHONIZE DIRECTORY)
     set(multiValueArgs SOURCES DEPENDS)
-    cmake_parse_arguments("" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     set(INCLUDE_DIRS)
     set(LIB_DIRS)
@@ -475,7 +475,7 @@ macro(sofa_set_01 name)
     set(optionArgs PARENT_SCOPE BOTH_SCOPES)
     set(oneValueArgs VALUE)
     set(multiValueArgs)
-    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
     if(ARG_VALUE)
         if(ARG_BOTH_SCOPES OR NOT ARG_PARENT_SCOPE)
             set(${name} 1)
@@ -505,7 +505,7 @@ macro(sofa_find_package name)
     set(optionArgs QUIET REQUIRED BOTH_SCOPES)
     set(oneValueArgs)
     set(multiValueArgs COMPONENTS OPTIONAL_COMPONENTS)
-    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
     set(find_package_args ${ARGN})
     if(find_package_args)
         list(REMOVE_ITEM find_package_args "BOTH_SCOPES")
@@ -540,6 +540,391 @@ endmacro()
 ##########################################################
 #################### INSTALL MACROS ######################
 ##########################################################
+
+
+macro(sofa_create_package_with_targets)
+    set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE)
+    set(multiValueArgs TARGETS)
+    set(optionalArgs AUTO_SET_TARGET_PROPERTIES)
+    cmake_parse_arguments("ARG" "${optionalArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    # Required arguments
+    foreach(arg ARG_PACKAGE_NAME ARG_PACKAGE_VERSION ARG_TARGETS ARG_INCLUDE_INSTALL_DIR)
+        if("${${arg}}" STREQUAL "")
+            string(SUBSTRING "${arg}" 4 -1 arg_name)
+            message(SEND_ERROR "Missing parameter ${arg_name}.")
+        endif()
+    endforeach()
+
+    sofa_create_package(${ARGN})
+    sofa_add_targets_to_package(${ARGN})
+
+    if(ARG_RELOCATABLE)
+        sofa_set_package_relocatable(${ARG_PACKAGE_NAME} ${ARG_RELOCATABLE})
+    endif()
+endmacro()
+
+
+# sofa_create_package(Foo <version> <build-include-dirs>)
+#
+# Create CMake package configuration files
+# - In the build tree:
+#   - ${CMAKE_BINARY_DIR}/cmake/FooConfig.cmake
+#   - ${CMAKE_BINARY_DIR}/cmake/FooConfigVersion.cmake
+# - In the install tree:
+#   - lib/cmake/Foo/FooConfigVersion.cmake
+#   - lib/cmake/Foo/FooConfig.cmake
+#   - lib/cmake/Foo/FooTargets.cmake
+#
+# This macro factorizes boilerplate CMake code for the different
+# packages in Sofa.  It assumes that there is a FooConfig.cmake.in
+# file template in the same directory.  For example, if a package Foo
+# depends on Bar and Baz, and creates the targets Foo and Qux, here is
+# a typical FooConfig.cmake.in:
+#
+# @PACKAGE_INIT@
+#
+# find_package(Bar REQUIRED)
+# find_package(Baz REQUIRED)
+#
+# if(NOT TARGET Qux)
+# 	include("${CMAKE_CURRENT_LIST_DIR}/FooTargets.cmake")
+# endif()
+#
+# check_required_components(Foo Qux)
+macro(sofa_create_package)
+    set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE)
+    set(multiValueArgs TARGETS)
+    set(optionalArgs AUTO_SET_TARGET_PROPERTIES)
+    cmake_parse_arguments("ARG" "${optionalArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    # Required arguments
+    foreach(arg ARG_PACKAGE_NAME ARG_PACKAGE_VERSION)
+        if("${${arg}}" STREQUAL "")
+            string(SUBSTRING "${arg}" 4 -1 arg_name)
+            message(SEND_ERROR "Missing parameter ${arg_name}.")
+        endif()
+    endforeach()
+
+    ## <package_name>Targets.cmake
+    install(EXPORT ${ARG_PACKAGE_NAME}Targets DESTINATION "lib/cmake/${ARG_PACKAGE_NAME}" COMPONENT headers)
+
+    ## <package_name>ConfigVersion.cmake
+    set(filename ${ARG_PACKAGE_NAME}ConfigVersion.cmake)
+    write_basic_package_version_file(${filename} VERSION ${ARG_PACKAGE_VERSION} COMPATIBILITY ExactVersion)
+    configure_file("${CMAKE_CURRENT_BINARY_DIR}/${filename}" "${CMAKE_BINARY_DIR}/cmake/${filename}" COPYONLY)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION "lib/cmake/${ARG_PACKAGE_NAME}" COMPONENT headers)
+
+    ### <package_name>Config.cmake
+    configure_package_config_file(
+        ${ARG_PACKAGE_NAME}Config.cmake.in
+        "${CMAKE_BINARY_DIR}/cmake/${ARG_PACKAGE_NAME}Config.cmake"
+        INSTALL_DESTINATION "lib/cmake/${ARG_PACKAGE_NAME}"
+        )
+    install(FILES "${CMAKE_BINARY_DIR}/cmake/${ARG_PACKAGE_NAME}Config.cmake" DESTINATION "lib/cmake/${ARG_PACKAGE_NAME}" COMPONENT headers)
+endmacro()
+
+
+macro(sofa_add_targets_to_package)
+    set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE)
+    set(multiValueArgs TARGETS)
+    set(optionalArgs AUTO_SET_TARGET_PROPERTIES)
+    cmake_parse_arguments("ARG" "${optionalArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    # Required arguments
+    foreach(arg ARG_PACKAGE_NAME ARG_TARGETS)
+        if("${${arg}}" STREQUAL "")
+            string(SUBSTRING "${arg}" 4 -1 arg_name)
+            message(SEND_ERROR "Missing parameter ${arg_name}.")
+        endif()
+    endforeach()
+    
+    set(child_args ${ARGN})
+    if(NOT ARG_INCLUDE_INSTALL_DIR)
+        list(APPEND child_args
+            INCLUDE_INSTALL_DIR "${ARG_PACKAGE_NAME}/${PROJECT_NAME}"
+            )
+    endif()
+        
+    if(ARG_AUTO_SET_TARGET_PROPERTIES)
+        sofa_auto_set_target_properties(${child_args})
+    endif()
+
+    sofa_install_targets_in_package(${child_args})
+endmacro()
+
+
+macro(sofa_auto_set_target_properties)
+    set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE)
+    set(multiValueArgs TARGETS)
+    set(optionalArgs AUTO_SET_TARGET_PROPERTIES)
+    cmake_parse_arguments("ARG" "${optionalArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    # Required arguments
+    foreach(arg ARG_PACKAGE_NAME ARG_TARGETS ARG_INCLUDE_INSTALL_DIR)
+        if("${${arg}}" STREQUAL "")
+            string(SUBSTRING "${arg}" 4 -1 arg_name)
+            message(SEND_ERROR "Missing parameter ${arg_name}.")
+        endif()
+    endforeach()
+    
+    string(TOUPPER "${ARG_PACKAGE_NAME}" SOFA_PACKAGE_NAME_UPPER)
+
+    foreach(target ${ARG_TARGETS}) # Most of the time there is only one target
+        # Set target properties
+        if(NOT "${target}" STREQUAL "${ARG_PACKAGE_NAME}") # Target is inside a package
+            set_target_properties(${target} PROPERTIES FOLDER ${ARG_PACKAGE_NAME}) # IDE folder
+        endif()
+        set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
+        set(version ${${target}_VERSION})
+        if(version VERSION_GREATER "0.0")
+            set_target_properties(${target} PROPERTIES VERSION "${version}")
+        elseif(target MATCHES "^Sofa" AND NOT PLUGIN_${SOFA_PACKAGE_NAME_UPPER} AND Sofa_VERSION)
+            # Default to Sofa_VERSION for all SOFA modules
+            set_target_properties(${target} PROPERTIES VERSION "${Sofa_VERSION}")
+        endif()
+        set(SOFA_TARGET_VERSION ${${target}_VERSION})
+        set(SOFA_TARGET_NAME "${target}")
+        string(TOUPPER "${target}" SOFA_TARGET_NAME_UPPER)
+
+        if(target MATCHES "^Sofa")
+            # TODO: Deprecate this backward compatibility and replace all the macros
+            # with old style: SofaModuleName -> SOFA_BUILD_MODULE_NAME + SOFA_MODULE_NAME_API
+            # by new style: SofaModuleName -> SOFA_BUILD_SOFAMODULENAME + SOFA_SOFAMODULENAME_API
+            string(REGEX REPLACE "([^A-Z])([A-Z])" "\\1_\\2" sofa_target_oldname "${target}")
+            string(REPLACE "Sofa" "" sofa_target_oldname "${sofa_target_oldname}")
+            string(TOUPPER "${sofa_target_oldname}" sofa_target_oldname_upper)
+            target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD${sofa_target_oldname_upper}")
+        endif()
+        target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD_${SOFA_TARGET_NAME_UPPER}")
+
+        # Set target include directories (if not already set manually)
+        set(include_source_root "${CMAKE_CURRENT_SOURCE_DIR}/..") # default but bad practice
+        if(ARG_INCLUDE_SOURCE_DIR)
+            if(IS_ABSOLUTE "${ARG_INCLUDE_SOURCE_DIR}")
+                set(include_source_root "${ARG_INCLUDE_SOURCE_DIR}")
+            else()
+                set(include_source_root "${CMAKE_CURRENT_SOURCE_DIR}/${ARG_INCLUDE_SOURCE_DIR}")
+            endif()
+        endif()
+        get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
+        
+        if(NOT "\$<BUILD_INTERFACE:${include_source_root}>" IN_LIST target_include_dirs)
+            target_include_directories(${target} PUBLIC "$<BUILD_INTERFACE:${include_source_root}>")
+        endif()
+        if(NOT "\$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${ARG_PACKAGE_NAME}>" IN_LIST target_include_dirs)
+            target_include_directories(${target} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${ARG_PACKAGE_NAME}>")
+        endif()
+        
+        if(ARG_RELOCATABLE)
+            if(NOT "\$<INSTALL_INTERFACE:include>" IN_LIST target_include_dirs)
+                target_include_directories(${target} PUBLIC "$<INSTALL_INTERFACE:include>")
+            endif()
+        elseif("${ARG_INCLUDE_INSTALL_DIR}" MATCHES "^${ARG_PACKAGE_NAME}")
+            if(NOT "\$<INSTALL_INTERFACE:include/${ARG_PACKAGE_NAME}>" IN_LIST target_include_dirs)
+                target_include_directories(${target} PUBLIC "$<INSTALL_INTERFACE:include/${ARG_PACKAGE_NAME}>")
+            endif()
+        else()
+            if(NOT "\$<INSTALL_INTERFACE:include/${ARG_INCLUDE_INSTALL_DIR}>" IN_LIST target_include_dirs)
+                target_include_directories(${target} PUBLIC "$<INSTALL_INTERFACE:include/${ARG_INCLUDE_INSTALL_DIR}>")
+            endif()
+        endif()
+    endforeach()
+endmacro()
+
+
+macro(sofa_install_targets_in_package)
+    set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE)
+    set(multiValueArgs TARGETS)
+    set(optionalArgs AUTO_SET_TARGET_PROPERTIES)
+    cmake_parse_arguments("ARG" "${optionalArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    # Required arguments
+    foreach(arg ARG_PACKAGE_NAME ARG_TARGETS ARG_INCLUDE_INSTALL_DIR)
+        if("${${arg}}" STREQUAL "")
+            string(SUBSTRING "${arg}" 4 -1 arg_name)
+            message(SEND_ERROR "Missing parameter ${arg_name}.")
+        endif()
+    endforeach()
+
+    install(TARGETS ${ARG_TARGETS}
+            EXPORT ${ARG_PACKAGE_NAME}Targets
+            RUNTIME DESTINATION "bin" COMPONENT applications
+            LIBRARY DESTINATION "lib" COMPONENT libraries
+            ARCHIVE DESTINATION "lib" COMPONENT libraries
+            PUBLIC_HEADER DESTINATION "include/${ARG_INCLUDE_INSTALL_DIR}" COMPONENT headers
+
+            # [MacOS] install runSofa above the already populated runSofa.app (see CMAKE_INSTALL_PREFIX)
+            BUNDLE DESTINATION "../../.." COMPONENT applications
+            )
+
+    set(include_source_dir "${CMAKE_CURRENT_SOURCE_DIR}")
+    if(ARG_INCLUDE_SOURCE_DIR)
+        if(IS_ABSOLUTE "${ARG_INCLUDE_SOURCE_DIR}")
+            set(include_source_dir "${ARG_INCLUDE_SOURCE_DIR}")
+        else()
+            set(include_source_dir "${CMAKE_CURRENT_SOURCE_DIR}/${ARG_INCLUDE_SOURCE_DIR}")
+        endif()
+    endif()
+
+    set(example_install_dir "share/sofa/examples/${ARG_PACKAGE_NAME}")
+    if(ARG_EXAMPLE_INSTALL_DIR)
+        set(example_install_dir "${ARG_EXAMPLE_INSTALL_DIR}")
+    endif()
+
+    string(TOUPPER "${ARG_PACKAGE_NAME}" SOFA_PACKAGE_NAME_UPPER)
+
+    foreach(target ${ARG_TARGETS}) # Most of the time there is only one target
+        # Configure and install headers
+        get_target_property(target_sources ${target} SOURCES)
+        list(FILTER target_sources INCLUDE REGEX ".*(\\.h\\.in|\\.h|\\.inl)$") # keep only headers
+        foreach(header_file ${target_sources})
+            if(NOT IS_ABSOLUTE "${header_file}")
+                set(header_file "${CMAKE_CURRENT_SOURCE_DIR}/${header_file}")
+            endif()
+            if("${header_file}" MATCHES "${CMAKE_CURRENT_BINARY_DIR}/.*")
+                file(RELATIVE_PATH header_relative_path "${CMAKE_CURRENT_BINARY_DIR}" "${header_file}")
+            else()
+                file(RELATIVE_PATH header_relative_path "${include_source_dir}" "${header_file}")
+            endif()
+            get_filename_component(header_relative_dir ${header_relative_path} DIRECTORY)
+            get_filename_component(header_filename ${header_file} NAME_WE)
+
+            # Optimize build dir
+            set(header_relative_dir_for_build "${header_relative_dir}")
+            string(REPLACE "../" "" header_relative_dir_for_build "${header_relative_dir_for_build}") # keep out-of-tree headers
+            if("${target}" STREQUAL "${ARG_PACKAGE_NAME}") # Target is a package
+                if("${header_relative_dir_for_build}" STREQUAL "") # Headers are not in a subdirectory
+                    set(header_relative_dir_for_build "${target}")
+                endif()
+                if(NOT "${target}" STREQUAL "SofaFramework" AND
+                   NOT "${ARG_INCLUDE_INSTALL_DIR}/${header_relative_dir_for_build}" MATCHES "${target}/${target}")
+                    # Force include/PackageName/PackageName/... layout for package headers in build directory
+                    set(header_relative_dir_for_build "${target}/${header_relative_dir_for_build}")
+                endif()
+            endif()
+
+            # Finalize dirs
+            if(ARG_RELOCATABLE)
+                set(header_install_dir "include/${header_relative_dir_for_build}")
+            else()
+                # headers install-dir tree = headers build-dir tree
+                set(header_install_dir "include/${ARG_INCLUDE_INSTALL_DIR}/${header_relative_dir_for_build}")
+            endif()
+            file(TO_CMAKE_PATH "${header_install_dir}" header_install_dir)
+
+            # Configure and install
+            get_target_property(public_header ${target} PUBLIC_HEADER)
+            if(header_file MATCHES ".*\\.h\\.in$")
+                # header to configure and install
+                file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/include/${ARG_INCLUDE_INSTALL_DIR}/${header_relative_dir_for_build}/${header_filename}.h" configured_file)
+                configure_file("${header_file}" "${configured_file}")
+                install(FILES "${configured_file}" DESTINATION "${header_install_dir}" COMPONENT headers)
+                #message("configured_file = ${configured_file}")
+                #message("configured_install_dir = ${header_install_dir}")
+            elseif("${public_header}" STREQUAL "public_header-NOTFOUND" AND NOT "${ARG_INCLUDE_INSTALL_DIR}" STREQUAL "")
+                # header to install
+                install(FILES ${header_file} DESTINATION "${header_install_dir}" COMPONENT headers)
+                #message("header_file = ${header_file}")
+                #message("header_install_dir = ${header_install_dir}\n")
+            endif()
+        endforeach()
+    endforeach()
+
+    # Install examples and scenes
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+        install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/examples/"
+                DESTINATION "${example_install_dir}"
+                COMPONENT resources)
+    endif()
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scenes")
+        install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenes/"
+                DESTINATION "${example_install_dir}"
+                COMPONENT resources)
+    endif()
+
+    # Install info files (README, license, etc.)
+    file(GLOB txt_files "*.txt" RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} LIST_DIRECTORIES false)
+    list(FILTER txt_files EXCLUDE REGEX "CMakeLists.txt")
+    file(GLOB md_files "*.md" RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} LIST_DIRECTORIES false)
+    if(ARG_RELOCATABLE)
+        set(info_install_dir ".")
+    else()
+        set(info_install_dir "include/${ARG_INCLUDE_INSTALL_DIR}")
+    endif()
+    install(FILES ${txt_files} ${md_files} DESTINATION "${info_install_dir}" COMPONENT headers)
+endmacro()
+
+
+# sofa_set_package_relocatable
+#   TARGET MUST EXIST, TO BE CALLED AFTER add_library
+# Content:
+#   If building out of SOFA: does nothing.
+#   If building through SOFA: call add_custom_target with custom commands to obtain a self-contained relocatable install.
+#   Self-contained plugins are useful to build modular binaries: they do not "pollute" SOFA install
+#   with self-contained plugins SOFA install will always look the same, no matter how many plugins are included.
+# Effect:
+#   add_custom_target will add the line 'set(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/${install_dir}/${name}")' at the top of the
+#   plugin's cmake_install.cmake to force the plugin to be installed in it's own directory instead of in SOFA's install directory
+#   (look at the build directory of any plugin to find an example of cmake_install.cmake).
+function(sofa_set_package_relocatable target install_dir)
+    if(NOT "${CMAKE_PROJECT_NAME}" STREQUAL "Sofa")
+        # not building through SOFA
+        return()
+    endif()
+    if(NOT TARGET ${target})
+        message(WARNING "sofa_set_package_relocatable: \"${target}\" is not an existing target.")
+        return()
+    endif()
+
+    get_target_property(target_binary_dir ${target} BINARY_DIR)
+
+    # Remove cmakepatch file at each configure
+    file(REMOVE "${target_binary_dir}/cmake_install.cmakepatch")
+
+    # Hack to make installed plugin independant and keep the add_subdirectory mechanism
+    # Does not fail if cmakepatch file already exists thanks to "|| true"
+    if(WIN32)
+        set(escaped_dollar "\$\$")
+        if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (Visual Studio)
+            set(escaped_dollar "\$")
+        endif()
+        string(REGEX REPLACE "/" "\\\\" target_binary_dir_windows "${target_binary_dir}")
+        add_custom_target(${target}_relocatable_install ALL
+            COMMENT "${target}: Patching cmake_install.cmake"
+            COMMAND
+                if not exist \"${target_binary_dir}/cmake_install.cmakepatch\"
+                echo set ( CMAKE_INSTALL_PREFIX_BACK \"${escaped_dollar}\{CMAKE_INSTALL_PREFIX\}\" )
+                    > \"${target_binary_dir}/cmake_install.cmakepatch\"
+                && echo set ( CMAKE_INSTALL_PREFIX \"${escaped_dollar}\{CMAKE_INSTALL_PREFIX\}/${install_dir}/${target}\" )
+                    >> \"${target_binary_dir}/cmake_install.cmakepatch\"
+                && type \"${target_binary_dir_windows}\\cmake_install.cmake\" >> \"${target_binary_dir_windows}\\cmake_install.cmakepatch\"
+                && echo set ( CMAKE_INSTALL_PREFIX \"${escaped_dollar}\{CMAKE_INSTALL_PREFIX_BACK\}\" )
+                    >> \"${target_binary_dir}/cmake_install.cmakepatch\"
+                && ${CMAKE_COMMAND} -E copy \"${target_binary_dir}/cmake_install.cmakepatch\" \"${target_binary_dir}/cmake_install.cmake\"
+            )
+    else()
+        add_custom_target(${target}_relocatable_install ALL
+            COMMENT "${target}: Patching cmake_install.cmake"
+            COMMAND
+                test ! -e ${target_binary_dir}/cmake_install.cmakepatch
+                && echo \" set ( CMAKE_INSTALL_PREFIX_BACK \\"\\$$\{CMAKE_INSTALL_PREFIX\}\\" ) \"
+                    > "${target_binary_dir}/cmake_install.cmakepatch"
+                && echo \" set ( CMAKE_INSTALL_PREFIX \\"\\$$\{CMAKE_INSTALL_PREFIX\}/${install_dir}/${target}\\" ) \"
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+                && cat ${target_binary_dir}/cmake_install.cmake >> ${target_binary_dir}/cmake_install.cmakepatch
+                && echo \" set ( CMAKE_INSTALL_PREFIX \\"\\$$\{CMAKE_INSTALL_PREFIX_BACK\}\\" ) \"
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+                && ${CMAKE_COMMAND} -E copy ${target_binary_dir}/cmake_install.cmakepatch ${target_binary_dir}/cmake_install.cmake
+                || true
+            )
+    endif()
+    set_target_properties(${target}_relocatable_install PROPERTIES FOLDER "relocatable_install")
+endfunction()
+
+
+
+
+
+
+
+
+
 
 # sofa_install_targets
 #
@@ -869,12 +1254,12 @@ endmacro()
 # set(HEADER_FILES   initExamplePlugin.h myComponent.h )
 # add_library( ${PROJECT_NAME} SHARED ${SOURCE_FILES})
 # target_link_libraries(${PROJECT_NAME} SofaCore)
-# sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "sofa/custom/install/dir" INCLUDE_SOURCE_DIR src/${PROJECT_NAME} )
+# sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "sofa/custom/install/dir" INCLUDE_SOURCE_DIR src )
 #
 function(sofa_generate_package)
     set(oneValueArgs NAME VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE)
     set(multiValueArgs TARGETS)
-    cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
     # Required arguments
     foreach(arg ARG_NAME ARG_VERSION ARG_TARGETS)
         if("${${arg}}" STREQUAL "")
@@ -897,26 +1282,12 @@ function(sofa_generate_package)
     sofa_write_package_config_files("${ARG_NAME}" "${ARG_VERSION}")
 endfunction()
 
-macro(sofa_create_package package_name version the_targets include_install_dir)
-    message(WARNING "Deprecated macro. Use the keyword argument function 'sofa_generate_package' instead")
-    # ARGV4 is a non-breaking additional argument to handle INCLUDE_SOURCE_DIR (see sofa_generate_package)
-    # TODO: add a real argument "include_source_dir" to this macro
-    sofa_generate_package(
-        NAME "${package_name}"
-        VERSION "${version}"
-        TARGETS "${the_targets}"
-        INCLUDE_INSTALL_DIR "${include_install_dir}"
-        INCLUDE_SOURCE_DIR "${ARGV4}"
-        EXAMPLE_INSTALL_DIR "${ARGV5}"
-        )
-endmacro()
-
 
 # Get path of all library versions (involving symbolic links) for a specified library
 function(sofa_install_libraries)
     set(options NO_COPY)
     set(multiValueArgs TARGETS LIBRARIES PATHS)
-    cmake_parse_arguments("sofa_install_libraries" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("sofa_install_libraries" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
     set(no_copy ${sofa_install_libraries_NO_COPY})
     set(targets ${sofa_install_libraries_TARGETS})
     set(lib_paths ${sofa_install_libraries_PATHS})
@@ -1001,7 +1372,7 @@ endfunction()
 
 function(sofa_copy_libraries)
     set(multiValueArgs TARGETS LIBRARIES PATHS)
-    cmake_parse_arguments("sofa_copy_libraries" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("sofa_copy_libraries" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
     set(targets ${sofa_copy_libraries_TARGETS})
     set(lib_paths ${sofa_copy_libraries_PATHS})
     if(sofa_copy_libraries_LIBRARIES)
