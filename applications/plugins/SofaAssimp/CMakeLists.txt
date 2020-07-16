@@ -46,4 +46,9 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(${PROJECT_NAME} ${ASSIMP_PLUGIN_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${ASSIMP_PLUGIN_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    )

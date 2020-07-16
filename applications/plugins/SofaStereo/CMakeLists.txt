@@ -34,5 +34,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFASTEREO_VERSION})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaOpenglVisual)
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(SofaStereo ${SOFASTEREO_VERSION} ${PROJECT_NAME} SofaStereo)
-
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${SOFASTEREO_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    )

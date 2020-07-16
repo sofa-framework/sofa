@@ -33,4 +33,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiMain SofaGeneral SceneCreato
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPHYSICSAPI_VERSION})
 
 ## Install rules and CMake package configurations files
-sofa_create_package(SofaPhysicsAPI ${SOFAPHYSICSAPI_VERSION} ${PROJECT_NAME} SofaPhysicsAPI)
+sofa_create_package_with_targets(
+    PACKAGE_NAME SofaPhysicsAPI
+    PACKAGE_VERSION ${SOFAPHYSICSAPI_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_INSTALL_DIR SofaPhysicsAPI
+    )

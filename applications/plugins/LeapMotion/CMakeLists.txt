@@ -46,11 +46,10 @@ target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual SofaUserIntera
 
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(${PROJECT_NAME} ${LEAPMOTION_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
-
 sofa_generate_package(
     NAME ${PROJECT_NAME}
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
     INCLUDE_SOURCE_DIR src
     )
+
