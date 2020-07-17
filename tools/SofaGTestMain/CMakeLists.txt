@@ -13,4 +13,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationTree SofaS
 target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
 
 ## Install rules for the library; CMake package configurations files
-sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${SOFAGTESTMAIN_VERSION} TARGETS ${PROJECT_NAME})
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${SOFAGTESTMAIN_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    )

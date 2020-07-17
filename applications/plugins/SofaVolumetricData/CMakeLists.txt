@@ -33,10 +33,10 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision ${SOFAADVANCED_DE
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_generate_package(
-    NAME SofaVolumetricData
-    VERSION ${SOFAVOLUMETRICDATA_VERSION}
-    TARGETS ${PROJECT_NAME}
+sofa_create_package_with_targets(
+    PACKAGE_NAME SofaVolumetricData
+    PACKAGE_VERSION ${SOFAVOLUMETRICDATA_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_INSTALL_DIR "SofaVolumetricData"
     RELOCATABLE "plugins"
     )

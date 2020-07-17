@@ -354,10 +354,10 @@ configure_file(SofaCUDANvccFlags.cmake ${CMAKE_BINARY_DIR}/cmake/SofaCUDANvccFla
 install(FILES SofaCUDANvccFlags.cmake DESTINATION lib/cmake/SofaCUDA)
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_generate_package(
-    NAME ${PROJECT_NAME}
-    VERSION ${SOFACUDA_VERSION}
-    TARGETS ${PROJECT_NAME}
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${SOFACUDA_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     RELOCATABLE "plugins"
 )

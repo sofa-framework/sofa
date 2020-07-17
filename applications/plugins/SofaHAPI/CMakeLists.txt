@@ -71,4 +71,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAHAPI_
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAHAPI_VERSION})
 
 ## Install rules for the library and the header; CMake package configurations files
-sofa_generate_package(NAME SofaHAPI VERSION ${SOFAHAPI_VERSION} TARGETS SofaHAPI INCLUDE_INSTALL_DIR SofaHAPI)
+sofa_create_package_with_targets(
+    PACKAGE_NAME SofaHAPI
+    PACKAGE_VERSION ${SOFAHAPI_VERSION}
+    TARGETS SofaHAPI AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_INSTALL_DIR SofaHAPI
+    )

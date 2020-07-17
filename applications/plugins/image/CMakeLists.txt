@@ -152,9 +152,9 @@ if(SofaGui_FOUND AND SOFAGUI_HAVE_SOFAGUIQT)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_generate_package(
-    NAME ${PROJECT_NAME}
-    TARGETS ${PROJECT_NAME}
-    VERSION ${PROJECT_VERSION}
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    PACKAGE_VERSION ${PROJECT_VERSION}
     RELOCATABLE "plugins"
     )

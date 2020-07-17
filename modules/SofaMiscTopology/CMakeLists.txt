@@ -29,4 +29,7 @@ if(ZLIB_FOUND)
     endif()
 endif()
 
-sofa_install_targets(SofaMisc ${PROJECT_NAME} "SofaMisc/${PROJECT_NAME}")
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaMisc
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    )

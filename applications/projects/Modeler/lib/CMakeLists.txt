@@ -45,9 +45,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaGui SofaBase SofaCommon SofaGen
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml) # Public because needed by Modeler (exec)
 
-sofa_generate_package(
-    NAME ${PROJECT_NAME}
-    VERSION ${PROJECT_VERSION}
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
     INCLUDE_SOURCE_DIR "."
     INCLUDE_INSTALL_DIR "SofaModeler"

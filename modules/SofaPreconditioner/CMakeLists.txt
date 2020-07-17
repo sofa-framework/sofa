@@ -45,10 +45,10 @@ if(SofaSparseSolver_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaSparseSolver)
 endif()
 
-sofa_generate_package(
-    NAME SofaPreconditioner
-    VERSION ${PROJECT_VERSION}
-    TARGETS SofaPreconditioner
+sofa_create_package_with_targets(
+    PACKAGE_NAME SofaPreconditioner
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS SofaPreconditioner AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaPreconditioner"
     RELOCATABLE "plugins"

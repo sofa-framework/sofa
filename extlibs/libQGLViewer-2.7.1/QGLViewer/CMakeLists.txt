@@ -96,7 +96,12 @@ endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 
-sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "extlibs/${PROJECT_NAME}/${PROJECT_NAME}")
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_INSTALL_DIR "extlibs/${PROJECT_NAME}/${PROJECT_NAME}"
+    )
 
 # Qt deployment
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)

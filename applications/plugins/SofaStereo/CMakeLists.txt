@@ -37,6 +37,6 @@ target_link_libraries(${PROJECT_NAME} SofaCore SofaOpenglVisual)
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${SOFASTEREO_VERSION}
-    TARGETS ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     )
