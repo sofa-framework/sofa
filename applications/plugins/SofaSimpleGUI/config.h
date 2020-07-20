@@ -22,9 +22,10 @@
 #ifndef SOFASIMPLEGUI_CONFIG_H
 #define SOFASIMPLEGUI_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_SOFASIMPLEGUI
+#  define SOFA_TARGET SofaSimpleGUI
 #  define SOFA_SOFASIMPLEGUI_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_SOFASIMPLEGUI_API  SOFA_IMPORT_DYNAMIC_LIBRARY

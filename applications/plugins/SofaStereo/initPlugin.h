@@ -22,7 +22,7 @@
 #ifndef INITSTEREOPLUGIN_H
 #define INITSTEREOPLUGIN_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_PLUGIN_STEREO
 #define SOFA_STEREO_API SOFA_EXPORT_DYNAMIC_LIBRARY

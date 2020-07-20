@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaMiscFem)
 
 # Dependencies
 sofa_find_package(Newmat BOTH_SCOPES)
+find_package(SofaCommon REQUIRED) # SofaSimpleFem
 
 set(HEADER_FILES
     config.h
@@ -64,8 +65,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem)
 if(Newmat_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_FEM")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 sofa_install_targets(SofaMisc ${PROJECT_NAME} "SofaMisc/${PROJECT_NAME}")

@@ -28,7 +28,7 @@
 #include <sstream>
 
 #include <sofa/helper/vector.h>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

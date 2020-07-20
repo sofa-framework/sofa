@@ -25,7 +25,7 @@
 #include <iostream>
 #include <string>
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/logging/Messaging.h>
 
 #include <boost/program_options.hpp>

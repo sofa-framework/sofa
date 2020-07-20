@@ -19,7 +19,6 @@
 #define VALUEEVENT_H
 
 #include "xmlio.h"
-#include <sofa/helper/system/config.h>
 
 /** a valueEvent of a load is composed of a value and a date
  *

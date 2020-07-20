@@ -22,7 +22,7 @@
 #ifndef SOFAOSTREAM_H_
 #define SOFAOSTREAM_H_
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sstream>
 #include <sofa/helper/logging/Message.h>
 

@@ -30,7 +30,7 @@ namespace component
 {
 
 
-void SOFA_MISC_FORCEFIELD_API initMiscForcefield();
+void SOFA_MISC_FORCE_FIELD_API initMiscForcefield();
 
 } // namespace component
 

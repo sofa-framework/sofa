@@ -27,7 +27,7 @@
 #include <typeinfo>
 #include <type_traits>
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa

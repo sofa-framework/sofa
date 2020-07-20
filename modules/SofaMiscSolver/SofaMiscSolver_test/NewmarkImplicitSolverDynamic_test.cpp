@@ -88,8 +88,8 @@ struct NewmarkImplicitDynamic_test : public Elasticity_test<_DataTypes>
 
         // Solver
         NewmarkImplicitSolver::SPtr newmarkSolver = addNew<NewmarkImplicitSolver> (root);
-        newmarkSolver->f_rayleighStiffness.setValue(rk);
-        newmarkSolver->f_rayleighMass.setValue(rm);
+        newmarkSolver->d_rayleighStiffness.setValue(rk);
+        newmarkSolver->d_rayleighMass.setValue(rm);
 
         CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (root);
         cgLinearSolver->f_maxIter=3000;

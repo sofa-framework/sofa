@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_MESHTETRASTUFFING_H
 #define SOFA_COMPONENT_MISC_MESHTETRASTUFFING_H
-#include <SofaMisc/config.h>
+#include <SofaMiscExtra/config.h>
 
 #include <string>
 #include <sofa/helper/fixed_array.h>

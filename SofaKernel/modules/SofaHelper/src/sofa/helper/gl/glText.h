@@ -35,7 +35,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/gl/Texture.h>
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

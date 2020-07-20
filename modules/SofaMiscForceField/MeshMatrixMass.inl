@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_MESHMATRIXMASS_INL
-#define SOFA_COMPONENT_MASS_MESHMATRIXMASS_INL
+#pragma once
 
 #include <SofaMiscForceField/MeshMatrixMass.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -40,13 +39,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 template <class DataTypes, class MassType>
@@ -911,18 +904,21 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(c
 
 // }
 
+using sofa::core::topology::TopologyObjectType;
 
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::init()
 {
     m_massLumpingCoeff = 0.0;
 
-    if(!checkTopology())
+    TopologyObjectType topoType = checkTopology();
+    if(topoType == TopologyObjectType::POINT)
     {
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     Inherited::init();
-    initTopologyHandlers();
+    initTopologyHandlers(topoType);
 
     massInitialization();
 
@@ -942,7 +938,7 @@ void MeshMatrixMass<DataTypes, MassType>::init()
 
 
 template <class DataTypes, class MassType>
-bool MeshMatrixMass<DataTypes, MassType>::checkTopology()
+sofa::core::topology::TopologyObjectType MeshMatrixMass<DataTypes, MassType>::checkTopology()
 {
     if (l_topology.empty())
     {
@@ -957,7 +953,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkTopology()
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
         sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return false;
+        return sofa::core::topology::TopologyObjectType::POINT;
     }
 
     this->getContext()->get(edgeGeo);
@@ -965,19 +961,18 @@ bool MeshMatrixMass<DataTypes, MassType>::checkTopology()
     this->getContext()->get(quadGeo);
     this->getContext()->get(tetraGeo);
     this->getContext()->get(hexaGeo);
-
-
+    
     if (m_topology->getNbHexahedra() > 0)
     {
         if(!hexaGeo)
         {
             msg_error() << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms.";
-            return false;
+            return TopologyObjectType::POINT;
         }
         else
         {
             msg_info() << "Hexahedral topology found.";
-            return true;
+            return TopologyObjectType::HEXAHEDRON;
         }
     }
     else if (m_topology->getNbTetrahedra() > 0)
@@ -985,12 +980,12 @@ bool MeshMatrixMass<DataTypes, MassType>::checkTopology()
         if(!tetraGeo)
         {
             msg_error() << "Tetrahedron topology but no geometry algorithms found. Add the component TetrahedronSetGeometryAlgorithms.";
-            return false;
+            return TopologyObjectType::POINT;
         }
         else
         {
             msg_info() << "Tetrahedral topology found.";
-            return true;
+            return TopologyObjectType::TETRAHEDRON;
         }
     }
     else if (m_topology->getNbQuads() > 0)
@@ -998,12 +993,12 @@ bool MeshMatrixMass<DataTypes, MassType>::checkTopology()
         if(!quadGeo)
         {
             msg_error() << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms.";
-            return false;
+            return TopologyObjectType::POINT;
         }
         else
         {
             msg_info() << "Quad topology found.";
-            return true;
+            return TopologyObjectType::QUAD;
         }
     }
     else if (m_topology->getNbTriangles() > 0)
@@ -1011,12 +1006,12 @@ bool MeshMatrixMass<DataTypes, MassType>::checkTopology()
         if(!triangleGeo)
         {
             msg_error() << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms.";
-            return false;
+            return TopologyObjectType::POINT;
         }
         else
         {
             msg_info() << "Triangular topology found.";
-            return true;
+            return TopologyObjectType::TRIANGLE;
         }
     }
     else if (m_topology->getNbEdges() > 0)
@@ -1024,42 +1019,68 @@ bool MeshMatrixMass<DataTypes, MassType>::checkTopology()
         if(!edgeGeo)
         {
             msg_error() << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms.";
-            return false;
+            return TopologyObjectType::POINT;
         }
         else
         {
             msg_info() << "Edge topology found.";
-            return true;
+            return TopologyObjectType::EDGE;
         }
     }
     else
     {
         msg_error() << "Topology empty.";
-        return false;
+        return TopologyObjectType::POINT;
     }
 }
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::initTopologyHandlers()
+void MeshMatrixMass<DataTypes, MassType>::initTopologyHandlers(sofa::core::topology::TopologyObjectType topologyType)
 {
     // add the functions to handle topology changes for Vertex informations
     m_vertexMassHandler = new VertexMassHandler(this, &d_vertexMassInfo);
     d_vertexMassInfo.createTopologicalEngine(m_topology, m_vertexMassHandler);
-    d_vertexMassInfo.linkToEdgeDataArray();
-    d_vertexMassInfo.linkToTriangleDataArray();
-    d_vertexMassInfo.linkToQuadDataArray();
-    d_vertexMassInfo.linkToTetrahedronDataArray();
-    d_vertexMassInfo.linkToHexahedronDataArray();
-    d_vertexMassInfo.registerTopologicalData();
 
     // add the functions to handle topology changes for Edge informations
     m_edgeMassHandler = new EdgeMassHandler(this, &d_edgeMassInfo);
     d_edgeMassInfo.createTopologicalEngine(m_topology, m_edgeMassHandler);
-    d_edgeMassInfo.linkToTriangleDataArray();
-    d_edgeMassInfo.linkToQuadDataArray();
-    d_edgeMassInfo.linkToTetrahedronDataArray();
-    d_edgeMassInfo.linkToHexahedronDataArray();
+
+
+    // register engines to the corresponding toplogy containers depending on current topology type
+    bool hasTriangles = false;
+    bool hasQuads = false;
+    if (topologyType == TopologyObjectType::HEXAHEDRON)
+    {
+        d_vertexMassInfo.linkToHexahedronDataArray();
+        d_edgeMassInfo.linkToHexahedronDataArray();
+        hasQuads = true; // hexahedron imply quads
+    }
+    else if (topologyType == TopologyObjectType::TETRAHEDRON)
+    {
+        d_vertexMassInfo.linkToTetrahedronDataArray();
+        d_edgeMassInfo.linkToTetrahedronDataArray();
+
+        hasTriangles = true; // Tetrahedron imply triangles
+    }
+
+    if (topologyType == TopologyObjectType::QUAD || hasQuads)
+    {
+        d_vertexMassInfo.linkToQuadDataArray();
+        d_edgeMassInfo.linkToQuadDataArray();
+    }
+
+    if (topologyType == TopologyObjectType::TRIANGLE || hasTriangles)
+    {
+        d_vertexMassInfo.linkToTriangleDataArray();
+        d_edgeMassInfo.linkToTriangleDataArray();
+    }
+
+    // PointData need to be linked to Edge container in any topology. d_edgeMassInfo as EdgeData is automatically register to Edge container
+    d_vertexMassInfo.linkToEdgeDataArray();
+    
+    // Register topological Data
+    d_vertexMassInfo.registerTopologicalData();
     d_edgeMassInfo.registerTopologicalData();
 }
 
@@ -2119,10 +2140,4 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
 }
 
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mass

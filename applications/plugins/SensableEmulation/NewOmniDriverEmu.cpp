@@ -44,6 +44,7 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 //sensable namespace
 #include <pthread.h>
+#include <thread>
 
 
 
@@ -240,8 +241,7 @@ void *hapticSimuExecute( void *ptr )
             timeToSleep = int( (requiredTime - totalTime) - timeCorrection); //  [us]
             if (timeToSleep > 0)
             {
-                usleep(timeToSleep);
-                //std::cout << "Frequency OK, computation time: " << totalTime << std::endl;
+                std::this_thread::sleep_for(std::chrono::microseconds(timeToSleep));
             }
             else
             {
@@ -251,11 +251,8 @@ void *hapticSimuExecute( void *ptr )
         }
         else
         {
-            //std::cout << "Running Asynchro without action" << std::endl;
-            usleep(10000);
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
-
-
     }
 }
 

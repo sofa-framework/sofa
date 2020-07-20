@@ -38,6 +38,8 @@
 #include <boost/thread.hpp>
 #endif
 
+#include <thread>
+#include <chrono>
 //sensable namespace
 
 using std::cout;
@@ -889,7 +891,7 @@ void NewOmniDriver::onAnimateBeginEvent()
 #ifdef SOFA_HAVE_BOOST
 			boost::thread::yield();
 #else
-			sofa::helper::system::thread::CTime::sleep(0);
+                        std::this_thread::sleep_for(std::chrono::milliseconds(0));
 #endif
 		}
 	}

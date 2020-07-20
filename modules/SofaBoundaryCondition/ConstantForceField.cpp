@@ -27,13 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -62,8 +56,4 @@ template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Rigid3Types>;
 template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Rigid2Types>;
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(PluginExample VERSION 1.0 LANGUAGES CXX)
 
 # Find and load CMake configuration of packages containing this plugin's dependencies
@@ -50,25 +50,12 @@ endif()
 # Create the plugin library.
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES_TO_MOC} ${MOCCED_HEADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-# Set define dllimport/dllexport mechanism on Windows.
-target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_PLUGINEXAMPLE")
-
 # Link the plugin library to its dependency(ies).
 target_link_libraries(${PROJECT_NAME} SofaBaseVisual)
 # Link with the optional GUI dependencies.
 if(Qt5Core_FOUND AND SofaGui_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaGuiQt)
 endif()
-
-# If using the build of this plugin with "find_package(PluginExample)",
-# then discover includes from '${CMAKE_CURRENT_SOURCE_DIR}/src' to reach all source headers
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-# and from '${CMAKE_BINARY_DIR}/include' to reach the configured files like config.h
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-
-# If using the install of this plugin with "find_package(PluginExample)",
-# then discover includes from 'include' directory.
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 # Create package Config, Version & Target files.
 # Deploy the headers, resources, scenes & examples.
@@ -78,7 +65,7 @@ sofa_generate_package(
     NAME ${PROJECT_NAME}
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
-    INCLUDE_SOURCE_DIR ${PLUGINEXAMPLE_SRC_DIR}
+    INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     RELOCATABLE "plugins"
     )

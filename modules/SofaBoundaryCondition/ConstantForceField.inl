@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_INL
+#pragma once
 
 #include <SofaBoundaryCondition/ConstantForceField.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
@@ -36,15 +34,8 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 using sofa::core::objectmodel::BaseObjectDescription ;
 
-namespace sofa
+namespace sofa::component::forcefield
 {
-
-namespace component
-{
-
-namespace forcefield
-{
-
 
 template<class DataTypes>
 ConstantForceField<DataTypes>::ConstantForceField()
@@ -620,13 +611,6 @@ void ConstantForceField<DataTypes>::updateForceMask()
     }
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_INL
-
+} // namespace sofa::component::forcefield
 
 

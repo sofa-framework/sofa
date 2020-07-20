@@ -20,21 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP
+
 #include <SofaMiscForceField/MeshMatrixMass.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 using namespace sofa::defaulttype;
-
-
 
 template <>
 Vector6 MeshMatrixMass<Vec3Types, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
@@ -77,13 +70,6 @@ Vector6 MeshMatrixMass<Vec3Types, double>::getMomentum ( const core::MechanicalP
 }
 
 
-
-
-
-
-
-
-
 // Register in the Factory
 int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each particle")
         .add< MeshMatrixMass<Vec3Types,Vec3Types::Real> >()
@@ -92,15 +78,10 @@ int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each 
 
         ;
 
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec3Types,Vec3Types::Real>;
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec2Types,Vec2Types::Real>;
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec1Types,Vec1Types::Real>;
+template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<Vec3Types,Vec3Types::Real>;
+template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<Vec2Types,Vec2Types::Real>;
+template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<Vec1Types,Vec1Types::Real>;
 
 
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mass

@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_SYSTEM_GL_H
 #define SOFA_HELPER_SYSTEM_GL_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/helper/config.h>
 
 #ifndef SOFA_NO_OPENGL
 

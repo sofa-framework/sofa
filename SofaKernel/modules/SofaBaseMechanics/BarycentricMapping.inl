@@ -50,7 +50,6 @@
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
 #include <sofa/helper/vector.h>
-#include <sofa/helper/system/config.h>
 
 #include <sofa/simulation/Simulation.h>
 

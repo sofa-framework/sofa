@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_GRAPH_INIT_H
 #define SOFA_SIMULATION_GRAPH_INIT_H
 
-#include <SofaSimulationGraph/graph.h>
+#include <SofaSimulationGraph/config.h>
 
 namespace sofa
 {

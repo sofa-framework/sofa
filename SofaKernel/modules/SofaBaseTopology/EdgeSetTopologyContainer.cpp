@@ -154,8 +154,7 @@ void EdgeSetTopologyContainer::reinit()
 
 void EdgeSetTopologyContainer::createEdgeSetArray()
 {
-	if(CHECK_TOPOLOGY)
-        msg_error() << "createEdgeSetArray method must be implemented by an higher level topology.";
+    msg_error() << "createEdgeSetArray method must be implemented by an higher level topology.";
 }
 
 
@@ -166,9 +165,6 @@ const sofa::helper::vector<EdgeSetTopologyContainer::Edge> &EdgeSetTopologyConta
 
 const sofa::helper::vector<EdgeSetTopologyContainer::Edge> &EdgeSetTopologyContainer::getEdgeArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(!hasEdges() && getNbPoints()>0) << "Edge array is empty with " << getNbPoints() << " vertices.";
-
     return d_edge.getValue();
 }
 
@@ -176,9 +172,6 @@ EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID 
 {
     if (!hasEdges())
     {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "Edge array is empty with " << getNbPoints() << " vertices.";
-
         return InvalidID;
     }
 
@@ -279,9 +272,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
 
     if (nbr == 0)
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "Can't compute connexity as there are no edges";
-
+        msg_error() << "CheckConnexity: Can't compute connexity as there are no edges";
         return false;
     }
 
@@ -289,7 +280,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-		msg_warning() << "Warning: in computing connexity, edges are missings. There is more than one connexe component.";
+		msg_warning() << "CheckConnexity: Edges are missings. There is more than one connexe component.";
         return false;
     }
 
@@ -303,9 +294,7 @@ size_t EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 
     if (nbr == 0)
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "Can't compute connexity as there are no edges";
-
+        msg_error() << "Can't getNumberOfConnectedComponent as there are no edges";
         return 0;
     }
 
@@ -336,15 +325,13 @@ size_t EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 
 const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getConnectedElement(EdgeID elem)
 {
+    VecEdgeID elemAll;
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "EdgesAroundVertex shell array is empty.";
-
-        createEdgesAroundVertexArray();
+        dmsg_warning() << "getConnectedElement: EdgesAroundVertex is empty. Be sure to call createEdgesAroundVertexArray first.";
+        return elemAll;
     }
-
-    VecEdgeID elemAll;
+    
     VecEdgeID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     size_t cpt = 0;
@@ -387,9 +374,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getConnected
         if (elemPreviousFront.empty())
         {
             end = true;
-			if(CHECK_TOPOLOGY)
-				msg_error() << "Loop for computing connexity has reach end.";
-
+            msg_warning() << "Loop to compute connexity has reach end before processing all elements. This means the mesh is not fully connected.";
         }
 
         // iterate
@@ -407,10 +392,8 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 
     if (!hasEdgesAroundVertex())
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "Edge vertex shell array is empty.";
-
-        createEdgesAroundVertexArray();
+    	dmsg_warning() << "getElementAroundElement: Edge vertex shell array is empty. Be sure to call createEdgesAroundVertexArray first.";
+        return elems;
     }
 
     Edge the_edge = this->getEdge(elem);
@@ -450,16 +433,13 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAroundElements(VecEdgeID elems)
 {
     VecEdgeID elemAll;
-    VecEdgeID elemTmp;
-
     if (!hasEdgesAroundVertex())
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "Edge vertex shell array is empty.";
-
-        createEdgesAroundVertexArray();
+        dmsg_warning() << "getElementAroundElements: EdgesAroundVertexArray is empty. Be sure to call createEdgesAroundVertexArray first.";
+        return elemAll;
     }
 
+    VecEdgeID elemTmp;
     for (size_t i = 0; i <elems.size(); ++i) // for each edgeId of input vector
     {
         VecEdgeID elemTmp2 = this->getElementAroundElement(elems[i]);
@@ -515,9 +495,6 @@ size_t EdgeSetTopologyContainer::getNumberOfElements() const
 
 const sofa::helper::vector< sofa::helper::vector<EdgeSetTopologyContainer::EdgeID> > &EdgeSetTopologyContainer::getEdgesAroundVertexArray()
 {
-    if(CHECK_TOPOLOGY)
-        msg_warning_when(m_edgesAroundVertex.empty()) << "EdgesAroundVertex shell array is empty.";
-
     return m_edgesAroundVertex;
 }
 
@@ -525,8 +502,6 @@ const EdgeSetTopologyContainer::EdgesAroundVertex& EdgeSetTopologyContainer::get
 {
     if(id < m_edgesAroundVertex.size())
         return m_edgesAroundVertex[id];
-    else if(CHECK_TOPOLOGY)
-        msg_error() << "EdgesAroundVertex array access out of bounds: " << id << " >= " << m_edgesAroundVertex.size();
 
     return InvalidSet;
 }
@@ -535,12 +510,11 @@ sofa::helper::vector< EdgeSetTopologyContainer::EdgeID > &EdgeSetTopologyContain
 {
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "Edge vertex shell array is empty.";
-
+        dmsg_warning() << "getEdgesAroundVertexForModification: EdgesAroundVertexArray is empty. Be sure to call createEdgesAroundVertexArray first.";
         createEdgesAroundVertexArray();
     }
 
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_edgesAroundVertex[i];
 }
 
@@ -586,8 +560,7 @@ void EdgeSetTopologyContainer::setEdgeTopologyToDirty()
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        if (CHECK_TOPOLOGY)
-            msg_info() << "Edge Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Edge Topology Set dirty engine: " << topoEngine->name;
     }
 }
 
@@ -601,8 +574,7 @@ void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
     {
         if ((*it)->isDirty())
         {
-            if (CHECK_TOPOLOGY)
-                msg_warning() << "Edge Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Edge Topology update did not clean engine: " << (*it)->name;
             (*it)->cleanDirty();
         }
     }

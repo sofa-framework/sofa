@@ -1,10 +1,5 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(Sofa) # Cannot use VERSION with patch like "00"
-
-# CMake policies
-if(POLICY CMP0072)
-    cmake_policy(SET CMP0072 NEW) # Use  GLVND libraries for OpenGL and GLX when available
-endif()
 
 # Manually define VERSION
 set(Sofa_VERSION_MAJOR 20)
@@ -46,12 +41,6 @@ if(APPLE AND SOFA_BUILD_APP_BUNDLE)
 endif()
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
-# Use packaging.cmake configuration (used for Continuous Delivery)
-if(SOFA_BUILD_RELEASE_PACKAGE)
-    message("Using package.cmake")
-    include("package.cmake")
-endif()
-
 # Remove generated CMake files, this prevents CMake from finding packages that
 # were disabled (like, unchecked in cmake-gui) after being built once.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/cmake)
@@ -81,6 +70,14 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
 list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
+
+install(FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindEigen3.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/macdeployqt.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/windeployqt.cmake"
+    DESTINATION lib/cmake/Modules
+    COMPONENT headers
+    )
 
 include(SofaMacros)
 

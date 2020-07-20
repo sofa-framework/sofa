@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>

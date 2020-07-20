@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_H
 #include "config.h"
 
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>

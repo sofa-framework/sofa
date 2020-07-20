@@ -44,6 +44,9 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
+#include <chrono>
+#include <thread>
+
 #ifndef WIN32
 #  include <pthread.h>
 #else
@@ -301,17 +304,11 @@ void *hapticSimuExecute( void *ptr )
 
             endTime = (double)omniDrv->thTimer->getTime();  //[s]
             totalTime = (endTime - startTime);  // [us]
-            timeToSleep = int( (requiredTime - totalTime) - timeCorrection); //  [us]
+            timeToSleep = int( ((requiredTime - totalTime) - timeCorrection) * timeScale); //  [us]
 
             if (timeToSleep > 0)
             {
-#ifndef WIN32
-                // Microseconds sleep
-                usleep(1000000.0 * timeScale * timeToSleep);
-#else
-                // Milliseconds sleep
-                Sleep(static_cast<DWORD>(1000.0 * timeScale * timeToSleep));
-#endif
+                std::this_thread::sleep_for(std::chrono::seconds(timeToSleep));
             }
             else
             {
@@ -325,11 +322,8 @@ void *hapticSimuExecute( void *ptr )
                 msg_info(omniDrv) << "Running Asynchro without action" ;
                 oneTimeMessage = 1;
             }
-#ifndef WIN32
-            usleep(10000);
-#else
-            Sleep(static_cast<DWORD>(10000));
-#endif
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
     }
 }

@@ -77,7 +77,7 @@ endif (VERBOSE_SOFA)
 ## ===================== SOFA_INCLUDE_FRAMEWORK_DIR
 find_path(SOFA_INCLUDE_FRAMEWORK_DIR
     NAME
-    sofa/core/core.h #use a file .h looks like important file to find the path directory
+    sofa/core/config.h #use a file .h looks like important file to find the path directory
     PATHS
     ${SOFA_DIR}/framework
     ## comment to allow CMake to search in system environment variables and

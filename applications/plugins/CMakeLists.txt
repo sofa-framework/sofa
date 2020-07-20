@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
 find_package(SofaFramework)
 
 sofa_add_subdirectory_external(SofaHighOrder SofaHighOrder)
+sofa_add_subdirectory_external(SofaPython3 SofaPython3)
 
 sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default and first as it is used by other plugins.
 sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
@@ -30,7 +31,6 @@ sofa_add_plugin(OptiTrackNatNet OptiTrackNatNet)
 sofa_add_plugin(SixenseHydra SixenseHydra)
 sofa_add_plugin(SofaOpenCL SofaOpenCL)
 sofa_add_plugin(Xitact Xitact)
-sofa_add_plugin(EmptyCmakePlugin EmptyCmakePlugin)
 sofa_add_plugin(Haption Haption)
 sofa_add_plugin(ManualMapping ManualMapping)
 sofa_add_plugin(PersistentContact PersistentContact)

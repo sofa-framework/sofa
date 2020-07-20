@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_CPP
-#include <sofa/helper/system/config.h>
 #include <SofaBaseCollision/NewProximityIntersection.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Mat.h>

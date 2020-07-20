@@ -23,7 +23,6 @@
 #define TaskScheduler_std_h__
 
 #include <sofa/config.h>
-#include <sofa/helper/system/config.h>
 
 #include <sofa/simulation/Task.h>
 #include <sofa/simulation/Locks.h>

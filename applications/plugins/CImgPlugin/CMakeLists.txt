@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(CImgPlugin VERSION 0.1)
 
 set(HEADER_FILES
@@ -51,7 +51,9 @@ if(JPEG_FOUND)
     link_directories(${JPEG_LIB_DIRS})
     include_directories(${JPEG_INCLUDE_DIR})
     SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${JPEG_LIBRARIES})
-    sofa_install_libraries(PATHS ${JPEG_LIBRARIES})
+    if(SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
+        sofa_install_libraries(PATHS ${JPEG_LIBRARIES})
+    endif()
 else()
     message(STATUS "CImgPlugin: JPEG Image Format disabled")
 endif()
@@ -75,7 +77,9 @@ if (ZLIB_FOUND)
         link_directories(${PNG_LIB_DIRS})
         include_directories(${PNG_INCLUDE_DIR} )
         SET( EXTERNAL_LIBS ${EXTERNAL_LIBS} ${PNG_LIBRARIES} )
-        sofa_install_libraries(TARGETS PNG::PNG)
+        if(SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
+            sofa_install_libraries(TARGETS PNG::PNG)
+        endif()
     else()
         message(STATUS "CImgPlugin: PNG Image Format disabled")
     endif()
@@ -91,17 +95,14 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_compile_options(${PROJECT_NAME} PUBLIC ${CIMG_CFLAGS})
 target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_CIMGPLUGIN")
 target_link_libraries(${PROJECT_NAME} SofaCore ${EXTERNAL_LIBS})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 ## Install rules for the library; CMake package configurations files
 sofa_generate_package(
     NAME ${PROJECT_NAME}
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
-    INCLUDE_SOURCE_DIR "src/CImgPlugin"
+    INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "CImgPlugin"
     RELOCATABLE "plugins"
     )

@@ -294,11 +294,6 @@ void TriangleSetTopologyModifier::addPointsProcess(const size_t nPoints)
 
 void TriangleSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
 {
-    if(!m_container->hasEdges())
-    {
-        m_container->createEdgeSetArray();
-    }
-
     // start by calling the parent's method.
     EdgeSetTopologyModifier::addEdgesProcess( edges );
 
@@ -377,9 +372,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
 
     if(!m_container->hasTriangles()) // this method should only be called when triangles exist
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Triangle array is empty.";
-
+		msg_error() << "Triangle array is empty.";
         return;
     }
 

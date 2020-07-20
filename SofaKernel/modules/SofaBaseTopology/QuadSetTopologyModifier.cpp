@@ -242,9 +242,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<Quad
 {
     if(!m_container->hasQuads()) // this method should only be called when quads exist
     {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Quad array is empty.";
-
+        msg_error() << "Quad array is empty.";
         return;
     }
 
@@ -360,11 +358,6 @@ void QuadSetTopologyModifier::addPointsProcess(const size_t nPoints)
 
 void QuadSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
 {
-    if(!m_container->hasEdges())
-    {
-        m_container->createEdgeSetArray();
-    }
-
     // start by calling the parent's method.
     EdgeSetTopologyModifier::addEdgesProcess( edges );
 

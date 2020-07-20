@@ -22,7 +22,7 @@
 #ifndef SOFA_SPH_FLUID_SPH_FLUID_H
 #define SOFA_SPH_FLUID_SPH_FLUID_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_SPH_FLUID
 #  define SOFA_SPH_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY

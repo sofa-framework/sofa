@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_EXEC_PARAMS_H
 #define SOFA_CORE_EXEC_PARAMS_H
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 #include <atomic>
 
 namespace sofa

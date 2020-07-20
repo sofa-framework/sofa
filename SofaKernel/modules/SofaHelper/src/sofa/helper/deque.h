@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_deque_H
 #define SOFA_HELPER_deque_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 #include <deque>
 #include <string>

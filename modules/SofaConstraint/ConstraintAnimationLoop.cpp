@@ -39,7 +39,6 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
 
-
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -52,6 +51,8 @@
 #include <string>
 #include <sstream>
 
+#include <chrono>
+#include <thread>
 
 
 /// Change that to true if you want to print extra message on this component.
@@ -611,7 +612,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
             msg_info() << "Total time = " << iterationTimeDiff ;
             int toSleep = (int)floor(dt*1000000-compTimeDiff);
             if (toSleep > 0)
-                usleep(toSleep);
+                std::this_thread::sleep_for(std::chrono::microseconds(toSleep));
             else
                 msg_error() << "Cannot achieve frequency for dt = " << dt ;
             compTime = (SReal)timer->getTime();

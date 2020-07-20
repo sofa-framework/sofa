@@ -22,9 +22,10 @@
 #ifndef TESTPLUGIN_CONFIG_H
 #define TESTPLUGIN_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/helper/config.h>
 
 #ifdef SOFA_BUILD_TESTPLUGIN
+#  define SOFA_TARGET TestPlugin
 #  define SOFA_TESTPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_TESTPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY

@@ -22,7 +22,7 @@
 #ifndef COMPLIANT_CONFIG_H
 #define COMPLIANT_CONFIG_H
 
-#include <SofaMisc/config.h>
+#include <sofa/config.h>
 
 #define COMPLIANT_MAJOR_VERSION ${COMPLIANT_MAJOR_VERSION}
 #define COMPLIANT_MINOR_VERSION ${COMPLIANT_MINOR_VERSION}

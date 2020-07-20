@@ -19,57 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GEOMAGIC_GEOMAGICDRIVER_H
-#define SOFA_GEOMAGIC_GEOMAGICDRIVER_H
+#pragma once
 
 //Geomagic include
-#include <sofa/helper/LCPcalc.h>
-#include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <Geomagic/config.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Quater.h>
-
-#include <SofaOpenglVisual/OglModel.h>
-
-#include <Geomagic/config.h>
 #include <SofaUserInteraction/Controller.h>
-#include <sofa/core/behavior/BaseController.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
-#include <SofaHaptics/ForceFeedback.h>
 
 //force feedback
-#include <sofa/simulation/Node.h>
-#include <cstring>
+#include <SofaHaptics/ForceFeedback.h>
 
-#include <SofaSimulationTree/GNode.h>
-
-#include <math.h>
-//#include <wrapper.h>
 #include <HD/hd.h>
-#include <HD/hdDevice.h>
-#include <HD/hdDefines.h>
-#include <HD/hdExport.h>
-#include <HD/hdScheduler.h>
 
-//Visualization
-#include <SofaRigid/RigidMapping.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-
-
-namespace sofa {
-
-namespace component {
-
-namespace controller {
+namespace sofa::component::controller
+{
 
 using namespace sofa::defaulttype;
-using core::objectmodel::Data;
 
-#define NBJOINT 6
+
+class GeomagicVisualModel;
+
 
 /**
-* Geomagic driver
+* Class providing a driver API to handle Geomagic haptic device and the servo loop scheduler.
+* Position and angles of the device will be retrieve inside @sa m_hapticData during a callback method executed by HD scheduler.
+* This callback is also setting force to the device if a ForceFeedBack component is used in the simulation scene.
+* Those data are then copied inside @sa m_simuData and used to update Device position in SOFA world in method @sa updatePosition()
 */
 class SOFA_GEOMAGIC_API GeomagicDriver : public Controller
 {
@@ -78,91 +54,72 @@ public:
     SOFA_CLASS(GeomagicDriver, Controller);
     typedef RigidTypes::Coord Coord;
     typedef RigidTypes::VecCoord VecCoord;
-    typedef SolidTypes<double>::Transform Transform;
+    
+    GeomagicDriver();
+    virtual ~GeomagicDriver();
 
-    typedef defaulttype::Vec4f Vec4f;
-    typedef defaulttype::Vector3 Vector3;
-    struct VisualComponent
-    {
-        simulation::Node::SPtr node;
-        sofa::component::visualmodel::OglModel::SPtr visu;
-        sofa::component::mapping::RigidMapping< Rigid3Types , Vec3Types  >::SPtr mapping;
-    };
+    // SOFA component API override
+    void init() override;
+    void draw(const sofa::core::visual::VisualParams* vparams) override;
 
+    void handleEvent(core::objectmodel::Event *) override;
+    void computeBBox(const core::ExecParams*  params, bool onlyVisible = false) override;
+
+    /// Public method to init tool. Can be called from thirdparty if @sa d_manualStart is set to true
+    virtual void initDevice();
+    
+    /// Method to clear sheduler and free device. Called by default at driver destruction
+    virtual void clearDevice();
+
+
+protected:
+    /// Internal method to update the position of the device in SOFA world using @sa m_simuData 
+    void updatePosition();
+
+    /** Internal method called by @sa updatePosition() to handle the button status part using as well @sa m_simuData
+    * if @sa d_emitButtonEvent is set to true, event will be fired by this method if button is pressed or released
+    */
+    void updateButtonStates();
+    
+
+public:
+    //Input Data
     Data< std::string > d_deviceName; ///< Name of device Configuration
-    Data<Vec3d> d_positionBase; ///< Position of the interface base in the scene world coordinates
-    Data<Quat> d_orientationBase; ///< Orientation of the interface base in the scene world coordinates
-    Data<Quat> d_orientationTool; ///< Orientation of the tool
+    Data<Vec3d> d_positionBase; ///< Input Position of the device base in the scene world coordinates
+    Data<Quat> d_orientationBase; ///< Input Orientation of the device base in the scene world coordinates
+    Data<Quat> d_orientationTool; ///< Input Orientation of the tool
+    Data<SReal> d_scale; ///< Default scale applied to the device Coordinates
+    Data<SReal> d_forceScale; ///< Default forceScale applied to the force feedback. 
+    Data<SReal> d_maxInputForceFeedback; ///< Maximum value of the normed input force feedback for device security
+    Data<Vector3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
 
-    Data<Vector6> d_dh_theta; ///< Denavit theta
-    Data<Vector6> d_dh_alpha; ///< Denavit alpha
-    Data<Vector6> d_dh_d; ///< Denavit d
-    Data<Vector6> d_dh_a; ///< Denavit a
-
-    Data<Vector6> d_angle; ///< Angluar values of joint (rad)
-    Data<double> d_scale; ///< Default scale applied to the Phantom Coordinates
-    Data<double> d_forceScale; ///< Default forceScale applied to the force feedback. 
+    // Input parameters
+    Data<bool> d_manualStart; /// < Bool to unactive the automatic start of the device at init. initDevice need to be called manually. False by default.
+    Data<bool> d_emitButtonEvent; ///< Bool to send event through the graph when button are pushed/released
     Data<bool> d_frameVisu; ///< Visualize the frame corresponding to the device tooltip
     Data<bool> d_omniVisu; ///< Visualize the frame of the interface in the virtual scene
-    Data< Coord > d_posDevice; ///< position of the base of the part of the device    
-    
+
+    //Output Data
+    Data<Coord> d_posDevice; ///< position of the base of the part of the device
+    Data<Vector6> d_angle; ///< Angluar values of joint (rad)
     Data<bool> d_button_1; ///< Button state 1
     Data<bool> d_button_2; ///< Button state 2
-    Data<bool> d_emitButtonEvent; ///< Bool to send event through the graph when button are pushed/released
-    Data<Vector3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
-    Data<double> d_maxInputForceFeedback; ///< Maximum value of the normed input force feedback for device security
-
-    Data<bool> d_manualStart; /// < Bool to unactive the automatic start of the device at init. initDevice need to be called manually. False by default.
-    VecCoord m_posDeviceVisu; ///< position of the hpatic devices for rendering. first pos is equal to d_posDevice
-
-    GeomagicDriver();
-
-	virtual ~GeomagicDriver();
-
-    virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void reinit() override;
-    virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
-    void updatePosition();
-    void updateButtonStates(bool emitEvent);
-    void initDevice(int cptInitPass = 0);
-    void clearDevice();
+    
+    // Pointer to the forceFeedBack component
     ForceFeedback::SPtr m_forceFeedback;
+    // link to the forceFeedBack component, if not set will search through graph and take first one encountered
+    SingleLink<GeomagicDriver, ForceFeedback, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_forceFeedback;
 
-    /// variable pour affichage graphique
-    enum
-    {
-        VN_stylus = 0,
-        VN_joint2 = 1,
-        VN_joint1 = 2,
-        VN_arm2   = 3,
-        VN_arm1   = 4,
-        VN_joint0 = 5,
-        VN_base   = 6,
-        NVISUALNODE = 7
-    };
+    /// This static bool is used to know if HD scheduler is already running. No mechanism provided by Hd lib.
+    inline static bool s_schedulerRunning = false;
 
-    VisualComponent visualNode[NVISUALNODE];
-    static const char* visualNodeNames[NVISUALNODE];
-    static const char* visualNodeFiles[NVISUALNODE];
-    simulation::Node::SPtr m_omniVisualNode;
-    component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>::SPtr rigidDOF;
-
-    bool m_visuActive; ///< Internal boolean to detect activation switch of the draw
-    bool m_initVisuDone; ///< Internal boolean activated only if visu initialization done without return
-    int m_errorDevice; ///< Int detecting any error coming from device / detection
-    bool m_simulationStarted; /// <Boolean storing hte information if Sofa has started the simulation (changed by AnimateBeginEvent)
-    bool m_isInContact;
-private:
-    void handleEvent(core::objectmodel::Event *) override;
-    void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;
-    void getMatrix( Mat<4,4, GLdouble> & M, int index, double teta);
-
-    Mat<4,4, GLdouble> compute_dh_Matrix(double theta,double alpha, double a, double d);
-    Mat<4,4, GLdouble> m_dh_matrices[NBJOINT];
-
-    //These data are written by the omni they cnnot be accessed in the simulation loop
-    struct OmniData
+protected:
+    // Pointer to the Geomagic visual model to draw device in scene
+    std::unique_ptr<GeomagicVisualModel> m_GeomagicVisualModel;
+   
+public:
+    ///These data are written by the omni they cnnot be accessed in the simulation loop
+    struct DeviceData
     {
         HDdouble angle1[3];
         HDdouble angle2[3];
@@ -170,18 +127,13 @@ private:
         int buttonState;
     };
 
-public:
-    OmniData m_omniData;
-    OmniData m_simuData;
-    HHD m_hHD;
-    std::vector< HDSchedulerHandle > m_hStateHandles;
-
+    // Public members exchanged between Driver and HD scheduler
+    bool m_simulationStarted; ///< Boolean to warn scheduler when SOFA has started the simulation (changed by AnimateBeginEvent)
+    bool m_isInContact; ///< Boolean to warn SOFA side when scheduler has computer contact (forcefeedback no null)
+    DeviceData m_hapticData; ///< data structure used by scheduler
+    DeviceData m_simuData; ///< data structure used by SOFA loop, values are copied from @sa m_hapticData
+    HHD m_hHD; ///< ID the device
+    std::vector< HDSchedulerHandle > m_hStateHandles; ///< List of ref to the workers scheduled
 };
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_GEOMAGIC_GEOMAGICDRIVER_H
+} // namespace sofa::component::controller

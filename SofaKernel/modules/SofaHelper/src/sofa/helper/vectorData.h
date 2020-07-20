@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 #include <sofa/helper/StringUtils.h>
 using sofa::helper::getAStringCopy ;

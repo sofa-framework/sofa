@@ -26,7 +26,7 @@
 #include <QObject>
 #include <image/image_gui/config.h>
 #include <image/ImageTypes.h>
-#include "sofa/defaulttype/defaulttype.h"
+#include "sofa/defaulttype/config.h"
 #include "sofa/defaulttype/VecTypes.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>

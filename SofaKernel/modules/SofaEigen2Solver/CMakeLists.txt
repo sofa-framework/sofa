@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaEigen2Solver)
 
 set(HEADER_FILES
@@ -8,7 +8,7 @@ set(HEADER_FILES
     EigenVector.h
     EigenVectorWrapper.h
     SVDLinearSolver.h
-    config.h
+    config.h.in
     initEigen2Solver.h
 )
 
@@ -21,7 +21,7 @@ set(SOURCE_FILES
 
 find_package(Eigen3 REQUIRED)
 
-if (SOFA_OPENMP AND "${Eigen3_VERSION}" VERSION_LESS 3.2.9)
+if (SOFA_OPENMP AND "${EIGEN3_VERSION}" VERSION_LESS 3.2.9)
     sofa_find_package(OpenMP BOTH_SCOPES) # will set/update SOFAEIGEN2SOLVER_HAVE_OPENMP
 endif()
 
@@ -32,11 +32,9 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_EIGEN2_SOLVER")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 if (SOFAEIGEN2SOLVER_HAVE_OPENMP)
     target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
-sofa_install_targets(SofaCommon ${PROJECT_NAME} "SofaCommon/${PROJECT_NAME}")
+sofa_install_targets(SofaBase ${PROJECT_NAME} "SofaBase/${PROJECT_NAME}")
