@@ -40,13 +40,13 @@ macro(sofa_create_package_with_targets)
         endif()
     endforeach()
     # Default value for INCLUDE_INSTALL_DIR
-    set(child_args "${ARGN}")
+    set(child_args ${ARGV})
     if(NOT ARG_INCLUDE_INSTALL_DIR)
         list(APPEND child_args INCLUDE_INSTALL_DIR "${ARG_PACKAGE_NAME}")
     endif()
 
-    sofa_create_package(${ARGN})
-    sofa_add_targets_to_package(${ARGN})
+    sofa_create_package(${child_args})
+    sofa_add_targets_to_package(${child_args})
 
     if(ARG_RELOCATABLE)
         sofa_set_target_install_relocatable(${ARG_PACKAGE_NAME} ${ARG_RELOCATABLE})
@@ -140,11 +140,11 @@ macro(sofa_add_targets_to_package)
         endif()
     endforeach()
     # Default value for INCLUDE_INSTALL_DIR
-    set(child_args ${ARGN})
+    set(child_args ${ARGV})
     if(NOT ARG_INCLUDE_INSTALL_DIR)
         list(APPEND child_args INCLUDE_INSTALL_DIR "${ARG_PACKAGE_NAME}/${PROJECT_NAME}")
     endif()
-        
+
     if(ARG_AUTO_SET_TARGET_PROPERTIES)
         sofa_auto_set_target_properties(${child_args})
     endif()
