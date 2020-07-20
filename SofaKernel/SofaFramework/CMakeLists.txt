@@ -63,7 +63,6 @@ install(FILES CMakeParseLibraryList.cmake DESTINATION lib/cmake/${PROJECT_NAME} 
 # SofaMacros*.cmake
 file(GLOB macro_files RELATIVE ${CMAKE_CURRENT_LIST_DIR} LIST_DIRECTORIES FALSE "SofaMacros*.cmake")
 foreach(macro_file ${macro_files})
-    message("macro_file = ${macro_file}")
     configure_file(${macro_file} ${CMAKE_BINARY_DIR}/cmake/${macro_file} COPYONLY)
     install(FILES ${macro_file} DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
 endforeach()

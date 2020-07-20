@@ -48,7 +48,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml) # Public because needed by
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${PROJECT_VERSION}
-    TARGETS ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "."
     INCLUDE_INSTALL_DIR "SofaModeler"
     RELOCATABLE "projects"
