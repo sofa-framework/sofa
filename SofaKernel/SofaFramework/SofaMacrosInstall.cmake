@@ -39,12 +39,10 @@ macro(sofa_create_package_with_targets)
             message(SEND_ERROR "Missing parameter ${arg_name}.")
         endif()
     endforeach()
-    
+    # Default value for INCLUDE_INSTALL_DIR
     set(child_args "${ARGN}")
     if(NOT ARG_INCLUDE_INSTALL_DIR)
-        list(APPEND child_args
-            INCLUDE_INSTALL_DIR "${ARG_PACKAGE_NAME}"
-            )
+        list(APPEND child_args INCLUDE_INSTALL_DIR "${ARG_PACKAGE_NAME}")
     endif()
 
     sofa_create_package(${ARGN})
@@ -141,12 +139,10 @@ macro(sofa_add_targets_to_package)
             message(SEND_ERROR "Missing parameter ${arg_name}.")
         endif()
     endforeach()
-    
+    # Default value for INCLUDE_INSTALL_DIR
     set(child_args ${ARGN})
     if(NOT ARG_INCLUDE_INSTALL_DIR)
-        list(APPEND child_args
-            INCLUDE_INSTALL_DIR "${ARG_PACKAGE_NAME}/${PROJECT_NAME}"
-            )
+        list(APPEND child_args INCLUDE_INSTALL_DIR "${ARG_PACKAGE_NAME}/${PROJECT_NAME}")
     endif()
         
     if(ARG_AUTO_SET_TARGET_PROPERTIES)
