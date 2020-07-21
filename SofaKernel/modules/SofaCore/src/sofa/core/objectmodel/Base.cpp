@@ -74,8 +74,8 @@ Base::Base()
     /// name change => component state update
     addUpdateCallback("name", {&name}, [this](const DataTracker&){
         /// Increment the state counter but without changing the state.
-        return m_componentstate.getValue();
-    }, {&m_componentstate});
+        return d_componentState.getValue();
+    }, {&d_componentState});
 }
 
 Base::~Base()
@@ -112,11 +112,11 @@ void Base::addUpdateCallback(const std::string& name,
     engine.addOutputs(outputs);
 
     for(auto& i : engine.getInputs())
-        if( i == &d_componentstate ) {
+        if( i == &d_componentState ) {
             msg_error(this) << "The componentstate cannot be set as an input of a callbackEngine.";
-            engine.delInput(&d_componentstate);
+            engine.delInput(&d_componentState);
         }
-    engine.addOutput(&d_componentstate);
+    engine.addOutput(&d_componentState);
 }
 
 void Base::addOutputToCallback(const std::string& name, BaseData* output)
