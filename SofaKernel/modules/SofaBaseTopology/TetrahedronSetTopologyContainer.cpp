@@ -101,8 +101,7 @@ void TetrahedronSetTopologyContainer::initTopology()
 
 void TetrahedronSetTopologyContainer::createTetrahedronSetArray()
 {
-	if (CHECK_TOPOLOGY)
-      msg_error() << "createTetrahedronSetArray method must be implemented by a child topology.";
+    msg_error() << "createTetrahedronSetArray method must be implemented by a child topology.";
 }
 
 void TetrahedronSetTopologyContainer::createEdgeSetArray()

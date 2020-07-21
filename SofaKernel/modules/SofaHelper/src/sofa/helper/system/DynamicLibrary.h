@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_SYSTEM_DYNAMICLIBRARY_H
 #define SOFA_HELPER_SYSTEM_DYNAMICLIBRARY_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <memory>
 #include <iostream>
 

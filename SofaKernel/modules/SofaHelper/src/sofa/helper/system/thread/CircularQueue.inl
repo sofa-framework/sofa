@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include "CircularQueue.h"
 
 #include <thread>

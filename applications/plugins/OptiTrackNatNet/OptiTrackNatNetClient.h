@@ -22,7 +22,7 @@
 #ifndef OPTITRACKNATNETCLIENT_H
 #define OPTITRACKNATNETCLIENT_H
 
-#include <sofa/config.h>
+#include <OptiTrackNatNet/config.h>
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>

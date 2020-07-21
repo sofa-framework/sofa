@@ -24,4 +24,11 @@
 
 #include <SofaGeneral/config.h>
 
+#ifdef SOFA_BUILD_GRAPH_COMPONENT
+#  define SOFA_TARGET SofaGraphComponent
+#  define SOFA_GRAPH_COMPONENT_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_GRAPH_COMPONENT_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

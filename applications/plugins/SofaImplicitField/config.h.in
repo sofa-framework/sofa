@@ -22,7 +22,7 @@
 #ifndef SOFA_SOFAIMPLICITFIELD_CONFIG_H
 #define SOFA_SOFAIMPLICITFIELD_CONFIG_H
 
-#include <SofaBase/config.h>
+#include <sofa/config.h>
 
 #cmakedefine01 SOFAIMPLICITFIELD_HAVE_SOFAPYTHON
 

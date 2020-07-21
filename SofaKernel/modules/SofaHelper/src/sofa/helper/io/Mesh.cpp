@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/Factory.inl>
 

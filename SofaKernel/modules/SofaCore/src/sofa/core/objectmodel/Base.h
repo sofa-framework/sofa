@@ -25,6 +25,7 @@
 #include <sofa/helper/StringUtils.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/DataTracker.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <list>
@@ -33,6 +34,7 @@
 #include <deque>
 
 #include <sofa/core/objectmodel/ComponentState.h>
+#include <sofa/core/DataTracker.h>
 
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
@@ -165,7 +167,15 @@ private:
         p->release();
     }
 
+private:
+    std::map<std::string, sofa::core::DataTrackerCallback> m_internalEngine;
+
 public:
+    void addUpdateCallback(const std::string& name,
+                           std::initializer_list<BaseData*> inputs,
+                           std::function<sofa::core::objectmodel::ComponentState(const DataTracker&)> function,
+                           std::initializer_list<BaseData*> outputs);
+    void addOutputToCallback(const std::string& name, BaseData* output);
 
     /// Accessor to the object name
     const std::string& getName() const
@@ -296,6 +306,7 @@ public:
     /// Note that this method should only be called if the Data was not initialized with the initData method
     void addData(BaseData* f, const std::string& name);
 
+
     /// Add a data field.
     /// Note that this method should only be called if the Data was not initialized with the initData method
     void addData(BaseData* f);
@@ -310,16 +321,16 @@ public:
     /// Add a link.
     void addLink(BaseLink* l);
 
-    /// Remove a link.
-    void removeLink(BaseLink* l);
-
     /// Add an alias to a Link
     void addAlias( BaseLink* link, const char* alias);
 
+
     typedef helper::vector<BaseData*> VecData;
     typedef std::multimap<std::string, BaseData*> MapData;
+
     typedef helper::vector<BaseLink*> VecLink;
     typedef std::multimap<std::string, BaseLink*> MapLink;
+
 
     /// Accessor to the vector containing all the fields of this object
     const VecData& getDataFields() const { return m_vecData; }

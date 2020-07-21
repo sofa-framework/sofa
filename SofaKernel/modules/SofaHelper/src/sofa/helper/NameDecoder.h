@@ -24,7 +24,7 @@
 #include <string>
 #include <typeinfo>
 #include <tuple>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa::helper
 {

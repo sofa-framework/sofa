@@ -29,7 +29,6 @@
 using sofa::helper::system::FileSystem ;
 
 #include "FileMonitor.h"
-#include <sofa/helper/system/config.h>
 
 using namespace std ;
 
@@ -48,6 +47,8 @@ using namespace std ;
 
 #include <CoreServices/CoreServices.h>
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 namespace sofa
 {
@@ -230,7 +231,8 @@ int FileMonitor::updates(int timeout)
                 keep_going = 0; // we're done
             }
         }
-        if (keep_going) usleep(10000);
+        if (keep_going)
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     while (keep_going);
 

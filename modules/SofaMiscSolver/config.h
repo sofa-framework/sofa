@@ -24,4 +24,11 @@
 
 #include <SofaMisc/config.h>
 
+#ifdef SOFA_BUILD_MISC_SOLVER
+#  define SOFA_TARGET SofaMiscSolver
+#  define SOFA_MISC_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_MISC_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

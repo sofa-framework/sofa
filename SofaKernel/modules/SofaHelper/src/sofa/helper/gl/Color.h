@@ -24,7 +24,7 @@
 
 #ifndef SOFA_NO_OPENGL
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 /// Forward declaration
 namespace sofa {

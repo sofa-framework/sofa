@@ -24,7 +24,6 @@
 
 #include "RegistrationContactForceField.h"
 //#include <sofa/core/ForceField.inl>
-#include <sofa/helper/system/config.h>
 #include <cassert>
 #include <sofa/helper/gl/template.h>
 #include <iostream>

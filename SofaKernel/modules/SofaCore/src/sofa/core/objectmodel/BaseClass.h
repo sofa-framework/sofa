@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASECLASS_H
 #define SOFA_CORE_OBJECTMODEL_BASECLASS_H
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 #include <sofa/helper/NameDecoder.h>
 #include <sofa/core/objectmodel/SPtr.h>
 #include <map>

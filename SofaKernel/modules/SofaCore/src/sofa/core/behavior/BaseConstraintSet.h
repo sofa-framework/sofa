@@ -23,7 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_BASECONSTRAINTSET_H
 
 #include <sofa/core/ConstraintParams.h>
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 #include <sofa/defaulttype/BaseVector.h>
 
 

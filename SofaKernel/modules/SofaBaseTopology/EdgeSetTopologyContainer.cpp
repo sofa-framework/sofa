@@ -154,8 +154,7 @@ void EdgeSetTopologyContainer::reinit()
 
 void EdgeSetTopologyContainer::createEdgeSetArray()
 {
-	if(CHECK_TOPOLOGY)
-        msg_error() << "createEdgeSetArray method must be implemented by an higher level topology.";
+    msg_error() << "createEdgeSetArray method must be implemented by an higher level topology.";
 }
 
 

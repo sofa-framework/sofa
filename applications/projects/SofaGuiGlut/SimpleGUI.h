@@ -28,7 +28,6 @@
 
 #include <sofa/gui/PickHandler.h>
 
-#include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/gl/Texture.h>

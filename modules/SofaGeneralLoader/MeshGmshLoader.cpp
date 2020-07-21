@@ -265,8 +265,9 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 nnodes = 0;
             }
         }
-        //store real index of node and not line index
 
+
+        //store real index of node and not line index
         helper::vector <unsigned int> nodes;
         nodes.resize (nnodes);
         const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};

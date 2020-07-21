@@ -66,10 +66,10 @@ public:
     GeomagicEmulator();
 
     /// Public method to init tool. Can be called from thirdparty if @sa d_manualStart is set to true
-    virtual void initDevice();
+    virtual void initDevice() override;
 
     /// Method to clear sheduler and free device. Called by default at driver destruction
-    virtual void clearDevice();
+    virtual void clearDevice() override;
 
 
 

@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_DIAGONALMASS_INL
-#define SOFA_COMPONENT_MASS_DIAGONALMASS_INL
+#pragma once
 
 #include <SofaBaseMechanics/DiagonalMass.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -32,14 +31,7 @@
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -1551,10 +1543,4 @@ void DiagonalMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::Eve
 }
 
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mass

@@ -25,7 +25,7 @@
 
 #include <string>
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/fixed_array.h>
 
 namespace sofa

@@ -28,9 +28,6 @@
 
 #include <SofaBaseUtils/AddResourceRepository.h>
 
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
-
 namespace sofa
 {
 

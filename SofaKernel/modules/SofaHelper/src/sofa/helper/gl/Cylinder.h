@@ -30,7 +30,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 #include <map>
 

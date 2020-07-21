@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMisc/config.h>
+#include <SofaMiscExtra/config.h>
 
 namespace sofa
 {

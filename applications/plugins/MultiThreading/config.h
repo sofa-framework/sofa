@@ -22,9 +22,10 @@
 #ifndef MULTITHREADING_CONFIG_H
 #define MULTITHREADING_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_MULTITHREADING_PLUGIN
+#  define SOFA_TARGET MultiThreading
 #  define SOFA_MULTITHREADING_PLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_MULTITHREADING_PLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY

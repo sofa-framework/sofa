@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_ADVANCEDTIMER_H
 #define SOFA_HELPER_ADVANCEDTIMER_H
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 

@@ -18,6 +18,8 @@
  */
 
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #ifndef _WIN32
 #define OS_UNIX  // for Unix (Linux, Irix)
@@ -587,13 +589,9 @@ int dtracklib_send(dtracklib_type* handle, unsigned short cmd, int val){
 		return 0;
 	}
 
-	if(cmd == DTRACKLIB_CMD_CAMERAS_AND_CALC_ON){
-#ifdef OS_UNIX
-		sleep(1);     // some delay (actually only necessary for older DTrack versions...)
-#endif
-#ifdef OS_WIN
-		Sleep(1000);  // some delay (actually only necessary for older DTrack versions...)
-#endif
+        if(cmd == DTRACKLIB_CMD_CAMERAS_AND_CALC_ON)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));  // some delay (actually only necessary for older DTrack versions...)
 	}
 
 	set_noerror(handle);

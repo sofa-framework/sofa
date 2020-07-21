@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_H
 #define SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_H
 
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 
 

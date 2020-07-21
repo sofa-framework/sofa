@@ -22,6 +22,10 @@
 #ifndef SOFA_SIMULATION_COMMON_COMMON_H
 #define SOFA_SIMULATION_COMMON_COMMON_H
 
-#include <sofa/simulation/config.h>
+// Backward compatibility header
+
+#include <SofaSimulationCommon/config.h>
+
+SOFA_DEPRECATED_HEADER(v21.06, "SofaSimulationCommon/config.h")
 
 #endif

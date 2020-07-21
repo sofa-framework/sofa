@@ -24,4 +24,11 @@
 
 #include <SofaBase/config.h>
 
+#ifdef SOFA_BUILD_BASE_TOPOLOGY
+#  define SOFA_TARGET SofaBaseTopology
+#  define SOFA_BASE_TOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_TOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

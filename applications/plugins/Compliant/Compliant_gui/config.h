@@ -22,7 +22,7 @@
 #ifndef COMPLIANT_GUI_CONFIG_H
 #define COMPLIANT_GUI_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_COMPLIANT_GUI
 #  define SOFA_Compliant_gui_API SOFA_EXPORT_DYNAMIC_LIBRARY

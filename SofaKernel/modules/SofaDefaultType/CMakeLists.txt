@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaDefaultType)
 
 set(SRC_ROOT "src/sofa/defaulttype")
@@ -18,6 +18,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/Mat_solve_SVD.h
     ${SRC_ROOT}/Quat.h
     ${SRC_ROOT}/Quat.inl
+    ${SRC_ROOT}/RGBAColor.h
     ${SRC_ROOT}/RigidTypes.h
     ${SRC_ROOT}/RigidVec6Types.h
     ${SRC_ROOT}/SolidTypes.h
@@ -29,6 +30,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/Vec3Types.h
     ${SRC_ROOT}/VecTypes.h
     ${SRC_ROOT}/defaulttype.h
+    ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/Color.h
 )
@@ -47,12 +49,9 @@ find_package(Eigen3 REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DEFAULTTYPE")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DEFAULTTYPE")
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/defaulttype" ${SRC_ROOT})
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework" "src")
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaDefaultType_test)

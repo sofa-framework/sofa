@@ -26,7 +26,6 @@
 #include <dtracklib.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/system/config.h>
 
 #ifndef WIN32
 #include <pthread.h>

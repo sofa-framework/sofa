@@ -33,13 +33,10 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <Geomagic/GeomagicVisualModel.h>
 
-namespace sofa
-{
+#include <chrono>
+#include <thread>
 
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 GeomagicEmulatorTask::GeomagicEmulatorTask(GeomagicEmulator* ptr, CpuTask::Status* pStatus)
@@ -106,7 +103,7 @@ GeomagicEmulatorTask::MemoryAlloc GeomagicEmulatorTask::run()
     if (m_driver->m_terminate == false)
     {
         TaskScheduler::getInstance()->addTask(new GeomagicEmulatorTask(m_driver, &m_driver->_simStepStatus));
-        Sleep(100);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     return MemoryAlloc::Dynamic;
@@ -133,7 +130,7 @@ void GeomagicEmulator::clearDevice()
     m_terminate = true;
     while (_simStepStatus.isBusy())
     {
-        Sleep(1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     _taskScheduler->stop();
 }
@@ -167,7 +164,7 @@ void GeomagicEmulator::initDevice()
     }
 
     // 2.6- Need to wait several ms for the scheduler to be well launched and retrieving correct device information before updating information on the SOFA side.
-    Sleep(42);
+    std::this_thread::sleep_for(std::chrono::milliseconds(42));
     updatePosition();
 }
 
@@ -272,8 +269,4 @@ int GeomagicEmulatorClass = core::RegisterObject("Driver allowing interfacing wi
 .add< GeomagicEmulator >()
 ;
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::controller

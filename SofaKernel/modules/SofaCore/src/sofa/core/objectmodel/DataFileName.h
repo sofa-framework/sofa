@@ -34,6 +34,12 @@ namespace core
 namespace objectmodel
 {
 
+enum PathType {
+    FILE,
+    DIRECTORY,
+    BOTH
+};
+
 /**
  *  \brief Data specialized to store filenames, potentially relative to the current directory at the time it was specified.
  *
@@ -41,15 +47,19 @@ namespace objectmodel
 class SOFA_CORE_API DataFileName : public sofa::core::objectmodel::Data<std::string>
 {
 public:
+
+
     typedef sofa::core::objectmodel::Data<std::string> Inherit;
 
     DataFileName( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
-        : Inherit(helpMsg, isDisplayed, isReadOnly)
+        : Inherit(helpMsg, isDisplayed, isReadOnly),
+          m_pathType(FILE)
     {
     }
 
     DataFileName( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
-        : Inherit(value, helpMsg, isDisplayed, isReadOnly)
+        : Inherit(value, helpMsg, isDisplayed, isReadOnly),
+        m_pathType(FILE)
     {
         updatePath();
     }
@@ -58,7 +68,8 @@ public:
         this constructor should be used through the initData() methods
      */
     explicit DataFileName(const BaseData::BaseInitData& init)
-        : Inherit(init)
+        : Inherit(init),
+          m_pathType(FILE)
     {
     }
 
@@ -66,7 +77,8 @@ public:
         this constructor should be used through the initData() methods
      */
     explicit DataFileName(const Inherit::InitData& init)
-        : Inherit(init)
+        : Inherit(init),
+          m_pathType(FILE)
     {
         updatePath();
     }
@@ -92,6 +104,17 @@ public:
         *beginEdit()=v;
         endEdit();
     }
+
+    void setPathType(PathType pathType)
+    {
+        m_pathType = pathType;
+    }
+
+    PathType getPathType()
+    {
+        return m_pathType;
+    }
+
     virtual void virtualEndEdit() { endEdit(); }
     virtual void virtualSetValue(const std::string& v) { setValue(v); }
     virtual bool read(const std::string& s );
@@ -125,11 +148,13 @@ public:
     }
 
 protected:
+
     void updatePath();
 
     std::string m_fullpath;
     std::string m_relativepath;
     std::string m_extension;
+    PathType    m_pathType; //< used to determine how file dialogs should be opened
 
 private:
     DataFileName(const Inherit& d);
@@ -143,13 +168,15 @@ class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< s
 public:
     typedef sofa::core::objectmodel::Data<sofa::helper::SVector<std::string> > Inherit;
 
-    DataFileNameVector( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
-        : Inherit(helpMsg, isDisplayed, isReadOnly)
+    DataFileNameVector( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
+        : Inherit(helpMsg, isDisplayed, isReadOnly),
+          m_pathType(FILE)
     {
     }
 
     DataFileNameVector( const sofa::helper::vector<std::string>& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
-        : Inherit(value, helpMsg, isDisplayed, isReadOnly)
+        : Inherit(value, helpMsg, isDisplayed, isReadOnly),
+          m_pathType(FILE)
     {
         updatePath();
     }
@@ -158,7 +185,8 @@ public:
         this constructor should be used through the initData() methods
      */
     explicit DataFileNameVector(const BaseData::BaseInitData& init)
-        : Inherit(init)
+        : Inherit(init),
+          m_pathType(FILE)
     {
     }
 
@@ -166,7 +194,8 @@ public:
         this constructor should be used through the initData() methods
      */
     explicit DataFileNameVector(const Inherit::InitData& init)
-        : Inherit(init)
+        : Inherit(init),
+          m_pathType(FILE)
     {
         updatePath();
     }
@@ -212,7 +241,7 @@ public:
     virtual bool read(const std::string& s )
     {
         bool ret = Inherit::read(s);
-        if (ret || fullpath.empty()) updatePath();
+        if (ret || m_fullpath.empty()) updatePath();
         return ret;
     }
 
@@ -220,12 +249,12 @@ public:
     virtual const std::string& getFullPath(unsigned int i) const
     {
         this->updateIfDirty();
-        return fullpath[i];
+        return m_fullpath[i];
     }
     virtual const std::string& getAbsolutePath(unsigned int i) const
     {
         this->updateIfDirty();
-        return fullpath[i];
+        return m_fullpath[i];
     }
 
     virtual void update()
@@ -234,10 +263,21 @@ public:
         this->updatePath();
     }
 
+    void setPathType(PathType pathType)
+    {
+        m_pathType = pathType;
+    }
+
+    PathType getPathType()
+    {
+        return m_pathType;
+    }
+
 protected:
     void updatePath();
 
-    sofa::helper::vector<std::string> fullpath;
+    sofa::helper::vector<std::string> m_fullpath;
+    PathType m_pathType; //< used to determine how file dialogs should be opened
 
 private:
     DataFileNameVector(const Inherit& d);

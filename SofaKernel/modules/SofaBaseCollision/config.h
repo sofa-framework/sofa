@@ -24,4 +24,11 @@
 
 #include <SofaBase/config.h>
 
+#ifdef SOFA_BUILD_BASE_COLLISION
+#  define SOFA_TARGET SofaBaseCollision
+#  define SOFA_BASE_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 #endif

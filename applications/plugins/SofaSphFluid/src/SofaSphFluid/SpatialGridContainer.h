@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_H
 #include <SofaSphFluid/config.h>
 
-#include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>

@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/helper/stable_vector.h>
-#include <sofa/core/core.h>
+#include <sofa/core/config.h>
 
 namespace sofa::core
 {

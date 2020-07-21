@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_ACCESSOR_H
 #define SOFA_HELPER_ACCESSOR_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
 

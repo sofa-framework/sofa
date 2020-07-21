@@ -23,3 +23,9 @@
 
 #include <SofaBase/config.h>
 
+#ifdef SOFA_BUILD_BASE_UTILS
+#  define SOFA_TARGET SofaBaseUtils
+#  define SOFA_BASE_UTILS_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_UTILS_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

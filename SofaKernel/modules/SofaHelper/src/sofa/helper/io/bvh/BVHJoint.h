@@ -27,7 +27,7 @@
 #include <sofa/helper/io/bvh/BVHMotion.h>
 #include <cstdio>		// fopen and friends
 #include <cstring>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(ColladaSceneLoader VERSION 0.1)
 
 set(HEADER_FILES
@@ -23,7 +23,6 @@ sofa_find_package(image QUIET)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGeneralRigid SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision)
 set(COLLADASCENELOADER_COMPILE_FLAGS "-DSOFA_BUILD_COLLADASCENELOADER")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 include_directories(${ASSIMP_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARIES})

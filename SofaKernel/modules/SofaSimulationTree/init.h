@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_TREE_INIT_H
 #define SOFA_SIMULATION_TREE_INIT_H
 
-#include <SofaSimulationTree/tree.h>
+#include <SofaSimulationTree/config.h>
 
 namespace sofa
 {

@@ -22,7 +22,6 @@
 #ifndef SOFA_CORE_OBJECTFACTORY_H
 #define SOFA_CORE_OBJECTFACTORY_H
 
-#include <sofa/helper/system/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/NameDecoder.h>
 

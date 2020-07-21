@@ -22,10 +22,10 @@
 #ifndef FRAMEBUFFEROBJECT_H_
 #define FRAMEBUFFEROBJECT_H_
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/system/gl.h>
 
 

@@ -27,7 +27,7 @@
 #include <cmath>
 #include <cassert>
 #include <iostream>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {

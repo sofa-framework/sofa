@@ -22,7 +22,6 @@
 #ifndef SOFA_HELPER_SYSTEM_THREAD_THREAD_SPECIFIC_PTR_H
 #define SOFA_HELPER_SYSTEM_THREAD_THREAD_SPECIFIC_PTR_H
 
-#include <sofa/helper/system/config.h>
 
 
 #if defined(__GNUC__) && (defined(__linux__) || defined(WIN32))

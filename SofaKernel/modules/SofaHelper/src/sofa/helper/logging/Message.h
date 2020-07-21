@@ -29,7 +29,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 #include <sstream>
 #include <set>
 #include <boost/shared_ptr.hpp>

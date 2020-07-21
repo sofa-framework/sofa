@@ -22,10 +22,12 @@
 #ifndef SOFA_HELPER_STRING_UTILS_H
 #define SOFA_HELPER_STRING_UTILS_H
 
+#include <sofa/helper/config.h>
+
 #include <string>
 #include <vector>
 #include <sstream>
-#include <sofa/config.h>
+
 namespace sofa
 {
 

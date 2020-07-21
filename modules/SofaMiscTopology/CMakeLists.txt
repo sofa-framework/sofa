@@ -1,6 +1,7 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaMiscTopology)
 
+find_package(SofaBase REQUIRED) # SofaBaseTopology
 sofa_find_package(ZLIB BOTH_SCOPES)
 
 set(HEADER_FILES
@@ -27,7 +28,5 @@ if(ZLIB_FOUND)
         sofa_install_libraries(TARGETS ZLIB::ZLIB)
     endif()
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS  "-DSOFA_BUILD_MISC_TOPOLOGY")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 sofa_install_targets(SofaMisc ${PROJECT_NAME} "SofaMisc/${PROJECT_NAME}")

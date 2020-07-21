@@ -211,6 +211,8 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+
     Mat<3,3,double> getPhi( int tetrahedronIndex);
 
 

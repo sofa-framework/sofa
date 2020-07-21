@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaGuiGlut)
 
 find_package(SofaSimulation REQUIRED)
@@ -38,6 +38,5 @@ target_link_libraries(${PROJECT_NAME} SofaGuiCommon SofaSimulationGraph ${GLUT_A
 if(Boost_FOUND)
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIGLUT -DCONFIG_PLUGIN_FILENAME=${_configPluginFileName} -DDEFAULT_CONFIG_PLUGIN_FILENAME=${_defaultConfigPluginFileName}")
 
 sofa_install_targets(SofaGui SofaGuiGlut "")

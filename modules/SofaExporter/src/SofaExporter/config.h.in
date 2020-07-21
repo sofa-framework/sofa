@@ -22,7 +22,7 @@
 #ifndef SOFAEXPORTER_CONFIG_H
 #define SOFAEXPORTER_CONFIG_H
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/config.h>
 
 #cmakedefine01 SOFAEXPORTER_HAVE_ZLIB
 #cmakedefine01 SOFAEXPORTER_HAVE_SOFAPYTHON

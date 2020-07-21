@@ -10,7 +10,7 @@
     <Node name="vtk file">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshVTKLoader name="VtkLoader" filename="mesh/liver.vtk" />
+        <MeshVTKLoader name="VtkLoader" filename="mesh/liver.vtk" flipNormals="0"/>
         <!--	  <MeshGmshLoader name="loader" filename="mesh/square3.msh" /> -->
         <MechanicalObject name="dofs" scale="1" src="@VtkLoader" />
         <TriangleSetTopologyContainer name="topo" src="@VtkLoader" />

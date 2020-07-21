@@ -22,7 +22,7 @@
 #ifndef SOFA_DEFAULTTYPE_BASEVECTOR_H
 #define SOFA_DEFAULTTYPE_BASEVECTOR_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/defaulttype/config.h>
 #include <iostream>
 
 namespace sofa

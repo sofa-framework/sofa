@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_PLUGIN_H
 #define SOFA_CORE_PLUGIN_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/core/config.h>
 
 #define SOFA_PLUGIN(PluginClass)				\
 public: 							\
@@ -47,9 +47,6 @@ public: 							\
     {                                                               \
         return &PluginClass::getInstance();                         \
     }
-
-
-#include <sofa/core/core.h>
 
 
 namespace sofa
