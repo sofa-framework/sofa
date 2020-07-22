@@ -67,7 +67,7 @@ void ParticleSource<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
     if (!this->mstate) {
-        //sofa::core::objectmodel::ComponentState::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        //sofa::core::objectmodel::ComponentState::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
