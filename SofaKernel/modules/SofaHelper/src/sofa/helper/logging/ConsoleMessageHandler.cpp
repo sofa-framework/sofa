@@ -51,6 +51,12 @@ void ConsoleMessageHandler::setMessageFormatter(MessageFormatter* formatter)
     m_formatter = formatter;
 }
 
+ConsoleMessageHandler& MainConsoleMessageHandler::getInstance()
+{
+    static ConsoleMessageHandler s_instance;
+    return s_instance;
+}
+
 } // logging
 } // helper
 } // sofa

@@ -57,6 +57,18 @@ private:
 
 };
 
+///
+/// \brief The MainConsoleMessageHandler class contains a singleton to ConsoleMessageHandler
+/// and offer static version of ConsoleMessageHandler API
+///
+/// \see ConsoleMessageHandler
+///
+class SOFA_HELPER_API MainConsoleMessageHandler
+{
+public:
+    static ConsoleMessageHandler& getInstance() ;
+};
+
 
 } // logging
 } // helper
