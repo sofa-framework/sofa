@@ -60,12 +60,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_TARGETS})
 configure_file(CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeParseLibraryList.cmake COPYONLY)
 install(FILES CMakeParseLibraryList.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
 
-# SofaMacros*.cmake
-file(GLOB macro_files RELATIVE ${CMAKE_CURRENT_LIST_DIR} LIST_DIRECTORIES FALSE "SofaMacros*.cmake")
-foreach(macro_file ${macro_files})
-    configure_file(${macro_file} ${CMAKE_BINARY_DIR}/cmake/${macro_file} COPYONLY)
-    install(FILES ${macro_file} DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
-endforeach()
+# SofaMacros.cmake
+configure_file(SofaMacros.cmake ${CMAKE_BINARY_DIR}/cmake/SofaMacros.cmake COPYONLY)
+install(FILES SofaMacros.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
