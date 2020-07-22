@@ -153,10 +153,10 @@ namespace core
     ///
     ///  addUpdateCallback("name", {&name}, [this](DataTracker& tracker){
     ///       // Increment the state counter but without changing the state.
-    ///       return m_componentstate.getValue();
-    ///  }, {&m_componentstate});
+    ///       return d_componentState.getValue();
+    ///  }, {&d_componentState});
     ///
-    ///  A member function with the same signature - core::objectmodel::CompoentState(DataTracker&) - can
+    ///  A member function with the same signature - core::objectmodel::ComponentState(DataTracker&) - can
     ///  also be used.
     ///
     ///  The update of the inputs is done for you before calling the callback,

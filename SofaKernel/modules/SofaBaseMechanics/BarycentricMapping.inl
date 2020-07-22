@@ -253,7 +253,7 @@ end:
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::init()
 {
-    this->m_componentstate = ComponentState::Invalid ;
+    d_componentState.setValue(ComponentState::Invalid) ;
 
     Inherit1::init();
 
@@ -282,7 +282,7 @@ void BarycentricMapping<TIn, TOut>::init()
     else
         d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
 
-    this->m_componentstate = ComponentState::Valid ;
+    this->d_componentState.setValue(ComponentState::Valid) ;
 }
 
 template <class TIn, class TOut>
@@ -357,7 +357,7 @@ template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if ( !vparams->displayFlags().getShowMappings() ) return;
-    if (this->m_componentstate != ComponentState::Valid ) return;
+    if (this->d_componentState.getValue() != ComponentState::Valid ) return;
 
     // Draw model (out) points
     const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();

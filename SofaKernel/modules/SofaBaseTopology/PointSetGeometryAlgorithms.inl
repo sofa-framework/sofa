@@ -55,7 +55,7 @@ template <class DataTypes>
 template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::init()
 {
-    this->m_componentstate = ComponentState::Invalid;
+    d_componentState.setValue(ComponentState::Invalid);
     if ( this->d_tagMechanics.getValue().size()>0) {
         sofa::core::objectmodel::Tag mechanicalTag(this->d_tagMechanics.getValue());
         object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
@@ -85,7 +85,7 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
         msg_error() << "Unable to get a valid mechanical object from the context";
         return;
     }
-    this->m_componentstate = ComponentState::Valid;
+    this->d_componentState.setValue(ComponentState::Valid);
 }
 
 template <class DataTypes>
