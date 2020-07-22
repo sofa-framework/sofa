@@ -81,7 +81,7 @@ void ConstantForceField<DataTypes>::parse(BaseObjectDescription* arg)
 template<class DataTypes>
 void ConstantForceField<DataTypes>::init()
 {
-    this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
        
     if (l_topology.empty())
     {
@@ -119,7 +119,7 @@ void ConstantForceField<DataTypes>::init()
         if( indicesSize > m_systemSize )
         {
             msg_error() << "Size mismatch: indices > system size";
-            this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
         // check each indice of the vector
@@ -128,7 +128,7 @@ void ConstantForceField<DataTypes>::init()
             if( indices[i] > m_systemSize )
             {
                 msg_error() << "Indices incorrect: indice["<< i <<"] = "<< indices[i] <<" exceeds system size";
-                this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                 return;
             }
         }
@@ -153,7 +153,7 @@ void ConstantForceField<DataTypes>::init()
         else
         {
             msg_error() << " Invalid given vector forces";
-            this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
         msg_info() << "Input vector forces is used for initialization";
@@ -168,7 +168,7 @@ void ConstantForceField<DataTypes>::init()
         else
         {
             msg_error() << " Invalid given force";
-            this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
         msg_info() << "Input force is used for initialization";
@@ -183,7 +183,7 @@ void ConstantForceField<DataTypes>::init()
         else
         {
             msg_error() << " Invalid given totalForce";
-            this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
         msg_info() << "Input totalForce is used for initialization";
@@ -199,7 +199,7 @@ void ConstantForceField<DataTypes>::init()
     this->trackInternalData(d_totalForce);
 
     // if all init passes, component is valid
-    this->m_componentstate = core::objectmodel::ComponentState::Valid;
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
@@ -221,13 +221,13 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         const VecIndex & indices = d_indices.getValue();
         size_t indicesSize = indices.size();
 
-        this->m_componentstate = core::objectmodel::ComponentState::Valid;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 
         // check size of vector indices
         if( indicesSize > m_systemSize )
         {
             msg_error() << "Size mismatch: indices > system size";
-            this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
         else if( indicesSize==0 )
@@ -241,7 +241,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
             if( indices[i] > m_systemSize )
             {
                 msg_error() << "Indices incorrect: indice["<< i <<"] = "<< indices[i] <<" exceeds system size";
-                this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                 return;
             }
         }
@@ -255,12 +255,12 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         if( checkForces(forces) )
         {
             computeForceFromForceVector();
-            this->m_componentstate = core::objectmodel::ComponentState::Valid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         }
         else
         {
             msg_error() << " Invalid given vector forces";
-            this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
     }
@@ -273,12 +273,12 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         if( checkForce(force) )
         {
             computeForceFromSingleForce();
-            this->m_componentstate = core::objectmodel::ComponentState::Valid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         }
         else
         {
             msg_error() << " Invalid given force";
-            this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
     }
@@ -291,12 +291,12 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         if( checkForce(totalForce) )
         {
             computeForceFromTotalForce();
-            this->m_componentstate = core::objectmodel::ComponentState::Valid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         }
         else
         {
             msg_error() << " Invalid given totalForce";
-            this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
     }
@@ -341,7 +341,7 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector()
     if( indicesSize!=forces.size() )
     {
         msg_error() << "Impossible to use the vector forces since its size mismatches with indices size";
-        this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     else
@@ -389,7 +389,7 @@ void ConstantForceField<DataTypes>::computeForceFromTotalForce()
     else
     {
         msg_error() << "Impossible to compute force from totalForce since vector indices size is zero";
-        this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 }

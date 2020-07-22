@@ -65,7 +65,7 @@ PlaneForceField<DataTypes>::PlaneForceField() :
 
 template<class DataTypes>
 void PlaneForceField<DataTypes>::init(){
-    if(this->m_componentstate == ComponentState::Valid){
+    if(this->d_componentState.getValue() == ComponentState::Valid){
         msg_warning(this) << "Calling an already fully initialized component.  You should use reinit instead." ;
     }
 
@@ -104,7 +104,7 @@ void PlaneForceField<DataTypes>::init(){
 
 
 
-    this->m_componentstate = ComponentState::Valid ;
+    this->d_componentState.setValue(ComponentState::Valid) ;
 }
 
 template<class DataTypes>
@@ -129,7 +129,7 @@ SReal PlaneForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParam
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
@@ -179,7 +179,7 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df1 = df;
@@ -200,7 +200,7 @@ void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     const Real fact = (Real)(-this->d_stiffness.getValue()*mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
@@ -225,7 +225,7 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
 template<class DataTypes>
 void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     helper::ReadAccessor<VecCoord> x = vx;
@@ -254,7 +254,7 @@ void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 template<class DataTypes>
 void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     defaulttype::Vec3d axe3d(1,1,1); axe3d = DataTypes::getDPos(axe);
@@ -271,7 +271,7 @@ void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
 template<class DataTypes>
 void PlaneForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     if (!vparams->displayFlags().getShowForceFields() || !d_drawIsEnabled.getValue())

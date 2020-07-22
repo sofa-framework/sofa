@@ -108,7 +108,7 @@ void Tetra2TriangleTopologicalMapping::init()
 
     if (!modelsOk)
     {
-        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -122,7 +122,7 @@ void Tetra2TriangleTopologicalMapping::init()
 
     // if no init triangle option (set output topology to empty)
     if (noInitialTriangles.getValue()){
-        this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         return;
     }
 
@@ -153,7 +153,7 @@ void Tetra2TriangleTopologicalMapping::init()
     toModel->init();
 
     Loc2GlobDataVec.endEdit();
-    this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
@@ -172,7 +172,7 @@ unsigned int Tetra2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
 
 void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 {
-    if (this->m_componentstate != sofa::core::objectmodel::ComponentState::Valid)
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     sofa::helper::AdvancedTimer::stepBegin("Update Tetra2TriangleTopologicalMapping");
@@ -517,7 +517,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
 bool Tetra2TriangleTopologicalMapping::checkTopologies()
 {
-    if (this->m_componentstate != sofa::core::objectmodel::ComponentState::Valid)
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return false;
 
     // result of the method to be changed in case of error encountered

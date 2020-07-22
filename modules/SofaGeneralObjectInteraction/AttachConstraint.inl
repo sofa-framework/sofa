@@ -273,7 +273,7 @@ void AttachConstraint<DataTypes>::reinit()
 
     if (f_restRotations.getValue())
         calcRestRotations();
-    this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template<class DataTypes>

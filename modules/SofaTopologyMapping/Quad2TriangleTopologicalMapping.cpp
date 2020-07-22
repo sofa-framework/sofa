@@ -113,7 +113,7 @@ void Quad2TriangleTopologicalMapping::init()
 
     if (!modelsOk)
     {
-        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -152,7 +152,7 @@ void Quad2TriangleTopologicalMapping::init()
     if (nx == 0 && ny == 0)
     {
         msg_error() << "Input topology is only 1D, this topology can't be mapped into a triangulation.";
-        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -188,7 +188,7 @@ void Quad2TriangleTopologicalMapping::init()
     //to_tstm->propagateTopologicalChanges();
     Loc2GlobDataVec.endEdit();
 
-    this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 unsigned int Quad2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
@@ -199,7 +199,7 @@ unsigned int Quad2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
 void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 {
 
-    if (this->m_componentstate != sofa::core::objectmodel::ComponentState::Valid)
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     sofa::helper::AdvancedTimer::stepBegin("Update Quad2TriangleTopologicalMapping");
