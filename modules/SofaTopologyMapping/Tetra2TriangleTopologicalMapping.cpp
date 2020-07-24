@@ -108,7 +108,7 @@ void Tetra2TriangleTopologicalMapping::init()
 
     if (!modelsOk)
     {
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -122,7 +122,7 @@ void Tetra2TriangleTopologicalMapping::init()
 
     // if no init triangle option (set output topology to empty)
     if (noInitialTriangles.getValue()){
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         return;
     }
 
@@ -153,7 +153,7 @@ void Tetra2TriangleTopologicalMapping::init()
     toModel->init();
 
     Loc2GlobDataVec.endEdit();
-    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 

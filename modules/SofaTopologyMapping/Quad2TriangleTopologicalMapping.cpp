@@ -113,7 +113,7 @@ void Quad2TriangleTopologicalMapping::init()
 
     if (!modelsOk)
     {
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -152,7 +152,7 @@ void Quad2TriangleTopologicalMapping::init()
     if (nx == 0 && ny == 0)
     {
         msg_error() << "Input topology is only 1D, this topology can't be mapped into a triangulation.";
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -188,7 +188,7 @@ void Quad2TriangleTopologicalMapping::init()
     //to_tstm->propagateTopologicalChanges();
     Loc2GlobDataVec.endEdit();
 
-    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 unsigned int Quad2TriangleTopologicalMapping::getFromIndex(unsigned int ind)

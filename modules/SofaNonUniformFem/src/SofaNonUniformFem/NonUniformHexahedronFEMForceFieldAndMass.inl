@@ -59,7 +59,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     if (this->m_topology == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -70,7 +70,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
                     << this->m_topology->getName() << "\n"
                     << this->m_topology->getTypeName() << "\n"
                     << this->m_topology->getNbPoints() << "\n";
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 

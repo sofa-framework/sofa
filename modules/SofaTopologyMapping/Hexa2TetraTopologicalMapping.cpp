@@ -99,7 +99,7 @@ void Hexa2TetraTopologicalMapping::init()
 
     if (!modelsOk)
     {
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -199,7 +199,7 @@ void Hexa2TetraTopologicalMapping::init()
     // Need to fully init the target topology
     toModel->init();
 
-    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 unsigned int Hexa2TetraTopologicalMapping::getFromIndex(unsigned int /*ind*/)

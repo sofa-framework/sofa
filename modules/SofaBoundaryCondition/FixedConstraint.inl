@@ -122,7 +122,7 @@ void FixedConstraint<DataTypes>::removeConstraint(unsigned int index)
 template <class DataTypes>
 void FixedConstraint<DataTypes>::init()
 {
-    d_componentState.setValue(ComponentState::Invalid);
+    this->d_componentState.setValue(ComponentState::Invalid);
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
     if (!this->mstate.get())
