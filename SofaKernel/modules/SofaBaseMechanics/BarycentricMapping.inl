@@ -253,7 +253,7 @@ end:
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::init()
 {
-    d_componentState.setValue(ComponentState::Invalid) ;
+    this->d_componentState.setValue(ComponentState::Invalid) ;
 
     Inherit1::init();
 
