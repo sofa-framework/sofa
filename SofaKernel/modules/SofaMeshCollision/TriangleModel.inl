@@ -105,7 +105,7 @@ void TriangleCollisionModel<DataTypes>::init()
 
     if (!modelsOk)
     {
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
