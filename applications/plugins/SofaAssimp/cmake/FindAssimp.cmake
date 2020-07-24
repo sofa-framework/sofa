@@ -4,42 +4,57 @@ elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
 	set(ASSIMP_ARCHITECTURE "32")
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	
-
+# First try to find install of assimp on the system
 find_package(Assimp NO_MODULE QUIET
     PATHS /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/cmake
     )
     
-if(NOT ASSIMP_INCLUDE_DIR OR NOT Assimp_FOUND)
+if(NOT ASSIMP_INCLUDE_DIR OR NOT Assimp_FOUND) #If not found, will try to manually find it using ASSIMP_ROOT_DIR
+    message(STATUS "No install of Assimp library found using cmake find_package default location : /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/cmake , please specify manually the {ASSIMP_ROOT_DIR}")
     if(WIN32)
         set(ASSIMP_ROOT_DIR CACHE PATH "ASSIMP root directory")
-
-        if(MSVC12)
-            set(ASSIMP_MSVC_VERSION "vc120")
-        elseif(MSVC14)	
-            set(ASSIMP_MSVC_VERSION "vc140")
-            set(ASSIMP_MSVC_VERSION2 "vc141")
-        else()
-            set(ASSIMP_MSVC_VERSION "")
-        endif()
         
-        
-        FIND_PATH(ASSIMP_INCLUDE_DIR NAMES assimp/postprocess.h
+        FIND_PATH(ASSIMP_INCLUDE_DIR 
+          NAMES assimp/postprocess.h
           PATHS "C://Program Files//Assimp//include//" 
             ${ASSIMP_ROOT_DIR}//include
             ${ASSIMP_ROOT_DIR}/include
           DOC "The directory where assimp headers reside"
         )
         
-        message(${ASSIMP_MSVC_VERSION})
-        find_path(ASSIMP_LIBRARY_DIR
-            NAMES assimp-${ASSIMP_MSVC_VERSION}-mt.lib assimp-${ASSIMP_MSVC_VERSION2}-mt.lib
-            HINTS ${ASSIMP_ROOT_DIR}/lib${ASSIMP_ARCHITECTURE}
-            ${ASSIMP_ROOT_DIR}/lib
-        )
+        
+        if(MSVC12)
+            set(ASSIMP_MSVC_VERSION "vc120")
+        elseif(MSVC14)	
             
+            #First look for vc140 build and if not found, will try vc141
+            find_path(ASSIMP_LIBRARY_DIR
+                NAMES assimp-vc140-mt.lib
+                HINTS ${ASSIMP_ROOT_DIR}/lib${ASSIMP_ARCHITECTURE}
+                ${ASSIMP_ROOT_DIR}/lib
+                ${ASSIMP_ROOT_DIR}/lib/x64
+            )
+            
+            if(ASSIMP_LIBRARY_DIR)
+                set(ASSIMP_MSVC_VERSION "vc140")
+            else()
+                set(ASSIMP_MSVC_VERSION "vc141")
+            endif()
+        else()
+            set(ASSIMP_MSVC_VERSION "")
+        endif()
+
+        if(NOT ASSIMP_LIBRARY_DIR)
+            find_path(ASSIMP_LIBRARY_DIR
+                NAMES assimp-${ASSIMP_MSVC_VERSION}-mt.lib
+                HINTS ${ASSIMP_ROOT_DIR}/lib${ASSIMP_ARCHITECTURE}
+                ${ASSIMP_ROOT_DIR}/lib
+                ${ASSIMP_ROOT_DIR}/lib/x64
+            )        
+        endif()
             
         find_library(ASSIMP_LIBRARY_RELEASE
-            NAMES assimp-${ASSIMP_MSVC_VERSION}-mt.lib assimp-${ASSIMP_MSVC_VERSION2}-mt.lib
+            NAMES assimp-${ASSIMP_MSVC_VERSION}-mt.lib
             PATHS 
               ${ASSIMP_LIBRARY_DIR}
               ${ASSIMP_ROOT_DIR}/lib
@@ -50,7 +65,7 @@ if(NOT ASSIMP_INCLUDE_DIR OR NOT Assimp_FOUND)
         
         
         find_library(ASSIMP_LIBRARY_DEBUG
-            NAMES assimp-${ASSIMP_MSVC_VERSION}-mtd.lib assimp-${ASSIMP_MSVC_VERSION2}-mtd.lib
+            NAMES assimp-${ASSIMP_MSVC_VERSION}-mtd.lib
             PATHS 
               ${ASSIMP_LIBRARY_DIR}
               ${ASSIMP_ROOT_DIR}/lib
@@ -58,10 +73,16 @@ if(NOT ASSIMP_INCLUDE_DIR OR NOT Assimp_FOUND)
                "C://dev//Assimp//3.3.1"
             DOC "The assimp debug library"
         )
+         
+
+        find_path(ASSIMP_BIN_DIR
+            NAMES assimp-${ASSIMP_MSVC_VERSION}-mt.dll
+            HINTS ${ASSIMP_ROOT_DIR}/bin${ASSIMP_ARCHITECTURE}
+            ${ASSIMP_ROOT_DIR}/bin
+            ${ASSIMP_ROOT_DIR}/bin/x64
+        )
             
-            
-        if (ASSIMP_LIBRARY_RELEASE)
-            message("la 01") 
+        if (ASSIMP_LIBRARY_RELEASE AND ASSIMP_BIN_DIR)
             if (ASSIMP_LIBRARY_DEBUG)
                 set(ASSIMP_LIBRARY 
                     optimized 	${ASSIMP_LIBRARY_RELEASE}
@@ -70,17 +91,10 @@ if(NOT ASSIMP_INCLUDE_DIR OR NOT Assimp_FOUND)
             else (ASSIMP_LIBRARY_DEBUG)
                 set(ASSIMP_LIBRARY ${ASSIMP_LIBRARY_RELEASE})
             endif()
-            
-            if(ASSIMP_INCLUDE_DIR)
-            message("la 02")
-                string(REPLACE "/include" "" ASSIMP_ROOT_DIR ${ASSIMP_INCLUDE_DIR})
-                set(ASSIMP_BIN_DIR "${ASSIMP_ROOT_DIR}/bin/")
-                set(ASSIMP_DLL ${ASSIMP_ROOT_DIR}/bin/assimp-${ASSIMP_MSVC_VERSION}-mt.dll)
-                
-                SET(Assimp_FOUND TRUE)
-            endif()            
+
+            set(ASSIMP_DLL ${ASSIMP_BIN_DIR}/assimp-${ASSIMP_MSVC_VERSION}-mt.dll)
+            set(Assimp_FOUND TRUE)
         else()
-            message("la 03")
             SET(Assimp_FOUND FALSE)
         endif()
         
@@ -117,19 +131,11 @@ if(NOT ASSIMP_INCLUDE_DIR OR NOT Assimp_FOUND)
     endif(WIN32)
 endif(NOT ASSIMP_INCLUDE_DIR OR NOT Assimp_FOUND)
 
-message("Assimp_FOUND: " ${Assimp_FOUND})
-message("assimp_FIND_QUIETLY: " ${Assimp_FIND_QUIETLY})
-message("assimp_FIND_REQUIRED:  ${${CMAKE_FIND_PACKAGE_NAME}_FIND_REQUIRED}")
-
-message("CMAKE_FIND_PACKAGE_NAME: " ${CMAKE_FIND_PACKAGE_NAME})
-
 if (${CMAKE_FIND_PACKAGE_NAME}_FOUND)
-message("la 1")
   if (NOT ${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY)
-    message(STATUS "Found asset importer library: ${ASSIMP_LIBRARY}")
+    message(STATUS "Found Assimp library: ${ASSIMP_LIBRARY} and include directory: ${ASSIMP_INCLUDE_DIR}")
   endif (NOT ${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY)
 else (${CMAKE_FIND_PACKAGE_NAME}_FOUND)
-message("la 2")
   if (${CMAKE_FIND_PACKAGE_NAME}_FIND_REQUIRED)
     message(FATAL_ERROR "Could not find asset importer library")
   endif (${CMAKE_FIND_PACKAGE_NAME}_FIND_REQUIRED)
