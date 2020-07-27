@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
+#include <sofa/core/objectmodel/BaseNode.h>
+using sofa::core::objectmodel::BaseNode ;
 
 #include <sofa/core/objectmodel/Link.h>
 using sofa::core::objectmodel::SingleLink ;
@@ -59,7 +61,7 @@ TEST_F(SingleLink_test, checkAccess  )
 {
     ASSERT_EQ(m_link.get(), m_dst.get()) ;
     ASSERT_FALSE(m_link.empty()) ;
-    ASSERT_EQ(m_link.size(), (unsigned int)1) ;
+    ASSERT_EQ(m_link.size(), uint(1)) ;
 }
 
 TEST_F(SingleLink_test, checkIsSetPersistent  )
@@ -84,16 +86,49 @@ TEST_F(SingleLink_test, checkCounterLogic )
 TEST_F(SingleLink_test, checkMultiLink )
 {
     SingleLink<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK > mlink ;
-    ASSERT_EQ(mlink.size(), (unsigned int)0) ;
+    ASSERT_EQ(mlink.size(), uint(0)) ;
     mlink.add(m_dst.get()) ;
-    ASSERT_EQ(mlink.size(), (unsigned int)1) ;
+    ASSERT_EQ(mlink.size(), uint(1)) ;
     mlink.add(m_dst.get()) ;
-    ASSERT_EQ(mlink.size(), (unsigned int)1) ;
+    ASSERT_EQ(mlink.size(), uint(1)) ;
 
     SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > slink ;
-    ASSERT_EQ(slink.size(), (unsigned int)0) ;
+    ASSERT_EQ(slink.size(), uint(0)) ;
     slink.add(m_dst.get()) ;
-    ASSERT_EQ(slink.size(), (unsigned int)1) ;
+    ASSERT_EQ(slink.size(), uint(1)) ;
     slink.add(m_dst.get()) ;
-    ASSERT_EQ(slink.size(), (unsigned int)1) ;
+    ASSERT_EQ(slink.size(), uint(1)) ;
+}
+
+TEST_F(SingleLink_test, getOwnerBase_BROKEN )
+{
+    ASSERT_EQ(m_link.getOwnerBase(), m_src.get());
+
+    auto anObject = sofa::core::objectmodel::New<BaseObject>() ;
+
+    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink ;
+    anObject->addLink(&objectLink);
+    ASSERT_EQ(objectLink.getOwnerBase(), anObject.get());
+
+    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink2 ;
+    ASSERT_EQ(objectLink2.getOwnerBase(), nullptr);
+}
+
+TEST_F(SingleLink_test, setLinkedBase )
+{
+    using sofa::core::objectmodel::BaseNode;
+    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink ;
+    SingleLink<BaseNode, BaseNode, BaseLink::FLAG_NONE > nodeLink ;
+    auto aBaseObject = sofa::core::objectmodel::New<BaseObject>();
+    sofa::core::objectmodel::Base* aBasePtr = aBaseObject.get();
+
+    // objectLink.add(aBasePtr); //< not possible because of template type specification
+
+    objectLink.setLinkedBase(aBasePtr);
+    ASSERT_EQ(objectLink.getLinkedBase(), aBasePtr);
+
+    EXPECT_MSG_EMIT(Error);
+    nodeLink.setLinkedBase(aBasePtr); //< should emit error because BaseNode template type is incompatible with aBasePtr which is a BaseObject
+
+    ASSERT_NE(nodeLink.getLinkedBase(), aBasePtr);
 }
