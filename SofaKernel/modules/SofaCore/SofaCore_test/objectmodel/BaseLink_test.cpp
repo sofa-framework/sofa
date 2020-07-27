@@ -100,27 +100,16 @@ TEST_F(SingleLink_test, checkMultiLink )
     ASSERT_EQ(slink.size(), uint(1)) ;
 }
 
-TEST_F(SingleLink_test, getOwnerBase_BROKEN )
-{
-    ASSERT_EQ(m_link.getOwnerBase(), m_src.get());
-
-    auto anObject = sofa::core::objectmodel::New<BaseObject>() ;
-
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink ;
-    anObject->addLink(&objectLink);
-    ASSERT_EQ(objectLink.getOwnerBase(), anObject.get());
-
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink2 ;
-    ASSERT_EQ(objectLink2.getOwnerBase(), nullptr);
-}
-
 TEST_F(SingleLink_test, setLinkedBase )
 {
-    using sofa::core::objectmodel::BaseNode;
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink ;
-    SingleLink<BaseNode, BaseNode, BaseLink::FLAG_NONE > nodeLink ;
     auto aBaseObject = sofa::core::objectmodel::New<BaseObject>();
     sofa::core::objectmodel::Base* aBasePtr = aBaseObject.get();
+
+    using sofa::core::objectmodel::BaseNode;
+    BaseLink::InitLink<BaseObject> initObjectLink(aBaseObject.get(), "objectlink", "");
+    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink(initObjectLink) ;
+    BaseLink::InitLink<BaseObject> initNodeLink(aBaseObject.get(), "nodelink", "");
+    SingleLink<BaseObject, BaseNode, BaseLink::FLAG_NONE > nodeLink(initNodeLink);
 
     // objectLink.add(aBasePtr); //< not possible because of template type specification
 
@@ -132,3 +121,16 @@ TEST_F(SingleLink_test, setLinkedBase )
 
     ASSERT_NE(nodeLink.getLinkedBase(), aBasePtr);
 }
+
+TEST_F(SingleLink_test, getOwnerBase_BROKEN )
+{
+    auto aBaseObject = sofa::core::objectmodel::New<BaseObject>();
+    using sofa::core::objectmodel::BaseNode;
+    BaseLink::InitLink<BaseObject> initObjectLink(aBaseObject.get(), "objectlink", "");
+    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink(initObjectLink) ;
+    ASSERT_EQ(objectLink.getOwnerBase(), aBaseObject.get());
+    // m_link is initialized without an owner.
+    // getOwnerBase() should still work and return a nullptr
+    ASSERT_EQ(m_link.getOwnerBase(), nullptr);
+}
+
