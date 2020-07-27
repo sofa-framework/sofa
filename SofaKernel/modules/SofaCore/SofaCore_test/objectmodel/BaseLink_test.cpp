@@ -100,29 +100,7 @@ TEST_F(SingleLink_test, checkMultiLink )
     ASSERT_EQ(slink.size(), uint(1)) ;
 }
 
-TEST_F(SingleLink_test, setLinkedBase )
-{
-    auto aBaseObject = sofa::core::objectmodel::New<BaseObject>();
-    sofa::core::objectmodel::Base* aBasePtr = aBaseObject.get();
-
-    using sofa::core::objectmodel::BaseNode;
-    BaseLink::InitLink<BaseObject> initObjectLink(aBaseObject.get(), "objectlink", "");
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink(initObjectLink) ;
-    BaseLink::InitLink<BaseObject> initNodeLink(aBaseObject.get(), "nodelink", "");
-    SingleLink<BaseObject, BaseNode, BaseLink::FLAG_NONE > nodeLink(initNodeLink);
-
-    // objectLink.add(aBasePtr); //< not possible because of template type specification
-
-    objectLink.setLinkedBase(aBasePtr);
-    ASSERT_EQ(objectLink.getLinkedBase(), aBasePtr);
-
-    EXPECT_MSG_EMIT(Error);
-    nodeLink.setLinkedBase(aBasePtr); //< should emit error because BaseNode template type is incompatible with aBasePtr which is a BaseObject
-
-    ASSERT_NE(nodeLink.getLinkedBase(), aBasePtr);
-}
-
-TEST_F(SingleLink_test, getOwnerBase_BROKEN )
+TEST_F(SingleLink_test, getOwnerBase)
 {
     auto aBaseObject = sofa::core::objectmodel::New<BaseObject>();
     using sofa::core::objectmodel::BaseNode;
@@ -132,5 +110,8 @@ TEST_F(SingleLink_test, getOwnerBase_BROKEN )
     // m_link is initialized without an owner.
     // getOwnerBase() should still work and return a nullptr
     ASSERT_EQ(m_link.getOwnerBase(), nullptr);
+
+    m_link.setOwner(aBaseObject.get());
+    ASSERT_EQ(m_link.getOwnerBase(), aBaseObject.get());
 }
 

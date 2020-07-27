@@ -234,7 +234,7 @@ void BaseLink::setLinkedBase(Base* link)
     {
         if (!owner)
             msg_error("BaseLink (" + getName() + ")") << "Could not read link from" << pathname;
-        msg_error(owner) << "Could not read link from" << pathname;
+        else msg_error(owner) << "Could not read link from" << pathname;
     }
 }
 
