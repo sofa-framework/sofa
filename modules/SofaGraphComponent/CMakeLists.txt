@@ -1,5 +1,7 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaGraphComponent)
+
+find_package(SofaBase REQUIRED)
 
 set(HEADER_FILES
     config.h
@@ -14,45 +16,46 @@ list(APPEND HEADER_FILES
     AddFrameButtonSetting.h
     AddRecordedCameraButtonSetting.h
     AttachBodyButtonSetting.h
-    BackgroundSetting.h
     FixPickedParticleButtonSetting.h
     Gravity.h
     InteractingBehaviorModel.h
     MouseButtonSetting.h
     PauseAnimation.h
     PauseAnimationOnEvent.h
-    RequiredPlugin.h
     SofaDefaultPathSetting.h
     StatsSetting.h
     ViewerSetting.h
-    SceneChecks.h
-    SceneCheckAPIChanges.h
+    SceneCheck.h
+    SceneCheckDuplicatedName.h
+    SceneCheckMissingRequiredPlugin.h
+    SceneCheckAPIChange.h
+    SceneCheckUsingAlias.h
     SceneCheckerVisitor.h
+    SceneCheckerListener.h
     APIVersion.h
     )
 list(APPEND SOURCE_FILES
     AddFrameButtonSetting.cpp
     AddRecordedCameraButtonSetting.cpp
     AttachBodyButtonSetting.cpp
-    BackgroundSetting.cpp
     FixPickedParticleButtonSetting.cpp
     Gravity.cpp
     MouseButtonSetting.cpp
     PauseAnimation.cpp
     PauseAnimationOnEvent.cpp
-    RequiredPlugin.cpp
     SofaDefaultPathSetting.cpp
     StatsSetting.cpp
     ViewerSetting.cpp
-    SceneChecks.cpp
-    SceneCheckAPIChanges.cpp
+    SceneCheckDuplicatedName.cpp
+    SceneCheckMissingRequiredPlugin.cpp
+    SceneCheckAPIChange.cpp
+    SceneCheckUsingAlias.cpp
     SceneCheckerVisitor.cpp
+    SceneCheckerListener.cpp
     APIVersion.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationCore SofaSimulationTree)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_GRAPH_COMPONENT")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationCore SofaSimulationTree SofaBaseUtils)
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} "SofaGeneral/${PROJECT_NAME}")

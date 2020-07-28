@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -9.8 0 " dt="0.05"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
   
     <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
-    <CGSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+    <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
 
 
 
@@ -21,7 +22,7 @@
     <!-- fixedPosition = USER POSITIONS OF FRAMES -->
     <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/>
     <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Rigid" name="dof" showObject="true" showObjectScale="0.7" src="@merged" />
+    <MechanicalObject template="Rigid3d" name="dof" showObject="true" showObjectScale="0.7" src="@merged" />
     
     <VoronoiShapeFunction name="SF" position="@dof.rest_position" src="@image" method="0" nbRef="4" />
     <!--  <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="6 -1 -1"/>  -->
@@ -51,20 +52,21 @@
     <Node 	name="mass"   >
         <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
         <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-        <Mesh name="mesh" src="@loader" />
+        <MeshTopology name="mesh" src="@loader" />
         <MechanicalObject />
         <UniformMass totalMass="50" />
         <LinearMapping template="Rigid,Vec3d"   geometricStiffness="0"/>
     </Node>
     
     <Node 	name="collision"   >
-        <Mesh name="mesh" src="@../loader" />
+        <MeshTopology name="mesh" src="@../loader" />
         <MechanicalObject  template="Vec3d" name="pts"    />
         <LinearMapping template="Rigid,Vec3d" geometricStiffness="0"/>
     </Node>
     
     <Node 	name="visual"   >
-        <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.8 1 0.8 "/>
+        <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+        <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="0.8 1 0.8 "/>
         <LinearMapping template="Rigid,ExtVec3f"/>
     </Node>
 </Node>
@@ -83,7 +85,7 @@
 <!-- fixedPosition = USER POSITIONS OF FRAMES -->
 	  <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/> 
           <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	  <MechanicalObject template="Rigid" name="dof" showObject="true" showObjectScale="0.7" src="@merged" />
+	  <MechanicalObject template="Rigid3d" name="dof" showObject="true" showObjectScale="0.7" src="@merged" />
 
 	  <VoronoiShapeFunction name="SF" position="@dof.rest_position" src="@image" method="0" nbRef="4" />
 <!--  <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="6 -1 -1"/>  -->
@@ -113,20 +115,21 @@
 	<Node 	name="mass"   >
 	      <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	      <Mesh name="mesh" src="@loader" />
+	      <MeshTopology name="mesh" src="@loader" />
 	      <MechanicalObject />
 	      <UniformMass totalMass="50" />
 	      <LinearMapping template="Rigid,Vec3d"   geometricStiffness="1"/>
         </Node>
 
 	    <Node 	name="collision"   >
-		<Mesh name="mesh" src="@../loader" /> 
+		<MeshTopology name="mesh" src="@../loader" /> 
 		<MechanicalObject  template="Vec3d" name="pts"    />
 	    	<LinearMapping template="Rigid,Vec3d" geometricStiffness="1"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
+		<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="1 0.8 0.8 "/>
 	    	<LinearMapping template="Rigid,ExtVec3f"/>
 	    </Node>
     </Node>

@@ -10,7 +10,6 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(VelocityConstraintValue)
 int VelocityConstraintValueClass = core::RegisterObject("Enforce the velocities to the given values").add< VelocityConstraintValue >();
 
 

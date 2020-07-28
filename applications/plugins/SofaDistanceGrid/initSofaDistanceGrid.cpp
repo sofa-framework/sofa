@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include "initSofaDistanceGrid.h"
 #include "components/collision/DistanceGridCollisionModel.h"
 #include "components/forcefield/DistanceGridForceField.h"
@@ -76,12 +75,6 @@ const char* getModuleComponentList()
     return "DistanceGridCollisionModel FFDDistanceGridDiscreteIntersection RayDistanceGridContact "
            "RigidDistanceGridDiscreteIntersection DistanceGridForceField";
 }
-
-SOFA_LINK_CLASS(DistanceGridCollisionModel)
-SOFA_LINK_CLASS(FFDDistanceGridDiscreteIntersection)
-SOFA_LINK_CLASS(RayDistanceGridContact)
-SOFA_LINK_CLASS(RigidDistanceGridDiscreteIntersection)
-SOFA_LINK_CLASS(DistanceGridForceField)
 
 } /// component
 

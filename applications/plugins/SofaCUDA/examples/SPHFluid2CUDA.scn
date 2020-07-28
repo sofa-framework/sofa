@@ -1,10 +1,11 @@
 <Node dt="0.001" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" gravity="0 -5 0" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 <!--  <MultiStepAnimationLoop integrationSteps="2" /> -->
 	<Node name="fluid">
 		<CentralDifferenceSolver/>
 <!--
-		<RungeKutta4/>
+		<RungeKutta4Solver/>
 		<EulerImplicitSolver rayleighMass="0" rayleighStiffness="0" />
 		<CGLinearSolver tolerance="1.0e-20" threshold="1.0e-12"/>
 -->

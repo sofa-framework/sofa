@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,10 +22,14 @@
 #ifndef REGISTRATION_CONFIG_H
 #define REGISTRATION_CONFIG_H
 
-#include <SofaGui/config.h>
+#include <sofa/config.h>
 
 #define REGISTRATION_MAJOR_VERSION ${REGISTRATION_MAJOR_VERSION}
 #define REGISTRATION_MINOR_VERSION ${REGISTRATION_MINOR_VERSION}
+
+#cmakedefine01 REGISTRATION_HAVE_SOFADISTANCEGRID
+
+#cmakedefine01 REGISTRATION_HAVE_IMAGE
 
 #ifdef SOFA_BUILD_REGISTRATION
 #  define SOFA_TARGET Registration

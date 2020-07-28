@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -22,7 +22,7 @@
 #ifndef OPTITRACKNATNETDEVICE_H
 #define OPTITRACKNATNETDEVICE_H
 
-#include <sofa/config.h>
+#include <OptiTrackNatNet/config.h>
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
@@ -69,15 +69,15 @@ public:
     OptiTrackNatNetDevice();
     virtual ~OptiTrackNatNetDevice();
 
-    virtual void init();
-    virtual void reinit();
-    virtual void draw(const sofa::core::visual::VisualParams* vparams);
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
 
-    virtual void processModelDef(const ModelDef* data);
-    virtual void processFrame(const FrameData* data);
+    virtual void processModelDef(const ModelDef* data) override;
+    virtual void processFrame(const FrameData* data) override;
 
-    virtual void onBeginAnimationStep(const double /*dt*/);
-    virtual void onKeyPressedEvent(sofa::core::objectmodel::KeypressedEvent* ev);
+    virtual void onBeginAnimationStep(const double /*dt*/) override;
+    virtual void onKeyPressedEvent(sofa::core::objectmodel::KeypressedEvent* ev) override;
 
     sofa::core::objectmodel::Data<std::string> trackableName; ///< NatNet trackable name
     sofa::core::objectmodel::Data<int> trackableID; ///< NatNet trackable number (ignored if trackableName is set)

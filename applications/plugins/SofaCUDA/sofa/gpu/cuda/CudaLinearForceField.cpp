@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,12 +33,12 @@ namespace component
 namespace forcefield
 {
 
-template class LinearForceField<gpu::cuda::CudaVec6fTypes>;
-template class LinearForceField<gpu::cuda::CudaVec3fTypes>;
-template class LinearForceField<gpu::cuda::CudaRigid3fTypes>;
+template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class LinearForceField<gpu::cuda::CudaVec6dTypes>;
-template class LinearForceField<gpu::cuda::CudaRigid3dTypes>;
+template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 }// namespace forcefield
@@ -50,8 +50,6 @@ namespace gpu
 
 namespace cuda
 {
-
-SOFA_DECL_CLASS(CudaLinearForceField)
 
 int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
         .add< component::forcefield::LinearForceField<CudaVec6fTypes> >()

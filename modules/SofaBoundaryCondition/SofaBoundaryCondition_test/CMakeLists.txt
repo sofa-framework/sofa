@@ -1,13 +1,16 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
 project(SofaBoundaryCondition_test)
 
-set(SOURCE_FILES ../../empty.cpp)
+sofa_find_package(SofaSparseSolver QUIET)
 
-list(APPEND SOURCE_FILES
+set(HEADER_FILES
+    config.h.in
+    )
+set(SOURCE_FILES
     AffineMovementConstraint_test.cpp
     FixedConstraint_test.cpp
-    PartialFixedConstraint.cpp
+    PartialFixedConstraint_test.cpp
     PlaneForceField_test.cpp
     PointConstraint_test.cpp
     ProjectDirectionConstraint_test.cpp
@@ -22,7 +25,13 @@ list(APPEND SOURCE_FILES
     )
 
 add_definitions("-DSOFABOUNDARYCONDITION_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SceneCreator)
+if(SofaSparseSolver_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaSparseSolver)
+endif()
+
+configure_file(config.h.in "${PROJECT_BINARY_DIR}/include/SofaBoundaryCondition_test/config.h")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>")
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

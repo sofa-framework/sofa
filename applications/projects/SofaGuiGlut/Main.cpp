@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -29,31 +29,24 @@ using std::string;
 #include <vector>
 using std::vector;
 
+#include <boost/program_options.hpp>
+
 #include "SimpleGUI.h"
 
-#ifdef SOFA_HAVE_BOOST
-#include "MultithreadGUI.h"
-#endif
-
 #include <sofa/helper/ArgumentParser.h>
-#include <SofaSimulationCommon/common.h>
+#include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #include <SofaSimulationCommon/init.h>
-#ifdef SOFA_HAVE_DAG
 #include <SofaSimulationGraph/init.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
-#endif
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/TreeSimulation.h>
 using sofa::simulation::Node;
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaGeneralLoader/ReadState.h>
 #include <SofaValidation/CompareState.h>
@@ -75,7 +68,6 @@ using sofa::core::ExecParams ;
 
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
-using sofa::helper::Console;
 
 using sofa::component::misc::CompareStateCreator;
 using sofa::component::misc::ReadStateActivator;
@@ -112,9 +104,6 @@ using sofa::helper::logging::ClangMessageHandler ;
 
 #include <sofa/helper/logging/ExceptionMessageHandler.h>
 using sofa::helper::logging::ExceptionMessageHandler;
-
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
 
 // ---------------------------------------------------------------------
 // ---
@@ -154,19 +143,10 @@ int main(int argc, char** argv)
     bool        noAutoloadPlugins = false;
     bool        temporaryFile = false;
 
-#if defined(SOFA_HAVE_DAG)
     string simulationType = "dag";
-#else
-    string simulationType = "tree";
-#endif
 
     vector<string> plugins;
     vector<string> files;
-#ifdef SOFA_SMP
-    string nProcs="";
-    bool        disableStealing = false;
-    bool        affinity = false;
-#endif
     string colorsStatus = "auto";
     string messageHandler = "auto";
     bool enableInteraction = false ;
@@ -178,22 +158,15 @@ int main(int argc, char** argv)
 
     ArgumentParser* argParser = new ArgumentParser(argc, argv);
 
-#ifdef SOFA_SMP
-    argParser->addArgument(po::value<bool>(&disableStealing)->default_value(false)->implicit_value(true),           "disableStealing,w", "Disable Work Stealing")
-    argParser->addArgument(po::value<std::string>(&nProcs)->default_value(""),                                      "nprocs", "Number of processor")
-    argParser->addArgument(po::value<bool>(&affinity)->default_value(false)->implicit_value(true),                  "affinity", "Enable aFfinity base Work Stealing")
-#endif
-
-
-    argParser->addArgument(po::value<bool>(&showHelp)->default_value(false)->implicit_value(true), "help,h", "Display this help message");
-    argParser->addArgument(po::value<bool>(&startAnim)->default_value(false)->implicit_value(true), "start,a", "start the animation loop");
-    argParser->addArgument(po::value<bool>(&printFactory)->default_value(false)->implicit_value(true), "factory,p", "print factory logs");
-    argParser->addArgument(po::value<bool>(&loadRecent)->default_value(false)->implicit_value(true), "recent,r", "load most recently opened file");
-    argParser->addArgument(po::value<bool>(&temporaryFile)->default_value(false)->implicit_value(true), "tmp", "the loaded scene won't appear in history of opened files");
-    argParser->addArgument(po::value<std::string>(&colorsStatus)->default_value("auto")->implicit_value("yes"), "colors,c", "use colors on stdout and stderr (yes, no, auto)");
-    argParser->addArgument(po::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f", "select the message formatting to use (auto, clang, sofa, rich, test)");
-    argParser->addArgument(po::value<std::string>(&gui)->default_value(""), "gui,g", gui_help.c_str());
-    argParser->addArgument(po::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true), "noautoload", "disable plugins autoloading");
+    argParser->addArgument(boost::program_options::value<bool>(&showHelp)->default_value(false)->implicit_value(true), "help,h", "Display this help message");
+    argParser->addArgument(boost::program_options::value<bool>(&startAnim)->default_value(false)->implicit_value(true), "start,a", "start the animation loop");
+    argParser->addArgument(boost::program_options::value<bool>(&printFactory)->default_value(false)->implicit_value(true), "factory,p", "print factory logs");
+    argParser->addArgument(boost::program_options::value<bool>(&loadRecent)->default_value(false)->implicit_value(true), "recent,r", "load most recently opened file");
+    argParser->addArgument(boost::program_options::value<bool>(&temporaryFile)->default_value(false)->implicit_value(true), "tmp", "the loaded scene won't appear in history of opened files");
+    argParser->addArgument(boost::program_options::value<std::string>(&colorsStatus)->default_value("auto")->implicit_value("yes"), "colors,c", "use colors on stdout and stderr (yes, no, auto)");
+    argParser->addArgument(boost::program_options::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f", "select the message formatting to use (auto, clang, sofa, rich, test)");
+    argParser->addArgument(boost::program_options::value<std::string>(&gui)->default_value(""), "gui,g", gui_help.c_str());
+    argParser->addArgument(boost::program_options::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true), "noautoload", "disable plugins autoloading");
 
     argParser->parse();
     files = argParser->getInputFileList();
@@ -206,33 +179,34 @@ int main(int argc, char** argv)
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
-    sofa::simulation::tree::init();
-#ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::init();
-#endif
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaMisc();
 
     glutInit(&argc, argv);
 
-#ifdef SOFA_HAVE_DAG
-    if (simulationType == "tree")
-        sofa::simulation::setSimulation(new TreeSimulation());
-    else
-        sofa::simulation::setSimulation(new DAGSimulation());
-#else //SOFA_HAVE_DAG
-    sofa::simulation::setSimulation(new TreeSimulation());
-#endif
+    sofa::simulation::setSimulation(new DAGSimulation());
 
-    if (colorsStatus == "auto")
-        Console::setColorsStatus(Console::ColorsAuto);
+    if (colorsStatus == "unset") {
+        // If the parameter is unset, check the environment variable
+        const char * colorStatusEnvironment = std::getenv("SOFA_COLOR_TERMINAL");
+        if (colorStatusEnvironment != nullptr) {
+            const std::string status (colorStatusEnvironment);
+            if (status == "yes" || status == "on" || status == "always")
+                sofa::helper::console::setStatus(sofa::helper::console::Status::On);
+            else if (status == "no" || status == "off" || status == "never")
+                sofa::helper::console::setStatus(sofa::helper::console::Status::Off);
+            else
+                sofa::helper::console::setStatus(sofa::helper::console::Status::Auto);
+        }
+    } else if (colorsStatus == "auto")
+        sofa::helper::console::setStatus(sofa::helper::console::Status::Auto);
     else if (colorsStatus == "yes")
-        Console::setColorsStatus(Console::ColorsEnabled);
+        sofa::helper::console::setStatus(sofa::helper::console::Status::On);
     else if (colorsStatus == "no")
-        Console::setColorsStatus(Console::ColorsDisabled);
+        sofa::helper::console::setStatus(sofa::helper::console::Status::Off);
 
     //TODO(dmarchal): Use smart pointer there to avoid memory leaks !!
     if (messageHandler == "auto" )
@@ -253,7 +227,7 @@ int main(int argc, char** argv)
     else if (messageHandler == "rich")
     {
         MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter()) ) ;
+        MessageDispatcher::addHandler( new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance()) ) ;
     }
     else if (messageHandler == "test"){
         MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;
@@ -273,8 +247,8 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    std::string configPluginPath = PluginRepository.getFirstPath() + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME) ;
-    std::string defaultConfigPluginPath = PluginRepository.getFirstPath() + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
+    std::string configPluginPath = PluginRepository.getFirstPath() + "/" + sofa_tostring(CONFIG_PLUGIN_FILENAME) ;
+    std::string defaultConfigPluginPath = PluginRepository.getFirstPath() + "/" + sofa_tostring(DEFAULT_CONFIG_PLUGIN_FILENAME);
 
     if (!noAutoloadPlugins)
     {
@@ -355,9 +329,6 @@ int main(int argc, char** argv)
         sofa::simulation::getSimulation()->unload(groot);
 
     sofa::simulation::common::cleanup();
-    sofa::simulation::tree::cleanup();
-#ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::cleanup();
-#endif
     return 0;
 }

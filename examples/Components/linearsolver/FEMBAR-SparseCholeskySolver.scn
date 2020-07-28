@@ -1,0 +1,18 @@
+<Node name="root" dt="0.02" gravity="0 -10 0">
+    <RequiredPlugin name="SofaSparseSolver"/>
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
+    <Node name="M1">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <SparseCholeskySolver printLog="0" verbose="0" />
+        <MechanicalObject />
+        <UniformMass vertexMass="1" />
+        <RegularGridTopology nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
+        <FixedConstraint indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
+        <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
+    </Node>
+</Node>

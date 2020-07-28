@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaConstraint)
 
 set(HEADER_FILES
@@ -18,6 +18,7 @@ list(APPEND HEADER_FILES
     ConstraintAttachBodyPerformer.h
     ConstraintAttachBodyPerformer.inl
     ConstraintSolverImpl.h
+    ConstraintStoreLambdaVisitor.h
     ContactDescription.h
     ContactIdentifier.h
     FreeMotionAnimationLoop.h
@@ -32,6 +33,8 @@ list(APPEND HEADER_FILES
     LinearSolverConstraintCorrection.inl
     LocalMinDistance.h
     LocalMinDistance.inl
+    MappingGeometricStiffnessForceField.h
+    MappingGeometricStiffnessForceField.inl
     PrecomputedConstraintCorrection.h
     PrecomputedConstraintCorrection.inl
     SlidingConstraint.h
@@ -42,6 +45,8 @@ list(APPEND HEADER_FILES
     StopperConstraint.inl
     UncoupledConstraintCorrection.h
     UncoupledConstraintCorrection.inl
+    UniformConstraint.h
+    UniformConstraint.inl
     UnilateralInteractionConstraint.h
     UnilateralInteractionConstraint.inl
     BarycentricDistanceLMConstraintContact.h
@@ -62,6 +67,7 @@ list(APPEND SOURCE_FILES
     ConstraintAnimationLoop.cpp
     ConstraintAttachBodyPerformer.cpp
     ConstraintSolverImpl.cpp
+    ConstraintStoreLambdaVisitor.cpp
     ContactIdentifier.cpp
     FreeMotionAnimationLoop.cpp
     FrictionContact.cpp
@@ -71,11 +77,13 @@ list(APPEND SOURCE_FILES
     LMDNewProximityIntersection.cpp
     LinearSolverConstraintCorrection.cpp
     LocalMinDistance.cpp
+    MappingGeometricStiffnessForceField.cpp
     PrecomputedConstraintCorrection.cpp
     SlidingConstraint.cpp
     StickContactConstraint.cpp
     StopperConstraint.cpp
     UncoupledConstraintCorrection.cpp
+    UniformConstraint.cpp
     UnilateralInteractionConstraint.cpp
     BarycentricDistanceLMConstraintContact.cpp
     DOFBlockerLMConstraint.cpp
@@ -89,7 +97,5 @@ list(APPEND SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CONSTRAINT")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} "SofaGeneral/${PROJECT_NAME}")

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -89,29 +89,23 @@ class TComponentMouseInteraction : public ComponentMouseInteraction
 public:
 
 
-    void createInteractionComponents(sofa::simulation::Node* parent, sofa::simulation::Node* current);
+    void createInteractionComponents(sofa::simulation::Node* parent, sofa::simulation::Node* current) override;
 
-    bool  isCompatible( core::objectmodel::BaseContext *context) const;
+    bool  isCompatible( core::objectmodel::BaseContext *context) const override;
 protected :
     MouseMapping mouseMapping;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
-#ifndef SOFA_DOUBLE
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3fTypes>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec2fTypes>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec2dTypes>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3dTypes>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3dTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
+extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec2Types>;
+extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3Types>;
+extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3Types>;
+
 #endif
 }
 }
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
 namespace helper
 {
 extern template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;

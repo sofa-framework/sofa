@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,13 +22,11 @@
 #ifndef SOFAPYTHON_CONFIG_H
 #define SOFAPYTHON_CONFIG_H
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/config.h>
 
 #define SOFAPYTHON_VERSION_STR "${SOFAPYTHON_VERSION}"
 #define SOFAPYTHON_MAJOR_VERSION ${SOFAPYTHON_MAJOR_VERSION}
 #define SOFAPYTHON_MINOR_VERSION ${SOFAPYTHON_MINOR_VERSION}
-
-#define SOFA_HAVE_PYTHON
 
 #ifdef SOFA_BUILD_SOFAPYTHON
 #  define SOFA_TARGET SofaPython

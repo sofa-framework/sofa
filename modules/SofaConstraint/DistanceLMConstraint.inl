@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,11 +31,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <iostream>
-
-
-
 
 
 namespace sofa
@@ -47,13 +44,56 @@ namespace component
 namespace constraintset
 {
 
+template <class DataTypes>
+DistanceLMConstraint<DataTypes>::DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2)
+    : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
+    , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
+    , l_topology(initLink("topology", "link to the topology container"))
+{
+}
+
+template <class DataTypes>
+DistanceLMConstraint<DataTypes>::DistanceLMConstraint( MechanicalState *dof)
+    : DistanceLMConstraint(dof,dof)
+{
+}
+
+template <class DataTypes>
+DistanceLMConstraint<DataTypes>::DistanceLMConstraint()
+    : DistanceLMConstraint(nullptr, nullptr)
+{
+}
 
 template <class DataTypes>
 void DistanceLMConstraint<DataTypes>::init()
 {
     sofa::core::behavior::LMConstraint<DataTypes,DataTypes>::init();
-    topology = this->getContext()->getMeshTopology();
-    if (vecConstraint.getValue().size() == 0 && (this->constrainedObject1==this->constrainedObject2) ) vecConstraint.setValue(this->topology->getEdges());
+    
+    // TODO epenod 2019-12-05: Adapt code to not look for topology if constraint is manually set. Need to dig more in the code to understand how topology is used.
+    if (vecConstraint.getValue().size() != 0)
+    {
+        // nothing to do in this case
+        return;
+    }
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+    
+    core::topology::BaseMeshTopology *_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (!_topology)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    if (vecConstraint.getValue().size() == 0 && (this->constrainedObject1==this->constrainedObject2) ) 
+        vecConstraint.setValue(_topology->getEdges());
 }
 
 template <class DataTypes>
@@ -167,20 +207,16 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lin
 }
 
 
-#ifndef SOFA_FLOAT
 template <>
-void DistanceLMConstraint<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void DistanceLMConstraint<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
+void DistanceLMConstraint<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
+
 
 template <class DataTypes>
 void DistanceLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
 
+    vparams->drawTool()->saveLastState();
     if (vparams->displayFlags().getShowBehaviorModels())
     {
         const VecCoord &x1= this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
@@ -195,6 +231,8 @@ void DistanceLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
         }
         vparams->drawTool()->drawLines(points, 1, sofa::defaulttype::Vec<4,float>(0.0,1.0,0.0f,1.0f));
     }
+    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace constraintset

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,22 +28,23 @@
 #include <map>
 
 #include <sofa/simulation/Visitor.h>
-#include "SceneChecks.h"
+#include "SceneCheck.h"
 
-/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
 namespace simulation
+{
+namespace _scenechecking_
 {
 
 class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
 {
 public:
-    SceneCheckerVisitor(const sofa::core::ExecParams* params) ;
-    virtual ~SceneCheckerVisitor() ;
+    SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance()) ;
+    ~SceneCheckerVisitor() override;
 
     void validate(Node* node) ;
-    virtual Result processNodeTopDown(Node* node) override ;
+    Result processNodeTopDown(Node* node) override ;
 
     void addCheck(SceneCheck::SPtr check) ;
     void removeCheck(SceneCheck::SPtr check) ;
@@ -52,8 +53,14 @@ private:
     std::vector<SceneCheck::SPtr> m_checkset ;
 };
 
-} // namespace simulation
+} // namespace _scenechecking_
 
+namespace scenechecking
+{
+    using _scenechecking_::SceneCheckerVisitor;
+}
+
+} // namespace simulation
 } // namespace sofa
 
 #endif

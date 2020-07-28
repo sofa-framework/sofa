@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SimpleGUI.h"
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -28,16 +27,16 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <fstream>
-#include <string.h>
-#include <math.h>
+#include <cstring>
+#include <cmath>
 
-#include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
 
 #include <sofa/helper/system/thread/CTime.h>
+#include <thread>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BoundingBox.h>
@@ -47,16 +46,6 @@
 #include <sofa/gui/MouseOperations.h>
 
 #include <sofa/simulation/PropagateEventVisitor.h>
-#ifdef SOFA_SMP
-#include <SofaBaseVisual/VisualModelImpl.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/CollisionVisitor.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/PropagateEventVisitor.h>
-#include <sofa/simulation/VisualVisitor.h>
-#include <athapascan-1>
-#include "Multigraph.inl"
-#endif /* SOFA_SMP */
 // define this if you want video and OBJ capture to be only done once per N iteration
 //#define CAPTURE_PERIOD 5
 
@@ -78,85 +67,11 @@ using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 using sofa::simulation::getSimulation;
-#ifdef SOFA_SMP
-using namespace sofa::simulation;
-struct doCollideTask
-{
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-        // groot->execute<CollisionVisitor>();
-        // TODO SimpleGUI::instance->getScene()->execute<CollisionVisitor>();
-        // TODO AnimateBeginEvent ev ( 0.0 );
-        // TODO PropagateEventVisitor act ( &ev );
-        // TODO SimpleGUI::instance->getScene()->execute ( act );
-        //	sofa::simulation::tree::getSimulation()->animate(groot.get());
 
-    }
-};
-struct animateTask
-{
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-
-        getSimulation()->animate( SimpleGUI::instance->getScene());
-
-    }
-};
-
-struct collideTask
-{
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-
-        //   a1::Fork<doCollideTask>()();
-        //	sofa::simulation::tree::getSimulation()->animate(groot.get());
-
-    }
-};
-struct visuTask
-{
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-        // TODO AnimateEndEvent ev ( 0.0 );
-        // TODO PropagateEventVisitor act ( &ev );
-        // TODO SimpleGUI::instance->getScene()->execute ( act );
-        // TODO SimpleGUI::instance->getScene()->execute<VisualUpdateVisitor>();
-
-    }
-};
-struct MainLoopTask
-{
-
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-        Iterative::Fork<doCollideTask>()();
-        Iterative::Fork<animateTask >(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
-        Iterative::Fork<visuTask>()();
-        //a1::Fork<collideTask>(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
-    }
-};
-#endif /* SOFA_SMP */
-
-SimpleGUI* SimpleGUI::instance = NULL;
+SimpleGUI* SimpleGUI::instance = nullptr;
 
 int SimpleGUI::mainLoop()
 {
-#ifdef SOFA_SMP
-    if(groot)
-    {
-// TODO	getScene()->execute<CollisionVisitor>();
-        a1::Sync();
-        mg=new Iterative::Multigraph<MainLoopTask>();
-        mg->compile();
-        mg->deploy();
-
-    }
-#endif /* SOFA_SMP */
     glutMainLoop();
     return 0;
 }
@@ -171,9 +86,6 @@ int SimpleGUI::closeGUI()
     delete this;
     return 0;
 }
-
-
-SOFA_DECL_CLASS(SimpleGUI)
 
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 
@@ -190,12 +102,9 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPt
 
     glutInitDisplayMode ( GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE );
 
-    //glutInitWindowPosition ( x0, y0 );
     glutInitWindowSize (_initialW, _initialH);
     glutCreateWindow ( ":: SOFA ::" );
 
-
-#ifndef PS3
     std::cout << "Window created:"
             << " red="<<glutGet(GLUT_WINDOW_RED_SIZE)
             << " green="<<glutGet(GLUT_WINDOW_GREEN_SIZE)
@@ -204,7 +113,6 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPt
             << " depth="<<glutGet(GLUT_WINDOW_DEPTH_SIZE)
             << " stencil="<<glutGet(GLUT_WINDOW_STENCIL_SIZE)
             << std::endl;
-#endif
 
     glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -215,7 +123,6 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPt
     glutIdleFunc ( glut_idle );
     glutDisplayFunc ( glut_display );
 
-#ifndef PS3
     glutReshapeFunc ( glut_reshape );
     glutKeyboardFunc ( glut_keyboard );
     glutSpecialFunc ( glut_special );
@@ -225,24 +132,10 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPt
 
     SimpleGUI* gui = new SimpleGUI();
     gui->setScene(groot, filename);
-
     gui->initializeGL();
-#else
-    // no glutReshape on PS3 the resoluion is fixed
-    GLuint screen_width;
-    GLuint screen_height;
-    psglGetDeviceDimensions(psglGetCurrentDevice(), &screen_width, &screen_height);
-
-    SimpleGUI* gui = new SimpleGUI();
-    gui->setScene(groot, filename);
-
-    gui->initializeGL();
-    gui->resizeGL(screen_width, screen_height);
-#endif
 
     return gui;
 }
-
 
 
 void SimpleGUI::glut_display()
@@ -285,7 +178,6 @@ void SimpleGUI::glut_motion(int x, int y)
 {
     if (instance)
     {
-        //instance->updateModifiers();
         instance->mouseEvent( MouseMove, x, y, 0 );
     }
 }
@@ -306,7 +198,7 @@ void SimpleGUI::glut_idle()
         if (instance->getScene() && instance->getScene()->getContext()->getAnimate())
             instance->step();
         else
-            CTime::sleep(0.01);
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         instance->animate();
     }
 }
@@ -340,7 +232,7 @@ SimpleGUI::SimpleGUI()
     _facetNormal = GL_FALSE;
     _renderingMode = GL_RENDER;
     _waitForRender = false;
-    texLogo = NULL;
+    texLogo = nullptr;
 
     _arrow = gluNewQuadric();
     gluQuadricDrawStyle(_arrow, GLU_FILL);
@@ -400,7 +292,7 @@ SimpleGUI::SimpleGUI()
 // ---------------------------------------------------------
 SimpleGUI::~SimpleGUI()
 {
-    if (instance == this) instance = NULL;
+    if (instance == this) instance = nullptr;
 }
 
 // -----------------------------------------------------------------
@@ -451,11 +343,9 @@ void SimpleGUI::initializeGL(void)
         specref[2] = 1.0f;
         specref[3] = 1.0f;
         // Here we initialize our multi-texturing functions
-#if defined(SOFA_HAVE_GLEW) && !defined(PS3)
         glewInit();
         if (!GLEW_ARB_multitexture)
             std::cerr << "Error: GL_ARB_multitexture not supported\n";
-#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;
@@ -489,7 +379,6 @@ void SimpleGUI::initializeGL(void)
         // Define background color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         //Load texture for logo
         std::string filename = sofa::helper::system::DataRepository.getFile("textures/SOFA_logo.bmp");
         std::string extension = sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
@@ -513,14 +402,11 @@ void SimpleGUI::initializeGL(void)
             texLogo->init();
         }
 
-#ifndef PS3
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_NORMAL_ARRAY);
-#endif
+
         // Turn on our light and enable color along with the light
-        //glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
-        //glEnable(GL_COLOR_MATERIAL);
 
         // change status so we only do this stuff once
         initialized = true;
@@ -656,45 +542,6 @@ void SimpleGUI::DrawBox(SReal* minBBox, SReal* maxBBox, double r)
     //std::cout << "box = < " << minBBox[0] << ' ' << minBBox[1] << ' ' << minBBox[2] << " >-< " << maxBBox[0] << ' ' << maxBBox[1] << ' ' << maxBBox[2] << " >"<< std::endl;
     if (r==0.0)
         r = (Vector3(maxBBox) - Vector3(minBBox)).norm() / 500;
-#if 0
-    {
-        Enable<GL_DEPTH_TEST> depth;
-        Disable<GL_LIGHTING> lighting;
-        glColor3f(0.0, 1.0, 1.0);
-        glBegin(GL_LINES);
-        for (int corner=0; corner<4; ++corner)
-        {
-            glVertex3d(           minBBox[0]           ,
-                    (corner&1)?minBBox[1]:maxBBox[1],
-                    (corner&2)?minBBox[2]:maxBBox[2]);
-            glVertex3d(           maxBBox[0]           ,
-                    (corner&1)?minBBox[1]:maxBBox[1],
-                    (corner&2)?minBBox[2]:maxBBox[2]);
-        }
-        for (int corner=0; corner<4; ++corner)
-        {
-            glVertex3d((corner&1)?minBBox[0]:maxBBox[0],
-                    minBBox[1]           ,
-                    (corner&2)?minBBox[2]:maxBBox[2]);
-            glVertex3d((corner&1)?minBBox[0]:maxBBox[0],
-                    maxBBox[1]           ,
-                    (corner&2)?minBBox[2]:maxBBox[2]);
-        }
-
-        // --- Draw the Z edges
-        for (int corner=0; corner<4; ++corner)
-        {
-            glVertex3d((corner&1)?minBBox[0]:maxBBox[0],
-                    (corner&2)?minBBox[1]:maxBBox[1],
-                    minBBox[2]           );
-            glVertex3d((corner&1)?minBBox[0]:maxBBox[0],
-                    (corner&2)?minBBox[1]:maxBBox[1],
-                    maxBBox[2]           );
-        }
-        glEnd();
-        return;
-    }
-#endif
     Enable<GL_DEPTH_TEST> depth;
     Enable<GL_LIGHTING> lighting;
     Enable<GL_COLOR_MATERIAL> colorMat;
@@ -759,7 +606,7 @@ void SimpleGUI::DrawBox(SReal* minBBox, SReal* maxBBox, double r)
 void SimpleGUI::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
         double ymax, double step)
 {
-    register double x, y;
+    double x, y;
 
     Enable<GL_DEPTH_TEST> depth;
 
@@ -788,7 +635,7 @@ void SimpleGUI::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
 void SimpleGUI::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
         double zmax, double step)
 {
-    register double y, z;
+    double y, z;
     Enable<GL_DEPTH_TEST> depth;
 
     glBegin(GL_LINES);
@@ -817,7 +664,7 @@ void SimpleGUI::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
 void SimpleGUI::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
         double zmax, double step)
 {
-    register double x, z;
+    double x, z;
     Enable<GL_DEPTH_TEST> depth;
 
     glBegin(GL_LINES);
@@ -896,7 +743,6 @@ void SimpleGUI::DisplayOBJs()
     Enable<GL_DEPTH_TEST> depth;
 
     glShadeModel(GL_SMOOTH);
-    //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glColor4f(1,1,1,1);
     glDisable(GL_COLOR_MATERIAL);
 
@@ -905,10 +751,7 @@ void SimpleGUI::DisplayOBJs()
 
     if (!initTexturesDone)
     {
-//         std::cout << "-----------------------------------> initTexturesDone\n";
-        //---------------------------------------------------
         simulation::getSimulation()->initTextures(groot.get());
-        //---------------------------------------------------
         initTexturesDone = true;
     }
 
@@ -924,8 +767,6 @@ void SimpleGUI::DisplayOBJs()
                         vparams->sceneBBox().maxBBoxPtr());
         }
     }
-
-    // glDisable(GL_COLOR_MATERIAL);
 }
 
 // -------------------------------------------------------
@@ -945,8 +786,6 @@ void SimpleGUI::DisplayMenu(void)
 
     glColor3f(0.3f, 0.7f, 0.95f);
     glRasterPos2i(_W / 2 - 5, _H - 15);
-    //sprintf(buffer,"FPS: %.1f\n", _frameRate.GetFPS());
-    //PrintString(GLUT_BITMAP_HELVETICA_12, buffer);
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -990,11 +829,8 @@ void SimpleGUI::DrawScene(void)
         Enable<GL_LIGHT0> light0;
 
         glColor3f(0.5f, 0.5f, 0.6f);
-        //    DrawXZPlane(-4.0, -20.0, 20.0, -20.0, 20.0, 1.0);
-        //    DrawAxis(0.0, 0.0, 0.0, 10.0);
 
         DisplayOBJs();
-
         DisplayMenu();        // always needs to be the last object being drawn
     }
 }
@@ -1051,11 +887,6 @@ void SimpleGUI::calcProjection()
     yNear = 0.35 * vparams->zNear();
     offset = 0.001 * vparams->zNear(); // for foreground and background planes
 
-    /*xOrtho = fabs(vparams->sceneTransform().translation[2]) * xNear
-            / vparams->zNear();
-    yOrtho = fabs(vparams->sceneTransform().translation[2]) * yNear
-            / vparams->zNear();*/
-
     if ((height != 0) && (width != 0))
     {
         if (height > width)
@@ -1077,8 +908,6 @@ void SimpleGUI::calcProjection()
 
     xFactor *= 0.01;
     yFactor *= 0.01;
-
-    //std::cout << xNear << " " << yNear << std::endl;
 
     zForeground = -vparams->zNear() - offset;
     zBackground = -vparams->zFar() + offset;
@@ -1118,28 +947,9 @@ void SimpleGUI::calcProjection()
 // ---------------------------------------------------------
 void SimpleGUI::paintGL()
 {
-    //    ctime_t beginDisplay;
-    //ctime_t endOfDisplay;
-
-    //    beginDisplay = MesureTemps();
-
-    // valid() is turned off when FLTK creates a new context for this window
-    // or when the window resizes, and is turned on after draw() is called.
-    // Use this to avoid unneccessarily initializing the OpenGL context.
-    //static double lastOrthoTransZ = 0.0;
-    /*
-    if (!valid())
-    {
-    InitGFX();        // this has to be called here since we don't know when the context is created
-    _W = w();
-    _H = h();
-    reshape(_W, _H);
-    }
-    */
     // clear buffers (color and depth)
     if (_background==0)
         glClearColor(0.0f,0.0f,0.0f,0.0f);
-    //glClearColor(0.0589f, 0.0589f, 0.0589f, 1.0f);
     else if (_background==1)
         glClearColor(0.0f,0.0f,0.0f,0.0f);
     else if (_background==2)
@@ -1202,11 +1012,6 @@ void SimpleGUI::eventNewStep()
 // ---------------------------------------------------------
 void SimpleGUI::animate(void)
 {
-    if (_spinning)
-    {
-        //_newQuat = _currentQuat + _newQuat;
-    }
-
     // update the entire scene
     redraw();
 }
@@ -1225,30 +1030,24 @@ bool SimpleGUI::isControlPressed() const
 bool SimpleGUI::isShiftPressed() const
 {
     return m_isShiftPressed;
-    //return glutGetModifiers()&GLUT_ACTIVE_SHIFT;
 }
 
 bool SimpleGUI::isAltPressed() const
 {
     return m_isAltPressed;
-    //return glutGetModifiers()&GLUT_ACTIVE_ALT;
 }
 
 void SimpleGUI::updateModifiers()
 {
-#ifndef PS3
     m_isControlPressed =  (glutGetModifiers()&GLUT_ACTIVE_CTRL )!=0;
     m_isShiftPressed   =  (glutGetModifiers()&GLUT_ACTIVE_SHIFT)!=0;
     m_isAltPressed     =  (glutGetModifiers()&GLUT_ACTIVE_ALT  )!=0;
-#endif
 }
 
 void SimpleGUI::keyPressEvent ( int k )
 {
-#ifndef PS3
     if( isControlPressed() ) // pass event to the scene data structure
     {
-        //cerr<<"SimpleGUI::keyPressEvent, key = "<<k<<" with Control pressed "<<endl;
         sofa::core::objectmodel::KeypressedEvent keyEvent(k);
         groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
     }
@@ -1349,13 +1148,11 @@ void SimpleGUI::keyPressEvent ( int k )
             break;
         }
         }
-#endif
 }
 
 
 void SimpleGUI::keyReleaseEvent ( int k )
 {
-    //cerr<<"SimpleGUI::keyReleaseEvent, key = "<<k<<endl;
     if( isControlPressed() ) // pass event to the scene data structure
     {
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(k);
@@ -1366,7 +1163,6 @@ void SimpleGUI::keyReleaseEvent ( int k )
 // ---------------------- Here are the mouse controls for the scene  ----------------------
 void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
 {
-#ifndef PS3
     const sofa::core::visual::VisualParams::Viewport& viewport = vparams->viewport();
 
     MousePosition mousepos;
@@ -1544,9 +1340,6 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
             int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
             {
-                //g_DepthBias[0] += dx*0.01;
-                //g_DepthBias[1] += dy*0.01;
-                //std::cout << "Depth bias = "<< g_DepthBias[0] << " " << g_DepthBias[1] << std::endl;
                 redraw();
                 _mouseInteractorSavedPosX = eventX;
                 _mouseInteractorSavedPosY = eventY;
@@ -1558,9 +1351,6 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
             int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
             {
-                //g_DepthOffset[0] += dx*0.01;
-                //g_DepthOffset[1] += dy*0.01;
-                //std::cout << "Depth offset = "<< g_DepthOffset[0] << " " << g_DepthOffset[1] << std::endl;
                 redraw();
                 _mouseInteractorSavedPosX = eventX;
                 _mouseInteractorSavedPosY = eventY;
@@ -1578,7 +1368,7 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         case MouseButtonPress:
         {
             //<CAMERA API>
-            sofa::core::objectmodel::MouseEvent* mEvent = NULL;
+            sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
             if (button == GLUT_LEFT_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, eventX, eventY);
             else if (button == GLUT_RIGHT_BUTTON)
@@ -1607,7 +1397,7 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         case MouseButtonRelease:
         {
             //<CAMERA API>
-            sofa::core::objectmodel::MouseEvent* mEvent = NULL;
+            sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
             if (button == GLUT_LEFT_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, eventX, eventY);
             else if (button == GLUT_RIGHT_BUTTON)
@@ -1632,7 +1422,6 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
 
         redraw();
     }
-#endif
 }
 
 void SimpleGUI::step()
@@ -1640,11 +1429,7 @@ void SimpleGUI::step()
     {
         if (_waitForRender) return;
         //groot->setLogTime(true);
-#ifdef SOFA_SMP
-        mg->step();
-#else
         getSimulation()->animate(groot.get());
-#endif
         getSimulation()->updateVisual(groot.get());
 
         if( m_dumpState )
@@ -1809,8 +1594,6 @@ void SimpleGUI::exportOBJ(bool exportMTL)
     }
     else
         ofilename << "scene";
-//     double time = groot->getTime();
-//     ofilename << '-' << (int)(time*1000);
 
     std::stringstream oss;
     oss.width(5);

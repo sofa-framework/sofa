@@ -49,7 +49,6 @@ int ExternalComponent::nbcalls = 0;
 
 
 //////////////////// //////// Registering the new component in the factory /////////////////////////
-SOFA_DECL_CLASS (ExternalComponent)
 int ExternalComponentClass = core::RegisterObject ( "An dummy External Component" )
         .add<ExternalComponent>(true);
 }
@@ -174,7 +173,7 @@ std::vector<std::vector<std::string>> dataconversionvalues =
      {"'XX_'+first.findData('name').getLinkPath()", "XX_@/theFirst.name"},
      {"first.findData('name').getLinkPath()", "theFirst"},
      {"first.findData('name')", "theFirst"},
-     {"'XX_'+rootNode.getAsACreateObjectParameter()", "XX_@"},
+     {"'XX_'+rootNode.getAsACreateObjectParameter()", "XX_@/"},
      {"CustomObject()", "custom value"}
     } ;
 

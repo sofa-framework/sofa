@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,22 +23,13 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
-
-// FIX: temporarily disabled as SofaSimpleFem is not supposed to depend on SofaOpenGLVisual
-//#define SIMPLEFEM_COLORMAP
-
-#ifdef SIMPLEFEM_COLORMAP
-#include <SofaOpenglVisual/ColorMap.h>
-#endif
 
 #include <map>
 #include <sofa/helper/map.h>
@@ -105,14 +96,6 @@ public:
     typedef sofa::helper::Quater<Real> Quat;
 
 protected:
-
-//    typedef Vec<6, Real> Displacement;					    ///< the displacement vector
-//    typedef Mat<3, 3, Real> MaterialStiffness;				    ///< the matrix of material stiffness
-//    typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;   ///< a vector of material stiffness matrices
-//    typedef Mat<6, 3, Real> StrainDisplacement;				    ///< the strain-displacement matrix
-//    typedef Mat<6, 6, Real> Stiffness;					    ///< the stiffness matrix
-//    typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement; ///< a vector of strain-displacement matrices
-//    typedef Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     typedef defaulttype::Mat<2, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     enum { DerivSize = DataTypes::deriv_total_size };
     typedef defaulttype::Mat<DerivSize, DerivSize, Real> MatBloc;
@@ -122,32 +105,22 @@ protected:
 
 protected:
     /// ForceField API
-    //{
     TriangularFEMForceFieldOptim();
 
     virtual ~TriangularFEMForceFieldOptim();
 public:
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
+    void init() override;
+    void reinit() override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
     void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection);
 
     void draw(const core::visual::VisualParams* vparams) override;
-    //}
 
     // parse method attribute (for compatibility with non-optimized version)
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        const char* method = arg->getAttribute("method");
-        if (method && *method && std::string(method) != std::string("large"))
-        {
-            serr << "Attribute method was specified as \""<<method<<"\" while this version only implements the \"large\" method. Ignoring..." << sendl;
-        }
-        Inherited::parse(arg);
-    }
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Class to store FEM information on each triangle, for topology modification handling
     class TriangleInfo
@@ -182,8 +155,8 @@ public:
             return in;
         }
     };
-    Real gamma, mu;
 
+    Real gamma, mu;
     class TriangleState
     {
     public:
@@ -212,7 +185,6 @@ public:
             return in;
         }
     };
-
     /// Class to store FEM information on each edge, for topology modification handling
     class EdgeInfo
     {
@@ -259,10 +231,10 @@ public:
     typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
     typedef typename VecCoord::template rebind<VertexInfo>::other VecVertexInfo;
     typedef typename VecCoord::template rebind<EdgeInfo>::other VecEdgeInfo;
-    topology::TriangleData<VecTriangleInfo> triangleInfo; ///< Internal triangle data (persistent)
-    topology::TriangleData<VecTriangleState> triangleState; ///< Internal triangle data (time-dependent)
-    topology::PointData<VecVertexInfo> vertexInfo; ///< Internal point data
-    topology::EdgeData<VecEdgeInfo> edgeInfo; ///< Internal edge data
+    topology::TriangleData<VecTriangleInfo> d_triangleInfo; ///< Internal triangle data (persistent)
+    topology::TriangleData<VecTriangleState> d_triangleState; ///< Internal triangle data (time-dependent)
+    topology::PointData<VecVertexInfo> d_vertexInfo; ///< Internal point data
+    topology::EdgeData<VecEdgeInfo> d_edgeInfo; ///< Internal edge data
 
 
     class TFEMFFOTriangleInfoHandler : public topology::TopologyDataHandler<Triangle,VecTriangleInfo >
@@ -305,14 +277,6 @@ public:
         TriangularFEMForceFieldOptim<DataTypes>* ff;
     };
 
-    sofa::core::topology::BaseMeshTopology* _topology;
-
-#ifdef SIMPLEFEM_COLORMAP
-#ifndef SOFA_NO_OPENGL
-	visualmodel::ColorMap::SPtr showStressColorMapReal;
-#endif
-#endif
-
     template<class MatrixWriter>
     void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
 
@@ -322,43 +286,37 @@ public:
 public:
 
     /// Forcefield intern paramaters
-    Data<Real> f_poisson;
-    Data<Real> f_young; ///< Young modulus in Hooke's law
-    Data<Real> f_damping; ///< Ratio damping/stiffness
-    Data<Real> f_restScale; ///< Scale factor applied to rest positions (to simulate pre-stretched materials)
+    Data<Real> d_poisson;
+    Data<Real> d_young; ///< Young modulus in Hooke's law
+    Data<Real> d_damping; ///< Ratio damping/stiffness
+    Data<Real> d_restScale; ///< Scale factor applied to rest positions (to simulate pre-stretched materials)
 
     /// Display parameters
-    Data<bool> showStressValue;
-    Data<bool> showStressVector; ///< Flag activating rendering of stress directions within each triangle
-#ifdef SIMPLEFEM_COLORMAP
-    Data<std::string> showStressColorMap; ///< Color map used to show stress values
-#endif
-    Data<Real> showStressMaxValue; ///< Max value for rendering of stress values
-#ifdef SIMPLEFEM_COLORMAP
-    Data<float> showStressValueAlpha; ///< Alpha (1-transparency) value for rendering of stress values
-#endif
+    Data<bool> d_showStressValue;
+    Data<bool> d_showStressVector; ///< Flag activating rendering of stress directions within each triangle
+    Data<Real> d_showStressMaxValue; ///< Max value for rendering of stress values
 
 
     TFEMFFOTriangleInfoHandler* triangleInfoHandler;
     TFEMFFOTriangleStateHandler* triangleStateHandler;
 
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<TriangularFEMForceFieldOptim<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     Real drawPrevMaxStress;
 
+    /// Pointer to the topology container. Will be set by link @sa l_topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<defaulttype::Vec3dTypes>;
-#endif
+extern template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<defaulttype::Vec3Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<defaulttype::Vec3fTypes>;
-#endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
 
 } // namespace forcefield
 

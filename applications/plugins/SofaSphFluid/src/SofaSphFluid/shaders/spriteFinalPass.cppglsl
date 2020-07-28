@@ -1,0 +1,57 @@
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace visualmodel
+{
+
+namespace shader
+{
+
+const std::string spriteFinalPassVS = R"SHADER_DELIM(
+#version 120
+
+varying vec2 v_texcoord;
+
+void main(void)
+{
+	v_texcoord = (gl_Vertex.xy + 1.0) / 2.0;
+    gl_Position = ftransform();
+}
+
+)SHADER_DELIM";
+
+//////////////////////
+const std::string spriteFinalPassFS = R"SHADER_DELIM(
+#version 120
+
+uniform sampler2D u_colorTexture;
+uniform sampler2D u_depthTexture;
+
+varying vec2 v_texcoord;
+
+void main(void)
+{
+	vec4 color = texture2D(u_colorTexture, v_texcoord);
+	float depth = texture2D(u_depthTexture, v_texcoord).x;
+
+	if(depth > 0.999999)
+		discard;
+
+	gl_FragDepth = depth;
+	gl_FragColor = color;
+
+}
+
+)SHADER_DELIM";
+
+} //shader
+
+} //visualmodel
+
+} //component
+
+} //sofa

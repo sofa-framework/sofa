@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,10 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
-
-
+#include <SofaBoundaryCondition_test/config.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
@@ -34,6 +31,10 @@
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 namespace sofa{
 namespace {
@@ -59,7 +60,7 @@ void createUniformMass(simulation::Node::SPtr node, component::container::Mechan
 }
 
 template <typename _DataTypes>
-struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
+struct FixedConstraint_test : public BaseTest
 {
     typedef _DataTypes DataTypes;
     typedef component::projectiveconstraintset::FixedConstraint<DataTypes> FixedConstraint;
@@ -87,6 +88,10 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( defaulttype::Vector3(0,0,0) );
+
+#if SOFABOUNDARYCONDITION_TEST_HAVE_SOFASPARSESOLVER
+        simpleapi::createObject(root , "RequiredPlugin", {{"name", "SofaSparseSolver"}}) ;
+#endif
 
         simulation::Node::SPtr node = createEulerSolverNode(root,"test", integrationScheme);
 
@@ -179,7 +184,7 @@ TYPED_TEST( FixedConstraint_test , testValueExplicit )
     EXPECT_TRUE(  this->test(1e-8, std::string("Explicit")) );
 }
 
-#ifdef SOFA_HAVE_METIS
+#if SOFABOUNDARYCONDITION_TEST_HAVE_SOFASPARSESOLVER
 TYPED_TEST( FixedConstraint_test , testValueImplicitWithSparseLDL )
 {
     EXPECT_MSG_NOEMIT(Error) ;

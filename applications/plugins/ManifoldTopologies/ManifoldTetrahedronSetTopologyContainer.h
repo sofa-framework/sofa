@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,12 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDTETRAHEDRONSETTOPOLOGYCONTAINER_H
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDTETRAHEDRONSETTOPOLOGYCONTAINER_H
-#include <ManifoldTopologies/config.h>
+#ifndef SOFA_MANIFOLD_TOPOLOGY_TETRAHEDRONSETTOPOLOGYCONTAINER_H
+#define SOFA_MANIFOLD_TOPOLOGY_TETRAHEDRONSETTOPOLOGYCONTAINER_H
 
 #include <ManifoldTopologies/config.h>
-
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 
 namespace sofa
@@ -68,15 +66,15 @@ public:
 
     ManifoldTetrahedronSetTopologyContainer();
 
-    virtual ~ManifoldTetrahedronSetTopologyContainer() {}
+    ~ManifoldTetrahedronSetTopologyContainer() override {}
 
-    virtual void init();
-    virtual void reinit();
+    void init() override;
+    void reinit() override;
 
 
     /// Procedural creation methods
     /// @{
-    virtual void clear();
+    void clear() override;
     /// @}
 
 
@@ -84,7 +82,7 @@ public:
      *
      * TODO: like in ManifoldTriangles, test the topology
      */
-    virtual bool checkTopology() const;
+    bool checkTopology() const override;
     /** \brief Returns the Tetrahedron array.
      *
      */
@@ -119,21 +117,21 @@ protected:
      * This function is only called if the TetrahedraAroundVertex array is required.
      * m_tetrahedraAroundVertex[i] contains the indices of all tetrahedra adjacent to the ith vertex
      */
-    virtual void createTetrahedraAroundVertexArray();
+    void createTetrahedraAroundVertexArray() override;
 
     /** \brief Creates the Tetrahedron Edge Shell Array
      *
      * This function is only called if the TetrahedronEdheShell array is required.
      * m_tetrahedraAroundEdge[i] contains the indices of all tetrahedra adjacent to the ith edge
      */
-    virtual void createTetrahedraAroundEdgeArray();
+    void createTetrahedraAroundEdgeArray() override;
 
     /** \brief Creates the Tetrahedron Triangle Shell Array
      *
      * This function is only called if the TetrahedraAroundTriangle array is required.
      * m_tetrahedraAroundTriangle[i] contains the indices of all tetrahedra adjacent to the ith edge
      */
-    virtual void createTetrahedraAroundTriangleArray();
+    void createTetrahedraAroundTriangleArray() override;
 
 
 
@@ -152,4 +150,4 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_MANIFOLD_TOPOLOGY_TETRAHEDRONSETTOPOLOGYCONTAINER_H

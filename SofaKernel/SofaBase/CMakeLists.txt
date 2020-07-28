@@ -1,17 +1,5 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaBase)
-
-## Dependencies
-find_package(SofaSimulation REQUIRED)
-
-## Version
-set(SOFABASE_VERSION ${SofaFramework_VERSION})
-
-## SofaBase/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaBase/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaBase/config.h" DESTINATION "include/SofaBase")
-
-### Subdirectories
 
 set(SOFABASE_TARGETS
     SofaBaseCollision
@@ -19,17 +7,30 @@ set(SOFABASE_TARGETS
     SofaBaseMechanics
     SofaBaseTopology
     SofaBaseVisual
-    SofaComponentBase
-)
+    SofaBaseUtils
+    SofaEigen2Solver
+    )
 
 foreach(TARGET ${SOFABASE_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
-    set_target_properties(${TARGET} PROPERTIES FOLDER SofaBase) # IDE folder
-    set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFABASE_VERSION})
 endforeach()
 
-## CMake package configurations files
-sofa_write_package_config_files(SofaBase ${SOFABASE_VERSION})
+set(SOFABASE_SRC src/${PROJECT_NAME})
+set(HEADER_FILES
+    ${SOFABASE_SRC}/config.h.in
+    ${SOFABASE_SRC}/initSofaBase.h
+    )
+set(SOURCE_FILES
+    ${SOFABASE_SRC}/initSofaBase.cpp
+    )
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFABASE_TARGETS})
+
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} 
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    )

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,15 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ManifoldTetrahedronSetTopologyContainer.h"
 
+#include <ManifoldTopologies/ManifoldTetrahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
-
-
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/template.h>
-
-#include <sofa/helper/gl/glText.inl>
 
 namespace sofa
 {
@@ -41,7 +35,6 @@ namespace topology
 using namespace std;
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ManidfoldTetrahedronSetTopologyContainer)
 int ManifoldTetrahedronSetTopologyContainerClass = core::RegisterObject("Manifold Tetrahedron set topology container")
         .add< ManifoldTetrahedronSetTopologyContainer >()
         ;
@@ -59,18 +52,16 @@ ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer
 
 void ManifoldTetrahedronSetTopologyContainer::reinit()
 {
-    std::cout << "Starting functions tests: " << std::endl;
     //	int test;
 
     /*	Tetrahedron tetra_test=Tetrahedron(m_tetrahedron[1][0], m_tetrahedron[1][3], m_tetrahedron[1][2], m_tetrahedron[1][1]);
      test = getTetrahedronOrientation(m_tetrahedron[1], tetra_test);
-     std::cout << "res: " << test<< std::endl;
+     msg_info() << "res: " << test;
 
      Tetrahedron tetra_test2=Tetrahedron(m_tetrahedron[1][2], m_tetrahedron[1][3], m_tetrahedron[1][0], m_tetrahedron[1][1]);
      test = getTetrahedronOrientation(m_tetrahedron[1], tetra_test2);
-     std::cout << "res: " << test<< std::endl;
+     msg_info() << "res: " << test;
      */
-
 
 
     createTetrahedraAroundEdgeArray();
@@ -78,13 +69,13 @@ void ManifoldTetrahedronSetTopologyContainer::reinit()
 
 
     /*		for (unsigned int i = 0 ; i <m_edge.size();i++)
-     std::cout << i  << " => " << m_edge[i] <<std::endl;
+     msg_info() << i  << " => " << m_edge[i] ;
 
      for (unsigned int i = 0; i < m_tetrahedraAroundEdge.size(); i++)
-     std::cout << i << " => " << m_tetrahedraAroundEdge[i] << std::endl;
+     msg_info() << i << " => " << m_tetrahedraAroundEdge[i];
 
      for (unsigned int i =0; i<m_tetrahedron.size();i++)
-     std::cout << i << " => "<<m_tetrahedron[i] << std::endl;
+     msg_info() << i << " => "<<m_tetrahedron[i];
      */
 }
 
@@ -98,21 +89,16 @@ void ManifoldTetrahedronSetTopologyContainer::init()
 
 void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray ()
 {
-    std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray ()"<<std::endl;
-
     // TO be implemented
     // see late: for the topology, only one connexe composante around one vertex.
 
     TetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray();
-
 }
 
 
 
 void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
 {
-    std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()"<<std::endl;
-
     // Get edge array
     sofa::helper::vector<Edge> edges = getEdgeArray();
 
@@ -120,14 +106,13 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
     TetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray();
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     //	for (unsigned int i = 0; i < m_tetrahedraAroundEdge.size(); i++)
-    //  std::cout << i << " => " << m_tetrahedraAroundEdge[i] << std::endl;
+    //  msg_info() << i << " => " << m_tetrahedraAroundEdge[i];
 
 
     for (unsigned int edgeIndex =0; edgeIndex<edges.size(); edgeIndex++)
     {
 
         sofa::helper::vector <unsigned int> &shell = getTetrahedraAroundEdgeForModification (edgeIndex);
-        sofa::helper::vector <unsigned int>::iterator it;
         sofa::helper::vector < sofa::helper::vector <unsigned int> > vertexTofind;
         sofa::helper::vector <unsigned int> goodShell;
         unsigned int firstVertex =0;
@@ -170,7 +155,7 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
         }
         else
         {
-            std::cout << "Error: createTetrahedraAroundEdgeArray: Houston there is a probleme." <<std::endl;
+            msg_error() << "CreateTetrahedraAroundEdgeArray: Houston there is a problem." ;
         }
 
         goodShell.push_back(shell[0]);
@@ -219,9 +204,6 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
         // Reverse path following methode
         if(reverse)
         {
-#ifndef NDEBUG
-            std::cout << "Edge on border: "<< edgeIndex << std::endl;
-#endif
             for (unsigned int i = cpt+1; i<shell.size(); i++)
             {
                 for (unsigned int j = 0; j<shell.size(); j++)
@@ -257,7 +239,7 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
 
 void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()
 {
-    //std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()"<<std::endl;
+    //msg_info() << "ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()";
     // To be implemented
     // at most 2 tetrahedrons adjacent to one triangle.
 
@@ -265,7 +247,7 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArra
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
     //	for (unsigned int i = 0; i <m_tetrahedraAroundTriangle.size();i++)
-    // std::cout << i << " old => " << m_tetrahedraAroundTriangle[i] << std::endl;
+    // msg_info() << i << " old => " << m_tetrahedraAroundTriangle[i];
 
 
     for (unsigned int triangleIndex = 0; triangleIndex < m_tetrahedraAroundTriangle.size(); triangleIndex++)
@@ -274,11 +256,9 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArra
 
         if (shell.size() == 1)
         {
-            //on fait rien pour le moment mais il faudrait verifier que le triangle est bien dans le bon sens:
-#ifndef NDEBUG
+            //Check if triangle has the good orientation
             int test = getTriangleTetrahedronOrientation (m_tetrahedron[ shell[0] ], m_triangle[ triangleIndex ]);
-            std::cout << "Border test: " << test << std::endl;
-#endif
+            msg_info() << "Border test: " << test;
         }
         else if (shell.size() == 2)
         {
@@ -292,49 +272,36 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArra
         }
         else
         {
-            std::cout << " Error: createTetrahedraAroundTriangleArray, manifold topology is not fullfil" << std::endl;
+            msg_error() << "CreateTetrahedraAroundTriangleArray, manifold topology is not fullfil.";
         }
     }
 
     //	for (unsigned int i = 0; i <m_tetrahedraAroundTriangle.size();i++)
-    //	  std::cout << i << " new => " << m_tetrahedraAroundTriangle[i] << std::endl;
+    //	  msg_info() << i << " new => " << m_tetrahedraAroundTriangle[i];
 
 }
 
 
 bool ManifoldTetrahedronSetTopologyContainer::checkTopology() const
 {
-    std::cout << "ManifoldTetrahedronSetTopologyContainer::checkTopology ()"<<std::endl;
-#ifndef NDEBUG
     bool ret = true;
 
     // To be implemented later later....
 
     return ret && TetrahedronSetTopologyContainer::checkTopology();
-#else
-    return true;
-#endif
 }
 
 
 
 void ManifoldTetrahedronSetTopologyContainer::clear()
 {
-    std::cout << "ManifoldTetrahedronSetTopologyContainer::clear ()"<<std::endl;
     //To be completed if necessary
-
     TetrahedronSetTopologyContainer::clear();
 }
 
 
 int ManifoldTetrahedronSetTopologyContainer::getTetrahedronOrientation (const Tetrahedron &t_ref, const Tetrahedron &t_test )
 {
-    //	std::cout << "ManifoldTetrahedronSetTopologyContainer::getTetrahedronOrientation ()"<<std::endl;
-#ifndef NDEBUG
-    std::cout << "Tetra de ref: " << t_ref << std::endl;
-    std::cout << "Tetra a tester: " << t_test << std::endl;
-#endif
-
     std::map<unsigned int, unsigned int> mapPosition;
     unsigned int positionsChange[4];
     std::map<unsigned int, unsigned int>::iterator it;
@@ -352,9 +319,7 @@ int ManifoldTetrahedronSetTopologyContainer::getTetrahedronOrientation (const Te
         it = mapPosition.find (t_test[i]);
         if (it == mapPosition.end())
         {
-#ifndef NDEBUG
-            std::cout <<"Error: getTetrahedronOrientation: reference and testing tetrahedrons are not composed by the same vertices."<<std::endl;
-#endif
+            msg_error() << "GetTetrahedronOrientation: reference and testing tetrahedrons are not composed by the same vertices.";
             return -1;
         }
         positionsChange[(*it).second] = i;
@@ -398,7 +363,7 @@ int ManifoldTetrahedronSetTopologyContainer::getEdgeTriangleOrientation(const Tr
 
 int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (const Tetrahedron &t, const Triangle &tri )
 {
-    //std::cout << "ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation ()"<<std::endl;
+    //msg_info() << "ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation ()";
     //To be done in better way:
 
     std::map <unsigned int, unsigned int> mapPosition;
@@ -418,9 +383,7 @@ int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (
         it = mapPosition.find (tri[i]);
         if (it == mapPosition.end())
         {
-#ifndef NDEBUG
-            std::cout <<"Error: getTriangleTetrahedronOrientation: tetrahedrons and triangle are not composed by the same vertices."<<std::endl;
-#endif
+            msg_error() << "GetTriangleTetrahedronOrientation: tetrahedrons and triangle are not composed by the same vertices.";
             return -1;
         }
         positionsChange[i] = (*it).second;

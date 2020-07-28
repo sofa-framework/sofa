@@ -28,7 +28,7 @@ class VectorVisSettings: public QObject
     Q_OBJECT
 
 public:
-    virtual ~VectorVisSettings() {}
+    ~VectorVisSettings() override {}
 
     /**
     * @name From Options
@@ -108,7 +108,7 @@ public:
         widget->setLayout(layout);
     }
 
-    virtual ~TVectorVisSettings() {};
+    ~TVectorVisSettings() override {};
 
     /**
     * When the Data<VectorVis> in the ImageViewer is changed, this gets called.
@@ -152,32 +152,32 @@ public:
         emit updateShapeScale(shapeScale);
     }
 
-    void shapeFromOptions(bool vis)
+    void shapeFromOptions(bool vis) override
     {
         this->shape = vis;
         emit settingsModified();
 
     }
 
-    void rgbFromOptions(bool _rgb)
+    void rgbFromOptions(bool _rgb) override
     {
         this->rgb = _rgb;
         emit settingsModified();
     }
 
-    void subsampleXYFromOptions(int subsample)
+    void subsampleXYFromOptions(int subsample) override
     {
         this->subsampleXY = subsample;
         emit settingsModified();
     }
 
-    void subsampleZFromOptions(int subsample)
+    void subsampleZFromOptions(int subsample) override
     {
         this->subsampleZ = subsample;
         emit settingsModified();
     }
 
-    void shapeScaleFromOptions(int scale)
+    void shapeScaleFromOptions(int scale) override
     {
         this->shapeScale = scale;
         emit settingsModified();

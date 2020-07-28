@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -28,6 +28,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 #include <fstream>
@@ -869,8 +870,6 @@ void OptiTrackNatNetDevice::onBeginAnimationStep(const double /*dt*/)
 {
     update();
 }
-
-SOFA_DECL_CLASS(OptiTrackNatNetDevice)
 
 int OptiTrackNatNetDeviceClass = sofa::core::RegisterObject("Tracked rigid device relying on OptiTrackNatNetClient")
         .add< OptiTrackNatNetDevice >()

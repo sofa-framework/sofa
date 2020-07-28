@@ -36,12 +36,12 @@ class SOFA_Compliant_API BaseConstraintValue : public core::objectmodel::BaseObj
     SOFA_ABSTRACT_CLASS(BaseConstraintValue, core::objectmodel::BaseObject);
 
 
-    BaseConstraintValue( mstate_type* mstate = 0 ) 
+    BaseConstraintValue( mstate_type* mstate = nullptr ) 
 		: mstate(mstate) { 
 		
 	}
 
-    void init()
+    void init() override
     {
         if( !mstate )
         {

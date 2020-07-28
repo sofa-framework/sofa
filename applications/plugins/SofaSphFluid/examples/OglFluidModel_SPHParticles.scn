@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<Node dt="0.01" gravity="0 -10 0" bbox="-4 -4 -4 4 4 4">
+    <RequiredPlugin name="SofaOpenglVisual"/> 
+    <RequiredPlugin name='SofaSphFluid' />
+    <VisualStyle displayFlags="hideBehaviorModels hideForceFields hideWireframe" />
+
+    <Node name="Particles">
+        <EulerExplicitSolver symplectic="1" />
+        <MechanicalObject name="MModel" />
+        <ParticleSource name="Source" translation="0 20 0" radius="0.01 0.1 0.01" velocity="0 -10 0" delay="0.02" start="0.0" stop="10" printLog="0"
+        center="-0.375 0 -0.75 
+            0.0 0.0 -0.75 
+            0.375 0.0 -0.75 
+            -0.75  0.0 -0.375 
+            -0.375 0.0 -0.375 
+            0.0 0.0 -0.375 
+            0.375 0.0 -0.375 
+            0.75 0.0 -0.375 
+            -0.75 0.0 0.0 
+            -0.375 0.0 0.0 
+            0.0 0.0 0.0 
+            0.375 0.0 0.0 
+            0.75 0.0 0.0 
+            -0.75 0.0 0.375 
+            -0.375 0.0 0.375 
+            0.0 0.0 0.375 
+            0.375 0.0 0.375 
+            0.75 0.0 0.375 
+            -0.375 0.0 0.75 
+            0.0 0.0 0.75 
+            0.375 0.0 0.75"  />
+        
+        <UniformMass name="M1" totalMass="1.0" />
+        <PointSetTopologyContainer name="con" />
+        <PointSetTopologyModifier name="mod" />
+        
+        <SpatialGridContainer cellWidth="0.75" />
+        <SPHFluidForceField radius="0.7" density="25" kernelType="1" viscosityType="2" viscosity="10" pressure="1000" surfaceTension="-1000" printLog="0" />
+
+        <ParticleSink name="sink" normal="0 1 0" d0="1" d1="0" showPlane="0" printLog="0" />
+        <Node name="Fluid" >            
+            <OglFluidModel template="Vec3d" position="@../MModel.position" 
+                debugFBO="9"
+                spriteRadius="0.5" spriteThickness="0.015" spriteBlurRadius="10" spriteBlurScale="10" spriteBlurDepthFalloff="1"  />
+        </Node>
+    </Node>
+</Node>

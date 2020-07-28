@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,13 +27,9 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
-//#include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
-
-#include <sofa/helper/gl/BasicShapes.h>
 
 namespace sofa
 {
@@ -44,7 +40,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-// Define TestNewPointFunction
 template< class DataTypes>
 bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
@@ -58,7 +53,6 @@ bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunctio
     }
 }
 
-// Define RemovalFunction
 template< class DataTypes>
 void ProjectToPointConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, core::objectmodel::Data<value_type> &)
 {
@@ -70,26 +64,25 @@ void ProjectToPointConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(u
 
 template <class DataTypes>
 ProjectToPointConstraint<DataTypes>::ProjectToPointConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the points to project") )
     , f_point( initData(&f_point,"point","Target of the projection") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , data(new ProjectToPointConstraintInternalData<DataTypes>())
+    , l_topology(initLink("topology", "link to the topology container"))
+    , data(new ProjectToPointConstraintInternalData<DataTypes>())    
+    , m_pointHandler(nullptr)
 {
-    // default to indice 0
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
-
-    pointHandler = new FCPointHandler(this, &f_indices);
 }
 
 
 template <class DataTypes>
 ProjectToPointConstraint<DataTypes>::~ProjectToPointConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 
     delete data;
 }
@@ -123,27 +116,42 @@ void ProjectToPointConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    //  if (!topology)
-    //    serr << "Can not find the topology." << sendl;
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
 
-    // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
-    f_indices.registerTopologicalData();
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &f_indices);
+        f_indices.createTopologicalEngine(_topology, m_pointHandler);
+        f_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
     const SetIndexArray & indices = f_indices.getValue();
 
+    std::stringstream sstream;
     unsigned int maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
     {
         const unsigned int index=indices[i];
         if (index >= maxIndex)
         {
-            serr << "Index " << index << " not valid!" << sendl;
+            sstream << "Index " << index << " not valid!\n";
             removeConstraint(index);
         }
     }
+    msg_error_when(!sstream.str().empty()) << sstream.str();
 
     reinit();
 }
@@ -155,44 +163,6 @@ void  ProjectToPointConstraint<DataTypes>::reinit()
     // get the indices sorted
     SetIndexArray tmp = f_indices.getValue();
     std::sort(tmp.begin(),tmp.end());
-
-//    // resize the jacobian
-//    unsigned numBlocks = this->mstate->getSize();
-//    unsigned blockSize = DataTypes::deriv_total_size;
-//    jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
-
-//    // fill the jacobian is ascending order
-//    SetIndexArray::const_iterator it= tmp.begin();
-//    unsigned i=0;
-//    for(SetIndexArray::const_iterator it= tmp.begin(); i<numBlocks && it!=tmp.end(); i++ )
-//    {
-//        if( i==*it )  // constrained particle: set diagonal to 0, and move the cursor to the next constraint
-//        {
-//            it++;
-//            for( unsigned j=0; j<blockSize; j++ )
-//            {
-//                jacobian.beginRow(blockSize*i+j );
-//                jacobian.set( blockSize*i+j, blockSize*i+j, 0); // constrained particle: set the diagonal to
-//            }
-//        }
-//        else
-//            for( unsigned j=0; j<blockSize; j++ )
-//            {
-//                jacobian.beginRow(blockSize*i+j );
-//                jacobian.set( blockSize*i+j, blockSize*i+j, 1); // unconstrained particle: set the diagonal to identity
-//            }
-//    }
-//    // Set the matrix to identity beyond the last constrained particle
-//    for(; i<numBlocks && it!=tmp.end(); i++ )
-//    {
-//        for( unsigned j=0; j<blockSize; j++ )
-//        {
-//            jacobian.beginRow( blockSize*i+j );
-//            jacobian.set( blockSize*i+j, blockSize*i+j, 1);
-//        }
-//    }
-//    jacobian.compress();
-
 }
 
 template <class DataTypes>
@@ -207,22 +177,14 @@ void ProjectToPointConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
     }
 }
 
-
-
-///// Update and return the jacobian. @todo update it when needed using topological engines instead of recomputing it at each call.
-//template <class DataTypes>
-//const sofa::defaulttype::BaseMatrix*  ProjectToPointConstraint<DataTypes>::getJ(const core::MechanicalParams* )
-//{
-//    return &jacobian;
-//}
-
-
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
-    if( f_fixAll.getValue(mparams) )
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecDeriv> res ( resData );
+    const SetIndexArray & indices = f_indices.getValue();
+    if( f_fixAll.getValue() )
     {
         // fix everything
         typename VecDeriv::iterator it;
@@ -245,13 +207,15 @@ void ProjectToPointConstraint<DataTypes>::projectResponse(const core::Mechanical
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
-    helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataMatrixDeriv> c ( cData );
+    const SetIndexArray & indices = f_indices.getValue();
 
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();
 
-    if( f_fixAll.getValue(mparams) )
+    if( f_fixAll.getValue() )
     {
         // fix everything
         while (rowIt != rowItEnd)
@@ -284,9 +248,11 @@ void ProjectToPointConstraint<DataTypes>::projectVelocity(const core::Mechanical
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
-    helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
-    if( f_fixAll.getValue(mparams) )
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecCoord> res ( xData );
+    const SetIndexArray & indices = f_indices.getValue();
+    if( f_fixAll.getValue() )
     {
         // fix everything
         typename VecCoord::iterator it;
@@ -306,7 +272,6 @@ void ProjectToPointConstraint<DataTypes>::projectPosition(const core::Mechanical
     }
 }
 
-// Matrix Integration interface
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
@@ -343,11 +308,12 @@ void ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray & indices = f_indices.getValue();
+
+    vparams->drawTool()->saveLastState();
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
@@ -373,7 +339,6 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        glColor4f (1.0f,0.35f,0.35f,1.0f);
         if( f_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
             {
@@ -390,24 +355,9 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
             }
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
-
-//// Specialization for rigids
-//#ifndef SOFA_FLOAT
-//template <>
-//void ProjectToPointConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-//template <>
-//void ProjectToPointConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
-//#endif
-//#ifndef SOFA_DOUBLE
-//template <>
-//void ProjectToPointConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-//template <>
-//void ProjectToPointConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
-//#endif
-
-
 
 } // namespace constraint
 

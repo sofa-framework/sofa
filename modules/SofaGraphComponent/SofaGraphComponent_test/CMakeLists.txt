@@ -1,11 +1,10 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
 project(SofaGraphComponent_test)
 
 set(SOURCE_FILES ../../empty.cpp)
 
 list(APPEND SOURCE_FILES
-RequiredPlugin_test.cpp
 SceneChecker_test.cpp
 )
 

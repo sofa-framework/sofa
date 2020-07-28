@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,6 +52,7 @@ class LinearMovementConstraintInternalData
 
 /** impose a motion to given DOFs (translation and rotation)
 	The motion between 2 key times is linearly interpolated
+    Rigid version doesn't handle Topology change.
 */
 template <class TDataTypes>
 class LinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
@@ -101,23 +102,27 @@ public :
     Deriv prevM, nextM;
     ///initial constrained DOFs position
     VecCoord x0;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LinearMovementConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     LinearMovementConstraint();
+    ~LinearMovementConstraint() override;
 
-    virtual ~LinearMovementConstraint();
 public:
     ///methods to add/remove some indices, keyTimes, keyMovement
     void clearIndices();
     void addIndex(unsigned int index);
     void removeIndex(unsigned int index);
     void clearKeyMovements();
-    /**add a new key movement
-    @param time : the simulation time you want to set a movement (in sec)
-    @param movement : the corresponding motion
-    for instance, addKeyMovement(1.0, Deriv(5,0,0) ) will set a translation of 5 in x direction a time 1.0s
-    **/
-    void addKeyMovement(Real time, Deriv movement);
 
+    ///@brief Add a new key movement
+    /// @param time : the simulation time you want to set a movement (in sec)
+    /// @param movement : the corresponding motion
+    /// for instance, addKeyMovement(1.0, Deriv(5,0,0) ) will set a translation of 5 in x direction a time 1.0s
+    ///
+    void addKeyMovement(Real time, Deriv movement);
 
     /// -- Constraint interface
     void init() override;
@@ -128,13 +133,13 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+    void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
     using core::behavior::ProjectiveConstraintSet<TDataTypes>::applyConstraint;
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
@@ -144,10 +149,7 @@ public:
         FCPointHandler(LinearMovementConstraint<DataTypes>* _lc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), lc(_lc) {}
 
-
-
         void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
-
 
         bool applyTestCreateFunction(unsigned int /*index*/,
                 const sofa::helper::vector< unsigned int > & /*ancestors*/,
@@ -165,12 +167,7 @@ protected:
     template <class MyCoord>
     void interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
-
 private:
-
     /// to keep the time corresponding to the key times
     Real currentTime;
 
@@ -181,27 +178,17 @@ private:
     void findKeyTimes();
 
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3dTypes>;
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3Types>;
 #endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3fTypes>;
-#endif
-#endif
-
 
 } // namespace projectiveconstraintset
 

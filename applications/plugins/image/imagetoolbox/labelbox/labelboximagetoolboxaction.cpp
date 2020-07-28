@@ -341,10 +341,6 @@ void LabelBoxImageToolBoxAction::validView()
 
 
 
-SOFA_DECL_CLASS(LabelBoxImageToolBoxAction)
-
-
-
 }
 }
 }

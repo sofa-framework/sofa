@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
-#define SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
+#ifndef SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_H
+#define SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_H
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/Mat.h>
@@ -40,28 +40,28 @@ public:
     Data< bool > resizable; ///< can the associated dofs can be resized? (in which case the matrices must be updated)
 
 
-    virtual void init();
+    virtual void init() override;
 
     /// Compute the compliance matrix
-    virtual void reinit();
+    virtual void reinit() override;
 
-    virtual SReal getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x ) const;
+    virtual SReal getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x ) const override;
 
     /// Return a pointer to the compliance matrix
-    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*);
+    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*) override;
 
-    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset );
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset ) override;
 
-    virtual void addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset );
+    virtual void addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset ) override;
 
     /// addForce does nothing when this component is processed like a compliance.
-    virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &);
+    virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &) override;
 
     /// addDForce does nothing when this component is processed like a compliance.
-    virtual void addDForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &);
+    virtual void addDForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &) override;
 
     /// unassembled API
-    virtual void addClambda(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &, SReal);
+    virtual void addClambda(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &, SReal) override;
 
 
 protected:
@@ -76,10 +76,17 @@ protected:
 
 };
 
+#if !defined(SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_CPP)
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec6Types>;
+#endif
+
 }
 }
 }
 
-#endif // SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
+#endif // SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_H
 
 

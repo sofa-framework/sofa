@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,9 +81,10 @@ public:
         m_controller = psc ;
     }
 
-    virtual ~MyFileEventListener(){}
+    ~MyFileEventListener() override{}
 
-    virtual void fileHasChanged(const std::string& filepath){
+    virtual void fileHasChanged(const std::string& filepath) override
+    {
         PythonEnvironment::gil lock {__func__} ;
 
         /// This function is called when the file has changed. Two cases have
@@ -108,8 +109,6 @@ int PythonScriptControllerClass = core::RegisterObject("A Sofa controller script
         .add< PythonScriptController >()
         ;
 
-SOFA_DECL_CLASS(PythonScriptController)
-
 PythonScriptController::PythonScriptController()
     : ScriptController()
     , m_filename(initData(&m_filename, "filename",
@@ -125,8 +124,8 @@ PythonScriptController::PythonScriptController()
     , m_doAutoReload( initData( &m_doAutoReload, false, "autoreload",
                                 "Automatically reload the file when the source code is changed. "
                                 "Default value is set to false" ) )
-    , m_ScriptControllerClass(0)
-    , m_ScriptControllerInstance(0)
+    , m_ScriptControllerClass(nullptr)
+    , m_ScriptControllerInstance(nullptr)
 {
     m_filelistener = new MyFileEventListener(this) ;
 }
@@ -169,6 +168,7 @@ void PythonScriptController::refreshBinding()
             BIND_OBJECT_METHOD(bwdInitGraph)
             BIND_OBJECT_METHOD(onKeyPressed)
             BIND_OBJECT_METHOD(onKeyReleased)
+            BIND_OBJECT_METHOD(onMouseMove)
             BIND_OBJECT_METHOD(onMouseButtonLeft)
             BIND_OBJECT_METHOD(onMouseButtonRight)
             BIND_OBJECT_METHOD(onMouseButtonMiddle)
@@ -300,6 +300,15 @@ bool PythonScriptController::script_onKeyReleased(const char c)
     PythonEnvironment::gil lock(__func__);    
     SP_CALL_MODULEBOOLFUNC(m_Func_onKeyReleased,"(c)", c);
     return b;
+}
+
+void PythonScriptController::script_onMouseMove(const int posX,const int posY)
+{
+     ActivableScopedAdvancedTimer advancedTimer(m_timingEnabled.getValue(),
+                                                "PythonScriptController_onMouseMove",this);
+
+     PythonEnvironment::gil lock(__func__);
+     SP_CALL_MODULEFUNC(m_Func_onMouseMove, "(ii)", posX, posY);
 }
 
 void PythonScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)

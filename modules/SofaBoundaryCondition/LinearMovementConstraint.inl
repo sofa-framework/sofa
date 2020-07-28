@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,8 +26,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
@@ -55,19 +55,21 @@ void LinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(u
 {
     if (lc)
     {
-        lc->removeIndex((unsigned int) pointIndex);
+        lc->removeIndex(pointIndex);
     }
 }
 
 template <class DataTypes>
 LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , data(new LinearMovementConstraintInternalData<DataTypes>)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
     , m_keyMovements(  initData(&m_keyMovements,"movements","movements corresponding to the key times") )
-    , d_relativeMovements( initData(&d_relativeMovements, (bool)true, "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
-    , showMovement( initData(&showMovement, (bool)false, "showMovement", "Visualization of the movement to be applied to constrained dofs."))
+    , d_relativeMovements( initData(&d_relativeMovements, bool(true), "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
+    , showMovement( initData(&showMovement, bool(false), "showMovement", "Visualization of the movement to be applied to constrained dofs."))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_pointHandler(nullptr)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -78,8 +80,6 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     m_keyTimes.endEdit();
     m_keyMovements.beginEdit()->push_back( Deriv() );
     m_keyMovements.endEdit();
-
-    pointHandler = new FCPointHandler(this, &m_indices);
 }
 
 
@@ -87,8 +87,8 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
 template <class DataTypes>
 LinearMovementConstraint<DataTypes>::~LinearMovementConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 }
 
 template <class DataTypes>
@@ -131,18 +131,32 @@ void LinearMovementConstraint<DataTypes>::addKeyMovement(Real time, Deriv moveme
 }
 
 // -- Constraint interface
-
-
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters
-    m_indices.createTopologicalEngine(topology, pointHandler);
-    m_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &m_indices);
+        m_indices.createTopologicalEngine(_topology, m_pointHandler);
+        m_indices.registerTopologicalData();        
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
     x0.resize(0);
     nextM = prevM = Deriv();
@@ -167,7 +181,7 @@ template <class DataTypes>
 template <class DataDeriv>
 void LinearMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
 {
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = static_cast<Real>(this->getContext()->getTime());
     if ((cT != currentTime) || !finished)
     {
         findKeyTimes();
@@ -196,7 +210,7 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> dx = vData;
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = static_cast<Real>(this->getContext()->getTime());
     if ((cT != currentTime) || !finished)
     {
         findKeyTimes();
@@ -219,7 +233,7 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = static_cast<Real>(this->getContext()->getTime());
 
     //initialize initial Dofs positions, if it's not done
     if (x0.size() == 0)
@@ -318,7 +332,7 @@ void LinearMovementConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::findKeyTimes()
 {
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = static_cast<Real>(this->getContext()->getTime());
     finished = false;
 
     if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())
@@ -400,39 +414,51 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
+
+    vparams->drawTool()->saveLastState();
+    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+
     if (showMovement.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glPointSize(10);
-        glColor4f(1, 0.5, 0.5, 1);
-        glBegin(GL_LINES);
+        vparams->drawTool()->disableLighting();
+
+        std::vector<sofa::defaulttype::Vector3> vertices;
+
         const SetIndexArray & indices = m_indices.getValue();
+        const VecDeriv& keyMovements = m_keyMovements.getValue();
         if (d_relativeMovements.getValue()) 
         {
             for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
             {
                 for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
                 {
-                    helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i]));
-                    helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i + 1]));
+                    auto tmp0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
+                    auto tmp1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
+                    sofa::defaulttype::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
+                    sofa::defaulttype::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    vertices.push_back(v0);
+                    vertices.push_back(v1);
                 }
             }
         } 
         else 
         {
-            for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
+            for (unsigned int i = 0; i < keyMovements.size() - 1; i++)
             {
                 for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
                 {
-                    helper::gl::glVertexT(DataTypes::getDPos(m_keyMovements.getValue()[i]));
-                    helper::gl::glVertexT(DataTypes::getDPos(m_keyMovements.getValue()[i + 1]));
+                    auto tmp0 = DataTypes::getDPos(keyMovements[i]);
+                    auto tmp1 = DataTypes::getDPos(keyMovements[i + 1]);
+                    sofa::defaulttype::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
+                    sofa::defaulttype::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    vertices.push_back(v0);
+                    vertices.push_back(v1);
                 }
             }
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices, 10, color);
     }
     else
     {
@@ -446,9 +472,10 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4, float> (1, 0.5, 0.5, 1));
+        vparams->drawTool()->drawPoints(points, 10, color);
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace constraint

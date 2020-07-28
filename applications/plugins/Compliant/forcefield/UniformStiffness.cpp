@@ -13,38 +13,18 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int UniformStiffnessClass = core::RegisterObject("Uniform stiffness")
-#ifndef SOFA_FLOAT
-        .add< UniformStiffness< Vec1dTypes > >(true)
-        .add< UniformStiffness< Vec2dTypes > >()
-        .add< UniformStiffness< Vec3dTypes > >()
-        .add< UniformStiffness< Vec6dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-#ifdef SOFA_FLOAT
-        .add< UniformStiffness< Vec1fTypes > >(true)
-#else
-        .add< UniformStiffness< Vec1fTypes > >()
-#endif
-        .add< UniformStiffness< Vec2fTypes > >()
-        .add< UniformStiffness< Vec3fTypes > >()
-        .add< UniformStiffness< Vec6fTypes > >()
-#endif
+        .add< UniformStiffness< Vec1Types > >(true)
+        .add< UniformStiffness< Vec2Types > >()
+        .add< UniformStiffness< Vec3Types > >()
+        .add< UniformStiffness< Vec6Types > >()
+
         ;
 
-SOFA_DECL_CLASS(UniformStiffness)
+template class SOFA_Compliant_API UniformStiffness<Vec1Types>;
+template class SOFA_Compliant_API UniformStiffness<Vec2Types>;
+template class SOFA_Compliant_API UniformStiffness<Vec3Types>;
+template class SOFA_Compliant_API UniformStiffness<Vec6Types>;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API UniformStiffness<Vec1dTypes>;
-template class SOFA_Compliant_API UniformStiffness<Vec2dTypes>;
-template class SOFA_Compliant_API UniformStiffness<Vec3dTypes>;
-template class SOFA_Compliant_API UniformStiffness<Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API UniformStiffness<Vec1fTypes>;
-template class SOFA_Compliant_API UniformStiffness<Vec2fTypes>;
-template class SOFA_Compliant_API UniformStiffness<Vec3fTypes>;
-template class SOFA_Compliant_API UniformStiffness<Vec6fTypes>;
-#endif
 
 }
 }

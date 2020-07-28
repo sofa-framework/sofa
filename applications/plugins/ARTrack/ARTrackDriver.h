@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,6 @@
 #include <dtracklib.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/system/config.h>
 
 #ifndef WIN32
 #include <pthread.h>
@@ -57,11 +56,11 @@ public:
 	SOFA_CLASS(ARTrackDriver, core::behavior::BaseController);
 
     ARTrackDriver();
-    virtual ~ARTrackDriver() {}
+    ~ARTrackDriver() override {}
 
-    virtual void init();
+    void init() override;
 
-    virtual void reinit();
+    void reinit() override;
 
 
     Data<double> aRTrackScale; ///< ARTrack scale
@@ -111,7 +110,7 @@ private:
     static void* computeTracking (void *sarg);
 #endif
 
-    void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override;
 };
 
 } // namespace controller

@@ -42,15 +42,12 @@ namespace forcefield
 /// @author Matthieu Nesme
 ///
 template<class DataTypes>
-class SOFA_Flexible_API FlexibleCorotationalMeshFEMForceField : public core::behavior::ForceField<DataTypes>, public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction>
+class SOFA_Flexible_API FlexibleCorotationalMeshFEMForceField : public core::behavior::ForceField<DataTypes>, public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction3>
 {
 public:
 
 
-    SOFA_CLASS2(SOFA_TEMPLATE(FlexibleCorotationalMeshFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes),SOFA_TEMPLATE(shapefunction::BarycentricShapeFunction,core::behavior::ShapeFunction));
-
-    virtual std::string getTemplateName() const { return templateName(this); }
-    static std::string templateName( const FlexibleCorotationalMeshFEMForceField<DataTypes>* = NULL) { return DataTypes::Name(); }
+    SOFA_CLASS2(SOFA_TEMPLATE(FlexibleCorotationalMeshFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes),SOFA_TEMPLATE(shapefunction::BarycentricShapeFunction,core::behavior::ShapeFunction3));
 
     /** @name  Input types    */
     //@{
@@ -67,7 +64,7 @@ public:
 
     /** @name forceField functions */
     //@{
-    virtual void init()
+    virtual void init() override
     {
         if( !this->mstate )
         {
@@ -90,18 +87,12 @@ public:
 /// CorotationalDeformationMapping
         m_corotationalDeformationMapping = core::objectmodel::New< CorotationalDeformationMapping >();
         m_corotationalDeformationMapping->setModels( this->mstate, m_rotatedDofs.get() );
-//        m_corotationalDeformationMapping->in_edges.setParent( &topo->seqEdges );
-//        m_corotationalDeformationMapping->in_triangles.setParent( &topo->seqTriangles );
-//        m_corotationalDeformationMapping->in_quads.setParent( &topo->seqQuads );
         m_corotationalDeformationMapping->in_tetrahedra.setParent( &topo->seqTetrahedra );
         m_corotationalDeformationMapping->in_hexahedra.setParent( &topo->seqHexahedra );
         m_corotationalDeformationMapping->init();
 
 /// Rotated Mesh
         m_rotatedTopology->seqPoints.setParent( &m_rotatedDofs->x );
-//        m_rotatedTopology->seqEdges.setParent( &m_corotationalDeformationMapping->out_edges );
-//        m_rotatedTopology->seqTriangles.setParent( &m_corotationalDeformationMapping->out_triangles );
-//        m_rotatedTopology->seqQuads.setParent( &m_corotationalDeformationMapping->out_quads );
         m_rotatedTopology->seqTetrahedra.setParent( &m_corotationalDeformationMapping->out_tetrahedra );
         m_rotatedTopology->seqHexahedra.setParent( &m_corotationalDeformationMapping->out_hexahedra );
 
@@ -135,18 +126,15 @@ public:
         _materialBlocks.resize( size );
         for( unsigned int i=0 ; i<size ; i++ ) _materialBlocks[i].volume=&m_gaussPointSampler->f_volume.getValue()[i];
 
-
         ForceField::init();
-
         reinit();
-
     }
 
 
 
 
 
-    virtual void reinit()
+    virtual void reinit() override
     {
 
         unsigned size = _materialBlocks.size();
@@ -156,15 +144,6 @@ public:
         {
             _materialBlocks[i].init( params, _viscosity.getValue() );
         }
-
-
-        // if _youngModulus or _poissonRatio changed, the assembled matrices must be updated
-
-//        typedef linearsolver::EigenBaseSparseMatrix<SReal> Sqmat;
-//        Sqmat sqmat( size, size );
-//        linearsolver::SingleMatrixAccessor accessor( &sqmat );
-//        ffield->addMBKToMatrix( ffield->isCompliance.getValue() ? &mparamsWithoutStiffness : mparams, &accessor );
-
 
         linearsolver::EigenSparseMatrix<defaulttype::E331Types,defaulttype::E331Types> K;
         K.resizeBlocks(size,size);
@@ -177,10 +156,6 @@ public:
         for(size_t i=0; i<size; i++)
             Jstrain.insertBackBlock( i, i, _strainJacobianBlocks[i].getJ() );
         Jstrain.compress();
-
-//        m_linearDeformationMapping->getJ(core::MechanicalParams::defaultInstance()); // to update J
-//        const linearsolver::EigenSparseMatrix<DataTypes,defaulttype::F331Types> &Jdefo = m_linearDeformationMapping->eigenJacobian;
-
 
         linearsolver::EigenSparseMatrix<DataTypes,defaulttype::F331Types> Jdefo;
         Jdefo.resizeBlocks(size,m_rotatedDofs->getSize());
@@ -199,12 +174,6 @@ public:
 
         m_assembledK.compressedMatrix = Jdefo.compressedMatrix.transpose() * Jstrain.compressedMatrix.transpose() * K.compressedMatrix * Jstrain.compressedMatrix * Jdefo.compressedMatrix;
 
-
-        //        serr<<K.compressedMatrix.nonZeros()<<" "<<Jstrain.compressedMatrix.nonZeros()<<" "<<Jdefo.compressedMatrix.nonZeros()<<" "<<m_assembledK.compressedMatrix.nonZeros()<<sendl;
-
-
-//        //if(this->assemble.getValue()) updateK();
-
         ForceField::reinit();
         ShapeFunction::reinit();
     }
@@ -212,7 +181,7 @@ public:
 
 
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& _v)
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& _v) override
     {
         m_corotationalDeformationMapping->apply( mparams, m_rotatedDofs->x ,_x);
         m_corotationalDeformationMapping->applyJ( mparams, m_rotatedDofs->v ,_v);
@@ -271,16 +240,9 @@ public:
 
         m_corotationalDeformationMapping->applyJT( mparams, _f, m_rotatedDofs->f );
 
-
-//        /*if(!BlockType::constantK)
-//        {
-//            if(this->assembleC.getValue()) updateC();
-//            if(this->assembleK.getValue()) updateK();
-//            if(this->assembleB.getValue()) updateB();
-//        }*/
     }
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  _df, const DataVecDeriv&  _dx )
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  _df, const DataVecDeriv&  _dx ) override
     {
         m_corotationalDeformationMapping->applyJ( mparams, m_rotatedDofs->dx ,_dx);
 
@@ -296,20 +258,20 @@ public:
     }
 
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const override
     {
         // TODO not implemented
         return 0;
     }
 
-    void draw(const core::visual::VisualParams* /*vparams*/)
+    void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
     //@}
 
 
     typedef core::behavior::ForceField<DataTypes> ForceField;
-    typedef shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction> ShapeFunction;
+    typedef shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction3> ShapeFunction;
     typedef engine::TopologyGaussPointSampler GaussPointSampler;
     typedef mapping::LinearMapping< DataTypes, defaulttype::F331Types > LinearDeformationMapping;
     typedef mapping::CorotationalMeshMapping< DataTypes, DataTypes > CorotationalDeformationMapping;
@@ -321,7 +283,6 @@ public:
 
     typedef defaulttype::LinearJacobianBlock< DataTypes, defaulttype::F331Types > LinearJacobianBlock;
     typedef helper::vector< LinearJacobianBlock >  LinearJacobianBlocks;
-//    LinearJacobianBlocks _linearJacobianBlocks;
 
     typedef defaulttype::CauchyStrainJacobianBlock< defaulttype::F331Types, defaulttype::E331Types > StrainJacobianBlock;
     typedef helper::vector< StrainJacobianBlock >  StrainJacobianBlocks;
@@ -367,12 +328,9 @@ protected:
 
 
     linearsolver::EigenSparseMatrix<DataTypes,DataTypes> m_assembledK; ///< assembled linear part defo*strain*stiffness
-    // linearsolver::EigenSparseMatrix<DataTypes,DataTypes> m_fullAssembledK; ///< full assembled matrix inclusing non-linear corotational mesh
-
 
     FlexibleCorotationalMeshFEMForceField()
         : ForceField(), ShapeFunction()
-        //, assemble ( initData ( &assemble,false, "assemble","Assemble the full matrix" ) )
         , d_method( initData( &d_method, "method", "Decomposition method" ) )
         , d_order( initData( &d_order, 1u, "order", "Order of quadrature method" ) )
         , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
@@ -402,19 +360,11 @@ protected:
     }
 
     virtual ~FlexibleCorotationalMeshFEMForceField() {}
-
-
-
-
-//      Data<bool> assemble;
-
-
-
 }; // class FlexibleCorotationalMeshFEMForceField
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_METACOROTATIONALMESHFEMFORCEFIELD_CPP)
+#if  !defined(FLEXIBLE_METACOROTATIONALMESHFEMFORCEFIELD_CPP)
 extern template class SOFA_Flexible_API FlexibleCorotationalMeshFEMForceField<defaulttype::Vec3Types>;
 #endif
 

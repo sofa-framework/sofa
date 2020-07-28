@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,9 +29,10 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 
@@ -50,8 +51,6 @@ int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation lo
         .add< MultiStepAnimationLoop >()
         .addAlias("MultiStepMasterSolver")
         ;
-
-SOFA_DECL_CLASS(MultiStepAnimationLoop);
 
 MultiStepAnimationLoop::MultiStepAnimationLoop(simulation::Node* gnode)
     : Inherit(gnode)
@@ -86,14 +85,22 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     BehaviorUpdatePositionVisitor beh(params , dt);
     this->gnode->execute ( beh );
 
+    UpdateInternalDataVisitor uid(params);
+    gnode->execute ( uid );
+
     const int ncollis = collisionSteps.getValue();
     const int ninteg = integrationSteps.getValue();
 
     SReal stepDt = dt / (ncollis * ninteg);
+
+    // initialize a constraint params object with default MultiVecId for 
+    // constraint jacobian, free positions, free velocity vectors
+    sofa::core::ConstraintParams cparams(*params); 
+
     for (int c = 0; c < ncollis; ++c)
     {
         // First we reset the constraints
-        sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
+        sofa::simulation::MechanicalResetConstraintVisitor(&cparams).execute(this->getContext());
         // Then do collision detection and response creation
         sout << "collision" << sendl;
         computeCollision(params);
@@ -126,11 +133,12 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
-#ifndef SOFA_NO_UPDATE_BBOX
-    sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
-    this->gnode->execute<UpdateBoundingBoxVisitor>(params);
-    sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
-#endif
+    if (!SOFA_NO_UPDATE_BBOX)
+    {
+        sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
+        this->gnode->execute<UpdateBoundingBoxVisitor>(params);
+        sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
+    }
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif

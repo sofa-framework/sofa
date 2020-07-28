@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,6 @@
 
 #include "GenerateSphere.h"
 #include <sofa/helper/rmath.h> //M_PI
-#include <sofa/helper/system/config.h>
 
 namespace sofa
 {
@@ -168,8 +167,8 @@ void GenerateSphere<DataTypes>::init()
 	} else if (f_platonicSolidName.getValue() == "octahedron"){
 		platonicSolid=OCTAHEDRON;
 	} else {
-		serr << "Wrong Platonic Solid Name : "<< f_platonicSolidName <<sendl;
-		serr << "It should be either \"tetrahedron\", \"octahedron\" or \"icosahedron\" "<<sendl;
+        msg_error() << "Wrong Platonic Solid Name : "<< f_platonicSolidName << msgendl
+		 << "It should be either \"tetrahedron\", \"octahedron\" or \"icosahedron\" ";
 	}
 
 }
@@ -182,15 +181,12 @@ void GenerateSphere<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void GenerateSphere<DataTypes>::update()
+void GenerateSphere<DataTypes>::doUpdate()
 {
     const Real radius = f_radius.getValue();
 	const size_t frequency = f_tessellationDegree.getValue();
 	const Coord origin = f_origin.getValue();
 	const PlatonicTriangulation solid=platonicSolid;
-
-
-    cleanDirty();
 
 	helper::WriteOnlyAccessor<Data<VecCoord> > posTrian = f_outputTrianglesPositions;
     helper::WriteOnlyAccessor<Data<SeqTriangles> > trians = f_triangles;

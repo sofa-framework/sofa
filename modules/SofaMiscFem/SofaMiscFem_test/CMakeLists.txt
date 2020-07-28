@@ -1,29 +1,23 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaMiscFem_test)
 
-find_package(Metis QUIET)
-
-set(HEADER_FILES)
-set(SOURCE_FILES ../../empty.cpp)
-
-list(APPEND SOURCE_FILES
-# Unit test TODO (htalbot): improve the parameters and initialization
-TetrahedronHyperelasticityFEMForceField_params_test.cpp
-)
-
-if(Metis_FOUND)
-# Test of regression for hyperelasticity (MooneyRivlin)
-list(APPEND SOURCE_FILES "TetrahedronHyperelasticityFEMForceField_scene_test.cpp")
-endif()
+set(HEADER_FILES
+    )
+set(SOURCE_FILES
+    # Unit test TODO (htalbot): improve the parameters and initialization
+    TetrahedronHyperelasticityFEMForceField_params_test.cpp
+    # Test of regression for hyperelasticity (MooneyRivlin)
+    TetrahedronHyperelasticityFEMForceField_scene_test.cpp
+    )
 
 if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND HEADER_FILES
-    LennardJonesForceField_test.h
-    LennardJonesForceField_test.inl
-    )
+        LennardJonesForceField_test.h
+        LennardJonesForceField_test.inl
+        )
     list(APPEND SOURCE_FILES
-    LennardJonesForceField_test.cpp
-    )
+        LennardJonesForceField_test.cpp
+        )
 endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

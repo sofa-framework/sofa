@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,5 +23,12 @@
 #define SOFAGENERALANIMATIONLOOP_CONFIG_H
 
 #include <SofaGeneral/config.h>
+
+#ifdef SOFA_BUILD_GENERAL_ANIMATION_LOOP
+#  define SOFA_TARGET SofaGeneralAnimationLoop
+#  define SOFA_GENERAL_ANIMATION_LOOP_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_GENERAL_ANIMATION_LOOP_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

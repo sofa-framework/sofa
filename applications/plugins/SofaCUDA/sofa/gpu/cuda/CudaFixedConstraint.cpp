@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 #include "CudaFixedConstraint.inl"
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -35,17 +35,17 @@ namespace component
 namespace projectiveconstraintset
 {
 
-template class FixedConstraint<gpu::cuda::CudaVec1fTypes>;
+template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec1fTypes>;
 
-template class FixedConstraint<gpu::cuda::CudaVec3fTypes>;
-template class FixedConstraint<gpu::cuda::CudaVec3f1Types>;
-template class FixedConstraint<gpu::cuda::CudaVec6fTypes>;
-template class FixedConstraint<gpu::cuda::CudaRigid3fTypes>;
+template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class FixedConstraint<gpu::cuda::CudaVec3dTypes>;
-template class FixedConstraint<gpu::cuda::CudaVec3d1Types>;
-template class FixedConstraint<gpu::cuda::CudaVec6dTypes>;
-template class FixedConstraint<gpu::cuda::CudaRigid3dTypes>;
+template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace projectiveconstraintset
@@ -58,8 +58,6 @@ namespace gpu
 namespace cuda
 {
 
-
-SOFA_DECL_CLASS(CudaFixedConstraint)
 
 int FixedConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::projectiveconstraintset::FixedConstraint<CudaVec1fTypes> >()

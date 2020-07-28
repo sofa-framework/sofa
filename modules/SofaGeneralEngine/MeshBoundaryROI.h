@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,9 +62,6 @@ public:
     /// outputs
     Data< SetIndex > d_indices;
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MeshBoundaryROI* = NULL) { return std::string();    }
-
 protected:
 
     MeshBoundaryROI()    : Inherited()
@@ -75,10 +72,10 @@ protected:
     {
     }
 
-    virtual ~MeshBoundaryROI() {}
+    ~MeshBoundaryROI() override {}
 
 public:
-    virtual void init() override
+    void init() override
     {
         addInput(&d_triangles);
         addInput(&d_quads);
@@ -88,13 +85,11 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    override { update();  }
-    void update() override
+    void reinit()    override { update();  }
+    void doUpdate() override
     {
         helper::ReadAccessor<Data< SeqTriangles > > triangles(this->d_triangles);
         helper::ReadAccessor<Data< SeqQuads > > quads(this->d_quads);
-
-        cleanDirty();
 
         helper::WriteOnlyAccessor<Data< SetIndex > >  indices(this->d_indices);
         indices.clear();

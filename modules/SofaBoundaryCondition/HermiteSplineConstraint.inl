@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,8 +24,8 @@
 
 #include <SofaBoundaryCondition/HermiteSplineConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -35,23 +35,6 @@ namespace component
 
 namespace projectiveconstraintset
 {
-
-
-template <class DataTypes>
-HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint()
-    :core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
-    , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
-    , m_x0(initData(&m_x0,"X0","first control point") )
-    , m_dx0(initData(&m_dx0,"dX0","first control tangente") )
-    , m_x1(initData(&m_x1,"X1","second control point") )
-    , m_dx1(initData(&m_dx1,"dX1","second control tangente") )
-    , m_sx0(initData(&m_sx0,"SX0","first interpolation vector") )
-    , m_sx1(initData(&m_sx1,"SX1","second interpolation vector") )
-{
-}
-
 
 template <class DataTypes>
 HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
@@ -65,6 +48,7 @@ HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint(core::behavior::Mech
     , m_dx1(initData(&m_dx1,"dX1","sceond control tangente") )
     , m_sx0(initData(&m_sx0,"SX0","first interpolation vector") )
     , m_sx1(initData(&m_sx1,"SX1","second interpolation vector") )
+    , l_topology(initLink("topology", "link to the topology container"))
 {
 }
 
@@ -91,13 +75,28 @@ void  HermiteSplineConstraint<DataTypes>::addConstraint(unsigned index)
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::init()
 {
-    topology = this->getContext()->getMeshTopology();
-
-    // Initialize functions and parameters for topology data and handler
-    m_indices.createTopologicalEngine(topology);
-    m_indices.registerTopologicalData();
-
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters for topology data and handler
+        m_indices.createTopologicalEngine(_topology);
+        m_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 }
 
 template <class DataTypes>
@@ -134,7 +133,6 @@ void HermiteSplineConstraint<DataTypes>::computeDerivateHermiteCoefs( const Real
     //-- time interpolation --> acceleration is itself computed from hemite
     Real u2 = u*u;
     Real u3 = u*u*u;
-    //Real uH00 = 2*u3 -3*u2 +1 ;		//hermite coefs
     Real uH10 = u3 -2*u2 +u;
     Real uH01 = -2*u3 + 3*u2;
     Real uH11 = u3 -u2;
@@ -234,17 +232,22 @@ void HermiteSplineConstraint<DataTypes>::projectJacobianMatrix(const core::Mecha
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     Real dt = (Real) this->getContext()->getDt();
     Real DT = m_tEnd.getValue() - m_tBegin.getValue();
 
-    glDisable (GL_LIGHTING);
-    glPointSize(2);
-    glColor4f (1,0.5,0.5,1);
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
 
-    glBegin (GL_LINE_STRIP);
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+
+    const Vec3R& mx0 = m_x0.getValue();
+    const Vec3R& mx1 = m_x0.getValue();
+    const Vec3R& mdx0 = m_dx0.getValue();
+    const Vec3R& mdx1 = m_dx1.getValue();
+
     for (Real t=0.0 ; t< DT ; t+= dt)
     {
         Real u = t/DT;
@@ -252,27 +255,30 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
         Real H00, H10, H01, H11;
         computeHermiteCoefs( u, H00, H10, H01, H11);
 
-        Vec3R p = m_x0.getValue()*H00 + m_dx0.getValue()*H10 + m_x1.getValue()*H01 + m_dx1.getValue()*H11;
-        helper::gl::glVertexT(p);
+        Vec3R p = mx0*H00 + mdx0*H10 + mx1*H01 + mdx1*H11;
+
+        sofa::defaulttype::Vector3 v(p[0], p[1],p[2]);
+        vertices.push_back(v);
     }
-    glEnd();
+    vparams->drawTool()->drawLineStrip(vertices, 2, color);
 
+    color = sofa::defaulttype::RGBAColor::red();
 
-    glColor4f (1,0.0,0.0,1);
-    glPointSize(5);
-    //display control point
-    glBegin(GL_POINTS);
-    helper::gl::glVertexT(m_x0.getValue());
-    helper::gl::glVertexT(m_x1.getValue());
-    glEnd();
-    //display control tangeantes
-    glBegin(GL_LINES);
-    helper::gl::glVertexT(m_x0.getValue());
-    helper::gl::glVertexT(m_x0.getValue()+m_dx0.getValue()*0.1);
-    helper::gl::glVertexT(m_x1.getValue());
-    helper::gl::glVertexT(m_x1.getValue()+m_dx1.getValue()*0.1);
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    vertices.clear();
+    vertices.push_back(sofa::defaulttype::Vector3(mx0[0], mx0[1], mx0[2]));
+    vertices.push_back(sofa::defaulttype::Vector3(mx1[0], mx1[1], mx1[2]));
+
+    vparams->drawTool()->drawPoints(vertices, 5.0, color);
+
+    //display control tangents
+    vertices.clear();
+    vertices.push_back(mx0);
+    vertices.push_back(mx0 + mdx0*0.1);
+    vertices.push_back(mx1);
+    vertices.push_back(mx1 + mdx1*0.1);
+
+    vparams->drawTool()->drawLines(vertices, 1.0, color);
+    vparams->drawTool()->restoreLastState();
 }
 
 

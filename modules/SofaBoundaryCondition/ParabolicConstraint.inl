@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,8 +24,8 @@
 
 #include <SofaBoundaryCondition/ParabolicConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -37,19 +37,6 @@ namespace projectiveconstraintset
 {
 
 template <class DataTypes>
-ParabolicConstraint<DataTypes>::ParabolicConstraint()
-    :core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_P1(initData(&m_P1,"P1","first point of the parabol") )
-    , m_P2(initData(&m_P2,"P2","second point of the parabol") )
-    , m_P3(initData(&m_P3,"P3","third point of the parabol") )
-    , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
-    , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
-{
-}
-
-
-template <class DataTypes>
 ParabolicConstraint<DataTypes>::ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
     : core::behavior::ProjectiveConstraintSet<DataTypes>(mstate)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
@@ -58,6 +45,7 @@ ParabolicConstraint<DataTypes>::ParabolicConstraint(core::behavior::MechanicalSt
     , m_P3(initData(&m_P3,"P3","third point of the parabol") )
     , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
     , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
+    , l_topology(initLink("topology", "link to the topology container"))
 {
 }
 
@@ -79,11 +67,26 @@ void ParabolicConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters for topology data and handler
-    m_indices.createTopologicalEngine(topology);
-    m_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters for topology data and handler
+        m_indices.createTopologicalEngine(_topology);
+        m_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
     Vec3R P1 = m_P1.getValue();
     Vec3R P2 = m_P2.getValue();
@@ -221,18 +224,18 @@ void ParabolicConstraint<DataTypes>::projectJacobianMatrix(const core::Mechanica
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
+
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     Real dt = (Real) this->getContext()->getDt();
     Real t = m_tEnd.getValue() - m_tBegin.getValue();
     Real nbStep = t/dt;
 
-    glDisable (GL_LIGHTING);
-    glPointSize(5);
-    glColor4f (1,0.5,0.5,1);
+    vparams->drawTool()->disableLighting();
+    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
-    glBegin (GL_LINES);
     for (unsigned int i=0 ; i< nbStep ; i++)
     {
         //draw lines between each step of the parabolic trajectory
@@ -243,24 +246,33 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
         Vec3R locPos( px , py, 0.0);
         Vec3R worldPos = m_P1.getValue() + m_projection.rotate(locPos);
 
-        helper::gl::glVertexT(worldPos);
+        vertices.push_back(sofa::defaulttype::Vector3(worldPos[0],worldPos[1],worldPos[2]));
 
         relativeTime = (i+1)/nbStep;
         px = m_locP3.x()*relativeTime;
         py = (- m_locP2.y() / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * (px *px) + ( (m_locP3.x()*m_locP2.y()) / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * px;
         locPos = Vec3R( px , py, 0.0);
         worldPos = m_P1.getValue() + m_projection.rotate(locPos);
-        helper::gl::glVertexT(worldPos);
+
+
+        vertices.push_back(sofa::defaulttype::Vector3(worldPos[0],worldPos[1],worldPos[2]));
+
     }
-    glEnd();
+    vparams->drawTool()->drawLines(vertices, 1.0, color);
+    vertices.clear();
 
     //draw points for the 3 control points
-    glBegin(GL_POINTS);
-    helper::gl::glVertexT(m_P1.getValue());
-    helper::gl::glVertexT(m_P2.getValue());
-    helper::gl::glVertexT(m_P3.getValue());
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    const Vec3R& mp1 = m_P1.getValue();
+    const Vec3R& mp2 = m_P2.getValue();
+    const Vec3R& mp3 = m_P3.getValue();
+    vertices.push_back(sofa::defaulttype::Vector3(mp1[0],mp1[1],mp1[2]));
+    vertices.push_back(sofa::defaulttype::Vector3(mp2[0],mp2[1],mp2[2]));
+    vertices.push_back(sofa::defaulttype::Vector3(mp3[0],mp3[1],mp3[2]));
+
+    vparams->drawTool()->drawPoints(vertices, 5.0, color);
+
+    vparams->drawTool()->restoreLastState();
+
 }
 
 

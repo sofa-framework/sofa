@@ -45,7 +45,7 @@ Q_OBJECT
 public:
 
     DistanceZoneImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent);
-    ~DistanceZoneImageToolBoxAction();
+    ~DistanceZoneImageToolBoxAction() override;
     
     sofa::component::engine::ZoneGeneratorImageToolBoxNoTemplated* ZGITB();
 
@@ -59,10 +59,10 @@ private:
     //void drawSegment();
 
 public slots:
-    virtual void addOnGraphs();
-    virtual void updateGraphs();
-    virtual void updateColor(){}
-    virtual void optionChangeSection(sofa::defaulttype::Vec3i);
+    void addOnGraphs() override;
+    void updateGraphs() override;
+    void updateColor() override{}
+    void optionChangeSection(sofa::defaulttype::Vec3i) override;
 
     
 private slots:

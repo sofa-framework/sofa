@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_INL
 
@@ -30,8 +27,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/system/config.h>
+#include <sofa/helper/io/XspLoader.h>
 #include <cassert>
 #include <iostream>
 #include <fstream>
@@ -46,6 +42,12 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
+SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
+    : SpringForceField(nullptr, nullptr, _ks, _kd)
+{
+}
+
+template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
     : Inherit(mstate1, mstate2)
     , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
@@ -55,30 +57,16 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , maskInUse(false)
 {
+    this->addAlias(&fileSprings, "fileSprings");
 }
-
-template<class DataTypes>
-SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
-    : ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
-    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
-    , showArrowSize(initData(&showArrowSize,0.01f,"showArrowSize","size of the axis"))
-    , drawMode(initData(&drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
-    , fileSprings(initData(&fileSprings, "fileSprings", "File describing the springs"))
-    , maskInUse(false)
-{
-    this->addAlias(&fileSprings, "filename");
-}
-
-
 
 template <class DataTypes>
-class SpringForceField<DataTypes>::Loader : public helper::io::MassSpringLoader
+class SpringForceField<DataTypes>::Loader : public helper::io::XspLoaderDataHook
 {
 public:
     SpringForceField<DataTypes>* dest;
     Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
-    virtual void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos)
+    void addSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos) override
     {
         helper::vector<Spring>& springs = *dest->springs.beginEdit();
         springs.push_back(Spring(m1,m2,ks,kd,initpos));
@@ -93,7 +81,7 @@ bool SpringForceField<DataTypes>::load(const char *filename)
     if (filename && filename[0])
     {
         Loader loader(this);
-        ret &= loader.load(filename);
+        ret &= helper::io::XspLoader::Load(filename, loader);
     }
     else ret = false;
     return ret;
@@ -124,20 +112,21 @@ void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const
 {
     int a = spring.m1;
     int b = spring.m2;
-    Coord u = p2[b]-p1[a];
+    typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
     Real d = u.norm();
     if( spring.enabled && d<1.0e-4 ) // null length => no force
         return;
     Real inverseLength = 1.0f/d;
     u *= inverseLength;
-    Real elongation = (Real)(d - spring.initpos);
+    Real elongation = d - spring.initpos;
     ener += elongation * elongation * spring.ks /2;
-    Deriv relativeVelocity = v2[b]-v1[a];
+    typename DataTypes::DPos relativeVelocity = DataTypes::getDPos(v2[b])-DataTypes::getDPos(v1[a]);
     Real elongationVelocity = dot(u,relativeVelocity);
-    Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
-    Deriv force = u*forceIntensity;
-    f1[a]+=force;
-    f2[b]-=force;
+    Real forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
+    typename DataTypes::DPos force = u*forceIntensity;
+
+    DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + force ) ;
+    DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) - force ) ;
 }
 
 template<class DataTypes>
@@ -217,8 +206,6 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     std::vector< Vector3 > points[4];
     bool external = (this->mstate1!=this->mstate2);
-    //if (!external)
-    //	glColor4f(1,1,1,1);
     const helper::vector<Spring>& springs = this->springs.getValue();
     for (unsigned int i=0; i<springs.size(); i++)
     {
@@ -307,7 +294,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
     {
         core::topology::BaseMeshTopology*	_topology = topo->toBaseMeshTopology();
 
-        if(_topology != NULL)
+        if(_topology != nullptr)
         {
             std::list<const core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
             std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
@@ -337,7 +324,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
     {
         core::topology::BaseMeshTopology*	_topology = topo->toBaseMeshTopology();
 
-        if(_topology != NULL)
+        if(_topology != nullptr)
         {
             std::list<const core::topology::TopologyChange *>::const_iterator changeIt=_topology->beginChange();
             std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
@@ -412,7 +399,7 @@ void SpringForceField<DataTypes>::initGnuplot(const std::string path)
 {
     if (!this->getName().empty())
     {
-        if (m_gnuplotFileEnergy != NULL)
+        if (m_gnuplotFileEnergy != nullptr)
         {
             m_gnuplotFileEnergy->close();
             delete m_gnuplotFileEnergy;
@@ -424,7 +411,7 @@ void SpringForceField<DataTypes>::initGnuplot(const std::string path)
 template<class DataTypes>
 void SpringForceField<DataTypes>::exportGnuplot(SReal time)
 {
-    if (m_gnuplotFileEnergy!=NULL)
+    if (m_gnuplotFileEnergy!=nullptr)
     {
         (*m_gnuplotFileEnergy) << time <<"\t"<< this->m_potentialEnergy << std::endl;
     }

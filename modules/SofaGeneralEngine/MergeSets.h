@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,13 +52,13 @@ public:
 protected:
     MergeSets();
 
-    virtual ~MergeSets();
+    ~MergeSets() override;
 public:
     void init() override;
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     Data<VecIndex> f_in1; ///< first set of indices
     Data<VecIndex> f_in2; ///< second set of indices
@@ -66,7 +66,7 @@ public:
     Data<std::string> f_op; ///< name of operation to compute (union, intersection, difference, symmetric_difference)
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)
 extern template class SOFA_GENERAL_ENGINE_API MergeSets<int>;
 extern template class SOFA_GENERAL_ENGINE_API MergeSets<unsigned int>;
 //extern template class SOFA_GENERAL_ENGINE_API MergeSets<long long>;

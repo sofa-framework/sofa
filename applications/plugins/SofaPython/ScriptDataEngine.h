@@ -5,7 +5,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/simulation/Node.h>
-#include "ScriptEvent.h"
+#include <sofa/core/objectmodel/ScriptEvent.h>
 #include "ScriptFunction.h"
 
 namespace sofa
@@ -25,19 +25,20 @@ public:
 
 protected:
     ScriptDataEngine();
-    virtual ~ScriptDataEngine();
+    ~ScriptDataEngine() override;
 
 public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override ;
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override ;
 
-    virtual void init() override ;
-    virtual void reinit() override ;
+    void init() override ;
+    void reinit() override ;
 
 
-    virtual void update() override ;
+    void call_update();
+    void doUpdate() override ;
 
 
 protected:

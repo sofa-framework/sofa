@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,7 +48,7 @@ NodeElement::~NodeElement()
 
 bool NodeElement::setParent(BaseElement* newParent)
 {
-    if (newParent != NULL && dynamic_cast<NodeElement*>(newParent)==NULL)
+    if (newParent != nullptr && dynamic_cast<NodeElement*>(newParent)==nullptr)
         return false;
     else
         return Element<core::objectmodel::BaseNode>::setParent(newParent);
@@ -57,12 +57,14 @@ bool NodeElement::setParent(BaseElement* newParent)
 bool NodeElement::initNode()
 {
     core::objectmodel::BaseNode::SPtr obj = Factory::CreateObject(this->getType(), this);
-    if (obj != NULL)
+    if (obj != nullptr)
     {
         setObject(obj);
         core::objectmodel::BaseNode* baseNode;
-        if (getTypedObject()!=NULL && getParentElement()!=NULL && (baseNode = getParentElement()->getObject()->toBaseNode()))
+        if (getTypedObject()!=nullptr && getParentElement()!=nullptr && (baseNode = getParentElement()->getObject()->toBaseNode()))
         {
+            getTypedObject()->setInstanciationSourceFilePos(getSrcLine());
+            getTypedObject()->setInstanciationSourceFileName(getSrcFile());
             baseNode->addChild(getTypedObject());
         }
         return true;
@@ -85,8 +87,6 @@ bool NodeElement::init()
 
     return res;
 }
-
-SOFA_DECL_CLASS(NodeElement)
 
 helper::Creator<BaseElement::NodeFactory, NodeElement> NodeNodeClass("Node");
 

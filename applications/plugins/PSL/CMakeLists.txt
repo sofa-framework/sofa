@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(PSL)
 
 ### Plugin dependencies
@@ -76,7 +76,7 @@ set(EXTRA_FILES
 
 
 # Config files and install rules for pythons scripts
-sofa_set_python_directory(${PROJECT_NAME} "python")
+sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 
 ## Add test project
 if(SOFA_BUILD_TESTS)

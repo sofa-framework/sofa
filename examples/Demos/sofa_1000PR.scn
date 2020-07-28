@@ -1,0 +1,185 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.05" showBoundingTree="0" gravity="0 -0.9 0">
+    <VisualStyle displayFlags="hideCollisionModels showBehaviorModels" />
+    
+    <RequiredPlugin name="Carving" pluginName="SofaCarving" />
+    <RequiredPlugin name="Refinement" pluginName="MeshRefinement" />
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name='SofaSparseSolver'/>
+
+    <FreeMotionAnimationLoop />
+    <GenericConstraintSolver unbuilt="false" tolerance="1e-3" maxIt="200"   printLog="0"/>
+    <DefaultPipeline verbose="0" depth="10" draw="0" />
+    <BruteForceDetection name="N2" />
+    <MinProximityIntersection name="Proximity" alarmDistance="1.2" contactDistance="0.1" />
+    <DefaultContactManager name="Response" response="FrictionContact" />
+
+    <MeshObjLoader name="loader_1" filename="mesh/n1.obj"/>
+    <MeshObjLoader name="loader_0" filename="mesh/n0.obj"/>
+    <RecordedCamera name="cam" position="0 50 0" rotationLookAt="0 5 0" rotationStartPoint="0 30 80" rotationCenter="0 0 0" listening="true" startTime="20" endTime="100" drawRotation="0" rotationMode="1" />
+    
+    <Node name="Number1">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
+        
+        <SparseGridRamificationTopology name="grid" n="4 6 3" fileTopology="mesh/n1.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
+        
+        <MechanicalObject name="Torus1" scale3d="15 15 15" translation="-25 20 -22"/>
+        <UniformMass totalMass="100" />
+        
+        <HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
+        <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
+	    
+        <Node name="Surf">
+            <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
+            <Node name="Q">
+                <QuadSetTopologyContainer  name="Container" />
+                <QuadSetTopologyModifier   name="Modifier" />
+                <QuadSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
+                
+                <TriangleCollisionModel />            
+                <PointCollisionModel />
+            </Node>
+        </Node>
+        <Node name="VisuTorus" tags="Visual">
+            <OglModel name="Visual" material="Default Diffuse 1 0 1 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 1 0 1 Emissive 0 1 1 0 1 Shininess 1 100" src="@../../loader_1"/>
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>                
+    </Node>
+    
+    
+    <Node name="Number01">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
+        
+        <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>                
+        <MechanicalObject name="Torus1" scale3d="15 15 15" translation="-22 20 -22"/>
+        <UniformMass totalMass="100" />
+        
+        <HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
+        <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
+        
+        <Node name="Surf">
+            <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
+            <Node name="Q">
+                <QuadSetTopologyContainer  name="Container" />
+                <QuadSetTopologyModifier   name="Modifier" />
+                <QuadSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
+                
+                <TriangleCollisionModel />            
+                <PointCollisionModel />
+            </Node>
+        </Node>
+        <Node name="VisuTorus" tags="Visual">
+            <OglModel name="Visual" color="blue" src="@../../loader_0" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>                
+    </Node>
+    
+    <Node name="Number02">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
+        
+        <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
+        
+        <MechanicalObject name="Torus1" scale3d="15 15 15" translation="-8 20 -22"/>
+        <UniformMass totalMass="100" />
+        
+        <HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
+        <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
+        <Node name="Surf">
+            <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
+            <Node name="Q">
+                <QuadSetTopologyContainer  name="Container" />
+                <QuadSetTopologyModifier   name="Modifier" />
+                <QuadSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
+                
+                <TriangleCollisionModel />            
+                <PointCollisionModel />
+            </Node>
+        </Node>
+        <Node name="VisuTorus" tags="Visual">
+            <OglModel name="Visual" src="@../../loader_0" color="white"/>
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>                
+    </Node>
+    
+    <Node name="Number03">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
+        
+        <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
+        
+        <MechanicalObject name="Torus1" scale3d="15 15 15" translation="6 20 -22"/>
+        <UniformMass totalMass="100" />
+        
+        <HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
+        <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
+        <Node name="Surf">
+            <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
+            <Node name="Q">
+                <QuadSetTopologyContainer  name="Container" />
+                <QuadSetTopologyModifier   name="Modifier" />
+                <QuadSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
+                
+                <TriangleCollisionModel />            
+                <PointCollisionModel />
+            </Node>
+        </Node>
+        <Node name="VisuTorus" tags="Visual">
+            <OglModel name="Visual" color="red" src="@../../loader_0"/>
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>                
+    </Node>
+    
+    <Node name="Sofa">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix3d" name="Torus1_SparseLDLSolver" printLog="false" />
+        
+        <SparseGridRamificationTopology name="grid" n="2 2 2" fileTopology="mesh/sofa_logo.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
+        
+        <MechanicalObject name="Torus1" scale3d="2 2 2" translation="0 200 -21"/>
+        <UniformMass totalMass="124" />
+        
+        <HexahedronFEMForceField name="FEM" youngModulus="15000" poissonRatio="0.45" method="large" />
+        <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
+        
+        <Node name="Blobs">
+             <MeshObjLoader name="loader" filename="mesh/sofa_logo_collision.obj" />
+             <MeshTopology src="@loader" />
+             <MechanicalObject src="@loader" name="CollisModel" />
+             <TriangleCollisionModel  />
+             <LineCollisionModel  />
+             <PointCollisionModel />
+             <BarycentricMapping input="@.." output="@." />
+        </Node>
+        
+        <Node name="VisuTorus" tags="Visual">
+            <MeshObjLoader name="loader" filename="mesh/sofa_logo.obj" handleSeams="1"/>
+            <OglModel name="Visual" src="@loader" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>                
+    </Node>
+
+
+    <Node name="Floor">
+        <MeshObjLoader name="loader" filename="mesh/floor.obj" handleSeams="1"/>
+        <MeshTopology src="@loader" />
+        <MechanicalObject name="Floor" src="@loader" scale3d="0.5 1 0.5"/>
+        <TriangleCollisionModel name="FloorT" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorL" simulated="0" moving="0"/>  
+        <PointCollisionModel name="FloorP" simulated="0" moving="0" />
+        <Node name="VisuFloor">
+            <OglModel name="FloorV" src="@../loader" scaleTex="0.09 0.09" texturename="textures/floor.bmp" scale3d="0.5 1 0.5"/>
+        </Node>
+    </Node>
+
+</Node>

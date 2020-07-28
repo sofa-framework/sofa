@@ -1,41 +1,55 @@
-cmake_minimum_required(VERSION 3.1)
-project(SofaPreconditioner)
+cmake_minimum_required(VERSION 3.12)
+project(SofaPreconditioner VERSION 1.0)
 
+# Dependencies
+find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaSimpleFem
+find_package(SofaGeneral REQUIRED) # SofaGeneralLinearSolver
+sofa_find_package(SofaSparseSolver QUIET) # Soft dependency of PrecomputedWarpPreconditioner
+
+set(SRC_ROOT src/SofaPreconditioner)
+
+# Config
 set(HEADER_FILES
-    BlockJacobiPreconditioner.h
-    BlockJacobiPreconditioner.inl
-    JacobiPreconditioner.h
-    JacobiPreconditioner.inl
-    PrecomputedWarpPreconditioner.h
-    PrecomputedWarpPreconditioner.inl
-    SSORPreconditioner.h
-    SSORPreconditioner.inl
-    ShewchukPCGLinearSolver.h
-    WarpPreconditioner.h
-    WarpPreconditioner.inl
-    config.h
-    initPreconditioner.h
-)
-
+    ${SRC_ROOT}/config.h.in
+    )
 set(SOURCE_FILES
-    BlockJacobiPreconditioner.cpp
-    JacobiPreconditioner.cpp
-    PrecomputedWarpPreconditioner.cpp
-    SSORPreconditioner.cpp
-    ShewchukPCGLinearSolver.cpp
-    WarpPreconditioner.cpp
-    initPreconditioner.cpp
-)
+    ${SRC_ROOT}/initPreconditioner.cpp
+    )
+
+# Sources
+list(APPEND HEADER_FILES
+    ${SRC_ROOT}/BlockJacobiPreconditioner.h
+    ${SRC_ROOT}/BlockJacobiPreconditioner.inl
+    ${SRC_ROOT}/JacobiPreconditioner.h
+    ${SRC_ROOT}/JacobiPreconditioner.inl
+    ${SRC_ROOT}/PrecomputedWarpPreconditioner.h
+    ${SRC_ROOT}/PrecomputedWarpPreconditioner.inl
+    ${SRC_ROOT}/SSORPreconditioner.h
+    ${SRC_ROOT}/SSORPreconditioner.inl
+    ${SRC_ROOT}/ShewchukPCGLinearSolver.h
+    ${SRC_ROOT}/WarpPreconditioner.h
+    ${SRC_ROOT}/WarpPreconditioner.inl
+    )
+list(APPEND SOURCE_FILES
+    ${SRC_ROOT}/BlockJacobiPreconditioner.cpp
+    ${SRC_ROOT}/JacobiPreconditioner.cpp
+    ${SRC_ROOT}/PrecomputedWarpPreconditioner.cpp
+    ${SRC_ROOT}/SSORPreconditioner.cpp
+    ${SRC_ROOT}/ShewchukPCGLinearSolver.cpp
+    ${SRC_ROOT}/WarpPreconditioner.cpp
+    )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaImplicitOdeSolver SofaSimpleFem SofaBaseLinearSolver)
-if(SOFA_HAVE_CSPARSE)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaImplicitOdeSolver SofaGeneralLinearSolver SofaSimpleFem)
+if(SofaSparseSolver_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaSparseSolver)
 endif()
-if(SOFA_HAVE_NEWMAT)
-    target_link_libraries(${PROJECT_NAME} PUBLIC SofaDenseSolver)
-endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PRECONDITIONER")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_generate_package(
+    NAME SofaPreconditioner
+    VERSION ${PROJECT_VERSION}
+    TARGETS SofaPreconditioner
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "SofaPreconditioner"
+    RELOCATABLE "plugins"
+    )

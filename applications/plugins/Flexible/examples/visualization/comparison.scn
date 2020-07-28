@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0 " dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <VisualStyle displayFlags="showWireframe showBehaviorModels" />
   <DefaultAnimationLoop />
   <DefaultVisualManagerLoop />
@@ -14,7 +15,8 @@
 
   <Node 	name="ref_highresFEM"   >
     <VisualStyle displayFlags="hideWireframe" />
-    <OglModel template="ExtVec3f" name="Visual" fileMesh="../beam/refBeam_Flex.obj" color="0.5 0.5 0.5" translation="-0.5 0 0"/>
+    <MeshObjLoader name="meshLoader_0" filename="../beam/refBeam_Flex.obj" translation="-0.5 0 0" handleSeams="1" />
+    <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.5 0.5 0.5"/>
   </Node>
 
 
@@ -28,7 +30,7 @@
     	<MechanicalObject template="Affine" name="parent"  showObject="true" src="@merged" />
 
 	<!--linear weights-->
-	<Mesh name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
+	<MeshTopology name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
 	<BarycentricShapeFunction  position="@parent.rest_position" nbRef="2" tolerance="-10000"/>
 	<ShapeFunctionDiscretizer name="SF" src="@image" />
 
@@ -49,11 +51,11 @@
         
         <Node   name="collision"   >
                 <VisualStyle displayFlags="hideBehaviorModels " />
-                <Mesh name="mesh" src="@../mesh" />
+                <MeshTopology name="mesh" src="@../mesh" />
                 <MechanicalObject  template="Vec3d" name="pts"    />
                 <UniformMass totalMass="10" />
                 <BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" />
-                <ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/>
+                <ConstantForceField template="Vec3d" indices="@[-1].indices" totalForce="0 -1 0"/>
                 <BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.9"  position="@mesh.position" />
                 <RestShapeSpringsForceField template="Vec3d" points="@[-1].indices" stiffness="1E5"/>
                 <LinearMapping template="Affine,Vec3d"/>
@@ -80,7 +82,7 @@
         <VisualStyle displayFlags="showWireframe hideBehaviorModels" />
 
         <MechanicalObject template="Vec3d" name="parent" showObject="false" />
-        <RegularGrid 
+        <RegularGridTopology 
                    n="5 5 21"
                    min="-1.2 -0.2  -1"
                    max=" -0.8  0.2   1"/> 
@@ -89,7 +91,7 @@
         <FixedConstraint indices="@[-1].indices" />
 
         <BoxROI template="Vec3d" box="-2 -1 0.99 0 1 1.1 "  drawBoxes="0" /> 
-        <ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
+        <ConstantForceField template="Vec3d" indices="@[-1].indices" totalForce="0 -1 0"/> 
 
         <UniformMass totalMass="10" />
 
@@ -99,7 +101,8 @@
 
 
         <Node name="Visual"  >
-                <VisualModel name="mesh" fileMesh="../beam/beam.obj" translation="-1 0 0" color="blue" />
+                <MeshObjLoader name="meshLoader_1" filename="../beam/beam.obj" translation="-1 0 0" handleSeams="1" />
+                <OglModel name="mesh" src="@meshLoader_1" color="blue" />
                 <BarycentricMapping input="@.." output="@." />
                 
                 <TransformPosition name="ref_position" input_position="@../../AffineFrames/collision/pts.position"  translation="-1 0 0" method="translation" />
@@ -108,7 +111,7 @@
                                 
                 <Node name="Difference with AffineFrames">
                     <MeshObjLoader name="loader" filename="../beam/beam.obj" triangulate="1"/>
-                    <Mesh src="@loader" />
+                    <MeshTopology src="@loader" />
                     <DataDisplay name="mesh" position="@../mesh.position" pointData="@../norm_error.output"/>
                     <ColorMap colorScheme="Blue to Red" />
                 </Node>

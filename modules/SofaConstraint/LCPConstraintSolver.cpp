@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,12 +28,9 @@
 #include <sofa/simulation/SolveVisitor.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/gl/Cylinder.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 #include <sofa/core/ObjectFactory.h>
@@ -83,7 +80,6 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
 
 bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-    //sout<<"constraintCorrections is called"<<sendl;
 
     // Test if the nodes containing the constraint correction are active (not sleeping)
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
@@ -95,7 +91,7 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
 
         if ( displayTime.getValue() )
         {
-            sout<<" build_LCP " << ( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
+            dmsg_info()<<" build_LCP " << ( (double) timer.getTime() - time)*timeScale<<" ms";
             time = (double) timer.getTime();
         }
     }
@@ -104,7 +100,7 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
         build_problem_info();
         if ( displayTime.getValue() )
         {
-            sout<<" build_problem " << ( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
+            dmsg_info()<<" build_problem " << ( (double) timer.getTime() - time)*timeScale<<" ms";
             time = (double) timer.getTime();
         }
     }
@@ -176,13 +172,12 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
         graph_error.clear();
         sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel Unbuild");
         gaussseidel_unbuilt(_dFree->ptr(), _result->ptr(), &graph_error);
-        sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel Unbuild");
+        sofa::helper::AdvancedTimer::stepEnd("NLCP GaussSeidel Unbuild");
 
         if (displayDebug.getValue())
         {
             dmsg_info() <<"_result unbuilt:"<<(*_result) ;
 
-            /////// debug
             _result->resize(_numConstraints);
 
             double _tol = tol.getValue();
@@ -193,8 +188,6 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
             helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
             dmsg_info() <<"\n_result nlcp :"<<(*_result);
         }
-
-        ////////
     }
 
     if ( displayTime.getValue() )
@@ -233,7 +226,6 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
 }
 
 #define MAX_NUM_CONSTRAINTS 3000
-//#define DISPLAY_TIME
 
 LCPConstraintSolver::LCPConstraintSolver()
     : displayDebug(initData(&displayDebug, false, "displayDebug","Display debug information."))
@@ -258,11 +250,11 @@ LCPConstraintSolver::LCPConstraintSolver()
     , showLevelTranslation( initData(&showLevelTranslation, "showLevelTranslation", "Translation between levels"))
     , _mu(0.6)
     , lcp(&lcp1)
-    , last_lcp(0)
+    , last_lcp(nullptr)
     , _W(&lcp1.W)
     , _dFree(&lcp1.dFree)
     , _result(&lcp1.f)
-    , _Wdiag(NULL)
+    , _Wdiag(nullptr)
 {
     _numConstraints = 0;
     _mu = 0.0;
@@ -278,7 +270,7 @@ LCPConstraintSolver::LCPConstraintSolver()
 
 LCPConstraintSolver::~LCPConstraintSolver()
 {
-    if (_Wdiag != 0)
+    if (_Wdiag != nullptr)
         delete _Wdiag;
 }
 
@@ -330,7 +322,7 @@ void LCPConstraintSolver::build_LCP()
     sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
     // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
-    simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(), _numConstraints).execute(context);
+    simulation::MechanicalAccumulateConstraint(&cparams, cparams.j(), _numConstraints).execute(context);
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
@@ -418,13 +410,12 @@ void LCPConstraintSolver::MultigridConstraintsMerge()
         MultigridConstraintsMerge_Spatial();
         break;
     default:
-        serr << "Unsupported merge method " << merge_method.getValue() << sendl;
+        msg_error() << "Unsupported merge method " << merge_method.getValue();
     }
 }
 
 void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 {
-    /////// Analyse des contacts �  regrouper //////
     double criterion=0.0;
     int numContacts = _numConstraints/3;
 
@@ -483,7 +474,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
     int nLevels = multi_grid_levels.getValue();
     if (nLevels < 2) nLevels = 2;
 
-    sout << "Multigrid merge from " << numContacts << " contacts." << sendl;
+    msg_info() << "Multigrid merge from " << numContacts << " contacts.";
 
     hierarchy_contact_group.resize(nLevels-1);
     hierarchy_constraint_group.resize(nLevels-1);
@@ -530,16 +521,16 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
         for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
         {
             const ConstraintBlockInfo& info = constraintBlockInfo[cb];
-            sout << "MultigridConstraintsMerge_Spatial level " << level-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("NULL"))
-                    << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea << sendl;
+            msg_info() << "MultigridConstraintsMerge_Spatial level " << level-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("nullptr"))
+                    << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea;
             if (!info.hasPosition)
             {
-                serr << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " have no position data" << sendl;
+                msg_error() << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " have no position data";
                 continue;
             }
             if (!info.hasDirection)
             {
-                serr << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " have no direction data" << sendl;
+                msg_error() << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " have no direction data";
                 continue;
             }
             ConstraintBlockInfo newInfo;
@@ -556,12 +547,12 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
                 int idFine = c0 + c*nbl;
                 if (idFine + 2 >= numConstraints)
                 {
-                    serr << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " has invalid index" << sendl;
+                    msg_error() << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid index";
                     break;
                 }
                 if ((unsigned)(info.offsetPosition + c) >= constraintPositions.size())
                 {
-                    serr << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " has invalid position index" << sendl;
+                    msg_error() << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid position index";
                     break;
                 }
                 ConstCoord posFine = constraintPositions[info.offsetPosition + c];
@@ -629,7 +620,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
             }
         }
         // Finalize
-        sout << "Multigrid merge level " << level << ": " << num_group << " groups." << sendl;
+        msg_info() << "Multigrid merge level " << level << ": " << num_group << " groups.";
 
         // Normalize and orthogonalize constraint directions
         for (unsigned int g=0; g<num_group; ++g)
@@ -693,8 +684,8 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
     for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
     {
         const ConstraintBlockInfo& info = constraintBlockInfo[cb];
-        sout << "MultigridConstraintsMerge_Spatial level " << nLevels-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("NULL"))
-                << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea << sendl;
+        msg_info() << "MultigridConstraintsMerge_Spatial level " << nLevels-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("nullptr"))
+                << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea;
     }
 }
 
@@ -717,7 +708,7 @@ void LCPConstraintSolver::build_problem_info()
 
     simulation::MechanicalResetConstraintVisitor resetCtr(&cparams);
     resetCtr.execute(context);
-    simulation::MechanicalAccumulateConstraint accCtr(&cparams, core::MatrixDerivId::holonomicC(), _numConstraints );
+    simulation::MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
     accCtr.execute(context);
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();
@@ -847,7 +838,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     if(!_numConstraints)
         return 0;
 
-    //helper::system::thread::CTime timer;
     double time = 0.0;
     double timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
     if ( displayTime.getValue() )
@@ -858,30 +848,23 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
     if(_mu==0.0)
     {
-        serr<<"WARNING: frictionless case with unbuilt nlcp is not implemented"<<sendl;
+        msg_error() << "WARNING: frictionless case with unbuilt nlcp is not implemented";
         return 0;
     }
 
-    /////// test: numContacts = _numConstraints/3 (must be dividable by 3)
     if (_numConstraints%3 != 0)
     {
-        serr<<" WARNING dim should be dividable by 3 in nlcp_gaussseidel"<<sendl;
+        msg_error() << " WARNING dim should be dividable by 3 in nlcp_gaussseidel";
         return 0;
     }
     int numContacts =  _numConstraints/3;
-    //////////////////////////////////////////////
-    // iterators
+
     int it,c1;
 
-    //////////////////////////////////////////////
     // data for iterative procedure
     double _tol = tol.getValue();
     int _maxIt = maxIt.getValue();
     double _mu = mu.getValue();
-
-    //debug
-    //std::cout<<"data are set"<<std::endl;
-
 
     /// each constraintCorrection has an internal force vector that is set to "0"
 
@@ -906,10 +889,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         }
     }
 
-
-
-
-    // return 1;
     if ( displayTime.getValue() )
     {
         dmsg_info() << " build_constraints " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
@@ -945,21 +924,20 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
             }
         }
-        if(!elem1)
-            serr<<"WARNING: no constraintCorrection found for contact"<<c1<<sendl;
+        if (!elem1)
+            msg_error() << "WARNING: no constraintCorrection found for contact" << c1;
         if(!elem2)
-            _cclist_elem2.push_back(NULL);
+            _cclist_elem2.push_back(nullptr);
 
     }
 
     // memory allocation of vector d
     unbuilt_d.resize(_numConstraints);
     double *d = &(unbuilt_d[0]);
-    //d = (double*)malloc(_numConstraints*sizeof(double));
 
     if ( displayTime.getValue() )
     {
-        sout<<" link_constraints " << ( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
+        msg_info()<<" link_constraints " << ( (double) timer.getTime() - time)*timeScale<<" ms";
         time = (double) timer.getTime();
     }
 
@@ -979,7 +957,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         _cclist_elem1[c1]->getBlockDiagonalCompliance(_Wdiag, 3*c1, 3*c1+2);
 
         // compliance of object2 (if object2 exists)
-        if(_cclist_elem2[c1] != NULL)
+        if(_cclist_elem2[c1] != nullptr)
         {
             _cclist_elem2[c1]->getBlockDiagonalCompliance(_Wdiag, 3*c1, 3*c1+2);
 
@@ -996,10 +974,8 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     unbuilt_W33.clear();
     unbuilt_W33.resize(numContacts);
     helper::LocalBlock33 *W33 = &(unbuilt_W33[0]); //new helper::LocalBlock33[numContacts];
-    //3 = (helper::LocalBlock33 **) malloc (_numConstraints*sizeof(helper::LocalBlock33));
     for (c1=0; c1<numContacts; c1++)
     {
-        //3[c1] = new helper::LocalBlock33();
         double w[6];
         w[0] = _Wdiag->element(3*c1  , 3*c1  );
         w[1] = _Wdiag->element(3*c1  , 3*c1+1);
@@ -1010,11 +986,9 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         W33[c1].compute(w[0], w[1] , w[2], w[3], w[4] , w[5]);
     }
 
-    // debug
     dmsg_info() <<" Compliance In constraint Space : \n W ="<<(* _W)<<msgendl
                 <<"getBlockDiagonalCompliance   \n Wdiag = "<<(* _Wdiag) ;
 
-    // return 1;
     if (displayTime.getValue())
     {
         dmsg_info() <<" build_diagonal " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
@@ -1029,15 +1003,11 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         std::list<unsigned int>::iterator it_c ;
         error =0;
 
-        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; ++it_c )
+        //constraints are treated 3x3 (friction contact)
+        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; std::advance(it_c, 3) )
         {
             int constraint = *it_c;
             c1 = constraint/3;
-
-            //constraints are treated 3x3 (friction contact)
-            ++it_c;
-            if(it_c != contact_sequence.end())
-                ++it_c;
 
             // compute the current violation :
 
@@ -1052,7 +1022,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
             _cclist_elem1[c1]->addConstraintDisplacement(d, 3*c1, 3*c1+2);
 
             // displacement of object2 due to contact force (if object2 exists)
-            if(_cclist_elem2[c1] != NULL)
+            if(_cclist_elem2[c1] != nullptr)
                 _cclist_elem2[c1]->addConstraintDisplacement(d, 3*c1, 3*c1+2);
 
 
@@ -1078,7 +1048,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
             f[3*c1+1] = ft - f[3*c1+1];
             f[3*c1+2] = fs - f[3*c1+2];
 
-            //std::cout<<"fn = "<< fn<<" -  ft = "<< ft<<" -  fs = "<<fs<<std::endl;
             ///////// verifier si Delta force vaut 0 => pas la peine d'ajouter la force
 
             // set Delta force on object 1 for evaluating the followings displacement
@@ -1088,7 +1057,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
                 _cclist_elem1[c1]->setConstraintDForce(f, 3*c1, 3*c1+2, update);
 
                 // set Delta force on object2 (if object2 exists)
-                if(_cclist_elem2[c1] != NULL)
+                if(_cclist_elem2[c1] != nullptr)
                     _cclist_elem2[c1]->setConstraintDForce(f, 3*c1, 3*c1+2, update);
             }
 
@@ -1128,7 +1097,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
 int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* /*residuals*/)
 {
-    //helper::system::thread::CTime timer;
     double time = 0.0;
     double timeScale = 1.0;
     if ( displayTime.getValue() )
@@ -1145,11 +1113,8 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     }
 
     int numContacts =  _numConstraints;
-    //////////////////////////////////////////////
-    // iterators
     int it,c1;
 
-    //////////////////////////////////////////////
     // data for iterative procedure
     double _tol = tol.getValue();
     int _maxIt = maxIt.getValue();
@@ -1206,7 +1171,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
         }
         msg_warning_when(!elem1) << "WARNING: no constraintCorrection found for contact"<<c1 ;
         if(!elem2)
-            _cclist_elem2[c1] = (NULL);
+            _cclist_elem2[c1] = (nullptr);
     }
 
     unbuilt_d.resize(_numConstraints);
@@ -1229,21 +1194,17 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
         // compliance of object1
         _cclist_elem1[c1]->getBlockDiagonalCompliance(_Wdiag, c1, c1);
         // compliance of object2 (if object2 exists)
-        if(_cclist_elem2[c1] != NULL)
+        if(_cclist_elem2[c1] != nullptr)
         {
             _cclist_elem2[c1]->getBlockDiagonalCompliance(_Wdiag, c1, c1);
         }
     }
-    // std::cout<<"getBlockDiagonalCompliance  Wdiag = "<<(* _Wdiag)<<std::endl;
 
     unbuilt_W11.resize(numContacts);
-    //unbuilt_invW11.resize(numContacts);
     double *W11 = &(unbuilt_W11[0]);
-    //double *invW11 = &(unbuilt_invW11[0]);
     for (c1=0; c1<numContacts; c1++)
     {
         W11[c1] = _Wdiag->element(c1, c1);
-        //invW11[c1] = 1.0 / W11[c1];
     }
 
     if ( displayTime.getValue() )
@@ -1274,7 +1235,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
             // displacement of object1 due to contact force
             _cclist_elem1[c1]->addConstraintDisplacement(d, c1, c1);
             // displacement of object2 due to contact force (if object2 exists)
-            if(_cclist_elem2[c1] != NULL)
+            if(_cclist_elem2[c1] != nullptr)
                 _cclist_elem2[c1]->addConstraintDisplacement(d, c1, c1);
             // set displacement in dn
             dn=d[c1];
@@ -1294,7 +1255,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
                 // compute the Delta of contact forces:
                 f[c1] = fn - fn0;
                 _cclist_elem1[c1]->setConstraintDForce(f, c1, c1, update);
-                if(_cclist_elem2[c1] != NULL)
+                if(_cclist_elem2[c1] != nullptr)
                     _cclist_elem2[c1]->setConstraintDForce(f, c1, c1, update);
             }
 
@@ -1363,6 +1324,8 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     const int merge_spatial_shift = 0; // merge_spatial_step/2
     const int merge_local_levels = this->merge_local_levels.getValue();
 
+    vparams->drawTool()->saveLastState();
+
     // from http://colorexplorer.com/colormatch.aspx
     const unsigned int colors[72]= { 0x2F2FBA, 0x111145, 0x2FBA8C, 0x114534, 0xBA8C2F, 0x453411, 0x2F72BA, 0x112A45, 0x2FBA48, 0x11451B, 0xBA2F5B, 0x451122, 0x2FB1BA, 0x114145, 0x79BA2F, 0x2D4511, 0x9E2FBA, 0x3B1145, 0x2FBA79, 0x11452D, 0xBA662F, 0x452611, 0x2F41BA, 0x111845, 0x2FBA2F, 0x114511, 0xBA2F8C, 0x451134, 0x2F8CBA, 0x113445, 0x6DBA2F, 0x284511, 0xAA2FBA, 0x3F1145, 0x2FAABA, 0x113F45, 0xAFBA2F, 0x414511, 0x692FBA, 0x271145, 0x2FBAAA, 0x11453F, 0xBA892F, 0x453311, 0x2F31BA, 0x111245, 0x2FBA89, 0x114533, 0xBA4F2F, 0x451D11, 0x2F4DBA, 0x111C45, 0x2FBA6D, 0x114528, 0xBA2F56, 0x451120, 0x2F72BA, 0x112A45, 0x2FBA48, 0x11451B, 0xBA2F9A, 0x451139, 0x2F93BA, 0x113645, 0x3FBA2F, 0x174511, 0x662FBA, 0x261145, 0x2FBAA8, 0x11453E, 0xB1BA2F, 0x414511};
 
@@ -1396,12 +1359,12 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
                 int idFine = c0 + c*nbl;
                 if ((unsigned)(info.offsetPosition + c) >= constraintPositions.size())
                 {
-                    msg_info() << "Level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " has invalid position index" ;
+                    msg_info() << "Level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid position index" ;
                     break;
                 }
                 if ((unsigned)(info.offsetDirection + 3*c) >= constraintDirections.size())
                 {
-                    msg_info() << "Level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " has invalid direction index" ;
+                    msg_info() << "Level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid direction index" ;
                     break;
                 }
                 ConstCoord posFine = constraintPositions[info.offsetPosition + c];
@@ -1446,14 +1409,14 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
         }
         coord0 = (coord0 - merge_spatial_shift) * merge_spatial_step;
         coordFact *= merge_spatial_step;
+
     }
+    vparams->drawTool()->saveLastState();
+
 }
 
 int LCPConstraintSolverClass = core::RegisterObject("A Constraint Solver using the Linear Complementarity Problem formulation to solve BaseConstraint based components")
         .add< LCPConstraintSolver >();
-
-SOFA_DECL_CLASS(LCPConstraintSolver);
-
 
 } // namespace constraintset
 

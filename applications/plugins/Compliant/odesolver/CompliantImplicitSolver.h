@@ -140,23 +140,8 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
 
             mparams().setImplicitVelocity( alpha );
             mparams().setImplicitPosition( beta );
-
-//            mparams().setX( posId );
-//            mparams().setV( velId );
-
             mop.mparams = mparams();
         }
-
-//        SolverOperations( const SolverOperations& sop )
-//            : vop(sop.vop)
-//            , mop(sop.mop)
-//            , ctx(sop.ctx)
-//            , alpha(sop.alpha)
-//            , beta(sop.beta)
-//            , _mparams(sop._mparams)
-//            , posId(sop.posId)
-//            ,velId(sop.velId)
-//        {}
 
         inline const core::MechanicalParams& mparams() const { return /*mop.*/_mparams; }
         inline       core::MechanicalParams& mparams()       { return /*mop.*/_mparams; }
@@ -170,21 +155,21 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
 
     typedef linearsolver::AssembledSystem system_type;
 				
-    virtual void init();
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
+    void init() override;
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     // OdeSolver API
-    virtual void solve(const core::ExecParams* params,
+    void solve(const core::ExecParams* params,
                        SReal dt,
                        core::MultiVecCoordId posId,
-                       core::MultiVecDerivId velId);
+                       core::MultiVecDerivId velId) override;
 
 
 	CompliantImplicitSolver();
-    virtual ~CompliantImplicitSolver();
+    ~CompliantImplicitSolver() override;
 
-    virtual void reset();
-    virtual void cleanup();
+    void reset() override;
+    void cleanup() override;
 
     enum { NO_STABILIZATION=0, PRE_STABILIZATION, POST_STABILIZATION_RHS, POST_STABILIZATION_ASSEMBLY, NB_STABILIZATION };
     Data<helper::OptionsGroup> stabilization;
@@ -243,7 +228,7 @@ public:
     /// Compute the forces f (stiffness and constraint forces)
     virtual void compute_forces(SolverOperations& sop,
                                 core::behavior::MultiVecDeriv& f,  // the total force sum (stiffness + constraint forces if required)
-                                core::behavior::MultiVecDeriv* f_k = NULL // the stiffness force only
+                                core::behavior::MultiVecDeriv* f_k = nullptr // the stiffness force only
                                );
 
     /// evaluate violated and active constraints
@@ -294,7 +279,7 @@ public:
     system_type::vec getLambda() const { assert(storeDSol); return dynamics_solution.tail(sys.n); }
     system_type::vec getDv() const { assert(storeDSol); return dynamics_solution.head(sys.m); }
     system_type::vec getPhi() const { assert(storeDSol); return dynamics_rhs.tail(sys.n); }
-//    system_type::vec getF() const { assert(storeDSol); return dynamics_rhs.head(sys.m); }  FF: I suspect this one is wrong, because rhs does not contain forces but momenta, does it ?
+
     // assembled matrices
     const system_type::rmat& H() const {return sys.H;}
     const system_type::rmat& P() const {return sys.P;}

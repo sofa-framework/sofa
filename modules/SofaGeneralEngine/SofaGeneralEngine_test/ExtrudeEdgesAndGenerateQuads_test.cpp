@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -71,15 +71,15 @@ struct ExtrudeEdgesAndGenerateQuads_test : public Sofa_test<typename _DataTypes:
         m_thisObject->setName("myname") ;
         EXPECT_TRUE(m_thisObject->getName() == "myname") ;
 
-        EXPECT_TRUE( m_thisObject->findData("extrudeDirection") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("thicknessIn") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("thicknessOut") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("numberOfSections") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("curveVertices") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("curveEdges") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("extrudedVertices") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("extrudedEdges") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("extrudedQuads") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("extrudeDirection") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("thicknessIn") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("thicknessOut") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("numberOfSections") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("curveVertices") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("curveEdges") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("extrudedVertices") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("extrudedEdges") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("extrudedQuads") != nullptr ) ;
 
         EXPECT_NO_THROW( m_thisObject->init() ) ;
         EXPECT_NO_THROW( m_thisObject->bwdInit() ) ;

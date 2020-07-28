@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,15 +22,6 @@
 #ifndef SOFA_COMPONENT_FEM_MATERIAL_PLASTICMATERIAL_H
 #define SOFA_COMPONENT_FEM_MATERIAL_PLASTICMATERIAL_H
 #include "config.h"
-
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
-//#define SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-#define SOFA_DOUBLE
-#endif
 
 #include <SofaMiscFem/BaseMaterial.h>
 #include <newmat/newmat.h>
@@ -81,7 +72,7 @@ public:
     SReal computeVonMisesStrain(Vector3 &strain);
     void computeStressOnSection(Vector3& Stress, Vector3 Strain, int section);	// computes the stress on a given section of the piecewise function
 
-    virtual void computeStress (unsigned int /*iElement*/) override {}
+    void computeStress (unsigned int /*iElement*/) override {}
 
 };
 

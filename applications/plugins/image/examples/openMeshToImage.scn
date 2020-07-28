@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
   <VisualStyle displayFlags="showVisual" />
   <MeshObjLoader name="mesh" filename="mesh/c_open.obj" triangulate="1"/>
   <MeshClosingEngine name="closer" inputPosition="@mesh.position" inputTriangles="@mesh.triangles" />
    
-  <VisualModel name="visual"  src="@mesh" color="0.5 0.5 1 .5"/>
-  <VisualModel name="closingVisual"  position="@closer.closingPosition" triangles="@closer.closingTriangles" color="1 0.1 0.1 1"/>
+  <OglModel name="visual"  src="@mesh" color="0.5 0.5 1 .5"/>
+  <OglModel name="closingVisual"  position="@closer.closingPosition" triangles="@closer.closingTriangles" color="1 0.1 0.1 1"/>
 
 <!-- method1 : using ROIs -->
   <MeshToImageEngine template="ImageUC" name="rasterizer" position="@closer.position"  triangles="@closer.triangles" value="1" insideValue="1" roiIndices="@closer.indices" roiValue="2"  voxelSize="0.5" padSize="5" rotateImage="true" printLog="true"/>

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -90,12 +90,11 @@ public:
     Data<Vec2R> m_sx0;
     Data<Vec2R> m_sx1; ///< second interpolation vector
 
-
-
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<HermiteSplineConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    
 protected:
-    HermiteSplineConstraint();
-
-    HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
+    HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate = nullptr);
 
     ~HermiteSplineConstraint();
 public:
@@ -127,20 +126,16 @@ protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class HermiteSplineConstraint<defaulttype::Rigid3dTypes>;
-extern template class HermiteSplineConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class HermiteSplineConstraint<defaulttype::Rigid3fTypes>;
-extern template class HermiteSplineConstraint<defaulttype::Vec3fTypes>;
-#endif
+template <>
+void SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>::init();
+
+
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

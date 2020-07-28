@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: ConicalForceField
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_H
 #include "config.h"
@@ -112,42 +101,19 @@ public:
     Data<Real> stiffness; ///< force stiffness
     Data<Real> damping; ///< force damping
     Data<defaulttype::RGBAColor> color; ///< cone color. (default=0.0,0.0,0.0,1.0,1.0)
-    Data<bool> bDraw; ///< enable/disable drawing of the cone
 protected:
-    ConicalForceField()
-        : coneCenter(initData(&coneCenter, "coneCenter", "cone center"))
-        , coneHeight(initData(&coneHeight, "coneHeight", "cone height"))
-        , coneAngle(initData(&coneAngle, (Real)10, "coneAngle", "cone angle"))
+    ConicalForceField();
 
-        , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
-        , damping(initData(&damping, (Real)5, "damping", "force damping"))
-        , color(initData(&color, defaulttype::RGBAColor(0.0f,0.0f,1.0f,1.0f), "color", "cone color. (default=0.0,0.0,0.0,1.0,1.0)"))
-        , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the cone"))
-    {
-    }
 public:
-    void setCone(const Coord& center, Coord height, Real angle)
-    {
-        coneCenter.setValue( center );
-        coneHeight.setValue( height );
-        coneAngle.setValue( angle );
-    }
+    void setCone(const Coord& center, Coord height, Real angle);
+    void setStiffness(Real stiff);
+    void setDamping(Real damp);
 
-    void setStiffness(Real stiff)
+    void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
+    void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        stiffness.setValue( stiff );
-    }
-
-    void setDamping(Real damp)
-    {
-        damping.setValue( damp );
-    }
-
-    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
-    virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
-    {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
 
@@ -158,13 +124,10 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API ConicalForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API ConicalForceField<defaulttype::Vec3fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API ConicalForceField<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace forcefield

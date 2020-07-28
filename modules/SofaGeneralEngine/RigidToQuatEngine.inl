@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,7 @@ template <class DataTypes>
 RigidToQuatEngine<DataTypes>::RigidToQuatEngine()
     : f_positions( initData (&f_positions, "positions", "Positions (Vector of 3)") )
     , f_orientations( initData (&f_orientations, "orientations", "Orientations (Quaternion)") )
+    , f_orientationsEuler( initData (&f_orientationsEuler, "orientationsEuler", "Orientations (Euler angle)") )
     , f_rigids( initData (&f_rigids, "rigids", "Rigid (Position + Orientation)") )
 {
     //
@@ -58,6 +59,7 @@ void RigidToQuatEngine<DataTypes>::init()
 
     addOutput(&f_positions);
     addOutput(&f_orientations);
+    addOutput(&f_orientationsEuler);
 
     setDirtyValue();
 }
@@ -69,23 +71,23 @@ void RigidToQuatEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void RigidToQuatEngine<DataTypes>::update()
+void RigidToQuatEngine<DataTypes>::doUpdate()
 {
     helper::ReadAccessor< Data< helper::vector<RigidVec3> > > rigids = f_rigids;
-
-    cleanDirty();
-
     helper::WriteOnlyAccessor< Data< helper::vector<Vec3> > > positions = f_positions;
     helper::WriteOnlyAccessor< Data< helper::vector<Quat> > > orientations = f_orientations;
+    helper::WriteOnlyAccessor< Data< helper::vector<Vec3> > > orientationsEuler = f_orientationsEuler;
 
     unsigned int sizeRigids = rigids.size();
     positions.resize(sizeRigids);
     orientations.resize(sizeRigids);
+    orientationsEuler.resize(sizeRigids);
     for (unsigned int i=0 ; i< sizeRigids ; i++)
     {
         RigidVec3 r = rigids[i];
         positions[i] = r.getCenter();
         orientations[i] = r.getOrientation();
+        orientationsEuler[i] = orientations[i].toEulerVector();
     }
 }
 

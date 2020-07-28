@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,14 +45,14 @@ public:
     SOFA_CLASS(GenerateRigidMass,core::DataEngine);
 
     GenerateRigidMass();
-    ~GenerateRigidMass();
+    ~GenerateRigidMass() override;
 
     /// Initialization method called at graph modification, during bottom-up traversal.
-    virtual void init() override;
+    void init() override;
     /// Update method called when variables used in precomputation are modified.
-    virtual void reinit() override;
+    void reinit() override;
     /// Update the output values
-    virtual void update() override;
+    void doUpdate() override;
 
 protected:
 
@@ -97,25 +97,15 @@ protected:
     helper::fixed_array<SReal,10> afIntegral;
 
 public:
-
-    template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        return core::DataEngine::canCreate (obj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const override;
-    static std::string templateName(const GenerateRigidMass<DataTypes,MassType>*);
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
+    static std::string GetCustomTemplateName();
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>;
-#endif
+#if  !defined(SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP)
+extern template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
+
 #endif
 
 } // namespace engine

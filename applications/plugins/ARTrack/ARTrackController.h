@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,28 +53,28 @@ public:
     /**
      * @brief Default Destructor.
      */
-    virtual ~ARTrackVirtualTimeController () {}
+    ~ARTrackVirtualTimeController () override {}
 
     /**
      * @brief SceneGraph callback initialization method.
      */
-    void init();
+    void init() override;
 
     /**
      * @brief SceneGraph callback re-initialization method.
      */
-    void reinit();
+    void reinit() override;
 
-    virtual void reset() {init();}
+    void reset() override {init();}
 
     /**
      * @brief Mouse event callback.
      */
 
 
-    void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override;
 
-    void onMouseEvent(core::objectmodel::MouseEvent *mev);
+    void onMouseEvent(core::objectmodel::MouseEvent *mev) override;
 
     void onARTrackEvent(core::objectmodel::ARTrackEvent *aev);
 
@@ -117,15 +117,15 @@ public:
     /**
      * @brief Default Destructor.
      */
-    virtual ~ARTrackController() {};
+    ~ARTrackController() override {};
 
-    void init();
+    void init() override;
 
     void onARTrackEvent(core::objectmodel::ARTrackEvent *aev);
 
-    void onMouseEvent(core::objectmodel::MouseEvent *mev);
+    void onMouseEvent(core::objectmodel::MouseEvent *mev) override;
 
-    void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override;
 
     static std::string templateName(const ARTrackController<DataTypes>* = NULL)
     {
@@ -161,18 +161,12 @@ protected:
     Vec3d beginLocalPosition,endLocalPosition;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_CPP)
+#if  !defined(SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_CPP)
 #pragma warning(disable : 4231)
-#ifndef SOFA_FLOAT
-extern template class ARTrackController<defaulttype::Vec1dTypes>;
-extern template class ARTrackController<defaulttype::Vec3dTypes>;
-extern template class ARTrackController<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class ARTrackController<defaulttype::Vec1fTypes>;
-extern template class ARTrackController<defaulttype::Vec3fTypes>;
-extern template class ARTrackController<defaulttype::Rigid3fTypes>;
-#endif
+extern template class ARTrackController<defaulttype::Vec1Types>;
+extern template class ARTrackController<defaulttype::Vec3Types>;
+extern template class ARTrackController<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace controller

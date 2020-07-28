@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -129,13 +129,13 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
     {
         collisionState = dynamic_cast<MouseContainer*>(b.body->getContext()->getMechanicalState());
 
-        if (SphereModel *sphere = dynamic_cast<SphereModel*>(b.body))
+        if (SphereCollisionModel<sofa::defaulttype::Vec3Types> *sphere = dynamic_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body))
         {
             Sphere s(sphere, idx);
             fixPoint = s.p();
             points.push_back(s.getIndex());
         }
-        else if(TriangleModel *triangle = dynamic_cast<TriangleModel*>(b.body))
+        else if(TriangleCollisionModel<sofa::defaulttype::Vec3Types> *triangle = dynamic_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body))
         {
             Triangle t(triangle, idx);
             fixPoint = (t.p1()+t.p2()+t.p3())/3.0;
@@ -143,12 +143,12 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
             points.push_back(t.p2Index());
             points.push_back(t.p3Index());
         }
-        else if(CapsuleModel *capsule = dynamic_cast<CapsuleModel*>(b.body)){
+        else if(CapsuleCollisionModel<sofa::defaulttype::Vec3Types> *capsule = dynamic_cast<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body)){
             fixPoint = (capsule->point1(idx) + capsule->point2(idx))/2.0;
             points.push_back(capsule->point1Index(idx));
             points.push_back(capsule->point2Index(idx));
         }
-        else if(dynamic_cast<RigidSphereModel*>(b.body)||dynamic_cast<OBBModel*>(b.body)){
+        else if(dynamic_cast<SphereCollisionModel<sofa::defaulttype::Rigid3Types>*>(b.body)||dynamic_cast<OBBCollisionModel<sofa::defaulttype::Rigid3Types>*>(b.body)){
             collisionState = dynamic_cast<MouseContainer*>(b.mstate);
             fixPoint = (collisionState->read(core::ConstVecCoordId::position())->getValue())[idx];
             points.push_back(idx);

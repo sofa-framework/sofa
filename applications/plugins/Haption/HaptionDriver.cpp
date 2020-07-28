@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,6 +21,7 @@
 ******************************************************************************/
 
 #include "HaptionDriver.h"
+#include <math.h>
 
 
 namespace sofa
@@ -237,9 +238,9 @@ void HaptionDriver::init()
                 visualNode[i].visu->initVisual();
                 visualNode[i].visu->updateVisual();
                 if(i<2)
-                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes >(visualHaptionDOF,visualNode[i].visu);
+                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, Vec3fTypes >(visualHaptionDOF,visualNode[i].visu);
                 else
-                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes >(visualAxesDOF,visualNode[i].visu);
+                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, Vec3fTypes >(visualAxesDOF,visualNode[i].visu);
                 visualNode[i].node->addObject(visualNode[i].mapping);
                 visualNode[i].mapping->name.setValue("RigidMapping");
                 visualNode[i].mapping->f_mapConstraints.setValue(false);
@@ -270,7 +271,7 @@ void HaptionDriver::init()
 
         for(int j=0; j<2; j++)
         {
-            sofa::defaulttype::ResizableExtVector<sofa::defaulttype::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+            sofa::helper::vector<sofa::defaulttype::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
             for(unsigned int i=0; i<scaleMapping.size(); i++)
                 for(int p=0; p<3; p++)
                     scaleMapping[i].at(p)*=(float)(scale.getValue());
@@ -429,7 +430,6 @@ void HaptionDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 
     if(visuAxes  && haptionVisu.getValue())
     {
-        double pi = 3.1415926535;
         if ((kpe->getKey()=='X' || kpe->getKey()=='x') && !modX )
         {
             modX=true;
@@ -478,14 +478,14 @@ void HaptionDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
         else if ((kpe->getKey()==21) && (modX || modY || modZ)) //down
         {
             VecCoord& posB =(*posBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-pi/50);
+            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-M_PI/50);
             posB[0].getOrientation()*=quarter_transform;
             posBase.endEdit();
         }
         else if ((kpe->getKey()==19) && (modX || modY || modZ)) //up
         {
             VecCoord& posB =(*posBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),+pi/50);
+            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),+M_PI/50);
             posB[0].getOrientation()*=quarter_transform;
             posBase.endEdit();
         }
@@ -618,8 +618,6 @@ void HaptionDriver::handleEvent(core::objectmodel::Event *event)
 
 int HaptionDriverClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
         .add< HaptionDriver >();
-
-SOFA_DECL_CLASS(HaptionDriver)
 
 } // namespace controller
 

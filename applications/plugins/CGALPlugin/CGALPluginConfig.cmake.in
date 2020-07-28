@@ -2,17 +2,14 @@
 
 @PACKAGE_INIT@
 
-find_package(SofaFramework REQUIRED)
-find_package(CGAL REQUIRED)
-find_package(MPFR REQUIRED)
-find_package(GMP REQUIRED)
-find_package(Boost QUIET REQUIRED COMPONENTS system thread)
+set(CGALPLUGIN_HAVE_IMAGE @CGALPLUGIN_HAVE_IMAGE@)
 
-if(NOT TARGET CGALPlugin)
-	include("${CMAKE_CURRENT_LIST_DIR}/CGALPluginTargets.cmake")
+find_package(SofaFramework REQUIRED)
+find_package(SofaSimulation REQUIRED)
+find_package(CGAL QUIET REQUIRED)
+
+if(CGALPLUGIN_HAVE_IMAGE)
+    find_package(CGAL QUIET REQUIRED COMPONENTS ImageIO)
 endif()
 
 check_required_components(CGALPlugin)
-
-set(CGALPlugin_LIBRARIES CGALPlugin)
-set(CGALPlugin_INCLUDE_DIRS @PACKAGE_CGALPLUGIN_INCLUDE_DIR@)

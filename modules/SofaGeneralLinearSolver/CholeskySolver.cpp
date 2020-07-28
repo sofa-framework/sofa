@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
 #define SOFA_COMPONENT_LINEARSOLVER_CHOLESKYSOLVER_CPP
 #include <SofaGeneralLinearSolver/CholeskySolver.inl>
 
@@ -38,27 +35,13 @@ namespace linearsolver
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(CholeskySolver)
-
 int CholeskySolverClass = core::RegisterObject("Direct linear solver based on Cholesky factorization, for dense matrices")
-#ifndef SOFA_FLOAT
         .add< CholeskySolver< SparseMatrix<double>, FullVector<double> > >(true)
-        .add< CholeskySolver< FullMatrix<double>, FullVector<double> > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< CholeskySolver< SparseMatrix<float>, FullVector<float> > >(true)
-        .add< CholeskySolver< FullMatrix<float>, FullVector<float> > >()
-#endif
-        ;
+        .add< CholeskySolver< FullMatrix<double>, FullVector<double> > >();
 
-#ifndef SOFA_FLOAT
 template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
 template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<float>, FullVector<float> >;
-template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< FullMatrix<float>, FullVector<float> >;
-#endif
+
 
 } // namespace linearsolver
 

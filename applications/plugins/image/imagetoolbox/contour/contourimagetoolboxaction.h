@@ -53,7 +53,7 @@ public:
     typedef helper::vector<PixCoord> VecPixCoord;
 
     ContourImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent);
-    ~ContourImageToolBoxAction();
+    ~ContourImageToolBoxAction() override;
     
     sofa::component::engine::ContourImageToolBoxNoTemplated* CITB();
 
@@ -70,10 +70,10 @@ private:
     void drawSegment();
 
 public slots:
-    virtual void addOnGraphs();
-    virtual void updateGraphs();
-    virtual void updateColor();
-    virtual void optionChangeSection(sofa::defaulttype::Vec3i);
+    void addOnGraphs() override;
+    void updateGraphs() override;
+    void updateColor() override;
+    void optionChangeSection(sofa::defaulttype::Vec3i) override;
 
     
 private slots:

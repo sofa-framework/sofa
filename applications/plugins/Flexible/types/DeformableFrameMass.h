@@ -53,9 +53,6 @@ namespace defaulttype
             if( m_invMassMatrix ) m_invMassMatrix->clear();
         }
 
-
-        static const char* Name();
-
         /// @returns the invert of the mass matrix
         const MassMatrix& getInverse() const
         {

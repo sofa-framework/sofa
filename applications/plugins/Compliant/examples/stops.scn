@@ -14,7 +14,7 @@
   <Node name="SlindingVec3 V1">
     
     <MechanicalObject template="Vec3d" position="0 0 0" showObject="1" showObjectScale="1" drawMode="1"/>
-    <UniformMass mass="1"/>
+    <UniformMass vertexMass="1"/>
     
     <Node name="yz">
       
@@ -104,7 +104,7 @@
     <Node name="SlindingVec3 V1 with restitution">
     
     <MechanicalObject template="Vec3d" position="0 -3 0" showObject="1" showObjectScale="1" drawMode="1"/>
-    <UniformMass mass="1"/>
+    <UniformMass vertexMass="1"/>
     
     <Node name="yz">
       

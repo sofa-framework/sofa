@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -127,9 +127,6 @@ public:
 
     Data< OutImageTypes > outputImage;
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const TransferFunction<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
-
     TransferFunction()    :   Inherited()
       , filter ( initData ( &filter,"filter","Filter" ) )
       , param ( initData ( &param,"param","Parameters" ) )
@@ -144,23 +141,22 @@ public:
         filter.setValue(filterOptions);
     }
 
-    virtual ~TransferFunction() {}
+    ~TransferFunction() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&inputImage);
         addOutput(&outputImage);
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void update() override
+    void doUpdate() override
     {
         TransferFunctionSpecialization<InImageTypes,OutImageTypes>::update( *this );
-        cleanDirty();
     }
 
 

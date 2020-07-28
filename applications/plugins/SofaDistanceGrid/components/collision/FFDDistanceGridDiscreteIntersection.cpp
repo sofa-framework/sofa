@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,6 @@
 #include <iostream>
 #include <algorithm>
 
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.inl>
 #include <sofa/helper/proximity.h>
 #include <sofa/core/collision/Intersection.inl>
@@ -42,17 +41,15 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-SOFA_DECL_CLASS(FFDDistanceGridDiscreteIntersection)
-
 IntersectorCreator<DiscreteIntersection, FFDDistanceGridDiscreteIntersection> FFDDistanceGridDiscreteIntersectors("FFDDistanceGrid");
 
 FFDDistanceGridDiscreteIntersection::FFDDistanceGridDiscreteIntersection(DiscreteIntersection* object)
     : intersection(object)
 {
-    intersection->intersectors.add<FFDDistanceGridCollisionModel, PointModel,                        FFDDistanceGridDiscreteIntersection>  (this);
-    intersection->intersectors.add<FFDDistanceGridCollisionModel, SphereModel,                       FFDDistanceGridDiscreteIntersection>  (this);
-    intersection->intersectors.add<FFDDistanceGridCollisionModel, TriangleModel,                     FFDDistanceGridDiscreteIntersection>  (this);
-    intersection->intersectors.add<RayModel, FFDDistanceGridCollisionModel,   FFDDistanceGridDiscreteIntersection>  (this);
+    intersection->intersectors.add<FFDDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>,                        FFDDistanceGridDiscreteIntersection>  (this);
+    intersection->intersectors.add<FFDDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>,                       FFDDistanceGridDiscreteIntersection>  (this);
+    intersection->intersectors.add<FFDDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>,                     FFDDistanceGridDiscreteIntersection>  (this);
+    intersection->intersectors.add<RayCollisionModel, FFDDistanceGridCollisionModel,   FFDDistanceGridDiscreteIntersection>  (this);
     intersection->intersectors.add<FFDDistanceGridCollisionModel,   RigidDistanceGridCollisionModel, FFDDistanceGridDiscreteIntersection>  (this);
     intersection->intersectors.add<FFDDistanceGridCollisionModel,   FFDDistanceGridCollisionModel,   FFDDistanceGridDiscreteIntersection> (this);
 }
@@ -130,10 +127,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                 {
                     detection->point[0] = grid1->meshPts[c1.points[i].index];
                     detection->point[1] = Vector3(p2) - grad * d;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    detection->baryCoords[0] = detection->point[0];
-                    detection->baryCoords[1] = Vector3(p2);
-#endif
                     detection->normal = r2 * -grad; // normal in global space from p1's surface
                     detection->value = value;
                     detection->elem.first = e1;
@@ -203,10 +196,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                                 {
                                     detection->point[0] = Vector3(pinit);
                                     detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                                    detection->baryCoords[0] = Vector3(pinit);
-                                    detection->baryCoords[1] = Vector3(p2);
-#endif
                                     detection->normal = Vector3(grad); // normal in global space from p1's surface
                                     detection->value = value;
                                     detection->elem.first = e1;
@@ -322,10 +311,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                             {
                                 detection->point[0] = Vector3(grid1->meshPts[c1.points[i].index]);
                                 detection->point[1] = Vector3(pinit);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                                detection->baryCoords[0] = detection->point[0];
-                                detection->baryCoords[1] = Vector3(pinit);
-#endif
                                 detection->normal = Vector3(-grad); // normal in global space from p1's surface
                                 detection->value = value;
                                 detection->elem.first = e1;
@@ -410,10 +395,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                             {
                                 detection->point[0] = Vector3(pinit);
                                 detection->point[1] = Vector3(grid2->meshPts[c2.points[i].index]);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                                detection->baryCoords[0] = Vector3(pinit);
-                                detection->baryCoords[1] = detection->point[1];
-#endif
                                 detection->normal = Vector3(grad); // normal in global space from p1's surface
                                 detection->value = value;
                                 detection->elem.first = e1;
@@ -506,11 +487,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     DetectionOutput *detection = &*(contacts->end()-1);
 
                     detection->point[0] = Vector3(pinit);
-                    detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    detection->baryCoords[0] = Vector3(pinit);
-                    detection->baryCoords[1] = Vector3(0.0,0.0,0.0);
-#endif
                     detection->normal = Vector3(grad); // normal in global space from p1's surface
                     detection->value = d - d0;
                     detection->elem.first = e1;
@@ -548,7 +524,7 @@ bool FFDDistanceGridDiscreteIntersection::testIntersection(FFDDistanceGridCollis
 int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, Triangle& e2, OutputVector* contacts)
 {
     const int f2 = e2.flags();
-    if (!(f2&TriangleModel::FLAG_POINTS)) return 0; // no points associated with this triangle
+    if (!(f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS)) return 0; // no points associated with this triangle
 
     DistanceGrid* grid1 = e1.getGrid();
     FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
@@ -561,7 +537,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     int nc = 0;
     for (unsigned int iP = 0; iP < 3; ++iP)
     {
-        if (!(f2&(TriangleModel::FLAG_P1<<iP))) continue;
+        if (!(f2&(TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1<<iP))) continue;
         Vector3 p2 = e2.p(iP);
         DistanceGrid::Coord p1 = p2;
 
@@ -605,10 +581,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
 
                         detection->point[0] = Vector3(pinit);
                         detection->point[1] = Vector3(p2);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                        detection->baryCoords[0] = Vector3(pinit);
-                        detection->baryCoords[1] = Vector3((iP == 1)?1.0:0.0,(iP == 2)?1.0:0.0,0.0);
-#endif
                         detection->normal = Vector3(grad); // normal in global space from p1's surface
                         detection->value = d - d0;
                         detection->elem.first = e1;
@@ -722,10 +694,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, FFDDistanc
 
                 detection->point[0] = e2.origin() + e2.direction()*rayPos;
                 detection->point[1] = c1.initpos(b);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                detection->baryCoords[0] = Vector3(rayPos,0,0);
-                detection->baryCoords[1] = detection->point[1];
-#endif
                 detection->normal = e2.direction(); // normal in global space from p1's surface
                 detection->value = d;
                 detection->elem.first = e2;

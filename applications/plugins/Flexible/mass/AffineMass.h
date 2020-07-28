@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,12 +70,12 @@ protected:
 
 public:
 
-    virtual void init()
+    virtual void init() override
     {
         core::behavior::Mass<DataTypes>::init();
     }
 
-    virtual void bwdInit()
+    virtual void bwdInit() override
     {
         // if the mass matrix is not given manually -> set to identity
         if( d_massMatrix.getValue().rows() != d_massMatrix.getValue().cols() || (unsigned)d_massMatrix.getValue().rows()!=this->mstate->getMatrixSize() )
@@ -85,57 +85,21 @@ public:
             massMatrix.setIdentity();
             massMatrix.compress();
             d_massMatrix.endEdit();
-
-    //        // perform assembly
-    //        core::MechanicalParams mparams = *core::MechanicalParams::defaultInstance();
-    //        mparams.setKFactor(0);
-    //        mparams.setBFactor(0);
-    //        mparams.setMFactor(1);
-    //        mparams.setDt( this->getContext()->getDt() ); // should not be used but to be sure
-
-    //        simulation::AssemblyVisitor assemblyVisitor( &mparams );
-    //        this->getContext()->executeVisitor( &assemblyVisitor );
-    //        component::linearsolver::AssembledSystem sys = assemblyVisitor.assemble();
-    //        massMatrix.compressedMatrix = sys.H;
-
-    //        if( massMatrix.rows()!=this->mstate->getMatrixSize() )
-    //        {
-    //            serr<<"Are you sure that every independent dofs are in independent graph branches?\n";
-    //            assert(false);
-    //        }
-
-    //        if( _instanciationNumber == 0 ) // only the first one (last bwdInit called) will call the mass removal
-    //        {
-    //    //        std::cerr<<SOFA_CLASS_METHOD<<"removing child masses"<<std::endl;
-
-    //            // visitor to delete child mass
-    //            RemoveChildMassVisitor removeChildMassVisitor( core::ExecParams::defaultInstance() );
-    //            this->getContext()->executeVisitor( &removeChildMassVisitor );
-
-    //            typename LinkMassNodes::Container massNodes = l_massNodes.getValue();
-    //            for ( unsigned int i = 0; i < massNodes.size() ; i++)
-    //            {
-    //               if( massNodes[i]->isActive() ) massNodes[i]->setActive( false );
-    //            }
-    //        }
         }
     }
 
-    static std::string templateName(const AffineMass<DataTypes>* = NULL)    { return DataTypes::Name();    }
-    virtual std::string getTemplateName() const	{		return templateName(this); 	}
-
-    void addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor)
+    void addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override
     {
         if( factor == 1.0 ) d_massMatrix.getValue().addMult( f, dx );
         else d_massMatrix.getValue().addMult( f, dx, factor );
     }
 
-    void accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
+    void accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/) override
     {
         serr<<"accFromF not yet implemented (the matrix inversion is needed)"<<sendl;
     }
 
-    void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
+    void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/) override
     {
         //if gravity was added separately (in solver's "solve" method), then nothing to do here
         if(this->m_separateGravity.getValue()) return;
@@ -146,11 +110,6 @@ public:
         Vec3 g ( this->getContext()->getGravity() );
         if(g[0]==0 && g[1]==0 && g[2]==0) return;
 
-    //    Deriv theGravity;
-    //    DataTypes::set( theGravity, g[0], g[1], g[2] );
-        // add weight
-    //    d_massMatrix.template addMul_by_line<Real,VecDeriv,Deriv>( _f, theGravity );
-
         //TODO optimize this!!!
         VecDeriv gravities(_f.size());
         for(size_t i=0 ; i<_f.size() ; ++i )
@@ -160,7 +119,7 @@ public:
         f.endEdit();
     }
 
-    SReal getKineticEnergy(const core::MechanicalParams* /*mparams*/, const DataVecDeriv& v) const
+    SReal getKineticEnergy(const core::MechanicalParams* /*mparams*/, const DataVecDeriv& v) const override
     {
         const VecDeriv& _v = v.getValue();
         SReal e = 0;
@@ -170,29 +129,13 @@ public:
         return e/2;
     }
 
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override
     {
         serr<<SOFA_CLASS_METHOD<<"not implemented!\n";
         return core::behavior::Mass< DataTypes >::getPotentialEnergy( mparams, x );
-
-    //    const VecCoord& _x = x.getValue();
-
-    //    VecCoord Mx/* = d_massMatrix * _x*/;
-    //    d_massMatrix.mult( Mx, _x );
-
-    //    SReal e = 0;
-    //    // gravity
-    //    Vec3d g ( this->getContext()->getGravity() );
-    //    Deriv theGravity;
-    //    DataTypes::set ( theGravity, g[0], g[1], g[2] );
-    //    for( unsigned int i=0 ; i<_x.size() ; i++ )
-    //    {
-    //        e -= theGravity*Mx[i];
-    //    }
-    //    return e;
     }
 
-    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
+    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override
     {
         if(mparams)
         {
@@ -213,7 +156,7 @@ public:
         }
     }
 
-    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
         Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());

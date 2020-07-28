@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -71,6 +71,11 @@ BaseData * helper_addNewIO(PyObject * self, PyObject * args, PyObject * kw)
         msg_error("SofaPython") << "Adding new IO failed!";
         return nullptr;
     }
+    if (NewData->getName().empty())
+    {
+        delete NewData;
+        return nullptr;
+    }
     NewData->setGroup(""); // Needs to be empty before it can be set to Input or Output ...
 
     return NewData;
@@ -111,7 +116,8 @@ static PyObject * DataEngine_addNewOutput(PyObject *self, PyObject* args, PyObje
     {
         Py_RETURN_NONE;
     }
-
+    if (!engine->findData(NewData->getName()))
+        engine->addData(NewData);
     engine->addOutput(NewData);
     Py_RETURN_NONE;
 }

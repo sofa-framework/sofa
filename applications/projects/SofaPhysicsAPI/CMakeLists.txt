@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaPhysicsAPI)
 
 set(SOFAPHYSICSAPI_VERSION 0.1)
@@ -26,15 +26,11 @@ set(SOURCE_FILES
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(SceneCreator REQUIRED)
+find_package(SofaValidation REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiMain SofaComponentGeneral SceneCreator)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX _d)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiMain SofaGeneral SceneCreator SofaValidation)
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPHYSICSAPI_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAPHYSICSAPI")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 ## Install rules and CMake package configurations files
 sofa_create_package(SofaPhysicsAPI ${SOFAPHYSICSAPI_VERSION} ${PROJECT_NAME} SofaPhysicsAPI)

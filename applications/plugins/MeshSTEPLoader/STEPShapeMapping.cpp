@@ -15,8 +15,6 @@ int STEPShapeExtractorClass = core::RegisterObject("Extract a shape from a MeshS
         .add< STEPShapeExtractor>(true);
 
 
-SOFA_DECL_CLASS(STEPShapeExtractor)
-
 STEPShapeExtractor::STEPShapeExtractor(MeshSTEPLoader* loader, MeshTopology* topology):
     shapeNumber(initData(&shapeNumber,"shapeNumber", "Shape number to be loaded" ) )
     ,indexBegin(initData(&indexBegin,(unsigned int)0,"indexBegin","The begin index for this shape with respect to the global mesh",true,true))
@@ -36,12 +34,12 @@ void STEPShapeExtractor::init()
 
     if( input == NULL || output == NULL )
     {
-        serr << "init failed! NULL pointers." << sendl;
+        msg_error() << "init failed! NULL pointers.";
         return;
     }
 
-    addInput(&input->positions);
-    addInput(&input->triangles);
+    addInput(&input->d_positions);
+    addInput(&input->d_triangles);
     addInput(&input->_uv);
 
     addOutput(&output->seqPoints);
@@ -50,23 +48,23 @@ void STEPShapeExtractor::init()
 }
 
 
-void STEPShapeExtractor::update()
+void STEPShapeExtractor::doUpdate()
 {
     MeshSTEPLoader* input = loader.get();
     MeshTopology* output = topology.get();
 
     if( input == NULL || output == NULL )
     {
-        serr << "init failed! NULL pointers." << sendl;
+        msg_error() << "init failed! NULL pointers.";
         return;
     }
 
-    const helper::vector<sofa::defaulttype::Vector3>& positionsI = input->positions.getValue();
-    const helper::vector<Topology::Triangle >& trianglesI = input->triangles.getValue();
+    const helper::vector<sofa::defaulttype::Vector3>& positionsI = input->d_positions.getValue();
+    const helper::vector<Triangle >& trianglesI = input->d_triangles.getValue();
     const helper::vector<sofa::defaulttype::Vector2>& uvI = input->_uv.getValue();
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(output->seqPoints.beginEdit());
-    helper::vector<Topology::Triangle >& my_triangles = *(output->seqTriangles.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(output->seqTriangles.beginEdit());
     helper::vector<sofa::defaulttype::Vector2>& my_uv = *(output->seqUVs.beginEdit());
 
     my_positions.clear();
@@ -81,7 +79,7 @@ void STEPShapeExtractor::update()
     unsigned int endIdx   = 0;
     if (my_numberShape >= my_indicesComponents.size())
     {
-        serr << "Number of the shape not valid" << sendl;
+        msg_error() << "Number of the shape not valid";
     }
     else
     {
@@ -104,7 +102,7 @@ void STEPShapeExtractor::update()
                 {
                     for (unsigned int j=0; j<my_indicesComponents[i][2]; ++j)
                     {
-                        Topology::Triangle triangleTemp(trianglesI[j+numTriangles][0]-numNodes, trianglesI[j+numTriangles][1]-numNodes, trianglesI[j+numTriangles][2]-numNodes);
+                        Triangle triangleTemp(trianglesI[j+numTriangles][0]-numNodes, trianglesI[j+numTriangles][1]-numNodes, trianglesI[j+numTriangles][2]-numNodes);
                         my_triangles.push_back(triangleTemp);
                     }
                 }
@@ -127,10 +125,8 @@ void STEPShapeExtractor::update()
 }
 
 
+} // namespace engine
 
+} // namespace component
 
-}
-
-}
-
-}
+} // namespace sofa

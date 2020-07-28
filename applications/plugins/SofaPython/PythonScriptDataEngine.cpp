@@ -44,9 +44,10 @@ public:
         m_dataengine = psc ;
     }
 
-    virtual ~MyyFileEventListener(){}
+    ~MyyFileEventListener() override{}
 
-    virtual void fileHasChanged(const std::string& filepath){
+    virtual void fileHasChanged(const std::string& filepath) override
+    {
         PythonEnvironment::gil lock {__func__} ;
 
         /// This function is called when the file has changed. Two cases have
@@ -68,13 +69,10 @@ int PythonScriptDataEngineClass = core::RegisterObject("A Sofa DataEngine script
         .add< PythonScriptDataEngine>()
         ;
 
-SOFA_DECL_CLASS(PythonScriptController)
-
-
 PythonScriptDataEngine::PythonScriptDataEngine()
     :ScriptDataEngine()
-    , m_ScriptDataEngineClass(0)
-    , m_ScriptDataEngineInstance(0)    
+    , m_ScriptDataEngineClass(nullptr)
+    , m_ScriptDataEngineInstance(nullptr)    
     , m_filename(initData(&m_filename, "filename",
                           "Python script filename"))
     , m_classname(initData(&m_classname, "classname",
@@ -112,7 +110,6 @@ void PythonScriptDataEngine::refreshBinding()
     BIND_OBJECT_METHOD_DATA_ENGINE(update)
     BIND_OBJECT_METHOD_DATA_ENGINE(init)
     BIND_OBJECT_METHOD_DATA_ENGINE(parse)
-            //BIND_OBJECT_METHOD(update)
 }
 
 void PythonScriptDataEngine::doLoadScript()
@@ -183,15 +180,6 @@ void PythonScriptDataEngine::setInstance(PyObject* instance) {
     refreshBinding();
 }
 
-// Ok, so in the end we're stuck with using the AnimationBeginEvent? (20.02.2018, sescaida)
-void PythonScriptDataEngine::handleEvent(Event *event)
-{
-    if (AnimateBeginEvent::checkEventType(event))
-    {
-        setDirtyValue();
-        update();
-    }
-}
 void PythonScriptDataEngine::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
     ScriptDataEngine::parse(arg);

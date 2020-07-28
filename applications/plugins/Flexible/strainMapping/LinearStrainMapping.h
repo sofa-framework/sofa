@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -108,7 +108,7 @@ public:
 
     /** @name Mapping functions */
     //@{
-    virtual void init()
+    virtual void init() override
     {
         if( core::behavior::BaseMechanicalState* stateFrom = this->fromModel.get()->toBaseMechanicalState() )
             maskFrom = &stateFrom->forceMask;
@@ -123,7 +123,7 @@ public:
         Inherit::init();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         if(this->d_assemble.getValue()) updateJ();
 
@@ -131,7 +131,7 @@ public:
     }
 
 
-    virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<VecCoord>& dOut, const Data<VecCoord>& dIn)
+    virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<VecCoord>& dOut, const Data<VecCoord>& dIn) override
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
@@ -154,7 +154,7 @@ public:
         dOut.endEdit();
     }
 
-    virtual void applyJ(const core::MechanicalParams * /*mparams*/ , Data<VecDeriv>& dOut, const Data<VecDeriv>& dIn)
+    virtual void applyJ(const core::MechanicalParams * /*mparams*/ , Data<VecDeriv>& dOut, const Data<VecDeriv>& dIn) override
     {
         if(this->d_assemble.getValue())
         {
@@ -170,8 +170,6 @@ public:
 #ifdef _OPENMP
 #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
-            //        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
-            //            if( !this->maskTo->isActivated() || this->maskTo->getEntry(i) )
             for(helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
             {
                 out[i]=Deriv();
@@ -186,7 +184,7 @@ public:
     }
 
 
-    virtual void applyJT(const core::MechanicalParams * /*mparams*/ , Data<VecDeriv>& dIn, const Data<VecDeriv>& dOut)
+    virtual void applyJT(const core::MechanicalParams * /*mparams*/ , Data<VecDeriv>& dIn, const Data<VecDeriv>& dOut) override
     {
         if(this->d_assemble.getValue())
         {
@@ -199,11 +197,6 @@ public:
             const VecDeriv& out = dOut.getValue();
             const VecVRef& indices = this->d_index.getValue();
 
-//#ifdef _OPENMP
-//#pragma omp parallel for if (this->d_parallel.getValue())
-//#endif
-            //        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
-            //            if( this->maskTo->getEntry(i) )
             for(helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
             {
                 for(size_t j=0; j<jacobian[i].size(); j++)
@@ -217,16 +210,16 @@ public:
         }
     }
 
-    virtual void applyJT(const core::ConstraintParams * /*cparams*/ , Data<MatrixDeriv>& /*out*/, const Data<MatrixDeriv>& /*in*/)
+    virtual void applyJT(const core::ConstraintParams * /*cparams*/ , Data<MatrixDeriv>& /*out*/, const Data<MatrixDeriv>& /*in*/) override
     {
 
     }
 
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentDfId*/, core::ConstMultiVecDerivId /*childForceId*/ )
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentDfId*/, core::ConstMultiVecDerivId /*childForceId*/ ) override
     {
     }
 
-    const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)
+    const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/) override
     {
         if(!this->d_assemble.getValue())  // J should have been updated in apply() that is call before (when assemble==1)
         {
@@ -237,7 +230,7 @@ public:
     }
 
     // Compliant plugin API
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override
     {
         if(!this->d_assemble.getValue())  // J should have been updated in apply() that is call before (when assemble==1)
         {
@@ -249,33 +242,16 @@ public:
 
 
 
-    virtual const defaulttype::BaseMatrix* getK()
+    virtual const defaulttype::BaseMatrix* getK() override
     {
         return NULL;
     }
 
 
-    void draw(const core::visual::VisualParams* /*vparams*/)
+    void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
 
-    //void updateForceMask()
-    //{
-    //    const VecVRef& indices = this->d_index.getValue();
-    //    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
-    //    {
-    //        if( this->maskTo->getEntry(i) )
-    //        {
-    //            for(size_t j=0; j<jacobian[i].size(); j++)
-    //            {
-    //                size_t index = indices[i][j];
-    //                this->maskFrom->insertEntry( index );
-    //            }
-    //        }
-    //    }
-
-    //    //    serr<<"updateForceMask "<<this->maskTo->nbActiveDofs()<<" "<<this->maskFrom->nbActiveDofs()<<sendl;
-    //}
     //@}
 
     Data<bool> d_assemble; ///< Assemble the matrices (Jacobian and Geometric Stiffness) or use optimized matrix/vector multiplications
@@ -310,7 +286,6 @@ protected:
     void updateJ()
     {
         unsigned int insize = this->fromModel->getSize();
-        //        unsigned int outsize = this->toModel->getSize();
 
         SparseMatrixEigen& J = eigenJacobian;
         const VecVRef& indices = this->d_index.getValue();

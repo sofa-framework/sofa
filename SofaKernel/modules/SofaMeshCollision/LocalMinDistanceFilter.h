@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,7 +41,6 @@ class LocalMinDistanceFilter;
 /**
  * @brief LocalMinDistance cone information class for an unique collision primitive.
  */
-//template< class TCollisionElement >
 class SOFA_MESH_COLLISION_API InfoFilter
 {
 public:
@@ -54,8 +53,8 @@ public:
     InfoFilter(LocalMinDistanceFilter *lmdFilters)
         :	m_revision(-1),
             m_lmdFilters(lmdFilters),
-            base_mesh_topology(NULL),
-            position_filtering(NULL)
+            base_mesh_topology(nullptr),
+            position_filtering(nullptr)
     {}
 
     /**
@@ -134,12 +133,9 @@ protected:
     /**
      * @brief Default destructor.
      */
-    virtual ~LocalMinDistanceFilter();
+    ~LocalMinDistanceFilter() override;
 public:
-    //virtual void init(){}
-
     void reinit() override { init(); bwdInit();}
-
     void reset() override {reinit();}
 
     /**

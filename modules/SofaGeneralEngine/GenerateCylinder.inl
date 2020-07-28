@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -93,7 +93,7 @@ void GenerateCylinder<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void GenerateCylinder<DataTypes>::update()
+void GenerateCylinder<DataTypes>::doUpdate()
 {
     const Real radius = f_radius.getValue();
     const Real height = f_height.getValue();
@@ -102,8 +102,6 @@ void GenerateCylinder<DataTypes>::update()
     const size_t freqTheta=f_resolutionCircumferential.getValue();
     const size_t freqR=f_resolutionRadial.getValue();
     const size_t freqZ=f_resolutionHeight.getValue();
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data<VecCoord> > out = f_outputTetrahedraPositions;
     helper::WriteOnlyAccessor<Data<SeqTetrahedra> > tetras = f_tetrahedra;
@@ -375,7 +373,7 @@ void GenerateCylinder<DataTypes>::update()
                         }
                         else
                         {
-                            serr << "ERROR: duplicate triangle " << tr << " in tetra " << i <<" : " << (*itt) << sendl;
+                            msg_error() << "Duplicate triangle " << tr << " in tetra " << i << " : " << (*itt);
                         }
                         // tests if all vertices are on the circular surface
                         nbSurfaceNodes=0;

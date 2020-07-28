@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,11 +23,9 @@
 #define SOFA_COMPONENT_ENGINE_PLANEROI_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
 
-#include <sofa/defaulttype/Vec3Types.h>
+
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -71,13 +69,13 @@ protected:
 
     PlaneROI();
 
-    ~PlaneROI() {}
+    ~PlaneROI() override {}
 public:
     void init() override;
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -89,8 +87,12 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+            {
+                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                              "' found in the context node.");
                 return false; // this template is not the same as the existing MechanicalState
+            }
         }
 
         return BaseObject::canCreate(obj, context, arg);
@@ -103,17 +105,6 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const PlaneROI<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-
 protected:
     bool isPointInPlane(const CPos& p);
     bool isPointInPlane(const PointID& pid);
@@ -122,7 +113,6 @@ protected:
     bool isTetrahedronInPlane(const Tetra& t);
 
     void computePlane(unsigned int planeIndex);
-
 
 public:
     //Input
@@ -151,7 +141,7 @@ public:
     Data<bool> p_drawEdges; ///< Draw Edges
     Data<bool> p_drawTriangles; ///< Draw Triangles
     Data<bool> p_drawTetrahedra; ///< Draw Tetrahedra
-    Data<double> _drawSize; ///< rendering size for box and topological elements
+    Data<float> _drawSize; ///< rendering size for box and topological elements
 
 private:
 
@@ -159,15 +149,10 @@ private:
     Real width, length, depth;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PLANEROI_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_PLANEROI_CPP)
+extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Rigid3Types>;
+ 
 #endif
 
 } // namespace engine

@@ -1,30 +1,40 @@
-cmake_minimum_required(VERSION 3.1)
-project(SofaDenseSolver)
+cmake_minimum_required(VERSION 3.12)
+project(SofaDenseSolver VERSION 1.0 LANGUAGES CXX)
+
+sofa_find_package(Newmat REQUIRED BOTH_SCOPES)
+sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaGeneral REQUIRED)
+
+set(SOFADENSESOLVER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    config.h
-    initDenseSolver.h
+    ${SOFADENSESOLVER_SRC}/config.h.in
+    ${SOFADENSESOLVER_SRC}/initSofaDenseSolver.h
     )
 
 set(SOURCE_FILES
-    initDenseSolver.cpp
+    ${SOFADENSESOLVER_SRC}/initSofaDenseSolver.cpp
     )
 
 list(APPEND HEADER_FILES
-    LULinearSolver.h
-    NewMatMatrix.h
-    NewMatVector.h
+    ${SOFADENSESOLVER_SRC}/LULinearSolver.h
+    ${SOFADENSESOLVER_SRC}/NewMatMatrix.h
+    ${SOFADENSESOLVER_SRC}/NewMatVector.h
     )
 list(APPEND SOURCE_FILES
-    LULinearSolver.cpp
-    NewMatCGLinearSolver.cpp
-    NewMatCholeskySolver.cpp
+    ${SOFADENSESOLVER_SRC}/LULinearSolver.cpp
+    ${SOFADENSESOLVER_SRC}/NewMatCGLinearSolver.cpp
+    ${SOFADENSESOLVER_SRC}/NewMatCholeskySolver.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DENSE_SOLVER")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "SofaDenseSolver"
+)

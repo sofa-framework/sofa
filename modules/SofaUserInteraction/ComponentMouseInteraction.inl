@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -80,7 +80,7 @@ void TComponentMouseInteraction<DataTypes>::createInteractionComponents( sofa::s
 template <class DataTypes>
 bool TComponentMouseInteraction<DataTypes>::isCompatible( core::objectmodel::BaseContext *context) const
 {
-    return (dynamic_cast<MouseContainer*>(context->getMechanicalState()) != NULL);
+    return (dynamic_cast<MouseContainer*>(context->getMechanicalState()) != nullptr);
 }
 }
 }
