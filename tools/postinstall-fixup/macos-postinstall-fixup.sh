@@ -23,6 +23,23 @@ echo "BUNDLE_DIR = $BUNDLE_DIR"
 echo "QT_DIR = $QT_DIR"
 echo "MACDEPLOYQT_EXE = $MACDEPLOYQT_EXE"
 
+# Keep plugin_list as short as possible
+echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
+for plugin in \
+        SofaExporter       \
+        SofaSparseSolver   \
+        SofaPreconditioner \
+        SofaValidation     \
+        SofaDenseSolver    \
+        SofaNonUniformFem  \
+        SofaOpenglVisual   \
+        SofaSphFluid       \
+        CImgPlugin         \
+        SofaMiscCollision  \
+    ; do
+    grep "$plugin" "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
+done
+
 # Make sure the bin folder exists and contains runSofa
 if [ ! -d "$INSTALL_DIR/bin" ]; then
     mkdir -p $INSTALL_DIR/bin

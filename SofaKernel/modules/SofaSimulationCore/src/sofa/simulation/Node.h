@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_CORE_NODE_H
 #define SOFA_SIMULATION_CORE_NODE_H
 
-#include <type_traits>
+#include <sofa/simulation/config.h>
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/Context.h>
@@ -54,10 +54,10 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
-
-#include <sofa/simulation/simulationcore.h>
 #include <sofa/simulation/MutationListener.h>
 #include <sofa/simulation/VisitorScheduler.h>
+
+#include <type_traits>
 
 namespace sofa
 {

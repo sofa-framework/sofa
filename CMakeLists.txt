@@ -160,7 +160,7 @@ option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL
 
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
-if(SOFA_BUILD_TESTS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     # Enable testing features of cmake, like the add_test() command.
     enable_testing()
     add_subdirectory(extlibs/gtest)
@@ -183,6 +183,10 @@ endif()
 
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
+
+# This option is useful to compile SOFA + internal plugins without SofaPython soft dependencies (SofaExporter, SofaTest, Compliant, image, ...)
+# it simplifies binaries generation and future cohabitation between SofaPython and SofaPython3
+option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to SofaPython" ON)
 
 ### Sofa using type double or float or both
 set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
@@ -219,10 +223,9 @@ endif()
 add_subdirectory(extlibs)
 
 ### Main Sofa subdirectories
-
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-if(SOFA_BUILD_TESTS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     # Depends on SofaSimulation
     add_subdirectory(tools/SofaGTestMain)
 endif()
@@ -242,9 +245,12 @@ add_subdirectory(SofaMisc)
 # In scene creator and SofaPython...it is located here.
 add_subdirectory(SofaGui)
 
-# SofaTest depend on SofaPython, so we add SofaPython before.
-# and SofaPython needs SofaGui...
-sofa_add_plugin(applications/plugins/SofaPython SofaPython)
+if(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
+    # SofaTest depend on SofaPython, so we add SofaPython before.
+    # and SofaPython needs SofaGui...
+    sofa_add_plugin(applications/plugins/SofaPython SofaPython)
+    sofa_add_module(modules/SofaExporter SofaExporter ON)
+endif()
 
 ## Collections
 ## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
@@ -267,7 +273,7 @@ option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plug
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
 
 # Activate SceneCreator when required
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS OR SOFA_BUILD_RELEASE_PACKAGE)
     set(SOFA_BUILD_SCENECREATOR ON CACHE BOOL "" FORCE)
 endif()
 
@@ -278,23 +284,24 @@ if(SOFA_BUILD_SCENECREATOR)
 endif()
 
 # Tests : define subdirectories
-if(SOFA_BUILD_TESTS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     # Library used to write high level tests involving many components.
     add_subdirectory(applications/plugins/SofaTest)
 endif()
 
+## Plugins
+add_subdirectory(applications/plugins)
+
 if(SOFA_BUILD_TESTS)
     # Tests for all the modules, written using SofaTest.
     add_subdirectory(tests)
-    # SofaPython_test is a special case, because it depends on
-    # SofaTest, which depends on SofaPython...
-    if(PLUGIN_SOFAPYTHON)
-        add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
-    endif()
 endif()
 
-## Plugins
-add_subdirectory(applications/plugins)
+if(SOFA_BUILD_TESTS AND PLUGIN_SOFAPYTHON)
+    # SofaPython_test is a special case, because it depends on
+    # SofaTest, which may depend on SofaPython...
+    add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
+endif()
 
 ## Applications
 add_subdirectory(applications/projects)
@@ -345,6 +352,8 @@ endif()
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt" "This folder will be automatically scanned by the Plugin Manager.")
 install(DIRECTORY ${CMAKE_BINARY_DIR}/plugins/ DESTINATION plugins COMPONENT resources)
 
+# Post-install scripts (must be the last add_subdirectory)
+add_subdirectory(tools/postinstall-fixup)
 
 #######################
 # CPack configuration #

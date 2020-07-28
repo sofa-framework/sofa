@@ -24,7 +24,7 @@
 #define SOFA_SIMULATION_COLLISIONENDEVENT_H
 
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/simulationcore.h>
+#include <sofa/simulation/config.h>
 
 namespace sofa
 {

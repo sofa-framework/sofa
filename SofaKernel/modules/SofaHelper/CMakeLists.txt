@@ -21,7 +21,7 @@ if(NOT SOFA_NO_OPENGL)
     sofa_find_package(GLEW BOTH_SCOPES)
 endif()
 # GTest
-if(SOFA_BUILD_TESTS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     sofa_find_package(GTest CONFIG BOTH_SCOPES)
 endif()
 # Eigen (header only)
@@ -246,7 +246,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_windows.cpp)
 endif()
-if(SOFA_BUILD_TESTS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     list(APPEND HEADER_FILES
         ${SRC_ROOT}/testing/BaseTest.h
         ${SRC_ROOT}/testing/NumericTest.h
@@ -404,7 +404,7 @@ if(Boost_FOUND)
 endif()
 
 # GTest
-if(SOFA_BUILD_TESTS AND GTest_FOUND)
+if((SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE) AND GTest_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
 endif()
 
