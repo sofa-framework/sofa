@@ -66,7 +66,7 @@ public:
 
     typedef std::map<std::string,Attribute> AttributeMap;
 
-    BaseObjectDescription(const std::string name=nullptr, const std::string type=nullptr);
+    BaseObjectDescription(const std::string name="", const std::string type="");
 
     virtual ~BaseObjectDescription();
 
@@ -103,7 +103,7 @@ public:
     virtual Base* findObject(const std::string& nodeName);
 
     /// Get an attribute given its name (return defaultVal if not present)
-    virtual const std::string getAttribute(const std::string& attr, const std::string& defaultVal=nullptr);
+    virtual const std::string& getAttribute(const std::string& attr, const std::string& defaultVal=nullptr);
 
     /// Get an attribute converted to a float given its name.
     /// returns defaultVal if not present or in case the attribute cannot be parsed totally

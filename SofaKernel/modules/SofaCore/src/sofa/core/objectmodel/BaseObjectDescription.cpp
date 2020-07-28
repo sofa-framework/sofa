@@ -102,7 +102,7 @@ bool BaseObjectDescription::removeAttribute(const std::string& attr)
 }
 
 /// Get an attribute given its name (return defaultVal if not present)
-const std::string BaseObjectDescription::getAttribute(const std::string& attr, const std::string& defaultVal)
+const std::string& BaseObjectDescription::getAttribute(const std::string& attr, const std::string& defaultVal)
 {
     AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
