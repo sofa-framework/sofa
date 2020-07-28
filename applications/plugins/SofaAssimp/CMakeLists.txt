@@ -25,8 +25,8 @@ find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(Assimp REQUIRED)
 
-sofa_find_package(Flexible QUIET)
 sofa_find_package(image QUIET)
+sofa_find_package(Flexible QUIET)
 
 # Create the plugin library.
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
@@ -37,7 +37,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${ASSIMP_LIBRARY} SofaLoader SofaOp
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC image)
 endif()
-
 if(Flexible_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Flexible)
 endif()
