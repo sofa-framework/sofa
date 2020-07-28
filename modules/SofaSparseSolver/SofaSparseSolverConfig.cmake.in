@@ -2,19 +2,12 @@
 
 @PACKAGE_INIT@
 
-# Add parent directory in CMAKE_PREFIX_PATH
-# to expose MetisConfig.cmake and CSparseConfig.cmake
-get_filename_component(parent_dir "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
-if(NOT "${parent_dir}" IN_LIST CMAKE_PREFIX_PATH)
-    list(APPEND CMAKE_PREFIX_PATH "${parent_dir}")
-endif()
-
 find_package(SofaBase REQUIRED)
 find_package(SofaCommon REQUIRED)
 find_package(SofaGeneral REQUIRED)
 
-find_package(Metis QUIET REQUIRED)
-find_package(CSparse QUIET REQUIRED)
+find_package(Metis QUIET REQUIRED HINTS "${CMAKE_CURRENT_LIST_DIR}/..")
+find_package(CSparse QUIET REQUIRED HINTS "${CMAKE_CURRENT_LIST_DIR}/..")
 
 ### Is the target existing ?
 if(NOT TARGET SofaSparseSolver)
