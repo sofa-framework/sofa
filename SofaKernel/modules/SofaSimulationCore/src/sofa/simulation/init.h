@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_CORE_INIT_H
 #define SOFA_SIMULATION_CORE_INIT_H
 
-#include <sofa/simulation/simulationcore.h>
+#include <sofa/simulation/config.h>
 
 namespace sofa
 {

@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/simulationcore.h>
+#include <sofa/simulation/config.h>
 
 namespace sofa
 {

@@ -23,7 +23,7 @@
 #define SOFA_SIMULATION_PIPELINEIMPL_H
 
 #include <sofa/core/collision/Pipeline.h>
-#include <sofa/simulation/simulationcore.h>
+#include <sofa/simulation/config.h>
 
 #include <vector>
 
