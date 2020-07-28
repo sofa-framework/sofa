@@ -3,7 +3,7 @@
     <VisualStyle name="displayFlags"  displayFlags="showVisual hideBehaviorModels showForceFields showInteractionForceFields showCollision showMapping hideOptions" />
 
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="Assimp" pluginName="SofaAssimp"/>
+    <RequiredPlugin name="SofaAssimp"/>
     
     <DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
     <BruteForceDetection name="Detection" />
