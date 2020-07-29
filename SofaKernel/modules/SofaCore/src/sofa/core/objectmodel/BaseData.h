@@ -119,9 +119,6 @@ public:
     //[[deprecated("Replaced with one with std::string instead of char* version")]]
     BaseData(const char* helpMsg, bool isDisplayed=true, bool isReadOnly=false);
 
-    // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
-    virtual BaseData* getNewInstance() =0;
-
     /// Destructor.
     ~BaseData() override;
 

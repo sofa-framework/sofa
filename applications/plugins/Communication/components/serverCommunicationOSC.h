@@ -82,8 +82,8 @@ protected:
 
 };
 
-} /// namespace communication
-} /// namespace component
-} /// namespace sofa
+} // namespace communication
+} // namespace component
+} // namespace sofa
 
 #endif // SOFA_SERVERCOMMUNICATIONOSC_H
