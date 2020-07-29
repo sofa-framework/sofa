@@ -33,6 +33,13 @@ if(PLUGIN_COMMUNICATION_VRPN)
     endif ()
 endif()
 
+#COMMUNICATION QSerial
+if(PLUGIN_COMMUNICATION_QSerial)
+    list(APPEND SOURCE_FILES
+        Communication_testQSerial.cpp
+    )
+endif()
+
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest Communication ${Oscpack_LIBRARIES} ${ZMQ_LIBRARIES} ${VRPN_LIBRARIES})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
