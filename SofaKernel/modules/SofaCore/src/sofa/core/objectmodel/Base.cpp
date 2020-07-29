@@ -117,8 +117,8 @@ void Base::addUpdateCallback(const std::string& name,
             engine.delInput(&d_componentState);
         }
 
-    if(std::find(engine.getOutputs().begin(), engine.getOutputs().end(), &d_componentstate) == engine.getOutputs().end())
-        engine.addOutput(&d_componentstate);
+    if(std::find(engine.getOutputs().begin(), engine.getOutputs().end(), &d_componentState) == engine.getOutputs().end())
+        engine.addOutput(&d_componentState);
 
     for (auto i : inputs)
         i->cleanDirty();
