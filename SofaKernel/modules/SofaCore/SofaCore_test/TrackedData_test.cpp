@@ -229,7 +229,7 @@ struct DataTrackerEngine_test: public BaseTest
         unsigned localCounter = 0u;
 
         ASSERT_TRUE(testObject.depend_on_input.getValue()==false);
-        ++localCounter;
+//        ++localCounter;
         ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
 
         testObject.input.setValue(true);
