@@ -19,17 +19,17 @@ class SOFA_Compliant_API BiCgStabSolver : public KrylovSolver {
 
   protected:
 
-    virtual void solve_schur_impl(vec& lambda,
+    void solve_schur_impl(vec& lambda,
                                   const schur_type& A,
                                   const vec& b,
-                                  params_type& p) const;
+                                  params_type& p) const override;
 
-    virtual void solve_kkt_impl(vec& x,
+    void solve_kkt_impl(vec& x,
                                 const kkt_type& A,
                                 const vec& b,
-                                params_type& p) const;
+                                params_type& p) const override;
 
-    virtual const char* method() const;
+    const char* method() const override;
     
 };
 

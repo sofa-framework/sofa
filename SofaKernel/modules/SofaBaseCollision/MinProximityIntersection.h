@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,11 +24,6 @@
 #include "config.h"
 
 #include <SofaBaseCollision/BaseProximityIntersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/BaseIntTool.h>
 
 namespace sofa
 {
@@ -55,7 +50,7 @@ protected:
 public:
     typedef core::collision::IntersectorFactory<MinProximityIntersection> IntersectorFactory;
 
-    virtual void init() override;
+    void init() override;
 
     bool getUseSurfaceNormals();
 
@@ -74,7 +69,7 @@ namespace core
 {
 namespace collision
 {
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_CPP)
 extern template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
 #endif
 }

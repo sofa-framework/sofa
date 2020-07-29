@@ -3,7 +3,7 @@
     <RequiredPlugin name="PluginExample" pluginName="PluginExample"/>
     <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields"/>
     <Node name="parent node with independent DOFs">
-        <EulerSolver name="ODE solver"/>
+        <EulerExplicitSolver name="ODE solver"/>
         <MechanicalObject template="Vec1d" name="angles"/>
         <UniformMass template="Vec1d" name="mass"/>
         <Node name="child node with DOFs mapped from the parent">

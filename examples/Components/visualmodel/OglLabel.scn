@@ -14,7 +14,7 @@
 
 	<MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
 
-	<UniformMass name="Mass" totalmass="1" />
+	<UniformMass name="Mass" totalMass="1" />
 	<MeshSpringForceField name="Springs" stiffness="100" damping="1" />
 
 	<PlaneForceField name="Floor" normal="-0.2 0 1" stiffness="100" damping="1" draw="1" />

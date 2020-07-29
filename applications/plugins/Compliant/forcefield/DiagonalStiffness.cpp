@@ -13,30 +13,16 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int DiagonalStiffnessClass = core::RegisterObject("Diagonal stiffness")
-#ifndef SOFA_FLOAT
-        .add< DiagonalStiffness< Vec1dTypes > >(true)
-        .add< DiagonalStiffness< Vec3dTypes > >()
-        .add< DiagonalStiffness< Vec6dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< DiagonalStiffness< Vec1fTypes > >()
-        .add< DiagonalStiffness< Vec3fTypes > >()
-        .add< DiagonalStiffness< Vec6fTypes > >()
-#endif
+        .add< DiagonalStiffness< Vec1Types > >(true)
+        .add< DiagonalStiffness< Vec3Types > >()
+        .add< DiagonalStiffness< Vec6Types > >()
+
         ;
 
-SOFA_DECL_CLASS(DiagonalStiffness)
+template class SOFA_Compliant_API DiagonalStiffness<Vec1Types>;
+template class SOFA_Compliant_API DiagonalStiffness<Vec3Types>;
+template class SOFA_Compliant_API DiagonalStiffness<Vec6Types>;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API DiagonalStiffness<Vec1dTypes>;
-template class SOFA_Compliant_API DiagonalStiffness<Vec3dTypes>;
-template class SOFA_Compliant_API DiagonalStiffness<Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API DiagonalStiffness<Vec1fTypes>;
-template class SOFA_Compliant_API DiagonalStiffness<Vec3fTypes>;
-template class SOFA_Compliant_API DiagonalStiffness<Vec6fTypes>;
-#endif
 
 }
 }

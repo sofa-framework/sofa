@@ -350,10 +350,6 @@ void LabelGridImageToolBoxAction::sectionButtonClick()
 
 
 
-SOFA_DECL_CLASS(LabelGridImageToolBoxAction)
-
-
-
 }
 }
 }

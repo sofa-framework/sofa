@@ -1,13 +1,11 @@
-cmake_minimum_required(VERSION 3.1)
-project(SofaImplicitField)
+cmake_minimum_required(VERSION 3.12)
+project(SofaImplicitField VERSION 1.0)
 
-set(SOFAIMPLICITFIELD_VERSION 1.0)
-set(SOFA_HAVE_SOFAIMPLICITFIELD 1)
-
-find_package(SofaDistanceGrid REQUIRED)
+sofa_find_package(SofaDistanceGrid REQUIRED)
+sofa_find_package(SofaPython QUIET)
 
 set(HEADER_FILES
-    config.h
+    config.h.in
     initSofaImplicitField.h
 
     # This is backward compatibility
@@ -40,16 +38,20 @@ set(EXTRA_FILES
     examples/README.md
     )
 
-add_subdirectory(SofaImplicitField_test)
+find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    add_subdirectory(SofaImplicitField_test)
+endif()
 
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaImplicitField/config.h")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_HAVE_SOFAIMPLICITFIELD")
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaDistanceGrid)
+target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAIMPLICITFIELD")
+target_link_libraries(${PROJECT_NAME} PRIVATE SofaDistanceGrid)
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(SofaImplicitField ${SOFAIMPLICITFIELD_VERSION} ${PROJECT_NAME} SofaImplicitField)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

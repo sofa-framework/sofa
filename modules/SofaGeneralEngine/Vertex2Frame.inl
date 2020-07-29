@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_VERTEX2FRAME_INL
 #define SOFA_COMPONENT_ENGINE_VERTEX2FRAME_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/Vertex2Frame.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Quat.h>
@@ -40,7 +36,7 @@ namespace engine
 {
 
 template <class DataTypes>
-const typename Vertex2Frame<DataTypes>::Real Vertex2Frame<DataTypes>::EPSILON = 0.99;
+const typename Vertex2Frame<DataTypes>::Real Vertex2Frame<DataTypes>::EPSILON = std::numeric_limits<Vertex2Frame<DataTypes>::Real>::epsilon();
 
 template <class DataTypes>
 Vertex2Frame<DataTypes>::Vertex2Frame():
@@ -76,7 +72,7 @@ void Vertex2Frame<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void Vertex2Frame<DataTypes>::update()
+void Vertex2Frame<DataTypes>::doUpdate()
 {
     const helper::vector<CPos>& fVertices = d_vertices.getValue();
     const helper::vector<CPos>& fNormals = d_normals.getValue();
@@ -91,12 +87,6 @@ void Vertex2Frame<DataTypes>::update()
         msg_info(this) << "Vertex2Frame : no vertices found. Component will not compute anything";
         return ;
     }
-
-    d_texCoords.updateIfDirty();
-    d_rotation.updateIfDirty();
-    d_rotationAngle.updateIfDirty();
-
-    cleanDirty();
 
     VecCoord& fFrames = *(d_frames.beginEdit());
     fFrames.resize(nbVertices);
@@ -115,7 +105,7 @@ void Vertex2Frame<DataTypes>::update()
 
             CPos xAxis;
             CPos yAxis(0.0, 1.0, 0.0);
-            if ( fabs(dot(yAxis, zAxis)) >= EPSILON)
+            if ( 1.0f - fabs(dot(yAxis, zAxis)) <= EPSILON)
                 yAxis = CPos(0.0, 0.0, 1.0);
 
             xAxis = yAxis.cross(zAxis);
@@ -143,7 +133,7 @@ void Vertex2Frame<DataTypes>::update()
 
             CPos yAxis;
             CPos zAxis(1.0, 0.0, 0.0);
-            if ( fabs(dot(zAxis, xAxis)) >= EPSILON)
+            if ( 1.0f - fabs(dot(zAxis, xAxis)) <= EPSILON)
                 zAxis = CPos(0.0, 0.0, 1.0);
 
             yAxis = zAxis.cross(xAxis);

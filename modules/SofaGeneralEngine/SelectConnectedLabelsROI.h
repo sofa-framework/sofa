@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SelectConnectedLabelsROI_H_
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -64,8 +62,9 @@ public:
     //Output
     Data<helper::vector<Index> > d_indices; ///< selected point/cell indices
 
-    virtual std::string getTemplateName() const    override {        return templateName(this);    }
-    static std::string templateName(const SelectConnectedLabelsROI* = NULL)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
+    static std::string GetCustomTemplateName(){       return sofa::defaulttype::DataTypeName<T>::name();    }
 
     SelectConnectedLabelsROI(): Inherited()
       , d_nbLabels ( initData ( &d_nbLabels,(unsigned int)0,"nbLabels","number of label lists" ) )
@@ -76,9 +75,9 @@ public:
         d_labels.resize(d_nbLabels.getValue());
     }
 
-    virtual ~SelectConnectedLabelsROI() {}
+    ~SelectConnectedLabelsROI() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&d_nbLabels);
         d_labels.resize(d_nbLabels.getValue());
@@ -87,7 +86,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override
+    void reinit() override
     {
         d_labels.resize(d_nbLabels.getValue());
         update();
@@ -111,11 +110,8 @@ public:
 protected:
 
 
-    virtual void update() override
+    void doUpdate() override
     {
-        updateAllInputsIfDirty();
-        cleanDirty();
-
         helper::WriteOnlyAccessor< Data< helper::vector<Index> > > indices = d_indices;
         indices.clear();
 

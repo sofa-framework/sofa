@@ -304,13 +304,13 @@ public:
         return RESULT_CONTINUE;
     }
     
-    virtual Result fwdMappedMechanicalState(simulation::Node* node,
-                                            core::behavior::BaseMechanicalState* mm) {
+    Result fwdMappedMechanicalState(simulation::Node* node,
+                                            core::behavior::BaseMechanicalState* mm) override {
         return mstate(node, mm);
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* node,
-                                      core::behavior::BaseMechanicalState* mm) {
+    Result fwdMechanicalState(simulation::Node* node,
+                                      core::behavior::BaseMechanicalState* mm) override {
         return mstate(node, mm);
     }
 
@@ -341,20 +341,19 @@ public:
         return RESULT_CONTINUE;
     }
     
-    virtual Result fwdMappedMechanicalState(simulation::Node* node,
-                                            core::behavior::BaseMechanicalState* mm) {
+    Result fwdMappedMechanicalState(simulation::Node* node,
+                                            core::behavior::BaseMechanicalState* mm) override {
         return mstate(node, mm);
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* node,
-                                      core::behavior::BaseMechanicalState* mm) {
+    Result fwdMechanicalState(simulation::Node* node,
+                                      core::behavior::BaseMechanicalState* mm) override {
         return mstate(node, mm);
     }
 
 };
 
 
-SOFA_DECL_CLASS(CompliantStaticSolver)
 int CompliantStaticSolverClass = core::RegisterObject("Static solver")
     .add< CompliantStaticSolver >();
 

@@ -24,7 +24,7 @@
 	<TetrahedronFEMForceField" name="FEM" youngModulus="10000000" poissonRatio="0.4" method="large" localStiffnessFactor="1 1 1 0.8 0.8 0.6 0.4 0.4 0.4 1 1 0.05 0.05" />
 
 	<Node name="Collision">
-		<Sphere name="Sphere" filename="buffoon.sph" scale="1.0" contactStiffness="1000" />
+		<SphereCollisionModel name="Sphere" filename="buffoon.sph" scale="1.0" contactStiffness="1000" />
 		<BarycentricMapping />
 	</Node>
 

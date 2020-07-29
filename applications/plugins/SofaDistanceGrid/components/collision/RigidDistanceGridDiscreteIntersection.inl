@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/helper/proximity.h>
-#include <sofa/helper/system/config.h>
 
 #include "RigidDistanceGridDiscreteIntersection.h"
 
@@ -84,10 +83,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
     contacts->resize(contacts->size()+1);
     core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0] = p1;
-    detection->baryCoords[1].clear();
-#endif
     detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
     detection->value = d - d0;
     detection->elem.first = e1;

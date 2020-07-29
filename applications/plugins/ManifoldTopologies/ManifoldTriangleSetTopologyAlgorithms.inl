@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,17 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYALGORITHMS_INL
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYALGORITHMS_INL
-#include "ManifoldTriangleSetTopologyAlgorithms.h"
+#ifndef SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_INL
+#define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_INL
 
-#include "ManifoldTriangleSetTopologyContainer.h"
-#include "ManifoldTriangleSetTopologyModifier.h"
-#include <sofa/core/visual/VisualParams.h>
+#include <ManifoldTopologies/ManifoldTriangleSetTopologyAlgorithms.h>
+#include <ManifoldTopologies/ManifoldTriangleSetTopologyContainer.h>
+#include <ManifoldTopologies/ManifoldTriangleSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-
-#include <algorithm>
-#include <functional>
 
 namespace sofa
 {
@@ -123,7 +119,7 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwapProcess (const 
 
     if (commonEdgeIndex == -1 || listVertex.size() > 4)
     {
-        std::cout << "Error: edgeSwapProcess: the two selected triangles are not adjacent" << std::endl;
+        msg_error() << "EdgeSwapProcess: the two selected triangles are not adjacent";
         return;
     }
     else
@@ -149,12 +145,12 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& 
 
     if(trianglesIndex2remove.size()>2)
     {
-        std::cout << "Error: edgeSwap: the topology is not manifold around the input edge: "<< edgeIndex << std::endl;
+        msg_error() << "EdgeSwap: the topology is not manifold around the input edge: " << edgeIndex;
         return false;
     }
     else if (trianglesIndex2remove.size() == 1)
     {
-        std::cout << "Error: edgeSwap: the edge: "<< edgeIndex << " is on the border of the mesh. Swaping this edge is impossible" << std::endl;
+        msg_error() << "EdgeSwap: the edge: "<< edgeIndex << " is on the border of the mesh. Swaping this edge is impossible";
         return false;
     }
 
@@ -185,7 +181,7 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& 
 
     if (!m_geometryAlgorithms->isDiagonalsIntersectionInQuad (tri1, tri2) )
     {
-        std::cout << "Error: edgeSwap: the new edge swaped will be outside the quad." << std::endl;
+        msg_error() << "EdgeSwap: the new edge swaped will be outside the quad.";
         return false;
     }
 
@@ -194,8 +190,8 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& 
         ancestors[i].push_back (trianglesIndex2remove[0]); baryCoefs[i].push_back (0.5);
         ancestors[i].push_back (trianglesIndex2remove[1]); baryCoefs[i].push_back (0.5);
     }
-    triToAddID[0] = m_container->getNbTriangles();
-    triToAddID[1] = m_container->getNbTriangles()+1;
+    triToAddID[0] = TriangleID(m_container->getNbTriangles());
+    triToAddID[1] = TriangleID(m_container->getNbTriangles()+1);
 
     m_modifier->addRemoveTriangles (triToAdd.size(), triToAdd, triToAddID, ancestors, baryCoefs, trianglesIndex2remove);
 
@@ -254,10 +250,10 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing(sofa::hel
 
                 int sum = 0;
 
-                sum = (m_container->getTrianglesAroundVertexArray()[ listVertex[0] ]).size();
-                sum += (m_container->getTrianglesAroundVertexArray()[ listVertex[1] ]).size();
-                sum -= (m_container->getTrianglesAroundVertexArray()[ listVertex[2] ]).size();
-                sum -= (m_container->getTrianglesAroundVertexArray()[ listVertex[3] ]).size();
+                sum = int((m_container->getTrianglesAroundVertexArray()[ listVertex[0] ]).size());
+                sum += int((m_container->getTrianglesAroundVertexArray()[ listVertex[1] ]).size());
+                sum -= int((m_container->getTrianglesAroundVertexArray()[ listVertex[2] ]).size());
+                sum -= int((m_container->getTrianglesAroundVertexArray()[ listVertex[3] ]).size());
 
                 for (unsigned int i = 0; i <2; i++)
                 {
@@ -334,8 +330,6 @@ int ManifoldTriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath(unsigned 
 template<class DataTypes>
 bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points, bool& reachBorder)
 {
-    // std::cout << "ManifoldTriangleSetTopologyAlgorithms::InciseAlongEdgeList()" << std::endl;
-
     //// STEP 1 - Incise with the TriangleSetTopologyAlgorithms function. Addremovetriangles() automatically reorder the mesh
     bool ok = TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (edges, new_points, end_points, reachBorder);
 
@@ -427,8 +421,6 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (co
 
     swapRemeshing (listEdges);
 
-    // std::cout <<"end incision"<<std::endl;
-
     return ok;
 }
 
@@ -439,4 +431,4 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (co
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENTS_MANIFOLDEDGESETTOPOLOGYALGORITHMS_INL
+#endif // SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_INL

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,13 +21,12 @@
 ******************************************************************************/
 
 #include "LeapMotionDriver.h"
-#ifdef SOFA_HAVE_BOOST
-#include <boost/thread/thread.hpp>
-#endif
 #include <SofaGeneralVisual/VisualTransform.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
+#include <chrono>
+#include <thread>
 
 namespace sofa
 {
@@ -75,7 +74,7 @@ LeapMotionDriver::~LeapMotionDriver() {
 
 void LeapMotionDriver::cleanup()
 {
-    sout << "LeapMotionDriver::cleanup()" << sendl;
+    msg_info() << "LeapMotionDriver::cleanup()";
 }
 
 
@@ -90,7 +89,7 @@ void LeapMotionDriver::init()
             for (unsigned int n=0; n<15 && !leapConnected; n++)
             {
                 std::cout << ".";
-                sofa::helper::system::thread::CTime::sleep(0.1);
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 leapConnected = getLeapController()->isConnected();
             }
             std::cout << "." << std::endl;
@@ -138,13 +137,13 @@ void LeapMotionDriver::init()
 
 void LeapMotionDriver::bwdInit()
 {
-    sout<<"LeapMotionDriver::bwdInit()"<<sendl;
+    msg_info() <<"LeapMotionDriver::bwdInit()";
 }
 
 
 void LeapMotionDriver::reset()
 {
-    sout<<"LeapMotionDriver::reset()" << sendl;
+    msg_info() <<"LeapMotionDriver::reset()";
     scrollDirection.setValue(0);
     this->reinit();
 }
@@ -733,9 +732,6 @@ void LeapMotionDriver::handleEvent(core::objectmodel::Event *event)
 
 int LeapMotionDriverClass = core::RegisterObject("LeapMotion device driver")
 .add< LeapMotionDriver >();
-
-SOFA_DECL_CLASS(LeapMotionDriver)
-
 
 } // namespace controller
 

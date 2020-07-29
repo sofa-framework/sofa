@@ -16,7 +16,7 @@ namespace forcefield
 template<class DataTypes>
 DiagonalStiffness<DataTypes>::DiagonalStiffness( core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
-    , diagonal( initData(&diagonal, 
+    , diagonal( initData(&diagonal,
                          "stiffness",
                          "stiffness value diagonally applied to all the DOF."))
     , damping( initData(&damping, "damping", "viscous damping."))
@@ -62,34 +62,29 @@ void DiagonalStiffness<DataTypes>::reinit()
         matC.compress();
     }
     else matC.compressedMatrix.resize(0,0);
+    matK.resize(state->getMatrixSize(), state->getMatrixSize());
 
-//    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
-//    {
-        matK.resize(state->getMatrixSize(), state->getMatrixSize());
-
-        unsigned int row = 0;
-        for(unsigned i = 0; i < n; ++i)
+    unsigned int row = 0;
+    for(unsigned i = 0; i < n; ++i)
+    {
+        for(unsigned int j = 0; j < m; ++j)
         {
-            for(unsigned int j = 0; j < m; ++j)
-            {
-                const SReal& k = diag[i][j];
-                matK.beginRow(row);
-                if(k) matK.insertBack(row, row, -k);
+            const SReal& k = diag[i][j];
+            matK.beginRow(row);
+            if(k) matK.insertBack(row, row, -k);
 
-                ++row;
-            }
+            ++row;
         }
-        matK.compress();
-//    }
-//    else matK.compressedMatrix.resize(0,0);
+    }
+    matK.compress();
 
-		if( damping.getValue().size() > 1 || damping.getValue()[0] > 0 ) {
-		
+    if( damping.getValue().size() > 1 || damping.getValue()[0] > 0 ) {
+
         matB.resize(state->getMatrixSize(), state->getMatrixSize());
 
         for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
-			const unsigned index = std::min<unsigned>(i, damping.getValue().size() - 1);
-			
+            const unsigned index = std::min<unsigned>(i, damping.getValue().size() - 1);
+
             const SReal& d = damping.getValue()[index];
 
             matB.beginRow(i);
@@ -129,7 +124,6 @@ const sofa::defaulttype::BaseMatrix* DiagonalStiffness<DataTypes>::getStiffnessM
 template<class DataTypes>
 void DiagonalStiffness<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset )
 {
-//    cerr<<SOFA_CLASS_METHOD<<std::endl;
     matK.addToBaseMatrix( matrix, kFact, offset );
 }
 
@@ -143,10 +137,7 @@ void DiagonalStiffness<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix *
 template<class DataTypes>
 void DiagonalStiffness<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /*v*/)
 {
-//    if( matK.compressedMatrix.nonZeros() )
-        matK.addMult( f, x );
-
-//        cerr<<SOFA_CLASS_METHOD<<"f after = " << f << std::endl << x << std::endl << matK << endl;
+    matK.addMult( f, x );
 }
 
 template<class DataTypes>

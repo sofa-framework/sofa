@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,19 +47,35 @@ LinearForceField<DataTypes>::LinearForceField()
     , d_keyTimes(initData(&d_keyTimes, "times", "key times for the interpolation"))
     , d_keyForces(initData(&d_keyForces, "forces", "forces corresponding to the key times"))
     , d_arrowSizeCoef(initData(&d_arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , l_topology(initLink("topology", "link to the topology container"))
 { }
 
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::init()
 {
-    topology = this->getContext()->getMeshTopology();
-
-    // Initialize functions and parameters for topology data and handler
-    points.createTopologicalEngine(topology);
-    points.registerTopologicalData();
-
     Inherit::init();
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+    
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+        
+        // Initialize functions and parameters for topology data and handler
+        points.createTopologicalEngine(_topology);
+        points.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 }
 
 template<class DataTypes>
@@ -68,15 +84,12 @@ void LinearForceField<DataTypes>::addPoint(unsigned index)
     points.beginEdit()->push_back(index);
     points.endEdit();
 
-}// LinearForceField::addPoint
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::removePoint(unsigned /*index*/)
 {
-// removeValue(*points.beginEdit(), index);
-    //points.endEdit();
-
-}// LinearForceField::removePoint
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::clearPoints()
@@ -84,7 +97,7 @@ void LinearForceField<DataTypes>::clearPoints()
     points.beginEdit()->clear();
     points.endEdit();
 
-}// LinearForceField::clearPoints
+}
 
 
 template<class DataTypes>
@@ -96,7 +109,7 @@ void LinearForceField<DataTypes>::addKeyForce(Real time, Deriv force)
     d_keyForces.beginEdit()->push_back( force );
     d_keyForces.endEdit();
 
-}// LinearForceField::addKeyForce
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::clearKeyForces()
@@ -106,7 +119,7 @@ void LinearForceField<DataTypes>::clearKeyForces()
     d_keyForces.beginEdit()->clear();
     d_keyForces.endEdit();
 
-}// LinearForceField::clearKeyForces
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f1, const DataVecCoord& /*p1*/, const DataVecDeriv&)
@@ -163,7 +176,14 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
             _f1[index] += targetForce;
         }
     }
-}// LinearForceField::addForce
+}
+
+template<class DataTypes>
+void LinearForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+{
+    //TODO: remove this line (avoid warning message) ...
+    mparams->setKFactorUsed(true);
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::addKToMatrix(defaulttype::BaseMatrix* matrix, SReal kFact, unsigned int& offset)
@@ -194,7 +214,7 @@ SReal LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
     }
 
     return e;
-}// LinearForceField::getPotentialEnergy
+}
 
 template< class DataTypes>
 void LinearForceField<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)

@@ -43,7 +43,7 @@ public:
 
 
     virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/,
-                                      const DataVecCoord& x ) const
+                                      const DataVecCoord& x ) const override
     {
         const VecCoord& _x = x.getValue();
         const SReal& k = d_stiffness.getValue();
@@ -62,7 +62,7 @@ public:
     virtual void addForce(const core::MechanicalParams *,
                           DataVecDeriv &f,
                           const DataVecCoord &x,
-                          const DataVecDeriv &)
+                          const DataVecDeriv &) override
     {
         const VecCoord& _x = x.getValue();
         VecDeriv& _f = *f.beginEdit();
@@ -86,7 +86,7 @@ public:
 
     virtual void addDForce(const core::MechanicalParams *mparams,
                            DataVecDeriv &df,
-                           const DataVecDeriv &dx)
+                           const DataVecDeriv &dx) override
     {
 
         const VecDeriv& _dx = dx.getValue();
@@ -109,7 +109,7 @@ public:
     }
 
     virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix,
-                               SReal kFact, unsigned int &offset )
+                               SReal kFact, unsigned int &offset ) override
     {
         const SReal& k = - d_stiffness.getValue() * kFact;
         size_t size = this->mstate->getMatrixSize();
@@ -124,7 +124,7 @@ public:
     }
 
     virtual void addBToMatrix( sofa::defaulttype::BaseMatrix * matrix,
-                               SReal bFact, unsigned int &offset )
+                               SReal bFact, unsigned int &offset ) override
     {
         const SReal& b = - d_damping.getValue() * bFact;
         size_t size = this->mstate->getMatrixSize();
@@ -138,7 +138,7 @@ public:
         }
     }
 
-    virtual void updateForceMask()
+    virtual void updateForceMask() override
     {
         for( unsigned int i=0 ; i<m_violated.size() ; ++i )
             if(m_violated[i])

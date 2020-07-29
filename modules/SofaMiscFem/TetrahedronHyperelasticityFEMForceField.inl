@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,6 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
 
-#include <sofa/helper/system/gl.h>
 #include <SofaMiscFem/BoyceAndArruda.h>
 #include <SofaMiscFem/NeoHookean.h>
 #include <SofaMiscFem/MooneyRivlin.h>
@@ -34,12 +33,11 @@
 #include <SofaMiscFem/Ogden.h>
 #include "TetrahedronHyperelasticityFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <algorithm>
@@ -110,7 +108,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::app
 }
 
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHyperelasticityFEMForceField() 
-    : m_topology(0)
+    : m_topology(nullptr)
     , m_initialPoints(0)
     , m_updateMatrix(true)
     , m_meshSaved( false)
@@ -120,7 +118,8 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::T
     , d_anisotropySet(initData(&d_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
     , m_tetrahedronInfo(initData(&m_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , m_edgeInfo(initData(&m_edgeInfo, "edgeInfo", "Internal edge data"))
-    , m_tetrahedronHandler(NULL)
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_tetrahedronHandler(nullptr)
 {
     m_tetrahedronHandler = new TetrahedronHandler(this,&m_tetrahedronInfo);
 }
@@ -150,7 +149,21 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
             copy(anisotropySet.begin(), anisotropySet.end(),globalParameters.anisotropyDirection.begin());
     }
 
-    m_topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
 
     /** parse the input material name */
@@ -237,10 +250,9 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
             m_initialPoints=p;
     }
-    int i;
 
     /// initialize the data structure associated with each tetrahedron
-    for (i=0;i<m_topology->getNbTetrahedra();++i)
+    for (Topology::TetrahedronID i=0;i<m_topology->getNbTetrahedra();++i)
     {
         m_tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
                                                 m_topology->getTetrahedron(i),  (const vector< unsigned int > )0,
@@ -482,7 +494,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::M
 template<class DataTypes>
 SReal TetrahedronHyperelasticityFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
-    msg_error() << "ERROR("<<this->getClassName()<<"): getPotentialEnergy( const MechanicalParams*, const DataVecCoord& ) not implemented.";
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
 }
 
@@ -722,12 +734,43 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::saveMesh( const char *f
 	fclose( file );
 }
 
+
+
+template<class DataTypes>
+void TetrahedronHyperelasticityFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, bool onlyVisible)
+{
+    if( !onlyVisible ) return;
+
+    if (!this->mstate) return;
+
+    helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::VecCoordId::position());
+
+    static const Real max_real = std::numeric_limits<Real>::max();
+    static const Real min_real = std::numeric_limits<Real>::lowest();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+    for (size_t i=0; i<x.size(); i++)
+    {
+        for (int c=0; c<3; c++)
+        {
+            if (x[i][c] > maxBBox[c]) maxBBox[c] = (Real)x[i][c];
+            else if (x[i][c] < minBBox[c]) minBBox[c] = (Real)x[i][c];
+        }
+    }
+
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+}
+
+
+
 template<class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     //	unsigned int i;
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
+
+    vparams->drawTool()->saveLastState();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -736,7 +779,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
 
 
     std::vector< Vector3 > points[4];
-    for(int i = 0 ; i<m_topology->getNbTetrahedra();++i)
+    for(Topology::TetrahedronID i = 0 ; i<m_topology->getNbTetrahedra();++i)
     {
         const Tetrahedron t=m_topology->getTetrahedron(i);
 
@@ -831,6 +874,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
     if (vparams->displayFlags().getShowWireFrame())
           vparams->drawTool()->setPolygonMode(0,false);
 
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

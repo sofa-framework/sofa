@@ -5,13 +5,13 @@
         <!-- 		<EulerImplicitSolver name="ODE solver" printLog="0" verbose="0" rayleighStiffness="0.0" rayleighMass="0"/> -->
         <StaticSolver name="ODE solver" printLog="0" />
         <CGLinearSolver template="GraphScattered" name="linear solver used by implicit ODE solvers" printLog="0" verbose="0" iterations="25" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid" />
+        <MechanicalObject template="Rigid3d" />
         <PartialFixedConstraint fixedDirections="1 1 1 0 0 0" />
-        <UniformMass template="Rigid" name="mass" />
+        <UniformMass template="Rigid3d" name="mass" />
         <Node name="child node with DOFs mapped from the parent">
             <MechanicalObject template="Vec3d" name="endpoint coordinates" position="1 -0.0 0"  />
             <RigidMapping name="angle-coord mapping" input="@.." output="@." index="0" />
-            <ConstantForceField force="1 -1 0" points="0" />
+            <ConstantForceField force="1 -1 0" indices="0" />
         </Node>
     </Node>
 </Node>

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -96,10 +96,8 @@ void ComplementaryROI<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ComplementaryROI<DataTypes>::update()
+void ComplementaryROI<DataTypes>::doUpdate()
 {
-    cleanDirty();
-
     ReadAccessor<Data<VecCoord> > position(d_position);
     ReadAccessor<Data<unsigned int> > nbSet(d_nbSet);
 
@@ -120,8 +118,8 @@ void ComplementaryROI<DataTypes>::update()
         ReadAccessor< Data<SetIndex> > setIndices(vd_setIndices[i]);
         for (unsigned int j=0;j<setIndices.size();++j) {
             set<index_type>::iterator it = myIndices.find(setIndices[j]);
-            if (it==myIndices.end())
-                serr << "index " << setIndices[j] << " does not exist" << sendl;
+            if (it == myIndices.end())
+                msg_error() << "index " << setIndices[j] << " does not exist";
             else
                 myIndices.erase(it);
         }
@@ -134,19 +132,7 @@ void ComplementaryROI<DataTypes>::update()
     for (unsigned int i=0;i<indices.size();++i)
         pointsInROI.push_back(position[indices[i]]);
 
-    sout << "Created ROI containing " << indices.size() << " points not in " << nbSet << " sets" << sendl;
-}
-
-template <class DataTypes>
-string ComplementaryROI<DataTypes>::getTemplateName() const
-{
-    return templateName(this);
-}
-
-template <class DataTypes>
-string ComplementaryROI<DataTypes>::templateName(const ComplementaryROI<DataTypes>*)
-{
-    return DataTypes::Name();
+    msg_info() << "Created ROI containing " << indices.size() << " points not in " << nbSet << " sets" ;
 }
 
 } // namespace engine

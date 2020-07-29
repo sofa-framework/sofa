@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,11 +25,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaBoundaryCondition/PlaneForceField.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/gl/template.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
@@ -50,21 +48,15 @@ using sofa::defaulttype::Vec ;
 template<class DataTypes>
 PlaneForceField<DataTypes>::PlaneForceField() :
      d_planeNormal(initData(&d_planeNormal, "normal", "plane normal. (default=[0,1,0])"))
-    // TODO(dmarchal): d coef is "jargon" that is not very helpfull if you ignore how is defined the model.
     , d_planeD(initData(&d_planeD, (Real)0, "d", "plane d coef. (default=0)"))
     , d_stiffness(initData(&d_stiffness, (Real)500, "stiffness", "force stiffness. (default=500)"))
     , d_damping(initData(&d_damping, (Real)5, "damping", "force damping. (default=5)"))
     , d_maxForce(initData(&d_maxForce, (Real)0, "maxForce", "if non-null , the max force that can be applied to the object. (default=0)"))
-
     , d_bilateral( initData(&d_bilateral, false, "bilateral", "if true the plane force field is applied on both sides. (default=false)"))
-
     , d_localRange( initData(&d_localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
-
-    // TODO(dmarchal): draw is a bad name. doDraw, doDebugDraw or drawEnabled to be consistent with the drawSize ?
-    , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "draw", "enable/disable drawing of plane. (default=false)"))
-    // TODO(dmarchal): color is a bad name.
-    , d_drawColor(initData(&d_drawColor, defaulttype::RGBAColor(0.0f,.5f,.2f,1.0f), "color", "plane color. (default=[0.0,0.5,0.2,1.0])"))
-    , d_drawSize(initData(&d_drawSize, (Real)10.0f, "drawSize", "plane display size if draw is enabled. (default=10)"))
+    , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "showPlane", "enable/disable drawing of plane. (default=false)"))
+    , d_drawColor(initData(&d_drawColor, defaulttype::RGBAColor(0.0f,.5f,.2f,1.0f), "planeColor", "plane color. (default=[0.0,0.5,0.2,1.0])"))
+    , d_drawSize(initData(&d_drawSize, (Real)10.0f, "showPlaneSize", "plane display size if draw is enabled. (default=10)"))
 {
     Deriv n;
     DataTypes::set(n, 0, 1, 0);
@@ -129,9 +121,7 @@ template<class DataTypes>
 SReal PlaneForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
                                                      const DataVecCoord&  /* x */) const
 {
-    msg_error(this) << "Function potentialEnergy is not implemented. " << msgendl
-                    << "To remove this errore message you need to implement a proper calculus of "
-                       "the plane force field potential energy.";
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
 }
 
@@ -284,17 +274,18 @@ void PlaneForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if(this->m_componentstate != ComponentState::Valid)
         return ;
 
-    if (!vparams->displayFlags().getShowForceFields())
+    if (!vparams->displayFlags().getShowForceFields() || !d_drawIsEnabled.getValue())
         return;
 
-    if (d_drawIsEnabled.getValue())
-        drawPlane(vparams);
+    drawPlane(vparams);
 }
 
 
 template<class DataTypes>
 void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vparams,float size)
 {
+    if(!vparams->displayFlags().getShowForceFields())
+        return;
     if (size == 0.0f)
         size = (float)d_drawSize.getValue();
 
@@ -330,6 +321,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     points.push_back(corners[0]);
     points.push_back(corners[2]);
     points.push_back(corners[3]);
+    vparams->drawTool()->saveLastState();
 
     vparams->drawTool()->setPolygonMode(2,false); //Cull Front face
 
@@ -363,19 +355,23 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
         }
     }
     vparams->drawTool()->drawLines(pointsLine, 1, defaulttype::Vec<4,float>(1,0,0,1));
+    vparams->drawTool()->restoreLastState();
 }
 
 template <class DataTypes>
 void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bool onlyVisible)
 {
-    if (onlyVisible && !d_drawIsEnabled.getValue()) return;
+    SOFA_UNUSED(params);
+
+    if (onlyVisible && !d_drawIsEnabled.getValue())
+        return;
 
     const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::min();
+    const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    defaulttype::Vec3d normal; normal = d_planeNormal.getValue(params);
+    defaulttype::Vec3d normal; normal = d_planeNormal.getValue();
     SReal size=d_drawSize.getValue();
 
     // find a first vector inside the plane
@@ -405,7 +401,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
             if (corners[i][c] < minBBox[c]) minBBox[c] = (Real)corners[i][c];
         }
     }
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 } // namespace forcefield

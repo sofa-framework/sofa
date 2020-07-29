@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -109,6 +109,9 @@ public :
     VecCoord meshPointsX0;
     /// final mesh DOFs position
     VecCoord meshPointsXf;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<AffineMovementConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
  
 protected:
     AffineMovementConstraint();
@@ -133,17 +136,17 @@ public:
 
     void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */) override
     {
-        serr << "projectJacobianMatrix not implemented" << sendl;
+        msg_error() << "projectJacobianMatrix not implemented";
     }
 
     /// Compute the theoretical final positions
     void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 
 
     // Implement projectMatrix for assembled solver of compliant
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+    void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
     /// Draw the constrained points (= border mesh points)
-     virtual void draw(const core::visual::VisualParams* vparams) override;
+     void draw(const core::visual::VisualParams* vparams) override;
 
      class FCPointHandler : public component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
@@ -164,9 +167,6 @@ public:
     };
 
 protected:
-  
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
     
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
@@ -174,7 +174,7 @@ protected:
 private:
 
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
     /// Initialize initial positions
     void initializeInitialPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0);
@@ -186,17 +186,11 @@ private:
     void transform(const SetIndexArray & indices, VecCoord& x0 , VecCoord& xf);
 };
 
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3fTypes>;
-#endif
-#endif
+#if !defined(SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3Types>;
+ 
+#endif //SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP
 
 
 } // namespace projectiveconstraintset

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/template.h>
+
 namespace sofa
 {
 
@@ -35,6 +35,15 @@ namespace component
 
 namespace constraintset
 {
+
+template<class DataTypes>
+StopperConstraint<DataTypes>::StopperConstraint(MechanicalState* object)
+    : Inherit(object)
+    , index(initData(&index, 0, "index", "index of the stop constraint"))
+    , min(initData(&min, -100.0, "min", "minimum value accepted"))
+    , max(initData(&max, 100.0, "max", "maximum value accepted"))
+{
+}
 
 template<class DataTypes>
 void StopperConstraint<DataTypes>::init()
@@ -54,7 +63,6 @@ template<class DataTypes>
 void StopperConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &/*x*/)
 {
     cid = cIndex;
-//	assert(mstate);
 
     MatrixDeriv& c = *c_d.beginEdit();
 

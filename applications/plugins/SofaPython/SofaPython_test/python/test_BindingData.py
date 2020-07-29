@@ -4,14 +4,14 @@ import Sofa
 import SofaTest
 
 def createScene(rootNode):
-    rootNode.addNewData("aField", "TestField", "help message", "f", 1.0)
+    rootNode.addNewData("aField", "TestField", "help message", "float", 1.0)
     field = rootNode.getData("aField")
     ASSERT_NEQ(field, None)
 
     ### Check isPersistant/setPersistant
-    ASSERT_TRUE( field.isPersistant() )
-    field.setPersistant(False)
     ASSERT_FALSE( field.isPersistant() )
+    field.setPersistant(True)
+    ASSERT_TRUE( field.isPersistant() )
 
     ### Check isSet/unset
     ASSERT_TRUE( field.isSet() )
@@ -45,3 +45,7 @@ def createScene(rootNode):
     #good API design.
     ASSERT_EQ(field.getSize(), 0)
     ASSERT_GT(field.getValue(0), 6.0)
+
+    ASSERT_EQ(type(field.isRequired()), bool)
+    ASSERT_EQ(type(field.isReadOnly()), bool)
+    ASSERT_EQ(type(field.getHelp()), str)

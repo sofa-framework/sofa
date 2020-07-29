@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -25,9 +25,9 @@
 
 #include "Sofa_test.h"
 
+#include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-
 
 namespace sofa {
 
@@ -48,10 +48,9 @@ public:
     {}
 
 
-    virtual void update() override
+    void doUpdate() override
     {
-        DataEngineType::update();
-
+        Inherit1::doUpdate();
         ++m_counter;
     }
 
@@ -80,7 +79,7 @@ struct DataEngine_test : public Sofa_test<>
     typedef DDGNode::DDGLinkContainer DDGLinkContainer;
 
     typename Engine::SPtr m_engine; ///< the real tested engine
-    typename DataEngineType::SPtr m_engineInput; ///< an other identical engine, where only inputs are used (not the engine itself). It is an easy way to create all inputs of the right type, to be able to link wuth them.
+    typename DataEngineType::SPtr m_engineInput; ///< an other identical engine, where only inputs are used (not the engine itself). It is an easy way to create all inputs of the right type, to be able to link with them.
 
     ///
     DataEngine_test()
@@ -93,6 +92,8 @@ struct DataEngine_test : public Sofa_test<>
 
     virtual void init()
     {
+        preInit();
+
         m_engineInput->init();
         m_engine->init();
 
@@ -129,24 +130,24 @@ struct DataEngine_test : public Sofa_test<>
 
         const DDGLinkContainer& inputs = m_engine->DDGNode::getInputs();
 
-        CHECKCOUNTER( 0 );  // c'est parti mon kiki
+        CHECKCOUNTER( 0 );
         const DDGLinkContainer& parent_inputs = m_engineInput->DDGNode::getInputs();
 
 
-        CHECKCOUNTER( 0 );  // c'est parti mon kiki
+        CHECKCOUNTER( 0 );
         const DDGLinkContainer& outputs = m_engine->DDGNode::getOutputs();
 
 
-        CHECKCOUNTER( 0 );  // c'est parti mon kiki
+        CHECKCOUNTER( 0 );
 
         // modifying inputs to ensure the engine should be evaluated
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {
             parent_inputs[i]->setDirtyValue();
-            CHECKCOUNTER( 0 );  // c'est parti mon kiki
+            CHECKCOUNTER( 0 );
         }
 
-        CHECKCOUNTER( 0 );  // c'est parti mon kiki
+        CHECKCOUNTER( 0 );
 
         outputs[0]->updateIfDirty(); // could call the engine
         CHECKMAXCOUNTER( 1 );
@@ -174,7 +175,11 @@ struct DataEngine_test : public Sofa_test<>
         }
         CHECKMAXCOUNTER( parent_inputs.size() );
     }
-
+private:
+    virtual void preInit()
+    {
+        // stub
+    }
 
 };
 

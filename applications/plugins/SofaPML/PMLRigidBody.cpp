@@ -38,7 +38,7 @@
 #include <PhysicalProperties/CellProperties.h>
 
 #include <sofa/core/objectmodel/SPtr.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaBaseMechanics/UniformMass.h>
@@ -309,9 +309,8 @@ void PMLRigidBody::createVisualModel(StructuralComponent* body)
     //create mappings
     mapping = New<RigidMapping<RigidTypes, Vec3Types> >();
     ((Mapping<RigidTypes, Vec3Types>*)mapping.get())->setModels((MechanicalState<RigidTypes>*)refDOF.get(), (MechanicalState<Vec3Types>*)mmodel.get());
-    // BaseMapping * Vmapping = new IdentityMapping< Mapping< State<Vec3Types>, MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >
-    BaseMapping::SPtr Vmapping = New<IdentityMapping< Vec3Types, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > >();
-    ((Mapping< Vec3Types, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >*)Vmapping.get())->setModels((MechanicalState<Vec3Types>*)mmodel.get(), vmodel.get());
+    BaseMapping::SPtr Vmapping = New<IdentityMapping< Vec3Types, helper::vector< Vec<3,GLfloat>, Vec<3,GLfloat> > > >();
+    ((Mapping< Vec3Types, helper::vector< Vec<3,GLfloat>, Vec<3,GLfloat> > >*)Vmapping.get())->setModels((MechanicalState<Vec3Types>*)mmodel.get(), vmodel.get());
 
     VisualNode->addObject(mapping);
     VisualNode->addObject(Vmapping);
@@ -439,7 +438,7 @@ void PMLRigidBody::createCollisionModel()
         CollisionNode->addObject(topology);
         CollisionNode->addObject(mapping);*/
 
-        TriangleModel::SPtr cmodel = New<TriangleModel>();
+        TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr cmodel = New<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
         //LineModel *lmodel = new LineModel;
         //PointModel *pmodel = new PointModel;
         VisualNode->addObject(cmodel);

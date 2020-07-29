@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="Scene" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<RequiredPlugin name="Registration" pluginName="Registration" />
 
 	<VisualStyle displayFlags="showBehavior showVisual" />
@@ -7,11 +8,12 @@
 	<CGLinearSolver template="GraphScattered" iterations="15"  threshold="1e-008" />
 
 	<Node name="target">
-			<OglModel name="Bone" fileMesh="data/femur_f.obj"  color="0.5 .4 1 1" />
+			<MeshObjLoader name="meshLoader_0" filename="data/femur_f.obj" handleSeams="1" />
+			<OglModel name="Bone" src="@meshLoader_0"  color="0.5 .4 1 1" />
 	</Node>
 	<Node name="source">
 			<MeshObjLoader name="MeshLoader"  filename="data/femur_m_res.obj" />
-			<Mesh src="@MeshLoader" />
+			<MeshTopology src="@MeshLoader" />
 			<MechanicalObject  name="PointSet"   />
 			<UniformMass mass="0.001"/>
    			<MeshSpringForceField name="Springs" stiffness="10000" />
@@ -26,7 +28,8 @@
 					cacheSize="4"
 					stiffness="5" damping="0" />
 		<Node name="Visu">
-			<OglModel name="Visual" fileMesh="data/femur_m.obj" normals="0"   color="1 .4 0.5 1" />
+			<MeshObjLoader name="meshLoader_1" filename="data/femur_m.obj" handleSeams="1" />
+			<OglModel name="Visual" src="@meshLoader_1" normals="0"   color="1 .4 0.5 1" />
 			<BarycentricMapping input="@.." output="@Visual" />
 		</Node>			
 	</Node>

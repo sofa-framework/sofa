@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,15 +25,14 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Ray.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/Quater.h>
 
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/OptionsGroup.h>
+
+#include "BackgroundSetting.h"
 
 namespace sofa
 {
@@ -50,8 +49,10 @@ public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
 
     typedef sofa::core::visual::VisualParams::CameraType CameraType;
-    typedef defaulttype::Vec3Types::Real Real;
+    typedef defaulttype::Ray Ray;
+    typedef defaulttype::Vector4 Vec4;
     typedef defaulttype::Vector3 Vec3;
+    typedef defaulttype::Vector2 Vec2;
     typedef defaulttype::Matrix3 Mat3;
     typedef defaulttype::Matrix4 Mat4;
     typedef defaulttype::Quat Quat;
@@ -95,15 +96,18 @@ public:
     Data<bool> p_activated; ///< Camera activated ?
 	Data<bool> p_fixedLookAtPoint; ///< keep the lookAt point always fixed
     
-    Data<helper::vector<float> > p_modelViewMatrix; ///< ModelView Matrix
-    Data<helper::vector<float> > p_projectionMatrix; ///< Projection Matrix
+    Data<helper::vector<SReal> > p_modelViewMatrix; ///< ModelView Matrix
+    Data<helper::vector<SReal> > p_projectionMatrix; ///< Projection Matrix
+
+    SingleLink<BaseCamera, sofa::component::configurationsetting::BackgroundSetting,
+               BaseLink::FLAG_STOREPATH> l_background ;
 
     BaseCamera();
-    virtual ~BaseCamera();
+    ~BaseCamera() override;
 
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void bwdInit() override;
+    void init() override;
+    void reinit() override;
+    void bwdInit() override;
 
     void activate();
     void desactivate();
@@ -120,11 +124,27 @@ public:
     void rotateCameraAroundPoint( Quat& rotation, const Vec3& point);
     virtual void rotateWorldAroundPoint( Quat& rotation, const Vec3& point, Quat orientationCam);
 
+    Vec3 screenToViewportPoint(const Vec3& p) const;
+    Vec3 screenToWorldPoint(const Vec3& p);
+
+    Vec3 viewportToScreenPoint(const Vec3& p) const;
+    Vec3 viewportToWorldPoint(const Vec3& p);
+
+    Vec3 worldToScreenPoint(const Vec3& p);
+    Vec3 worldToViewportPoint(const Vec3& p);
+
+    Ray viewportPointToRay(const Vec3&p);
+    Ray screenPointToRay(const Vec3&p);
+
+    Ray toRay() const;
+
+
     Vec3 cameraToWorldCoordinates(const Vec3& p);
     Vec3 worldToCameraCoordinates(const Vec3& p);
     Vec3 cameraToWorldTransform(const Vec3& v);
     Vec3 worldToCameraTransform(const Vec3& v);
     Vec3 screenToWorldCoordinates(int x, int y);
+    Vec2 worldToScreenCoordinates(const Vec3& p);
 
     void fitSphere(const Vec3& center, SReal radius);
     void fitBoundingBox(const Vec3& min,const Vec3& max);
@@ -162,6 +182,10 @@ public:
     {
         p_minBBox.setValue(min);
         p_maxBBox.setValue(max);
+
+        sceneCenter = (min + max)*0.5;
+        sceneRadius = 0.5*(max - min).norm();
+
         computeZ();
     }
 
@@ -197,7 +221,7 @@ public:
     Vec3 getLookAtFromOrientation(const Vec3 &pos, const double &distance,const Quat & orientation);
     Vec3 getPositionFromOrientation(const Vec3 &lookAt, const double &distance, const Quat& orientation);
 
-    virtual void manageEvent(core::objectmodel::Event* e)=0;
+    virtual void manageEvent(core::objectmodel::Event* event) = 0 ;
     virtual void internalUpdate() {}
 
     void handleEvent(sofa::core::objectmodel::Event* event) override;
@@ -248,6 +272,10 @@ public:
         return 1.0;
     }
 
+
+    void draw(const core::visual::VisualParams*) override ;
+    void computeClippingPlane(const core::visual::VisualParams* vp, double& zNear, double& zFar);
+    virtual void drawCamera(const core::visual::VisualParams*);
 protected:
     void updateOutputData();
 

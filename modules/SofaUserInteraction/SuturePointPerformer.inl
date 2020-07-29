@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaMeshCollision/TriangleModel.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa
@@ -41,8 +41,8 @@ SuturePointPerformer<DataTypes>::SuturePointPerformer(BaseMouseInteractor *i)
     :TInteractionPerformer<DataTypes>(i)
     , first(1)
     , fixedIndex(0)
-    , SpringObject(NULL)
-    ,FixObject(NULL) {}
+    , SpringObject(nullptr)
+    ,FixObject(nullptr) {}
 
 
 template <class DataTypes>
@@ -51,11 +51,11 @@ void SuturePointPerformer<DataTypes>::start()
     if (first) //first click
     {
         BodyPicked picked = this->interactor->getBodyPicked();
-        TriangleModel* CollisionModel = dynamic_cast< TriangleModel* >(picked.body);
+        TriangleCollisionModel<sofa::defaulttype::Vec3Types>* CollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(picked.body);
 
-        if (picked.body == NULL || CollisionModel == NULL)
+        if (picked.body == nullptr || CollisionModel == nullptr)
         {
-            this->interactor->serr << "Error: SuturePointPerformer no picked body in first clic." << this->interactor->sendl;
+            msg_error(this->interactor) << "No picked body in first clic.";
             return;
         }
 
@@ -65,11 +65,11 @@ void SuturePointPerformer<DataTypes>::start()
     else // second click
     {
         BodyPicked picked = this->interactor->getBodyPicked();
-        TriangleModel* CollisionModel = dynamic_cast< TriangleModel* >(picked.body);
+        TriangleCollisionModel<sofa::defaulttype::Vec3Types>* CollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(picked.body);
 
-        if (picked.body == NULL || CollisionModel == NULL)
+        if (picked.body == nullptr || CollisionModel == nullptr)
         {
-            this->interactor->serr << "Error: SuturePointPerformer no picked body in second clic." << this->interactor->sendl;
+            msg_error(this->interactor) << "No picked body in second clic.";
             return;
         }
 
@@ -85,22 +85,22 @@ void SuturePointPerformer<DataTypes>::start()
 
         if (!SpringObject)
         {
-            this->interactor->serr << "Error: can't find StiffSpringForceField." << this->interactor->sendl;
+            msg_error(this->interactor) << "Can't find StiffSpringForceField.";
             return;
         }
         else if (!triangleContainer)
         {
-            this->interactor->serr << "Error: can't find triangleContainer." << this->interactor->sendl;
+            msg_error(this->interactor) << "Can't find triangleContainer.";
             return;
         }
         else if (!MechanicalObject)
         {
-            this->interactor->serr << "Error: can't find MechanicalObject." << this->interactor->sendl;
+            msg_error(this->interactor) << "Can't find MechanicalObject.";
             return;
         }
         else if (!FixObject)
         {
-            this->interactor->serr << "Error: can't find FixObject." << this->interactor->sendl;
+            msg_error(this->interactor) << "Can't find FixObject.";
             return;
         }
 

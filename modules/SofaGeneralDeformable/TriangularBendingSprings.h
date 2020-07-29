@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,24 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: TriangularBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_H
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <map>
 
@@ -84,6 +71,13 @@ public:
 
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
+
+
+    Data<double> f_ks; ///< uniform stiffness for the all springs
+    Data<double> f_kd; ///< uniform damping for the all springs
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TriangularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
 
@@ -161,30 +155,22 @@ protected:
 
     protected:
         TriangularBendingSprings<DataTypes>* ff;
-    };
-
-    sofa::core::topology::BaseMeshTopology* _topology;
+    };    
 
     bool updateMatrix;
-
-    Data<double> f_ks; ///< uniform stiffness for the all springs
-    Data<double> f_kd; ///< uniform damping for the all springs
-
-
-
     TriangularBendingSprings(/*double _ks, double _kd*/);
-    //TriangularBendingSprings(); //MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
+    //TriangularBendingSprings(); //MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
 
     virtual ~TriangularBendingSprings();
 public:
     /// Searches triangle topology and creates the bending springs
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const override;
 
     virtual double getKs() const { return f_ks.getValue();}
     virtual double getKd() const { return f_kd.getValue();}
@@ -208,20 +194,18 @@ protected:
 
     SReal m_potentialEnergy;
 
+    sofa::core::topology::BaseMeshTopology* m_topology;
+
     //public:
     //Data<double> ks;
     //Data<double> kd;
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangularBendingSprings<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangularBendingSprings<defaulttype::Vec3fTypes>;
-#endif
-#endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)
+extern template class SOFA_GENERAL_DEFORMABLE_API TriangularBendingSprings<defaulttype::Vec3Types>;
+
+#endif // !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)
 
 
 } // namespace forcefield

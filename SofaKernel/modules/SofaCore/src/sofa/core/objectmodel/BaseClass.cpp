@@ -1,0 +1,82 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#include <sofa/core/objectmodel/BaseClass.h>
+
+namespace sofa
+{
+
+namespace core
+{
+
+namespace objectmodel
+{
+
+BaseClass* DeprecatedBaseClass::GetSingleton()
+{
+    static DeprecatedBaseClass dpc;
+    return &dpc;
+}
+
+
+BaseClass::BaseClass()
+{
+}
+
+BaseClass::~BaseClass()
+{
+}
+
+DeprecatedBaseClass::DeprecatedBaseClass()
+{
+    namespaceName= "DeprecatedBaseClass::namespace";
+    className = "DeprecatedBaseClass::classname";
+    templateName = "DeprecatedBaseClass::templatename";
+    shortName = "DeprecatedBaseClass::shortname";
+}
+
+std::string BaseClass::decodeFullName(const std::type_info& t)
+{
+    return sofa::helper::NameDecoder::decodeFullName(t);
+}
+
+std::string BaseClass::decodeTypeName(const std::type_info& t)
+{
+    return sofa::helper::NameDecoder::decodeTypeName(t);
+}
+
+std::string BaseClass::decodeClassName(const std::type_info& t)
+{
+    return sofa::helper::NameDecoder::decodeClassName(t);
+}
+
+std::string BaseClass::decodeNamespaceName(const std::type_info& t)
+{
+    return sofa::helper::NameDecoder::decodeNamespaceName(t);
+}
+
+
+} // namespace objectmodel
+
+} // namespace core
+
+} // namespace sofa
+

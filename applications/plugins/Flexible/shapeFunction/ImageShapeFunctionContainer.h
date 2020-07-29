@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,13 +48,8 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(ImageShapeFunctionContainer, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_));
     typedef BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_> Inherit;
 
-
-    virtual std::string getTemplateName() const    { return templateName(this); }
-    static std::string templateName(const ImageShapeFunctionContainer<ShapeFunctionTypes_,ImageTypes_>* = NULL) { return ShapeFunctionTypes_::Name()+std::string(",")+ImageTypes_::Name(); }
-
-
-    virtual void init()    { Inherit::init(); reinit();}
-    virtual void reinit()
+    virtual void init() override { Inherit::init(); reinit(); }
+    virtual void reinit() override
     {
         Inherit::reinit();
         // chane nbref according to nb channels

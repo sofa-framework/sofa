@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaStereo/StereoCamera.h>
 
 #define   NB_MAX_TEXTURES 16
@@ -50,7 +50,7 @@ protected:
     sofa::core::objectmodel::DataFileName textureright;
     sofa::core::objectmodel::DataFileName fileMesh;
 
-    typedef sofa::defaulttype::ExtVec3fTypes DataTypes;
+    typedef sofa::defaulttype::Vec3fTypes DataTypes;
     typedef DataTypes::Real Real;
     typedef sofa::defaulttype::Vec<2, float> TexCoord;
     typedef sofa::defaulttype::Vec<3,Real> Vec3Real;

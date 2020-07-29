@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -82,10 +82,6 @@ public:
     Data< bool > d_mult; ///< multiply density by image intensity?
     //@}
 
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageToRigidMassEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
-
     ImageToRigidMassEngine()    :   Inherited()
       , image(initData(&image,ImageTypes(),"image",""))
       , transform(initData(&transform,TransformType(),"transform",""))
@@ -102,7 +98,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -114,13 +110,13 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void update() override
+    void doUpdate() override
     {
         raTransform inT(this->transform);
         raImage in(this->image);
@@ -130,8 +126,6 @@ protected:
         Real d = d_density.getValue();
         bool mult = d_mult.getValue();
 
-
-        cleanDirty();
 
         helper::WriteOnlyAccessor<Data< RigidCoord > > pos(this->d_position);
         helper::WriteOnlyAccessor<Data< RigidMass > > rigidMass(this->d_rigidMass);

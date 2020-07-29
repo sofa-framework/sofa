@@ -76,8 +76,8 @@ protected:
 
 };
 
-} /// namespace communication
-} /// namespace component
-} /// namespace sofa
+} // namespace communication
+} // namespace component
+} // namespace sofa
 
 #endif // SOFA_COMMUNICATIONSUBSCRIBER_H

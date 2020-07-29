@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -29,18 +29,12 @@
 #include <sofa/helper/testing/NumericTest.h>
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
 
-// Maybe not the right place to put this (private header?)
-#ifndef SOFA_FLOAT
-typedef sofa::defaulttype::Rigid3dTypes Rigid3;
-typedef sofa::defaulttype::Rigid3dMass Rigid3Mass;
-typedef sofa::defaulttype::Vec3dTypes Vec3Types;
-typedef sofa::defaulttype::Vec1dTypes Vec1Types;
-#else
-typedef sofa::defaulttype::Rigid3fTypes Rigid3;
-typedef sofa::defaulttype::Rigid3fMass Rigid3Mass;
-typedef sofa::defaulttype::Vec3fTypes Vec3Types;
-typedef sofa::defaulttype::Vec1fTypes Vec1Types;
-#endif
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
+using sofa::defaulttype::Rigid3Types;
+using sofa::defaulttype::Rigid3Mass;
+using sofa::defaulttype::Vec3Types;
+using sofa::defaulttype::Vec1Types;
 
 namespace sofa
 {
@@ -49,7 +43,7 @@ namespace sofa
     {
     public:
         BaseSofa_test();
-        virtual ~BaseSofa_test() ;
+        ~BaseSofa_test() override ;
         void clearSceneGraph() ;
     } ;
 

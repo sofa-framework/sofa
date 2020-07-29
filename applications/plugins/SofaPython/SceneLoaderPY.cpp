@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,7 @@
 #include "PythonFactory.h"
 
 using namespace sofa::core::objectmodel;
+using sofa::helper::system::SetDirectory;
 
 namespace sofa
 {
@@ -82,15 +83,25 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
 }
 
 
-sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
+sofa::simulation::Node::SPtr SceneLoaderPY::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
     sofa::simulation::Node::SPtr root;
-    loadSceneWithArguments(filename, helper::ArgumentParser::extra_args(), &root);
+    doLoadSceneWithArguments(filename, sceneArgs, &root);
     return root;
 }
 
 
-void SceneLoaderPY::loadSceneWithArguments(const char *filename,
+void SceneLoaderPY::loadSceneWithArguments(const std::string& filename,
+                                           const std::vector<std::string>& arguments,
+                                           Node::SPtr* root_out)
+{
+    notifyLoadingSceneBefore();
+    doLoadSceneWithArguments(filename, arguments, root_out);
+    notifyLoadingSceneAfter(*root_out);
+}
+
+
+void SceneLoaderPY::doLoadSceneWithArguments(const std::string& filename,
                                            const std::vector<std::string>& arguments,
                                            Node::SPtr* root_out)
 {
@@ -108,10 +119,10 @@ void SceneLoaderPY::loadSceneWithArguments(const char *filename,
     PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
 
     // We go the the current file's directory so that all relative path are correct
-    helper::system::SetDirectory chdir ( filename );
+    SetDirectory chdir ( filename );
 
-    notifyLoadingScene();
-    if(!PythonEnvironment::runFile(helper::system::SetDirectory::GetFileName(filename).c_str(), arguments))
+    PythonEnvironment::setArguments(SetDirectory::GetFileName(filename.c_str()), arguments);
+    if(!PythonEnvironment::runFile(SetDirectory::GetFileName(filename.c_str())))
     {
         // LOAD ERROR
         SP_MESSAGE_ERROR( "scene script load error." );
@@ -140,7 +151,7 @@ void SceneLoaderPY::loadSceneWithArguments(const char *filename,
             if(root_out) *root_out = rootNode;
 
             SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()));
-            rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename ) );
+            rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename.c_str() ) );
 
             return;
         }
@@ -152,7 +163,7 @@ void SceneLoaderPY::loadSceneWithArguments(const char *filename,
 }
 
 
-bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments)
+bool SceneLoaderPY::loadTestWithArguments(const std::string& filename, const std::vector<std::string>& arguments)
 {
     PythonEnvironment::gil lock(__func__);    
     if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
@@ -180,7 +191,7 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
     PyObject *pFunc = PyDict_GetItemString(pDict, "run");
     if (PyCallable_Check(pFunc))
     {
-        PyObject *res = PyObject_CallObject(pFunc,0);
+        PyObject *res = PyObject_CallObject(pFunc,nullptr);
         printPythonExceptions();
 
         if( !res )
@@ -232,7 +243,7 @@ void exportPython( Node* node, const char* fileName )
 {
     if ( !node ) return;
 
-    if ( fileName!=NULL )
+    if ( fileName!=nullptr )
     {
         std::ofstream out( fileName );
 

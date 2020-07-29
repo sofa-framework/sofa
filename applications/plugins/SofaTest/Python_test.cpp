@@ -24,6 +24,19 @@ struct fail {
         : message(message) { }
 };
 
+
+/// This function is used by gtest to print the content of the struct in a meaninfull way
+void SOFA_SOFATEST_API PrintTo(const sofa::Python_test_data& d, ::std::ostream *os)
+{
+  (*os) << d.filepath  ;
+  (*os) << " with args {" ;
+  for(auto& v : d.arguments)
+  {
+      (*os) << v << ", " ;
+  }
+  (*os) << "}";
+}
+
 static PyObject* operator||(PyObject* obj, const fail& error) {
     if(obj) return obj;
     throw std::runtime_error(error.message);
@@ -48,7 +61,7 @@ PyObject* default_excepthook {nullptr} ;
 // TODO FIXME: there's probably a MEMLEAK hiding in there, figure it out
 static PyObject* except_hook(PyObject* self, PyObject* args) {
     // raise the stop flag
-    char* flags = reinterpret_cast<char*>(PyCapsule_GetPointer(self, NULL));
+    char* flags = reinterpret_cast<char*>(PyCapsule_GetPointer(self, nullptr));
     assert(flags && "cannot get flags pointer (wtf?)");
     if(!flags) std::exit(1);
 
@@ -80,7 +93,7 @@ static PyMethodDef except_hook_def = {
     "sofa_excepthook",
     except_hook,
     METH_VARARGS,
-    NULL
+    nullptr
 };
 
 
@@ -90,9 +103,9 @@ static void install_sys_excepthook(char* flags) {
         
         default_excepthook = PySys_GetObject((char*)"excepthook") || fail("cannot get default excepthook");
 
-        PyObject* self = PyCapsule_New(flags, NULL, NULL) || fail("cant wrap flags pointer");
+        PyObject* self = PyCapsule_New(flags, nullptr, nullptr) || fail("cant wrap flags pointer");
 
-        PyObject* excepthook = PyCFunction_NewEx(&except_hook_def, self, NULL)
+        PyObject* excepthook = PyCFunction_NewEx(&except_hook_def, self, nullptr)
                 || fail("cannot create excepthook closure");
 
         PySys_SetObject((char*)"excepthook", excepthook) || fail("cannot set sys.excepthook");
@@ -186,7 +199,7 @@ struct Listener : core::objectmodel::BaseObject {
         f_listening = true;
     }
 
-    virtual void handleEvent(core::objectmodel::Event * event) {
+    void handleEvent(core::objectmodel::Event * event) override {
         if (core::objectmodel::PythonScriptEvent::checkEventType(event)
                 || core::objectmodel::ScriptEvent::checkEventType(event) )
         {

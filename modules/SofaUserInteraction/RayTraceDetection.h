@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,9 +42,9 @@ namespace collision
 /**
  *  \brief It is a Ray Trace based collision detection algorithm
  *
- *   For each point in one object, we trace a ray following de oposite of the point's normal
- *    up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
- * colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
+ *   For each point in one object, we trace a ray following the oposite of the point's normal
+ *   up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
+ *   colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
  */
 class SOFA_USER_INTERACTION_API RayTraceDetection :public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
@@ -67,13 +67,13 @@ public:
     }
     void selfCollision (TriangleOctreeModel * cm1);
     void addCollisionModel (core::CollisionModel * cm) override;
-    virtual void addCollisionPair (const std::pair < core::CollisionModel *,
+    void addCollisionPair (const std::pair < core::CollisionModel *,
             core::CollisionModel * >&cmPair) override;
 
-    void findPairsVolume (CubeModel * cm1,
-            CubeModel * cm2);
+    void findPairsVolume (CubeCollisionModel * cm1,
+            CubeCollisionModel * cm2);
 
-    virtual void beginBroadPhase() override
+    void beginBroadPhase() override
     {
         core::collision::BroadPhaseDetection::beginBroadPhase();
         collisionModels.clear();

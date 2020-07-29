@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -35,11 +35,10 @@
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/accessor.h>
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaMisc/initSofaMisc.h>
 
 
 
@@ -58,11 +57,10 @@ int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
     sofa::simulation::graph::init();
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaMisc();
     sofa::gui::initMain();
 
     sofa::helper::parse("This is a SOFA application.")
@@ -104,7 +102,7 @@ int main(int argc, char** argv)
 
     // this currently reveals a bug
 //    // attach a collision surface to the particle
-//    SphereModel::SPtr sphere = New<SphereModel>();
+//    SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphere = New<SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
 //    particule_node->addObject(sphere);
 //    sphere->defaultRadius.setValue(0.1);
 

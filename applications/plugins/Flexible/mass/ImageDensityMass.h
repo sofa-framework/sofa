@@ -1,9 +1,7 @@
 #ifndef SOFA_FLEXIBLE_ImageDensityMass_H
 #define SOFA_FLEXIBLE_ImageDensityMass_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/State.h>
@@ -82,12 +80,8 @@ public:
 
     /** @name Image map stuff */
     //@{
-#ifndef SOFA_FLOAT
     Data< defaulttype::ImageD > f_densityImage; ///< the density map
-#else
-	Data< defaulttype::ImageF > f_densityImage; ///< A density map (ratio kg/dm^3)
-#endif 
-
+ 
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     Data< TransformType > f_transform;   ///< transform of the density map
     //@}
@@ -133,34 +127,32 @@ public:
 
     void clear();
 
-    virtual void reinit();
-    virtual void init();
+    virtual void reinit() override;
+    virtual void init() override;
 
 
 
     // -- Mass interface
-    void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
+    void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
-    void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
+    void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
 
-    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV()
+    SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& v) const override;  ///< vMv/2 using dof->getV()
 
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
+    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
     /// Add Mass contribution to global Matrix assembling
-    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
+    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
 
-    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
+    bool isDiagonal() override { return false; }
 
-
-    bool isDiagonal() { return false; }
-
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
     static std::string templateName(const ImageDensityMass<DataTypes, ShapeFunctionTypes, MassType>* = NULL)
@@ -180,15 +172,8 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_FLEXIBLE_ImageDensityMass_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunctiond,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
-//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3dTypes,core::behavior::ShapeFunctiond,defaulttype::Rigid3dMass>; // rigid frame
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunctionf,defaulttype::Mat3x3f>;
-//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3fTypes,core::behavior::ShapeFunctionf,defaulttype::Rigid3fMass>; // rigid frame
-#endif
+#if  !defined(SOFA_FLEXIBLE_ImageDensityMass_CPP)
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3Types,core::behavior::ShapeFunction3d,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
 #endif
 
 } // namespace mass

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,9 +62,12 @@ public:
 } ;
 
 SetOfPythonScenes scenes = {"test_BindingBase.py",
+                            "test_BindingBaseObject.py",
                             "test_BindingData.py",
                             "test_BindingLink.py",
-                            "test_BindingSofa.py"} ;
+                            "test_BindingNode.py",
+                            "test_BindingSofa.py",
+                            "test_PythonEnvironment.py"} ;
 
 TEST_P(PythonBinding_tests, scene)
 {

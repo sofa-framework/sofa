@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,12 +21,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_VOXELGRIDLOADER
 #define SOFA_COMPONENT_LOADER_VOXELGRIDLOADER
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/VoxelLoader.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/fixed_array.h>
 
 namespace sofa
 {
@@ -49,16 +46,16 @@ public:
     typedef helper::fixed_array<unsigned int,8> Hexahedron;
 protected:
     VoxelGridLoader();
-    virtual ~VoxelGridLoader();
+    ~VoxelGridLoader() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
     virtual void clear();
 
-    virtual bool load() override;
-    virtual bool canLoad() override;
+    bool load() override;
+    bool canLoad() override;
 
     void setVoxelSize ( const defaulttype::Vector3 vSize );
     defaulttype::Vector3 getVoxelSize () const override;

@@ -1,4 +1,4 @@
-# CMake package configuration file for the SofaPython plugin
+# CMake package configuration file for the SofaStereo plugin
 
 @PACKAGE_INIT@
 

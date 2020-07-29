@@ -1,12 +1,13 @@
 <!-- Mechanical TriangularFEMForceFieldOptim Example -->
 <Node name="root" dt="0.05" gravity="0 10 10" showBoundingTree="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
     <!-- Activate this loader to use a square mesh with only two triangles (useful to debug base equations) -->
     <!--<MeshGmshLoader name="loaderSquare" triangles="0 1 3  1 2 3" position="0 0 0  1 0 0  1 1 0  0 1 0" />-->
     <!-- Activate this loader to load a square mesh with many triangles -->
     <MeshGmshLoader filename="mesh/square3.msh" name="loaderSquare" />
     <Node name="SquareGravity1">
-        <EulerImplicit name="odesolver1" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="odesolver1" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver verbose="0" printLog="0" iterations="25" name="linearsolver1" tolerance="1.0e-9" threshold="1.0e-9" />
         <TriangleSetTopologyContainer name="Container" src="@../loaderSquare" />
         <MechanicalObject name="DOFs" src="@../loaderSquare" scale="100"  />
@@ -23,7 +24,7 @@
     </Node>
     <!-- Activate this version to compare computed stiffness matrix (addKToMatrix) with addDForce -->
     <!--<Node name="SquareGravityTestMatrixConstruction">
-        <EulerImplicit name="odesolver2" printLog="0" />
+        <EulerImplicitSolver name="odesolver2" printLog="0" />
         <CGLinearSolver template="SparseMatrix" verbose="0" printLog="1" iterations="25" name="linearsolver2" tolerance="1.0e-9" threshold="1.0e-9" />
         <TriangleSetTopologyContainer name="Container" src="@../loaderSquare" />
         <MechanicalObject name="DOFs" src="@../loaderSquare" scale="100"  />

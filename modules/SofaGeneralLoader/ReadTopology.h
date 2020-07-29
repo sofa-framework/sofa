@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,17 +21,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_READTOPOLOGY_H
 #define SOFA_COMPONENT_MISC_READTOPOLOGY_H
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -58,10 +54,13 @@ public:
     Data < double > f_shift; ///< shift between times in the file and times when they will be read
     Data < bool > f_loop; ///< set to 'true' to re-read the file when reaching the end
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink <ReadTopology, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     core::topology::BaseMeshTopology* m_topology;
     std::ifstream* infile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     gzFile gzfile;
 #endif
     double nextTime;
@@ -70,15 +69,15 @@ protected:
 
     ReadTopology();
 
-    virtual ~ReadTopology();
+    ~ReadTopology() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reset() override;
+    void reset() override;
 
     void setTime(double time);
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void processReadTopology();
     void processReadTopology(double time);
@@ -91,8 +90,11 @@ public:
     template<class T>
     static bool canCreate(T* obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMeshTopology() == NULL)
+        if (context->getMeshTopologyLink() == nullptr) {
+            arg->logError("No mesh topology found in the context node.");
             return false;
+        }
+
         return BaseObject::canCreate(obj, context, arg);
     }
 
@@ -117,12 +119,12 @@ class SOFA_GENERAL_LOADER_API ReadTopologyCreator: public simulation::Visitor
 public:
     ReadTopologyCreator(const core::ExecParams* params);
     ReadTopologyCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i=true, int c=0 );
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n) { sceneName = n;}
     void setCounter(int c) {counterReadTopology = c;}
     void setCreateInMapping(bool b) {createInMapping=b;}
-    virtual const char* getClassName() const { return "ReadTopologyCreator"; }
+    const char* getClassName() const override { return "ReadTopologyCreator"; }
 protected:
     std::string sceneName;
     std::string extension;
@@ -139,11 +141,11 @@ class SOFA_GENERAL_LOADER_API ReadTopologyActivator: public simulation::Visitor
 public:
     ReadTopologyActivator(const core::ExecParams* params, bool active)
         :Visitor(params), state(active) {}
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     bool getTopology() const {return state;}
     void setTopology(bool active) {state=active;}
-    virtual const char* getClassName() const { return "ReadTopologyActivator"; }
+    const char* getClassName() const override { return "ReadTopologyActivator"; }
 protected:
     void changeTopologyReader(sofa::component::misc::ReadTopology *rt);
 
@@ -156,11 +158,11 @@ public:
     ReadTopologyModifier(const core::ExecParams* params, double _time)
         :Visitor(params), time(_time) {}
 
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     double getTime() const { return time; }
     void setTime(double _time) { time=_time; }
-    virtual const char* getClassName() const { return "ReadTopologyModifier"; }
+    const char* getClassName() const override { return "ReadTopologyModifier"; }
 protected:
     void changeTimeReader(sofa::component::misc::ReadTopology *rt) { rt->processReadTopology(time); }
 

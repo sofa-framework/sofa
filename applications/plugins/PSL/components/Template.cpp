@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,7 +87,6 @@ void Template::addDataToTrack(BaseData* d)
     m_trackedDatas.push_back(d);
 }
 
-SOFA_DECL_CLASS(Template)
 int TemplateClass = core::RegisterObject("An object template encoded as parsed hson-py object.")
         .add< Template >();
 
@@ -109,7 +108,7 @@ static PyObject * Template_setTemplate(PyObject *self, PyObject * args)
 
     obj->m_rawTemplate = nullptr ;
     if (!PyArg_ParseTuple(args, "O", &(obj->m_rawTemplate))) {
-        return NULL;
+        return nullptr;
     }
 
     std::stringstream s ;
@@ -143,14 +142,14 @@ static PyObject * Template_trackData(PyObject *self, PyObject * args)
     Template* obj = dynamic_cast<Template*>(((PySPtr<Base>*)self)->object.get()) ;
     PyObject* o  {nullptr} ;
     if (!PyArg_ParseTuple(args, "O", &o)) {
-        return NULL ;
+        return nullptr ;
     }
 
     BaseData* bd = ((PyPtr<BaseData>*)o)->object ;
     if(obj && bd)
         obj->addDataToTrack(bd) ;
     else
-        return NULL ;
+        return nullptr ;
     Py_RETURN_NONE ;
 }
 

@@ -1,0 +1,25 @@
+<Node name="root" dt="0.01" gravity="0 0 -10" showBoundingTree="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <BackgroundSetting color="0.5 0.6 0.7"/>
+    <LightManager ambient="1 1 1"/>
+
+    <SpotLight name="light01" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="0 3.5 10"/>
+    <SpotLight name="light02" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="3 3 10"/>
+    <SpotLight name="light03" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="-3 3 10"/>
+    <SpotLight name="light04" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="0 2.5 10"/>
+
+    <SpotLight name="light05" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="0 -3.5 10"/>
+    <SpotLight name="light06" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="3 -3 10"/>
+    <SpotLight name="light07" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="-3 -3 10"/>
+    <SpotLight name="light08" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="0 -2.5 10"/>
+
+    <!-- <SpotLight name="light09" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="-3.5 0 10"/> -->
+    <!-- <SpotLight name="light10" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="-4.5 0 10"/> -->
+    <!-- <SpotLight name="light11" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="3.5 0 10"/> -->
+    <!-- <SpotLight name="light12" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="4.5 0 10"/> -->
+
+	<Node name="Torus" >
+		<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" scale="2" rotation="90 0 0" handleSeams="1" />
+		<OglModel name="Visual" src="@meshLoader_0" color="1 1 1"/>
+	</Node>
+</Node>

@@ -61,6 +61,6 @@ protected:
     void createVRPNMessage(CommunicationSubscriber *subscriber, std::string argument);
 };
 
-}   /// namespace communication
-}   /// namespace component
-}   /// namespace sofa
+}   // namespace communication
+}   // namespace component
+}   // namespace sofa

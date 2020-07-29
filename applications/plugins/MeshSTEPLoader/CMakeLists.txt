@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(MeshSTEPLoader)
 
 
@@ -27,7 +27,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(OpenCascade REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-set(MESHSTEPLOADER_COMPILER_FLAGS "-DSOFA_BUILD_MESHSTEPLOADERPLUGIN")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_${PROJECT_NAME}")
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
 target_link_libraries(${PROJECT_NAME} ${OPENCASCADE_LIBRARIES})
 include_directories(${OPENCASCADE_INCLUDE_DIR})
@@ -38,7 +38,6 @@ if(WIN32)
     set(MESHSTEPLOADER_COMPILER_FLAGS "${MESHSTEPLOADER_COMPILER_FLAGS} -DWNT")
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MESHSTEPLOADERPLUGIN")
 
 install(TARGETS ${PROJECT_NAME}
     COMPONENT MeshSTEPLoader_libraries

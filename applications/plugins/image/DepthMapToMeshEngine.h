@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -96,9 +96,6 @@ public:
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles; ///< output triangles
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const DepthMapToMeshEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
-
     DepthMapToMeshEngine()    :   Inherited()
         , depthFactor(initData(&depthFactor,(Real)(1.0),"depthFactor","Intensity to depth factor"))
         , minThreshold(initData(&minThreshold,(Real)(0.1),"minThreshold","minimal depth for point creation"))
@@ -120,14 +117,14 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual ~DepthMapToMeshEngine()
+    ~DepthMapToMeshEngine() override
     {
 #ifndef SOFA_NO_OPENGL
         if(texture) delete texture;
 #endif /* SOFA_NO_OPENGL */
     }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -137,7 +134,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
@@ -147,15 +144,12 @@ protected:
     static const unsigned texture_res=256;
 #endif /* SOFA_NO_OPENGL */
 
-    virtual void update() override
+    void doUpdate() override
     {
         raImage in(this->image);
         raTransform inT(this->transform);
         raTexture inTex(this->texImage);
         const unsigned int dimx=in->getDimensions()[0],dimy=in->getDimensions()[1];
-
-
-        cleanDirty();
 
         waPositions pos(this->position);
         waTexCoords tc(this->texCoord);
@@ -236,7 +230,7 @@ protected:
         }
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams) override
+    void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
 

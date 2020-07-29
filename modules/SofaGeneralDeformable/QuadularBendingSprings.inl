@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,9 +25,7 @@
 #include <SofaGeneralDeformable/QuadularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
-
-#include <sofa/helper/gl/template.h>
-
+#include <sofa/defaulttype/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 #include <sofa/core/topology/TopologyChange.h>
@@ -93,9 +91,9 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const s
         {
 
             /// describe the jth edge index of quad no i
-            EdgesInQuad te2 = ff->_topology->getEdgesInQuad(quadAdded[i]);
+            EdgesInQuad te2 = ff->m_topology->getEdgesInQuad(quadAdded[i]);
             /// describe the jth vertex index of quad no i
-            Quad t2 = ff->_topology->getQuad(quadAdded[i]);
+            Quad t2 = ff->m_topology->getQuad(quadAdded[i]);
 
             for(unsigned int j=0; j<4; ++j)
             {
@@ -116,7 +114,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const s
                         }
                     }
 
-                    const sofa::helper::vector< unsigned int > shell = ff->_topology->getQuadsAroundEdge(edgeIndex);
+                    const sofa::helper::vector< unsigned int > shell = ff->m_topology->getQuadsAroundEdge(edgeIndex);
                     if (shell.size()==2)
                     {
 
@@ -128,19 +126,19 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const s
                         if(shell[0] == quadAdded[i])
                         {
 
-                            te1 = ff->_topology->getEdgesInQuad(shell[1]);
-                            t1 =  ff->_topology->getQuad(shell[1]);
+                            te1 = ff->m_topology->getEdgesInQuad(shell[1]);
+                            t1 =  ff->m_topology->getQuad(shell[1]);
 
                         }
                         else   // shell[1] == quadAdded[i]
                         {
 
-                            te1 = ff->_topology->getEdgesInQuad(shell[0]);
-                            t1 =  ff->_topology->getQuad(shell[0]);
+                            te1 = ff->m_topology->getEdgesInQuad(shell[0]);
+                            t1 =  ff->m_topology->getQuad(shell[0]);
                         }
 
-                        int i1 = ff->_topology->getEdgeIndexInQuad(te1, edgeIndex); //edgeIndex //te1[j]
-                        int i2 = ff->_topology->getEdgeIndexInQuad(te2, edgeIndex); // edgeIndex //te2[j]
+                        int i1 = ff->m_topology->getEdgeIndexInQuad(te1, edgeIndex); //edgeIndex //te1[j]
+                        int i2 = ff->m_topology->getEdgeIndexInQuad(te2, edgeIndex); // edgeIndex //te2[j]
 
                         ei.m1 = t1[i1]; // i1
                         ei.m2 = t2[(i2+3)%4]; // i2
@@ -198,9 +196,9 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(cons
         {
 
             /// describe the jth edge index of quad no i
-            EdgesInQuad te = ff->_topology->getEdgesInQuad(quadRemoved[i]);
+            EdgesInQuad te = ff->m_topology->getEdgesInQuad(quadRemoved[i]);
             /// describe the jth vertex index of quad no i
-            //Quad t =  ff->_topology->getQuad(quadRemoved[i]);
+            //Quad t =  ff->m_topology->getQuad(quadRemoved[i]);
 
 
             for(unsigned int j=0; j<4; ++j)
@@ -212,7 +210,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(cons
 
                     unsigned int edgeIndex = te[j];
 
-                    const sofa::helper::vector< unsigned int > shell = ff->_topology->getQuadsAroundEdge(edgeIndex);
+                    const sofa::helper::vector< unsigned int > shell = ff->m_topology->getQuadsAroundEdge(edgeIndex);
                     if (shell.size()==3)
                     {
 
@@ -223,10 +221,10 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(cons
 
                         if(shell[0] == quadRemoved[i])
                         {
-                            te1 = ff->_topology->getEdgesInQuad(shell[1]);
-                            t1 =  ff->_topology->getQuad(shell[1]);
-                            te2 = ff->_topology->getEdgesInQuad(shell[2]);
-                            t2 =  ff->_topology->getQuad(shell[2]);
+                            te1 = ff->m_topology->getEdgesInQuad(shell[1]);
+                            t1 =  ff->m_topology->getQuad(shell[1]);
+                            te2 = ff->m_topology->getEdgesInQuad(shell[2]);
+                            t2 =  ff->m_topology->getQuad(shell[2]);
 
                         }
                         else
@@ -235,25 +233,25 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(cons
                             if(shell[1] == quadRemoved[i])
                             {
 
-                                te1 = ff->_topology->getEdgesInQuad(shell[2]);
-                                t1 =  ff->_topology->getQuad(shell[2]);
-                                te2 = ff->_topology->getEdgesInQuad(shell[0]);
-                                t2 =  ff->_topology->getQuad(shell[0]);
+                                te1 = ff->m_topology->getEdgesInQuad(shell[2]);
+                                t1 =  ff->m_topology->getQuad(shell[2]);
+                                te2 = ff->m_topology->getEdgesInQuad(shell[0]);
+                                t2 =  ff->m_topology->getQuad(shell[0]);
 
                             }
                             else   // shell[2] == quadRemoved[i]
                             {
 
-                                te1 = ff->_topology->getEdgesInQuad(shell[0]);
-                                t1 =  ff->_topology->getQuad(shell[0]);
-                                te2 = ff->_topology->getEdgesInQuad(shell[1]);
-                                t2 =  ff->_topology->getQuad(shell[1]);
+                                te1 = ff->m_topology->getEdgesInQuad(shell[0]);
+                                t1 =  ff->m_topology->getQuad(shell[0]);
+                                te2 = ff->m_topology->getEdgesInQuad(shell[1]);
+                                t2 =  ff->m_topology->getQuad(shell[1]);
 
                             }
                         }
 
-                        int i1 = ff->_topology->getEdgeIndexInQuad(te1, edgeIndex);
-                        int i2 = ff->_topology->getEdgeIndexInQuad(te2, edgeIndex);
+                        int i1 = ff->m_topology->getEdgeIndexInQuad(te1, edgeIndex);
+                        int i2 = ff->m_topology->getEdgeIndexInQuad(te2, edgeIndex);
 
                         ei.m1 = t1[i1];
                         ei.m2 = t2[(i2+3)%4];
@@ -326,7 +324,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
     {
         bool debug_mode = false;
 
-        unsigned int last = ff->_topology->getNbPoints() -1;
+        unsigned int last = ff->m_topology->getNbPoints() -1;
         unsigned int i,j;
 
         helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
@@ -356,15 +354,15 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
 
             }
 
-            const sofa::helper::vector<unsigned int> &shell= ff->_topology->getQuadsAroundVertex(lastIndexVec[i]);
+            const sofa::helper::vector<unsigned int> &shell= ff->m_topology->getQuadsAroundVertex(lastIndexVec[i]);
             for (j=0; j<shell.size(); ++j)
             {
 
-                Quad tj = ff->_topology->getQuad(shell[j]);
+                Quad tj = ff->m_topology->getQuad(shell[j]);
 
-                unsigned int vertexIndex = ff->_topology->getVertexIndexInQuad(tj, lastIndexVec[i]);
+                unsigned int vertexIndex = ff->m_topology->getVertexIndexInQuad(tj, lastIndexVec[i]);
 
-                EdgesInQuad tej = ff->_topology->getEdgesInQuad(shell[j]);
+                EdgesInQuad tej = ff->m_topology->getEdgesInQuad(shell[j]);
 
                 for (unsigned int j_edge=vertexIndex; j_edge%4 !=(vertexIndex+2)%4; ++j_edge)
                 {
@@ -374,28 +372,24 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                     if (edgeInf[ind_j].m1 == (int) last)
                     {
                         edgeInf[ind_j].m1=(int) tab[i];
-                        //sout << "INFO_print : OK m1 for ind_j =" << ind_j << sendl;
                     }
                     else
                     {
                         if (edgeInf[ind_j].m2 == (int) last)
                         {
                             edgeInf[ind_j].m2=(int) tab[i];
-                            //sout << "INFO_print : OK m2 for ind_j =" << ind_j << sendl;
                         }
                     }
 
                     if (edgeInf[ind_j].m3 == (int) last)
                     {
                         edgeInf[ind_j].m3=(int) tab[i];
-                        //sout << "INFO_print : OK m3 for ind_j =" << ind_j << sendl;
                     }
                     else
                     {
                         if (edgeInf[ind_j].m4 == (int) last)
                         {
                             edgeInf[ind_j].m4=(int) tab[i];
-                            //sout << "INFO_print : OK m4 for ind_j =" << ind_j << sendl;
                         }
                     }
 
@@ -404,7 +398,6 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
 
             if(debug_mode)
             {
-
                 for (unsigned int j_loc=0; j_loc<edgeInf.size(); ++j_loc)
                 {
 
@@ -413,8 +406,6 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                     {
                         edgeInf[j_loc].m1 =(int) tab[i];
                         //is_forgotten=true;
-                        //sout << "INFO_print : QuadularBendingSprings - MISS m1 for j_loc =" << j_loc << sendl;
-
                     }
                     else
                     {
@@ -422,8 +413,6 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                         {
                             edgeInf[j_loc].m2 =(int) tab[i];
                             //is_forgotten=true;
-                            //sout << "INFO_print : QuadularBendingSprings - MISS m2 for j_loc =" << j_loc << sendl;
-
                         }
 
                     }
@@ -432,8 +421,6 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                     {
                         edgeInf[j_loc].m3 =(int) tab[i];
                         //is_forgotten=true;
-                        //sout << "INFO_print : QuadularBendingSprings - MISS m3 for j_loc =" << j_loc << sendl;
-
                     }
                     else
                     {
@@ -441,8 +428,6 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                         {
                             edgeInf[j_loc].m4 =(int) tab[i];
                             //is_forgotten=true;
-                            //sout << "INFO_print : QuadularBendingSprings - MISS m4 for j_loc =" << j_loc << sendl;
-
                         }
 
                     }
@@ -463,7 +448,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointRenumbering(con
     if(ff)
     {
         helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
-        for ( int i = 0; i < ff->_topology->getNbEdges(); ++i)
+        for (unsigned  int i = 0; i < ff->m_topology->getNbEdges(); ++i)
         {
             if(edgeInf[i].is_activated)
             {
@@ -495,10 +480,12 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const
 
 template<class DataTypes>
 QuadularBendingSprings<DataTypes>::QuadularBendingSprings()
-    : updateMatrix(true)
-    , f_ks ( initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs"))
+    : f_ks ( initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs"))
     , f_kd ( initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , edgeInfo ( initData(&edgeInfo, "edgeInfo","Internal edge data"))
+    , m_topology(nullptr)
+    , updateMatrix(true)
 {
     edgeHandler = new EdgeBSHandler(this, &edgeInfo);
 }
@@ -515,37 +502,49 @@ QuadularBendingSprings<DataTypes>::~QuadularBendingSprings()
 template<class DataTypes>
 void QuadularBendingSprings<DataTypes>::init()
 {
-    //serr << "initializing QuadularBendingSprings" << sendl;
     this->Inherited::init();
 
-    _topology = this->getContext()->getMeshTopology();
-
-    if (_topology->getNbQuads()==0)
+    if (l_topology.empty())
     {
-        serr << "ERROR(QuadularBendingSprings): object must have a Quadular Set Topology."<<sendl;
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    edgeInfo.createTopologicalEngine(_topology,edgeHandler);
+    if (m_topology->getNbQuads()==0)
+    {
+        msg_warning() << "No Quads found in linked Topology.";
+    }
+
+    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
     edgeInfo.linkToPointDataArray();
     edgeInfo.linkToQuadDataArray();
     edgeInfo.registerTopologicalData();
 
     /// prepare to store info in the edge array
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-    edgeInf.resize(_topology->getNbEdges());
+    edgeInf.resize(m_topology->getNbEdges());
 
     // set edge tensor to 0
-    for (int i=0; i<_topology->getNbEdges(); ++i)
+    for (unsigned int i=0; i<m_topology->getNbEdges(); ++i)
     {
         edgeHandler->applyCreateFunction(i, edgeInf[i],
-                _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
+                m_topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
 
     // create edge tensor by calling the quad creation function
     sofa::helper::vector<unsigned int> quadAdded;
-    for (int i=0; i<_topology->getNbQuads(); ++i)
+    for (unsigned int i=0; i<m_topology->getNbQuads(); ++i)
         quadAdded.push_back(i);
 
     edgeHandler->applyQuadCreation(quadAdded,
@@ -555,40 +554,12 @@ void QuadularBendingSprings<DataTypes>::init()
 
 
     edgeInfo.endEdit();
-    /////
-
-    /*
-
-    // Set the bending springs
-
-    std::map< IndexPair, IndexPair > edgeMap;
-    std::set< IndexPair > springSet;
-
-    sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
-    assert( topology );
-
-    const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
-    //sout<<"==================================QuadularBendingSprings<DataTypes>::init(), quads size = "<<quads.size()<<sendl;
-    for( unsigned i= 0; i<quads.size(); ++i )
-    {
-        const topology::MeshTopology::Quad& face = quads[i];
-        {
-            registerEdge( std::make_pair(face[0], face[1]), std::make_pair(face[3], face[2]), edgeMap, springSet );
-            registerEdge( std::make_pair(face[1], face[2]), std::make_pair(face[0], face[3]), edgeMap, springSet );
-            registerEdge( std::make_pair(face[2], face[3]), std::make_pair(face[1], face[0]), edgeMap, springSet );
-            registerEdge( std::make_pair(face[3], face[0]), std::make_pair(face[2], face[1]), edgeMap, springSet );
-        }
-    }
-
-    // init the parent class
-    StiffSpringForceField<DataTypes>::init();
-    */
 }
 
 template <class DataTypes>
 SReal QuadularBendingSprings<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
 {
-    serr<<"getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error() << "getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 
@@ -599,7 +570,7 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=m_topology->getNbEdges();
 
     EdgeInformation *einfo;
 
@@ -609,17 +580,13 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
     //this->dfdx.resize(nbEdges); //m_springs.size()
     f.resize(x.size());
     m_potentialEnergy = 0;
-    /*        serr<<"QuadularBendingSprings<DataTypes>::addForce()"<<sendl;*/
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
 
-        /*            serr<<"QuadularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
-
         if(einfo->is_activated)
         {
-
             //this->addSpringForce(m_potentialEnergy,f,x,v, i, einfo->spring);
 
             int a1 = einfo->m1;
@@ -636,9 +603,7 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
                 u1 *= inverseLength;
                 Real elongation = (Real)(d1 - einfo->restlength1);
                 m_potentialEnergy += elongation * elongation * einfo->ks / 2;
-                /*      serr<<"QuadularBendingSprings<DataTypes>::addSpringForce, p = "<<p<<sendl;
 
-                		serr<<"QuadularBendingSprings<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;*/
                 Deriv relativeVelocity = v[b1]-v[a1];
                 Real elongationVelocity = dot(u1,relativeVelocity);
                 Real forceIntensity = (Real)(einfo->ks*elongation+einfo->kd*elongationVelocity);
@@ -677,9 +642,7 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
                 u2 *= inverseLength;
                 Real elongation = (Real)(d2 - einfo->restlength2);
                 m_potentialEnergy += elongation * elongation * einfo->ks / 2;
-                /*      serr<<"QuadularBendingSprings<DataTypes>::addSpringForce, p = "<<p<<sendl;
 
-                		serr<<"QuadularBendingSprings<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;*/
                 Deriv relativeVelocity = v[b2]-v[a2];
                 Real elongationVelocity = dot(u2,relativeVelocity);
                 Real forceIntensity = (Real)(einfo->ks*elongation+einfo->kd*elongationVelocity);
@@ -720,7 +683,6 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
 
     //for (unsigned int i=0; i<springs.size(); i++)
     //{
-    /*            serr<<"QuadularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
     //    this->addSpringForce(m_potentialEnergy,f,x,v, i, springs[i]);
     //}
 }
@@ -732,22 +694,18 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=m_topology->getNbEdges();
 
     const EdgeInformation *einfo;
 
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
 
     df.resize(dx.size());
-    //serr<<"QuadularBendingSprings<DataTypes>::addDForce, dx1 = "<<dx1<<sendl;
-    //serr<<"QuadularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1<<sendl;
     //const helper::vector<Spring>& springs = this->springs.getValue();
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
-
-        /*            serr<<"QuadularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
 
         if(einfo->is_activated)
         {
@@ -765,133 +723,97 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
             df[b1]-=dforce1;
             df[a2]+=dforce2;
             df[b2]-=dforce2;
-            //serr<<"QuadularBendingSprings<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
 
-            //if(updateMatrix)
-            //{
-            //}
             updateMatrix=false;
         }
     }
     d_df.endEdit();
 
-    //for (unsigned int i=0; i<springs.size(); i++)
-    //{
-    //    this->addSpringDForce(df,dx, i, springs[i]);
-    //}
-    //serr<<"QuadularBendingSprings<DataTypes>::addDForce, df = "<<f<<sendl;
 }
-
-
-/*
-template<class DataTypes>
-void QuadularBendingSprings<DataTypes>::updateLameCoefficients()
-{
-	lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-	mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
-}
-*/
-
 
 template<class DataTypes>
 void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    glDisable(GL_LIGHTING);
-
-    unsigned int nb_to_draw = 0;
+    vparams->drawTool()->disableLighting();
 
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::defaulttype::Vec4f> colors;
+    sofa::defaulttype::RGBAColor green_color = sofa::defaulttype::RGBAColor::green();
+    sofa::defaulttype::RGBAColor red_color   = sofa::defaulttype::RGBAColor::red();
+    sofa::defaulttype::RGBAColor color1 = sofa::defaulttype::RGBAColor(1,0.5, 0,1);
+    sofa::defaulttype::RGBAColor color2 = sofa::defaulttype::RGBAColor(0,1,0.5,1);
 
-    glBegin(GL_LINES);
     for(unsigned int i=0; i<edgeInf.size(); ++i)
     {
         if(edgeInf[i].is_activated)
         {
-
-
             bool external=true;
             Real d1 = (x[edgeInf[i].m2]-x[edgeInf[i].m1]).norm();
             if (external)
             {
-                if (d1<edgeInf[i].restlength1*0.9999)
-                    glColor4f(1,0,0,1);
+                if (d1<edgeInf[i].restlength2*0.9999)
+                    colors.push_back(red_color);
                 else
-                    glColor4f(0,1,0,1);
+                    colors.push_back(green_color);
             }
             else
             {
                 if (d1<edgeInf[i].restlength1*0.9999)
-                    glColor4f(1,0.5f,0,1);
+                    colors.push_back(color1);
                 else
-                    glColor4f(0,1,0.5f,1);
+                    colors.push_back(color2);
             }
 
-
-            nb_to_draw+=1;
-
-            //glColor4f(0,1,0,1);
-            helper::gl::glVertexT(x[edgeInf[i].m1]);
-            helper::gl::glVertexT(x[edgeInf[i].m2]);
+            vertices.push_back( x[edgeInf[i].m1] );
+            vertices.push_back( x[edgeInf[i].m2] );
 
             Real d2 = (x[edgeInf[i].m4]-x[edgeInf[i].m3]).norm();
             if (external)
             {
                 if (d2<edgeInf[i].restlength2*0.9999)
-                    glColor4f(1,0,0,1);
+                    colors.push_back(red_color);
                 else
-                    glColor4f(0,1,0,1);
+                    colors.push_back(green_color);
             }
             else
             {
                 if (d2<edgeInf[i].restlength2*0.9999)
-                    glColor4f(1,0.5f,0,1);
+                    colors.push_back(color1);
                 else
-                    glColor4f(0,1,0.5f,1);
+                    colors.push_back(color2);
             }
 
-
-            nb_to_draw+=1;
-
-            //glColor4f(0,1,0,1);
-            helper::gl::glVertexT(x[edgeInf[i].m3]);
-            helper::gl::glVertexT(x[edgeInf[i].m4]);
-
+            vertices.push_back( x[edgeInf[i].m3] );
+            vertices.push_back( x[edgeInf[i].m4] );
         }
     }
-    glEnd();
-
+    vparams->drawTool()->drawLines(vertices, 1, colors);
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        vparams->drawTool()->setPolygonMode(0, false);
 
 
-    ////
-
-    glBegin(GL_QUADS);
-    glColor4f(1,0,0,1);
-    for(int i=0; i<_topology->getNbQuads(); ++i)
+    vertices.clear();
+    for(unsigned int i=0; i<m_topology->getNbQuads(); ++i)
     {
-        helper::gl::glVertexT(x[_topology->getQuad(i)[0]]);
-        helper::gl::glVertexT(x[_topology->getQuad(i)[1]]);
-        helper::gl::glVertexT(x[_topology->getQuad(i)[2]]);
-        helper::gl::glVertexT(x[_topology->getQuad(i)[3]]);
+        for(unsigned int j = 0 ; j<4 ; j++)
+            vertices.push_back(x[m_topology->getQuad(i)[j]]);
     }
-    glEnd();
+    vparams->drawTool()->drawQuads(vertices, sofa::defaulttype::RGBAColor::red());
 
-    ////
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
-
 
 
 } // namespace forcefield

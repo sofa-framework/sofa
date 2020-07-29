@@ -1,4 +1,5 @@
 #include "CoulombConstraint.inl"
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa {
 namespace component {
@@ -11,14 +12,9 @@ SOFA_COMPLIANT_CONSTRAINT_CPP(CoulombConstraintBase)
 // TODO register in the factory in case we want to use it manually in
 // the graph
 
-#ifndef SOFA_FLOAT
-template struct SOFA_Compliant_API CoulombConstraint<Vec3dTypes>;
-template struct SOFA_Compliant_API CoulombConstraint<Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template struct SOFA_Compliant_API CoulombConstraint<Vec3fTypes>;
-template struct SOFA_Compliant_API CoulombConstraint<Vec6fTypes>;
-#endif
+template struct SOFA_Compliant_API CoulombConstraint<Vec3Types>;
+template struct SOFA_Compliant_API CoulombConstraint<Vec6Types>;
+
 
 }
 }

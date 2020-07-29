@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,7 +36,6 @@ using namespace std;
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(TriangleSetTopologyContainer)
 int TriangleSetTopologyContainerClass = core::RegisterObject("Triangle set topology container")
         .add< TriangleSetTopologyContainer >()
         ;
@@ -56,16 +55,40 @@ void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
     if (a >= getNbPoints()) setNbPoints(a+1);
     if (b >= getNbPoints()) setNbPoints(b+1);
     if (c >= getNbPoints()) setNbPoints(c+1);
-
-#ifndef NDEBUG
-    sout << "ADD TRIANGLE" << sendl;
-#endif
 }
 
 void TriangleSetTopologyContainer::init()
 {
-    EdgeSetTopologyContainer::init();
     d_triangle.updateIfDirty(); // make sure m_triangle is up to date
+
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+    // Todo (epernod 2019-03-12): optimise by removing this loop or at least create AroundVertex buffer at the same time.
+    if (!m_triangle.empty())
+    {
+        for (size_t i=0; i<m_triangle.size(); ++i)
+        {
+            for(PointID j=0; j<3; ++j)
+            {
+                int a = m_triangle[i][j];
+                if (a >= getNbPoints()) setNbPoints(a+1);
+            }
+        }
+    }
+
+    // only init if triangles are present at init.
+    if (!m_triangle.empty())
+        initTopology();
+}
+
+void TriangleSetTopologyContainer::initTopology()
+{
+    // Force creation of Edge Neighboordhood buffers.
+    EdgeSetTopologyContainer::initTopology();
+
+    // Create triangle cross element buffers.
+    createEdgesInTriangleArray();
+    createTrianglesAroundVertexArray();
+    createTrianglesAroundEdgeArray();
 }
 
 void TriangleSetTopologyContainer::reinit()
@@ -76,95 +99,100 @@ void TriangleSetTopologyContainer::reinit()
 
 void TriangleSetTopologyContainer::createTriangleSetArray()
 {
-#ifndef NDEBUG
-    sout << "Error. [TriangleSetTopologyContainer::createTriangleSetArray] This method must be implemented by a child topology." << sendl;
-#endif
+    msg_error() << "createTriangleSetArray method must be implemented by a child topology.";
 }
 
-void TriangleSetTopologyContainer::createTrianglesAroundVertexArray ()
+void TriangleSetTopologyContainer::createTrianglesAroundVertexArray()
 {
+    // first clear potential previous buffer
+    clearTrianglesAroundVertex();
+
     if(!hasTriangles()) // this method should only be called when triangles exist
-    {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createTrianglesAroundVertexArray] triangle array is empty." << sendl;
-#endif
         createTriangleSetArray();
-    }
 
-    if(hasTrianglesAroundVertex())
-    {
-        clearTrianglesAroundVertex();
-    }
+    if (hasTrianglesAroundVertex()) // created by upper topology
+        return;
 
-    m_trianglesAroundVertex.resize( getNbPoints() );
     helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
-    for (unsigned int i = 0; i < m_triangle.size(); ++i)
+    if (m_triangle.empty())
+    {
+        msg_warning() << "TrianglesAroundVertex buffer can't be created as no triangles are present in this topology.";
+        return;
+    }
+
+    int nbPoints = getNbPoints();
+    if (nbPoints == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
+        this->setNbPoints(d_initPoints.getValue().size());
+
+    m_trianglesAroundVertex.resize(getNbPoints());
+    for (size_t i = 0; i < m_triangle.size(); ++i)
     {
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<3; ++j)
-            m_trianglesAroundVertex[ m_triangle[i][j]  ].push_back( i );
+            m_trianglesAroundVertex[ m_triangle[i][j]  ].push_back( (TriangleID)i );
     }
 }
 
 void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
 {
+    // first clear potential previous buffer
+    clearTrianglesAroundEdge();
+
     if(!hasTriangles()) // this method should only be called when triangles exist
-    {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createTrianglesAroundEdgeArray] triangle array is empty." << sendl;
-#endif
         createTriangleSetArray();
+
+    if (hasTrianglesAroundEdge()) // created by upper topology
+        return;
+
+    const size_t numTriangles = getNumberOfTriangles();
+    if (numTriangles == 0)
+    {
+        msg_warning() << "TrianglesAroundEdge buffer can't be created as no triangles are present in this topology.";
+        return;
     }
 
     if(!hasEdges()) // this method should only be called when edges exist
-    {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createTrianglesAroundEdgeArray] edge array is empty." << sendl;
-#endif
         createEdgeSetArray();
+
+    const size_t numEdges = getNumberOfEdges();
+    if (numEdges == 0)
+    {
+        msg_warning() << "TrianglesAroundEdge buffer can't be created as no edges are present in this topology.";
+        return;
     }
 
     if(!hasEdgesInTriangle())
         createEdgesInTriangleArray();
 
-    const unsigned int numTriangles = getNumberOfTriangles();
-    const unsigned int numEdges = getNumberOfEdges();
-
-    if(hasTrianglesAroundEdge())
+    if (m_edgesInTriangle.empty())
     {
-        clearTrianglesAroundEdge();
+        msg_warning() << "TrianglesAroundEdge buffer can't be created as EdgesInTriangle buffer creation failed.";
+        return;
     }
 
     m_trianglesAroundEdge.resize( numEdges );
-
-    for (unsigned int i = 0; i < numTriangles; ++i)
+    for (size_t i = 0; i < numTriangles; ++i)
     {
+        const Triangle &t = getTriangle((TriangleID)i);
         // adding triangle i in the triangle shell of all edges
         for (unsigned int j=0; j<3; ++j)
         {
-            m_trianglesAroundEdge[ m_edgesInTriangle[i][j] ].push_back( i );
+            if (d_edge.getValue()[m_edgesInTriangle[i][j]][0] == t[(j + 1) % 3])
+                m_trianglesAroundEdge[m_edgesInTriangle[i][j]].insert(m_trianglesAroundEdge[m_edgesInTriangle[i][j]].begin(), (TriangleID)i); // triangle is on the left of the edge
+            else
+                m_trianglesAroundEdge[m_edgesInTriangle[i][j]].push_back((TriangleID)i); // triangle is on the right of the edge
         }
     }
 }
 
 void TriangleSetTopologyContainer::createEdgeSetArray()
 {
-
     if(!hasTriangles()) // this method should only be called when triangles exist
-    {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createEdgeSetArray] triangle array is empty." << sendl;
-#endif
         createTriangleSetArray();
-    }
 
     if(hasEdges())
     {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createEdgeSetArray] edge array is not empty." << sendl;
-#endif
-
         // clear edges and all shells that depend on edges
         EdgeSetTopologyContainer::clear();
 
@@ -176,17 +204,17 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
     }
 
     // create a temporary map to find redundant edges
-    std::map<Edge, unsigned int> edgeMap;
+    std::map<Edge, EdgeID> edgeMap;
     helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
-    for (unsigned int i=0; i<m_triangle.size(); ++i)
+    for (size_t i=0; i<m_triangle.size(); ++i)
     {
         const Triangle &t = m_triangle[i];
         for(unsigned int j=0; j<3; ++j)
         {
-            const unsigned int v1 = t[(j+1)%3];
-            const unsigned int v2 = t[(j+2)%3];
+            const PointID v1 = t[(j+1)%3];
+            const PointID v2 = t[(j+2)%3];
 
             // sort vertices in lexicographic order
             const Edge e = ((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
@@ -194,9 +222,9 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
             if(edgeMap.find(e) == edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                const unsigned int edgeIndex = (unsigned int)edgeMap.size();
-                edgeMap[e] = edgeIndex;
-//	      m_edge.push_back(e); Changed to have oriented edges on the border of the triangulation
+                const size_t edgeIndex = edgeMap.size();
+                edgeMap[e] = (EdgeID)edgeIndex;
+                //m_edge.push_back(e); Changed to have oriented edges on the border of the triangulation
                 m_edge.push_back(Edge(v1,v2));
             }
         }
@@ -205,84 +233,42 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
 
 void TriangleSetTopologyContainer::createEdgesInTriangleArray()
 {
-    if(!hasTriangles()) // this method should only be called when triangles exist
-    {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createEdgesInTriangleArray] triangle array is empty." << sendl;
-#endif
-        createTriangleSetArray();
-    }
+    // first clear potential previous buffer
+    clearEdgesInTriangle();
 
-    // this should never be called : remove existing triangle edges
-    if(hasEdgesInTriangle())
-        clearEdgesInTriangle();
+    if(!hasTriangles()) // this method should only be called when triangles exist
+        createTriangleSetArray();
+
+    if (hasEdgesInTriangle()) // created by upper topology
+        return;
 
     helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
-    if(!hasEdges()) // To optimize, this method should be called without creating edgesArray before.
-    {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createEdgesInTriangleArray] edge array is empty." << sendl;
-#endif
 
-        /// create edge array and triangle edge array at the same time
-        const unsigned int numTriangles = getNumberOfTriangles();
-        m_edgesInTriangle.resize(numTriangles);
+    bool foundEdge = true;
 
-
-        // create a temporary map to find redundant edges
-        std::map<Edge, unsigned int> edgeMap;
-        helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-
-        for (unsigned int i=0; i<m_triangle.size(); ++i)
-        {
-            const Triangle &t = m_triangle[i];
-            for(unsigned int j=0; j<3; ++j)
-            {
-                const unsigned int v1 = t[(j+1)%3];
-                const unsigned int v2 = t[(j+2)%3];
-
-                // sort vertices in lexicographic order
-                const Edge e = ((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
-
-                if(edgeMap.find(e) == edgeMap.end())
-                {
-                    // edge not in edgeMap so create a new one
-                    const unsigned int edgeIndex = (unsigned int)edgeMap.size();
-                    /// add new edge
-                    edgeMap[e] = edgeIndex;
-//			  m_edge.push_back(e);
-                    m_edge.push_back(Edge(v1,v2));
-
-                }
-                m_edgesInTriangle[i][j] = edgeMap[e];
-            }
-        }
-    }
-    else
+    if (hasEdges())
     {
         /// there are already existing edges : must use an inefficient method. Parse all triangles and find the edge that match each triangle edge
         helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-        const unsigned int numTriangles = getNumberOfTriangles();
-        const unsigned int numEdges = getNumberOfEdges();
+        const size_t numTriangles = getNumberOfTriangles();
+        const size_t numEdges = getNumberOfEdges();
 
         m_edgesInTriangle.resize(numTriangles);
         /// create a multi map where the key is a vertex index and the content is the indices of edges adjacent to that vertex.
         std::multimap<PointID, EdgeID> edgesAroundVertexMap;
         std::multimap<PointID, EdgeID>::iterator it;
-        bool foundEdge;
 
-        for (unsigned int edge=0; edge<numEdges; ++edge)  //Todo: check if not better using multimap <PointID ,TriangleID> and for each edge, push each triangle present in both shell
+        for (size_t edge=0; edge<numEdges; ++edge)  //Todo: check if not better using multimap <PointID ,TriangleID> and for each edge, push each triangle present in both shell
         {
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0],edge));
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1],edge));
+            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0], (EdgeID)edge));
+            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1], (EdgeID)edge));
         }
-
-        for(unsigned int i=0; i<numTriangles; ++i)
+        for ( size_t i = 0 ; (i < numTriangles) && (foundEdge == true) ; ++i )
         {
             const Triangle &t = m_triangle[i];
             // adding edge i in the edge shell of both points
-            for(unsigned int j=0; j<3; ++j)
+            for ( unsigned int j = 0 ; (j < 3) && (foundEdge == true) ; ++j )
             {
                 //finding edge i in edge array
                 std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgesAroundVertexMap.equal_range(t[(j+1)%3]);
@@ -290,20 +276,64 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                 foundEdge=false;
                 for(it=itPair.first; (it!=itPair.second) && (foundEdge==false); ++it)
                 {
-                    unsigned int edge = (*it).second;
+                    EdgeID edge = (*it).second;
                     if ( (m_edge[edge][0] == t[(j+1)%3] && m_edge[edge][1] == t[(j+2)%3]) || (m_edge[edge][0] == t[(j+2)%3] && m_edge[edge][1] == t[(j+1)%3]))
                     {
                         m_edgesInTriangle[i][j] = edge;
                         foundEdge=true;
                     }
                 }
-#ifndef NDEBUG
-                if (foundEdge==false)
-                    sout << "[TriangleSetTopologyContainer::getTriangleArray] cannot find edge for triangle " << i << "and edge "<< j << sendl;
-#endif
+
+                if (!foundEdge)
+                {
+                    msg_error() << "Cannot find edge " << j
+                        << " [" << t[(j + 1) % 3] << ", " << t[(j + 2) % 3] << "]"
+                        << " in triangle " << i;
+                    m_edgesInTriangle.clear();
+                    this->d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                    return;
+                }
             }
         }
     }
+    if(!hasEdges() || foundEdge == false) // To optimize, this method should be called without creating edgesArray before.
+    {
+        /// create edge array and triangle edge array at the same time
+        const size_t numTriangles = getNumberOfTriangles();
+        m_edgesInTriangle.resize(numTriangles);
+
+
+        // create a temporary map to find redundant edges
+        std::map<Edge, EdgeID> edgeMap;
+        helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+
+        for (size_t i=0; i<m_triangle.size(); ++i)
+        {
+            const Triangle &t = m_triangle[i];
+            for(unsigned int j=0; j<3; ++j)
+            {
+                const PointID v1 = t[(j+1)%3];
+                const PointID v2 = t[(j+2)%3];
+
+                // sort vertices in lexicographic order
+                const Edge e = ((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
+
+                if(edgeMap.find(e) == edgeMap.end())
+                {
+                    // edge not in edgeMap so create a new one
+                    const size_t edgeIndex = edgeMap.size();
+                    /// add new edge
+                    edgeMap[e] = (EdgeID)edgeIndex;
+//			  m_edge.push_back(e);
+                    m_edge.push_back(Edge(v1,v2));
+
+                }
+
+                m_edgesInTriangle[i][j] = edgeMap[e];
+            }
+        }
+    }
+
 }
 
 
@@ -313,10 +343,6 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
 
     if(!hasTrianglesAroundEdge())	// Use the trianglesAroundEdgeArray. Should check if it is consistent
     {
-#ifndef NDEBUG
-        std::cout << "Warning. [TriangleSetTopologyContainer::createElementsOnBorder] Triangle edge shell array is empty." << std::endl;
-#endif
-
         createTrianglesAroundEdgeArray();
     }
 
@@ -329,19 +355,19 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
     if(!m_pointsOnBorder.empty())
         m_pointsOnBorder.clear();
 
-    const unsigned int nbrEdges = getNumberOfEdges();
+    const size_t nbrEdges = getNumberOfEdges();
     bool newTriangle = true;
     bool newEdge = true;
     bool newPoint = true;
 
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-    for (unsigned int i = 0; i < nbrEdges; i++)
+    for (size_t i = 0; i < nbrEdges; i++)
     {
         if (m_trianglesAroundEdge[i].size() == 1) // I.e this edge is on a border
         {
 
             // --- Triangle case ---
-            for (unsigned int j = 0; j < m_trianglesOnBorder.size(); j++) // Loop to avoid duplicated indices
+            for (size_t j = 0; j < m_trianglesOnBorder.size(); j++) // Loop to avoid duplicated indices
             {
                 if (m_trianglesOnBorder[j] == m_trianglesAroundEdge[i][0])
                 {
@@ -357,7 +383,7 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
 
 
             // --- Edge case ---
-            for (unsigned int j = 0; j < m_edgesOnBorder.size(); j++) // Loop to avoid duplicated indices
+            for (size_t j = 0; j < m_edgesOnBorder.size(); j++) // Loop to avoid duplicated indices
             {
                 if (m_edgesOnBorder[j] == i)
                 {
@@ -368,13 +394,13 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
 
             if(newEdge) // If index doesn't already exist, add it to the list of edges On border.
             {
-                m_edgesOnBorder.push_back (i);
+                m_edgesOnBorder.push_back ((EdgeID)i);
             }
 
 
             // --- Point case ---
             PointID firstVertex = m_edge[i][0];
-            for (unsigned int j = 0; j < m_pointsOnBorder.size(); j++) // Loop to avoid duplicated indices
+            for (size_t j = 0; j < m_pointsOnBorder.size(); j++) // Loop to avoid duplicated indices
             {
                 if (m_pointsOnBorder[j] == firstVertex)
                 {
@@ -399,182 +425,118 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
 
 void TriangleSetTopologyContainer::reOrientateTriangle(TriangleID id)
 {
-    std::cout << "TriangleSetTopologyContainer::reOrientateTriangle" << std::endl;
-    if (id >= (unsigned int)this->getNbTriangles())
+    if (id >= (TriangleID)this->getNbTriangles())
     {
-#ifndef NDEBUG
-        sout << "Warning. [MeshTopology::reOrientateTriangle] Triangle ID out of bounds." << sendl;
-#endif
+        msg_warning() << "Triangle ID out of bounds.";
         return;
     }
+
     Triangle& tri = (*d_triangle.beginEdit())[id];
-    unsigned int tmp = tri[1];
+    PointID tmp = tri[1];
     tri[1] = tri[2];
     tri[2] = tmp;
     d_triangle.endEdit();
 
-    std::cout << "TriangleSetTopologyContainer::reOrientateTriangle end" << std::endl;
     return;
 }
 
 
 const sofa::helper::vector<TriangleSetTopologyContainer::Triangle> & TriangleSetTopologyContainer::getTriangleArray()
 {
-    if(!hasTriangles() && getNbPoints()>0)
-    {
-#ifndef NDEBUG
-        sout << "[TriangleSetTopologyContainer::getTriangleArray] creating triangle array." << sendl;
-#endif
-        createTriangleSetArray();
-    }
-
     return d_triangle.getValue();
 }
 
 
 const TriangleSetTopologyContainer::Triangle TriangleSetTopologyContainer::getTriangle (TriangleID i)
 {
-    if(!hasTriangles())
-        createTriangleSetArray();
-
-    return (d_triangle.getValue())[i];
+    if ((size_t)i >= getNbTriangles())
+        return Triangle(InvalidID, InvalidID, InvalidID);
+    else
+        return (d_triangle.getValue())[i];
 }
 
 
 
-int TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, PointID v3)
+TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, PointID v3)
 {
     if(!hasTrianglesAroundVertex())
-        createTrianglesAroundVertexArray();
+    {
+        return InvalidID;
+    }
 
-    sofa::helper::vector<unsigned int> set1 = getTrianglesAroundVertex(v1);
-    sofa::helper::vector<unsigned int> set2 = getTrianglesAroundVertex(v2);
-    sofa::helper::vector<unsigned int> set3 = getTrianglesAroundVertex(v3);
+    sofa::helper::vector<TriangleID> set1 = getTrianglesAroundVertex(v1);
+    sofa::helper::vector<TriangleID> set2 = getTrianglesAroundVertex(v2);
+    sofa::helper::vector<TriangleID> set3 = getTrianglesAroundVertex(v3);
 
     sort(set1.begin(), set1.end());
     sort(set2.begin(), set2.end());
     sort(set3.begin(), set3.end());
 
     // The destination vector must be large enough to contain the result.
-    sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());
-    sofa::helper::vector<unsigned int>::iterator result1;
+    sofa::helper::vector<TriangleID> out1(set1.size()+set2.size());
+    sofa::helper::vector<TriangleID>::iterator result1;
     result1 = std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
     out1.erase(result1,out1.end());
-
-    sofa::helper::vector<unsigned int> out2(set3.size()+out1.size());
-    sofa::helper::vector<unsigned int>::iterator result2;
+    sofa::helper::vector<TriangleID> out2(set3.size()+out1.size());
+    sofa::helper::vector<TriangleID>::iterator result2;
     result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
     out2.erase(result2,out2.end());
-
-#ifndef NDEBUG
-    if(out2.size() > 1)
-        sout << "Warning. [TriangleSetTopologyContainer::getTriangleIndex] more than one triangle found" << sendl;
-#endif
+    
+    msg_warning_when(out2.size() > 1) << "More than one triangle found for indices: [" << v1 << "; " << v2 << "; " << v3 << "]";
 
     if (out2.size()==1)
         return (int) (out2[0]);
-    else
-        return -1;
+
+    return InvalidID;
 }
 
-unsigned int TriangleSetTopologyContainer::getNumberOfTriangles() const
+size_t TriangleSetTopologyContainer::getNumberOfTriangles() const
 {
-    return (unsigned int)d_triangle.getValue().size();
+    return d_triangle.getValue().size();
 }
 
-unsigned int TriangleSetTopologyContainer::getNumberOfElements() const
+size_t TriangleSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfTriangles();
 }
 
-const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TriangleSetTopologyContainer::getTrianglesAroundVertexArray()
+const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundVertex > &TriangleSetTopologyContainer::getTrianglesAroundVertexArray()
 {
-    if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
-    {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundVertexArray] triangle vertex shell array is empty." << sendl;
-#endif
-        createTrianglesAroundVertexArray();
-    }
-
     return m_trianglesAroundVertex;
 }
 
-const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TriangleSetTopologyContainer::getTrianglesAroundEdgeArray()
+const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundEdge > &TriangleSetTopologyContainer::getTrianglesAroundEdgeArray()
 {
-    if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
-    {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundEdgeArray] triangle edge shell array is empty." << sendl;
-#endif
-        createTrianglesAroundEdgeArray();
-    }
-
     return m_trianglesAroundEdge;
 }
 
 const sofa::helper::vector<TriangleSetTopologyContainer::EdgesInTriangle> &TriangleSetTopologyContainer::getEdgesInTriangleArray()
 {
-    if(m_edgesInTriangle.empty())
-        createEdgesInTriangleArray();
-
     return m_edgesInTriangle;
 }
 
-const TriangleSetTopologyContainer::TrianglesAroundVertex& TriangleSetTopologyContainer::getTrianglesAroundVertex(PointID i)
+const TriangleSetTopologyContainer::TrianglesAroundVertex& TriangleSetTopologyContainer::getTrianglesAroundVertex(PointID id)
 {
-    if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
-    {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundVertex] triangle vertex shell array is empty." << sendl;
-#endif
-        createTrianglesAroundVertexArray();
-    }
-    else if( i >= m_trianglesAroundVertex.size())
-    {
-#ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundVertex] index out of bounds." << sendl;
-#endif
-        createTrianglesAroundVertexArray();
-    }
+    if (id < m_trianglesAroundVertex.size())
+        return m_trianglesAroundVertex[id];
 
-    return m_trianglesAroundVertex[i];
+    return InvalidSet;
 }
 
-const TriangleSetTopologyContainer::TrianglesAroundEdge& TriangleSetTopologyContainer::getTrianglesAroundEdge(EdgeID i)
+const TriangleSetTopologyContainer::TrianglesAroundEdge& TriangleSetTopologyContainer::getTrianglesAroundEdge(EdgeID id)
 {
-    if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
-    {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundEdge] triangle edge shell array is empty." << sendl;
-#endif
-        createTrianglesAroundEdgeArray();
-    }
-    else if( i >= m_trianglesAroundEdge.size())
-    {
-#ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundEdge] index out of bounds." << sendl;
-#endif
-        createTrianglesAroundEdgeArray();
-    }
+    if (id < m_trianglesAroundEdge.size())
+        return m_trianglesAroundEdge[id];
 
-    return m_trianglesAroundEdge[i];
+    return InvalidSet;
 }
 
-const TriangleSetTopologyContainer::EdgesInTriangle &TriangleSetTopologyContainer::getEdgesInTriangle(const unsigned int i)
+const TriangleSetTopologyContainer::EdgesInTriangle &TriangleSetTopologyContainer::getEdgesInTriangle(const TriangleID id)
 {
-    if(m_edgesInTriangle.empty())
-        createEdgesInTriangleArray();
+    if (id < m_edgesInTriangle.size())
+        return m_edgesInTriangle[id];
 
-    if( i >= m_edgesInTriangle.size())
-    {
-#ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getEdgesInTriangle] index out of bounds." << sendl;
-#endif
-        createEdgesInTriangleArray();
-    }
-
-    return m_edgesInTriangle[i];
+    return InvalidTriangle;
 }
 
 int TriangleSetTopologyContainer::getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const
@@ -606,9 +568,7 @@ const sofa::helper::vector <TriangleSetTopologyContainer::TriangleID>& TriangleS
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
-#ifndef NDEBUG
-        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getTrianglesOnBorder] A border element list is empty." << sendl;
-#endif
+        dmsg_warning() << "getTrianglesOnBorder: trianglesOnBorder array is empty. Be sure to call createElementsOnBorder first.";
         createElementsOnBorder();
     }
 
@@ -620,9 +580,7 @@ const sofa::helper::vector <TriangleSetTopologyContainer::EdgeID>& TriangleSetTo
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
-#ifndef NDEBUG
-        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getEdgesOnBorder] A border element list is empty." << sendl;
-#endif
+        dmsg_warning() << "getEdgesOnBorder: edgesOnBorder array is empty. Be sure to call createElementsOnBorder first.";
         createElementsOnBorder();
     }
 
@@ -634,9 +592,7 @@ const sofa::helper::vector <TriangleSetTopologyContainer::PointID>& TriangleSetT
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
-#ifndef NDEBUG
-        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getPointsOnBorder] A border element list is empty." << sendl;
-#endif
+        dmsg_warning() << "getPointsOnBorder: pointsOnBorder array is empty. Be sure to call createElementsOnBorder first.";
         createElementsOnBorder();
     }
 
@@ -644,130 +600,129 @@ const sofa::helper::vector <TriangleSetTopologyContainer::PointID>& TriangleSetT
 }
 
 
-sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTrianglesAroundEdgeForModification(const unsigned int i)
+TriangleSetTopologyContainer::TrianglesAroundEdge &TriangleSetTopologyContainer::getTrianglesAroundEdgeForModification(const EdgeID i)
 {
     if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
     {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundEdgeForModification] triangle edge shell array is empty." << sendl;
-#endif
+        dmsg_warning() << "getTrianglesAroundEdgeForModification: TrianglesAroundEdgeArray is empty. Be sure to call createTrianglesAroundEdgeArray first.";
         createTrianglesAroundEdgeArray();
     }
 
-    if( i >= m_trianglesAroundEdge.size())
-    {
-#ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundEdgeForModification] index out of bounds." << sendl;
-#endif
-        createTrianglesAroundEdgeArray();
-    }
-
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_trianglesAroundEdge[i];
 }
 
-sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTrianglesAroundVertexForModification(const unsigned int i)
+TriangleSetTopologyContainer::TrianglesAroundVertex &TriangleSetTopologyContainer::getTrianglesAroundVertexForModification(const PointID i)
 {
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
-#ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundVertexForModification] triangle vertex shell array is empty." << sendl;
-#endif
+        dmsg_warning() << "getTrianglesAroundVertexForModification: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
         createTrianglesAroundVertexArray();
     }
 
-    if( i >= m_trianglesAroundVertex.size())
-    {
-#ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundVertexForModification] index out of bounds." << sendl;
-#endif
-        createTrianglesAroundVertexArray();
-    }
-
+    //TODO epernod (2020-04): this method should be removed as it can create a seg fault.
     return m_trianglesAroundVertex[i];
 }
 
 bool TriangleSetTopologyContainer::checkTopology() const
 {
-
-#ifndef NDEBUG
+    if (!d_checkTopology.getValue())
+        return true;
+    
     bool ret = true;
     helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
     if (hasTrianglesAroundVertex())
     {
         std::set <int> triangleSet;
-        std::set<int>::iterator it;
 
-        for (unsigned int i=0; i<m_trianglesAroundVertex.size(); ++i)
+        for (size_t i = 0; i < m_trianglesAroundVertex.size(); ++i)
         {
-            const sofa::helper::vector<unsigned int> &tvs = m_trianglesAroundVertex[i];
-            for (unsigned int j=0; j<tvs.size(); ++j)
+            const sofa::helper::vector<TriangleID> &tvs = m_trianglesAroundVertex[i];
+            for (size_t j = 0; j < tvs.size(); ++j)
             {
-                bool check_triangle_vertex_shell = (m_triangle[tvs[j]][0]==i)
-                        || (m_triangle[tvs[j]][1]==i)
-                        || (m_triangle[tvs[j]][2]==i);
-                if(!check_triangle_vertex_shell)
+                const Triangle& triangle = m_triangle[tvs[j]];
+                bool check_triangle_vertex_shell = (triangle[0] == i) || (triangle[1] == i) || (triangle[2] == i);
+                if (!check_triangle_vertex_shell)
                 {
-                    std::cout << "*** CHECK FAILED : check_triangle_vertex_shell, i = " << i << " , j = " << j << std::endl;
+                    msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: triangle " << tvs[j] << ": [" << triangle << "] not around vertex: " << i;
                     ret = false;
                 }
 
-                it=triangleSet.find(tvs[j]);
-                if(it == triangleSet.end())
-                {
-                    triangleSet.insert (tvs[j]);
-                }
+                triangleSet.insert(tvs[j]);
             }
         }
 
-        if(triangleSet.size()  != m_triangle.size())
+        if (triangleSet.size() != m_triangle.size())
         {
-            std::cout << "*** CHECK FAILED : check_triangle_vertex_shell, triangle are missing in m_trianglesAroundVertex" <<std::endl;
+            msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: found " << triangleSet.size() << " triangles in m_trianglesAroundVertex out of " << m_triangle.size();
             ret = false;
         }
     }
 
-    if (hasTrianglesAroundEdge())
-    {
-        std::set <int> triangleSet;
-        std::set<int>::iterator it;
 
-        for (unsigned int i=0; i<m_trianglesAroundEdge.size(); ++i)
+    if (hasTrianglesAroundEdge() && hasEdgesInTriangle())
+    {
+        // check first m_edgesInTriangle
+        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+
+        if (m_edgesInTriangle.size() != m_triangle.size())
         {
-            const sofa::helper::vector<unsigned int> &tes=m_trianglesAroundEdge[i];
-            for (unsigned int j=0; j<tes.size(); ++j)
+            msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: m_edgesInTriangle size: " << m_edgesInTriangle.size() << " not equal to " << m_triangle.size();
+            ret = false;
+        }
+
+        for (size_t i=0; i<m_edgesInTriangle.size(); ++i)
+        {
+            const Triangle& triangle = m_triangle[i];
+            const EdgesInTriangle& eInTri = m_edgesInTriangle[i];
+
+            for (unsigned int j=0; j<3; j++)
             {
-                bool check_triangle_edge_shell =   (m_edgesInTriangle[tes[j]][0]==i)
-                        || (m_edgesInTriangle[tes[j]][1]==i)
-                        || (m_edgesInTriangle[tes[j]][2]==i);
-                if(!check_triangle_edge_shell)
+                const Edge& edge = m_edge[eInTri[j]];
+                int cptFound = 0;
+                for (unsigned int k=0; k<3; k++)
+                    if (edge[0] == triangle[k] || edge[1] == triangle[k])
+                        cptFound++;
+
+                if (cptFound != 2)
                 {
-                    std::cout << "*** CHECK FAILED : check_triangle_edge_shell, i = " << i << " , j = " << j << std::endl;
+                    msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: edge: " << eInTri[j] << ": [" << edge << "] not found in triangle: " << i << ": " << triangle;
                     ret = false;
                 }
-
-                it=triangleSet.find(tes[j]);
-                if(it == triangleSet.end())
-                {
-                    triangleSet.insert (tes[j]);
-                }
-
             }
         }
 
-        if(triangleSet.size()  != m_triangle.size())
+        // check m_trianglesAroundEdge using checked m_edgesInTriangle
+        std::set <int> triangleSet;
+        for (size_t i = 0; i < m_trianglesAroundEdge.size(); ++i)
         {
-            std::cout << "*** CHECK FAILED : check_triangle_edge_shell, triangle are missing in m_trianglesAroundEdge" <<std::endl;
+            const sofa::helper::vector<TriangleID> &tes = m_trianglesAroundEdge[i];
+            for (size_t j = 0; j < tes.size(); ++j)
+            {
+                const EdgesInTriangle& eInTri = m_edgesInTriangle[tes[j]];
+                bool check_triangle_edge_shell = (eInTri[0] == i)
+                    || (eInTri[1] == i)
+                    || (eInTri[2] == i);
+                if (!check_triangle_edge_shell)
+                {
+                    msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: triangle: " << tes[j] << " with edges: [" << eInTri << "] not found around edge: " << i;
+                    ret = false;
+                }
+
+                triangleSet.insert(tes[j]);
+            }
+        }
+
+        if (triangleSet.size() != m_triangle.size())
+        {
+            msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: found " << triangleSet.size() << " triangles in m_trianglesAroundEdge out of " << m_triangle.size();
             ret = false;
         }
 
     }
 
     return ret && EdgeSetTopologyContainer::checkTopology();
-
-#else
-    return true;
-#endif
 }
 
 
@@ -776,13 +731,11 @@ bool TriangleSetTopologyContainer::checkTopology() const
 
 bool TriangleSetTopologyContainer::checkConnexity()
 {
-    unsigned int nbr = this->getNbTriangles();
+    size_t nbr = this->getNbTriangles();
 
     if (nbr == 0)
     {
-#ifndef NDEBUG
-        serr << "Warning. [TriangleSetTopologyContainer::checkConnexity] Can't compute connexity as there are no triangles" << sendl;
-#endif
+        msg_error() << "CheckConnexity: Can't compute connexity as there are no triangles";
         return false;
     }
 
@@ -790,41 +743,39 @@ bool TriangleSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        serr << "Warning: in computing connexity, triangles are missings. There is more than one connexe component." << sendl;
+        msg_warning() << "CheckConnexity: Triangles are missings. There is more than one connexe component.";
         return false;
     }
     return true;
 }
 
 
-unsigned int TriangleSetTopologyContainer::getNumberOfConnectedComponent()
+size_t TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    unsigned int nbr = this->getNbTriangles();
+    size_t nbr = this->getNbTriangles();
 
     if (nbr == 0)
     {
-#ifndef NDEBUG
-        serr << "Warning. [TriangleSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no triangles" << sendl;
-#endif
+        msg_error() << "Can't getNumberOfConnectedComponent as there are no triangles";
         return 0;
     }
 
     VecTriangleID elemAll = this->getConnectedElement(0);
-    unsigned int cpt = 1;
+    size_t cpt = 1;
 
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        TriangleID other_triangleID = elemAll.size();
+        size_t other_triangleID = elemAll.size();
 
-        for (TriangleID i = 0; i<elemAll.size(); ++i)
+        for (size_t i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)
             {
                 other_triangleID = i;
                 break;
             }
 
-        VecTriangleID elemTmp = this->getConnectedElement(other_triangleID);
+        VecTriangleID elemTmp = this->getConnectedElement((TriangleID)other_triangleID);
         cpt++;
 
         elemAll.insert(elemAll.begin(), elemTmp.begin(), elemTmp.end());
@@ -835,15 +786,13 @@ unsigned int TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 
 const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::getConnectedElement(TriangleID elem)
 {
+    VecTriangleID elemAll;
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
-#ifndef NDEBUG
-        serr << "Warning. [TriangleSetTopologyContainer::getConnectedElement] triangle vertex shell array is empty." << sendl;
-#endif
-        createTrianglesAroundVertexArray();
+        dmsg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
+        return elemAll;
     }
 
-    VecTriangleID elemAll;
     VecTriangleID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     size_t cpt = 0;
@@ -860,12 +809,12 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
         // First Step - Create new region
         elemNextFront = this->getElementAroundElements(elemOnFront); // for each triangleID on the propagation front
         // Second Step - Avoid backward direction
-        for (unsigned int i = 0; i<elemNextFront.size(); ++i)
+        for (size_t i = 0; i<elemNextFront.size(); ++i)
         {
             bool find = false;
             TriangleID id = elemNextFront[i];
 
-            for (unsigned int j = 0; j<elemAll.size(); ++j)
+            for (size_t j = 0; j<elemAll.size(); ++j)
                 if (id == elemAll[j])
                 {
                     find = true;
@@ -884,9 +833,7 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
         if (elemPreviousFront.empty())
         {
             end = true;
-#ifndef NDEBUG
-            serr << "Loop for computing connexity has reach end." << sendl;
-#endif
+            msg_error() << "Loop for computing connexity has reach end.";
         }
 
         // iterate
@@ -903,19 +850,17 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
 
     if (!hasTrianglesAroundVertex())
     {
-#ifndef NDEBUG
-        serr << "Warning. [TriangleSetTopologyContainer::getElementAroundElement] triangle vertex shell array is empty." << sendl;
-#endif
-        createTrianglesAroundVertexArray();
+        dmsg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
+        return elems;
     }
 
     Triangle the_tri = this->getTriangle(elem);
 
-    for(unsigned int i = 0; i<3; ++i) // for each node of the triangle
+    for(PointID i = 0; i<3; ++i) // for each node of the triangle
     {
         TrianglesAroundVertex triAV = this->getTrianglesAroundVertex(the_tri[i]);
 
-        for (unsigned int j = 0; j<triAV.size(); ++j) // for each triangle around the node
+        for (size_t j = 0; j<triAV.size(); ++j) // for each triangle around the node
         {
             bool find = false;
             TriangleID id = triAV[j];
@@ -923,7 +868,7 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
             if (id == elem)
                 continue;
 
-            for (unsigned int k = 0; k<elems.size(); ++k) // check no redundancy
+            for (size_t k = 0; k<elems.size(); ++k) // check no redundancy
                 if (id == elems[k])
                 {
                     find = true;
@@ -941,29 +886,26 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
 const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::getElementAroundElements(VecTriangleID elems)
 {
     VecTriangleID elemAll;
-    VecTriangleID elemTmp;
-
     if (!hasTrianglesAroundVertex())
     {
-#ifndef NDEBUG
-        serr << "Warning. [TriangleSetTopologyContainer::getElementAroundElements] triangle vertex shell array is empty." << sendl;
-#endif
-        createTrianglesAroundVertexArray();
+        dmsg_warning() << "getElementAroundElements: TrianglesAroundVertexArray is empty. Be sure to call createTrianglesAroundVertexArray first.";
+        return elemAll;
     }
 
-    for (unsigned int i = 0; i <elems.size(); ++i) // for each triangleId of input vector
+    VecTriangleID elemTmp;
+    for (size_t i = 0; i <elems.size(); ++i) // for each triangleId of input vector
     {
         VecTriangleID elemTmp2 = this->getElementAroundElement(elems[i]);
 
         elemTmp.insert(elemTmp.end(), elemTmp2.begin(), elemTmp2.end());
     }
 
-    for (unsigned int i = 0; i<elemTmp.size(); ++i) // for each Triangle Id found
+    for (size_t i = 0; i<elemTmp.size(); ++i) // for each Triangle Id found
     {
         bool find = false;
         TriangleID id = elemTmp[i];
 
-        for (unsigned int j = 0; j<elems.size(); ++j) // check no redundancy with input vector
+        for (size_t j = 0; j<elems.size(); ++j) // check no redundancy with input vector
             if (id == elems[j])
             {
                 find = true;
@@ -972,7 +914,7 @@ const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::
 
         if (!find)
         {
-            for (unsigned int j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
+            for (size_t j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
                 if (id == elemAll[j])
                 {
                     find = true;
@@ -1020,7 +962,7 @@ bool TriangleSetTopologyContainer::hasBorderElementLists() const
 
 void TriangleSetTopologyContainer::clearTrianglesAroundVertex()
 {
-    for(unsigned int i=0; i<m_trianglesAroundVertex.size(); ++i)
+    for(size_t i=0; i<m_trianglesAroundVertex.size(); ++i)
         m_trianglesAroundVertex[i].clear();
 
     m_trianglesAroundVertex.clear();
@@ -1028,7 +970,7 @@ void TriangleSetTopologyContainer::clearTrianglesAroundVertex()
 
 void TriangleSetTopologyContainer::clearTrianglesAroundEdge()
 {
-    for(unsigned int i=0; i<m_trianglesAroundEdge.size(); ++i)
+    for(size_t i=0; i<m_trianglesAroundEdge.size(); ++i)
         m_trianglesAroundEdge[i].clear();
 
     m_trianglesAroundEdge.clear();
@@ -1063,6 +1005,36 @@ void TriangleSetTopologyContainer::clear()
     EdgeSetTopologyContainer::clear();
 }
 
+void TriangleSetTopologyContainer::setTriangleTopologyToDirty()
+{
+    // set this container to dirty
+    m_triangleTopologyDirty = true;
+
+    // set all engines link to this container to dirty
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        msg_info() << "Triangle Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void TriangleSetTopologyContainer::cleanTriangleTopologyFromDirty()
+{
+    m_triangleTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            msg_warning() << "Triangle Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
+}
 
 
 void TriangleSetTopologyContainer::updateTopologyEngineGraph()
@@ -1072,13 +1044,6 @@ void TriangleSetTopologyContainer::updateTopologyEngineGraph()
 
     // will concatenate with edges one:
     EdgeSetTopologyContainer::updateTopologyEngineGraph();
-
-#ifndef NDEBUG
-    // std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
-    // std::cout << "point m_enginesList.size(): " << PointSetTopologyContainer::m_enginesList.size() << std::endl;
-    // std::cout << "edge m_enginesList.size(): " << EdgeSetTopologyContainer::m_enginesList.size() << std::endl;
-    // std::cout << "triangle m_enginesList.size(): " << this->m_enginesList.size() << std::endl;
-#endif
 }
 
 

@@ -71,63 +71,49 @@ find_package(SofaFramework REQUIRED)
 #COMMUNICATION ZMQ
 if(PLUGIN_COMMUNICATION_ZMQ)
     find_package(ZMQ REQUIRED)
-    if (ZMQ_FOUND)
-        message("Found ZMQ libraries")
-        include_directories(${ZMQ_INCLUDE_DIRS})
+    message("Found ZMQ libraries")
+    include_directories(${ZMQ_INCLUDE_DIRS})
 
-        list(APPEND HEADER_FILES
-            components/serverCommunicationZMQ.h
-            components/serverCommunicationZMQ.inl
-            )
+    list(APPEND HEADER_FILES
+        components/serverCommunicationZMQ.h
+        components/serverCommunicationZMQ.inl
+        )
 
-        list(APPEND SOURCE_FILES
-            components/serverCommunicationZMQ.cpp
-            )
-    else ()
-        message("Can't find ZMQ !")
-    endif ()
-
+    list(APPEND SOURCE_FILES
+        components/serverCommunicationZMQ.cpp
+        )
 endif()
 
 #COMMUNICATION OSC
 if(PLUGIN_COMMUNICATION_Oscpack)
     find_package(Oscpack REQUIRED)
-    if (Oscpack_FOUND)
-        message("Found Oscpack libraries")
-        include_directories(${Oscpack_INCLUDE_DIRS})
+    message("Found Oscpack libraries")
+    include_directories(${Oscpack_INCLUDE_DIRS})
 
-        list(APPEND HEADER_FILES
-            components/serverCommunicationOSC.h
-            components/serverCommunicationOSC.inl
-            )
+    list(APPEND HEADER_FILES
+        components/serverCommunicationOSC.h
+        components/serverCommunicationOSC.inl
+        )
 
-        list(APPEND SOURCE_FILES
-            components/serverCommunicationOSC.cpp
-            )
-    else ()
-        message("Can't find Oscpack !")
-    endif ()
+    list(APPEND SOURCE_FILES
+        components/serverCommunicationOSC.cpp
+        )
 endif()
 
 #COMMUNICATION VRPN
 if(PLUGIN_COMMUNICATION_VRPN)
     find_package(VRPN REQUIRED)
-    if (VRPN_FOUND)
-        message("Found VRPN libraries")
-        include_directories(${VRPN_INCLUDE_DIRS})
+    message("Found VRPN libraries")
+    include_directories(${VRPN_INCLUDE_DIRS})
 
-        list(APPEND HEADER_FILES
-            components/serverCommunicationVRPN.h
-            components/serverCommunicationVRPN.inl
-            )
+    list(APPEND HEADER_FILES
+        components/serverCommunicationVRPN.h
+        components/serverCommunicationVRPN.inl
+        )
 
-        list(APPEND SOURCE_FILES
-            components/serverCommunicationVRPN.cpp
-            )
-    else ()
-        message("Can't find VRPN !")
-    endif ()
-
+    list(APPEND SOURCE_FILES
+        components/serverCommunicationVRPN.cpp
+        )
 endif()
 
 #COMMUNICATION QSerial
@@ -150,7 +136,7 @@ IF(WIN32)
 ENDIF(WIN32)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} ${Oscpack_LIBRARIES} ${ZMQ_LIBRARIES} ${VRPN_LIBRARIES} SofaCore SofaSimulationGraph Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} ${Oscpack_LIBRARIES} ${ZMQ_LIBRARIES} ${VRPN_LIBRARIES} SofaCore SofaBaseLinearSolver SofaSimulationGraph Qt5::Widgets)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Communication")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,8 +33,6 @@ namespace component
 
 namespace collision
 {
-
-SOFA_DECL_CLASS(DefaultContactManager)
 
 int DefaultContactManagerClass = core::RegisterObject("Default class to create reactions to the collisions")
         .add< DefaultContactManager >()
@@ -100,14 +98,39 @@ void DefaultContactManager::reset()
     cleanup();
 }
 
+void DefaultContactManager::setDefaultResponseType(const std::string &responseT)
+{
+    if (response.getValue().size() == 0)
+    {
+        helper::vector<std::string> listResponse(1,responseT);
+        sofa::helper::OptionsGroup responseOptions(listResponse);
+        response.setValue(responseOptions);
+    }
+    else
+    {
+        sofa::helper::OptionsGroup* options = response.beginEdit();
+        options->setSelectedItem(responseT);
+        response.endEdit();
+    }
+}
+
+
+void DefaultContactManager::changeInstance(Instance inst)
+{
+    core::collision::ContactManager::changeInstance(inst);
+    storedContactMap[instance].swap(contactMap);
+    contactMap.swap(storedContactMap[inst]);
+}
+
 void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
 {
     using core::CollisionModel;
     using core::collision::Contact;
 
-    int nbContact = 0;
+    size_t nbContact = 0;
 
     // First iterate on the collision detection outputs and look for existing or new contacts
+    std::stringstream errorStream;
     for (DetectionOutputMap::const_iterator outputsIt = outputsMap.begin(),
         outputsItEnd = outputsMap.end(); outputsIt != outputsItEnd ; ++outputsIt)
     {
@@ -117,13 +140,12 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
         if (contactInsert.second)
         {
             // new contact
-            //sout << "Creation new "<<contacttype<<" contact"<<sendl;
             CollisionModel* model1 = outputsIt->first.first;
             CollisionModel* model2 = outputsIt->first.second;
             std::string responseUsed = getContactResponse(model1, model2);
 
             // We can create rules in order to not respond to specific collisions
-            if (!responseUsed.compare("null"))
+            if (!responseUsed.compare("nullptr"))
             {
                 contactMap.erase(contactIt);
             }
@@ -132,7 +154,7 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
                 Contact::SPtr contact = Contact::Create(responseUsed, model1, model2, intersectionMethod,
                     notMuted());
 
-                if (contact == NULL)
+                if (contact == nullptr)
                 {
                     std::string model1class = model1->getClassName();
                     std::string model2class = model2->getClassName();
@@ -140,21 +162,21 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
                         std::make_pair(model1class, model2class))];
                     if (count <= 10)
                     {
-                        serr << "Contact " << responseUsed << " between " << model1->getClassName()
-                            << " and " << model2->getClassName() << " creation failed" << sendl;
+                        errorStream << "Contact " << responseUsed << " between " << model1->getClassName()
+                            << " and " << model2->getClassName() << " creation failed \n";
                         if (count == 1)
                         {
-                            serr << "Supported models for contact " << responseUsed << ":" << sendl;
+                            errorStream << "Supported models for contact " << responseUsed << ":\n";
                             for (Contact::Factory::const_iterator it =
                                 Contact::Factory::getInstance()->begin(),
                                 itend = Contact::Factory::getInstance()->end(); it != itend; ++it)
                             {
                                 if (it->first != responseUsed) continue;
-                                serr << "   " << helper::gettypename(it->second->type()) << sendl;
+                                errorStream << "   " << helper::gettypename(it->second->type()) << "\n";
                             }
-                            serr << sendl;
+                            errorStream << "\n";
                         }
-                        if (count == 10) serr << "further messages suppressed" << sendl;
+                        if (count == 10) errorStream << "further messages suppressed.\n";
                     }
                     contactMap.erase(contactIt);
                 }
@@ -178,6 +200,8 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
         }
     }
 
+    msg_error_when(!errorStream.str().empty()) << errorStream.str();
+
     // Then look at previous contacts
     // and remove inactive contacts
     for (ContactMap::iterator contactIt = contactMap.begin(), contactItEnd = contactMap.end();
@@ -190,7 +214,7 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
             // inactive contact
             if (contactIt->second->keepAlive())
             {
-                contactIt->second->setDetectionOutputs(NULL);
+                contactIt->second->setDetectionOutputs(nullptr);
                 ++nbContact;
             }
             else
@@ -270,7 +294,7 @@ void DefaultContactManager::draw(const core::visual::VisualParams* vparams)
 {
     for (sofa::helper::vector<core::collision::Contact::SPtr>::iterator it = contacts.begin(); it!=contacts.end(); ++it)
     {
-        if ((*it)!=NULL)
+        if ((*it)!=nullptr)
             (*it)->draw(vparams);
     }
 }

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,6 +23,15 @@
 #define IMAGE_CONFIG_H
 
 #include <sofa/config.h>
+
+#cmakedefine01 IMAGE_HAVE_SOFAGUI
+#cmakedefine01 IMAGE_HAVE_CIMGPLUGIN
+#cmakedefine01 IMAGE_HAVE_NEWMAT
+#cmakedefine01 IMAGE_HAVE_SOFAPYTHON
+#cmakedefine01 IMAGE_HAVE_MULTITHREADING
+#cmakedefine01 IMAGE_HAVE_ZLIB
+#cmakedefine01 IMAGE_HAVE_FREENECT
+#cmakedefine01 IMAGE_HAVE_DIFFUSIONSOLVER
 
 #define IMAGE_MAJOR_VERSION ${IMAGE_MAJOR_VERSION}
 #define IMAGE_MINOR_VERSION ${IMAGE_MINOR_VERSION}

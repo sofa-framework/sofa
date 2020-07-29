@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,7 +45,6 @@ class PlaneForceFieldInternalData
 public:
 };
 
-///
 /// @class PlaneForceField
 /// A plane is cutting the space in two half spaces. This component generate a force preventing the
 /// object to cross the plane. The plane is defined by its normal and by the amount of displacement
@@ -111,38 +110,41 @@ public:
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)
 
     /// Inherited from ForceField.
-    virtual void init() override;
-    virtual void addForce(const core::MechanicalParams* mparams,
+    void init() override;
+    void addForce(const core::MechanicalParams* mparams,
                           DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams,
+    void addDForce(const core::MechanicalParams* mparams,
                            DataVecDeriv& df, const DataVecDeriv& dx) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
                                      const DataVecCoord&  /* x */) const override;
     virtual void updateStiffness( const VecCoord& x );
-    virtual void addKToMatrix(const core::MechanicalParams*
+    void addKToMatrix(const core::MechanicalParams*
                               mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
     void drawPlane(const core::visual::VisualParams*, float size=0.0f);
     void computeBBox(const core::ExecParams *, bool onlyVisible=false) override;
 
+    //TODO(htalbot) remove after v18.12
+    //Temporary function to warn the user when old attribute names are used
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        if (arg->getAttribute("color"))
+        {
+            msg_warning() << "input data 'color' changed for 'planeColor'";
+        }
+        Inherit::parse(arg);
+    }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Rigid3fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace forcefield

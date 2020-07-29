@@ -2,7 +2,7 @@
 <Node name="root" dt="0.01">
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
     <Node name="Poutre1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/smCube27.msh" />
         <Node name="M1">
@@ -12,7 +12,7 @@
             <FixedConstraint indices="0 3 6 9 12 15 18 21 24" />
         </Node>
         <Node name="M2">
-            <MechanicalObject template="Rigid" dz="10.5" showObject="1"/>
+            <MechanicalObject template="Rigid3d" dz="10.5" showObject="1"/>
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
                 <MechanicalObject template="Vec3d" src="@../../loader"/>
@@ -25,7 +25,7 @@
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         </Node>
         <Node name="M4">
-            <MechanicalObject template="Rigid" dz="31.5" showObject="1"/>
+            <MechanicalObject template="Rigid3d" dz="31.5" showObject="1"/>
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
                 <MechanicalObject template="Vec3d" src="@../../loader"/>

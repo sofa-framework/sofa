@@ -1,0 +1,26 @@
+### Topology scenes ###
+Components/topology/Tetra2TriangleTopologicalMapping.scn 30 1e-4 1
+
+### Topology Modifier scenes ###
+# Triangle and Triangle2Edge tests
+Components/topology/TopologicalModifiers/RemovingTrianglesProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/RemovingTriangle2EdgeProcess.scn 30 1e-4 
+Components/topology/TopologicalModifiers/AddingTrianglesProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/AddingTriangle2EdgeProcess.scn 30 1e-4 1
+
+# Tetra and Tetra2Triangle tests
+Components/topology/TopologicalModifiers/RemovingTetraProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/RemovingTetra2TriangleProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/RemovingTetra2TriangleProcess_withOptions.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/AddingTetraProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/AddingTetra2TriangleProcess.scn 30 1e-4 1
+
+# Hexa and Hexa2Quand tests
+Components/topology/TopologicalModifiers/RemovingHexa2QuadProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/RemovingQuad2TriangleProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/AddingHexa2QuadProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/AddingQuad2TriangleProcess.scn 30 1e-4 1
+
+#never worked: Components/topology/TopologicalModifiers/RemovingHexa2TetraProcess.scn
+
+

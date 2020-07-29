@@ -452,10 +452,6 @@ void DepthImageToolBoxAction::sectionButtonClick()
 
 
 
-SOFA_DECL_CLASS(DepthImageToolBoxAction)
-
-
-
 }
 }
 }

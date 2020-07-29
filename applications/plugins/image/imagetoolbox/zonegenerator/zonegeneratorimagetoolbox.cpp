@@ -15,8 +15,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(ZoneGeneratorImageToolBox)
-
 int ZoneGeneratorImageToolBox_Class = core::RegisterObject("ZoneGeneratorImageToolBox")
         .add<ZoneGeneratorImageToolBox<ImageUC> >()
         .add<ZoneGeneratorImageToolBox<ImageD> >(true)

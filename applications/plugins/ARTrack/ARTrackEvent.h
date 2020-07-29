@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,8 @@
 #define SOFA_CORE_OBJECTMODEL_ARTRACKEVENT_H
 
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/system/config.h>
 
 namespace sofa
 {
@@ -55,12 +54,13 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~ARTrackEvent() {}
+    ~ARTrackEvent() override {}
 
     const Vector3 getPosition() const;
     const Quat getOrientation() const;
     const sofa::helper::fixed_array<double,3> getAngles() const;
     const Vector3 getFingerposition(const unsigned int i) const;
+    static inline const char* GetClassName() { return "ARTrackEvent"; }
 
 private:
     Vector3 m_position; ///< ARTrack coordinates in a Vec3d type.

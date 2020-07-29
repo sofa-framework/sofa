@@ -18,15 +18,15 @@ void* FailNode::getObject(const sofa::core::objectmodel::ClassInfo& /*class_info
                 const sofa::core::objectmodel::TagSet& /*tags*/,
                 SearchDirection /*dir*/ ) const {
 	fail();
-	return 0;
+	return nullptr;
 }
 
-Node* FailNode::findCommonParent( simulation::Node* /*node2*/ ) {fail(); return 0; }
+Node* FailNode::findCommonParent( simulation::Node* /*node2*/ ) {fail(); return nullptr; }
 	
 void* FailNode::getObject(const sofa::core::objectmodel::ClassInfo& /*class_info*/,
                 const std::string& /*path*/) const {
 	fail();
-    return 0;
+    return nullptr;
 }
 
 void FailNode::getObjects(const sofa::core::objectmodel::ClassInfo& /*class_info*/,
@@ -48,22 +48,22 @@ size_t FailNode::getNbParents() const { fail(); return 0;}
 BaseNode* FailNode::getFirstParent() const { fail(); return NULL; }
 	
 /// Add a child node
-void FailNode::addChild(BaseNode::SPtr /*node*/){ fail(); }
+void FailNode::doAddChild(BaseNode::SPtr /*node*/){ fail(); }
 
 /// Remove a child node
-void FailNode::removeChild(BaseNode::SPtr /*node*/){ fail(); }
+void FailNode::doRemoveChild(BaseNode::SPtr /*node*/){ fail(); }
 
 /// Move a node from another node
-void FailNode::moveChild(BaseNode::SPtr /*node*/){ fail(); }
+void FailNode::doMoveChild(BaseNode::SPtr /*node*/){ fail(); }
 
 /// Add a generic object
-bool FailNode::addObject(BaseObject::SPtr /*obj*/){ fail(); return 0; }
+bool FailNode::doAddObject(BaseObject::SPtr /*obj*/){ fail(); return false; }
 
 /// Remove a generic object
-bool FailNode::removeObject(BaseObject::SPtr /*obj*/){ fail(); return 0; }
+bool FailNode::doRemoveObject(BaseObject::SPtr /*obj*/){ fail(); return false; }
 
 /// Move an object from a node to another node
-void FailNode::moveObject(BaseObject::SPtr /*obj*/){ fail(); }
+void FailNode::doMoveObject(BaseObject::SPtr /*obj*/){ fail(); }
 
 /// Test if the given node is a parent of this node.
 bool FailNode::hasParent(const BaseNode* /*node*/) const{ fail(); return 0; }
@@ -77,10 +77,10 @@ bool FailNode::hasAncestor(const BaseContext * /*context*/) const{ fail(); retur
 void FailNode::detachFromGraph(){ fail(); }
 
 /// Get this node context
-BaseContext* FailNode::getContext(){ fail(); return 0; }
+BaseContext* FailNode::getContext(){ fail(); return nullptr; }
 
 /// Get this node context
-const BaseContext* FailNode::getContext() const{ fail(); return 0; }
+const BaseContext* FailNode::getContext() const{ fail(); return nullptr; }
 
 /// Return the full path name of this node
 std::string FailNode::getPathName() const {fail(); return 0; }
@@ -88,7 +88,7 @@ std::string FailNode::getPathName() const {fail(); return 0; }
 /// Return the path from this node to the root node
 std::string FailNode::getRootPath() const {fail(); return 0; }
 
-void* FailNode::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/){ fail(); return 0;}
+void* FailNode::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/){ fail(); return nullptr;}
 
 
 

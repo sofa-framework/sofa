@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -268,12 +268,12 @@ void CompliantAttachPerformer<DataTypes>::start()
     if( _visualmodel )
     {
         _vm = core::objectmodel::New<visualmodel::OglModel>();
-        defaulttype::ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginWriteOnly();
+        helper::vector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginWriteOnly();
         vmpos.resize(2);
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = pointOnRay;
         _vm->m_positions.endEdit();
-        defaulttype::ResizableExtVector< visualmodel::OglModel::Triangle >& vmtri= *_vm->m_triangles.beginWriteOnly();
+        helper::vector< visualmodel::OglModel::Triangle >& vmtri= *_vm->m_triangles.beginWriteOnly();
         vmtri.resize(1);
         vmtri[0] = visualmodel::OglModel::Triangle( 0, 0, 1 );
         _vm->m_triangles.endEdit();
@@ -315,7 +315,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
 
     if( _visualmodel )
     {
-        defaulttype::ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginWriteOnly();
+        helper::vector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginWriteOnly();
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = DataTypes::getCPos(xmouse[0]);
         _vm->m_positions.endEdit();

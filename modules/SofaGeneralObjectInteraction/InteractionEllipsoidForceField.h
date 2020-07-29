@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -146,13 +146,13 @@ public:
         damping.setValue( damp );
     }
 
-    virtual void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2) override;
+    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2) override;
 
     virtual void addForce2(DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& p1, const DataVecCoord2& p2, const DataVecDeriv1& v1, const DataVecDeriv2& v2);
 
-    virtual void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2) override;
+    void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2) override;
 
-    virtual SReal getPotentialEnergy(const sofa::core::MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2)const override;
+    SReal getPotentialEnergy(const sofa::core::MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2)const override;
 
     void init() override;
     void reinit() override;
@@ -173,19 +173,10 @@ protected:
     } vars;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_INTERACTIONELLIPSOIDFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class InteractionEllipsoidForceField<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class InteractionEllipsoidForceField<defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class InteractionEllipsoidForceField<defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes>;
-extern template class InteractionEllipsoidForceField<defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes>;
-#endif
-#endif
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_INTERACTIONELLIPSOIDFORCEFIELD_CPP)
+extern template class InteractionEllipsoidForceField<defaulttype::Vec3Types, defaulttype::Rigid3Types>;
+
+
 #endif
 
 } // namespace interactionforcefield

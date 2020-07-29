@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -80,7 +80,7 @@ DiscreteGridField::DiscreteGridField()
       dz( initData( &dz, 0.0, "dz", "z translation" ) )
 {
     m_usedDomains = 0;
-    m_imgData = 0;
+    m_imgData = nullptr;
 }
 
 
@@ -89,7 +89,7 @@ DiscreteGridField::~DiscreteGridField()
     if (m_imgData)
     {
         delete[] m_imgData;
-        m_imgData = 0;
+        m_imgData = nullptr;
     }
 }
 
@@ -366,8 +366,6 @@ double DiscreteGridField::getValue( Vec3d &transformedPos )
 ///factory register
 int DiscreteGridFieldClass = RegisterObject("A discrete scalar field from a regular grid storing field value with interpolation.")
         .add< DiscreteGridField >() ;
-
-SOFA_DECL_CLASS(DiscreteGridField)
 
 } ///namespace _discretegrid_
 

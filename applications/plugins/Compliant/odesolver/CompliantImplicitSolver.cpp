@@ -11,7 +11,6 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-SOFA_DECL_CLASS(CompliantImplicitSolver)
 int CompliantImplicitSolverClass = core::RegisterObject("Newmark-beta implicit solver for constrained dynamics using assembly")
         .add< CompliantImplicitSolver >()
         .addAlias("AssembledSolver"); // deprecated, for backward compatibility only
@@ -768,7 +767,10 @@ using namespace core::behavior;
             Data<bool> data;
             data.read( propagate_lambdasChar );
             if( data.getValue() )
-                constraint_forces.beginWriteOnly()->setSelectedItem(3); constraint_forces.endEdit();
+            {
+                constraint_forces.beginWriteOnly()->setSelectedItem(3);
+                constraint_forces.endEdit();
+            }
         }
     }
 

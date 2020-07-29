@@ -58,10 +58,9 @@ public:
 protected:
 
 	virtual void apply(typename self::out_pos_type& out,
-                       const typename self::in_pos_type& in) {
+                       const typename self::in_pos_type& in) override {
 		
 		// local frames have been computed in assemble
-
         (void)in;
         assert( in.size() == out.size() || (size_t)std::count( mask.begin(),mask.end(),true)==out.size() );
 
@@ -91,7 +90,7 @@ protected:
 	}
 
 
-	virtual void assemble( const typename self::in_pos_type& in_pos ) {
+    virtual void assemble( const typename self::in_pos_type& in_pos ) override {
 
         Eigen::Matrix<real, 3, self::Nout> local_frame;
 
@@ -105,11 +104,7 @@ protected:
 		
         for(unsigned i = 0, activatedIndex=0; i < n; ++i)
         {
-//          assert( std::abs( normal[i].norm() - 1 ) <= std::numeric_limits<SReal>::epsilon() );
-
-
             if( !mask.empty() && !mask[i] ) continue; // not activated
-
 
             if( self::Nout==2 )
             {
@@ -171,17 +166,11 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ContactMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3dTypes, defaulttype::Vec2dTypes >;
-extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3fTypes, defaulttype::Vec2fTypes >;
-extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_ContactMapping_CPP)
+extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3Types, defaulttype::Vec2Types >;
+extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+
 #endif
 
 }

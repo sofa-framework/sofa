@@ -22,7 +22,7 @@
 #ifndef SOFA_COMMUNICATION_CONFIG_H
 #define SOFA_COMMUNICATION_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/helper/config.h>
 
 #ifdef SOFA_BUILD_Communication
 #  define SOFA_COMMUNICATION_API SOFA_EXPORT_DYNAMIC_LIBRARY

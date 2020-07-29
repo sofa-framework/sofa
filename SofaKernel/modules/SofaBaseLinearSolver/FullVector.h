@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -75,13 +75,13 @@ public:
 
     FullVector()
         : defaulttype::BaseVector()
-        , data(NULL), cursize(0), allocsize(0)
+        , data(nullptr), cursize(0), allocsize(0)
     {
     }
 
     FullVector(const FullVector& vect)
         : defaulttype::BaseVector()
-        , data(NULL), cursize(0), allocsize(0)
+        , data(nullptr), cursize(0), allocsize(0)
     {
         (*this) = vect;
     }
@@ -104,7 +104,7 @@ public:
     {
     }
 
-    virtual ~FullVector()
+    ~FullVector() override
     {
         if (allocsize>0)
             delete[] data;
@@ -147,13 +147,13 @@ public:
         cursize = dim;
     }
 
-    void resize(Index dim)
+    void resize(Index dim) override
     {
         fastResize(dim);
         clear();
     }
 
-    void clear()
+    void clear() override
     {
         if (cursize > 0)
             std::fill( this->begin(), this->end(), T() );
@@ -169,7 +169,7 @@ public:
     }
 
     // for compatibility with baseVector
-    void clear(Index dim)
+    void clear(Index dim) override
     {
         resize(dim);
     }
@@ -186,25 +186,25 @@ public:
         return data[i];
     }
 
-    SReal element(Index i) const
+    SReal element(Index i) const override
     {
         checkIndex(i);
         return (SReal) data[i];
     }
 
-    void set(Index i, SReal v)
+    void set(Index i, SReal v) override
     {
         checkIndex(i);
         data[i] = (Real)v;
     }
 
-    void add(Index i, SReal v)
+    void add(Index i, SReal v) override
     {
         checkIndex(i);
         data[i] +=  (Real)v;
     }
 
-    Index size() const
+    Index size() const override
     {
         return cursize;
     }
@@ -317,7 +317,7 @@ public:
     static const char* Name() { return "FullVector"; }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP)
+#if  !defined(SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP)
 //extern template class SOFA_BASE_LINEAR_SOLVER_API FullVector<bool>;
 #endif
 

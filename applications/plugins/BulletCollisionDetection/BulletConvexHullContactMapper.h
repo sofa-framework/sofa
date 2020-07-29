@@ -1,7 +1,7 @@
 #ifndef BULLET_CONVEX_HULL_CONTACT_MAPPER
 #define BULLET_CONVEX_HULL_CONTACT_MAPPER
 
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include "BulletConvexHullModel.h"
 
 namespace sofa
@@ -33,7 +33,7 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
+#if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
 extern template class SOFA_BULLETCOLLISIONDETECTION_API ContactMapper<BulletConvexHullModel,Vec3Types>;
 #endif
 

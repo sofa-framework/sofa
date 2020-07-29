@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -58,40 +56,13 @@ protected:
 
     PointsFromIndices();
 
-    ~PointsFromIndices() {}
+    ~PointsFromIndices() override {}
 public:
     void init() override;
 
     void reinit() override;
 
-    void update() override;
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        //if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-        //    return false;
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* tObj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return core::objectmodel::BaseObject::create(tObj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const PointsFromIndices<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
+    void doUpdate() override;
 
     Data<VecCoord> f_X; ///< Position coordinates of the degrees of freedom
     Data<SetIndex> f_indices; ///< Indices of the points
@@ -101,13 +72,9 @@ private:
     bool contains(VecCoord& v, Coord c);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API PointsFromIndices<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API PointsFromIndices<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP)
+extern template class SOFA_GENERAL_ENGINE_API PointsFromIndices<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

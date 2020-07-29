@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,8 +48,8 @@ void InciseAlongPathPerformer::start()
     {
         firstIncisionBody = startBody;
         cpt++;
-        initialNbTriangles = startBody.body->getMeshTopology()->getNbTriangles();
-        initialNbPoints = startBody.body->getMeshTopology()->getNbPoints();
+        initialNbTriangles = startBody.body->getCollisionTopology()->getNbTriangles();
+        initialNbPoints = startBody.body->getCollisionTopology()->getNbPoints();
     }
 }
 
@@ -66,7 +66,7 @@ void InciseAlongPathPerformer::execute()
 
     if (currentMethod == 0) // incise from clic to clic
     {
-        if (firstBody.body == NULL) // first clic
+        if (firstBody.body == nullptr) // first clic
             firstBody=startBody;
         else
         {
@@ -75,7 +75,7 @@ void InciseAlongPathPerformer::execute()
         }
 
 
-        if (firstBody.body == NULL || secondBody.body == NULL) return;
+        if (firstBody.body == nullptr || secondBody.body == nullptr) return;
 
         sofa::core::topology::TopologyModifier* topologyModifier;
         firstBody.body->getContext()->get(topologyModifier);
@@ -89,7 +89,7 @@ void InciseAlongPathPerformer::execute()
         }
 
         firstBody = secondBody;
-        secondBody.body = NULL;
+        secondBody.body = nullptr;
 
         this->interactor->setBodyPicked(secondBody);
     }
@@ -97,7 +97,7 @@ void InciseAlongPathPerformer::execute()
     {
 
         BodyPicked currentBody=this->interactor->getBodyPicked();
-        if (currentBody.body == NULL || startBody.body == NULL) return;
+        if (currentBody.body == nullptr || startBody.body == nullptr) return;
 
         if (currentBody.indexCollisionElement == startBody.indexCollisionElement) return;
 
@@ -114,7 +114,7 @@ void InciseAlongPathPerformer::execute()
         startBody = currentBody;
         firstBody = currentBody;
 
-        currentBody.body=NULL;
+        currentBody.body=nullptr;
         this->interactor->setBodyPicked(currentBody);
     }
 
@@ -131,7 +131,7 @@ void InciseAlongPathPerformer::setPerformerFreeze()
 
 void InciseAlongPathPerformer::PerformCompleteIncision()
 {
-    if (firstIncisionBody.body == NULL || startBody.body == NULL)
+    if (firstIncisionBody.body == nullptr || startBody.body == nullptr)
     {
         msg_error("InciseAlongPathPerformer") << "One picked body is null." ;
         return;
@@ -146,7 +146,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 
     // Initial point could have move due to gravity: looking for new coordinates of first incision point and triangle index.
     bool findTri = false;
-    sofa::helper::vector <unsigned int> triAroundVertex = startBody.body->getMeshTopology()->getTrianglesAroundVertex(initialNbPoints);
+    sofa::helper::vector <unsigned int> triAroundVertex = startBody.body->getCollisionTopology()->getTrianglesAroundVertex(initialNbPoints);
 
     // Check if point index and triangle index are consistent.
     for (unsigned int j = 0; j<triAroundVertex.size(); ++j)
@@ -164,7 +164,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 
 
     // Get new coordinate of first incision point:
-    sofa::component::container::MechanicalObject<defaulttype::Vec3Types>* MechanicalObject=NULL;
+    sofa::component::container::MechanicalObject<defaulttype::Vec3Types>* MechanicalObject=nullptr;
     startBody.body->getContext()->get(MechanicalObject, sofa::core::objectmodel::BaseContext::SearchRoot);
     const sofa::defaulttype::Vector3& the_point = (MechanicalObject->read(core::ConstVecCoordId::position())->getValue())[initialNbPoints];
 
@@ -193,7 +193,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
     }
 
     startBody = firstIncisionBody;
-    firstIncisionBody.body = NULL;
+    firstIncisionBody.body = nullptr;
 
     finishIncision = false; //Incure no second cut
 }
@@ -201,24 +201,23 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 InciseAlongPathPerformer::~InciseAlongPathPerformer()
 {
     if (secondBody.body)
-        secondBody.body= NULL;
+        secondBody.body= nullptr;
 
     if (firstBody.body)
-        firstBody.body = NULL;
+        firstBody.body = nullptr;
 
     if (startBody.body)
-        startBody.body = NULL;
+        startBody.body = nullptr;
 
     if (firstIncisionBody.body)
-        firstIncisionBody.body = NULL;
+        firstIncisionBody.body = nullptr;
 
     this->interactor->setBodyPicked(firstIncisionBody);
 }
 
-void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
+void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    if (firstBody.body == NULL) return;
+    if (firstBody.body == nullptr) return;
 
     BodyPicked currentBody=this->interactor->getBodyPicked();
 
@@ -277,22 +276,20 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
     positions[0] = pointA;
     positions[positions.size()-1] = pointB;
 
-    glDisable(GL_LIGHTING);
-    glColor3f(0.3f,0.8f,0.3f);
-    glBegin(GL_LINES);
-
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+    sofa::defaulttype::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
+    std::vector<sofa::defaulttype::Vector3> vertices;
     for (unsigned int i = 1; i<positions.size(); ++i)
     {
-        glVertex3d(positions[i-1][0], positions[i-1][1], positions[i-1][2]);
-        glVertex3d(positions[i][0], positions[i][1], positions[i][2]);
+        vertices.push_back(sofa::defaulttype::Vector3(positions[i-1][0], positions[i-1][1], positions[i-1][2]));
+        vertices.push_back(sofa::defaulttype::Vector3(positions[i][0], positions[i][1], positions[i][2]));
     }
-
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawLines(vertices,1,color);
+    vparams->drawTool()->restoreLastState();
 }
 
 
 }
 }
 }
-

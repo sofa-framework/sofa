@@ -1,8 +1,12 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaBaseVisual)
+
+sofa_find_package(TinyXML REQUIRED)
 
 set(HEADER_FILES
     BaseCamera.h
+    BackgroundSetting.h
+    Camera.h
     InteractiveCamera.h
     VisualModelImpl.h
     VisualStyle.h
@@ -12,6 +16,8 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     BaseCamera.cpp
+    BackgroundSetting.cpp
+    Camera.cpp
     InteractiveCamera.cpp
     VisualModelImpl.cpp
     VisualStyle.cpp
@@ -20,7 +26,6 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BASE_VISUAL")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml) # Private because not exported in API
 
-sofa_install_targets(SofaBase ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_install_targets(SofaBase ${PROJECT_NAME} "SofaBase/${PROJECT_NAME}")

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,7 +37,11 @@ namespace collision
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricPenalityContact(CollisionModel1* _model1, CollisionModel2* _model2, Intersection* _intersectionMethod)
-    : model1(_model1), model2(_model2), intersectionMethod(_intersectionMethod), ff(NULL), parent(NULL)
+    : model1(_model1)
+    , model2(_model2)
+    , intersectionMethod(_intersectionMethod)
+    , ff(nullptr)
+    , parent(nullptr)
 {
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
@@ -52,13 +56,13 @@ BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>:
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::cleanup()
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
         ff->cleanup();
-        if (parent!=NULL) parent->removeObject(ff);
+        if (parent!=nullptr) parent->removeObject(ff);
         //delete ff;
-        parent = NULL;
-        ff = NULL;
+        parent = nullptr;
+        ff = nullptr;
         mapper1.cleanup();
         mapper2.cleanup();
     }
@@ -68,10 +72,10 @@ template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTyp
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
-    if (ff==NULL)
+    if (ff==nullptr)
     {
-        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStirngID::generate().c_str());
-        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStirngID::generate().c_str());
+        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStringID::generate().c_str());
+        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStringID::generate().c_str());
         ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
         ff->setName( getName() );
         setInteractionTags(mstate1, mstate2);
@@ -155,15 +159,10 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     }
     dmsg_info() << " "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new).";
 
-    //int size = contacts.size();
     ff->clear(size);
     mapper1.resize(size);
     mapper2.resize(size);
-    //int i = 0;
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
-    //for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
-    //{
-    //    DetectionOutput* o = &*it;
     for (int i=0; i<insize; i++)
     {
         int index = oldIndex[i];
@@ -176,27 +175,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         typename DataTypes1::Real r1 = 0.0;
         typename DataTypes2::Real r2 = 0.0;
 
-        // Just make it work, some changes have been done in rev 10382 so that BarycentricPenaltyContact doesn't
-        // map well the contact points because o->baryCoords is used ant not initialized. It means that
-        // the mapped contact point is random ! So I replaced addPointB by addPoint to make it work.
-        // Create mapping for first point
-//        index1 = mapper1.addPointB(o->point[0], index1, r1
-//#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-//                , o->baryCoords[0]
-//#endif
-//                                  );
-
         index1 = mapper1.addPoint(o->point[0], index1, r1);
-
-        // Create mapping for second point
-//        index2 = mapper2.addPointB(o->point[1], index2, r2
-//#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-//                , o->baryCoords[1]
-//#endif
-//                                  );
-
         index2 = mapper2.addPoint(o->point[1], index2, r2);
-
 
         double distance = d0 + r1 + r2;
         double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness());
@@ -213,17 +193,16 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::createResponse(core::objectmodel::BaseContext* group)
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(ff);
         }
         parent = group;
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
-            //sout << "Attaching contact response to "<<parent->getName()<<sendl;
             parent->addObject(this);
             parent->addObject(ff);
         }
@@ -233,23 +212,20 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::removeResponse()
 {
-    if (ff!=NULL)
+    if (ff!=nullptr)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
-            //sout << "Removing contact response from "<<parent->getName()<<sendl;
             parent->removeObject(this);
             parent->removeObject(ff);
         }
-        parent = NULL;
+        parent = nullptr;
     }
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* )
 {
-    //	if (ff!=NULL)
-    //		ff->draw(vparams);
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >

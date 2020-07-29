@@ -371,9 +371,9 @@ std::string ServerCommunicationZMQ::getArgumentType(std::string value)
     return stringType;
 }
 
-}   /// namespace communication
-}   /// namespace component
-}   /// namespace sofa
+}   // namespace communication
+}   // namespace component
+}   // namespace sofa
 
 
 #endif // SOFA_CONTROLLER_ServerCommunicationZMQ_INL

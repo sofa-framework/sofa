@@ -15,7 +15,7 @@ def createDragon(parentnode,name,color):
 	node.createObject('EulerImplicit',name='cg_odesolver',printLog='false')
 	node.createObject('CGLinearSolver',name='linear solver',iterations=25,tolerance=1.0e-9,threshold=1.0e-9)
 	node.createObject('MechanicalObject')
-	node.createObject('UniformMass',totalmass=10)
+	node.createObject('UniformMass',totalMass=10)
 	node.createObject('RegularGrid',nx=6, ny=5, nz=3, xmin=-11, xmax=11, ymin=-7, ymax=7, zmin=-4, zmax=4 )
 	node.createObject('RegularGridSpringForceField', name='Springs', stiffness=350, damping=1)
 

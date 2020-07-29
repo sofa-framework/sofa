@@ -1,11 +1,12 @@
 <Node name="root" dt="0.02">
-    <CollisionPipeline verbose="0" />
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
-    <CollisionGroup />
+    <DefaultContactManager response="default" />
+    <DefaultCollisionGroupManager />
     <DiscreteIntersection />
     <Node name="Liver">
-        <EulerImplicit name="cg_odesolver" rayleighMass="0.1" rayleighStiffness="0.2" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" rayleighMass="0.1" rayleighStiffness="0.2" printLog="false" />
 <!--        <CGLinearSolver template="CompressedRowSparseMatrix3d" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />-->
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 <!--
@@ -22,7 +23,7 @@
         <FastTriangularBendingSprings name="Bending" bendingStiffness="100" />
         <TaitSurfacePressureForceField name="Pressure" gamma="5" B="10000" injectedVolume="100" printLog="1" />
         <DiagonalMass name="mass" massDensity="1" printLog="0" />
-        <TriangleModel name="CM" />
+        <TriangleCollisionModel name="CM" />
 
         <Node name="Visu">
             <OglModel name="VisualModel" src="@../loader" color="white" />

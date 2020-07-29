@@ -19,17 +19,17 @@ class SOFA_Compliant_API AnalysisSolver : public KKTSolver {
 	 
 	AnalysisSolver();
 	
-	virtual void init();
+	void init() override;
 
-	virtual void factor(const system_type& system);
+	void factor(const system_type& system) override;
 	
-	virtual void solve(vec& x,
+	void solve(vec& x,
 	                   const system_type& system,
-	                   const vec& rhs) const;
+	                   const vec& rhs) const override;
 
-	virtual void correct(vec& x,
+	void correct(vec& x,
 						 const system_type& system,
-						 const vec& rhs, real damping) const;
+						 const vec& rhs, real damping) const override;
 
     Data<bool> condest; ///< estimating the condition number as a ratio largest/smaller singular values (computed by SVD)
     Data<bool> eigenvaluesign; ///< computing the sign of the eigenvalues (of the implicit matrix H)

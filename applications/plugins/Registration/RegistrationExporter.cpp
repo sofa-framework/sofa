@@ -23,8 +23,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(RegistrationExporter)
-
 int RegistrationExporterClass = core::RegisterObject("Replicate loaded obj files into path, with current positions")
 .add< RegistrationExporter >();
 

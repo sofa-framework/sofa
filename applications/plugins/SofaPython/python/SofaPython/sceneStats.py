@@ -39,6 +39,7 @@ class SceneStatsVisitor(object):
             "Topology":0,
             "VisualModel":0,
             "PythonScriptController":0,
+            "PythonScriptDataEngine":0,
             }
 
     def processNodeTopDown(self,node):

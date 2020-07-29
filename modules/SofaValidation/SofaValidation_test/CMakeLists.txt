@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
 project(SofaValidation_test)
 
 set(SOURCE_FILES
-  Monitor_test.cpp
+Monitor_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

@@ -17,8 +17,6 @@ namespace engine
 
 
 
-SOFA_DECL_CLASS( ComputeDualQuatEngine )
-
 using namespace defaulttype;
 
 int ComputeDualQuatEngineClass = core::RegisterObject("Converts a vector of Affine or Rigid to a vector of Dual Quaternions.")

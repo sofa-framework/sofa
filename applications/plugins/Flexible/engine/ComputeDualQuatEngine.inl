@@ -59,7 +59,7 @@ ComputeDualQuatEngine< DataTypes >::ComputeDualQuatEngine()
 
 
 template < class DataTypes >
-void ComputeDualQuatEngine< DataTypes >::update()
+void ComputeDualQuatEngine< DataTypes >::doUpdate()
 {
     typedef sofa::helper::DualQuatCoord3<Real> DualQuat;
 
@@ -67,7 +67,6 @@ void ComputeDualQuatEngine< DataTypes >::update()
     const VecCoord& x = d_x.getValue();
     const VecCoord& x0 = d_x0.getValue();
 
-    cleanDirty();
 
     // Clean the output
     helper::vector< defaulttype::Vec4f >& dualQuats = *d_dualQuats.beginWriteOnly();

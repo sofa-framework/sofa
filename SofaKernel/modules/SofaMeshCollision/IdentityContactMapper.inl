@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,28 +41,28 @@ namespace collision
 template < class TCollisionModel, class DataTypes >
 void IdentityContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
-    if (mapping!=NULL)
+    if (mapping!=nullptr)
     {
         simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             simulation::Node::SPtr child = dynamic_cast<simulation::Node*>(mapping->getContext());
             child->detachFromGraph();
             child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
             child.reset(); //delete child;
-            mapping = NULL;
+            mapping = nullptr;
         }
     }
 }
 template < class TCollisionModel, class DataTypes >
 typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* IdentityContactMapper<TCollisionModel,DataTypes>::createMapping(const char* name)
 {
-    if (model==NULL) return NULL;
+    if (model==nullptr) return nullptr;
     simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
-    if (parent==NULL)
+    if (parent==nullptr)
     {
         msg_error("IdentityContactMapper") << "IdentityContactMapper only works for scenegraph scenes.";
-        return NULL;
+        return nullptr;
     }
     simulation::Node::SPtr child = parent->createChild(name);
     typename MMechanicalState::SPtr mstate = sofa::core::objectmodel::New<MMechanicalObject>(); child->addObject(mstate);

@@ -25,12 +25,12 @@ template<class TDataTypes>
 class TBulletCylinderModel : public sofa::component::collision::TCylinderModel<TDataTypes>,public BulletCollisionModel
 {
 public:
-    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletCylinderModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TTriangleModel, TDataTypes),BulletCollisionModel);
+    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletCylinderModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
     //SOFA_CLASS(SOFA_TEMPLATE(TBulletCylinderModel, TDataTypes),SOFA_TEMPLATE(TCylinderModel, TDataTypes));
 	SOFA_CLASS(SOFA_TEMPLATE(TBulletCylinderModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TCylinderModel, TDataTypes));
 
 	
-    //typedef typename GCylinderModel::DataTypes DataTypes;
+    //typedef typename GCylinderCollisionModel<sofa::defaulttype::Rigid3Types>::DataTypes DataTypes;
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -74,13 +74,9 @@ protected:
 
 typedef TBulletCylinderModel<defaulttype::RigidTypes> BulletCylinderModel;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3dTypes>;//je pense que les cylindres sont définis sur des rigides dans bullet
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
+extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3Types>;//je pense que les cylindres sont définis sur des rigides dans bullet
+
 #endif
 
 }}}

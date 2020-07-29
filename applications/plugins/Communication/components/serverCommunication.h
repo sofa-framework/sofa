@@ -157,8 +157,8 @@ protected:
 
 };
 
-} /// namespace communication
-} /// namespace component
-} /// namespace sofa
+} // namespace communication
+} // namespace component
+} // namespace sofa
 
 #endif // SOFA_SERVERCOMMUNICATION_H

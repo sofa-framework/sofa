@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<!-- Automatic Triangle adding example: Element added are define in: ./AddingTrianglesProcess.txt -->
+<Node name="root" gravity="0 0 -9" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForcefields" />
+    <DefaultPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <Node name="SquareGravity">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" />
+        <MeshGmshLoader name="loader" filename="mesh/cubeDof.msh" />
+        <MechanicalObject name="dofs" src="@loader" template="Vec3d" />
+        <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" listening="1" />
+        <TriangleSetTopologyModifier name="Modifier" />
+        <TriangleSetTopologyAlgorithms template="Vec3" name="TopoAlgo" />
+        <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+        <UniformMass totalMass="0.1" />
+        <FixedConstraint template="Vec3" name="default6" indices="0 2 18 20" />
+        <TriangularFEMForceField template="Vec3" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
+        
+        <Node name="Edge Mesh"  >
+			<EdgeSetTopologyContainer name="Edge_topo" printLog="1"/>
+			<EdgeSetTopologyModifier name="Edge_mod" />
+			<EdgeSetTopologyAlgorithms template="Vec3" name="TopoAlgo" />
+			<EdgeSetGeometryAlgorithms template="Vec3" name="GeomAlgo"  drawEdges="1" />
+			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Triangle_topo"  output="@Edge_topo" />
+		</Node>
+        
+        <Node >
+          <VisualModel name="Visual" color="red" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+        
+        <TopologicalChangeProcessor listening="1" filename="AddingTrianglesProcess.txt" />
+    </Node>
+    
+    <Node name="Tare">
+        <MeshGmshLoader name="loader" filename="mesh/nine_quads.msh"/>
+        <OglModel name="visu" src="@loader" />
+    </Node>
+</Node>

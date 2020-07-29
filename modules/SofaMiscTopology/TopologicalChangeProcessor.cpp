@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,7 @@
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/simulation/Simulation.h>
 
-#include <time.h>
+#include <ctime>
 
 #ifndef NDEBUG
     #define DEBUG_MSG true
@@ -54,8 +54,6 @@ namespace component
 
 namespace misc
 {
-
-SOFA_DECL_CLASS(TopologicalChangeProcessor)
 
 using namespace defaulttype;
 
@@ -79,13 +77,14 @@ TopologicalChangeProcessor::TopologicalChangeProcessor()
     , m_tetrahedraToRemove (initData (&m_tetrahedraToRemove, "tetrahedraToRemove", "List of tetrahedron IDs to be removed."))
     , m_hexahedraToRemove (initData (&m_hexahedraToRemove, "hexahedraToRemove", "List of hexahedron IDs to be removed."))
     , m_saveIndicesAtInit( initData(&m_saveIndicesAtInit, false, "saveIndicesAtInit", "set to 'true' to save the incision to do in the init to incise even after a movement"))
-    , m_epsilonSnapPath( initData(&m_epsilonSnapPath, (Real)0.1, "epsilonSnapPath", "epsilon snap path"))
-    , m_epsilonSnapBorder( initData(&m_epsilonSnapBorder, (Real)0.25, "epsilonSnapBorder", "epsilon snap path"))
+    , m_epsilonSnapPath( initData(&m_epsilonSnapPath, (SReal)0.1, "epsilonSnapPath", "epsilon snap path"))
+    , m_epsilonSnapBorder( initData(&m_epsilonSnapBorder, (SReal)0.25, "epsilonSnapBorder", "epsilon snap path"))
     , m_draw( initData(&m_draw, false, "draw", "draw information"))
-    , m_topology(NULL)
-    , infile(NULL)
-#ifdef SOFA_HAVE_ZLIB
-    , gzfile(NULL)
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
+    , infile(nullptr)
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
+    , gzfile(nullptr)
 #endif
     , nextTime(0)
     , lastTime(0)
@@ -99,7 +98,7 @@ TopologicalChangeProcessor::~TopologicalChangeProcessor()
 {
     if (infile)
         delete infile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -108,7 +107,21 @@ TopologicalChangeProcessor::~TopologicalChangeProcessor()
 
 void TopologicalChangeProcessor::init()
 {
-    m_topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     if (!m_useDataInputs.getValue())
         this->readDataFile();
@@ -127,28 +140,28 @@ void TopologicalChangeProcessor::readDataFile()
     if (infile)
     {
         delete infile;
-        infile = NULL;
+        infile = nullptr;
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     if (gzfile)
     {
         gzclose(gzfile);
-        gzfile = NULL;
+        gzfile = nullptr;
     }
 #endif
 
     const std::string& filename = m_filename.getFullPath();
     if (filename.empty())
     {
-        serr << "TopologicalChangeProcessor: ERROR: empty filename"<<sendl;
+        msg_error() << "empty filename";
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
         gzfile = gzopen(filename.c_str(),"rb");
         if( !gzfile )
         {
-            serr << "TopologicalChangeProcessor: Error opening compressed file "<<filename<<sendl;
+            msg_error() << "TopologicalChangeProcessor: Error opening compressed file " << filename;
         }
     }
 #endif
@@ -157,9 +170,9 @@ void TopologicalChangeProcessor::readDataFile()
         infile = new std::ifstream(filename.c_str());
         if( !infile->is_open() )
         {
-            serr << "TopologicalChangeProcessor: Error opening file "<<filename<<sendl;
+            msg_error() << "TopologicalChangeProcessor: Error opening file " << filename;
             delete infile;
-            infile = NULL;
+            infile = nullptr;
         }
     }
     nextTime = 0;
@@ -229,7 +242,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             if (topoMod)
                 topoMod->removeItems(vitems);
             else
-                serr<< "TopologicalChangeProcessor: Error: No HexahedraTopology available" << sendl;
+                msg_error() << "No HexahedraTopology available";
         }
 
         if (!tetrahedra.empty())
@@ -242,7 +255,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             if (topoMod)
                 topoMod->removeItems(vitems);
             else
-                serr<< "TopologicalChangeProcessor: Error: No TetrahedraTopology available" << sendl;
+                msg_error() << "No TetrahedraTopology available";
         }
 
         if (!quads.empty())
@@ -255,7 +268,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             if (topoMod)
                 topoMod->removeItems(vitems);
             else
-                serr<< "TopologicalChangeProcessor: Error: No QuadTopology available" << sendl;
+                msg_error() << "No QuadTopology available";
         }
 
         if (!triangles.empty())
@@ -268,7 +281,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             if (topoMod)
                 topoMod->removeItems(vitems);
             else
-                serr<< "TopologicalChangeProcessor: Error: No TriangleTopology available" << sendl;
+                msg_error() << "No TriangleTopology available";
         }
 
         if (!edges.empty())
@@ -281,7 +294,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             if (topoMod)
                 topoMod->removeItems(vitems);
             else
-                serr<< "TopologicalChangeProcessor: Error: No EdgeTopology available" << sendl;
+                msg_error() << "No EdgeTopology available";
         }
 
         // iterate, time set to infini if no interval.
@@ -299,7 +312,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
 {
     if (!m_topology) return false;
     if (!infile
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
         && !gzfile
 #endif
        )
@@ -307,10 +320,10 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
     lastTime = time;
     validLines.clear();
     std::string line, cmd;
-    double epsilon = 1e-10;
+    const SReal epsilon = std::numeric_limits<SReal>::epsilon();
     while (nextTime < time || fabs(nextTime - time) < epsilon )
     {
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
         if (gzfile)
         {
             if (gzeof(gzfile))
@@ -323,9 +336,9 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
             line.clear();
             char buf[4097];
             buf[0] = '\0';
-            while (gzgets(gzfile,buf,sizeof(buf))!=NULL && buf[0])
+            while (gzgets(gzfile,buf,sizeof(buf))!=nullptr && buf[0])
             {
-                int l = strlen(buf);
+                size_t l = strlen(buf);
                 if (buf[l-1] == '\n')
                 {
                     buf[l-1] = '\0';
@@ -378,7 +391,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;
 
-    unsigned int nbElements = 0;
+    size_t nbElements = 0;
     for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end();)
     {
         //For one Timestep store all topology data available.
@@ -412,7 +425,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if(!topoMod)
                 {
-                    serr << "No PointSetTopologyModifier available" << sendl;
+                    msg_error() << "No PointSetTopologyModifier available";
                     continue;
                 }
 
@@ -421,7 +434,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 helper::vector < unsigned int > triangles;
                 triangles.resize(nbElements);
 
-                for(unsigned int i=0;i<nbElements;++i)
+                for(size_t i=0;i<nbElements;++i)
                 {
                     Sin >> triangles[i];
                     Vector2& baryCoord = baryCoords[i];
@@ -431,7 +444,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 helper::vector< helper::vector< unsigned int > > p_ancestors(nbElements);
                 sofa::helper::vector< helper::vector< double > > p_baryCoefs(nbElements);
-                for(unsigned int i=0; i<nbElements; ++i)
+                for(size_t i=0; i<nbElements; ++i)
                 {
                     helper::vector<unsigned int>& ancestor = p_ancestors[i];
                     ancestor.resize(3);
@@ -455,14 +468,14 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!topoMod)
                 {
-                    serr<< "TopologicalChangeProcessor: Error: No QuadTopology available" << sendl;
+                    msg_error() << "No QuadTopology available";
                     continue;
                 }
 
                 helper::vector<core::topology::Topology::Edge > vitems;
                 vitems.resize (nbElements);
 
-                for (unsigned int i = 0; i<nbElements; ++i)
+                for (size_t i = 0; i<nbElements; ++i)
                     Sin >> vitems[i][0] >> vitems[i][1];
 
                 topoMod->addEdges(vitems);
@@ -480,7 +493,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     str >> token;
                     if(token == "Ancestors" || token == "Ancestor")
                     {
-                        for(unsigned int i = 0; i<nbElements; ++i)
+                        for(size_t i = 0; i<nbElements; ++i)
                         {
                             helper::vector<unsigned int>& ancestor = p_ancestors[i];
                             ancestor.resize(1);
@@ -494,14 +507,14 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!topoMod)
                 {
-                    serr<< "TopologicalChangeProcessor: Error: No TriangleTopology available" << sendl;
+                    msg_error() << "No TriangleTopology available";
                     continue;
                 }
 
                 helper::vector<core::topology::Topology::Triangle > vitems;
                 vitems.resize (nbElements);
 
-                for (unsigned int i = 0; i<nbElements; ++i)
+                for (size_t i = 0; i<nbElements; ++i)
                     Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2];
 
                 if(!p_ancestors.empty())
@@ -520,14 +533,14 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!topoMod)
                 {
-                    serr<< "TopologicalChangeProcessor: Error: No QuadTopology available" << sendl;
+                    msg_error() << "No QuadTopology available";
                     continue;
                 }
 
                 helper::vector<core::topology::Topology::Quad > vitems;
                 vitems.resize (nbElements);
 
-                for (unsigned int i = 0; i<nbElements; ++i)
+                for (size_t i = 0; i<nbElements; ++i)
                     Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2] >> vitems[i][3];
 
                 topoMod->addQuads(vitems);
@@ -539,14 +552,14 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!topoMod)
                 {
-                    serr<< "TopologicalChangeProcessor: Error: No TetrahedraTopology available" << sendl;
+                    msg_error() << "No TetrahedraTopology available";
                     continue;
                 }
 
                 helper::vector<core::topology::Topology::Tetrahedron > vitems;
                 vitems.resize (nbElements);
 
-                for (unsigned int i = 0; i<nbElements; ++i)
+                for (size_t i = 0; i<nbElements; ++i)
                     Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2] >> vitems[i][3];
 
                 topoMod->addTetrahedra(vitems);
@@ -558,14 +571,14 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!topoMod)
                 {
-                    serr<< "TopologicalChangeProcessor: Error: No HexahedraTopology available" << sendl;
+                    msg_error() << "No HexahedraTopology available";
                     continue;
                 }
 
                 helper::vector<core::topology::Topology::Hexahedron > vitems;
                 vitems.resize (nbElements);
 
-                for (unsigned int i = 0; i<nbElements; ++i)
+                for (size_t i = 0; i<nbElements; ++i)
                     Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2] >> vitems[i][3]
                         >> vitems[i][4] >> vitems[i][5] >> vitems[i][6] >> vitems[i][7];
 
@@ -573,7 +586,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             }
             else
             {
-                serr<< "TopologicalChangeProcessor: Error: keyword: '" << EleType <<"' not expected."<< sendl;
+                msg_error() << "keyword: '" << EleType << "' not expected.";
                 continue;
             }
 
@@ -594,7 +607,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             helper::vector <unsigned int> vitems;
             vitems.resize (nbElements);
 
-            for (unsigned int i = 0; i<nbElements; ++i)
+            for (size_t i = 0; i<nbElements; ++i)
                 Sin >> vitems[i];
 
             topoMod->removeItems(vitems);
@@ -606,7 +619,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
         }
         else if ( buff == "INCISE=" )
         {
-            msg_info() << "processTopologicalChanges: about to make a incision with time = " << time ;
+            msg_info() << "processTopologicalChanges: about to make a incision with time = " << time;
 
             if (m_saveIndicesAtInit.getValue())
             {
@@ -637,7 +650,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             ++it;//go to the next line
 
             //get the values in the current line and put them in a vector
-            std::vector<Real> values = getValuesInLine(*it, nbElements);
+            std::vector<SReal> values = getValuesInLine(*it, nbElements);
             bool onlyCoordinates = (values.size() == nbElements * 3);
 
             std::istringstream Sin(*it);
@@ -660,7 +673,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 findElementIndex(a, ind_ta, -1);
             }
 
-            for (unsigned int i = 1; i < nbElements; ++i)
+            for (size_t i = 1; i < nbElements; ++i)
             {
                 if (!onlyCoordinates)
                 {
@@ -703,7 +716,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (!isPathOk)
                 {
-                    dmsg_error() << "Invalid path in computeIntersectedPointsList" ;
+                    msg_error() << "Invalid path in computeIntersectedPointsList";
                     break;
                 }
 
@@ -771,7 +784,7 @@ void TopologicalChangeProcessor::saveIndices()
     }
 
     //filter only the lines about incision and put them in the linesAboutIncision
-    for (unsigned int i = 0 ; i < listInTheFile.size() ; i++)
+    for (size_t i = 0 ; i < listInTheFile.size() ; i++)
     {
         std::string currentString(listInTheFile[i]);
 
@@ -782,20 +795,20 @@ void TopologicalChangeProcessor::saveIndices()
         if (found!=std::string::npos)
         {
             size_t foundT = listInTheFile[i-1].find("T=");
-            if (foundT!=std::string::npos)
+            if (foundT != std::string::npos)
             {
-                linesAboutIncision.push_back(listInTheFile[i-1]);
+                linesAboutIncision.push_back(listInTheFile[i - 1]);
                 linesAboutIncision.push_back(listInTheFile[i]);
-                linesAboutIncision.push_back(listInTheFile[i+1]);
+                linesAboutIncision.push_back(listInTheFile[i + 1]);
             }
             else
-                dmsg_error() << " Error in line " << i << " : " << listInTheFile[i-1] ;
+                msg_error() << " Error in line " << i << " : " << listInTheFile[i - 1];
         }
     }
 
     if (linesAboutIncision.size() % 3)
     {
-        dmsg_error() << " Problem (Bug) while saving the lines about incision." ;
+        msg_error() << " Problem (Bug) while saving the lines about incision.";
     }
 
     for (std::vector<std::string>::iterator it=linesAboutIncision.begin(); it!=linesAboutIncision.end();)
@@ -805,7 +818,7 @@ void TopologicalChangeProcessor::saveIndices()
         std::string buff;
         std::istringstream str(*it);
 
-        Real timeToIncise;
+        SReal timeToIncise;
         int indexOfTime = -1;
 
         str >> buff;
@@ -838,24 +851,21 @@ void TopologicalChangeProcessor::saveIndices()
         //go to the next line
         ++it;
 
-        std::vector<Real> values = getValuesInLine(*it, nbElements);
+        std::vector<SReal> values = getValuesInLine(*it, nbElements);
 
-        dmsg_error_when(values.empty())
-                <<  "Error while saving the indices. Cannot get the values of line " << *it ;
+        msg_error_when(values.empty()) << "Error while saving the indices. Cannot get the values of line " << *it;
 
         bool onlyCoordinates = false;
 
         if (values.size() == nbElements * 3)
         {
             onlyCoordinates = true;
-
-            if(DEBUG_MSG)
-                dmsg_info() << "Use only coordinates. Triangles indices will be computed. " ;
+            msg_info() << "Use only coordinates. Triangles indices will be computed. ";
         }
 
         unsigned int increment = ( onlyCoordinates ) ? 3 : 4; // 3 if only the coordinates, 4 if there is also a triangle index
 
-        for (unsigned int i = 0 ; i < values.size() ; i+=increment)
+        for (size_t i = 0 ; i < values.size() ; i+=increment)
         {
             Vector3 coord;
             int triangleIndex;
@@ -905,12 +915,12 @@ void TopologicalChangeProcessor::saveIndices()
      * The hack consists in gently modify the first point of the line if both the points are equal (within epsilon)
      * Note : the crash is due to the computeIntersectedObjectsList algorithm in TriangleSetGeometryAlgorithm
      * */
-    for ( unsigned int i = 0 ; i < triangleIncisionInformation.size() ; i++)
+    for ( size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
         triangleIncisionInformation[i].computeCoordinates(m_topology);
         if ( i )
         {
-            Real epsilon = 1e-5;
+            SReal epsilon = 1e-5;
 
             bool equal = true;
 
@@ -921,8 +931,7 @@ void TopologicalChangeProcessor::saveIndices()
 
             if (equal &&  triangleIncisionInformation[i].coordinates.size() > 1)
             {
-                if(DEBUG_MSG)
-                    dmsg_warning() << "Two consecutives values are equal" ;
+                msg_warning() << "Two consecutives values are equal" ;
 
                 Vector3 direction =  triangleIncisionInformation[i].coordinates[1] - triangleIncisionInformation[i].coordinates[0];
                 direction *= epsilon;
@@ -935,8 +944,7 @@ void TopologicalChangeProcessor::saveIndices()
                 int triIndex;
                 findElementIndex(Vector3(newPosition), triIndex, -1);
 
-                msg_error_when( (triIndex==-1) )
-                        << "Error while searching triangle index." ;
+                msg_error_when( (triIndex==-1) ) << "Error while searching triangle index." ;
 
                 triangleIncisionInformation[i].triangleIndices[0] = (unsigned int) triIndex;
 
@@ -952,10 +960,10 @@ void TopologicalChangeProcessor::saveIndices()
     }
 }
 
-int TopologicalChangeProcessor::findIndexInListOfTime(Real time)
+int TopologicalChangeProcessor::findIndexInListOfTime(SReal time)
 {
     double epsilon = 1e-10;
-    for (unsigned int i = 0 ; i < triangleIncisionInformation.size() ; i++)
+    for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
         if ( fabs(time - triangleIncisionInformation[i].timeToIncise) < epsilon )
         {
@@ -965,9 +973,9 @@ int TopologicalChangeProcessor::findIndexInListOfTime(Real time)
     return -1;
 }
 
-std::vector<Real> TopologicalChangeProcessor::getValuesInLine(std::string line, unsigned int nbElements)
+std::vector<SReal> TopologicalChangeProcessor::getValuesInLine(std::string line, size_t nbElements)
 {
-    std::vector<Real> values;
+    std::vector<SReal> values;
     values.clear();
 
     std::istringstream count(line);
@@ -975,7 +983,7 @@ std::vector<Real> TopologicalChangeProcessor::getValuesInLine(std::string line, 
     //bool onlyCoordinates = false;
     if ( !count.eof())
     {
-        Real currentNumber;
+        SReal currentNumber;
         count >> currentNumber;
         values.push_back(currentNumber);
         while (!count.eof())
@@ -995,7 +1003,7 @@ std::vector<Real> TopologicalChangeProcessor::getValuesInLine(std::string line, 
             {
                 if (nbElements*4 < values.size())
                 {
-                    msg_warning() << "Incorrect input in '" << m_filename.getValue() <<"'. Too much values (" << values.size()<< ") in input in " << std::string(line) ;
+                    msg_warning() << "Incorrect input in '" << m_filename.getValue() << "'. Too much values (" << values.size() << ") in input in " << std::string(line);
                 }
                 else if (nbElements*3 > values.size())
                 {
@@ -1034,7 +1042,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
         return;
 
     //get the number of triangle in the topology
-    unsigned int nbTriangle = m_topology->getNbTriangles();
+    size_t nbTriangle = m_topology->getNbTriangles();
 
     sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
     m_topology->getContext()->get(triangleAlg);
@@ -1080,7 +1088,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
     std::vector<unsigned int> finalTriIndices;
     finalTriIndices.clear();
 
-    for (unsigned int i = 0 ; i < triIndices.size() ; i++)
+    for (size_t i = 0 ; i < triIndices.size() ; i++)
     {
         const bool is_tested = false;
         unsigned int indTest = 0;
@@ -1109,25 +1117,25 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
     /***
      * Projection of the point followed by a including test
      */
-    Real x = coord[0], y = coord[1], z = coord[2];
+    SReal x = coord[0], y = coord[1], z = coord[2];
     //project point along the normal
     for (unsigned int i = 0 ; i < nbTriangle ; i++)
     {
         //get the normal of the current triangle
         Vector3 normal = triangleGeo->computeTriangleNormal(i);
-        Real normalNorm = normal.norm();
+        SReal normalNorm = normal.norm();
         if (!normalNorm)
             break;
         //normalize the normal (avoids to divide by the norm)
         normal /= normal.norm();
-        Real a = normal[0], b = normal[1], c = normal[2];
+        SReal a = normal[0], b = normal[1], c = normal[2];
 
         //get the coordinates points of the triangle
         Vector3 points[3];
         triangleGeo->getTriangleVertexCoordinates(i, points);
 
         //get d in the equation of the plane of the triangle ax+by+cz + d = 0
-        Real d = - (points[0][0] * c + points[0][1] * b + points[0][2] * c );
+        SReal d = - (points[0][0] * a + points[0][1] * b + points[0][2] * c );
         Vector3 projectedPoint;
 
         projectedPoint[0] = ((b * b + c * c) * x - a * b * y - a * c * z - d * a) /*/normalNorm*/;
@@ -1168,7 +1176,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
 
     //TODO(dmarchal 2017-05-03) So what ? Can we remove this ?
     //beastly way
-//                for( unsigned int i = 0 ; i < nbTriangle ; i++)
+//                for( size_t i = 0 ; i < nbTriangle ; i++)
 //                {
 //                    bool isPointInTriangle = false;
 //
@@ -1202,7 +1210,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     {
         std::stringstream tmp ;
         tmp <<" Unable to find a time index with time " <<  getContext()->getTime() << ". The possible values are ";
-        for (unsigned int i = 0 ; i < triangleIncisionInformation.size() ; i++)
+        for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
             tmp << triangleIncisionInformation[i].timeToIncise << " | ";
         tmp << ". Aborting." ;
         msg_error() << tmp.str() ;
@@ -1219,7 +1227,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     bool firstCut= true;
 
     std::vector<Vector3> coordinates;
-    for (unsigned int i = 0 ; i < triangleIncisionInformation.size() ; i++)
+    for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
         if ( (int) i == indexOfTime)
             coordinates = triangleIncisionInformation[indexOfTime].computeCoordinates(m_topology);
@@ -1232,14 +1240,14 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     {
         if (triangleIncisionInformation[indexOfTime].triangleIndices.empty())
         {
-            msg_error() << "List of triangles indices cannot be empty. Aborting. " ;
+            msg_error() << "List of triangles indices cannot be empty. Aborting. ";
             return;
         }
         ind_ta = triangleIncisionInformation[indexOfTime].triangleIndices[0];
     }
     else
     {
-        msg_error() <<  "found index '" << indexOfTime << "' which is larger than the vector size '" << triangleIncisionInformation.size() <<"'" ;
+        msg_error() << "found index '" << indexOfTime << "' which is larger than the vector size '" << triangleIncisionInformation.size() << "'";
         return;
     }
 
@@ -1249,7 +1257,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     a = coordinates[0];
 
     unsigned int ind_tb = 0;
-    for (unsigned int i =1; i < triangleIncisionInformation[indexOfTime].triangleIndices.size(); ++i)
+    for (size_t i =1; i < triangleIncisionInformation[indexOfTime].triangleIndices.size(); ++i)
     {
         ind_tb = triangleIncisionInformation[indexOfTime].triangleIndices[i];
 
@@ -1280,14 +1288,11 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
 
         if (!isPathOk)
         {
-            dmsg_error() << "While computing computeIntersectedPointsList between triangles '"
+            msg_error() << "While computing computeIntersectedPointsList between triangles '"
                     << errorTrianglesIndices[errorTrianglesIndices.size() - 1] << "' and '" << errorTrianglesIndices[errorTrianglesIndices.size() - 2]  << "' at time = '" << getContext()->getTime()  << "'" ;
 
-            if(DEBUG_MSG)
-            {
-                dmsg_error() << " a = " << a << " b = " << b << msgendl
+            msg_error() << " a = " << a << " b = " << b << msgendl
                              << "ind_ta = " << ind_ta << " ind_tb = " << ind_tb ;
-            }
 
             break;
         }
@@ -1335,11 +1340,11 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
  */
 void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 {
-    unsigned int nbTriangleInfo = triangleIncisionInformation.size();
+    size_t nbTriangleInfo = triangleIncisionInformation.size();
     sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
 
-    for ( unsigned int i = 0 ; i < nbTriangleInfo ; i++)
+    for ( size_t i = 0 ; i < nbTriangleInfo ; i++)
     {
         for (unsigned int j = 0 ; j < triangleIncisionInformation[i].triangleIndices.size() ; j++ )
         {
@@ -1393,14 +1398,14 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     if (!triangleGeo)
         return;
 
-    unsigned int nbTriangles = m_topology->getNbTriangles();
+    size_t nbTriangles = m_topology->getNbTriangles();
 
     std::vector< Vector3 > trianglesToDraw;
     std::vector< Vector3 > pointsToDraw;
 
-    for (unsigned int i = 0 ; i < triangleIncisionInformation.size() ; i++)
+    for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
-        for (unsigned int j = 0 ; j < triangleIncisionInformation[i].triangleIndices.size() ; j++)
+        for (size_t j = 0 ; j < triangleIncisionInformation[i].triangleIndices.size() ; j++)
         {
             unsigned int triIndex = triangleIncisionInformation[i].triangleIndices[j];
 
@@ -1429,9 +1434,9 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     {
         trianglesToDraw.clear();
         /* initialize random seed: */
-        srand ( (unsigned int)time(NULL) );
+        srand ( (unsigned int)time(nullptr) );
 
-        for (unsigned int i = 0 ; i < errorTrianglesIndices.size() ; i++)
+        for (size_t i = 0 ; i < errorTrianglesIndices.size() ; i++)
         {
             Vec3Types::Coord coord[3];
             triangleGeo->getTriangleVertexCoordinates(errorTrianglesIndices[i], coord);

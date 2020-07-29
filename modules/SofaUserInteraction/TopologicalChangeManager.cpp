@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,12 +66,12 @@ TopologicalChangeManager::~TopologicalChangeManager()
 {
 }
 
-int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const helper::vector<int>& indices) const
+int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<int>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
-    topo_curr = model->getContext()->getMeshTopology();
+    topo_curr = model->getCollisionTopology();
 
-    if(topo_curr == NULL)
+    if(topo_curr == nullptr)
         return 0;
 
     std::set< unsigned int > items;
@@ -118,7 +118,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
         for(unsigned int i=0; i<listObject.size(); ++i)
         {
             sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
-            if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
+            if(topoMap != nullptr && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
                 //unsigned int ind_glob = topoMap->getGlobIndex(ind_curr);
@@ -146,7 +146,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
                         }
                     }
                 }
-                topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
+                topo_curr = topoMap->getFrom();
                 node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
                 break;
@@ -173,64 +173,108 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
     return res;
 }
 
-#if 0
 
-int TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::collision::TetrahedronModel* model, const helper::vector<int>& indices) const
+int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<int>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
-    topo_curr = model->getContext()->getMeshTopology();
+    topo_curr = model->getCollisionTopology();
 
-    if(dynamic_cast<PointSetTopologyContainer*>(topo_curr) == NULL)
+    if (topo_curr == nullptr)
         return 0;
+
+    sofa::helper::vector<unsigned int> tItems;
+    for (auto i : indices)
+    {
+        const sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex& triAV = topo_curr->getTrianglesAroundVertex(i);        
+        for (auto j : triAV)
+        {
+            bool found = false;
+            for (auto k : tItems)
+            {
+                if (j == k)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+                tItems.push_back(j);
+        }
+    }
 
     std::set< unsigned int > items;
 
     simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
-    for (unsigned int i=0; i<indices.size(); ++i)
-        items.insert(indices[i]);
+    if (topo_curr->getNbTetrahedra() > 0)
+    {
+        // get the index of the tetra linked to each triangle
+        for (unsigned int i = 0; i<tItems.size(); ++i)
+            items.insert(topo_curr->getTetrahedraAroundTriangle(tItems[i])[0]);
+    }
+    else if (topo_curr->getNbHexahedra() > 0)
+    {
+        // get the index of the hexa linked to each quad
+        for (unsigned int i = 0; i<tItems.size(); ++i)
+            items.insert(topo_curr->getHexahedraAroundQuad(tItems[i] / 2)[0]);
+    }
+    else
+    {
+        //Quick HACK for Hexa2TetraMapping
+        sofa::component::topology::Hexa2TetraTopologicalMapping* badMapping;
+        model->getContext()->get(badMapping, sofa::core::objectmodel::BaseContext::SearchRoot);
+        if (badMapping) //stop process
+        {
+            msg_warning("TopologicalChangeManager") << " Removing element is not handle by Hexa2TetraTopologicalMapping. Stopping process.";
+            return 0;
+        }
+
+        size_t nbt = topo_curr->getNbTriangles();
+        for (unsigned int i = 0; i<tItems.size(); ++i)
+        {
+            items.insert(tItems[i] < nbt ? tItems[i] : (tItems[i] + nbt) / 2);
+        }
+    }
 
     bool is_topoMap = true;
 
-    while(is_topoMap)
+    while (is_topoMap)
     {
         is_topoMap = false;
-
         std::vector< core::objectmodel::BaseObject * > listObject;
         node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
-        for(unsigned int i=0; i<listObject.size(); ++i)
+        for (unsigned int i = 0; i<listObject.size(); ++i)
         {
             sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
-            if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
+            if (topoMap != nullptr && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
                 std::set< unsigned int > loc_items = items;
                 items.clear();
-                if( topoMap->isTheOutputTopologySubdividingTheInputOne())
+                if (topoMap->isTheOutputTopologySubdividingTheInputOne())
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (std::set< unsigned int >::const_iterator it = loc_items.begin(); it != loc_items.end(); ++it)
                     {
                         unsigned int ind_glob = topoMap->getGlobIndex(*it);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
-                        //sout << *it << " -> "<<ind_glob << " -> "<<ind<<sendl;
                         items.insert(ind);
                     }
                 }
                 else
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (std::set< unsigned int >::const_iterator it = loc_items.begin(); it != loc_items.end(); ++it)
                     {
                         vector<unsigned int> indices;
-                        topoMap->getFromIndex( indices, *it);
-                        for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); itIndices++)
+                        topoMap->getFromIndex(indices, *it);
+                        for (vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
-                            items.insert( *itIndices );
+                            items.insert(*itIndices);
                         }
                     }
                 }
-                topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
+                topo_curr = topoMap->getFrom();
                 node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
-
                 break;
             }
         }
@@ -241,27 +285,25 @@ int TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::c
     vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
     int res = vitems.size();
+    
 
     sofa::core::topology::TopologyModifier* topoMod;
     topo_curr->getContext()->get(topoMod);
 
     topoMod->removeItems(vitems);
-
     topoMod->notifyEndingEvent();
-
     topoMod->propagateTopologicalChanges();
 
     return res;
 }
 
-#endif	// if 0
 
-int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const helper::vector<int>& indices) const
+int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<int>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
-    topo_curr = model->getContext()->getMeshTopology();
+    topo_curr = model->getCollisionTopology();
 
-    if(dynamic_cast<PointSetTopologyContainer*>(topo_curr) == NULL)
+    if(dynamic_cast<PointSetTopologyContainer*>(topo_curr) == nullptr)
         return 0;
 
     std::set< unsigned int > items;
@@ -282,7 +324,7 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
         for(unsigned int i=0; i<listObject.size(); ++i)
         {
             sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
-            if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
+            if(topoMap != nullptr && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
                 std::set< unsigned int > loc_items = items;
@@ -308,7 +350,7 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
                         }
                     }
                 }
-                topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
+                topo_curr = topoMap->getFrom();
                 node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
                 break;
@@ -352,19 +394,17 @@ int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisio
 
 int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<int>& indices) const
 {
-    if(dynamic_cast<TriangleModel*>(model)!= NULL)
+    if(dynamic_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(model)!= nullptr)
     {
-        return removeItemsFromTriangleModel(static_cast<TriangleModel*>(model), indices);
+        return removeItemsFromTriangleModel(static_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(model), indices);
     }
-#if 0
-    else if(dynamic_cast<TetrahedronModel*>(model)!= NULL)
+    if (dynamic_cast<PointCollisionModel<sofa::defaulttype::Vec3Types>*>(model) != nullptr)
     {
-        return removeItemsFromTetrahedronModel(static_cast<TetrahedronModel*>(model), indices);
+        return removeItemsFromPointModel(static_cast<PointCollisionModel<sofa::defaulttype::Vec3Types>*>(model), indices);
     }
-#endif // if 0
-    else if(dynamic_cast<SphereModel*>(model)!= NULL)
+    else if(dynamic_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(model)!= nullptr)
     {
-        return removeItemsFromSphereModel(static_cast<SphereModel*>(model), indices);
+        return removeItemsFromSphereModel(static_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(model), indices);
     }
     else
         return 0;
@@ -376,9 +416,9 @@ int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisio
 bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem, defaulttype::Vector3& pos, const bool firstInput, int snapingValue, int snapingBorderValue)
 {
     Triangle triangle(elem);
-    TriangleModel* model = triangle.getCollisionModel();
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model = triangle.getCollisionModel();
 
-    if (model != NULL)
+    if (model != nullptr)
     {
 
         if (firstInput) // initialise first point of contact from the incisionCollisionModel
@@ -422,8 +462,8 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel
         int snapingValue, int snapingBorderValue)
 {
 
-    TriangleModel* firstCollisionModel = dynamic_cast< TriangleModel* >(firstModel);
-    TriangleModel* secondCollisionModel = dynamic_cast< TriangleModel* >(secondModel);
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>* firstCollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(firstModel);
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>* secondCollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(secondModel);
     if (!firstCollisionModel || firstCollisionModel != secondCollisionModel) return false;
     return incisionTriangleModel(firstCollisionModel,  idxA, firstPoint,
             secondCollisionModel, idxB, secondPoint,
@@ -433,15 +473,15 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel
 
 
 // Perform incision in triangulation
-bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel , core::topology::BaseMeshTopology::TriangleID idxA, const Vector3& firstPoint,
-        TriangleModel *secondModel, core::topology::BaseMeshTopology::TriangleID idxB, const Vector3& secondPoint,
+bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa::defaulttype::Vec3Types> *firstModel , core::topology::BaseMeshTopology::TriangleID idxA, const Vector3& firstPoint,
+        TriangleCollisionModel<sofa::defaulttype::Vec3Types> *secondModel, core::topology::BaseMeshTopology::TriangleID idxB, const Vector3& secondPoint,
         int snapingValue, int snapingBorderValue)
 {
 
     // -- STEP 1: looking for collision model and topology components
 
-    TriangleModel* firstCollisionModel = dynamic_cast< TriangleModel* >(firstModel);
-    TriangleModel* secondCollisionModel = dynamic_cast< TriangleModel* >(secondModel);
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>* firstCollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(firstModel);
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>* secondCollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(secondModel);
 
     Triangle firstTriangle(firstCollisionModel, idxA);
     Triangle secondTriangle(secondCollisionModel, idxB);
@@ -453,7 +493,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
     }
 
 
-    sofa::core::topology::BaseMeshTopology* currentTopology = firstCollisionModel->getContext()->getMeshTopology();
+    sofa::core::topology::BaseMeshTopology* currentTopology = firstCollisionModel->getCollisionTopology();
     simulation::Node* collisionNode = dynamic_cast<simulation::Node*>(firstCollisionModel->getContext());
 
     // Test if a TopologicalMapping (by default from TetrahedronSetTopology to TriangleSetTopology) exists :

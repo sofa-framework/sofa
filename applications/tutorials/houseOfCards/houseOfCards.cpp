@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -34,11 +34,10 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <SofaConstraint/LMConstraintSolver.h>
@@ -57,8 +56,7 @@ const std::string colors[7]= {"red","green","blue","cyan","magenta","yellow","wh
 
 SReal convertDegreeToRadian(const SReal& angle)
 {
-    const SReal pi=3.14159265;
-    return angle*pi/180.0;
+    return angle*M_PI/180.0;
 }
 
 Node::SPtr createCard(Node::SPtr  parent, const Coord3& position, const Coord3& rotation)
@@ -190,11 +188,10 @@ Node::SPtr createHouseOfCards(Node::SPtr root,  unsigned int size, SReal distanc
 int main(int argc, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaMisc();
     sofa::gui::initMain();
 
     unsigned int sizeHouseOfCards=4;

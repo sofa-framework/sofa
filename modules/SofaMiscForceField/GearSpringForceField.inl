@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,12 +25,7 @@
 #include <SofaMiscForceField/GearSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Cylinder.h>
-#include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/system/config.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 #include <cassert>
 #include <iostream>
@@ -47,11 +42,41 @@ namespace component
 namespace interactionforcefield
 {
 
+template<class DataTypes>
+GearSpring<DataTypes>::GearSpring()
+    : GearSpring(0, 0, 0, 0)
+{
+}
+
+template<class DataTypes>
+GearSpring<DataTypes>::GearSpring(unsigned int m1, unsigned int m2, unsigned int p1, unsigned int p2)
+    : GearSpring(m1, m2, p1, p2, 10000, 10000, 10000, 10000, 1)
+{
+}
+
+template<class DataTypes>
+GearSpring<DataTypes>::GearSpring(unsigned int m1, unsigned  int m2, unsigned int p1, unsigned int p2, Real hardKst, Real softKsr, Real hardKsr, Real kd, Real ratio)
+    : m1(m1)
+    , m2(m2)
+    , p1(p1)
+    , p2(p2)
+    , previousAngle1(0)
+    , previousAngle2(0)
+    , angle1(0)
+    , angle2(0)
+    , kd(kd)
+    , hardStiffnessTrans(hardKst)
+    , softStiffnessRot(softKsr)
+    , hardStiffnessRot(hardKsr)
+    , Ratio(ratio)
+{
+    freeAxis = sofa::defaulttype::Vec<2,unsigned int>(0,0);
+}
 
 template<class DataTypes>
 GearSpringForceField<DataTypes>::GearSpringForceField(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
-    , outfile(NULL)
+    , outfile(nullptr)
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping"))
     , f_filename( initData(&f_filename, "filename", "output file name"))
     , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
@@ -63,13 +88,7 @@ GearSpringForceField<DataTypes>::GearSpringForceField(MechanicalState* object1, 
 
 template<class DataTypes>
 GearSpringForceField<DataTypes>::GearSpringForceField()
-    : outfile(NULL)
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping"))
-    , f_filename( initData(&f_filename, "filename", "output file name"))
-    , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
-    , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
-    , lastTime((Real)0.0)
-    , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
+    : GearSpringForceField(nullptr, nullptr)
 {
 }
 
@@ -91,9 +110,9 @@ void GearSpringForceField<DataTypes>::init()
         outfile = new std::ofstream(filename.c_str());
         if( !outfile->is_open() )
         {
-            serr << "Error creating file "<<filename<<sendl;
+            msg_error() << "Creating file " << filename << " failed.";
             delete outfile;
-            outfile = NULL;
+            outfile = nullptr;
         }
     }
 
@@ -120,15 +139,8 @@ void GearSpringForceField<DataTypes>::reinit()
 template <class DataTypes>
 void GearSpringForceField<DataTypes>::bwdInit()
 {
-//   this->Inherit::bwdInit();
-
     reinit();
 }
-
-
-
-static const double pi=3.14159265358979323846264338327950288;
-
 
 template<class DataTypes>
 void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , /*const*/ Spring& spring)
@@ -139,7 +151,7 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
     if(spring.m1==spring.p1) cp1 = &spring.ini1; else { cp1 = &p1[spring.p1]; dv1 += v1[spring.p1];	spring.ini1 = *cp1;	}
     if(spring.m2==spring.p2) cp2 = &spring.ini2; else { cp2 = &p2[spring.p2]; dv2 += v2[spring.p2];	spring.ini2 = *cp2;	}
 
-// pivot
+    // pivot
     // force
     Vector  fT1 = ((*cp1).getCenter() - (*cc1).getCenter())*spring.hardStiffnessTrans + getVCenter(dv1)*spring.kd,
             fT2 = ((*cp2).getCenter() - (*cc2).getCenter())*spring.hardStiffnessTrans + getVCenter(dv2)*spring.kd;
@@ -147,7 +159,7 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
     // torque
     Vector fR1 , fR2;
     getVectorAngle(*cc1,*cp1,spring.freeAxis[0],fR1);		fR1 = fR1*spring.hardStiffnessRot + getVOrientation(dv1)*spring.kd,
-                                                            getVectorAngle(*cc2,*cp2,spring.freeAxis[1],fR2);		fR2 = fR2*spring.hardStiffnessRot + getVOrientation(dv2)*spring.kd;
+            getVectorAngle(*cc2,*cp2,spring.freeAxis[1],fR2);		fR2 = fR2*spring.hardStiffnessRot + getVOrientation(dv2)*spring.kd;
 
     // add force
     const Deriv force1(fT1, fR1 );
@@ -155,7 +167,7 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
     const Deriv force2(fT2, fR2 );
     f2[spring.m2] += force2; this->mstate2->forceMask.insertEntry(spring.m2);	if(spring.m2!=spring.p2) { 	f2[spring.p2] -= force2; this->mstate2->forceMask.insertEntry(spring.p2); }
 
-// gear
+    // gear
     // get gear rotation axis in global coord
     Mat M1, M2;
     cc1->writeRotationMatrix(M1);
@@ -170,22 +182,15 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
 
     // compute 1D forces using updated angles around gear rotation axis
     Real newAngle1 = getAngleAroundAxis(*cp1,*cc1,spring.freeAxis[0]),
-         newAngle2 = getAngleAroundAxis(*cp2,*cc2,spring.freeAxis[1]);
+            newAngle2 = getAngleAroundAxis(*cp2,*cc2,spring.freeAxis[1]);
 
-    Real PI2=(Real)2.*(Real)pi;
-    while(newAngle1 - spring.previousAngle1 > pi) newAngle1 -= PI2;
-    while(newAngle1 - spring.previousAngle1 < -pi) newAngle1 += PI2;
-    while(newAngle2 - spring.previousAngle2 > pi) newAngle2 -= PI2;
-    while(newAngle2 - spring.previousAngle2 < -pi) newAngle2 += PI2;
+    while(newAngle1 - spring.previousAngle1 > M_PI) newAngle1 -= M_2_PI;
+    while(newAngle1 - spring.previousAngle1 < -M_PI) newAngle1 += M_2_PI;
+    while(newAngle2 - spring.previousAngle2 > M_PI) newAngle2 -= M_2_PI;
+    while(newAngle2 - spring.previousAngle2 < -M_PI) newAngle2 += M_2_PI;
 
     spring.angle1 += newAngle1 - spring.previousAngle1; spring.previousAngle1 = newAngle1;
     spring.angle2 += newAngle2 - spring.previousAngle2; spring.previousAngle2 = newAngle2;
-
-    // avoid drift ???
-    //while(spring.angle1 > PI) { spring.angle1 -= PI2; spring.angle2 -= PI2 * spring.Ratio ;}
-    //while(spring.angle1 <-PI) { spring.angle1 += PI2; spring.angle2 += PI2 * spring.Ratio ;}
-    //spring.angle1 = newAngle1;
-
 
     Real f = ( - spring.angle1 * spring.Ratio - spring.angle2 ) * spring.softStiffnessRot; // force1 = - force2  at contact point
 
@@ -221,7 +226,7 @@ void GearSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDer
 {
     Deriv d1 = -dx1[spring.m1] , d2 = -dx2[spring.m2] ;
 
-// pivots
+    // pivots
     if(spring.m1!=spring.p1) d1 += dx1[spring.p1];
     if(spring.m2!=spring.p2) d2 += dx2[spring.p2];
 
@@ -238,12 +243,12 @@ void GearSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDer
             dfR2 = spring.ini2.rotate(KR2.linearProduct(spring.ini2.inverseRotate(getVOrientation(d2))));
 
     const Deriv dforce1(dfT1,dfR1),
-          dforce2(dfT2,dfR2);
+            dforce2(dfT2,dfR2);
 
     f1[spring.m1] += dforce1 * kFactor; if(spring.m1!=spring.p1) f1[spring.p1] -= dforce1 * kFactor;
     f2[spring.m2] += dforce2 * kFactor; if(spring.m2!=spring.p2) f2[spring.p2] -= dforce2 * kFactor;
 
-// gear
+    // gear
     Real dangle1 = spring.ini1.inverseRotate(getVOrientation(dx1[spring.m1]))[spring.freeAxis[0]];
     Real dangle2 = spring.ini2.inverseRotate(getVOrientation(dx2[spring.m2]))[spring.freeAxis[1]];
 
@@ -311,45 +316,79 @@ void GearSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *mp
 template<class DataTypes>
 void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
+
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    glDisable(GL_LIGHTING);
+    vparams->drawTool()->disableLighting();
+    sofa::defaulttype::RGBAColor color(1, 1, 0, 1);
     const helper::vector<Spring>& springs = this->springs.getValue();
+
+    float radius = showFactorSize.getValue() / 15; //see helper/gl/Cylinder.cpp
 
     for (unsigned int i=0; i<springs.size(); i++)
     {
         if(springs[i].freeAxis[0] == 0)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector((Real)(1.0*showFactorSize.getValue()),0,0));
+            typename DataTypes::CPos vec = Vector((Real)(1.0*showFactorSize.getValue()), 0, 0);
+
+            typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
+
+            vparams->drawTool()->drawCylinder(v0, v1 , radius, color);
         }
         if(springs[i].freeAxis[0] == 1)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,(Real)(1.0*showFactorSize.getValue()),0));
+            typename DataTypes::CPos vec = Vector(0, (Real)(1.0*showFactorSize.getValue()), 0.0);
+
+            typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
+
+            vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
         if(springs[i].freeAxis[0] == 2)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,0,(Real)(1.0*showFactorSize.getValue())) );
+            typename DataTypes::CPos vec = Vector(0, 0, (Real)(1.0*showFactorSize.getValue()));
+
+            typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
+
+            vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
 
         if(springs[i].freeAxis[1] == 0)
         {
-            helper::gl::Cylinder::draw(p2[springs[i].m2].getCenter(), p2[springs[i].m2].getOrientation(), Vector((Real)(1.0*showFactorSize.getValue()),0,0));
+            typename DataTypes::CPos vec = Vector((Real)(1.0*showFactorSize.getValue()), 0, 0);
+
+            typename DataTypes::CPos v0 = p2[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p2[springs[i].m2].getOrientation().rotate(vec) + v0;
+            
+            vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
         if(springs[i].freeAxis[1] == 1)
         {
-            helper::gl::Cylinder::draw(p2[springs[i].m2].getCenter(), p2[springs[i].m2].getOrientation(), Vector(0,(Real)(1.0*showFactorSize.getValue()),0));
+            typename DataTypes::CPos vec = Vector(0, (Real)(1.0*showFactorSize.getValue()), 0.0);
+
+            typename DataTypes::CPos v0 = p2[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p2[springs[i].m2].getOrientation().rotate(vec) + v0;
+
+            vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
         if(springs[i].freeAxis[1] == 2)
         {
-            helper::gl::Cylinder::draw(p2[springs[i].m2].getCenter(), p2[springs[i].m2].getOrientation(), Vector(0,0,(Real)(1.0*showFactorSize.getValue())) );
+            typename DataTypes::CPos vec = Vector(0, 0, (Real)(1.0*showFactorSize.getValue()));
+
+            typename DataTypes::CPos v0 = p2[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p2[springs[i].m2].getOrientation().rotate(vec) + v0;
+
+            vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
-        //	if (showExtraTorsion.getValue())
-        //		helper::gl::drawArrow(p1[springs[i].m1].getCenter(), p1[springs[i].m1].pointToParent(springs[i].torsion-springs[i].lawfulTorsion), (float)(0.5*showFactorSize.getValue()));
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

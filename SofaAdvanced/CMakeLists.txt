@@ -1,36 +1,55 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaAdvanced)
 
 ## Dependencies
 find_package(SofaGeneral REQUIRED)
-find_package(MiniFlowVR QUIET)
-set(SOFA_HAVE_MINIFLOWVR ${MiniFlowVR_FOUND})
-set(SOFA_HAVE_FLOWVR ${MiniFlowVR_FOUND}) # cmakedefine
 
 ## Version
 set(SOFAADVANCED_VERSION ${SofaFramework_VERSION})
 
-## SofaAdvanced/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaAdvanced/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaAdvanced/config.h" DESTINATION "include/SofaAdvanced")
-
-
-### Subdirectories
-
+## Subdirectories
 set(SOFAADVANCED_TARGETS
-    SofaComponentAdvanced
     SofaNonUniformFem
-)
+    )
+
+message(DEPRECATION
+    " ${PROJECT_NAME} is deprecated.\n"
+    " You should now explicitely find (find_package) and link (target_link_library) each module you need within: \n"
+    " ${SOFAADVANCED_TARGETS}"
+    )
 
 foreach(TARGET ${SOFAADVANCED_TARGETS})
-    add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
-    set_target_properties(${TARGET} PROPERTIES FOLDER SofaAdvanced) # IDE folder
-    set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFAADVANCED_VERSION})
+    find_package(${TARGET} QUIET)
+    if(NOT ${TARGET}_FOUND)
+        string(TOUPPER module_${TARGET} MODULE_TO_CHECK)
+        list(APPEND LIST_MODULES_TO_CHECK ${MODULE_TO_CHECK})
+    endif()
 endforeach()
+if(LIST_MODULES_TO_CHECK)
+    message(FATAL_ERROR
+        " If you still want to use ${PROJECT_NAME}, please enable the following CMake option(s): \n"
+        " ${LIST_MODULES_TO_CHECK}"
+        )
+endif()
 
+set(SOFAADVANCED_SRC src/${PROJECT_NAME})
 
-## CMake package configurations files
-sofa_write_package_config_files(SofaAdvanced ${SOFAADVANCED_VERSION})
+set(HEADER_FILES
+    ${SOFAADVANCED_SRC}/config.h.in 
+    ${SOFAADVANCED_SRC}/initSofaAdvanced.h
+    )
+
+set(SOURCE_FILES
+    ${SOFAADVANCED_SRC}/initSofaAdvanced.cpp
+    )
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAADVANCED_TARGETS})
+
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    )

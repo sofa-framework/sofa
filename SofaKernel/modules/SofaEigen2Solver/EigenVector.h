@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,10 +69,10 @@ public:
         resize(nbRow);
     }
 
-    Index size() const { return eigenVector.size(); }
+    Index size() const override { return eigenVector.size(); }
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(Index nbRow)
+    void resize(Index nbRow) override
     {
         eigenVector.resize((IndexEigen)nbRow);
     }
@@ -86,24 +86,24 @@ public:
 
 
 
-    SReal element(Index i) const
+    SReal element(Index i) const override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("EigenVector") << "Invalid read access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
             return 0.0;
         }
 #endif
         return eigenVector.coeff((IndexEigen)i);
     }
 
-    void set(Index i, double v)
+    void set(Index i, double v) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
@@ -115,7 +115,7 @@ public:
 #ifdef EigenVector_CHECK
         if (i >= rowSize()/Nout || j >= colSize()/Nin )
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()/Nout<<","<<colSize()/Nin<<")"<<std::endl;
+            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() / Nout << "," << colSize() / Nin << ")";
             return;
         }
 #endif
@@ -126,24 +126,24 @@ public:
 
 
 
-    void add(Index i, double v)
+    void add(Index i, double v) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "/*<<this->Name()*/<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in "/*<<this->Name()*/ << " of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
         eigenVector.coeffRef((IndexEigen)i) += (Real)v;
     }
 
-    void clear(Index i)
+    void clear(Index i) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
@@ -152,7 +152,7 @@ public:
 
 
     /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
-    void clear()
+    void clear() override
     {
         resize(0);
         resize(size());
@@ -174,12 +174,8 @@ public:
 
 };
 
-#ifndef SOFA_FLOAT
-template<> const char* EigenVector<defaulttype::Vec3dTypes>::Name();
-#endif
-#ifndef SOFA_DOUBLE
-template<> const char* EigenVector<defaulttype::Vec3fTypes>::Name();
-#endif
+template<> const char* EigenVector<defaulttype::Vec3Types>::Name();
+
 
 
 
@@ -206,7 +202,7 @@ public:
     const VectorEigen& getVectorEigen() const { return eigenVector; }
 
 
-    Index size() const { return eigenVector.size(); }
+    Index size() const override { return eigenVector.size(); }
 
     EigenVector(Index nbRow=0)
     {
@@ -214,31 +210,31 @@ public:
     }
 
     /// Resize the matrix without preserving the data
-    void resize(Index nbRow)
+    void resize(Index nbRow) override
     {
         eigenVector.resize(nbRow);
     }
 
 
 
-    SReal element(Index i) const
+    SReal element(Index i) const override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("EigenVector") << "Invalid read access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
             return 0.0;
         }
 #endif
         return eigenVector.coeff(i);
     }
 
-    void set(Index i, double v)
+    void set(Index i, double v) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
@@ -249,24 +245,24 @@ public:
 
 
 
-    void add(Index i, double v)
+    void add(Index i, double v) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "/*<<this->Name()*/<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in "/*<<this->Name()*/ << " of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
         eigenVector.coeffRef(i) += (Real)v;
     }
 
-    void clear(Index i)
+    void clear(Index i) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
@@ -275,7 +271,7 @@ public:
 
 
     /// Set all values to 0
-    void clear()
+    void clear() override
     {
         eigenVector.setZero();
     }
