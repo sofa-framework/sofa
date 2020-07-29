@@ -71,7 +71,7 @@ struct Link_test : public BaseSimulationTest
         // 4. test with invalid link but valid owner
         ASSERT_FALSE(withOwner.read("/A")); // should return false as the link is invalid (should start with '@')
         ASSERT_TRUE(withOwner.read("@/plop")); // same as 3: plop could be added later in the graph, after init()
-        ASSERT_TRUE(withOwner.read("@/\!-#")); // read doesn't check path consistency, except for the presence of the '@'sign in the first character. This will return true
+        ASSERT_FALSE(withOwner.read("@/\!-#")); // read doesn't check path consistency, except for the presence of the '@'sign in the first character. This will return true
         ASSERT_TRUE(withOwner.read("@/")); // Here link is OK, but points to a BaseNode, while the link only accepts BaseObjects. Should return false. But returns true, since findLinkDest returns false in read()
 
         // test with valid link & valid owner
