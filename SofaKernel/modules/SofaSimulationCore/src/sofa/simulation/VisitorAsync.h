@@ -22,10 +22,10 @@
 #ifndef Sofa_VisitorAsync_h__
 #define Sofa_VisitorAsync_h__
 
-#include <Multithreading/config.h>
+#include <MultiThreading/config.h>
 
 #include <sofa/simulation/Visitor.h>
-#include <MultiThreading/src/Tasks.h>
+#include <MultiThreading/Tasks.h>
 
 namespace sofa
 {

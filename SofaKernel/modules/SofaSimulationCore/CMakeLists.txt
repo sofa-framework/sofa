@@ -140,7 +140,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
 )
-if(SOFA_BUILD_TESTS)
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     list(APPEND HEADER_FILES
         ${SRC_ROOT}/testing/Node_test.h
         )

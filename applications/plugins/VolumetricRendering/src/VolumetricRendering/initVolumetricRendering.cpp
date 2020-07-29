@@ -19,25 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITLEAPMOTION_H
-#define INITLEAPMOTION_H
+
+#include <VolumetricRendering/config.h>
+
+namespace sofa::component
+{
+
+//Here are just several convenient functions to help user to know what contains the plugin
+
+extern "C" {
+    SOFA_VOLUMETRICRENDERING_API void initExternalModule();
+    SOFA_VOLUMETRICRENDERING_API const char* getModuleName();
+    SOFA_VOLUMETRICRENDERING_API const char* getModuleVersion();
+    SOFA_VOLUMETRICRENDERING_API const char* getModuleLicense();
+    SOFA_VOLUMETRICRENDERING_API const char* getModuleDescription();
+    SOFA_VOLUMETRICRENDERING_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return "VolumetricRendering";
+}
+
+const char* getModuleVersion()
+{
+    return "0.1";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
 
-#include <sofa/config.h>
+const char* getModuleDescription()
+{
+    return "A plugin for volumetric rendering (tetrahedron, hexahedron)";
+}
+
+const char* getModuleComponentList()
+{
+    return "OglTetrahedralModel";
+}
 
 
-#ifndef WIN32
-        #define SOFA_EXPORT_DYNAMIC_LIBRARY
-        #define SOFA_IMPORT_DYNAMIC_LIBRARY
-        #define SOFA_LEAPMOTION_API
-#else
-        #ifdef SOFA_BUILD_LEAPMOTION
-                #define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-                #define SOFA_LEAPMOTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-        #else
-                #define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-                #define SOFA_LEAPMOTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-        #endif
-#endif // not WIN32
+} // namespace sofa::component
 
-#endif // INITLEAPMOTION_H

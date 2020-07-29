@@ -80,10 +80,10 @@ public:
         ASSERT_NE(root, nullptr) ;
 
         ASSERT_NE(root->findData("componentState"), nullptr);
-        root->m_componentstate = ComponentState::Valid;
-        ASSERT_EQ(root->m_componentstate, ComponentState::Valid);
-        root->m_componentstate = ComponentState::Loading;
-        ASSERT_EQ(root->m_componentstate, ComponentState::Loading);
+        root->d_componentState.setValue(ComponentState::Valid);
+        ASSERT_EQ(root->d_componentState.getValue(), ComponentState::Valid);
+        root->d_componentState.setValue(ComponentState::Loading);
+        ASSERT_EQ(root->d_componentState.getValue(), ComponentState::Loading);
     }
 };
 

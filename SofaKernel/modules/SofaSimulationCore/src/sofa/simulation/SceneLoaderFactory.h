@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_SCENELOADERFACTORY_H
 #define SOFA_SIMULATION_SCENELOADERFACTORY_H
 
-#include <sofa/simulation/simulationcore.h>
+#include <sofa/simulation/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
 

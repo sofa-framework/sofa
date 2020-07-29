@@ -914,7 +914,7 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     TopologyObjectType topoType = checkTopology();
     if(topoType == TopologyObjectType::POINT)
     {
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     Inherited::init();
@@ -952,7 +952,7 @@ sofa::core::topology::TopologyObjectType MeshMatrixMass<DataTypes, MassType>::ch
     if (m_topology == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return sofa::core::topology::TopologyObjectType::POINT;
     }
 
@@ -1333,12 +1333,12 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
         if(checkTotalMass())
         {
             initFromTotalMass();
-            this->m_componentstate = core::objectmodel::ComponentState::Valid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         }
         else
         {
             msg_error() << "doUpdateInternal: incorrect update from totalMass";
-            this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         }
     }
     else if(this->hasDataChanged(d_massDensity))
@@ -1346,12 +1346,12 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
         if(checkMassDensity())
         {
             initFromMassDensity();
-            this->m_componentstate = core::objectmodel::ComponentState::Valid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         }
         else
         {
             msg_error() << "doUpdateInternal: incorrect update from massDensity";
-            this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         }
     }
     else if(this->hasDataChanged(d_vertexMass))
@@ -1361,12 +1361,12 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
             if(checkVertexMass() && checkEdgeMass() )
             {
                 initFromVertexAndEdgeMass();
-                this->m_componentstate = core::objectmodel::ComponentState::Valid;
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
             }
             else
             {
                 msg_error() << "doUpdateInternal: incorrect update from vertex and edgeMass";
-                this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             }
         }
         else if(d_lumping.getValue() && (!this->hasDataChanged(d_edgeMass)))
@@ -1374,17 +1374,17 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
             if(checkVertexMass())
             {
                 initFromVertexMass();
-                this->m_componentstate = core::objectmodel::ComponentState::Valid;
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
             }
             else
             {
                 msg_error() << "doUpdateInternal: incorrect update from vertexMass (lumping)";
-                this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             }
         }
         else
         {
-            this->m_componentstate = core::objectmodel::ComponentState::Invalid;
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             msg_error() << "Initialization using vertexMass requires the lumping option or the edgeMass information";
         }
     }

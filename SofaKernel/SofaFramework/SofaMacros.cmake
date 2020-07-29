@@ -145,7 +145,10 @@ endmacro()
 
 macro(sofa_add_plugin_experimental directory plugin_name)
     sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
-    message("-- ${plugin_name} is an experimental feature, use it at your own risk.")
+    string(TOUPPER "PLUGIN_${plugin_name}" option)
+    if(${option})
+        message("-- ${plugin_name} is an experimental feature, use it at your own risk.")
+    endif()
 endmacro()
 
 macro(sofa_add_module directory module_name)
@@ -154,7 +157,10 @@ endmacro()
 
 macro(sofa_add_module_experimental directory module_name)
     sofa_add_generic( ${directory} ${module_name} "Module" ${ARGV2} )
-    message("-- ${module_name} is an experimental feature, use it at your own risk.")
+    string(TOUPPER "MODULE_${module_name}" option)
+    if(${option})
+        message("-- ${module_name} is an experimental feature, use it at your own risk.")
+    endif()
 endmacro()
 
 macro(sofa_add_application directory app_name)
@@ -207,7 +213,7 @@ function(sofa_add_generic_external directory name type)
         message("Fetching ${type_lower} ${name}")
 
         if(NOT EXISTS ${fetched_dir})
-            file(MAKE_DIRECTORY ${fetched_dir})
+            file(MAKE_DIRECTORY "${fetched_dir}/")
         endif()
 
         # Download and unpack at configure time
@@ -611,8 +617,8 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             # TODO: Deprecate this backward compatibility and replace all the macros
             # with old style: SofaModuleName -> SOFA_BUILD_MODULE_NAME + SOFA_MODULE_NAME_API
             # by new style: SofaModuleName -> SOFA_BUILD_SOFAMODULENAME + SOFA_SOFAMODULENAME_API
-            string(REPLACE "Sofa" "" sofa_target_oldname "${target}")
-            string(REGEX REPLACE "([A-Z])" "_\\1" sofa_target_oldname "${sofa_target_oldname}")
+            string(REGEX REPLACE "([^A-Z])([A-Z])" "\\1_\\2" sofa_target_oldname "${target}")
+            string(REPLACE "Sofa" "" sofa_target_oldname "${sofa_target_oldname}")
             string(TOUPPER "${sofa_target_oldname}" sofa_target_oldname_upper)
             target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD${sofa_target_oldname_upper}")
         endif()
@@ -648,7 +654,7 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
 
         # Configure and install headers
         get_target_property(target_sources ${target} SOURCES)
-        list(FILTER target_sources INCLUDE REGEX ".*(\.h\.in|\.h|\.inl)$") # keep only headers
+        list(FILTER target_sources INCLUDE REGEX ".*(\\.h\\.in|\\.h|\\.inl)$") # keep only headers
         foreach(header_file ${target_sources})
             if(NOT IS_ABSOLUTE "${header_file}")
                 set(header_file "${CMAKE_CURRENT_SOURCE_DIR}/${header_file}")
@@ -676,21 +682,19 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             endif()
 
             # Finalize dirs
-            set(header_build_dir "include/${include_install_dir}/${header_relative_dir_for_build}")
             if(relocatable_arg)
-                #set(header_install_dir "include/${include_install_dir}/${header_relative_dir}")
-                set(header_install_dir "include/${header_relative_dir}")
+                set(header_install_dir "include/${header_relative_dir_for_build}")
             else()
-                # install dir headers tree = build dir headers tree
-                set(header_install_dir "${header_build_dir}")
+                # headers install-dir tree = headers build-dir tree
+                set(header_install_dir "include/${include_install_dir}/${header_relative_dir_for_build}")
             endif()
             file(TO_CMAKE_PATH "${header_install_dir}" header_install_dir)
 
             # Configure and install
             get_target_property(public_header ${target} PUBLIC_HEADER)
-            if(header_file MATCHES ".*\.h\.in$")
+            if(header_file MATCHES ".*\\.h\\.in$")
                 # header to configure and install
-                file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/${header_build_dir}/${header_filename}.h" configured_file)
+                file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/include/${include_install_dir}/${header_relative_dir_for_build}/${header_filename}.h" configured_file)
                 configure_file("${header_file}" "${configured_file}")
                 install(FILES "${configured_file}" DESTINATION "${header_install_dir}" COMPONENT headers)
                 #message("configured_file = ${configured_file}")
@@ -699,7 +703,7 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
                 # header to install
                 install(FILES ${header_file} DESTINATION "${header_install_dir}" COMPONENT headers)
                 #message("header_file = ${header_file}")
-                #message("header_install_dir = ${header_install_dir}")
+                #message("header_install_dir = ${header_install_dir}\n")
             endif()
         endforeach()
     endforeach()
@@ -1038,17 +1042,17 @@ function(sofa_copy_libraries)
             if(NOT EXISTS runtime_output_dir)
                 # make sure runtime_output_dir exists before calling configure_file COPYONLY
                 # otherwise it will not be treated as a directory
-                file(MAKE_DIRECTORY ${runtime_output_dir})
+                file(MAKE_DIRECTORY "${runtime_output_dir}/")
             endif()
 
             if(EXISTS ${SHARED_LIB})
                 if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (Visual Studio)
                     foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                        file(MAKE_DIRECTORY "${runtime_output_dir}/${CONFIG}")
+                        file(MAKE_DIRECTORY "${runtime_output_dir}/${CONFIG}/")
                         configure_file(${SHARED_LIB} "${runtime_output_dir}/${CONFIG}/" COPYONLY)
                     endforeach()
                 else()                        # Single-config generator (nmake, ninja)
-                    configure_file(${SHARED_LIB} "${runtime_output_dir}" COPYONLY)
+                    configure_file(${SHARED_LIB} "${runtime_output_dir}/" COPYONLY)
                 endif()
             endif()
         endif()

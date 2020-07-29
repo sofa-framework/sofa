@@ -4,7 +4,7 @@
 #include <image/config.h>
 #include "ImageTypes.h"
 #if IMAGE_HAVE_MULTITHREADING
-#include <MultiThreading/src/DataExchange.inl>
+#include <MultiThreading/DataExchange.inl>
 #endif  // IMAGE_HAVE_MULTITHREADING
 
 namespace sofa

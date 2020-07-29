@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_TREE_CACTUSSTACKSTORAGE_H
 #define SOFA_SIMULATION_TREE_CACTUSSTACKSTORAGE_H
 
-#include <sofa/simulation/simulationcore.h>
+#include <sofa/simulation/config.h>
 #include <sofa/simulation/LocalStorage.h>
 #include <stack>
 

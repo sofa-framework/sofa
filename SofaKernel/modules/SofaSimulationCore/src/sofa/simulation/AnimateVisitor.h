@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_ANIMATEACTION_H
 #define SOFA_SIMULATION_ANIMATEACTION_H
 
-#include <sofa/simulation/simulationcore.h>
+#include <sofa/simulation/config.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/VecId.h>
