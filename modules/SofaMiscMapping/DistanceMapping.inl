@@ -77,7 +77,7 @@ void DistanceMapping<TIn, TOut>::init()
     if (m_edgeContainer == nullptr)
     {
         msg_error() << "No EdgeSetTopologyContainer component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -476,7 +476,7 @@ void DistanceMultiMapping<TIn, TOut>::init()
     if (m_edgeContainer == nullptr)
     {
         msg_error() << "No EdgeSetTopologyContainer component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     

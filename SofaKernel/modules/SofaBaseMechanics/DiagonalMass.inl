@@ -850,12 +850,12 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::init()
 {
-    m_componentstate = ComponentState::Valid;
+    this->d_componentState.setValue(ComponentState::Valid);
 
     if (!d_fileMass.getValue().empty())
     {
         if(!load(d_fileMass.getFullPath().c_str())){
-            m_componentstate = ComponentState::Invalid;
+            this->d_componentState.setValue(ComponentState::Invalid);
             return;
         }
         msg_warning() << "File given as input for DiagonalMass, in this a case:" << msgendl
@@ -867,7 +867,7 @@ void DiagonalMass<DataTypes, MassType>::init()
     {
         if(!checkTopology())
         {
-            m_componentstate = ComponentState::Invalid;
+            this->d_componentState.setValue(ComponentState::Invalid);
             return;
         }
         Inherited::init();
@@ -891,7 +891,7 @@ void DiagonalMass<DataTypes, MassType>::init()
         this->trackInternalData(d_massDensity);
         this->trackInternalData(d_totalMass);
     }
-    m_componentstate = ComponentState::Valid;
+    this->d_componentState.setValue(ComponentState::Valid);
 }
 
 
@@ -1200,7 +1200,7 @@ void DiagonalMass<DataTypes, MassType>::checkTotalMassInit()
     {
         d_totalMass.setValue(1.0) ;
         msg_warning() << "Switching back to default values: totalMass = 1.0\n";
-        m_componentstate = ComponentState::Invalid;
+        this->d_componentState.setValue(ComponentState::Invalid);
     }
 }
 
@@ -1384,12 +1384,12 @@ void DiagonalMass<DataTypes, MassType>::doUpdateInternal()
         if(checkTotalMass())
         {
             initFromTotalMass();
-            m_componentstate = ComponentState::Valid;
+            this->d_componentState.setValue(ComponentState::Valid);
         }
         else
         {
             msg_error() << "doUpdateInternal: incorrect update from totalMass";
-            m_componentstate = ComponentState::Invalid;
+            this->d_componentState.setValue(ComponentState::Invalid);
         }
     }
     else if(this->hasDataChanged(d_massDensity))
@@ -1397,12 +1397,12 @@ void DiagonalMass<DataTypes, MassType>::doUpdateInternal()
         if(checkMassDensity())
         {
             initFromMassDensity();
-            m_componentstate = ComponentState::Valid;
+            this->d_componentState.setValue(ComponentState::Valid);
         }
         else
         {
             msg_error() << "doUpdateInternal: incorrect update from massDensity";
-            m_componentstate = ComponentState::Invalid;
+            this->d_componentState.setValue(ComponentState::Invalid);
         }
     }
     else if(this->hasDataChanged(d_vertexMass))
@@ -1410,12 +1410,12 @@ void DiagonalMass<DataTypes, MassType>::doUpdateInternal()
         if(checkVertexMass())
         {
             initFromVertexMass();
-            m_componentstate = ComponentState::Valid;
+            this->d_componentState.setValue(ComponentState::Valid);
         }
         else
         {
             msg_error() << "doUpdateInternal: incorrect update from vertexMass";
-            m_componentstate = ComponentState::Invalid;
+            this->d_componentState.setValue(ComponentState::Invalid);
         }
     }
 

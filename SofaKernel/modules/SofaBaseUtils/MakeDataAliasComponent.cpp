@@ -41,7 +41,7 @@ MakeDataAliasComponent::MakeDataAliasComponent() :
   ,d_dataname(initData(&d_dataname, "dataname", "The data field for which to create an alias."))
   ,d_alias(initData(&d_alias, "alias", "The alias of the data field."))
 {
-    m_componentstate = ComponentState::Invalid ;
+    d_componentState.setValue(ComponentState::Invalid) ;
 }
 
 void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
@@ -93,7 +93,7 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
     }
     creatorentry.m_dataAlias[dataname].push_back(salias) ;
 
-    m_componentstate = ComponentState::Valid ;
+    d_componentState.setValue(ComponentState::Valid) ;
 }
 
 int MakeDataAliasComponentClass = RegisterObject("This object create an alias to a data field. ")

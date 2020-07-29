@@ -102,7 +102,7 @@ void Hexa2QuadTopologicalMapping::init()
 
     if (!modelsOk)
     {
-        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -141,7 +141,7 @@ void Hexa2QuadTopologicalMapping::init()
     // Need to fully init the target topology
     toModel->init();
 
-    this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 unsigned int Hexa2QuadTopologicalMapping::getFromIndex(unsigned int ind)
@@ -159,7 +159,7 @@ unsigned int Hexa2QuadTopologicalMapping::getFromIndex(unsigned int ind)
 
 void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 {
-    if (this->m_componentstate != sofa::core::objectmodel::ComponentState::Valid)
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     sofa::helper::AdvancedTimer::stepBegin("Update Hexa2QuadTopologicalMapping");

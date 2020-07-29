@@ -163,7 +163,7 @@ void BoxROI<DataTypes>::init()
             }else{
                 msg_warning(this) << "No attribute 'rest_position' in component '" << getName() << "'.\n"
                                   << "The BoxROI component thus have no input and is thus deactivated.\n" ;
-                m_componentstate = ComponentState::Invalid ;
+                d_componentState.setValue(ComponentState::Invalid) ;
                 return ;
             }
         }
@@ -181,7 +181,7 @@ void BoxROI<DataTypes>::init()
                 }else{
                     msg_warning(this) << "No attribute 'position' in component '" << getName() << "'.\n"
                                       << "The BoxROI component thus have no input and is thus deactivated.\n" ;
-                    m_componentstate = ComponentState::Invalid ;
+                    d_componentState.setValue(ComponentState::Invalid) ;
                     return ;
                 }
             }
@@ -193,14 +193,14 @@ void BoxROI<DataTypes>::init()
                                         "To remove this error message you can either:\n"
                                         "   - to specifiy the DOF where to apply the BoxROI with the 'position' attribute.\n"
                                         "   - to add MechanicalObject or MeshLoader component before the BoxROI in the scene graph.\n";
-                    m_componentstate = ComponentState::Invalid ;
+                    d_componentState.setValue(ComponentState::Invalid) ;
                     return ;
                 }
 
                 BaseData* parent = mstate->findData("rest_position");
                 if(!parent){
                     dmsg_error(this) <<  "Unable to find a rest_position attribute in the MechanicalObject '" << mstate->getName() << "'";
-                    m_componentstate = ComponentState::Invalid ;
+                    d_componentState.setValue(ComponentState::Invalid) ;
                     return ;
                 }
                 d_X0.setParent(parent);
@@ -272,7 +272,7 @@ void BoxROI<DataTypes>::init()
                                  "To remove this message you can either: \n"
                                  "  - set value into one or more of the attributes 'edges', 'triangles', 'tetrahedra', 'hexahedra'. \n"
                                  "  - add a TopologyContainer and a BaseMeshTopology in the context of this object. \n";
-            m_componentstate = ComponentState::Invalid ;
+            d_componentState.setValue(ComponentState::Invalid) ;
             return ;
         }*/
     }
@@ -298,7 +298,7 @@ void BoxROI<DataTypes>::init()
     addOutput(&d_quadInROI);
     addOutput(&d_nbIndices);
 
-    m_componentstate = ComponentState::Valid ;
+    d_componentState.setValue(ComponentState::Valid) ;
 
     /// The following is a trick to force the initial selection of the element by the engine.
     bool tmp=d_doUpdate.getValue() ;
@@ -572,7 +572,7 @@ bool BoxROI<DataTypes>::isQuadInBoxesStrict(const Quad& q)
 template <class DataTypes>
 void BoxROI<DataTypes>::doUpdate()
 {
-    if(m_componentstate==ComponentState::Invalid){
+    if(d_componentState.getValue() == ComponentState::Invalid){
         return ;
     }
 
@@ -741,7 +741,7 @@ void BoxROI<DataTypes>::doUpdate()
 template <class DataTypes>
 void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(m_componentstate==ComponentState::Invalid)
+    if(d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->d_drawSize.getValue())
@@ -1048,7 +1048,7 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
     if( onlyVisible && !d_drawBoxes.getValue() )
         return;
 
-    if(m_componentstate==ComponentState::Invalid)
+    if(d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
     const vector<Vec6>&  alignedBoxes =d_alignedBoxes.getValue();

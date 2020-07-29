@@ -55,7 +55,7 @@ template <class DataTypes>
 template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::init()
 {
-    this->m_componentstate = ComponentState::Invalid;
+    this->d_componentState.setValue(ComponentState::Invalid);
     if ( this->d_tagMechanics.getValue().size()>0) {
         sofa::core::objectmodel::Tag mechanicalTag(this->d_tagMechanics.getValue());
         object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
@@ -76,7 +76,7 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
     if (!m_topology)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TriangleCollisionModel<sofa::defaulttype::Vec3Types> requires a Triangular Topology";
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -85,7 +85,7 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
         msg_error() << "Unable to get a valid mechanical object from the context";
         return;
     }
-    this->m_componentstate = ComponentState::Valid;
+    this->d_componentState.setValue(ComponentState::Valid);
 }
 
 template <class DataTypes>
