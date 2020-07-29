@@ -118,6 +118,9 @@ void Base::addUpdateCallback(const std::string& name,
         }
     if(std::find(engine.getOutputs().begin(), engine.getOutputs().end(), &d_componentstate) == engine.getOutputs().end())
         engine.addOutput(&d_componentstate);
+
+    for (auto o : outputs)
+        o->cleanDirty();
 }
 
 void Base::addOutputsToCallback(const std::string& name, std::initializer_list<BaseData*> outputs)
