@@ -10,10 +10,10 @@ find_package(SofaCommon REQUIRED)
 find_package(SofaGeneral REQUIRED)
 
 if(SOFASPARSESOLVER_HAVE_METIS)
-    find_package(Metis QUIET REQUIRED)
+    find_package(Metis QUIET REQUIRED HINTS "${CMAKE_CURRENT_LIST_DIR}/..")
 endif()
 if(SOFASPARSESOLVER_HAVE_CSPARSE)
-    find_package(CSparse QUIET REQUIRED)
+    find_package(CSparse QUIET REQUIRED HINTS "${CMAKE_CURRENT_LIST_DIR}/..")
 endif()
 
 ### Is the target existing ?
