@@ -33,6 +33,7 @@
 #include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/helper/NameDecoder.h>
 
 #define TYPE_GEODESIC 0
 #define TYPE_HARMONIC 1
@@ -147,10 +148,10 @@ public:
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
         if (arg->findObject(arg->getAttribute("hexaContainerPath", "../..")) == nullptr) {
-            msg_error(context) << "Cannot create " << className(obj) << " as the hexas container is missing.";
+            msg_error(context) << "Cannot create Distances as the hexas container is missing.";
         }
         if (arg->findObject(arg->getAttribute("targetPath", "..")) == nullptr) {
-            msg_error(context) << "Cannot create " << className(obj) << " as the target point set is missing.";
+            msg_error(context) << "Cannot create Distances as the target point set is missing.";
         }
         if ( dynamic_cast<sofa::component::topology::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == nullptr )
             return false;
