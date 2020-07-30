@@ -224,6 +224,20 @@ std::string BaseLink::CreateString(Base* object, BaseData* data, Base* from)
     return CreateString(CreateStringPath(object,from),CreateStringData(data));
 }
 
+void BaseLink::setLinkedBase(Base* link)
+{
+    auto owner = getOwnerBase();
+    BaseNode* n = dynamic_cast<BaseNode*>(link);
+    BaseObject* o = dynamic_cast<BaseObject*>(link);
+    auto pathname = n != nullptr ? n->getPathName() : o->getPathName();
+    if (!this->read("@" + pathname))
+    {
+        if (!owner)
+            msg_error("BaseLink (" + getName() + ")") << "Could not read link from" << pathname;
+        else msg_error(owner) << "Could not read link from" << pathname;
+    }
+}
+
 } // namespace objectmodel
 
 } // namespace core
