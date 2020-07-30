@@ -1326,7 +1326,7 @@ TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
-    m_componentstate = ComponentState::Invalid ;
+    d_componentState.setValue(ComponentState::Invalid) ;
 
     const VecReal& youngModulus = _youngModulus.getValue();
     minYoung=youngModulus[0];
@@ -1361,7 +1361,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << " object must have a mesh topology. The component is inactivated.  "
             "To remove this error message please add a topology component to your scene.";
-        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 
         // Need to affect a vector to the pointer even if it is empty.
         if (_indexedElements == nullptr)
@@ -1380,7 +1380,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         if (_indexedElements == nullptr)
             _indexedElements = new VecElement();
 
-        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 
         return;
     }
@@ -1446,7 +1446,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
        _indexedElements = tetrahedra;
     }
 
-    m_componentstate = ComponentState::Valid ;
+    d_componentState.setValue(ComponentState::Valid) ;
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
 
@@ -1467,7 +1467,7 @@ void TetrahedronFEMForceField<DataTypes>::reset()
 template <class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::reinit()
 {
-    if(m_componentstate==ComponentState::Invalid)
+    if(d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
     if (!this->mstate || !m_topology){
@@ -1738,7 +1738,7 @@ void TetrahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, b
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(m_componentstate == ComponentState::Invalid)
+    if(d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
     if (!vparams->displayFlags().getShowForceFields()) return;

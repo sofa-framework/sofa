@@ -53,7 +53,7 @@ void BaseLoader::parse(sofa::core::objectmodel::BaseObjectDescription *arg)
     
     // File not loaded, component is set to invalid
     if (!success)
-        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 }
 
 

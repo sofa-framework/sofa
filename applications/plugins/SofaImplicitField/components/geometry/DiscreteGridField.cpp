@@ -54,11 +54,11 @@ DiscreteGridField::DiscreteGridField()
 void DiscreteGridField::init()
 {
     if(in_nx.getValue()==0 && in_nz.getValue()==0 && in_nz.getValue()==0) {
-        m_componentstate = ComponentState::Invalid;
+        d_componentState.setValue(ComponentState::Invalid);
         msg_error() << "uninitialized grid";
     }
     else if(in_filename.isSet() == false) {
-        m_componentstate = ComponentState::Invalid;
+        d_componentState.setValue(ComponentState::Invalid)
         msg_error() << "unset filename";
     }
     else {
@@ -67,7 +67,7 @@ void DiscreteGridField::init()
         loadGrid(in_scale.getValue(),in_sampling.getValue(),in_nx.getValue(),in_ny.getValue(),in_nz.getValue(),pmin,pmax);
     }
 
-    m_componentstate = ComponentState::Valid;
+    d_componentState.setValue(ComponentState::Valid)
 }
 */
 

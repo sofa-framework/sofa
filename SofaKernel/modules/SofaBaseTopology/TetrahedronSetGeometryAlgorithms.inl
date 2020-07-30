@@ -1065,7 +1065,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(this->m_componentstate == ComponentState::Invalid)
+    if(this->d_componentState.getValue() == ComponentState::Invalid)
         return;
 
     TriangleSetGeometryAlgorithms<DataTypes>::draw(vparams);

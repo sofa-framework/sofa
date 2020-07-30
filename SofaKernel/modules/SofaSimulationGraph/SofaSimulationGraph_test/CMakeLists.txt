@@ -11,6 +11,7 @@ set(SOURCE_FILES
     Node_test.cpp
     SimpleApi_test.cpp
     Simulation_test.cpp
+    Link_test.cpp
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

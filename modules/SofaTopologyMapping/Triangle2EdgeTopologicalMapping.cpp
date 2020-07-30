@@ -95,7 +95,7 @@ void Triangle2EdgeTopologicalMapping::init()
 
     if (!modelsOk)
     {
-        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -130,7 +130,7 @@ void Triangle2EdgeTopologicalMapping::init()
     // Need to fully init the target topology
     toModel->init();
 
-    this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
@@ -148,7 +148,7 @@ unsigned int Triangle2EdgeTopologicalMapping::getFromIndex(unsigned int ind)
 
 void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 {
-    if (this->m_componentstate != sofa::core::objectmodel::ComponentState::Valid)
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     sofa::helper::AdvancedTimer::stepBegin("Update Triangle2EdgeTopologicalMapping");

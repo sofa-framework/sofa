@@ -54,13 +54,13 @@ Base::Base()
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
-    , d_componentstate(initData(&d_componentstate, ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
+    , d_componentState(initData(&d_componentState, ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
 {
     name.setOwnerClass("Base");
     name.setAutoLink(false);
-    d_componentstate.setAutoLink(false);
-    d_componentstate.setReadOnly(true);
-    d_componentstate.setOwnerClass("Base");
+    d_componentState.setAutoLink(false);
+    d_componentState.setReadOnly(true);
+    d_componentState.setOwnerClass("Base");
     f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
     f_tags.setOwnerClass("Base");
@@ -74,8 +74,8 @@ Base::Base()
     /// name change => component state update
     addUpdateCallback("name", {&name}, [this](const DataTracker&){
         /// Increment the state counter but without changing the state.
-        return m_componentstate.getValue();
-    }, {&m_componentstate});
+        return d_componentState.getValue();
+    }, {&d_componentState});
 }
 
 Base::~Base()
@@ -112,11 +112,11 @@ void Base::addUpdateCallback(const std::string& name,
     engine.addOutputs(outputs);
 
     for(auto& i : engine.getInputs())
-        if( i == &d_componentstate ) {
+        if( i == &d_componentState ) {
             msg_error(this) << "The componentstate cannot be set as an input of a callbackEngine.";
-            engine.delInput(&d_componentstate);
+            engine.delInput(&d_componentState);
         }
-    engine.addOutput(&d_componentstate);
+    engine.addOutput(&d_componentState);
 }
 
 void Base::addOutputToCallback(const std::string& name, BaseData* output)

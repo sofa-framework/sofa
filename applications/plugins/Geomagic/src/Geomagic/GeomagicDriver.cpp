@@ -178,7 +178,7 @@ GeomagicDriver::GeomagicDriver()
     this->f_listening.setValue(true);
     m_forceFeedback = nullptr;
     m_GeomagicVisualModel = std::make_unique<GeomagicVisualModel>();
-    sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Loading);
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
 }
 
 
@@ -282,7 +282,7 @@ void GeomagicDriver::initDevice()
         if (tmpError != HD_SUCCESS) // failed
         {
             m_hHD = HD_INVALID_HANDLE;
-            sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
     }
@@ -305,7 +305,7 @@ void GeomagicDriver::initDevice()
 
     if (catchHDError())
     {
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     
@@ -321,7 +321,7 @@ void GeomagicDriver::initDevice()
 
     if (catchHDError())
     {
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -342,7 +342,7 @@ void GeomagicDriver::initDevice()
     std::this_thread::sleep_for(std::chrono::milliseconds(42));
     updatePosition();
 
-    sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
@@ -459,7 +459,7 @@ void GeomagicDriver::updateButtonStates()
 
 void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 {
-    if (sofa::core::objectmodel::BaseObject::d_componentstate.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+    if (sofa::core::objectmodel::BaseObject::d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     vparams->drawTool()->saveLastState();
@@ -504,7 +504,7 @@ void GeomagicDriver::handleEvent(core::objectmodel::Event *event)
 {
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
-        if (sofa::core::objectmodel::BaseObject::d_componentstate.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        if (sofa::core::objectmodel::BaseObject::d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
             return;
 
         if (m_hStateHandles.size() && m_hStateHandles[0] == HD_INVALID_HANDLE)

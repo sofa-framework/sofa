@@ -41,7 +41,7 @@ MakeAliasComponent::MakeAliasComponent() :
    d_targetcomponent(initData(&d_targetcomponent, "targetcomponent", "The component class for which to create an alias."))
   ,d_alias(initData(&d_alias, "alias", "The new alias of the component."))
 {
-    m_componentstate = ComponentState::Invalid ;
+    d_componentState.setValue(ComponentState::Invalid) ;
 }
 
 void MakeAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
@@ -78,7 +78,7 @@ void MakeAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 
     ObjectFactory::getInstance()->addAlias(salias, starget);
 
-    m_componentstate = ComponentState::Valid ;
+    d_componentState.setValue(ComponentState::Valid) ;
 }
 
 int MakeAliasComponentClass = RegisterObject("This object create an alias to a component name to make the scene more readable. ")

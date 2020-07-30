@@ -110,7 +110,7 @@ void CylinderCollisionModel<DataTypes>::init()
     if (m_mstate==nullptr)
     {
         msg_error() << "CylinderCollisionModel requires a Rigid Mechanical Model";
-        m_componentstate = ComponentState::Invalid;
+        d_componentState.setValue(ComponentState::Invalid);
         return;
     }
 

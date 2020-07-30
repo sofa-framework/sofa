@@ -44,7 +44,7 @@ MeshBarycentricMapperEngine<DataTypes>::MeshBarycentricMapperEngine()
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::init()
 {
-    d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 
     if(l_topology.get() == nullptr)
     {
@@ -70,7 +70,7 @@ void MeshBarycentricMapperEngine<DataTypes>::init()
     addOutput(&d_tableElements);
     setDirtyValue();
 
-    d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template <class DataTypes>
@@ -82,7 +82,7 @@ void MeshBarycentricMapperEngine<DataTypes>::reinit()
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
 {
-    if (d_componentstate.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     using sofa::defaulttype::Vector3;
