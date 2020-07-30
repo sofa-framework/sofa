@@ -26,7 +26,6 @@ sofa_add_plugin(Flexible Flexible)     # Depends on image, CImgPlugin, SofaHighO
 sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
 sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant
 sofa_add_plugin(PreassembledMass PreassembledMass) # Depends on Flexible and Compliant
-sofa_add_plugin(ARTrack ARTrack)
 sofa_add_plugin(ExternalBehaviorModel ExternalBehaviorModel)
 sofa_add_plugin(InvertibleFVM InvertibleFVM)
 sofa_add_plugin(MeshSTEPLoader MeshSTEPLoader)
