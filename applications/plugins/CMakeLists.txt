@@ -11,7 +11,6 @@ sofa_add_plugin(SofaSphFluid SofaSphFluid)
 sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON) # Contains DefaultCollisionGroupManager
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollision
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
-sofa_add_plugin(SofaVolumetricData SofaVolumetricData) # Depends on SofaDistanceGrid, SofaImplicitField
 sofa_add_plugin(MultiThreading MultiThreading)
 sofa_add_plugin(DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
 sofa_add_plugin(image image)           # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
