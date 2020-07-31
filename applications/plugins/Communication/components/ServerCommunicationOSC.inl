@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "serverCommunicationOSC.h"
+#include "ServerCommunicationOSC.h"
 #include <Communication/components/CommunicationSubscriber.h>
 
 namespace sofa

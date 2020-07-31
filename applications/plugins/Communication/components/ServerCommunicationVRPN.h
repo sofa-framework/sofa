@@ -1,4 +1,4 @@
-#include "serverCommunication.h"
+#include "ServerCommunication.h"
 
 #include<vrpn_BaseClass.h>
 #include<vrpn_Analog.h>

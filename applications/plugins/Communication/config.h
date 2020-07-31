@@ -24,7 +24,7 @@
 
 #include <sofa/helper/config.h>
 
-#ifdef SOFA_BUILD_Communication
+#ifdef SOFA_BUILD_COMMUNICATION
 #  define SOFA_COMMUNICATION_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_COMMUNICATION_API SOFA_IMPORT_DYNAMIC_LIBRARY

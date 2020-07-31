@@ -23,7 +23,7 @@
 #define SOFA_COMMUNICATIONSUBSCRIBER_H
 
 #include <Communication/config.h>
-#include <Communication/components/serverCommunication.h>
+#include <Communication/components/ServerCommunication.h>
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/Link.h>

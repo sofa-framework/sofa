@@ -1,7 +1,7 @@
 #ifndef SOFA_SERVERCOMMUNICATIONZMQ_CPP
 #define SOFA_SERVERCOMMUNICATIONZMQ_CPP
 
-#include "serverCommunicationZMQ.inl"
+#include "ServerCommunicationZMQ.inl"
 
 namespace sofa
 {

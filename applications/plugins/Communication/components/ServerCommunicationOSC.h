@@ -22,7 +22,7 @@
 #ifndef SOFA_SERVERCOMMUNICATIONOSC_H
 #define SOFA_SERVERCOMMUNICATIONOSC_H
 
-#include "serverCommunication.h"
+#include "ServerCommunication.h"
 
 #include <oscpack/osc/OscReceivedElements.h>
 #include <oscpack/osc/OscPrintReceivedElements.h>

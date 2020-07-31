@@ -1,7 +1,7 @@
 #ifndef SOFA_SERVERCOMMUNICATIONVRPN_CPP
 #define SOFA_SERVERCOMMUNICATIONVRPN_CPP
 
-#include "serverCommunicationVRPN.inl"
+#include "ServerCommunicationVRPN.inl"
 
 using sofa::core::RegisterObject ;
 

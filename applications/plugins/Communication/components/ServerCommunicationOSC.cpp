@@ -19,7 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "communicationCircularBuffer.inl"
+#include "ServerCommunicationOSC.inl"
+
+using sofa::core::RegisterObject ;
 
 namespace sofa
 {
@@ -30,6 +32,9 @@ namespace component
 namespace communication
 {
 
+SOFA_DECL_CLASS(ServerCommunicationOSC)
+
+int ServerCommunicationOSCClass = sofa::core::RegisterObject("Comunication component using OSC protocol").add<ServerCommunicationOSC>();
 
 } /// communication
 

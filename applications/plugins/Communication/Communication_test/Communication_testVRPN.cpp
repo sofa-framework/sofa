@@ -50,8 +50,8 @@ using sofa::simulation::Simulation ;
 using sofa::core::ObjectFactory ;
 
 // COMMUNICATION PART
-#include <Communication/components/serverCommunication.h>
-#include <Communication/components/serverCommunicationVRPN.h>
+#include <Communication/components/ServerCommunication.h>
+#include <Communication/components/ServerCommunicationVRPN.h>
 #include <Communication/components/CommunicationSubscriber.h>
 using sofa::component::communication::ServerCommunication;
 using sofa::component::communication::ServerCommunicationVRPN;

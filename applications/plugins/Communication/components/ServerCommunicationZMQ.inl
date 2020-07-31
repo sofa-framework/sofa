@@ -1,7 +1,7 @@
 #ifndef SOFA_CONTROLLER_ServerCommunicationZMQ_INL
 #define SOFA_CONTROLLER_ServerCommunicationZMQ_INL
 
-#include "serverCommunicationZMQ.h"
+#include "ServerCommunicationZMQ.h"
 #include <Communication/components/CommunicationSubscriber.h>
 
 namespace sofa

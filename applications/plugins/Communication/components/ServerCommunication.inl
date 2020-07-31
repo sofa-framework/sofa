@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <Communication/components/serverCommunication.h>
+#include <Communication/components/ServerCommunication.h>
 #include <Communication/components/CommunicationSubscriber.h>
 
 using sofa::core::RegisterObject ;

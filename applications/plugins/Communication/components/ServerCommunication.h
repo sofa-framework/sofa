@@ -57,7 +57,7 @@ using sofa::defaulttype::AbstractTypeInfo ;
 using sofa::component::linearsolver::FullMatrix;
 
 
-#include <Communication/components/communicationCircularBuffer.h>
+#include <Communication/components/CommunicationCircularBuffer.h>
 
 #include <iostream>
 #include <chrono>

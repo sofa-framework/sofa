@@ -1,7 +1,7 @@
 #ifndef SOFA_SERVERCOMMUNICATIONZMQ_H
 #define SOFA_SERVERCOMMUNICATIONZMQ_H
 #define WIN32_LEAN_AND_MEAN
-#include "serverCommunication.h"
+#include "ServerCommunication.h"
 #include <algorithm>
 #include <string>
 #include <regex>

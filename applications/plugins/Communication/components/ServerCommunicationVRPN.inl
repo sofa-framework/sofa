@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "serverCommunicationVRPN.h"
+#include "ServerCommunicationVRPN.h"
 #include "Communication/components/CommunicationSubscriber.h"
 
 #include <vrpn_Text.h>

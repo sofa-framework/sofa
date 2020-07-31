@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <Communication/components/communicationCircularBuffer.h>
+#include <Communication/components/CommunicationCircularBuffer.h>
 
 namespace sofa
 {

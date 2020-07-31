@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "serverCommunicationOSC.inl"
+#include "ServerCommunication.inl"
 
 using sofa::core::RegisterObject ;
 
@@ -31,10 +31,6 @@ namespace component
 
 namespace communication
 {
-
-SOFA_DECL_CLASS(ServerCommunicationOSC)
-
-int ServerCommunicationOSCClass = sofa::core::RegisterObject("Comunication component using OSC protocol").add<ServerCommunicationOSC>();
 
 } /// communication
 

@@ -1,124 +1,128 @@
-Cmake_minimum_required(VERSION 3.1)
-project(Communication)
+Cmake_minimum_required(VERSION 3.12)
+project(Communication VERSION 1.0)
 
-option(PLUGIN_COMMUNICATION_Oscpack "Make use of the Oscpack protocol" OFF)
-option(PLUGIN_COMMUNICATION_ZMQ "Make use of the ZMQ protocol" OFF)
-option(PLUGIN_COMMUNICATION_VRPN "Make use of the VRPN protocol" OFF)
+find_package(SofaFramework REQUIRED)
 
-set(COMMUNICATION_MAJOR_VERSION 1)
-set(COMMUNICATION_MINOR_VERSION 0)
-set(COMMUNICATION_VERSION ${COMMUNICATION_MAJOR_VERSION}.${COMMUNICATION_MINOR_VERSION})
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/cmake" DESTINATION lib COMPONENT headers)
 
 set(HEADER_FILES
     config.h
     components/CommunicationSubscriber.h
     components/CommunicationSubscriber.inl
-    components/communicationCircularBuffer.h
-    components/communicationCircularBuffer.inl
-    components/serverCommunication.h
-    components/serverCommunication.inl
-
+    components/CommunicationCircularBuffer.h
+    components/CommunicationCircularBuffer.inl
+    components/ServerCommunication.h
+    components/ServerCommunication.inl
     )
-
 set(SOURCE_FILES
     initCommunication.cpp
     components/CommunicationSubscriber.cpp
-    components/communicationCircularBuffer.cpp
-    components/serverCommunication.cpp
+    components/CommunicationCircularBuffer.cpp
+    components/ServerCommunication.cpp
     )
-
 set(EXTRA_FILES
     README.md
-    examples/ZMQ/primitives/Sender/senderRequest.scn
-    examples/ZMQ/primitives/Sender/senderPublisher.scn
-
-    examples/ZMQ/primitives/Receiver/receiverRequest.scn
-    examples/ZMQ/primitives/Receiver/receiverPublisher.scn
-
-    examples/ZMQ/matrix/Sender/senderRequest.scn
-    examples/ZMQ/matrix/Sender/senderPublisher.scn
-
-    examples/ZMQ/matrix/Receiver/receiverRequest.scn
-    examples/ZMQ/matrix/Receiver/receiverPublisher.scn
-
-    examples/OSC/primitives/Sender/sender.scn
-
-    examples/OSC/primitives/Receiver/receiver.scn
-
-    examples/OSC/matrix/Sender/sender.scn
-
-    examples/OSC/matrix/Receiver/receiver.scn
-
-    examples/VRPN/primitives/Sender/Sender.scn
-    examples/VRPN/primitives/Receiver/Receiver.scn
-
-    examples/VRPN/matrix/Sender/Sender.scn
-    examples/VRPN/matrix/Receiver/Receiver.scn
     )
 
-find_package(SofaFramework REQUIRED)
+set(PROTOCOL_LIBS "")
 
-#COMMUNICATION ZMQ
+# ZMQ
+find_package(ZMQ QUIET)
+option(PLUGIN_COMMUNICATION_ZMQ "Make use of the ZMQ" ${ZMQ_FOUND})
 if(PLUGIN_COMMUNICATION_ZMQ)
-    find_package(ZMQ REQUIRED)
+    sofa_find_package(ZMQ REQUIRED)
     message("Found ZMQ libraries")
     include_directories(${ZMQ_INCLUDE_DIRS})
+    list(APPEND PROTOCOL_LIBS ${ZMQ_LIBRARIES})
 
     list(APPEND HEADER_FILES
-        components/serverCommunicationZMQ.h
-        components/serverCommunicationZMQ.inl
+        components/ServerCommunicationZMQ.h
+        components/ServerCommunicationZMQ.inl
         )
-
     list(APPEND SOURCE_FILES
-        components/serverCommunicationZMQ.cpp
+        components/ServerCommunicationZMQ.cpp
+        )
+    list(APPEND EXTRA_FILES
+        examples/ZMQ/primitives/Sender/senderRequest.scn
+        examples/ZMQ/primitives/Sender/senderPublisher.scn
+        examples/ZMQ/primitives/Receiver/receiverRequest.scn
+        examples/ZMQ/primitives/Receiver/receiverPublisher.scn
+        examples/ZMQ/matrix/Sender/senderRequest.scn
+        examples/ZMQ/matrix/Sender/senderPublisher.scn
+        examples/ZMQ/matrix/Receiver/receiverRequest.scn
+        examples/ZMQ/matrix/Receiver/receiverPublisher.scn
         )
 endif()
 
-#COMMUNICATION OSC
+# Oscpack
+find_package(Oscpack QUIET)
+option(PLUGIN_COMMUNICATION_Oscpack "Make use of the Oscpack" ${Oscpack_FOUND})
 if(PLUGIN_COMMUNICATION_Oscpack)
-    find_package(Oscpack REQUIRED)
+    sofa_find_package(Oscpack REQUIRED)
     message("Found Oscpack libraries")
     include_directories(${Oscpack_INCLUDE_DIRS})
+    list(APPEND PROTOCOL_LIBS ${Oscpack_LIBRARIES})
 
     list(APPEND HEADER_FILES
-        components/serverCommunicationOSC.h
-        components/serverCommunicationOSC.inl
+        components/ServerCommunicationOSC.h
+        components/ServerCommunicationOSC.inl
         )
-
     list(APPEND SOURCE_FILES
-        components/serverCommunicationOSC.cpp
+        components/ServerCommunicationOSC.cpp
+        )
+    list(APPEND EXTRA_FILES
+        examples/OSC/primitives/Sender/sender.scn
+        examples/OSC/primitives/Receiver/receiver.scn
+        examples/OSC/matrix/Sender/sender.scn
+        examples/OSC/matrix/Receiver/receiver.scn
         )
 endif()
 
-#COMMUNICATION VRPN
+# VRPN
+find_package(VRPN QUIET)
+option(PLUGIN_COMMUNICATION_VRPN "Make use of the VRPN" ${VRPN_FOUND})
 if(PLUGIN_COMMUNICATION_VRPN)
-    find_package(VRPN REQUIRED)
+    sofa_find_package(VRPN REQUIRED)
     message("Found VRPN libraries")
     include_directories(${VRPN_INCLUDE_DIRS})
+    list(APPEND PROTOCOL_LIBS ${VRPN_LIBRARIES})
 
     list(APPEND HEADER_FILES
-        components/serverCommunicationVRPN.h
-        components/serverCommunicationVRPN.inl
+        components/ServerCommunicationVRPN.h
+        components/ServerCommunicationVRPN.inl
         )
-
     list(APPEND SOURCE_FILES
-        components/serverCommunicationVRPN.cpp
+        components/ServerCommunicationVRPN.cpp
+        )
+    list(APPEND EXTRA_FILES
+        examples/VRPN/primitives/Sender/Sender.scn
+        examples/VRPN/primitives/Receiver/Receiver.scn
+        examples/VRPN/matrix/Sender/Sender.scn
+        examples/VRPN/matrix/Receiver/Receiver.scn
         )
 endif()
 
-add_subdirectory(Communication_test)
-
-IF(WIN32)
-	add_definitions(-D_WINSOCKAPI_)
-ENDIF(WIN32)
+if(WIN32)
+    add_definitions(-D_WINSOCKAPI_)
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} ${Oscpack_LIBRARIES} ${ZMQ_LIBRARIES} ${VRPN_LIBRARIES} SofaCore SofaBaseLinearSolver SofaSimulationGraph)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Communication")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(${PROJECT_NAME} SofaCore SofaBaseLinearSolver SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} ${PROTOCOL_LIBS})
 
-install(TARGETS ${PROJECT_NAME}
-    COMPONENT Communication_libraries
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+    )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(PLUGIN_COMMUNICATION_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(PLUGIN_COMMUNICATION_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(Communication_test)
+endif()

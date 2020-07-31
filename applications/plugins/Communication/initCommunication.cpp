@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <Communication/config.h>
 
-#include <Communication/components/communicationBinder.h>
+#include <Communication/components/CommunicationBinder.h>
 
 extern "C" {
     SOFA_COMMUNICATION_API void initExternalModule();
