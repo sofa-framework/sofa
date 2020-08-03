@@ -321,7 +321,12 @@ install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION
 
 install(DIRECTORY "${SRC_ROOT}/resources/" DESTINATION "share/sofa/gui/qt" COMPONENT resources)
 
-sofa_install_targets(SofaGui SofaGuiQt "SofaGui" "src")
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaGui
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "SofaGui"
+    )
 
 # Qt deployment
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)

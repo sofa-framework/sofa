@@ -41,10 +41,10 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver SofaImplicitOdeSolver SofaSimpleFem)
 target_link_libraries(${PROJECT_NAME} PUBLIC metis csparse)
 
-sofa_generate_package(
-    NAME SofaSparseSolver
-    VERSION ${PROJECT_VERSION}
-    TARGETS SofaSparseSolver
+sofa_create_package_with_targets(
+    PACKAGE_NAME SofaSparseSolver
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS SofaSparseSolver AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaSparseSolver"
     RELOCATABLE "plugins"

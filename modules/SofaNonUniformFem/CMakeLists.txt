@@ -67,10 +67,10 @@ if(SofaDenseSolver_FOUND)
 endif()
 
 
-sofa_generate_package(
-    NAME ${PROJECT_NAME}
-    VERSION ${PROJECT_VERSION}
-    TARGETS ${PROJECT_NAME}
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
