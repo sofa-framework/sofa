@@ -1280,7 +1280,7 @@ function(sofa_generate_package)
     cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     message(WARNING "Deprecated macro. Use 'sofa_create_package_with_targets' instead.")
-    sofa_create_package(
+    sofa_create_package_with_targets(
         PACKAGE_NAME ${ARG_NAME}
         PACKAGE_VERSION ${ARG_VERSION}
         TARGETS ${ARG_TARGETS} AUTO_SET_TARGET_PROPERTIES
