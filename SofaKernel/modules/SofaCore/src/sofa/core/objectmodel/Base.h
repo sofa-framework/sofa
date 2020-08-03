@@ -98,6 +98,9 @@ namespace loader
 
 // VisitorScheduler
 
+// Empty class to be used to highlight deprecated objects at compilation time.
+class DeprecatedAndRemoved {};
+
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
@@ -502,8 +505,8 @@ public:
     ///   Methods related to component state
     /// @{
 
-    ComponentState getComponentState() const { return d_componentstate.getValue() ; }
-    bool isComponentStateValid() const { return d_componentstate == ComponentState::Valid; }
+    ComponentState getComponentState() const { return d_componentState.getValue() ; }
+    bool isComponentStateValid() const { return d_componentState == ComponentState::Valid; }
 
     ///@}
 
@@ -530,11 +533,13 @@ public:
 
     Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
 
-    Data< ComponentState >  d_componentstate; ///< the object state
+    Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< the object state
 
-    /// TODO @marques bruno: uncomment once c++17 is enabled in SOFA 
-    // [[deprecated("m_componentstate was renamed to d_componentstate. Please upgrade your code")]]
-    Data< ComponentState >& m_componentstate{d_componentstate}; ///< the object state
+    [[deprecated("m_componentstate was renamed to d_componentState in PR#1358. Please upgrade your code. Notification to be removed at v20.12")]]
+    DeprecatedAndRemoved m_componentstate;
+
+    [[deprecated("d_componentState was renamed to d_componentState in PR#1358. Please upgrade your code. Notification to be removed at v20.12")]]
+    DeprecatedAndRemoved d_componentstate;
 
 
     std::string m_definitionSourceFileName        {""};

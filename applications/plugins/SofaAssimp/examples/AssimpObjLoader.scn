@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-<!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
 <Node name="Root" gravity="0 -9.81 0" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="Assimp" pluginName="SofaAssimp"/>
@@ -7,8 +6,8 @@
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager response="default" />
-    <MinProximityIntersection name="Proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="false"/>
-    <DefaultCollisionGroupManager />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.08" contactDistance="0.05"/>
+
     <Node name="obj file">
         <AssimpLoader name="ObjLoader" filename="mesh/floor3.obj" />
         <MechanicalObject name="dofs" src="@ObjLoader" />

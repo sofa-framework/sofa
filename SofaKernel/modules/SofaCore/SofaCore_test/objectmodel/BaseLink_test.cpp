@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
+#include <sofa/core/objectmodel/BaseNode.h>
+using sofa::core::objectmodel::BaseNode ;
 
 #include <sofa/core/objectmodel/Link.h>
 using sofa::core::objectmodel::SingleLink ;
@@ -59,7 +61,7 @@ TEST_F(SingleLink_test, checkAccess  )
 {
     ASSERT_EQ(m_link.get(), m_dst.get()) ;
     ASSERT_FALSE(m_link.empty()) ;
-    ASSERT_EQ(m_link.size(), (unsigned int)1) ;
+    ASSERT_EQ(m_link.size(), size_t(1)) ;
 }
 
 TEST_F(SingleLink_test, checkIsSetPersistent  )
@@ -84,16 +86,32 @@ TEST_F(SingleLink_test, checkCounterLogic )
 TEST_F(SingleLink_test, checkMultiLink )
 {
     SingleLink<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK > mlink ;
-    ASSERT_EQ(mlink.size(), (unsigned int)0) ;
+    ASSERT_EQ(mlink.size(), size_t(0)) ;
     mlink.add(m_dst.get()) ;
-    ASSERT_EQ(mlink.size(), (unsigned int)1) ;
+    ASSERT_EQ(mlink.size(), size_t(1)) ;
     mlink.add(m_dst.get()) ;
-    ASSERT_EQ(mlink.size(), (unsigned int)1) ;
+    ASSERT_EQ(mlink.size(), size_t(1)) ;
 
     SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > slink ;
-    ASSERT_EQ(slink.size(), (unsigned int)0) ;
+    ASSERT_EQ(slink.size(), size_t(0)) ;
     slink.add(m_dst.get()) ;
-    ASSERT_EQ(slink.size(), (unsigned int)1) ;
+    ASSERT_EQ(slink.size(), size_t(1)) ;
     slink.add(m_dst.get()) ;
-    ASSERT_EQ(slink.size(), (unsigned int)1) ;
+    ASSERT_EQ(slink.size(), size_t(1)) ;
 }
+
+TEST_F(SingleLink_test, getOwnerBase)
+{
+    auto aBaseObject = sofa::core::objectmodel::New<BaseObject>();
+    using sofa::core::objectmodel::BaseNode;
+    BaseLink::InitLink<BaseObject> initObjectLink(aBaseObject.get(), "objectlink", "");
+    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink(initObjectLink) ;
+    ASSERT_EQ(objectLink.getOwnerBase(), aBaseObject.get());
+    // m_link is initialized without an owner.
+    // getOwnerBase() should still work and return a nullptr
+    ASSERT_EQ(m_link.getOwnerBase(), nullptr);
+
+    m_link.setOwner(aBaseObject.get());
+    ASSERT_EQ(m_link.getOwnerBase(), aBaseObject.get());
+}
+

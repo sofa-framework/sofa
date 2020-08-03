@@ -122,7 +122,7 @@ void FixedConstraint<DataTypes>::removeConstraint(unsigned int index)
 template <class DataTypes>
 void FixedConstraint<DataTypes>::init()
 {
-    this->m_componentstate = ComponentState::Invalid;
+    this->d_componentState.setValue(ComponentState::Invalid);
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
     if (!this->mstate.get())
@@ -154,7 +154,7 @@ void FixedConstraint<DataTypes>::init()
     }
    
     this->checkIndices();
-    this->m_componentstate = ComponentState::Valid;
+    this->d_componentState.setValue(ComponentState::Valid);
 }
 
 template <class DataTypes>
@@ -381,7 +381,7 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (this->m_componentstate!=ComponentState::Valid) return;
+    if (this->d_componentState.getValue() != ComponentState::Valid) return;
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!d_showObject.getValue()) return;
     if (!this->isActive()) return;

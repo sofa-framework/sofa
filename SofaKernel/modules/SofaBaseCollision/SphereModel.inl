@@ -92,7 +92,7 @@ void SphereCollisionModel<DataTypes>::resize(int size)
 template<class DataTypes>
 void SphereCollisionModel<DataTypes>::init()
 {
-    if(m_componentstate==ComponentState::Valid){
+    if(d_componentState.getValue() == ComponentState::Valid){
         msg_warning(this) << "Calling an already fully initialized component. You should use reinit instead." ;
     }
 
@@ -105,7 +105,7 @@ void SphereCollisionModel<DataTypes>::init()
         msg_error(this) << "Missing a MechanicalObject with template '" << DataTypes::Name() << ". "
                            "This MechnicalObject stores the position of the spheres. When this one is missing the collision model is deactivated. \n"
                            "To remove this error message you can add to your scene a line <MechanicalObject template='"<< DataTypes::Name() << "'/>. ";
-        m_componentstate = ComponentState::Invalid ;
+        d_componentState.setValue(ComponentState::Invalid) ;
 
         return;
     }
@@ -113,14 +113,14 @@ void SphereCollisionModel<DataTypes>::init()
     const int npoints = mstate->getSize();
     resize(npoints);
 
-    m_componentstate = ComponentState::Valid ;
+    d_componentState.setValue(ComponentState::Valid) ;
 }
 
 
 template<class DataTypes>
 void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index)
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     TSphere<DataTypes> t(this,index);
@@ -132,7 +132,7 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
 template<class DataTypes>
 void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     using namespace sofa::defaulttype;
@@ -179,7 +179,7 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
 template <class DataTypes>
 void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
@@ -219,7 +219,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
 {
     using sofa::defaulttype::Vector3 ;
 
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
@@ -276,7 +276,7 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
 {
     SOFA_UNUSED(params);
 
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     if( !onlyVisible )

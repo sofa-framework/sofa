@@ -85,7 +85,7 @@ void MeshExporter::doReInit()
     if (!m_inputtopology)
     {
         msg_error() << "Error, no topology." << sendl;
-        m_componentstate = ComponentState::Invalid ;
+        d_componentState.setValue(ComponentState::Invalid) ;
         return;
     }
 
@@ -101,19 +101,19 @@ void MeshExporter::doReInit()
         }
     }
 
-    m_componentstate = ComponentState::Valid ;
+    d_componentState.setValue(ComponentState::Valid) ;
 }
 
 bool MeshExporter::write()
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return false;
     return writeMesh() ;
 }
 
 bool MeshExporter::writeMesh()
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return false;
 
     const unsigned int format = d_fileFormat.getValue().getSelectedId();
@@ -200,7 +200,7 @@ std::string MeshExporter::getMeshFilename(const char* ext)
 
 bool MeshExporter::writeMeshVTKXML()
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return false;
 
     std::string filename = getMeshFilename(".vtu");
@@ -361,7 +361,7 @@ bool MeshExporter::writeMeshVTKXML()
 
 bool MeshExporter::writeMeshVTK()
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return false;
 
     std::string filename = getMeshFilename(".vtk");
@@ -480,7 +480,7 @@ bool MeshExporter::writeMeshVTK()
 /// http://geuz.org/gmsh/doc/texinfo/gmsh.html#File-formats
 bool MeshExporter::writeMeshGmsh()
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return false;
 
     std::string filename = getMeshFilename(".gmsh");
@@ -597,7 +597,7 @@ bool MeshExporter::writeMeshGmsh()
 
 bool MeshExporter::writeMeshNetgen()
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return false;
 
     std::string filename = getMeshFilename(".mesh");
@@ -689,7 +689,7 @@ bool MeshExporter::writeMeshNetgen()
 /// http://tetgen.berlios.de/fformats.html
 bool MeshExporter::writeMeshTetgen()
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return false;
 
     std::string filename = getMeshFilename(".node");
