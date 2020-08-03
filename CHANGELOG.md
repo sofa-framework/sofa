@@ -82,6 +82,7 @@ ____________________________________________________________
 
 **Plugins / Projects**
 - [plugins] Fix warnings for option compilation [#1316](https://github.com/sofa-framework/sofa/pull/1316)
+- [plugins] Add SofaPython3 as external project in SOFA [#1427](https://github.com/sofa-framework/sofa/pull/1427)
 - [sofa-launcher] Change doc on sofa-launcher to markdown [#1311](https://github.com/sofa-framework/sofa/pull/1311)
 - [SofaCUDA] Compilation without OpenGL [#1242](https://github.com/sofa-framework/sofa/pull/1242)
 
@@ -125,11 +126,15 @@ ____________________________________________________________
 - [SofaTopologyMapping] Fix Tetra2TriangleTopologicalMapping [#1319](https://github.com/sofa-framework/sofa/pull/1319)
 
 **Plugins / Projects**
+- [plugins] Fix compilation further to 1397 [#1428](https://github.com/sofa-framework/sofa/pull/1428)
 - [Geomagic] Fix several wrong behaviors in driver code [#1378](https://github.com/sofa-framework/sofa/pull/1378)
+- [Geomagic] Fix include Dir of OpenHaptics  [#1438](https://github.com/sofa-framework/sofa/pull/1438)
 - [MeshSTEPLoader] FIX OCC version check [#1312](https://github.com/sofa-framework/sofa/pull/1312)
 - [MeshSTEPLoader] FIX build with OCC >= 7.4 [#1310](https://github.com/sofa-framework/sofa/pull/1310)
 - [Modeler] FIX link error on Windows [#1282](https://github.com/sofa-framework/sofa/pull/1282)
 - [SofaMiscCollision] Fix topological changes in TetrahedronCollisionModel  [#1354](https://github.com/sofa-framework/sofa/pull/1354)
+- [SofaSparseSolver] FIX Metis and CSparse not found in install [#1437](https://github.com/sofa-framework/sofa/pull/1437)
+- [SofaSparseSolver] FIX Metis and CSparse not found in install (redo) [#1440](https://github.com/sofa-framework/sofa/pull/1440)
 - [SofaSphFluid] Fix broken behavior for ParticleSink and ParticleSource [#1278](https://github.com/sofa-framework/sofa/pull/1278)
 - [SofaSphFluid] FIX .scene-tests [#1317](https://github.com/sofa-framework/sofa/pull/1317)
 - [SofaOpenCL] Make it work with 20.06 [#1361](https://github.com/sofa-framework/sofa/pull/1361)
@@ -183,6 +188,7 @@ ____________________________________________________________
 - [OpenCTMPlugin] Fix compilation and clean before moving out [#1359](https://github.com/sofa-framework/sofa/pull/1359)
 - [PluginExample] Update PluginExample [#1356](https://github.com/sofa-framework/sofa/pull/1356)
 - [Regression] Update hash [#1321](https://github.com/sofa-framework/sofa/pull/1321)
+- [SofaHighOrder] Update URL of external repository [#1430](https://github.com/sofa-framework/sofa/pull/1430)
 - [SofaSphFluid] Clean SofaFluid plugin compilation warning. [#1296](https://github.com/sofa-framework/sofa/pull/1296)
 
 **Examples / Scenes**
