@@ -4,7 +4,6 @@ find_package(SofaFramework)
 
 sofa_add_subdirectory_external(SofaHighOrder SofaHighOrder)
 sofa_add_subdirectory_external(SofaPython3 SofaPython3)
-sofa_add_subdirectory_external(InvertibleFVM InvertibleFVM)
 
 sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default and first as it is used by other plugins.
 sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
@@ -30,6 +29,7 @@ sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on 
 sofa_add_plugin(PreassembledMass PreassembledMass) # Depends on Flexible and Compliant
 sofa_add_plugin(ARTrack ARTrack)
 sofa_add_plugin(ExternalBehaviorModel ExternalBehaviorModel)
+sofa_add_plugin_external(InvertibleFVM InvertibleFVM)
 sofa_add_plugin(MeshSTEPLoader MeshSTEPLoader)
 sofa_add_plugin(PluginExample PluginExample)
 sofa_add_plugin(ManifoldTopologies ManifoldTopologies)
