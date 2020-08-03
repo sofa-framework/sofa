@@ -56,7 +56,8 @@ BaseObject::~BaseObject()
     assert(l_master.get() == nullptr); // an object that is still a slave should not be able to be deleted, as at least one smart pointer points to it
     for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
     {
-        (*iSlaves)->l_master.reset();
+        if (iSlaves->get())
+            (*iSlaves)->l_master.reset();
     }
 }
 
@@ -66,7 +67,7 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 {
     if (!after) after = BaseContext::getDefault();
     if (before == after) return;
-    for (unsigned int i = 0; i < l_slaves.size(); ++i) l_slaves.get(i)->l_context.set(after);
+    for (unsigned int i = 0; i < l_slaves.size(); ++i) if (l_slaves.get(i)) l_slaves.get(i)->l_context.set(after);
     if (after != BaseContext::getDefault())
     {
         // update links
