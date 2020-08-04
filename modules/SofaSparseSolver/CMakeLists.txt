@@ -7,11 +7,14 @@ find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaSimpleFem
 find_package(SofaGeneral REQUIRED) # SofaGeneralLinearSolver
 
 add_subdirectory(extlibs/csparse)
+sofa_set_01(SOFASPARSESOLVER_HAVE_CSPARSE VALUE TRUE)
+
 find_package(metis QUIET) # Unix users can have an installed version of metis
 if(NOT metis_FOUND)
-    message(STATUS "SofaSparseSolver: metis library not found, will use built-in metis library.")
+    message(STATUS "SofaSparseSolver: using built-in metis library")
     add_subdirectory(extlibs/metis-5.1.0)
 endif()
+sofa_set_01(SOFASPARSESOLVER_HAVE_METIS VALUE TRUE)
 
 set(SRC_ROOT src/SofaSparseSolver)
 
@@ -38,10 +41,10 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver SofaImplicitOdeSolver SofaSimpleFem)
 target_link_libraries(${PROJECT_NAME} PUBLIC metis csparse)
 
-sofa_generate_package(
-    NAME SofaSparseSolver
-    VERSION ${PROJECT_VERSION}
-    TARGETS SofaSparseSolver
+sofa_create_package_with_targets(
+    PACKAGE_NAME SofaSparseSolver
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS SofaSparseSolver AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaSparseSolver"
     RELOCATABLE "plugins"

@@ -20,4 +20,9 @@ endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS ${ARTRACK_COMPILER_FLAGS})
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_create_package(ARTrackLib 0.0 ARTrackLib "")
+sofa_create_package_with_targets(
+    PACKAGE_NAME ARTrackLib
+    PACKAGE_VERSION 0.0
+    TARGETS ARTrackLib
+    INCLUDE_INSTALL_DIR ""
+    )

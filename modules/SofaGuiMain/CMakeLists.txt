@@ -19,4 +19,9 @@ if(SOFAGUI_HAVE_SOFAHEADLESSRECORDER)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaHeadlessRecorder)
 endif()
 
-sofa_install_targets(SofaGui SofaGuiMain "SofaGui" "src")
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaGui
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "SofaGui"
+    )
