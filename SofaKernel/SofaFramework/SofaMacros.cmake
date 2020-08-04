@@ -482,6 +482,13 @@ macro(sofa_set_01 name)
     set(oneValueArgs VALUE)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    # Required arguments
+    foreach(arg ARG_VALUE)
+        if("${${arg}}" STREQUAL "")
+            string(SUBSTRING "${arg}" 4 -1 arg_name)
+            message(SEND_ERROR "Missing parameter ${arg_name}.")
+        endif()
+    endforeach()
     if(ARG_VALUE)
         if(ARG_BOTH_SCOPES OR NOT ARG_PARENT_SCOPE)
             set(${name} 1)
@@ -1280,7 +1287,7 @@ function(sofa_generate_package)
     cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     message(WARNING "Deprecated macro. Use 'sofa_create_package_with_targets' instead.")
-    sofa_create_package(
+    sofa_create_package_with_targets(
         PACKAGE_NAME ${ARG_NAME}
         PACKAGE_VERSION ${ARG_VERSION}
         TARGETS ${ARG_TARGETS} AUTO_SET_TARGET_PROPERTIES
