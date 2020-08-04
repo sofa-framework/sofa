@@ -57,7 +57,9 @@ BaseObject::~BaseObject()
     for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
     {
         if (iSlaves->get())
+        {
             (*iSlaves)->l_master.reset();
+        }
     }
 }
 
@@ -67,7 +69,13 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 {
     if (!after) after = BaseContext::getDefault();
     if (before == after) return;
-    for (unsigned int i = 0; i < l_slaves.size(); ++i) if (l_slaves.get(i)) l_slaves.get(i)->l_context.set(after);
+    for (unsigned int i = 0; i < l_slaves.size(); ++i)
+    {
+        if (l_slaves.get(i))
+        {
+            l_slaves.get(i)->l_context.set(after);
+        }
+    }
     if (after != BaseContext::getDefault())
     {
         // update links
@@ -244,13 +252,13 @@ void BaseObject::removeSlave(BaseObject::SPtr s)
 
 void BaseObject::init()
 {
-	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
-	{
-		if ((*iData)->isRequired() && !(*iData)->isSet())
-		{
+    for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
+    {
+        if ((*iData)->isRequired() && !(*iData)->isSet())
+        {
         msg_warning() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" ;
-		}
-	}
+        }
+    }
 }
 
 void BaseObject::bwdInit()
