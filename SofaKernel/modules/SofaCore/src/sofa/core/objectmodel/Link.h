@@ -529,18 +529,25 @@ public:
         {
             DestType* ptr = nullptr;
 
-            if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, str, this))
+            if (str[0] != '@')
+            {
+                return false;
+            }
+            else if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, str, this))
             {
                 // This is not an error, as the destination can be added later in the graph
                 // instead, we will check for failed links after init is completed
-                //ok = false;
+                add(ptr, str);
+                return true;
             }
-            else if (str[0] != '@')
+            else
             {
-                ok = false;
+                // read should return false if link is not properly added despite
+                // already having an owner and being able to look for linkDest
+                add(ptr, str);
+                return ptr != nullptr;
             }
 
-            add(ptr, str);
         }
         else
         {
@@ -634,11 +641,12 @@ public:
     void setOwner(OwnerType* owner)
     {
         m_owner = owner;
+        if (!owner) return;
         m_owner->addLink(this);
     }
 
 protected:
-    OwnerType* m_owner;
+    OwnerType* m_owner {nullptr};
     Container m_value;
 
     DestType* getIndex(unsigned int index) const

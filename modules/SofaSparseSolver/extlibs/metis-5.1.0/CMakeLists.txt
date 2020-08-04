@@ -20,10 +20,10 @@ if(UNIX)
 endif()
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_generate_package(
-    NAME Metis
-    VERSION 5.1.0
-    TARGETS metis
+sofa_create_package_with_targets(
+    PACKAGE_NAME Metis
+    PACKAGE_VERSION 5.1.0
+    TARGETS metis AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "include"
     INCLUDE_INSTALL_DIR "extlibs/Metis"
     )

@@ -78,9 +78,9 @@ target_include_directories(gtest
     )
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_generate_package(
-    NAME GTest
-    VERSION ${PROJECT_VERSION}
+sofa_create_package_with_targets(
+    PACKAGE_NAME GTest
+    PACKAGE_VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
     INCLUDE_SOURCE_DIR "include"
     INCLUDE_INSTALL_DIR "extlibs/GTest"

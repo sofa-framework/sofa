@@ -80,7 +80,7 @@ protected:
     std::vector< sofa::core::collision::DetectionOutput* > contacts;
     std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
 
-    void activateMappers();
+    virtual void activateMappers();
 
     void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 

@@ -37,9 +37,9 @@ endif()
 target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DIFFUSIONSOLVER")
 target_link_libraries(${PROJECT_NAME} CImgPlugin)
 
-sofa_generate_package(
-    NAME ${PROJECT_NAME}
-    TARGETS ${PROJECT_NAME}
-    VERSION ${PROJECT_VERSION}
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     RELOCATABLE "plugins"
     )

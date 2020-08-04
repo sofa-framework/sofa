@@ -426,7 +426,12 @@ if(JSON_FOUND)
         )
 endif()
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework" "src")
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaFramework
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "SofaFramework"
+    )
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaHelper_test)
