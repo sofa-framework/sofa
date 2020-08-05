@@ -54,11 +54,11 @@ BaseObject::BaseObject()
 BaseObject::~BaseObject()
 {
     assert(l_master.get() == nullptr); // an object that is still a slave should not be able to be deleted, as at least one smart pointer points to it
-    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+    for(auto slave : l_slaves)
     {
-        if (iSlaves->get())
+        if (slave.get())
         {
-            (*iSlaves)->l_master.reset();
+            slave->l_master.reset();
         }
     }
 }
@@ -69,11 +69,11 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 {
     if (!after) after = BaseContext::getDefault();
     if (before == after) return;
-    for (unsigned int i = 0; i < l_slaves.size(); ++i)
+    for (auto slave : l_slaves)
     {
-        if (l_slaves.get(i))
+        if (slave.get())
         {
-            l_slaves.get(i)->l_context.set(after);
+            slave->l_context.set(after);
         }
     }
     if (after != BaseContext::getDefault())
@@ -221,10 +221,10 @@ const BaseObject::VecSlaves& BaseObject::getSlaves() const
 
 BaseObject* BaseObject::getSlave(const std::string& name) const
 {
-    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+  for (auto slave : l_slaves)
     {
-        if ((*iSlaves)->getName() == name)
-            return iSlaves->get();
+      if (slave.get() && slave->getName() == name)
+	return slave.get();
     }
     return nullptr;
 }
@@ -252,11 +252,11 @@ void BaseObject::removeSlave(BaseObject::SPtr s)
 
 void BaseObject::init()
 {
-    for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
+  for(auto data: this->m_vecData)
     {
-        if ((*iData)->isRequired() && !(*iData)->isSet())
+        if (data->isRequired() && !data->isSet())
         {
-        msg_warning() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" ;
+            msg_warning() << "Required data \"" << data->getName() << "\" has not been set. (Current value is " << data->getValueString() << ")" ;
         }
     }
 }
