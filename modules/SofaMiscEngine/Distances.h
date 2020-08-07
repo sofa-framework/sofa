@@ -147,10 +147,10 @@ public:
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
         if (arg->findObject(arg->getAttribute("hexaContainerPath", "../..")) == nullptr) {
-            msg_error(context) << "Cannot create " << T::GetClass().className << " as the hexas container is missing.";
+            msg_error(context) << "Cannot create " << T::GetClass()->className << " as the hexas container is missing.";
         }
         if (arg->findObject(arg->getAttribute("targetPath", "..")) == nullptr) {
-            msg_error(context) << "Cannot create " << T::GetClass().className << " as the target point set is missing.";
+            msg_error(context) << "Cannot create " << T::GetClass()->className << " as the target point set is missing.";
         }
         if ( dynamic_cast<sofa::component::topology::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == nullptr )
             return false;
