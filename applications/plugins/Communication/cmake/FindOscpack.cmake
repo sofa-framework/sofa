@@ -5,7 +5,7 @@
 # Oscpack_LIBRARIES - The libraries needed to use Oscpack
 
 find_path(Oscpack_INCLUDE_DIR osc/OscTypes.h)
-find_library(Oscpack_LIBRARY Oscpack)
+find_library(Oscpack_LIBRARY NAMES oscpack)
 
 set(Oscpack_LIBRARIES ${Oscpack_LIBRARY})
 set(Oscpack_INCLUDE_DIRS ${Oscpack_INCLUDE_DIR})
