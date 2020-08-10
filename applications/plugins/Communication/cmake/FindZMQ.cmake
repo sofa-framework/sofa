@@ -7,6 +7,16 @@
 find_path(ZMQ_INCLUDE_DIR zmq.h)
 find_library(ZMQ_LIBRARY NAMES zmq)
 
+# If lib not found, try searching in ZMQ_ROOT/lib (env and CMake vars)
+if(NOT ZMQ_LIBRARY)
+	file(GLOB libzmq LIST_DIRECTORIES false RELATIVE "$ENV{ZMQ_ROOT}/lib" "$ENV{ZMQ_ROOT}/lib/libzmq*")
+    find_library(ZMQ_LIBRARY NAMES ${libzmq})
+endif()
+if(NOT ZMQ_LIBRARY)
+	file(GLOB libzmq LIST_DIRECTORIES false RELATIVE "${ZMQ_ROOT}/lib" "${ZMQ_ROOT}/lib/libzmq*")
+    find_library(ZMQ_LIBRARY NAMES ${libzmq})
+endif()
+
 set(ZMQ_LIBRARIES ${ZMQ_LIBRARY})
 set(ZMQ_INCLUDE_DIRS ${ZMQ_INCLUDE_DIR})
 
