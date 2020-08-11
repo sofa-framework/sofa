@@ -54,9 +54,12 @@ BaseObject::BaseObject()
 BaseObject::~BaseObject()
 {
     assert(l_master.get() == nullptr); // an object that is still a slave should not be able to be deleted, as at least one smart pointer points to it
-    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+    for(auto slave : l_slaves)
     {
-        (*iSlaves)->l_master.reset();
+        if (slave.get())
+        {
+            slave->l_master.reset();
+        }
     }
 }
 
@@ -66,7 +69,13 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 {
     if (!after) after = BaseContext::getDefault();
     if (before == after) return;
-    for (unsigned int i = 0; i < l_slaves.size(); ++i) l_slaves.get(i)->l_context.set(after);
+    for (auto slave : l_slaves)
+    {
+        if (slave.get())
+        {
+            slave->l_context.set(after);
+        }
+    }
     if (after != BaseContext::getDefault())
     {
         // update links
@@ -212,10 +221,10 @@ const BaseObject::VecSlaves& BaseObject::getSlaves() const
 
 BaseObject* BaseObject::getSlave(const std::string& name) const
 {
-    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+    for (auto slave : l_slaves)
     {
-        if ((*iSlaves)->getName() == name)
-            return iSlaves->get();
+        if (slave.get() && slave->getName() == name)
+            return slave.get();
     }
     return nullptr;
 }
@@ -243,13 +252,13 @@ void BaseObject::removeSlave(BaseObject::SPtr s)
 
 void BaseObject::init()
 {
-	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
-	{
-		if ((*iData)->isRequired() && !(*iData)->isSet())
-		{
-        msg_warning() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" ;
-		}
-	}
+    for(auto data: this->m_vecData)
+    {
+        if (data->isRequired() && !data->isSet())
+        {
+            msg_warning() << "Required data \"" << data->getName() << "\" has not been set. (Current value is " << data->getValueString() << ")" ;
+        }
+    }
 }
 
 void BaseObject::bwdInit()
