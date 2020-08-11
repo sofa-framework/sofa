@@ -28,13 +28,13 @@ set(EXTRA_FILES
 set(PROTOCOL_LIBS "")
 
 # ZMQ
-find_package(ZMQ QUIET)
-option(PLUGIN_COMMUNICATION_ZMQ "Make use of the ZMQ" ${ZMQ_FOUND})
+find_package(ZeroMQ QUIET)
+option(PLUGIN_COMMUNICATION_ZMQ "Make use of the ZMQ" ${ZeroMQ_FOUND})
 if(PLUGIN_COMMUNICATION_ZMQ)
-    sofa_find_package(ZMQ REQUIRED)
+    sofa_find_package(ZeroMQ REQUIRED)
     message("Found ZMQ libraries")
-    include_directories(${ZMQ_INCLUDE_DIRS})
-    list(APPEND PROTOCOL_LIBS ${ZMQ_LIBRARIES})
+    list(APPEND PROTOCOL_LIBS libzmq)
+    sofa_install_libraries(TARGETS libzmq)
 
     list(APPEND HEADER_FILES
         components/ServerCommunicationZMQ.h
@@ -112,7 +112,6 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaBaseLinearSolver SofaSimulationGraph)
-message("PROTOCOL_LIBS = ${PROTOCOL_LIBS}")
 target_link_libraries(${PROJECT_NAME} ${PROTOCOL_LIBS})
 
 sofa_generate_package(
