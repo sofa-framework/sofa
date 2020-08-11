@@ -63,6 +63,9 @@ if(PLUGIN_COMMUNICATION_Oscpack)
     message("Found Oscpack libraries")
     include_directories(${Oscpack_INCLUDE_DIRS})
     list(APPEND PROTOCOL_LIBS ${Oscpack_LIBRARIES})
+    if(WIN32)
+       list(APPEND PROTOCOL_LIBS Ws2_32 winmm)
+    endif()
 
     list(APPEND HEADER_FILES
         components/ServerCommunicationOSC.h
@@ -109,6 +112,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaBaseLinearSolver SofaSimulationGraph)
+message("PROTOCOL_LIBS = ${PROTOCOL_LIBS}")
 target_link_libraries(${PROJECT_NAME} ${PROTOCOL_LIBS})
 
 sofa_generate_package(
