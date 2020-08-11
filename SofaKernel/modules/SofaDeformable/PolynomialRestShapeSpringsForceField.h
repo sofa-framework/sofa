@@ -23,13 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "config.h"
-
+#include <SofaDeformable/config.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/vector.h>
 #include <sofa/core/BaseMapping.h>
-
 #include <sofa/defaulttype/RGBAColor.h>
 
 
