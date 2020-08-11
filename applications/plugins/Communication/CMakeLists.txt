@@ -114,6 +114,15 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES
 target_link_libraries(${PROJECT_NAME} SofaCore SofaBaseLinearSolver SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} ${PROTOCOL_LIBS})
 
+# Dynamic .scene-tests
+file(WRITE ${CMAKE_CURRENT_LIST_DIR}/examples/.scene-tests "")
+file(GLOB_RECURSE scene_files RELATIVE "${CMAKE_CURRENT_LIST_DIR}/examples" "*.scn")
+foreach(scene_file ${scene_files})
+    if(NOT "examples/${scene_file}" IN_LIST EXTRA_FILES)
+        file(APPEND ${CMAKE_CURRENT_LIST_DIR}/examples/.scene-tests "ignore \"${scene_file}\"\n")
+    endif()
+endforeach()
+
 sofa_generate_package(
     NAME ${PROJECT_NAME}
     TARGETS ${PROJECT_NAME}
