@@ -221,10 +221,10 @@ const BaseObject::VecSlaves& BaseObject::getSlaves() const
 
 BaseObject* BaseObject::getSlave(const std::string& name) const
 {
-  for (auto slave : l_slaves)
+    for (auto slave : l_slaves)
     {
-      if (slave.get() && slave->getName() == name)
-	return slave.get();
+        if (slave.get() && slave->getName() == name)
+            return slave.get();
     }
     return nullptr;
 }
@@ -252,7 +252,7 @@ void BaseObject::removeSlave(BaseObject::SPtr s)
 
 void BaseObject::init()
 {
-  for(auto data: this->m_vecData)
+    for(auto data: this->m_vecData)
     {
         if (data->isRequired() && !data->isSet())
         {
