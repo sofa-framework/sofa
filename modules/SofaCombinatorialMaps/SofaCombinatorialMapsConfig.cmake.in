@@ -1,13 +1,14 @@
-# CMake package configuration file for the SofaCombinatorialMaps module
+# CMake package configuration file for @PROJECT_NAME@
 @PACKAGE_INIT@
 
-find_package(cgogn_core REQUIRED)
-find_package(cgogn_geometry REQUIRED)
-find_package(cgogn_io REQUIRED)
-find_package(cgogn_modeling REQUIRED)
+find_package(Newmat QUIET REQUIRED)
+find_package(cgogn_core QUIET REQUIRED)
+find_package(cgogn_geometry QUIET REQUIRED)
+find_package(cgogn_io QUIET REQUIRED)
+find_package(cgogn_modeling QUIET REQUIRED)
 
-### Is the target existing ?
-if(NOT TARGET SofaCombinatorialMaps)
-        ### If not we are building out of tree.
-        include("${CMAKE_CURRENT_LIST_DIR}/SofaCombinatorialMapsTargets.cmake")
+if(NOT TARGET @PROJECT_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 endif()
+
+check_required_components(@PROJECT_NAME@)
