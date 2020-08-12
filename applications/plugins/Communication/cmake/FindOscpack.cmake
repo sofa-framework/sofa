@@ -14,3 +14,4 @@ set(Oscpack_INCLUDE_DIRS ${Oscpack_INCLUDE_DIR})
 # if all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Oscpack DEFAULT_MSG Oscpack_LIBRARY Oscpack_INCLUDE_DIR)
+set(Oscpack_FOUND ${OSCPACK_FOUND})

@@ -57,7 +57,7 @@ endif()
 
 # Oscpack
 find_package(Oscpack QUIET)
-option(PLUGIN_COMMUNICATION_Oscpack "Make use of the Oscpack" ${OSCPACK_FOUND})
+option(PLUGIN_COMMUNICATION_Oscpack "Make use of the Oscpack" ${Oscpack_FOUND})
 if(PLUGIN_COMMUNICATION_Oscpack)
     sofa_find_package(Oscpack REQUIRED)
     message("Found Oscpack libraries")
