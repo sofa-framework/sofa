@@ -195,7 +195,7 @@ public:
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
 
     /// Rebuild the system using a mass and force factor
-    void rebuildSystem(double massFactor, double forceFactor) override;
+    virtual void rebuildSystem(double massFactor, double forceFactor) override;
 
     /// Set the linear system matrix (only use for bench)
     void setSystemMatrix(Matrix* matrix);
@@ -233,10 +233,10 @@ public:
     defaulttype::BaseVector* getSystemLHBaseVector() override { return currentGroup->systemLHVector; }
 
     /// Solve the system as constructed using the previous methods
-    void solveSystem() override;
+    virtual void solveSystem() override;
 
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
-    void invertSystem() override;
+    virtual void invertSystem() override;
 
     void prepareVisitor(simulation::Visitor* v)
     {
@@ -269,14 +269,14 @@ public:
         return ThreadManager::Name()+Matrix::Name();
     }
 
-    bool isAsyncSolver() override
+    virtual bool isAsyncSolver() override
     {
         return ThreadManager::isAsyncSolver();
     }
 
-    void invert(Matrix& /*M*/) override {}
+    virtual void invert(Matrix& /*M*/) override {}
 
-    void solve(Matrix& M, Vector& solution, Vector& rh) override = 0;
+    virtual void solve(Matrix& M, Vector& solution, Vector& rh) override = 0;
 
     virtual bool computeJMInvJtLocal(Matrix * /*M*/, const JMatrixType * J, double fact) { return false; }
 

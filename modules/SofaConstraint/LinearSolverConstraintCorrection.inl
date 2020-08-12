@@ -191,7 +191,7 @@ void LinearSolverConstraintCorrection<DataTypes>::computeComplianceInConstraintS
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W)
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if (d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     // use the OdeSolver to get the position integration factor

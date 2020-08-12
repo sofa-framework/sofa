@@ -49,7 +49,7 @@ public:
 
     void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) override;
 
-    virtual void computeComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
+    void computeComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
 
     void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
 
@@ -77,7 +77,7 @@ public:
 
 protected:
     GenericConstraintCorrection();
-    ~GenericConstraintCorrection() override;
+    virtual ~GenericConstraintCorrection() override;
 
     std::list<core::behavior::ConstraintSolver*> constraintsolvers;
 

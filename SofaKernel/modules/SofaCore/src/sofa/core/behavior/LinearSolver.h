@@ -143,6 +143,22 @@ public:
         return false;
     }
 
+    /// Add the jacobian of the constraints using a visitor and apply to result
+    ///
+    /// @param cparams contains the MultiMatrixDerivId  which allows to retrieve the constraint jacobian to use for 
+    ///        each mechanical object. 
+    /// @param result the variable where the result will be added
+    /// @param fact integrator parameter
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    virtual bool addComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, SReal fact)
+    {
+        SOFA_UNUSED(cparams);
+        SOFA_UNUSED(result);
+        SOFA_UNUSED(fact);
+        msg_error() << "addComplianceMatrix has not been implemented";
+        return false;
+    }
+
     /// Apply the contactforce dx = Minv * J^t * f and store the resut in dx VecId
     virtual void applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/,sofa::core::MultiVecDerivId /*dx*/, const defaulttype::BaseVector* /*f*/) {
         msg_error() << "applyConstraintForce has not been implemented.";
@@ -155,6 +171,17 @@ public:
         msg_error() << "computeResidual has not been implemented.";
     }
 
+    /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    ///
+    /// @param J the matrix J to use
+    /// @param fact integrator parameter
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    virtual bool computeJMInvJt(defaulttype::BaseMatrix* J, SReal fact)
+    {
+        SOFA_UNUSED(J);
+        SOFA_UNUSED(fact);
+        return false;
+    }
 
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
     ///
