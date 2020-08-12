@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,16 +77,16 @@ struct AverageCoord_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->setName("myname") ;
         EXPECT_TRUE(m_thisObject->getName() == "myname") ;
 
-        EXPECT_TRUE( m_thisObject->findData("indices") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("vecId") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("average") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("indices") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("vecId") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("average") != nullptr ) ;
 
         EXPECT_NO_THROW( m_thisObject->init() ) ;
         EXPECT_NO_THROW( m_thisObject->bwdInit() ) ;
         EXPECT_NO_THROW( m_thisObject->reinit() ) ;
         EXPECT_NO_THROW( m_thisObject->reset() ) ;
 
-        this->mstate = NULL;
+        this->mstate = nullptr;
         EXPECT_NO_THROW(this->update()) ;
 
         return ;

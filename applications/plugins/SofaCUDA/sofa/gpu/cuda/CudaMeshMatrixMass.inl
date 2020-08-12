@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,9 +65,9 @@ template<>
 void MeshMatrixMass<CudaVec3fTypes, float>::copyVertexMass()
 {
     helper::vector<MassType>& vertexInf = *(d_vertexMassInfo.beginEdit());
-    data.vMass.resize(_topology->getNbPoints());
+    data.vMass.resize(m_topology->getNbPoints());
 
-    for (int i=0; i<this->_topology->getNbPoints(); ++i)
+    for (int i=0; i<this->m_topology->getNbPoints(); ++i)
         data.vMass[i] = (float) vertexInf[i];
 
     d_vertexMassInfo.endEdit();
@@ -114,9 +114,9 @@ template<>
 void MeshMatrixMass<CudaVec2fTypes, float>::copyVertexMass()
 {
     helper::vector<MassType>& vertexInf = *(d_vertexMassInfo.beginEdit());
-    data.vMass.resize(_topology->getNbPoints());
+    data.vMass.resize(m_topology->getNbPoints());
 
-    for (int i=0; i<this->_topology->getNbPoints(); ++i)
+    for (int i=0; i<this->m_topology->getNbPoints(); ++i)
         data.vMass[i] = (float) vertexInf[i];
 
     d_vertexMassInfo.endEdit();
@@ -163,9 +163,9 @@ template<>
 void MeshMatrixMass<CudaVec1fTypes, float>::copyVertexMass()
 {
     helper::vector<MassType>& vertexInf = *(d_vertexMassInfo.beginEdit());
-    data.vMass.resize(_topology->getNbPoints());
+    data.vMass.resize(m_topology->getNbPoints());
 
-    for (int i=0; i<this->_topology->getNbPoints(); ++i)
+    for (int i=0; i<this->m_topology->getNbPoints(); ++i)
         data.vMass[i] = (float) vertexInf[i];
 
     d_vertexMassInfo.endEdit();

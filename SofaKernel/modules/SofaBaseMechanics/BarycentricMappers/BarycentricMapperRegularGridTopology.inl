@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,7 +42,7 @@ BarycentricMapperRegularGridTopology<In,Out>::BarycentricMapperRegularGridTopolo
                                                                                    PointSetTopologyContainer* toTopology)
     : Inherit1(fromTopology, toTopology)
     , m_fromTopology(fromTopology)
-    , m_matrixJ(NULL), m_updateJ(true)
+    , m_matrixJ(nullptr), m_updateJ(true)
 {
 }
 

@@ -1,7 +1,8 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.0005">
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
     <Node name="Poutre1" gravity="0 -9.81 0">
-        <EulerSolver name="Explicit" printLog="0" />
+        <RequiredPlugin name="SofaValidation" />
+        <EulerExplicitSolver name="Explicit" printLog="0" />
         <Node name="M1" gravity="0 -9.81 0">
             <MeshGmshLoader name="loader" filename="mesh/smCube27.msh" />
             <MechanicalObject src="@loader" template="Vec3d" name="default1" restScale="1" />

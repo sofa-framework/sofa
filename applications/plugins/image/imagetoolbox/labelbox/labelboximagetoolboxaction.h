@@ -42,7 +42,7 @@ Q_OBJECT
 
 public:
     LabelBoxImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent);
-    ~LabelBoxImageToolBoxAction();
+    ~LabelBoxImageToolBoxAction() override;
     
     sofa::component::engine::LabelBoxImageToolBox* LBITB();
 
@@ -52,10 +52,10 @@ private:
     void validView();
 
 public slots:
-    virtual void addOnGraphs();
-    virtual void updateGraphs();
-    virtual void updateColor();
-    virtual void optionChangeSection(sofa::defaulttype::Vec3i);
+    void addOnGraphs() override;
+    void updateGraphs() override;
+    void updateColor() override;
+    void optionChangeSection(sofa::defaulttype::Vec3i) override;
 
 private slots:
     void selectionPointButtonClick(bool);

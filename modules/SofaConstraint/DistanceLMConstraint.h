@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,20 +72,9 @@ protected:
     DistanceLMConstraintInternalData<DataTypes> data;
     friend class DistanceLMConstraintInternalData<DataTypes>;
 
-
-    DistanceLMConstraint( MechanicalState *dof)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
-        , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
-    {}
-
-    DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
-        , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
-    {}
-
-    DistanceLMConstraint()
-        : vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
-    {}
+    DistanceLMConstraint();
+    DistanceLMConstraint( MechanicalState *dof);
+    DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2);
 
     ~DistanceLMConstraint() {}
 public:
@@ -97,7 +86,7 @@ public:
     void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex) override;
     void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     bool isCorrectionComputedWithSimulatedDOF(core::ConstraintParams::ConstOrder /*order*/) const override
     {
@@ -107,18 +96,11 @@ public:
         else return false;
     }
 
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-    static std::string templateName(const DistanceLMConstraint<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
     //Edges involving a distance constraint
     Data< SeqEdges > vecConstraint; ///< List of the edges to constrain
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink <DistanceLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected :
 
     ///Compute the length of an edge given the vector of coordinates corresponding
@@ -126,9 +108,6 @@ protected :
     ///Compute the direction of the constraint
     Deriv getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
     void updateRestLength();
-
-    // Base Components of the current context
-    core::topology::BaseMeshTopology *topology;
 
     helper::vector<  unsigned int > registeredConstraints;
 

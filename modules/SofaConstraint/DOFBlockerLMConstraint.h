@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,29 +76,22 @@ protected:
     friend class DOFBlockerLMConstraintInternalData<DataTypes>;
 
 
-    DOFBlockerLMConstraint( MechanicalState *dof)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
+    DOFBlockerLMConstraint(MechanicalState *dof = nullptr)
+        : core::behavior::LMConstraint<DataTypes, DataTypes>(dof, dof)
         , BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain"))
         , factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis"))
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
+        , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis, 1.0f, "showSizeAxis", "size of the vector used to display the constrained axis"))
+        , l_topology(initLink("topology", "link to the topology container"))
+        , m_pointHandler(nullptr)
     {
-        pointHandler = new FCTPointHandler(this, &f_indices);
-    }
-
-    DOFBlockerLMConstraint()
-        : BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain"))
-        , factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis"))
-        , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
-    {
-        pointHandler = new FCTPointHandler(this, &f_indices);
+        
     }
 
     ~DOFBlockerLMConstraint()
     {
-        if (pointHandler)
-            delete pointHandler;
+        if (m_pointHandler)
+            delete m_pointHandler;
     }
 
 public:
@@ -115,16 +108,6 @@ public:
     void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex) override;
     void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order) override;
 
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const DOFBlockerLMConstraint<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
     bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const override
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
@@ -135,7 +118,10 @@ public:
     Data<helper::vector<Deriv> > BlockedAxis; ///< List of rotation axis to constrain
     Data<helper::vector<SReal> > factorAxis; ///< Factor to apply in order to block only a certain amount of rotation along the axis
     SetIndex f_indices; ///< List of the index of particles to be fixed
-    Data<SReal> showSizeAxis; ///< size of the vector used to display the constrained axis
+    Data<float> showSizeAxis; ///< size of the vector used to display the constrained axis
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<DOFBlockerLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<unsigned int> >
     {
@@ -157,12 +143,8 @@ public:
 
 protected :
     sofa::helper::vector<SetIndexArray> idxEquations;
-
-
-    sofa::core::topology::BaseMeshTopology* topology;
-
-    FCTPointHandler* pointHandler;
-
+    
+    FCTPointHandler* m_pointHandler;
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)

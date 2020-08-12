@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,7 +55,7 @@ protected:
 
     HausdorffDistance();
 
-    virtual ~HausdorffDistance() {}
+    ~HausdorffDistance() override {}
 
     void handleEvent(core::objectmodel::Event *event) override;
     void onBeginAnimationStep(const double /*dt*/);
@@ -77,17 +77,6 @@ public:
     Data<Real> max; ///< Symmetrical Hausdorff distance
 
     Data<bool> f_update; ///< Recompute every time step
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-
-    static std::string templateName(const HausdorffDistance<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
 
 protected:
 

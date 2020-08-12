@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,7 +81,7 @@ void ProximityROI<DataTypes>::init()
         }
         else
         {
-            core::loader::MeshLoader* loader = NULL;
+            core::loader::MeshLoader* loader = nullptr;
             this->getContext()->get(loader);
             if (loader)
             {
@@ -138,13 +138,13 @@ void ProximityROI<DataTypes>::doUpdate()
 
     if (rad.empty())
     {
-        serr << "The parameter 'Radius' must at least contains one value. This ROI is then disabled/useless." << sendl;
+        msg_error() << "The parameter 'Radius' must at least contains one value. This ROI is then disabled/useless.";
         return;
     }
 
     if (f_num.getValue()==0)
     {
-        serr << "The parameter 'N' must have a value greater than zero. This ROI is then disabled/useless." << sendl;
+        msg_error() << "The parameter 'N' must have a value greater than zero. This ROI is then disabled/useless.";
         return;
     }
 
@@ -162,7 +162,7 @@ void ProximityROI<DataTypes>::doUpdate()
 
     if(cen.size() < rad.size())
     {
-        serr << "There parameter 'Radius' has more elements than parameters 'center'." << sendl;
+        msg_error() << "There parameter 'Radius' has more elements than parameters 'center'.";
     }
 
     const VecCoord* x0 = &f_X0.getValue();

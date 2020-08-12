@@ -1,9 +1,5 @@
-cmake_minimum_required(VERSION 3.1)
-project(SofaCarving)
-
-set(SOFACARVING_MAJOR_VERSION 0)
-set(SOFACARVING_MINOR_VERSION 1)
-set(SOFACARVING_VERSION ${SOFACARVING_MAJOR_VERSION}.${SOFACARVING_MINOR_VERSION})
+cmake_minimum_required(VERSION 3.12)
+project(SofaCarving VERSION 0.1)
 
 set(HEADER_FILES
     CarvingManager.h
@@ -20,25 +16,20 @@ set(README_FILES SofaCarving.txt)
 find_package(SofaGeneral REQUIRED)
 
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-target_link_libraries(${PROJECT_NAME} SofaComponentGeneral)
+target_link_libraries(${PROJECT_NAME} SofaGeneral)
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFACARVING")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFACARVING_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(SofaCarving ${SOFACARVING_VERSION} SofaCarving SofaCarving)
-
-## Install rules for the resources
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    RELOCATABLE "plugins"
+    )
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)

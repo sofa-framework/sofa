@@ -70,7 +70,7 @@ protected:
 	
 
 	typedef RigidJointMapping self;
-	virtual void assemble( const typename self::in_pos_type& in_pos ) {
+    virtual void assemble( const typename self::in_pos_type& in_pos ) override {
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
 
@@ -163,7 +163,7 @@ protected:
 	} 
 	
 	virtual void apply(typename self::out_pos_type& out,
-	                   const typename self::in_pos_type& in ) {
+                       const typename self::in_pos_type& in ) override {
         const pairs_type& p = pairs.getValue();
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();
@@ -206,7 +206,7 @@ protected:
     }
 
 
-    virtual void updateForceMask()
+    virtual void updateForceMask() override
     {
         const pairs_type& p = pairs.getValue();
 

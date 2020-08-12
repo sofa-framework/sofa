@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,11 +33,11 @@ namespace collision
 
 using namespace defaulttype;
 
-ContactMapperCreator< ContactMapper<SphereModel> > SphereContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<PointModel> > PointContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointContactMapperClass("default",true);
 
-template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel, sofa::defaulttype::Vec3Types>;
-template class SOFA_MESH_COLLISION_API ContactMapper<PointModel, sofa::defaulttype::Vec3Types>;
+template class SOFA_MESH_COLLISION_API ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class SOFA_MESH_COLLISION_API ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 
 } // namespace collision
 

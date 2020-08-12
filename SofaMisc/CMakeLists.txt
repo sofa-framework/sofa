@@ -1,39 +1,39 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaMisc)
 
-## Dependencies
-find_package(SofaGeneral REQUIRED)
-
-## Version
-set(SOFAMISC_VERSION ${SofaFramework_VERSION})
-
-## SofaMisc/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaMisc/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaMisc/config.h" DESTINATION "include/SofaMisc" COMPONENT headers)
-
-
-### Subdirectories
-
+## Subdirectories
 set(SOFAMISC_TARGETS
-    SofaComponentMisc
-    SofaMisc
+    SofaMiscExtra
     SofaMiscEngine
     SofaMiscFem
     SofaMiscForceField
     SofaMiscMapping
     SofaMiscSolver
     SofaMiscTopology
-)
+    )
 
 foreach(TARGET ${SOFAMISC_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
-    set_target_properties(${TARGET} PROPERTIES FOLDER SofaMisc) # IDE folder
-    set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFAMISC_VERSION})
 endforeach()
 
+set(SOFAMISC_SRC src/${PROJECT_NAME})
 
-## CMake package configurations files
-sofa_write_package_config_files(SofaMisc ${SOFAMISC_VERSION})
+set(HEADER_FILES
+    ${SOFAMISC_SRC}/config.h.in 
+    ${SOFAMISC_SRC}/initSofaMisc.h
+    )
+
+set(SOURCE_FILES
+    ${SOFAMISC_SRC}/initSofaMisc.cpp
+    )
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAMISC_TARGETS})
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    )

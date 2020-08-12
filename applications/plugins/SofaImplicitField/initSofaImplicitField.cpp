@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,11 +29,6 @@
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
-#ifdef SOFA_HAVE_SOFAPYTHON
-#define DO_SOFAPYTHON_FEATURES true
-#else
-#define DO_SOFAPYTHON_FEATURES false
-#endif
 namespace sofa
 {
 
@@ -56,7 +51,7 @@ void initExternalModule()
         first = false;
     }
 
-    if(DO_SOFAPYTHON_FEATURES)
+    if(SOFAIMPLICITFIELD_HAVE_SOFAPYTHON)
         PluginManager::getInstance().loadPlugin("SofaPython") ;
 }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,6 +76,9 @@ protected:
     Data<Real> m_tBegin;
     Data<Real> m_tEnd; ///< End Time of the motion
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<ParabolicConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
     /// the 3 points projected in the parabol plan
     Vec3R m_locP1;
     Vec3R m_locP2;
@@ -84,12 +87,7 @@ protected:
     /// the quaternion doing the projection
     QuatR m_projection;
 
-
-
-
-    ParabolicConstraint();
-
-    ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
+    ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate = nullptr);
 
     ~ParabolicConstraint();
 public:
@@ -123,9 +121,6 @@ public:
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
-
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
 };
 
 

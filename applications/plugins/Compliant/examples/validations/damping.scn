@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
 <Node 	name="Root" gravity="0 -1 0" dt="0.3"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
   <VisualStyle displayFlags="showVisual showBehaviorModels" />
 
@@ -32,7 +33,7 @@
 
 			<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 
-			<Mesh name="mesh" src="@loader" />
+			<MeshTopology name="mesh" src="@loader" />
 
 			<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
@@ -86,7 +87,8 @@
 
 			<Node name="Visual"  >
 
-				<VisualModel  fileMesh="mesh/torus.obj" color="red" />
+				<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+				<OglModel src="@meshLoader_0" color="red" />
 
 				<LinearMapping template="Vec3d,ExtVec3f" />
 
@@ -120,7 +122,7 @@
 
 			<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 
-			<Mesh name="mesh" src="@loader" />
+			<MeshTopology name="mesh" src="@loader" />
 
 			<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
@@ -178,7 +180,8 @@
 
 			<Node name="Visual"  >
 
-				<VisualModel  fileMesh="mesh/torus.obj" color="blue" />
+				<MeshObjLoader name="meshLoader_2" filename="mesh/torus.obj" handleSeams="1" />
+				<OglModel src="@meshLoader_2" color="blue" />
 
 				<LinearMapping template="Vec3d,ExtVec3f" />
 
@@ -209,7 +212,7 @@
 
 			<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 
-			<Mesh name="mesh" src="@loader" />
+			<MeshTopology name="mesh" src="@loader" />
 
 			<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
@@ -263,7 +266,8 @@
 
 			<Node name="Visual"  >
 
-				<VisualModel  fileMesh="mesh/torus.obj" />
+				<MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+				<OglModel src="@meshLoader_1" />
 
 				<LinearMapping template="Vec3d,ExtVec3f" />
 
@@ -294,7 +298,7 @@
 
 			<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 
-			<Mesh name="mesh" src="@loader" />
+			<MeshTopology name="mesh" src="@loader" />
 
 			<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
@@ -348,7 +352,8 @@
 
 			<Node name="Visual"  >
 
-				<VisualModel  fileMesh="mesh/torus.obj" color="magenta"/>
+				<MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" />
+				<OglModel src="@meshLoader_3" color="magenta"/>
 
 				<LinearMapping template="Vec3d,ExtVec3f" />
 

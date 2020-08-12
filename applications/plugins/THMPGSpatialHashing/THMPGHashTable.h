@@ -144,7 +144,7 @@ protected:
 //    };
 
 public:
-    THMPGHashTable() : _cm(0x0),_timeStamp(-1.0){
+    THMPGHashTable() : _cm(nullptr),_timeStamp(-1.0){
         _p1 = 73856093;
         _p2 = 19349663;
         _p3 = 83492791;
@@ -223,7 +223,7 @@ public:
     void refersh(SReal timeStamp);
 
     inline bool initialized()const{
-        return _cm != 0x0;
+        return _cm != nullptr;
     }
 
     inline core::CollisionModel* getCollisionModel()const{

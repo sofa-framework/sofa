@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,7 +69,7 @@ SphereROI<DataTypes>::SphereROI()
     , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangles","Draw Triangles") )
     , p_drawQuads( initData(&p_drawQuads,false,"drawQuads","Draw Quads") )
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
-    , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
+    , _drawSize( initData(&_drawSize,0.0f,"drawSize","rendering size for box and topological elements") )
 {
     //Adding alias to handle TrianglesInSphereROI input/output
     addAlias(&p_drawSphere,"isVisible");
@@ -102,7 +102,7 @@ void SphereROI<DataTypes>::init()
         }
         else
         {
-            core::loader::MeshLoader* loader = NULL;
+            core::loader::MeshLoader* loader = nullptr;
             this->getContext()->get(loader);
             if (loader)
             {
@@ -288,7 +288,7 @@ void SphereROI<DataTypes>::doUpdate()
 		}
 		else
 		{
-			serr << "WARNING: number of sphere centers and radius doesn't match." << sendl;
+			msg_warning() << "Number of sphere centers and radius doesn't match.";
 			return;
 		}
     }
@@ -475,7 +475,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         {
 
             drawcenters.push_back(c[i]);
-            drawradii.push_back((float)(r[i] * 0.5));
+            drawradii.push_back(float(r[i]));
             
             if (edgeAngle.getValue() > 0)
             {
@@ -676,7 +676,7 @@ void SphereROI<defaulttype::Rigid3Types>::doUpdate()
 
 	if (cen.size() != rad.size())
 	{
-		serr << "WARNING: number of sphere centers and radius doesn't match." <<sendl;
+		msg_warning() << "Number of sphere centers and radius doesn't match.";
 		return;
 	}
 

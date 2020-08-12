@@ -64,7 +64,7 @@ template<class TDataTypes>
 class TBulletConvexHullModel : public sofa::core::CollisionModel ,public BulletCollisionModel
 {
 public:
-    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletConvexHullModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TTriangleModel, TDataTypes),BulletCollisionModel);
+    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletConvexHullModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
     SOFA_CLASS(SOFA_TEMPLATE(TBulletConvexHullModel, TDataTypes),sofa::core::CollisionModel);
 
     typedef TDataTypes DataTypes;

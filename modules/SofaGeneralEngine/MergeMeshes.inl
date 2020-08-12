@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -85,7 +85,7 @@ void MergeMeshes<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDescript
     if (p)
     {
         std::string nbStr = p;
-        sout << "parse: setting nbMeshes="<<nbStr<<sendl;
+        msg_info() << "parse: setting nbMeshes="<<nbStr;
         f_nbMeshes.read(nbStr);
         createInputMeshesData();
     }
@@ -100,7 +100,7 @@ void MergeMeshes<DataTypes>::parseFields ( const std::map<std::string,std::strin
     if (it != str.end() && it->second)
     {
         std::string nbStr = *it->second;
-        sout << "parseFields: setting nbMeshes="<<nbStr<<sendl;
+        msg_info() << "parseFields: setting nbMeshes="<<nbStr;
         f_nbMeshes.read(nbStr);
         createInputMeshesData();
     }
@@ -151,21 +151,21 @@ void MergeMeshes<DataTypes>::doUpdate()
     npoints = (unsigned) f_output_positions.getValue().size();
     f_output_npoints.endEdit();
 
-    sout << "Created merged mesh: "
+    msg_info() << "Created merged mesh: "
             << f_output_positions.getValue().size() << " points, ";
     if (f_output_edges.getValue().size() > 0)
-        sout << f_output_edges.getValue().size() << " edges, ";
+        msg_info() << f_output_edges.getValue().size() << " edges, ";
     if (f_output_triangles.getValue().size() > 0)
-        sout << f_output_triangles.getValue().size() << " triangles, ";
+        msg_info() << f_output_triangles.getValue().size() << " triangles, ";
     if (f_output_quads.getValue().size() > 0)
-        sout << f_output_quads.getValue().size() << " quads, ";
+        msg_info() << f_output_quads.getValue().size() << " quads, ";
     if (f_output_polygons.getValue().size() > 0)
-        sout << f_output_polygons.getValue().size() << " polygons, ";
+        msg_info() << f_output_polygons.getValue().size() << " polygons, ";
     if (f_output_tetrahedra.getValue().size() > 0)
-        sout << f_output_tetrahedra.getValue().size() << " tetrahedra, ";
+        msg_info() << f_output_tetrahedra.getValue().size() << " tetrahedra, ";
     if (f_output_hexahedra.getValue().size() > 0)
-        sout << f_output_hexahedra.getValue().size() << " hexahedra, ";
-    sout << " from " << nb << " input meshes." << sendl;
+        msg_info() << f_output_hexahedra.getValue().size() << " hexahedra, ";
+    msg_info() << " from " << nb << " input meshes.";
 }
 
 } // namespace engine

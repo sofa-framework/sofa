@@ -25,7 +25,7 @@ public:
     {
     }
 
-    virtual Result processNodeTopDown(simulation::Node* node)
+    Result processNodeTopDown(simulation::Node* node) override
     {
         core::behavior::BaseMass* mass;
         node->get(mass);

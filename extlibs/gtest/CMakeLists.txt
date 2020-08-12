@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.1)
-project(gtest CXX C)
+cmake_minimum_required(VERSION 3.12)
+project(gtest VERSION 2.6.2 LANGUAGES CXX C)
 
 ## Options
 # When other libraries are using a shared version of runtime libraries,
@@ -14,8 +14,6 @@ mark_as_advanced(gtest_disable_pthreads)
 # Define helper functions and macros used by Google Test.
 include(cmake/internal_utils.cmake)
 config_compiler_and_linker()  # Defined in internal_utils.cmake.
-
-include_directories(include "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # The code must be relocatable if we want to link a shared library against it.
 if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
@@ -33,6 +31,20 @@ set(HEADER_FILES
     include/gtest/gtest-spi.h
     include/gtest/gtest-test-part.h
     include/gtest/gtest-typed-test.h
+    include/gtest/internal/gtest-death-test-internal.h
+    include/gtest/internal/gtest-filepath.h
+    include/gtest/internal/gtest-internal.h
+    include/gtest/internal/gtest-linked_ptr.h
+    include/gtest/internal/gtest-param-util-generated.h
+    include/gtest/internal/gtest-param-util.h
+    include/gtest/internal/gtest-port-arch.h
+    include/gtest/internal/gtest-port.h
+    include/gtest/internal/gtest-string.h
+    include/gtest/internal/gtest-tuple.h
+    include/gtest/internal/gtest-type-util.h
+    include/gtest/internal/custom/gtest-port.h
+    include/gtest/internal/custom/gtest-printers.h
+    include/gtest/internal/custom/gtest.h
 )
 
 set(SOURCE_FILES
@@ -60,12 +72,16 @@ else()
     target_compile_options(gtest PRIVATE "-Wno-missing-field-initializers")
 endif()
 
-target_include_directories(gtest PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
-target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include>")
+target_include_directories(gtest
+    SYSTEM PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" # for src/gtest.cc -> src/gtest-internal-inl.h
+    )
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_create_package(GTest 2.6.2 "gtest" "")
-
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/gtest
-        COMPONENT GTest_headers
-        DESTINATION include/)
+sofa_create_package_with_targets(
+    PACKAGE_NAME GTest
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "include"
+    INCLUDE_INSTALL_DIR "extlibs/GTest"
+    )

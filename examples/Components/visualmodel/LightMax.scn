@@ -1,4 +1,5 @@
 <Node name="root" dt="0.01" gravity="0 0 -10" showBoundingTree="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <BackgroundSetting color="0.5 0.6 0.7"/>
     <LightManager ambient="1 1 1"/>
 
@@ -18,6 +19,7 @@
     <!-- <SpotLight name="light12" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="4.5 0 10"/> -->
 
 	<Node name="Torus" >
-		<OglModel name="Visual" fileMesh="mesh/torus.obj" color="1 1 1" scale="2" rotation="90 0 0"/>
+		<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" scale="2" rotation="90 0 0" handleSeams="1" />
+		<OglModel name="Visual" src="@meshLoader_0" color="1 1 1"/>
 	</Node>
 </Node>

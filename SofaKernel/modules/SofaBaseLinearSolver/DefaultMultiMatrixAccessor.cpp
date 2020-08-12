@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,7 +40,7 @@ namespace linearsolver
 
 
 DefaultMultiMatrixAccessor::DefaultMultiMatrixAccessor()
-    : globalMatrix(NULL)
+    : globalMatrix(nullptr)
     , globalDim(0)
 {
 }
@@ -58,12 +58,12 @@ void DefaultMultiMatrixAccessor::clear()
         it->second = -1;
 
     for (std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
-        if (it->second != NULL) delete it->second;
+        if (it->second != nullptr) delete it->second;
     mappedMatrices.clear();
     diagonalStiffnessBloc.clear();
 
     for (std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin(), itend = interactionStiffnessBloc.end(); it != itend; ++it)
-        if (it->second.matrix != NULL && it->second.matrix != globalMatrix) delete it->second.matrix;
+        if (it->second.matrix != nullptr && it->second.matrix != globalMatrix) delete it->second.matrix;
 
     interactionStiffnessBloc.clear();
     mappingList.clear();
@@ -93,7 +93,7 @@ void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::
 
 void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mapping)
 {
-    const sofa::defaulttype::BaseMatrix* jmatrix = NULL;
+    const sofa::defaulttype::BaseMatrix* jmatrix = nullptr;
     if (mapping->isMechanical() && mapping->areMatricesMapped())
         jmatrix = mapping->getJ();
 
@@ -202,13 +202,13 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
 
     if(m_doPrintInfo)
     {
-        if (r.matrix != NULL)
+        if (r.matrix != nullptr)
         {
             msg_info() << "Giving Stiffness Matrix [" << r.matrix->rowSize() << "." << r.matrix->colSize() << "] for state '" << mstate->getPathName()
                     << "' at offset (" << r.offset  <<","<< r.offset <<")" ;
         }
         else
-            msg_warning() << "NULL matrix found for state " << mstate->getName() ;
+            msg_warning() << "nullptr matrix found for state " << mstate->getName() ;
     }
     return r;
 }
@@ -225,7 +225,7 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
 
         if(m_doPrintInfo)///////////////////////////////////////////
         {
-            if (r2.matrix != NULL)
+            if (r2.matrix != nullptr)
             {
                 msg_info() << "Giving Interaction Stiffness Matrix ["
                         << r2.matrix->rowSize() << "." << r2.matrix->colSize()
@@ -233,7 +233,7 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
                         <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" ;
             }else
             {
-                msg_warning() << "Giving NULL matrix for self-interaction "<<
+                msg_warning() << "Giving nullptr matrix for self-interaction "<<
                         mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" ;
             }
         }
@@ -245,14 +245,14 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
         std::map< std::pair<const BaseMechanicalState*,const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.find(pairMS);
         if (it != interactionStiffnessBloc.end())// the interaction is already added
         {
-            if(it->second.matrix != NULL)
+            if(it->second.matrix != nullptr)
             {
                 r2 = it->second;
             }
 
             if(m_doPrintInfo)///////////////////////////////////////////
             {
-                if(r2.matrix != NULL)
+                if(r2.matrix != nullptr)
                 {
                     msg_info() << "Giving Interaction Stiffness Matrix ["
                             << r2.matrix->rowSize() << "." << r2.matrix->colSize()
@@ -261,7 +261,7 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
                 }
                 else
                 {
-                    msg_warning() << "Giving NULL matrix  for interaction "
+                    msg_warning() << "Giving nullptr matrix  for interaction "
                             <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" ;
                 }
             }
@@ -281,14 +281,14 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
 
                     if(m_doPrintInfo)/////////////////////////////////////////////////////////
                     {
-                        if (r2.matrix != NULL)
+                        if (r2.matrix != nullptr)
                         {
                             msg_info() <<  "Giving Interaction Stiffness Matrix ["
                                     << r2.matrix->rowSize() << "." << r2.matrix->colSize()
                                     <<"] at offset ("<<r2.offRow <<","<< r2.offCol<<")  for interaction : "
                                     <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" ;
                         }else{
-                            msg_warning() << "Giving NULL matrix  for interaction "
+                            msg_warning() << "Giving nullptr matrix  for interaction "
                                     << " for interaction : "
                                     << mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" ;
                         }
@@ -306,7 +306,7 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
 
                 if(m_doPrintInfo)/////////////////////////////////////////////////////////
                 {
-                    if (r2.matrix != NULL)
+                    if (r2.matrix != nullptr)
                     {
                         msg_info() <<   "Giving Interaction Stiffness Matrix ["
                                 << r2.matrix->rowSize() << "." << r2.matrix->colSize()
@@ -315,7 +315,7 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
                     }
                     else
                     {
-                        msg_info() << "Giving NULL matrix  for interaction "
+                        msg_info() << "Giving nullptr matrix  for interaction "
                                 << " for interaction : "
                                 << mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" ;
                     }
@@ -328,9 +328,9 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
     }//end of case where state1 # state2
 
 
-    if(m_doPrintInfo && r2.matrix == NULL)
+    if(m_doPrintInfo && r2.matrix == nullptr)
     {
-        msg_warning() << "NULL matrix found for interaction " << mstate1->getName()<<" --- "<<mstate2->getName() ;
+        msg_warning() << "nullptr matrix found for interaction " << mstate1->getName()<<" --- "<<mstate2->getName() ;
     }
 
     return r2;
@@ -599,7 +599,7 @@ void CRSMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mappi
 {
     const sofa::defaulttype::BaseMatrix* jmatrix = mapping->getJ();
 
-    if ((jmatrix != NULL) && (mapping->isMechanical()) && (mapping->areMatricesMapped()))
+    if ((jmatrix != nullptr) && (mapping->isMechanical()) && (mapping->areMatricesMapped()))
     {
         const BaseMechanicalState* mappedState  = const_cast<const BaseMechanicalState*>(mapping->getMechTo()[0]);
         defaulttype::BaseMatrix* mappedstiffness;

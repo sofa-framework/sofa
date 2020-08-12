@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,13 +39,13 @@ struct UncoupledConstraintCorrection_test: public BaseSimulationTest
     {
         SceneInstance sceneinstance("xml",
                     "<Node>\n"
-                    "   <RequiredPlugin name='SofaAllCommonComponents'/>"
+                    "   <RequiredPlugin name='SofaComponentAll'/>"
                     "   <RequiredPlugin name='SofaMiscCollision'/>"
                     "   <LCPConstraintSolver maxIt='1000' tolerance='0.001' />\n"
                     "   <FreeMotionAnimationLoop />\n"
                     "   <Node name='collision'>\n"
                     "         <MechanicalObject />\n"
-                    "         <UncoupledConstraintCorrection />\n"
+                    "         <UncoupledConstraintCorrection useOdeSolverIntegrationFactors='0' />\n"
                     "   </Node>\n"
                     "</Node>\n"
                     );

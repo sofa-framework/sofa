@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,6 @@
 #ifndef SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_INL
 #define SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_INL
 
-#include <sofa/helper/system/config.h>
 #include <SofaConstraint/LMDNewProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/proximity.h>
@@ -237,7 +236,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             ///////////////////////
             // closest point is A
             ///////////////////////
-            if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)) return 0; // this corner is not considered
             alpha = 0.0;
             beta = 0.0;
             //p = p1 + AB * alpha + AC * beta;
@@ -255,7 +254,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             ///////////////////////////
             // closest point is on AB : convention edgesIndices 0
             ///////////////////////////
-            if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)) return 0; // this edge is not considered
             alpha = pAB;
             beta = 0.0;
             pq = q-p1 - AB*alpha;// p= p1 + AB * alpha + AC * beta;
@@ -270,7 +269,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             ///////////////////////////
             // closest point is on AC: convention edgesIndices 2
             ///////////////////////////
-            if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)) return 0; // this edge is not considered
             alpha = 0.0;
             beta = pAC;
             pq = q-p1 - AC*beta;// p= p1 + AB * alpha + AC * beta;
@@ -290,7 +289,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
                 //////////////////////
                 // closest point is B
                 //////////////////////
-                if (!(flags&TriangleModel::FLAG_P2)) return 0; // this point is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)) return 0; // this point is not considered
                 alpha = 1.0;
                 beta = 0.0;
                 pq = q-p2;
@@ -303,7 +302,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             else if (pBC > 0.999999)
             {
                 // closest point is C
-                if (!(flags&TriangleModel::FLAG_P3)) return 0; // this point is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)) return 0; // this point is not considered
                 alpha = 0.0;
                 beta = 1.0;
                 pq = q-p3;
@@ -318,7 +317,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
                 ///////////////////////////
                 // closest point is on BC: convention edgesIndices 1
                 ///////////////////////////
-                if (!(flags&TriangleModel::FLAG_E23)) return 0; // this edge is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23)) return 0; // this edge is not considered
                 alpha = 1.0-pBC;
                 beta = pBC;
                 pq = q-p1 - AB * alpha - AC * beta;
@@ -437,7 +436,7 @@ int LMDNewProximityIntersection::computeIntersection(TSphere<T1>& e1, TSphere<T2
 template<class T>
 bool LMDNewProximityIntersection::testIntersection(Line&, TSphere<T>&)
 {
-    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere)."<<sendl;
+    msg_error() << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere).";
     return true;
 }
 
@@ -465,7 +464,7 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, O
 template<class T>
 bool LMDNewProximityIntersection::testIntersection(Triangle&, TSphere<T>&)
 {
-    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere)."<<sendl;
+    msg_error() << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere).";
     return true;
 }
 
@@ -474,7 +473,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
 {
 
 // index of lines:
-    const sofa::helper::fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getTopology()->getEdgesInTriangle(e1.getIndex());
+    const sofa::helper::fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
     unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
     E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
 
@@ -485,7 +484,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
     for (int i=0; i<3; i++)
     {
         // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
-        edge[i] = e1.getCollisionModel()->getTopology()->getEdge(edgesInTriangle1[i]);
+        edge[i] = e1.getCollisionModel()->getCollisionTopology()->getEdge(edgesInTriangle1[i]);
         if(((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p2Index()) || ((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p1Index()))
         {
             E1edge1verif = edgesInTriangle1[i]; /*std::cout<<"- e1 1: "<<i ;*/

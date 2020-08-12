@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -123,7 +123,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
 
     virtual ~Multi2Mapping_test()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
     }
 
@@ -318,7 +318,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         SparseJMatrixEigen1* J1 = dynamic_cast<SparseJMatrixEigen1*>((*J)[0]);
         SparseJMatrixEigen2* J2 = dynamic_cast<SparseJMatrixEigen2*>((*J)[1]);
         OutVecDeriv Jv(Nc);
-        assert(J1 != NULL && J2 != NULL);
+        assert(J1 != nullptr && J2 != nullptr);
         J1->addMult(Jv, vIn1p[0]);
         J2->addMult(Jv, vIn2p[0]);
 
@@ -331,7 +331,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             if (this->vectorMaxDiff(jfcIn1[p], fIn1p[p])>this->epsilon()*errorMax)
             {
                 succeed = false;
-                ADD_FAILURE() << "applyJT (parent 1) test failed" << endl << "jfcIn1[" << p << "] = " << jfcIn1[p] << endl << " fp[" << p << "] = " << fIn1p[p] << endl;
+                ADD_FAILURE() << "applyJT (parent 1) test failed" << std::endl << "jfcIn1[" << p << "] = " << jfcIn1[p] << std::endl << " fp[" << p << "] = " << fIn1p[p] << std::endl;
             }
         }
         for (Index p = 0; p<Np2.size(); p++)
@@ -341,16 +341,16 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             if (this->vectorMaxDiff(jfcIn2[p], fIn2p[p])>this->epsilon()*errorMax)
             {
                 succeed = false;
-                ADD_FAILURE() << "applyJT (parent 2) test failed" << endl << "jfcIn2[" << p << "] = " << jfcIn2[p] << endl << " fp[" << p << "] = " << fIn2p[p] << endl;
+                ADD_FAILURE() << "applyJT (parent 2) test failed" << std::endl << "jfcIn2[" << p << "] = " << jfcIn2[p] << std::endl << " fp[" << p << "] = " << fIn2p[p] << std::endl;
             }
         }
 
         // ================ test getJs() : check that J.vp = vc
         if (this->vectorMaxDiff(Jv, vc) > this->epsilon()*errorMax){
             succeed = false;
-            cout << "Jvp = " << Jv << endl;
-            cout << "vc  = " << vc << endl;
-            ADD_FAILURE() << "getJs() test failed" << endl << "Jvp = " << Jv << endl << "vc  = " << vc << endl;
+            msg_info("Multi2Mapping_test") << "Jvp = " << Jv << msgendl
+                                           << "vc  = " << vc;
+            ADD_FAILURE() << "getJs() test failed" << std::endl << "Jvp = " << Jv << std::endl << "vc  = " << vc << std::endl;
         }
 
         // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)
@@ -394,9 +394,9 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         if (this->vectorMaxDiff(dxc, vc) > this->epsilon()*errorMax)
         {
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax << endl
-                          << "position change = " << dxc << endl
-                          << "velocity        = " << vc << endl;
+            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax << std::endl
+                          << "position change = " << dxc << std::endl
+                          << "velocity        = " << vc << std::endl;
         }
 
         // update parent force based on the same child forces
@@ -425,9 +425,9 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             if( this->vectorMaxDiff(dfIn1p[p],fIn1p12[p]) > this->epsilon()*errorMax )
             {
                 succeed = false;
-                ADD_FAILURE() << "applyDJT test (parent 1) failed" << endl <<
-                                 "dfIn1p["<<p<<"]    = " << dfIn1p[p] << endl <<
-                                 "fIn1p2["<<p<<"]-fIn1p["<<p<<"] = " << fIn1p12[p] << endl;
+                ADD_FAILURE() << "applyDJT test (parent 1) failed" << std::endl <<
+                                 "dfIn1p["<<p<<"]    = " << dfIn1p[p] << std::endl <<
+                                 "fIn1p2["<<p<<"]-fIn1p["<<p<<"] = " << fIn1p12[p] << std::endl;
             }
         }
         // ================ test applyDJT() (Case 2)
@@ -439,9 +439,9 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             if( this->vectorMaxDiff(dfIn2p[p],fIn2p12[p]) > this->epsilon()*errorMax )
             {
                 succeed = false;
-                ADD_FAILURE() << "applyDJT test (parent 2) failed" << endl <<
-                                 "dfIn2p["<<p<<"]    = " << dfIn2p[p] << endl <<
-                                 "fIn2p2["<<p<<"]-fIn2p["<<p<<"] = " << fIn2p12[p] << endl;
+                ADD_FAILURE() << "applyDJT test (parent 2) failed" << std::endl <<
+                                 "dfIn2p["<<p<<"]    = " << dfIn2p[p] << std::endl <<
+                                 "fIn2p2["<<p<<"]-fIn2p["<<p<<"] = " << fIn2p12[p] << std::endl;
             }
         }
 
@@ -451,13 +451,13 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         for(Index i=0; i<Np2.size(); i++) in2Dofs[i]->forceMask.clear();
         outDofs->forceMask.assign(outDofs->getSize(),true);
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
-        for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
+        for( unsigned i=0; i<Nc; i++ ) OutType::set( fout[i], 1,1,1 ); // every child forces are non-nul
         for(Index p=0; p<Np1.size(); p++) {
-            WriteInVecDeriv fin = in1Dofs[p]->writeForces();
+            WriteIn1VecDeriv fin = in1Dofs[p]->writeForces();
             copyToData( fin, fIn1p2[p] );  // reset parent forces before accumulating child forces
         }
         for(Index p=0; p<Np2.size(); p++) {
-            WriteInVecDeriv fin = in2Dofs[p]->writeForces();
+            WriteIn2VecDeriv fin = in2Dofs[p]->writeForces();
             copyToData( fin, fIn2p2[p] );  // reset parent forces before accumulating child forces
         }
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
@@ -465,7 +465,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         {
             copyFromData( fIn1p[i], in1Dofs[i]->readForces() );
             for( unsigned j=0; j<Np1[i]; j++ ) {
-                if( fIn1p[i][j] != InDeriv() && !in1Dofs[i]->forceMask.getEntry(j) ){
+                if( fIn1p[i][j] != In1Deriv() && !in1Dofs[i]->forceMask.getEntry(j) ){
                     succeed = false;
                     ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents 0-"<< i << std::endl;
                     break;
@@ -476,7 +476,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         {
             copyFromData( fIn2p[i], in2Dofs[i]->readForces() );
             for( unsigned j=0; j<Np2[i]; j++ ) {
-                if( fIn2p[i][j] != InDeriv() && !in2Dofs[i]->forceMask.getEntry(j) ){
+                if( fIn2p[i][j] != In2Deriv() && !in2Dofs[i]->forceMask.getEntry(j) ){
                     succeed = false;
                     ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents 1-"<< i << std::endl;
                     break;

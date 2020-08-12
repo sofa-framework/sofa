@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,9 +76,9 @@ bool ObjectElement::initNode()
 
     core::objectmodel::BaseObject::SPtr obj = core::ObjectFactory::CreateObject(ctx, this);
 
-    if (obj == NULL)
+    if (obj == nullptr)
         obj = Factory::CreateObject(this->getType(), this);
-    if (obj == NULL)
+    if (obj == nullptr)
     {
         BaseObjectDescription desc("InfoComponent", "InfoComponent") ;
         desc.setAttribute("name", ("Not created ("+getType()+")"));
@@ -110,6 +110,8 @@ bool ObjectElement::initNode()
 
             msg_warning(obj.get()) << SOFA_FILE_INFO_COPIED_FROM(getSrcFile(), getSrcLine()) << "Unused Attribute: \""<<it->first <<"\" with value: \"" <<it->second.c_str() <<"\"" ;        }
     }
+    obj->setInstanciationSourceFilePos(getSrcLine());
+    obj->setInstanciationSourceFileName(getSrcFile());
     return true;
 }
 

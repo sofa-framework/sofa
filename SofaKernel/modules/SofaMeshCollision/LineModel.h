@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_LINEMODEL_H
-#define SOFA_COMPONENT_COLLISION_LINEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
@@ -41,18 +41,18 @@ namespace collision
 {
 
 template<class DataTypes>
-class TLineModel;
+class LineCollisionModel;
 
 class LineLocalMinDistanceFilter;
 
 template<class TDataTypes>
-class TLine : public core::TCollisionElementIterator<TLineModel<TDataTypes> >
+class TLine : public core::TCollisionElementIterator<LineCollisionModel<TDataTypes> >
 {
 public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef TLineModel<DataTypes> ParentModel;
+    typedef LineCollisionModel<DataTypes> ParentModel;
 
     TLine(ParentModel* model, int index);
     TLine() {}
@@ -77,24 +77,13 @@ public:
 
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
-
-    bool activated(core::CollisionModel *cm = 0) const;
-};
-
-class LineActiver
-{
-public:
-    LineActiver() {}
-    virtual ~LineActiver() {}
-    virtual bool activeLine(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
-	static LineActiver* getDefaultActiver() { static LineActiver defaultActiver; return &defaultActiver; }
 };
 
 template<class TDataTypes>
-class SOFA_MESH_COLLISION_API TLineModel : public core::CollisionModel
+class SOFA_MESH_COLLISION_API LineCollisionModel : public core::CollisionModel
 {
 public :
-    SOFA_CLASS(SOFA_TEMPLATE(TLineModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(LineCollisionModel, TDataTypes), core::CollisionModel);
     
     enum LineFlag
     {
@@ -118,12 +107,12 @@ protected:
     bool needsUpdate;
     virtual void updateFromTopology();
 
-    TLineModel();
+    LineCollisionModel();
 
 public:
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
-    typedef TLineModel<DataTypes> ParentModel;
+    typedef LineCollisionModel<DataTypes> ParentModel;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -131,19 +120,19 @@ public:
     typedef TLine<DataTypes> Element;
     friend class TLine<DataTypes>;
 
-    virtual void init() override;
+    void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size) override;
+    void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
-    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
+    void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void handleTopologyChange() override;
+    void handleTopologyChange() override;
 
     bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
 
@@ -166,39 +155,36 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+        {
+            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                          "' found in the context node.");
             return false;
+        }
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
+    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
     {
-        return templateName(this);
+        return l_topology.get();
     }
 
-    static std::string templateName(const TLineModel<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
-
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    
 protected:
-
     core::behavior::MechanicalState<DataTypes>* mstate;
     Topology* topology;
-    PointModel* mpoints;
+    PointCollisionModel<sofa::defaulttype::Vec3Types>* mpoints;
     int meshRevision;
     LineLocalMinDistanceFilter *m_lmdFilter;
 
-    Data< std::string  > LineActiverPath; ///< path of a component LineActiver that activates or deactivates collision line during execution
-    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
-
-    LineActiver *myActiver;
-
-
 };
+
 
 template<class DataTypes>
 inline TLine<DataTypes>::TLine(ParentModel* model, int index)
@@ -257,7 +243,7 @@ template<class DataTypes>
 inline typename DataTypes::Deriv TLine<DataTypes>::n() const {return (this->model->mpoints->getNormal(this->i1()) + this->model->mpoints->getNormal( this->i2())).normalized();}
 
 template<class DataTypes>
-inline typename TLineModel<DataTypes>::Deriv TLineModel<DataTypes>::velocity(int index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[1]])/((Real)(2.0)); }
+inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(int index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[1]])/((Real)(2.0)); }
 
 template<class DataTypes>
 inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(this->index); }
@@ -265,17 +251,12 @@ inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(th
 template<class DataTypes>
 inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
-template<class DataTypes>
-inline bool TLine<DataTypes>::activated(core::CollisionModel *cm) const
-{
-    return this->model->myActiver->activeLine(this->index, cm);
-}
+template <class TDataTypes> using TLineModel [[deprecated("The TLineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] = LineCollisionModel<TDataTypes>;
+using  LineModel [[deprecated("The LineModel is now deprecated, please use LineCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = LineCollisionModel<sofa::defaulttype::Vec3Types>;
+using Line = TLine<sofa::defaulttype::Vec3Types>;
 
-typedef TLineModel<sofa::defaulttype::Vec3Types> LineModel;
-typedef TLine<sofa::defaulttype::Vec3Types> Line;
-
-#if  !defined(SOFA_COMPONENT_COLLISION_LINEMODEL_CPP)
-extern template class SOFA_MESH_COLLISION_API TLineModel<defaulttype::Vec3Types>;
+#if  !defined(SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP)
+extern template class SOFA_MESH_COLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
 
 #endif
 

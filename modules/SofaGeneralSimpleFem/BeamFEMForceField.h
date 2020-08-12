@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -172,12 +172,19 @@ protected:
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> m_matS;
 
     const VecElement *m_indexedElements;
+
+public:
     Data<Real> d_poissonRatio; ///< Potion Ratio
     Data<Real> d_youngModulus; ///< Young Modulus
     Data<Real> d_radius; ///< radius of the section
     Data<Real> d_radiusInner; ///< inner radius of the section for hollow beams
     Data< BaseMeshTopology::SetIndex > d_listSegment; ///< apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology
     Data< bool> d_useSymmetricAssembly; ///< use symmetric assembly of the matrix K
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<BeamFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
+ protected:
     bool m_partialListSegment;
     bool m_updateStiffnessMatrix;
     bool m_assembling;
@@ -197,16 +204,16 @@ protected:
 
 public:
 
-    virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void reinit() override;
+    void init() override;
+    void bwdInit() override;
+    void reinit() override;
     virtual void reinitBeam(unsigned int i);
-    virtual void addForce(const MechanicalParams* mparams, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
-    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
-    virtual void addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix ) override;
-    virtual SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord&  x) const override;
-    virtual void draw(const core::visual::VisualParams* vparams) override;
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+    void addForce(const MechanicalParams* mparams, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
+    void addDForce(const MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
+    void addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix ) override;
+    SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord&  x) const override;
+    void draw(const core::visual::VisualParams* vparams) override;
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
     void setUpdateStiffnessMatrix(bool val);
     void setComputeGlobalMatrix(bool val);

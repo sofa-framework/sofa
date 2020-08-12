@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,11 +38,20 @@ namespace component
 namespace collision
 {
 
+template < class TCollisionModel, class DataTypes >
+RigidContactMapper<TCollisionModel,DataTypes>::RigidContactMapper()
+    : model(nullptr)
+    , child(nullptr)
+    , mapping(nullptr)
+    , outmodel(nullptr)
+    , nbp(0)
+{
+}
 
 template < class TCollisionModel, class DataTypes >
 void RigidContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
-    if (child!=NULL)
+    if (child!=nullptr)
     {
         child->detachFromGraph();
         child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
@@ -53,15 +62,15 @@ void RigidContactMapper<TCollisionModel,DataTypes>::cleanup()
 template < class TCollisionModel, class DataTypes >
 typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidContactMapper<TCollisionModel,DataTypes>::createMapping(const char* name)
 {
-    if (model==NULL) return NULL;
+    if (model==nullptr) return nullptr;
     InMechanicalState* instate = model->getMechanicalState();
-    if (instate!=NULL)
+    if (instate!=nullptr)
     {
         simulation::Node* parent = dynamic_cast<simulation::Node*>(instate->getContext());
-        if (parent==NULL)
+        if (parent==nullptr)
         {
             msg_error("RigidContactMapper") << "RigidContactMapper only works for scenegraph scenes.";
-            return NULL;
+            return nullptr;
         }
         child = parent->createChild(name);
         outmodel = sofa::core::objectmodel::New<MMechanicalObject>();
@@ -74,14 +83,14 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
     else
     {
         simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
-        if (parent==NULL)
+        if (parent==nullptr)
         {
             msg_error("RigidContactMapper") << "RigidContactMapper only works for scenegraph scenes.";
-            return NULL;
+            return nullptr;
         }
         child = parent->createChild(name);
         outmodel = sofa::core::objectmodel::New<MMechanicalObject>(); child->addObject(outmodel);
-        mapping = NULL;
+        mapping = nullptr;
     }
     return outmodel.get();
 }

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,6 +35,9 @@ namespace component
 
 namespace topology
 {
+
+using sofa::core::objectmodel::ComponentState;
+using namespace sofa::core::topology;
 
 const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 
@@ -138,35 +141,6 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
     }
     tetrahedronNumericalIntegration.addQuadratureMethod(m,5,qpa);
 
-/*
-    v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
-    qpa.push_back(QuadraturePoint(v,(Real) 8/405));
-    a=(7+sqrt((Real)15))/34;
-    b=(13+3*sqrt((Real)15))/34;
-     c=(2665-14*sqrt((Real)15))/226800;
-    for (i=0;i<4;++i) {
-        v=BarycentricCoordinatesType(a,a,a,a);
-        v[i]=b;
-        qpa.push_back(QuadraturePoint(v,c));
-    }
-    a=(7-sqrt((Real)15))/34;
-    b=(13-3*sqrt((Real)15))/34;
-    c=(2665+14*sqrt((Real)15))/226800;
-    for (i=0;i<4;++i) {
-        v=BarycentricCoordinatesType(a,a,a,a);
-        v[i]=b;
-        qpa.push_back(QuadraturePoint(v,c));
-    }
-    a=(5-sqrt((Real)15))/20;
-    b=(5+sqrt((Real)15))/20;
-    c=(Real)5/567;
-    for (i=0;i<6;++i) {
-        v=BarycentricCoordinatesType(a,a,a,a);
-        v[edgesInTetrahedronArray[i][0]]=b;
-        v[edgesInTetrahedronArray[i][1]]=b;
-        qpa.push_back(QuadraturePoint(v,c));
-    }
-    tetrahedronNumericalIntegration.addQuadratureMethod(m,5,qpa); */
     /// integration with sixtic accuracy with 24 points
     // This rule is originally from Keast:
     // Patrick Keast,
@@ -557,16 +531,11 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeT
 template< class DataTypes>
 typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const TetraID i) const
 {
-    const Tetrahedron t=this->m_topology->getTetrahedron(i);
-    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
-    Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
-    if(volume<0)
-        volume=-volume;
-    return volume;
+    return computeRestTetrahedronVolume(this->m_topology->getTetrahedron(i));
 }
 
 template< class DataTypes>
-typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const Tetrahedron t) const
+typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const Tetrahedron& t) const
 {
     const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
@@ -587,6 +556,50 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronVolume( Basi
         ai[i] = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     }
 }
+
+template<class DataTypes>
+typename DataTypes::Real TetrahedronSetGeometryAlgorithms<DataTypes>::computeDihedralAngle(const TetraID tetraId, const EdgeID edgeId) const
+{
+    Real angle = 0.0;
+    const typename DataTypes::VecCoord& positions = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const Tetrahedron& tetra = this->m_topology->getTetrahedron(tetraId);
+    const EdgesInTetrahedron& edgeIds = this->m_topology->getEdgesInTetrahedron(tetraId);
+    const Edge& edge = this->m_topology->getEdge(edgeIds[edgeId]);
+
+    unsigned int idA = edge[0];
+    unsigned int idB = edge[1];
+
+    unsigned int idC = sofa::defaulttype::InvalidID, idD = sofa::defaulttype::InvalidID;
+    for (unsigned int i = 0; i < 4; i++)
+    {
+        if (tetra[i] != idA && tetra[i] != idB)
+        {
+            if (idC == sofa::defaulttype::InvalidID)
+                idC = tetra[i];
+            else
+                idD = tetra[i];
+        }
+    }
+
+    typename DataTypes::Coord pAB = positions[idB] - positions[idA];
+    typename DataTypes::Coord pAC = positions[idC] - positions[idA];
+    typename DataTypes::Coord pAD = positions[idD] - positions[idA];
+
+    sofa::defaulttype::Vec<3, Real> AB = sofa::defaulttype::Vec<3, Real>(pAB);
+    sofa::defaulttype::Vec<3, Real> AC = sofa::defaulttype::Vec<3, Real>(pAC);
+    sofa::defaulttype::Vec<3, Real> AD = sofa::defaulttype::Vec<3, Real>(pAD);
+    
+    sofa::defaulttype::Vec<3, Real> nF1 = AB.cross(AC);
+    sofa::defaulttype::Vec<3, Real> nF2 = AB.cross(AD);
+
+    nF1.normalize();
+    nF2.normalize();
+    Real cosTheta = nF1 * nF2;
+    angle = std::acos(cosTheta) * (180 / M_PI);    
+
+    return angle;
+}
+
 
 /// Finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
 template<class DataTypes>
@@ -720,7 +733,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
         }
     }
     if(ind_ta == core::topology::BaseMeshTopology::InvalidID)
-        std::cout << "ERROR: Can't find the seed" << std::endl;
+        msg_error() << "getTetraInBall, Can't find the seed.";
     Real d = r;
 //      const Tetrahedron &ta=this->m_topology->getTetrahedron(ind_ta);
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
@@ -862,10 +875,16 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::computeIntersectionEdgeWithPla
         return false;
 }
 
-template <typename DataTypes>
-bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(Tetra& tetra)
+template< class DataTypes>
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkNodeSequence(const TetraID tetraId) const
 {
-    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    return checkNodeSequence(this->m_topology->getTetrahedron(tetraId));
+}
+
+template <typename DataTypes>
+bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(const Tetrahedron& tetra) const
+{
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::position())->getValue());
     sofa::defaulttype::Vec<3,Real> vec[3];
     for(int i=1; i<4; i++)
     {
@@ -878,6 +897,127 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(Tetra& tetra
     else
         return false;
 }
+
+
+template< class DataTypes>
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::isTetrahedronElongated(const TetraID tetraId, SReal factorLength) const
+{
+    const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const Tetrahedron& tetra = this->m_topology->getTetrahedron(tetraId);    
+
+    typename DataTypes::VecCoord points;
+    points.resize(4);
+    for (unsigned int i = 0; i < 4; i++) {
+        points[i] = coords[ tetra[i] ];
+    }
+
+    Real minLength = std::numeric_limits<Real>::max();
+    Real maxLength = std::numeric_limits<Real>::min();
+    
+    for (unsigned int i = 0; i < 4; i++)
+    {
+        for (unsigned int j = i + 1; j < 4; j++)
+        {
+            Real length = (points[j] - points[i]).norm2();
+            if (length < minLength) {
+                minLength = length;
+            }
+                
+            if (length > maxLength) {
+                maxLength = length;
+            }            
+        }
+    }
+
+    if (minLength*factorLength < maxLength) {
+        return true;
+    }
+    else
+        return false;
+}
+
+
+template< class DataTypes>
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkTetrahedronDihedralAngles(const TetraID tetraId, SReal minAngle, SReal maxAngle) const
+{
+    bool badAngle = false;
+    for (unsigned int eId = 0; eId < 6; eId++)
+    {
+        Real angle = computeDihedralAngle(tetraId, eId);
+        if (angle < minAngle) {
+            badAngle = true;
+            break;
+        }
+        else if (angle > maxAngle) {
+            badAngle = true;
+            break;
+        }
+    }
+
+    return !badAngle;
+}
+
+
+template< class DataTypes>
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkTetrahedronValidity(const TetraID tetraId, SReal minAngle, SReal maxAngle, SReal factorLength) const
+{
+    // test orientation first
+    if (checkNodeSequence(tetraId) == false) {
+        return false;
+    }
+
+    // test elongated shape
+    if (isTetrahedronElongated(tetraId, factorLength) == true) {
+        return false;
+    }
+
+    // test dihedral angles
+    if (checkTetrahedronDihedralAngles(tetraId, minAngle, maxAngle) == false)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+template <typename DataTypes>
+const sofa::helper::vector <BaseMeshTopology::TetraID>& TetrahedronSetGeometryAlgorithms<DataTypes>::computeBadTetrahedron(SReal minAngle, SReal maxAngle, SReal factorLength)
+{
+    m_badTetraIds.clear();
+    for (size_t i = 0; i < this->m_topology->getNbTetrahedra(); ++i)
+    {
+        // test orientation first
+        if (checkNodeSequence(i) == false)
+        {
+            m_badTetraIds.push_back(i);
+            continue;
+        }
+
+        // test elongated shape
+        if (isTetrahedronElongated(i, factorLength) == true)
+        {
+            m_badTetraIds.push_back(i);
+            continue;
+        }
+
+        // test dihedral angles
+        if (checkTetrahedronDihedralAngles(i, minAngle, maxAngle) == false)
+        {
+            m_badTetraIds.push_back(i);
+            continue;
+        }        
+    }
+
+    return m_badTetraIds;
+}
+
+template <typename DataTypes>
+const sofa::helper::vector <BaseMeshTopology::TetraID>& TetrahedronSetGeometryAlgorithms<DataTypes>::getBadTetrahedronIds()
+{
+    return m_badTetraIds;
+}
+
 
 /// Write the current mesh into a msh file
 template <typename DataTypes>
@@ -925,11 +1065,14 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(this->d_componentState.getValue() == ComponentState::Invalid)
+        return;
+
     TriangleSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
     //Draw tetra indices
-    if (d_showTetrahedraIndices.getValue())
+    if (d_showTetrahedraIndices.getValue() && this->m_topology->getNbTetrahedra() != 0)
     {
         const sofa::defaulttype::Vec4f& color_tmp = d_drawColorTetrahedra.getValue();
         defaulttype::Vec4f color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
@@ -958,33 +1101,70 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
     }
 
     // Draw Tetra
-    if (d_drawTetrahedra.getValue())
+    if (d_drawTetrahedra.getValue() && this->m_topology->getNbTetrahedra() != 0)
     {
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, true);
+
         const sofa::defaulttype::Vec4f& color_tmp = d_drawColorTetrahedra.getValue();
         defaulttype::Vec4f color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
 
         const sofa::helper::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
         std::vector<defaulttype::Vector3>   pos;
-        pos.reserve(tetraArray.size()*4u);
+        pos.reserve(tetraArray.size() * 4u);
 
-        for (size_t i = 0; i<tetraArray.size(); ++i)
+        for (size_t i = 0; i < tetraArray.size(); ++i)
         {
             const Tetrahedron& tet = tetraArray[i];
-            for (unsigned int j = 0u; j<4u; ++j)
+            for (unsigned int j = 0u; j < 4u; ++j)
             {
                 pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[tet[j]])));
             }
         }
 
         const float& scale = d_drawScaleTetrahedra.getValue();
-
-        if (scale >= 1.0 && scale < 0.001)
+        
+        if (scale >= 1.0 || scale < 0.001)
             vparams->drawTool()->drawTetrahedra(pos, color4);
         else
             vparams->drawTool()->drawScaledTetrahedra(pos, color4, scale);
 
+        // Draw Tetra border
+        if (!vparams->displayFlags().getShowWireFrame())
+        {
+            vparams->drawTool()->setPolygonMode(0, true);
+            //vparams->drawTool()->enablePolygonOffset(0.0, -1.0);
+            if (scale >= 1.0 || scale < 0.001)
+                vparams->drawTool()->drawTetrahedra(pos, sofa::helper::types::RGBAColor::gray());
+            else
+                vparams->drawTool()->drawScaledTetrahedra(pos, sofa::helper::types::RGBAColor::gray(), scale);
+            //vparams->drawTool()->disablePolygonOffset();
+            vparams->drawTool()->setPolygonMode(0, false);
+        }
+
+        // Draw bad tetra
+        if (!m_badTetraIds.empty())
+        {
+            std::vector<defaulttype::Vector3> posBad;
+            posBad.reserve(m_badTetraIds.size() * 4u);
+
+            for (size_t i = 0; i < m_badTetraIds.size(); ++i)
+            {
+                const Tetrahedron& tet = tetraArray[m_badTetraIds[i]];
+                for (unsigned int j = 0u; j < 4u; ++j)
+                {
+                    posBad.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[tet[j]])));
+                }
+            }
+
+            const float& scale = d_drawScaleTetrahedra.getValue();
+
+            if (scale >= 1.0 || scale < 0.001)
+                vparams->drawTool()->drawTetrahedra(posBad, sofa::helper::types::RGBAColor::red());
+            else
+                vparams->drawTool()->drawScaledTetrahedra(posBad, sofa::helper::types::RGBAColor::red(), scale);
+        }        
+       
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, false);
     }

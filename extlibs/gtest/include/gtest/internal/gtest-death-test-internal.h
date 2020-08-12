@@ -27,11 +27,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-//
-// The Google C++ Testing Framework (Google Test)
+// The Google C++ Testing and Mocking Framework (Google Test)
 //
 // This header file defines internal utilities needed for implementing
 // death tests.  They are subject to change without notice.
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_DEATH_TEST_INTERNAL_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_DEATH_TEST_INTERNAL_H_
@@ -51,6 +51,9 @@ const char kDeathTestUseFork[] = "death_test_use_fork";
 const char kInternalRunDeathTestFlag[] = "internal_run_death_test";
 
 #if GTEST_HAS_DEATH_TEST
+
+GTEST_DISABLE_MSC_WARNINGS_PUSH_(4251 \
+/* class A needs to have dll-interface to be used by clients of class B */)
 
 // DeathTest is a class that hides much of the complexity of the
 // GTEST_DEATH_TEST_ macro.  It is abstract; its static Create method
@@ -135,6 +138,8 @@ class GTEST_API_ DeathTest {
   GTEST_DISALLOW_COPY_AND_ASSIGN_(DeathTest);
 };
 
+GTEST_DISABLE_MSC_WARNINGS_POP_()  //  4251
+
 // Factory interface for death tests.  May be mocked out for testing.
 class DeathTestFactory {
  public:
@@ -217,14 +222,18 @@ GTEST_API_ bool ExitedUnsuccessfully(int exit_status);
 // can be streamed.
 
 // This macro is for implementing ASSERT/EXPECT_DEBUG_DEATH when compiled in
-// NDEBUG mode. In this case we need the statements to be executed, the regex is
-// ignored, and the macro must accept a streamed message even though the message
-// is never printed.
-# define GTEST_EXECUTE_STATEMENT_(statement, regex) \
-  GTEST_AMBIGUOUS_ELSE_BLOCKER_ \
-  if (::testing::internal::AlwaysTrue()) { \
-     GTEST_SUPPRESS_UNREACHABLE_CODE_WARNING_BELOW_(statement); \
-  } else \
+// NDEBUG mode. In this case we need the statements to be executed and the macro
+// must accept a streamed message even though the message is never printed.
+// The regex object is not evaluated, but it is used to prevent "unused"
+// warnings and to avoid an expression that doesn't compile in debug mode.
+#define GTEST_EXECUTE_STATEMENT_(statement, regex)             \
+  GTEST_AMBIGUOUS_ELSE_BLOCKER_                                \
+  if (::testing::internal::AlwaysTrue()) {                     \
+    GTEST_SUPPRESS_UNREACHABLE_CODE_WARNING_BELOW_(statement); \
+  } else if (!::testing::internal::AlwaysTrue()) {             \
+    const ::testing::internal::RE& gtest_regex = (regex);      \
+    static_cast<void>(gtest_regex);                            \
+  } else                                                       \
     ::testing::Message()
 
 // A class representing the parsed contents of the

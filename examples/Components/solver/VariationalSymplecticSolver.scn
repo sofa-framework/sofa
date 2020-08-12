@@ -6,7 +6,7 @@
         <Node name="M1">
             <MechanicalObject />
             <UniformMass vertexMass="1" />
-            <RegularGrid nx="4" ny="4" nz="28" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="27" />
+            <RegularGridTopology nx="4" ny="4" nz="28" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="27" />
             <BoxConstraint box="-9.1 -0.1 -0.1 -5.9 3.1 0.1" />
             <!--<BoxConstraint box="-9.1 -0.1 26.9 -5.9 3.1 27.1" />-->
             <TetrahedronFEMForceField name="FEM" youngModulus="100000" poissonRatio="0.3" />

@@ -16,7 +16,7 @@
 #include <sofa/core/Mapping.h>
 
 
-#ifdef SOFA_HAVE_IMAGE
+#if FLEXIBLE_HAVE_IMAGE
 #include "../mass/ImageDensityMass.h"
 #endif
 
@@ -93,7 +93,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRAC
 
 
 #if !defined(FLEXIBLE_COMPILING_CPP)
-#ifdef SOFA_HAVE_IMAGE
+#if FLEXIBLE_HAVE_IMAGE
 extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,defaulttype::TYPEABSTRACTNAME3dMass>;
 
 extern template class SOFA_Flexible_API UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes,defaulttype::TYPEABSTRACTNAME3dMass>;

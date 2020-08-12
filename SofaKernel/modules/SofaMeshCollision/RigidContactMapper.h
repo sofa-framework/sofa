@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_H
 #include "config.h"
 
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
@@ -78,10 +77,7 @@ public:
     int nbp;
 
 protected:
-    RigidContactMapper()
-        : model(NULL), child(NULL), mapping(NULL), outmodel(NULL), nbp(0)
-    {
-    }
+    RigidContactMapper();
 
 public:
 
@@ -96,9 +92,9 @@ public:
 
     void resize(int size)
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
             mapping->clear(size);
-        if (outmodel!=NULL)
+        if (outmodel != nullptr)
             outmodel->resize(size);
         nbp = 0;
     }
@@ -122,7 +118,7 @@ public:
 
     void update()
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
             map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
@@ -132,7 +128,7 @@ public:
 
     void updateXfree()
     {
-        if (mapping!=NULL)
+        if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
             map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
@@ -148,7 +144,7 @@ class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<Ri
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             RigidSphere e(this->model, index);
-            const typename RigidSphereModel::DataTypes::Coord & rCenter = e.rigidCenter();
+            const typename SphereCollisionModel<sofa::defaulttype::Rigid3Types>::DataTypes::Coord & rCenter = e.rigidCenter();
             const typename TVec3Types::Coord & cP = P - rCenter.getCenter();
             const defaulttype::Quaternion & ori = rCenter.getOrientation();
 
@@ -160,56 +156,56 @@ class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<Ri
 
 
 template <class TVec3Types>
-class ContactMapper<OBBModel,TVec3Types > : public RigidContactMapper<OBBModel, TVec3Types >{
+class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types > : public RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >{
     public:
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
             const defaulttype::Quaternion & ori = this->model->orientation(index);
 
-            return RigidContactMapper<OBBModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
+            return RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
 };
 
 template <class TVec3Types>
-class ContactMapper<RigidCapsuleModel,TVec3Types > : public RigidContactMapper<RigidCapsuleModel, TVec3Types >{
+class ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types > : public RigidContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >{
     public:
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
             const defaulttype::Quaternion & ori = this->model->orientation(index);
 
-            return RigidContactMapper<RigidCapsuleModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
+            return RigidContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
 };
 
 template <class TVec3Types>
-class ContactMapper<CylinderModel,TVec3Types > : public RigidContactMapper<CylinderModel, TVec3Types >{
+class ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types > : public RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >{
     public:
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
             const defaulttype::Quaternion & ori = this->model->orientation(index);
 
-            return RigidContactMapper<CylinderModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
+            return RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_CPP)
-extern template class SOFA_MESH_COLLISION_API ContactMapper<CylinderModel, defaulttype::Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidCapsuleModel, defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidSphereModel, defaulttype::Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<OBBModel, defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>;
 
 // Manual declaration of non-specialized members, to avoid warnings from MSVC.
-extern template SOFA_MESH_COLLISION_API void RigidContactMapper<CylinderModel, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<CylinderModel, defaulttype::Vec3Types>::createMapping(const char*);
-extern template SOFA_MESH_COLLISION_API void RigidContactMapper<RigidCapsuleModel, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<RigidCapsuleModel, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_MESH_COLLISION_API void RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_MESH_COLLISION_API void RigidContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::createMapping(const char*);
 extern template SOFA_MESH_COLLISION_API void RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::cleanup();
 extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::createMapping(const char*);
-extern template SOFA_MESH_COLLISION_API void RigidContactMapper<OBBModel, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<OBBModel, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_MESH_COLLISION_API void RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::createMapping(const char*);
 #endif
 
 } // namespace collision

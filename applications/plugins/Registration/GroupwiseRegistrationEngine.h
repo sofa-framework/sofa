@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,7 +67,7 @@ public:
     virtual std::string getTemplateName() const override { return templateName(this);    }
     static std::string templateName(const GroupwiseRegistrationEngine<T>* = NULL) { return T::Name();   }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&f_nbInputs);
         vf_inputs.resize(f_nbInputs.getValue());
@@ -75,7 +75,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override
+    void reinit() override
     {
         vf_inputs.resize(f_nbInputs.getValue());
         vf_outputs.resize(f_nbInputs.getValue());
@@ -94,11 +94,11 @@ protected:
     }
 
 
-    virtual ~GroupwiseRegistrationEngine()
+    ~GroupwiseRegistrationEngine() override
     {
     }
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         const unsigned int M = vf_inputs.size();
         if(!M) return;

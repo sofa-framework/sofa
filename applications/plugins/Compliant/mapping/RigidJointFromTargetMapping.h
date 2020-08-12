@@ -68,7 +68,7 @@ protected:
     }
 
     typedef RigidJointFromTargetMapping self;
-    virtual void assemble( const typename self::in_pos_type& in_pos ) {
+    virtual void assemble( const typename self::in_pos_type& in_pos ) override {
         typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
 
@@ -143,7 +143,7 @@ protected:
     }
 
     virtual void apply(typename self::out_pos_type& out,
-                       const typename self::in_pos_type& in ) {
+                       const typename self::in_pos_type& in ) override {
 
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();
@@ -232,7 +232,7 @@ protected:
 
 
     typedef RigidJointFromWorldFrameMapping self;
-    virtual void assemble( const typename self::in_pos_type& in_pos ) {
+    virtual void assemble( const typename self::in_pos_type& in_pos ) override {
         typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
 
@@ -288,7 +288,7 @@ protected:
     }
 
     virtual void apply(typename self::out_pos_type& out,
-                       const typename self::in_pos_type& in ) {
+                       const typename self::in_pos_type& in ) override {
 
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();

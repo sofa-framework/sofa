@@ -11,7 +11,7 @@
         <Node name="child node with DOFs mapped from the parent">
             <MechanicalObject template="Vec2d" name="endpoint coordinates" position="1 0 "  />
             <RigidMapping template="" name="angle-coord mapping" input="@.." output="@." index="0" />
-            <ConstantForceField force="1 -1" points="0" />
+            <ConstantForceField force="1 -1" indices="0" />
         </Node>
     </Node>
 </Node>

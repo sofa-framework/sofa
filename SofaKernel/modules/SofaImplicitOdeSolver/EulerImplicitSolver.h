@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -109,7 +109,6 @@ public:
     Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
     Data<SReal> f_velocityDamping; ///< Velocity decay coefficient (no decay if null)
     Data<bool> f_firstOrder; ///< Use backward Euler scheme for first order ode system.
-    Data<bool> f_verbose; ///< Dump system state at each iteration
     Data<bool> d_trapezoidalScheme; ///< Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time
     Data<bool> f_solveConstraint; ///< Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)
     Data<bool> d_threadSafeVisitor;
@@ -127,13 +126,13 @@ public:
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt.
-    virtual double getVelocityIntegrationFactor() const override { return 1.0; }
+    double getVelocityIntegrationFactor() const override { return 1.0; }
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the position
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt².
-    virtual double getPositionIntegrationFactor() const override ;
+    double getPositionIntegrationFactor() const override ;
 
     virtual double getPositionIntegrationFactor(double dt ) const { return dt; }
 

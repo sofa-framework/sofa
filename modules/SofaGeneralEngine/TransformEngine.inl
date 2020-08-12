@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -167,7 +167,7 @@ struct RotationSpecialized<DataTypes, 2, false> : public TransformOperation<Data
     void configure(const defaulttype::Quaternion &/*qi*/, bool /*inverse*/, sofa::core::objectmodel::Base* pBase)
     {
         assert(pBase);
-        pBase->serr << "'void RotationSpecialized::configure(const defaulttype::Quaternion &qi, bool inverse)' is not implemented for two-dimensional data types" << pBase->sendl;
+        msg_error(pBase) << "'void RotationSpecialized::configure(const defaulttype::Quaternion &qi, bool inverse)' is not implemented for two-dimensional data types";
         assert(false && "This method should not be called without been implemented");
     }
 

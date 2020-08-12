@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaGuiGlut)
 
 find_package(SofaSimulation REQUIRED)
@@ -11,11 +11,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
     SimpleGUI.cpp)
 
-
-if(Boost_FOUND)
-    list(APPEND HEADER_FILES MultithreadGUI.h)
-    list(APPEND SOURCE_FILES MultithreadGUI.cpp)
-endif()
 
 list(APPEND SOURCE_FILES Main.cpp)
 
@@ -43,6 +38,5 @@ target_link_libraries(${PROJECT_NAME} SofaGuiCommon SofaSimulationGraph ${GLUT_A
 if(Boost_FOUND)
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIGLUT -DCONFIG_PLUGIN_FILENAME=${_configPluginFileName} -DDEFAULT_CONFIG_PLUGIN_FILENAME=${_defaultConfigPluginFileName}")
 
 sofa_install_targets(SofaGui SofaGuiGlut "")

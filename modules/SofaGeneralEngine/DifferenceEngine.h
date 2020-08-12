@@ -1,7 +1,7 @@
  
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,24 +51,13 @@ public:
 
     DifferenceEngine();
 
-    virtual ~DifferenceEngine() {}
+    ~DifferenceEngine() override {}
 
     void init() override;
 
     void reinit() override;
 
     void doUpdate() override;
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const DifferenceEngine<TDataType>* = NULL)
-    {
-        return defaulttype::DataTypeInfo<TDataType>::name();
-    }
-
 
 protected:
 

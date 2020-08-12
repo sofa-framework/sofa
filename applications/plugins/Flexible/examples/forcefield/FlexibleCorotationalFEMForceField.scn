@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultAnimationLoop />
@@ -13,7 +14,7 @@
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
     
-	<Mesh name="mesh" src="@../loader" />
+	<MeshTopology name="mesh" src="@../loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
        <UniformMass totalMass="250" />
 
@@ -23,7 +24,8 @@
         <FlexibleCorotationalMeshFEMForceField youngModulus="2000.0" poissonRatio="0.2" viscosity="0" order="1"/>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="yellow"/>
+	     <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_0" color="yellow"/>
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
 	
@@ -32,7 +34,7 @@
     <Node 	name="CorotationalMesh"   >
 	<EulerImplicitSolver /> 
 	<CGLinearSolver    iterations="50" tolerance="1e-5" threshold="1e-5"/>
-	<Mesh name="mesh" src="@../loader" />
+	<MeshTopology name="mesh" src="@../loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
         <UniformMass totalMass="250" />
 
@@ -45,10 +47,10 @@
 	    <MechanicalObject  name="pts" template="Vec3d" showObject="0" showObjectScale="5" />
 	    <CorotationalMeshMapping name="mapping" inputTetrahedra="@../mesh.tetrahedra"/>
 
-	    <Mesh name="mesh" src="@mapping" position="@pts.position"/>
+	    <MeshTopology name="mesh" src="@mapping" position="@pts.position"/>
 		
 <!--		<Node name="Visual"  >
-		    <VisualModel  color="0 1 0"/>
+		    <OglModel  color="0 1 0"/>
         	     <IdentityMapping />
 		</Node>-->
 
@@ -71,7 +73,8 @@
         </Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="1 0 0"/>
+	     <MeshObjLoader name="meshLoader_2" filename="mesh/torus.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_2" color="1 0 0"/>
              <LinearMapping template="Vec3d,ExtVec3f" assemble="0"/>
 	</Node>
 
@@ -85,7 +88,7 @@
         <EulerImplicitSolver />
         <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
     
-	<Mesh name="mesh" src="@../loader" />
+	<MeshTopology name="mesh" src="@../loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
        <UniformMass totalMass="250" />
 
@@ -95,7 +98,8 @@
         <FlexibleCorotationalFEMForceField youngModulus="2000.0" poissonRatio="0.2" viscosity="0" order="1" method="polar" geometricStiffness="true"/>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" />
+	     <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_1" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
 	
@@ -108,7 +112,7 @@
         <EulerImplicitSolver />
         <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
     
-	<Mesh name="mesh" src="@../loader" />
+	<MeshTopology name="mesh" src="@../loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
        <UniformMass totalMass="250" />
 
@@ -130,7 +134,8 @@
         </Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1" />
+	     <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" />
+	     <OglModel src="@meshLoader_3" color="1 .4 0.5 1" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
 	

@@ -7,16 +7,16 @@ The outcome of this scene is a still object. The MechanicalObject is comprised b
 	<EulerImplicitSolver   rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" />
 	<LMConstraintSolver numIterations="27" maxError="1e-7" />
-	<MechanicalObject template="Rigid" position="0 -1 0 0 0 0 1 0 1 0 0 0 0 1" />
-	<UniformMass template="Rigid"  />
-	<JointSpringForceField template="Rigid" name="jointSpringFF2"  spring="BEGIN_SPRING  0 1  REST_T 0 0.5 0 END_SPRING
+	<MechanicalObject template="Rigid3d" position="0 -1 0 0 0 0 1 0 1 0 0 0 0 1" />
+	<UniformMass template="Rigid3d"  />
+	<JointSpringForceField template="Rigid3d" name="jointSpringFF2"  spring="BEGIN_SPRING  0 1  REST_T 0 0.5 0 END_SPRING
 " />
-	<FixedLMConstraint template="Rigid"   indices="0" /> 
+	<FixedLMConstraint template="Rigid3d"   indices="0" /> 
 	<Node>
 		<MeshObjLoader name="loader"  filename="mesh/cube.obj" />
 		<MeshTopology  src="@loader" />
 		<MechanicalObject  />
-    <TriangleModel />
+    <TriangleCollisionModel />
     <FixedLMConstraint indices="4 5 6 7"/>
     <RigidMapping input="@.." output="@." rigidIndexPerPoint="4 4" />
 	</Node>

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -114,10 +114,12 @@ void IndicesFromValues<T>::doUpdate()
                     break;
                 }
             }
-            if (index >= 0)
+            if (index >= 0) {
                 indices.push_back(index);
-            else
-                serr << "Input value " << i <<" not found : " << v << sendl;
+            }
+            else {
+                msg_error() << "Input value " << i << " not found : " << v;
+            }
         }
     }
 }

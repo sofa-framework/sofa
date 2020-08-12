@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,13 +59,13 @@ Distances< DataTypes >::Distances ( sofa::component::topology::DynamicSparseGrid
     initTargetStep ( initData ( &initTargetStep, 1, "initTargetStep","initialize the target MechanicalObject from the grid using this step." ) ),
     zonesFramePair ( initData ( &zonesFramePair, "zonesFramePair","Correspondance between the segmented value and the frames." ) ),
     harmonicMaxValue ( initData ( &harmonicMaxValue, 100.0, "harmonicMaxValue","Max value used to initialize the harmonic distance grid." ) ),
-    fileDistance( initData(&fileDistance, "fileDistance", "file containing the result of the computation of the distances")),
+    fileDistance( initData(&fileDistance, "filename", "file containing the result of the computation of the distances")),
     targetPath(initData(&targetPath, "targetPath", "path to the goal point set topology")),
     target ( targetPointSet ) ,
     hexaContainerPath(initData(&hexaContainerPath, "hexaContainerPath", "path to the grid used to compute the distances")),
     hexaContainer ( hexaTopoContainer )
 {
-    this->addAlias(&fileDistance, "filename");
+    this->addAlias(&fileDistance, "fileDistance");
     zonesFramePair.setDisplayed( false); // GUI can not display map.
 
     sofa::helper::OptionsGroup distanceTypeOptions(5,"Geodesic","Harmonic","Stiffness Diffusion", "Vorono\xEF", "Harmonic with Stiffness");
@@ -83,7 +83,7 @@ void Distances< DataTypes >::init()
     hexaContainer->getContext()->get ( hexaGeoAlgo );
     if ( !hexaGeoAlgo )
     {
-        serr << "Can not find the hexahedron geometry algorithms component." << sendl;
+        msg_error() << "Can not find the hexahedron geometry algorithms component.";
         return;
     }
 
@@ -91,7 +91,7 @@ void Distances< DataTypes >::init()
     this->getContext()->get( voxelGridLoader);
     if ( !voxelGridLoader )
     {
-        serr << "Can not find the Voxel Grid Loader component." << sendl;
+        msg_error() << "Can not find the Voxel Grid Loader component.";
         return;
     }
     densityValues = voxelGridLoader->getData();
@@ -168,7 +168,7 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
     else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS ) filename+="StiffnessHarmonic";
     else
     {
-        serr << "distance Type unknown when adding an element." << sendl;
+        msg_error() << "distance Type unknown when adding an element.";
         return;
     }
 
@@ -176,7 +176,7 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
     {
         // Load the distance map from the file
         filename=sofa::helper::system::DataRepository.getFile(filename);
-        sout << "Using filename:" << filename << " to load the distances" << sendl;
+        msg_info() << "Using filename:" << filename << " to load the distances";
         std::ifstream distanceFile(filename.c_str());
         distanceMap.read(distanceFile);
         distanceFile.close();
@@ -224,7 +224,7 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
                 computeHarmonicCoords ( i, hfrom, true );
         }
 
-        sout << "Writing filename:" << filename << " to save the distances" << sendl;
+        msg_info() << "Writing filename:" << filename << " to save the distances";
         std::ofstream distanceFile(filename.c_str());
         distanceMap.write(distanceFile);
         distanceFile.close();
@@ -266,7 +266,7 @@ void Distances< DataTypes >::addElt ( const Coord& elt, VecCoord beginElts, cons
     }
     else
     {
-        serr << "distance Type unknown when adding an element." << sendl;
+        msg_error() << "distance Type unknown when adding an element.";
     }
 }
 
@@ -368,7 +368,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
 
     dMIndex[hfrom[mapIndex]] = 0.0;
 
-    sout << "Compute distance map." << sendl;
+    msg_info() << "Compute distance map.";
 
     sofa::defaulttype::Vec3i res = hexaContainer->resolution.getValue();
     bool convergence = false;
@@ -503,7 +503,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
     delete [] dMCpy;
     delete [] distMap;
 
-    sout << "Distance map computed." << sendl;
+    msg_info() << "Distance map computed.";
 }
 
 
@@ -671,7 +671,7 @@ void Distances< DataTypes >::findCorrespondingHexas ( helper::vector<core::topol
         unsigned int hexa1DCoord;
         find1DCoord( hexa1DCoord, pointSet[i]);
         hexas.push_back ( hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( hexa1DCoord, existing ) );
-        if ( !existing ) serr << "hexa not found. Point (" << pointSet[i] << ") may be outside of the grid." << sendl;
+        if ( !existing ) msg_error() << "hexa not found. Point (" << pointSet[i] << ") may be outside of the grid.";
     }
 }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -335,7 +335,7 @@ extern template struct SOFA_BASE_COLLISION_API IntrConfigManager<TOBB<defaulttyp
 extern template SOFA_BASE_COLLISION_API void ClipConvexPolygonAgainstPlane(const defaulttype::Vec<3,SReal>&, SReal, int&,defaulttype::Vec<3,SReal>*);
 extern template SOFA_BASE_COLLISION_API defaulttype::Vec<3,SReal> GetPointFromIndex (int, const MyBox<SReal>& );
 extern template SOFA_BASE_COLLISION_API defaulttype::Vec<3,defaulttype::Rigid3Types::Real> getPointFromIndex (int, const TOBB<defaulttype::Rigid3Types>& );
-extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<SReal>;
+extern template class SOFA_BASE_COLLISION_API CapIntrConfiguration<SReal>;
 
 #endif
 

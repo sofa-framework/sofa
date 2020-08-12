@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,6 +69,8 @@ public:
     Data<bool> p_showForces; ///< draw triangles which have a given pressure
     Data<bool> p_useConstantForce; ///< applied force is computed as the the pressure vector times the area at rest
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TrianglePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
   
 protected:
 
@@ -99,26 +101,26 @@ protected:
 
     component::topology::TriangleSparseData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap; ///< map between edge indices and their pressure
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 	sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
 
 
 	TrianglePressureForceField();
 
-    virtual ~TrianglePressureForceField() override;
+    ~TrianglePressureForceField() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-
-    /// Constant pressure has null variation
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int & /*offset*/) override {}
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
 
     /// Constant pressure has null variation
-    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override {}
+    void addKToMatrix(sofa::defaulttype::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int & /*offset*/) override {}
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
+    /// Constant pressure has null variation
+    void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override {}
+
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     void setDminAndDmax(const SReal _dmin, const SReal _dmax){dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);}

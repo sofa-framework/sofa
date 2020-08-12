@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -22,7 +22,7 @@
 #ifndef OPTITRACKNATNETCLIENT_H
 #define OPTITRACKNATNETCLIENT_H
 
-#include <sofa/config.h>
+#include <OptiTrackNatNet/config.h>
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
@@ -64,7 +64,7 @@ public:
 
 protected:
     bool connect();
-    void handleEvent(sofa::core::objectmodel::Event *);
+    void handleEvent(sofa::core::objectmodel::Event *) override;
 
     virtual void update();
 
@@ -81,10 +81,10 @@ public:
     OptiTrackNatNetClient();
     virtual ~OptiTrackNatNetClient();
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
-    virtual void draw(const sofa::core::visual::VisualParams* vparams);
+    virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
 
     sofa::core::objectmodel::Data<float> drawTrackedMarkersSize; ///< Size of displayed markers
     sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawTrackedMarkersColor; ///< Color of displayed markers

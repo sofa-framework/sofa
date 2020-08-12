@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -149,7 +149,7 @@ public :
    typedef typename VecCoord::template rebind<EdgeInformation>::other edgeInformationVector;
 
  protected :
-   core::topology::BaseMeshTopology* _topology;
+   core::topology::BaseMeshTopology* m_topology;
    VecCoord  _initialPoints;	/// the intial positions of the points
    bool updateMatrix;
    bool  _meshSaved ;
@@ -157,6 +157,9 @@ public :
    Data<SetParameterArray> f_parameterSet; ///< The global parameters specifying the material
    Data<SetAnisotropyDirectionArray> f_anisotropySet; ///< The global directions of anisotropy of the material
    Data<std::string> f_parameterFileName; ///< the name of the file describing the material parameters for all tetrahedra
+
+   /// Link to be set to the topology container in the component graph.
+   SingleLink<StandardTetrahedralFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
    
 public:
@@ -179,16 +182,16 @@ public:
 
   //  virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
-    virtual void init() override;
+    void init() override;
     //Used for CUDA implementation
     void initNeighbourhoodPoints();
     void initNeighbourhoodEdges();
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
+    void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
 

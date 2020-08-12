@@ -139,6 +139,7 @@ struct Monitor_test : public sofa::Sofa_test<>
                 "<Node name='root' gravity='0 -9.81 0'>"
                 "<DefaultAnimationLoop/>"
                 "<Node name='node'>"
+                "<RequiredPlugin name = 'SofaValidation' />"
                 "<EulerImplicit rayleighStiffness='0' printLog='false' rayleighMass='0.1'/>"
                 "<CGLinearSolver iterations='100' threshold='0.00000001' "
                 "tolerance='1e-5'/>"
@@ -156,9 +157,9 @@ struct Monitor_test : public sofa::Sofa_test<>
         root->init(sofa::core::ExecParams::defaultInstance());
 
         std::string s = "/node/monitor";
-        Monitor<Rigid3Types>* ptr = NULL;
+        Monitor<Rigid3Types>* ptr = nullptr;
         ptr = root->get<Monitor<Rigid3Types> >(s);
-        EXPECT_FALSE(ptr == NULL);
+        EXPECT_FALSE(ptr == nullptr);
 
         monitor = reinterpret_cast<MonitorTest*>(ptr);
         EXPECT_FALSE(monitor == 0);

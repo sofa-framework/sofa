@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,9 +77,9 @@ bool HexahedronSetTopology_test::testHexahedronBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyObjectType::HEXAHEDRON);
     HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -93,15 +93,15 @@ bool HexahedronSetTopology_test::testHexahedronBuffers()
     EXPECT_EQ(topoCon->getNumberOfHexahedra(), nbrHexahedron);
     EXPECT_EQ(topoCon->getHexahedra().size(), nbrHexahedron);
 
-    // check quads should not be created
-    EXPECT_EQ(topoCon->getNumberOfQuads(), 0);
-    EXPECT_EQ(topoCon->getNbQuads(), 0);
-    EXPECT_EQ(topoCon->getQuads().size(), 0);
+    // check quads buffer has been created
+    EXPECT_EQ(topoCon->getNumberOfQuads(), nbrQuad);
+    EXPECT_EQ(topoCon->getNbQuads(), nbrQuad);
+    EXPECT_EQ(topoCon->getQuads().size(), nbrQuad);
 
-    // check edges should not be created
-    EXPECT_EQ(topoCon->getNumberOfEdges(), 0);
-    EXPECT_EQ(topoCon->getNbEdges(), 0);
-    EXPECT_EQ(topoCon->getEdges().size(), 0);
+    // check edges buffer has been created
+    EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getNbEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 elements in this file should be :
     sofa::helper::fixed_array<HexahedronSetTopologyContainer::PointID, 8> elemTruth0(0, 1, 5, 4, 16, 17, 21, 20);
@@ -139,7 +139,7 @@ bool HexahedronSetTopology_test::testHexahedronBuffers()
         EXPECT_EQ(elem2[i], -1);
 
 
-    if(scene != NULL)
+    if(scene != nullptr)
         delete scene;
 
     return true;
@@ -151,9 +151,9 @@ bool HexahedronSetTopology_test::testQuadBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyObjectType::HEXAHEDRON);
     HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -233,7 +233,7 @@ bool HexahedronSetTopology_test::testQuadBuffers()
 
             if (found == false)
             {
-                if (scene != NULL)
+                if (scene != nullptr)
                     delete scene;
                 return false;
             }
@@ -249,9 +249,9 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyObjectType::HEXAHEDRON);
     HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -266,8 +266,8 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
 
     // check edge created element
     HexahedronSetTopologyContainer::Edge edge = topoCon->getEdge(0);
-    EXPECT_EQ(edge[0], 0);
-    EXPECT_EQ(edge[1], 1);
+    EXPECT_EQ(edge[0], 4);
+    EXPECT_EQ(edge[1], 5);
 
 
     // check HexahedronAroundEdge buffer access
@@ -295,7 +295,7 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
     for (size_t i = 0; i < edgeInElem.size(); i++)
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
     
-    sofa::helper::fixed_array<int, 10> edgeInElemTruth(20, 13, 14, 21, 22, 23, 24, 16, 25, 18); // Test only 10 out of 12 edges as no fixed_array<12>
+    sofa::helper::fixed_array<int, 10> edgeInElemTruth(22, 13, 18, 21, 26, 20, 27, 19, 25, 15); // Test only 10 out of 12 edges as no fixed_array<12>
     for (size_t i = 0; i<edgeInElemTruth.size(); ++i)
         EXPECT_EQ(edgeInElem[i], edgeInElemTruth[i]);
     
@@ -328,7 +328,7 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
 
             if (found == false)
             {
-                if (scene != NULL)
+                if (scene != nullptr)
                     delete scene;
                 return false;
             }
@@ -344,9 +344,9 @@ bool HexahedronSetTopology_test::testVertexBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyObjectType::HEXAHEDRON);
     HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -391,16 +391,16 @@ bool HexahedronSetTopology_test::checkTopology()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyObjectType::HEXAHEDRON);
     HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
 
     bool res = topoCon->checkTopology();
     
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
     
     return res;

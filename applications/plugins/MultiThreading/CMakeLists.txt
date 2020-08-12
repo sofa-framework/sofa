@@ -1,48 +1,40 @@
-cmake_minimum_required(VERSION 3.1)
-project(MultiThreading)
-
-set(MULTITHREADING_MAJOR_VERSION 0)
-set(MULTITHREADING_MINOR_VERSION 1)
-set(MULTITHREADING_VERSION ${MULTITHREADING_MAJOR_VERSION}.${MULTITHREADING_MINOR_VERSION})
+cmake_minimum_required(VERSION 3.12)
+project(MultiThreading VERSION 0.1)
 
 set(HEADER_FILES
-    config.h
-    src/AnimationLoopParallelScheduler.h
-    src/AnimationLoopTasks.h
-    src/BeamLinearMapping_mt.h
-    src/BeamLinearMapping_mt.inl
-    src/BeamLinearMapping_tasks.inl
-    src/DataExchange.h
-    src/DataExchange.inl
-	src/MeanComputation.h
-	src/MeanComputation.inl
-    
-)
+    src/MultiThreading/config.h
+    src/MultiThreading/AnimationLoopParallelScheduler.h
+    src/MultiThreading/AnimationLoopTasks.h
+    src/MultiThreading/BeamLinearMapping_mt.h
+    src/MultiThreading/BeamLinearMapping_mt.inl
+    src/MultiThreading/BeamLinearMapping_tasks.inl
+    src/MultiThreading/DataExchange.h
+    src/MultiThreading/DataExchange.inl
+    src/MultiThreading/MeanComputation.h
+    src/MultiThreading/MeanComputation.inl
+    )
 
 set(SOURCE_FILES
-    src/initMultiThreading.cpp
-    src/AnimationLoopParallelScheduler.cpp
-    src/AnimationLoopTasks.cpp
-    src/BeamLinearMapping_mt.cpp
-    src/DataExchange.cpp    
-	src/MeanComputation.cpp
-)
+    src/MultiThreading/initMultiThreading.cpp
+    src/MultiThreading/AnimationLoopParallelScheduler.cpp
+    src/MultiThreading/AnimationLoopTasks.cpp
+    src/MultiThreading/BeamLinearMapping_mt.cpp
+    src/MultiThreading/DataExchange.cpp
+    src/MultiThreading/MeanComputation.cpp
+    )
 
 find_package(SofaMisc REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping SofaConstraint)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_MULTITHREADING_PLUGIN")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${MULTITHREADING_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(MultiThreading ${MULTITHREADING_VERSION} MultiThreading MultiThreading)
-
-## Install rules for the resources
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    RELOCATABLE "plugins"
+    )

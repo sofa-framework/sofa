@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -94,6 +94,10 @@ bool MeshGmshLoader::load()
     // -- Reading file
     if (node == "$NOD" || node == "$Nodes") // Gmsh format
     {
+        // By default for Gmsh file format, create subElements except if specified not to.
+        if (!d_createSubelements.isSet())
+            d_createSubelements.setValue(true);
+
         // TODO 2018-04-06: temporary change to unify loader API
         //fileRead = readGmsh(file, gmshFormat);
         (void)gmshFormat;
@@ -261,8 +265,9 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 nnodes = 0;
             }
         }
-        //store real index of node and not line index
 
+
+        //store real index of node and not line index
         helper::vector <unsigned int> nodes;
         nodes.resize (nnodes);
         const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};

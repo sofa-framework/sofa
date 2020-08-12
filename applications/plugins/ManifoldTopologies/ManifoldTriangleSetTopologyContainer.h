@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,12 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYCONTAINER_H
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYCONTAINER_H
-#include <ManifoldTopologies/config.h>
+#ifndef SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYCONTAINER_H
+#define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYCONTAINER_H
 
 #include <ManifoldTopologies/config.h>
-
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
 namespace sofa
@@ -61,11 +59,11 @@ public:
 
     ManifoldTriangleSetTopologyContainer();
 
-    virtual ~ManifoldTriangleSetTopologyContainer() {}
+    ~ManifoldTriangleSetTopologyContainer() override {}
 
-    virtual void init();
+    void init() override;
 
-    virtual void clear();
+    void clear() override;
 
 
 
@@ -84,7 +82,7 @@ public:
      And in the clockwise direction in the second triangle (if this one exist).
      *
      */
-    virtual bool checkTopology() const;
+    bool checkTopology() const override;
 
 
     /** \brief: Given a Triangle and a Vertex i, returns the next adjacent triangle to the first one
@@ -150,7 +148,7 @@ protected:
      * In this function, vertices of each edge are not stored in lexicographic order.
      *
      */
-    virtual void createEdgeSetArray();
+    void createEdgeSetArray() override;
 
 
     /** \brief Creates the Edge Vertex Shell Array.
@@ -160,7 +158,7 @@ protected:
      * This funciton check if there are T connections between more than 2 edges at the ith DOF.
      *
      */
-    virtual void createEdgesAroundVertexArray();
+    void createEdgesAroundVertexArray() override;
 
 
     /** \brief Creates the Triangle Vertex Shell Array
@@ -170,7 +168,7 @@ protected:
      * This function check if there are T connections between more than 3 triangles at the ith DOF.
      *
      */
-    virtual void createTrianglesAroundVertexArray();
+    void createTrianglesAroundVertexArray() override;
 
 
     /** \brief Creates the Triangle Edge Shell Array
@@ -180,7 +178,7 @@ protected:
      * This function check if there are more than 2 triangles adjacent to each edge.
      *
      */
-    virtual void createTrianglesAroundEdgeArray();
+    void createTrianglesAroundEdgeArray() override;
 
 
 private:
@@ -188,19 +186,19 @@ private:
     /** \brief Returns a non-const triangle vertex shell given a vertex index for subsequent modification
      *
      */
-    virtual TrianglesAroundVertex& getTrianglesAroundVertexForModification(const PointID vertexIndex);
+    TrianglesAroundVertex& getTrianglesAroundVertexForModification(const PointID vertexIndex) override;
 
 
     /** \brief Returns a non-const triangle edge shell given the index of an edge for subsequent modification
      *
      */
-    virtual TrianglesAroundEdge& getTrianglesAroundEdgeForModification(const EdgeID edgeIndex);
+    TrianglesAroundEdge& getTrianglesAroundEdgeForModification(const EdgeID edgeIndex) override;
 
 
     /** \brief Returns a non-const edge vertex shell given the index of an vertex for subsequent modification
      *
      */
-    virtual EdgesAroundVertex& getEdgesAroundVertexForModification(const PointID vertexIndex);
+    EdgesAroundVertex& getEdgesAroundVertexForModification(const PointID vertexIndex) override;
 
 };
 
@@ -210,4 +208,4 @@ private:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYCONTAINER_H

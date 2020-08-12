@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,10 +25,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaBoundaryCondition/PlaneForceField.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
@@ -66,7 +65,7 @@ PlaneForceField<DataTypes>::PlaneForceField() :
 
 template<class DataTypes>
 void PlaneForceField<DataTypes>::init(){
-    if(this->m_componentstate == ComponentState::Valid){
+    if(this->d_componentState.getValue() == ComponentState::Valid){
         msg_warning(this) << "Calling an already fully initialized component.  You should use reinit instead." ;
     }
 
@@ -105,7 +104,7 @@ void PlaneForceField<DataTypes>::init(){
 
 
 
-    this->m_componentstate = ComponentState::Valid ;
+    this->d_componentState.setValue(ComponentState::Valid) ;
 }
 
 template<class DataTypes>
@@ -122,9 +121,7 @@ template<class DataTypes>
 SReal PlaneForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
                                                      const DataVecCoord&  /* x */) const
 {
-    msg_error(this) << "Function potentialEnergy is not implemented. " << msgendl
-                    << "To remove this errore message you need to implement a proper calculus of "
-                       "the plane force field potential energy.";
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
 }
 
@@ -132,7 +129,7 @@ SReal PlaneForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParam
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
@@ -182,7 +179,7 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df1 = df;
@@ -203,7 +200,7 @@ void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     const Real fact = (Real)(-this->d_stiffness.getValue()*mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
@@ -228,7 +225,7 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
 template<class DataTypes>
 void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     helper::ReadAccessor<VecCoord> x = vx;
@@ -257,7 +254,7 @@ void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 template<class DataTypes>
 void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     defaulttype::Vec3d axe3d(1,1,1); axe3d = DataTypes::getDPos(axe);
@@ -274,7 +271,7 @@ void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
 template<class DataTypes>
 void PlaneForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(this->m_componentstate != ComponentState::Valid)
+    if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     if (!vparams->displayFlags().getShowForceFields() || !d_drawIsEnabled.getValue())
@@ -364,6 +361,8 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 template <class DataTypes>
 void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if (onlyVisible && !d_drawIsEnabled.getValue())
         return;
 
@@ -372,7 +371,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    defaulttype::Vec3d normal; normal = d_planeNormal.getValue(params);
+    defaulttype::Vec3d normal; normal = d_planeNormal.getValue();
     SReal size=d_drawSize.getValue();
 
     // find a first vector inside the plane
@@ -402,7 +401,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
             if (corners[i][c] < minBBox[c]) minBBox[c] = (Real)corners[i][c];
         }
     }
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 } // namespace forcefield

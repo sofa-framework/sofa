@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,9 +43,9 @@ DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping
     , globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
     , m_rootAngularForceScaleFactor(initData(&m_rootAngularForceScaleFactor, (Real)1.0, "rootAngularForceScaleFactor", "Scale factor applied on the angular force accumulated on the rigid model"))
     , m_rootLinearForceScaleFactor(initData(&m_rootLinearForceScaleFactor, (Real)1.0, "rootLinearForceScaleFactor", "Scale factor applied on the linear force accumulated on the rigid model"))
-    , m_fromModel(NULL)
-    , m_toModel(NULL)
-    , m_fromRootModel(NULL)
+    , m_fromModel(nullptr)
+    , m_toModel(nullptr)
+    , m_fromRootModel(nullptr)
 {
 }
 
@@ -123,7 +123,7 @@ const typename DataTypes::VecCoord& M_getX0(core::behavior::MechanicalState<Data
 template<class DataTypes>
 const typename DataTypes::VecCoord& M_getX0(core::State<DataTypes>* /*model*/)
 {
-    return NULL;
+    return nullptr;
 }
 
 template <class TIn, class TInRoot, class TOut>
@@ -235,7 +235,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply(
     if(dataVecOutPos.empty() || dataVecInPos.empty())
         return;
 
-    const InRootVecCoord* inroot = NULL;
+    const InRootVecCoord* inroot = nullptr;
 
     //We need only one input In model and input Root model (if present)
     OutVecCoord& out = *dataVecOutPos[0]->beginEdit();
@@ -295,7 +295,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ(
     if(dataVecOutVel.empty() || dataVecInVel.empty())
         return;
 
-    const InRootVecDeriv* inroot = NULL;
+    const InRootVecDeriv* inroot = nullptr;
 
     //We need only one input In model and input Root model (if present)
     OutVecDeriv& out = *dataVecOutVel[0]->beginEdit();
@@ -326,7 +326,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
             const InVecCoord xfrom = xfromData->getValue();
             OutDataVecCoord* xtoData = m_toModel->write(core::VecCoordId::position());
             OutVecCoord &xto = *xtoData->beginEdit();
-            apply(xto, xfrom, (m_fromRootModel==NULL ? NULL : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
+            apply(xto, xfrom, (m_fromRootModel==nullptr ? nullptr : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
             this->f_printLog.setValue(log);
             xtoData->endEdit();
         }
@@ -374,7 +374,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(
     if(dataVecOutForce.empty() || dataVecInForce.empty())
         return;
 
-    InRootVecDeriv* outroot = NULL;
+    InRootVecDeriv* outroot = nullptr;
 
     //We need only one input In model and input Root model (if present)
     InVecDeriv& out = *dataVecOutForce[0]->beginEdit();
@@ -386,7 +386,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(
     applyJT(out,in, outroot);
 
     dataVecOutForce[0]->endEdit();
-    if (outroot != NULL)
+    if (outroot != nullptr)
         dataVecOutRootForce[0]->endEdit();
 }
 
@@ -457,7 +457,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(
     if(dataMatOutConst.empty() || dataMatInConst.empty())
         return;
 
-    InRootMatrixDeriv* outroot = NULL;
+    InRootMatrixDeriv* outroot = nullptr;
 
     //We need only one input In model and input Root model (if present)
     InMatrixDeriv& out = *dataMatOutConst[0]->beginEdit();
@@ -469,7 +469,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(
     applyJT(out,in, outroot);
 
     dataMatOutConst[0]->endEdit();
-    if (outroot != NULL)
+    if (outroot != nullptr)
         dataMatOutRootConst[0]->endEdit();
 }
 
@@ -477,7 +477,7 @@ template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(core::topology::Topology* t)
 {
     core::topology::BaseMeshTopology* from = t->toBaseMeshTopology();
-    if(from == NULL ) {
+    if(from == nullptr ) {
         msg_error() << __FUNCTION__ << ": could not cast topology to BaseMeshTopology";
         return;
     }

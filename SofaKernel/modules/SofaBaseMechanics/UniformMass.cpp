@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,31 +20,23 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_CPP
+
 #include <SofaBaseMechanics/UniformMass.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
-using sofa::helper::system::TemporaryLocale ;
-
 #include <sstream>
 
+using sofa::helper::system::TemporaryLocale ;
 using std::string ;
 using std::ostringstream ;
-
 using sofa::component::mass::Vec3d ;
 using sofa::helper::system::DataRepository ;
-
 using namespace sofa::defaulttype;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 static void skipToEOL(FILE* f)
@@ -80,7 +72,7 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
         {
             char	cmd[64];
             FILE*	file;
-            if ((file = fopen(filename.c_str(), "r")) == NULL)
+            if ((file = fopen(filename.c_str(), "r")) == nullptr)
             {
                 msg_error(this) << "cannot open file '" << filename << "'.\n" ;
             }
@@ -204,7 +196,7 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
         }
         setMass(m);
     }
-    else if (d_totalMass.getValue()>0 && mstate!=NULL) d_vertexMass.setValue((Real)d_totalMass.getValue() / mstate->getSize());
+    else if (d_totalMass.getValue()>0 && mstate!=nullptr) d_vertexMass.setValue((Real)d_totalMass.getValue() / mstate->getSize());
 }
 
 
@@ -324,7 +316,6 @@ void UniformMass<Vec6Types, MassType>::drawVec6Impl(const core::visual::VisualPa
             vertices.push_back(p);
             vertices.push_back(p + R.col(j)*len[j]);
             colors.push_back(colorSet[j]);
-            colors.push_back(colorSet[j]);;
         }
     }
 
@@ -418,7 +409,7 @@ void UniformMass<VecTypes, MassType>::addMDxToVectorVecImpl(defaulttype::BaseVec
     for (unsigned int i=0; i<indices.size(); i++)
         for (unsigned int j=0; j<derivDim; j++)
         {
-            if (dx != NULL)
+            if (dx != nullptr)
                 resVect->add(offset + indices[i] * derivDim + j, mFact * m * g[j] * (*dx)[indices[i]][0]);
             else
                 resVect->add(offset + indices[i] * derivDim + j, mFact * m * g[j]);
@@ -551,8 +542,4 @@ template class SOFA_BASE_MECHANICS_API UniformMass<Rigid2Types,Rigid2Mass>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mass

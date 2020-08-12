@@ -114,18 +114,21 @@ More info about Doxygen here: https://www.stack.nl/~dimitri/doxygen/manual/index
 - [G7] You must avoid the `using` directive in header files (.h and .inl): ~~`using namespace foo;`~~
 - [G8] You should declare automatic variables only when you need them (not before).
 - [G9] You must always initialize pointers, either to the address of something, or to `nullptr`
-
+- [G10] You may use the type specifier `auto` (since C++11) when:
+    - you are in a for loop
+    - you deal with iterators
+    - you deal with long typenames AND or when the variable type is obvious
 
 ## SOFA specific rules
 - Tricky code should not be commented but rewritten! In general, the use of comments should be minimized by making the code self-documenting by appropriate name choices and an explicit logical structure.
-- All the code under development must be tagged `SOFA_DEV`
 - The use of magic numbers in the code should be avoided. Numbers other than 0 and 1 should be declared as named constants instead.
+- The definition of ε-definition of limit ('epsilon', an arbitrarily small positive quantity) should not be code specific but rather use the class template [`std::numeric_limits`](https://en.cppreference.com/w/cpp/types/numeric_limits/epsilon). Here is an example: `const DataTypes::Real EPSILON = std::numeric_limits<DataTypes::Real>::epsilon();`
+`const DataTypes::Real EPSILON = std::numeric_limits<DataTypes::Real>::epsilon();`
 - All internal data, needed by your component, and that can’t be recomputed must be put inside a `Data` or a `DataPtr`. This way, your component can be saved. Also, this `Data` will be automatically displayed inside the GUI.
-- Use `sout`, `serr`, `sendl` instead of `cout`, `cerr`, `endl` in SOFA Components.
-    - `serr` will automatically display inside the console a message with a warning, the name of the component, and its class.  
-    If you modify the component in the graph, you will see a tabulation named `Warnings` with the log of all the `serr` done by the component.
-    - `sout` will display inside the console a message ONLY if the Data f_printLog is set to true.  
-    If you modify the component in the graph, you will see a tabulation named `Outputs` with the log of all the `sout` done by the component
+- For messaging in SOFA components, the [dedicated Messaging API](https://www.sofa-framework.org/community/doc/programming-with-sofa/start-coding/message-api/) must be used.
+    - `msg_info()` will display the message in the console only if the `printLog` flag is activated.
+    - `msg_warning()` will display the message in the console with an warning message.
+    - `msg_error()` will display the message in the console with an error message.
 - Use `sofa::helper::vector`  instead of `std::vector`
 - Only use `sofa::simulation::tree::GNode` when you need to directly use access to the children or the parent of the node. If not, use the more generic `sofa::simulation::Node`
-
+- When an information, a function or an internal variable from an external component is needed in a component, prefer an explicit Link to connect both components instead of implicitly browsing the graph using `getContext`

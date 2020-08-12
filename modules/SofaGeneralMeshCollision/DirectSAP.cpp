@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -114,12 +114,11 @@ void DirectSAP::reinit()
     }
     else
     {
-        if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeModel>();
+        if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeCollisionModel>();
         boxModel->resize(1);
         boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
     }
 }
-
 
 inline bool DirectSAP::added(core::CollisionModel *cm) const
 {
@@ -143,13 +142,13 @@ void DirectSAP::endBroadPhase()
 
     //to gain time, we create at the same time all SAPboxes so as to allocate
     //memory the less times
-    std::vector<CubeModel*> cube_models;
+    std::vector<CubeCollisionModel*> cube_models;
     cube_models.reserve(_new_cm.size());
 
     int n = 0;
     for(unsigned int i = 0 ; i < _new_cm.size() ; ++i){
         n += _new_cm[i]->getSize();
-        cube_models.push_back(dynamic_cast<CubeModel*>(_new_cm[i]->getPrevious()));
+        cube_models.push_back(dynamic_cast<CubeCollisionModel*>(_new_cm[i]->getPrevious()));
     }
 
     _boxes.reserve(_boxes.size() + n);
@@ -159,7 +158,7 @@ void DirectSAP::endBroadPhase()
     int cur_EndPtID = 0;
     int cur_boxID = _boxes.size();
     for(unsigned int i = 0 ; i < cube_models.size() ; ++i){
-        CubeModel * cm = cube_models[i];
+        CubeCollisionModel * cm = cube_models[i];
         for(int j = 0 ; j < cm->getSize() ; ++j){
             EndPoint * min = &end_pts[cur_EndPtID];
             ++cur_EndPtID;
@@ -323,6 +322,12 @@ void DirectSAP::beginNarrowPhase()
         }
     }
     sofa::helper::AdvancedTimer::stepEnd("Direct SAP intersection");
+}
+
+inline void DSAPBox::show()const
+{
+    msg_info("DSAPBox") <<"MIN "<<cube.minVect()<< msgendl
+                        <<"MAX "<<cube.maxVect() ;
 }
 
 bool DSAPBox::overlaps(const DSAPBox &other,double alarmDist) const{

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,9 +29,10 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 
@@ -83,6 +84,9 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
 
     BehaviorUpdatePositionVisitor beh(params , dt);
     this->gnode->execute ( beh );
+
+    UpdateInternalDataVisitor uid(params);
+    gnode->execute ( uid );
 
     const int ncollis = collisionSteps.getValue();
     const int ninteg = integrationSteps.getValue();

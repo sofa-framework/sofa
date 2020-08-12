@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -97,15 +97,15 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
 
     if (itBegin == itEnd) return;
 
-    PointSetTopologyModifier *toPointMod = NULL;
-    EdgeSetTopologyModifier *toEdgeMod = NULL;
-    TriangleSetTopologyModifier *toTriangleMod = NULL;
+    PointSetTopologyModifier *toPointMod = nullptr;
+    EdgeSetTopologyModifier *toEdgeMod = nullptr;
+    TriangleSetTopologyModifier *toTriangleMod = nullptr;
 
-    TriangleSetTopologyContainer *fromTriangleCon = NULL;
+    TriangleSetTopologyContainer *fromTriangleCon = nullptr;
     fromModel->getContext()->get(fromTriangleCon);
 
 
-    TriangleSetTopologyContainer *toTriangleCon = NULL;
+    TriangleSetTopologyContainer *toTriangleCon = nullptr;
     toModel->getContext()->get(toTriangleCon);
 
     msg_info() << "Begin: " << msgendl
@@ -119,7 +119,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
     toModel->getContext()->get(toPointMod);
     if (!toPointMod)
     {
-        serr << "No PointSetTopologyModifier found for target topology." << sendl;
+         msg_error()<<"No PointSetTopologyModifier found for target topology." ;
         return;
     }
 

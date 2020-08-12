@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,7 +53,9 @@ QuadPressureForceField<DataTypes>::QuadPressureForceField()
     , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
     , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
     , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw quads which have a given pressure"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , quadPressureMap(initData(&quadPressureMap, "quadPressureMap", "map between edge indices and their pressure"))
+    , m_topology(nullptr)
 {
 }
 
@@ -62,12 +64,21 @@ void QuadPressureForceField<DataTypes>::init()
 {
     this->core::behavior::ForceField<DataTypes>::init();
 
-    _topology = this->getContext()->getMeshTopology();
-    if(!_topology)
-        serr << "Missing component: Unable to get MeshTopology from the current context. " << sendl;
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    if(!_topology)
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
+    }
 
     if (dmin.getValue()!=dmax.getValue())
     {
@@ -78,7 +89,7 @@ void QuadPressureForceField<DataTypes>::init()
         selectQuadsFromString();
     }
 
-    quadPressureMap.createTopologicalEngine(_topology);
+    quadPressureMap.createTopologicalEngine(m_topology);
     quadPressureMap.registerTopologicalData();
 
     initQuadInformation();
@@ -96,10 +107,10 @@ void QuadPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
         force=my_subset[i].force/4;
-        f[_topology->getQuad(my_map[i])[0]]+=force;
-        f[_topology->getQuad(my_map[i])[1]]+=force;
-        f[_topology->getQuad(my_map[i])[2]]+=force;
-        f[_topology->getQuad(my_map[i])[3]]+=force;
+        f[m_topology->getQuad(my_map[i])[0]]+=force;
+        f[m_topology->getQuad(my_map[i])[1]]+=force;
+        f[m_topology->getQuad(my_map[i])[2]]+=force;
+        f[m_topology->getQuad(my_map[i])[3]]+=force;
 
     }
     d_f.endEdit();
@@ -126,8 +137,10 @@ void QuadPressureForceField<DataTypes>::initQuadInformation()
     sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* quadGeo;
     this->getContext()->get(quadGeo);
 
-    if(!quadGeo)
-        serr << "Missing component: Unable to get QuadSetGeometryAlgorithms from the current context." << sendl;
+    if (!quadGeo)
+    {
+        msg_error() << "Missing component: Unable to get QuadSetGeometryAlgorithms from the current context.";
+    }
 
     // FIXME: a dirty way to avoid a crash
     if(!quadGeo)
@@ -175,9 +188,9 @@ void QuadPressureForceField<DataTypes>::selectQuadsAlongPlane()
     sofa::helper::vector<QuadPressureInformation>& my_subset = *(quadPressureMap).beginEdit();
     helper::vector<unsigned int> inputQuads;
 
-    for (size_t n=0; n<_topology->getNbQuads(); ++n)
+    for (size_t n=0; n<m_topology->getNbQuads(); ++n)
     {
-        if ((vArray[_topology->getQuad(n)[0]]) && (vArray[_topology->getQuad(n)[1]])&& (vArray[_topology->getQuad(n)[2]])&& (vArray[_topology->getQuad(n)[3]]) )
+        if ((vArray[m_topology->getQuad(n)[0]]) && (vArray[m_topology->getQuad(n)[1]])&& (vArray[m_topology->getQuad(n)[2]])&& (vArray[m_topology->getQuad(n)[3]]) )
         {
             // insert a dummy element : computation of pressure done later
             QuadPressureInformation q;
@@ -245,7 +258,7 @@ void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
         for(unsigned int j=0 ; j<4 ; j++)
-            vertices.push_back(x[_topology->getQuad(my_map[i])[j]]);
+            vertices.push_back(x[m_topology->getQuad(my_map[i])[j]]);
     }
     vparams->drawTool()->drawQuads(vertices, color);
 

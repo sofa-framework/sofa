@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,8 +25,7 @@
 #include <SofaMiscForceField/LennardJonesForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/system/config.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 
@@ -41,6 +40,20 @@ namespace component
 namespace forcefield
 {
 
+template<class DataTypes>
+LennardJonesForceField<DataTypes>::LennardJonesForceField()
+    : a(1)
+    , b(1)
+    , aInit  (initData(&aInit  ,Real(0), "aInit"  ,"a for Gravitational FF which corresponds to G*m1*m2 alpha should be equal to 1 and beta to 0."))
+    , alpha  (initData(&alpha  ,Real(6), "alpha"  ,"Alpha"))
+    , beta   (initData(&beta   ,Real(12),"beta"   ,"Beta"))
+    , dmax   (initData(&dmax   ,Real(2), "dmax"   ,"DMax"))
+    , fmax   (initData(&fmax   ,Real(1), "fmax"   ,"FMax"))
+    , d0     (initData(&d0     ,Real(1), "d0"     ,"d0"))
+    , p0     (initData(&p0     ,Real(1), "p0"     ,"p0"))
+    , damping(initData(&damping,Real(0), "damping","Damping"))
+{
+}
 
 template<class DataTypes>
 void LennardJonesForceField<DataTypes>::init()
@@ -58,17 +71,23 @@ void LennardJonesForceField<DataTypes>::init()
 
         // Validity check: compute force and potential at d0
         Real f0 = a*alpha.getValue()*(Real)pow(d0.getValue(),-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d0.getValue(),-beta.getValue()-1);
-        if (fabs(f0)>0.001)
-            serr << "Lennard-Jones initialization failed: f0="<<f0<<sendl;
+
+        msg_error_when(fabs(f0) > 0.001) << "Lennard-Jones initialization failed: f0=" << f0;
         Real cp0 = (a*(Real)pow(d0.getValue(),-alpha.getValue())-b*(Real)pow(d0.getValue(),-beta.getValue()));
-        if (fabs(cp0/p0.getValue()-1)>0.001)
-            serr << "Lennard-Jones initialization failed: cp0="<<cp0<<sendl;
+
+        msg_error_when(fabs(cp0 / p0.getValue() - 1) > 0.001) << "Lennard-Jones initialization failed: cp0=" << cp0;
+
         // Debug
-        for (Real d = 0; d<dmax.getValue(); d+= dmax.getValue()/60)
+        if (this->f_printLog.getValue())
         {
-            Real f = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
-            msg_info() << "f("<<d<<")="<<f;
-        }
+            std::stringstream tmp;
+            for (Real d = 0; d<dmax.getValue(); d += dmax.getValue() / 60)
+            {
+                Real f = a * alpha.getValue()*(Real)pow(d, -alpha.getValue() - 1) - b * beta.getValue()*(Real)pow(d, -beta.getValue() - 1);
+                tmp << "f(" << d << ")=" << f;
+            }
+            msg_info() << tmp.str();
+        }        
     }
 }
 

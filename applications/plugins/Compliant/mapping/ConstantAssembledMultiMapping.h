@@ -31,7 +31,7 @@ class ConstantAssembledMultiMapping : public AssembledMultiMapping<TIn, TOut>
 
     Data<bool> d_constant; ///< If constant, the Jacobian and Hessian are build once for all during 'init' (false by default)
 
-    virtual void init() {
+    virtual void init() override {
 
         if( d_constant.getValue() )
         {
@@ -56,7 +56,7 @@ class ConstantAssembledMultiMapping : public AssembledMultiMapping<TIn, TOut>
 	
     virtual void apply(const core::MechanicalParams* mparams,
 	                   const helper::vector<OutDataVecCoord*>& dataVecOutPos,
-	                   const helper::vector<const InDataVecCoord*>& dataVecInPos) {
+                       const helper::vector<const InDataVecCoord*>& dataVecInPos) override {
         if( !d_constant.getValue() )
             return Inherit1::apply( mparams, dataVecOutPos, dataVecInPos );
 	
@@ -75,7 +75,7 @@ class ConstantAssembledMultiMapping : public AssembledMultiMapping<TIn, TOut>
 	}
 
 
-    virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId force ) {
+    virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId force ) override {
 
         const unsigned n = this->getFrom().size();
 
@@ -111,7 +111,7 @@ protected:
 
 
     // to remove some warnings
-    virtual void apply( out_pos_type& out, const helper::vector<in_pos_type>& in ) = 0;
+    virtual void apply( out_pos_type& out, const helper::vector<in_pos_type>& in ) override = 0;
 
 
     /// The Hessian can be constant, while geometric stiffness is not:

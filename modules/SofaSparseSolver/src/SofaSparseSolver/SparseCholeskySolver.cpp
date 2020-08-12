@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,14 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP
 #include <SofaSparseSolver/SparseCholeskySolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {
@@ -47,7 +46,7 @@ using sofa::helper::system::thread::ctime_t;
 template<class TMatrix, class TVector>
 SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , S(NULL), N(NULL)
+    , S(nullptr), N(nullptr)
 {
 }
 

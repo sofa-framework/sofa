@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,10 +22,12 @@
 #ifndef COMPLIANT_CONFIG_H
 #define COMPLIANT_CONFIG_H
 
-#include <SofaMisc/config.h>
+#include <sofa/config.h>
 
 #define COMPLIANT_MAJOR_VERSION ${COMPLIANT_MAJOR_VERSION}
 #define COMPLIANT_MINOR_VERSION ${COMPLIANT_MINOR_VERSION}
+
+#cmakedefine01 COMPLIANT_HAVE_SOFAPYTHON
 
 #ifdef SOFA_BUILD_Compliant
 #  define SOFA_TARGET Compliant

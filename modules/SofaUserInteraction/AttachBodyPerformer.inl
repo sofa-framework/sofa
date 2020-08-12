@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -90,7 +90,7 @@ void AttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vpar
 template <class DataTypes>
 AttachBodyPerformer<DataTypes>::AttachBodyPerformer(BaseMouseInteractor *i):
     TInteractionPerformer<DataTypes>(i),
-    mapper(NULL)
+    mapper(nullptr)
 {
     flags.setShowVisualModels(false);
     flags.setShowInteractionForceFields(true);
@@ -109,7 +109,7 @@ void AttachBodyPerformer<DataTypes>::clear()
     if (mapper)
     {
         mapper->cleanup();
-        delete mapper; mapper=NULL;
+        delete mapper; mapper=nullptr;
     }
 
     this->interactor->setDistanceFromMouse(0);
@@ -127,7 +127,7 @@ template <class DataTypes>
 bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
 {
 
-    core::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
+    core::behavior::MechanicalState<DataTypes>* mstateCollision=nullptr;
     int index;
     if (picked.body)
     {
@@ -146,11 +146,7 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         typename DataTypes::Real r=0.0;
         typename DataTypes::Coord dofPicked;
         DataTypes::setCPos(dofPicked, pointPicked);
-        index = mapper->addPointB(dofPicked, idx, r
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , picked.baryCoords
-#endif
-                                 );
+        index = mapper->addPointB(dofPicked, idx, r);
         mapper->update();
 
         if (mstateCollision->getContext() != picked.body->getContext())

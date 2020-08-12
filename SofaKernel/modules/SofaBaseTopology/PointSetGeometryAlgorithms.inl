@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,16 +40,22 @@ namespace component
 namespace topology
 {
 
+using sofa::core::objectmodel::ComponentState;
+
 template <class DataTypes>
- PointSetGeometryAlgorithms< DataTypes >::PointSetGeometryAlgorithms()        : GeometryAlgorithms()
-        ,d_showIndicesScale (core::objectmodel::Base::initData(&d_showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
-        ,d_showPointIndices (core::objectmodel::Base::initData(&d_showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
-        ,d_tagMechanics( initData(&d_tagMechanics,std::string(),"tagMechanics","Tag of the Mechanical Object"))
-    {
-    }
+ PointSetGeometryAlgorithms< DataTypes >::PointSetGeometryAlgorithms()        
+    : GeometryAlgorithms()
+    , d_showIndicesScale (core::objectmodel::Base::initData(&d_showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
+    , d_showPointIndices (core::objectmodel::Base::initData(&d_showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
+    , d_tagMechanics( initData(&d_tagMechanics,std::string(),"tagMechanics","Tag of the Mechanical Object"))
+    , l_topology(initLink("topology", "link to the topology container"))
+{
+}
+
 template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::init()
 {
+    this->d_componentState.setValue(ComponentState::Invalid);
     if ( this->d_tagMechanics.getValue().size()>0) {
         sofa::core::objectmodel::Tag mechanicalTag(this->d_tagMechanics.getValue());
         object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
@@ -57,7 +63,29 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
         object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
     }
     core::topology::GeometryAlgorithms::init();
-    this->m_topology = this->getContext()->getMeshTopology();
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    this->m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (!m_topology)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TriangleCollisionModel<sofa::defaulttype::Vec3Types> requires a Triangular Topology";
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    if(this->object ==nullptr)
+    {
+        msg_error() << "Unable to get a valid mechanical object from the context";
+        return;
+    }
+    this->d_componentState.setValue(ComponentState::Valid);
 }
 
 template <class DataTypes>

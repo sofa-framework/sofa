@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,17 +40,17 @@ TopologyEngineImpl< VecT>::TopologyEngineImpl(t_topologicalData *_topologicalDat
         sofa::core::topology::BaseMeshTopology *_topology,
         sofa::core::topology::TopologyHandler *_topoHandler) :
     m_topologicalData(_topologicalData),
-    m_topology(NULL),
+    m_topology(nullptr),
     m_topoHandler(_topoHandler),
     m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false),
     m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
     m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 
-    if (m_topology == NULL)
+    if (m_topology == nullptr)
         msg_error() << "Topology is not dynamic";
 
-    if (m_topoHandler == NULL)
+    if (m_topoHandler == nullptr)
         msg_error() << "Topology Handler not available";
 }
 
@@ -96,11 +96,9 @@ void TopologyEngineImpl< VecT>::registerTopology(sofa::core::topology::BaseMeshT
 {
     m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 
-    if (m_topology == NULL)
+    if (m_topology == nullptr)
     {
-        if (CHECK_TOPOLOGY)
-            msg_error() <<"Topology is not dynamic";
-
+        msg_error() <<"Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
         return;
     }
     else
@@ -111,11 +109,9 @@ void TopologyEngineImpl< VecT>::registerTopology(sofa::core::topology::BaseMeshT
 template <typename VecT>
 void TopologyEngineImpl< VecT>::registerTopology()
 {
-    if (m_topology == NULL)
+    if (m_topology == nullptr)
     {
-        if (CHECK_TOPOLOGY)
-            msg_error() <<"Topology is not dynamic";
-
+        msg_error() << "Current topology is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
         return;
     }
     else
@@ -145,11 +141,9 @@ void TopologyEngineImpl< VecT>::linkToPointDataArray()
 
     sofa::component::topology::PointSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::PointSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as PointSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as PointSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Point Data Array.";
         return;
     }
 
@@ -166,11 +160,9 @@ void TopologyEngineImpl< VecT>::linkToEdgeDataArray()
 
     sofa::component::topology::EdgeSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::EdgeSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as EdgeSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as EdgeSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Edge Data Array.";
         return;
     }
 
@@ -187,11 +179,9 @@ void TopologyEngineImpl< VecT>::linkToTriangleDataArray()
 
     sofa::component::topology::TriangleSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as TriangleSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as TriangleSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Triangle Data Array.";
         return;
     }
 
@@ -208,11 +198,9 @@ void TopologyEngineImpl< VecT>::linkToQuadDataArray()
 
     sofa::component::topology::QuadSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::QuadSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as QuadSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as QuadSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Quad Data Array.";
         return;
     }
 
@@ -229,11 +217,9 @@ void TopologyEngineImpl< VecT>::linkToTetrahedronDataArray()
 
     sofa::component::topology::TetrahedronSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TetrahedronSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as TetrahedronSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as TetrahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Tetrahedron Data Array.";
         return;
     }
 
@@ -250,11 +236,9 @@ void TopologyEngineImpl< VecT>::linkToHexahedronDataArray()
 
     sofa::component::topology::HexahedronSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::HexahedronSetTopologyContainer*>(m_topology);
 
-    if (_container == NULL)
+    if (_container == nullptr)
     {
-        if(CHECK_TOPOLOGY)
-            msg_error() <<"Can't dynamic cast topology as HexahedronSetTopologyContainer";
-
+        msg_error() << "Owner topology can't be cast as HexahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";
         return;
     }
 

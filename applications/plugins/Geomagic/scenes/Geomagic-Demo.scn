@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 0" dt="0.01" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin pluginName="Geomagic"/>
 
@@ -7,11 +8,12 @@
 
     <GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" drawDevice="1" drawDeviceFrame="0" positionBase="0 0 0" orientationBase="0 0 0 1"  />
 
-	<MechanicalObject template="Rigid" name="GeomagicMO" position="@GeomagicDevice.positionDevice" />
+	<MechanicalObject template="Rigid3d" name="GeomagicMO" position="@GeomagicDevice.positionDevice" />
 
     <!-- Example of an instrument controlled with the Geomagic device -->
     <Node name="mapping">
-        <OglModel name="Visual" fileMesh="mesh/dental_instrument.obj" color="red"  />
+        <MeshObjLoader name="meshLoader_0" filename="mesh/dental_instrument.obj" handleSeams="1" />
+        <OglModel name="Visual" src="@meshLoader_0" color="red"  />
         <RigidMapping input="@.." output="@Visual" />
     </Node>
     

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -88,6 +88,9 @@ public:
 
     topology::TriangleData <helper::vector< Deriv> > localFiberDirection; ///< Computed fibers direction within each triangle
 
+    /// Link to be set to the topology container in the component graph.
+    using Inherit1::l_topology;
+
     class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >
     {
     public:
@@ -110,7 +113,7 @@ public:
     /// Bring inherited member in the current lookup context.
     /// otherwise any access to the Inherit1::member would require "this->".
     /// @see https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    using Inherit1::_topology;
+    using Inherit1::m_topology;
 
     TRQSTriangleHandler* triangleHandler;
 };

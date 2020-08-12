@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,7 +61,7 @@ ClusteringEngine<DataTypes>::ClusteringEngine()
     , d_cluster(initData(&d_cluster,"cluster","Computed clusters."))
     , input_filename(initData(&input_filename,"inFile","import precomputed clusters"))
     , output_filename(initData(&output_filename,"outFile","export clusters"))
-    , topo(NULL)
+    , topo(nullptr)
 {
 }
 
@@ -70,7 +70,7 @@ void ClusteringEngine<DataTypes>::init()
 {
     this->mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 
-    if(this->mstate==NULL)
+    if(this->mstate==nullptr)
         msg_info(this) << "This component requires a mechanical state in its context for output visualization.";
 
     addInput(&d_radius);
@@ -308,11 +308,11 @@ bool ClusteringEngine<DataTypes>::load()
     if(!fname.compare(loadedFilename)) return true;
 
     if (!fname.size()) return false;
-    if (!helper::system::DataRepository.findFile(fname))  { serr << "ClusteringEngine: cannot find "<<fname<<sendl;  return false;	}
+    if (!helper::system::DataRepository.findFile(fname))  { msg_error() << "ClusteringEngine: cannot find "<<fname;  return false;	}
     fname=helper::system::DataRepository.getFile(fname);
 
     ifstream fileStream (fname.c_str(), std::ifstream::in);
-    if (!fileStream.is_open())	{ serr << "ClusteringEngine: cannot open "<<fname<<sendl;  return false;	}
+    if (!fileStream.is_open())	{ msg_error() << "ClusteringEngine: cannot open "<<fname;  return false;	}
 
     WriteOnlyAccessor< Data< VVI > > clust = this->d_cluster;
     clust.clear();
@@ -343,7 +343,7 @@ bool ClusteringEngine<DataTypes>::save()
     if (!fname.size()) return false;
 
     ofstream fileStream (fname.c_str(), ofstream::out);
-    if (!fileStream.is_open())	{ serr << "ClusteringEngine: cannot open "<<fname<<sendl;  return false;	}
+    if (!fileStream.is_open())	{ msg_error() << "ClusteringEngine: cannot open "<<fname;  return false;	}
 
     ReadAccessor< Data< VVI > > clust = this->d_cluster;
 
@@ -361,7 +361,7 @@ bool ClusteringEngine<DataTypes>::save()
         fileStream << std::endl;
     }
 
-    sout << "ClusteringEngine: saved clusters in "<<fname<<sendl;
+    sout << "ClusteringEngine: saved clusters in "<<fname;
 
     return true;
 }
@@ -371,7 +371,7 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 {
     if (vparams->displayFlags().getShowBehaviorModels())
     {
-        if(this->mstate==NULL)
+        if(this->mstate==nullptr)
             return;
 
         vparams->drawTool()->saveLastState();
@@ -404,7 +404,6 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
                 }
         }
         vparams->drawTool()->drawLines(vertices, 1.0, colors);
-
         vparams->drawTool()->restoreLastState();
     }
 }

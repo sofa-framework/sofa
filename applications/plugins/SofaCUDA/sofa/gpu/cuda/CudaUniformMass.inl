@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -219,6 +219,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,flo
 template <>
 void UniformMass<gpu::cuda::CudaRigid3fTypes, defaulttype::RigidMass<3,float> >::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -242,6 +243,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, defaulttype::RigidMass<3,float> >:
     {
         helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
     }
+#endif // SOFA_NO_OPENGL
 }
 
 

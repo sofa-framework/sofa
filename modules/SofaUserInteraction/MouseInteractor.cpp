@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -99,32 +99,21 @@ void BaseMouseInteractor::updatePosition(SReal )
 
 void BaseMouseInteractor::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     VecPerformer::iterator it=performers.begin(), it_end=performers.end();
     for (; it!=it_end; ++it)
         (*it)->draw(vparams);
 
-    if( !vparams->isSupported(sofa::core::visual::API_OpenGL) ) return;
-
     if (lastPicked.body)
     {
+        sofa::defaulttype::Vec4f color = sofa::defaulttype::Vec4f(0.0f,1.0f,0.0f,1.0f);
         if (isAttached)
-            glColor4f(1.0f,0.0f,0.0f,1.0f);
-        else
-            glColor4f(0.0f,1.0f,0.0f,1.0f);
+            color = sofa::defaulttype::Vec4f(1.0f,0.0f,0.0f,1.0f);
 
-        glDisable(GL_LIGHTING);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glLineWidth(3);
+        vparams->drawTool()->setPolygonMode(0, true);
         lastPicked.body->draw(vparams,lastPicked.indexCollisionElement);
+        vparams->drawTool()->setPolygonMode(0, false);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-
-        glColor4f(1,1,1,1);
-        glLineWidth(1);
     }
-#endif /* SOFA_NO_OPENGL */
 }
 }
 }

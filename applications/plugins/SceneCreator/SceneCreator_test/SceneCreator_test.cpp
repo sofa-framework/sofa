@@ -37,6 +37,11 @@ using sofa::helper::system::PluginManager ;
 class SceneCreator_test : public sofa::Sofa_test<>
 {
 public:
+    void SetUp()
+    {
+        importPlugin("SofaOpenglVisual");
+    }
+
     bool createCubeFailed();
     bool createCubeSuccess();
     bool createRigidCubeSuccess();

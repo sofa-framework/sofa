@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -84,20 +84,20 @@ void LineSetSkinningMapping<TIn, TOut>::init()
 {
     const OutVecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
-    t = this->fromModel->getContext()->getMeshTopology();
+    m_topology = this->fromModel->getContext()->getMeshTopology();
     linesInfluencedByVertice.resize(xto.size());
 
-    verticesInfluencedByLine.resize(t->getNbLines());
+    verticesInfluencedByLine.resize(m_topology->getNbLines());
 
-    neighborhoodLinesSet.resize(t->getNbLines());
-    neighborhood.resize(t->getNbLines());
+    neighborhoodLinesSet.resize(m_topology->getNbLines());
+    neighborhood.resize(m_topology->getNbLines());
 
-    for(unsigned int line1Index=0; line1Index< (unsigned) t->getNbLines(); line1Index++)
+    for(unsigned int line1Index=0; line1Index< (unsigned) m_topology->getNbLines(); line1Index++)
     {
-        const sofa::core::topology::BaseMeshTopology::Line& line1 = t->getLine(line1Index);
-        for(unsigned int line2Index=0; line2Index< (unsigned) t->getNbLines(); line2Index++)
+        const sofa::core::topology::BaseMeshTopology::Line& line1 = m_topology->getLine(line1Index);
+        for(unsigned int line2Index=0; line2Index< (unsigned) m_topology->getNbLines(); line2Index++)
         {
-            const sofa::core::topology::BaseMeshTopology::Line& line2 = t->getLine(line2Index);
+            const sofa::core::topology::BaseMeshTopology::Line& line2 = m_topology->getLine(line2Index);
             if ((line1[0] == line2[0]) || (line1[0] == line2[1]) || (line1[1] == line2[0]))
             {
                 neighborhoodLinesSet[line1Index].insert(line2Index);
@@ -105,7 +105,7 @@ void LineSetSkinningMapping<TIn, TOut>::init()
         }
     }
 
-    for(unsigned int line1Index=0; line1Index< (unsigned) t->getNbLines(); line1Index++)
+    for(unsigned int line1Index=0; line1Index< (unsigned) m_topology->getNbLines(); line1Index++)
     {
         std::set<int> result;
         std::insert_iterator<std::set<int> > res_ins(result, result.begin());
@@ -127,11 +127,11 @@ void LineSetSkinningMapping<TIn, TOut>::init()
     {
         double	sumWeights = 0.0;
         helper::vector<influencedLineType> lines;
-        lines.resize(t->getNbLines());
+        lines.resize(m_topology->getNbLines());
 
-        for(unsigned int lineIndex=0; lineIndex< (unsigned) t->getNbLines(); lineIndex++)
+        for(unsigned int lineIndex=0; lineIndex< (unsigned) m_topology->getNbLines(); lineIndex++)
         {
-            const sofa::core::topology::BaseMeshTopology::Line& line = t->getLine(lineIndex);
+            const sofa::core::topology::BaseMeshTopology::Line& line = m_topology->getLine(lineIndex);
             double _weight = convolutionSegment(xfrom[line[0]].getCenter(), xfrom[line[1]].getCenter(), xto[verticeIndex]);
 
             for(unsigned int lineInfluencedIndex=0; lineInfluencedIndex<lines.size(); lineInfluencedIndex++)
@@ -215,7 +215,7 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
         {
 
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-            const sofa::core::topology::BaseMeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][lineInfluencedIndex].lineIndex);
+            const sofa::core::topology::BaseMeshTopology::Line& l = m_topology->getLine(linesInfluencedByVertice[verticeIndex][lineInfluencedIndex].lineIndex);
             defaulttype::Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
 
@@ -230,7 +230,9 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
-    OutVecCoord& out = *outData.beginEdit(mparams);
+    SOFA_UNUSED(mparams);
+
+    OutVecCoord& out = *outData.beginEdit();
     const InVecCoord& in = inData.getValue();
 
     for (unsigned int verticeIndex=0; verticeIndex<out.size(); verticeIndex++)
@@ -239,18 +241,20 @@ void LineSetSkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParam
         for (unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
         {
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-            out[verticeIndex] += in[t->getLine(iline.lineIndex)[0]].getCenter()*iline.weight;
-            out[verticeIndex] += in[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position*iline.weight);
+            out[verticeIndex] += in[m_topology->getLine(iline.lineIndex)[0]].getCenter()*iline.weight;
+            out[verticeIndex] += in[m_topology->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position*iline.weight);
         }
     }
-    outData.endEdit(mparams);
+    outData.endEdit();
 }
 
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
+    SOFA_UNUSED(mparams);
+
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
-    OutVecDeriv& out = *outData.beginEdit(mparams);
+    OutVecDeriv& out = *outData.beginEdit();
     const InVecDeriv& in = inData.getValue();
     for (unsigned int verticeIndex=0; verticeIndex<out.size(); verticeIndex++)
     {
@@ -258,18 +262,20 @@ void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalPara
         for (unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
         {
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-            defaulttype::Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
-            out[verticeIndex] += (getVCenter(in[t->getLine(iline.lineIndex)[0]]) - IP.cross(getVOrientation(in[t->getLine(iline.lineIndex)[0]]))) * iline.weight;
+            defaulttype::Vec<3,Real> IP = xfrom[m_topology->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
+            out[verticeIndex] += (getVCenter(in[m_topology->getLine(iline.lineIndex)[0]]) - IP.cross(getVOrientation(in[m_topology->getLine(iline.lineIndex)[0]]))) * iline.weight;
         }
     }
-    outData.endEdit(mparams);
+    outData.endEdit();
 }
 
 
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
-    InVecDeriv& out = *outData.beginEdit(mparams);
+    SOFA_UNUSED(mparams);
+
+    InVecDeriv& out = *outData.beginEdit();
     const OutVecDeriv& in = inData.getValue();
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     out.clear();
@@ -282,7 +288,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalPar
         for (unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
         {
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-            unsigned int I =t->getLine(iline.lineIndex)[0];
+            unsigned int I =m_topology->getLine(iline.lineIndex)[0];
 
             defaulttype::Vec<3,Real> IP = xfrom[I].getOrientation().rotate(iline.position);
 
@@ -292,12 +298,12 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalPar
         }
     }
 
-    outData.endEdit(mparams);
+    outData.endEdit();
 
     /*
-    	for(unsigned int lineIndex=0; lineIndex< (unsigned) t->getNbLines(); lineIndex++)
+    	for(unsigned int lineIndex=0; lineIndex< (unsigned) m_topology->getNbLines(); lineIndex++)
     	{
-    		unsigned int I = t->getLine(lineIndex)[0];
+    		unsigned int I = m_topology->getLine(lineIndex)[0];
     		for (unsigned int verticeInfluencedIndex=0; verticeInfluencedIndex<verticesInfluencedByLine[lineIndex].size(); verticeInfluencedIndex++)
     		{
     			influencedVerticeType vertice = verticesInfluencedByLine[lineIndex][verticeInfluencedIndex];
@@ -313,7 +319,9 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalPar
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintParams* mparams, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
 {
-    InMatrixDeriv& out = *outData.beginEdit(mparams);
+    SOFA_UNUSED(mparams);
+
+    InMatrixDeriv& out = *outData.beginEdit();
     const OutMatrixDeriv& in = inData.getValue();
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
@@ -338,13 +346,13 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintPar
                 for (unsigned int lineInfluencedIndex = 0; lineInfluencedIndex < linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
                 {
                     influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-                    defaulttype::Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
+                    defaulttype::Vec<3,Real> IP = xfrom[m_topology->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
                     InDeriv direction;
                     getVCenter(direction) = data * iline.weight;
                     //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
                     getVOrientation(direction) = IP.cross(data) * iline.weight;
 
-                    o.addCol(t->getLine(iline.lineIndex)[0], direction);
+                    o.addCol(m_topology->getLine(iline.lineIndex)[0], direction);
                 }
 
                 ++colIt;
@@ -352,7 +360,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintPar
         }
     }
 
-    outData.endEdit(mparams);
+    outData.endEdit();
 }
 
 } // namespace mapping

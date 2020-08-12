@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -240,10 +240,6 @@ public:
     Data<bool> exportAtBegin; ///< export file at the initialization
     Data<bool> exportAtEnd; ///< export file when the simulation is finished
 
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageExporter<ImageTypes>* = NULL) { return ImageTypes::Name(); }
-
     ImageExporter()	: Inherited()
         , image(initData(&image,ImageTypes(),"image","image"))
         , transform(initData(&transform, TransformType(), "transform" , ""))
@@ -263,11 +259,11 @@ public:
         ImageExporterSpecialization<ImageTypes>::init( *this );
     }
 
-    virtual ~ImageExporter() {}
+    ~ImageExporter() override {}
 
-    virtual	void cleanup() override { if (exportAtEnd.getValue()) write();	}
+    	void cleanup() override { if (exportAtEnd.getValue()) write();	}
 
-    virtual void bwdInit() override { if (exportAtBegin.getValue())	write(); }
+    void bwdInit() override { if (exportAtBegin.getValue())	write(); }
 
 protected:
 

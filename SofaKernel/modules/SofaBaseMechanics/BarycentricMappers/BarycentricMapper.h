@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_H
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_H
 
+#include <SofaBaseMechanics/config.h>
 #include <sofa/core/Mapping.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -42,7 +43,6 @@ using core::visual::VisualParams;
 using sofa::defaulttype::BaseMatrix;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 
 /// Base class for barycentric mapping topology-specific mappers
 template<class In, class Out>
@@ -131,7 +131,7 @@ public:
 
 protected:
     BarycentricMapper() {}
-    virtual ~BarycentricMapper() override {}
+    ~BarycentricMapper() override {}
 
 private:
     BarycentricMapper(const BarycentricMapper& n) ;
@@ -140,9 +140,6 @@ private:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3dTypes, ExtVec3Types >;
-
-
 #endif
 
 }

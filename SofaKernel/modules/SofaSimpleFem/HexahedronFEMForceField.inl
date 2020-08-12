@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <set>
 
@@ -72,9 +72,10 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
     , f_drawPercentageOffset(initData(&f_drawPercentageOffset,(Real)0.15,"drawPercentageOffset","size of the hexa"))
     , needUpdateTopology(false)
+    , l_topology(initLink("topology", "link to the topology container"))
     , _elementStiffnesses(initData(&_elementStiffnesses,"stiffnessMatrices", "Stiffness matrices per element (K_i)"))
-    , _mesh(NULL)
-    , _sparseGrid(NULL)
+    , m_topology(nullptr)
+    , _sparseGrid(nullptr)
     , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
     , data(new HexahedronFEMForceFieldInternalData<DataTypes>())
 {
@@ -118,27 +119,33 @@ void HexahedronFEMForceField<DataTypes>::init()
     else _alreadyInit=true;
 
     this->core::behavior::ForceField<DataTypes>::init();
-    if( this->getContext()->getMeshTopology()==NULL )
+
+    if (l_topology.empty())
     {
-        msg_error() << "Object must have a Topology." ;
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". Object must have a MeshTopology.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    _mesh = dynamic_cast<sofa::core::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
-    if ( _mesh==NULL)
-    {
-        msg_error() << "Object must have a MeshTopology." ;
-        return;
-    }
-    else if( _mesh->getNbHexahedra()<=0 )
+
+    if( m_topology->getNbHexahedra()<=0 )
     {
         msg_error() << "Object must have a hexahedric MeshTopology." << msgendl
-                    << " name: " << _mesh->getName() << msgendl
-                    << " typename: " << _mesh->getTypeName()<< msgendl
-                    << " nbPoints:" << _mesh->getNbPoints()<< msgendl;
+                    << " name: " << m_topology->getName() << msgendl
+                    << " typename: " << m_topology->getTypeName()<< msgendl
+                    << " nbPoints:" << m_topology->getNbPoints()<< msgendl;
         return;
     }
-    _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_mesh);
+    _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(m_topology);
     m_potentialEnergy = 0;
 
     reinit();
@@ -957,7 +964,7 @@ void HexahedronFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::getNodeRotation(Transformation& R, unsigned int nodeIdx)
 {
-    core::topology::BaseMeshTopology::HexahedraAroundVertex liste_hexa = _mesh->getHexahedraAroundVertex(nodeIdx);
+    core::topology::BaseMeshTopology::HexahedraAroundVertex liste_hexa = m_topology->getHexahedraAroundVertex(nodeIdx);
 
     R[0][0] = R[1][1] = R[2][2] = 1.0 ;
     R[0][1] = R[0][2] = R[1][0] = R[1][2] = R[2][0] = R[2][1] = 0.0 ;
@@ -987,7 +994,7 @@ template<class DataTypes>
 SReal HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
                                                              const DataVecCoord&  /* x */) const
 {
-    msg_error() << "Get potentialEnergy not implemented";
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
 }
 
@@ -1164,6 +1171,8 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( !onlyVisible ) return;
 
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::VecCoordId::position());
@@ -1181,7 +1190,7 @@ void HexahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams* par
         }
     }
 
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 

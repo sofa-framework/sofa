@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -29,6 +29,8 @@
 
 #include <QHeaderView>
 #include <QImage>
+
+#include <tinyxml.h>
 
 namespace sofa
 {
@@ -100,7 +102,7 @@ void TutorialSelector::loadTutorials(const std::string &fileTutorial)
         msg_error("TutorialSelector") << "Unable to load file '"  << fileTutorial << "'";
         return;
     }
-    openNode(node, 0, true);
+    openNode(node, nullptr, true);
 
     this->setMaximumWidth((int)(this->columnWidth(0)*1.1));
 }
@@ -113,7 +115,7 @@ void TutorialSelector::openNode(TiXmlNode *node, QTreeWidgetItem *parent, bool i
     // replace these constants with checks of the return value of ToElement(), ...
     // -- Jeremie A. 02/07/2011
     //int typeOfNode=node->Type();
-    QTreeWidgetItem* item=0;
+    QTreeWidgetItem* item=nullptr;
     if (node->ToElement())   // case TiXmlNode::ELEMENT:
     {
         if (!isRoot)
@@ -137,7 +139,7 @@ void TutorialSelector::openNode(TiXmlNode *node, QTreeWidgetItem *parent, bool i
     else     // default:
     {
     }
-    for ( TiXmlNode* child = node->FirstChild(); child != 0; child = child->NextSibling())
+    for ( TiXmlNode* child = node->FirstChild(); child != nullptr; child = child->NextSibling())
     {
         openNode(child, item);
     }

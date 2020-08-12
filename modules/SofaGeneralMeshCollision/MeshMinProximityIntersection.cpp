@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaGeneralMeshCollision/MeshMinProximityIntersection.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.inl>
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <sofa/core/collision/Intersection.inl>
@@ -50,43 +49,43 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
     if (addSelf)
     {
         if (intersection->usePointPoint.getValue())
-            intersection->intersectors.add<PointModel, PointModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
         else
-            intersection->intersectors.ignore<PointModel, PointModel>();
+            intersection->intersectors.ignore<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
 
         if(intersection->useLinePoint.getValue())
-            intersection->intersectors.add<LineModel, PointModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
         else
-            intersection->intersectors.ignore<LineModel, PointModel>();
+            intersection->intersectors.ignore<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
 
         if(intersection->useLineLine.getValue())
-            intersection->intersectors.add<LineModel, LineModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
         else
-            intersection->intersectors.ignore<LineModel, LineModel>();
+            intersection->intersectors.ignore<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
 
-        intersection->intersectors.add<TriangleModel, PointModel, MeshMinProximityIntersection>(this);
-        intersection->intersectors.ignore<TriangleModel, LineModel>();
-        intersection->intersectors.ignore<TriangleModel, TriangleModel>();
-        intersection->intersectors.add<CapsuleModel, TriangleModel, MeshMinProximityIntersection>(this);
-        intersection->intersectors.add<CapsuleModel, LineModel, MeshMinProximityIntersection>(this);
+        intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+        intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
+        intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
+        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
 
         if (intersection->useSphereTriangle.getValue())
         {
-            intersection->intersectors.add<SphereModel, PointModel, MeshMinProximityIntersection>(this);
-            intersection->intersectors.add<RigidSphereModel, PointModel, MeshMinProximityIntersection>(this);
-            intersection->intersectors.add<TriangleModel, SphereModel, MeshMinProximityIntersection>(this);
-            intersection->intersectors.add<TriangleModel, RigidSphereModel, MeshMinProximityIntersection>(this);
-            intersection->intersectors.add<LineModel, SphereModel, MeshMinProximityIntersection>(this);
-            intersection->intersectors.add<LineModel, RigidSphereModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, MeshMinProximityIntersection>(this);
         }
         else
         {
-            intersection->intersectors.ignore<SphereModel, PointModel>();
-            intersection->intersectors.ignore<RigidSphereModel, PointModel>();
-            intersection->intersectors.ignore<LineModel, SphereModel>();
-            intersection->intersectors.ignore<LineModel, RigidSphereModel>();
-            intersection->intersectors.ignore<TriangleModel, SphereModel>();
-            intersection->intersectors.ignore<TriangleModel, RigidSphereModel>();
+            intersection->intersectors.ignore<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
+            intersection->intersectors.ignore<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
+            intersection->intersectors.ignore<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
+            intersection->intersectors.ignore<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>();
+            intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
+            intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>();
         }
     }
 }
@@ -169,7 +168,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree,ABfree,CDfree;
@@ -198,7 +197,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     }
     else
     {
-        intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
+        msg_warning(intersection) << "Null distance between contact detected";
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
@@ -295,7 +294,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree,Qfree,ABfree,ACfree;
@@ -323,7 +322,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     }
     else
     {
-        intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
+        msg_warning(intersection) << "Null distance between contact detected";
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
@@ -402,7 +401,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 ABfree = e2.p2Free()-e2.p1Free();
@@ -427,7 +426,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     }
     else
     {
-        intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
+        msg_warning(intersection) << "Null distance between contact detected";
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
@@ -462,7 +461,7 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
+#ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
         Vector3 Pfree, Qfree;
@@ -489,7 +488,7 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
     }
     else
     {
-        intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
+        msg_warning(intersection) << "Null distance between contact detected";
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;

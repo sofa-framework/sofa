@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,7 +43,7 @@
 #define GAUSS_SEIDEL 0
 #define JACOBI 1
 #define CG 2
-#include <image/extlibs/DiffusionSolver/DiffusionSolver.h>
+#include <DiffusionSolver/DiffusionSolver.h>
 
 
 
@@ -302,7 +302,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::Image<T>>
 
 
     template<class DiffusionShapeFunction>
-    static void solveGS(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    static void solveGS(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=nullptr)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveGS( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), 1.5, material /*This->d_weightThreshold.getValue()*/ );
@@ -326,7 +326,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::Image<T>>
     }
 
     template<class DiffusionShapeFunction>
-    static void solveJacobi(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    static void solveJacobi(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=nullptr)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveJacobi( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );
@@ -350,7 +350,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::Image<T>>
     }
 
     template<class DiffusionShapeFunction>
-    static void solveCG(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    static void solveCG(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=nullptr)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveCG( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );
@@ -430,11 +430,9 @@ public:
 
     //@}
 
-    virtual std::string getTemplateName() const    { return templateName(this); }
-    static std::string templateName(const DiffusionShapeFunction<ShapeFunctionTypes_,ImageTypes_>* = NULL) { return ShapeFunctionTypes_::Name()+std::string(",")+ImageTypes_::Name(); }
 
 
-    virtual void init()
+    virtual void init() override
     {
         Inherit::init();
 
@@ -498,7 +496,7 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         const char* p = arg->getAttribute(nbBoundaryConditions.getName().c_str());
         if (p)
@@ -512,7 +510,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         std::map<std::string,std::string*>::const_iterator it = str.find(nbBoundaryConditions.getName());
         if (it != str.end() && it->second)

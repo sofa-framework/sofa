@@ -1,7 +1,7 @@
 #ifndef BULLET_CONVEX_HULL_CONTACT_MAPPER
 #define BULLET_CONVEX_HULL_CONTACT_MAPPER
 
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include "BulletConvexHullModel.h"
 
 namespace sofa

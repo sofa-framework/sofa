@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 
 #include <sofa/core/State.h>
 #include <vector>
-#include <assert.h>
+#include <cassert>
 #include <fstream>
 
 namespace sofa
@@ -68,12 +68,12 @@ protected:
 
     virtual ~MappedObject();
 public:
-    virtual void init() override;
+    void init() override;
 
     Data<VecCoord> f_X; ///< position vector
     Data<VecDeriv> f_V; ///< velocity vector
 
-    virtual void resize(size_t vsize) override { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
+    void resize(size_t vsize) override { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
 
     VecCoord* getX()  { return f_X.beginEdit(); }
     VecDeriv* getV()  { return f_V.beginEdit(); }
@@ -91,7 +91,7 @@ public:
         if(v == core::VecCoordId::position())
             return &f_X;
 
-        return NULL;
+        return nullptr;
     }
 
     const Data< VecCoord >* read(core::ConstVecCoordId v) const override
@@ -99,7 +99,7 @@ public:
         if(v == core::ConstVecCoordId::position())
             return &f_X;
         else
-            return NULL;
+            return nullptr;
     }
 
     Data< VecDeriv >* write(core::VecDerivId v) override
@@ -107,7 +107,7 @@ public:
         if(v == core::VecDerivId::velocity())
             return &f_V;
         else
-            return NULL;
+            return nullptr;
     }
 
     const Data< VecDeriv >* read(core::ConstVecDerivId v) const override
@@ -115,17 +115,17 @@ public:
         if(v == core::ConstVecDerivId::velocity())
             return &f_V;
         else
-            return NULL;
+            return nullptr;
     }
 
     Data< MatrixDeriv >* write(core::MatrixDerivId /*v*/) override
     {
-        return NULL;
+        return nullptr;
     }
 
     const Data< MatrixDeriv >* read(core::ConstMatrixDerivId /*v*/) const override
     {
-        return NULL;
+        return nullptr;
     }
 };
 

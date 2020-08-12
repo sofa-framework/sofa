@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(Modeler)
 
 if(APPLE)
@@ -7,7 +7,7 @@ else()
     set(RC_FILES "sofa.rc")
 endif()
 
-find_package(Qt5 COMPONENTS Core QUIET)
+find_package(Qt5 COMPONENTS Core REQUIRED)
 
 if(Qt5Core_FOUND)
     message("Modeler executable: Using Qt5")
@@ -15,6 +15,6 @@ if(Qt5Core_FOUND)
 endif()
 
 add_executable(${PROJECT_NAME} Main.cpp ${RC_FILES} ${RESOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaModeler SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SofaModeler SofaBase SofaCommon SofaGeneral SofaMisc)
 
-sofa_install_targets(SofaGui Modeler "")
+sofa_install_targets(SofaModeler Modeler "Modeler")

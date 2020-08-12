@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<!-- Automatic Tetrahedron removing with Tetra2Triangle mapping example: Element removed are define in: ./RemovingTetra2TriangleProcess.txt -->
+<Node name="root" dt="0.01" showBoundingTree="0" gravity="0 -9 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <VisualStyle displayFlags="showBehaviorModels showVisual showWireframe showForceFields" />
+    <DefaultPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <Node name="TT">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" />
+        <MeshGmshLoader name="loader" filename="mesh/cube_low_res.msh" />
+        <MechanicalObject src="@loader" name="Volume" />
+        <TetrahedronSetTopologyContainer name="Tetra_topo" src="@loader" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        
+        <DiagonalMass massDensity="1.0" />
+        <FixedConstraint name="fix" indices="7 8 14 15" />
+        <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
+
+        <Node name="Visu">
+            <OglModel name="Visual" color="yellow" />
+            <IdentityMapping input="@../Volume" output="@Visual" />
+        </Node>
+
+        <TopologicalChangeProcessor listening="1" filename="RemovingTetraProcess.txt" />        
+    </Node>
+</Node>

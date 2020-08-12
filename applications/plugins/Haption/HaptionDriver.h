@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,7 +43,6 @@
 #include <cstring>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
-//#include <sofa/core/objectmodel/MouseEvent.h>
 #include <math.h>
 #include <SofaSimulationTree/GNode.h>
 #include "virtuoseAPI.h"
@@ -69,7 +68,7 @@ typedef struct
 {
     simulation::Node *node;
     sofa::component::visualmodel::OglModel *visu;
-    sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  > *mapping;
+    sofa::component::mapping::RigidMapping< Rigid3dTypes , Vec3fTypes  > *mapping;
 } VisualComponent;
 
 typedef struct

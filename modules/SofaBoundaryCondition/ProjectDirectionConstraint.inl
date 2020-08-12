@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,24 +64,24 @@ void ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyDestroyFunction
 
 template <class DataTypes>
 ProjectDirectionConstraint<DataTypes>::ProjectDirectionConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))
-    , data(new ProjectDirectionConstraintInternalData<DataTypes>())
+    , l_topology(initLink("topology", "link to the topology container"))
+    , data(new ProjectDirectionConstraintInternalData<DataTypes>())    
+    , m_pointHandler(nullptr)
 {
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
-
-    pointHandler = new FCPointHandler(this, &f_indices);
 }
 
 
 template <class DataTypes>
 ProjectDirectionConstraint<DataTypes>::~ProjectDirectionConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 
     delete data;
 }
@@ -115,11 +115,28 @@ void ProjectDirectionConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
-    f_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+   
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+        
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &f_indices);
+        f_indices.createTopologicalEngine(_topology, m_pointHandler);
+        f_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
     const Indices & indices = f_indices.getValue();
 
@@ -129,7 +146,7 @@ void ProjectDirectionConstraint<DataTypes>::init()
         const unsigned int index=indices[i];
         if (index >= maxIndex)
         {
-            serr << "Index " << index << " not valid!" << sendl;
+            msg_error() << "Index " << index << " not valid!";
             removeConstraint(index);
         }
     }
@@ -205,14 +222,16 @@ void ProjectDirectionConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Ba
 template <class DataTypes>
 void ProjectDirectionConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecDeriv> res ( resData );
     jacobian.mult(res.wref(),res.ref());
 }
 
 template <class DataTypes>
 void ProjectDirectionConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ , DataMatrixDeriv& /*cData*/)
 {
-    serr<<"projectJacobianMatrix(const core::MechanicalParams*, DataMatrixDeriv& ) is not implemented" << sendl;
+    msg_error() << "projectJacobianMatrix(const core::MechanicalParams*, DataMatrixDeriv& ) is not implemented";
 }
 
 template <class DataTypes>
@@ -243,13 +262,13 @@ void ProjectDirectionConstraint<DataTypes>::projectPosition(const core::Mechanic
 template <class DataTypes>
 void ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
 {
-    serr << "applyConstraint is not implemented " << sendl;
+    msg_error() << "applyConstraint is not implemented ";
 }
 
 template <class DataTypes>
 void ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
 {
-    serr<<"ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented "<< sendl;
+    msg_error() << "ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented ";
 }
 
 

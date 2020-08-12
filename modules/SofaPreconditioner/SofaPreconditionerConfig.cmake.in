@@ -1,11 +1,20 @@
-# CMake package configuration file for the SofaSparseSolver module
+# CMake package configuration file for the SofaPreconditioner module
 
 @PACKAGE_INIT@
 
+set(SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER @SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER@)
+
+find_package(SofaCommon REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
+if(SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER)
+    find_package(SofaSparseSolver QUIET REQUIRED)
+endif()
+
 ### Is the target existing ?
-if(NOT TARGET SofaSparseSolver)
-        ### If not we are building out of tree.
-        include("${CMAKE_CURRENT_LIST_DIR}/SofaSparseSolverTargets.cmake")
+if(NOT TARGET SofaPreconditioner)
+    ### If not we are building out of tree.
+    include("${CMAKE_CURRENT_LIST_DIR}/SofaPreconditionerTargets.cmake")
 endif()
 
 check_required_components(SofaSparseSolver)
