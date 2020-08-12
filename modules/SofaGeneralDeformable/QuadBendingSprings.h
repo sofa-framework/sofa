@@ -72,14 +72,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_QUADBENDINGSPRINGS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<defaulttype::Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<defaulttype::Vec2fTypes>;
-#endif
+extern template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<defaulttype::Vec2Types>;
+
 #endif
 
 } // namespace interactionforcefield

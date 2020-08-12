@@ -34,11 +34,10 @@ namespace shapefunction
 
 // Register in the Factory
 int HatShapeFunctionClass = core::RegisterObject("Computes compactly supported hat shape functions")
-
-        .add< HatShapeFunction<sofa::core::behavior::ShapeFunction> >(true)
+        .add< HatShapeFunction<sofa::core::behavior::ShapeFunction3> >(true)
         ;
 
-template class SOFA_Flexible_API HatShapeFunction<sofa::core::behavior::ShapeFunction>;
+template class SOFA_Flexible_API HatShapeFunction<sofa::core::behavior::ShapeFunction3>;
 }
 }
 }

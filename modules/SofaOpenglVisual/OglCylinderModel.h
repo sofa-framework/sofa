@@ -52,10 +52,10 @@ namespace visualmodel
 
 
 // I have no idea what is Ogl in this component ?...
-class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel, public ExtVec3fState
+class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel, public ExtVec3State
 {
 public:
-    SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel,ExtVec3fState);
+    SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel,ExtVec3State);
 protected:
     OglCylinderModel();
     virtual ~OglCylinderModel();
@@ -84,9 +84,9 @@ private:
     float r,g,b,a;
     // component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData;
 
-    typedef defaulttype::ExtVec3fTypes::Coord Coord;
-    typedef defaulttype::ExtVec3fTypes::VecCoord VecCoord;
-    typedef defaulttype::ExtVec3fTypes::Real Real;
+    typedef ExtVec3State::Coord Coord;
+    typedef ExtVec3State::VecCoord VecCoord;
+    typedef ExtVec3State::Real Real;
 
 public:
     virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }

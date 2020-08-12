@@ -94,12 +94,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MISC_EVALSURFACEDISTANCE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_VALIDATION_API EvalSurfaceDistance<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_VALIDATION_API EvalSurfaceDistance<defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_VALIDATION_API EvalSurfaceDistance<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace misc

@@ -201,12 +201,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API VectorSpringForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API VectorSpringForceField<defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_GENERAL_DEFORMABLE_API VectorSpringForceField<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace interactionforcefield

@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP
 #include "NormalsFromPoints.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -36,20 +36,12 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int NormalsFromPointsClass = core::RegisterObject("Compute vertex normals by averaging face normals")
-#ifndef SOFA_FLOAT
-        .add< NormalsFromPoints<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< NormalsFromPoints<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< NormalsFromPoints<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API NormalsFromPoints<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API NormalsFromPoints<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API NormalsFromPoints<Vec3Types>;
+ 
 
 
 } //

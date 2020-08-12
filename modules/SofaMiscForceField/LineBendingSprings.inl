@@ -65,13 +65,11 @@ void LineBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
     Real d = (Real)this->kd.getValue();
     Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
-    //sout<<"=================================LineBendingSprings<DataTypes>::addSpring "<<a<<", "<<b<<sendl;
 }
 
 template<class DataTypes>
 void LineBendingSprings<DataTypes>::registerLine( unsigned a, unsigned b, std::map<Index, unsigned>& ptMap)
 {
-    //sout<<"=================================LineBendingSprings<DataTypes>::registerLine "<<a<<", "<<b<<sendl;
     {
         if( ptMap.find( a ) != ptMap.end() )
         {
@@ -99,7 +97,6 @@ void LineBendingSprings<DataTypes>::init()
     assert( topology );
 
     const sofa::core::topology::BaseMeshTopology::SeqEdges& Edges = topology->getEdges();
-    //sout<<"==================================LineBendingSprings<DataTypes>::init(), Lines size = "<<Lines.size()<<sendl;
     for( unsigned i= 0; i<Edges.size(); ++i )
     {
         const sofa::core::topology::BaseMeshTopology::Edge& edge = Edges[i];

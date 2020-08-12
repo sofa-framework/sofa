@@ -32,7 +32,7 @@
 //
 #define SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP
 #include <SofaBoundaryCondition/ConicalForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -48,20 +48,12 @@ using namespace sofa::defaulttype;
 
 
 int ConicalForceFieldClass = core::RegisterObject("Repulsion applied by a cone toward the exterior")
-#ifndef SOFA_FLOAT
-        .add< ConicalForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ConicalForceField<Vec3fTypes> >()
-#endif
+        .add< ConicalForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class ConicalForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class ConicalForceField<Vec3fTypes>;
-#endif
+template class ConicalForceField<Vec3Types>;
+
 
 
 } // namespace forcefield

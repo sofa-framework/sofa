@@ -39,7 +39,6 @@ using namespace defaulttype;
 
 // Register in the Factory
 int CorotationalStrainMappingClass = core::RegisterObject("Map Deformation Gradients to Corotational Strain (small local deformations).")
-
         .add< CorotationalStrainMapping< F331Types, E331Types > >(true)
         .add< CorotationalStrainMapping< F321Types, E321Types > >()
         .add< CorotationalStrainMapping< F311Types, E311Types > >()

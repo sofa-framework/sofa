@@ -23,7 +23,7 @@
 
 #include "TriangularFEMForceField.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <assert.h>
 
 // #define DEBUG_TRIANGLEFEM
@@ -41,20 +41,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int TriangularFEMForceFieldClass = core::RegisterObject("Corotational Triangular finite elements")
-#ifndef SOFA_FLOAT
-        .add< TriangularFEMForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TriangularFEMForceField<Vec3fTypes> >()
-#endif
+        .add< TriangularFEMForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_FEM_API TriangularFEMForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_FEM_API TriangularFEMForceField<Vec3fTypes>;
-#endif
+template class SOFA_MISC_FEM_API TriangularFEMForceField<Vec3Types>;
+
 
 
 } // namespace forcefield

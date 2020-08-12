@@ -62,11 +62,11 @@ void EulerImplicitSolver::init()
 {
     if (!this->getTags().empty())
     {
-        sout << "EulerImplicitSolver: responsible for the following objects with tags " << this->getTags() << " :" << sendl;
+        msg_info() << "EulerImplicitSolver: responsible for the following objects with tags " << this->getTags() << " :";
         helper::vector<core::objectmodel::BaseObject*> objs;
         this->getContext()->get<core::objectmodel::BaseObject>(&objs,this->getTags(),sofa::core::objectmodel::BaseContext::SearchDown);
         for (unsigned int i=0; i<objs.size(); ++i)
-            sout << "  " << objs[i]->getClassName() << ' ' << objs[i]->getName() << sendl;
+            msg_info() << "  " << objs[i]->getClassName() << ' ' << objs[i]->getName();
     }
     sofa::core::behavior::OdeSolver::init();
 }
@@ -195,29 +195,55 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     {
     if (firstOrder)
     {
-        sofa::helper::AdvancedTimer::stepBegin("UpdateV");
-        newVel.eq(x);                         // vel = x
-        sofa::helper::AdvancedTimer::stepNext ("UpdateV", "CorrectV");
-        mop.solveConstraint(newVel,core::ConstraintParams::VEL);
-        sofa::helper::AdvancedTimer::stepNext ("CorrectV", "UpdateX");
-        newPos.eq(pos, newVel, h);            // pos = pos + h vel
-        sofa::helper::AdvancedTimer::stepNext ("UpdateX", "CorrectX");
-        mop.solveConstraint(newPos,core::ConstraintParams::POS);
-        sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
+        const char* prevStep = "UpdateV";
+        sofa::helper::AdvancedTimer::stepBegin(prevStep);
+#define SOFATIMER_NEXTSTEP(s) { sofa::helper::AdvancedTimer::stepNext(prevStep,s); prevStep=s; }
+
+        newVel.eq(x);                       // vel = x
+
+        if (solveConstraint)
+        {
+            SOFATIMER_NEXTSTEP("CorrectV");
+            mop.solveConstraint(newVel,core::ConstraintParams::VEL);
+        }
+        SOFATIMER_NEXTSTEP("UpdateX");
+
+        newPos.eq(pos, newVel, h);          // pos = pos + h vel
+
+        if (solveConstraint)
+        {
+            SOFATIMER_NEXTSTEP("CorrectX");
+            mop.solveConstraint(newPos,core::ConstraintParams::POS);
+        }
+#undef SOFATIMER_NEXTSTEP
+        sofa::helper::AdvancedTimer::stepEnd  (prevStep);
     }
     else
     {
-        sofa::helper::AdvancedTimer::stepBegin("UpdateV");
+        const char* prevStep = "UpdateV";
+        sofa::helper::AdvancedTimer::stepBegin(prevStep);
+#define SOFATIMER_NEXTSTEP(s) { sofa::helper::AdvancedTimer::stepNext(prevStep,s); prevStep=s; }
+
         // vel = vel + x
         newVel.eq(vel, x);
-        sofa::helper::AdvancedTimer::stepNext ("UpdateV", "CorrectV");
-        mop.solveConstraint(newVel,core::ConstraintParams::VEL);
-        sofa::helper::AdvancedTimer::stepNext ("CorrectV", "UpdateX");
+
+        if (solveConstraint)
+        {
+            SOFATIMER_NEXTSTEP("CorrectV");
+            mop.solveConstraint(newVel,core::ConstraintParams::VEL);
+        }
+        SOFATIMER_NEXTSTEP("UpdateX");
+
         // pos = pos + h vel
         newPos.eq(pos, newVel, h);
-        sofa::helper::AdvancedTimer::stepNext ("UpdateX", "CorrectX");
-        mop.solveConstraint(newPos,core::ConstraintParams::POS);
-        sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
+
+        if (solveConstraint)
+        {
+            SOFATIMER_NEXTSTEP("CorrectX");
+            mop.solveConstraint(newPos,core::ConstraintParams::POS);
+        }
+#undef SOFATIMER_NEXTSTEP
+        sofa::helper::AdvancedTimer::stepEnd  (prevStep);
     }
 
     }
@@ -248,7 +274,18 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
         sofa::helper::AdvancedTimer::stepBegin("UpdateVAndX");
         vop.v_multiop(ops);
-        sofa::helper::AdvancedTimer::stepEnd("UpdateVAndX");
+        if (!solveConstraint)
+        {
+            sofa::helper::AdvancedTimer::stepEnd("UpdateVAndX");
+        }
+        else
+        {
+            sofa::helper::AdvancedTimer::stepNext ("UpdateVAndX", "CorrectV");
+            mop.solveConstraint(newVel,core::ConstraintParams::VEL);
+            sofa::helper::AdvancedTimer::stepNext ("CorrectV", "CorrectX");
+            mop.solveConstraint(newPos,core::ConstraintParams::POS);
+            sofa::helper::AdvancedTimer::stepEnd  ("UpdateVAndX");
+        }
     }
 #endif
 

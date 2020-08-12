@@ -23,7 +23,7 @@
 
 #include "PersistentUnilateralInteractionConstraint.inl"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -36,12 +36,8 @@ namespace constraintset
 
 using namespace sofa::defaulttype;
 
-#ifndef SOFA_FLOAT
-template class SOFA_PERSISTENTCONTACT_API PersistentUnilateralInteractionConstraint<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_PERSISTENTCONTACT_API PersistentUnilateralInteractionConstraint<Vec3fTypes>;
-#endif
+template class SOFA_PERSISTENTCONTACT_API PersistentUnilateralInteractionConstraint<Vec3Types>;
+
 
 
 } // namespace constraintset

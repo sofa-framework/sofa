@@ -166,7 +166,7 @@ BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry:
 
     xml::ObjectElement description("Default", entry->className.c_str() );
 
-    if (!templateName.empty()) description.setAttribute("template", templateName.c_str());
+    if (!templateName.empty()) description.setAttribute("template", templateName);
 
     Creator::SPtr c;
     if (entry->creatorMap.size() <= 1)
@@ -742,7 +742,7 @@ void GraphModeler::configureElement(Base* b, xml::BaseElement *elem)
         for (data_iterator itData=itAttribute->begin<xml::DataElement>(); itData != itAttribute->end<xml::DataElement>(); ++itData)  itData->initNode();
         const std::string nameAttribute = itAttribute->getAttribute("type","");
         const std::string valueAttribute = itAttribute->getValue();
-        elem->setAttribute(nameAttribute, valueAttribute.c_str());
+        elem->setAttribute(nameAttribute, valueAttribute);
     }
 
 
@@ -885,13 +885,13 @@ void GraphModeler::loadPreset(Node *parent, std::string presetFile,
 
 void GraphModeler::updatePresetNode(xml::BaseElement &elem, std::string meshFile, std::string translation, std::string rotation, std::string scale)
 {
-    if (elem.presenceAttribute(std::string("filename")))     elem.setAttribute(std::string("filename"),     meshFile.c_str());
-    if (elem.presenceAttribute(std::string("fileMesh")))     elem.setAttribute(std::string("fileMesh"),     meshFile.c_str());
-    if (elem.presenceAttribute(std::string("fileTopology"))) elem.setAttribute(std::string("fileTopology"), meshFile.c_str());
+    if (elem.presenceAttribute(std::string("filename")))     elem.setAttribute(std::string("filename"),     meshFile);
+    if (elem.presenceAttribute(std::string("fileMesh")))     elem.setAttribute(std::string("fileMesh"),     meshFile);
+    if (elem.presenceAttribute(std::string("fileTopology"))) elem.setAttribute(std::string("fileTopology"), meshFile);
 
-    if (elem.presenceAttribute(std::string("translation")))  elem.setAttribute(std::string("translation"), translation.c_str());
-    if (elem.presenceAttribute(std::string("rotation")))     elem.setAttribute(std::string("rotation"),    rotation.c_str());
-    if (elem.presenceAttribute(std::string("scale3d")))      elem.setAttribute(std::string("scale3d"),     scale.c_str());
+    if (elem.presenceAttribute(std::string("translation")))  elem.setAttribute(std::string("translation"), translation);
+    if (elem.presenceAttribute(std::string("rotation")))     elem.setAttribute(std::string("rotation"),    rotation);
+    if (elem.presenceAttribute(std::string("scale3d")))      elem.setAttribute(std::string("scale3d"),     scale);
 }
 
 bool GraphModeler::getSaveFilename(std::string &filename)

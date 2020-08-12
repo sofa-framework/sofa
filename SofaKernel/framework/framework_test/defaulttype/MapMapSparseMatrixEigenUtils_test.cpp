@@ -24,7 +24,7 @@
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
 #include <Eigen/Sparse>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace
 {

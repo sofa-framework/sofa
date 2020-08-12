@@ -130,22 +130,13 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP)
-#ifndef SOFA_FLOAT
-extern template class MappedObject<defaulttype::Vec3dTypes>;
-extern template class MappedObject<defaulttype::Vec2dTypes>;
-extern template class MappedObject<defaulttype::Vec1dTypes>;
-extern template class MappedObject<defaulttype::Vec6dTypes>;
-extern template class MappedObject<defaulttype::Rigid3dTypes>;
-extern template class MappedObject<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class MappedObject<defaulttype::Vec3fTypes>;
-extern template class MappedObject<defaulttype::Vec2fTypes>;
-extern template class MappedObject<defaulttype::Vec1fTypes>;
-extern template class MappedObject<defaulttype::Vec6fTypes>;
-extern template class MappedObject<defaulttype::Rigid3fTypes>;
-extern template class MappedObject<defaulttype::Rigid2fTypes>;
-#endif
+extern template class MappedObject<defaulttype::Vec3Types>;
+extern template class MappedObject<defaulttype::Vec2Types>;
+extern template class MappedObject<defaulttype::Vec1Types>;
+extern template class MappedObject<defaulttype::Vec6Types>;
+extern template class MappedObject<defaulttype::Rigid3Types>;
+extern template class MappedObject<defaulttype::Rigid2Types>;
+
 #endif
 
 } // namespace container

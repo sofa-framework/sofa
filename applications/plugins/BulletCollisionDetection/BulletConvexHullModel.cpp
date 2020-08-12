@@ -10,12 +10,8 @@ namespace collision
 {
 
 int BulletConvexHullModelClass = core::RegisterObject("collision model using a set of convex hulls")
-#ifndef SOFA_FLOAT
-        .add< TBulletConvexHullModel< defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TBulletConvexHullModel< defaulttype::Rigid3fTypes> >()
-#endif
+        .add< TBulletConvexHullModel< defaulttype::Rigid3Types> >()
+
         .addAlias("BulletConvexHullModel")
         .addAlias("BtConvexHullModel")
         .addAlias("BulletConvexHull")
@@ -23,12 +19,8 @@ int BulletConvexHullModelClass = core::RegisterObject("collision model using a s
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletConvexHullModel<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletConvexHullModel<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_BULLETCOLLISIONDETECTION_API TBulletConvexHullModel<defaulttype::Rigid3Types>;
+
 
 }
 }

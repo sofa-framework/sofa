@@ -27,7 +27,7 @@
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
 
 #include <sofa/helper/system/FileRepository.h>

@@ -70,14 +70,9 @@ private:
 typedef TIntrSphereOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrSphereOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Vec3dTypes,defaulttype::Rigid3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Rigid3dTypes,defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Vec3fTypes,defaulttype::Rigid3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Rigid3fTypes,defaulttype::Rigid3fTypes>;
-#endif
+extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Rigid3Types,defaulttype::Rigid3Types>;
+
 #endif
 
 }

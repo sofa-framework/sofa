@@ -144,7 +144,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
 
     tetrahedronInf.resize(_topology->getNbTetrahedra());
 
-    for (int i=0; i<_topology->getNbTetrahedra(); ++i)
+    for (size_t i=0; i<_topology->getNbTetrahedra(); ++i)
     {
         tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
                 _topology->getTetrahedron(i),  (const std::vector< unsigned int > )0,

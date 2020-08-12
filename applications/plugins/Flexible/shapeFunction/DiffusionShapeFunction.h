@@ -36,10 +36,6 @@
 #include <map>
 #include <string>
 
-//#include <Eigen/SparseCore>
-//#include <Eigen/SparseCholesky>
-//#include <Eigen/IterativeLinearSolvers>
-
 //#define HARMONIC 0
 //#define BIHARMONIC 1
 //#define ANISOTROPIC 2
@@ -447,10 +443,7 @@ public:
         // init weight and indice image
         DiffusionShapeFunctionSpecialization<ImageTypes>::init( this );
 
-//        if (this->method.getValue().getSelectedId() == HARMONIC)
         {
-
-//            DiffusionSolver<float>::setNbThreads( 1 );
             DiffusionSolver<float>::setDefaultNbThreads();
 
             cimg_library::CImg<float> values;
@@ -463,17 +456,9 @@ public:
                 materialPtr = &material;
             }
 
-//            if( materialPtr ) materialPtr->display("materialPtr");
-
-
-
-
             for(unsigned int i=0; i<this->f_position.getValue().size(); i++)
             {
                 DiffusionShapeFunctionSpecialization<ImageTypes>::buildDiffusionProblem(this,i,values,mask);
-
-//                values.display("values");
-//                mask.display("mask");
 
 #ifndef NDEBUG
                 // checking that there is at least a one pixel outside border
@@ -496,8 +481,6 @@ public:
                         DiffusionShapeFunctionSpecialization<ImageTypes>::solveGS(this,values,mask,materialPtr);
                         break;
                 }
-
-//                values.display("diffused");
 
                 DiffusionShapeFunctionSpecialization<ImageTypes>::updateWeights(this,i);
             }
@@ -547,7 +530,6 @@ protected:
         :Inherit()
         , f_distances(initData(&f_distances,DistTypes(),"distances",""))
         , nbBoundaryConditions(initData(&nbBoundaryConditions,(unsigned int)0,"nbBoundaryConditions","Number of boundary condition images provided"))
-//        , method ( initData ( &method,"method","method" ) )
         , solver ( initData ( &solver,"solver","solver (param)" ) )
         , iterations(initData(&iterations,(unsigned int)100,"iterations","Max number of iterations for iterative solvers"))
         , tolerance(initData(&tolerance,(Real)1e-6,"tolerance","Error tolerance for iterative solvers"))
@@ -556,14 +538,6 @@ protected:
         , d_clearData(initData(&d_clearData,true,"clearData","clear diffusion image after computation?"))
         , d_outsideDiffusion(initData(&d_outsideDiffusion,false,"outsideDiffusion","propagate shape function outside of the object? (can be useful for embeddings)"))
     {
-//        helper::OptionsGroup methodOptions(3,"0 - Harmonic"
-//                                           ,"1 - bi-Harmonic"
-//                                           ,"2 - Anisotropic"
-//                                           );
-//        methodOptions.setSelectedItem(HARMONIC);
-//        method.setValue(methodOptions);
-//        method.setGroup("parameters");
-
         helper::OptionsGroup solverOptions(3
                                            ,"0 - Gauss-Seidel"
                                            ,"1 - Jacobi"

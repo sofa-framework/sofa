@@ -37,20 +37,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int DevAngleCollisionMonitorClass = core::RegisterObject("Angle collision monitoring")
-#ifndef SOFA_FLOAT
-        .add< DevAngleCollisionMonitor<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< DevAngleCollisionMonitor<Rigid3fTypes> >()
-#endif
+        .add< DevAngleCollisionMonitor<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class DevAngleCollisionMonitor<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class DevAngleCollisionMonitor<Rigid3fTypes>;
-#endif
+template class DevAngleCollisionMonitor<Rigid3Types>;
+
 
 } // namespace misc
 

@@ -6,7 +6,7 @@
     <RequiredPlugin name="SofaSparseSolver"/>
     <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
     <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" />
-    <GenericConstraintSolver tolerance="1e-9" iterations="1000"/>
+    <GenericConstraintSolver tolerance="1e-9" maxIterations="1000"/>
     <!-- resolution = number of particles (including the fixed one) -->
     <!-- scale = total length of the pendulum -->
     <!-- 1m long wire -->

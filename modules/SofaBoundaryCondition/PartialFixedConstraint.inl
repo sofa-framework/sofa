@@ -102,8 +102,7 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
     else
     {
         const SetIndexArray & indices = this->d_indices.getValue();
-        unsigned i=0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             for (unsigned j = 0; j < NumDimensions; j++)
             {
@@ -122,7 +121,6 @@ void PartialFixedConstraint<DataTypes>::projectResponse(const core::MechanicalPa
     helper::WriteAccessor<DataVecDeriv> res = resData;
     projectResponseT(mparams, res.wref());
 }
-
 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)

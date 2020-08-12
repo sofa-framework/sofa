@@ -18,7 +18,7 @@
 		<Node name="simu_head">
 			<EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
 			<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-			<SparseGridRamification vertices="@../subset_head.pointsInROI" n="10 10 10" nbVirtualFinerLevels="0" finestConnectivity="0" />			
+			<SparseGridRamification position="@../subset_head.pointsInROI" n="10 10 10" nbVirtualFinerLevels="0" finestConnectivity="0" />			
 			<MechanicalObject template="Vec3d" name="mecaObj2"  />
 			<BoxConstraint box="-2 4 4 2 8 4.5" drawBoxes="0"/>
 			<UniformMass totalMass="50.0" />
@@ -42,8 +42,9 @@
    		<MergePoints template="Vec3d" name="merge_subsets" position1="@meshLoader.position"
 			position2="@simu_head/Visu/CollisModel.position" mappingX2="@subset_head.indices"/>
 
-       
-        <OglModel name="Visual" position="@merge_subsets.points" 
-			src="@meshLoader" useVBO="0" texturename="textures/snakeskin.png" scaleTex="20 20"/>
+       <Node>
+			<OglModel name="Visual" position="@../merge_subsets.points" 
+				src="@../meshLoader" useVBO="0" texturename="textures/snakeskin.png" scaleTex="20 20"/>
+		</Node>
     </Node>
 </Node>

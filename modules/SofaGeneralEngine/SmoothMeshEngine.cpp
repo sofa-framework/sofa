@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP
 #include "SmoothMeshEngine.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -36,20 +36,12 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int SmoothMeshEngineClass = core::RegisterObject("Compute the laplacian smoothing of a mesh")
-#ifndef SOFA_FLOAT
-        .add< SmoothMeshEngine<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< SmoothMeshEngine<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< SmoothMeshEngine<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<Vec3Types>;
+ 
 
 
 } //

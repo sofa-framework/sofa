@@ -200,8 +200,7 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
     }
     else
     {
-        unsigned i=0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             res[*it] = Deriv();
         }
@@ -230,8 +229,7 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
     {
         while (rowIt != rowItEnd)
         {
-            unsigned i=0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<rowIt.row().size(); ++it, ++i)
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
                 rowIt.row().erase(*it);
             }
@@ -258,8 +256,7 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
     }
     else
     {
-        unsigned i=0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             res[*it] = Deriv();
         }
@@ -369,8 +366,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
         else
         {
-            unsigned i=0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<x.size(); ++it, ++i)
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
@@ -392,8 +388,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
         else
         {
-            unsigned i=0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<x.size(); ++it, ++i)
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);

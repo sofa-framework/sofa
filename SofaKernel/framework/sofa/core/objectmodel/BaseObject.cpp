@@ -90,7 +90,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
         if (valueString[0] != '@')
         {
-            msg_error() <<"'src' attribute value should be a link using '@'" ;
+            msg_error() <<"'src' attribute value should be a link using '@'";
         }
         else
         {
@@ -115,7 +115,7 @@ void BaseObject::setSrc(const std::string &valueString, std::vector< std::string
     loader = getContext()->get<BaseObject>(objectName);
     if (!loader)
     {
-        msg_error() << "Source object \"" << valueString << "\" NOT FOUND." ;
+        msg_error() << "Source object \"" << valueString << "\" NOT FOUND.";
         return;
     }
     setSrc(valueString, loader, attributeList);
@@ -253,7 +253,7 @@ void BaseObject::init()
 	{
 		if ((*iData)->isRequired() && !(*iData)->isSet())
 		{
-                        msg_warning() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" ;
+        msg_warning() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" ;
 		}
 	}
 }

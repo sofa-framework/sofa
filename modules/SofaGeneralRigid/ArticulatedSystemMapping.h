@@ -230,23 +230,10 @@ private:
 
 #if  !defined(SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3fTypes >;
-#endif
+extern template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3dTypes >;
-extern template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3dTypes >;
-extern template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3dTypes >;
-extern template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3fTypes >;
-extern template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3fTypes >;
-extern template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3fTypes >;
-#endif
-#endif
+
+
 
 #endif
 

@@ -172,22 +172,13 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_CPP)
-#ifndef SOFA_FLOAT
-//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec3dTypes>;
-//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec2dTypes>;
-//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec1dTypes>;
-//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec6dTypes>;
-extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec3fTypes>;
-//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec2fTypes>;
-//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec1fTypes>;
-//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec6fTypes>;
-extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Rigid2fTypes>;
-#endif
+//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec3Types>;
+//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec2Types>;
+//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec1Types>;
+//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec6Types>;
+extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Rigid3Types>;
+//extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Rigid2Types>;
+
 #endif
 
 } // namespace controller

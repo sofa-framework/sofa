@@ -32,7 +32,7 @@
 #include "OgreShaderTextureUnit.h"
 #include "OgreSceneObject.h"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/loader/Material.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

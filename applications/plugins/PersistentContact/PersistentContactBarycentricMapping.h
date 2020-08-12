@@ -210,12 +210,14 @@ public:
     PersistentContactBarycentricMapping()
         : Inherit()
         ,  m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
+        , m_init(false)
     {
     }
 
     PersistentContactBarycentricMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to)
         , m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
+        , m_init(false)
     {
     }
 
@@ -246,26 +248,13 @@ protected:
 };
 
 
-#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
-#endif
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
+
 
 #if  !defined(SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3dTypes, Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3fTypes, Vec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3fTypes, Vec3dTypes >;
-#endif
-#endif
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3Types, Vec3Types >;
+
+
 #endif
 
 } // namespace mapping

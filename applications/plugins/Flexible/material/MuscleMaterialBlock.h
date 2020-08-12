@@ -122,9 +122,6 @@ class MuscleMaterialBlock< E311(_Real) >:
         Real Fv = Vsh*(Vmax + ldot)/fact;
 
         Real F = C*Fl*Fv;
-//        std::cout<<"ldot,vmax = "<<ldot<<","<<Vmax<<std::endl;
-//        std::cout<<"Fv = "<<Fv<<std::endl;
-
         K = F*D*EN;
         B = C*Fl*Vmax*(Vsh+1.)*Vsh/fact/fact;
 

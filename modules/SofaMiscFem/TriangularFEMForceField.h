@@ -369,13 +369,8 @@ public:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3dTypes>;
-#endif
+extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3fTypes>;
-#endif
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 

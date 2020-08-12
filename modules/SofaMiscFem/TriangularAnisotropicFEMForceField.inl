@@ -32,7 +32,7 @@
 #include <iostream> //for debugging
 #include <vector>
 #include <algorithm>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <assert.h>
 
 // #define DEBUG_TRIANGLEFEM

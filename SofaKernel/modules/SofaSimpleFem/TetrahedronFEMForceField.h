@@ -324,12 +324,8 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace forcefield

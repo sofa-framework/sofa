@@ -12,12 +12,8 @@ namespace collision
 {
 
 int BulletCapsuleModelClass = core::RegisterObject("collision model using a set of Capsules, it can be used in the bullet collision pipeline")
-#ifndef SOFA_FLOAT
-        .add< TBulletCapsuleModel< defaulttype::Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TBulletCapsuleModel< defaulttype::Vec3fTypes> >()
-#endif
+        .add< TBulletCapsuleModel< defaulttype::Vec3Types> >()
+
         .addAlias("BulletCapsuleModel")
         .addAlias("BtCapsuleModel")
         .addAlias("BulletCapsule")
@@ -26,12 +22,8 @@ int BulletCapsuleModelClass = core::RegisterObject("collision model using a set 
 
 
 int RigidBulletCapsuleModelClass = core::RegisterObject("collision model using a set of Capsules, it can be used in the bullet collision pipeline")
-#ifndef SOFA_FLOAT
-        .add< TBulletCapsuleModel< defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TBulletCapsuleModel< defaulttype::Rigid3fTypes> >()
-#endif
+        .add< TBulletCapsuleModel< defaulttype::Rigid3Types> >()
+
         .addAlias("RigidBulletCapsuleModel")
         .addAlias("RigidBtCapsuleModel")
         .addAlias("RigidBulletCapsule")
@@ -39,14 +31,9 @@ int RigidBulletCapsuleModelClass = core::RegisterObject("collision model using a
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCapsuleModel<defaulttype::Vec3dTypes>;
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCapsuleModel<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCapsuleModel<defaulttype::Vec3fTypes>;
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCapsuleModel<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCapsuleModel<defaulttype::Vec3Types>;
+template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCapsuleModel<defaulttype::Rigid3Types>;
+
 
 } // namespace collision
 

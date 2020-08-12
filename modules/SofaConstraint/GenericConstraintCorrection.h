@@ -28,7 +28,7 @@
 namespace sofa
 {
 
-    namespace core { namespace behavior { class OdeSolver; class LinearSolver; } }
+namespace core { namespace behavior { class OdeSolver; class LinearSolver; } }
 
 
 namespace component
@@ -95,8 +95,8 @@ public:
 
 protected:
 
-    void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId, 
-        core::ConstMultiVecDerivId correction, double positionFactor, double velocityFactor);
+    void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId,
+                               core::ConstMultiVecDerivId correction, double positionFactor, double velocityFactor);
 
     core::behavior::OdeSolver* m_ODESolver;
     std::vector< core::behavior::LinearSolver* > m_linearSolvers;

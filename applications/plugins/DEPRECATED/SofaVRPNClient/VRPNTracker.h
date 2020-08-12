@@ -88,12 +88,8 @@ private:
 };
 
 #if  !defined(SOFAVRPNCLIENT_VRPNTRACKER_CPP_)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<defaulttype::Vec3Types>;
+ 
 #endif
 
 }

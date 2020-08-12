@@ -40,10 +40,10 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_OPENGL_VISUAL_API DataDisplay : public core::visual::VisualModel, public ExtVec3fState
+class SOFA_OPENGL_VISUAL_API DataDisplay : public core::visual::VisualModel, public ExtVec3State
 {
 public:
-    SOFA_CLASS2(DataDisplay, core::visual::VisualModel, ExtVec3fState);
+    SOFA_CLASS2(DataDisplay, core::visual::VisualModel, ExtVec3State);
 
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
     typedef core::topology::BaseMeshTopology::Quad     Quad;

@@ -318,18 +318,11 @@ private:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Rigid3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Rigid3dTypes, defaulttype::Vec1dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Rigid3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Rigid3fTypes, defaulttype::Vec1fTypes >;
-#endif
+extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+
 
 #endif
 

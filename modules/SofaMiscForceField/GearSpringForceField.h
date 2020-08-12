@@ -326,14 +326,9 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3dTypes>;
-extern template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3fTypes>;
-extern template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3fTypes>;
-#endif
+extern template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3Types>;
+extern template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3Types>;
+
 #endif
 } // namespace interactionforcefield
 

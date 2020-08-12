@@ -28,7 +28,6 @@ namespace sofa
 namespace helper
 {
 
-#ifndef SOFA_FLOAT
 template class SOFA_HELPER_API Monomial_LD<double,1>;
 template class SOFA_HELPER_API Monomial_LD<double,2>;
 template class SOFA_HELPER_API Monomial_LD<double,3>;
@@ -40,21 +39,7 @@ template class SOFA_HELPER_API Polynomial_LD<double,2>;
 template class SOFA_HELPER_API Polynomial_LD<double,3>;
 template class SOFA_HELPER_API Polynomial_LD<double,4>;
 template class SOFA_HELPER_API Polynomial_LD<double,5>;
-#endif
 
-#ifndef SOFA_DOUBLE
-template class SOFA_HELPER_API Monomial_LD<float,1>;
-template class SOFA_HELPER_API Monomial_LD<float,2>;
-template class SOFA_HELPER_API Monomial_LD<float,3>;
-template class SOFA_HELPER_API Monomial_LD<float,4>;
-template class SOFA_HELPER_API Monomial_LD<float,5>;
-
-template class SOFA_HELPER_API Polynomial_LD<float,1>;
-template class SOFA_HELPER_API Polynomial_LD<float,2>;
-template class SOFA_HELPER_API Polynomial_LD<float,3>;
-template class SOFA_HELPER_API Polynomial_LD<float,4>;
-template class SOFA_HELPER_API Polynomial_LD<float,5>;
-#endif
 
 } // namespace helper
 

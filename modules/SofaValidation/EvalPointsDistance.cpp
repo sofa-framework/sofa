@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_CPP
 #include "EvalPointsDistance.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -38,24 +38,14 @@ using namespace defaulttype;
 
 
 int EvalPointsDistanceClass = core::RegisterObject("Periodically compute the distance between 2 set of points")
-#ifndef SOFA_FLOAT
-        .add< EvalPointsDistance<Vec3dTypes> >()
-        .add< EvalPointsDistance<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< EvalPointsDistance<Vec3fTypes> >()
-        .add< EvalPointsDistance<Rigid3fTypes> >()
-#endif
+        .add< EvalPointsDistance<Vec3Types> >()
+        .add< EvalPointsDistance<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_VALIDATION_API EvalPointsDistance<Vec3dTypes>;
-template class SOFA_VALIDATION_API EvalPointsDistance<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_VALIDATION_API EvalPointsDistance<Vec3fTypes>;
-template class SOFA_VALIDATION_API EvalPointsDistance<Rigid3fTypes>;
-#endif
+template class SOFA_VALIDATION_API EvalPointsDistance<Vec3Types>;
+template class SOFA_VALIDATION_API EvalPointsDistance<Rigid3Types>;
+
 
 } // namespace misc
 

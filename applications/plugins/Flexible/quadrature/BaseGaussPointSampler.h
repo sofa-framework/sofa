@@ -127,7 +127,6 @@ public:
     {
         addInput(&f_method);
         addInput(&f_order);
-//        addInput(&f_position); // can be either input or output depending on the sampler
         addOutput(&f_volume);
         addOutput(&f_transforms);
     }

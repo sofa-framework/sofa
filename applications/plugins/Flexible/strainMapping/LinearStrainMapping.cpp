@@ -44,10 +44,6 @@ int LinearStrainMappingClass = core::RegisterObject("Map strain positions as a l
         .add< LinearStrainMapping< E321Types > >()
         .add< LinearStrainMapping< E332Types > >()
         .add< LinearStrainMapping< E333Types > >()
-
-//        .add< LinearStrainMapping< D331Types > >()
-//        .add< LinearStrainMapping< D321Types > >()
-//        .add< LinearStrainMapping< D332Types > >()
         ;
 
 template class SOFA_Flexible_API LinearStrainMapping< E331Types >;

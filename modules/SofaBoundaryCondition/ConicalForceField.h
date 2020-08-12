@@ -137,12 +137,8 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API ConicalForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API ConicalForceField<defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_BOUNDARY_CONDITION_API ConicalForceField<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace forcefield

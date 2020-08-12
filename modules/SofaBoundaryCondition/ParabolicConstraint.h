@@ -130,14 +130,9 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARABOLICCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class ParabolicConstraint<defaulttype::Rigid3dTypes>;
-extern template class ParabolicConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class ParabolicConstraint<defaulttype::Rigid3fTypes>;
-extern template class ParabolicConstraint<defaulttype::Vec3fTypes>;
-#endif
+extern template class ParabolicConstraint<defaulttype::Rigid3Types>;
+extern template class ParabolicConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

@@ -199,14 +199,9 @@ typedef TCapsuleModel<sofa::defaulttype::Rigid3Types> RigidCapsuleModel;
 typedef TCapsule<sofa::defaulttype::Rigid3Types> RigidCapsule;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_RIGIDCAPSULEMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Rigid3fTypes>;
-#endif
+extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3Types>;
+extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace collision

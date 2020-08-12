@@ -14,21 +14,13 @@ using namespace sofa::defaulttype;
 
 int UniformLinearPotentialEnergyClass = core::RegisterObject("Linear potential energy")
     
-#ifndef SOFA_FLOAT    
-    .add< UniformLinearPotentialEnergy<Vec1dTypes> >(true)
-#endif
-#ifndef SOFA_DOUBLE
-    .add< UniformLinearPotentialEnergy<Vec1fTypes> >()
-#endif
+    .add< UniformLinearPotentialEnergy<Vec1Types> >(true)
+
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API UniformLinearPotentialEnergy<Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API UniformLinearPotentialEnergy<Vec1fTypes>;
-#endif
+template class SOFA_Compliant_API UniformLinearPotentialEnergy<Vec1Types>;
+
 
 }
 }

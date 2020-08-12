@@ -238,23 +238,14 @@ protected:
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_FORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CORE_API ForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Vec1dTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Vec6dTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Rigid3dTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Rigid2dTypes>;
-#endif
+extern template class SOFA_CORE_API ForceField<defaulttype::Vec3Types>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Vec6Types>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Rigid2Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CORE_API ForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Vec1fTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Vec6fTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Rigid3fTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Rigid2fTypes>;
-#endif
+
 #endif
 
 } // namespace behavior

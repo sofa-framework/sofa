@@ -30,7 +30,7 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 
 #define   NB_MAX_TEXTURES 16

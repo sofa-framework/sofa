@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP
 #include <SofaGeneralEngine/PairBoxRoi.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -36,28 +36,16 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int PairBoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
-#ifndef SOFA_FLOAT
-        .add< PairBoxROI<Vec3dTypes> >()
-        .add< PairBoxROI<Rigid3dTypes> >()
-        .add< PairBoxROI<Vec6dTypes> >() //Phuoc
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< PairBoxROI<Vec3fTypes> >()
-        .add< PairBoxROI<Rigid3fTypes> >()
-        .add< PairBoxROI<Vec6fTypes> >() //Phuoc
-#endif //SOFA_DOUBLE
+        .add< PairBoxROI<Vec3Types> >()
+        .add< PairBoxROI<Rigid3Types> >()
+        .add< PairBoxROI<Vec6Types> >() //Phuoc
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec3dTypes>;
-template class SOFA_GENERAL_ENGINE_API PairBoxROI<Rigid3dTypes>;
-template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec6dTypes>; //Phuoc
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec3fTypes>;
-template class SOFA_GENERAL_ENGINE_API PairBoxROI<Rigid3fTypes>;
-template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec6fTypes>; //Phuoc
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec3Types>;
+template class SOFA_GENERAL_ENGINE_API PairBoxROI<Rigid3Types>;
+template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec6Types>; //Phuoc
+ 
 
 
 } // namespace constraint

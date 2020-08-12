@@ -30,7 +30,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <sofa/helper/RandomGenerator.h>
 
@@ -107,12 +107,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_GENERAL_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

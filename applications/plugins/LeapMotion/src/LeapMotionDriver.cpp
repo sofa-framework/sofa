@@ -75,7 +75,7 @@ LeapMotionDriver::~LeapMotionDriver() {
 
 void LeapMotionDriver::cleanup()
 {
-    sout << "LeapMotionDriver::cleanup()" << sendl;
+    msg_info() << "LeapMotionDriver::cleanup()";
 }
 
 
@@ -138,13 +138,13 @@ void LeapMotionDriver::init()
 
 void LeapMotionDriver::bwdInit()
 {
-    sout<<"LeapMotionDriver::bwdInit()"<<sendl;
+    msg_info() <<"LeapMotionDriver::bwdInit()";
 }
 
 
 void LeapMotionDriver::reset()
 {
-    sout<<"LeapMotionDriver::reset()" << sendl;
+    msg_info() <<"LeapMotionDriver::reset()";
     scrollDirection.setValue(0);
     this->reinit();
 }

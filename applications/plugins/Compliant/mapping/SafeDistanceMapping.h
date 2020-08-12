@@ -126,8 +126,6 @@ public:
             Direction& gap = m_directions[i];
 
              gap = in[pairs[i][1]] - in[pairs[i][0]]; // (only for position)
-//            computeCoordPositionDifference( gap, in[links[i][0]], in[links[i][1]] ); // todo for more complex types such as Rigids
-
              m_lengths[i] = gap.norm();
 
 

@@ -37,28 +37,16 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int RepulsiveSpringForceFieldClass = core::RegisterObject("Springs which only repell")
-#ifndef SOFA_FLOAT
-        .add< RepulsiveSpringForceField<Vec3dTypes> >()
-        .add< RepulsiveSpringForceField<Vec2dTypes> >()
-        .add< RepulsiveSpringForceField<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< RepulsiveSpringForceField<Vec3fTypes> >()
-        .add< RepulsiveSpringForceField<Vec2fTypes> >()
-        .add< RepulsiveSpringForceField<Vec1fTypes> >()
-#endif
+        .add< RepulsiveSpringForceField<Vec3Types> >()
+        .add< RepulsiveSpringForceField<Vec2Types> >()
+        .add< RepulsiveSpringForceField<Vec1Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class RepulsiveSpringForceField<Vec3dTypes>;
-template class RepulsiveSpringForceField<Vec2dTypes>;
-template class RepulsiveSpringForceField<Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class RepulsiveSpringForceField<Vec3fTypes>;
-template class RepulsiveSpringForceField<Vec2fTypes>;
-template class RepulsiveSpringForceField<Vec1fTypes>;
-#endif
+template class RepulsiveSpringForceField<Vec3Types>;
+template class RepulsiveSpringForceField<Vec2Types>;
+template class RepulsiveSpringForceField<Vec1Types>;
+
 
 } // namespace interactionforcefield
 

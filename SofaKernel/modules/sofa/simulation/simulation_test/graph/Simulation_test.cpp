@@ -22,7 +22,7 @@
 #include <sofa/helper/testing/NumericTest.h>
 using sofa::helper::testing::NumericTest ;
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
 
 #include <SofaBaseMechanics/MechanicalObject.h>

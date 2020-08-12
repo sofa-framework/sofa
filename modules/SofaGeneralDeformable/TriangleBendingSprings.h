@@ -81,14 +81,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec2fTypes>;
-#endif
+extern template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec2Types>;
+
 #endif
 
 } // namespace interactionforcefield

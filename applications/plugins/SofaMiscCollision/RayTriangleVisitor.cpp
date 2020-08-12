@@ -120,8 +120,7 @@ void RayTriangleVisitor::processTriangleModel(simulation::Node* /*node*/, compon
 
 void RayTriangleVisitor::processOglModel(simulation::Node* /*node*/, component::visualmodel::OglModel* om)
 {
-    using component::visualmodel::OglModel;
-    typedef defaulttype::ExtVec3fTypes DataTypes;
+    typedef component::visualmodel::OglModel::DataTypes DataTypes;
 
     const DataTypes::VecCoord& x = om->getVertices();
     for( std::size_t i=0; i<om->getTriangles().size(); i++ )

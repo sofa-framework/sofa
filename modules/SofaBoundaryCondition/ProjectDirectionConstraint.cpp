@@ -39,24 +39,14 @@ using namespace sofa::helper;
 
 
 int ProjectDirectionConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-#ifndef SOFA_FLOAT
-        .add< ProjectDirectionConstraint<Vec3dTypes> >()
-        .add< ProjectDirectionConstraint<Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ProjectDirectionConstraint<Vec3fTypes> >()
-        .add< ProjectDirectionConstraint<Vec2fTypes> >()
-#endif
+        .add< ProjectDirectionConstraint<Vec3Types> >()
+        .add< ProjectDirectionConstraint<Vec2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec2fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec2Types>;
+
 
 
 

@@ -31,7 +31,7 @@
         </Node>
         <Node name="Out">
             <MechanicalObject template="Vec3d" name="mecaObj2" />
-            <SparseGridTopology n="4 7 4" vertices="@../Subset.pointsOutROI" name="name" drawHexahedra="0" />
+            <SparseGridTopology n="4 7 4" position="@../Subset.pointsOutROI" name="name" drawHexahedra="0" />
             <UniformMass totalMass="15" />
             <HexahedronFEMForceField template="Vec3d" name="FEM" youngModulus="50" poissonRatio="0.49" />
             <Node name="tetra">

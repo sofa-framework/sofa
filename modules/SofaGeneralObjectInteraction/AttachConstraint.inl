@@ -38,9 +38,8 @@ namespace component
 namespace projectiveconstraintset
 {
 
-#ifndef SOFA_FLOAT
 template<>
-inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (f_minDistance.getValue() != -1 &&
@@ -72,11 +71,10 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& 
             x2.getOrientation() = x1.getOrientation();
     }
 }
-#endif
 
-#ifndef SOFA_DOUBLE
+
 template<>
-inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid2Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (f_minDistance.getValue() != -1 &&
@@ -91,49 +89,10 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectPosition(Coord& 
     if (!freeRotations)
         x2.getOrientation() = x1.getOrientation();
 }
-#endif
 
-#ifndef SOFA_FLOAT
+
 template<>
-inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
-{
-    // do nothing if distance between x2 & x1 is bigger than f_minDistance
-    if (f_minDistance.getValue() != -1 &&
-        (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
-    {
-        constraintReleased[index] = true;
-        return;
-    }
-    constraintReleased[index] = false;
-
-    x2.getCenter() = x1.getCenter();
-    if (!freeRotations)
-        x2.getOrientation() = x1.getOrientation();
-}
-#endif
-
-#ifndef SOFA_DOUBLE
-template<>
-inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
-{
-    // do nothing if distance between x2 & x1 is bigger than f_minDistance
-    if (f_minDistance.getValue() != -1 &&
-        (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
-    {
-        constraintReleased[index] = true;
-        return;
-    }
-    constraintReleased[index] = false;
-
-    x2.getCenter() = x1.getCenter();
-    if (!freeRotations)
-        x2.getOrientation() = x1.getOrientation();
-}
-#endif
-
-#ifndef SOFA_FLOAT
-template<>
-inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid3Types>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
@@ -143,11 +102,10 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& 
         getVOrientation(x2) = getVOrientation(x1);
     //x2 = Deriv();
 }
-#endif
 
-#ifndef SOFA_DOUBLE
+
 template<>
-inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid2Types>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
@@ -156,37 +114,10 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectVelocity(Deriv& 
     if (!freeRotations)
         getVOrientation(x2) = getVOrientation(x1);
 }
-#endif
 
-#ifndef SOFA_FLOAT
+
 template<>
-inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
-{
-    // do nothing if distance between x2 & x1 is bigger than f_minDistance
-    if (constraintReleased[index]) return;
-
-    getVCenter(x2) = getVCenter(x1);
-    if (!freeRotations)
-        getVOrientation(x2) = getVOrientation(x1);
-}
-#endif
-
-#ifndef SOFA_DOUBLE
-template<>
-inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
-{
-    // do nothing if distance between x2 & x1 is bigger than f_minDistance
-    if (constraintReleased[index]) return;
-
-    getVCenter(x2) = getVCenter(x1);
-    if (!freeRotations)
-        getVOrientation(x2) = getVOrientation(x1);
-}
-#endif
-
-#ifndef SOFA_FLOAT
-template<>
-inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid3Types>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
@@ -212,11 +143,10 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& 
         }
     }
 }
-#endif
 
-#ifndef SOFA_DOUBLE
+
 template<>
-inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid2Types>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
@@ -242,111 +172,27 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& 
         }
     }
 }
-#endif
 
-#ifndef SOFA_FLOAT
+
 template<>
-inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
-{
-    // do nothing if distance between x2 & x1 is bigger than f_minDistance
-    if (constraintReleased[index]) return;
-
-    if (!twoway)
-    {
-        if (!freeRotations)
-            dx2 = Deriv();
-        else
-            getVCenter(dx2).clear();
-    }
-    else
-    {
-        if (!freeRotations)
-        {
-            dx1 += dx2;
-            dx2 = dx1;
-        }
-        else
-        {
-            getVCenter(dx1) += getVCenter(dx2);
-            getVCenter(dx2) = getVCenter(dx1);
-        }
-    }
-}
-#endif
-
-#ifndef SOFA_DOUBLE
-template<>
-inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
-{
-    // do nothing if distance between x2 & x1 is bigger than f_minDistance
-    if (constraintReleased[index]) return;
-
-    if (!twoway)
-    {
-        if (!freeRotations)
-            dx2 = Deriv();
-        else
-            getVCenter(dx2).clear();
-    }
-    else
-    {
-        if (!freeRotations)
-        {
-            dx1 += dx2;
-            dx2 = dx1;
-        }
-        else
-        {
-            getVCenter(dx1) += getVCenter(dx2);
-            getVCenter(dx2) = getVCenter(dx1);
-        }
-    }
-}
-#endif
-
-#ifndef SOFA_FLOAT
-template<>
-inline unsigned int AttachConstraint<defaulttype::Rigid3dTypes>::DerivConstrainedSize(bool freeRotations)
+inline unsigned int AttachConstraint<defaulttype::Rigid3Types>::DerivConstrainedSize(bool freeRotations)
 {
     if (freeRotations)
         return Deriv::spatial_dimensions;
     else
         return Deriv::total_size;
 }
-#endif
 
-#ifndef SOFA_DOUBLE
+
 template<>
-inline unsigned int AttachConstraint<defaulttype::Rigid3fTypes>::DerivConstrainedSize(bool freeRotations)
+inline unsigned int AttachConstraint<defaulttype::Rigid2Types>::DerivConstrainedSize(bool freeRotations)
 {
     if (freeRotations)
         return Deriv::spatial_dimensions;
     else
         return Deriv::total_size;
 }
-#endif
 
-#ifndef SOFA_FLOAT
-template<>
-inline unsigned int AttachConstraint<defaulttype::Rigid2dTypes>::DerivConstrainedSize(bool freeRotations)
-{
-    if (freeRotations)
-        return Deriv::spatial_dimensions;
-    else
-        return Deriv::total_size;
-}
-#endif
-
-#ifndef SOFA_DOUBLE
-template<>
-inline unsigned int AttachConstraint<defaulttype::Rigid2fTypes>::DerivConstrainedSize(bool freeRotations)
-{
-    if (freeRotations)
-        return Deriv::spatial_dimensions;
-    else
-        return Deriv::total_size;
-}
-#endif
 
 #if 0
 // Define TestNewPointFunction
@@ -478,8 +324,6 @@ void AttachConstraint<DataTypes>::init()
     f_indices2.createTopologicalEngine(topology);
     f_indices2.registerTopologicalData();
 
-    constraintReleased.resize(f_indices2.getValue().size());
-
     if (f_radius.getValue() >= 0 && f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0 && this->mstate1 && this->mstate2)
     {
         const Real maxR = f_radius.getValue();
@@ -547,16 +391,7 @@ void AttachConstraint<DataTypes>::init()
         msg_error() << "Size mismatch between indices1 and indices2";
     }
 
-#if 0
-    // Initialize functions and parameters
-    topology::PointSubset my_subset = f_indices.getValue();
-
-    my_subset.setTestFunction(FCTestNewPointFunction);
-    my_subset.setRemovalFunction(FCRemovalFunction);
-
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
-#endif
+    constraintReleased.resize(f_indices2.getValue().size());
     activeFlags.resize(f_indices2.getValue().size());
     std::fill(activeFlags.begin(), activeFlags.end(), true);
     if (f_restRotations.getValue())
@@ -569,10 +404,9 @@ void AttachConstraint<DataTypes>::calcRestRotations()
 {
 }
 
-#ifndef SOFA_FLOAT
 template <>
-void AttachConstraint<sofa::defaulttype::Rigid3dTypes>::calcRestRotations();
-#endif
+void AttachConstraint<sofa::defaulttype::Rigid3Types>::calcRestRotations();
+
 
 
 template<class DataTypes>
@@ -594,6 +428,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
     VecCoord &res2 = *res2_d.beginEdit();
 
     // update active flags
+    constraintReleased.resize(indices2.size());
     activeFlags.resize(indices2.size());
     if (last)
         lastDist.resize(indices2.size());
@@ -659,6 +494,9 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
 
+    constraintReleased.resize(indices2.size());
+    activeFlags.resize(indices2.size());
+
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         bool active = true;
@@ -697,6 +535,9 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
     const bool freeRotations = f_freeRotations.getValue();
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
+
+    constraintReleased.resize(indices2.size());
+    activeFlags.resize(indices2.size());
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
@@ -754,6 +595,9 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     unsigned int i=0;
     const bool clamp = f_clamp.getValue();
 
+    constraintReleased.resize(indices.size());
+    activeFlags.resize(indices.size());
+
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
         if (!clamp && i < activeFlags.size() && !activeFlags[i])
@@ -803,6 +647,9 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     const unsigned int NCLast = DerivConstrainedSize(f_lastFreeRotation.getValue());
     unsigned int i = 0;
     const bool clamp = f_clamp.getValue();
+
+    constraintReleased.resize(indices.size());
+    activeFlags.resize(indices.size());
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {

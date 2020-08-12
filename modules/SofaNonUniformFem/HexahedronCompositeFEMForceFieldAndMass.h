@@ -158,12 +158,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELDANDMASS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_NON_UNIFORM_FEM_API HexahedronCompositeFEMForceFieldAndMass<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_NON_UNIFORM_FEM_API HexahedronCompositeFEMForceFieldAndMass<defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_NON_UNIFORM_FEM_API HexahedronCompositeFEMForceFieldAndMass<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace forcefield

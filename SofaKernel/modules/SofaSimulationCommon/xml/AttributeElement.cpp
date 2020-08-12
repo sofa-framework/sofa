@@ -62,7 +62,7 @@ bool AttributeElement::initNode()
     {
         value=replaceAttribute[name];
     }
-    getParentElement()->setAttribute(name, value.c_str());
+    getParentElement()->setAttribute(name, value);
     return true;
 }
 

@@ -148,12 +148,7 @@ public:
     {
         if(this->assemble.getValue()) updateJ();
 
-        // clear forces and force apply
-        // bg: do we need this ?
-        // helper::WriteOnlyAccessor<Data< OutVecDeriv > > f(*this->toModel->write(core::VecDerivId::force())); for(unsigned int i=0;i<f.size();i++) f[i].clear();
-        // apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
-        // applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
-
+        // clear forces and force apply       
         Inherit::reinit();
     }
 
@@ -164,7 +159,6 @@ public:
     virtual void applyJT()
     {
         applyJT(NULL, *this->fromModel->write(core::VecDerivId::force()), *this->toModel->read(core::ConstVecDerivId::force()));
-       //TODO applyDJT(NULL, *this->fromModel->write(core::VecDerivId::force()), *this->toModel->read(core::ConstVecDerivId::force()));
     }
 
     //Pierre-Luc : I added these function to be able to use the mapping functionnalities without using the whole component
@@ -290,8 +284,6 @@ public:
         helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (parentDisplacementData);
         helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
 
-//        cerr<<"BaseStrainMapping::applyDJT, parentForce before = " << parentForce << endl;
-
         if( assemble.getValue() ) // assembled version
         {
             if( K.compressedMatrix.nonZeros() )
@@ -315,7 +307,6 @@ public:
                 jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
             }
         }
-//        cerr<<"BaseStrainMapping::applyDJT, parentForce after = " << parentForce << endl;
     }
 
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)

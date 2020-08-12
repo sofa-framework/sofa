@@ -89,8 +89,8 @@ void OglShaderVisualModel::popTransformMatrix()
 {
     OglModel::popTransformMatrix();
     /*
-    	if (shader)
-    		shader->stop();
+        if (shader)
+            shader->stop();
     */
 }
 
@@ -142,15 +142,15 @@ void OglShaderVisualModel::init()
 
             //add restNormal as Attribute
             vrestnormals.setContext( this->getContext());
-        	vrestnormals.setID( std::string("restNormal") );
-        	vrestnormals.setIndexShader( 0);
+            vrestnormals.setID( std::string("restNormal") );
+            vrestnormals.setIndexShader( 0);
             vrestnormals.init();
 
             computeRestNormals();
         */
         computeRestPositions();
-//
-//    //add Model Matrix as Uniform
+        //
+        //    //add Model Matrix as Uniform
         if (!modelMatrixUniform)
         {
             modelMatrixUniform = new OglMatrix4Variable;
@@ -178,9 +178,9 @@ void OglShaderVisualModel::updateVisual()
 void OglShaderVisualModel::computeRestPositions()
 {
     if (!vrestpositions) return;
-//    int counter = m_restPositions.getCounter();
-//    if (counter == restPosition_lastUpdate) return;
-//    restPosition_lastUpdate = counter;
+    //    int counter = m_restPositions.getCounter();
+    //    if (counter == restPosition_lastUpdate) return;
+    //    restPosition_lastUpdate = counter;
 
     helper::ReadAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
     helper::ReadAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restpositions = m_restPositions;
@@ -194,15 +194,12 @@ void OglShaderVisualModel::computeRestPositions()
         m_restPositions.endEdit();
     }
 
-
-    sofa::defaulttype::ResizableExtVector<Coord>& vrestpos = * ( vrestpositions->beginEdit() );
+    auto& vrestpos = * ( vrestpositions->beginEdit() );
     vrestpos.resize ( restpositions.size() );
-
     for ( unsigned int i = 0; i < restpositions.size(); i++ )
     {
         vrestpos[i] = restpositions[i];
     }
-
     vrestpositions->endEdit();
     computeRestNormals();
 }
@@ -214,25 +211,25 @@ void OglShaderVisualModel::handleTopologyChange()
 
     if (m_topology && shader)
     {
-//        bool update=false;
+        //        bool update=false;
         std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
         std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
 
-//        while( itBegin != itEnd )
-//        {
-//            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-//            if ((changeType==core::topology::TRIANGLESREMOVED) ||
-//                (changeType==core::topology::TRIANGLESADDED) ||
-//                (changeType==core::topology::QUADSADDED) ||
-//                (changeType==core::topology::QUADSREMOVED))
-//            update=true;
-//            itBegin++;
-//        }
+        //        while( itBegin != itEnd )
+        //        {
+        //            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+        //            if ((changeType==core::topology::TRIANGLESREMOVED) ||
+        //                (changeType==core::topology::TRIANGLESADDED) ||
+        //                (changeType==core::topology::QUADSADDED) ||
+        //                (changeType==core::topology::QUADSREMOVED))
+        //            update=true;
+        //            itBegin++;
+        //        }
         if (itBegin != itEnd)
         {
             computeRestPositions();
             computeRestNormals();
-//            msg_info()<< "OglShaderVisualModel - Updating Rest Normals"<<std::endl;
+            //            msg_info()<< "OglShaderVisualModel - Updating Rest Normals"<<std::endl;
         }
     }
 
@@ -252,10 +249,10 @@ void OglShaderVisualModel::fwdDraw(core::visual::VisualParams* /*vp*/)
 void OglShaderVisualModel::computeRestNormals()
 {
     if (!vrestpositions || !vrestnormals) return;
-    const sofa::defaulttype::ResizableExtVector<Coord>& vrestpos = vrestpositions->getValue();
-    const sofa::defaulttype::ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
-    const sofa::defaulttype::ResizableExtVector<Quad>& quads = m_quads.getValue();
-    sofa::defaulttype::ResizableExtVector<Coord>& restNormals = * ( vrestnormals->beginEdit() );
+    auto& vrestpos = vrestpositions->getValue();
+    auto& triangles = m_triangles.getValue();
+    auto& quads = m_quads.getValue();
+    auto& restNormals = * ( vrestnormals->beginEdit() );
     restNormals.resize(vrestpos.size());
     for (unsigned int i = 0; i < restNormals.size(); i++)
     {

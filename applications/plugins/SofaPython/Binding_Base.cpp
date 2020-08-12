@@ -26,7 +26,7 @@
 
 #include <sofa/helper/vector.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 #include <sofa/helper/logging/Messaging.h>

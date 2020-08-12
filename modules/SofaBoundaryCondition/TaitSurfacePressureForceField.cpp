@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_CPP
 #include <SofaBoundaryCondition/TaitSurfacePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa
@@ -43,20 +43,12 @@ This ForceField can be used to apply :\n\
  * a constant pressure (set $B=0$ and use $P_0$)\n\
  * an ideal gas pressure (set $\\gamma=1$ and use $B$)\n\
  * a pressure from water (set $\\gamma=7$ and use $B$)")
-#ifndef SOFA_FLOAT
-        .add< TaitSurfacePressureForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TaitSurfacePressureForceField<Vec3fTypes> >()
-#endif
+        .add< TaitSurfacePressureForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API TaitSurfacePressureForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API TaitSurfacePressureForceField<Vec3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API TaitSurfacePressureForceField<Vec3Types>;
+
 
 
 } // namespace forcefield

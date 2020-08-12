@@ -23,7 +23,7 @@
 
 #include "TriangularFEMForceFieldOptim.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -38,20 +38,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int TriangularFEMForceFieldOptimClass = core::RegisterObject("Corotational Triangular finite elements")
-#ifndef SOFA_FLOAT
-        .add< TriangularFEMForceFieldOptim<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TriangularFEMForceFieldOptim<Vec3fTypes> >()
-#endif
+        .add< TriangularFEMForceFieldOptim<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<Vec3fTypes>;
-#endif
+template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<Vec3Types>;
+
 
 
 } // namespace forcefield

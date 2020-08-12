@@ -37,20 +37,12 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int Vertex2FrameClass = core::RegisterObject("")
-#ifndef SOFA_FLOAT
-        .add< Vertex2Frame<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< Vertex2Frame<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< Vertex2Frame<Rigid3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API Vertex2Frame<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API Vertex2Frame<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API Vertex2Frame<Rigid3Types>;
+ 
 
 
 } // namespace constraint

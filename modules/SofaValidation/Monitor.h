@@ -133,16 +133,10 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MISC_MONITOR_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec3dTypes>;
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec6dTypes>;
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec3fTypes>;
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec6fTypes>;
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Rigid3fTypes>;
-#endif
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec3Types>;
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec6Types>;
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Rigid3Types>;
+
 #endif
 
 

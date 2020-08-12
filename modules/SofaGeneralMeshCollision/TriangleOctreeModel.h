@@ -26,7 +26,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 

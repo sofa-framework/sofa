@@ -150,16 +150,10 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Rigid3dTypes, defaulttype::Vec1dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec1fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Rigid3fTypes, defaulttype::Vec1fTypes >;
-#endif
+extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+
 
 #endif
 

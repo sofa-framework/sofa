@@ -115,8 +115,11 @@ public:
     /// adds a message in the logError if the attribute cannot be totally parsed.
     virtual int getAttributeAsInt(const std::string& attr, const int defaultVal=0.0) ;
 
-    /// Set an attribute. Override any existing value
+    [[deprecated("since 18.12, replaced by a pure c++ version with similar name. Will be removed in 19.12")]]
     virtual void setAttribute(const std::string& attr, const char* val);
+
+    /// Set an attribute. Override any existing value
+    virtual void setAttribute(const std::string& attr, const std::string& val);
 
     /// Remove an attribute given its name
     virtual bool removeAttribute(const std::string& attr);

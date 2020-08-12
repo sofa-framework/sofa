@@ -28,7 +28,7 @@
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaMeshCollision/PointModel.h>
 
 namespace sofa
@@ -275,12 +275,8 @@ typedef TLineModel<sofa::defaulttype::Vec3Types> LineModel;
 typedef TLine<sofa::defaulttype::Vec3Types> Line;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_LINEMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MESH_COLLISION_API TLineModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MESH_COLLISION_API TLineModel<defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_MESH_COLLISION_API TLineModel<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace collision

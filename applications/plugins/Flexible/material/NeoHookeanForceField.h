@@ -80,7 +80,6 @@ protected:
         , _youngModulus(initData(&_youngModulus,helper::vector<Real>((int)1,(Real)1000),"youngModulus","stiffness"))
         , _poissonRatio(initData(&_poissonRatio,helper::vector<Real>((int)1,(Real)0),"poissonRatio","incompressibility ]-1,0.5["))
         , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
-//        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
     }
 

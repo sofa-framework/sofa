@@ -102,7 +102,6 @@ protected:
 	
 	void apply(typename self::out_pos_type& out,
                const helper::vector< typename self::in_pos_type >& in ) {
-		// assert( this->getFrom().size() == 2 );
 
 		const pairs_type& p = pairs.getValue();
 		
@@ -127,12 +126,6 @@ protected:
                             const typename self::const_out_deriv_type& out_force) {
         // we're done lol
         if( true || ! geometricStiffness.getValue() ) return;
-        
-        // assert( this->getFromModels().size() == 2 );
-        // assert( this->getFromModels()[0] != this->getFromModels()[1] );
-
-        // assert( this->getToModels().size() == 1 );
-        // assert( this->getToModels()[0]->getSize() == 1 );
 
         typedef typename self::geometric_type::CompressedMatrix matrix_type;
         matrix_type& dJ = this->geometric.compressedMatrix;
@@ -280,7 +273,6 @@ protected:
 				
                 const mat33 Rp_T = (se3::rotation(parent).normalized().toRotationMatrix()).transpose();
 
-//				mat33 Rdelta = se3::rotation(delta).toRotationMatrix();
 				const typename se3::vec3 s = se3::translation(child) - se3::translation(parent);
 
                 mat33 chunk;

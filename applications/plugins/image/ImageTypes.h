@@ -392,12 +392,7 @@ typedef Image<unsigned long> ImageUL;
 typedef Image<float> ImageF;
 typedef Image<double> ImageD;
 typedef Image<bool> ImageB;
-
-#ifdef SOFA_FLOAT
-typedef ImageF ImageR;
-#else
-typedef ImageD ImageR;
-#endif
+typedef Image<SReal> ImageR;
 
 template<> inline const char* ImageC::Name() { return "ImageC"; }
 template<> inline const char* ImageUC::Name() { return "ImageUC"; }

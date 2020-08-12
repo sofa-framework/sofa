@@ -36,22 +36,10 @@ namespace engine
 using namespace defaulttype;
 
 int DilateEngineClass = core::RegisterObject("Dilates a given mesh by moving vertices along their normal.")
-// TriangleOctree implemented with double only
-//#ifdef SOFA_WITH_FLOAT
-//.add< DilateEngine<Vec3fTypes>>(true)
-//#endif //SOFA_FLOAT
-#ifdef SOFA_WITH_DOUBLE
-.add< DilateEngine<Vec3dTypes>>(true) // default template
-#endif //SOFA_DOUBLE
-        ;
+        .add< DilateEngine<Vec3Types>>(true) // default template
+                                      ;
 
-// TriangleOctree implemented with double only
-//#ifdef SOFA_WITH_FLOAT
-//template class SOFA_GENERAL_ENGINE_API DilateEngine<Vec3fTypes>;
-//#endif //SOFA_WITH_FLOAT
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_GENERAL_ENGINE_API DilateEngine<Vec3dTypes>;
-#endif //SOFA_WITH_DOUBLE
+template class SOFA_GENERAL_ENGINE_API DilateEngine<Vec3Types>;
 
 } // namespace engine
 

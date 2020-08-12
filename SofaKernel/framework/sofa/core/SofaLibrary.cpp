@@ -30,7 +30,6 @@ namespace core
 {
 
 //Automatically create and destroy all the components available: easy way to verify the default constructor and destructor
-//#define TEST_CREATION_COMPONENT
 void SofaLibrary::build( const std::vector< std::string >& examples)
 {
     exampleFiles=examples;
@@ -46,24 +45,6 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
 
     for (std::size_t i=0; i<entries.size(); ++i)
     {
-#ifdef      TEST_CREATION_COMPONENT
-        {
-            sofa::core::objectmodel::BaseObject::SPtr object;
-            msg_info("SofaLibrary") << "Creating " << entries[i]->className ;
-            if (entries[i]->creatorMap.find(entries[i]->defaultTemplate) != entries[i]->creatorMap.end())
-            {
-                object = entries[i]->creatorMap.find(entries[i]->defaultTemplate)->second->createInstance(NULL, NULL);
-            }
-            else
-            {
-                object = entries[i]->creatorList.begin()->second->createInstance(NULL, NULL);
-            }
-            msg_info("SofaLibrary") << "Deleting " << entries[i]->className ;
-            object.reset();
-            msg_info("SofaLibrary") << entries[i]->className ;
-        }
-#endif
-
         //Insert Template specification
         ObjectFactory::CreatorMap::iterator creatorEntry = entries[i]->creatorMap.begin();
         if (creatorEntry != entries[i]->creatorMap.end())

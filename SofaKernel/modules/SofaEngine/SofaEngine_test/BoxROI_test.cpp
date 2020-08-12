@@ -377,14 +377,9 @@ struct BoxROITest :  public ::testing::Test
 //Please fix this either the tests or the BoxROI implementation
 typedef Types<
     Vec3Types
-#ifdef SOFA_WITH_DOUBLE
     ,Vec3dTypes
     //,Rigid3dTypes
-#endif
-#ifdef SOFA_WITH_FLOAT
-    //,Vec3fTypes
-    //,Rigid3fTypes
-#endif
+
 > DataTypes;
 
 TYPED_TEST_CASE(BoxROITest, DataTypes);

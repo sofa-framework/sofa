@@ -34,12 +34,8 @@ namespace gui
 using namespace sofa::defaulttype;
 
 #ifdef WIN32
-#ifndef SOFA_DOUBLE
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, SculptBodyPerformer<defaulttype::Vec3fTypes> >  SculptBodyPerformerVec3fClass("SculptBody",true);
-#endif
-#ifndef SOFA_FLOAT
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, SculptBodyPerformer<defaulttype::Vec3dTypes> >  SculptBodyPerformerVec3dClass("SculptBody",true);
-#endif
+
 #endif
 
 void SculptOperation::start()

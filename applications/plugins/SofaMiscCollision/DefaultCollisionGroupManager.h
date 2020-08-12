@@ -46,50 +46,27 @@ public:
     typedef std::set<simulation::Node::SPtr> GroupSet;
     GroupSet groupSet;
 
-protected:
-    DefaultCollisionGroupManager();
-
-    virtual ~DefaultCollisionGroupManager();
-	
-private:
-	DefaultCollisionGroupManager(const DefaultCollisionGroupManager& n) ;
-	DefaultCollisionGroupManager& operator=(const DefaultCollisionGroupManager& n) ;
-
 public:
-
     virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts) override;
-
     virtual void clearGroups(core::objectmodel::BaseContext* scene) override;
 
 protected:
+    DefaultCollisionGroupManager();
+    virtual ~DefaultCollisionGroupManager();
 
     //Find the node containing the ode solver used to animate the mechanical model associated to the collision model
     virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
 
-    virtual void changeInstance(Instance inst) override
-    {
-        core::collision::CollisionGroupManager::changeInstance(inst);
-        storedGroupSet[instance].swap(groupSet);
-        groupSet.swap(storedGroupSet[inst]);
-    }
+    virtual void changeInstance(Instance inst) override;
 
     template <typename Container>
-    void clearGroup(const Container &inNodes, simulation::Node::SPtr group)
-    {
-        core::objectmodel::BaseNode::SPtr parent = *inNodes.begin();
-        while(!group->child.empty()) parent->moveChild(*group->child.begin());
-
-        simulation::CleanupVisitor cleanupvis(sofa::core::ExecParams::defaultInstance());
-        cleanupvis.execute(group.get());
-        simulation::DeleteVisitor vis(sofa::core::ExecParams::defaultInstance());
-        vis.execute(group.get());
-        group->detachFromGraph();
-        //delete group;
-        group.reset();
-    }
-
+    void clearGroup(const Container &inNodes, simulation::Node::SPtr group);
 
     std::map<Instance,GroupSet> storedGroupSet;
+
+private:
+    DefaultCollisionGroupManager(const DefaultCollisionGroupManager& n) ;
+    DefaultCollisionGroupManager& operator=(const DefaultCollisionGroupManager& n) ;
 
 
 };

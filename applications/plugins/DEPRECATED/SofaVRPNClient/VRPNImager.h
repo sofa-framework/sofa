@@ -132,12 +132,8 @@ private:
 };
 
 #if  !defined(SOFAVRPNCLIENT_VRPNIMAGER_CPP_)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SOFAVRPNCLIENT_API VRPNImager<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SOFAVRPNCLIENT_API VRPNImager<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_SOFAVRPNCLIENT_API VRPNImager<defaulttype::Vec3Types>;
+ 
 #endif
 
 }

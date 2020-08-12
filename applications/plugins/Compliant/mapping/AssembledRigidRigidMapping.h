@@ -182,46 +182,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 				}
 			}			
  		}
-
         dJ.finalize();
-
     }
-
-    
-    // virtual void applyDJT(const core::MechanicalParams* mparams,
-    //                       core::MultiVecDerivId inForce,
-    //                       core::ConstMultiVecDerivId /* inDx */ ) {
-    //     std::cout << "PARANOID TEST YO" << std::endl;
-        
-    //     const Data<typename self::InVecDeriv>& inDx =
-    //         *mparams->readDx(this->fromModel);
-            
-    //     const core::State<TIn>* from_read = this->getFromModel();
-    //     core::State<TIn>* from_write = this->getFromModel();
-
-    //     typename self::in_vel_type lvalue( *inForce[from_write].write() );
-
-    //     typename self::in_pos_type in_pos = this->in_pos();
-    //     typename self::out_force_type out_force = this->out_force();
-
-    //     for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
-    //         const source_type& s = source.getValue()[i];
-
-    //         const typename TOut::Deriv& lambda = out_force[i];
-    //         const typename TOut::Deriv::Vec3& f = lambda.getLinear();
-
-    //         const typename TOut::Deriv::Quat& R = in_pos[ s.first ].getOrientation();
-    //         const typename TOut::Deriv::Vec3& t = s.second.getCenter();
-
-    //         const typename TOut::Deriv::Vec3& Rt = R.rotate( t );
-    //         const typename TIn::Deriv::Vec3& omega = inDx.getValue()[ s.first ].getAngular();
-            
-    //         lvalue[s.first].getAngular() -= TIn::crosscross(f, omega, Rt) * mparams->kFactor();
-    //     }
-      
-    // }
-
-
 
 	virtual void assemble( const typename self::in_pos_type& in_pos ) {
 

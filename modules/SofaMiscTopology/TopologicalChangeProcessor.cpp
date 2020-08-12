@@ -77,8 +77,8 @@ TopologicalChangeProcessor::TopologicalChangeProcessor()
     , m_tetrahedraToRemove (initData (&m_tetrahedraToRemove, "tetrahedraToRemove", "List of tetrahedron IDs to be removed."))
     , m_hexahedraToRemove (initData (&m_hexahedraToRemove, "hexahedraToRemove", "List of hexahedron IDs to be removed."))
     , m_saveIndicesAtInit( initData(&m_saveIndicesAtInit, false, "saveIndicesAtInit", "set to 'true' to save the incision to do in the init to incise even after a movement"))
-    , m_epsilonSnapPath( initData(&m_epsilonSnapPath, (Real)0.1, "epsilonSnapPath", "epsilon snap path"))
-    , m_epsilonSnapBorder( initData(&m_epsilonSnapBorder, (Real)0.25, "epsilonSnapBorder", "epsilon snap path"))
+    , m_epsilonSnapPath( initData(&m_epsilonSnapPath, (SReal)0.1, "epsilonSnapPath", "epsilon snap path"))
+    , m_epsilonSnapBorder( initData(&m_epsilonSnapBorder, (SReal)0.25, "epsilonSnapBorder", "epsilon snap path"))
     , m_draw( initData(&m_draw, false, "draw", "draw information"))
     , m_topology(NULL)
     , infile(NULL)
@@ -635,7 +635,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             ++it;//go to the next line
 
             //get the values in the current line and put them in a vector
-            std::vector<Real> values = getValuesInLine(*it, nbElements);
+            std::vector<SReal> values = getValuesInLine(*it, nbElements);
             bool onlyCoordinates = (values.size() == nbElements * 3);
 
             std::istringstream Sin(*it);
@@ -803,7 +803,7 @@ void TopologicalChangeProcessor::saveIndices()
         std::string buff;
         std::istringstream str(*it);
 
-        Real timeToIncise;
+        SReal timeToIncise;
         int indexOfTime = -1;
 
         str >> buff;
@@ -836,7 +836,7 @@ void TopologicalChangeProcessor::saveIndices()
         //go to the next line
         ++it;
 
-        std::vector<Real> values = getValuesInLine(*it, nbElements);
+        std::vector<SReal> values = getValuesInLine(*it, nbElements);
 
         dmsg_error_when(values.empty())
                 <<  "Error while saving the indices. Cannot get the values of line " << *it ;
@@ -908,7 +908,7 @@ void TopologicalChangeProcessor::saveIndices()
         triangleIncisionInformation[i].computeCoordinates(m_topology);
         if ( i )
         {
-            Real epsilon = 1e-5;
+            SReal epsilon = 1e-5;
 
             bool equal = true;
 
@@ -950,7 +950,7 @@ void TopologicalChangeProcessor::saveIndices()
     }
 }
 
-int TopologicalChangeProcessor::findIndexInListOfTime(Real time)
+int TopologicalChangeProcessor::findIndexInListOfTime(SReal time)
 {
     double epsilon = 1e-10;
     for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
@@ -963,9 +963,9 @@ int TopologicalChangeProcessor::findIndexInListOfTime(Real time)
     return -1;
 }
 
-std::vector<Real> TopologicalChangeProcessor::getValuesInLine(std::string line, size_t nbElements)
+std::vector<SReal> TopologicalChangeProcessor::getValuesInLine(std::string line, size_t nbElements)
 {
-    std::vector<Real> values;
+    std::vector<SReal> values;
     values.clear();
 
     std::istringstream count(line);
@@ -973,7 +973,7 @@ std::vector<Real> TopologicalChangeProcessor::getValuesInLine(std::string line, 
     //bool onlyCoordinates = false;
     if ( !count.eof())
     {
-        Real currentNumber;
+        SReal currentNumber;
         count >> currentNumber;
         values.push_back(currentNumber);
         while (!count.eof())
@@ -1107,25 +1107,25 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
     /***
      * Projection of the point followed by a including test
      */
-    Real x = coord[0], y = coord[1], z = coord[2];
+    SReal x = coord[0], y = coord[1], z = coord[2];
     //project point along the normal
     for (unsigned int i = 0 ; i < nbTriangle ; i++)
     {
         //get the normal of the current triangle
         Vector3 normal = triangleGeo->computeTriangleNormal(i);
-        Real normalNorm = normal.norm();
+        SReal normalNorm = normal.norm();
         if (!normalNorm)
             break;
         //normalize the normal (avoids to divide by the norm)
         normal /= normal.norm();
-        Real a = normal[0], b = normal[1], c = normal[2];
+        SReal a = normal[0], b = normal[1], c = normal[2];
 
         //get the coordinates points of the triangle
         Vector3 points[3];
         triangleGeo->getTriangleVertexCoordinates(i, points);
 
         //get d in the equation of the plane of the triangle ax+by+cz + d = 0
-        Real d = - (points[0][0] * c + points[0][1] * b + points[0][2] * c );
+        SReal d = - (points[0][0] * c + points[0][1] * b + points[0][2] * c );
         Vector3 projectedPoint;
 
         projectedPoint[0] = ((b * b + c * c) * x - a * b * y - a * c * z - d * a) /*/normalNorm*/;

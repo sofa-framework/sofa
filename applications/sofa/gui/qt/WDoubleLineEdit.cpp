@@ -23,6 +23,7 @@
 #include <math.h>
 #include "WDoubleLineEdit.h"
 #include <iostream>
+using std::cerr; using std::endl;
 /* -------------------------------------------------------- */
 
 WDoubleLineEdit::WDoubleLineEdit(QWidget *parent,const char *name) : QLineEdit(parent /*,name */)
@@ -35,13 +36,13 @@ WDoubleLineEdit::WDoubleLineEdit(QWidget *parent,const char *name) : QLineEdit(p
     m_fValue=0.0;
     m_bFirst=true;
     m_DblValid=new QDoubleValidator(m_fMinValue,m_fMaxValue,20,this);
+    m_isDragging = false ;
     setValidator(m_DblValid);
 
     connect(this,SIGNAL(returnPressed()),
             this,SLOT  (slotReturnPressed()));
 
     m_bInternal=false;
-    //validateAndSet(QString("%1").arg(m_fValue),0,0,0);
     this->setText(QString("%1").arg(m_fValue));
     this->setCursorPosition(0);
     this->setSelection(0, 0);
@@ -49,18 +50,16 @@ WDoubleLineEdit::WDoubleLineEdit(QWidget *parent,const char *name) : QLineEdit(p
 /* -------------------------------------------------------- */
 void WDoubleLineEdit::slotReturnPressed()
 {
-    //cerr<<"WDoubleLineEdit::slotReturnPressed"<<endl;
     m_bInternal=true;
 
     slotCalcValue(text().toDouble());
 
 }
 /* -------------------------------------------------------- */
-void WDoubleLineEdit::slotCalcValue(double f)
+void WDoubleLineEdit::slotCalcValue(double f, bool isEditted)
 {
     int    p;
 
-    //cerr << "WDoubleLineEdit::slotCalcValue" << endl;
     if (f < m_fMinValue)
         f=m_fMinValue;
     else if (f > m_fMaxValue)
@@ -69,18 +68,20 @@ void WDoubleLineEdit::slotCalcValue(double f)
     {
         m_bFirst=false;
         m_fValue=f;
-        //cerr << "WDoubleLineEdit::slotCalcValue m_fValue = " << m_fValue << endl;
-        emit (ValueChanged(f));
+        if(isEditted)
+            emit (valueEdited(f));
+        else
+            emit (valueChanged(f));
+
         p=(int)(100.0*(f - m_fMinValue)/(m_fMaxValue - m_fMinValue));
         if (p != m_iPercent)
         {
-//      cerr << "m_iPercent = " << m_iPercent << endl;
             emit (valuePercentChanged(p));
             m_iPercent=p;
         }
         update();
     }
-//    validateAndSet(QString("%1").arg(m_fValue),0,0,0);
+
     this->setText(QString("%1").arg(m_fValue));
     this->setCursorPosition(0);
     this->setSelection(0, 0);
@@ -101,6 +102,7 @@ void WDoubleLineEdit::setIntValue(int f)
 {
     setValue(static_cast<double>(f));
 }
+
 /* -------------------------------------------------------- */
 void WDoubleLineEdit::setValuePercent(int p)
 {
@@ -109,17 +111,18 @@ void WDoubleLineEdit::setValuePercent(int p)
     else
         m_bInternal=false;
 }
+
 /* -------------------------------------------------------- */
 int WDoubleLineEdit::valuePercent()
 {
     return ((int)(99.0*(m_fValue - m_fMinValue)/(m_fMaxValue - m_fMinValue)));
 }
+
 /* -------------------------------------------------------- */
 void WDoubleLineEdit::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Escape)
     {
-//        validateAndSet(QString("%1").arg(m_fValue),0,0,0);
         this->setText(QString("%1").arg(m_fValue));
         this->setCursorPosition(0);
         this->setSelection(0, 0);
@@ -128,3 +131,28 @@ void WDoubleLineEdit::keyPressEvent(QKeyEvent *e)
         QLineEdit::keyPressEvent(e);
 }
 /* -------------------------------------------------------- */
+void WDoubleLineEdit::mouseMoveEvent(QMouseEvent *event) {
+    if(m_isDragging){
+        double dt=(event->x() - m_prevMousePosition.x())/100.0 ;
+        m_prevMousePosition = event->pos() ;
+        slotCalcValue(dt + m_fValue, false) ;
+        emit valueEdited(m_fValue) ;
+    }
+    QLineEdit::mouseMoveEvent(event) ;
+}
+
+void WDoubleLineEdit::mousePressEvent(QMouseEvent *event) {
+    if(event->button() == Qt::LeftButton){
+        m_isDragging = true ;
+        m_prevMousePosition = event->pos() ;
+    }
+    QLineEdit::mousePressEvent(event) ;
+}
+
+void WDoubleLineEdit::mouseReleaseEvent(QMouseEvent *event) {
+    if(event->button() == Qt::LeftButton){
+        m_isDragging = false ;
+        m_prevMousePosition = event->pos() ;
+    }
+    QLineEdit::mouseReleaseEvent(event) ;
+}

@@ -933,7 +933,7 @@ bool LegacyVTKReader::readFile(const char* filename)
         }
         if (swapped)
         {
-            sout << "Binary data is byte-swapped." << sendl;
+            msg_info() << "Binary data is byte-swapped.";
             if (inputPoints)
             {
                 inputPoints->swap();

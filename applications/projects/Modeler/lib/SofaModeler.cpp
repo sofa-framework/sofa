@@ -817,7 +817,7 @@ void SofaModeler::exportSofaClasses()
                 componentNameStream << componentName << componentCount++;
 
                 BaseObjectDescription desc(componentNameStream.str().c_str(), componentName.c_str());
-                desc.setAttribute("template", templateName.c_str());
+                desc.setAttribute("template", templateName);
 
                 if(creatorIterator->second->canCreate(node->getContext(), &desc))
                     creatorIterator->second->createInstance(node->getContext(), &desc);

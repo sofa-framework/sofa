@@ -51,10 +51,6 @@ public:
     SOFA_CLASS(OglShaderVisualModel, OglModel);
 
 protected:
-
-    typedef sofa::defaulttype::ExtVec3fTypes::Coord Coord;
-    typedef sofa::defaulttype::ExtVec3fTypes::VecCoord VecCoord;
-
     GLuint abo;
     OglShader* shader;
     int restPosition_lastUpdate;

@@ -27,7 +27,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -43,28 +43,16 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int TetrahedronDiffusionFEMForceFieldClass = core::RegisterObject("Isotropic or anisotropic diffusion on Tetrahedral Meshes")
-#ifndef SOFA_FLOAT
-  .add< TetrahedronDiffusionFEMForceField<Vec1dTypes> >()
-  .add< TetrahedronDiffusionFEMForceField<Vec2dTypes> >(true)
-  .add< TetrahedronDiffusionFEMForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-  .add< TetrahedronDiffusionFEMForceField<Vec1fTypes> >()
-  .add< TetrahedronDiffusionFEMForceField<Vec2fTypes> >()
-  .add< TetrahedronDiffusionFEMForceField<Vec3fTypes> >()
-#endif
+  .add< TetrahedronDiffusionFEMForceField<Vec1Types> >()
+  .add< TetrahedronDiffusionFEMForceField<Vec2Types> >(true)
+  .add< TetrahedronDiffusionFEMForceField<Vec3Types> >()
+
 ;
 
-#ifndef SOFA_FLOAT
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1dTypes>;
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2dTypes>;
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1fTypes>;
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2fTypes>;
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3fTypes>;
-#endif
+  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1Types>;
+  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2Types>;
+  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3Types>;
+
 
 
 

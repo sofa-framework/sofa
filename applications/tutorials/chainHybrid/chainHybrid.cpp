@@ -23,7 +23,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
-using sofa::defaulttype::ExtVec3fTypes;
+using sofa::defaulttype::ExtVec3Types;
 using Coord3 = sofa::defaulttype::Vector3;
 using Deriv3 = sofa::defaulttype::Vec3Types::Deriv;
 using VecCoord3 = sofa::helper::vector<Coord3>;

@@ -6,7 +6,7 @@
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa{
 namespace simplegui{

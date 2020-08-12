@@ -37,46 +37,28 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int FrameDiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
-#ifndef SOFA_FLOAT
-        .add< FrameDiagonalMass<Rigid3dTypes,Frame3x6dMass> >()
+        .add< FrameDiagonalMass<Rigid3Types,Frame3x6dMass> >()
         .add< FrameDiagonalMass<Affine3dTypes,Frame3x12dMass> >()
         .add< FrameDiagonalMass<Quadratic3dTypes,Frame3x30dMass> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< FrameDiagonalMass<Rigid3fTypes,Frame3x6fMass> >()
-        .add< FrameDiagonalMass<Affine3fTypes,Frame3x12fMass> >()
-        .add< FrameDiagonalMass<Quadratic3fTypes,Frame3x30fMass> >()
-#endif
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_FRAME_API FrameDiagonalMass<Rigid3dTypes,Frame3x6dMass>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API FrameDiagonalMass<Rigid3fTypes,Frame3x6fMass>;
-#endif
+template class SOFA_FRAME_API FrameDiagonalMass<Rigid3Types,Frame3x6dMass>;
+
 
 template<> void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::rotateMass() {}
 
 template<> void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::rotateMass() {}
 
-#ifndef SOFA_FLOAT
 template class SOFA_FRAME_API FrameDiagonalMass<Affine3dTypes,Frame3x12dMass>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API FrameDiagonalMass<Affine3fTypes,Frame3x12fMass>;
-#endif
+
 
 template<> void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::rotateMass() {}
 
 template<> void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::rotateMass() {}
 
-#ifndef SOFA_FLOAT
 template class SOFA_FRAME_API FrameDiagonalMass<Quadratic3dTypes,Frame3x30dMass>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API FrameDiagonalMass<Quadratic3fTypes,Frame3x30fMass>;
-#endif
+
 
 
 } // namespace mass

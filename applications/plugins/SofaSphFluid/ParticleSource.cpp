@@ -23,7 +23,7 @@
 #include "ParticleSource.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include "sofa/defaulttype/Vec3Types.h"
+#include "sofa/defaulttype/VecTypes.h"
 
 namespace sofa
 {
@@ -35,24 +35,14 @@ namespace misc
 {
 
 int ParticleSourceClass = core::RegisterObject("Parametrable particle generator")
-#ifndef SOFA_FLOAT
-        .add< ParticleSource<defaulttype::Vec3dTypes> >()
-        .add< ParticleSource<defaulttype::Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ParticleSource<defaulttype::Vec3fTypes> >()
-        .add< ParticleSource<defaulttype::Vec2fTypes> >()
-#endif
+        .add< ParticleSource<defaulttype::Vec3Types> >()
+        .add< ParticleSource<defaulttype::Vec2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3dTypes>;
-template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3fTypes>;
-template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2fTypes>;
-#endif
+template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3Types>;
+template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2Types>;
+
 
 }
 }

@@ -23,7 +23,7 @@
 #include <SofaTest/Sofa_test.h>
 #include <SofaGeneralEngine/TransformEngine.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 using sofa::component::engine::TransformEngine;

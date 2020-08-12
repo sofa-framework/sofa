@@ -121,14 +121,9 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_OSCILLATORCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class OscillatorConstraint<defaulttype::Rigid3dTypes>;
-extern template class OscillatorConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class OscillatorConstraint<defaulttype::Rigid3fTypes>;
-extern template class OscillatorConstraint<defaulttype::Vec3fTypes>;
-#endif
+extern template class OscillatorConstraint<defaulttype::Rigid3Types>;
+extern template class OscillatorConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

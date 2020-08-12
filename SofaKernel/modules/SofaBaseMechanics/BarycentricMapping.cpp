@@ -38,36 +38,16 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
-#ifndef SOFA_FLOAT
         .add< BarycentricMapping< Vec3dTypes, Vec3dTypes > >(true)
-        .add< BarycentricMapping< Vec3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< BarycentricMapping< Vec3fTypes, Vec3fTypes > >()
-        .add< BarycentricMapping< Vec3fTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< BarycentricMapping< Vec3fTypes, Vec3dTypes > >()
-        .add< BarycentricMapping< Vec3dTypes, Vec3fTypes > >()
-#endif
-#endif
+        .add< BarycentricMapping< Vec3dTypes, ExtVec3Types > >()
+
+
         ;
 
-#ifndef SOFA_FLOAT
 template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3fTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3fTypes, Vec3dTypes >;
-#endif
-#endif
+template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, ExtVec3Types >;
+
+
 
 } // namespace mapping
 

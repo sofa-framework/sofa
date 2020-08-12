@@ -154,18 +154,11 @@ protected:
     topology::RegularGridTopology* topology;
 };
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec1dTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec1fTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec6fTypes>;
-#endif
+extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec6Types>;
+
 #endif
 
 } // namespace interactionforcefield

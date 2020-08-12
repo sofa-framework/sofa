@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP
 #include "HexahedronFEMForceField.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 
@@ -39,20 +39,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int HexahedronFEMForceFieldClass = core::RegisterObject("Hexahedral finite elements")
-#ifdef SOFA_WITH_FLOAT
-        .add< HexahedronFEMForceField<Vec3fTypes> >()
-#endif
-#ifdef SOFA_WITH_DOUBLE
-        .add< HexahedronFEMForceField<Vec3dTypes> >()
-#endif
+        .add< HexahedronFEMForceField<Vec3Types> >()
+
         ;
 
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<Vec3fTypes>;
-#endif
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<Vec3dTypes>;
-#endif
+template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<Vec3Types>;
+
 
 } // namespace forcefield
 

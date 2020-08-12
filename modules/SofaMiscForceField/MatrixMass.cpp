@@ -23,7 +23,7 @@
 #include <SofaMiscForceField/MatrixMass.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -45,28 +45,16 @@ int MatrixMassClass = core::RegisterObject("Define a specific mass for each part
 // .add< MatrixMass<Vec3fTypes,float> >()
 // .add< MatrixMass<Vec2dTypes,double> >()
 // .add< MatrixMass<Vec2fTypes,float> >()
-#ifndef SOFA_FLOAT
-        .add< MatrixMass<Vec3dTypes,Mat3x3d> >()
-        .add< MatrixMass<Vec2dTypes,Mat2x2d> >()
-        .add< MatrixMass<Vec1dTypes,Mat1x1d> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MatrixMass<Vec3fTypes,Mat3x3f> >()
-        .add< MatrixMass<Vec2fTypes,Mat2x2f> >()
-        .add< MatrixMass<Vec1fTypes,Mat1x1f> >()
-#endif
+        .add< MatrixMass<Vec3Types,Mat3x3d> >()
+        .add< MatrixMass<Vec2Types,Mat2x2d> >()
+        .add< MatrixMass<Vec1Types,Mat1x1d> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class MatrixMass<Vec3dTypes,Mat3x3d>;
-template class MatrixMass<Vec2dTypes,Mat2x2d>;
-template class MatrixMass<Vec1dTypes,Mat1x1d>;
-#endif
-#ifndef SOFA_DOUBLE
-template class MatrixMass<Vec3fTypes,Mat3x3f>;
-template class MatrixMass<Vec2fTypes,Mat2x2f>;
-template class MatrixMass<Vec1fTypes,Mat1x1f>;
-#endif
+template class MatrixMass<Vec3Types,Mat3x3d>;
+template class MatrixMass<Vec2Types,Mat2x2d>;
+template class MatrixMass<Vec1Types,Mat1x1d>;
+
 
 } // namespace mass
 

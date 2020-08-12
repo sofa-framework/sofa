@@ -126,12 +126,8 @@ struct TestIndexValueMapper : public Sofa_test<>
 
 typedef Types<
 Vec3Types
-#ifdef SOFA_WITH_DOUBLE
 ,Vec3dTypes
-#endif
-#ifdef SOFA_WITH_FLOAT
-,Vec3fTypes
-#endif
+
 > DataTypes;
 
 TYPED_TEST_CASE(TestIndexValueMapper, DataTypes);

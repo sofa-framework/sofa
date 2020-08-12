@@ -75,12 +75,8 @@ protected:
 typedef TBulletCylinderModel<defaulttype::RigidTypes> BulletCylinderModel;
 
 #if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3dTypes>;//je pense que les cylindres sont définis sur des rigides dans bullet
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3fTypes>;
-#endif
+extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3Types>;//je pense que les cylindres sont définis sur des rigides dans bullet
+
 #endif
 
 }}}

@@ -174,18 +174,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_INTERACTIONELLIPSOIDFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class InteractionEllipsoidForceField<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class InteractionEllipsoidForceField<defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class InteractionEllipsoidForceField<defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes>;
-extern template class InteractionEllipsoidForceField<defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes>;
-#endif
-#endif
+extern template class InteractionEllipsoidForceField<defaulttype::Vec3Types, defaulttype::Rigid3Types>;
+
+
 #endif
 
 } // namespace interactionforcefield

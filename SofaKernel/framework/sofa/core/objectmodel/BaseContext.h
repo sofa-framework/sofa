@@ -25,9 +25,6 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-#include <sofa/defaulttype/SolidTypes.h>
-#endif
 
 
 namespace sofa
@@ -68,11 +65,6 @@ public:
     /// @name Types defined for local coordinate system handling
     /// @{
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    typedef defaulttype::SolidTypes<SReal> SolidTypes;
-    typedef SolidTypes::Transform Frame;
-    typedef SolidTypes::SpatialVector SpatialVector;
-#endif
 //    typedef SolidTypes::Rot Quat;
 //    typedef SolidTypes::Mat Mat33;
     /// @}
@@ -118,51 +110,8 @@ public:
 
     /// Animation flag
     virtual bool getAnimate() const;
-
-
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    /// Multiresolution support (UNSTABLE)
-    virtual int getCurrentLevel() const;
-
-    /// Multiresolution support (UNSTABLE)
-    virtual int getCoarsestLevel() const;
-
-    /// Multiresolution support (UNSTABLE)
-    virtual int getFinestLevel() const;
-
-    /// Multiresolution support (UNSTABLE)
-    //     virtual unsigned int nbLevels() const;
-#endif
-
     /// @}
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    /// @name Local Coordinate System
-    /// @{
-    /// Projection from the local coordinate system to the world coordinate system.
-    virtual const Frame& getPositionInWorld() const;
-    /// Projection from the local coordinate system to the world coordinate system.
-    virtual void setPositionInWorld(const Frame&)
-    {}
-
-    /// Spatial velocity (linear, angular) of the local frame with respect to the world
-    virtual const SpatialVector& getVelocityInWorld() const;
-    /// Spatial velocity (linear, angular) of the local frame with respect to the world
-    virtual void setVelocityInWorld(const SpatialVector&)
-    {}
-
-    /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-    virtual const Vec3& getVelocityBasedLinearAccelerationInWorld() const;
-    /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-    virtual void setVelocityBasedLinearAccelerationInWorld(const Vec3& )
-    {}
-    /// Gravity in local coordinates  TODO: replace with world coordinates
-    virtual Vec3 getLocalGravity() const;
-    ///// Gravity in local coordinates
-    //virtual void setGravity( const Vec3& ) { }
-    /// @}
-#endif
 
     /// Gravity in local coordinates
     virtual const Vec3& getGravity() const;
@@ -412,21 +361,6 @@ public:
     /// Sleeping state change of the context
     virtual void setChangeSleepingState(bool /*val*/)
     { }
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
-    virtual bool setCurrentLevel(int )
-    {
-        return false;
-    }
-
-    /// Multiresolution support (UNSTABLE)
-    virtual void setCoarsestLevel(int ) {}
-
-    /// Multiresolution support (UNSTABLE)
-    virtual void setFinestLevel(int ) {}
-#endif
-
     /// @}
 
     /// @name Variables Setters

@@ -27,7 +27,7 @@
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
 
 #include <SofaDeformable/StiffSpringForceField.h>
@@ -50,6 +50,8 @@ using sofa::core::ObjectFactory ;
 namespace sofa
 {
 namespace modeling {
+using sofa::defaulttype::Vec3Types;
+
 using sofa::component::interactionforcefield::StiffSpringForceField ;
 typedef StiffSpringForceField<Vec3Types>   StiffSpringForceField3;
 

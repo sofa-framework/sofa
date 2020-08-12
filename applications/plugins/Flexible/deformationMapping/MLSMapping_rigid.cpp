@@ -45,7 +45,7 @@ using namespace defaulttype;
 // Register in the Factory
 int MLSMappingClass_rigid = core::RegisterObject("Map child positions using generalized moving least squares.")
         .add< MLSMapping< Rigid3Types, Vec3Types > >()
-        .add< MLSMapping< Rigid3Types, ExtVec3fTypes > >()
+        .add< MLSMapping< Rigid3Types, ExtVec3Types > >()
         .add< MLSMapping< Rigid3Types, F331Types > >()
         .add< MLSMapping< Rigid3Types, F321Types > >()
         .add< MLSMapping< Rigid3Types, F311Types > >()
@@ -54,7 +54,7 @@ int MLSMappingClass_rigid = core::RegisterObject("Map child positions using gene
         ;
 
 template class SOFA_Flexible_API MLSMapping< Rigid3Types, Vec3Types >;
-template class SOFA_Flexible_API MLSMapping< Rigid3Types, ExtVec3fTypes >;
+template class SOFA_Flexible_API MLSMapping< Rigid3Types, ExtVec3Types >;
 template class SOFA_Flexible_API MLSMapping< Rigid3Types, F331Types >;
 template class SOFA_Flexible_API MLSMapping< Rigid3Types, F321Types >;
 template class SOFA_Flexible_API MLSMapping< Rigid3Types, F311Types >;

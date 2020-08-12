@@ -37,20 +37,12 @@ namespace projectiveconstraintset
 
 //declaration of the class, for the factory
 int SkeletalMotionConstraintClass = core::RegisterObject("animate a skeleton")
-#ifndef SOFA_FLOAT
-        .add< SkeletalMotionConstraint<defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SkeletalMotionConstraint<defaulttype::Rigid3fTypes> >()
-#endif
+        .add< SkeletalMotionConstraint<defaulttype::Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3Types>;
+
 
 } // namespace projectiveconstraintset
 

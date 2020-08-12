@@ -39,15 +39,17 @@ namespace component
 namespace visualmodel
 {
 
-template< int size, unsigned int type, class DataTypes>
+template< int size, unsigned int type, class TDataTypes>
 class OglAttribute: public core::visual::VisualModel, public OglShaderElement
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE3(OglAttribute, size, type, DataTypes), core::visual::VisualModel, OglShaderElement);
+    SOFA_CLASS2(SOFA_TEMPLATE3(OglAttribute, size, type, TDataTypes), core::visual::VisualModel, OglShaderElement);
 protected:
     OglAttribute();
     virtual ~OglAttribute();
 public:
+    typedef TDataTypes DataType;
+
     virtual void init() override;
 
     virtual void initVisual() override;
@@ -57,10 +59,10 @@ public:
     /// if attributes are not static, update the buffer
     void updateVisual() override;
 
-    sofa::defaulttype::ResizableExtVector<DataTypes>* beginEdit();
+    sofa::defaulttype::ResizableExtVector<TDataTypes>* beginEdit();
     void endEdit();
-    const sofa::defaulttype::ResizableExtVector<DataTypes>& getValue() const;
-    void setValue( const sofa::defaulttype::ResizableExtVector<DataTypes>& value);
+    const sofa::defaulttype::ResizableExtVector<TDataTypes>& getValue() const;
+    void setValue( const sofa::defaulttype::ResizableExtVector<TDataTypes>& value);
     void enable();
     void disable();
     virtual void bwdDraw(core::visual::VisualParams* ) override;
@@ -94,7 +96,7 @@ protected:
 
     unsigned int _usage;
 
-    Data<sofa::defaulttype::ResizableExtVector<DataTypes> > value; ///< internal Data
+    Data<sofa::defaulttype::ResizableExtVector<TDataTypes> > value; ///< internal Data
     Data<bool> handleDynamicTopology;
 
     sofa::core::topology::BaseMeshTopology* _topology;

@@ -67,21 +67,13 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec1dTypes>;
-//extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Rigid2dTypes>;
-#endif
+extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec3Types>;
+extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec2Types>;
+extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec1Types>;
+//extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Rigid3Types>;
+//extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Rigid2Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec1fTypes>;
-//extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Rigid2fTypes>;
-#endif
+
 #endif
 
 } // namespace topology

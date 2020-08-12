@@ -204,14 +204,9 @@ void ShapeMatching<DataTypes>::doUpdate()
 }
 
 // Specialization for rigids
-#ifndef SOFA_FLOAT
 template <>
-void ShapeMatching<sofa::defaulttype::Rigid3dTypes >::doUpdate();
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void ShapeMatching<sofa::defaulttype::Rigid3fTypes >::doUpdate();
-#endif
+void ShapeMatching<sofa::defaulttype::Rigid3Types >::doUpdate();
+
 
 
 

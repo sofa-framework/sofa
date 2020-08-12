@@ -37,20 +37,10 @@ using namespace defaulttype;
 
 // Register in the Factory
 int PolynomialMaterialForceFieldClass = core::RegisterObject("Polynomial Material Law for isotropic homogeneous materials")
-
         .add< PolynomialMaterialForceField< I331Types > >(true)
-//.add< PolynomialMaterialForceField< I332Types > >()
-//.add< PolynomialMaterialForceField< I333Types > >()
-//        .add< PolynomialMaterialForceField< U331Types > >(true)
-//        .add< PolynomialMaterialForceField< U321Types > >()
         ;
 
 template class SOFA_Flexible_API PolynomialMaterialForceField< I331Types >;
-//template class SOFA_Flexible_API PolynomialMaterialForceField< I332Types >;
-//template class SOFA_Flexible_API PolynomialMaterialForceField< I333Types >;
-//template class SOFA_Flexible_API PolynomialMaterialForceField< U331Types >;
-//template class SOFA_Flexible_API PolynomialMaterialForceField< U321Types >;
-
 }
 }
 }

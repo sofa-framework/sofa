@@ -38,12 +38,8 @@ namespace linearsolver
 {
 
 int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
-#ifndef SOFA_FLOAT
 .add< BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> > >(true)
-#endif
-#ifndef SOFA_DOUBLE
-.add< BTDLinearSolver<BTDMatrix<6,float>,BlockVector<6,float> > >()
-#endif
+
 //.add< BTDLinearSolver<BTDMatrix<3,double>,BlockVector<3,double> > >()
 //.add< BTDLinearSolver<BTDMatrix<3,float>,BlockVector<3,float> > >()
 //.add< BTDLinearSolver<BTDMatrix<2,double>,BlockVector<2,double> > >()
@@ -56,12 +52,8 @@ int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thom
 //.add< BTDLinearSolver<NewMatSymmetricBandMatrix,NewMatVector> >()
         ;
 
-#ifndef SOFA_FLOAT
 template class SOFA_GENERAL_LINEAR_SOLVER_API BTDLinearSolver< BTDMatrix<6, double>, BlockVector<6, double> >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_LINEAR_SOLVER_API BTDLinearSolver< BTDMatrix<6, float>, BlockVector<6, float> >;
-#endif
+
 
 } // namespace linearsolver
 

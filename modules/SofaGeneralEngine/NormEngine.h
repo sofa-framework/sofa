@@ -78,12 +78,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
-#ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API NormEngine<defaulttype::Vec3d>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API NormEngine<defaulttype::Vec3f>;
-#endif
+
 #endif
 
 } // namespace engine

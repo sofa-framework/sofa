@@ -219,12 +219,8 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace constraintset

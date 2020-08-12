@@ -18,25 +18,14 @@ using namespace defaulttype;
 // Register in the Factory
 int RigidJointMultiMappingClass = core::RegisterObject("Computes relative rigid configurations")
 
-#ifndef SOFA_FLOAT
-    .add< RigidJointMultiMapping< Rigid3dTypes, Vec6dTypes > >()
-    .add< RigidJointMultiMapping< Rigid3dTypes, Rigid3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-    .add< RigidJointMultiMapping< Rigid3fTypes, Vec6fTypes > >()
-    .add< RigidJointMultiMapping< Rigid3fTypes, Rigid3fTypes > >()
-#endif
+    .add< RigidJointMultiMapping< Rigid3Types, Vec6Types > >()
+    .add< RigidJointMultiMapping< Rigid3Types, Rigid3Types > >()
+
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API RigidJointMultiMapping<  Rigid3dTypes, Vec6dTypes >;
-template class SOFA_Compliant_API RigidJointMultiMapping<  Rigid3dTypes, Rigid3dTypes >;
-#endif
+template class SOFA_Compliant_API RigidJointMultiMapping<  Rigid3Types, Vec6Types >;
+template class SOFA_Compliant_API RigidJointMultiMapping<  Rigid3Types, Rigid3Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API RigidJointMultiMapping< Rigid3fTypes, Vec6fTypes >;
-template class SOFA_Compliant_API RigidJointMultiMapping< Rigid3fTypes, Rigid3fTypes >;
-#endif
 
 
 

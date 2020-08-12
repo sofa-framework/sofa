@@ -56,15 +56,13 @@ using namespace sofa::gpu::cuda;
 
 // Register in the Factory
 int BarycentricMappingRigidClass = core::RegisterObject("")
-#ifndef SOFA_FLOAT
-        .add< BarycentricMapping< CudaVec3fTypes, Rigid3dTypes > >()
-#endif
+        .add< BarycentricMapping< CudaVec3Types, Rigid3Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
 
 template <>
-void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3dTypes>::handleTopologyChange(core::topology::Topology* t)
+void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Types>::handleTopologyChange(core::topology::Topology* t)
 {
     if (t != this->m_fromTopology) return;
     if ( this->m_fromTopology->beginChange() == this->m_fromTopology->endChange() )
@@ -92,7 +90,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3d
                     if ( mapData[j].in_index == -1 ) // compute new mapping
                     {
                         Vector3 coefs;
-                        defaulttype::Vec3dTypes::Coord pos;
+                        defaulttype::Vec3Types::Coord pos;
                         pos[0] = mapData[j].baryCoords[0];
                         pos[1] = mapData[j].baryCoords[1];
                         pos[2] = mapData[j].baryCoords[2];
@@ -152,7 +150,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3d
                         coefs[1] = d_map.getValue()[j].baryCoords[1];
                         coefs[2] = d_map.getValue()[j].baryCoords[2];
 
-                        defaulttype::Vec3dTypes::Coord restPos = m_fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
+                        defaulttype::Vec3Types::Coord restPos = m_fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
 
                         helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
                         vectorData[j].in_index = -1;
@@ -190,12 +188,11 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3d
         }
     }
 }
-#endif
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3fTypes, Rigid3dTypes >;
-#endif
+
+template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3Types, Rigid3Types >;
+
 } // namespace mapping
 
 } // namespace component

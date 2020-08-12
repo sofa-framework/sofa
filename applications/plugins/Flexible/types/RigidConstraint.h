@@ -205,14 +205,9 @@ protected:
 };
 
 #if  !defined(FLEXIBLE_RigidConstraint_CPP)
-#ifndef SOFA_FLOAT
 extern template class SOFA_Flexible_API RigidConstraint<defaulttype::Affine3dTypes>;
 extern template class SOFA_Flexible_API RigidConstraint<defaulttype::Quadratic3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API RigidConstraint<defaulttype::Affine3fTypes>;
-extern template class SOFA_Flexible_API RigidConstraint<defaulttype::Quadratic3fTypes>;
-#endif
+
 #endif
 
 }

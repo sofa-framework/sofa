@@ -25,7 +25,7 @@
 
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaSphFluid/SpatialGridContainer.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 
 namespace sofa

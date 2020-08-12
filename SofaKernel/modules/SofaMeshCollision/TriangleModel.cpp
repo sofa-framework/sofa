@@ -33,12 +33,8 @@ namespace collision
 {
 
 int TriangleModelClass = core::RegisterObject("collision model using a triangular mesh, as described in BaseMeshTopology")
-#ifndef SOFA_FLOAT
-        .add< TTriangleModel<defaulttype::Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TTriangleModel<defaulttype::Vec3fTypes> >()
-#endif
+        .add< TTriangleModel<defaulttype::Vec3Types> >()
+
         .addAlias("TriangleModel")
         .addAlias("TriangleMeshModel")
         .addAlias("TriangleSetModel")
@@ -47,12 +43,8 @@ int TriangleModelClass = core::RegisterObject("collision model using a triangula
         .addAlias("Triangle")
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MESH_COLLISION_API TTriangleModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MESH_COLLISION_API TTriangleModel<defaulttype::Vec3fTypes>;
-#endif
+template class SOFA_MESH_COLLISION_API TTriangleModel<defaulttype::Vec3Types>;
+
 
 } // namespace collision
 

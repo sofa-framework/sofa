@@ -130,9 +130,8 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
 }
 
 //////// Rigid3d ////////
-#ifndef SOFA_FLOAT
 template <>
-void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::apply( const core::MechanicalParams* /*mparams*/, OutDataVecCoord& dOut, const InDataVecCoord& dIn )
+void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::apply( const core::MechanicalParams* /*mparams*/, OutDataVecCoord& dOut, const InDataVecCoord& dIn )
 {
     OutVecCoord& out = *dOut.beginEdit();
     const InVecCoord& in = dIn.getValue();
@@ -158,7 +157,7 @@ void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::apply( 
 }
 
 template <>
-void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::applyJ( const core::MechanicalParams* /*mparams*/, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJ( const core::MechanicalParams* /*mparams*/, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
 {
     OutVecDeriv& out = *dOut.beginEdit();
     const InVecDeriv& in = dIn.getValue();
@@ -180,7 +179,7 @@ void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::applyJ(
 }
 
 template <>
-void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::applyJT( const core::MechanicalParams* /*mparams*/, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
+void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJT( const core::MechanicalParams* /*mparams*/, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
     InVecDeriv& out = *dOut.beginEdit();
     const OutVecDeriv& in = dIn.getValue();
@@ -191,7 +190,7 @@ void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::applyJT
     if (nbloc > 512) nbloc = 512;
     data.tmp.recreate(2*nbloc);
     RigidMappingCuda3f_applyJT(points.size(), nbloc, data.tmp.deviceWrite(), rotatedPoints.deviceRead(), in.deviceRead());
-    helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = data.tmp;
+    helper::ReadAccessor<gpu::cuda::CudaVec3Types::VecDeriv> tmp = data.tmp;
     for(int i=0; i<nbloc; i++)
     {
         v += tmp[2*i];
@@ -202,7 +201,7 @@ void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::applyJT
 
     dOut.endEdit();
 }
-#endif
+
 //////// Rigid3f ////////
 
 template <>

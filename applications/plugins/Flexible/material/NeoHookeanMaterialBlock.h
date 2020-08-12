@@ -382,12 +382,6 @@ public:
     }
 };
 
-
-
-
-
-
-
 } // namespace defaulttype
 } // namespace sofa
 
