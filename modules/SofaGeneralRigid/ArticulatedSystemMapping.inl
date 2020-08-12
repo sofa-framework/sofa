@@ -55,14 +55,14 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     if(this->getFromModels1().empty())
     {
         msg_error() << "While iniatilizing ; input Model not found.";
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     if(this->getToModels().empty())
     {
         msg_error() << "While iniatilizing ; output Model not found.";
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -98,7 +98,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     if (xfrom.size() > xtoData.size())
     {
         msg_error() << "Input model '" << m_fromModel->getName() << "' size: " << xfrom.size() << " is bigger than output model '" << m_toModel->getName() << "' size: " << xtoData.size();
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     
@@ -119,7 +119,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::bwdInit()
     if (!ahc)
     {
         msg_error("ArticulatedSystemMapping::bwdInit") << "ArticulatedSystemMapping needs a ArticulatedHierarchyContainer, but it could not find it.";
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     articulationCenters = ahc->getArticulationCenters();
@@ -131,7 +131,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::bwdInit()
     if (articulationCenters.size() > xfrom.size())
     {
         msg_error() << "ArticulationCenters '" << ahc->name << "' size: " << articulationCenters.size() << " is bigger than the size of input model '" << m_fromModel->name << "' position vector: " << xfrom.size();
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -367,7 +367,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
         sofa::defaulttype::Vec<3,OutReal> P = xto[parent].getCenter();
         sofa::defaulttype::Vec<3,OutReal> C = xto[child].getCenter();
         getVCenter(out[child]) = getVCenter(out[parent]) + cross(P-C, getVOrientation(out[parent]));
-        //msg_info()<<"P:"<< P  <<"- C: "<< C;
 
         helper::vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
         helper::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
