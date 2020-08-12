@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -109,7 +109,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::computeQuadArea( BasicArrayInterface<
     size_t nb_quads = this->m_topology->getNbQuads();
     const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    for(int i=0; i<nb_quads; ++i)
+    for(size_t i=0; i<nb_quads; ++i)
     {
         // ta.size()
         const Quad &t = this->m_topology->getQuad(i);  //ta[i];
@@ -351,12 +351,14 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Quads indices
-    if (showQuadIndices.getValue())
+    if (showQuadIndices.getValue() && this->m_topology->getNbQuads() != 0)
     {
-
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-        defaulttype::Vec4f color4(color[0] - 0.2f, color[1] - 0.2f, color[2] - 0.2f, 1.0);
+        sofa::helper::types::RGBAColor color = _drawColor.getValue();
+        color[0] -= 0.2f;
+        color[1] -= 0.2f;
+        color[2] -= 0.2f;
+
         float scale = this->getIndicesScale();
 
         //for quads:
@@ -378,63 +380,79 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             positions.push_back(center);
 
         }
-        vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
     }
 
 
     // Draw Quads
-    if (_drawQuads.getValue())
+    if (_drawQuads.getValue() && this->m_topology->getNbQuads() != 0)
     {
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, true);
+
         const sofa::helper::vector<Quad>& quadArray = this->m_topology->getQuads();
 
-        if (!quadArray.empty()) // Draw Quad surfaces
-        {
-            const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-            const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-            defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0f);
+        // Draw Quad surfaces
+        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+        { // drawing quads
+            std::vector<defaulttype::Vector3> pos;
+            pos.reserve(quadArray.size()*4u);
+            for (size_t i=0u; i< quadArray.size(); i++)
+            {
+                const Quad& q = quadArray[i];
 
-            { // drawing quads
-                std::vector<defaulttype::Vector3> pos;
-                pos.reserve(quadArray.size()*4u);
-                for (size_t i=0u; i< quadArray.size(); i++)
+                defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
+                std::vector<defaulttype::Vector3> tmpPos;
+                tmpPos.resize(4);
+
+                for (unsigned int j = 0; j<4; j++)
+                {
+                    tmpPos[j] = defaulttype::Vector3(DataTypes::getCPos(coords[q[j]]));
+                    bary += tmpPos[j];
+                }
+                bary /= 4;
+
+                for (unsigned int j = 0; j<4; j++)
+                    pos.push_back(bary*0.1 + tmpPos[j]*0.9);
+            }
+            vparams->drawTool()->drawQuads(pos, _drawColor.getValue());
+        }
+
+        if (!vparams->displayFlags().getShowWireFrame())
+        { // drawing edges
+            const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
+            sofa::helper::types::RGBAColor edge_color = _drawColor.getValue();
+            edge_color[0] -= 0.2f;
+            edge_color[1] -= 0.2f;
+            edge_color[2] -= 0.2f;
+
+            std::vector<defaulttype::Vector3> pos;
+            pos.reserve(edgeArray.size()*2u);
+
+            if (!edgeArray.empty())
+            {
+                for (size_t i = 0u; i<edgeArray.size(); i++)
+                {
+                    const Edge& e = edgeArray[i];
+                    pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
+                    pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
+                }
+            } else {
+                for (size_t i = 0u; i<quadArray.size(); i++)
                 {
                     const Quad& q = quadArray[i];
                     for (unsigned int j = 0; j<4; j++)
                     {
                         pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[j]])));
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[(j+1u)%4u]])));
                     }
                 }
-                vparams->drawTool()->drawQuads(pos, color4);
             }
-
-            { // drawing edges
-                const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
-                const sofa::defaulttype::Vec4f edge_color(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f,1.0f);
-                std::vector<defaulttype::Vector3> pos;
-                pos.reserve(edgeArray.size()*2u);
-
-                if (!edgeArray.empty())
-                {
-                    for (size_t i = 0u; i<edgeArray.size(); i++)
-                    {
-                        const Edge& e = edgeArray[i];
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
-                    }
-                } else {
-                    for (size_t i = 0u; i<quadArray.size(); i++)
-                    {
-                        const Quad& q = quadArray[i];
-                        for (unsigned int j = 0; j<4; j++)
-                        {
-                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[j]])));
-                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[(j+1u)%4u]])));
-                        }
-                    }
-                }
-                vparams->drawTool()->drawLines(pos,1.0f, edge_color );
-            }
+            vparams->drawTool()->drawLines(pos,1.0f, edge_color );
         }
+
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, false);
     }
 }
 

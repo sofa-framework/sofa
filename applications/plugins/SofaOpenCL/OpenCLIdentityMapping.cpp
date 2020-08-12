@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,16 +61,15 @@ template class IdentityMapping< OpenCLVec3fTypes, OpenCLVec3dTypes>;
 template class IdentityMapping< OpenCLVec3dTypes, OpenCLVec3fTypes>;
 template class IdentityMapping< OpenCLVec3dTypes, OpenCLVec3dTypes>;
 template class IdentityMapping< OpenCLVec3dTypes, Vec3fTypes>;
-template class IdentityMapping< OpenCLVec3Types, Vec3Types>;
+template class IdentityMapping< OpenCLVec3dTypes, Vec3Types>;
 
 template class IdentityMapping< Vec3fTypes, OpenCLVec3dTypes>;
-template class IdentityMapping< Vec3Types, OpenCLVec3Types>;
+template class IdentityMapping< Vec3Types, OpenCLVec3dTypes>;
 
 
-template class IdentityMapping< OpenCLVec3d1Types, ExtVec3fTypes>;
-template class IdentityMapping< OpenCLVec3dTypes, ExtVec3fTypes>;
+template class IdentityMapping< OpenCLVec3d1Types, Vec3fTypes>;
+template class IdentityMapping< OpenCLVec3fTypes, Vec3fTypes>;
 
-template class IdentityMapping< OpenCLVec3fTypes, ExtVec3fTypes>;
 template class IdentityMapping< OpenCLVec3f1Types, OpenCLVec3f1Types>;
 template class IdentityMapping< OpenCLVec3f1Types, Vec3Types>;
 
@@ -78,7 +77,6 @@ template class IdentityMapping< OpenCLVec3f1Types, Vec3fTypes>;
 template class IdentityMapping< Vec3Types, OpenCLVec3f1Types>;
 
 template class IdentityMapping< Vec3fTypes, OpenCLVec3f1Types>;
-template class IdentityMapping< OpenCLVec3f1Types, ExtVec3fTypes>;
 template class IdentityMapping< OpenCLVec3f1Types, OpenCLVec3fTypes>;
 template class IdentityMapping< OpenCLVec3fTypes, OpenCLVec3f1Types>;
 
@@ -110,16 +108,12 @@ int IdentityMappingOpenCLClass = core::RegisterObject("Supports GPU-side computa
         .add< IdentityMapping< OpenCLVec3dTypes, OpenCLVec3fTypes> >()
         .add< IdentityMapping< OpenCLVec3dTypes, OpenCLVec3dTypes> >()
         .add< IdentityMapping< OpenCLVec3dTypes, Vec3fTypes> >()
-        .add< IdentityMapping< OpenCLVec3Types, Vec3Types> >()
+        .add< IdentityMapping< OpenCLVec3dTypes, Vec3Types> >()
 
         .add< IdentityMapping< Vec3fTypes, OpenCLVec3dTypes> >()
-        .add< IdentityMapping< Vec3Types, OpenCLVec3Types> >()
+        .add< IdentityMapping< Vec3dTypes, OpenCLVec3Types> >()
 
-
-        .add< IdentityMapping< OpenCLVec3d1Types, ExtVec3fTypes> >()
-        .add< IdentityMapping< OpenCLVec3dTypes, ExtVec3fTypes> >()
-
-        .add< IdentityMapping< OpenCLVec3fTypes, ExtVec3fTypes> >()
+        .add< IdentityMapping< OpenCLVec3d1Types, Vec3fTypes> >()
         .add< IdentityMapping< OpenCLVec3f1Types, OpenCLVec3f1Types> >()
         .add< IdentityMapping< OpenCLVec3f1Types, Vec3Types> >()
 
@@ -127,7 +121,6 @@ int IdentityMappingOpenCLClass = core::RegisterObject("Supports GPU-side computa
         .add< IdentityMapping< Vec3Types, OpenCLVec3f1Types> >()
 
         .add< IdentityMapping< Vec3fTypes, OpenCLVec3f1Types> >()
-        .add< IdentityMapping< OpenCLVec3f1Types, ExtVec3fTypes> >()
         .add< IdentityMapping< OpenCLVec3f1Types, OpenCLVec3fTypes> >()
         .add< IdentityMapping< OpenCLVec3fTypes, OpenCLVec3f1Types> >()
         ;

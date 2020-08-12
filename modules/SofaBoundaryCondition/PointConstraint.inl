@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,7 +44,7 @@ namespace projectiveconstraintset
 
 template <class DataTypes>
 PointConstraint<DataTypes>::PointConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , _drawSize( initData(&_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
 {
@@ -92,8 +92,10 @@ const sofa::defaulttype::BaseMatrix*  PointConstraint<DataTypes>::getJ(const cor
 template <class DataTypes>
 void PointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecDeriv> res ( resData );
+    const SetIndexArray & indices = f_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
@@ -105,8 +107,10 @@ void PointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
 template <class DataTypes>
 void PointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
-    helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataMatrixDeriv> c (  cData );
+    const SetIndexArray & indices = f_indices.getValue();
 
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,9 +51,11 @@ public:
 
 
 
-    typedef core::topology::BaseMeshTopology::TetraID TetraID;
+    typedef core::topology::BaseMeshTopology::TetraID TetraID;    
     typedef core::topology::BaseMeshTopology::TetrahedronID TetrahedronID;
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::EdgeID EdgeID;
+    typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef core::topology::BaseMeshTopology::TetrahedraAroundVertex TetrahedraAroundVertex;
@@ -73,16 +75,16 @@ protected:
         , d_showTetrahedraIndices (initData(&d_showTetrahedraIndices, (bool) false, "showTetrahedraIndices", "Debug : view Tetrahedrons indices"))
         , d_drawTetrahedra(initData(&d_drawTetrahedra, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
         , d_drawScaleTetrahedra(initData(&d_drawScaleTetrahedra, (float) 1.0, "drawScaleTetrahedra", "Scale of the terahedra (between 0 and 1; if <1.0, it produces gaps between the tetrahedra)"))
-        , d_drawColorTetrahedra(initData(&d_drawColorTetrahedra, sofa::defaulttype::Vec4f(1.0f,1.0f,0.0f,1.0f), "drawColorTetrahedra", "RGBA code color used to draw tetrahedra."))
+        , d_drawColorTetrahedra(initData(&d_drawColorTetrahedra, sofa::helper::types::RGBAColor(1.0f,1.0f,0.0f,1.0f), "drawColorTetrahedra", "RGBA code color used to draw tetrahedra."))
     {
         core::objectmodel::Base::addAlias(&d_showTetrahedraIndices, "showTetrasIndices");
         core::objectmodel::Base::addAlias(&d_drawTetrahedra, "drawTetra");
         core::objectmodel::Base::addAlias(&d_drawTetrahedra, "drawTetrahedron");
     }
 
-    virtual ~TetrahedronSetGeometryAlgorithms() override {}
+    ~TetrahedronSetGeometryAlgorithms() override {}
 public:
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     void computeTetrahedronAABB(const TetraID i, Coord& minCoord, Coord& maxCoord) const;
 
@@ -107,7 +109,10 @@ public:
 
     /// computes the tetrahedron volume  of tetrahedron no i and returns it
     Real computeRestTetrahedronVolume(const TetraID i) const;
-    Real computeRestTetrahedronVolume(const Tetrahedron t) const;
+    Real computeRestTetrahedronVolume(const Tetrahedron& t) const;
+
+
+    Real computeDihedralAngle(const TetraID tetraId, const EdgeID edgeId) const;
 
     /// finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
     void getTetraInBall(const TetraID ind_ta, const TetraID ind_tb,
@@ -131,9 +136,28 @@ public:
                                           sofa::defaulttype::Vec<3,Real>& c,
                                           sofa::defaulttype::Vec<3,Real>& normal,
                                           sofa::defaulttype::Vec<3,Real>& intersection);
+    
+    /// Method to check if points stored inside the Tetrahedron, given by the tetrahedron id, are in the right order (by checking the cross products between edges).
+    bool checkNodeSequence(const TetraID tetraId) const;
+    
+    /// Method to check if points stored inside the Tetrahedron, given as parameter, are in the right order (by checking the cross products between edges).
+    bool checkNodeSequence(const Tetrahedron& tetra) const;
 
-    bool checkNodeSequence(Tetra& tetra);
+    /// Method to check if the dihedral angles of the tetrahedron have correct values (between 20 and 160 degrees).
+    bool checkTetrahedronDihedralAngles(const TetraID tetraId, SReal minAngle = 20, SReal maxAngle = 160) const;
 
+    /// Method to check if Tetrahedron is elongated, meaning the longest edge > 10x min edge
+    bool isTetrahedronElongated(const TetraID tetraId, SReal factorLength = 10) const;
+
+    /// Return false if one of the test method: @sa isTetrahedronElongated, @sa checkTetrahedronDihedralAngles and @sa checkNodeSequence return false for the given Tetrahedron Id.
+    bool checkTetrahedronValidity(const TetraID tetraId, SReal minAngle = 20, SReal maxAnglemaxAngle = 160, SReal factorLength = 10) const;
+
+    /// Will call @sa checkTetrahedronValidity for each Tetrahedron of the mesh and store the bad tetrahedron ID in @sa m_badTetraIds
+    const sofa::helper::vector <TetraID>& computeBadTetrahedron(SReal minAngle = 20, SReal maxAngle = 160, SReal factorLength = 10);
+
+    /// Return bad tetrahedron ID: @sa m_badTetraIds
+    const sofa::helper::vector <TetraID>& getBadTetrahedronIds();
+    
     /// return a pointer to the container of cubature points
     NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();
 
@@ -141,19 +165,18 @@ protected:
     Data<bool> d_showTetrahedraIndices; ///< Debug : view Tetrahedrons indices
     Data<bool> d_drawTetrahedra; ///< if true, draw the tetrahedra in the topology
     Data<float> d_drawScaleTetrahedra; ///< Scale of the terahedra (between 0 and 1; if <1.0, it produces gaps between the tetrahedra)
-    Data<sofa::defaulttype::Vec4f> d_drawColorTetrahedra; ///< RGBA code color used to draw tetrahedra.
+    Data<sofa::helper::types::RGBAColor> d_drawColorTetrahedra; ///< RGBA code color used to draw tetrahedra.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,4> tetrahedronNumericalIntegration;
+
+    /// vector of Tetrahedron ID which do not respect @sa checkTetrahedronValidity . buffer updated only by method @sa computeBadTetrahedron
+    sofa::helper::vector <TetraID> m_badTetraIds;
 };
 
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
+#if !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec2Types>;
 extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec1Types>;
-//extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Rigid3Types>;
-//extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Rigid2Types>;
-
-
 #endif
 
 } // namespace topology

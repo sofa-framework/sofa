@@ -5,18 +5,20 @@
 -->
 
 <Node name="root" dt="0.001" gravity="10 0 0" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
     <RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
 
     <OmniDriver scale="0.1" orientation="0 0 90"/>
-	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+	<DefaultPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
-	<CollisionResponse name="response" response="default" />
+	<DefaultContactManager name="response" response="default" />
 	<MinProximityIntersection name="proximity" alarmDistance="0.03" contactDistance="0.03" />
 
 	<Node name="Tooth" >
 		<Node name="VisualModel" >
-			<OglModel name="ToothVisualModel" fileMesh="Demos/Dentistry/data/mesh/tooth-closed.obj" color="white" />
+			<MeshObjLoader name="meshLoader_0" filename="Demos/Dentistry/data/mesh/tooth-closed.obj" handleSeams="1" />
+			<OglModel name="ToothVisualModel" src="@meshLoader_0" color="white" />
 		</Node>
 		<Node name="CollisionModel" >
 			<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
@@ -25,27 +27,28 @@
 
 	<!-- ADDED: the Mechanical state Controller gathers events from the Omni driver and populates the Mechanical state -->
 	<Node name="Omni">
-		<MechanicalObject template="Rigid" name="DOFs" position="0 0 0  0 0 0 1"/>
-		<MechanicalStateController template="Rigid" listening="true"  mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
+		<MechanicalObject template="Rigid3d" name="DOFs" position="0 0 0  0 0 0 1"/>
+		<MechanicalStateController template="Rigid3d" listening="true"  mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
 		<Node name="VisuAvatar" activated="false">
-			<OglModel name="Visual" fileMesh="mesh/sphere.obj" color="gray" scale="0.1"/>
+			<MeshObjLoader name="meshLoader_2" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
+			<OglModel name="Visual" src="@meshLoader_2" color="gray"/>
 			<RigidMapping input="@.." output="@Visual" index="0"/>
 		</Node>
 		<Node name="RefModel">
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader"  />
+			<MeshTopology src="@loader"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<RigidMapping />
 		</Node>
 		<Node name="RefModelRight" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel" />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="0.5" />
 			<RigidMapping />
 		</Node>
 		<Node name="RefModelLeft" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="-0.5" />
 			<RigidMapping />
 		</Node>
@@ -54,30 +57,31 @@
 	<Node name="Instrument" >
 		<EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
 		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
-		<MechanicalObject name="instrumentState" template="Rigid" />
+		<MechanicalObject name="instrumentState" template="Rigid3d" />
 		<UniformMass name="mass" totalmass="0.05" />
 		<EnslavementForceFeedback activate="true" stiffness="3.0"/> <!-- ADDED : Compute a force-feedback for the device -->
 		<Node name="VisualModel" >
-			<OglModel name="InstrumentVisualModel" fileMesh="Demos/Dentistry/data/mesh/dental_instrument.obj" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
+			<MeshObjLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
+			<OglModel name="InstrumentVisualModel" src="@meshLoader_1" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
 			<RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
 		</Node>
 		<Node name="CollisionModel" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
-			<Line name="instrument" contactStiffness="10" />
-			<Point name="instrument" contactStiffness="10" />
+			<LineCollisionModel name="instrument" contactStiffness="10" />
+			<PointCollisionModel name="instrument" contactStiffness="10" />
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelRight" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="0.5" />
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelLeft" >
 			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-			<Mesh src="@loader" name="InstrumentCollisionModel"  />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="-0.5" />
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>

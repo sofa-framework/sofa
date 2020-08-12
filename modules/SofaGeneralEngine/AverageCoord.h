@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,7 +57,7 @@ protected:
 
     AverageCoord();
 
-    virtual ~AverageCoord() {}
+    ~AverageCoord() override {}
 public:
     void init() override;
 
@@ -71,19 +71,6 @@ public:
 
     void handleEvent(core::objectmodel::Event *event) override;
     void onBeginAnimationStep(const double /*dt*/);
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-
-    static std::string templateName(const AverageCoord<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-
 
 protected:
     sofa::core::behavior::MechanicalState<DataTypes> *mstate;

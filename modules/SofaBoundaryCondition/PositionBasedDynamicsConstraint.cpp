@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,11 +65,13 @@ template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid
 template <>
 void PositionBasedDynamicsConstraint<Rigid3Types>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
-    helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecCoord> res ( xData );
     helper::ReadAccessor<DataVecCoord> tpos = position ;
-	helper::WriteAccessor<DataVecDeriv> vel ( mparams, velocity );
-	helper::WriteAccessor<DataVecCoord> old_pos ( mparams, old_position );
-    if (tpos.size() != res.size()) 	{ serr << "Invalid target position vector size." << sendl;		return; }
+    helper::WriteAccessor<DataVecDeriv> vel ( velocity );
+    helper::WriteAccessor<DataVecCoord> old_pos ( old_position );
+    if (tpos.size() != res.size()) { msg_error() << "Invalid target position vector size."; return; }
 
     Real dt =  (Real)this->getContext()->getDt();
     if(!dt) return;

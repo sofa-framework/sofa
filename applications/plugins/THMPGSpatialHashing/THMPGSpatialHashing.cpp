@@ -79,22 +79,22 @@ void THMPGSpatialHashing::sumEdgeLength_template(core::CollisionModel *cm){
 
 void THMPGSpatialHashing::sumEdgeLength(core::CollisionModel *cm){
     if(cm->getEnumType() == sofa::core::CollisionModel::TRIANGLE_TYPE)
-        sumEdgeLength_template<sofa::component::collision::TriangleModel::DataTypes>(cm);
+        sumEdgeLength_template<sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::DataTypes>(cm);
 //    else if(cm->getEnumType() == sofa::core::CollisionModel::TETRAHEDRON_TYPE)
-//        sumEdgeLength_template<sofa::component::collision::TetrahedronModel::DataTypes>(cm);
+//        sumEdgeLength_template<sofa::component::collision::TetrahedronCollisionModel::DataTypes>(cm);
     else if(cm->getEnumType() == sofa::core::CollisionModel::LINE_TYPE)
-        sumEdgeLength_template<sofa::component::collision::LineModel::DataTypes>(cm);
+        sumEdgeLength_template<sofa::component::collision::LineCollisionModel<sofa::defaulttype::Vec3Types>::DataTypes>(cm);
     else if(cm->getEnumType() == sofa::core::CollisionModel::SPHERE_TYPE){
-        const sofa::component::collision::SphereModel * sphm = static_cast<SphereModel *>(cm);
+        const sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types> * sphm = static_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types> *>(cm);
         for(int i = 0 ; i < sphm->getSize() ; ++i){
             _total_edges_length += (SReal)(2) * sphm->getRadius(i);
         }
         _nb_edges += sphm->getSize();
     }
     else if(cm->getEnumType() == sofa::core::CollisionModel::OBB_TYPE){
-        const OBBModel * obbm = static_cast<OBBModel *>(cm);
+        const OBBCollisionModel<sofa::defaulttype::Rigid3Types> * obbm = static_cast<OBBCollisionModel<sofa::defaulttype::Rigid3Types> *>(cm);
         for(int i = 0 ; i < obbm->getSize() ; ++i){
-            const OBBModel::Coord & extents = obbm->extents(i);
+            const OBBCollisionModel<sofa::defaulttype::Rigid3Types>::Coord & extents = obbm->extents(i);
             for(int j = 0 ; j < 3 ; ++j){
                 _total_edges_length += (SReal)(2)*extents[j];
             }

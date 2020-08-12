@@ -1,4 +1,5 @@
 <Node 	name="Root" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<Node 	name="STEP file"  >
 		<MeshSTEPLoader name="STEPLoader"  filename="cube.stp"  deflection="0.1"  debug="0"  keepDuplicate="1" />
 		<MeshTopology src="@STEPLoader" />

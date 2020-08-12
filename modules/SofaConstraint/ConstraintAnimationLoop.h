@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,25 +59,12 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
-    {
-        if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
-        {
-            ctime_t t0 = begin(node, c);
-            c->getConstraintResolution(_cparams, _res, _offset);
-            end(node, c, t0);
-        }
-        return RESULT_CONTINUE;
-    }
-
+    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -102,37 +89,16 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
-    {
-        ctime_t t0 = begin(node, c);
-
-        c->setConstraintId(contactId);
-        c->buildConstraintMatrix(cparams, res, contactId);
-
-        end(node, c, t0);
-        return RESULT_CONTINUE;
-    }
-
+    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c) override;
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const
-    {
-        return "MechanicalSetConstraint";
-    }
-
-    virtual bool isThreadSafe() const
-    {
-        return false;
-    }
-
+    const char* getClassName() const override;
+    bool isThreadSafe() const override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -158,29 +124,17 @@ public:
 #endif
     }
 
-    virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
-    {
-        ctime_t t0 = begin(node, map);
-        map->applyJT(cparams, res, res);
-        end(node, map, t0);
-    }
-
+    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAccumulateConstraint2"; }
+    const char* getClassName() const override;
 
-    virtual bool isThreadSafe() const
-    {
-        return false;
-    }
+    bool isThreadSafe() const override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -229,29 +183,29 @@ public:
 
     SOFA_CLASS(ConstraintAnimationLoop, sofa::simulation::CollisionAnimationLoop);
 protected:
-    ConstraintAnimationLoop(simulation::Node* gnode = NULL);
-    virtual ~ConstraintAnimationLoop();
+    ConstraintAnimationLoop(simulation::Node* gnode = nullptr);
+    ~ConstraintAnimationLoop() override;
 public:
 
-    virtual void step(const core::ExecParams* params, SReal dt) override;
-    virtual void init() override;
+    void step(const core::ExecParams* params, SReal dt) override;
+    void init() override;
 
-    Data<bool> displayTime; ///< Display time for each important step of ConstraintAnimationLoop.
-    Data<double> _tol; ///< Tolerance of the Gauss-Seidel
-    Data<int> _maxIt; ///< Maximum number of iterations of the Gauss-Seidel
-    Data<bool> doCollisionsFirst; ///< Compute the collisions first (to support penality-based contacts)
-    Data<bool> doubleBuffer; ///< Buffer the constraint problem in a double buffer to be accessible with an other thread
-    Data<bool> scaleTolerance; ///< Scale the error tolerance with the number of constraints
-    Data<bool> _allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
-    Data<double> _sor; ///< Successive Over Relaxation parameter (0-2)
-    Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
-    Data<bool> _realTimeCompensation; ///< If the total computational time T < dt, sleep(dt-T)
+    Data<bool> d_displayTime; ///< Display time for each important step of ConstraintAnimationLoop.
+    Data<double> d_tol; ///< Tolerance of the Gauss-Seidel
+    Data<int> d_maxIt; ///< Maximum number of iterations of the Gauss-Seidel
+    Data<bool> d_doCollisionsFirst; ///< Compute the collisions first (to support penality-based contacts)
+    Data<bool> d_doubleBuffer; ///< Buffer the constraint problem in a double buffer to be accessible with an other thread
+    Data<bool> d_scaleTolerance; ///< Scale the error tolerance with the number of constraints
+    Data<bool> d_allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
+    Data<double> d_sor; ///< Successive Over Relaxation parameter (0-2)
+    Data<bool> d_schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
+    Data<bool> d_realTimeCompensation; ///< If the total computational time T < dt, sleep(dt-T)
 
-    Data<bool> activateSubGraph;
+    Data<bool> d_activateSubGraph;
 
-    Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors; ///< Sum of the constraints' errors at each iteration
-    Data<std::map < std::string, sofa::helper::vector<double> > > _graphConstraints; ///< Graph of each constraint's error at the end of the resolution
-    Data<std::map < std::string, sofa::helper::vector<double> > > _graphForces; ///< Graph of each constraint's force at each step of the resolution
+    Data<std::map < std::string, sofa::helper::vector<double> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
+    Data<std::map < std::string, sofa::helper::vector<double> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
+    Data<std::map < std::string, sofa::helper::vector<double> > > d_graphForces; ///< Graph of each constraint's force at each step of the resolution
 
     ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;}
 
@@ -300,13 +254,7 @@ protected:
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 
 
-    virtual ConstraintProblem *getCP()
-    {
-        if (doubleBuffer.getValue() && bufCP1)
-            return &CP2;
-        else
-            return &CP1;
-    }
+    virtual ConstraintProblem* getCP();
 
     sofa::helper::system::thread::CTime *timer;
     SReal timeScale, time ;

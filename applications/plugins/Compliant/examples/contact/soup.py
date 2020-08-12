@@ -73,7 +73,7 @@ def createScene(root):
 	
 	sphereNode = root.createChild('Spheres')
 	sphereNode.createObject('MechanicalObject',template='Vec3d',position=spherePos, velocity='0 0 -1')
-	sphereNode.createObject('TSphereModel',template='Vec3d',name='sphere_model',radius=1,selfCollision="1")
+	sphereNode.createObject('SphereCollisionModel',template='Vec3d',name='sphere_model',radius=1,selfCollision="1")
 	sphereNode.createObject('UniformMass',name='mass',mass=.1)
 	
 	
@@ -86,7 +86,7 @@ def createScene(root):
                         for z in xrange(1):
                             sphereNode = root.createChild('Sphere'+str(i))
                             sphereNode.createObject('MechanicalObject',template='Vec3d',position=str(x*2.5+r)+" "+str(y*2.5+r)+" "+str(20+2.5*(z+1)), velocity='0 0 -1')
-                            sphereNode.createObject('TSphereModel',template='Vec3d',name='sphere_model',radius=1,selfCollision="0")
+                            sphereNode.createObject('SphereCollisionModel',template='Vec3d',name='sphere_model',radius=1,selfCollision="0")
                             sphereNode.createObject('UniformMass',name='mass',mass=.1)
                             i+=1
 		

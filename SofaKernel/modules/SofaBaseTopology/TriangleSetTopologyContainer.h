@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,8 +46,6 @@ class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyContainer : public EdgeSetTopolo
 public:
     SOFA_CLASS(TriangleSetTopologyContainer,EdgeSetTopologyContainer);
 
-
-
     typedef core::topology::BaseMeshTopology::PointID                      PointID;
     typedef core::topology::BaseMeshTopology::EdgeID                       EdgeID;
     typedef core::topology::BaseMeshTopology::TriangleID                   TriangleID;
@@ -63,27 +61,25 @@ public:
 protected:
     TriangleSetTopologyContainer();
 
-    virtual ~TriangleSetTopologyContainer() {}
+    ~TriangleSetTopologyContainer() override {}
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
 
     /// Procedural creation methods
     /// @{
-    virtual void clear() override;
-    virtual void addEdge( int, int ) override {}
-    virtual void addTriangle( int a, int b, int c ) override;
+    void clear() override;
+    void addEdge( int, int ) override {}
+    void addTriangle( int a, int b, int c ) override;
     /// @}
-
-
 
     /// BaseMeshTopology API
     /// @{
 
     /** \brief Returns the quad array. */
-    virtual const SeqTriangles& getTriangles() override
+    const SeqTriangles& getTriangles() override
     {
         return getTriangleArray();
     }
@@ -97,16 +93,16 @@ public:
      * @param ID of a triangle.
      * @return The corresponding triangle.
      */
-    virtual const Triangle getTriangle(TriangleID i) override;
+    const Triangle getTriangle(TriangleID i) override;
 
 
     /* Returns the indices of a triangle given three vertex indices.
      *
      * @param the three vertex indices.
      * @return the ID of the corresponding triangle.
-     * @return -1 if none
+     * @return InvalidID if none
      */
-    virtual int getTriangleIndex(PointID v1, PointID v2, PointID v3) override;
+    TriangleID getTriangleIndex(PointID v1, PointID v2, PointID v3) override;
 
 
     /** \brief Returns the 3 edges adjacent to a given triangle.
@@ -114,7 +110,7 @@ public:
      * @param ID of a triangle.
      * @return EdgesInTriangle list composing the input triangle.
      */
-    virtual const EdgesInTriangle& getEdgesInTriangle(TriangleID i) override;
+    const EdgesInTriangle& getEdgesInTriangle(TriangleID id) override;
 
 
     /** \brief Returns the set of triangles adjacent to a given vertex.
@@ -122,7 +118,7 @@ public:
      * @param ID of a vertex
      * @return TrianglesAroundVertex list around the input vertex
      */
-    virtual const TrianglesAroundVertex& getTrianglesAroundVertex(PointID i) override;
+    const TrianglesAroundVertex& getTrianglesAroundVertex(PointID id) override;
 
 
     /** \brief Returns the set of triangles adjacent to a given edge.
@@ -130,7 +126,7 @@ public:
      * @param ID of an edge.
      * @return TrianglesAroundEdge list around the input edge.
      */
-    virtual const TrianglesAroundEdge& getTrianglesAroundEdge(EdgeID i) override;
+    const TrianglesAroundEdge& getTrianglesAroundEdge(EdgeID id) override;
 
 
     /** \brief Returns the index (either 0, 1 ,2) of the vertex whose global index is vertexIndex.
@@ -140,7 +136,7 @@ public:
      * @return the position of this vertex in the triangle (i.e. either 0, 1, 2).
      * @return -1 if none.
      */
-    virtual int getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const override;
+    int getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const override;
 
     /** \brief Returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex.
      *
@@ -149,7 +145,7 @@ public:
      * @return the position of this edge in the triangle (i.e. either 0, 1, 2).
      * @return -1 if none.
      */
-    virtual int getEdgeIndexInTriangle(const EdgesInTriangle &t, EdgeID edgeIndex) const override;
+    int getEdgeIndexInTriangle(const EdgesInTriangle &t, EdgeID edgeIndex) const override;
 
     /// @}
 
@@ -157,7 +153,8 @@ public:
 
     /// Dynamic Topology API
     /// @{
-
+    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see EdgeSetTopologyContainer::initTopology()
+    void initTopology();
 
     /** \brief Checks if the topology is coherent
      *
@@ -167,7 +164,7 @@ public:
      * @see m_trianglesAroundVertex
      * @see m_trianglesAroundEdge
      */
-    virtual bool checkTopology() const override;
+    bool checkTopology() const override;
 
 
     /** \brief Returns the number of triangles in this topology.
@@ -178,7 +175,7 @@ public:
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual size_t getNumberOfElements() const override;
+    size_t getNumberOfElements() const override;
 
     /** \brief Returns the Triangle array. */
     const sofa::helper::vector<Triangle> &getTriangleArray();
@@ -220,18 +217,18 @@ public:
       *
       * @return true if only one connected component
       */
-    virtual bool checkConnexity() override;
+    bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual size_t getNumberOfConnectedComponent() override;
+    size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const VecTriangleID getConnectedElement(TriangleID elem) override;
+    const VecTriangleID getConnectedElement(TriangleID elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const VecTriangleID getElementAroundElement(TriangleID elem) override;
+    const VecTriangleID getElementAroundElement(TriangleID elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const VecTriangleID getElementAroundElements(VecTriangleID elems) override;
+    const VecTriangleID getElementAroundElements(VecTriangleID elems) override;
     /// @}
 
     bool hasTriangles() const;
@@ -272,7 +269,7 @@ protected:
      *
      * Create the set of edges when needed.
      */
-    virtual void createEdgeSetArray() override;
+    void createEdgeSetArray() override;
 
 
     /** \brief Creates the array of edge indices for each triangle.
@@ -329,13 +326,13 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_triangle
-    virtual void updateTopologyEngineGraph() override;
+    void updateTopologyEngineGraph() override;
 
 
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setTriangleTopologyToDirty() {m_triangleTopologyDirty = true;}
-    void cleanTriangleTopologyFromDirty() {m_triangleTopologyDirty = false;}
+    void setTriangleTopologyToDirty();
+    void cleanTriangleTopologyFromDirty();
     const bool& isTriangleTopologyDirty() {return m_triangleTopologyDirty;}
 
 public:

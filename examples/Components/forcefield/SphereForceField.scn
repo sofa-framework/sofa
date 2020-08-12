@@ -1,9 +1,10 @@
 <!-- Mechanical SphereForceField Example -->
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="hideBehaviorModels showForceFields hideCollisionModels hideVisualModels" />
 
     <Node name="Floor">
-        <RegularGrid nx="2" ny="1" nz="2" xmin="20" xmax="-20" ymin="-3.05" ymax="-3.05" zmin="-20" zmax="20" />
+        <RegularGridTopology nx="2" ny="1" nz="2" xmin="20" xmax="-20" ymin="-3.05" ymax="-3.05" zmin="-20" zmax="20" />
         <MechanicalObject />
 
         <Node name="Visu">
@@ -13,9 +14,9 @@
     </Node>
     
     <Node name="SquareCloth1">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <RegularGrid nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+        <RegularGridTopology nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <MechanicalObject />
         <UniformMass totalMass="100" />
         <BoxConstraint box="-12 7 12 -10 7 12    10 7 12 12 7 12" />
@@ -33,6 +34,7 @@
     </Node>
     
     <Node name="Sphere">
-        <OglModel name="Visual" fileMesh="mesh/sphere.obj" scale="3.95" dx="0" dy="1" dz="3" color="blue" />
+        <MeshObjLoader name="meshLoader_0" filename="mesh/sphere.obj" scale="3.95" handleSeams="1" />
+        <OglModel name="Visual" src="@meshLoader_0" dx="0" dy="1" dz="3" color="blue" />
     </Node>
 </Node>

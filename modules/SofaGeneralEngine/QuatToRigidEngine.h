@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,7 +56,7 @@ public:
     typedef typename sofa::defaulttype::StdRigidTypes<3,Real>::Coord RigidVec3;
 protected:
     QuatToRigidEngine();
-    virtual ~QuatToRigidEngine();
+    ~QuatToRigidEngine() override;
 public:
     void doUpdate() override;
     void init() override;
@@ -69,17 +69,7 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
 
-    static std::string templateName(const QuatToRigidEngine<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-    //
     Data<helper::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
     Data<helper::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
     Data<helper::vector<Vec3 > > f_colinearPositions; ///< Optional positions to restrict output to be colinear in the quaternion Z direction
@@ -87,8 +77,7 @@ public:
 };
 
 #if  !defined(QUATTORIGIDENGINE_CPP)
-extern template class SOFA_GENERAL_ENGINE_API QuatToRigidEngine<defaulttype::Vec3Types>;
- 
+extern template class SOFA_GENERAL_ENGINE_API QuatToRigidEngine<defaulttype::Vec3Types>; 
 #endif
 
 } // namespace engine

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,7 +39,7 @@ namespace topology
 
 enum class Grid_dimension
 {
-    GRID_NULL = 0,
+    GRID_nullptr = 0,
     GRID_1D,
     GRID_2D,
     GRID_3D
@@ -60,7 +60,7 @@ using MeshTopology::getHexahedron;
     typedef sofa::defaulttype::Vec3i Vec3i;
     typedef sofa::defaulttype::Vector2 Vector2;
     typedef sofa::defaulttype::Vector3 Vector3;
-    typedef sofa::defaulttype::ResizableExtVector<Vector2> TextCoords2D;
+    typedef Vector2 TextCoords2D;
     friend class GridUpdate;
 
 
@@ -73,14 +73,14 @@ private:
         typedef MeshTopology::Hexa Hexa;
         SOFA_CLASS(GridUpdate,sofa::core::DataEngine);
         GridUpdate(GridTopology* t);
-        virtual void doUpdate() override;
+        void doUpdate() override;
     protected:
         void updateEdges();
         void updateQuads();
         void updateTriangles();
         void updateHexas();
     private:
-        GridTopology* topology;
+        GridTopology* m_topology;
     };
 
 protected:
@@ -113,10 +113,10 @@ protected:
 
 public:
     /// BaseObject method should be overwritten by children
-    virtual void init() override;
+    void init() override;
 
     /// BaseObject method should be overwritten by children
-    virtual void reinit() override;
+    void reinit() override;
 
 
     /** \brief Set grid resolution in the 3 directions
@@ -149,7 +149,7 @@ public:
     unsigned getIndex( int i, int j, int k ) const;
 
     /// Overwrite from @sa MeshTopology::hasPos always @return bool true
-    virtual bool hasPos()  const override { return true; }
+    bool hasPos()  const override { return true; }
 
     /// Get Point in grid @return Vector3 given its @param id i. Will call @sa getPointInGrid. This method should be overwritten by children.
     virtual Vector3 getPoint(int i) const;
@@ -158,17 +158,17 @@ public:
     virtual Vector3 getPointInGrid(int i, int j, int k) const;
 
     /// get X from Point index @param i, will call @sa getPoint
-    virtual SReal getPX(int i)  const override { return getPoint(i)[0]; }
+    SReal getPX(int i)  const override { return getPoint(i)[0]; }
     /// get Y from Point index @param i, will call @sa getPoint
-    virtual SReal getPY(int i) const override { return getPoint(i)[1]; }
+    SReal getPY(int i) const override { return getPoint(i)[1]; }
     /// get Z from Point index @param i, will call @sa getPoint
-    virtual SReal getPZ(int i) const override { return getPoint(i)[2]; }
+    SReal getPZ(int i) const override { return getPoint(i)[2]; }
 
     /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override ;
+    void parse(core::objectmodel::BaseObjectDescription* arg) override ;
 
     /// Overload Method from @sa MeshTopology::getNbHexahedra
-    virtual size_t getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
+    size_t getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
     /// Overload Method from @sa MeshTopology::getQuad
     Quad getQuad(int x, int y, int z);
 
@@ -184,8 +184,9 @@ public:
     /// Get Cube index, similar to \sa hexa method
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
-	/// Get the actual dimension of this grid using Enum @sa Grid_dimension
-	Grid_dimension getDimensions() const;
+    /// Get the actual dimension of this grid using Enum @sa Grid_dimension
+    Grid_dimension getDimensions() const;
+
 public:
     /// Data storing the size of the grid in the 3 directions
     Data<Vec3i> d_n;
@@ -193,6 +194,7 @@ public:
     /// Data bool to set option to compute topological elements
     Data<bool> d_computeHexaList;
     Data<bool> d_computeQuadList; ///< put true if the list of Quad is needed during init (default=true)
+    Data<bool> d_computeTriangleList; ///< put true if the list of Triangles is needed during init (default=true)
     Data<bool> d_computeEdgeList; ///< put true if the list of Lines is needed during init (default=true)
     Data<bool> d_computePointList; ///< put true if the list of Points is needed during init (default=true)
     /// Data bool to set option to compute texcoords

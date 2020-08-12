@@ -5,3 +5,6 @@ ignore "TestCutting.scn"
 ignore "optitrackFullBorderFixed.scn"
 ignore "OmniCutting.scn"
 ignore "optitrackFull.scn"
+
+# GraspingManager was removed in v18.12 (deprecated since v17.12)
+ignore "optitrackGrasping.scn"

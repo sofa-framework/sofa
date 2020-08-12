@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,21 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP
+
 #include <SofaMiscForceField/MeshMatrixMass.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 using namespace sofa::defaulttype;
-
-
 
 template <>
 Vector6 MeshMatrixMass<Vec3Types, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
@@ -54,10 +47,10 @@ Vector6 MeshMatrixMass<Vec3Types, double>::getMomentum ( const core::MechanicalP
         for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
-    for(size_t i=0 ; i<_topology->getNbEdges() ; ++i )
+    for(size_t i=0 ; i<m_topology->getNbEdges() ; ++i )
     {
-        unsigned v0 = _topology->getEdge(i)[0];
-        unsigned v1 = _topology->getEdge(i)[1];
+        unsigned v0 = m_topology->getEdge(i)[0];
+        unsigned v1 = m_topology->getEdge(i)[1];
 
         // is it correct to share the edge mass between the 2 vertices?
         double m = edgeMass[i] * 0.5;
@@ -77,13 +70,6 @@ Vector6 MeshMatrixMass<Vec3Types, double>::getMomentum ( const core::MechanicalP
 }
 
 
-
-
-
-
-
-
-
 // Register in the Factory
 int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each particle")
         .add< MeshMatrixMass<Vec3Types,Vec3Types::Real> >()
@@ -92,15 +78,10 @@ int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each 
 
         ;
 
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec3Types,Vec3Types::Real>;
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec2Types,Vec2Types::Real>;
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec1Types,Vec1Types::Real>;
+template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<Vec3Types,Vec3Types::Real>;
+template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<Vec2Types,Vec2Types::Real>;
+template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<Vec1Types,Vec1Types::Real>;
 
 
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mass

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #ifndef SOFAASSIMP_CONFIG_H
 #define SOFAASSIMP_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config.h>
 
 #define ASSIMP_PLUGIN_MAJOR_VERSION ${ASSIMP_PLUGIN_MAJOR_VERSION}
 #define ASSIMP_PLUGIN_MINOR_VERSION ${ASSIMP_PLUGIN_MINOR_VERSION}

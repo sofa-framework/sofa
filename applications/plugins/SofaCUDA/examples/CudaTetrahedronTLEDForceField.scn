@@ -1,4 +1,5 @@
 <Node name="root" dt="0.0012" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="0" showBoundingTree="0" showVisualModels="1" gravity="9.81 0 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 <MultiStepAnimationLoop integrationSteps="10"/>
 
@@ -13,7 +14,7 @@
         <TetrahedronSetTopologyContainer name="volume" points="@../Liver_surface/stuffing.outputPoints" tetras="@../Liver_surface/stuffing.outputTetras"/>
         <MechanicalObject name="TetraLiverMO" template="CudaVec3f"/>
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="CudaVec3f"/>
-	<UniformMass mass="1 1 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" printLog="false" totalmass="1.5" />
+	<UniformMass mass="1 1 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" printLog="false" totalMass="1.5" />
         <CudaTetrahedronTLEDForceField name="FEM" youngModulus="6567" poissonRatio="0.45" isViscoelastic="0" isAnisotropic="0" preferredDirection="0 0.707 0.707"/>
 
 	<!-- Constraints -->

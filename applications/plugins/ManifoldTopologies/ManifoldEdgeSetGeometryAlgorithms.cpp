@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ManifoldEdgeSetGeometryAlgorithms.inl"
+#define SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <ManifoldTopologies/ManifoldEdgeSetGeometryAlgorithms.inl>
 #include <sofa/core/ObjectFactory.h>
+
 namespace sofa
 {
 
@@ -39,14 +39,13 @@ int ManifoldEdgeSetGeometryAlgorithmsClass = core::RegisterObject("ManifoldEdge 
         .add< ManifoldEdgeSetGeometryAlgorithms<Vec1Types> >()
         .add< ManifoldEdgeSetGeometryAlgorithms<Rigid3Types> >()
         .add< ManifoldEdgeSetGeometryAlgorithms<Rigid2Types> >()
-
         ;
 
-template class ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>;
-template class ManifoldEdgeSetGeometryAlgorithms<Vec2Types>;
-template class ManifoldEdgeSetGeometryAlgorithms<Vec1Types>;
-template class ManifoldEdgeSetGeometryAlgorithms<Rigid3Types>;
-template class ManifoldEdgeSetGeometryAlgorithms<Rigid2Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<Vec1Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<Rigid3Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<Rigid2Types>;
 
 
 } // namespace topology

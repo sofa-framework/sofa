@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <!--<RequiredPlugin pluginName="PluginXiCath_1_0.dll" />-->
   <RequiredPlugin pluginName="MultiThreading" />
   
@@ -23,13 +24,14 @@
       <FixedConstraint  name="FixedConstraint" indices="39" />
 	  <UncoupledConstraintCorrection name="liver1_ConstraintCorrection"/>	
       <Node name="Visu1" tags="Visual" gravity="0 -9.81 0">
-        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj"  translation="10 0 0"/>
+        <MeshObjLoader name="meshLoader_1" filename="mesh/liver-smooth.obj"  translation="10 0 0" handleSeams="1" />
+        <OglModel  name="VisualModel" src="@meshLoader_1"/>
         <BarycentricMapping name="visual mapping" input="@../dofs1" output="@VisualModel" />
       </Node>
       <Node name="Surf1" gravity="0 -9.81 0">
         <SphereLoader filename="mesh/liver.sph" />
         <MechanicalObject name="spheres" position="@[-1].position" />
-        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
         <BarycentricMapping name="sphere mapping" input="@../dofs1" output="@spheres" />
       </Node>
     </Node>
@@ -53,13 +55,14 @@
       <FixedConstraint  name="FixedConstraint" indices="64" />
 	    <UncoupledConstraintCorrection name="liver2_ConstraintCorrection"/>
       <Node name="Visu2" tags="Visual" gravity="0 -9.81 0">
-        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="-10 0 0"/>
+        <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" translation="-10 0 0" handleSeams="1" />
+        <OglModel  name="VisualModel" src="@meshLoader_0"/>
         <BarycentricMapping name="visual mapping" input="@../dofs2" output="@VisualModel" />
       </Node>
       <Node name="Surf2" gravity="0 -9.81 0">
         <SphereLoader filename="mesh/liver.sph" />
         <MechanicalObject name="spheres" position="@[-1].position" />
-        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
         <BarycentricMapping name="sphere mapping" input="@../dofs2" output="@spheres" />
       </Node>
     </Node>
@@ -83,13 +86,14 @@
       <FixedConstraint  name="FixedConstraint" indices="72" />
 	  <UncoupledConstraintCorrection name="liver3_ConstraintCorrection"/>
       <Node name="Visu3" tags="Visual" gravity="0 -9.81 0">
-        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="10 10 0"/>
+        <MeshObjLoader name="meshLoader_4" filename="mesh/liver-smooth.obj" translation="10 10 0" handleSeams="1" />
+        <OglModel  name="VisualModel" src="@meshLoader_4"/>
         <BarycentricMapping name="visual mapping" input="@../dofs3" output="@VisualModel" />
       </Node>
       <Node name="Surf3" gravity="0 -9.81 0">
         <SphereLoader filename="mesh/liver.sph" />
         <MechanicalObject name="spheres" position="@[-1].position" />
-        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
         <BarycentricMapping name="sphere mapping" input="@../dofs3" output="@spheres" />
       </Node>
     </Node>
@@ -114,13 +118,14 @@
       <FixedConstraint  name="FixedConstraint" indices="96" />
 	  <UncoupledConstraintCorrection name="liver4_ConstraintCorrection"/>
       <Node name="Visu4" tags="Visual" gravity="0 -9.81 0">
-        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="-10 10 0"/>
+        <MeshObjLoader name="meshLoader_3" filename="mesh/liver-smooth.obj" translation="-10 10 0" handleSeams="1" />
+        <OglModel  name="VisualModel" src="@meshLoader_3"/>
         <BarycentricMapping name="visual mapping" input="@../dofs4" output="@VisualModel" />
       </Node>
       <Node name="Surf4" gravity="0 -9.81 0">
         <SphereLoader filename="mesh/liver.sph" />
         <MechanicalObject name="spheres" position="@[-1].position" />
-        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
         <BarycentricMapping name="sphere mapping" input="@../dofs4" output="@spheres" />
       </Node>
     </Node>
@@ -152,13 +157,14 @@
       <!-- <FixedConstraint  name="FixedConstraint" indices="96" /> -->
 	    <!-- <UncoupledConstraintCorrection name="liver4_ConstraintCorrection"/> -->
       <Node name="ResultVisu" tags="Visual" gravity="0 -9.81 0">
-        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="0 0 0" color="blue"/>
+        <MeshObjLoader name="meshLoader_2" filename="mesh/liver-smooth.obj" translation="0 0 0" handleSeams="1" />
+        <OglModel  name="VisualModel" src="@meshLoader_2" color="blue"/>
         <BarycentricMapping name="visual mapping" input="@../ResultDofs" output="@VisualModel" />
       </Node>
       <Node name="ResultSurf" gravity="0 -9.81 0">
         <SphereLoader filename="mesh/liver.sph" />
         <MechanicalObject name="spheres" position="@[-1].position" />
-        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
         <BarycentricMapping name="sphere mapping" input="@../ResultDofs" output="@spheres" />
       </Node>
     </Node>

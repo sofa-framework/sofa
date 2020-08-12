@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,18 +60,18 @@ void LocalMinDistanceFilter::bwdInit()
 {
     if(this->isRigid())
     {
-        RigidMapping< Rigid3Types, Vec3Types > *r_mapping= NULL;
+        RigidMapping< Rigid3Types, Vec3Types > *r_mapping= nullptr;
         r_mapping = this->getContext()->get< RigidMapping< Rigid3Types, Vec3Types > >();
 
-        if(r_mapping==NULL)
+        if(r_mapping==nullptr)
         {
-            serr<<"No RigidMapping were found in the same or child node: maybe a template problem (only works for double)"<<sendl;
+            msg_error() << "No RigidMapping were found in the same or child node: maybe a template problem (only works for double)";
             this->setRigid(false);
             return;
         }
         if(!r_mapping->useX0.getValue())
         {
-            serr<<"optimization for rigid can not be used if the RigidMapping.useX0=false : cancel optim"<<sendl;
+            msg_error() << "optimization for rigid can not be used if the RigidMapping.useX0=false : cancel optim";
             this->setRigid(false);
             return;
         }
@@ -79,7 +79,7 @@ void LocalMinDistanceFilter::bwdInit()
 }
 
 
-// invalidate function is called by PointModel, LineModel or TriangleModel each time a new computation of the BoundingTree is called
+// invalidate function is called by PointCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types> or TriangleCollisionModel<sofa::defaulttype::Vec3Types> each time a new computation of the BoundingTree is called
 void LocalMinDistanceFilter::invalidate()
 {
 
@@ -94,7 +94,7 @@ void LocalMinDistanceFilter::invalidate()
 bool InfoFilter::isValid(void)
 {
     assert(m_lmdFilters != 0);
-    if (m_lmdFilters==NULL)
+    if (m_lmdFilters==nullptr)
     {
         msg_error("InfoFilter")<<"pointer m_lmdFilters is null";
         return false;

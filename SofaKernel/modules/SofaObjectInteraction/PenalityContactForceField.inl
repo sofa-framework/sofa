@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,6 @@
 
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/config.h>
 #include <cassert>
 #include <iostream>
 
@@ -145,7 +144,7 @@ void PenalityContactForceField<DataTypes>::addDForce(const sofa::core::Mechanica
 template <class DataTypes>
 SReal PenalityContactForceField<DataTypes>::getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const
 {
-    serr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error() << "PenalityContactForceField::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 

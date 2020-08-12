@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 
-#include <string.h>
+#include <cstring>
 #include <sstream>
 
 namespace sofa
@@ -45,10 +45,10 @@ ReadState::ReadState()
     , d_shift( initData(&d_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
     , d_loop( initData(&d_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , d_scalePos( initData(&d_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
-    , mmodel(NULL)
-    , infile(NULL)
-#ifdef SOFA_HAVE_ZLIB
-    , gzfile(NULL)
+    , mmodel(nullptr)
+    , infile(nullptr)
+#if SOFAGENERALLOADER_HAVE_ZLIB
+    , gzfile(nullptr)
 #endif
     , nextTime(0)
     , lastTime(0)
@@ -61,7 +61,7 @@ ReadState::~ReadState()
 {
     if (infile)
         delete infile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -78,13 +78,13 @@ void ReadState::reset()
     if (infile)
     {
         delete infile;
-        infile = NULL;
+        infile = nullptr;
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     if (gzfile)
     {
         gzclose(gzfile);
-        gzfile = NULL;
+        gzfile = nullptr;
     }
 #endif
 
@@ -93,7 +93,7 @@ void ReadState::reset()
     {
         msg_error() << "ERROR: empty filename";
     }
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
         gzfile = gzopen(filename.c_str(),"rb");
@@ -110,7 +110,7 @@ void ReadState::reset()
         {
             msg_error() << "Error opening file "<<filename;
             delete infile;
-            infile = NULL;
+            infile = nullptr;
         }
     }
     nextTime = 0;
@@ -120,11 +120,11 @@ void ReadState::reset()
 
 void ReadState::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
+    if (simulation::AnimateBeginEvent::checkEventType(event))
     {
         processReadState();
     }
-    if (/* simulation::AnimateEndEvent* ev = */simulation::AnimateEndEvent::checkEventType(event))
+    if (simulation::AnimateEndEvent::checkEventType(event))
     {
 
     }
@@ -148,7 +148,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
 {
     if (!mmodel) return false;
     if (!infile
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
         && !gzfile
 #endif
        )
@@ -158,7 +158,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
     std::string line, cmd;
     while (nextTime <= time)
     {
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
         if (gzfile)
         {
             if (gzeof(gzfile))
@@ -172,7 +172,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
             line.clear();
             char buf[4097];
             buf[0] = '\0';
-            while (gzgets(gzfile,buf,sizeof(buf))!=NULL && buf[0])
+            while (gzgets(gzfile,buf,sizeof(buf))!=nullptr && buf[0])
             {
                 size_t l = strlen(buf);
                 if (buf[l-1] == '\n')

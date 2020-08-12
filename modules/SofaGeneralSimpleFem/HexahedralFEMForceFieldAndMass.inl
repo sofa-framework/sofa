@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,6 @@
 
 #include "HexahedralFEMForceFieldAndMass.h"
 #include <sofa/core/visual/VisualParams.h>
-#include "HexahedralFEMForceField.inl"
 
 #include <SofaBaseTopology/TopologyData.inl>
 
@@ -59,13 +58,15 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::init( )
 
     this->getContext()->get(this->_topology);
 
-    if(this->_topology == NULL)
+    if(this->_topology == nullptr)
     {
-        serr << "ERROR(HexahedralFEMForceField): object must have a HexahedronSetTopology."<<sendl;
+        msg_error() << "ERROR(HexahedralFEMForceField): object must have a HexahedronSetTopology.";
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     this->reinit();
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template<class DataTypes>
@@ -403,7 +404,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::accFromF(const core::MechanicalParams*, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
-    serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented"<<sendl;
+    msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented";
     // need to built the big global mass matrix and to inverse it...
 }
 
@@ -454,7 +455,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
 template<class DataTypes>
 SReal HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/) const
 {
-    serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented"<<sendl; return 0.0;
+    msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented";
+    return 0.0;
 }
 
 

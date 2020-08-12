@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,7 +63,7 @@ protected:
 
     ProximityROI();
 
-    ~ProximityROI() {}
+    ~ProximityROI() override {}
 public:
     void init() override;
 
@@ -81,32 +81,16 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+            {
+                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                              "' found in the context node.");
                 return false; // this template is not the same as the existing MechanicalState
+            }
         }
 
         return BaseObject::canCreate(obj, context, arg);
     }
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* tObj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return core::objectmodel::BaseObject::create(tObj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const ProximityROI<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-
-protected:
 
 public:
     //Input

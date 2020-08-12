@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <Node 	 name="root"  gravity="0 -1000 0"  dt="0.04"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle name="visualStyle1"  displayFlags="showVisual" />
+
+	<MeshObjLoader name="loader_snake_body" filename="mesh/snake_body.obj" />
+	<MeshObjLoader name="loader_snake_cornea" filename="mesh/snake_cornea.obj" />
+	<MeshObjLoader name="loader_snake_yellowEye" filename="mesh/snake_yellowEye.obj" />
+	<MeshObjLoader name="loader_SOFA_pod" filename="mesh/SOFA_pod.obj" />
+
 	<LCPConstraintSolver name="lCPConstraintSolver1"  printLog="0"  initial_guess="0"  build_lcp="0"  tolerance="0.001"  maxIt="1000"  mu="0.2"  group="0" />
 	<FreeMotionAnimationLoop name="freeMotionAnimationLoop1" />
 	<DefaultPipeline name="defaultPipeline1"  verbose="0"  draw="0"  depth="15" />
@@ -13,7 +20,7 @@
 	<DefaultContactManager name="Response"  response="FrictionContact" />
 	<VisualManagerSecondaryPass name="visualManagerSecondaryPass7"  listening="1"  renderToScreen="1"  input_tags="Visu"  fragFilename="shaders/correctionAbberationChromatique.frag" />
 	<CompositingVisualLoop name="compositingVisualLoop3" />
-	<OglShader name="oglShader0"  tags="Visu"  fileVertexShader="shaders/phong.vert"  fileFragmentShader="shaders/phong.frag" />
+	<OglShader name="oglShader0"  tags="Visu"  fileVertexShaders="['shaders/phong.vert']"  fileFragmentShaders="['shaders/phong.frag']" />
 	<Node 	 name="Snake"  >
 		<SparseGridRamificationTopology name="sparseGridRamificationTopology1"  fileTopology="mesh/snake_body.obj"  n="4 12 3"  nbVirtualFinerLevels="3"  finestConnectivity="0" />
 		<EulerImplicitSolver name="cg_odesolver"  rayleighStiffness="0.03"  rayleighMass="1" />
@@ -26,22 +33,22 @@
 			<MeshObjLoader name="loader"  filename="mesh/meca_snake_900tri.obj" />
 			<MeshTopology name="meshTopology1"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
-			<TTriangleModel template="Vec3d" name="tTriangleModel1"  selfCollision="0" />
-			<TLineModel template="Vec3d" name="tLineModel1"  selfCollision="0" />
-			<TPointModel template="Vec3d" name="tPointModel1"  selfCollision="0" />
+			<TriangleCollisionModel template="Vec3d" name="tTriangleModel1"  selfCollision="0" />
+			<LineCollisionModel template="Vec3d" name="tLineModel1"  selfCollision="0" />
+			<PointCollisionModel template="Vec3d" name="tPointModel1"  selfCollision="0" />
 			<BarycentricMapping template="Vec3d,Vec3d" name="barycentricMap1"  tags="Visu"  input="@.."  output="@." />
 		</Node>
 		<Node 	 name="VisuBody"  tags="Visual"  >
-			<OglModel template="ExtVec3f" name="VisualBody"  tags="Visu"  fileMesh="mesh/snake_body.obj"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-			<BarycentricMapping template="Vec3d,ExtVec3f" name="barycentricMap2"  tags="Visu"  input="@.."  output="@VisualBody" />
+			<OglModel template="ExtVec3d" name="VisualBody"  tags="Visu"  src="@../../loader_snake_body"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<BarycentricMapping template="Vec3d,ExtVec3d" name="barycentricMap2"  tags="Visu"  input="@.."  output="@VisualBody" />
 		</Node>
 		<Node 	 name="VisuCornea"  tags="Visual"  >
-			<OglModel template="ExtVec3f" name="VisualCornea"  tags="Visu"  fileMesh="mesh/snake_cornea.obj"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-			<BarycentricMapping template="Vec3d,ExtVec3f" name="barycentricMap3"  tags="Visu"  input="@.."  output="@VisualCornea" />
+			<OglModel template="ExtVec3d" name="VisualCornea"  tags="Visu"  src="@../../loader_snake_cornea"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<BarycentricMapping template="Vec3d,ExtVec3d" name="barycentricMap3"  tags="Visu"  input="@.."  output="@VisualCornea" />
 		</Node>
 		<Node 	 name="VisuEye"  tags="Visual"  >
-			<OglModel template="ExtVec3f" name="VisualEye"  tags="Visu"  fileMesh="mesh/snake_yellowEye.obj"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-			<BarycentricMapping template="Vec3d,ExtVec3f" name="barycentricMap4"  tags="Visu"  input="@.."  output="@VisualEye" />
+			<OglModel template="ExtVec3d" name="VisualEye"  tags="Visu"  src="@../../loader_snake_yellowEye"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<BarycentricMapping template="Vec3d,ExtVec3d" name="barycentricMap4"  tags="Visu"  input="@.."  output="@VisualEye" />
 		</Node>
 	</Node>
 	<Node 	 name="Base"  >
@@ -49,27 +56,27 @@
 			<MeshObjLoader name="loader"  tags="Visu"  filename="mesh/collision_batons.obj" />
 			<MeshTopology name="meshTopology2"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
-			<TLineModel template="Vec3d" name="tLineModel2"  moving="0"  simulated="0" />
-			<TPointModel template="Vec3d" name="tPointModel2"  moving="0"  simulated="0" />
+			<LineCollisionModel template="Vec3d" name="tLineModel2"  moving="0"  simulated="0" />
+			<PointCollisionModel template="Vec3d" name="tPointModel2"  moving="0"  simulated="0" />
 		</Node>
 		<Node 	 name="Blobs"  >
 			<MeshObjLoader name="loader"  tags="Visu"  filename="mesh/collision_boules_V3.obj" />
 			<MeshTopology name="meshTopology3"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
-			<TTriangleModel template="Vec3d" name="tTriangleModel2"  moving="0"  simulated="0" />
-			<TLineModel template="Vec3d" name="tLineModel3"  moving="0"  simulated="0" />
-			<TPointModel template="Vec3d" name="tPointModel3"  moving="0"  simulated="0" />
+			<TriangleCollisionModel template="Vec3d" name="tTriangleModel2"  moving="0"  simulated="0" />
+			<LineCollisionModel template="Vec3d" name="tLineModel3"  moving="0"  simulated="0" />
+			<PointCollisionModel template="Vec3d" name="tPointModel3"  moving="0"  simulated="0" />
 		</Node>
 		<Node 	 name="Foot"  >
 			<MeshObjLoader name="loader"  tags="Visu"  filename="mesh/collision_pied.obj" />
 			<MeshTopology name="meshTopology4"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
-			<TTriangleModel template="Vec3d" name="tTriangleModel3"  moving="0"  simulated="0" />
-			<TLineModel template="Vec3d" name="tLineModel4"  moving="0"  simulated="0" />
-			<TPointModel template="Vec3d" name="tPointModel4"  moving="0"  simulated="0" />
+			<TriangleCollisionModel template="Vec3d" name="tTriangleModel3"  moving="0"  simulated="0" />
+			<LineCollisionModel template="Vec3d" name="tLineModel4"  moving="0"  simulated="0" />
+			<PointCollisionModel template="Vec3d" name="tPointModel4"  moving="0"  simulated="0" />
 		</Node>
 		<Node 	 name="Visu"  tags="Visual"  >
-			<OglModel template="ExtVec3f" name="OglModel"  tags="Visu"  fileMesh="mesh/SOFA_pod.obj"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<OglModel template="ExtVec3d" name="OglModel"  tags="Visu"  src="@../../loader_SOFA_pod"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 		</Node>
 	</Node>
 </Node>

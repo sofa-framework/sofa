@@ -1,15 +1,14 @@
 <Node name="root" dt="0.01" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels showCollisionModels" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.5" contactDistance="0.05" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <!-- A deformable square mesh -->
     <Node name="Truss" activated="true" gravity="0 0 0">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="125" tolerance="1e-16" threshold="1e-16" />
-        <!--<LULinearSolver/>-->
-        <!--<RegularGrid name="grid" min="0 0 0" max="0.1 0.01 0.01" nx="10" ny="2" nz="2" />-->
         <MeshGmshLoader name="meshLoader0" filename="mesh/truss_tetra.msh" />
         <TetrahedronSetTopologyContainer name="Container" src="@meshLoader0" />
         <TetrahedronSetTopologyModifier name="Modifier" />
@@ -19,33 +18,25 @@
         <UniformMass totalMass="0.05" />
         <BoxConstraint box="-0.001 -0.001 -0.001 0.001 0.011 0.011" />
         <TetrahedronFEMForceField name="FEM" youngModulus="300000" poissonRatio="0.45" method="large" />
-	<BoxROI box="0.099 -0.001 -0.001 0.11 0.011 0.011"/>
-	<ConstantForceField force="0 -0.1 0" />
-        <!--<BoxConstantForceField  force="0 -0.1 0" />-->
-        <!--<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="960000" assembling="0"/>-->
-        <!--<ConstantForceField points="449 459 549 559" forces="1000000 0 0"/>-->
-        <!--<BoxConstantForceField box="4.99 -5.01 -5.01 5.01 5.01 5.01" force="-100000 0 0"/>-->
+        <BoxROI box="0.099 -0.001 -0.001 0.11 0.011 0.011"/>
+        <ConstantForceField force="0 -0.1 0" />
+
         <Node name="Triangle">
             <include href="Objects/TriangleSetTopology.xml" />
             <Tetra2TriangleTopologicalMapping input="@/Truss/Container" output="@Container" />
-            <TriangleModel />
+            <TriangleCollisionModel />
             <Node name="TriangleVisual">
-                <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-                <IdentityMapping template="Vec3d,ExtVec3f" name="default12" input="@.." output="@Visual" />
+                <OglModel template="Vec3" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+                <IdentityMapping template="Vec3d,Vec3" name="default12" input="@.." output="@Visual" />
             </Node>
-            <!--<TrianglePressureForceField name="TrianglePressure" normal="0 1 0" dmin="0.049" dmax="0.051" pressure="0 5000 0"/>-->
         </Node>
         <Node name="Beam">
-            <MechanicalObject template="Rigid" name="BeamMO" position="0 0 0  0 0 0 1  0.02 0 0  0 0 0 1  0.04 0 0  0 0 0 1   0.06 0 0  0 0 0 1  0.08 0 0  0 0 0 1   0.1 0 0  0 0 0 1" />
-            <Mesh name="BeamMesh" lines="0 1 1 2 2 3 3 4 4 5" />
+            <MechanicalObject template="Rigid3d" name="BeamMO" position="0 0 0  0 0 0 1  0.02 0 0  0 0 0 1  0.04 0 0  0 0 0 1   0.06 0 0  0 0 0 1  0.08 0 0  0 0 0 1   0.1 0 0  0 0 0 1" />
+            <MeshTopology name="BeamMesh" lines="0 1 1 2 2 3 3 4 4 5" />
             <FixedConstraint name="BeamFixedConstraint" indices="0" />
-            <UniformMass vertexMass="0.001 0.001 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" totalMass="0.01" />
-            <!--<UniformMass totalMass="1"/>-->
+            <UniformMass vertexMass="0.001 0.001 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" />
             <BeamFEMForceField name="BeamFEM" radius="0.005" youngModulus="3000000000" poissonRatio="0.45" />
-            <ConstantForceField points="5" forces="0 0 0 -10 0 0" />
-            <!--<MechanicalObject template="Rigid" name="BeamMO" position="0 0 0  0 0.0704 0.7036 0.7071  0 0.05 0 0    0.0704    0.7036    0.7071 0 0.1 0 0    0.0704    0.7036    0.7071"/>-->
-            <!--<UniformMass mass="0.001 0.001 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" printLog="false" totalmass="0.005" />-->
-            <!--<MechanicalObject template="Rigid" name="BeamMO" position="0 0 0.01 0 0 0 1 0.05 0 0.01 0 0 0 1 0.1 0 0.01 0 0 0 1"/>-->
+            <ConstantForceField indices="5" forces="0 0 0 -10 0 0" />
             <BarycentricMapping isMechanical="true" input="@TrussMO" output="@BeamMO" />
             <Node name="VisuThread">
                 <MechanicalObject name="Quads" />
@@ -60,11 +51,4 @@
         </Node>
     </Node>
 </Node>
-<!--<Node name="Beam">
-                        <MechanicalObject template="Rigid" name="BeamMO" position="0 0 0  0 0 0 1   0.05 0 0  0 0 0 1   0.1 0 0  0 0 0 1"/>
-                        <Mesh name="BeamMesh" lines="0 1 1 2"/>
-                        <FixedConstraint name="BeamFixedConstraint" indices="0" />
-                        <UniformMass vertexMass="0.001 0.001 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" totalMass="1"/>
-                        <BeamFEMForceField name="BeamFEM" radius="0.1" youngModulus="900" poissonRatio="0.45"/>
-                        <ConstantForceField points="2" forces="0 -1 0 0 0 0"/>
-		</Node>-->
+

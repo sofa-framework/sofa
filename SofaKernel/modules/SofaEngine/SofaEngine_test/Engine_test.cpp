@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -251,6 +251,19 @@ TEST_F(Engine_test , check_propagation )
 
 namespace sofa {
 
+// specialization for special cases
+template<>
+void DataEngine_test< TestDataEngine<component::engine::JoinPoints<defaulttype::Vec3Types> > >::preInit()
+{
+    m_engineInput->findData("points")->read("0.0 0.0 0.0");
+}
+
+template<>
+void DataEngine_test< TestDataEngine<component::engine::RandomPointDistributionInSurface<defaulttype::Vec3Types> > >::preInit()
+{
+    m_engineInput->findData("vertices")->read("-0.5 -0.5 -0.5  1 0 0  0 1 0  0 0 1");
+    m_engineInput->findData("triangles")->read("0 2 1  0 1 3  0 3 2   1 2 3");
+}
 
 // testing every engines of SofaEngine here
 
@@ -263,7 +276,7 @@ typedef testing::Types<
 TestDataEngine< component::engine::SelectLabelROI<unsigned int> >,
 TestDataEngine< component::engine::SelectConnectedLabelsROI<unsigned int> >,
 TestDataEngine< component::engine::DilateEngine<defaulttype::Vec3Types> >, // DilateEngine only defined for Vec3dTypes
-
+TestDataEngine< component::engine::JoinPoints<defaulttype::Vec3Types> >, 
 TestDataEngine< component::engine::GenerateCylinder<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::ExtrudeSurface<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::ExtrudeQuadsAndGenerateHexas<defaulttype::Vec3Types> >,
@@ -286,7 +299,6 @@ TestDataEngine< component::engine::ValuesFromIndices<int> >,
 TestDataEngine< component::engine::IndicesFromValues<int> >,
 TestDataEngine< component::engine::IndexValueMapper<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::ROIValueMapper >,
-TestDataEngine< component::engine::JoinPoints<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::MapIndices<int> >,
 TestDataEngine< component::engine::RandomPointDistributionInSurface<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::SmoothMeshEngine<defaulttype::Vec3Types> >,
@@ -310,7 +322,6 @@ TestDataEngine< component::engine::SumEngine<defaulttype::Vector3> >,
 TestDataEngine< component::engine::DifferenceEngine<defaulttype::Vector3> >
 > TestTypes; // the types to instanciate.
 
-
 //// ========= Tests to run for each instanciated type
 TYPED_TEST_CASE(DataEngine_test, TestTypes);
 
@@ -320,5 +331,6 @@ TYPED_TEST( DataEngine_test , basic_test )
     EXPECT_MSG_NOEMIT(Error) ;
     this->run_basic_test();
 }
+
 
 }// namespace sofa

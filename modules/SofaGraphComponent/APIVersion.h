@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -18,10 +18,6 @@
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
-/******************************************************************************
-*  Contributors:                                                              *
-*  - damien.marchal@univ-lille1.fr                                            *
 ******************************************************************************/
 #ifndef SOFA_APIVERSION_H
 #define SOFA_APIVERSION_H
@@ -46,11 +42,11 @@ public:
     SOFA_CLASS(APIVersion, BaseObject);
 
     const std::string& getApiLevel() ;
-    virtual void init() override ;
+    void init() override ;
 
 protected:
     APIVersion() ;
-    virtual ~APIVersion() ;
+    ~APIVersion() override ;
     void checkInputData() ;
 private:
     Data<std::string>  d_level ; ///< The API Level of the scene ('17.06', '17.12', '18.06', ...)

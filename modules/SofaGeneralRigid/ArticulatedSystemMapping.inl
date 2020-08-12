@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,8 +42,8 @@ namespace mapping
 
 template <class TIn, class TInRoot, class TOut>
 ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping ()
-    : ahc(NULL)
-    , m_fromModel(NULL), m_toModel(NULL), m_fromRootModel(NULL)
+    : ahc(nullptr)
+    , m_fromModel(nullptr), m_toModel(nullptr), m_fromRootModel(nullptr)
 {
 
 }
@@ -54,13 +54,13 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
 
     if(this->getFromModels1().empty())
     {
-        serr << "Error while iniatilizing ; input Model not found" << sendl;
+        msg_error() << "While iniatilizing ; input Model not found.";
         return;
     }
 
     if(this->getToModels().empty())
     {
-        serr << "Error while iniatilizing ; output Model not found" << sendl;
+        msg_error() << "While iniatilizing ; output Model not found.";
         return;
     }
 
@@ -91,7 +91,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     helper::WriteAccessor<Data<OutVecCoord> > xtoData = *m_toModel->write(core::VecCoordId::position());
     apply(xtoData.wref(),
             xfrom,
-            m_fromRootModel == NULL ? NULL : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue());
+            m_fromRootModel == nullptr ? nullptr : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue());
     Inherit::init();
     /*
     OutVecDeriv& vto = m_toModel->read(core::ConstVecDerivId::velocity())->getValue();

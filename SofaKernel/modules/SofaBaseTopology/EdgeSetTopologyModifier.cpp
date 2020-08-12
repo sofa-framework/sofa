@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <functional>
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/helper/AdvancedTimer.h>
 
 // Use BOOST GRAPH LIBRARY :
 
@@ -66,7 +66,7 @@ void EdgeSetTopologyModifier::init()
 
 void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 {
-	if (CHECK_TOPOLOGY)
+	if (m_container->d_checkTopology.getValue())
 	{
 		// check if the 2 vertices are different
 		if (e[0] == e[1])
@@ -80,7 +80,7 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 		// Important: getEdgeIndex creates the edge vertex shell array
 		if (m_container->hasEdgesAroundVertex())
 		{
-			if (m_container->getEdgeIndex(e[0], e[1]) != -1)
+            if (m_container->getEdgeIndex(e[0], e[1]) != InvalidID)
 			{
 				msg_error() << "Edge " << e[0] << ", " << e[1] << " already exists.";
 				return;
@@ -88,16 +88,24 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 		}
 	}
 
-    if (m_container->hasEdgesAroundVertex())
-    {
-        size_t edgeId = m_container->getNumberOfEdges();
+    unsigned int nbrP = m_container->getNbPoints();
+    for(unsigned int i=0; i<2; ++i)
+        if (e[i] + 1 > nbrP) // point not well init
+        {
+            nbrP = e[i] + 1;
+            m_container->setNbPoints(nbrP);
+        }
 
-        sofa::helper::vector< EdgeID > &shell0 = m_container->getEdgesAroundVertexForModification( e[0] );
-        shell0.push_back((EdgeID)edgeId);
+    if (m_container->m_edgesAroundVertex.size() != nbrP)
+        m_container->m_edgesAroundVertex.resize(nbrP);
 
-        sofa::helper::vector< EdgeID > &shell1 = m_container->getEdgesAroundVertexForModification( e[1] );
-        shell1.push_back((EdgeID)edgeId);
-    }
+    size_t edgeId = m_container->getNumberOfEdges();
+
+    sofa::helper::vector< EdgeID > &shell0 = m_container->m_edgesAroundVertex[e[0]];
+    shell0.push_back((EdgeID)edgeId);
+
+    sofa::helper::vector< EdgeID > &shell1 = m_container->m_edgesAroundVertex[e[1]];
+    shell1.push_back((EdgeID)edgeId);
 
     helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = m_container->d_edge;
     m_edge.push_back(e);
@@ -619,26 +627,35 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<EdgeID> &in
 void EdgeSetTopologyModifier::removeEdges(const sofa::helper::vector< EdgeID >& edgeIds,
         const bool removeIsolatedPoints, const bool resetTopoChange)
 {
+    sofa::helper::AdvancedTimer::stepBegin("removeEdges");
+
     sofa::helper::vector<EdgeID> edgeIds_filtered;
     for (size_t i = 0; i < edgeIds.size(); i++)
     {
         if( edgeIds[i] >= m_container->getNumberOfEdges())
-            dmsg_error() << "Unable to remoev and edges: "<< edgeIds[i] <<" is out of bound and won't be removed." ;
+            dmsg_warning() << "Unable to remoev and edges: "<< edgeIds[i] <<" is out of bound and won't be removed." ;
         else
             edgeIds_filtered.push_back(edgeIds[i]);
     }
 
-    /// add the topological changes in the queue
+    // add the topological changes in the queue
+    sofa::helper::AdvancedTimer::stepBegin("removeEdgesWarning");
     removeEdgesWarning(edgeIds_filtered);
+
     // inform other objects that the edges are going to be removed
+    sofa::helper::AdvancedTimer::stepNext ("removeEdgesWarning", "propagateTopologicalChanges");
     if (resetTopoChange)
         propagateTopologicalChanges();
     else
         propagateTopologicalChangesWithoutReset();
+
     // now destroy the old edges.
+    sofa::helper::AdvancedTimer::stepNext ("propagateTopologicalChanges", "removeEdgesProcess");
     removeEdgesProcess( edgeIds_filtered, removeIsolatedPoints );
 
+    sofa::helper::AdvancedTimer::stepEnd("removeEdgesProcess");
     m_container->checkTopology();
+    sofa::helper::AdvancedTimer::stepEnd("removeEdges");
 }
 
 void EdgeSetTopologyModifier::removeItems(const sofa::helper::vector< EdgeID >& items)
@@ -661,9 +678,11 @@ void EdgeSetTopologyModifier::renumberPoints( const sofa::helper::vector<EdgeID>
 
 void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges)
 {
+    sofa::helper::AdvancedTimer::stepBegin("addEdges");
     size_t nEdges = m_container->getNumberOfEdges();
 
-    /// actually add edges in the topology container
+    // actually add edges in the topology container
+    sofa::helper::AdvancedTimer::stepBegin("addEdgesProcess");
     addEdgesProcess(edges);
 
     sofa::helper::vector<EdgeID> edgesIndex;
@@ -675,19 +694,26 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
     }
 
     // add topology event in the stack of topological events
+    sofa::helper::AdvancedTimer::stepNext ("addEdgesProcess", "addEdgesWarning");
     addEdgesWarning(edges.size(), edges, edgesIndex);
 
     // inform other objects that the edges are already added
+    sofa::helper::AdvancedTimer::stepNext ("addEdgesWarning", "propagateTopologicalChanges");
     propagateTopologicalChanges();
+    sofa::helper::AdvancedTimer::stepEnd("propagateTopologicalChanges");
+
+    sofa::helper::AdvancedTimer::stepEnd("addEdges");
 }
 
 void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges,
         const sofa::helper::vector< sofa::helper::vector< EdgeID > > & ancestors,
         const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs)
 {
+    sofa::helper::AdvancedTimer::stepBegin("addEdges with ancestors");
     size_t nEdges = m_container->getNumberOfEdges();
 
     /// actually add edges in the topology container
+    sofa::helper::AdvancedTimer::stepBegin("addEdgesProcess");
     addEdgesProcess(edges);
 
     sofa::helper::vector<EdgeID> edgesIndex;
@@ -699,10 +725,15 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
     }
 
     // add topology event in the stack of topological events
+    sofa::helper::AdvancedTimer::stepNext ("addEdgesProcess", "addEdgesWarning");
     addEdgesWarning(edges.size(), edges, edgesIndex, ancestors, baryCoefs);
 
     // inform other objects that the edges are already added
+    sofa::helper::AdvancedTimer::stepNext ("addEdgesWarning", "propagateTopologicalChanges");
     propagateTopologicalChanges();
+    sofa::helper::AdvancedTimer::stepEnd("propagateTopologicalChanges");
+
+    sofa::helper::AdvancedTimer::stepEnd("addEdges with ancestors");
 }
 
 void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges,
@@ -959,6 +990,7 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isEdgeTopologyDirty()) // edge Data has not been touched
         return PointSetTopologyModifier::propagateTopologicalEngineChanges();
 
+    sofa::helper::AdvancedTimer::stepBegin("EdgeSetTopologyModifier::propagateTopologicalEngineChanges");
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
@@ -966,15 +998,13 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-			if (CHECK_TOPOLOGY)
-				msg_info() << "Performing: " << topoEngine->getName();
-
             topoEngine->update();
         }
     }
 
     m_container->cleanEdgeTopologyFromDirty();
     PointSetTopologyModifier::propagateTopologicalEngineChanges();
+    sofa::helper::AdvancedTimer::stepEnd("EdgeSetTopologyModifier::propagateTopologicalEngineChanges");
 }
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -183,14 +183,6 @@ protected :
     Data<float> showArrowSize; ///< size of the axis
     Data<int> drawMode; ///< Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
 };
-
-//#if  !defined(INTENSITYPROFILEREGISTRATIONFORCEFIELD_CPP)
-////extern template class SOFA_REGISTRATION_API IntensityProfileRegistrationForceField<Vec3Types>;
-//
-//#ifdef SOFA_WITH_FLOAT
-//extern template class SOFA_REGISTRATION_API IntensityProfileRegistrationForceField<Vec3fTypes>;
-//#endif
-//#endif
 
 } //
 

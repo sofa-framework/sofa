@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,7 +57,7 @@ void CenterPointTopologicalMapping::init()
     {
         toModel->setNbPoints(fromModel->getNbHexahedra());
 
-        PointSetGeometryAlgorithms<Vec3Types> *geomAlgo = NULL;
+        PointSetGeometryAlgorithms<Vec3Types> *geomAlgo = nullptr;
         toModel->getContext()->get(geomAlgo);
 
         geomAlgo->getDOF()->resize(fromModel->getNbHexahedra());

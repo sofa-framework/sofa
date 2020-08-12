@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_CPP
+
 #include <SofaBaseMechanics/DiagonalMass.inl>
 #include <sofa/core/ObjectFactory.h>
 
@@ -27,14 +28,9 @@ using sofa::core::visual::VisualParams ;
 using sofa::core::MechanicalParams ;
 using sofa::helper::ReadAccessor ;
 
-namespace sofa
+namespace sofa::component::mass
 {
 
-namespace component
-{
-
-namespace mass
-{
 using sofa::core::objectmodel::ComponentState ;
 
 using namespace sofa::defaulttype;
@@ -136,7 +132,7 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
 {
     if(this->getContext()==nullptr){
         dmsg_error(this) << "Calling the initRigidImpl function is only possible if the object has a valid associated context \n" ;
-        m_componentstate = ComponentState::Invalid ;
+        this->d_componentState.setValue(ComponentState::Invalid) ;
 
         //return;
     }
@@ -144,18 +140,26 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
     if(this->mstate == nullptr ){
         msg_error(this) << "DiagonalComponent can only be used on node with an associated '<MechanicalObject>' \n"
                            "To remove this warning you can: add a <MechanicalObject> to the node. \n" ;
-        m_componentstate = ComponentState::Invalid ;
+        this->d_componentState.setValue(ComponentState::Invalid) ;
 
         //return;
     }
 
-    _topology = this->getContext()->getMeshTopology();
 
-    if(_topology){
-        msg_warning(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+    
+    if(m_topology){
+        msg_error(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
                              "The component cannot be initialized and thus is de-activated. \n "
                              "To supress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
-        m_componentstate = ComponentState::Invalid ;
+        this->d_componentState.setValue(ComponentState::Invalid) ;
 
         //return;
     }
@@ -178,7 +182,7 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
         d_vertexMass.endEdit();
     }
 
-    m_componentstate = ComponentState::Valid ;
+    this->d_componentState.setValue(ComponentState::Valid) ;
 }
 
 template <class RigidTypes, class RigidMass>
@@ -320,9 +324,4 @@ template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid2Types,Rigid2Mass>;
 
 
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mass

@@ -1,29 +1,28 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2018 MGH, INRIA, USTL, UJF, CNRS                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_H
 #define SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_H
+
+#include <SofaGeneralAnimationLoop/config.h>
 
 #include <sofa/core/behavior/MixedInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -32,7 +31,6 @@
 #include <sofa/core/MechanicalParams.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
-#include <SofaMiscMapping/config.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
@@ -63,7 +61,7 @@ public:
 
     }
 
-    virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override
     {
         ctime_t t0 = begin(node, map);
         map->applyJT(cparams, res, res);
@@ -72,20 +70,20 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAccumulateJacobian"; }
+    const char* getClassName() const override { return "MechanicalAccumulateJacobian"; }
 
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return false;
     }
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -123,7 +121,7 @@ using sofa::core::objectmodel::ComponentState ;
  * An example using this component can be found in examples/Components/animationLoop/MechanicalMatrixMapper.pyscn
 */
 template<typename TDataTypes1, typename TDataTypes2>
-class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper : public MixedInteractionForceField<TDataTypes1, TDataTypes2>
+class MechanicalMatrixMapper : public MixedInteractionForceField<TDataTypes1, TDataTypes2>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(MechanicalMatrixMapper, TDataTypes1, TDataTypes2), SOFA_TEMPLATE2(MixedInteractionForceField, TDataTypes1, TDataTypes2));
@@ -164,6 +162,9 @@ protected:
 
     Data<helper::vector<std::string>> d_forceFieldList;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::simulation::Node , BaseLink::FLAG_STOREPATH > l_nodeToParse;
+    Data <bool> d_stopAtNodeToParse;
+    Data <bool> d_skipJ1tKJ1;
+    Data <bool> d_skipJ2tKJ2;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMechanicalState , BaseLink::FLAG_NONE > l_mechanicalState;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMass , BaseLink::FLAG_NONE > l_mappedMass;
     MultiLink  < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseForceField, BaseLink::FLAG_NONE > l_forceField;
@@ -176,11 +177,11 @@ protected:
 public:
 
     ////////////////////////// Inherited from BaseObject //////////////////////
-    virtual void init() override;
+    void init() override;
     ///////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from ForceField //////////////////////
-    virtual void addForce(const MechanicalParams* mparams,
+    void addForce(const MechanicalParams* mparams,
                           DataVecDeriv1& f1,
                           DataVecDeriv2& f2,
                           const DataVecCoord1& x1,
@@ -188,16 +189,16 @@ public:
                           const DataVecDeriv1& v1,
                           const DataVecDeriv2& v2) override;
 
-    virtual void addDForce(const MechanicalParams* mparams,
+    void addDForce(const MechanicalParams* mparams,
                            DataVecDeriv1& df1,
                            DataVecDeriv2& df2,
                            const DataVecDeriv1& dx1,
                            const DataVecDeriv2& dx2) override;
 
-    virtual void addKToMatrix(const MechanicalParams* mparams,
+    void addKToMatrix(const MechanicalParams* mparams,
                               const MultiMatrixAccessor* matrix ) override;
 
-    virtual double getPotentialEnergy(const MechanicalParams* mparams,
+    double getPotentialEnergy(const MechanicalParams* mparams,
                                       const DataVecCoord1& x1, const DataVecCoord2& x2) const override;
     ///////////////////////////////////////////////////////////////////////////
 
@@ -268,10 +269,16 @@ protected:
     using MixedInteractionForceField<TDataTypes1, TDataTypes2>::mstate1 ;
     using MixedInteractionForceField<TDataTypes1, TDataTypes2>::mstate2 ;
     using MixedInteractionForceField<TDataTypes1, TDataTypes2>::getContext ;
-    using BaseObject::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
 
 };
+
+#if !defined(SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_CPP)
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Rigid3Types>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Rigid3Types>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Vec1Types>;
+#endif
 
 } // namespace interactionforcefield
 

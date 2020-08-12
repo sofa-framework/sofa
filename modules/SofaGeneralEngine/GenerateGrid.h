@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,7 +67,7 @@ public:
 
     GenerateGrid();
 
-    ~GenerateGrid() {}
+    ~GenerateGrid() override {}
 
     void init() override;
 
@@ -75,15 +75,6 @@ public:
 
     void doUpdate() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const GenerateGrid<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
 
 public:
     Data<VecCoord> d_outputX; ///< ouput position

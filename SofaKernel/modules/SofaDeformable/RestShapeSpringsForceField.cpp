@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,13 +52,13 @@ void RestShapeSpringsForceField<Rigid3Types>::addForce(const core::MechanicalPar
 
     f1.resize(p1.size());
 
-    if (recompute_indices.getValue())
+    if (d_recompute_indices.getValue())
     {
         recomputeIndices();
     }
 
-    const VecReal& k = stiffness.getValue();
-    const VecReal& k_a = angularStiffness.getValue();
+    const VecReal& k = d_stiffness.getValue();
+    const VecReal& k_a = d_angularStiffness.getValue();
 
     for (unsigned int i = 0; i < m_indices.size(); i++)
     {
@@ -107,8 +107,8 @@ void RestShapeSpringsForceField<Rigid3Types>::addDForce(const core::MechanicalPa
     sofa::helper::WriteAccessor< DataVecDeriv > df1 = df;
     sofa::helper::ReadAccessor< DataVecDeriv > dx1 = dx;
 
-    const VecReal& k = stiffness.getValue();
-    const VecReal& k_a = angularStiffness.getValue();
+    const VecReal& k = d_stiffness.getValue();
+    const VecReal& k_a = d_angularStiffness.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int curIndex = 0;
@@ -125,8 +125,8 @@ void RestShapeSpringsForceField<Rigid3Types>::addDForce(const core::MechanicalPa
 template<>
 void RestShapeSpringsForceField<Rigid3Types>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
-    const VecReal& k = stiffness.getValue();
-    const VecReal& k_a = angularStiffness.getValue();
+    const VecReal& k = d_stiffness.getValue();
+    const VecReal& k_a = d_angularStiffness.getValue();
     const int N = 6;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
@@ -156,7 +156,7 @@ void RestShapeSpringsForceField<Rigid3Types>::addKToMatrix(const core::Mechanica
 template<>
 void RestShapeSpringsForceField<Rigid3Types>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
+    if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
     vparams->drawTool()->saveLastState();
@@ -183,7 +183,7 @@ void RestShapeSpringsForceField<Rigid3Types>::draw(const core::visual::VisualPar
             vertices.push_back(p0[index].getCenter());
         }
     }
-    vparams->drawTool()->drawLines(vertices,5, Vec4f(springColor.getValue()));
+    vparams->drawTool()->drawLines(vertices,5, Vec4f(d_springColor.getValue()));
     vparams->drawTool()->restoreLastState();
 }
 

@@ -77,7 +77,7 @@ protected:
     
 public:
 
-	void init() {
+    void init() override {
 		this->core::behavior::Mass<DataTypes>::init();
 
         typedef std::runtime_error error;
@@ -111,7 +111,7 @@ public:
 	typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
 #ifndef SOFA_NO_OPENGL
-	void draw(const core::visual::VisualParams* vparams) {
+    void draw(const core::visual::VisualParams* vparams) override {
 		
         if ( !vparams->displayFlags().getShowBehaviorModels() || !_draw.getValue() )
             return;
@@ -140,7 +140,7 @@ public:
 
 	void addForce(const core::MechanicalParams* , 
 	              DataVecDeriv& _f, 
-	              const DataVecCoord& _x, const DataVecDeriv& _v) {
+                  const DataVecCoord& _x, const DataVecDeriv& _v) override {
 
 		helper::WriteAccessor< DataVecDeriv > f(_f);
 		helper::ReadAccessor< DataVecCoord >  x(_x);
@@ -181,7 +181,7 @@ public:
 	// coordonnées locales (ce que sofa ne fait pas). du coup on tape
 	// dans this->mstate->getX pour l'obtenir mais l'api devrait gérer ca
     SReal getKineticEnergy( const core::MechanicalParams*,
-	                         const DataVecDeriv& _v  ) const {
+                             const DataVecDeriv& _v  ) const override {
 		helper::ReadAccessor< DataVecDeriv >  v(_v);
 		
         SReal res = 0;
@@ -205,7 +205,7 @@ public:
 
 	// TODO maybe sign is wrong 
     SReal getPotentialEnergy( const core::MechanicalParams*,
-	                           const DataVecCoord& _x  ) const {
+                               const DataVecCoord& _x  ) const override {
 		helper::ReadAccessor< DataVecCoord >  x(_x);
 				
 		defaulttype::Vec3d g ( this->getContext()->getGravity() );
@@ -225,7 +225,7 @@ public:
     virtual void addMDx(const core::MechanicalParams* ,
 	                    DataVecDeriv& _f, 
 	                    const DataVecDeriv& _dx, 
-                        SReal factor) {
+                        SReal factor) override {
         helper::WriteAccessor< DataVecDeriv > f(_f);
         helper::ReadAccessor< DataVecDeriv > dx(_dx);
 
@@ -246,7 +246,7 @@ public:
 
 
     virtual void addMToMatrix(const core::MechanicalParams* mparams,
-	                          const sofa::core::behavior::MultiMatrixAccessor* matrix) {
+                              const sofa::core::behavior::MultiMatrixAccessor* matrix) override {
 		
 		sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix( this->mstate );
 		const unsigned size = defaulttype::DataTypeInfo<typename DataTypes::Deriv>::size();

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,7 +81,6 @@ protected:
 
     sofa::component::topology::EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap; ///< map between edge indices and their pressure
 
-    sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::TriangleSetTopologyContainer* _completeTopology;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
 
@@ -96,16 +95,22 @@ protected:
     Data<Coord> p_binormal; ///< binormal of the 2D plane
     Data<bool> p_showForces; ///< draw arrows of edge pressures
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<EdgePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
     EdgePressureForceField();
 
     virtual ~EdgePressureForceField();
+
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override;
+    void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

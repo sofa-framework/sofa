@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,7 +67,7 @@ protected:
         , d_showHexaIndices(initData(&d_showHexaIndices, (bool)false, "showHexaIndices", "Debug : view Hexa indices"))
         , d_drawHexahedra(initData(&d_drawHexahedra, false, "drawHexahedra", "if true, draw the Hexahedron in the topology"))
         , d_drawScaleHexahedra(initData(&d_drawScaleHexahedra, float(1.0), "drawScaleHexahedra", "Scale of the hexahedra (between 0 and 1; if <1.0, it produces gaps between the hexahedra)"))
-        , d_drawColorHexahedra(initData(&d_drawColorHexahedra, sofa::defaulttype::Vec3f(1.0f,0.5f,0.0f), "drawColorHexahedra", "RGB code color used to draw hexahedra."))
+        , d_drawColorHexahedra(initData(&d_drawColorHexahedra, sofa::helper::types::RGBAColor(1.0f,0.5f,0.0f, 1.0f), "drawColorHexahedra", "RGB code color used to draw hexahedra."))
     {
         core::objectmodel::Base::addAlias(&d_drawHexahedra, "drawHexa");
         core::objectmodel::Base::addAlias(&d_drawHexahedra, "drawHexahedron");
@@ -154,13 +154,13 @@ public:
     */
     void writeMSHfile(const char *filename) const;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
     Data<bool> d_showHexaIndices; ///< Debug : view Hexa indices
     Data<bool> d_drawHexahedra; ///< if true, draw the Hexahedron in the topology
     Data<float> d_drawScaleHexahedra; ///< Scale of the hexahedra (between 0 and 1; if <1.0, it produces gaps between the hexahedra)
-    Data<sofa::defaulttype::Vec3f> d_drawColorHexahedra; ///< RGB code color used to draw hexahedra.
+    Data<sofa::helper::types::RGBAColor> d_drawColorHexahedra; ///< RGB code color used to draw hexahedra.
 	/// include cubature points
 	NumericalIntegrationDescriptor<Real,3> hexahedronNumericalIntegration;
 };

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ManifoldTriangleSetTopologyAlgorithms.inl"
+#define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <ManifoldTopologies/ManifoldTriangleSetTopologyAlgorithms.inl>
 #include <sofa/core/ObjectFactory.h>
+
 namespace sofa
 {
 
@@ -39,9 +39,10 @@ int ManifoldTriangleSetTopologyAlgorithmsClass = core::RegisterObject("ManifoldT
         .add< ManifoldTriangleSetTopologyAlgorithms<Vec2Types> >()
         .add< ManifoldTriangleSetTopologyAlgorithms<Vec1Types> >()
         ;
-template class ManifoldTriangleSetTopologyAlgorithms<Vec3Types>;
-template class ManifoldTriangleSetTopologyAlgorithms<Vec2Types>;
-template class ManifoldTriangleSetTopologyAlgorithms<Vec1Types>;
+
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<Vec3Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<Vec2Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<Vec1Types>;
 
 } // namespace topology
 

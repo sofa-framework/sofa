@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -43,7 +43,7 @@
 
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
-#include <SofaComponentMain/init.h>
+#include <SofaMain/init.h>
 
 #include <sofa/core/objectmodel/Context.h>
 
@@ -106,7 +106,6 @@ using sofa::core::Mapping;
 using sofa::core::behavior::MechanicalState;
 using sofa::core::State;
 using sofa::core::objectmodel::New;
-using sofa::defaulttype::ExtVectorTypes;
 
 using sofa::component::topology::MeshTopology;
 using sofa::component::projectiveconstraintset::FixedConstraint;
@@ -253,13 +252,9 @@ int main(int argc, char** argv)
     cylOglModel->setColor("red");
 
 
-    typedef BarycentricMapping< Vec3dTypes, ExtVec3fTypes > BarycentricMapping3d_to_Ext3f;
-    BarycentricMapping3d_to_Ext3f::SPtr barycentricMapping = New<BarycentricMapping3d_to_Ext3f>(mechanicalObject.get(), cylOglModel.get());
+    typedef BarycentricMapping< Vec3dTypes, Vec3fTypes > BarycentricMapping3d_to_Vec3f;
+    BarycentricMapping3d_to_Vec3f::SPtr barycentricMapping = New<BarycentricMapping3d_to_Vec3f>(mechanicalObject.get(), cylOglModel.get());
     barycentricMapping->setName("Barycentric");
-    //barycentricMapping->setPathInputObject("../..");
-    //barycentricMapping->setPathOutputObject("Visual");
-
-
 
 
     // collision node
@@ -275,7 +270,7 @@ int main(int argc, char** argv)
 
     MechanicalObject3d::SPtr cylSurfMechanicalObject = New<MechanicalObject3d>();
 
-    TriangleModel::SPtr triangleModel = New<TriangleModel>();
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr triangleModel = New<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
 
     typedef BarycentricMapping< Vec3dTypes, Vec3dTypes > BarycentricMechanicalMapping3d_to_3d;
     BarycentricMechanicalMapping3d_to_3d::SPtr cylSurfBarycentricMapping = New<BarycentricMechanicalMapping3d_to_3d>(mechanicalObject.get(), cylSurfMechanicalObject.get());

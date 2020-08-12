@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
-#include <string.h>
+#include <cstring>
 #include <sofa/defaulttype/BoundingBox.h>
 
 namespace sofa
@@ -459,18 +459,21 @@ void Fluid3D::updateVisual()
         points[i].n.normalize();
 }
 
-void Fluid3D::computeBBox(const core::ExecParams*  params , bool /*onlyVisible*/)
+void Fluid3D::computeBBox(const core::ExecParams*  params , bool onlyVisible)
 {
-    vec3 center = f_center.getValue(params);
-    const real& cellwidth = f_cellwidth.getValue(params);
-    SReal size[3] = { (f_nx.getValue()-1)*cellwidth, (f_ny.getValue(params)-1)*cellwidth, (f_nz.getValue(params)-1)*cellwidth };
+    SOFA_UNUSED(params);
+    SOFA_UNUSED(onlyVisible);
+
+    vec3 center = f_center.getValue();
+    const real& cellwidth = f_cellwidth.getValue();
+    SReal size[3] = { (f_nx.getValue()-1)*cellwidth, (f_ny.getValue()-1)*cellwidth, (f_nz.getValue()-1)*cellwidth };
     SReal minBBox[3] = { center[0]-size[0]/2, center[1]-size[1]/2, center[2]-size[2]/2 };
     SReal maxBBox[3];
     for (int c=0; c<3; c++)
     {
         maxBBox[c] = minBBox[c]+size[c];
     }
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
 } // namespace eulerianfluid

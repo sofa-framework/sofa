@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,7 +68,7 @@ public:
     Cell cellIndex;  ///< used by external classes to retrieve the index of the cell where barycentric weights are computed from
 
 
-    void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
+    void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1) override
     {
         InternalShapeFunction<spatial_dimensions>::computeShapeFunction( this, childPosition, this->cellIndex, ref, w, dw, ddw, cell );
     }
@@ -590,7 +590,7 @@ public:
 
 
     /// adapted from BarycentricMapperMeshTopology::init()
-    virtual void init()
+    virtual void init() override
     {
         Inherit::init();
 

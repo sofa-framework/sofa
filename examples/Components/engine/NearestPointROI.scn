@@ -1,0 +1,65 @@
+<Node name="root" dt="0.02">
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <Node name="AttachTwoWay">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <Node name="M1">
+            <MechanicalObject />
+            <UniformMass vertexMass="1" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="1" xmax="4" ymin="0" ymax="3" zmin="0" zmax="9" />
+            <BoxConstraint box="0.9 -0.1 -0.1 4.1 3.1 0.1" />
+            <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
+        </Node>
+        <Node name="M2">
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+            <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <MechanicalObject />
+            <UniformMass vertexMass="1" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="1" xmax="4" ymin="0" ymax="3" zmin="9" zmax="18" />
+            <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
+        </Node>
+        <Node name="M3">
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+            <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <MechanicalObject />
+            <UniformMass vertexMass="1" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="1" xmax="4" ymin="0" ymax="3" zmin="18" zmax="27" />
+            <!--<BoxConstraint box="0.9 -0.1 26.9 4.1 3.1 27.1" />-->
+            <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
+        </Node>
+        <AttachConstraint object1="@M1" object2="@M2" twoWay="true" indices1="144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159" indices2="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" constraintFactor="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"/>
+        <AttachConstraint object1="@M2" object2="@M3" twoWay="true" indices1="144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159" indices2="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" constraintFactor="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"/>
+    </Node>
+    <Node name="AttachTwoWayWithRadius">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <Node name="M1">
+            <MechanicalObject name="mo"/>
+            <UniformMass vertexMass="1" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="6" xmax="9" ymin="0" ymax="3" zmin="0" zmax="9" />
+            <BoxConstraint box="5.9 -0.1 -0.1 9.1 3.1 0.1" />
+            <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
+        </Node>
+        <Node name="M2">
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+            <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <MechanicalObject name="mo"/>
+            <UniformMass vertexMass="1" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="6" xmax="9" ymin="0" ymax="3" zmin="9" zmax="18" />
+            <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
+        </Node>
+        <Node name="M3">
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+            <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <MechanicalObject name="mo"/>
+            <UniformMass vertexMass="1" />
+            <RegularGridTopology nx="4" ny="4" nz="10" xmin="6" xmax="9" ymin="0" ymax="3" zmin="18" zmax="27" />
+            <!--<BoxConstraint box="-4.1 -0.1 26.9 -0.9 3.1 27.1" />-->
+            <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
+        </Node>
+        <NearestPointROI template="Vec3" name="np1" object1="@./M1/mo" object2="@./M2/mo" radius="0.1"/>
+        <NearestPointROI template="Vec3" name="np2" object1="@./M2/mo" object2="@./M3/mo" radius="0.1"/>
+        <AttachConstraint object1="@M1" object2="@M2" twoWay="true" indices1="@np1.indices1" indices2="@np1.indices2"/>
+        <AttachConstraint object1="@M2" object2="@M3" twoWay="true" indices1="@np2.indices1" indices2="@np2.indices2"/>
+    </Node>
+</Node>

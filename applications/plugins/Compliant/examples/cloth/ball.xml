@@ -2,5 +2,5 @@
   <MechanicalObject template="Vec3" position="0 0 0" name="dofs" />
   <UniformMass />
   <FixedConstraint indices="0" />
-  <SphereModel radius="0.5" />
+  <SphereCollisionModel radius="0.5" />
 </Node>

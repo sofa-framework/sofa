@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,9 +66,6 @@ public:
     Data< OutImageTypes > outputImage;
     Data<helper::SVector<helper::SVector<To> > > VoxelData; ///< Data associed to each non null input voxel
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageDataDisplay<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
-
     ImageDataDisplay()    :   Inherited()
       , inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
       , outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
@@ -78,9 +75,9 @@ public:
         outputImage.setReadOnly(true);
     }
 
-    virtual ~ImageDataDisplay() {}
+    ~ImageDataDisplay() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&VoxelData);
         addInput(&inputImage);
@@ -88,11 +85,11 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         const helper::SVector<helper::SVector<To> >& dat = this->VoxelData.getValue();
         raImagei in(this->inputImage);

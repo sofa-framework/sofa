@@ -34,10 +34,10 @@ template<class TDataTypes>
 class TBulletCapsuleModel : public TCapsuleModel<TDataTypes>,public BulletCollisionModel
 {
 public:
-    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletCapsuleModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TTriangleModel, TDataTypes),BulletCollisionModel);
+    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletCapsuleModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
     SOFA_CLASS(SOFA_TEMPLATE(TBulletCapsuleModel, TDataTypes),SOFA_TEMPLATE(TCapsuleModel, TDataTypes));
 
-    //typedef typename GCapsuleModel::DataTypes DataTypes;
+    //typedef typename GCapsuleCollisionModel<sofa::defaulttype::Vec3Types>::DataTypes DataTypes;
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::VecCoord VecCoord;

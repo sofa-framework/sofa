@@ -1,19 +1,19 @@
 <!-- MechanicalStateController example -->
 <Node name="root" dt="0.005" gravity="0 -10 0">
+    <RequiredPlugin pluginName='SofaMiscCollision'/> 
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="InstrumentEdgeSet">
-        <EulerImplicit rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
+        <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
         <BTDLinearSolver template="BTDMatrix6d" printLog="false" verbose="false" />
         <MeshGmshLoader name="loader" filename="mesh/edgeSet.msh" />
-        <MechanicalObject src="@loader" name="MechanicalDOFs" template="Rigid" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1" />
-        <include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid" />
-        <MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true" />
-        <EdgeSetController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" />
+        <MechanicalObject src="@loader" name="MechanicalDOFs" template="Rigid3d" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1" />
+        <include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid3d" />
+        <MechanicalStateController template="Rigid3d" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true" />
         <FixedConstraint name="FixedConstraint" indices="0" />
         <UniformMass vertexMass="1 1 0.1 0 0 0 0.1 0 0 0 0.1" printLog="false" /> 
 

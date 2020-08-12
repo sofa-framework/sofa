@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,27 +39,27 @@ using sofa::core::objectmodel::ComponentState;
 
 
 template<class DataTypes>
-TCylinderModel<DataTypes>::TCylinderModel():
+CylinderCollisionModel<DataTypes>::CylinderCollisionModel():
       d_cylinder_radii(initData(&d_cylinder_radii, "radii","Radius of each cylinder")),
       d_cylinder_heights(initData(&d_cylinder_heights,"heights","The cylinder heights")),
       d_default_radius(initData(&d_default_radius,Real(0.5),"defaultRadius","The default radius")),
       d_default_height(initData(&d_default_height,Real(2),"defaultHeight","The default height")),
       d_default_local_axis(initData(&d_default_local_axis,typename DataTypes::Vec3(0.0, 1.0, 0.0),"defaultLocalAxis", "The default local axis cylinder is modeled around")),
-      m_mstate(NULL)
+      m_mstate(nullptr)
 {
     enum_type = CYLINDER_TYPE;
 }
 
 template<class DataTypes>
-TCylinderModel<DataTypes>::TCylinderModel(core::behavior::MechanicalState<DataTypes>* mstate)
-    : TCylinderModel()
+CylinderCollisionModel<DataTypes>::CylinderCollisionModel(core::behavior::MechanicalState<DataTypes>* mstate)
+    : CylinderCollisionModel()
 {
     m_mstate = mstate;
     enum_type = CYLINDER_TYPE;
 }
 
 template<class DataTypes>
-void TCylinderModel<DataTypes>::resize(int size)
+void CylinderCollisionModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -103,14 +103,14 @@ void TCylinderModel<DataTypes>::resize(int size)
 }
 
 template<class DataTypes>
-void TCylinderModel<DataTypes>::init()
+void CylinderCollisionModel<DataTypes>::init()
 {
     this->CollisionModel::init();
     m_mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (m_mstate==NULL)
+    if (m_mstate==nullptr)
     {
-        msg_error() << "TCylinderModel requires a Rigid Mechanical Model";
-        m_componentstate = ComponentState::Invalid;
+        msg_error() << "CylinderCollisionModel requires a Rigid Mechanical Model";
+        d_componentState.setValue(ComponentState::Invalid);
         return;
     }
 
@@ -119,10 +119,10 @@ void TCylinderModel<DataTypes>::init()
 
 
 template<class DataTypes>
-void TCylinderModel<DataTypes>::computeBoundingTree(int maxDepth)
+void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     using namespace sofa::defaulttype;
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int ncyl = m_mstate->getSize();
 
     bool updated = false;
@@ -175,7 +175,7 @@ void TCylinderModel<DataTypes>::computeBoundingTree(int maxDepth)
 
 
 template<class DataTypes>
-void TCylinderModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int i)
+void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int i)
 {
     using namespace sofa::defaulttype;
     Vec<4,float> colour(getColor4f());
@@ -193,7 +193,7 @@ void TCylinderModel<DataTypes>::draw(const core::visual::VisualParams* vparams,i
 }
 
 template<class DataTypes>
-void TCylinderModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {
@@ -204,36 +204,36 @@ void TCylinderModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     }
 
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 
 
 template<class DataTypes>
-typename TCylinderModel<DataTypes>::Real TCylinderModel< DataTypes >::defaultRadius() const
+typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel< DataTypes >::defaultRadius() const
 {
     return this->d_default_radius.getValue();
 }
 
 template<class DataTypes>
-const typename TCylinderModel<DataTypes>::Coord & TCylinderModel< DataTypes >::center(int i)const{
+const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel< DataTypes >::center(int i)const{
     return DataTypes::getCPos((m_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
 }
 
 template<class DataTypes>
-typename TCylinderModel<DataTypes>::Real TCylinderModel< DataTypes >::radius(int i) const
+typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel< DataTypes >::radius(int i) const
 {
     return this->d_cylinder_radii.getValue()[i];
 }
 
 template<class DataTypes>
-typename TCylinderModel<DataTypes>::Coord TCylinderModel< DataTypes >::point1(int i) const
+typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel< DataTypes >::point1(int i) const
 {
     return  center(i) - axis(i) * height(i)/2.0;
 }
 
 template<class DataTypes>
-typename TCylinderModel<DataTypes>::Coord TCylinderModel< DataTypes >::point2(int i) const
+typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel< DataTypes >::point2(int i) const
 {
     return  center(i) + axis(i) * height(i)/2.0;
 }
@@ -258,7 +258,7 @@ typename TCylinder<DataTypes>::Real TCylinder<DataTypes >::radius() const
 
 
 template<class DataTypes>
-const typename TCylinderModel<DataTypes>::Coord & TCylinderModel<DataTypes >::velocity(int index) const {
+const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel<DataTypes >::velocity(int index) const {
     return DataTypes::getDPos(((m_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
 }
 
@@ -267,12 +267,12 @@ template<class DataTypes>
 const typename TCylinder<DataTypes>::Coord & TCylinder<DataTypes >::v() const {return this->model->velocity(this->index);}
 
 template<class DataTypes>
-const sofa::defaulttype::Quaternion TCylinderModel<DataTypes >::orientation(int index)const{
+const sofa::defaulttype::Quaternion CylinderCollisionModel<DataTypes >::orientation(int index)const{
     return m_mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
 template<class DataTypes>
-typename TCylinderModel<DataTypes>::Coord TCylinderModel<DataTypes >::axis(int index) const {
+typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel<DataTypes >::axis(int index) const {
     Coord ax = d_cylinder_local_axes.getValue()[index];
 
     const sofa::defaulttype::Quaternion & ori = orientation(index);
@@ -280,13 +280,13 @@ typename TCylinderModel<DataTypes>::Coord TCylinderModel<DataTypes >::axis(int i
 }
 
 template<class DataTypes>
-typename TCylinderModel<DataTypes>::Coord TCylinderModel<DataTypes>::local_axis(int index) const {
+typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel<DataTypes>::local_axis(int index) const {
     Coord ax = d_cylinder_local_axes.getValue()[index];
     return ax;
 }
 
 template<class DataTypes>
-typename TCylinderModel<DataTypes>::Real TCylinderModel<DataTypes>::height(int index) const {
+typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel<DataTypes>::height(int index) const {
     return ((d_cylinder_heights.getValue()))[index];
 }
 
@@ -296,17 +296,17 @@ template<class DataTypes>
 }
 
 template<class DataTypes>
-Data< typename TCylinderModel<DataTypes>::VecReal> & TCylinderModel<DataTypes >::writeRadii(){
+Data< typename CylinderCollisionModel<DataTypes>::VecReal> & CylinderCollisionModel<DataTypes >::writeRadii(){
     return d_cylinder_radii;
 }
 
 template<class DataTypes>
-Data< typename TCylinderModel<DataTypes>::VecReal > & TCylinderModel<DataTypes >::writeHeights(){
+Data< typename CylinderCollisionModel<DataTypes>::VecReal > & CylinderCollisionModel<DataTypes >::writeHeights(){
     return d_cylinder_heights;
 }
 
 template<class DataTypes>
-Data< typename TCylinderModel<DataTypes>::VecAxisCoord > & TCylinderModel<DataTypes >::writeLocalAxes(){
+Data< typename CylinderCollisionModel<DataTypes>::VecAxisCoord > & CylinderCollisionModel<DataTypes >::writeLocalAxes(){
     return d_cylinder_local_axes;
 }
 

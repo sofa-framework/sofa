@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,7 +50,6 @@
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
 #include <sofa/helper/vector.h>
-#include <sofa/helper/system/config.h>
 
 #include <sofa/simulation/Simulation.h>
 
@@ -63,6 +62,8 @@ namespace sofa
 namespace component
 {
 
+using namespace topology;
+
 namespace mapping
 {
 
@@ -70,6 +71,8 @@ using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Matrix3;
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vec3d;
+using sofa::core::objectmodel::ComponentState;
+
 // 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
 typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
@@ -86,10 +89,18 @@ typedef typename sofa::core::topology::BaseMeshTopology::SeqQuads SeqQuads;
 typedef typename sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
 typedef typename sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
 
+template <typename T, typename V>
+static bool is_a(const V * topology) {
+    return dynamic_cast<const T *>(topology) != nullptr;
+}
+
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper)
     : Inherit1 ( from, to )
-    , m_mapper(initLink("mapper","Internal mapper created depending on the type of topology"), mapper)
+    , d_mapper(initLink("mapper","Internal mapper created depending on the type of topology"), mapper)
+    , d_input_topology(initLink("input_topology", "Input topology container (usually the surrounding domain)."))
+    , d_output_topology(initLink("output_topology", "Output topology container (usually the immersed domain)."))
+
 
 {
     if (mapper)
@@ -97,160 +108,190 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::S
 }
 
 template <class TIn, class TOut>
-BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology )
+BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::State<Out>* to, BaseMeshTopology * input_topology )
     : Inherit1 ( from, to )
-    , m_mapper (initLink("mapper","Internal mapper created depending on the type of topology"))
+    , d_mapper (initLink("mapper","Internal mapper created depending on the type of topology"))
+    , d_input_topology(initLink("input_topology", "Input topology container (usually the surrounding domain)."))
+    , d_output_topology(initLink("output_topology", "Output topology container (usually the immersed domain)."))
 {
-    if (topology)
-    {
-        createMapperFromTopology ( topology );
+    if (input_topology) {
+        d_input_topology.set(input_topology);
+        populateTopologies();
+        createMapperFromTopology ();
     }
 }
 
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology * topology )
+void BarycentricMapping<TIn, TOut>::populateTopologies()
+{
+    if (! d_input_topology.get()) {
+        if (! this->fromModel) {
+            msg_error() << "No input mechanical state found. Consider setting the '" << this->fromModel.getName() << "' attribute.";
+        } else {
+            BaseMeshTopology * topology = nullptr;
+            this->fromModel->getContext()->get(topology);
+            if (topology) {
+                d_input_topology.set(topology);
+            } else {
+                msg_error() << "No input topology found. Consider setting the '" << d_input_topology.getName() << "' attribute. ";
+            }
+        }
+    }
+
+    if (! d_output_topology.get()) {
+        if (! this->toModel) {
+            msg_error() << "No output mechanical state found. Consider setting the '" << this->toModel.getName() << "' attribute.";
+        } else {
+            BaseMeshTopology * topology = nullptr;
+            this->toModel->getContext()->get(topology);
+            if (topology) {
+                d_output_topology.set(topology);
+            }
+        }
+    }
+}
+
+template <class TIn, class TOut>
+void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
 {
     using sofa::core::behavior::BaseMechanicalState;
+    using sofa::core::topology::TopologyContainer;
+    using sofa::component::topology::SparseGridTopology;
 
-    m_mapper = nullptr;
+    using RegularGridMapper = BarycentricMapperRegularGridTopology< InDataTypes, OutDataTypes >;
+    using SparseGridMapper =  BarycentricMapperSparseGridTopology< InDataTypes, OutDataTypes >;
+    using MeshMapper = BarycentricMapperMeshTopology< InDataTypes, OutDataTypes >;
+    using HexahedronSetMapper =  BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes>;
+    using TetrahedronSetMapper = BarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes>;
+    using QuadSetMapper = BarycentricMapperQuadSetTopology<InDataTypes, OutDataTypes>;
+    using TriangleSetMapper = BarycentricMapperTriangleSetTopology<InDataTypes, OutDataTypes>;
+    using EdgeSetMapper = BarycentricMapperEdgeSetTopology<InDataTypes, OutDataTypes>;
 
-    topology::PointSetTopologyContainer* toTopoCont;
-    this->toModel->getContext()->get(toTopoCont);
+    auto input_topology_container = d_input_topology.get();
+    auto output_topology_container = dynamic_cast<PointSetTopologyContainer*> (d_output_topology.get());
 
-    core::topology::TopologyContainer* fromTopoCont = nullptr;
+    if (!input_topology_container)
+        return;
 
-    if (dynamic_cast< core::topology::TopologyContainer* >(topology) != nullptr)
-    {
-        fromTopoCont = dynamic_cast< core::topology::TopologyContainer* >(topology);
-    }
-    else if (topology == nullptr)
-    {
-        this->fromModel->getContext()->get(fromTopoCont);
-    }
+    // Output topology container could be null, as most of the mappers do not need it.
 
-    if (fromTopoCont != nullptr)
-    {
-        topology::HexahedronSetTopologyContainer* t1 = dynamic_cast< topology::HexahedronSetTopologyContainer* >(fromTopoCont);
-        if (t1 != nullptr)
-        {
-            typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexahedronSetMapper;
-            m_mapper = sofa::core::objectmodel::New<HexahedronSetMapper>(t1, toTopoCont);
+    d_mapper = nullptr;
+    RegularGridTopology* rgt = nullptr;
+    SparseGridTopology* sgt = nullptr;
+
+    // Regular Grid Topology
+    if (is_a<RegularGridTopology>(input_topology_container) ) {
+        rgt = dynamic_cast<RegularGridTopology*>(input_topology_container);
+        if (rgt->hasVolume()) {
+            msg_info() << "Creating RegularGridMapper";
+            d_mapper = sofa::core::objectmodel::New<RegularGridMapper>(rgt, output_topology_container);
         }
-        else
-        {
-            topology::TetrahedronSetTopologyContainer* t2 = dynamic_cast<topology::TetrahedronSetTopologyContainer*>(fromTopoCont);
-            if (t2 != nullptr)
-            {
-                typedef BarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes> TetrahedronSetMapper;
-                m_mapper = sofa::core::objectmodel::New<TetrahedronSetMapper>(t2, toTopoCont);
-            }
-            else
-            {
-                topology::QuadSetTopologyContainer* t3 = dynamic_cast<topology::QuadSetTopologyContainer*>(fromTopoCont);
-                if (t3 != nullptr)
-                {
-                    typedef BarycentricMapperQuadSetTopology<InDataTypes, OutDataTypes> QuadSetMapper;
-                    m_mapper = sofa::core::objectmodel::New<QuadSetMapper>(t3, toTopoCont);
-                }
-                else
-                {
-                    topology::TriangleSetTopologyContainer* t4 = dynamic_cast<topology::TriangleSetTopologyContainer*>(fromTopoCont);
-                    if (t4 != nullptr)
-                    {
-                        typedef BarycentricMapperTriangleSetTopology<InDataTypes, OutDataTypes> TriangleSetMapper;
-                        m_mapper = sofa::core::objectmodel::New<TriangleSetMapper>(t4, toTopoCont);
-                    }
-                    else
-                    {
-                        topology::EdgeSetTopologyContainer* t5 = dynamic_cast<topology::EdgeSetTopologyContainer*>(fromTopoCont);
-                        if ( t5 != nullptr )
-                        {
-                            typedef BarycentricMapperEdgeSetTopology<InDataTypes, OutDataTypes> EdgeSetMapper;
-                            m_mapper = sofa::core::objectmodel::New<EdgeSetMapper>(t5, toTopoCont);
-                        }
-                    }
-                }
-            }
-        }
+        goto end;
     }
-    else
-    {
-        using sofa::component::topology::RegularGridTopology;
 
-        RegularGridTopology* rgt = dynamic_cast< RegularGridTopology* >(topology);
-
-        if (rgt != nullptr && rgt->isVolume())
-        {
-            typedef BarycentricMapperRegularGridTopology< InDataTypes, OutDataTypes > RegularGridMapper;
-
-            m_mapper = sofa::core::objectmodel::New<RegularGridMapper>(rgt, toTopoCont);
+    // Sparse Grid Topology
+    if (is_a<SparseGridTopology>(input_topology_container) ) {
+        sgt = dynamic_cast<SparseGridTopology*>(input_topology_container);
+        if (sgt->hasVolume()) {
+            msg_info() << "Creating SparseGridMapper";
+            d_mapper = sofa::core::objectmodel::New<SparseGridMapper>(sgt, output_topology_container);
         }
-        else
-        {
-            using sofa::component::topology::SparseGridTopology;
-
-            SparseGridTopology* sgt = dynamic_cast< SparseGridTopology* >(topology);
-            if (sgt != nullptr && sgt->isVolume())
-            {
-                typedef BarycentricMapperSparseGridTopology< InDataTypes, OutDataTypes > SparseGridMapper;
-                m_mapper = sofa::core::objectmodel::New<SparseGridMapper>(sgt, toTopoCont);
-            }
-            else // generic MeshTopology
-            {
-                using sofa::core::topology::BaseMeshTopology;
-
-                typedef BarycentricMapperMeshTopology< InDataTypes, OutDataTypes > MeshMapper;
-                BaseMeshTopology* bmt = dynamic_cast< BaseMeshTopology* >(topology);
-                m_mapper = sofa::core::objectmodel::New<MeshMapper>(bmt, toTopoCont);
-            }
-        }
+        goto end;
     }
-    if (m_mapper)
-    {
-        m_mapper->setName("mapper");
-        this->addSlave(m_mapper.get());
-        m_mapper->maskFrom = this->maskFrom;
-        m_mapper->maskTo = this->maskTo;
+
+    // Hexahedron Topology
+    if (is_a<HexahedronSetTopologyContainer>(input_topology_container)) {
+        msg_info() << "Creating HexahedronSetMapper";
+        d_mapper = sofa::core::objectmodel::New<HexahedronSetMapper>(
+            dynamic_cast<HexahedronSetTopologyContainer*>(input_topology_container), output_topology_container);
+        goto end;
+    }
+
+    // Tetrahedron Topology
+    if (is_a<TetrahedronSetTopologyContainer>(input_topology_container)) {
+        msg_info() << "Creating TetrahedronSetMapper";
+        d_mapper = sofa::core::objectmodel::New<TetrahedronSetMapper >(
+            dynamic_cast<TetrahedronSetTopologyContainer*>(input_topology_container), output_topology_container);
+        goto end;
+    }
+
+    // Quad Topology
+    if (is_a<QuadSetTopologyContainer>(input_topology_container)) {
+        msg_info() << "Creating QuadSetMapper";
+        d_mapper = sofa::core::objectmodel::New<QuadSetMapper >(
+            dynamic_cast<QuadSetTopologyContainer*>(input_topology_container), output_topology_container);
+        goto end;
+    }
+
+    // Triangle Topology
+    if (is_a<TriangleSetTopologyContainer>(input_topology_container)) {
+        msg_info() << "Creating TriangleSetMapper";
+        d_mapper = sofa::core::objectmodel::New<TriangleSetMapper >(
+            dynamic_cast<TriangleSetTopologyContainer*>(input_topology_container), output_topology_container);
+        goto end;
+    }
+
+    // Edge Topology
+    if (is_a<EdgeSetTopologyContainer>(input_topology_container)) {
+        msg_info() << "Creating EdgeSetMapper";
+        d_mapper = sofa::core::objectmodel::New<EdgeSetMapper >(
+            dynamic_cast<EdgeSetTopologyContainer*>(input_topology_container), output_topology_container);
+        goto end;
+    }
+
+    // Generic Mesh Topology
+    d_mapper = sofa::core::objectmodel::New<MeshMapper>(input_topology_container, output_topology_container);
+
+end:
+    if (d_mapper) {
+        this->addSlave(d_mapper.get());
+        d_mapper->maskFrom = this->maskFrom;
+        d_mapper->maskTo = this->maskTo;
     }
 }
 
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::init()
 {
-    topology_from = this->fromModel->getContext()->getMeshTopology();
-    topology_to = this->toModel->getContext()->getMeshTopology();
+    this->d_componentState.setValue(ComponentState::Invalid) ;
 
     Inherit1::init();
 
-    if ( m_mapper == NULL ) // try to create a mapper according to the topology of the In model
+    populateTopologies();
+
+    if ( d_mapper == nullptr ) // try to create a mapper according to the topology of the In model
     {
-        if ( topology_from!=NULL )
-        {
-            createMapperFromTopology ( topology_from );
+        createMapperFromTopology ( );
+    }
+
+    if ( d_mapper == nullptr)
+    {
+        if (d_input_topology.get()) {
+            msg_error() << "No compatible input topology found. Make sure the input topology ('" << d_input_topology.getPath()
+                        << "') is a class derived from BaseMeshTopology.";
         }
+
+        return;
     }
 
-    if ( m_mapper != NULL )
-    {
-        if (useRestPosition.getValue())
-            m_mapper->init ( ((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
-        else
-            m_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
-    }
+    if (!this->toModel)
+        return;
+
+    if (useRestPosition.getValue())
+        d_mapper->init ( ((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
     else
-    {
-        msg_error() << "Barycentric mapping does not understand topology.";
-    }
+        d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
 
+    this->d_componentState.setValue(ComponentState::Valid) ;
 }
 
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::reinit()
 {
-    if ( m_mapper != NULL )
+    if ( d_mapper != nullptr )
     {
-        m_mapper->clear();
-        m_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
+        d_mapper->clear();
+        d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
     }
 }
 
@@ -260,10 +301,10 @@ void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * mparams
 {
     SOFA_UNUSED(mparams);
 
-    if (m_mapper != NULL)
+    if (d_mapper != nullptr)
     {
-        m_mapper->resize( this->toModel );
-        m_mapper->apply(*out.beginWriteOnly(), in.getValue());
+        d_mapper->resize( this->toModel );
+        d_mapper->apply(*out.beginWriteOnly(), in.getValue());
         out.endEdit();
     }
 }
@@ -274,9 +315,9 @@ void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * mpara
     SOFA_UNUSED(mparams);
 
     typename Out::VecDeriv* out = _out.beginEdit();
-    if (m_mapper != NULL)
+    if (d_mapper != nullptr)
     {
-        m_mapper->applyJ(*out, in.getValue());
+        d_mapper->applyJ(*out, in.getValue());
     }
     _out.endEdit();
 }
@@ -287,9 +328,9 @@ void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * mpar
 {
     SOFA_UNUSED(mparams);
 
-    if (m_mapper != NULL)
+    if (d_mapper != nullptr)
     {
-        m_mapper->applyJT(*out.beginEdit(), in.getValue());
+        d_mapper->applyJT(*out.beginEdit(), in.getValue());
         out.endEdit();
     }
 }
@@ -298,11 +339,11 @@ void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * mpar
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* BarycentricMapping<TIn, TOut>::getJ()
 {
-    if (m_mapper!=NULL )
+    if (d_mapper!=nullptr )
     {
         const size_t outStateSize = this->toModel->getSize();
         const size_t inStateSize = this->fromModel->getSize();
-        const sofa::defaulttype::BaseMatrix* matJ = m_mapper->getJ((int)outStateSize, (int)inStateSize);
+        const sofa::defaulttype::BaseMatrix* matJ = d_mapper->getJ((int)outStateSize, (int)inStateSize);
 
         return matJ;
     }
@@ -316,6 +357,7 @@ template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if ( !vparams->displayFlags().getShowMappings() ) return;
+    if (this->d_componentState.getValue() != ComponentState::Valid ) return;
 
     // Draw model (out) points
     const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();
@@ -328,8 +370,8 @@ void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpara
 
     // Draw mapping line between models
     const InVecCoord& in = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
-    if ( m_mapper!=NULL )
-        m_mapper->draw(vparams,out,in);
+    if ( d_mapper!=nullptr )
+        d_mapper->draw(vparams,out,in);
 
 }
 
@@ -339,9 +381,9 @@ void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * cpara
 {
     SOFA_UNUSED(cparams);
 
-    if (m_mapper!=NULL )
+    if (d_mapper!=nullptr )
     {
-        m_mapper->applyJT(*out.beginEdit(), in.getValue());
+        d_mapper->applyJT(*out.beginEdit(), in.getValue());
         out.endEdit();
     }
 }
@@ -350,8 +392,12 @@ void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * cpara
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topology* t )
 {
-    SOFA_UNUSED(t);
-    reinit(); // we now recompute the entire mapping when there is a topologychange
+    //foward topological modifications to the mapper
+    if (this->d_mapper.get()){
+        this->d_mapper->processTopologicalChanges(((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(),
+                                                  ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue(),
+                                                  t);
+    }
 }
 
 #ifdef BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
@@ -360,24 +406,27 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
 {
     using core::topology::TopologyChange;
 
-    if (t != this->fromTopology) return;
+    auto input_topology = d_input_topology.get();
+    auto output_topology = d_output_topology.get();
 
-    if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
+    if (t != input_topology) return;
+
+    if ( input_topology->beginChange() == input_topology->endChange() )
         return;
 
-    MechanicalState< In >* mStateFrom = NULL;
-    MechanicalState< Out >* mStateTo = NULL;
+    MechanicalState< In >* mStateFrom = nullptr;
+    MechanicalState< Out >* mStateTo = nullptr;
 
-    this->fromTopology->getContext()->get(mStateFrom);
-    this->toTopology->getContext()->get(mStateTo);
+    input_topology->getContext()->get(mStateFrom);
+    output_topology->getContext()->get(mStateTo);
 
-    if ((mStateFrom == NULL) || (mStateTo == NULL))
+    if ((mStateFrom == nullptr) || (mStateTo == nullptr))
         return;
 
     const typename MechanicalState< In >::VecCoord& in = *(mStateFrom->getX0());
     const typename MechanicalState< Out >::VecCoord& out = *(mStateTo->getX0());
 
-    for (std::list< const TopologyChange *>::const_iterator it = this->fromTopology->beginChange(), itEnd = this->fromTopology->endChange(); it != itEnd; ++it)
+    for (std::list< const TopologyChange *>::const_iterator it = input_topology->beginChange(), itEnd = input_topology->endChange(); it != itEnd; ++it)
     {
         const core::topology::TopologyChangeType& changeType = (*it)->getChangeType();
 
@@ -385,7 +434,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
         {
         case core::topology::ENDING_EVENT :
         {
-            const helper::vector< topology::Triangle >& triangles = this->fromTopology->getTriangles();
+            const helper::vector< topology::Triangle >& triangles = input_topology->getTriangles();
             helper::vector< Mat3x3d > bases;
             helper::vector< Vector3 > centers;
 
@@ -437,7 +486,7 @@ const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::
     typedef typename Mapper::MatrixType mat_type;
     const sofa::defaulttype::BaseMatrix* matJ = getJ();
 
-    const mat_type* mat = dynamic_cast<const mat_type*>(matJ);
+    const auto * mat = dynamic_cast<const mat_type*>(matJ);
     assert( mat );
 
     eigen.copyFrom( *mat );   // woot
@@ -450,8 +499,8 @@ const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::updateForceMask()
 {
-    if( m_mapper )
-        m_mapper->updateForceMask();
+    if( d_mapper )
+        d_mapper->updateForceMask();
 }
 
 } // namespace mapping

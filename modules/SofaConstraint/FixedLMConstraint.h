@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,26 +72,12 @@ protected:
     FixedLMConstraintInternalData<DataTypes> data;
     friend class FixedLMConstraintInternalData<DataTypes>;
 
-
-    FixedLMConstraint( MechanicalState *dof)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
-        , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    {
-        pointHandler = new FCPointHandler(this, &f_indices);
-    }
-
-    FixedLMConstraint()
-        : f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    {
-        pointHandler = new FCPointHandler(this, &f_indices);
-    }
+    FixedLMConstraint( MechanicalState *dof = nullptr);
 
     ~FixedLMConstraint()
     {
-        if (pointHandler)
-            delete pointHandler;
+        if (m_pointHandler)
+            delete m_pointHandler;
     }
 
 public:
@@ -108,16 +94,6 @@ public:
     void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex) override;
     void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order) override;
 
-
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-    static std::string templateName(const FixedLMConstraint<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
     bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const override
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
@@ -128,6 +104,8 @@ public:
     SetIndex f_indices; ///< List of the index of particles to be fixed
     Data<double> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<FixedLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
@@ -154,9 +132,8 @@ protected :
     SetIndexArray idxX, idxY, idxZ;
     std::map< unsigned int, Coord> restPosition;
 
-    sofa::core::topology::BaseMeshTopology* topology;
 
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
 };
 

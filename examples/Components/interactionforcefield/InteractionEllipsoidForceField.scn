@@ -1,22 +1,23 @@
 <!-- Mechanical InteractionEllipsoidForceField Example -->
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showInteractionForceFields showVisual" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse name="Response" />
+    <DefaultContactManager name="Response" />
     <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
     <Node name="RotatingObstacle">
-        <Euler name="odesolver" printLog="false" />
-        <MechanicalObject name="MS2" template="Rigid" position="0 5 3 0 0 0 1" velocity="0 0 0 -0.1 0 0" />
+        <EulerExplicitSolver name="odesolver" printLog="false" />
+        <MechanicalObject name="MS2" template="Rigid3d" position="0 5 3 0 0 0 1" velocity="0 0 0 -0.1 0 0" />
         <UniformMass totalMass="1" />
         <PartialFixedConstraint indices="0" fixedDirections="1 1 1 0 0 0" />
     </Node>
     <Node name="SquareCloth1">
-        <EulerImplicit name="odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject name="MS1" />
         <UniformMass totalMass="100" />
-        <RegularGrid nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+        <RegularGridTopology nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <BoxROI name="box1" box="-12 7 12 -10 7 12" />
         <FixedConstraint indices="@box1.indices"/>
         <BoxROI name="box2" box="-12 7 12 -10 7 12" />

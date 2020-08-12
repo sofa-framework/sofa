@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,7 +72,7 @@ protected:
 
     SphereROI();
 
-    ~SphereROI() {}
+    ~SphereROI() override {}
 public:
     void init() override;
 
@@ -90,8 +90,12 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+            {
+                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                              "' found in the context node.");
                 return false; // this template is not the same as the existing MechanicalState
+            }
         }
 
         return BaseObject::canCreate(obj, context, arg);
@@ -104,19 +108,7 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SphereROI<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-
 protected:
-
 	bool isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
     bool isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
     bool isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
@@ -166,7 +158,7 @@ public:
     Data<bool> p_drawTriangles; ///< Draw Triangles
     Data<bool> p_drawQuads; ///< Draw Quads
     Data<bool> p_drawTetrahedra; ///< Draw Tetrahedra
-    Data<double> _drawSize; ///< rendering size for box and topological elements
+    Data<float> _drawSize; ///< rendering size for box and topological elements
 
 };
 
@@ -182,7 +174,6 @@ template<> void SphereROI<defaulttype::Rigid3Types>::doUpdate();
 #if  !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)
 extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Vec3Types>;
 extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Rigid3Types>;
- 
 #endif
 
 } // namespace engine

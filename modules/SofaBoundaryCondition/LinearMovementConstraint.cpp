@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,15 +36,27 @@ namespace component
 namespace projectiveconstraintset
 {
 
+template <> SOFA_BOUNDARY_CONDITION_API
+void LinearMovementConstraint<defaulttype::Rigid3Types>::init()
+{    
+    this->core::behavior::ProjectiveConstraintSet<defaulttype::Rigid3Types>::init();
+
+    x0.resize(0);
+    nextM = prevM = Deriv();
+
+    currentTime = -1.0;
+    finished = false;
+}
+
+
 //declaration of the class, for the factory
 int LinearMovementConstraintClass = core::RegisterObject("translate given particles")
         .add< LinearMovementConstraint<defaulttype::Vec3Types> >()
         .add< LinearMovementConstraint<defaulttype::Vec2Types> >()
         .add< LinearMovementConstraint<defaulttype::Vec1Types> >()
         .add< LinearMovementConstraint<defaulttype::Vec6Types> >()
-        .add< LinearMovementConstraint<defaulttype::Rigid3Types> >()
+        .add< LinearMovementConstraint<defaulttype::Rigid3Types> >();
 
-        ;
 
 template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3Types>;
 template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2Types>;

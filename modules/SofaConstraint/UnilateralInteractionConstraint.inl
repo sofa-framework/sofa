@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,7 +42,7 @@ UnilateralInteractionConstraint<DataTypes>::UnilateralInteractionConstraint(Mech
     , epsilon(Real(0.001))
     , yetIntegrated(false)
     , customTolerance(0.0)
-    , contactsStatus(NULL)
+    , contactsStatus(nullptr)
 {
 }
 
@@ -315,7 +315,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(const co
         break;
 
     default :
-        serr << "UnilateralInteractionConstraint doesn't implement " << cparams->getName() << " constraint violation\n";
+        msg_error() << "UnilateralInteractionConstraint doesn't implement " << cparams->getName() << " constraint violation\n";
         break;
     }
 }
@@ -359,7 +359,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(const c
     if(contactsStatus)
     {
         delete[] contactsStatus;
-        contactsStatus = NULL;
+        contactsStatus = nullptr;
     }
 
     if (contacts.size() > 0)
@@ -373,7 +373,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(const c
         Contact& c = contacts[i];
         if(c.mu > 0.0)
         {
-            UnilateralConstraintResolutionWithFriction* ucrwf = new UnilateralConstraintResolutionWithFriction(c.mu, NULL, &contactsStatus[i]);
+            UnilateralConstraintResolutionWithFriction* ucrwf = new UnilateralConstraintResolutionWithFriction(c.mu, nullptr, &contactsStatus[i]);
             ucrwf->setTolerance(customTolerance);
             resTab[offset] = ucrwf;
 
@@ -417,13 +417,11 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
         redVertices.push_back(c.P);
         redVertices.push_back(c.Q);
 
-        otherVertices.push_back(c.P);
-        otherColors.push_back(sofa::defaulttype::RGBAColor::white());
+        otherVertices.push_back(c.P);        
         otherVertices.push_back(c.P + c.norm);
-        otherColors.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+        otherColors.push_back(sofa::defaulttype::RGBAColor::white());
 
         otherVertices.push_back(c.Q);
-        otherColors.push_back(sofa::defaulttype::RGBAColor::black());
         otherVertices.push_back(c.Q - c.norm);
         otherColors.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
 

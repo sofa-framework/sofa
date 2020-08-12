@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_MESHMATRIXMASS_H
-#define SOFA_COMPONENT_MASS_MESHMATRIXMASS_H
-#include "config.h"
+#pragma once
 
-
+#include <SofaMiscForceField/config.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
@@ -31,17 +29,13 @@
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/RigidTypes.h>
+
 //VERY IMPORTANT FOR GRAPHS
 #include <sofa/helper/map.h>
-
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/DataTracker.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+
+namespace sofa::component::topology
 {
 	/// forward declaration to avoid adding includes in .h
 	template< class DataTypes> class EdgeSetGeometryAlgorithms;
@@ -51,7 +45,8 @@ namespace topology
 	template< class DataTypes> class HexahedronSetGeometryAlgorithms;
 }
 
-namespace mass
+
+namespace sofa::component::mass
 {
 
 template<class DataTypes, class TMassType>
@@ -129,6 +124,8 @@ public:
     Data< bool >         d_printMass; ///< Boolean to print the mass
     Data< std::map < std::string, sofa::helper::vector<double> > > f_graph; ///< Graph of the controlled potential
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<MeshMatrixMass<DataTypes, TMassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
 
@@ -137,27 +134,18 @@ protected:
     Real m_massLumpingCoeff;
 
     MeshMatrixMass();
-    ~MeshMatrixMass();
+    ~MeshMatrixMass() override;
 
-    bool checkTopology();
-    void initTopologyHandlers();
+    sofa::core::topology::TopologyObjectType checkTopology();
+    void initTopologyHandlers(sofa::core::topology::TopologyObjectType topologyType);
     void massInitialization();
 
     /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)
     MeshMatrixMassInternalData<DataTypes, MassType> data;
     friend class MeshMatrixMassInternalData<DataTypes, MassType>;
 
-    /// Data tracker
-    sofa::core::DataTracker m_dataTrackerVertex;
-    sofa::core::DataTracker m_dataTrackerEdge;
-    sofa::core::DataTracker m_dataTrackerDensity;
-    sofa::core::DataTracker m_dataTrackerTotal;
-
 
 public:
-
-    sofa::core::topology::BaseMeshTopology* _topology;
-
     sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
     sofa::component::topology::TriangleSetGeometryAlgorithms<GeometricalTypes>* triangleGeo;
     sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
@@ -167,10 +155,10 @@ public:
 
     virtual void clear();
 
-    virtual void reinit() override;
-    virtual void init() override;
-    virtual void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
-    bool update();
+    void reinit() override;
+    void init() override;
+    void handleEvent(sofa::core::objectmodel::Event *event) override;
+    void doUpdateInternal() override;
 
     TopologyType getMassTopologyType() const
     {
@@ -228,31 +216,31 @@ public:
 
 
     // -- Mass interface
-    virtual void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
+    void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
-    virtual void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f) override; // This function can't be used as it use M^-1
+    void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f) override; // This function can't be used as it use M^-1
 
-    virtual void addForce(const core::MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    void addForce(const core::MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    virtual SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const override;  ///< vMv/2 using dof->getV() override
+    SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const override;  ///< vMv/2 using dof->getV() override
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
+    SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    virtual defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)) override
+    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)) override
 
-    virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
+    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    virtual bool isDiagonal() override { return false; }
+    bool isDiagonal() override { return false; }
 
 
 
     /// Add Mass contribution to global Matrix assembling
-    virtual void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    virtual SReal getElementMass(unsigned int index) const override;
-    virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
+    SReal getElementMass(unsigned int index) const override;
+    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Answer wether mass matrix is lumped or not
     bool isLumped() { return d_lumping.getValue(); }
@@ -434,19 +422,15 @@ protected:
     };
 
     EdgeMassHandler* m_edgeMassHandler;
+
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 #if  !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
-extern template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<defaulttype::Vec3Types,defaulttype::Vec3Types::Real>;
-extern template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<defaulttype::Vec2Types,defaulttype::Vec2Types::Real>;
-extern template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<defaulttype::Vec1Types,defaulttype::Vec1Types::Real>;
+extern template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<defaulttype::Vec3Types,defaulttype::Vec3Types::Real>;
+extern template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<defaulttype::Vec2Types,defaulttype::Vec2Types::Real>;
+extern template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<defaulttype::Vec1Types,defaulttype::Vec1Types::Real>;
 
 #endif
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mass

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -373,7 +373,7 @@ void GenerateCylinder<DataTypes>::doUpdate()
                         }
                         else
                         {
-                            serr << "ERROR: duplicate triangle " << tr << " in tetra " << i <<" : " << (*itt) << sendl;
+                            msg_error() << "Duplicate triangle " << tr << " in tetra " << i << " : " << (*itt);
                         }
                         // tests if all vertices are on the circular surface
                         nbSurfaceNodes=0;

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,6 @@ namespace _topologybarycentricmapper_
 
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 
 /// Template class for barycentric mapping topology-specific mappers.
 template<class In, class Out>
@@ -80,6 +79,12 @@ public:
     virtual void updateForceMask(){/*mask is already filled in the mapper's applyJT*/}
     virtual void resize( core::State<Out>* toModel ) = 0;
 
+    void processTopologicalChanges(const typename Out::VecCoord& out, const typename In::VecCoord& in, core::topology::Topology* t) {
+        SOFA_UNUSED(t);
+        this->clear();
+        this->init(out,in);
+    }
+
 protected:
     TopologyBarycentricMapper(core::topology::BaseMeshTopology* fromTopology,
                               topology::PointSetTopologyContainer* toTopology = nullptr)
@@ -87,7 +92,7 @@ protected:
         , m_toTopology(toTopology)
     {}
 
-    virtual ~TopologyBarycentricMapper() override {}
+    ~TopologyBarycentricMapper() override {}
 
     core::topology::BaseMeshTopology*    m_fromTopology;
     topology::PointSetTopologyContainer* m_toTopology;
@@ -95,7 +100,6 @@ protected:
 
 #if !defined(SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_CPP)
 extern template class SOFA_BASE_MECHANICS_API TopologyBarycentricMapper< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API TopologyBarycentricMapper< Vec3dTypes, ExtVec3Types >;
 
 
 #endif

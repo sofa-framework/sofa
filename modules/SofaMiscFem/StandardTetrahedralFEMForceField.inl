@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,8 +58,8 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
                                                                                             const sofa::helper::vector<double> &)
 {
     if (ff) {
-        const helper::vector< core::topology::BaseMeshTopology::Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
-        const std::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=ff->_topology->getEdges() ;
+        const helper::vector< core::topology::BaseMeshTopology::Tetrahedron > &tetrahedronArray=ff->m_topology->getTetrahedra() ;
+        const std::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=ff->m_topology->getEdges() ;
         unsigned int j;
         /*int l*/;
         typename DataTypes::Real volume;
@@ -68,7 +68,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
 
         ///describe the indices of the 4 tetrahedron vertices
         const core::topology::BaseMeshTopology::Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
-        core::topology::BaseMeshTopology::EdgesInTetrahedron te=ff->_topology->getEdgesInTetrahedron(tetrahedronIndex);
+        core::topology::BaseMeshTopology::EdgesInTetrahedron te=ff->m_topology->getEdgesInTetrahedron(tetrahedronIndex);
 
         //store point indices
         tinfo.tetraIndices[0] = (float)t[0];
@@ -103,7 +103,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
 
 
         for(j=0;j<6;++j) {
-            core::topology::BaseMeshTopology::Edge e=ff->_topology->getLocalEdgesInTetrahedron(j);
+            core::topology::BaseMeshTopology::Edge e=ff->m_topology->getLocalEdgesInTetrahedron(j);
             int k=e[0];
             //l=e[1];
             if (edgeArray[te[j]][0]!=t[k]) {
@@ -121,7 +121,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
 
 
 template <class DataTypes> StandardTetrahedralFEMForceField<DataTypes>::StandardTetrahedralFEMForceField()
-: _topology(0)
+    : m_topology(nullptr)
     , _initialPoints(0)
     , updateMatrix(true)
     , _meshSaved( false)
@@ -129,8 +129,9 @@ template <class DataTypes> StandardTetrahedralFEMForceField<DataTypes>::Standard
     , f_parameterSet(initData(&f_parameterSet,"ParameterSet","The global parameters specifying the material"))
     , f_anisotropySet(initData(&f_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
     , f_parameterFileName(initData(&f_parameterFileName,std::string("myFile.param"),"ParameterFile","the name of the file describing the material parameters for all tetrahedra"))
-, tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
-, edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
+    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
 {
     tetrahedronHandler = new GHTetrahedronHandler(this,&tetrahedronInfo);
 }
@@ -143,13 +144,27 @@ template <class DataTypes> StandardTetrahedralFEMForceField<DataTypes>::~Standar
 template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::init()
 {
     this->Inherited::init();
-    _topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-        tetrahedronInfo.createTopologicalEngine(_topology,tetrahedronHandler);
-        tetrahedronInfo.registerTopologicalData();
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        edgeInfo.createTopologicalEngine(_topology);
-        edgeInfo.registerTopologicalData();
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    tetrahedronInfo.createTopologicalEngine(m_topology,tetrahedronHandler);
+    tetrahedronInfo.registerTopologicalData();
+
+    edgeInfo.createTopologicalEngine(m_topology);
+    edgeInfo.registerTopologicalData();
 
     /** parse the parameter set */
     SetParameterArray paramSet=f_parameterSet.getValue();
@@ -205,20 +220,19 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
         msg_error() << "Material name '" << material << "' is not valid." ;
     }
 
-    if (!_topology->getNbTetrahedra())
+    if (!m_topology->getNbTetrahedra())
     {
-        msg_error() << "Object must have a Tetrahedral Set Topology.";
-        return;
+        msg_warning() << "No tetrahedra found in linked Topology.";
     }
 
     tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     /// prepare to store info in the triangle array
-    tetrahedronInf.resize(_topology->getNbTetrahedra());
+    tetrahedronInf.resize(m_topology->getNbTetrahedra());
 
     edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
 
-    edgeInf.resize(_topology->getNbEdges());
+    edgeInf.resize(m_topology->getNbEdges());
     edgeInfo.endEdit();
 
     if (_initialPoints.size() == 0)
@@ -226,19 +240,18 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
         const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints=p;
     }
-    int i;
 
     /// initialize the data structure associate with each tetrahedron
-    for (int i=0; i<_topology->getNbEdges(); i++)
+    for (size_t i=0; i<m_topology->getNbEdges(); i++)
     {
-        edgeInf[i].vertices[0] = (float) _topology->getEdge(i)[0];
-        edgeInf[i].vertices[1] = (float) _topology->getEdge(i)[1];
+        edgeInf[i].vertices[0] = (float) m_topology->getEdge(i)[0];
+        edgeInf[i].vertices[1] = (float) m_topology->getEdge(i)[1];
     }
 
     /// initialize the data structure associated with each tetrahedron
-    for (i=0;i<_topology->getNbTetrahedra();++i) {
+    for (size_t i=0;i<m_topology->getNbTetrahedra();++i) {
             tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
-                        _topology->getTetrahedron(i),  (const helper::vector< unsigned int > )0,
+                        m_topology->getTetrahedron(i),  (const helper::vector< unsigned int > )0,
                         (const helper::vector< double >)0);
     }
     /// set the call back function upon creation of a tetrahedron
@@ -266,12 +279,12 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
     const VecCoord& x = d_x.getValue();
 
     unsigned int i=0,j=0,k=0,l=0;
-    unsigned int nbTetrahedra=_topology->getNbTetrahedra();
+    unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
 
     tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-    unsigned int nbEdges=_topology->getNbEdges();
-    const helper::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=_topology->getEdges() ;
+    unsigned int nbEdges=m_topology->getNbEdges();
+    const helper::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
     TetrahedronRestInformation *tetInfo;
     EdgeInformation *einfo;
 
@@ -292,7 +305,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
     for(i=0; i<nbTetrahedra; i++ )
     {
         tetInfo=&tetrahedronInf[i];
-        const core::topology::BaseMeshTopology::Tetrahedron &ta= _topology->getTetrahedron(i);
+        const core::topology::BaseMeshTopology::Tetrahedron &ta= m_topology->getTetrahedron(i);
 
         x0=x[ta[0]];
 
@@ -384,12 +397,12 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
         }
         if (mparams->implicit()) {
             // if implicit solver then computes the stifffness on each edge
-             core::topology::BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(i);
+             core::topology::BaseMeshTopology::EdgesInTetrahedron te=m_topology->getEdgesInTetrahedron(i);
 
             /// describe the jth edge index of tetrahedron i no i
             for(j=0;j<6;j++) {
                 einfo= &edgeInf[te[j]];
-                core::topology::BaseMeshTopology::Edge e=_topology->getLocalEdgesInTetrahedron(j);
+                core::topology::BaseMeshTopology::Edge e=m_topology->getLocalEdgesInTetrahedron(j);
 
                 k=e[0];
                 l=e[1];
@@ -450,8 +463,8 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int l=0;
-    unsigned int nbEdges=_topology->getNbEdges();
-    const helper::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=_topology->getEdges() ;
+    unsigned int nbEdges=m_topology->getNbEdges();
+    const helper::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
 
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 //	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
@@ -463,8 +476,8 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
     if (updateMatrix) {
 
         TetrahedronRestInformation *tetInfo;
-        unsigned int nbTetrahedra=_topology->getNbTetrahedra();
-        const std::vector< topology::Tetrahedron> &tetrahedronArray=_topology->getTetrahedra() ;
+        unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
+        const std::vector< topology::Tetrahedron> &tetrahedronArray=m_topology->getTetrahedra() ;
         unsigned int i=0, j=0, k=0;
         for(l=0; l<nbEdges; l++ )edgeInf[l].DfDx.clear();
         for(i=0; i<nbTetrahedra; i++ )
@@ -472,13 +485,13 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
             tetInfo=&tetrahedronInf[i];
 //			Matrix3 &df=tetInfo->deformationGradient;
 //			Matrix3 Tdf=df.transposed();
-            core::topology::BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(i);
+            core::topology::BaseMeshTopology::EdgesInTetrahedron te=m_topology->getEdgesInTetrahedron(i);
 
             /// describe the jth vertex index of triangle no i
             const topology::Tetrahedron &ta= tetrahedronArray[i];
             for(j=0;j<6;j++) {
                 einfo= &edgeInf[te[j]];
-                topology::Edge e=_topology->getLocalEdgesInTetrahedron(j);
+                topology::Edge e=m_topology->getLocalEdgesInTetrahedron(j);
 
                 k=e[0];
                 l=e[1];
@@ -553,8 +566,8 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 template<class DataTypes>
 void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal kFact, unsigned int &offset)
 {
-    unsigned int nbEdges=_topology->getNbEdges();
-    const helper::vector< Edge> &edgeArray=_topology->getEdges() ;
+    unsigned int nbEdges=m_topology->getNbEdges();
+    const helper::vector< Edge> &edgeArray=m_topology->getEdges() ;
     edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
     EdgeInformation *einfo;
     unsigned int i,j,N0, N1, l;
@@ -666,7 +679,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 
         // get current energy around
         Real energy1 = 0;
-        core::topology::BaseMeshTopology::TetrahedraAroundVertex vTetras = _topology->getTetrahedraAroundVertex( moveIdx );
+        core::topology::BaseMeshTopology::TetrahedraAroundVertex vTetras = m_topology->getTetrahedraAroundVertex( moveIdx );
         for(unsigned int i = 0; i < vTetras.size(); ++i)
         {
             energy1 += tetrahedronInf[vTetras[i]].strainEnergy * tetrahedronInf[vTetras[i]].restVolume;
@@ -702,10 +715,10 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
         }
 
         // check 2nd derivative for off-diagonal elements:
-        core::topology::BaseMeshTopology::EdgesAroundVertex vEdges = _topology->getEdgesAroundVertex( moveIdx );
+        core::topology::BaseMeshTopology::EdgesAroundVertex vEdges = m_topology->getEdgesAroundVertex( moveIdx );
         for (unsigned int eIdx=0; eIdx<vEdges.size(); eIdx++)
         {
-            core::topology::BaseMeshTopology::Edge edge = _topology->getEdge( vEdges[eIdx] );
+            core::topology::BaseMeshTopology::Edge edge = m_topology->getEdge( vEdges[eIdx] );
             unsigned int testIdx = edge[0];
             if (testIdx==moveIdx) testIdx = edge[1];
             Coord deltaForceFactual = force2[testIdx] - force1[testIdx];
@@ -743,7 +756,7 @@ template<class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::saveMesh( const char *filename )
 {
     VecCoord pos( this->mstate->read(core::ConstVecCoordId::position())->getValue() );
-    core::topology::BaseMeshTopology::SeqTriangles triangles = _topology->getTriangles();
+    core::topology::BaseMeshTopology::SeqTriangles triangles = m_topology->getTriangles();
     FILE *file = fopen( filename, "wb" );
     if (!file) return;
     // write header
@@ -758,11 +771,11 @@ void StandardTetrahedralFEMForceField<DataTypes>::saveMesh( const char *filename
     short stlSeperator = 0;
 
     for (unsigned int triangleId=0; triangleId<triangles.size(); triangleId++) {
-        if (_topology->getTetrahedraAroundTriangle( triangleId ).size()==1) {
+        if (m_topology->getTetrahedraAroundTriangle( triangleId ).size()==1) {
             // surface triangle, save it
-            unsigned int p0 = _topology->getTriangle( triangleId )[0];
-            unsigned int p1 = _topology->getTriangle( triangleId )[1];
-            unsigned int p2 = _topology->getTriangle( triangleId )[2];
+            unsigned int p0 = m_topology->getTriangle( triangleId )[0];
+            unsigned int p1 = m_topology->getTriangle( triangleId )[1];
+            unsigned int p2 = m_topology->getTriangle( triangleId )[2];
             for (int d=0; d<3; d++) {
                 vertex[0][d] = (float)pos[p0][d];
                 vertex[1][d] = (float)pos[p1][d];

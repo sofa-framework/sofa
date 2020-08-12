@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -133,6 +133,8 @@ public:
     Data<Real> f_drawPercentageOffset; ///< size of the hexa
     bool needUpdateTopology;
 
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<HexahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 public:
     void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
     void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
@@ -140,18 +142,18 @@ public:
     void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
     void setComputeGlobalMatrix(bool val) { this->f_assembling.setValue(val); }
 
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void addForce (const core::MechanicalParams* mparams, DataVecDeriv& f,
+    void init() override;
+    void reinit() override;
+    void addForce (const core::MechanicalParams* mparams, DataVecDeriv& f,
                            const DataVecCoord& x, const DataVecDeriv& v) override;
-    virtual void addDForce (const core::MechanicalParams* mparams, DataVecDeriv& df,
+    void addDForce (const core::MechanicalParams* mparams, DataVecDeriv& df,
                             const DataVecDeriv& dx) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
                                      const DataVecCoord&  /* x */) const override;
 
     // getPotentialEnergy is implemented for polar method
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*) const override;
+    SReal getPotentialEnergy(const core::MechanicalParams*) const override;
 
     const Transformation& getElementRotation(const unsigned elemidx);
 
@@ -186,7 +188,7 @@ protected:
     CompressedMatrix _stiffnesses;
     SReal m_potentialEnergy;
 
-    sofa::core::topology::BaseMeshTopology* _mesh;
+    sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the topology container. Will be set by link @sa l_topology
     topology::SparseGridTopology* _sparseGrid;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
@@ -198,7 +200,7 @@ protected:
 protected:
     HexahedronFEMForceField();
 
-    inline const VecElement *getIndexedElements(){ return & (_mesh->getHexahedra()); }
+    inline const VecElement *getIndexedElements(){ return & (m_topology->getHexahedra()); }
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M,
                                           const helper::fixed_array<Coord,8> &nodes, const int elementIndice,

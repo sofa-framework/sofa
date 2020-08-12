@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,14 +66,14 @@ struct DilateEngine_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->setName("myname") ;
         EXPECT_TRUE(m_thisObject->getName() == "myname") ;
 
-        EXPECT_TRUE( m_thisObject->findData("input_position") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("output_position") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("triangles") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("quads") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("normal") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("thickness") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("distance") != NULL ) ;
-        EXPECT_TRUE( m_thisObject->findData("minThickness") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("input_position") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("output_position") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("triangles") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("quads") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("normal") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("thickness") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("distance") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("minThickness") != nullptr ) ;
 
         EXPECT_NO_THROW( m_thisObject->init() ) ;
         EXPECT_NO_THROW( m_thisObject->bwdInit() ) ;

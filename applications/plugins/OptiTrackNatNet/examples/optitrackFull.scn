@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <Node animate="1" gravity="0 0 -1">
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="optiTrackNatNet"/>
   <VisualStyle displayFlags="showVisual showCollisionModels" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="1" />
 
   <OptiTrackNatNetClient serverName="169.254.165.78" scale="1000" drawOtherMarkersSize="2" drawTrackedMarkersSize="0" />
@@ -18,19 +19,19 @@
 -->
   </Node>
   <Node name="Cystitome">
-    <MechanicalObject name="ms1" template="Rigid" />
+    <MechanicalObject name="ms1" template="Rigid3d" />
     <OptiTrackNatNetDevice name="CutDevice" trackableName="Cut" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Cystitome.obj" simMarkersMeshFile="./data/markers_cystitome.obj" controlNode="1" drawMarkersColor="1 0 1 1" drawAxisSize="10 10 10" drawMarkersSize="2" />
     <Node name="CutEdges">
-<!--      <Mesh position="0 0.0167 -0.0424 0 0.1959 0.2303" edges="0 1" /> -->
-<!--      <Mesh position="0 -0.1625 -0.3151    0 0.1959 0.2303" edges="0 1" /> -->
-      <Mesh position="0 -0.7001 -1.1332    0 0.1959 0.2303" edges="0 1" />
-<!--      <Mesh position="0 -1.7753 -2.7694    0 0.1959 0.2303" edges="0 1" /> -->
+<!--      <MeshTopology position="0 0.0167 -0.0424 0 0.1959 0.2303" edges="0 1" /> -->
+<!--      <MeshTopology position="0 -0.1625 -0.3151    0 0.1959 0.2303" edges="0 1" /> -->
+      <MeshTopology position="0 -0.7001 -1.1332    0 0.1959 0.2303" edges="0 1" />
+<!--      <MeshTopology position="0 -1.7753 -2.7694    0 0.1959 0.2303" edges="0 1" /> -->
       <MechanicalObject name="vertices" />
-      <LineModel name="CM" group="2" simulated="0" moving="1" contactStiffness="0" />
+      <LineCollisionModel name="CM" group="2" simulated="0" moving="1" contactStiffness="0" />
       <RigidMapping />
     </Node>
     <Node name="Surface">
-      <Mesh position="
+      <MeshTopology position="
 0 0.1063 0.0939
 0 -0.0300 1.3480
 0 -0.3800 2.5480
@@ -39,8 +40,8 @@
 0 -1.7000 4.8600
 0 -1.7000 8.2993" edges="0 1 1 2 2 3 3 4 4 5 5 6" />
       <MechanicalObject name="vertices" />
-      <PointModel group="2" />
-      <LineModel group="2" />
+      <PointCollisionModel group="2" />
+      <LineCollisionModel group="2" />
       <RigidMapping />
     </Node>
     <Node name="Visual">
@@ -49,30 +50,30 @@
     </Node>
   </Node>
   <Node name="Grab">
-    <MechanicalObject name="ms1" template="Rigid" />
+    <MechanicalObject name="ms1" template="Rigid3d" />
     <OptiTrackNatNetDevice name="GrabDevice" trackableName="Grab" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Grab.obj" simMarkersMeshFile="./data/markers-Grab.obj"  controlNode="1" distanceMarkersID="5 6" closedDistance="46" openDistance="48" jointCenter="0 33.7158 17.7522" jointAxis="0 4 -2.8" jointOpenAngle="5" jointClosedAngle="-0.1" drawMarkersColor="1 1 0 1" drawAxisSize="10 10 10" drawMarkersSize="2" drawMarkersIDSize="2" />
     <Node name="GrabPoint">
       <MechanicalObject name="vertices" position="0 -2.7482 -40.7508 0 -1.5256 -40.7505" />
-      <SphereModel name="CM" radius="2" contactResponse="stick" group="1" simulated="0" moving="1" contactStiffness="1000" />
+      <SphereCollisionModel name="CM" radius="2" contactResponse="stick" group="1" simulated="0" moving="1" contactStiffness="1000" />
       <RigidMapping index="0" />
       <GraspingManager name="Grasping" active="@../GrabDevice.closed" printLog="1" />
     </Node>
     <Node name="GrabSurfaceL">
       <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left.obj" triangulate="1" createSubelements="true" />
-      <Mesh src="@loaderPince" />
+      <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
-      <TriangleModel group="1" simulated="0" moving="1" />
-      <LineModel group="1" simulated="0" moving="1" />
-      <PointModel group="1" simulated="0" moving="1" />
+      <TriangleCollisionModel group="1" simulated="0" moving="1" />
+      <LineCollisionModel group="1" simulated="0" moving="1" />
+      <PointCollisionModel group="1" simulated="0" moving="1" />
       <RigidMapping index="1" />
     </Node>
     <Node name="GrabSurfaceR">
       <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right.obj" triangulate="1" createSubelements="true"/>
-      <Mesh src="@loaderPince" />
+      <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
-      <TriangleModel group="1" simulated="0" moving="1" />
-      <LineModel group="1" simulated="0" moving="1" />
-      <PointModel group="1" simulated="0" moving="1" />
+      <TriangleCollisionModel group="1" simulated="0" moving="1" />
+      <LineCollisionModel group="1" simulated="0" moving="1" />
+      <PointCollisionModel group="1" simulated="0" moving="1" />
       <RigidMapping index="2" />
     </Node>
     <Node name="GrabVisualL">
@@ -90,7 +91,7 @@
   </Node>
 -->
     <Node name="SquareGravity">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" scale="100" createSubelements="true"/>
         <include href="Objects/TriangleSetTopology.xml" src="@meshLoader" />
@@ -101,9 +102,9 @@
 			showFracturableTriangles="true" hosfordExponant="10.0" criteriaValue="10000" computePrincipalStress="true"/>
 <!--        <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" />-->
         <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
-        <TriangleModel name="cmTriangles" contactStiffness="5000" />
-        <LineModel name="cmLines" contactStiffness="5000" />
-        <PointModel name="cmPoints" contactStiffness="5000" />
+        <TriangleCollisionModel name="cmTriangles" contactStiffness="5000" />
+        <LineCollisionModel name="cmLines" contactStiffness="5000" />
+        <PointCollisionModel name="cmPoints" contactStiffness="5000" />
         <Node name="VM">
             <OglModel name="Visual" color="red" />
             <IdentityMapping />

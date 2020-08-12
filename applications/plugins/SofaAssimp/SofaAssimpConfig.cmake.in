@@ -2,8 +2,18 @@
 
 @PACKAGE_INIT@
 
+set(SOFAASSIMP_HAVE_IMAGE @SOFAASSIMP_HAVE_IMAGE@)
+set(SOFAASSIMP_HAVE_FLEXIBLE @SOFAASSIMP_HAVE_FLEXIBLE@)
+
 find_package(SofaGeneral REQUIRED)
 find_package(Assimp REQUIRED)
+
+if(SOFAASSIMP_HAVE_IMAGE)
+    find_package(image QUIET REQUIRED)
+endif()
+if(SOFAASSIMP_HAVE_FLEXIBLE)
+    find_package(Flexible QUIET REQUIRED)
+endif()
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

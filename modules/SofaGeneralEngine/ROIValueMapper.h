@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,10 +62,7 @@ public:
     //Parameter
     Data<Real> p_defaultValue; ///< Default value for indices out of ROIs
 
-    virtual std::string getTemplateName() const    override {        return templateName(this);    }
-    static std::string templateName(const ROIValueMapper* = NULL)    {        return std::string();    }
-
-    virtual void init() override
+    void init() override
     {
         addInput(&nbROIs);
         f_indices.resize(nbROIs.getValue());
@@ -75,7 +72,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override
+    void reinit() override
     {
         f_indices.resize(nbROIs.getValue());
         f_value.resize(nbROIs.getValue());
@@ -110,9 +107,9 @@ protected:
     {
     }
 
-    virtual ~ROIValueMapper() {}
+    ~ROIValueMapper() override {}
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         size_t nb = nbROIs.getValue();
         f_indices.resize(nb);

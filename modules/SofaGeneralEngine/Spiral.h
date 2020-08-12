@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,7 +57,7 @@ protected:
 
     Spiral();
 
-    ~Spiral() {}
+    ~Spiral() override {}
 public:
     void init() override;
 
@@ -67,24 +67,13 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const Spiral<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
     Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
     Data<VecCoord> f_X; ///< Position coordinates of the degrees of freedom
     Data<Real> curvature; ///< Spiral curvature factor
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SPIRAL_CPP)
-extern template class SOFA_GENERAL_ENGINE_API Spiral<defaulttype::Vec3Types>;
- 
+extern template class SOFA_GENERAL_ENGINE_API Spiral<defaulttype::Vec3Types>; 
 #endif
 
 } // namespace engine

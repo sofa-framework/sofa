@@ -42,7 +42,7 @@
 #include <SofaBoundaryCondition/UniformVelocityDampingForceField.inl>
 
 
-#ifdef SOFA_HAVE_IMAGE
+#if FLEXIBLE_HAVE_IMAGE
 #include "../mass/ImageDensityMass.inl"
 #endif
 
@@ -273,7 +273,7 @@ namespace mass
 template <> SOFA_Flexible_API
 void UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dMass>::constructor_message()
 {
-    serr << "UniformMass on '" << this->templateName() << "' is for debug purpose only and should NOT be used for simulation" << sendl;
+    serr << "UniformMass on '" << GetClass()->templateName << "' is for debug purpose only and should NOT be used for simulation" << sendl;
 }
 template <> SOFA_Flexible_API
 void UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dMass>::draw(const core::visual::VisualParams* /*vparams*/)
@@ -323,7 +323,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRAC
             ;
 
 
-#ifdef SOFA_HAVE_IMAGE
+#if FLEXIBLE_HAVE_IMAGE
 
     int EVALUATOR(TYPEABSTRACTNAME,ImageDensityMassClass) = core::RegisterObject ( "Define a global mass matrix including non diagonal terms" )
     .add< ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,TYPEABSTRACTNAME3dMass> >()
@@ -432,7 +432,6 @@ namespace mapping
 // Register in the Factory
 int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes > >()
-        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3Types > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes > >()
 
 
@@ -442,7 +441,6 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 
 
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3Types >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
 
 

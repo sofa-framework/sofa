@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -90,9 +90,6 @@ public:
 
     Data< Real > minLength; ///< minimun edge length in pixels
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const VoronoiToMeshEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
-
     VoronoiToMeshEngine()    :   Inherited()
       , showMesh(initData(&showMesh,false,"showMesh","show reconstructed mesh"))
       , image(initData(&image,ImageTypes(),"image","Voronoi image"))
@@ -109,7 +106,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&image);
         addInput(&background);
@@ -121,7 +118,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
@@ -228,7 +225,7 @@ protected:
     }
 
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         raImage in(this->image);
         raImage inb(this->background);
@@ -408,7 +405,7 @@ protected:
         }
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams) override
+    void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -92,26 +92,26 @@ public:
 
     /// @name Component API
     /// @{
-    virtual void init(); /// call when initializing the simulation
-    virtual void draw( const core::visual::VisualParams* vparams ); /// debug drawing
-    virtual void handleEvent(sofa::core::objectmodel::Event *event);
+    virtual void init() override; /// call when initializing the simulation
+    virtual void draw( const core::visual::VisualParams* vparams ) override; /// debug drawing
+    virtual void handleEvent(sofa::core::objectmodel::Event *event) override;
     /// @}
 
 
     /// @name Internal force API
     /// @{
     /// f += K( x, v ) -> build the right part of the sytem (including gravity)
-    virtual void addForce( const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v );
+    virtual void addForce( const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v ) override;
     /// df += K.dx -> call at each iteration by unassembled system solvers
     /// necessary to perform an implicit interaction
-    virtual void addDForce( const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx );
+    virtual void addDForce( const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override;
     /// @}
 
 
     /// @name Mass API
     /// @{
     /// f += factor M dx (for implicit solvers)
-    virtual void addMDx( const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor );
+    virtual void addMDx( const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor ) override;
     /// @}
 
 

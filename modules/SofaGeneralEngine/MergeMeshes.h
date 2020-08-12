@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,7 +55,7 @@ public:
 protected:
     MergeMeshes();
 
-    ~MergeMeshes();
+    ~MergeMeshes() override;
 public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
@@ -68,16 +68,6 @@ public:
     void reinit() override;
 
     void doUpdate() override;
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const MergeMeshes<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
 
     Data<unsigned int> f_nbMeshes; ///< number of meshes to merge
 

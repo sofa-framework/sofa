@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,32 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_INL
-#define SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_INL
+#pragma once
 
 #include <SofaGeneralEngine/MeshBarycentricMapperEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
 MeshBarycentricMapperEngine<DataTypes>::MeshBarycentricMapperEngine()
-    : initialized(false)
-    , InputMeshName( initData (&InputMeshName, "InputMeshName", "Name and path of Input mesh Topology") )
-    , InputPositions( initData (&InputPositions, "InputPositions", "Initial positions of the master points"))
-    , MappedPointPositions( initData (&MappedPointPositions, "MappedPointPositions", "Initial positions of the mapped points"))
-    , BarycentricPositions(initData (&BarycentricPositions, "BarycentricPositions", "Output : Barycentric positions of the mapped points"))
-    , TableElements(initData (&TableElements, "TableElements", "Output : Table that provides the element index to which each input point belongs"))
-    , computeLinearInterpolation(initData(&computeLinearInterpolation, false, "computeLinearInterpolation", "if true, computes a linear interpolation (debug)"))
-    , f_interpolationIndices(initData(&f_interpolationIndices, "LinearInterpolationIndices", "Indices of a linear interpolation"))
-    , f_interpolationValues(initData(&f_interpolationValues, "LinearInterpolationValues", "Values of a linear interpolation"))
+    : d_inputPositions( initData (&d_inputPositions, "inputPositions", "Initial positions of the master points"))
+    , d_mappedPointPositions( initData (&d_mappedPointPositions, "mappedPointPositions", "Initial positions of the mapped points"))
+    , d_barycentricPositions(initData (&d_barycentricPositions, "barycentricPositions", "Output : Barycentric positions of the mapped points"))
+    , d_tableElements(initData (&d_tableElements, "tableElements", "Output : Table that provides the element index to which each input point belongs"))
+    , d_bComputeLinearInterpolation(initData(&d_bComputeLinearInterpolation, false, "computeLinearInterpolation", "if true, computes a linear interpolation (debug)"))
+    , d_interpolationIndices(initData(&d_interpolationIndices, "linearInterpolationIndices", "Indices of a linear interpolation"))
+    , d_interpolationValues(initData(&d_interpolationValues, "linearInterpolationValues", "Values of a linear interpolation"))
+    , l_topology(initLink("InputMeshName", "Name and path of Input mesh Topology"))
 {
 }
 
@@ -52,23 +44,33 @@ MeshBarycentricMapperEngine<DataTypes>::MeshBarycentricMapperEngine()
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::init()
 {
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 
-    this->update();
-
-    if (TopoInput==NULL)
+    if(l_topology.get() == nullptr)
     {
-        msg_error() <<"Can not work with no input topology.";
-        return;
+        sofa::core::topology::BaseMeshTopology::SPtr localTopology = nullptr;
+        this->getContext()->get(localTopology);
+        if (localTopology == nullptr)
+        {
+            msg_error() << "Can not work with no input topology.";
+            return;
+        }
+        else
+        {
+            l_topology.set(localTopology);
+            msg_warning() << "No topology given, will use the local one. (this automatic behavior is not recommended, consider explicit input of the \"topology\" field).";
+        }
     }
 
-    addInput(&InputMeshName);
-    addInput(&InputPositions);
 
-    addOutput(&BarycentricPositions);
-    addOutput(&TableElements);
+    addInput(&d_inputPositions);
+    addInput(&d_mappedPointPositions);
+
+    addOutput(&d_barycentricPositions);
+    addOutput(&d_tableElements);
     setDirtyValue();
 
-
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template <class DataTypes>
@@ -80,67 +82,49 @@ void MeshBarycentricMapperEngine<DataTypes>::reinit()
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
 {
+    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     using sofa::defaulttype::Vector3;
     using sofa::defaulttype::Matrix3;
     using sofa::defaulttype::Mat3x3d;
     using sofa::defaulttype::Vec3d;
 
-    const std::string path = InputMeshName.getValue();
+    const VecCoord& in = d_inputPositions.getValue();
+    const VecCoord& out = d_mappedPointPositions.getValue();
 
-
-    if (path.size()>0)
     {
-        this->getContext()->get(TopoInput ,path  );
+        auto baryPos = sofa::helper::getWriteOnlyAccessor(d_barycentricPositions);
+        auto tableElts = sofa::helper::getWriteOnlyAccessor(d_tableElements);
 
+        baryPos.clear();
+        tableElts.clear();
+
+        baryPos.resize(out.size());
+        tableElts.resize(out.size());
     }
-    else
-        TopoInput = NULL;
 
-    if(TopoInput==NULL)
+    if (d_bComputeLinearInterpolation.getValue())
     {
-        serr<<"no TopoInput found !!"<<sendl;
-        return;
+        auto linearInterpolIndices = sofa::helper::getWriteOnlyAccessor(d_interpolationIndices);
+        auto linearInterpolValues = sofa::helper::getWriteOnlyAccessor(d_interpolationValues);
+
+        linearInterpolIndices.clear();
+        linearInterpolValues.clear();
+
+        linearInterpolIndices.resize(out.size());
+        linearInterpolValues.resize(out.size());
     }
-    /*
-    else
-         std::cout<< "topology named "<<TopoInput->getName()<<" found !! "<<path<<std::endl;
 
-             */
-    std::cout<<"size of InputPositions="<<InputPositions.getValue().size()<<std::endl;
-
-    std::cout<<"size of InputPositions="<<InputPositions.getValue()<<std::endl;
-
-
-    const VecCoord* in = &InputPositions.getValue();
-    const VecCoord* out = &MappedPointPositions.getValue();
-
-
-
-    baryPos =  BarycentricPositions.beginWriteOnly();
-    tableElts= TableElements.beginWriteOnly();
-    baryPos->resize(out->size());
-    tableElts->resize(out->size());
-
-    if(computeLinearInterpolation.getValue())
-    {
-        linearInterpolIndices = f_interpolationIndices.beginEdit();
-        linearInterpolValues = f_interpolationValues.beginEdit();
-
-        linearInterpolIndices->clear();
-        linearInterpolValues->clear();
-
-        linearInterpolIndices->resize(out->size());
-        linearInterpolValues->resize(out->size());
-    }
 
 
     int outside = 0;
 
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = TopoInput->getTetrahedra();
-    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = TopoInput->getHexahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = l_topology->getTetrahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = l_topology->getHexahedra();
 
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = TopoInput->getTriangles();
-    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = TopoInput->getQuads();
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = l_topology->getTriangles();
+    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = l_topology->getQuads();
     sofa::helper::vector<Matrix3> bases;
     sofa::helper::vector<Vector3> centers;
 
@@ -150,10 +134,8 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
         {
             //no 3D elements, nor 2D elements -> map on 1D elements
 
-            const sofa::core::topology::BaseMeshTopology::SeqEdges& edges = TopoInput->getEdges();
+            const sofa::core::topology::BaseMeshTopology::SeqEdges& edges = l_topology->getEdges();
             if ( edges.empty() ) return;
-
-            clear1d ( (*out).size() );
 
             sofa::helper::vector< SReal >   lengthEdges;
             sofa::helper::vector< Vector3 > unitaryVectors;
@@ -161,13 +143,13 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             unsigned int e;
             for ( e=0; e<edges.size(); e++ )
             {
-                lengthEdges.push_back ( ( (*in)[edges[e][1]]-(*in)[edges[e][0]] ).norm() );
+                lengthEdges.push_back ( ( (in)[edges[e][1]]-(in)[edges[e][0]] ).norm() );
 
-                Vector3 V12 = ( (*in)[edges[e][1]]-(*in)[edges[e][0]] ); V12.normalize();
+                Vector3 V12 = ( (in)[edges[e][1]]-(in)[edges[e][0]] ); V12.normalize();
                 unitaryVectors.push_back ( V12 );
             }
 
-            for ( unsigned int i=0; i<(*out).size(); i++ )
+            for ( unsigned int i=0; i<(out).size(); i++ )
             {
                 SReal coef=0;
                 for ( e=0; e<edges.size(); e++ )
@@ -175,7 +157,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
                     SReal lengthEdge = lengthEdges[e];
                     Vector3 V12 =unitaryVectors[e];
 
-                    coef = ( V12 ) *Vector3 ((*out)[i]-(*in)[edges[e][0]] ) /lengthEdge;
+                    coef = ( V12 ) *Vector3 ((out)[i]-(in)[edges[e][0]] ) /lengthEdge;
                     if ( coef >= 0 && coef <= 1 )
                     {
                         addPointInLine ( e, &coef );
@@ -184,53 +166,52 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
 
                 }
                 //If no good coefficient has been found, we add to the last element
-                if ( e == edges.size() ) addPointInLine ( edges.size()-1,&coef );
+                if ( e == edges.size() ) addPointInLine ( int(edges.size() - 1),&coef );
 
             }
         }
         else
         {
             // no 3D elements -> map on 2D elements
-            clear2d ( (*out).size() ); // reserve space for 2D mapping
-            int c0 = triangles.size();
+            int c0 = int(triangles.size());
             bases.resize ( triangles.size() +quads.size() );
             centers.resize ( triangles.size() +quads.size() );
             for ( unsigned int t = 0; t < triangles.size(); t++ )
             {
                 Mat3x3d m,mt;
-                m[0] = (*in)[triangles[t][1]]-(*in)[triangles[t][0]];
-                m[1] = (*in)[triangles[t][2]]-(*in)[triangles[t][0]];
+                m[0] = (in)[triangles[t][1]]-(in)[triangles[t][0]];
+                m[1] = (in)[triangles[t][2]]-(in)[triangles[t][0]];
                 m[2] = cross ( m[0],m[1] );
                 mt.transpose ( m );
                 bases[t].invert ( mt );
-                centers[t] = ( (*in)[triangles[t][0]]+(*in)[triangles[t][1]]+(*in)[triangles[t][2]] ) /3;
+                centers[t] = ( (in)[triangles[t][0]]+(in)[triangles[t][1]]+(in)[triangles[t][2]] ) /3;
             }
             for ( unsigned int c = 0; c < quads.size(); c++ )
             {
                 Mat3x3d m,mt;
-                m[0] = (*in)[quads[c][1]]-(*in)[quads[c][0]];
-                m[1] = (*in)[quads[c][3]]-(*in)[quads[c][0]];
+                m[0] = (in)[quads[c][1]]-(in)[quads[c][0]];
+                m[1] = (in)[quads[c][3]]-(in)[quads[c][0]];
                 m[2] = cross ( m[0],m[1] );
                 mt.transpose ( m );
                 bases[c0+c].invert ( mt );
-                centers[c0+c] = ( (*in)[quads[c][0]]+(*in)[quads[c][1]]+(*in)[quads[c][2]]+(*in)[quads[c][3]] ) *0.25;
+                centers[c0+c] = ( (in)[quads[c][0]]+(in)[quads[c][1]]+(in)[quads[c][2]]+(in)[quads[c][3]] ) *0.25;
             }
-            for ( unsigned int i=0; i<(*out).size(); i++ )
+            for ( unsigned int i=0; i<(out).size(); i++ )
             {
-                Vector3 pos = DataTypes::getCPos((*out)[i]);
+                Vector3 pos = DataTypes::getCPos((out)[i]);
                 Vector3 coefs;
                 int index = -1;
                 double distance = 1e10;
                 for ( unsigned int t = 0; t < triangles.size(); t++ )
                 {
-                    Vec3d v = bases[t] * ( pos - (*in)[triangles[t][0]] );
+                    Vec3d v = bases[t] * ( pos - (in)[triangles[t][0]] );
                     double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
                     if ( d>0 ) d = ( pos-centers[t] ).norm2();
                     if ( d<distance ) { coefs = v; distance = d; index = t; }
                 }
                 for ( unsigned int c = 0; c < quads.size(); c++ )
                 {
-                    Vec3d v = bases[c0+c] * ( pos - (*in)[quads[c][0]] );
+                    Vec3d v = bases[c0+c] * ( pos - (in)[quads[c][0]] );
                     double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-1,v[0]-1 ),std::max ( v[2]-0.01,-v[2]-0.01 ) ) );
                     if ( d>0 ) d = ( pos-centers[c0+c] ).norm2();
                     if ( d<distance ) { coefs = v; distance = d; index = c0+c; }
@@ -239,58 +220,59 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
                 {
                     ++outside;
                 }
-                if ( index < c0 ){
-                    std::cout<<"addPoint "<<i<<" in Triangle "<<index<<" coef bary :"<<coefs<<std::endl;
+                if ( index < c0 )
+                {
                     addPointInTriangle ( index, coefs.ptr(),i );
                 }
                 else
-                    addPointInQuad ( index-c0, coefs.ptr() );
+                {
+                    addPointInQuad(index - c0, coefs.ptr());
+                }
             }
         }
     }
     else
     {
-        clear3d ( (*out).size() ); // reserve space for 3D mapping
-        int c0 = tetrahedra.size();
+        int c0 = int(tetrahedra.size());
         bases.resize ( tetrahedra.size() +cubes.size() );
         centers.resize ( tetrahedra.size() +cubes.size() );
         for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
         {
             Mat3x3d m,mt;
-            m[0] = (*in)[tetrahedra[t][1]]-(*in)[tetrahedra[t][0]];
-            m[1] = (*in)[tetrahedra[t][2]]-(*in)[tetrahedra[t][0]];
-            m[2] = (*in)[tetrahedra[t][3]]-(*in)[tetrahedra[t][0]];
+            m[0] = (in)[tetrahedra[t][1]]-(in)[tetrahedra[t][0]];
+            m[1] = (in)[tetrahedra[t][2]]-(in)[tetrahedra[t][0]];
+            m[2] = (in)[tetrahedra[t][3]]-(in)[tetrahedra[t][0]];
             mt.transpose ( m );
             bases[t].invert ( mt );
-            centers[t] = ( (*in)[tetrahedra[t][0]]+(*in)[tetrahedra[t][1]]+(*in)[tetrahedra[t][2]]+(*in)[tetrahedra[t][3]] ) *0.25;
+            centers[t] = ( (in)[tetrahedra[t][0]]+(in)[tetrahedra[t][1]]+(in)[tetrahedra[t][2]]+(in)[tetrahedra[t][3]] ) *0.25;
             //sout << "Tetra "<<t<<" center="<<centers[t]<<" base="<<m<<sendl;
         }
         for ( unsigned int c = 0; c < cubes.size(); c++ )
         {
             Mat3x3d m,mt;
-            m[0] = (*in)[cubes[c][1]]-(*in)[cubes[c][0]];
-            m[1] = (*in)[cubes[c][3]]-(*in)[cubes[c][0]];
-            m[2] = (*in)[cubes[c][4]]-(*in)[cubes[c][0]];
+            m[0] = (in)[cubes[c][1]]-(in)[cubes[c][0]];
+            m[1] = (in)[cubes[c][3]]-(in)[cubes[c][0]];
+            m[2] = (in)[cubes[c][4]]-(in)[cubes[c][0]];
             mt.transpose ( m );
             bases[c0+c].invert ( mt );
-            centers[c0+c] = ( (*in)[cubes[c][0]]+(*in)[cubes[c][1]]+(*in)[cubes[c][2]]+(*in)[cubes[c][3]]+(*in)[cubes[c][4]]+(*in)[cubes[c][5]]+(*in)[cubes[c][6]]+(*in)[cubes[c][7]] ) *0.125;
+            centers[c0+c] = ( (in)[cubes[c][0]]+(in)[cubes[c][1]]+(in)[cubes[c][2]]+(in)[cubes[c][3]]+(in)[cubes[c][4]]+(in)[cubes[c][5]]+(in)[cubes[c][6]]+(in)[cubes[c][7]] ) *0.125;
         }
-        for ( unsigned int i=0; i<(*out).size(); i++ )
+        for ( unsigned int i=0; i<(out).size(); i++ )
         {
-            Vector3 pos = DataTypes::getCPos((*out)[i]);
+            Vector3 pos = DataTypes::getCPos((out)[i]);
             Vector3 coefs;
             int index = -1;
             double distance = 1e10;
             for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
             {
-                Vector3 v = bases[t] * ( pos - (*in)[tetrahedra[t][0]] );
+                Vector3 v = bases[t] * ( pos - (in)[tetrahedra[t][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
                 if ( d>0 ) d = ( pos-centers[t] ).norm2();
                 if ( d<distance ) { coefs = v; distance = d; index = t; }
             }
             for ( unsigned int c = 0; c < cubes.size(); c++ )
             {
-                Vector3 v = bases[c0+c] * ( pos - (*in)[cubes[c][0]] );
+                Vector3 v = bases[c0+c] * ( pos - (in)[cubes[c][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( -v[2],v[0]-1 ),std::max ( v[1]-1,v[2]-1 ) ) );
                 if ( d>0 ) d = ( pos-centers[c0+c] ).norm2();
                 if ( d<distance ) { coefs = v; distance = d; index = c0+c; }
@@ -306,13 +288,13 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
         }
     }
 
-    BarycentricPositions.endEdit();
-    TableElements.endEdit();
+    d_barycentricPositions.endEdit();
+    d_tableElements.endEdit();
 
-    if(computeLinearInterpolation.getValue())
+    if(d_bComputeLinearInterpolation.getValue())
     {
-        f_interpolationIndices.endEdit();
-        f_interpolationValues.endEdit();
+        d_interpolationIndices.endEdit();
+        d_interpolationValues.endEdit();
     }
 
 }
@@ -327,39 +309,45 @@ void MeshBarycentricMapperEngine<DataTypes>::draw(const core::visual::VisualPara
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::addPointInLine(const int /*lineIndex*/, const SReal* /*baryCoords*/)
 {
-    std::cout<<"addPointInLine not implemented"<<std::endl;
+    msg_error() << "addPointInLine not implemented";
 
 }
 
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const int triangleIndex, const SReal* baryCoords,  const unsigned int pointIndex)
 {
-    if(tableElts==NULL|| baryPos==NULL)
-        return;
-    (*tableElts)[pointIndex] = triangleIndex;
-    (*baryPos)[pointIndex][0] =( Real ) baryCoords[0];
-    (*baryPos)[pointIndex][1] =( Real ) baryCoords[1];
+    auto baryPos = sofa::helper::getWriteOnlyAccessor(d_barycentricPositions);
+    auto tableElts = sofa::helper::getWriteOnlyAccessor(d_tableElements);
+
+    tableElts[pointIndex] = triangleIndex;
+    baryPos[pointIndex][0] = Real(baryCoords[0]);
+    baryPos[pointIndex][1] = Real(baryCoords[1]);
 
 
-    if(computeLinearInterpolation.getValue())
+    if(d_bComputeLinearInterpolation.getValue())
     {
-        const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = TopoInput->getTriangles();
+        const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = l_topology->getTriangles();
 
-        if(linearInterpolIndices==NULL|| linearInterpolIndices==NULL || triangles.size()==0 )
+        if (triangles.size() == 0)
+        {
             return;
+        }
+
+        auto linearInterpolIndices = sofa::helper::getWriteOnlyAccessor(d_interpolationIndices);
+        auto linearInterpolValues = sofa::helper::getWriteOnlyAccessor(d_interpolationValues);
 
         // node0
-        (*linearInterpolIndices)[pointIndex].push_back(triangles[triangleIndex][0]);
-        Real value = (Real)1.-(Real)(baryCoords[0]-baryCoords[1]);
-        (*linearInterpolValues)[pointIndex].push_back(value);
+        linearInterpolIndices[pointIndex].push_back(triangles[triangleIndex][0]);
+        Real value = Real(1.0) - Real(baryCoords[0]-baryCoords[1]);
+        linearInterpolValues[pointIndex].push_back(value);
 
         // node1
-        (*linearInterpolIndices)[pointIndex].push_back(triangles[triangleIndex][1]);
-        (*linearInterpolValues)[pointIndex].push_back((Real)baryCoords[0]);
+        linearInterpolIndices[pointIndex].push_back(triangles[triangleIndex][1]);
+        linearInterpolValues[pointIndex].push_back(Real(baryCoords[0]));
 
         // node2
-        (*linearInterpolIndices)[pointIndex].push_back(triangles[triangleIndex][2]);
-        (*linearInterpolValues)[pointIndex].push_back((Real)baryCoords[1]);
+        linearInterpolIndices[pointIndex].push_back(triangles[triangleIndex][2]);
+        linearInterpolValues[pointIndex].push_back(Real(baryCoords[1]));
 
 
     }
@@ -371,42 +359,48 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const int triang
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::addPointInQuad(const int /*quadIndex*/, const SReal* /*baryCoords*/)
 {
-    std::cout<<"addPointInQuad not implemented"<<std::endl;
+    msg_error() << "addPointInQuad not implemented";
 }
 
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const int tetraIndex, const SReal* baryCoords, const unsigned int pointIndex)
 {
-    if(tableElts==NULL|| baryPos==NULL)
-        return;
-    (*tableElts)[pointIndex] = tetraIndex;
-    (*baryPos)[pointIndex][0] =( Real ) baryCoords[0];
-    (*baryPos)[pointIndex][1] =( Real ) baryCoords[1];
-    (*baryPos)[pointIndex][2] =( Real ) baryCoords[2];
+    auto baryPos = sofa::helper::getWriteOnlyAccessor(d_barycentricPositions);
+    auto tableElts = sofa::helper::getWriteOnlyAccessor(d_tableElements);
 
-    if(computeLinearInterpolation.getValue())
+    tableElts[pointIndex] = tetraIndex;
+    baryPos[pointIndex][0] = Real(baryCoords[0]);
+    baryPos[pointIndex][1] = Real(baryCoords[1]);
+    baryPos[pointIndex][2] = Real(baryCoords[2]);
+
+    if(d_bComputeLinearInterpolation.getValue())
     {
-        const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = TopoInput->getTetrahedra();
+        const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = l_topology->getTetrahedra();
 
-        if(linearInterpolIndices==NULL|| linearInterpolIndices==NULL || tetrahedra.size()==0 )
+        if (tetrahedra.size() == 0)
+        {
             return;
+        }
+
+        auto linearInterpolIndices = sofa::helper::getWriteOnlyAccessor(d_interpolationIndices);
+        auto linearInterpolValues = sofa::helper::getWriteOnlyAccessor(d_interpolationValues);
 
         // node0
-        (*linearInterpolIndices)[pointIndex].push_back(tetrahedra[tetraIndex][0]);
-        Real value = (Real)1.-(Real)(baryCoords[0]-baryCoords[1]-baryCoords[2]);
-        (*linearInterpolValues)[pointIndex].push_back(value);
+        linearInterpolIndices[pointIndex].push_back(tetrahedra[tetraIndex][0]);
+        Real value = Real(1.0) - Real(baryCoords[0]-baryCoords[1]-baryCoords[2]);
+        linearInterpolValues[pointIndex].push_back(value);
 
         // node1
-        (*linearInterpolIndices)[pointIndex].push_back(tetrahedra[tetraIndex][1]);
-        (*linearInterpolValues)[pointIndex].push_back((Real)baryCoords[0]);
+        linearInterpolIndices[pointIndex].push_back(tetrahedra[tetraIndex][1]);
+        linearInterpolValues[pointIndex].push_back(Real(baryCoords[0]));
 
         // node2
-        (*linearInterpolIndices)[pointIndex].push_back(tetrahedra[tetraIndex][2]);
-        (*linearInterpolValues)[pointIndex].push_back((Real)baryCoords[1]);
+        linearInterpolIndices[pointIndex].push_back(tetrahedra[tetraIndex][2]);
+        linearInterpolValues[pointIndex].push_back(Real(baryCoords[1]));
 
         // node3
-        (*linearInterpolIndices)[pointIndex].push_back(tetrahedra[tetraIndex][3]);
-        (*linearInterpolValues)[pointIndex].push_back((Real)baryCoords[2]);
+        linearInterpolIndices[pointIndex].push_back(tetrahedra[tetraIndex][3]);
+        linearInterpolValues[pointIndex].push_back(Real(baryCoords[2]));
 
     }
 
@@ -416,32 +410,7 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const int tetraInde
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::addPointInCube(const int /*cubeIndex*/, const SReal* /*baryCoords*/)
 {
-    std::cout<<"addPointInCube not implemented"<<std::endl;
+    msg_error() << "addPointInCube not implemented";
 }
 
-
-template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::clear1d ( int /*reserve*/ )
-{
-// map1d.clear(); if ( reserve>0 ) map1d.reserve ( reserve );
-}
-
-template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::clear2d ( int /*reserve*/ )
-{
-// map2d.clear(); if ( reserve>0 ) map2d.reserve ( reserve );
-}
-
-template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::clear3d ( int /*reserve*/ )
-{
-// map3d.clear(); if ( reserve>0 ) map3d.reserve ( reserve );
-}
-
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // sofa::component::engine

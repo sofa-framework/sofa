@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
-#include "config.h"
+#include <SofaSparseSolver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
@@ -29,7 +29,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <sofa/helper/map.h>
-#include <math.h>
+#include <cmath>
 #include <csparse.h>
 
 namespace sofa
@@ -54,7 +54,7 @@ public :
     Real * tmp;
     SparseLUInvertData()
     {
-        S=NULL; N=NULL; tmp=NULL;
+        S=nullptr; N=nullptr; tmp=nullptr;
     }
 
     ~SparseLUInvertData()

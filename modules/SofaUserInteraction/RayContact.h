@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,12 +35,12 @@ namespace component
 namespace collision
 {
 
-class RayModel;
+class RayCollisionModel;
 
 class SOFA_USER_INTERACTION_API BaseRayContact : public core::collision::Contact
 {
 public:
-    typedef RayModel CollisionModel1;
+    typedef RayCollisionModel CollisionModel1;
 
 protected:
     CollisionModel1* model1;
@@ -49,15 +49,15 @@ protected:
 
     BaseRayContact(CollisionModel1* model1, core::collision::Intersection* instersectionMethod);
 
-    ~BaseRayContact();
+    ~BaseRayContact() override;
 public:
     const sofa::helper::vector<core::collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }
 
-    void createResponse(core::objectmodel::BaseContext* /*group*/)
+    void createResponse(core::objectmodel::BaseContext* /*group*/) override
     {
     }
 
-    void removeResponse()
+    void removeResponse() override
     {
     }
 
@@ -67,7 +67,7 @@ template<class CM2>
 class RayContact : public BaseRayContact
 {
 public:
-    typedef RayModel CollisionModel1;
+    typedef RayCollisionModel CollisionModel1;
     typedef CM2 CollisionModel2;
     typedef core::collision::Intersection Intersection;
     typedef core::collision::TDetectionOutputVector<CollisionModel1, CollisionModel2> OutputVector;
@@ -80,7 +80,7 @@ public:
     {
     }
 
-    void setDetectionOutputs(core::collision::DetectionOutputVector* outputs)
+    void setDetectionOutputs(core::collision::DetectionOutputVector* outputs) override
     {
         OutputVector* o = static_cast<OutputVector*>(outputs);
         //collisions = outputs;
@@ -89,7 +89,7 @@ public:
             collisions[i] = &(*o)[i];
     }
 
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
+    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
 };
 
 } // namespace collision

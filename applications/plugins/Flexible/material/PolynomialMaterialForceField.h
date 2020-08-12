@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,7 +63,7 @@ public:
 //    Data<bool > f_PSDStabilization;
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real C10=0.0;
         Real C01=0,C20=0,C02=0,C30=0,C03=0,C11=0,bulk=0;

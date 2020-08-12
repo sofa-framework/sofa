@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,21 +58,11 @@ protected:
 
     TransformEngine();
 
-    ~TransformEngine() {}
+    ~TransformEngine() override {}
 public:
     void init() override;
-
     void reinit() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const TransformEngine<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }    
 protected:
     void doUpdate() override;
 
@@ -86,14 +76,11 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP)
-
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec1Types>;
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2Types>;
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3Types>;
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid2Types>;
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid3Types>;
- 
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::ExtVec3fTypes>;
 #endif
 
 } // namespace engine

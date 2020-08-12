@@ -39,14 +39,14 @@ static Vec3 st_pos_max(10,10,10);
 static Vec3 min_extent(0.5,0.5,0.5);
 static Vec3 max_extent(3,3,3);
 
-sofa::component::collision::BulletOBBModel::SPtr makeBulletOBB(const Vec3 & p,const double *angles,const int *order,const Vec3 &v,const Vec3 &extents, sofa::simulation::Node::SPtr &father){
+sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeBulletOBB(const Vec3 & p,const double *angles,const int *order,const Vec3 &v,const Vec3 &extents, sofa::simulation::Node::SPtr &father){
     //creating node containing OBBModel
     sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
     //creating a mechanical object which will be attached to the OBBModel
     MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
 
-    //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
+    //editing DOF related to the OBBCollisionModel<sofa::defaulttype::Rigid3Types> to be created, size is 1 because it contains just one OBB
     obbDOF->resize(1);
     Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
@@ -83,16 +83,16 @@ sofa::component::collision::BulletOBBModel::SPtr makeBulletOBB(const Vec3 & p,co
 
     obb->addObject(obbDOF);
 
-    //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::BulletOBBModel::SPtr obbCollisionModel = New<sofa::component::collision::BulletOBBModel >();
+    //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
+    sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbCollisionModel = New<sofa::component::collision::BulletOBBModel >();
     obb->addObject(obbCollisionModel);
 
     //editting the OBBModel
     //obbCollisionModel->init();
     obbCollisionModel->resize(1);
 
-    Data<sofa::component::collision::BulletOBBModel::VecCoord> & dVecCoord = obbCollisionModel->writeExtents();
-    sofa::component::collision::BulletOBBModel::VecCoord & vecCoord = *(dVecCoord.beginEdit());
+    Data<sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord> & dVecCoord = obbCollisionModel->writeExtents();
+    sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord & vecCoord = *(dVecCoord.beginEdit());
 
     vecCoord[0] = extents;
 
@@ -125,13 +125,13 @@ static void transMechaRigid(const Vec3 & angles,const Vec3 & new_pos,sofa::simul
 }
 
 struct copyBulletOBB{
-    sofa::component::collision::BulletOBBModel::SPtr operator()(const sofa::component::collision::OBBModel::SPtr & obb_read,sofa::simulation::Node::SPtr &father){
+    sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr operator()(const sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr & obb_read,sofa::simulation::Node::SPtr &father){
         sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
         //creating a mechanical object which will be attached to the OBBModel
         MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
 
-        //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
+        //editing DOF related to the OBBCollisionModel<sofa::defaulttype::Rigid3Types> to be created, size is 1 because it contains just one OBB
         obbDOF->resize(1);
         Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
         MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
@@ -146,8 +146,8 @@ struct copyBulletOBB{
 
         obb->addObject(obbDOF);
 
-        //creating an OBBModel and attaching it to the same node than obbDOF
-        sofa::component::collision::BulletOBBModel::SPtr obbCollisionModel = New<sofa::component::collision::BulletOBBModel >();
+        //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
+        sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbCollisionModel = New<sofa::component::collision::BulletOBBModel >();
         obb->addObject(obbCollisionModel);
 
         //editting the OBBModel
@@ -157,7 +157,7 @@ struct copyBulletOBB{
 
         sofa::component::collision::BulletOBBModel * ptr_obb = obbCollisionModel.get();
         ptr_obb->setName(obb_read->getName());
-        sofa::component::collision::BulletOBBModel::VecCoord & extents = *(ptr_obb->ext.beginEdit());
+        sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord & extents = *(ptr_obb->ext.beginEdit());
 
         extents[0] = obb_read->extents(0);
 
@@ -168,13 +168,13 @@ struct copyBulletOBB{
 };
 
 struct copyBulletConvexHull{
-    sofa::component::collision::BulletConvexHullModel::SPtr operator()(const sofa::component::collision::OBBModel::SPtr & obb_read,sofa::simulation::Node::SPtr &father){
+    sofa::component::collision::BulletConvexHullModel::SPtr operator()(const sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr & obb_read,sofa::simulation::Node::SPtr &father){
         sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
         //creating a mechanical object which will be attached to the OBBModel
         MechanicalObjectRigid3::SPtr cv_hullDOF = New<MechanicalObjectRigid3>();
 
-        //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
+        //editing DOF related to the OBBCollisionModel<sofa::defaulttype::Rigid3Types> to be created, size is 1 because it contains just one OBB
         cv_hullDOF->resize(1);
         Data<MechanicalObjectRigid3::VecCoord> & dpositions = *cv_hullDOF->write( sofa::core::VecId::position() );
         MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
@@ -189,7 +189,7 @@ struct copyBulletConvexHull{
 
         obb->addObject(cv_hullDOF);
 
-        //creating an OBBModel and attaching it to the same node than obbDOF
+        //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
         sofa::component::collision::BulletConvexHullModel::SPtr cv_hull_model = New<sofa::component::collision::BulletConvexHullModel >();
         obb->addObject(cv_hull_model);
 
@@ -200,11 +200,11 @@ struct copyBulletConvexHull{
 
         sofa::component::collision::BulletConvexHullModel * ptr_cv_hull = cv_hull_model.get();
         ptr_cv_hull->setName(obb_read->getName());
-//        sofa::component::collision::BulletOBBModel::VecCoord & extents = *(ptr_obb->ext.beginEdit());
+//        sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord & extents = *(ptr_obb->ext.beginEdit());
 
 //        extents[0] = obb_read->extents(0);
 
-        sofa::component::collision::OBBModel::VecCoord vs;
+        sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord vs;
         obb_read->vertices(0,vs);
 
         sofa::component::collision::BulletConvexHullModel::VecCoord & ch_points = *(cv_hull_model->CHPoints.beginEdit());
@@ -221,13 +221,13 @@ struct copyBulletConvexHull{
 };
 
 
-//static sofa::component::collision::OBBModel::SPtr copyOBB(const sofa::component::collision::BulletOBBModel::SPtr & obb_read,sofa::simulation::Node::SPtr &father){
+//static sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr copyOBB(const sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr & obb_read,sofa::simulation::Node::SPtr &father){
 //    sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
 //    //creating a mechanical object which will be attached to the OBBModel
 //    MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
 
-//    //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
+//    //editing DOF related to the OBBCollisionModel<sofa::defaulttype::Rigid3Types> to be created, size is 1 because it contains just one OBB
 //    obbDOF->resize(1);
 //    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
 //    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
@@ -242,8 +242,8 @@ struct copyBulletConvexHull{
 
 //    obb->addObject(obbDOF);
 
-//    //creating an OBBModel and attaching it to the same node than obbDOF
-//    sofa::component::collision::OBBModel::SPtr obbCollisionModel = New<sofa::component::collision::OBBModel >();
+//    //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
+//    sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbCollisionModel = New<sofa::component::collision::OBBModel >();
 //    obb->addObject(obbCollisionModel);
 
 //    //editting the OBBModel
@@ -253,7 +253,7 @@ struct copyBulletConvexHull{
 
 //    sofa::component::collision::OBBModel * ptr_obb = obbCollisionModel.get();
 //    ptr_obb->setName(obb_read->getName());
-//    sofa::component::collision::OBBModel::VecCoord & extents = *(ptr_obb->ext.beginEdit());
+//    sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord & extents = *(ptr_obb->ext.beginEdit());
 
 //    extents[0] = obb_read->extents(0);
 
@@ -262,7 +262,7 @@ struct copyBulletConvexHull{
 //    return obbCollisionModel;
 //}
 
-static sofa::component::collision::OBBModel::SPtr makeRandOBB(const Vec3 & pos_min,const Vec3 & pos_max,sofa::simulation::Node::SPtr &father){
+static sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeRandOBB(const Vec3 & pos_min,const Vec3 & pos_max,sofa::simulation::Node::SPtr &father){
     Vec3 p = randVect(pos_min,pos_max);
     double angles[3];
 
@@ -279,13 +279,13 @@ static sofa::component::collision::OBBModel::SPtr makeRandOBB(const Vec3 & pos_m
     Vec3 v(0,0,0);
     Vec3 extents(randVect(Vec3(0.5,0.5,0.5),Vec3(3,3,3)));
 
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(p,angles,order,v,extents,father);
+    sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(p,angles,order,v,extents,father);
 
     return obbmodel;
 }
 
 
-//static sofa::component::collision::BulletOBBModel::SPtr makeRandBulletOBB(const Vec3 & pos_min,const Vec3 & pos_max,sofa::simulation::Node::SPtr &father){
+//static sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeRandBulletOBB(const Vec3 & pos_min,const Vec3 & pos_max,sofa::simulation::Node::SPtr &father){
 //    Vec3 p = randVect(pos_min,pos_max);
 //    SReal angles[3];
 
@@ -302,7 +302,7 @@ static sofa::component::collision::OBBModel::SPtr makeRandOBB(const Vec3 & pos_m
 //    Vec3 v(0,0,0);
 //    Vec3 extents(randVect(min_extent,max_extent));
 
-//    sofa::component::collision::BulletOBBModel::SPtr obbmodel = makeBulletOBB(p,angles,order,v,extents,father);
+//    sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeBulletOBB(p,angles,order,v,extents,father);
 
 //    return obbmodel;
 //}
@@ -332,8 +332,8 @@ bool BCD_test::randTest(int seed,int nb_move){
     sofa_scn->addObject(new_prox);
 
     //copying collision models and adding them to the scene
-    sofa::component::collision::OBBModel::SPtr obb1s = makeRandOBB(st_pos_min,st_pos_max,sofa_scn);
-    sofa::component::collision::OBBModel::SPtr obb2s = makeRandOBB(st_pos_min,st_pos_max,sofa_scn);
+    sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obb1s = makeRandOBB(st_pos_min,st_pos_max,sofa_scn);
+    sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obb2s = makeRandOBB(st_pos_min,st_pos_max,sofa_scn);
 
     //setting id to collision models
     std::string name1("1");

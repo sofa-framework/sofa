@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,24 +61,23 @@ void PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunctio
 
 template <class DataTypes>
 PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , data(new PatchTestMovementConstraintInternalData<DataTypes>)
-    , m_meshIndices( initData(&m_meshIndices,"meshIndices","Indices of the mesh") )
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_beginConstraintTime( initData(&m_beginConstraintTime,"beginConstraintTime","Begin time of the bilinear constraint") )
-    , m_endConstraintTime( initData(&m_endConstraintTime,"endConstraintTime","End time of the bilinear constraint") )
-    , m_constrainedPoints( initData(&m_constrainedPoints,"constrainedPoints","Coordinates of the constrained points") )
-    , m_cornerMovements(  initData(&m_cornerMovements,"cornerMovements","movements of the corners of the grid") )
-    , m_cornerPoints(  initData(&m_cornerPoints,"cornerPoints","corner points for computing constraint") )
-    , m_drawConstrainedPoints(  initData(&m_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
+    , d_meshIndices( initData(&d_meshIndices,"meshIndices","Indices of the mesh") )
+    , d_indices( initData(&d_indices,"indices","Indices of the constrained points") )
+    , d_beginConstraintTime( initData(&d_beginConstraintTime,"beginConstraintTime","Begin time of the bilinear constraint") )
+    , d_endConstraintTime( initData(&d_endConstraintTime,"endConstraintTime","End time of the bilinear constraint") )
+    , d_constrainedPoints( initData(&d_constrainedPoints,"constrainedPoints","Coordinates of the constrained points") )
+    , d_cornerMovements(  initData(&d_cornerMovements,"cornerMovements","movements of the corners of the grid") )
+    , d_cornerPoints(  initData(&d_cornerPoints,"cornerPoints","corner points for computing constraint") )
+    , d_drawConstrainedPoints(  initData(&d_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_pointHandler(nullptr)
 {
-    pointHandler = new FCPointHandler(this, &m_indices);
-
-    if(!m_beginConstraintTime.isSet())
-     m_beginConstraintTime = 0;
-    if(!m_endConstraintTime.isSet())
-        m_endConstraintTime = 20;
-
+    if(!d_beginConstraintTime.isSet())
+     d_beginConstraintTime = 0;
+    if(!d_endConstraintTime.isSet())
+        d_endConstraintTime = 20;
 }
 
 
@@ -86,29 +85,29 @@ PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
 template <class DataTypes>
 PatchTestMovementConstraint<DataTypes>::~PatchTestMovementConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 }
 
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::clearConstraints()
 {
-    m_indices.beginEdit()->clear();
-    m_indices.endEdit();
+    d_indices.beginEdit()->clear();
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::addConstraint(unsigned int index)
 {
-    m_indices.beginEdit()->push_back(index);
-    m_indices.endEdit();
+    d_indices.beginEdit()->push_back(index);
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::removeConstraint(unsigned int index)
 {
-    removeValue(*m_indices.beginEdit(),index);
-    m_indices.endEdit();
+    removeValue(*d_indices.beginEdit(),index);
+    d_indices.endEdit();
 }
 
 // -- Constraint interface
@@ -119,13 +118,29 @@ void PatchTestMovementConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters
-    m_indices.createTopologicalEngine(topology, pointHandler);
-    m_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
 
-    const SetIndexArray & indices = m_indices.getValue();
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &d_indices);
+        d_indices.createTopologicalEngine(_topology, m_pointHandler);
+        d_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
+
+    const SetIndexArray & indices = d_indices.getValue();
 
     unsigned int maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
@@ -133,7 +148,7 @@ void PatchTestMovementConstraint<DataTypes>::init()
         const unsigned int index=indices[i];
         if (index >= maxIndex)
         {
-            serr << "Index " << index << " not valid!" << sendl;
+            msg_error() <<"Index " << index << " not valid!";
             removeConstraint(index);
         }
     }
@@ -147,8 +162,8 @@ void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
 {
     Coord corner0, corner1, corner2, corner3,corner4,corner5,corner6,corner7, point;
     // Write accessor
-    helper::WriteAccessor< Data<VecCoord > > cornerPositions = m_cornerPoints;
-    helper::WriteAccessor< Data<VecCoord > > constrainedPoints = m_constrainedPoints;
+    helper::WriteAccessor< Data<VecCoord > > cornerPositions = d_cornerPoints;
+    helper::WriteAccessor< Data<VecCoord > > constrainedPoints = d_constrainedPoints;
     bool isMeshin3D = false;
     point = constrainedPoints[0];
 
@@ -235,7 +250,7 @@ template <class DataTypes>
 template <class DataDeriv>
 void PatchTestMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
 {
-    const SetIndexArray & indices = m_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     for (size_t i = 0; i< indices.size(); ++i)
     {
         dx[indices[i]]=Deriv();
@@ -263,20 +278,20 @@ void PatchTestMovementConstraint<DataTypes>::projectPosition(const core::Mechani
 {
     sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
     helper::WriteAccessor<DataVecCoord> x = xData;
-    const SetIndexArray & indices = m_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
 
     // Time
-    double beginTime = m_beginConstraintTime.getValue();
-    double endTime = m_endConstraintTime.getValue();
+    double beginTime = d_beginConstraintTime.getValue();
+    double endTime = d_endConstraintTime.getValue();
     double totalTime = endTime - beginTime;
 
     //initialize initial mesh Dofs positions, if it's not done
     if(meshPointsX0.size()==0)
-        this->initializeInitialPositions(m_meshIndices.getValue(),xData,meshPointsX0);
+        this->initializeInitialPositions(d_meshIndices.getValue(),xData,meshPointsX0);
 
     //initialize final mesh Dofs positions, if it's not done
     if(meshPointsXf.size()==0)
-       this->initializeFinalPositions(m_meshIndices.getValue(),xData, meshPointsX0, meshPointsXf);
+       this->initializeFinalPositions(d_meshIndices.getValue(),xData, meshPointsX0, meshPointsXf);
 
     //initialize initial constrained Dofs positions, if it's not done
     if(x0.size() == 0)
@@ -310,7 +325,7 @@ void PatchTestMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::B
     // clears the rows and columns associated with constrained particles
     unsigned blockSize = DataTypes::deriv_total_size;
 
-    for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
+    for(SetIndexArray::const_iterator it= d_indices.getValue().begin(), iend=d_indices.getValue().end(); it!=iend; it++ )
     {
         M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
     }
@@ -321,7 +336,7 @@ template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::getFinalPositions( VecCoord& finalPos,DataVecCoord& xData)
 {
     // Indices of mesh points
-    const SetIndexArray & meshIndices = m_meshIndices.getValue();
+    const SetIndexArray & meshIndices = d_meshIndices.getValue();
 
     // Initialize final positions
     if(meshPointsXf.size()==0)
@@ -377,7 +392,7 @@ void PatchTestMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int
     Real alpha, beta, gamma;
 
     // Corner points
-    const VecCoord& cornerPoints = m_cornerPoints.getValue();
+    const VecCoord& cornerPoints = d_cornerPoints.getValue();
     if(cornerPoints.size()==0)
         this->findCornerPoints();
 
@@ -398,7 +413,7 @@ void PatchTestMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int
          beta = fabs(point[1]-corner0[1])/fabs(corner3[1]-corner0[1]);
 
          // cornerMovements
-         const VecDeriv& cornerMovements = m_cornerMovements.getValue();
+         const VecDeriv& cornerMovements = d_cornerMovements.getValue();
 
          // Compute displacement by linear interpolation
          displacement = cornerMovements[0]*(1-alpha)*(1-beta) + cornerMovements[1]*alpha*(1-beta)+ cornerMovements[2]*alpha*beta+cornerMovements[3]*(1-alpha)*beta;
@@ -428,7 +443,7 @@ void PatchTestMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int
             gamma = 0; // 2D
 
         // cornerMovements
-        const VecDeriv& cornerMovements = m_cornerMovements.getValue();
+        const VecDeriv& cornerMovements = d_cornerMovements.getValue();
 
         // Compute displacement by linear interpolation
         displacement = (cornerMovements[0]*(1-alpha)*(1-beta) + cornerMovements[1]*alpha*(1-beta)+ cornerMovements[2]*alpha*beta+cornerMovements[3]*(1-alpha)*beta) * (1-gamma)
@@ -444,12 +459,12 @@ void PatchTestMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = m_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     std::vector< defaulttype::Vector3 > points;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     defaulttype::Vector3 point;
 
-    if(m_drawConstrainedPoints.getValue())
+    if(d_drawConstrainedPoints.getValue())
     {
         for (SetIndexArray::const_iterator it = indices.begin();it != indices.end();++it)
         {

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,7 +59,7 @@ template <class In, class Out>
 BarycentricMapperMeshTopology<In,Out>::BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
         topology::PointSetTopologyContainer* toTopology)
     : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology),
-      m_matrixJ(NULL), m_updateJ(true)
+      m_matrixJ(nullptr), m_updateJ(true)
 {
 }
 

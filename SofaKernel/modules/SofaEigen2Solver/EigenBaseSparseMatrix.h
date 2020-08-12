@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_H
 #define SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_H
 
+#include <SofaEigen2Solver/config.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/SortedPermutation.h>
@@ -30,12 +31,9 @@
 #include <map>
 #include <Eigen/Sparse>
 
-#ifdef _OPENMP
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
 #include "EigenBaseSparseMatrix_MT.h"
 #endif
-
-
-
 
 namespace sofa
 {
@@ -45,12 +43,6 @@ namespace component
 
 namespace linearsolver
 {
-
-//#define EigenBaseSparseMatrix_CHECK
-//#define EigenBaseSparseMatrix_VERBOSE
-
-
-
 
 /** Sparse matrix based on the Eigen library.
 
@@ -75,7 +67,7 @@ Rows, columns, or the full matrix can be set to zero using the clear* methods.
 template<class TReal>
 class EigenBaseSparseMatrix : public defaulttype::BaseMatrix
 {
-    void set(Index i, Index j, double v)
+    void set(Index i, Index j, double v) override
     {
         for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
         {
@@ -135,7 +127,7 @@ public:
     }
 
     /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress().
-    void add( Index row, Index col, double value ){
+    void add( Index row, Index col, double value ) override{
         if( value!=0.0 ) incoming.push_back( Triplet(row,col,(Real)value) );
     }
 
@@ -172,7 +164,7 @@ public:
 
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(Index nbRow, Index nbCol)
+    void resize(Index nbRow, Index nbCol) override
     {
         compressedMatrix.resize(nbRow,nbCol);
     }
@@ -180,13 +172,13 @@ public:
 
 
     /// number of rows
-    Index rowSize(void) const
+    Index rowSize(void) const override
     {
         return compressedMatrix.rows();
     }
 
     /// number of columns
-    Index colSize(void) const
+    Index colSize(void) const override
     {
         return compressedMatrix.cols();
     }
@@ -196,7 +188,7 @@ public:
         compressedMatrix.reserve(reserveSize);
     }
 
-    SReal element(Index i, Index j) const
+    SReal element(Index i, Index j) const override
     {
         return (SReal)compressedMatrix.coeff(i,j);
     }
@@ -204,7 +196,7 @@ public:
 
 
     /// Add the values from the scheduled list, and clears the schedule list. @sa set(Index i, Index j, double v).
-    void compress()
+    void compress() override
     {
         if( incoming.empty() ) return;
         CompressedMatrix m(compressedMatrix.rows(),compressedMatrix.cols());
@@ -230,7 +222,7 @@ public:
 
 
     /// Set all the entries of a row to 0
-    void clearRow(Index i)
+    void clearRow(Index i) override
     {
         compress();
         for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
@@ -240,7 +232,7 @@ public:
     }
 
     /// Set all the entries of rows imin to imax-1 to 0.
-    void clearRows(Index imin, Index imax)
+    void clearRows(Index imin, Index imax) override
     {
         compress();
         for(Index i=imin; i<imax; i++)
@@ -251,7 +243,7 @@ public:
     }
 
     ///< Set all the entries of a column to 0. Not efficient !
-    void clearCol(Index col)
+    void clearCol(Index col) override
     {
         compress();
         for(Index i=0; i<compressedMatrix.rows(); i++ )
@@ -265,7 +257,7 @@ public:
     }
 
     ///< Clears the all the entries of column imin to column imax-1. Not efficient !
-    void clearCols(Index imin, Index imax)
+    void clearCols(Index imin, Index imax) override
     {
         compress();
         for(Index i=0; i<compressedMatrix.rows(); i++ )
@@ -277,14 +269,14 @@ public:
     }
 
     ///< Set all the entries of column i and of row i to 0. Not efficient !
-    void clearRowCol(Index i)
+    void clearRowCol(Index i) override
     {
         clearRow(i);
         clearCol(i);
     }
 
     ///< Clears all the entries of rows imin to imax-1 and columns imin to imax-1
-    void clearRowsCols(Index imin, Index imax)
+    void clearRowsCols(Index imin, Index imax) override
     {
         clearRows(imin,imax);
         clearCols(imin,imax);
@@ -292,7 +284,7 @@ public:
 
 
     /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
-    void clear()
+    void clear() override
     {
         Index r=rowSize(), c=colSize();
         resize(0,0);
@@ -311,7 +303,7 @@ public:
     void mult_MT( VectorEigen& result, const VectorEigen& data )
     {
         compress();
-#ifdef _OPENMP
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
         result = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, data );
 #else
         result = compressedMatrix * data;
@@ -371,7 +363,7 @@ public:
     public:
 
         MatrixAccessor( ThisMatrix* m=0 ) {setMatrix(m); }
-        virtual ~MatrixAccessor() {}
+        ~MatrixAccessor() override {}
 
         void setMatrix( ThisMatrix* m )
         {
@@ -383,16 +375,15 @@ public:
         const ThisMatrix* getMatrix() const { return matrix; }
 
 
-        virtual int getGlobalDimension() const { return matrix->rowSize(); }
-        virtual int getGlobalOffset(const core::behavior::BaseMechanicalState*) const { return 0; }
-        virtual MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const
+        int getGlobalDimension() const override { return matrix->rowSize(); }
+        int getGlobalOffset(const core::behavior::BaseMechanicalState*) const override { return 0; }
+        MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const override
         {
-            //    cerr<<"SingleMatrixAccessor::getMatrix" << endl;
             return matRef;
         }
 
 
-        virtual InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* /*mstate1*/, const core::behavior::BaseMechanicalState* /*mstate2*/) const
+        InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* /*mstate1*/, const core::behavior::BaseMechanicalState* /*mstate2*/) const override
         {
             assert(false);
             InteractionMatrixRef ref;
@@ -435,7 +426,7 @@ public:
     /// @warning res MUST NOT be the same variable as this or rhs
     void mul_MT(EigenBaseSparseMatrix<Real>& res, const EigenBaseSparseMatrix<Real>& rhs) const
     {
-    #ifdef _OPENMP
+    #if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
         assert( &res != this );
         assert( &res != &rhs );
         ((EigenBaseSparseMatrix<Real>*)this)->compress();  /// \warning this violates the const-ness of the method
@@ -456,7 +447,7 @@ public:
     void mul_MT( Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& res, const Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& rhs )
     {
         compress();
-#ifdef _OPENMP
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
         res = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, rhs );
 #else
         res = compressedMatrix * rhs;

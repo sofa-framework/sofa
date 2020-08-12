@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,16 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -51,7 +48,6 @@ EulerImplicitSolver::EulerImplicitSolver()
     , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
     , f_velocityDamping( initData(&f_velocityDamping,(SReal)0.0,"vdamping","Velocity decay coefficient (no decay if null)") )
     , f_firstOrder (initData(&f_firstOrder, false, "firstOrder", "Use backward Euler scheme for first order ode system."))
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , d_trapezoidalScheme( initData(&d_trapezoidalScheme,false,"trapezoidalScheme","Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time") )
     , f_solveConstraint( initData(&f_solveConstraint,false,"solveConstraint","Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)") )
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
@@ -97,7 +93,8 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     mop.cparams.setV(vResult);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx());
+    dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
     x.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
@@ -108,7 +105,6 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
 
     const SReal& h = dt;
-    const bool verbose  = f_verbose.getValue();
     const bool firstOrder = f_firstOrder.getValue();
 
     // the only difference for the trapezoidal rule is the factor tr = 0.5 for some usages of h
@@ -119,15 +115,14 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     else
         tr = 1.0;
 
-    if (verbose)
-        std::cout<<"trapezoidal factor = "<< tr <<std::endl;
+    msg_info() << "trapezoidal factor = " << tr;
 
     sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
     mop->setImplicit(true); // this solver is implicit
     // compute the net forces at the beginning of the time step
     mop.computeForce(f);
-    if( verbose )
-        serr<<"EulerImplicitSolver, initial f = "<< f <<sendl;
+
+    msg_info() << "EulerImplicitSolver, initial f = " << f;
 
     sofa::helper::AdvancedTimer::stepNext ("ComputeForce", "ComputeRHTerm");
     if( firstOrder )
@@ -140,8 +135,8 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
         // force in the current configuration
         b.eq(f,1.0/tr);                                                                         // b = f0
-        if( verbose )
-            serr<<"EulerImplicitSolver, f = "<< f <<sendl;
+
+        msg_info() << "EulerImplicitSolver, f = " << f;
 
         // add the change of force due to stiffness + Rayleigh damping
         mop.addMBKv(b, -f_rayleighMass.getValue(), 1, h+f_rayleighStiffness.getValue()); // b =  f0 + ( rm M + B + (h+rs) K ) v
@@ -150,13 +145,11 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         b.teq(h*tr);                                                                        // b = h(f0 + ( rm M + B + (h+rs) K ) v )
     }
 
-    if( verbose )
-        serr<<"EulerImplicitSolver, b = "<< b <<sendl;
+    msg_info() << "EulerImplicitSolver, b = " << b;
 
     mop.projectResponse(b);          // b is projected to the constrained space
 
-    if( verbose )
-        serr<<"EulerImplicitSolver, projected b = "<< b <<sendl;
+    msg_info() << "EulerImplicitSolver, projected b = " << b;
 
     sofa::helper::AdvancedTimer::stepNext ("ComputeRHTerm", "MBKBuild");
 
@@ -167,11 +160,8 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     else
         matrix = MechanicalMatrix(1+tr*h*f_rayleighMass.getValue(),-tr*h,-tr*h*(h+f_rayleighStiffness.getValue())); // MechanicalMatrix::K * (-tr*h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-tr*h) + MechanicalMatrix::M * (1+tr*h*f_rayleighMass.getValue());
 
-    if( verbose )
-    {
-        serr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) << " = " << matrix <<sendl;
-        serr<<"EulerImplicitSolver, Matrix K = " << MechanicalMatrix::K << sendl;
-    }
+    msg_info() << "EulerImplicitSolver, matrix = " << (MechanicalMatrix::K * (-h * (h + f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1 + h * f_rayleighMass.getValue())) << " = " << matrix;
+    msg_info() << "EulerImplicitSolver, Matrix K = " << MechanicalMatrix::K;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("SystemSolution");
@@ -294,16 +284,16 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     if (f_velocityDamping.getValue()!=0.0)
         newVel *= exp(-h*f_velocityDamping.getValue());
 
-    if( verbose )
+    if( f_printLog.getValue() )
     {
         mop.projectPosition(newPos);
         mop.projectVelocity(newVel);
         mop.propagateX(newPos);
         mop.propagateV(newVel);
-        serr<<"EulerImplicitSolver, final x = "<< newPos <<sendl;
-        serr<<"EulerImplicitSolver, final v = "<< newVel <<sendl;
+        msg_info() << "EulerImplicitSolver, final x = " << newPos;
+        msg_info() << "EulerImplicitSolver, final v = " << newVel;
         mop.computeForce(f);
-        serr<<"EulerImplicitSolver, final f = "<< f <<sendl;
+        msg_info() << "EulerImplicitSolver, final f = " << f;
     }
 }
 

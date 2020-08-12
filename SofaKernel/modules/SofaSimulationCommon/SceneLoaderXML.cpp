@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,17 +66,16 @@ void SceneLoaderXML::getExtensionList(ExtensionList* list)
     list->push_back("scn");
 }
 
-sofa::simulation::Node::SPtr SceneLoaderXML::load(const char *filename)
+sofa::simulation::Node::SPtr SceneLoaderXML::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
+    SOFA_UNUSED(sceneArgs);
     sofa::simulation::Node::SPtr root;
 
-    if (!canLoadFileName(filename))
+    if (!canLoadFileName(filename.c_str()))
         return 0;
 
-    notifyLoadingScene();
-
-    xml::BaseElement* xml = xml::loadFromFile ( filename );
-    root = processXML(xml, filename);
+    xml::BaseElement* xml = xml::loadFromFile ( filename.c_str() );
+    root = processXML(xml, filename.c_str());
 
     delete xml;
 
@@ -93,9 +92,9 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
 {
     loadSucceed = true;
 
-    if ( xml==NULL )
+    if ( xml==nullptr )
     {
-        return NULL;
+        return nullptr;
     }
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
@@ -108,7 +107,7 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
     sofa::simulation::xml::NodeElement* nodeElt = dynamic_cast<sofa::simulation::xml::NodeElement *>(xml);
-    if( nodeElt==NULL )
+    if( nodeElt==nullptr )
     {
         msg_fatal_withfile("SceneLoaderXML", xml->getSrcFile(), xml->getSrcLine()) << "XML Root Node is not an Element. \n" ;
         loadSucceed = false;
@@ -121,11 +120,11 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     }
 
     core::objectmodel::BaseNode* baseroot = xml->getObject()->toBaseNode();
-    if ( baseroot == NULL )
+    if ( baseroot == nullptr )
     {
         msg_error_withfile("SceneLoaderXML", xml->getSrcFile(), xml->getSrcLine()) << "Objects initialization failed." ;
         loadSucceed = false;
-        return NULL;
+        return nullptr;
     }
 
     Node::SPtr root = down_cast<Node> ( baseroot );
@@ -142,13 +141,14 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
 /// Load from a string in memory
 Node::SPtr SceneLoaderXML::loadFromMemory ( const char *filename, const char *data, unsigned int size )
 {
-    notifyLoadingScene();
+    notifyLoadingSceneBefore();
 
     xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
 
     Node::SPtr root = processXML(xml, filename);
 
     delete xml;
+    notifyLoadingSceneAfter(root);
     return root;
 }
 

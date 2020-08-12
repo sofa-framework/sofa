@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,7 @@
 
 #include <sofa/helper/io/Mesh.h>
 
-#ifdef SOFA_HAVE_MINIFLOWVR
+#if SOFADISTANCEGRID_HAVE_MINIFLOWVR
 #include <flowvr/render/mesh.h>
 #endif
 
@@ -82,25 +82,11 @@ int validateDim(int n)
 }
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
-    : meshPts(new DefaultAllocator<Coord>)
+    : meshPts()
     , m_nbRef(1)
     , m_nx(validateDim(nx)), m_ny(validateDim(ny)), m_nz(validateDim(nz))
     , m_nxny(m_nx*m_ny), m_nxnynz(m_nx*m_ny*m_nz)
-    , m_dists(m_nx*m_ny*m_nz, new DefaultAllocator<SReal>)
-    , m_pmin(pmin), m_pmax(pmax)
-    , m_cellWidth   (calcCellWidth(m_nx,m_ny,m_nz,pmin,pmax))
-    , m_invCellWidth(calcInvCellWidth(m_nx,m_ny,m_nz,pmin,pmax))
-    , m_cubeDim(0)
-{
-}
-
-DistanceGrid::DistanceGrid(int nx, int ny, int nz,
-                           Coord pmin, Coord pmax, ExtVectorAllocator<SReal>* alloc)
-    : meshPts(new DefaultAllocator<Coord>)
-    , m_nbRef(1)
-    , m_nx(validateDim(nx)), m_ny(validateDim(ny)), m_nz(validateDim(nz))
-    , m_nxny(m_nx*m_ny), m_nxnynz(m_nx*m_ny*m_nz)
-    , m_dists(m_nx*m_ny*m_nz, alloc)
+    , m_dists(m_nx*m_ny*m_nz)
     , m_pmin(pmin), m_pmax(pmax)
     , m_cellWidth   (calcCellWidth(m_nx,m_ny,m_nz,pmin,pmax))
     , m_invCellWidth(calcInvCellWidth(m_nx,m_ny,m_nz,pmin,pmax))
@@ -187,7 +173,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
     }
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
-#ifdef SOFA_HAVE_MINIFLOWVR
+#if SOFADISTANCEGRID_HAVE_MINIFLOWVR
         flowvr::render::Mesh mesh;
         if (!mesh.load(filename.c_str()))
         {
@@ -245,9 +231,9 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
             grid->computeBBox();
         return grid;
 #else
-        msg_error("DistanceGrid")<<"Loading a .fmesh file requires the FlowVR library (activatable with the CMake option 'SOFA_BUILD_MINIFLOWVR')";
+        msg_error("DistanceGrid")<<"Loading a .fmesh file requires the FlowVR library";
         return NULL;
-#endif
+#endif // SOFADISTANCEGRID_HAVE_MINIFLOWVR
     }
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {

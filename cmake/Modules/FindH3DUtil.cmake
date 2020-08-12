@@ -10,6 +10,7 @@ GET_FILENAME_COMPONENT(module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 # Look for the header file.
 FIND_PATH(H3DUTIL_INCLUDE_DIR NAMES H3DUtil/H3DUtil.h
     PATHS $ENV{H3D_ROOT}/../H3DUtil/include
+    $ENV{H3D_ROOT}/include
     ../../H3DUtil/include
     ${module_file_path}/../../../H3DUtil/include
     DOC "Path in which the file H3DUtil/H3DUtil.h is located." )
@@ -30,12 +31,14 @@ ENDIF( MSVC )
 
 FIND_LIBRARY(H3DUTIL_LIBRARY NAMES ${H3DUTIL_NAME}
     PATHS $ENV{H3D_ROOT}/../lib
+    $ENV{H3D_ROOT}/lib
     ../../lib
     ${module_file_path}/../../../lib
     DOC "Path to ${H3DUTIL_NAME} library." )
 
 FIND_LIBRARY(H3DUTIL_DEBUG_LIBRARY NAMES ${H3DUTIL_NAME}_d
     PATHS $ENV{H3D_ROOT}/../lib
+    $ENV{H3D_ROOT}/lib
     ../../lib
     ${module_file_path}/../../../lib
     DOC "Path to ${H3DUTIL_NAME}_d library." )

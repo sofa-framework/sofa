@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,7 +58,7 @@ TriangleOctreeModel::TriangleOctreeModel ()
 void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    TriangleModel::draw(vparams);
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::draw(vparams);
     if (isActive () && vparams->displayFlags().getShowCollisionModels ())
     {
         if (vparams->displayFlags().getShowWireFrame ())
@@ -84,27 +84,27 @@ void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 
 void TriangleOctreeModel::computeBoundingTree(int maxDepth)
 {
-    const helper::vector<topology::Triangle>& tri = *triangles;
+    const helper::vector<topology::Triangle>& tri = *m_triangles;
     if(octreeRoot)
     {
         delete octreeRoot;
-        octreeRoot=NULL;
+        octreeRoot=nullptr;
     }
 
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     updateFromTopology();
 
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
-    int size2=mstate->getSize();
+    int size2=m_mstate->getSize();
     pNorms.resize(size2);
     for(int i=0; i<size2; i++)
     {
         pNorms[i]=defaulttype::Vector3(0,0,0);
     }
     defaulttype::Vector3 minElem, maxElem;
-    maxElem[0]=minElem[0]=mstate->read(core::ConstVecCoordId::position())->getValue()[0][0];
-    maxElem[1]=minElem[1]=mstate->read(core::ConstVecCoordId::position())->getValue()[0][1];
-    maxElem[2]=minElem[2]=mstate->read(core::ConstVecCoordId::position())->getValue()[0][2];
+    maxElem[0]=minElem[0]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][0];
+    maxElem[1]=minElem[1]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][1];
+    maxElem[2]=minElem[2]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][2];
 
     cubeModel->resize(1);  // size = number of triangles
     for (int i=1; i<size; i++)

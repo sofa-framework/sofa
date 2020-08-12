@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,18 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: MechanicalStateController
-//
-// Description:
-//
-//
-// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
 #ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_H
 #include "config.h"
@@ -76,7 +64,7 @@ protected:
     /**
      * @brief Default Destructor.
      */
-    virtual ~MechanicalStateController() {};
+    ~MechanicalStateController() override {};
 public:
     /**
      * @brief SceneGraph callback initialization method.
@@ -146,16 +134,6 @@ public:
      * @brief Apply the controller modifications to the controlled MechanicalState.
      */
     void applyController(void);
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const MechanicalStateController<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
 protected:
 
     Data< unsigned int > index; ///< Controlled DOF index.
@@ -179,13 +157,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP)
-//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec3Types>;
-//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec2Types>;
 extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec1Types>;
-//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec6Types>;
 extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Rigid3Types>;
-//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Rigid2Types>;
-
 #endif
 
 } // namespace controller

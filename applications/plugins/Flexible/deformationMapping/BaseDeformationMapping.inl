@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -432,10 +432,10 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
     const InVecCoord& in = dIn.getValue();
     const VecVRef& indices = this->f_index.getValue();
 
+    std::stringstream tmp;
 #ifdef _OPENMP
 #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
-    std::stringstream tmp ;
     for(helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
     {
         out[i]=OutCoord();

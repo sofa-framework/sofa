@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,7 +53,7 @@ static helper::Creator<InteractionPerformer::InteractionPerformerFactory, Attach
 template <>
 bool AttachBodyPerformer<defaulttype::Rigid3Types>::start_partial(const BodyPicked& picked)
 {
-    core::behavior::MechanicalState<defaulttype::Rigid3Types>* mstateCollision=NULL;
+    core::behavior::MechanicalState<defaulttype::Rigid3Types>* mstateCollision=nullptr;
 
     double restLength = picked.dist;
     mstateCollision = static_cast< core::behavior::MechanicalState<defaulttype::Rigid3Types>*  >(picked.mstate);
@@ -71,7 +71,7 @@ bool AttachBodyPerformer<defaulttype::Rigid3Types>::start_partial(const BodyPick
     spring.setInitLength(this->interactor->getMouseRayModel()->getRay(0).direction()*restLength);
     spring.setSoftStiffnessTranslation(stiffness);
     jointspringforcefield->addSpring(spring);
-    jointspringforcefield->showFactorSize.setValue(showFactorSize);
+    jointspringforcefield->d_showFactorSize.setValue(showFactorSize);
 
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)

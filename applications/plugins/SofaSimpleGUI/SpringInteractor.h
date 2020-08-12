@@ -34,16 +34,16 @@ public:
     SpringInteractor(const PickedPoint&  picked, SReal stiffness=(SReal) 100.);
 
     /// Insert this in the scene as a child of the given node
-    virtual void attach( SofaScene* scene );
+    void attach( SofaScene* scene ) override;
 
     /// Remove this from the scene, without destroying it.
-    virtual void detach();
+    void detach() override;
 
     /// current interaction point
-    Vec3 getPoint();
+    Vec3 getPoint() override;
 
     /// Displace the interaction to the given point
-    virtual void setPoint( const Vec3& p );
+    void setPoint( const Vec3& p ) override;
 
 };
 

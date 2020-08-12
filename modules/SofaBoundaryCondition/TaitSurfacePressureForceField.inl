@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,7 +62,8 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_drawForceColor(initData(&m_drawForceColor, defaulttype::Vec4f(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
     m_volumeAfterTC(initData(&m_volumeAfterTC, "volumeAfterTC", "OUT: Volume after a topology change")),
     m_surfaceAreaAfterTC(initData(&m_surfaceAreaAfterTC, (Real)0.0, "surfaceAreaAfterTC", "OUT: Surface area after a topology change")),
-    m_topology(NULL),
+    l_topology(initLink("topology", "link to the topology container")),
+    m_topology(nullptr),
     lastTopologyRevision(-1)
 {
     m_p0.setGroup("Controls");
@@ -106,7 +107,22 @@ template <class DataTypes>
 void TaitSurfacePressureForceField<DataTypes>::init()
 {
     Inherit1::init();
-    m_topology = this->getContext()->getMeshTopology();
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     updateFromTopology();
     computeMeshVolumeAndArea(*m_currentVolume.beginEdit(), *m_currentSurfaceArea.beginEdit(), this->mstate->read(sofa::core::VecCoordId::position()));
@@ -167,7 +183,7 @@ void TaitSurfacePressureForceField<DataTypes>::updateFromTopology()
     if (m_topology && lastTopologyRevision != m_topology->getRevision())
     {
         if (lastTopologyRevision >= 0)
-            serr << "NEW TOPOLOGY v" << m_topology->getRevision() << sendl;
+            msg_error() << "NEW TOPOLOGY v" << m_topology->getRevision();
 
         lastTopologyRevision = m_topology->getRevision();
         computePressureTriangles();
@@ -317,7 +333,7 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrix(const core::Mechanic
 template<class DataTypes>
 SReal TaitSurfacePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
 {
-    serr << "Get potentialEnergy not implemented" << sendl;
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
 }
 
@@ -468,7 +484,7 @@ void TaitSurfacePressureForceField<DataTypes>::computePressureAndStiffness(Real&
 {
     if (currentVolume > 10*v0 || 10*currentVolume < v0)
     {
-        serr << "TOO MUCH VOLUME VARIATION." << sendl;
+        msg_error() << "TOO MUCH VOLUME VARIATION.";
         pressure = 0;
         stiffness = 0;
     }

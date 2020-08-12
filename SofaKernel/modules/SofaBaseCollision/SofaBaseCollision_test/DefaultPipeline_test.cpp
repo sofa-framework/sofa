@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -126,7 +126,7 @@ int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
     Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
-    //EXPECT_NE( (root.get()), NULL) ;
+    //EXPECT_NE( (root.get()), nullptr) ;
     root->init(ExecParams::defaultInstance()) ;
 
     DefaultPipeline* clp = dynamic_cast<DefaultPipeline*>(root->getObject("pipeline")) ;

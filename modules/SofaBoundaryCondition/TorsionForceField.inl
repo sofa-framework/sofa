@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -150,7 +150,7 @@ void TorsionForceField<DataTypes>::addKToMatrix(defaulttype::BaseMatrix* matrix,
 template<typename DataTypes>
 SReal TorsionForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
 {
-    serr << "Get potentialEnergy not implemented" << sendl;
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
 }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,7 @@ namespace collision
 {
 
 template<class DataTypes>
-class TOBBModel;
+class OBBCollisionModel;
 
 /**
   *An OBB model is a set of OBBs. It is linked to a rigid mechanical object. Each frame
@@ -49,7 +49,7 @@ class TOBBModel;
   *(obb.axis(i) is the local frame axis for i-th dimension)
   */
 template<class TDataTypes>
-class TOBB : public core::TCollisionElementIterator< TOBBModel<TDataTypes> >
+class TOBB : public core::TCollisionElementIterator< OBBCollisionModel<TDataTypes> >
 {
 public:
     typedef TDataTypes DataTypes;
@@ -59,7 +59,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Quat Quaternion;
 
-    typedef TOBBModel<DataTypes> ParentModel;
+    typedef OBBCollisionModel<DataTypes> ParentModel;
 
     TOBB(ParentModel* model, int index);
 
@@ -128,10 +128,10 @@ public:
 
 
 template< class TDataTypes>
-class TOBBModel : public core::CollisionModel
+class OBBCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TOBBModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(OBBCollisionModel, TDataTypes), core::CollisionModel);
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::Coord::Pos Coord;
@@ -146,16 +146,16 @@ public:
     Data<VecCoord> ext; ///< Extents in x,y and z directions
     Data<Real> default_ext; ///< Default extent
 protected:
-    TOBBModel();
-    TOBBModel(core::behavior::MechanicalState<TDataTypes>* mstate );
+    OBBCollisionModel();
+    OBBCollisionModel(core::behavior::MechanicalState<TDataTypes>* mstate );
 public:
-    virtual void init() override;
+    void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size) override;
+    void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
     //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
 
@@ -170,20 +170,14 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == nullptr && context->getMechanicalState() != nullptr)
+        {
+            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                          "' found in the context node.");
             return false;
+        }
 
         return BaseObject::canCreate(obj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const TOBBModel<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
     }
 
     /**
@@ -259,7 +253,7 @@ public:
     Data<VecCoord> & writeExtents();
 
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
+    void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;
@@ -277,12 +271,12 @@ inline TOBB<DataTypes>::TOBB(const core::CollisionElementIterator& i)
 }
 
 
-typedef TOBBModel<sofa::defaulttype::Rigid3Types> OBBModel;
-typedef TOBB<sofa::defaulttype::Rigid3Types> OBB;
+using OBBModel [[deprecated("The OBBModel is now deprecated, please use OBBCollisionModel<sofa::defaulttype::Rigid3Types> instead. Compatibility stops at v20.06")]] = OBBCollisionModel<sofa::defaulttype::Rigid3Types>;
+using OBB = TOBB<sofa::defaulttype::Rigid3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_OBBMODEL_CPP)
 extern template class SOFA_BASE_COLLISION_API TOBB<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_COLLISION_API TOBBModel<defaulttype::Rigid3Types>;
+extern template class SOFA_BASE_COLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
 
 #endif
 
