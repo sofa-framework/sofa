@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -55,7 +55,7 @@ public:
 protected:
     MapIndices();
 
-    virtual ~MapIndices();
+    ~MapIndices() override;
 public:
     void init() override;
 
@@ -80,7 +80,7 @@ public:
     void apply(Value& v, const MapIndex& m);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
 extern template class SOFA_GENERAL_ENGINE_API MapIndices<int>;
 extern template class SOFA_GENERAL_ENGINE_API MapIndices<unsigned int>;
 extern template class SOFA_GENERAL_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -104,7 +104,7 @@ void JoinPoints<DataTypes>::doUpdate()
 
     if (points.size() < 1)
     {
-        serr << "Error, no point defined" << sendl;
+        msg_error() << "Error, no point defined";
         return ;
     }
 

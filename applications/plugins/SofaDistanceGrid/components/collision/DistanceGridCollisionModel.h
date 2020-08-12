@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,12 +26,12 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include "../../DistanceGrid.h"
@@ -143,7 +143,7 @@ public:
 protected:
     RigidDistanceGridCollisionModel();
 
-    ~RigidDistanceGridCollisionModel();
+    ~RigidDistanceGridCollisionModel() override;
 public:
     core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
@@ -457,14 +457,14 @@ public:
 protected:
     FFDDistanceGridCollisionModel();
 
-    ~FFDDistanceGridCollisionModel();
+    ~FFDDistanceGridCollisionModel() override;
 public:
     core::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
     core::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }
 
     /// alias used by ContactMapper
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
-    core::topology::BaseMeshTopology* getMeshTopology() override { return ffdMesh; }
+    core::topology::BaseMeshTopology* getCollisionTopology() override { return ffdMesh; }
 
     void init() override;
 
@@ -549,7 +549,7 @@ public:
                     this->child->addObject(visu);
                     visu->useAlpha.setValue(true);
                     visu->vscale.setValue(this->model->getContext()->getDt());
-                    IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
+                    IdentityMapping< DataTypes, StdVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, StdVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
                     this->child->addObject(map);
                     visu->init();
                     map->init(); */
@@ -608,7 +608,7 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP)
 
 extern template class SOFA_SOFADISTANCEGRID_API ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 extern template class SOFA_SOFADISTANCEGRID_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;

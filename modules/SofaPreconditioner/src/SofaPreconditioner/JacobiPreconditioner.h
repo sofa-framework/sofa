@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,14 +21,14 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_JACOBIPRECONDITIONER_H
 #define SOFA_COMPONENT_LINEARSOLVER_JACOBIPRECONDITIONER_H
-#include "config.h"
+#include <SofaPreconditioner/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/helper/map.h>
 
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {
@@ -57,20 +57,10 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const JacobiPreconditioner<TMatrix,TVector>* = NULL)
+    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
+    /// so we need to override that by implementing GetCustomTemplateName() function
+    /// More details on the name customization infrastructure is in NameDecoder.h
+    static const std::string GetCustomTemplateName()
     {
         return TMatrix::Name();
     }

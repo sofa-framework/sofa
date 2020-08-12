@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -743,11 +743,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
                 if(is_in_next_triangle)
                 {
                     ind_t_test=ind_triangle;
-                    //sout << "correct to triangle indexed by " << ind_t_test << sendl;
+                    //msg_info() << "correct to triangle indexed by " << ind_t_test;
                 }
                 else // not found
                 {
-                    //sout << "not found !!! " << sendl;
+                    //msg_info() << "not found !!! ";
                     ind_t_test=ind_t;
                 }
             }
@@ -761,7 +761,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
     }
     else // triangle is flat
     {
-        //sout << "INFO_print : triangle is flat" << sendl;
+        //msg_info() << "INFO_print : triangle is flat";
         return false;
     }
 }
@@ -887,11 +887,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
                 if(is_in_next_triangle)
                 {
                     ind_t_test=ind_triangle;
-                    //sout << "correct to triangle indexed by " << ind_t_test << sendl;
+                    //msg_info() << "correct to triangle indexed by " << ind_t_test;
                 }
                 else // not found
                 {
-                    //sout << "not found !!! " << sendl;
+                    //msg_info() << "not found !!! ";
                     ind_t_test=ind_t;
                 }
             }
@@ -905,7 +905,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
     }
     else // triangle is flat
     {
-        //sout << "INFO_print : triangle is flat" << sendl;
+        //msg_info() << "INFO_print : triangle is flat";
         return false;
     }
 }
@@ -1134,8 +1134,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
     sofa::defaulttype::Vec<3,Real> vect_from = point_from - point_p;
     sofa::defaulttype::Vec<3,Real> vect_to = point_p - point_to;
 
-    //sout << "INFO_print : vect_from = " << vect_from <<  sendl;
-    //sout << "INFO_print : vect_to = " << vect_to <<  sendl;
+    //msg_info() << "INFO_print : vect_from = " << vect_from <<  sendl;
+    //msg_info() << "INFO_print : vect_to = " << vect_to <<  sendl;
 
     sofa::defaulttype::Vec<3,Real> normal_from;
     sofa::defaulttype::Vec<3,Real> normal_to;
@@ -1278,8 +1278,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
 
             if(value_test<=0.0)
             {
-                //sout << "INFO_print : CONVEXE, value_test = " << value_test <<  sendl;
-                //sout << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
+                //msg_info() << "INFO_print : CONVEXE, value_test = " << value_test <<  sendl;
+                //msg_info() << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
 
                 while(i < shell.size())
                 {
@@ -1304,8 +1304,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
             }
             else // value_test>0.0
             {
-                //sout << "INFO_print : CONCAVE, value_test = " << value_test <<  sendl;
-                //sout << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
+                //msg_info() << "INFO_print : CONCAVE, value_test = " << value_test <<  sendl;
+                //msg_info() << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
 
                 while(i < shell.size())
                 {
@@ -2392,10 +2392,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Triangles indices
-    if (showTriangleIndices.getValue())
+    if (showTriangleIndices.getValue() && this->m_topology->getNbTriangles() != 0)
     {
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-        const sofa::defaulttype::Vec4f& color = _drawColor.getValue();
         float scale = this->getIndicesScale();
 
         //for triangles:
@@ -2416,23 +2415,58 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             positions.push_back(center);
 
         }
-        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+        vparams->drawTool()->draw3DText_Indices(positions, scale, _drawColor.getValue());
     }
 
 
 
-    if (_draw.getValue())
+    if (_draw.getValue() && this->m_topology->getNbTriangles() != 0)
     {
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, true);
+
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
 
-        if (!triangleArray.empty()) // Draw triangle surfaces
-        {
-            const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+        // Draw triangle surfaces
+        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-            const sofa::defaulttype::Vec4f& color = _drawColor.getValue();
+        {//   Draw Triangles
+            std::vector<defaulttype::Vector3> pos;
+            pos.reserve(triangleArray.size()*3);
+            for (size_t i = 0; i<triangleArray.size(); i++)
+            {
+                const Triangle& t = triangleArray[i];
 
-            {//   Draw Triangles
-                std::vector<defaulttype::Vector3> pos;
+                defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
+                std::vector<defaulttype::Vector3> tmpPos;
+                tmpPos.resize(3);
+
+                for (unsigned int j = 0; j<3; j++)
+                {
+                    tmpPos[j] = defaulttype::Vector3(DataTypes::getCPos(coords[t[j]]));
+                    bary += tmpPos[j];
+                }
+                bary /= 3;
+
+                for (unsigned int j = 0; j<3; j++)
+                    pos.push_back(bary*0.1 + tmpPos[j]*0.9);
+            }
+            vparams->drawTool()->drawTriangles(pos,_drawColor.getValue());
+        }
+
+        if (!vparams->displayFlags().getShowWireFrame())
+        {//   Draw triangle edges for better display
+            const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
+            std::vector<defaulttype::Vector3> pos;
+            if (!edgeArray.empty())
+            {
+                for (size_t i = 0; i<edgeArray.size(); i++)
+                {
+                    const Edge& e = edgeArray[i];
+                    pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
+                    pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
+                }
+            } else {
                 for (size_t i = 0; i<triangleArray.size(); i++)
                 {
                     const Triangle& t = triangleArray[i];
@@ -2440,53 +2474,30 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
                     for (unsigned int j = 0; j<3; j++)
                     {
                         pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[j]])));
-
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[(j+1u)%3u]])));
                     }
                 }
-                vparams->drawTool()->drawTriangles(pos,color);
             }
 
-
-            {//   Draw triangle edges for better display
-                const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
-                std::vector<defaulttype::Vector3> pos;
-                if (!edgeArray.empty())
-                {
-                    for (size_t i = 0; i<edgeArray.size(); i++)
-                    {
-                        const Edge& e = edgeArray[i];
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
-                    }
-                } else {
-                    for (size_t i = 0; i<triangleArray.size(); i++)
-                    {
-                        const Triangle& t = triangleArray[i];
-
-                        for (unsigned int j = 0; j<3; j++)
-                        {
-                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[j]])));
-                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[(j+1u)%3u]])));
-                        }
-                    }
-                }
-                vparams->drawTool()->drawLines(pos,1.0f,color);
-            }
+            sofa::helper::types::RGBAColor colorL = _drawColor.getValue();
+            for (auto& c: colorL)
+                c /= 2;
+            vparams->drawTool()->drawLines(pos, 1.0f, colorL);
         }
+
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, false);
     }
 
 
-    if (_drawNormals.getValue())
+    if (_drawNormals.getValue() && this->m_topology->getNbTriangles() != 0)
     {
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
         size_t nbrTtri = triangleArray.size();
 
-        Coord point2;
         sofa::defaulttype::Vec4f color;
         SReal normalLength = _drawNormalLength.getValue();
-
-        vparams->drawTool()->setLightingEnabled(false);
 
         sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
         sofa::helper::vector<sofa::defaulttype::Vec4f> colors;
@@ -2505,10 +2516,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             sofa::defaulttype::Vec3d point2 = center + normal*normalLength;
 
             for(unsigned int j=0; j<3; j++)
-                color[j] = (float)fabs (normal[j]);
+                color[j] = (float)fabs(normal[j]);
 
             vertices.push_back(center);
-            colors.push_back(color);
             vertices.push_back(point2);
             colors.push_back(color);
         }

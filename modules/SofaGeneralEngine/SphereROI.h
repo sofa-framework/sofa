@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_SPHEREROI_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -74,7 +72,7 @@ protected:
 
     SphereROI();
 
-    ~SphereROI() {}
+    ~SphereROI() override {}
 public:
     void init() override;
 
@@ -92,8 +90,12 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+            {
+                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                              "' found in the context node.");
                 return false; // this template is not the same as the existing MechanicalState
+            }
         }
 
         return BaseObject::canCreate(obj, context, arg);
@@ -106,19 +108,7 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SphereROI<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-
 protected:
-
 	bool isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
     bool isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
     bool isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
@@ -168,39 +158,22 @@ public:
     Data<bool> p_drawTriangles; ///< Draw Triangles
     Data<bool> p_drawQuads; ///< Draw Quads
     Data<bool> p_drawTetrahedra; ///< Draw Tetrahedra
-    Data<double> _drawSize; ///< rendering size for box and topological elements
+    Data<float> _drawSize; ///< rendering size for box and topological elements
 
 };
 
-#ifndef SOFA_FLOAT
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
-template<> void SphereROI<defaulttype::Rigid3dTypes>::doUpdate();
-#endif
+template<> bool SphereROI<defaulttype::Rigid3Types>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
+template<> void SphereROI<defaulttype::Rigid3Types>::doUpdate();
 
-#ifndef SOFA_DOUBLE
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
-template<> void SphereROI<defaulttype::Rigid3fTypes>::doUpdate();
-#endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)
+extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace engine

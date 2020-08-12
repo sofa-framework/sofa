@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,8 +39,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(InputEventReader)
-
 // Register in the Factory
 int InputEventReaderClass = core::RegisterObject("Read events from file")
         .add< InputEventReader >();
@@ -54,7 +52,7 @@ InputEventReader::InputEventReader()
     , p_key2(initData(&p_key2, '1', "key2","Key event generated when the right pedal is pressed"))
     , p_writeEvents(initData(&p_writeEvents, false , "writeEvents","If true, write incoming events ; if false, read events from that file (if an output filename is provided)"))
     , p_outputFilename(initData(&p_outputFilename, "outputFilename","Other filename where events will be stored (or read)"))
-    , inFile(NULL), outFile(NULL)
+    , inFile(nullptr), outFile(nullptr)
     , fd(-1)
     , deplX(0), deplY(0)
     , pedalValue(-1)
@@ -66,7 +64,7 @@ void InputEventReader::init()
 {
 #ifdef __linux__
     if((fd = open(filename.getFullPath().c_str(), O_RDONLY)) < 0)
-        sout << "ERROR: impossible to open the file: " << filename.getValue() << sendl;
+        msg_error() << "Impossible to open the file: " << filename.getValue();
 #endif
 
     if(p_outputFilename.isSet())
@@ -77,9 +75,9 @@ void InputEventReader::init()
             outFile->open(p_outputFilename.getFullPath().c_str());
             if( !outFile->is_open() )
             {
-                serr << "File " <<p_outputFilename.getFullPath() << " not writable" << sendl;
+                msg_error() << "File " <<p_outputFilename.getFullPath() << " not writable";
                 delete outFile;
-                outFile = NULL;
+                outFile = nullptr;
             }
         }
         else
@@ -87,9 +85,9 @@ void InputEventReader::init()
             inFile = new std::ifstream(p_outputFilename.getFullPath().c_str(), std::ifstream::in | std::ifstream::binary);
             if( !inFile->is_open() )
             {
-                serr << "File " <<p_outputFilename.getFullPath() << " not readable" << sendl;
+                msg_error() << "File " <<p_outputFilename.getFullPath() << " not readable";
                 delete inFile;
-                inFile = NULL;
+                inFile = nullptr;
             }
         }
     }
@@ -110,7 +108,7 @@ void InputEventReader::manageEvent(const input_event &ev)
 #endif
 #ifdef __linux__
     if (p_printEvent.getValue())
-        serr << "event type 0x" << std::hex << ev.type << std::dec << " code 0x" << std::hex << ev.code << std::dec << " value " << ev.value << sendl;
+        msg_error() << "event type 0x" << std::hex << ev.type << std::dec << " code 0x" << std::hex << ev.code << std::dec << " value " << ev.value;
 
     if (ev.type == EV_REL)
     {
@@ -184,7 +182,7 @@ void InputEventReader::getInputEvents()
         while (poll(&pfd, 1, 0 /*timeout.getValue()*/)>0 && (pfd.revents & POLLIN))
         {
             if (read(fd, &temp, sizeof(struct input_event)) == -1)
-                serr << "Error: read function return an error." << sendl;
+                msg_error() << "Read function return an error.";
 
             memcpy(&ev, &temp, sizeof(struct input_event));
 

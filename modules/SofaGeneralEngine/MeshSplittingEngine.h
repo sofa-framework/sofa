@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/vectorData.h>
 
@@ -86,39 +86,13 @@ public:
     Data< helper::vector<unsigned int> > indexPairs;
     helper::vectorData<SeqPositions> position;
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MeshSplittingEngine<DataTypes>* = NULL) { return DataTypes::Name();    }
-
 protected:
 
-    MeshSplittingEngine()    : Inherited()
-      , inputPosition(initData(&inputPosition,"position","input vertices"))
-      , inputEdges(initData(&inputEdges,"edges","input edges"))
-      , inputTriangles(initData(&inputTriangles,"triangles","input triangles"))
-      , inputQuads(initData(&inputQuads,"quads","input quads"))
-      , inputTets(initData(&inputTets,"tetrahedra","input tetrahedra"))
-      , inputHexa(initData(&inputHexa,"hexahedra","input hexahedra"))
-      , nbInputs (initData(&nbInputs, (unsigned)0, "nbInputs", "Number of input vectors"))
-      , indices(this, "indices", "input vertex indices", helper::DataEngineInput)
-      , edgeIndices(this, "edgeIndices", "input edge indices", helper::DataEngineInput)
-      , triangleIndices(this, "triangleIndices", "input triangle indices", helper::DataEngineInput)
-      , quadIndices(this, "quadIndices", "input quad indices", helper::DataEngineInput)
-      , tetrahedronIndices(this, "tetrahedronIndices", "input tetrahedron indices", helper::DataEngineInput)
-      , hexahedronIndices(this, "hexahedronIndices", "input hexahedron indices", helper::DataEngineInput)
-      , indexPairs( initData( &indexPairs, helper::vector<unsigned>(), "indexPairs", "couples for input vertices: ROI index + index in the ROI"))
-      , position(this, "position", "output vertices", helper::DataEngineOutput)
-    {
-        resizeData();
-    }
-
-    virtual ~MeshSplittingEngine()
-    {
-
-    }
-
+    MeshSplittingEngine();
+    ~MeshSplittingEngine() override;
 
 public:
-    virtual void init() override
+    void init() override
     {
         addInput(&inputPosition);
         addInput(&inputEdges);
@@ -133,7 +107,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    override { resizeData(); update();  }
+    void reinit()    override { resizeData(); update();  }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
@@ -176,13 +150,9 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshSplittingEngine_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_MeshSplittingEngine_CPP)
+extern template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

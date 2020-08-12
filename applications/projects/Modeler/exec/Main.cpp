@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -31,11 +31,10 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaMisc/initSofaMisc.h>
 
 #include <QApplication>
 
@@ -52,11 +51,10 @@ using sofa::helper::Utils;
 int main(int argc, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaMisc();
 
     // TODO: create additionnal handlers depending on command-line parameters
 
@@ -64,26 +62,6 @@ int main(int argc, char** argv)
     (void)application;
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-
-    const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
-    const std::string sofaIniFilePath = etcDir + "/sofa.ini";
-    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
-
-    if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())
-    {
-        std::string shareDir = iniFileValues["SHARE_DIR"];
-        if (!FileSystem::isAbsolute(shareDir))
-            shareDir = etcDir + "/" + shareDir;
-        sofa::helper::system::DataRepository.addFirstPath(shareDir);
-    }
-
-    if (iniFileValues.find("EXAMPLES_DIR") != iniFileValues.end())
-    {
-        std::string examplesDir = iniFileValues["EXAMPLES_DIR"];
-        if (!FileSystem::isAbsolute(examplesDir))
-            examplesDir = etcDir + "/" + examplesDir;
-        sofa::helper::system::DataRepository.addFirstPath(examplesDir);
-    }
 
 	Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();

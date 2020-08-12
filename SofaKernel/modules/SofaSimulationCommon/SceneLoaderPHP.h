@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,6 +22,7 @@
 #ifndef SOFA_SIMULATION_SCENELOADERPHP_H
 #define SOFA_SIMULATION_SCENELOADERPHP_H
 
+#include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 
 namespace sofa
@@ -34,16 +35,16 @@ class SOFA_SIMULATION_COMMON_API SceneLoaderPHP : public SceneLoader
 {
 public:
     /// Pre-loading check
-    virtual bool canLoadFileExtension(const char *extension);
+    bool canLoadFileExtension(const char *extension) override;
 
     /// load the file
-    virtual sofa::simulation::Node::SPtr load(const char *filename);
+    virtual sofa::simulation::Node::SPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs) override;
 
     /// get the file type description
-    virtual std::string getFileTypeDesc();
+    virtual std::string getFileTypeDesc() override;
 
     /// get the list of file extensions
-    virtual void getExtensionList(ExtensionList* list);
+    void getExtensionList(ExtensionList* list) override;
 };
 
 } // namespace simulation

@@ -41,7 +41,6 @@ public:
 
 };
 
-SOFA_DECL_CLASS(ComponentDeprecated)
 int ComponentDeprecatedClassId = sofa::core::RegisterObject("")
         .add< ComponentDeprecated >();
 
@@ -91,6 +90,7 @@ struct SceneChecker_test : public Sofa_test<>
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
+              << "    <RequiredPlugin name='SofaOpenglVisual'/>                   \n"
               << "    <Node name='nodeCheck'>                                     \n"
               << "      <Node name='nodeA' />                                     \n"
               << "      <Node name='nodeA' />                                     \n"
@@ -182,13 +182,14 @@ struct SceneChecker_test : public Sofa_test<>
         PluginManager::getInstance().loadPluginByName("SofaPython");
 
         std::string withAlias = "Triangle";
-        std::string withoutAlias = "TTriangleModel";
+        std::string withoutAlias = "TriangleCollisionModel";
         std::string componentName = sceneWithAlias ? withAlias : withoutAlias;
 
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
               << "    <MechanicalObject template='Vec3d' />                       \n"
+              << "    <MeshTopology />                                            \n"
               << "    <" << componentName << "/>                                  \n"
               << "</Node>                                                         \n";
 

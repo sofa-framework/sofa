@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_TOPOLOGICALCHANGEPROCESSOR_H
 #define SOFA_COMPONENT_MISC_TOPOLOGICALCHANGEPROCESSOR_H
-#include "config.h"
+#include <SofaMiscTopology/config.h>
 
 
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -30,7 +30,7 @@
 
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -44,12 +44,6 @@ namespace component
 
 namespace misc
 {
-
-#ifdef SOFA_FLOAT
-typedef float Real; ///< alias
-#else
-typedef double Real; ///< alias
-#endif
 
 class TriangleIncisionInformation;
 
@@ -83,21 +77,23 @@ public:
 
     Data <bool> m_saveIndicesAtInit; ///< set to 'true' to save the incision to do in the init to incise even after a movement
 
-    Data<Real>  m_epsilonSnapPath; ///< epsilon snap path
-    Data<Real>  m_epsilonSnapBorder; ///< epsilon snap path
+    Data<SReal>  m_epsilonSnapPath; ///< epsilon snap path
+    Data<SReal>  m_epsilonSnapBorder; ///< epsilon snap path
 
     Data<bool>  m_draw; ///< draw information
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TopologicalChangeProcessor, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     TopologicalChangeProcessor();
 
-    virtual ~TopologicalChangeProcessor();
+    ~TopologicalChangeProcessor() override;
 
     core::topology::BaseMeshTopology* m_topology;
 
     std::ifstream* infile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAMISCTOPOLOGY_HAVE_ZLIB
     gzFile gzfile;
 #endif
     double nextTime;
@@ -111,13 +107,13 @@ protected:
     std::vector<unsigned int>    errorTrianglesIndices;
 
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
     virtual void readDataFile();
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void setTime(double time);
 
@@ -131,8 +127,10 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMeshTopology() == NULL)
+        if (context->getMeshTopology() == nullptr) {
+            arg->logError("No mesh topology found in the context node.");
             return false;
+        }
 
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -143,13 +141,13 @@ public:
 
 protected:
 
-    std::vector<Real> getValuesInLine(std::string line, size_t nbElements);
+    std::vector<SReal> getValuesInLine(std::string line, size_t nbElements);
 
     void findElementIndex(defaulttype::Vector3 coord, int& triangleIndex, int oldTriangleIndex);
     void saveIndices();//only for incision
     void inciseWithSavedIndices();
 
-    int findIndexInListOfTime(Real time);
+    int findIndexInListOfTime(SReal time);
 };
 
 
@@ -158,7 +156,7 @@ class TriangleIncisionInformation
 public:
     std::vector<unsigned int>      triangleIndices;
     std::vector<defaulttype::Vector3>                barycentricCoordinates;
-    Real                                           timeToIncise;
+    SReal                                           timeToIncise;
 
     std::vector<defaulttype::Vector3>                coordinates;
 
@@ -199,7 +197,7 @@ public:
             defaulttype::Vec3Types::Coord coord[3];
             unsigned int triIndex = triangleIndices[i];
 
-            if ( (int)triIndex >= topology->getNbTriangles())
+            if ( triIndex >= topology->getNbTriangles())
             {
                 msg_error("TriangleIncisionInformation") << " Bad index to access triangles  " <<  triIndex ;
             }

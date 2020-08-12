@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,6 +25,17 @@
 #include "CudaBarycentricMapping.h"
 #include <sofa/core/Mapping.inl>
 #include <SofaBaseMechanics/BarycentricMapping.inl>
+#include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.inl>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapper.inl>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.inl>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.inl>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.inl>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.inl>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.inl>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.inl>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.inl>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.inl>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl>
 
 namespace sofa
 {

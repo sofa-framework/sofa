@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,6 +24,7 @@
 #include <sofa/version.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/helper/ComponentChange.h>
 
 
 namespace sofa
@@ -42,15 +43,10 @@ SceneCheckUsingAlias::SceneCheckUsingAlias()
 {
     /// Add a callback to be n
     ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg) {
-        if (o->getClassName() != arg->getAttribute("type", "") )
+        std::string typeNameInScene = arg->getAttribute("type", "");
+        if ( typeNameInScene != o->getClassName() )
         {
-            std::string alias = arg->getAttribute("type", "");
-
-            std::vector<std::string> v = this->m_componentsCreatedUsingAlias[o->getClassName()];
-            if ( std::find(v.begin(), v.end(), alias) == v.end() )
-            {
-                this->m_componentsCreatedUsingAlias[o->getClassName()].push_back(alias);
-            }
+            this->m_componentsCreatedUsingAlias[o->getClassName()].push_back(typeNameInScene);
         }
     });
 }
@@ -82,24 +78,31 @@ void SceneCheckUsingAlias::doPrintSummary()
                            "use with caution." << msgendl;
     for (auto i : this->m_componentsCreatedUsingAlias)
     {
-        if (i.second.size() > 1)
-            usingAliasesWarning << "  - " << i.first << " have been created using the aliases ";
-        else
-            usingAliasesWarning << "  - " << i.first << " has been created using the alias ";
+        std::vector<std::string> unique_aliases(i.second);
+        std::sort( unique_aliases.begin(), unique_aliases.end() );
+        unique_aliases.erase( std::unique(unique_aliases.begin(), unique_aliases.end()), unique_aliases.end() );
 
-        bool first = true;
-        for (std::string &alias : i.second)
+        for(std::string &unique_alias : unique_aliases)
         {
-            if (first)
-                usingAliasesWarning << "\"" << alias << "\"";
-            else
-                usingAliasesWarning << ", \"" << alias << "\"";
+            unsigned int count = std::count(i.second.begin(), i.second.end(), unique_alias);
 
-            first = false;
+            using sofa::helper::lifecycle::ComponentChange;
+            using sofa::helper::lifecycle::uncreatableComponents;
+
+            usingAliasesWarning << "  - " << i.first << ": " << count << " created with alias \"" <<  unique_alias << "\"";
+            if( uncreatableComponents.find(unique_alias) != uncreatableComponents.end() )
+            {
+                usingAliasesWarning << " This alias will be REMOVED at the SOFA release " << uncreatableComponents.at(unique_alias).getVersion() << ", please update your scenes.";
+            }
+
+            if(unique_alias != unique_aliases.back()) usingAliasesWarning << msgendl;
         }
-        usingAliasesWarning << "." << msgendl;
+
+        if(i.first != m_componentsCreatedUsingAlias.rbegin()->first) usingAliasesWarning << msgendl;
     }
     msg_warning(this->getName()) << usingAliasesWarning.str();
+
+    m_componentsCreatedUsingAlias.clear();
 }
 
 } // namespace _scenechecking_

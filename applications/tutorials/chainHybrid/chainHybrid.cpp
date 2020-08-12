@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -23,7 +23,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
-using sofa::defaulttype::ExtVec3fTypes;
 using Coord3 = sofa::defaulttype::Vector3;
 using Deriv3 = sofa::defaulttype::Vec3Types::Deriv;
 using VecCoord3 = sofa::helper::vector<Coord3>;

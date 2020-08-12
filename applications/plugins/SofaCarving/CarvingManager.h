@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,7 @@
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseController.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
 
@@ -61,12 +61,12 @@ public:
     typedef helper::vector<core::collision::DetectionOutput> ContactVector;
     
     /// Sofa API init method of the component
-    virtual void init() override;
+    void init() override;
     /// Sofa API reset method of the component
-    virtual void reset() override;
+    void reset() override;
 
     /// Method to handle various event like keyboard or omni.
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     /// Impl method that will compute the intersection and check if some element have to be removed.
     virtual void doCarve();
@@ -77,13 +77,13 @@ protected:
     CarvingManager();
 
     /// Default destructor
-    virtual ~CarvingManager();
+    ~CarvingManager() override;
 
 
 public:
     /// Tool model path
     Data < std::string > d_toolModelPath; 
-    /// TriangleSetModel or SphereModel path
+    /// TriangleSetModel or SphereCollisionModel<sofa::defaulttype::Vec3Types> path
     Data < std::string > d_surfaceModelPath;
 
     /// Collision distance at which cavring will start. Equal to contactDistance by default.

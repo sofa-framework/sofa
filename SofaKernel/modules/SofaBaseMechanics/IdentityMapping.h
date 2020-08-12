@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -86,8 +86,6 @@ public:
 
     typedef defaulttype::Mat<N, N, Real> Mat;
 
-    //enum { N=((int)Deriv::static_size < (int)InDeriv::static_size ? (int)Deriv::static_size : (int)InDeriv::static_size) };
-
 protected:
     IdentityMapping()
         : Inherit()
@@ -100,14 +98,14 @@ protected:
     {
     }
 
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
 public:
     /// Return true if the destination model has the same topology as the source model.
     ///
     /// This is the case for mapping keeping a one-to-one correspondance between
     /// input and output DOFs (mostly identity or data-conversion mappings).
-    virtual bool sameTopology() const override { return true; }
+    bool sameTopology() const override { return true; }
 
     void init() override;
 
@@ -121,7 +119,7 @@ public:
 
     const sofa::defaulttype::BaseMatrix* getJ() override;
 
-    virtual void handleTopologyChange() override;
+    void handleTopologyChange() override;
 
 
 protected:
@@ -132,9 +130,6 @@ protected:
     typedef helper::vector< defaulttype::BaseMatrix* > js_type;
     js_type Js;
 
-//    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
-//    void updateJ();
-
 public:
 
     const js_type* getJs() override;
@@ -144,55 +139,20 @@ public:
 template <int N, int M, class Real>
 struct IdentityMappingMatrixHelper;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
 
-#ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec2dTypes, defaulttype::Vec2dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6dTypes, defaulttype::Vec6dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6dTypes, defaulttype::ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3dTypes, defaulttype::Rigid3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2dTypes, defaulttype::Rigid2dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3dTypes, defaulttype::ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2dTypes, defaulttype::Vec2dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec2fTypes, defaulttype::Vec2fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec1fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6fTypes, defaulttype::Vec6fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec3fTypes, defaulttype::ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6fTypes, defaulttype::ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3fTypes, defaulttype::Rigid3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2fTypes, defaulttype::Rigid2fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3fTypes, defaulttype::ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2fTypes, defaulttype::Vec2fTypes >;
-#endif
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec2Types, defaulttype::Vec2Types >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6Types, defaulttype::Vec6Types >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6Types, defaulttype::Vec3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2Types, defaulttype::Rigid2Types >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3Types, defaulttype::Vec3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2Types, defaulttype::Vec2Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec3dTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec3fTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec2dTypes, defaulttype::Vec2fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec2fTypes, defaulttype::Vec2dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec1dTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec1fTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6dTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6dTypes, defaulttype::Vec6fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6fTypes, defaulttype::Vec6dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec6fTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3fTypes, defaulttype::Rigid3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3dTypes, defaulttype::Rigid3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2dTypes, defaulttype::Rigid2fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2fTypes, defaulttype::Rigid2dTypes >;
-#endif
-#endif
+
+
 
 #endif
 

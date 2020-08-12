@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,9 +51,6 @@ namespace component
 
 namespace forcefield
 {
-
-
-
 
 /** Compute Finite Element forces based on tetrahedral elements.
  */
@@ -148,7 +145,7 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 public:
-    class TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
+    class SOFA_GENERAL_SIMPLE_FEM_API TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
     {
     public :
         typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
@@ -183,9 +180,15 @@ public:
     Data<defaulttype::Vec4f> drawColor3; ///<  draw color for faces 3
     Data<defaulttype::Vec4f> drawColor4; ///<  draw color for faces 4
     Data<std::map < std::string, sofa::helper::vector<double> > > _volumeGraph;
+
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<TetrahedralCorotationalFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     TetrahedralCorotationalFEMForceField();
     TetrahedronHandler* tetrahedronHandler;
+
+    /// Pointer to the topology container. Will be set by link @sa l_topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 public:
 
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
@@ -198,18 +201,18 @@ public:
 
     void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
 
-    virtual void init() override;
-    virtual void reinit() override;
+    void init() override;
+    void reinit() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
 
     // Getting the rotation of the vertex by averaing the rotation of neighboring elements
     void getRotation(Transformation& R, unsigned int nodeIdx);
@@ -261,16 +264,12 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)
 
 
 } // namespace forcefield

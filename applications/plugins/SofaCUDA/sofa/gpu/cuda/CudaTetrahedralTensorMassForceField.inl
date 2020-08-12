@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,8 +66,8 @@ using namespace gpu::cuda;
         VecDeriv& f = *d_f.beginEdit();
         const VecCoord& x = d_x.getValue();
 
-        int nbEdges=_topology->getNbEdges();
-        int nbPoints=_topology->getNbPoints();
+        int nbEdges=m_topology->getNbEdges();
+        int nbPoints=m_topology->getNbPoints();
 
         edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
@@ -88,8 +88,8 @@ using namespace gpu::cuda;
         const VecDeriv& dx = d_dx.getValue();
         Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-        int nbEdges=_topology->getNbEdges();
-        int nbPoints=_topology->getNbPoints();
+        int nbEdges=m_topology->getNbEdges();
+        int nbPoints=m_topology->getNbPoints();
         edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
         TetrahedralTensorMassForceField_contribEdge().resize(6*nbEdges);
@@ -111,27 +111,27 @@ using namespace gpu::cuda;
         TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = 0;
 
         /// Compute it
-        for(int i=0;i<_topology->getNbPoints();++i)
+        for(int i=0;i<m_topology->getNbPoints();++i)
         {
-            if((int)_topology->getEdgesAroundVertex(i).size()>TetrahedralTensorMassForceField_nbMaxEdgesPerNode())
-                TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = _topology->getEdgesAroundVertex(i).size();
+            if((int)m_topology->getEdgesAroundVertex(i).size()>TetrahedralTensorMassForceField_nbMaxEdgesPerNode())
+                TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = m_topology->getEdgesAroundVertex(i).size();
         }
 
         /// Initialize the vector neighbourhoodPoints
-        TetrahedralTensorMassForceField_neighbourhoodPoints().resize((_topology->getNbPoints())*TetrahedralTensorMassForceField_nbMaxEdgesPerNode());
+        TetrahedralTensorMassForceField_neighbourhoodPoints().resize((m_topology->getNbPoints())*TetrahedralTensorMassForceField_nbMaxEdgesPerNode());
 
         unsigned int edgeID;
 
-        for (int i=0;i<_topology->getNbPoints();++i)
+        for (int i=0;i<m_topology->getNbPoints();++i)
         {
             for(int j=0;j<TetrahedralTensorMassForceField_nbMaxEdgesPerNode();++j)
             {
-                if(j>(int)_topology->getEdgesAroundVertex(i).size()-1)
+                if(j>(int)m_topology->getEdgesAroundVertex(i).size()-1)
                     TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = -1;
                 else
                 {
-                    edgeID = _topology->getEdgesAroundVertex(i)[j];
-                    if(i == (int)_topology->getEdge(edgeID)[0])
+                    edgeID = m_topology->getEdgesAroundVertex(i)[j];
+                    if(i == (int)m_topology->getEdge(edgeID)[0])
                         TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = 2*edgeID;   //v0
                     else
                         TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = 2*edgeID+1; //v1
@@ -150,8 +150,8 @@ using namespace gpu::cuda;
         VecDeriv& f = *d_f.beginEdit();
         const VecCoord& x = d_x.getValue();
 
-        int nbEdges=_topology->getNbEdges();
-        int nbPoints=_topology->getNbPoints();
+        int nbEdges=m_topology->getNbEdges();
+        int nbPoints=m_topology->getNbPoints();
 
         edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
@@ -171,8 +171,8 @@ using namespace gpu::cuda;
         const VecDeriv& dx = d_dx.getValue();
         Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-        int nbEdges=_topology->getNbEdges();
-        int nbPoints=_topology->getNbPoints();
+        int nbEdges=m_topology->getNbEdges();
+        int nbPoints=m_topology->getNbPoints();
         edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
         TetrahedralTensorMassForceField_contribEdge().resize(6*nbEdges);
@@ -191,27 +191,27 @@ using namespace gpu::cuda;
 		TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = 0;
 
 		/// Compute it
-		for(int i=0;i<_topology->getNbPoints();++i)
+		for(int i=0;i<m_topology->getNbPoints();++i)
 		{
-			if((int)_topology->getEdgesAroundVertex(i).size()>TetrahedralTensorMassForceField_nbMaxEdgesPerNode())
-				TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = _topology->getEdgesAroundVertex(i).size();
+			if((int)m_topology->getEdgesAroundVertex(i).size()>TetrahedralTensorMassForceField_nbMaxEdgesPerNode())
+				TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = m_topology->getEdgesAroundVertex(i).size();
 		}
 
 		/// Initialize the vector neighbourhoodPoints
-		TetrahedralTensorMassForceField_neighbourhoodPoints().resize((_topology->getNbPoints())*TetrahedralTensorMassForceField_nbMaxEdgesPerNode());
+		TetrahedralTensorMassForceField_neighbourhoodPoints().resize((m_topology->getNbPoints())*TetrahedralTensorMassForceField_nbMaxEdgesPerNode());
 
 		unsigned int edgeID;
 
-        for (int i=0;i<_topology->getNbPoints();++i)
+        for (int i=0;i<m_topology->getNbPoints();++i)
 		{
 			for(int j=0;j<TetrahedralTensorMassForceField_nbMaxEdgesPerNode();++j)
 			{
-				if(j>(int)_topology->getEdgesAroundVertex(i).size()-1)
+				if(j>(int)m_topology->getEdgesAroundVertex(i).size()-1)
 					TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = -1;
 				else
 				{
-					edgeID = _topology->getEdgesAroundVertex(i)[j];
-                    if((unsigned) i == _topology->getEdge(edgeID)[0])
+					edgeID = m_topology->getEdgesAroundVertex(i)[j];
+                    if((unsigned) i == m_topology->getEdge(edgeID)[0])
 						TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = 2*edgeID;   //v0
 					else
 						TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = 2*edgeID+1; //v1

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -102,9 +102,6 @@ public:
     Data< float > showIndicesScale; ///< Indices samples scale
     //@}
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const BaseGaussPointSampler* = NULL) { return std::string();    }
-
     BaseGaussPointSampler()    :   Inherited()
       , f_method ( initData ( &f_method,"method","quadrature method" ) )
       , f_position(initData(&f_position,SeqPositions(),"position","output sample positions"))
@@ -123,11 +120,10 @@ public:
         f_method.setValue(methodOptions);
     }
 
-    virtual void init()
+    void init() override
     {
         addInput(&f_method);
         addInput(&f_order);
-//        addInput(&f_position); // can be either input or output depending on the sampler
         addOutput(&f_volume);
         addOutput(&f_transforms);
     }
@@ -141,7 +137,7 @@ public:
 
 protected:
 
-    virtual void draw(const core::visual::VisualParams* vparams)
+    void draw(const core::visual::VisualParams* vparams) override
     {
         if (!vparams->displayFlags().getShowVisualModels()) return;
 

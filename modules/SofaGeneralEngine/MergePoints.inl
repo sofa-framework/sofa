@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,10 +21,6 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_MERGEPOINTS_INL
 #define SOFA_COMPONENT_ENGINE_MERGEPOINTS_INL
-
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
 
 #include <SofaGeneralEngine/MergePoints.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -102,7 +98,7 @@ void MergePoints<DataTypes>::doUpdate()
             if (posX < points.size()) // new point to insert
                 points[posX] = x2[i]; // insert X2 inside X1
             else
-                serr << "Error Trying to insert vertex from mapping at pos: " <<  posX << " which is out of bounds of X1." << sendl;
+                msg_error() << "Error Trying to insert vertex from mapping at pos: " << posX << " which is out of bounds of X1.";
         }
 
         // fill indice1 & indice2 buffers

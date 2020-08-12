@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,7 +30,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
-
+#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {
@@ -57,14 +57,15 @@ inline double UncoupledConstraintCorrection_computeCompliance(
 /// Compute compliance between 2 constraint Jacobians for Rigid types
 template<typename Real, class VecReal>
 inline double UncoupledConstraintCorrection_computeCompliance(
-    unsigned int /*index*/,
+    unsigned int index,
     const sofa::defaulttype::RigidDeriv<3, Real>& n1, const sofa::defaulttype::RigidDeriv<3, Real>& n2,
-    const Real /*comp0*/, const VecReal& comp)
+    const Real comp0, const VecReal& comp)
 {
-    double w;
+    SOFA_UNUSED(index);
+    SOFA_UNUSED(comp0);
 
     // translation part
-    w = (n1.getVCenter() * n2.getVCenter()) * comp[0];
+    double w = (n1.getVCenter() * n2.getVCenter()) * comp[0];
     // rotation part
     w += (n1.getVOrientation()[0] * comp[1] + n1.getVOrientation()[1] * comp[2] + n1.getVOrientation()[2] * comp[3]) * n2.getVOrientation()[0];
     w += (n1.getVOrientation()[0] * comp[2] + n1.getVOrientation()[1] * comp[4] + n1.getVOrientation()[2] * comp[5]) * n2.getVOrientation()[1];
@@ -86,10 +87,13 @@ inline sofa::defaulttype::Vec<N, Real> UncoupledConstraintCorrection_computeDx(
 /// Compute displacement from constraint force for Rigid types
 template<typename Real, class VecReal>
 inline sofa::defaulttype::RigidDeriv<3, Real> UncoupledConstraintCorrection_computeDx(
-    unsigned int /*index*/,
+    unsigned int index,
     const sofa::defaulttype::RigidDeriv<3, Real>& f,
-    const Real /*comp0*/, const VecReal& comp)
+    const Real comp0, const VecReal& comp)
 {
+    SOFA_UNUSED(index);
+    SOFA_UNUSED(comp0);
+
     sofa::defaulttype::RigidDeriv<3, Real> dx;
     // translation part
     dx.getVCenter() = (f.getVCenter()) * comp[0];
@@ -105,15 +109,15 @@ inline sofa::defaulttype::RigidDeriv<3, Real> UncoupledConstraintCorrection_comp
 
 template<class DataTypes>
 UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
-    : Inherit(mm)
-    , compliance(initData(&compliance, "compliance", "compliance value on each dof"))
+    : Inherit(mm)    
+    , compliance(initData(&compliance, "compliance", "compliance value on each dof. If Rigid compliance (7 values): 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix"))
     , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
-    , d_handleTopologyChange(initData(&d_handleTopologyChange, true, "handleTopologyChange", "Enable support of topological changes for compliance vector (disable if another component takes care of this)"))
     , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
     , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
-    , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, false, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
-    , m_pOdeSolver(NULL)
+    , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, true, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_pOdeSolver(nullptr)
 {
 }
 
@@ -142,9 +146,10 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         if (!defaultCompliance.isSet() && !comp.empty())
             defaultCompliance.setValue(comp[0]); // set default compliance to first one in case it was given in the compliance vector
         if (comp.size() > 1)
-            serr << "Warning compliance size ( " << comp.size() << " is not equal to the size of the mstate (" << x.size() << ")" << sendl;
+            msg_warning() << "Compliance size ( " << comp.size() << " is not equal to the size of the mstate (" << x.size() << ")";
         Real comp0 = (!comp.empty()) ? comp[0] : defaultCompliance.getValue();
-        sout << "Using " << comp0 << " as initial compliance" << sendl;
+        msg_warning() << "Using " << comp0 << " as initial compliance";
+
         VecReal UsedComp;
         for (unsigned int i=0; i<x.size(); i++)
         {
@@ -154,15 +159,31 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         if (!UsedComp.empty())
         {
             compliance.setValue(UsedComp);
+
+            // If compliance is a vector of value per dof, need to register it as a PointData to the current topology
+            if (l_topology.empty())
+            {
+                msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+                l_topology.set(this->getContext()->getMeshTopologyLink());
+            }
+
+            sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+            msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+            if (_topology != nullptr)
+            {
+                compliance.createTopologicalEngine(_topology);
+                compliance.registerTopologicalData();
+            }
         }
     }
-
+   
     this->getContext()->get(m_pOdeSolver);
     if (!m_pOdeSolver)
     {
         if (d_useOdeSolverIntegrationFactors.getValue() == true)
         {
-            serr << "Can't find any odeSolver" << sendl;
+            msg_error() << "Can't find any odeSolver";
             d_useOdeSolverIntegrationFactors.setValue(false);
         }
         d_useOdeSolverIntegrationFactors.setReadOnly(true);
@@ -174,76 +195,6 @@ void UncoupledConstraintCorrection<DataTypes>::reinit()
 {
     Inherit::reinit();
 }
-
-template< class DataTypes >
-void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
-{
-    using sofa::core::topology::TopologyChange;
-    using sofa::core::topology::TopologyChangeType;
-    using sofa::core::topology::BaseMeshTopology;
-
-    if (!d_handleTopologyChange.getValue())
-        return; // another component takes care of updating compliance vector
-
-    BaseMeshTopology *topology = this->getContext()->getMeshTopology();
-    if (!topology)
-        return;
-    if (defaultCompliance.isSet() && compliance.getValue().empty())
-        return; // uniform compliance, no need to update it
-
-    std::list< const TopologyChange * >::const_iterator itBegin = topology->beginChange();
-    std::list< const TopologyChange * >::const_iterator itEnd = topology->endChange();
-
-    VecReal& comp = *(compliance.beginEdit());
-    const Real comp0 = defaultCompliance.getValue();
-
-    for (std::list< const TopologyChange * >::const_iterator changeIt = itBegin; changeIt != itEnd; ++changeIt)
-    {
-        const TopologyChangeType changeType = (*changeIt)->getChangeType();
-
-        switch ( changeType )
-        {
-        case core::topology::POINTSADDED :
-        {
-            unsigned int nbPoints = (static_cast< const sofa::core::topology::PointsAdded *> (*changeIt))->getNbAddedVertices();
-
-            VecReal addedCompliance;
-
-            for (unsigned int i = 0; i < nbPoints; i++)
-            {
-                addedCompliance.push_back(comp0);
-            }
-
-            comp.insert(comp.end(), addedCompliance.begin(), addedCompliance.end());
-
-            break;
-        }
-        case core::topology::POINTSREMOVED :
-        {
-            using sofa::helper::vector;
-
-            const vector< unsigned int > &pts = (static_cast< const sofa::core::topology::PointsRemoved * >(*changeIt))->getArray();
-
-            unsigned int lastIndexVec = comp.size() - 1;
-
-            for (unsigned int i = 0; i < pts.size(); i++)
-            {
-                comp[pts[i]] = comp[lastIndexVec];
-                lastIndexVec--;
-            }
-
-            comp.resize(comp.size() - pts.size());
-
-            break;
-        }
-        default:
-            break;
-        }
-    }
-
-    compliance.endEdit();
-}
-
 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
@@ -318,7 +269,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::defaulttype::BaseMatrix *W)
 {
-    const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue(cparams) ;
+    const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue() ;
     VecReal comp = compliance.getValue();
     Real comp0 = defaultCompliance.getValue();
     const bool verbose = f_verbose.getValue();
@@ -355,7 +306,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 
         if (verbose)
         {
-            sout << "C[" << indexCurRowConst << "]";
+            dmsg_info() << "C[" << indexCurRowConst << "]";
         }
 
         const MatrixDerivColConstIterator colItBegin = rowIt.begin();
@@ -372,7 +323,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 
                 if (verbose)
                 {
-                    sout << " dof[" << dof << "]=" << n;
+                    dmsg_info() << " dof[" << dof << "]=" << n;
                 }
 
                 //w += (n * n) * (dof < comp.size() ? comp[dof] : comp0);
@@ -611,7 +562,6 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     {
 
         // compliance * force
-        //dx[i] = force[i] * (i<comp.size() ? comp[i] : comp0);
         dx[i] = UncoupledConstraintCorrection_computeDx(i, force[i], comp0, comp);
 
         const Deriv dxi = dx[i] * xFactor;
@@ -746,7 +696,6 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
 
                 constraint_force[dof] += colIt.val() * df[id];
 
-                //Deriv dx =  constraint_force[dof] * (dof < comp.size() ? comp[dof] : comp0);
                 Deriv dx = UncoupledConstraintCorrection_computeDx(dof, constraint_force[dof], comp0, comp);
 
                 constraint_disp[dof] = dx;
@@ -783,7 +732,6 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
             {
                 unsigned int dof = colIt.index();
                 Deriv n = colIt.val();
-                //w += (n * n) * (dof < comp.size() ? comp[dof] : comp0);
                 w += UncoupledConstraintCorrection_computeCompliance(dof, n, n, comp0, comp);
             }
             
@@ -822,7 +770,6 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
                     unsigned int dof = colIt.index();
                     const Deriv& n1 = colIt.val();
                     const Deriv& n2 = colIt2.val();
-                    //w += (n1 * n2) * (dof < comp.size() ? comp[dof] : comp0);
                     w += UncoupledConstraintCorrection_computeCompliance(dof, n1, n2, comp0, comp);
                     ++colIt;
                     ++colIt2;

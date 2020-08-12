@@ -61,7 +61,7 @@ private:
     int oldSlide;
 public:
     LabelPointsBySectionImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent);
-    ~LabelPointsBySectionImageToolBoxAction();
+    ~LabelPointsBySectionImageToolBoxAction() override;
     
     sofa::component::engine::LabelPointsBySectionImageToolBox* LPBSITB();
     
@@ -74,13 +74,13 @@ private:
     void setAxis(int);
 
 public slots:
-    virtual void addOnGraphs();
-    virtual void updateGraphs();
-    virtual void updateColor();
-    virtual void optionChangeSection(sofa::defaulttype::Vec3i);
+    void addOnGraphs() override;
+    void updateGraphs() override;
+    void updateColor() override;
+    void optionChangeSection(sofa::defaulttype::Vec3i) override;
     void changeSection(int);
     sofa::defaulttype::Vec3i changeSection2(int,bool force=false);
-    void mouseMove(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
+    void mouseMove(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value) override;
     void addToPath(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,bool forceMoveTo=false);
 
 private slots:

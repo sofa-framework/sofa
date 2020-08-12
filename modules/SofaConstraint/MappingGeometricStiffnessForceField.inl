@@ -59,22 +59,8 @@ void MappingGeometricStiffnessForceField<DataTypes>::addKToMatrix(const sofa::co
             mat->add(offset + i, offset + j, mappingK->element(i, j)*kFact);
         }
     }
-
-    //typedef typename DataTypes::Deriv TBloc;
-    //sofa::component::linearsolver::BlocMatrixWriter< TBloc > writer;
-    //writer.addKToMatrix(this, mparams, matrix->getMatrix(this->getMState()));
 }
-
-//template<class MatrixWriter>
-//template<class DataTypes>
-//void MappingGeometricStiffnessForceField<DataTypes>::addKToMatrixT(const sofa::core::MechanicalParams* mparams, MatrixWriter m)
-//{
-//
-//}
-
 }
-
 }
-
 
 #endif // SOFA_CONSTRAINT_MAPPINGGEOMTRICSTIFFNESSFORCEFIELD_INL

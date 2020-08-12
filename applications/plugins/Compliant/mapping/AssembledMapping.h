@@ -47,16 +47,16 @@ namespace sofa {
                         base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
                 }
 	
-				const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() {
+                const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override {
 					assert( !js.empty() );
 					return &js;
 				}
 
-				const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
+                const sofa::defaulttype::BaseMatrix* getJ() override { return &jacobian; }
 	
 				virtual void apply(const core::MechanicalParams*,
 				                   Data<typename self::OutVecCoord>& out, 
-				                   const Data<typename self::InVecCoord>& in) {
+                                   const Data<typename self::InVecCoord>& in) override {
 					out_pos_type out_pos(out);
 					in_pos_type in_pos(in);
 	  
@@ -66,7 +66,7 @@ namespace sofa {
 	
 				virtual void applyJ(const core::MechanicalParams*,
 				                    Data<typename self::OutVecDeriv>& out, 
-				                    const Data<typename self::InVecDeriv>& in) {
+                                    const Data<typename self::InVecDeriv>& in) override {
 					if( jacobian.compressedMatrix.nonZeros() > 0 ) {
                         jacobian.mult(out, in);
                     }
@@ -83,8 +83,7 @@ namespace sofa {
 
 				virtual void applyJT(const core::MechanicalParams*,			     
 				                     Data<typename self::InVecDeriv>& in, 
-				                     const Data<typename self::OutVecDeriv>& out) {
-					// debug();
+                                     const Data<typename self::OutVecDeriv>& out) override {
 					if( jacobian.compressedMatrix.nonZeros() > 0 ) {
                         jacobian.addMultTranspose(in, out);
                     }
@@ -92,20 +91,18 @@ namespace sofa {
 
 				virtual void applyJT(const core::ConstraintParams*,
 				                     Data< typename self::InMatrixDeriv>& , 
-				                     const Data<typename self::OutMatrixDeriv>& ) {
-					// throw std::logic_error("not implemented");
-					// if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
+                                     const Data<typename self::OutMatrixDeriv>& ) override {
 				}
 
 
-                virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId childForce ) {
+                virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId childForce ) override {
 
                     // trigger assembly
                     this->assemble_geometric(this->in_pos(),
                                              this->out_force( childForce ) );
                 }
 
-                virtual const defaulttype::BaseMatrix* getK() {
+                virtual const defaulttype::BaseMatrix* getK() override {
 
                     if( geometric.compressedMatrix.nonZeros() ) return &geometric;
                     else return NULL;
@@ -113,14 +110,13 @@ namespace sofa {
 
                 virtual void applyDJT(const core::MechanicalParams* mparams,
                                       core::MultiVecDerivId inForce,
-                                      core::ConstMultiVecDerivId /* inDx */ ) {
+                                      core::ConstMultiVecDerivId /* inDx */ ) override {
 
                     if( geometric.compressedMatrix.nonZeros() ) {
 
                         const Data<typename self::InVecDeriv>& inDx =
                             *mparams->readDx(this->fromModel);
                         
-//                        const core::State<In>* from_read = this->getFromModel();
                         core::State<In>* from_write = this->getFromModel();
 
                         // TODO does this even make sense ?

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,31 +72,10 @@ public:
 
 
 protected:
-    DistanceLMContactConstraint( MechanicalState *dof)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
-        , pointPairs(sofa::core::objectmodel::Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        , contactFriction(sofa::core::objectmodel::Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
-        , intersection(0)
-    {
-        initColorContactState();
-    }
+    DistanceLMContactConstraint();
+    DistanceLMContactConstraint( MechanicalState *dof);
+    DistanceLMContactConstraint( MechanicalState *dof1, MechanicalState * dof2);
 
-    DistanceLMContactConstraint( MechanicalState *dof1, MechanicalState * dof2)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
-        , pointPairs(sofa::core::objectmodel::Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        , contactFriction(sofa::core::objectmodel::Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
-        , intersection(0)
-    {
-        initColorContactState();
-    }
-
-    DistanceLMContactConstraint()
-        : pointPairs(sofa::core::objectmodel::Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        , contactFriction(sofa::core::objectmodel::Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
-        , intersection(0)
-    {
-        initColorContactState();
-    }
 
     ~DistanceLMContactConstraint() override {}
 public:
@@ -108,21 +87,10 @@ public:
             core::behavior::ConstraintGroup * group) override;
 
     bool isCorrectionComputedWithSimulatedDOF(ConstOrder order) const override;
-    //
     void clear();
     /// register a new contact
     void addContact(unsigned m1, unsigned m2);
-    virtual void draw(const core::visual::VisualParams* vparams) override;
-
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-    static std::string templateName(const DistanceLMContactConstraint<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected :
 
@@ -178,13 +146,9 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_CPP)
+extern template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace constraintset

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,7 +55,6 @@ using namespace collision;
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
 
-SOFA_DECL_CLASS (RayTraceDetection)
 int RayTraceDetectionClass =
     core::
     RegisterObject
@@ -72,7 +71,7 @@ RayTraceDetection ():bDraw (initData
 }
 
 
-void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
+void RayTraceDetection::findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2)
 {
     /*Obtain the CollisionModel at the lowest level, in this case it must be a TriangleOctreeModel */
 
@@ -104,7 +103,7 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
     core::collision::DetectionOutputVector*& contacts = this->getDetectionOutputs(tm1, tm2);
 
 
-    if (contacts == NULL)
+    if (contacts == nullptr)
     {
         contacts = new
         sofa::core::collision::TDetectionOutputVector <
@@ -153,18 +152,18 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
         int flags = tri1.flags();
 
         /*test only the points related to this triangle */
-        if (flags & TriangleModel::FLAG_P1)
+        if (flags & TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)
         {
             normau[nPoints] = tm1->pNorms[tri1.p1Index ()];
             trianglePoints[nPoints++] = tri1.p1 ();
 
         }
-        if (flags & TriangleModel::FLAG_P2)
+        if (flags & TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)
         {
             normau[nPoints] = tm1->pNorms[tri1.p2Index ()];
             trianglePoints[nPoints++] = tri1.p2 ();
         }
-        if (flags & TriangleModel::FLAG_P3)
+        if (flags & TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)
         {
             normau[nPoints] = tm1->pNorms[tri1.p3Index ()];
             trianglePoints[nPoints++] = tri1.p3 ();
@@ -260,7 +259,7 @@ void RayTraceDetection::addCollisionModel (core::CollisionModel * cm)
 
         bool swapModels = false;
         core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
-        if (intersector == NULL)
+        if (intersector == nullptr)
             continue;
 
         core::CollisionModel* cm1 = (swapModels?cm2:cm);
@@ -281,8 +280,8 @@ void RayTraceDetection::addCollisionPair (const std::pair <
         core::CollisionModel *,
         core::CollisionModel * >&cmPair)
 {
-    CubeModel *cm1 = dynamic_cast < CubeModel * >(cmPair.first);
-    CubeModel *cm2 = dynamic_cast < CubeModel * >(cmPair.second);
+    CubeCollisionModel *cm1 = dynamic_cast < CubeCollisionModel * >(cmPair.first);
+    CubeCollisionModel *cm2 = dynamic_cast < CubeCollisionModel * >(cmPair.second);
     if (cm1 && cm2)
     {
         //ctime_t t0, t1, t2;

@@ -26,14 +26,9 @@ bool ComplianceTester<DataTypes>::canConvert(core::objectmodel::BaseObject* o)
 
 CompliantSleepController::CompliantSleepController()
 {
-#ifndef SOFA_DOUBLE
-	addCompliance< forcefield::DiagonalCompliance<defaulttype::Vec6fTypes> >();
-	addCompliance< forcefield::UniformCompliance<sofa::defaulttype::Vec1fTypes> >();
-#endif
-#ifndef SOFA_FLOAT
 	addCompliance< forcefield::DiagonalCompliance<defaulttype::Vec6dTypes> >();
 	addCompliance< forcefield::UniformCompliance<sofa::defaulttype::Vec1dTypes> >();
-#endif
+
 }
 
 CompliantSleepController::~CompliantSleepController()
@@ -128,8 +123,6 @@ void GetConstrainedContextPairs::processMapping(simulation::Node* /*node*/, core
 
 int CompliantSleepControllerClass = core::RegisterObject("A controller that puts node into sleep when the objects are not moving, and wake them up again when there are in collision with a moving object (compatible with compliant specific constraints)")
 	.add< CompliantSleepController >();
-
-SOFA_DECL_CLASS(CompliantSleepController)
 
 } // namespace controller
 

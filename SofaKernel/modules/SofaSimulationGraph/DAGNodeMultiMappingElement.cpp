@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,13 +51,11 @@ void DAGNodeMultiMappingElement::updateSceneGraph(
     helper::vector<simulation::Node*>::const_iterator it;
     for( it = otherInputs.begin(); it != otherInputs.end(); ++it)
     {
-        multiMapping->serr << "Node: " << (*it)->getName() << " does not belong to "
-                << multiMapping->getContext()->getName() << "ancestors" << multiMapping->sendl;
+        msg_error(multiMapping) << "Node: " << (*it)->getName() << " does not belong to "
+            << multiMapping->getContext()->getName() << "ancestors.";
     }
 }
 
-
-SOFA_DECL_CLASS(DAGNodeMultiMappingElement)
 
 helper::Creator<sofa::simulation::xml::BaseElement::NodeFactory, DAGNodeMultiMappingElement> DAGNodeMultiMappingClass("DAGNodeMultiMapping");
 

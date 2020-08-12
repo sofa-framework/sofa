@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -133,12 +133,12 @@ public:
 
 /// Mapper for CudaPointDistanceGridCollisionModel
 template <class DataTypes>
-class ContactMapper<sofa::gpu::cuda::CudaPointModel,DataTypes> : public SubsetContactMapper<sofa::gpu::cuda::CudaPointModel,DataTypes>
+class ContactMapper<sofa::gpu::cuda::CudaPointCollisionModel,DataTypes> : public SubsetContactMapper<sofa::gpu::cuda::CudaPointCollisionModel,DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    typedef SubsetContactMapper<sofa::gpu::cuda::CudaPointModel,DataTypes> Inherit;
+    typedef SubsetContactMapper<sofa::gpu::cuda::CudaPointCollisionModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
     typedef typename Inherit::MMapping MMapping;
@@ -165,12 +165,12 @@ public:
 
 
 template <class DataTypes>
-class ContactMapper<sofa::gpu::cuda::CudaSphereModel,DataTypes> : public SubsetContactMapper<sofa::gpu::cuda::CudaSphereModel,DataTypes>
+class ContactMapper<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes> : public SubsetContactMapper<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    typedef SubsetContactMapper<sofa::gpu::cuda::CudaSphereModel,DataTypes> Inherit;
+    typedef SubsetContactMapper<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
     typedef typename Inherit::MMapping MMapping;

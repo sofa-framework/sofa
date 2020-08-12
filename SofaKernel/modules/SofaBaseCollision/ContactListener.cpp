@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <SofaBaseCollision/ContactListener.h>
 
 #include <sofa/core/collision/NarrowPhaseDetection.h>
@@ -33,112 +32,96 @@
 
 namespace sofa
 {
-	namespace core
-	{
+namespace core
+{
 
-		namespace collision
-		{
+namespace collision
+{
 
-			SOFA_DECL_CLASS(ContactListener);
-			int ContactListenerClass = core::RegisterObject("ContactListener .. ").add< ContactListener >();
-
+int ContactListenerClass = core::RegisterObject("ContactListener .. ").add< ContactListener >();
 
 
-			ContactListener::ContactListener(  CollisionModel* collModel1 , CollisionModel* collModel2 )
-				: 
-				  //mLinkCollisionModel1( initLink("collisionModel1", "first collision model"), collModel1 )
-				//, mLinkCollisionModel2( initLink("collisionModel2", "second collision model"), collModel2 )
-				 mNarrowPhase(NULL)
-			{
-				mCollisionModel1 = collModel1;
-				mCollisionModel2 = collModel2;
-			}
 
-			ContactListener::~ContactListener()
-			{
-			}
+ContactListener::ContactListener(  CollisionModel* collModel1 , CollisionModel* collModel2 )
+    :  m_NarrowPhase(nullptr)
+{
+    m_CollisionModel1 = collModel1;
+    m_CollisionModel2 = collModel2;
+}
 
-			void ContactListener::init(void)
-			{
-				helper::vector<ContactManager*> contactManagers;
+ContactListener::~ContactListener()
+{
+}
 
-				mNarrowPhase = getContext()->get<core::collision::NarrowPhaseDetection>();
-				if ( mNarrowPhase != NULL )
-				{
-					// add to the event listening
-					f_listening.setValue(true);
+void ContactListener::init(void)
+{
+    m_NarrowPhase = getContext()->get<core::collision::NarrowPhaseDetection>();
+    if ( m_NarrowPhase != nullptr )
+    {
+        // add to the event listening
+        f_listening.setValue(true);
+    }
+}
 
-				}
+void ContactListener::handleEvent( core::objectmodel::Event* _event )
+{
+    if (simulation::CollisionBeginEvent::checkEventType(_event))
+    {
+        m_ContactsVector.clear();
+    }
 
-			}
+    else if (simulation::CollisionEndEvent::checkEventType(_event))
+    {
 
-			void ContactListener::handleEvent( core::objectmodel::Event* _event )
-			{
-                if (simulation::CollisionBeginEvent::checkEventType(_event))
-				{
-					mContactsVector.clear();
-				}
+        const NarrowPhaseDetection::DetectionOutputMap& detectionOutputsMap = m_NarrowPhase->getDetectionOutputs();
 
-                else if (simulation::CollisionEndEvent::checkEventType(_event))
-				{
+        if ( detectionOutputsMap.size() == 0 )
+        {
+            endContact(nullptr);
+            return;
+        }
 
-					const NarrowPhaseDetection::DetectionOutputMap& detectionOutputsMap = mNarrowPhase->getDetectionOutputs();
+        if  ( m_CollisionModel2 == nullptr )
+        {
+            //// check only one collision model
+            for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputsMap.begin(); it!=detectionOutputsMap.end(); ++it )
+            {
+                const CollisionModel* collMod1 = it->first.first;
+                const CollisionModel* collMod2 = it->first.second;
 
-					if ( detectionOutputsMap.size() == 0 )
-					{
-						endContact(NULL);
-						return;
-					}
+                if ( m_CollisionModel1 == collMod1 || m_CollisionModel1 == collMod2 )
+                {
+                    if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it->second) )
+                    {
+                        m_ContactsVector.push_back( contacts );
+                    }
+                }
+            }
+        }
+        else
+        {
+            // check both collision models
+            for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputsMap.begin(); it!=detectionOutputsMap.end(); ++it )
+            {
+                const CollisionModel* collMod1 = it->first.first;
+                const CollisionModel* collMod2 = it->first.second;
 
-					//core::collision::NarrowPhaseDetection::DetectionOutputMap::iterator it = detectionOutputsMap.begin();
-					//const helper::vector<DetectionOutput>* detection = dynamic_cast<helper::vector<DetectionOutput>*>(it->second);
-					//const TDetectionOutputVector<mCollisionModel1,mCollisionModel2>* detection = dynamic_cast<TDetectionOutputVector*>(it->second);
-
-					if  ( mCollisionModel2 == NULL )
-					{
-						//// check only one collision model
-						for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputsMap.begin(); it!=detectionOutputsMap.end(); ++it )
-						{
-							const CollisionModel* collMod1 = it->first.first;
-							const CollisionModel* collMod2 = it->first.second;
-
-							if ( mCollisionModel1 == collMod1 || mCollisionModel1 == collMod2 )
-							{
-								if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it->second) )
-								{
-									mContactsVector.push_back( contacts );
-								}
-							}
-						}
-					}
-					else
-					{
-						// check both collision models
-						for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputsMap.begin(); it!=detectionOutputsMap.end(); ++it )
-						{
-							const CollisionModel* collMod1 = it->first.first;
-							const CollisionModel* collMod2 = it->first.second;
-
-							if ( (mCollisionModel1==collMod1 && mCollisionModel2==collMod2) || (mCollisionModel1==collMod2 && mCollisionModel2==collMod1) )
-							{
-								if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it->second) )
-								{
-									mContactsVector.push_back( contacts );
-								}
-							}
-						}
-
-					}
-
-					beginContact(mContactsVector);
-
-				}
-
-			}
+                if ( (m_CollisionModel1==collMod1 && m_CollisionModel2==collMod2) || (m_CollisionModel1==collMod2 && m_CollisionModel2==collMod1) )
+                {
+                    if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it->second) )
+                    {
+                        m_ContactsVector.push_back( contacts );
+                    }
+                }
+            }
+        }
+        beginContact(m_ContactsVector);
+    }
+}
 
 
-		} // namespace collision
+} // namespace collision
 
-	} // namespace core
+} // namespace core
 
 } // namespace sofa

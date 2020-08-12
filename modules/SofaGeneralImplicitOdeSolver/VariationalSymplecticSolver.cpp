@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,15 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Herve Delingette, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #include "VariationalSymplecticSolver.h"
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -66,11 +63,13 @@ void VariationalSymplecticSolver::init()
 {
     if (!this->getTags().empty())
     {
-        sout << "VariationalSymplecticSolver: responsible for the following objects with tags " << this->getTags() << " :" << sendl;
         helper::vector<core::objectmodel::BaseObject*> objs;
         this->getContext()->get<core::objectmodel::BaseObject>(&objs,this->getTags(),sofa::core::objectmodel::BaseContext::SearchDown);
+        std::stringstream tmp;
         for (unsigned int i=0;i<objs.size();++i)
-            sout << "  " << objs[i]->getClassName() << ' ' << objs[i]->getName() << sendl;
+            tmp << "  " << objs[i]->getClassName() << ' ' << objs[i]->getName() << msgendl;
+
+        msg_info() << "Responsible for the following objects with tags " << this->getTags() << " :" << tmp.str();
     }
     sofa::core::behavior::OdeSolver::init();
     energies.open((f_fileName.getValue()).c_str(),std::ios::out);
@@ -96,7 +95,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     const SReal& h = dt;
     const SReal rM = f_rayleighMass.getValue();
     const SReal rK = f_rayleighStiffness.getValue();
-    const bool verbose  = f_verbose.getValue();
 
     if (cpt == 0 || this->getContext()->getTime()==0.0)
     {
@@ -123,7 +121,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 	cpt++;
     MultiVecDeriv pPrevious(&vop, pID); // get previous momemtum value
     p.eq(pPrevious); // set p to previous momemtum
-
 
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
  
@@ -178,7 +175,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 		unsigned int nbMaxIterNewton = f_newtonSteps.getValue();
 		unsigned int i_newton=0;
 		double err_newton =0; // initialisation
-		//    MultiVecDeriv F(&vop);
 
 		oldpos.eq(pos); // save initial position
 		double positionNorm=oldpos.norm(); // the norm of the position to compute the stopping criterion
@@ -216,7 +212,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 			mop.projectResponse(b);
 			// add left term : matrix=-K+4/h^(2)M, but with dampings rK and rM
             core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
-//			matrix = MechanicalMatrix::K * (-1.0-rK/h) +  MechanicalMatrix::M * (4.0/(h*h)+rM);
 			matrix = MechanicalMatrix::K * (-1.0-4*rK/h) +  MechanicalMatrix::M * (4.0/(h*h)+4*rM/h);
 
 			sofa::helper::AdvancedTimer::stepNext ("MBKBuild", "MBKSolve");
@@ -258,9 +253,9 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
             m_incrementalPotentialEnergy = m_incrementalPotentialEnergy + deltaPotentialEnergy;
         }
 
-		if (verbose) 
-			std::cout<<" i_newton "<<i_newton<<"    err_newton "<<err_newton<<std::endl;
-		/// Updates of v, p and final position ///
+        msg_info() <<" i_newton "<<i_newton<<"    err_newton "<<err_newton ;
+
+        /// Updates of v, p and final position ///
 		//v(k+1,0)=(2/h)(q(k,i_end)-q(k,0))
 		VMultiOp opsfin;
 		opsfin.resize(1);
@@ -336,11 +331,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
                 if (f_saveEnergyInFile.getValue())
                     energies << this->getContext()->getTime()<<","<<hamiltonianKineticEnergy<<","<<potentialEnergy<<","<<hamiltonianKineticEnergy+potentialEnergy<<std::endl;
             }
-
-
-
         }
-
 	}
 
     sofa::helper::AdvancedTimer::stepNext ("CorrectV", "CorrectX");
@@ -350,8 +341,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 	// update the previous momemtum as the current one for next step
     pPrevious.eq(newp);
 }
-
-SOFA_DECL_CLASS(VariationalSymplecticSolver)
 
 int VariationalSymplecticSolverClass = core::RegisterObject("Implicit time integrator which conserves linear momentum and mechanical energy")
         .add< VariationalSymplecticSolver >()

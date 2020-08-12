@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<!-- Automatic Triangle removing with Triangle2Edge mapping example: Element removed are define in: ./RemovingTrianglesProcess.txt -->
+<Node name="root" gravity="0 0 -9" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <DefaultPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <Node name="SquareGravity">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />
+        <MechanicalObject name="dofs" src="@loader" template="Vec3" />
+        <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" />
+        <TriangleSetTopologyModifier name="Triangle_mod" />
+        <TriangleSetTopologyAlgorithms template="Vec3" name="TopoAlgo" />
+        <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+        <DiagonalMass template="Vec3" name="mass" massDensity="1.0" />
+        <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
+        <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="300" damping="1" />
+        
+        <Node name="Edge Mesh"  >
+			<EdgeSetTopologyContainer name="Edge_topo" />
+			<EdgeSetTopologyModifier name="Edge_mod" />
+			<EdgeSetTopologyAlgorithms template="Vec3" name="TopoAlgo" />
+			<EdgeSetGeometryAlgorithms template="Vec3" name="GeomAlgo"  drawEdges="1" />
+			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Triangle_topo"  output="@Edge_topo" />
+			<EdgePressureForceField template="Vec3" name="edgePressureFF0"  edges="@Edge_topo.edges" pressure="0 0 1" normal="0 0 1"  p_intensity="1" arrowSizeCoef="10" showForces="1" mstate="@../dofs"/>
+		</Node>
+        
+        <Node name="Visu">
+            <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@.." output="@Visual" />
+        </Node>
+        
+        <TopologicalChangeProcessor listening="1" filename="RemovingTrianglesProcess.txt" />
+    </Node>
+</Node>

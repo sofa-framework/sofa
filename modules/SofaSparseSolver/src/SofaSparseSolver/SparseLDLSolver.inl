@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
 
@@ -30,10 +28,12 @@
 #include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <math.h>
+#include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
 #include <fstream>
+#include <iomanip>      // std::setprecision
+#include <string>
 
 namespace sofa {
 
@@ -44,7 +44,9 @@ namespace linearsolver {
 template<class TMatrix, class TVector, class TThreadManager>
 SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
     : numStep(0)
-    , f_saveMatrixToFile( initData(&f_saveMatrixToFile, false, "saveMatrixToFile", "save matrix to a text file (can be very slow, as full matrix is stored"))
+    , f_saveMatrixToFile( initData(&f_saveMatrixToFile, false, "savingMatrixToFile", "save matrix to a text file (can be very slow, as full matrix is stored"))
+    , d_filename( initData(&d_filename, std::string("MatrixInLDL_%04d.txt"),"savingFilename", "Name of file where system matrix (mass, stiffness and damping) will be stored."))
+    , d_precision( initData(&d_precision, 6, "savingPrecision", "Number of digits used to store system's matrix. Default is 6."))
 {}
 
 template<class TMatrix, class TVector, class TThreadManager>
@@ -54,12 +56,18 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& 
 
 template<class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
-    if (f_saveMatrixToFile.getValue()) {
+    if (f_saveMatrixToFile.getValue())
+    {
         std::ofstream f;
-        char name[100];
-        sprintf(name, "matrixInLDLInvert_%04d.txt", numStep);
+        std::string name=d_filename.getValue().c_str();
+        if (d_filename.getValue().find("%d"))
+        {
+            char bname[100];
+            snprintf(bname, 100, d_filename.getValue().c_str(), numStep);
+            name=bname;
+        }
         f.open(name);
-        f << M;
+        f << std::scientific << std::setprecision(d_precision.getValue()) << M;
         f.close();
     }
 
@@ -72,7 +80,7 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
     int * M_rowind = (int *) &Mfiltered.getColsIndex()[0];
     Real * M_values = (Real *) &Mfiltered.getColsValue()[0];
 
-    if(M_colptr==nullptr || M_rowind==nullptr || M_values==nullptr || (int) Mfiltered.getRowBegin().size() < n )
+    if(M_colptr==nullptr || M_rowind==nullptr || M_values==nullptr || Mfiltered.getRowBegin().size() < (size_t)n )
     {
         msg_warning() << "Invalid Linear System to solve. Please insure that there is enough constraints (not rank deficient)." ;
         return ;

@@ -1,11 +1,13 @@
-<Node name="root" dt="0.04" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
-	<CollisionPipeline verbose="0" />
+<Node name="root" dt="0.04">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+	<VisualStyle displayFlags="showBehaviorModels" />
+	<DefaultPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
-	<CollisionResponse name="Response" />
+	<DefaultContactManager name="Response" />
 	<NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
 
 	<Node name="Floor">
-		<RegularGrid
+		<RegularGridTopology
 			nx="2" ny="1" nz="2"
 			xmin="10" xmax="-10"
 			ymin="-3.05" ymax="-3.05"
@@ -18,29 +20,29 @@
 	</Node>
 	<Node name="M1">
 		<!--<CGImplicit iterations="10" />-->
-		<EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="10"/>
-		<RegularGrid
+		<RegularGridTopology
 			nx="10" ny="10" nz="46"
 			xmin="-1.5" xmax="1.5"
 			ymin="0" ymax="3"
 			zmin="-7.5" zmax="7.5"
 		/>
 		<MechanicalObject />
-		<UniformMass totalmass="400" />
+		<UniformMass totalMass="400" />
 		<BoxConstraint box="-1.6 -0.1 -7.6 1.6 3.1 -7.4" />
 		<!--		<MeshSpringForceField stiffness="2333" /> -->
 		<TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.4" method="large" />
-		<PlaneForceField normal="0 1 0" d="-3" stiffness="10000"  draw="1" />
+		<PlaneForceField normal="0 1 0" d="-3" stiffness="10000"  showPlane="1" />
 		<Node>
-			<RegularGrid
+			<RegularGridTopology
 				nx="2" ny="2" nz="9"
 				xmin="-0.75" xmax="0.75"
 				ymin="0.75" ymax="2.25"
 				zmin="-5.5" zmax="6.5"
 			/>
 			<MechanicalObject/>
-			<SphereModel radius="1.0" />
+			<SphereCollisionModel radius="1.0" />
 			<BarycentricMapping />
 		</Node>
 		<Node>
@@ -50,7 +52,7 @@
 				ymin="0" ymax="3"
 				zmin="-7.5" zmax="7.5"
 			/>
-			<VisualModel name="Visual"/>
+			<OglModel name="Visual"/>
 			<SubsetMapping input="@.." output="@Visual" />
 		</Node>
 	</Node>

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="0.1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   
     <RequiredPlugin pluginName="Flexible"/>
   
@@ -11,7 +12,7 @@
       <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
       
 	 <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-        <Mesh name="mesh" src="@loader" />
+        <MeshTopology name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -38,7 +39,8 @@
         </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.2 1 0.2 1" />
+		<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.2 1 0.2 1" />
 	    	<LinearMapping template="Vec3d,ExtVec3f"  />
 	    </Node>
     </Node>
@@ -70,7 +72,7 @@
     </Node>
 
 	<Node name="Visual" >
-	     <VisualModel  color="0.2 1 0.2 1"/>
+	     <OglModel  color="0.2 1 0.2 1"/>
              <IdentityMapping />
 	</Node>
 

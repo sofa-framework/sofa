@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,27 +38,15 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-SOFA_DECL_CLASS(ProjectToLineConstraint)
-
 int ProjectToLineConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-#ifndef SOFA_FLOAT
-        .add< ProjectToLineConstraint<Vec3dTypes> >()
-        .add< ProjectToLineConstraint<Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ProjectToLineConstraint<Vec3fTypes> >()
-        .add< ProjectToLineConstraint<Vec2fTypes> >()
-#endif
+        .add< ProjectToLineConstraint<Vec3Types> >()
+        .add< ProjectToLineConstraint<Vec2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec2fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec2Types>;
+
 
 
 

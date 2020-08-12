@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<!-- Automatic Tetrahedron adding example: Element added are define in: ./AddingTetrahedraProcess.txt -->
+<Node name="root" gravity="0 0 -9" dt="0.01">
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
+    <DefaultPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <Node name="TT">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" />
+        <MeshGmshLoader name="loader" filename="mesh/cubeDof.msh" />
+        <MechanicalObject src="@loader" name="Volume" />
+        <TetrahedronSetTopologyContainer src="@loader" name="Tetra_topo" listening="1" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1" />
+        
+        <UniformMass totalMass="1.0" />
+
+        <FixedConstraint indices="0 1 2" />
+        <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
+        
+        <TopologicalChangeProcessor listening="1" filename="AddingTetrahedraProcess.txt" />
+    </Node>
+</Node>

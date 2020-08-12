@@ -6,11 +6,10 @@ using std::cout;
 using std::endl;
 
 #include <sofa/helper/system/PluginManager.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaMisc/initSofaMisc.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
@@ -32,16 +31,14 @@ typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > V
 SofaScene::SofaScene()
 {
     _groot = _iroot = NULL;
-	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
     std::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;// = NULL;
 	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
 
     sofaSimulation = sofa::simulation::graph::getSimulation(); // creates one if it is not already created
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaMisc();
 }
 
 void SofaScene::step( SReal dt)

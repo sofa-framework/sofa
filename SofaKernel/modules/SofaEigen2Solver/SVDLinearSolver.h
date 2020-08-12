@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,12 +21,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SVDLinearSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_SVDLinearSOLVER_H
-#include "config.h"
+#include <SofaEigen2Solver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/helper/map.h>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {
@@ -64,9 +64,6 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b) override;
     Data<Real> f_conditionNumber; ///< Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.
 
-#ifdef DISPLAY_TIME
-    double timeStamp;
-#endif
 };
 
 } // namespace linearsolver

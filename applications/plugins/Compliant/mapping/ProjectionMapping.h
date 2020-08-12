@@ -50,7 +50,7 @@ public:
 	}
 	
 
-    virtual void init()
+    virtual void init() override
     {
         this->getToModel()->resize( set.getValue().size() );
         AssembledMapping<TIn, TOut>::init();
@@ -59,7 +59,7 @@ public:
 
 protected:
 	
-	virtual void assemble( const typename self::in_pos_type& in) {
+    virtual void assemble( const typename self::in_pos_type& in) override {
 		
         const helper::vector<set_type>& s = set.getValue();
 		
@@ -88,7 +88,7 @@ protected:
 	}
 	
 	virtual void apply(typename self::out_pos_type& out, 
-					   const typename self::in_pos_type& in ) {
+                       const typename self::in_pos_type& in ) override {
         const helper::vector<set_type>& s = set.getValue();
         const helper::vector<SReal>& off = offset.getValue();
 		
@@ -103,7 +103,7 @@ protected:
 		
 	}
 
-    virtual void updateForceMask()
+    virtual void updateForceMask() override
     {
         const helper::vector<set_type>& s = set.getValue();
 
@@ -118,14 +118,8 @@ protected:
 	
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_PROJECTIONMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Compliant_API ProjectionMapping<  sofa::defaulttype::Vec6dTypes, sofa::defaulttype::Vec1dTypes >;
-#endif
-
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Compliant_API ProjectionMapping< sofa::defaulttype::Vec6fTypes, sofa::defaulttype::Vec1fTypes >;
-#endif
+#if !defined(SOFA_COMPONENT_COMPLIANCE_PROJECTIONMAPPING_CPP)
+extern template class SOFA_Compliant_API ProjectionMapping<  sofa::defaulttype::Vec6Types, sofa::defaulttype::Vec1Types >;
 #endif
 
 

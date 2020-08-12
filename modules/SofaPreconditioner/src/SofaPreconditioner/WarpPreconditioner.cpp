@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
 #include <SofaPreconditioner/WarpPreconditioner.inl>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
@@ -30,10 +27,10 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {
@@ -45,15 +42,9 @@ namespace linearsolver
 {
 
 
-SOFA_DECL_CLASS(WarpPreconditioner)
-
 int WarpPreconditionerClass = core::RegisterObject("Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix")
-#ifndef SOFA_FLOAT
 .add< WarpPreconditioner< RotationMatrix<double>, FullVector<double>, NoThreadManager > >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< WarpPreconditioner< RotationMatrix<float>, FullVector<float>,NoThreadManager > > ()
-#endif
+
 ;
 ;
 

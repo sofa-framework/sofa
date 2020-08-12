@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<Node dt="0.01" gravity="0 -10 0" bbox="-4 -4 -4 4 4 4">
+    <RequiredPlugin name="SofaOpenglVisual"/> 
+    <RequiredPlugin name='SofaSphFluid' />
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showWireframe" />
+
+    <Node name="Particles">
+        <EulerExplicitSolver symplectic="1" />
+        <MechanicalObject name="MModel" />
+        <ParticleSource name="Source" translation="0 10 0" radius="0.01 0.1 0.01" velocity="0 -10 0" delay="0.02" start="-0.1" stop="4" printLog="0"
+        center="-0.375 0 -0.75 
+            0.0 0.0 -0.75 
+            0.375 0.0 -0.75 
+            -0.75  0.0 -0.375 
+            -0.375 0.0 -0.375 
+            0.0 0.0 -0.375 
+            0.375 0.0 -0.375 
+            0.75 0.0 -0.375 
+            -0.75 0.0 0.0 
+            -0.375 0.0 0.0 
+            0.0 0.0 0.0 
+            0.375 0.0 0.0 
+            0.75 0.0 0.0 
+            -0.75 0.0 0.375 
+            -0.375 0.0 0.375 
+            0.0 0.0 0.375 
+            0.375 0.0 0.375 
+            0.75 0.0 0.375 
+            -0.375 0.0 0.75 
+            0.0 0.0 0.75 
+            0.375 0.0 0.75"  />
+        
+        
+        <PointSetTopologyContainer name="con" />
+        <PointSetTopologyModifier name="mod" />
+        <UniformMass name="M1" totalMass="1.0" handleTopologicalChanges="1"/>
+        <SpatialGridContainer cellWidth="0.75" />
+        <SPHFluidForceField radius="0.7" density="25" kernelType="1" viscosityType="2" viscosity="10" pressure="1000" surfaceTension="-1000" printLog="0" />
+
+        <ParticleSink name="sink" normal="0 1 0" d0="0" d1="-1" showPlane="1" printLog="0" />
+        
+    </Node>
+</Node>

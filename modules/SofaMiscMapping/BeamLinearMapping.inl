@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,8 +24,6 @@
 
 #include <SofaMiscMapping/BeamLinearMapping.h>
 #include <sofa/core/visual/VisualParams.h>
-
-#include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 
@@ -76,7 +74,7 @@ template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::init()
 {
     bool local = localCoord.getValue();
-    if (this->points.empty() && this->toModel!=NULL)
+    if (this->points.empty() && this->toModel!=nullptr)
     {
         const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
         beamLength.resize(xfrom.size());
@@ -90,7 +88,7 @@ void BeamLinearMapping<TIn, TOut>::init()
             beamLength[xfrom.size()-1] = beamLength[xfrom.size()-2];
 
         const VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
-        sout << "BeamLinearMapping: init "<<x.size()<<" points."<<sendl;
+        msg_info() << "BeamLinearMapping: init "<<x.size()<<" points.";
         points.resize(x.size());
 
         if (local)

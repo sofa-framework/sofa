@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,8 @@ using sofa::component::mass::UniformMass ;
 #include <SofaBaseMechanics/initBaseMechanics.h>
 using sofa::component::initBaseMechanics ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
@@ -50,6 +52,10 @@ using sofa::component::container::MechanicalObject ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
+#include <SofaTest/Sofa_test.h>
+using BaseTest = sofa::Sofa_test<SReal>;
+
+
 template <class TDataTypes, class TMassTypes>
 struct TemplateTypes
 {
@@ -58,7 +64,7 @@ struct TemplateTypes
 };
 
 template <typename TTemplateTypes>
-struct UniformMassTest :  public ::testing::Test
+struct UniformMassTest :  public BaseTest
 {
     typedef UniformMass<typename TTemplateTypes::DataTypes,
     typename TTemplateTypes::MassTypes> TheUniformMass ;
@@ -78,6 +84,8 @@ struct UniformMassTest :  public ::testing::Test
 
     virtual void SetUp()
     {
+        sofa::simpleapi::importPlugin("SofaComponentAll") ;
+
         todo = true ;
         initBaseMechanics();
         setSimulation( m_simu = new DAGSimulation() );
@@ -86,7 +94,7 @@ struct UniformMassTest :  public ::testing::Test
 
     void TearDown()
     {
-        if (m_root != NULL){
+        if (m_root != nullptr){
             m_simu->unload(m_root);
         }
     }
@@ -109,7 +117,7 @@ struct UniformMassTest :  public ::testing::Test
         EXPECT_TRUE( m_mass->findData("showInitialCenterOfGravity") != nullptr ) ;
 
         EXPECT_TRUE( m_mass->findData("indices") != nullptr ) ;
-        EXPECT_TRUE( m_mass->findData("handleTopoChange") != nullptr ) ;
+        EXPECT_TRUE( m_mass->findData("handleTopologicalChanges") != nullptr ) ;
         EXPECT_TRUE( m_mass->findData("preserveTotalMass") != nullptr ) ;
 
         EXPECT_TRUE( m_mass->findData("compute_mapping_inertia") != nullptr ) ;
@@ -138,6 +146,38 @@ struct UniformMassTest :  public ::testing::Test
         if(mass!=nullptr){
             EXPECT_EQ( mass->getTotalMass(), 1.0 ) ;
             EXPECT_EQ( mass->getVertexMass(), 0.5 ) ;
+        }
+    }
+
+    /// totalMass, mass and localRange..
+    /// case where NO mass info give, default totalMass = 1.0
+    void checkRigidAttribute()
+    {
+        EXPECT_MSG_NOEMIT(Error, Warning);
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject template='Rigid3' position='0 0 0 0 0 0 1'/>"
+                "   <UniformMass name='mass' vertexMass='1.0 1.0 2.0 0.0 0.0 0.0 4.0 0.0 7.0 8.0 9.0'/>"
+                "</Node>                                                     " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        root->init(ExecParams::defaultInstance()) ;
+
+        UniformMassRigid* mass = root->getTreeObject<UniformMassRigid>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        std::vector<double> values={2.0,0.0,0.0,0.0,4.0,0.0,7.0,8.0,9.0};
+        for(unsigned int i=0;i<3;i++)
+        {
+            for(unsigned int j=0;j<3;j++)
+            {
+                ASSERT_EQ(mass->d_vertexMass.getValue().inertiaMatrix[i][j],
+                          values[i*3+j]);
+            }
         }
     }
 
@@ -409,24 +449,7 @@ struct UniformMassTest :  public ::testing::Test
 
 
 typedef Types<
-TemplateTypes<Vec3Types, Vec3Types::Real>
-/*#ifdef SOFA_WITH_DOUBLE
-,TemplateTypes<Vec3dTypes, Vec3dTypes::Real>
-,TemplateTypes<Vec2dTypes, Vec2dTypes::Real>
-,TemplateTypes<Vec1dTypes, Vec1dTypes::Real>
-,TemplateTypes<Vec6dTypes, Vec6dTypes::Real>
-,TemplateTypes<Rigid3dTypes, Rigid3dMass>
-,TemplateTypes<Rigid2dTypes, Rigid2dMass>
-#endif
-#ifdef SOFA_WITH_FLOAT
-,TemplateTypes<Vec3dTypes, Vec3dTypes::Real>
-,TemplateTypes<Vec2dTypes, Vec2dTypes::Real>
-,TemplateTypes<Vec1dTypes, Vec1dTypes::Real>
-,TemplateTypes<Vec6dTypes, Vec6dTypes::Real>
-,TemplateTypes<Rigid3dTypes, Rigid3dMass>
-,TemplateTypes<Rigid2dTypes, Rigid2dMass>
-#endif*/
-> DataTypes;
+TemplateTypes<Vec3Types, Vec3Types::Real>> DataTypes;
 
 TYPED_TEST_CASE(UniformMassTest, DataTypes);
 
@@ -494,6 +517,10 @@ TYPED_TEST(UniformMassTest, loadFromAnInvalidPathname) {
 
 TYPED_TEST(UniformMassTest, loadFromAFileForRigid) {
     ASSERT_NO_THROW(this->loadFromAFileForRigid()) ;
+}
+
+TYPED_TEST(UniformMassTest, checkRigidAttribute) {
+    ASSERT_NO_THROW(this->checkRigidAttribute()) ;
 }
 
 TYPED_TEST(UniformMassTest, reinitTest) {

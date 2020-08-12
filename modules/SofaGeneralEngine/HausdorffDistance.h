@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -55,7 +55,7 @@ protected:
 
     HausdorffDistance();
 
-    virtual ~HausdorffDistance() {}
+    ~HausdorffDistance() override {}
 
     void handleEvent(core::objectmodel::Event *event) override;
     void onBeginAnimationStep(const double /*dt*/);
@@ -78,17 +78,6 @@ public:
 
     Data<bool> f_update; ///< Recompute every time step
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-
-    static std::string templateName(const HausdorffDistance<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
 protected:
 
     void computeDistances();
@@ -97,21 +86,13 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec1dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Rigid2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec1fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Rigid2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_CPP)
+extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec1Types>;
+extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec2Types>;
+extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Rigid2Types>;
+extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Rigid3Types>;
+ 
 #endif
 
 } // namespace engine

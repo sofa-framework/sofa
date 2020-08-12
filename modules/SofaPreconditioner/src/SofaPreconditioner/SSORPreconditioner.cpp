@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #include <SofaPreconditioner/SSORPreconditioner.inl>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
@@ -40,8 +37,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
-
-SOFA_DECL_CLASS(SSORPreconditioner)
 
 int SSORPreconditionerClass = core::RegisterObject("Linear system solver / preconditioner based on Symmetric Successive Over-Relaxation (SSOR). If the matrix is decomposed as $A = D + L + L^T$, this solver computes $(1/(2-w))(D/w+L)(D/w)^{-1}(D/w+L)^T x = b, or $(D+L)D^{-1}(D+L)^T x = b$ if $w=1$.")
 //.add< SSORPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)

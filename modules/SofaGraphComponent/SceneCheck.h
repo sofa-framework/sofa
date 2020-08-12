@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,6 @@
 #define SOFA_SIMULATION_SCENECHECKS_H
 
 #include "config.h"
-#include <sofa/helper/system/config.h>
 #include <iostream>
 #include <string>
 #include <map>
@@ -45,6 +44,8 @@ namespace _scenechecking_
 class SOFA_GRAPH_COMPONENT_API SceneCheck
 {
 public:
+    virtual ~SceneCheck() {}
+
     typedef std::shared_ptr<SceneCheck> SPtr;
     virtual const std::string getName() = 0;
     virtual const std::string getDesc() = 0;

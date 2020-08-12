@@ -1,28 +1,30 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 -9.81 0" dt="0.005"   >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <VisualStyle displayFlags="showVisualModels showForceFields showInteractionForceFields" />
   <Gravity name="G"  gravity="0 -9.8 0" />
   <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
 
-  <CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+  <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
   <BruteForceDetection name="detection" />
-  <CollisionResponse name="response" response="default" />
+  <DefaultContactManager name="response" response="default" />
   <MinProximityIntersection name="proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="true"/>
 
   <NewOmniDriver name="Omni Driver"  listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" />
 
   <Node 	name="Instrument"  >
 
-    <MechanicalObject template="Rigid" name="instrumentState" tags="Omni"  />
-    <UniformMass template="Rigid" name="mass"  totalMass="0.05" />
+    <MechanicalObject template="Rigid3d" name="instrumentState" tags="Omni"  />
+    <UniformMass template="Rigid3d" name="mass"  totalMass="0.05" />
     <Node 	name="VisualModel" >
-      <OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="data/mesh/dental_instrument.obj" translation="-0.212256 0.132361 3.55" rotation="180 0 150" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
+      <MeshObjLoader name="meshLoader_0" filename="data/mesh/dental_instrument.obj" translation="-0.212256 0.132361 3.55" rotation="180 0 150" handleSeams="1" />
+      <OglModel template="ExtVec3f" name="InstrumentVisualModel" src="@meshLoader_0" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
       <RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
     </Node>
     <Node 	name="CollisionModel"  >
 
       <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="0 0 0 " />
-      <Point name="ParticleModel" contactStiffness="1" />
+      <PointCollisionModel name="ParticleModel" contactStiffness="1" />
       <RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@instrumentState"  output="@Particles" />
 
         <EnslavementForceFeedback name="forcefeedback" tags="Omni" collisionModel1="@ParticleModel" collisionModel2="" relativeStiffness="4" attractionDistance="0.03" normalsPointOut="true" contactScale="0.1" penetrationOffset="0.02"/>
@@ -33,14 +35,15 @@
   </Node>
   <Node 	name="Tooth"  >
     <Node 	name="VisualModel"   >
-      <OglModel template="ExtVec3f" name="ToothVisualModel"  fileMesh="data/mesh/tooth_closed.obj"  material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
+      <MeshObjLoader name="meshLoader_1" filename="data/mesh/tooth_closed.obj" handleSeams="1" />
+      <OglModel template="ExtVec3f" name="ToothVisualModel" src="@meshLoader_1"  material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
     </Node>
     <Node 	name="CollisionModel" >
       
       <MeshObjLoader name="loader"  filename="data/mesh/tooth_closed.obj"/>
       <MeshTopology src="@loader" name="ToothCollisionModel" />
       <MechanicalObject src="@loader" template="Vec3d" name="toothState" />
-      <Triangle />
+      <TriangleCollisionModel />
 
     </Node>
   </Node>

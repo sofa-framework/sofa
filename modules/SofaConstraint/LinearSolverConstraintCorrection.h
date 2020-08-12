@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,33 +67,33 @@ public:
     typedef std::list<int> ListIndex;
     typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 protected:
-    LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);
+    LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
 
     virtual ~LinearSolverConstraintCorrection();
 public:
-    virtual void init() override;
+    void init() override;
 
 
-    virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
+    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
 
-    virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
+    void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
 
-    virtual void computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
+    void computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
 
-    virtual void applyMotionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &dx, const Data< VecDeriv > &f) override;
+    void applyMotionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &dx, const Data< VecDeriv > &f) override;
 
-    virtual void applyPositionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord >& x, Data< VecDeriv>& dx, const Data< VecDeriv >& f) override;
+    void applyPositionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord >& x, Data< VecDeriv>& dx, const Data< VecDeriv >& f) override;
 
-    virtual void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv>& v, Data< VecDeriv>& dv, const Data< VecDeriv >& f) override;
+    void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv>& v, Data< VecDeriv>& dv, const Data< VecDeriv >& f) override;
 
-    virtual void rebuildSystem(double massFactor, double forceFactor) override;
+    void rebuildSystem(double massFactor, double forceFactor) override;
 
     /// @name Deprecated API
     /// @{
 
-    virtual void applyContactForce(const defaulttype::BaseVector *f) override;
+    void applyContactForce(const defaulttype::BaseVector *f) override;
 
-    virtual void resetContactForce() override;
+    void resetContactForce() override;
 
     /// @}
 
@@ -105,27 +105,15 @@ public:
 
     void verify_constraints();
 
-    virtual bool hasConstraintNumber(int index) override;  // virtual ???
+    bool hasConstraintNumber(int index) override;  // virtual ???
 
-    virtual void resetForUnbuiltResolution(double * f, std::list<unsigned int>& renumbering) override;
+    void resetForUnbuiltResolution(double * f, std::list<unsigned int>& renumbering) override;
 
-    virtual void addConstraintDisplacement(double *d, int begin,int end) override;
+    void addConstraintDisplacement(double *d, int begin,int end) override;
 
-    virtual void setConstraintDForce(double *df, int begin, int end, bool update) override;
+    void setConstraintDForce(double *df, int begin, int end, bool update) override;
 
-    virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
-
-    /// Pre-construction check method called by ObjectFactory.
-#if 0
-    template<class T>
-    static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
-    {
-        /*if (getOdeSolver(context) == NULL)
-            return false;
-        */
-        return Inherit::canCreate(obj, context, arg);
-    }
-#endif //
+    void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
 
 protected:
 
@@ -146,7 +134,7 @@ protected:
     /// Bring inherited attributes and function in the current lookup context.
     /// otherwise any access to the base::attribute would require
     /// the "this->" approach.
-    using Inherit::m_componentstate ;
+    using Inherit::d_componentState ;
     using Inherit::mstate ;
     ////////////////////////////////////////////////////////////////////////////
 
@@ -166,19 +154,12 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3dTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec2dTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1dTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3fTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec2fTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1fTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace collision

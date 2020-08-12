@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,16 +22,12 @@
 #ifndef SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_INL
 #define SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/RandomPointDistributionInSurface.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RGBAColor.h>
 #include <cstdlib>
 #include <ctime>
-#include <limits.h>
+#include <climits>
 
 namespace sofa
 {
@@ -72,7 +68,7 @@ void RandomPointDistributionInSurface<DataTypes>::init()
     // initialize random seed
     if (randomSeed.getValue() == 0)
     {
-        randomSeed.setValue((unsigned int)time(NULL));
+        randomSeed.setValue((unsigned int)time(nullptr));
     }
 
     //srand(randomSeed.getValue());
@@ -210,7 +206,7 @@ void RandomPointDistributionInSurface<DataTypes>::doUpdate()
 
     if (triangles.size() <= 1 ||  vertices.size() <= 1)
     {
-        serr << "Error in input data (number of vertices of triangles is less than 1)." << sendl;
+        msg_error() << "In input data (number of vertices of triangles is less than 1).";
         return;
     }
 
@@ -251,7 +247,7 @@ void RandomPointDistributionInSurface<DataTypes>::doUpdate()
     }
 
     if (safeCounter == safeLimit)
-        sout << "ERROR while generating point ; cancelling to break infinite loop" << sendl;
+        msg_error() << "While generating point ; cancelling to break infinite loop";
 
     f_inPoints.endEdit();
     f_outPoints.endEdit();

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,11 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
-
 #ifndef SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_INL
 #define SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_INL
 
@@ -36,11 +31,11 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/MechanicalMatrixVisitor.h>
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 #include <sofa/helper/Quater.h>
 
@@ -55,14 +50,14 @@ namespace linearsolver
 
 template<class TMatrix, class TVector,class ThreadManager>
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::WarpPreconditioner()
-: solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver/preconditioner to warp"))
-, f_useRotationFinder(initData(&f_useRotationFinder, (unsigned)0, "useRotationFinder", "Which rotation Finder to use" ) )
+    : solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver/preconditioner to warp"))
+    , f_useRotationFinder(initData(&f_useRotationFinder, (unsigned)0, "useRotationFinder", "Which rotation Finder to use" ) )
 {
 
-    realSolver = NULL;
+    realSolver = nullptr;
 
-    rotationWork[0] = NULL;
-    rotationWork[1] = NULL;
+    rotationWork[0] = nullptr;
+    rotationWork[1] = nullptr;
 
     first = true;
     indexwork = 0;
@@ -74,15 +69,17 @@ WarpPreconditioner<TMatrix,TVector,ThreadManager >::~WarpPreconditioner()
     if (rotationWork[0]) delete rotationWork[0];
     if (rotationWork[1]) delete rotationWork[1];
 
-    rotationWork[0] = NULL;
-    rotationWork[1] = NULL;
+    rotationWork[0] = nullptr;
+    rotationWork[1] = nullptr;
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit() {
     this->getContext()->get(realSolver, solverName.getValue());
 
-    if (realSolver==NULL) serr << "Error the cannot find the solver " << solverName.getValue() << sendl;
+    if (realSolver == nullptr) {
+        msg_error() << "The cannot find the solver " << solverName.getValue();
+    }
 
     sofa::core::objectmodel::BaseContext * c = this->getContext();
     c->get<sofa::core::behavior::BaseRotationFinder >(&rotationFinders, sofa::core::objectmodel::BaseContext::Local);
@@ -113,13 +110,9 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
     this->currentMFactor = mparams->mFactor();
     this->currentBFactor = mparams->bFactor();
     this->currentKFactor = mparams->kFactor();
-    this->createGroups(mparams);
-    for (unsigned int g=0, nbg = this->getNbGroups(); g < nbg; ++g) {
-        this->setGroup(g);
-        if (!this->frozen) {
-            simulation::common::MechanicalOperations mops(mparams, this->getContext());
-            if (!this->currentGroup->systemMatrix) this->currentGroup->systemMatrix = this->createMatrix();
-        }
+    if (!this->frozen) {
+        simulation::common::MechanicalOperations mops(mparams, this->getContext());
+        if (!this->currentGroup->systemMatrix) this->currentGroup->systemMatrix = this->createMatrix();
     }
 
     realSolver->setSystemMBKMatrix(mparams);

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,23 +36,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-
-template <class DataTypes>
-HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint()
-    :core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
-    , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
-    , m_x0(initData(&m_x0,"X0","first control point") )
-    , m_dx0(initData(&m_dx0,"dX0","first control tangente") )
-    , m_x1(initData(&m_x1,"X1","second control point") )
-    , m_dx1(initData(&m_dx1,"dX1","second control tangente") )
-    , m_sx0(initData(&m_sx0,"SX0","first interpolation vector") )
-    , m_sx1(initData(&m_sx1,"SX1","second interpolation vector") )
-{
-}
-
-
 template <class DataTypes>
 HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
     : core::behavior::ProjectiveConstraintSet<DataTypes>(mstate)
@@ -65,6 +48,7 @@ HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint(core::behavior::Mech
     , m_dx1(initData(&m_dx1,"dX1","sceond control tangente") )
     , m_sx0(initData(&m_sx0,"SX0","first interpolation vector") )
     , m_sx1(initData(&m_sx1,"SX1","second interpolation vector") )
+    , l_topology(initLink("topology", "link to the topology container"))
 {
 }
 
@@ -91,13 +75,28 @@ void  HermiteSplineConstraint<DataTypes>::addConstraint(unsigned index)
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::init()
 {
-    topology = this->getContext()->getMeshTopology();
-
-    // Initialize functions and parameters for topology data and handler
-    m_indices.createTopologicalEngine(topology);
-    m_indices.registerTopologicalData();
-
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters for topology data and handler
+        m_indices.createTopologicalEngine(_topology);
+        m_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 }
 
 template <class DataTypes>
@@ -134,7 +133,6 @@ void HermiteSplineConstraint<DataTypes>::computeDerivateHermiteCoefs( const Real
     //-- time interpolation --> acceleration is itself computed from hemite
     Real u2 = u*u;
     Real u3 = u*u*u;
-    //Real uH00 = 2*u3 -3*u2 +1 ;		//hermite coefs
     Real uH10 = u3 -2*u2 +u;
     Real uH01 = -2*u3 + 3*u2;
     Real uH11 = u3 -u2;

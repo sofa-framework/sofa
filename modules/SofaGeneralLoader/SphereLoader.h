@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_SPHERELOADER_H
 #define SOFA_COMPONENT_LOADER_SPHERELOADER_H
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/BaseLoader.h>
 
@@ -44,7 +44,7 @@ public:
     Data< helper::vector<SReal> > radius; ///< Radius of each sphere
     Data< defaulttype::Vector3 > d_scale; ///< Scale applied to sphere positions
     Data< defaulttype::Vector3 > d_translation; ///< Translation applied to sphere positions
-    virtual bool load() override;
+    bool load() override;
 };
 
 } //loader

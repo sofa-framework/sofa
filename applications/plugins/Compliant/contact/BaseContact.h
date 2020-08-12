@@ -105,16 +105,16 @@ protected:
         mappedContacts.clear();
     }
 
-    virtual ~BaseContact() {}
+    ~BaseContact() override {}
 
 
 
 public:
 
 
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
+    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
 
-    void setDetectionOutputs(core::collision::DetectionOutputVector* o)
+    void setDetectionOutputs(core::collision::DetectionOutputVector* o) override
     {
         contacts = static_cast<DetectionOutputVector*>(o);
 
@@ -123,7 +123,7 @@ public:
 
 
 
-    void createResponse(core::objectmodel::BaseContext* /*group*/ )
+    void createResponse(core::objectmodel::BaseContext* /*group*/ ) override
     {
         if( !contacts )
         {
@@ -220,7 +220,7 @@ public:
 
     /// @internal for SOFA collision mechanism
     /// called before setting-up new collisions
-    void removeResponse() {
+    void removeResponse() override {
         if( delta_node ) {
             mapper1.resize(0);
             mapper2.resize(0);
@@ -229,7 +229,7 @@ public:
 
     /// @internal for SOFA collision mechanism
     /// called when the collision components must be removed from the scene graph
-    void cleanup() {
+    void cleanup() override {
 
         // should be called only when !keep
 
@@ -248,7 +248,7 @@ public:
     /// to check if the collision components must be removed from the scene graph
     /// or if it should be kept but deactivated
     /// when the objects are no longer colliding
-    virtual bool keepAlive() { return keep.getValue(); }
+    bool keepAlive() override { return keep.getValue(); }
 
 
 protected:

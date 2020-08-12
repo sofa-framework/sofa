@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -217,6 +217,7 @@ SReal PenalityContactForceField<CudaVec3fTypes>::getPotentialEnergy(const core::
 //template<>
 void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!((this->mstate1 == this->mstate2)?  vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
@@ -262,6 +263,7 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
         }
         glEnd();
     }
+#endif // SOFA_NO_OPENGL
 }
 
 } // namespace interactionforcefield

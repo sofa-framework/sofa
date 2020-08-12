@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,8 +57,11 @@ void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype:
         for(size_t i=0; i<3; i++)  transformMatrix[8+i]=(double)w[i]*scale*0.01; // arbitrarily small thickness
     }
 
-    for(size_t i=0; i<3; i++)  transformMatrix[i+12]=p[i];
-    for(size_t i=0; i<3; i++)  transformMatrix[4*i+3]=0; transformMatrix[15] = 1;
+    for(unsigned i=0; i<3; i++)
+        transformMatrix[i+12]=p[i];
+    for(unsigned i=0; i<3; i++)
+        transformMatrix[4*i+3]=0;
+    transformMatrix[15] = 1;
     glMultMatrixd(transformMatrix);
 
     GLUquadricObj* ellipsoid = gluNewQuadric();

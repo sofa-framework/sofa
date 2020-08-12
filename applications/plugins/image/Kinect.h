@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -497,7 +497,7 @@ protected:
                 if(bbmin[j]>c[i][j]) bbmin[j]=c[i][j];
                 if(bbmax[j]<c[i][j]) bbmax[j]=c[i][j];
             }
-        this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
+        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
     }
 
     void draw(const core::visual::VisualParams* vparams)

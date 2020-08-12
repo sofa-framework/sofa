@@ -23,12 +23,22 @@ Visitor::Result ConstraintStoreLambdaVisitor::fwdConstraintSet(simulation::Node*
     return RESULT_CONTINUE;
 }
 
-void ConstraintStoreLambdaVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+void ConstraintStoreLambdaVisitor::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
 {
+    SOFA_UNUSED(node);
+
     sofa::core::MechanicalParams mparams(*m_cParams);
     mparams.setDx(m_cParams->dx());
     mparams.setF(m_cParams->lambda());
     map->applyJT(&mparams, m_cParams->lambda(), m_cParams->lambda());
+}
+
+bool ConstraintStoreLambdaVisitor::stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+{
+    SOFA_UNUSED(node);
+    SOFA_UNUSED(map);
+
+    return false;
 }
 
 }

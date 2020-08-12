@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaUserInteraction/RayDiscreteIntersection.inl>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.inl>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/helper/proximity.h>
@@ -42,8 +41,6 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-SOFA_DECL_CLASS(RayDiscreteIntersection)
-
 IntersectorCreator<DiscreteIntersection, RayDiscreteIntersection> RayDiscreteIntersectors("Ray");
 
 // since MinProximityIntersection inherits from DiscreteIntersection, should not this line be implicit? (but it is not the case...)
@@ -54,19 +51,19 @@ RayDiscreteIntersection::RayDiscreteIntersection(DiscreteIntersection* object, b
 {
     if (addSelf)
     {
-        intersection->intersectors.add<RayModel, SphereModel,       RayDiscreteIntersection>(this);
-        intersection->intersectors.add<RayModel, RigidSphereModel,  RayDiscreteIntersection>(this);
-        intersection->intersectors.add<RayModel, TriangleModel,     RayDiscreteIntersection>(this);
-        intersection->intersectors.add<RayModel, OBBModel,          RayDiscreteIntersection>(this);
+        intersection->intersectors.add<RayCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>,       RayDiscreteIntersection>(this);
+        intersection->intersectors.add<RayCollisionModel, RigidSphereModel,  RayDiscreteIntersection>(this);
+        intersection->intersectors.add<RayCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>,     RayDiscreteIntersection>(this);
+        intersection->intersectors.add<RayCollisionModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>,          RayDiscreteIntersection>(this);
 
         // TODO implement ray vs capsule
-        intersection->intersectors.ignore<RayModel, CapsuleModel>();
-        intersection->intersectors.ignore<RayModel, RigidCapsuleModel>();
-//        intersection->intersectors.add<RayModel, CapsuleModel,      RayDiscreteIntersection>(this);
-//        intersection->intersectors.add<RayModel, RigidCapsuleModel, RayDiscreteIntersection>(this);
+        intersection->intersectors.ignore<RayCollisionModel, CapsuleCollisionModel<sofa::defaulttype::Vec3Types>>();
+        intersection->intersectors.ignore<RayCollisionModel, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>>();
+//        intersection->intersectors.add<RayCollisionModel, CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,      RayDiscreteIntersection>(this);
+//        intersection->intersectors.add<RayCollisionModel, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, RayDiscreteIntersection>(this);
 
-        intersection->intersectors.ignore<RayModel, PointModel>();
-        intersection->intersectors.ignore<RayModel, LineModel>();
+        intersection->intersectors.ignore<RayCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
+        intersection->intersectors.ignore<RayCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
     }
 }
 

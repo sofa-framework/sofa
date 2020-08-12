@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -85,9 +85,6 @@ public:
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles; ///< output triangles
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MarchingCubesEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
-
     MarchingCubesEngine()    :   Inherited()
         , isoValue(initData(&isoValue,(Real)(1.0),"isoValue","pixel value to extract isosurface"))
         , subdiv(initData(&subdiv,defaulttype::Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))
@@ -104,7 +101,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -113,13 +110,13 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         raImage in(this->image);
 		raTransform inT(this->transform);
@@ -171,7 +168,7 @@ protected:
         }
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams) override
+    void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;

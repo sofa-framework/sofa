@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,6 +65,17 @@ void FixedLMConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned
 }
 
 template <class DataTypes>
+FixedLMConstraint<DataTypes>::FixedLMConstraint(MechanicalState *dof)
+    : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
+    , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
+    , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_pointHandler(nullptr)
+{
+    
+}
+
+template <class DataTypes>
 void FixedLMConstraint<DataTypes>::clearConstraints()
 {
     f_indices.beginEdit()->clear();
@@ -104,11 +115,27 @@ void FixedLMConstraint<DataTypes>::init()
 {
     core::behavior::LMConstraint<DataTypes,DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
-    f_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &f_indices);
+        f_indices.createTopologicalEngine(_topology, m_pointHandler);
+        f_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
 
     X[0]=1; X[1]=0; X[2]=0;
@@ -211,13 +238,10 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
-    //serr<<"FixedLMConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
-
     const SetIndexArray & indices = f_indices.getValue();
 
     std::vector< defaulttype::Vector3 > points;
     defaulttype::Vector3 point;
-    //serr<<"FixedLMConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)

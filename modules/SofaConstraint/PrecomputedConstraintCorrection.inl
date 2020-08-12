@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,9 +60,6 @@ namespace component
 namespace constraintset
 {
 
-//#define	MAX_NUM_CONSTRAINT_PER_NODE 10000
-//#define EPS_UNITARY_FORCE 0.01
-
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
@@ -72,8 +69,8 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
     , debugViewFrameScale(initData(&debugViewFrameScale, 1.0, "debugViewFrameScale", "Scale on computed node's frame"))
     , f_fileCompliance(initData(&f_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , fileDir(initData(&fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
-    , invM(NULL)
-    , appCompliance(NULL)
+    , invM(nullptr)
+    , appCompliance(nullptr)
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
 {
     this->addAlias(&f_fileCompliance, "filePrefix");
@@ -103,7 +100,7 @@ typename PrecomputedConstraintCorrection<DataTypes>::InverseStorage* Precomputed
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::releaseInverse(std::string name, InverseStorage* inv)
 {
-    if (inv == NULL) return;
+    if (inv == nullptr) return;
     std::map< std::string, InverseStorage >& registry = getInverseMap();
     if (--inv->nbref == 0)
     {
@@ -134,15 +131,15 @@ template<class DataTypes>
 bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string fileName)
 {
     // Try to load from memory
-    msg_info(this) << "Try to load compliance from memory " << fileName ;
+    msg_info() << "Try to load compliance from memory " << fileName ;
 
     invM = getInverse(fileName);
     dimensionAppCompliance = nbRows;
 
-    if (invM->data == NULL)
+    if (invM->data == nullptr)
     {
         // Try to load from file
-        msg_info(this) << "Try to load compliance from : " << fileName ;
+        msg_info() << "Try to load compliance from : " << fileName ;
 
         std::string dir = fileDir.getValue();
         if (!dir.empty())
@@ -152,7 +149,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
             {
                 invM->data = new Real[nbRows * nbCols];
 
-                msg_info(this) << "File " << dir + "/" + fileName << " found. Loading..." ;
+                msg_info() << "File " << dir + "/" + fileName << " found. Loading..." ;
 
                 compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(double));
                 compFileIn.close();
@@ -170,7 +167,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 
                 std::ifstream compFileIn(fileName.c_str(), std::ifstream::binary);
 
-                msg_info(this) << "File " << fileName << " found. Loading..." ;
+                msg_info() << "File " << fileName << " found. Loading..." ;
 
                 compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(double));
                 compFileIn.close();
@@ -190,7 +187,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string& fileName)
 {
-    msg_info(this) << "saveCompliance in " << fileName;
+    msg_info() << "saveCompliance in " << fileName;
 
     std::string filePathInSofaShare;
     std::string dir = fileDir.getValue();
@@ -217,7 +214,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     if (nbNodes == 0)
     {
-        msg_error(this) << "No degree of freedom" ;
+        msg_error() << "No degree of freedom" ;
         return;
     }
 
@@ -232,7 +229,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     if (!loadCompliance(invName))
     {
-        msg_info(this) << "Compliance being built";
+        msg_info() << "Compliance being built";
 
         // Buffer Allocation
         invM->data = new Real[nbRows * nbCols];
@@ -251,26 +248,26 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         this->getContext()->get(cgLinearSolver);
         this->getContext()->get(linearSolver);
 
-        simulation::Node *solvernode = NULL;
+        simulation::Node *solvernode = nullptr;
 
         if (eulerSolver && cgLinearSolver)
         {
-            msg_info(this) << "use EulerImplicitSolver & CGLinearSolver" ;
+            msg_info() << "use EulerImplicitSolver & CGLinearSolver" ;
             solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else if (eulerSolver && linearSolver)
         {
-            msg_info(this) << "use EulerImplicitSolver & LinearSolver";
+            msg_info() << "use EulerImplicitSolver & LinearSolver";
             solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else if(eulerSolver)
         {
-            msg_info(this) << "use EulerImplicitSolver";
+            msg_info() << "use EulerImplicitSolver";
             solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else
         {
-            msg_error(this) << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" ;
+            msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" ;
             return;
         }
 
@@ -305,9 +302,8 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         }
 
 
-        helper::WriteAccessor< Data< VecCoord > > posData = *this->mstate->write(core::VecCoordId::position());
-        VecCoord& pos = posData.wref();
-        const VecCoord prev_pos = pos;
+        helper::ReadAccessor< Data< VecCoord > > rposData = *this->mstate->read(core::ConstVecCoordId::position());
+        const VecCoord prev_pos = rposData.ref();
 
         helper::WriteAccessor< Data< VecDeriv > > velocityData = *this->mstate->write(core::VecDerivId::velocity());
         VecDeriv& velocity = velocityData.wref();
@@ -332,10 +328,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             std::streamsize prevPrecision = sout.precision();
             sout.precision(2);
             sout << "Precomputing constraint correction : " << std::fixed << (float)f / (float)nbNodes * 100.0f << " %   " << '\xd';
-            sout ;
             sout.precision(prevPrecision);
-
-            // Deriv unitary_force;
 
             for (unsigned int i = 0; i < dof_on_node; i++)
             {
@@ -347,6 +340,10 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 // Reset positions and velocities
                 velocity.clear();
                 velocity.resize(nbNodes);
+
+                // Actualize ref to the position vector ; it seems it is changed at every eulerSolver->solve()
+                helper::WriteOnlyAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::VecCoordId::position());
+                VecCoord& pos = wposData.wref();
 
                 for (unsigned int n = 0; n < nbNodes; n++)
                     pos[n] = prev_pos[n];
@@ -397,6 +394,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         for (unsigned int i = 0; i < velocity.size(); i++)
             velocity[i] = prev_velocity[i];
 
+        helper::WriteOnlyAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::VecCoordId::position());
+        VecCoord& pos = wposData.wref();
+
         // Restore position
         for (unsigned int i = 0; i < pos.size(); i++)
             pos[i] = prev_pos[i];
@@ -417,13 +417,13 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
     //  Print 400 first row and column of the matrix
     if (this->notMuted())
     {
-        msg_error(this) << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
+        msg_info() << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
 
         for (unsigned int i = 0; i < 20 && i < nbCols; i++)
         {
             for (unsigned int j = 0; j < 20 && j < nbCols; j++)
             {
-                msg_error(this) << " \t " << appCompliance[j*nbCols + i];
+                msg_info() << " \t " << appCompliance[j*nbCols + i];
             }
         }
 
@@ -436,7 +436,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 {
     m_activeDofs.clear();
 
-	const MatrixDeriv& c = cparams->readJ(this->mstate)->getValue(cparams);
+	const MatrixDeriv& c = cparams->readJ(this->mstate)->getValue();
 
     double factor = 1.0;
 
@@ -444,7 +444,6 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     {
     case core::ConstraintParams::POS_AND_VEL :
     case core::ConstraintParams::POS :
-        // factor = eulerSolver->getPositionIntegrationFactor();
         break;
 
     case core::ConstraintParams::ACC :
@@ -460,7 +459,6 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     /////////// The constraints are modified using a rotation value at each node/////
     if (m_rotations.getValue())
         rotateConstraints(false);
-    /////////////////////////////////////////////////////////////////////////////////
 
 
     /////////// Which node are involved with the contact ? /////
@@ -499,23 +497,11 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     m_activeDofs.sort();
     m_activeDofs.unique();
 
-    // Commented by PJ
-    /*
-    int nActiveDof = 0;
-    for (unsigned int i = 0; i < noSparseComplianceSize; ++i)
-    {
-        if (_indexNodeSparseCompliance[i] == 0)
-            ++nActiveDof;
-    }
-    */
-
-    ////////////////////////////////////////////////////////////
     unsigned int offset, offset2;
     unsigned int ii,jj, it;
     Deriv Vbuf;
     it = 0;
 
-    //////////////////////////////////////////
     _sparseCompliance.resize(nActiveDof * nbConstraints);
 
     for (int NodeIdx = 0; NodeIdx < (int)noSparseComplianceSize; ++NodeIdx)
@@ -581,16 +567,6 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
                 curColConst++;
             }
         }
-
-        /*
-        //Compliance matrix is symetric ?
-        for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-        {
-            int indexCurColConst = this->mstate->getConstraintId()[curColConst];
-            W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-        }
-        */
-
         curConstraint++;
     }
 }
@@ -707,7 +683,7 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, 
     sofa::Data< VecDeriv > &v_d, sofa::Data< VecDeriv > &dv_d, const sofa::Data<VecDeriv>& correction_d)
 {
-    const VecDeriv& correction = correction_d.getValue(cparams);
+    const VecDeriv& correction = correction_d.getValue();
     auto dv = sofa::helper::write(dv_d, cparams);
     VecDeriv& v = *v_d.beginEdit();
 
@@ -863,18 +839,18 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
 
     simulation::Node *node = dynamic_cast< simulation::Node* >(this->getContext());
 
-    TetrahedronFEMForceField< DataTypes >* forceField = NULL;
-    RotationFinder< DataTypes > * rotationFinder = NULL;
+    TetrahedronFEMForceField< DataTypes >* forceField = nullptr;
+    RotationFinder< DataTypes > * rotationFinder = nullptr;
 
-    if (node != NULL)
+    if (node != nullptr)
     {
         forceField = node->get< TetrahedronFEMForceField< DataTypes > > ();
-        if (forceField == NULL)
+        if (forceField == nullptr)
         {
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
-            if (rotationFinder == NULL)
+            if (rotationFinder == nullptr)
             {
-                msg_warning(this) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
             }
         }
@@ -884,7 +860,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
     for (unsigned int i=0; i< x.size(); i++)
     {
         Transformation Ri;
-        if (forceField != NULL)
+        if (forceField != nullptr)
         {
             forceField->getRotation(Ri, i);
         }
@@ -924,25 +900,25 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
 
     simulation::Node *node = dynamic_cast< simulation::Node * >(this->getContext());
 
-    TetrahedronFEMForceField< DataTypes >* forceField = NULL;
-    RotationFinder< DataTypes >* rotationFinder = NULL;
+    TetrahedronFEMForceField< DataTypes >* forceField = nullptr;
+    RotationFinder< DataTypes >* rotationFinder = nullptr;
 
-    if (node != NULL)
+    if (node != nullptr)
     {
         forceField = node->get< TetrahedronFEMForceField< DataTypes > > ();
-        if (forceField == NULL)
+        if (forceField == nullptr)
         {
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
-            if (rotationFinder == NULL)
+            if (rotationFinder == nullptr)
             {
-                msg_warning(this) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
             }
         }
     }
     else
     {
-        msg_error(this) << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
+        msg_error() << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
         return;
     }
 
@@ -959,7 +935,7 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
             const int localRowNodeIdx = colIt.index();
             Transformation Ri;
 
-            if (forceField != NULL)
+            if (forceField != nullptr)
             {
                 forceField->getRotation(Ri, localRowNodeIdx);
             }
@@ -988,26 +964,25 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 
     using sofa::core::behavior::RotationFinder;
 
-    sofa::component::forcefield::TetrahedronFEMForceField<DataTypes>* forceField = NULL;
-    RotationFinder< DataTypes >* rotationFinder = NULL;
+    sofa::component::forcefield::TetrahedronFEMForceField<DataTypes>* forceField = nullptr;
+    RotationFinder< DataTypes >* rotationFinder = nullptr;
 
-    if (node != NULL)
+    if (node != nullptr)
     {
-        //		core::behavior::BaseForceField* _forceField = node->forceField[1];
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<DataTypes> > ();
-        if (forceField == NULL)
+        if (forceField == nullptr)
         {
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
-            if (rotationFinder == NULL)
+            if (rotationFinder == nullptr)
             {
-                msg_warning(this) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
             }
         }
     }
     else
     {
-        msg_error(this) << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
+        msg_error() << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
         return;
     }
 
@@ -1016,7 +991,7 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         Transformation Rj;
-        if (forceField != NULL)
+        if (forceField != nullptr)
         {
             forceField->getRotation(Rj, j);
         }
@@ -1050,14 +1025,9 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
     bool error_message_not_displayed=true;
 #endif
 
-    /////////// The constraints on the same nodes are gathered //////////////////////
-    //gatherConstraints();
-    /////////////////////////////////////////////////////////////////////////////////
-
     /////////// The constraints are modified using a rotation value at each node/////
     if (m_rotations.getValue())
         rotateConstraints(false);
-    /////////////////////////////////////////////////////////////////////////////////
 
     unsigned int nbConstraints = 0;
 
@@ -1091,8 +1061,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         if (cId >= id_to_localIndex.size())
             id_to_localIndex.resize(cId + 1, -1);
 
-        if (id_to_localIndex[cId] != -1)
-            serr << "duplicate entry in constraints for id " << cId << " : " << id_to_localIndex[cId] << " + " << cpt ;
+        msg_error_when(id_to_localIndex[cId] != -1) << "duplicate entry in constraints for id " << cId << " : " << id_to_localIndex[cId] << " + " << cpt;
 
         id_to_localIndex[cId] = cpt;
         localIndex_to_id.push_back(cId);
@@ -1107,7 +1076,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         {
             if(error_message_not_displayed)
             {
-                serr<<"Initial_guess not supported yet in unbuilt mode with NEW_METHOD_UNBUILT!=> PUT F to 0"<<sendl;
+                msg_error() << "Initial_guess not supported yet in unbuilt mode with NEW_METHOD_UNBUILT!=> PUT F to 0";
                 error_message_not_displayed = false;
             }
 
@@ -1202,16 +1171,6 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
                 curColConst++;
             }
         }
-
-        /*
-        //Compliance matrix is symetric ?
-        for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-        {
-            int indexCurColConst = this->mstate->getConstraintId()[curColConst];
-            W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-        }
-        */
-
         curRowConst++;
     }
 #endif
@@ -1385,7 +1344,6 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
     localActiveDof.sort();
     localActiveDof.unique();
 
-    ////////////////////////////////////////////////////////////
     unsigned int offset, offset2;
     Deriv Vbuf;
     int it = 0;
@@ -1435,8 +1393,6 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
             it++;
         }
     }
-
-    //////////////
     it = 0;
 
     for (int i = begin; i <= end; i++)

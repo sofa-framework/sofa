@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -352,8 +352,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
 
         for(unsigned int i=0; i<2; i++) AddSeedPoint<DistT>(trial,dist,regimg, pos[i],vorindex[i]);
         if(This->useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,dist, regimg,voxelsize); else fastMarching<DistT,DistT>(trial,dist, regimg,voxelsize);
-        //dist.display();
-        //regimg.display();
         while(!converged)
         {
             converged=!(Lloyd<DistT>(pos,vorindex,regimg));
@@ -425,9 +423,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
         }
 
         fact.fill(wi,pi,This->fillOrder(),voxelsize,This->volOrder());
-
-        //  std::cout<<"pt "<<*(fact.voronoiIndices.begin())-1<<" : "<<fact.center<<std::endl<<std::endl<<std::endl<<pi<<std::endl<<std::endl<<wi<<std::endl;
-        //test: fact.directSolve(wi,pi); std::cout<<"Jacobi err="<<fact.getError()<<std::endl;
 
         // write error into output image
         if(writeErrorImg)
@@ -513,10 +508,7 @@ public:
     Data< unsigned int > f_fillOrder; ///< Fill Order  // For the mapping, we use second order fit (to have translation invariance of elastons, use first order)
     //@}
 
-    virtual std::string getTemplateName() const    { return templateName(this); }
-    static std::string templateName(const ImageGaussPointSampler<ImageTypes_, MaskTypes_>* = NULL) { return ImageTypes_::Name()+std::string(",")+MaskTypes_::Name(); }
-
-    virtual void init()
+    void init() override
     {
         Inherit::init();
 
@@ -534,9 +526,9 @@ public:
         this->getContext()->get( deformationMapping, core::objectmodel::BaseContext::Local);
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
-    virtual void bwdInit() {  updateMapping(); }
+    void bwdInit() override {  updateMapping(); }
 
 protected:
     ImageGaussPointSampler()    :   Inherit()
@@ -558,7 +550,7 @@ protected:
     {
     }
 
-    virtual ~ImageGaussPointSampler()
+    ~ImageGaussPointSampler() override
     {
         // what is that?
         f_index.setReadOnly(true);
@@ -584,7 +576,7 @@ protected:
     static const int spatial_dimensions=3;
     mapping::BasePointMapper<spatial_dimensions,Real>* deformationMapping; ///< link to local deformation mapping for weights update
 
-    virtual void doUpdate()
+    void doUpdate() override
     {
         ImageGaussPointSamplerSpec::init(this);
         ImageGaussPointSamplerSpec::Cluster_SimilarIndices(this);
@@ -682,14 +674,6 @@ protected:
             // set sample orientation to identity (could be image orientation)
             transforms[i].identity();
         }
-
-        // test
-        /*for(unsigned int i=0; i<nb; i++)
-        {
-            Real sumw=0; for(unsigned int j=0; j<w[i].size(); j++) { sumw+=w[i][j]; }
-            Vec<spatial_dimensions,Real>  sumdw; for(unsigned int j=0; j<dw[i].size(); j++) sumdw+=dw[i][j];
-            if(sumdw.norm()>1E-2 || fabs(sumw-1)>1E-2) std::cout<<"error on "<<i<<" : "<<sumw<<","<<sumdw<<std::endl;
-        }*/
 
         if(evaluateShapeFunction.getValue())
         {

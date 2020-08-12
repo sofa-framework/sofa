@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,9 +76,6 @@ public:
     Data< ImageTypes > outputImage;
     Data< TransformType > outputTransform;
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageAccumulator<ImageTypes>* = NULL) { return ImageTypes::Name(); }
-
     ImageAccumulator()    :   Inherited()
         , accumulate(initData(&accumulate,false,"accumulate","accumulate ?"))
         , inputImage(initData(&inputImage,ImageTypes(),"inputImage",""))
@@ -95,9 +92,9 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual ~ImageAccumulator() {}
+    ~ImageAccumulator() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&inputImage);
         addInput(&inputTransform);
@@ -106,14 +103,14 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
     double SimuTime;
     ctime_t t0,t;
     int count;
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         if(SimuTime==this->getContext()->getTime()) return; // check if simutime has changed
         SimuTime=this->getContext()->getTime();

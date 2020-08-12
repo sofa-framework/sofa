@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SelectLabelROI_H_
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -61,10 +59,12 @@ public:
     //Output
     Data<helper::vector<Index> > d_indices; ///< selected point/cell indices
 
-    virtual std::string getTemplateName() const    override {        return templateName(this);    }
-    static std::string templateName(const SelectLabelROI* = NULL)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
+    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
+    /// so we need to override that by implementing GetCustomTemplateName() function
+    /// More details on the name customization infrastructure is in NameDecoder.h
+    static const std::string GetCustomTemplateName(){  return sofa::defaulttype::DataTypeName<T>::name();    }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&d_labels);
         addInput(&d_selectLabels);
@@ -72,7 +72,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override
+    void reinit() override
     {
         update();
     }
@@ -86,9 +86,9 @@ protected:
     {
     }
 
-    virtual ~SelectLabelROI() {}
+    ~SelectLabelROI() override {}
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         helper::ReadAccessor< Data< helper::vector<T>  > > selectLabels = d_selectLabels;
         // convert to set for efficient look-up

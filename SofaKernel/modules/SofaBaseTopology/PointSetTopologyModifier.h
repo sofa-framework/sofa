@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,17 +44,19 @@ class SOFA_BASE_TOPOLOGY_API PointSetTopologyModifier : public core::topology::T
 {
 public:
     SOFA_CLASS(PointSetTopologyModifier,core::topology::TopologyModifier);
-    
+
     typedef core::topology::BaseMeshTopology::PointID PointID;
+    Data<bool> d_propagateToDOF; ///< propagate changes to Mechanical object DOFs
 
 protected:
     PointSetTopologyModifier()
         : TopologyModifier()
+        , d_propagateToDOF(initData(&d_propagateToDOF, true, "propagateToDOF", " propagate changes to MEchanical object DOFs if true"))
     {}
 
-    virtual ~PointSetTopologyModifier() override {}
+    ~PointSetTopologyModifier() override {}
 public:
-    virtual void init() override;
+    void init() override;
 
     /** \brief Swap points i1 and i2.
     *
@@ -175,7 +177,7 @@ public:
     * @sa beginChange()
     * @sa endChange()
     */
-    virtual void propagateTopologicalChanges() override;  // DEPRECATED
+    void propagateTopologicalChanges() override;  // DEPRECATED
 
     /// TODO: doc ??
     void propagateTopologicalChangesWithoutReset();
@@ -203,7 +205,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<  PointID  >& /*items*/) override
+    void removeItems(const sofa::helper::vector<  PointID  >& /*items*/) override
     { }
 
     /** \brief Generic method for points renumbering

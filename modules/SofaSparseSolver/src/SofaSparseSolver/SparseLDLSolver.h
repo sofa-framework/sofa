@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_H
-#include "config.h"
+#include <SofaSparseSolver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -29,9 +29,10 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/map.h>
-#include <math.h>
+#include <cmath>
 #include <SofaSparseSolver/SparseLDLSolverImpl.h>
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -62,7 +63,9 @@ public :
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact) override;
     int numStep;
 
-    Data<bool> f_saveMatrixToFile; ///< save matrix to a text file (can be very slow, as full matrix is stored
+    Data<bool> f_saveMatrixToFile;      ///< save matrix to a text file (can be very slow, as full matrix is stored)
+    sofa::core::objectmodel::DataFileName d_filename;   ///< file where this matrix will be saved
+    Data<int> d_precision;      ///< number of digits used to save system's matrix, default is 6
 
     MatrixInvertData * createInvertData() override {
         return new InvertData();
@@ -75,15 +78,10 @@ protected :
     sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
-#ifdef SOFA_WITH_DOUBLE
+#if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
 extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
 extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
-#endif
-#ifdef SOFA_WITH_FLOAT
-extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< float>,FullVector<float> >;
-extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,float> >,FullVector<float> >;
-#endif
+
 #endif
 
 

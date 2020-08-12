@@ -90,7 +90,7 @@ void SofaGL::draw()
             GLuint* buffer = selectBuf;
             // process the hits
             GLint i, j, numberOfNames=0;
-            GLuint names, *ptr, minZ,*ptrNames=0;
+            GLuint names, *ptr, minZ,*ptrNames=nullptr;
 
             ptr = (GLuint *) buffer;
             minZ = 0xffffffff;

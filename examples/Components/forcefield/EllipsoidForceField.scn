@@ -1,16 +1,17 @@
 <!-- Mechanical EllipsoidForceField Example -->
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields showVisual" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse name="Response" />
+    <DefaultContactManager name="Response" />
     <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
     <Node name="SquareCloth1">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject />
         <UniformMass totalMass="100" />
-        <RegularGrid nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+        <RegularGridTopology nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <BoxConstraint box="-12 7 12 -10 7 12" />
         <BoxConstraint box="10 7 12 12 7 12" />
         <MeshSpringForceField name="Springs" stiffness="2000" damping="0" />
@@ -23,21 +24,21 @@
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <Node>
-            <RegularGrid nx="4" ny="1" nz="4" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+            <RegularGridTopology nx="4" ny="1" nz="4" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
             <MechanicalObject />
-            <SphereModel radius="1.0" contactStiffness="1" />
+            <SphereCollisionModel radius="1.0" contactStiffness="1" />
             <SubsetMapping radius="0.8"/>
         </Node>
         <!--
 		<Node name="Surf">
 			<MechanicalObject />
-			<RegularGrid
+			<RegularGridTopology
 				nx="100" ny="1" nz="100"
 				xmin="12" xmax="-12"
 				ymin="7" ymax="7"
 				zmin="-12" zmax="12" />
 			<IdentityMapping />
-			<Triangle />
+			<TriangleCollisionModel />
 		</Node>
 		-->
     </Node>

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -42,7 +42,6 @@
 
 // ForceField
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
-#include <SofaMiscForceField/LennardJonesForceField.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
@@ -130,6 +129,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     vecBox.push_back(entireBoxRoi);
     typename BoxRoi::SPtr boxRoi = modeling::addNew<BoxRoi>(SquareNode,"boxRoi");
     boxRoi->d_alignedBoxes.setValue(vecBox);
+    boxRoi->d_strict.setValue(false);
 
     //PairBoxRoi to define the constrained points = points of the border
     typename PairBoxRoi::SPtr pairBoxRoi = modeling::addNew<PairBoxRoi>(SquareNode,"pairBoxRoi");
@@ -211,6 +211,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     vecBox.push_back(box);
     typename BoxRoi::SPtr boxRoi1 = modeling::addNew<BoxRoi>(root,"boxRoiFix");
     boxRoi1->d_alignedBoxes.setValue(vecBox);
+    boxRoi1->d_strict.setValue(false);
     // FixedConstraint
     typename component::projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fc=
         modeling::addNew<typename component::projectiveconstraintset::FixedConstraint<DataTypes> >(root);
@@ -227,6 +228,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     typename BoxRoi::SPtr boxRoi2 = modeling::addNew<BoxRoi>(root,"boxRoiPressure");
     boxRoi2->d_alignedBoxes.setValue(vecBox);
     boxRoi2->d_computeTriangles=true;
+    boxRoi2->d_strict.setValue(false);
     /// TrianglePressureForceField
     typename component::forcefield::TrianglePressureForceField<DataTypes>::SPtr tpff=
             modeling::addNew<typename component::forcefield::TrianglePressureForceField<DataTypes> >(root);

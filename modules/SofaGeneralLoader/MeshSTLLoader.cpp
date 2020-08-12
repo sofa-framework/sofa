@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,8 +40,6 @@ namespace loader
 {
 
 using namespace sofa::defaulttype;
-
-SOFA_DECL_CLASS(MeshSTLLoader)
 
 int MeshSTLLoaderClass = core::RegisterObject("Specific mesh loader for STL file format.")
         .add< MeshSTLLoader >()
@@ -115,7 +113,6 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     uint32_t nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);
 
-    my_triangles.resize( nbrFacet ); // exact size
     my_normals.resize( nbrFacet ); // exact size
     my_positions.reserve( nbrFacet * 3 ); // max size
 
@@ -137,10 +134,13 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // temporaries
     sofa::defaulttype::Vec3f vertex, normal;
 
+    // reserve vector before filling it
+    my_triangles.reserve( nbrFacet );
+
     // Parsing facets
     for (uint32_t i = 0; i<nbrFacet; ++i)
     {
-        Triangle& the_tri = my_triangles[i];
+        Triangle the_tri;
 
         // Normal:
         dataFile.read((char*)&normal[0], 4);
@@ -187,17 +187,19 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
                     the_tri[j] = my_positions.size()-1;
                 }
             }
-
         }
+
+        this->addTriangle(&my_triangles, the_tri);
 
         // Attribute byte count
         uint16_t count;
         dataFile.read((char*)&count, 2);
+    }
 
-        // Security: // checked once before reading in debug mode
-//        position = dataFile.tellg();
-//        if (position == length)
-//            break;
+    if(my_triangles.size() != (size_t)nbrFacet)
+    {
+        msg_error() << "Size mismatch between triangle vector and facetSize";
+        return false;
     }
 
     this->d_positions.endEdit();
@@ -281,7 +283,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
         }
         else if (bufferWord == "endfacet")
         {
-            my_triangles.push_back(the_tri);
+            this->addTriangle(&my_triangles, the_tri);
             vertexCounter = 0;
         }
         else if (bufferWord == "endsolid" || bufferWord == "end")

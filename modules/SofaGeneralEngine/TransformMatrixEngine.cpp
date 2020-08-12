@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,19 +38,15 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TranslateTransformMatrixEngine)
 int TranslateTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given translation")
         .add< TranslateTransformMatrixEngine >();
 
-SOFA_DECL_CLASS(InvertTransformMatrixEngine)
 int InvertTransformMatrixEngineClass = core::RegisterObject("Inverts the input transform")
         .add< InvertTransformMatrixEngine >();
 
-SOFA_DECL_CLASS(ScaleTransformMatrixEngine)
 int ScaleTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given scale transformation")
         .add< ScaleTransformMatrixEngine >();
 
-SOFA_DECL_CLASS(RotateTransformMatrixEngine)
 int RotateTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given rotation")
         .add< RotateTransformMatrixEngine >();
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,26 +48,26 @@ using sofa::core::behavior::ConstraintResolution ;
 class BilateralConstraintResolution : public ConstraintResolution
 {
 public:
-    BilateralConstraintResolution(double* initF=NULL) 
+    BilateralConstraintResolution(double* initF=nullptr) 
         : ConstraintResolution(1)
         , _f(initF) {}
-    virtual void resolution(int line, double** w, double* d, double* force, double *dfree)
+    void resolution(int line, double** w, double* d, double* force, double *dfree) override
     {
         SOFA_UNUSED(dfree);
         force[line] -= d[line] / w[line][line];
     }
 
-    virtual void init(int line, double** /*w*/, double* force)
+    void init(int line, double** /*w*/, double* force) override
     {
         if(_f) { force[line] = *_f; }
     }
 
-    virtual void initForce(int line, double* force)
+    void initForce(int line, double* force) override
     {
         if(_f) { force[line] = *_f; }
     }
 
-    void store(int line, double* force, bool /*convergence*/)
+    void store(int line, double* force, bool /*convergence*/) override
     {
         if(_f) *_f = force[line];
     }
@@ -80,12 +80,12 @@ class BilateralConstraintResolution3Dof : public ConstraintResolution
 {
 public:
 
-    BilateralConstraintResolution3Dof(sofa::defaulttype::Vec3d* vec = NULL)
+    BilateralConstraintResolution3Dof(sofa::defaulttype::Vec3d* vec = nullptr)
         : ConstraintResolution(3)
         , _f(vec)
     {
     }
-    virtual void init(int line, double** w, double *force)
+    void init(int line, double** w, double *force) override
     {
         sofa::defaulttype::Mat<3,3,double> temp;
         temp[0][0] = w[line][line];
@@ -107,7 +107,7 @@ public:
         }
     }
 
-    virtual void initForce(int line, double* force)
+    void initForce(int line, double* force) override
     {
         if(_f)
         {
@@ -116,7 +116,7 @@ public:
         }
     }
 
-    virtual void resolution(int line, double** /*w*/, double* d, double* force, double * dFree)
+    void resolution(int line, double** /*w*/, double* d, double* force, double * dFree) override
     {
         SOFA_UNUSED(dFree);
         for(int i=0; i<3; i++)
@@ -126,7 +126,7 @@ public:
         }
     }
 
-    void store(int line, double* force, bool /*convergence*/)
+    void store(int line, double* force, bool /*convergence*/) override
     {
         if(_f)
         {
@@ -148,7 +148,7 @@ public:
     , wBlock(Eigen::MatrixXd(blockSize, blockSize))
     {
     }
-    virtual void init(int line, double** w, double * /*force*/)
+    void init(int line, double** w, double * /*force*/) override
     {
         for (auto i = 0; i < wBlock.rows(); ++i)   
         {
@@ -157,7 +157,7 @@ public:
         wBlockInv.compute(wBlock);
     }
 
-    virtual void resolution(int line, double** /*w*/, double* displacement, double* force, double* /*dFree*/)
+    void resolution(int line, double** /*w*/, double* displacement, double* force, double* /*dFree*/) override
     {
         Eigen::Map< Eigen::VectorXd > f(&force[line], wBlock.cols());
         Eigen::Map< Eigen::VectorXd > d(&displacement[line], wBlock.cols());

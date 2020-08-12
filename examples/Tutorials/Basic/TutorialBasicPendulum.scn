@@ -14,5 +14,5 @@
 
   <FixedConstraint indices="0"/>
   <StiffSpringForceField name="Springs" stiffness="100" damping="1" spring="0 1 10 1 1"/>
-  <SphereModel radius="0.1"/>
+  <SphereCollisionModel radius="0.1"/>
 </Node>

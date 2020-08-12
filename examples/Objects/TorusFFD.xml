@@ -1,7 +1,7 @@
 <Node name="TorusFFD">
 	<EulerImplicitSolver rayleighStiffness="0.01"  rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" threshold="0.00000001" tolerance="1e-05"/>
-	<RegularGrid
+	<RegularGridTopology
 			nx="6" ny="2" nz="5"
 			xmin="-2.5" xmax="2.5"
 			ymin="-0.5" ymax="0.5"
@@ -11,14 +11,15 @@
 	<UniformMass totalMass="5" />
 	<RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
 	<Node name="Visu">
-		<OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow"  scale="1.0"/>
+		<MeshObjLoader name="meshVisualLoader" filename="mesh/torus.obj"/>
+		<OglModel name="Visual" src="@meshVisualLoader" color="yellow"  scale="1.0"/>
 		<BarycentricMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="Surf2">
-        <MeshObjLoader name="collisionLoader" filename="mesh/torus_for_collision.obj"/>
-		<Mesh src="@collisionLoader"/>
+        <MeshObjLoader name="meshCollisionLoader" filename="mesh/torus_for_collision.obj"/>
+		<MeshTopology src="@meshCollisionLoader"/>
 		<MechanicalObject scale="1.0"/>
-		<Triangle />
+		<TriangleCollisionModel />
 		<BarycentricMapping />
 	</Node>
 </Node>

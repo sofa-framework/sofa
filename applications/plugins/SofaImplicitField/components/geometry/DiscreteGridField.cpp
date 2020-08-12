@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,11 +54,11 @@ DiscreteGridField::DiscreteGridField()
 void DiscreteGridField::init()
 {
     if(in_nx.getValue()==0 && in_nz.getValue()==0 && in_nz.getValue()==0) {
-        m_componentstate = ComponentState::Invalid;
+        d_componentState.setValue(ComponentState::Invalid);
         msg_error() << "uninitialized grid";
     }
     else if(in_filename.isSet() == false) {
-        m_componentstate = ComponentState::Invalid;
+        d_componentState.setValue(ComponentState::Invalid)
         msg_error() << "unset filename";
     }
     else {
@@ -67,7 +67,7 @@ void DiscreteGridField::init()
         loadGrid(in_scale.getValue(),in_sampling.getValue(),in_nx.getValue(),in_ny.getValue(),in_nz.getValue(),pmin,pmax);
     }
 
-    m_componentstate = ComponentState::Valid;
+    d_componentState.setValue(ComponentState::Valid)
 }
 */
 
@@ -80,7 +80,7 @@ DiscreteGridField::DiscreteGridField()
       dz( initData( &dz, 0.0, "dz", "z translation" ) )
 {
     m_usedDomains = 0;
-    m_imgData = 0;
+    m_imgData = nullptr;
 }
 
 
@@ -89,7 +89,7 @@ DiscreteGridField::~DiscreteGridField()
     if (m_imgData)
     {
         delete[] m_imgData;
-        m_imgData = 0;
+        m_imgData = nullptr;
     }
 }
 
@@ -366,8 +366,6 @@ double DiscreteGridField::getValue( Vec3d &transformedPos )
 ///factory register
 int DiscreteGridFieldClass = RegisterObject("A discrete scalar field from a regular grid storing field value with interpolation.")
         .add< DiscreteGridField >() ;
-
-SOFA_DECL_CLASS(DiscreteGridField)
 
 } ///namespace _discretegrid_
 

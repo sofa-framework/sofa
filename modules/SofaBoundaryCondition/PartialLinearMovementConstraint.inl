@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,7 +62,7 @@ void PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFun
 
 template <class DataTypes>
 PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , data(new PartialLinearMovementConstraintInternalData<DataTypes>)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
@@ -73,10 +73,12 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
     , minDepIndice( initData(&minDepIndice, "minDepIndice", "The indice node in the list of constrained nodes, which is imposed the minimum displacment "))
     , maxDepIndice( initData(&maxDepIndice, "maxDepIndice", "The indice node in the list of constrained nodes, which is imposed the maximum displacment "))
     , m_imposedDisplacmentOnMacroNodes(  initData(&m_imposedDisplacmentOnMacroNodes,"imposedDisplacmentOnMacroNodes","The imposed displacment on macro nodes") )
-    , X0 ( initData ( &X0,(Real) 0.0,"X0","Size of specimen in X-direction" ) )
-    , Y0 ( initData ( &Y0,(Real) 0.0,"Y0","Size of specimen in Y-direction" ) )
-    , Z0 ( initData ( &Z0,(Real) 0.0,"Z0","Size of specimen in Z-direction" ) )
+    , X0 ( initData ( &X0, Real(0.0),"X0","Size of specimen in X-direction" ) )
+    , Y0 ( initData ( &Y0, Real(0.0),"Y0","Size of specimen in Y-direction" ) )
+    , Z0 ( initData ( &Z0, Real(0.0),"Z0","Size of specimen in Z-direction" ) )
     , movedDirections( initData(&movedDirections,"movedDirections","for each direction, 1 if moved, 0 if free") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_pointHandler(nullptr)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -91,16 +93,14 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
     for( unsigned i=0; i<NumDimensions; i++)
         movedDirection[i] = true;
     movedDirections.setValue(movedDirection);
-
-    pointHandler = new FCPointHandler(this, &m_indices);
 }
 
 
 template <class DataTypes>
 PartialLinearMovementConstraint<DataTypes>::~PartialLinearMovementConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 }
 
 template <class DataTypes>
@@ -150,11 +150,27 @@ void PartialLinearMovementConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters
-    m_indices.createTopologicalEngine(topology, pointHandler);
-    m_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &m_indices);
+        m_indices.createTopologicalEngine(_topology, m_pointHandler);
+        m_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
     x0.resize(0);
     nextM = prevM = Deriv();
@@ -264,14 +280,8 @@ template <class MyCoord>
 void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename std::enable_if<!std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x)
 {
     const SetIndexArray & indices = m_indices.getValue();
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  current time cT = "<<cT<<endl;
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  prevT = "<<prevT<<" ,prevM= "<<prevM<<endl;
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  nextT = "<<nextT<<" ,nextM= "<<nextM<<endl;
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, current x = "<<x<<endl;
     Real dt = (cT - prevT) / (nextT - prevT);
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, dt = "<<dt<<endl;
     Deriv m = prevM + (nextM-prevM)*dt;
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, movement m = "<<m<<endl;
     VecBool movedDirection = movedDirections.getValue();
     //set the motion to the Dofs
     if(linearMovementBetweenNodesInIndices.getValue())
@@ -298,11 +308,11 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
                                 x0[*it][0]*(b-x0[*it][1])*imposedDisplacmentOnMacroNodes[1]+         ///< N2
                                 x0[*it][0]*x0[*it][1]*imposedDisplacmentOnMacroNodes[2]+              ///< N3
                                 (a-x0[*it][0])*x0[*it][1]*imposedDisplacmentOnMacroNodes[3])*m[j];    ///< N4
-//                             4|----------------|3
-//                              |                |
-//                              |                |
-//                              |                |
-//                             1|----------------|2
+                        //                             4|----------------|3
+                        //                              |                |
+                        //                              |                |
+                        //                              |                |
+                        //                             1|----------------|2
                     }
                     else ///< case3d
                     {
@@ -320,7 +330,7 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
                         //
 
                         x[*it][j] = x0[*it][j] + ((Real)1.0/(a*b*c))*(
-                                (a-x0[*it][0])*(b-x0[*it][1])*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[0]+    ///< N1
+                                    (a-x0[*it][0])*(b-x0[*it][1])*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[0]+    ///< N1
                                 (a-x0[*it][0])*(b-x0[*it][1])*x0[*it][2]*imposedDisplacmentOnMacroNodes[1]+        ///< N2
                                 x0[*it][0]*(b-x0[*it][1])*x0[*it][2]*imposedDisplacmentOnMacroNodes[2]+            ///< N3
                                 x0[*it][0]*(b-x0[*it][1])*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[3]+        ///< N4
@@ -344,7 +354,6 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
             for( unsigned j=0; j< NumDimensions; j++)
                 if(movedDirection[j]) x[*it][j] = x0[*it][j] + m[j] ;
         }
-        //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, new x = "<<x<<endl<<endl<<endl;
     }
 
 }
@@ -382,7 +391,6 @@ void PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix(const cor
         projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
         ++rowIt;
     }
-    //cerr<<" PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix c= "<<endl<<c<<endl;
 }
 
 template <class DataTypes>
@@ -424,9 +432,6 @@ void PartialLinearMovementConstraint<DataTypes>::findKeyTimes()
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
-    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-    //const unsigned int N = Deriv::size();
     const SetIndexArray & indices = m_indices.getValue();
     core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
 
@@ -451,9 +456,6 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::Mec
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
-    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
-    //const unsigned int N = Deriv::size();
     int o = matrix->getGlobalOffset(this->mstate.get(mparams));
     if (o >= 0) {
         unsigned int offset = (unsigned int)o;

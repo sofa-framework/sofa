@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,10 +24,9 @@
 
 #include <SofaBoundaryCondition/EllipsoidForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/defaulttype/RGBAColor.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 
 namespace sofa
@@ -60,6 +59,28 @@ namespace forcefield
 //                          +  v       * (i==j) / (ri^2*sqrt(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4))
 //                          +  v       * (xi/ri^2) * (xj/rj^2) * 1/(rj^2*(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4) ]
 
+template<class DataTypes>
+EllipsoidForceField<DataTypes>::EllipsoidForceField()
+    : contacts(initData(&contacts,"contacts", "Contacts"))
+    , center(initData(&center, "center", "ellipsoid center"))
+    , vradius(initData(&vradius, "vradius", "ellipsoid radius"))
+    , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
+    , damping(initData(&damping, (Real)5, "damping", "force damping"))
+    , color(initData(&color, defaulttype::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=0,0.5,1.0,1.0)"))
+{
+}
+
+template<class DataTypes>
+void EllipsoidForceField<DataTypes>::setStiffness(Real stiff)
+{
+    stiffness.setValue( stiff );
+}
+
+template<class DataTypes>
+void EllipsoidForceField<DataTypes>::setDamping(Real damp)
+{
+    damping.setValue( damp );
+}
 
 template<class DataTypes>
 void EllipsoidForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV )
@@ -140,6 +161,13 @@ void EllipsoidForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
 
 
     datadF.endEdit();
+}
+
+template<class DataTypes>
+SReal EllipsoidForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
+    return 0.0;
 }
 
 template<class DataTypes>

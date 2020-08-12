@@ -3,9 +3,9 @@
 
 #include <image/config.h>
 #include "ImageTypes.h"
-#ifdef WITH_MULTITHREADING
-#include <MultiThreading/src/DataExchange.inl>
-#endif  // WITH_MULTITHREADING
+#if IMAGE_HAVE_MULTITHREADING
+#include <MultiThreading/DataExchange.inl>
+#endif  // IMAGE_HAVE_MULTITHREADING
 
 namespace sofa
 {
@@ -13,13 +13,10 @@ namespace defaulttype
 {
 
 
-#ifndef SOFA_FLOAT
-RegisterTemplateAlias ImageRAlias("ImageR", "ImageD");
-#else
-RegisterTemplateAlias ImageRAlias("ImageR", "ImageF");
-#endif
+static RegisterTemplateAlias ImageRAlias("ImageR", "ImageD");
 
-#ifdef WITH_MULTITHREADING
+
+#if IMAGE_HAVE_MULTITHREADING
 // Register in the Factory
 using sofa::core::DataExchange;
 int DataExchangeClass = core::RegisterObject("DataExchange")
@@ -32,11 +29,8 @@ int DataExchangeClass = core::RegisterObject("DataExchange")
 .add< DataExchange<sofa::defaulttype::ImageUS>>()
 .add< DataExchange<sofa::defaulttype::ImageL>>()
 .add< DataExchange<sofa::defaulttype::ImageUL>>()
-#ifdef SOFA_FLOAT
 .add< DataExchange<sofa::defaulttype::ImageF>>()
-#else
 .add< DataExchange<sofa::defaulttype::ImageD>>()
-#endif  // SOFA_FLOAT
 ;
 }  // namespace defaulttype
 
@@ -51,11 +45,8 @@ template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageS>;
 template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageUS>;
 template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageL>;
 template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageUL>;
-#ifdef SOFA_FLOAT
 template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageF>;
-#else
 template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageD>;
-#endif  // SOFA_FLOAT
-#endif  // WITH_MULTITHREADING
+#endif  // IMAGE_HAVE_MULTITHREADING
 }
 }  // namespace sofa

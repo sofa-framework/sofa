@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -80,7 +80,7 @@ public:
     template <class RealObject>
     static RealObject* create( RealObject*, BaseMouseInteractor* interactor)
     {
-        if (!dynamic_cast< MouseInteractor<DataTypes>* >(interactor)) return NULL;
+        if (!dynamic_cast< MouseInteractor<DataTypes>* >(interactor)) return nullptr;
         else return new RealObject(interactor);
     }
 
@@ -89,7 +89,7 @@ public:
 } // namespace collision
 } // namespace component
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_CPP)
 namespace helper
 {
 //delay load of the specialized Factory class. unique definition reside in the cpp file.

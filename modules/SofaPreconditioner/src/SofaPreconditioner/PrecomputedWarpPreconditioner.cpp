@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,10 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
-
 #include <SofaPreconditioner/PrecomputedWarpPreconditioner.inl>
 
 namespace sofa
@@ -34,15 +30,9 @@ namespace component
 namespace linearsolver
 {
 
-SOFA_DECL_CLASS(PrecomputedWarpPreconditioner)
-
 int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix")
-#ifndef SOFA_FLOAT
-        .add< PrecomputedWarpPreconditioner< defaulttype::Vec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PrecomputedWarpPreconditioner< defaulttype::Vec3fTypes > >()
-#endif
+        .add< PrecomputedWarpPreconditioner< defaulttype::Vec3Types > >()
+
         ;
 
 } // namespace linearsolver

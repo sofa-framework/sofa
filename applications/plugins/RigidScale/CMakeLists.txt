@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
-project(RigidScale)
+project(RigidScale VERSION 0.1)
 
 set(HEADER_FILES "")
 
@@ -48,7 +48,7 @@ set(README_FILE "")
 include_directories(${SOFA_EXTLIBS_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-sofa_set_python_directory(${PROJECT_NAME} "python")
+sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 add_definitions("-DSOFA_BUILD_RIGIDSCALE")
@@ -64,4 +64,9 @@ endif()
 target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGraphComponent SofaUserInteraction SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField SofaCore)
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(${PROJECT_NAME} 0.1 ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    RELOCATABLE "plugins"
+    )

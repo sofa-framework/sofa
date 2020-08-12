@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,31 +72,33 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef component::topology::PointSubsetData< SetIndexArray > SetIndex;
 public:
-    /// direction on which the constraint applies
-    Data<Coord> d_direction;
-
+    Data<Coord> d_direction; ///< direction on which the constraint applied
     Data<Real> d_dmin; ///< coordinates min of the plane for the vertex selection
     Data<Real> d_dmax; ///< coordinates max of the plane for the vertex selection
     SetIndex   d_indices; ///< the set of vertex indices
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<FixedPlaneConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
+
     /// inherited from the BaseObject interface
-    virtual void init() override;
-    virtual void draw(const VisualParams* vparams) override;
+    void init() override;
+    void draw(const VisualParams* vparams) override;
 
     /// -- Constraint interface
-    virtual void projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData) override;
-    virtual void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& vData) override;
-    virtual void projectPosition(const MechanicalParams* mparams, DataVecCoord& xData) override;
+    void projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData) override;
+    void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& vData) override;
+    void projectPosition(const MechanicalParams* mparams, DataVecCoord& xData) override;
 
     /// Implement projectMatrix for assembled solver of compliant
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset) override;
-    virtual void projectJacobianMatrix(const MechanicalParams* mparams, DataMatrixDeriv& cData) override;
+    void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset) override;
+    void projectJacobianMatrix(const MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
     /// Implement applyConstraint for direct solvers
-    virtual void applyConstraint(const MechanicalParams* mparams,
+    void applyConstraint(const MechanicalParams* mparams,
                                  const MultiMatrixAccessor* matrix) override;
 
-    virtual void applyConstraint(const MechanicalParams* mparams, BaseVector* vector,
+    void applyConstraint(const MechanicalParams* mparams, BaseVector* vector,
                                  const MultiMatrixAccessor* matrix) override;
 
     void setDirection (Coord dir);
@@ -122,9 +124,6 @@ protected:
     /// whether vertices should be selected from 2 parallel planes
     bool m_selectVerticesFromPlanes {false};
 
-    /// Pointer to the current topology
-    BaseMeshTopology* m_topology {nullptr};
-
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     /// Bring inherited attributes and function in the current lookup context.
@@ -142,16 +141,10 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP)
-#ifdef SOFA_WITH_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6dTypes>;
-#endif /// SOFA_WITH_DOUBLE
-#ifdef SOFA_WITH_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6fTypes>;
-#endif /// SOFA_WITH_FLOAT
+extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

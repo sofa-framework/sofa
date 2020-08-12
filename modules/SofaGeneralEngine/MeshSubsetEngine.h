@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa
@@ -74,28 +74,12 @@ public:
     Data< SeqTriangles > triangles; ///< Triangles of mesh subset
     Data< SeqQuads > quads; ///< Quads of mesh subset
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MeshSubsetEngine<DataTypes>* = NULL) { return DataTypes::Name();    }
-
 protected:
-
-    MeshSubsetEngine()    : Inherited()
-      , inputPosition(initData(&inputPosition,"inputPosition","input vertices"))
-      , inputEdges(initData(&inputEdges,"inputEdges","input edges"))
-      , inputTriangles(initData(&inputTriangles,"inputTriangles","input triangles"))
-      , inputQuads(initData(&inputQuads,"inputQuads","input quads"))
-      , indices(initData(&indices,"indices","Index lists of the selected vertices"))
-      , position(initData(&position,"position","Vertices of mesh subset"))
-      , edges(initData(&edges,"edges","edges of mesh subset"))
-      , triangles(initData(&triangles,"triangles","Triangles of mesh subset"))
-      , quads(initData(&quads,"quads","Quads of mesh subset"))
-    {
-    }
-
-    virtual ~MeshSubsetEngine() {}
+    MeshSubsetEngine();
+    ~MeshSubsetEngine() override;
 
 public:
-    virtual void init() override
+    void init() override
     {
         addInput(&inputPosition);
         addInput(&inputEdges);
@@ -109,17 +93,13 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    override { update();  }
+    void reinit()    override { update();  }
     void doUpdate() override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP)
+extern template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

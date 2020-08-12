@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaGeneralEngine)
 
 set(HEADER_FILES
@@ -15,8 +15,6 @@ list(APPEND HEADER_FILES
     AverageCoord.inl
     ClusteringEngine.h
     ClusteringEngine.inl
-    ComplementaryROI.h
-    ComplementaryROI.inl
     ComplementaryROI.h
     ComplementaryROI.inl
     DilateEngine.h
@@ -75,6 +73,8 @@ list(APPEND HEADER_FILES
     MeshSplittingEngine.inl
     MeshSubsetEngine.h
     MeshSubsetEngine.inl
+    NearestPointROI.h
+    NearestPointROI.inl
     NormEngine.h
     NormEngine.inl
     NormalsFromPoints.h
@@ -126,7 +126,6 @@ list(APPEND SOURCE_FILES
     AverageCoord.cpp
     ClusteringEngine.cpp
     ComplementaryROI.cpp
-    ComplementaryROI.cpp
     DilateEngine.cpp
     DifferenceEngine.cpp
     ExtrudeEdgesAndGenerateQuads.cpp
@@ -156,6 +155,7 @@ list(APPEND SOURCE_FILES
     MeshSampler.cpp
     MeshSplittingEngine.cpp
     MeshSubsetEngine.cpp
+    NearestPointROI.cpp
     NormEngine.cpp
     NormalsFromPoints.cpp
     PairBoxRoi.cpp
@@ -185,7 +185,8 @@ list(APPEND SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_GENERAL_ENGINE")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaGeneral
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    )

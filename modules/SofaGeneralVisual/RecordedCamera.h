@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,17 +45,12 @@ public:
     typedef BaseCamera::Quat Quat;
 protected:
     RecordedCamera();
-    virtual ~RecordedCamera() {}
+    ~RecordedCamera() override {}
 public:
-    virtual void init() override;
-
-    virtual void reinit() override;
-
-    virtual void reset() override;
-
-    virtual void handleEvent(sofa::core::objectmodel::Event *) override;
-
-    //virtual void rotateWorldAroundPoint(Quat &rotation, const Vec3 &point);
+    void init() override;
+    void reinit() override;
+    void reset() override;
+    void handleEvent(sofa::core::objectmodel::Event *) override;
 
     enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
     enum  { SCENE_CENTER_PIVOT = 0, WORLD_CENTER_PIVOT = 1};
@@ -110,8 +105,6 @@ public:
 protected:
     double m_nextStep;
     double m_angleStep;
-    //double m_initAngle;
-    //double m_radius;
     bool firstIterationforRotation;
     bool firstIterationforTranslation;
     bool firstIterationforNavigation;

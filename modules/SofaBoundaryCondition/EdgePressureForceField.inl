@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,9 +29,6 @@
 #include <vector>
 #include <set>
 
-
-// #define DEBUG_TRIANGLEFEM
-
 namespace sofa
 {
 
@@ -41,44 +38,71 @@ namespace component
 namespace forcefield
 {
 
+template <class DataTypes>
+EdgePressureForceField<DataTypes>::EdgePressureForceField()
+    : edgePressureMap(initData(&edgePressureMap, "edgePressureMap", "map between edge indices and their pressure"))
+    ,pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+    , edgeIndices(initData(&edgeIndices,"edgeIndices", "Indices of edges separated with commas where a pressure is applied"))
+    , edges(initData(&edges, "edges", "List of edges where a pressure is applied"))
+    , normal(initData(&normal,"normal", "Normal direction for the plane selection of edges"))
+    , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
+    , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+    , arrowSizeCoef(initData(&arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , p_intensity(initData(&p_intensity,"p_intensity", "pressure intensity on edge normal"))
+    , p_binormal(initData(&p_binormal,"binormal", "Binormal of the 2D plane"))
+    , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw arrows of edge pressures"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
+{
+    _completeTopology = nullptr;
+}
 
 template <class DataTypes> EdgePressureForceField<DataTypes>::~EdgePressureForceField()
 {
 }
-
 
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::init()
 {
     this->core::behavior::ForceField<DataTypes>::init();
 
-    _topology = this->getContext()->getMeshTopology();
-    if(_topology == NULL)
+    if (l_topology.empty())
     {
-        serr << "ERROR(EdgePressureForceField): No base topology available." << sendl;
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     this->getContext()->get(edgeGeo);
     assert(edgeGeo!=0);
 
-    if (edgeGeo==NULL)
+    if (edgeGeo==nullptr)
     {
-        serr << "ERROR(EdgePressureForceField): object must have an EdgeSetTopology."<<sendl;
+        msg_error() << " object must have an EdgeSetTopology.";
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
 
-    _completeTopology = NULL;
+    _completeTopology = nullptr;
     this->getContext()->get(_completeTopology, core::objectmodel::BaseContext::SearchUp);
 
-    if(_completeTopology == NULL && edgeIndices.getValue().empty() && edges.getValue().empty())
+    if(_completeTopology == nullptr && edgeIndices.getValue().empty() && edges.getValue().empty())
     {
-        serr << "ERROR(EdgePressureForceField): Either a pressure vector or a TriangleSetTopology is required." << sendl;
+        msg_error() << "Either a pressure vector or a TriangleSetTopology is required.";
     }
 
     // init edgesubsetData engine
-    edgePressureMap.createTopologicalEngine(_topology);
+    edgePressureMap.createTopologicalEngine(m_topology);
     edgePressureMap.registerTopologicalData();
 
     if (dmin.getValue()!=dmax.getValue())
@@ -97,7 +121,6 @@ void EdgePressureForceField<DataTypes>::init()
     initEdgeInformation();
 }
 
-
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  /*dataX */, const DataVecDeriv & /*dataV*/ )
 {
@@ -110,24 +133,54 @@ void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
         force=my_subset[i].force/2;
-        f[_topology->getEdge(my_map[i])[0]]+=force;
-        f[_topology->getEdge(my_map[i])[1]]+=force;
+        f[m_topology->getEdge(my_map[i])[0]]+=force;
+        f[m_topology->getEdge(my_map[i])[1]]+=force;
     }
 
     dataF.endEdit();
     updateEdgeInformation();
 }
 
+template <class DataTypes>
+void EdgePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+{
+    //TODO: remove this line (avoid warning message) ...
+    mparams->setKFactorUsed(true);
+}
+
+template <class DataTypes>
+SReal EdgePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
+    return 0.0;
+}
+
+template <class DataTypes>
+void EdgePressureForceField<DataTypes>::setDminAndDmax(const SReal _dmin, const SReal _dmax)
+{
+    dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);
+}
+
+template<class DataTypes>
+bool EdgePressureForceField<DataTypes>::isPointInPlane(Coord p)
+{
+    Real d=dot(p,normal.getValue());
+    if ((d>dmin.getValue())&& (d<dmax.getValue()))
+        return true;
+    else
+        return false;
+}
+
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::initEdgeInformation()
 {
+    if (!this->mstate.get())
+        msg_error() << " No mechanical Object linked.";
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (x.empty())
-    {
-        serr << "ERROR(EdgePressureForceField): No mechanical Object linked."<<sendl;
         return;
-    }
 
     const helper::vector<Real>& intensities = p_intensity.getValue();
 
@@ -143,7 +196,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
             my_subset[i].force=pressure.getValue()*my_subset[i].length;
         }
     }
-    else if (_topology && intensities.size() > 0)
+    else if (m_topology && intensities.size() > 0)
     {
         // binormal provided
         if(p_binormal.isSet())
@@ -152,7 +205,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
             binormal.normalize();
             for(unsigned int i = 0; i < my_map.size() ; i++)
             {
-                core::topology::BaseMeshTopology::Edge e = _topology->getEdge(my_map[i]);  // FF,13/03/2012: This seems more consistent
+                core::topology::BaseMeshTopology::Edge e = m_topology->getEdge(my_map[i]);  // FF,13/03/2012: This seems more consistent
 
                 Coord tang = x[e[1]] - x[e[0]]; tang.normalize();
                 Coord normal = binormal.cross(tang);
@@ -170,7 +223,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
         {
             for(unsigned i = 0; i < my_map.size() ; i++)
             {
-                core::topology::BaseMeshTopology::Edge e = _topology->getEdge(my_map[i]), f;
+                core::topology::BaseMeshTopology::Edge e = m_topology->getEdge(my_map[i]), f;
 
                 Vec3d tang, n1, n2;
                 n2 = Vec3d(0,0,1);
@@ -178,7 +231,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
                 Vec3d sum;
                 bool found = false;
-                int k = 0;
+                size_t k = 0;
                 while ((!found) && (k < _completeTopology->getNbEdges()))
                 {
                     f = _completeTopology->getEdge(k);
@@ -234,15 +287,16 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     return;
 }
 
-
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 {
+    if (!this->mstate.get())
+        msg_error() << " No mechanical Object linked.";
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (x.empty())
     {
-        serr << "ERROR(EdgePressureForceField): No mechanical Object linked."<<sendl;
         return;
     }
 
@@ -250,8 +304,8 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        sofa::defaulttype::Vec3d p1 = x[_topology->getEdge(my_map[i])[0]];
-        sofa::defaulttype::Vec3d p2 = x[_topology->getEdge(my_map[i])[1]];
+        sofa::defaulttype::Vec3d p1 = x[m_topology->getEdge(my_map[i])[0]];
+        sofa::defaulttype::Vec3d p2 = x[m_topology->getEdge(my_map[i])[1]];
         sofa::defaulttype::Vec3d orig(0,0,0);
 
         sofa::defaulttype::Vec3d tang = p2 - p1;
@@ -277,7 +331,6 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
     initEdgeInformation();
 }
 
-
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 {
@@ -296,9 +349,9 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
     helper::vector<unsigned int> inputEdges;
 
 
-    for (int n=0; n<_topology->getNbEdges(); ++n)
+    for (size_t n=0; n<m_topology->getNbEdges(); ++n)
     {
-        if ((vArray[_topology->getEdge(n)[0]]) && (vArray[_topology->getEdge(n)[1]]))
+        if ((vArray[m_topology->getEdge(n)[0]]) && (vArray[m_topology->getEdge(n)[1]]))
         {
             // insert a dummy element : computation of pressure done later
             EdgePressureInformation t;
@@ -319,7 +372,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const helper::vec
 
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
-    unsigned int sizeTest = _topology->getNbEdges();
+    unsigned int sizeTest = m_topology->getNbEdges();
 
     for (unsigned int i = 0; i < inputIndices.size(); ++i)
     {
@@ -327,7 +380,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const helper::vec
         my_subset.push_back(t);
 
         if (inputIndices[i] >= sizeTest)
-            serr << "ERROR(EdgePressureForceField): Edge indice: " << inputIndices[i] << " is out of edge indices bounds. This could lead to non desired behavior." <<sendl;
+            msg_error() << " Edge indice: " << inputIndices[i] << " is out of edge indices bounds. This could lead to non desired behavior." ;
     }
     edgePressureMap.endEdit();
 
@@ -345,7 +398,7 @@ template<class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesFromEdgeList()
 {
     const helper::vector<core::topology::BaseMeshTopology::Edge>& inputEdges = edges.getValue();
-    const helper::vector<core::topology::BaseMeshTopology::Edge>& topologyEdges = _topology->getEdges();
+    const helper::vector<core::topology::BaseMeshTopology::Edge>& topologyEdges = m_topology->getEdges();
 
     helper::vector<unsigned int> indices(inputEdges.size());
 
@@ -388,7 +441,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        sofa::defaulttype::Vector3 p = (x[_topology->getEdge(my_map[i])[0]] + x[_topology->getEdge(my_map[i])[1]]) / 2.0;
+        sofa::defaulttype::Vector3 p = (x[m_topology->getEdge(my_map[i])[0]] + x[m_topology->getEdge(my_map[i])[1]]) / 2.0;
         vertices.push_back(p);
 
         sofa::defaulttype::Vec3d f = my_subset[i].force;

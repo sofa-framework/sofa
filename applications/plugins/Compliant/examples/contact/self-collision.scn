@@ -24,7 +24,7 @@
     
   <MechanicalObject name="dofs" template="Vec3d" position="0 3 0  3 3 0" velocity="1 0 0  -1 0 0" showObject="1" showObjectScale="1"/>
   <UniformMass totalMass="1"/>
-  <SphereModel template="Vec3d" contactFriction="0" contactRestitution="0" selfCollision='1' />
+  <SphereCollisionModel template="Vec3d" contactFriction="0" contactRestitution="0" selfCollision='1' />
 </Node>
     
   
@@ -37,12 +37,12 @@
     <Node name="Ball1">
       <MechanicalObject name="dofs" template="Vec3d" position="0 0 0" velocity="1 0 0" showObject="1" showObjectScale="1"/>
       <UniformMass totalMass="1"/>
-      <SphereModel template="Vec3d" contactFriction="0" contactRestitution="0" />
+      <SphereCollisionModel template="Vec3d" contactFriction="0" contactRestitution="0" />
     </Node>
     <Node name="Ball2">
       <MechanicalObject name="dofs" template="Vec3d" position="3 0 0" velocity="-1 0 0" showObject="1" showObjectScale="1"/>
       <UniformMass totalMass="1"/>
-      <SphereModel template="Vec3d" contactFriction="0" contactRestitution="0"/>
+      <SphereCollisionModel template="Vec3d" contactFriction="0" contactRestitution="0"/>
     </Node>
     
   </Node >

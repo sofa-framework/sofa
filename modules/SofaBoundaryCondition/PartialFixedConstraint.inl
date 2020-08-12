@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,8 +48,6 @@ PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
     // default to indice 0
     this->d_indices.beginEdit()->push_back(0);
     this->d_indices.endEdit();
-
-    this->pointHandler = new typename Inherited::FCPointHandler(this, &this->d_indices);
 
     VecBool blockedDirection;
     for( unsigned i=0; i<NumDimensions; i++)
@@ -102,8 +100,7 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
     else
     {
         const SetIndexArray & indices = this->d_indices.getValue();
-        unsigned i=0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             for (unsigned j = 0; j < NumDimensions; j++)
             {
@@ -122,7 +119,6 @@ void PartialFixedConstraint<DataTypes>::projectResponse(const core::MechanicalPa
     helper::WriteAccessor<DataVecDeriv> res = resData;
     projectResponseT(mparams, res.wref());
 }
-
 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)

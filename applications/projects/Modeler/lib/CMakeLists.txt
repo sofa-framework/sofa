@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.1)
-project(SofaModeler)
+cmake_minimum_required(VERSION 3.12)
+project(SofaModeler VERSION 0.1)
+
+find_package(TinyXML REQUIRED)
 
 set(HEADER_FILES
-    ../../../sofa/gui/qt/SofaPluginManager.h
     AddPreset.h
     FilterLibrary.h
     GlobalModification.h
@@ -19,7 +20,6 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    ../../../sofa/gui/qt/SofaPluginManager.cpp
     AddPreset.cpp
     FilterLibrary.cpp
     GlobalModification.cpp
@@ -35,27 +35,21 @@ set(SOURCE_FILES
     TutorialSelector.cpp
 )
 
-set(UI_FILES ../../../sofa/gui/qt/PluginManager.ui)
+find_package(Qt5 COMPONENTS Core Gui OpenGL Widgets REQUIRED)
 
-find_package(Qt5 COMPONENTS Core QUIET)
+qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
+set(MOC_FILES_GROUP "Generated")
 
-if(Qt5Core_FOUND)
-    message("Modeler library: Using Qt5")
-    find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
+add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaGui SofaBase SofaCommon SofaGeneral SofaMisc)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml) # Public because needed by Modeler (exec)
 
-    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Xml_INCLUDE_DIRS})
-    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
-
-    qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
-    set(MOC_FILES_GROUP "Generated")
-
-    qt5_wrap_ui(FORM_FILES ${UI_FILES})
-    set(FORM_FILES_GROUP "Generated")
-endif()
-
-add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGuiMain SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc ${EXT_QT_LIBRARIES})
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${EXT_QT_INCLUDES}>")
-
-sofa_install_targets(SofaGui SofaModeler "SofaModeler")
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "."
+    INCLUDE_INSTALL_DIR "SofaModeler"
+    RELOCATABLE "projects"
+    )

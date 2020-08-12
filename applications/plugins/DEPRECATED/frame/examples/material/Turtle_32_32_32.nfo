@@ -1,4 +1,0 @@
-voxelType: unsigned char
-dimensions: 32 32 32
-origin: -1.2825 -1.2825 -1.2825
-voxelSize: 0.08 0.08 0.08

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -28,7 +28,6 @@
 
 #include <sofa/gui/PickHandler.h>
 
-#include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/gl/Texture.h>
@@ -39,14 +38,10 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
-#ifdef SOFA_SMP
-#include <Multigraph.h>
-#endif
-
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <fstream>
 
 namespace sofa
@@ -62,9 +57,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
-#ifdef SOFA_SMP
-class MainLoopTask;
-#endif
 
 class SimpleGUI : public sofa::gui::BaseGUI
 {
@@ -78,11 +70,11 @@ public:
 
     SimpleGUI();
 
-    int mainLoop();
-    void redraw();
-    int closeGUI();
+    int mainLoop() override;
+    void redraw() override;
+    int closeGUI() override;
 
-    sofa::simulation::Node* currentSimulation()
+    sofa::simulation::Node* currentSimulation() override
     {
         return getScene();
     }
@@ -92,22 +84,19 @@ public:
     /// @name registration of each GUI
     /// @{
 
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
-    void setViewerResolution(int width , int height);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
+    void setViewerResolution(int width , int height) override;
     /// @}
 
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
-    ~SimpleGUI();
+    ~SimpleGUI() override;
 
 public:
 
     // glut callbacks
 
     static SimpleGUI* instance;
-#ifdef SOFA_SMP
-    Iterative::Multigraph<MainLoopTask> *mg;
-#endif
     static void glut_display();
     static void glut_reshape(int w, int h);
     static void glut_keyboard(unsigned char k, int x, int y);
@@ -157,7 +146,6 @@ private:
     int 			_background;
     float			_zoomSpeed;
     float			_panSpeed;
-    //Transformation	_sceneTransform;
     Vector3			_previousEyePos;
     GLUquadricObj*	_arrow;
     GLUquadricObj*	_tube;
@@ -213,7 +201,7 @@ protected:
     void calcProjection();
 
 public:
-    void setScene(sofa::simulation::Node::SPtr scene, const char* filename=NULL, bool temporaryFile=false);
+    void setScene(sofa::simulation::Node::SPtr scene, const char* filename=nullptr, bool temporaryFile=false);
     sofa::simulation::Node* getScene()
     {
         return groot.get();

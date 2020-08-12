@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -423,11 +423,7 @@ public:
     Data<bool> useDijkstra; ///< Use Dijkstra for geodesic distance computation (use fastmarching otherwise)
     //@}
 
-    virtual std::string getTemplateName() const    { return templateName(this); }
-    static std::string templateName(const VoronoiShapeFunction<ShapeFunctionTypes_,ImageTypes_>* = NULL) { return ShapeFunctionTypes_::Name()+std::string(",")+ImageTypes_::Name(); }
-
-
-    virtual void init()
+    virtual void init() override
     {
         Inherit::init();
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_H
-#include "config.h"
+#include <SofaSparseSolver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
@@ -30,7 +30,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/map.h>
-#include <math.h>
+#include <cmath>
 #include <csparse.h>
 
 namespace sofa
@@ -72,7 +72,7 @@ public :
     void solveT(float * z, float * r);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)
+#if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)
 extern template class SOFA_SOFASPARSESOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
 extern template class SOFA_SOFASPARSESOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
 #endif

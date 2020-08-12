@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -171,7 +171,7 @@ namespace sofa
 				SofaHAPIForceFeedbackEffect::SPtr ffe = sofa::core::objectmodel::New<SofaHAPIForceFeedbackEffect>();
 				ffe->setForceFeedback(ffs[i]);
 				std::ostringstream name;
-				name << "Tool"<<ffs[i]->indice.getValue() <<"-" << ffs[i]->getName();
+				name << "Tool"<<ffs[i]->d_indice.getValue() <<"-" << ffs[i]->getName();
 				ffe->setName(name.str());
 				ForceFeedbackEffect* e = ffe->getEffect();
 				e->setTransform(data);
@@ -500,8 +500,6 @@ namespace sofa
 				.addAlias("HAPIHapticsDevice")
 				.addAlias("DefaultHapticsDevice")
 				;
-
-		SOFA_DECL_CLASS(SofaHAPIHapticsDevice)
 
 	} // namespace SofaHAPI
 }

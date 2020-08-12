@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 #define SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 
@@ -33,10 +30,10 @@
 #include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <math.h>
+#include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -44,7 +41,7 @@
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
-#ifdef SOFA_HAVE_CSPARSE
+#if SOFASPARSESOLVER_HAVE_CSPARSE
 #include <SofaSparseSolver/SparseCholeskySolver.h>
 #endif
 
@@ -104,11 +101,12 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
     if(! use_file.getValue() || ! internalData.readFile(ss.str().c_str(),systemSize) )
     {
-#ifdef SOFA_HAVE_CSPARSE
+#if SOFASPARSESOLVER_HAVE_CSPARSE
         loadMatrixWithCSparse(M);
         if (use_file.getValue()) internalData.writeFile(ss.str().c_str(),systemSize);
 #else
-        serr << "CSPARSE support is required to invert the matrix" << sendl;
+        SOFA_UNUSED(M);
+        msg_error()<< "CSPARSE support is required to invert the matrix";
 #endif
     }
 
@@ -121,7 +119,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     }
 }
 
-#ifdef SOFA_HAVE_CSPARSE
+#if SOFASPARSESOLVER_HAVE_CSPARSE
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
 {

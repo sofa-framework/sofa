@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<Node dt="0.01" gravity="0 -10 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaSphFluid"/>
+
+    <VisualStyle displayFlags="hideBehaviorModels showForceFields hideCollisionModels" />   
+    <Node name="SPHSurfaceMapping">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        
+        <RegularGridTopology nx="5" ny="40" nz="5" xmin="-1.5" xmax="0" ymin="-3" ymax="12" zmin="-1.5" zmax="0" drawEdges="0"/>
+        <MechanicalObject name="MModel" />
+        <UniformMass name="M1" vertexMass="1" />
+        <SpatialGridContainer cellWidth="0.75"/>
+        <SPHFluidForceField radius="0.745" density="15" kernelType="1" viscosityType="2" viscosity="10" pressure="1500" surfaceTension="-1000" printLog="0" />
+        
+        <PlaneForceField normal="1 0 0" d="-4" showPlane="1"/>
+        <PlaneForceField normal="-1 0 0" d="-14" showPlane="1"/>
+        <PlaneForceField normal="0.3 1 0" d="-4" showPlane="1"/>
+        <PlaneForceField normal="0 0 1" d="-4" showPlane="1"/>
+        <PlaneForceField normal="0 0 -1" d="-4" showPlane="1"/>
+        
+        <Node id="Visual">
+            <OglModel name="VModel" color="blue" />
+            <SPHFluidSurfaceMapping name="MarchingCube" input="@../MModel" output="@VModel" isoValue="0.5" radius="0.75" step="0.25" />
+        </Node>
+    </Node>
+    
+</Node>

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <set>
 
@@ -55,7 +55,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronHandler::applyC
     if (ff)
     {
 
-        const core::topology::BaseMeshTopology::Tetrahedron t=ff->_topology->getTetrahedron(tetrahedronIndex);
+        const core::topology::BaseMeshTopology::Tetrahedron t=ff->m_topology->getTetrahedron(tetrahedronIndex);
         Index a = t[0];
         Index b = t[1];
         Index c = t[2];
@@ -95,7 +95,8 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , drawColor2(initData(&drawColor2,defaulttype::Vec4f(0.0f,0.5f,1.0f,1.0f),"drawColor2"," draw color for faces 2"))
     , drawColor3(initData(&drawColor3,defaulttype::Vec4f(0.0f,1.0f,1.0f,1.0f),"drawColor3"," draw color for faces 3"))
     , drawColor4(initData(&drawColor4,defaulttype::Vec4f(0.5f,1.0f,1.0f,1.0f),"drawColor4"," draw color for faces 4"))
-    , tetrahedronHandler(NULL)
+    , l_topology(initLink("topology", "link to the topology container"))
+    , tetrahedronHandler(nullptr)
 {
     this->addAlias(&_assembling, "assembling");
     _poissonRatio.setWidget("poissonRatio");
@@ -108,19 +109,24 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
 template <class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 {
-
     this->core::behavior::ForceField<DataTypes>::init();
 
-    _topology = this->getContext()->getMeshTopology();
-
-    if (_topology->getNbTetrahedra()==0)
+    if (l_topology.empty())
     {
-        serr << "ERROR(TetrahedralCorotationalFEMForceField): object must have a Tetrahedral Set Topology."<<sendl;
-        return;
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    reinit(); // compute per-element stiffness matrices and other precomputed values
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". This FEM needs to rely on a Tetrahedral Topology.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+    reinit(); // compute per-element stiffness matrices and other precomputed values
 }
 
 
@@ -143,16 +149,16 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
-    tetrahedronInf.resize(_topology->getNbTetrahedra());
+    tetrahedronInf.resize(m_topology->getNbTetrahedra());
 
-    for (int i=0; i<_topology->getNbTetrahedra(); ++i)
+    for (size_t i=0; i<m_topology->getNbTetrahedra(); ++i)
     {
         tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
-                _topology->getTetrahedron(i),  (const std::vector< unsigned int > )0,
+                m_topology->getTetrahedron(i),  (const std::vector< unsigned int > )0,
                 (const std::vector< double >)0);
     }
 
-    tetrahedronInfo.createTopologicalEngine(_topology,tetrahedronHandler);
+    tetrahedronInfo.createTopologicalEngine(m_topology,tetrahedronHandler);
     tetrahedronInfo.registerTopologicalData();
 
     tetrahedronInfo.endEdit();
@@ -169,7 +175,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(const core::Mecha
     {
     case SMALL :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
             accumulateForceSmall( f, p, i );
         }
@@ -177,7 +183,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(const core::Mecha
     }
     case LARGE :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
             accumulateForceLarge( f, p, i );
         }
@@ -185,7 +191,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(const core::Mecha
     }
     case POLAR :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
             accumulateForcePolar( f, p, i );
         }
@@ -207,9 +213,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(const core::Mech
     {
     case SMALL :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
-            const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
+            const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
             Index a = t[0];
             Index b = t[1];
             Index c = t[2];
@@ -221,9 +227,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(const core::Mech
     }
     case LARGE :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
-            const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
+            const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
             Index a = t[0];
             Index b = t[1];
             Index c = t[2];
@@ -235,9 +241,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(const core::Mech
     }
     case POLAR :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
-            const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
+            const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
             Index a = t[0];
             Index b = t[1];
             Index c = t[2];
@@ -369,7 +375,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
-    computeMaterialStiffness(tetrahedronInf[i].materialMatrix, a, b, c, d, (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_topology->getNbTetrahedra()]));
+    computeMaterialStiffness(tetrahedronInf[i].materialMatrix, a, b, c, d, (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/m_topology->getNbTetrahedra()]));
 
     tetrahedronInfo.endEdit();
 }
@@ -377,8 +383,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d, SReal localStiffnessFactor)
 {
-
-    //const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
     const Real youngModulus = _youngModulus.getValue()*(Real)localStiffnessFactor;
     const Real poissonRatio = _poissonRatio.getValue();
 
@@ -408,11 +412,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(M
     Real volumes6 = fabs( dot( AB, C ) );
     if (volumes6<0)
     {
-        serr << "ERROR: Negative volume for tetra "<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
+        msg_error() << "Negative volume for tetra " << a << ',' << b << ',' << c << ',' << d << "> = " << volumes6 / 6;
     }
-//	materialMatrix  /= (volumes6);//*6 christian
-//    /// @TODO: in TetrahedronFEMForceField, the stiffness matrix is divided by 6 compared to the code in TetrahedralCorotationalFEMForceField. Check which is the correct one...
-
+    //	materialMatrix  /= (volumes6);//*6 christian
+    // @TODO: in TetrahedronFEMForceField, the stiffness matrix is divided by 6 compared to the code in TetrahedralCorotationalFEMForceField. Check which is the correct one...
     // FF:  there is normally  a factor 1/6v in the strain-displacement matrix. Times transpose makes 1/36v². Integrating accross the volume multiplies by v, so the factor is 1/36v
     materialMatrix  /= (volumes6*6);
 
@@ -421,16 +424,12 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(M
 template<class DataTypes>
 inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacementTransposed &J )
 {
-
     // Unit of K = unit of youngModulus / unit of volume = Pa / m^3 = kg m^-4 s^-2
     // Unit of J = m^2
     // Unit of JKJt =  kg s^-2
     // Unit of displacement = m
     // Unit of force = kg m s^-2
 
-#if 0
-    F = J*(K*(J.multTranspose(Depl)));
-#else
     /* We have these zeros
                                   K[0][3]   K[0][4]   K[0][5]
                                   K[1][3]   K[1][4]   K[1][5]
@@ -518,12 +517,6 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
             J[10][3]*KJtD[3]+  J[10][4]*KJtD[4] /*J[10][5]*KJtD[5]*/;
     F[11] = /*J[11][0]*KJtD[0]+  J[11][1]*KJtD[1]+*/J[11][2]*KJtD[2]+
             /*J[11][3]*KJtD[3]+*/J[11][4]*KJtD[4]+  J[11][5]*KJtD[5]  ;
-//        serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, D = "<<Depl<<sendl;
-//        serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<sendl;
-//        serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, K = "<<K<<sendl;
-//        serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, KJtD = "<<KJtD<<sendl;
-//        serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, F = "<<F<<sendl;
-#endif
 }
 
 template<class DataTypes>
@@ -536,10 +529,6 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
     // Unit of displacement = m
     // Unit of force = kg m s^-2
 
-#if 0
-    F = J*(K*(J.multTranspose(Depl)));
-    F *= fact;
-#else
     /* We have these zeros
                                   K[0][3]   K[0][4]   K[0][5]
                                   K[1][3]   K[1][4]   K[1][5]
@@ -588,8 +577,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
             J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
             J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
             J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
-//         serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, D = "<<Depl<<sendl;
-//         serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<sendl;
+
 
     defaulttype::VecNoInit<6,Real> KJtD;
     KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
@@ -631,14 +619,6 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
             J[10][3]*KJtD[3]+  J[10][4]*KJtD[4] /*J[10][5]*KJtD[5]*/;
     F[11] = /*J[11][0]*KJtD[0]+  J[11][1]*KJtD[1]+*/J[11][2]*KJtD[2]+
             /*J[11][3]*KJtD[3]+*/J[11][4]*KJtD[4]+  J[11][5]*KJtD[5]  ;
-
-//        serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, D = "<<Depl<<sendl;
-//        serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<sendl;
-//        serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, K = "<<K<<sendl;
-//        serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, KJtD = "<<KJtD<<sendl;
-//        serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, F = "<<F<<sendl;
-
-#endif
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -663,7 +643,7 @@ template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vector& f, const Vector & p,Index elementIndex )
 {
 
-    const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(elementIndex);
+    const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(elementIndex);
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
 
@@ -686,9 +666,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
     D[9] =  (X0)[d][0] - (X0)[a][0] - p[d][0]+p[a][0];
     D[10] = (X0)[d][1] - (X0)[a][1] - p[d][1]+p[a][1];
     D[11] = (X0)[d][2] - (X0)[a][2] - p[d][2]+p[a][2];
-    /*        serr<<"TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall, displacement"<<D<<sendl;
-            serr<<"TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall, strainDisplacementTransposed"<<tetrahedronInfo[elementIndex].strainDisplacementTransposedMatrix<<sendl;
-            serr<<"TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall, material"<<tetrahedronInfo[elementIndex].materialMatrix<<sendl;*/
 
     // compute force on element
     Displacement F;
@@ -698,7 +675,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
     if(!_assembling.getValue())
     {
         computeForce( F, D,tetrahedronInf[elementIndex].materialMatrix,tetrahedronInf[elementIndex].strainDisplacementTransposedMatrix );
-        //serr<<"TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall, force"<<F<<sendl;
     }
     else
     {
@@ -732,11 +708,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
                 {
 
                     int col = t[j/3]*3+j%3;
-                    //serr<<row<<" "<<col<<sendl;
-
-                    //typename CompressedValue::iterator result = _stiffnesses[row].find(col);
-
-
                     // search if the vertex is already take into account by another element
                     typename CompressedValue::iterator result = _stiffnesses[row].end();
                     for(typename CompressedValue::iterator it=_stiffnesses[row].begin(); it!=_stiffnesses[row].end()&&result==_stiffnesses[row].end(); ++it)
@@ -752,10 +723,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
                 }
             }
         }
-
-        /*for(unsigned int i=0;i<_stiffnesses.size();++i)
-            for(typename CompressedValue::iterator it=_stiffnesses[i].begin();it!=_stiffnesses[i].end();++it)
-                serr<<i<<" "<<(*it).first<<"   "<<(*it).second<<"   "<<JKJt[i][(*it).first]<<sendl;*/
 
         F = JKJt * D;
     }
@@ -848,13 +815,13 @@ template <class DataTypes>
 inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned int nodeIdx)
 {
     const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetraInf = tetrahedronInfo.getValue();
-    int numNeiTetra=_topology->getTetrahedraAroundVertex(nodeIdx).size();
+    int numNeiTetra=m_topology->getTetrahedraAroundVertex(nodeIdx).size();
     Transformation r;
     r.clear();
 
     for(int i=0; i<numNeiTetra; i++)
     {
-        int tetraIdx=_topology->getTetrahedraAroundVertex(nodeIdx)[i];
+        int tetraIdx=m_topology->getTetrahedraAroundVertex(nodeIdx)[i];
         const TetrahedronInformation *tinfo = &tetraInf[tetraIdx];
         Transformation r01,r21;
         r01=tinfo->initialTransformation;
@@ -969,16 +936,11 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
     tetrahedronInf[i].rotatedInitialElements[3] = R_0_1*(X0)[d];
 
     tetrahedronInf[i].initialTransformation = R_0_1;
-//	serr<<"a,b,c : "<<a<<" "<<b<<" "<<c<<sendl;
-//	serr<<"_initialPoints : "<<_initialPoints<<sendl;
-//	serr<<"R_0_1 large : "<<R_0_1<<sendl;
 
     tetrahedronInf[i].rotatedInitialElements[1] -= tetrahedronInf[i].rotatedInitialElements[0];
     tetrahedronInf[i].rotatedInitialElements[2] -= tetrahedronInf[i].rotatedInitialElements[0];
     tetrahedronInf[i].rotatedInitialElements[3] -= tetrahedronInf[i].rotatedInitialElements[0];
     tetrahedronInf[i].rotatedInitialElements[0] = Coord(0,0,0);
-
-//	serr<<"_rotatedInitialElements : "<<_rotatedInitialElements<<sendl;
 
     computeStrainDisplacement( tetrahedronInf[i].strainDisplacementTransposedMatrix,tetrahedronInf[i].rotatedInitialElements[0], tetrahedronInf[i].rotatedInitialElements[1],tetrahedronInf[i].rotatedInitialElements[2],tetrahedronInf[i].rotatedInitialElements[3] );
 
@@ -988,7 +950,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const Vector & p, Index elementIndex )
 {
-    const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(elementIndex);
+    const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(elementIndex);
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
@@ -996,7 +958,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
     Transformation R_0_2;
     computeRotationLarge( R_0_2, p, t[0],t[1],t[2]);
     tetrahedronInf[elementIndex].rotation.transpose(R_0_2);
-    //serr<<"R_0_2 large : "<<R_0_2<<sendl;
 
     // positions of the deformed and displaced Tetrahedron in its frame
     helper::fixed_array<Coord,4> deforme;
@@ -1023,8 +984,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
     D[10] = tetrahedronInf[elementIndex].rotatedInitialElements[3][1] - deforme[3][1];
     D[11] =tetrahedronInf[elementIndex].rotatedInitialElements[3][2] - deforme[3][2];
 
-    //serr<<"D : "<<D<<sendl;
-
     Displacement F;
     if(_updateStiffnessMatrix.getValue())
     {
@@ -1049,16 +1008,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
         computeForce( F, D, tetrahedronInf[elementIndex].materialMatrix, tetrahedronInf[elementIndex].strainDisplacementTransposedMatrix);
         for(int i=0; i<12; i+=3)
             f[t[i/3]] += tetrahedronInf[elementIndex].rotation * Deriv( F[i], F[i+1],  F[i+2] );
-
-        //serr<<"p large : "<<p<<sendl;
-        //serr<<"F large : "<<f<<sendl;
-//		for(int i=0;i<12;i+=3)
-//		{
-//			Vec tmp;
-//			v_eq_Ab( tmp, _rotations[elementIndex], Vec( F[i], F[i+1],  F[i+2] ) );
-//			serr<<tmp<<"\t";
-//		}
-//		serr<<sendl;
     }
     else
     {
@@ -1068,7 +1017,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
 
         StiffnessMatrix RJKJt, RJKJtRt;
         computeStiffnessMatrix(RJKJt,RJKJtRt,tetrahedronInf[elementIndex].materialMatrix, tetrahedronInf[elementIndex].strainDisplacementTransposedMatrix,tetrahedronInf[elementIndex].rotation);
-
 
         //erase the stiffness matrix at each time step
         if(elementIndex==0)
@@ -1150,11 +1098,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessLarge( Vecto
 
     Displacement F;
 
-    //serr<<"X : "<<X<<sendl;
-
     computeForce( F, X,tetrahedronInf[i].materialMatrix, tetrahedronInf[i].strainDisplacementTransposedMatrix, fact);
-
-    //serr<<"F : "<<F<<sendl;
 
     f[a] += tetrahedronInf[i].rotation * Deriv( -F[0], -F[1],  -F[2] );
     f[b] += tetrahedronInf[i].rotation * Deriv( -F[3], -F[4],  -F[5] );
@@ -1195,7 +1139,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initPolar(int i, Index& a,
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const Vector & p, Index elementIndex )
 {
-    const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(elementIndex);
+    const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(elementIndex);
 
     Transformation A;
     A[0] = p[t[1]]-p[t[0]];
@@ -1229,7 +1173,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForcePolar( Vect
     D[9] = tetrahedronInf[elementIndex].rotatedInitialElements[3][0] - deforme[3][0];
     D[10] = tetrahedronInf[elementIndex].rotatedInitialElements[3][1] - deforme[3][1];
     D[11] = tetrahedronInf[elementIndex].rotatedInitialElements[3][2] - deforme[3][2];
-    //serr<<"D : "<<D<<sendl;
 
     Displacement F;
     if(_updateStiffnessMatrix.getValue())
@@ -1246,7 +1189,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForcePolar( Vect
     }
     else
     {
-        serr << "TODO(TetrahedralCorotationalFEMForceField): support for assembling system matrix when using polar method."<<sendl;
+        msg_error() << "TODO(TetrahedralCorotationalFEMForceField): support for assembling system matrix when using polar method.";
     }
 
     tetrahedronInfo.endEdit();
@@ -1285,11 +1228,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessPolar( Vecto
 
     Displacement F;
 
-    //serr<<"X : "<<X<<sendl;
-
     computeForce( F, X, tetrahedronInf[i].materialMatrix, tetrahedronInf[i].strainDisplacementTransposedMatrix, fact);
-
-    //serr<<"F : "<<F<<sendl;
 
     f[a] -= tetrahedronInf[i].rotation * Deriv( F[0], F[1],  F[2] );
     f[b] -= tetrahedronInf[i].rotation * Deriv( F[3], F[4],  F[5] );
@@ -1306,6 +1245,8 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessPolar( Vecto
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
 	if( !onlyVisible ) return;
 
 	helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::VecCoordId::position());
@@ -1323,7 +1264,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeBBox(const core::Ex
 		}
 	}
 
-	this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+	this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 
@@ -1343,9 +1284,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
 
 
     std::vector< defaulttype::Vector3 > points[4];
-    for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+    for(size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
     {
-        const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
+        const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
 
         Index a = t[0];
         Index b = t[1];
@@ -1357,22 +1298,18 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
         Coord pc = (x[c]+center)*(Real)0.666667;
         Coord pd = (x[d]+center)*(Real)0.666667;
 
-// 		glColor4f(0,0,1,1);
         points[0].push_back(pa);
         points[0].push_back(pb);
         points[0].push_back(pc);
 
-// 		glColor4f(0,0.5,1,1);
         points[1].push_back(pb);
         points[1].push_back(pc);
         points[1].push_back(pd);
 
-// 		glColor4f(0,1,1,1);
         points[2].push_back(pc);
         points[2].push_back(pd);
         points[2].push_back(pa);
 
-// 		glColor4f(0.5,1,1,1);
         points[3].push_back(pd);
         points[3].push_back(pa);
         points[3].push_back(pb);
@@ -1408,7 +1345,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::default
     Rot[0][1]=Rot[0][2]=0;
     Rot[1][0]=Rot[1][2]=0;
     Rot[2][0]=Rot[2][1]=0;
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetras = _topology->getTetrahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetras = m_topology->getTetrahedra();
     for(int IT=0 ; IT != (int)tetras.size() ; ++IT)
     {
         if (method == SMALL)

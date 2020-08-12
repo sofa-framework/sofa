@@ -62,7 +62,7 @@ protected:
 	
 
     typedef RigidRestJointMapping self;
-	virtual void assemble( const typename self::in_pos_type& in_pos ) {
+    virtual void assemble( const typename self::in_pos_type& in_pos ) override {
         typename self::jacobian_type& J = this->jacobian;
 
         const size_t size = in_pos.size();
@@ -134,7 +134,7 @@ protected:
 	} 
 	
 	virtual void apply(typename self::out_pos_type& out,
-                       const typename self::in_pos_type& in ) {
+                       const typename self::in_pos_type& in ) override {
 
         const size_t size = in.size();
 
@@ -177,14 +177,8 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPLIANT_RIGIDRESTJOINTMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Compliant_API RigidRestJointMapping<  Rigid3dTypes, Vec6dTypes >;
-#endif
-
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Compliant_API RigidRestJointMapping< Rigid3fTypes, Vec6fTypes >;
-#endif
+#if !defined(SOFA_COMPLIANT_RIGIDRESTJOINTMAPPING_CPP)
+extern template class SOFA_Compliant_API RigidRestJointMapping<  Rigid3Types, Vec6Types >;
 #endif
 }
 }

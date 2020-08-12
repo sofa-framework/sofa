@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(LeapMotion)
 
 set(LEAPMOTION_MAJOR_VERSION 0)
@@ -10,7 +10,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package(SofaFramework REQUIRED)
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
-
+find_package(SofaOpenglVisual REQUIRED)
 find_package(Leap REQUIRED)
 
 
@@ -39,18 +39,17 @@ add_library(${PROJECT_NAME} SHARED  ${MOC_FILES} ${SOURCE_FILES} ${README_FILES}
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${LEAPMOTION_INCLUDE_DIRS}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${LEAPMOTION_INCLUDE_DIRS}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${LEAP_INCLUDE_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_LEAPMOTION")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${LEAPMOTION_VERSION})
 
 target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual SofaUserInteraction ${LEAP_LIBRARY})
 
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(${PROJECT_NAME} ${LEAPMOTION_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR src
+    )
 
-install(DIRECTORY sofa
-        DESTINATION include/${PROJECT_NAME}
-        FILES_MATCHING PATTERN "*.h" PATTERN "*hpp" PATTERN "*.inl"
-)

@@ -1,17 +1,19 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
 project(CGALPlugin_test)
 
 
 set(HEADER_FILES
-#    Compliant_test.h
+
 )
 
 set(SOURCE_FILES
 #    MeshGenerationFromImage_test.cpp
 )
 
+find_package(SofaTest REQUIRED)
 find_package(image QUIET)
+
 if(image_FOUND)
     list(APPEND SOURCE_FILES MeshGenerationFromImage_test.cpp)
 

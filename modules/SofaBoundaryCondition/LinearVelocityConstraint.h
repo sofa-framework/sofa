@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,13 +69,13 @@ public:
 
 public :
     /// indices of the DOFs the constraint is applied to
-    SetIndex m_indices;
+    SetIndex d_indices;
     /// the key frames when the motion is defined by the user
-    Data<helper::vector<Real> > m_keyTimes;
+    Data<helper::vector<Real> > d_keyTimes;
     /// the motions corresponding to the key frames
-    Data<VecDeriv > m_keyVelocities;
+    Data<VecDeriv > d_keyVelocities;
     /// the coordinates on which to applay velocities
-    SetIndex m_coordinates;
+    SetIndex d_coordinates;
 
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
@@ -85,6 +85,10 @@ public :
     VecCoord x0;
     ///position at the previous step for constrained DOFs position
     VecCoord xP;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LinearVelocityConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     LinearVelocityConstraint();
 
@@ -111,7 +115,7 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
@@ -133,10 +137,6 @@ public:
         LinearVelocityConstraint<DataTypes> *lc;
     };
 
-protected:
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
 private:
 
     /// to keep the time corresponding to the key times
@@ -149,24 +149,16 @@ private:
     void findKeyTimes();
 
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Rigid3Types>;
+
 #endif
 
 

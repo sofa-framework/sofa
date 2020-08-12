@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,23 +34,22 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(Ray)
-
-int RayModelClass = core::RegisterObject("Collision model representing a ray in space, e.g. a mouse click")
-        .add< RayModel >()
+int RayCollisionModelClass = core::RegisterObject("Collision model representing a ray in space, e.g. a mouse click")
+        .add< RayCollisionModel >()
         .addAlias("Ray")
+        .addAlias("RayModel")
         ;
 
 
 using namespace sofa::defaulttype;
 
-RayModel::RayModel(SReal length)
+RayCollisionModel::RayCollisionModel(SReal length)
     : defaultLength(initData(&defaultLength, length, "", "TODO"))
 {
     this->contactResponse.setValue("ray"); // use RayContact response class
 }
 
-void RayModel::resize(int size)
+void RayCollisionModel::resize(int size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -72,14 +71,14 @@ void RayModel::resize(int size)
 }
 
 
-void RayModel::init()
+void RayCollisionModel::init()
 {
     this->CollisionModel::init();
 
     mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
-    if (mstate==NULL)
+    if (mstate==nullptr)
     {
-        serr<<"RayModel requires a Vec3 Mechanical Model" << sendl;
+        msg_error() << "RayCollisionModel requires a Vec3 Mechanical Model";
         return;
     }
 
@@ -90,7 +89,7 @@ void RayModel::init()
 }
 
 
-int RayModel::addRay(const Vector3& origin, const Vector3& direction, SReal length)
+int RayCollisionModel::addRay(const Vector3& origin, const Vector3& direction, SReal length)
 {
     int i = size;
     resize(i);
@@ -101,7 +100,7 @@ int RayModel::addRay(const Vector3& origin, const Vector3& direction, SReal leng
     return i;
 }
 
-void RayModel::draw(const core::visual::VisualParams* vparams,int index)
+void RayCollisionModel::draw(const core::visual::VisualParams* vparams,int index)
 {
     if( !vparams->isSupported(core::visual::API_OpenGL) ) return;
 
@@ -116,7 +115,7 @@ void RayModel::draw(const core::visual::VisualParams* vparams,int index)
     vparams->drawTool()->restoreLastState();
 }
 
-void RayModel::draw(const core::visual::VisualParams* vparams)
+void RayCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {       
@@ -125,15 +124,15 @@ void RayModel::draw(const core::visual::VisualParams* vparams)
             draw(vparams,i);
         }
     }
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
     {
         getPrevious()->draw(vparams);
     }
 }
 
-void RayModel::computeBoundingTree(int maxDepth)
+void RayCollisionModel::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
 
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
@@ -168,7 +167,7 @@ void RayModel::computeBoundingTree(int maxDepth)
 
 }
 
-void RayModel::applyTranslation(double dx, double dy, double dz)
+void RayCollisionModel::applyTranslation(double dx, double dy, double dz)
 {
     Vector3 d(dx,dy,dz);
     for (int i = 0; i < getNbRay(); i++)

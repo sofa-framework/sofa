@@ -1,4 +1,4 @@
 <Node name="Group">
 	<BoxROI name="box_roi" box="0 0 0 1 1 1" position="" />
-	<ConstantForceField points="@[-1].indices" force="" totalForce="" arrowSizeCoef="" />
+        <ConstantForceField points="@[-1].indices" force="" totalForce="" showArrowSize="" />
 </Node>

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -90,9 +90,6 @@ public:
     Data<ImageTypes> image; ///< Image
     Data<TransformType> transform; ///< Transform
 
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MergeImages<ImageTypes>* = NULL) { return ImageTypes::Name(); }
-
     MergeImages()    :   Inherited()
         , overlap ( initData ( &overlap,"overlap","method for handling overlapping regions" ) )
         , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )
@@ -124,10 +121,10 @@ public:
         Interpolation.setValue(InterpolationOptions);
     }
 
-    virtual ~MergeImages()
+    ~MergeImages() override
     { }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&nbImages);
         inputImages.resize(nbImages.getValue());
@@ -139,7 +136,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override
+    void reinit() override
     {
         inputImages.resize(nbImages.getValue());
         inputTransforms.resize(nbImages.getValue());
@@ -172,7 +169,7 @@ protected:
         Coord u;
     };
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         unsigned int nb = nbImages.getValue();
         inputImages.resize(nb);

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP
 
 #include "UncoupledConstraintCorrection.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/Node.h>
@@ -43,20 +43,6 @@ namespace constraintset
 using namespace sofa::defaulttype;
 
 template<>
-SOFA_CONSTRAINT_API UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<sofa::defaulttype::Rigid3Types> *mm)
-    : Inherit(mm)
-    , compliance(initData(&compliance, "compliance", "Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix"))
-    , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
-    , d_handleTopologyChange(initData(&d_handleTopologyChange, false, "handleTopologyChange", "Enable support of topological changes for compliance vector (should be disabled for rigids)"))
-    , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
-    , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
-    , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, false, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
-    , m_pOdeSolver(NULL)
-{
-}
-
-template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init()
 {
     Inherit::init();
@@ -72,7 +58,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     {
         if (d_useOdeSolverIntegrationFactors.getValue() == true)
         {
-            serr << "Can't find any odeSolver" << sendl;
+            msg_error() << "Can't find any odeSolver";
             d_useOdeSolverIntegrationFactors.setValue(false);
         }
         d_useOdeSolverIntegrationFactors.setReadOnly(true);
@@ -98,8 +84,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
         Rigid3Mass massValue;
 
         //Should use the BaseMatrix API to get the Mass
-        //void getElementMass(unsigned int index, defaulttype::BaseMatrix *m)
-        if (node != NULL)
+        if (node != nullptr)
         {
             core::behavior::BaseMass *m = node->mass;
             UniformMass< Rigid3Types, Rigid3Mass > *um = dynamic_cast< UniformMass< Rigid3Types, Rigid3Mass >* > (m);
@@ -107,11 +92,11 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
             if (um)
                 massValue = um->getVertexMass();
             else
-                serr << "WARNING : no mass found" << sendl;
+                msg_warning() << "No mass found.";
         }
         else
         {
-            serr << "\n WARNING : node is not found => massValue could be incorrect in addComplianceInConstraintSpace function" << sendl;
+            msg_warning() << "Node is not found => massValue could be incorrect in addComplianceInConstraintSpace function.";
         }
         
 
@@ -179,38 +164,18 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 }
 
 
-SOFA_DECL_CLASS(UncoupledConstraintCorrection)
-
 int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computing constraint forces within a simulated body using the compliance method.")
-#ifndef SOFA_FLOAT
-        .add< UncoupledConstraintCorrection< Vec1dTypes > >()
-        .add< UncoupledConstraintCorrection< Vec2dTypes > >()
-        .add< UncoupledConstraintCorrection< Vec3dTypes > >()
-        .add< UncoupledConstraintCorrection< Rigid3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< UncoupledConstraintCorrection< Vec1fTypes > >()
-        .add< UncoupledConstraintCorrection< Vec2fTypes > >()
-        .add< UncoupledConstraintCorrection< Vec3fTypes > >()
-        .add< UncoupledConstraintCorrection< Rigid3fTypes > >()
-        //TODO(dmarchal) There is no Rigid3fTypes template specizaliation while there is one for Rigid3d...
-        //this look sucipicious.
+        .add< UncoupledConstraintCorrection< Vec1Types > >()
+        .add< UncoupledConstraintCorrection< Vec2Types > >()
+        .add< UncoupledConstraintCorrection< Vec3Types > >()
+        .add< UncoupledConstraintCorrection< Rigid3Types > >()
+    ;
 
-#endif
-        ;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1Types >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec2Types >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec3Types >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3Types >;
 
-#ifndef SOFA_FLOAT
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1dTypes >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec2dTypes >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec3dTypes >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1fTypes >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec2fTypes >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec3fTypes >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3fTypes >;
-#endif
 
 } // namespace constraintset
 

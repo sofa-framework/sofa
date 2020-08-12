@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -187,7 +187,7 @@ void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJ
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( map[indexIn].in_index );
 
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
@@ -280,7 +280,7 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJ
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( map[indexIn].in_index );
 
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
@@ -418,8 +418,8 @@ void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3f1Types>::resize( core
 
 // instanciations involving CudaVec3f1Types with CudaVec3fTypes
 
-template class BarycentricMapping< CudaVec3f1Types, CudaVec3fTypes>;
-template class BarycentricMapping< CudaVec3fTypes, CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3f1Types, CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3fTypes, CudaVec3f1Types>;
 
 
 
@@ -437,8 +437,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
-
-SOFA_DECL_CLASS(CudaBarycentricMapping_3f1_3f)
 
 int BarycentricMappingCudaClass_3f1_3f = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< BarycentricMapping< CudaVec3f1Types, CudaVec3fTypes> >()

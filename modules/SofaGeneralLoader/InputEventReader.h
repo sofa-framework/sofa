@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_INPUTEVENTREADER_H
 #define SOFA_COMPONENT_MISC_INPUTEVENTREADER_H
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -64,7 +64,7 @@ protected:
     /**
      * @brief Default Destructor.
      */
-    ~InputEventReader();
+    ~InputEventReader() override;
 public:
     /**
      * @brief SceneGraph callback initialization method.
@@ -76,7 +76,7 @@ public:
      *
      * At every simulation step transforms the mouse Linux events in SOFA mouse events and propagates them
      */
-    virtual void handleEvent(core::objectmodel::Event *event) override;
+    void handleEvent(core::objectmodel::Event *event) override;
 
 private:
 

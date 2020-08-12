@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,7 +46,7 @@ StateTester<DataTypes>::~StateTester()
 template <class DataTypes>
 bool StateTester<DataTypes>::canConvert(core::behavior::BaseMechanicalState* baseState)
 {
-    return dynamic_cast< core::behavior::MechanicalState<DataTypes>* >(baseState) != NULL;
+    return dynamic_cast< core::behavior::MechanicalState<DataTypes>* >(baseState) != nullptr;
 }
 
 template <class DataTypes>
@@ -161,8 +161,7 @@ void SleepController::init()
             }
         }
 
-        if (!found)
-            serr << "SleepController can not control node " << state->getContext()->getName() << " of type " << state->getClass()->templateName << sendl;
+        msg_error_when(!found) << "SleepController can not control node " << state->getContext()->getName() << " of type " << state->getClass()->templateName;
     }
 
     m_timeSinceWakeUp.assign(m_contextsThatCanSleep.size(), 0.0);
@@ -174,7 +173,7 @@ void SleepController::init()
             m_initialState.push_back(m_contextsThatCanSleep[i]->isSleeping());
     }
 
-    sout << "found " << m_statesThatCanSleep.size() << " nodes that can change their sleep state" << sendl;
+    msg_info() << "found " << m_statesThatCanSleep.size() << " nodes that can change their sleep state";
 }
 
 void SleepController::reset()
@@ -328,7 +327,7 @@ void SleepController::addWakeupPair(std::vector<BaseContexts>& wakeupPairs, core
 
     context1 = getParentContextThatCanSleep(context1);
     context2 = getParentContextThatCanSleep(context2);
-    if (context1 == NULL || context2 == NULL)
+    if (context1 == nullptr || context2 == nullptr)
         return;
 
     BaseContexts::const_iterator contextsBegin = m_contextsThatCanSleep.begin();
@@ -395,7 +394,7 @@ GetStatesThatCanSleep::GetStatesThatCanSleep(const core::ExecParams* params, std
 
 void GetStatesThatCanSleep::processNodeBottomUp(simulation::Node* node)
 {
-    if (node->canChangeSleepingState() && node->mechanicalState != NULL)
+    if (node->canChangeSleepingState() && node->mechanicalState != nullptr)
         m_states.push_back(node->mechanicalState.get());
 }
 
@@ -427,8 +426,6 @@ simulation::Visitor::Result UpdateAllSleepStates::processNodeTopDown(simulation:
 
 int SleepControllerClass = core::RegisterObject("A controller that puts node into sleep when the objects are not moving, and wake them up again when there are in collision with a moving object")
 .add< SleepController >();
-
-SOFA_DECL_CLASS(SleepController)
 
 } // namespace controller
 

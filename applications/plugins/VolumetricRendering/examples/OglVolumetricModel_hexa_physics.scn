@@ -3,10 +3,10 @@
     <RequiredPlugin name="VolumetricRendering" />
 
     <Node name="HexaRaptor" >
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1.0e-7" threshold="1.0e-7"/>
 
-		<SparseGrid name="grid" n="21 21 21" fileTopology="mesh/raptor_8kp.obj" />
+		<SparseGridTopology name="grid" n="21 21 21" fileTopology="mesh/raptor_8kp.obj" />
 
 		<MechanicalObject name="dofs" template="Vec3d" />
 	 	<HexahedronSetTopologyContainer hexahedra="@grid.hexahedra" />

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 
@@ -47,9 +47,6 @@ int RungeKutta2SolverClass = core::RegisterObject("A popular explicit time integ
         .add< RungeKutta2Solver >()
         .addAlias("RungeKutta2")
         ;
-
-SOFA_DECL_CLASS(RungeKutta2);
-
 
 void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {

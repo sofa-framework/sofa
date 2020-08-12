@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_CAPSULEMODEL_CPP
+#define SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP
 #include <SofaBaseCollision/CapsuleModel.inl>
 #include <sofa/core/ObjectFactory.h>
-
 
 namespace sofa
 {
@@ -34,32 +33,19 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
 
-SOFA_DECL_CLASS(Capsule)
+int CapsuleCollisionModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
+        .add< CapsuleCollisionModel<sofa::defaulttype::Vec3Types> >()
 
-int CapsuleModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
-#ifndef SOFA_FLOAT
-        .add<  TCapsuleModel<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add < TCapsuleModel<Vec3fTypes> >()
-#endif
         .addAlias("Capsule")
         .addAlias("CapsuleModel")
-//.addAlias("CapsuleMesh")
-//.addAlias("CapsuleSet")
+        .addAlias("TCapsuleModel")
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3dTypes>;
-template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3fTypes>;
-template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3fTypes>;
-#endif
+template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3Types>;
+template class SOFA_BASE_COLLISION_API CapsuleCollisionModel<defaulttype::Vec3Types>;
+
 
 
 } // namespace collision

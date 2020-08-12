@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,28 +53,46 @@ bool fake_TopologyScene::loadMeshFile()
         { "name","loader" },
         { "filename", sofa::helper::system::DataRepository.getFile(m_filename) } });
 
-    // could do better but will work for now
-    std::string topoConType = "";
+    auto meca = createObject(m_root, "MechanicalObject", {
+        { "name", "dof" },
+        { "position", "@loader.position"} });
+       
+   
     if (m_staticTopology)
-        topoConType = "MeshTopology";
-    else if (m_topoType == TopologyObjectType::POINT)
-        topoConType = "PointSetTopologyContainer";
-    else if (m_topoType == TopologyObjectType::EDGE)
-        topoConType = "EdgeSetTopologyContainer";
-    else if (m_topoType == TopologyObjectType::TRIANGLE)
-        topoConType = "TriangleSetTopologyContainer";
-    else if (m_topoType == TopologyObjectType::QUAD)
-        topoConType = "QuadSetTopologyContainer";
-    else if (m_topoType == TopologyObjectType::TETRAHEDRON)
-        topoConType = "TetrahedronSetTopologyContainer";
-    else if (m_topoType == TopologyObjectType::HEXAHEDRON)
-        topoConType = "HexahedronSetTopologyContainer";
+    {
+        auto topo = createObject(m_root, "MeshTopology", {
+            { "name", "topoCon" },
+            { "src", "@loader" }
+        });        
+    }
+    else
+    {
+        std::string topoType = "";
+        if (m_topoType == TopologyObjectType::POINT)
+            topoType = "Point";
+        else if (m_topoType == TopologyObjectType::EDGE)
+            topoType = "Edge";
+        else if (m_topoType == TopologyObjectType::TRIANGLE)
+            topoType = "Triangle";
+        else if (m_topoType == TopologyObjectType::QUAD)
+            topoType = "Quad";
+        else if (m_topoType == TopologyObjectType::TETRAHEDRON)
+            topoType = "Tetrahedron";
+        else if (m_topoType == TopologyObjectType::HEXAHEDRON)
+            topoType = "Hexahedron";
 
+        // create topology components
+        auto topo = createObject(m_root, topoType+"SetTopologyContainer", {
+            { "name", "topoCon" },
+            { "src", "@loader" }
+        });
+        
+        createObject(m_root, topoType + "SetTopologyModifier", {{ "name", "topoMod" }});
+        createObject(m_root, topoType + "SetTopologyAlgorithms", { { "name", "topoAlgo" } });
+        createObject(m_root, topoType + "SetGeometryAlgorithms", { { "name", "topoGeo" } });
+    }
 
-    auto topo = createObject(m_root, topoConType, {
-        { "name", "topoCon" },
-        { "src", "@loader" }
-    });
+    m_simu->init(m_root.get());
    
     return true;
 }
