@@ -393,11 +393,11 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     }
 
     // Then we can compute how many vertices are created
-    int nbVOut = 0;
+    size_t nbVOut = 0;
     bool vsplit = false;
-    for (int i = 0; i < nbVIn; i++)
+    for (size_t i = 0; i < nbVIn; i++)
     {
-        nbVOut += int(vertTexNormMap[i].size());
+        nbVOut += vertTexNormMap[i].size();
     }
 
     msg_info() << nbVIn << " input positions, " << nbVOut << " final vertices.   ";
@@ -435,7 +435,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     }
 
     int nbNOut = 0; /// Number of different normals
-    for (int i = 0, j = 0; i < nbVIn; i++)
+    for (int i = 0, j = 0; i < int(nbVIn); i++)
     {
         positions[i] = verticesImport[i];
 
@@ -496,12 +496,12 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         const vector<int>& verts = vertNormTexIndex[0];
         const vector<int>& texs = vertNormTexIndex[1];
         const vector<int>& norms = vertNormTexIndex[2];
-        vector<int> idxs;
+        vector<Topology::PointID> idxs;
         idxs.resize(verts.size());
-        for (unsigned int j = 0; j < verts.size(); j++)
+        for (auto j = 0; j < verts.size(); j++)
         {
-            idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (m_useNormals.getValue() ? norms[j] : 0))];
-            if ((unsigned)idxs[j] >= (unsigned)nbVOut)
+            idxs[j] = Topology::PointID(vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (m_useNormals.getValue() ? norms[j] : 0))]);
+            if (idxs[j] >= nbVOut)
             {
                 msg_error() << this->getPathName()<<" index "<<idxs[j]<<" out of range";
                 idxs[j] = 0;
@@ -930,10 +930,10 @@ void VisualModelImpl::computeNormals()
         VecDeriv& normals = *(m_vnormals.beginEdit());
 
         normals.resize(nbn);
-        for (int i = 0; i < nbn; i++)
+        for (size_t i = 0; i < nbn; i++)
             normals[i].clear();
 
-        for (unsigned int i = 0; i < triangles.size(); i++)
+        for (size_t i = 0; i < triangles.size(); i++)
         {
             const Coord& v1 = vertices[triangles[i][0]];
             const Coord& v2 = vertices[triangles[i][1]];
@@ -945,7 +945,7 @@ void VisualModelImpl::computeNormals()
             normals[triangles[i][2]] += n;
         }
 
-        for (unsigned int i = 0; i < quads.size(); i++)
+        for (size_t i = 0; i < quads.size(); i++)
         {
             const Coord & v1 = vertices[quads[i][0]];
             const Coord & v2 = vertices[quads[i][1]];
@@ -962,7 +962,7 @@ void VisualModelImpl::computeNormals()
             normals[quads[i][3]] += n4;
         }
 
-        for (unsigned int i = 0; i < normals.size(); i++)
+        for (size_t i = 0; i < normals.size(); i++)
             normals[i].normalize();
 
         m_vnormals.endEdit();
@@ -971,7 +971,7 @@ void VisualModelImpl::computeNormals()
     {
         vector<Coord> normals;
         int nbn = 0;
-        for (unsigned int i = 0; i < vertNormIdx.size(); i++)
+        for (size_t i = 0; i < vertNormIdx.size(); i++)
         {
             if (vertNormIdx[i] >= nbn)
                 nbn = vertNormIdx[i]+1;
@@ -981,7 +981,7 @@ void VisualModelImpl::computeNormals()
         for (int i = 0; i < nbn; i++)
             normals[i].clear();
 
-        for (unsigned int i = 0; i < triangles.size() ; i++)
+        for (size_t i = 0; i < triangles.size() ; i++)
         {
             const Coord & v1 = vertices[triangles[i][0]];
             const Coord & v2 = vertices[triangles[i][1]];
@@ -993,7 +993,7 @@ void VisualModelImpl::computeNormals()
             normals[vertNormIdx[triangles[i][2]]] += n;
         }
 
-        for (unsigned int i = 0; i < quads.size() ; i++)
+        for (size_t i = 0; i < quads.size() ; i++)
         {
             const Coord & v1 = vertices[quads[i][0]];
             const Coord & v2 = vertices[quads[i][1]];
@@ -1010,14 +1010,14 @@ void VisualModelImpl::computeNormals()
             normals[vertNormIdx[quads[i][3]]] += n4;
         }
 
-        for (unsigned int i = 0; i < normals.size(); i++)
+        for (size_t i = 0; i < normals.size(); i++)
         {
             normals[i].normalize();
         }
 
         VecDeriv& vnormals = *(m_vnormals.beginEdit());
         vnormals.resize(vertices.size());
-        for (unsigned int i = 0; i < vertices.size(); i++)
+        for (size_t i = 0; i < vertices.size(); i++)
         {
             vnormals[i] = normals[vertNormIdx[i]];
         }
@@ -1171,7 +1171,7 @@ void VisualModelImpl::computeUVSphereProjection()
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     vtexcoords.resize(nbrV);
 
-    for (int i = 0; i < nbrV; ++i)
+    for (size_t i = 0; i < nbrV; ++i)
     {
         Coord Vcentered = coords[i] - center;
         SReal r = sqrt(Vcentered[0] * Vcentered[0] + Vcentered[1] * Vcentered[1] + Vcentered[2] * Vcentered[2]);

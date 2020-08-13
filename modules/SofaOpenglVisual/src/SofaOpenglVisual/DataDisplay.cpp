@@ -258,7 +258,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             // Triangles
             size_t nbTriangles = m_topology->getNbTriangles();
-            for (int i=0; i<nbTriangles; i++)
+            for (unsigned int i=0; i<nbTriangles; i++)
             {
                 Vec4f color = isnan(triData[i])
                     ? f_colorNaN.getValue()
@@ -276,7 +276,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             // Triangles
             size_t nbTriangles = m_topology->getNbTriangles();
             glBegin(GL_TRIANGLES);
-            for (int i=0; i<nbTriangles; i++)
+            for (unsigned int i=0; i<nbTriangles; i++)
             {
                 Vec4f color0 = isnan(pointTriData[i*3])
                     ? f_colorNaN.getValue()
@@ -309,7 +309,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             glDisable( GL_LIGHTING );
             size_t nbQuads = m_topology->getNbQuads();
-            for (int i=0; i<nbQuads; i++)
+            for (unsigned int i=0; i<nbQuads; i++)
             {
                 Vec4f color = isnan(quadData[i])
                     ? f_colorNaN.getValue()
@@ -326,7 +326,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             glEnable( GL_LIGHTING );
             size_t nbQuads = m_topology->getNbQuads();
             glBegin(GL_QUADS);
-            for (int i=0; i<nbQuads; i++)
+            for (unsigned int i=0; i<nbQuads; i++)
             {
                 Vec4f color0 = isnan(pointQuadData[i*4])
                     ? f_colorNaN.getValue()
@@ -409,7 +409,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
         // Quads
         glBegin(GL_QUADS);
-        for (size_t i=0; i<m_topology->getNbQuads(); ++i)
+        for (sofa::core::topology::Topology::QuadID i=0; i<m_topology->getNbQuads(); ++i)
         {
             const Quad &q = m_topology->getQuad(i);
             Vec4f color[4];
@@ -453,7 +453,7 @@ void DataDisplay::computeNormals()
 
     m_normals.resize(x.size(),Vec3f(0,0,0));
 
-    for (size_t i=0; i<m_topology->getNbTriangles(); ++i)
+    for (sofa::core::topology::Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
     {
         const Triangle &t = m_topology->getTriangle(i);
 
@@ -467,7 +467,7 @@ void DataDisplay::computeNormals()
         m_normals[t[2]] += n;
     }
 
-    for (size_t i=0; i<m_topology->getNbQuads(); ++i)
+    for (sofa::core::topology::Topology::QuadID i=0; i<m_topology->getNbQuads(); ++i)
     {
         const Quad &q = m_topology->getQuad(i);
 
