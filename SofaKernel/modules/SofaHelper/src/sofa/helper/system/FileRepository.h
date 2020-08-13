@@ -143,9 +143,7 @@ public:
 
     void displayPaths() {std::cout<<(*this)<<std::endl;}
 
-    // Zykl.io begin
-    std::string getTempPath() const;
-    // Zykl.io end
+    const std::string getTempPath() const;
 
 protected:
 
