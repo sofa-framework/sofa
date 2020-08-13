@@ -21,6 +21,19 @@
 ******************************************************************************/
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/Utils.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
+
+#include <boost/filesystem.hpp>
+
+#include <cstring>
+#include <cstdlib>
+#include <iostream>
+#include <algorithm>
+#include <sstream>
+#include <filesystem>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -30,18 +43,6 @@
 #else
 #include <unistd.h>
 #endif
-
-#include <boost/filesystem.hpp>
-
-#include <cstring>
-#include <cstdlib>
-#include <iostream>
-#include <algorithm>
-#include <sstream>
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/Utils.h>
-#include <sofa/helper/system/FileSystem.h>
-using sofa::helper::system::FileSystem;
 
 #ifdef WIN32
 #define ON_WIN32 true
@@ -345,36 +346,10 @@ std::string FileRepository::relativeToPath(std::string path, std::string refPath
     return path;
 }
 
-// Zykl.io begin
-std::string FileRepository::getTempPath() const
+const std::string FileRepository::getTempPath() const
 {
-    std::string retval;
-
-#ifdef _WIN32
-    TCHAR wbuf [255];
-    GetTempPath (255, wbuf);
-
-    // conversion
-    char buf[255] = {0};
-    if ( !WideCharToMultiByte(CP_UTF8, 0, wbuf, -1, buf, 255, 0, 0) ) {
-        msg_error("FileRepository") << "widechar to multibyte encoding failed";
-    }
-    retval = std::string(buf);
-#else
-
-#ifdef __linux__
-    char const *folder = getenv("TMPDIR");
-    if (folder == 0)
-        folder = "/tmp/";
-    retval = std::string(folder);
-
-#else
-    msg_error("FileRepository") << "FileRepository::getTempPath() not supported on this platform!";
-#endif
-
-#endif
+    return std::filesystem::temp_directory_path().string();
 }
-// Zykl.io end
 
 } // namespace system
 
