@@ -473,7 +473,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 //        nbNOut = nbVOut;
 //    else if (nbNOut == nbVOut)
 //        vertNormIdx.resize(0);
-    if( vsplit && nbNOut == nbVOut )
+    if( vsplit && nbNOut == int(nbVOut) )
         vertNormIdx.resize(0);
 
 
@@ -498,7 +498,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         const vector<int>& norms = vertNormTexIndex[2];
         vector<Topology::PointID> idxs;
         idxs.resize(verts.size());
-        for (auto j = 0; j < verts.size(); j++)
+        for (size_t j = 0; j < verts.size(); j++)
         {
             idxs[j] = Topology::PointID(vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (m_useNormals.getValue() ? norms[j] : 0))]);
             if (idxs[j] >= nbVOut)
