@@ -21,19 +21,6 @@
 ******************************************************************************/
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/Utils.h>
-#include <sofa/helper/system/FileSystem.h>
-using sofa::helper::system::FileSystem;
-
-#include <boost/filesystem.hpp>
-
-#include <cstring>
-#include <cstdlib>
-#include <iostream>
-#include <algorithm>
-#include <sstream>
-#include <filesystem>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -43,6 +30,18 @@ using sofa::helper::system::FileSystem;
 #else
 #include <unistd.h>
 #endif
+
+#include <boost/filesystem.hpp>
+
+#include <cstring>
+#include <cstdlib>
+#include <iostream>
+#include <algorithm>
+#include <sstream>
+#include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/Utils.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
 
 #ifdef WIN32
 #define ON_WIN32 true
@@ -348,7 +347,7 @@ std::string FileRepository::relativeToPath(std::string path, std::string refPath
 
 const std::string FileRepository::getTempPath() const
 {
-    return std::filesystem::temp_directory_path().string();
+    return boost::filesystem::temp_directory_path().string();
 }
 
 } // namespace system
