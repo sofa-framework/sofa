@@ -88,7 +88,7 @@ public:
 
 
     /// Specific constructor for 1-element vectors.
-    template<int NN = N, typename std::enable_if<NN==1,int>::type = 0>
+    template<size_type NN = N, typename std::enable_if<NN==1,int>::type = 0>
     explicit fixed_array(value_type r1)
     {
         static_assert(N==1, "");
@@ -96,7 +96,7 @@ public:
     }
 
     /// Specific constructor for 2-elements vectors.
-    template<int NN = N, typename std::enable_if<NN==2,int>::type = 0>
+    template<size_type NN = N, typename std::enable_if<NN==2,int>::type = 0>
     fixed_array(value_type r1, value_type r2)
     {
         static_assert(N == 2, "");
@@ -105,7 +105,7 @@ public:
     }
 
     /// Specific constructor for 3-elements vectors.
-    template<int NN = N, typename std::enable_if<NN==3,int>::type = 0>
+    template<size_type NN = N, typename std::enable_if<NN==3,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3)
     {
         static_assert(N == 3, "");
@@ -115,7 +115,7 @@ public:
     }
 
     /// Specific constructor for 4-elements vectors.
-    template<int NN = N, typename std::enable_if<NN==4,int>::type = 0>
+    template<size_type NN = N, typename std::enable_if<NN==4,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4)
     {
         static_assert(N == 4, "");
@@ -126,7 +126,7 @@ public:
     }
 
     /// Specific constructor for 5-elements vectors.
-    template<int NN = N, typename std::enable_if<NN==5,int>::type = 0>
+    template<size_type NN = N, typename std::enable_if<NN==5,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5)
     {
         static_assert(N == 5, "");
@@ -138,7 +138,7 @@ public:
     }
 
     /// Specific constructor for 6-elements vectors.
-    template<int NN = N, typename std::enable_if<NN==6,int>::type = 0>
+    template<size_type NN = N, typename std::enable_if<NN==6,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6)
     {
         static_assert(N == 6, "");
@@ -151,7 +151,7 @@ public:
     }
 
     /// Specific constructor for 7-elements vectors.
-    template<int NN = N, typename std::enable_if<NN==7,int>::type = 0>
+    template<size_type NN = N, typename std::enable_if<NN==7,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7)
     {
         static_assert(N == 7, "");
@@ -165,7 +165,7 @@ public:
     }
 
     /// Specific constructor for 8-elements vectors.
-    template<int NN = N, typename std::enable_if<NN==8,int>::type = 0>
+    template<size_type NN = N, typename std::enable_if<NN==8,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8)
     {
         static_assert(N == 8, "");
@@ -180,7 +180,7 @@ public:
     }
 
     /// Specific constructor for 9-elements vectors.
-    template<int NN = N, typename std::enable_if<NN==9,int>::type = 0>
+    template<size_type NN = N, typename std::enable_if<NN==9,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9)
     {
         static_assert(N == 9, "");
@@ -196,7 +196,7 @@ public:
     }
 
     /// Specific constructor for 10-elements vectors.
-    template<int NN = N, typename std::enable_if<NN==10,int>::type = 0>
+    template<size_type NN = N, typename std::enable_if<NN==10,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9, value_type r10)
     {
         static_assert(N == 10, "");
