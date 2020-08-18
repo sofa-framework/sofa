@@ -131,7 +131,7 @@ void FixedTranslationConstraint<DataTypes>::init()
 }
 
 
-template<int N, class T>
+template<std::size_t N, class T>
 static inline void clearPos(defaulttype::RigidDeriv<N,T>& v)
 {
     getVCenter(v).clear();

@@ -342,7 +342,7 @@ public:
 /// Rigids (as data-structures) support
 ////////////////////////////////////////////////////////////////
 
-template<int N, class T>
+template<std::size_t N, class T>
 class struct_data_trait < sofa::defaulttype::RigidCoord<N, T> >
 {
 public:
@@ -358,11 +358,11 @@ template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidCoord<3 COMMA T>, 1, "
 template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidCoord<2 COMMA T>, 0, "Center", "", typename data_type::Vec2, getCenter());
 template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidCoord<2 COMMA T>, 1, "Orientation", "A", typename data_type::Real, getOrientation());
 
-template<int N, class T>
+template<std::size_t N, class T>
 class data_widget_container < sofa::defaulttype::RigidCoord<N, T> > : public struct_data_widget_container < sofa::defaulttype::RigidCoord<N, T> >
 {};
 
-template<int N, class T>
+template<std::size_t N, class T>
 class struct_data_trait < sofa::defaulttype::RigidMass<N, T> >
 {
 public:
@@ -374,14 +374,14 @@ public:
     }
 };
 
-template<int N, class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<N COMMA T>, 0, "Mass", "Mass", T, mass);
-template<int N, class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<N COMMA T>, 1, "Volume", "Vol", T, volume);
+template<std::size_t N, class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<N COMMA T>, 0, "Mass", "Mass", T, mass);
+template<std::size_t N, class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<N COMMA T>, 1, "Volume", "Vol", T, volume);
 template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<2 COMMA T>, 2, "Inertia Matrix", "Inertia", T, inertiaMatrix);
 template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<3 COMMA T>, 2, "Inertia Matrix", "Inertia", typename data_type::Mat3x3, inertiaMatrix);
 template<class T> STRUCT_DATA_VAR_READONLY(sofa::defaulttype::RigidMass<2 COMMA T>, 3, "Inertia Mass Matrix", "InertialMass", T, inertiaMassMatrix);
 template<class T> STRUCT_DATA_VAR_READONLY(sofa::defaulttype::RigidMass<3 COMMA T>, 3, "Inertia Mass Matrix", "InertialMass", typename data_type::Mat3x3, inertiaMassMatrix);
 
-template<int N, class T>
+template<std::size_t N, class T>
 class data_widget_container < sofa::defaulttype::RigidMass<N, T> > : public struct_data_widget_container < sofa::defaulttype::RigidMass<N, T> >
 {};
 

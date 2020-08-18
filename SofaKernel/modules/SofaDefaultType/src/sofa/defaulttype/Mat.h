@@ -737,7 +737,7 @@ public:
     }
 
     /// Assignment from another matrix
-    template<size_type L2, size_type C2, typename real2> void operator=(const Mat<L2,C2,real2>& m)
+    template<std::size_t L2, std::size_t C2, typename real2> void operator=(const Mat<L2,C2,real2>& m)
     {
         this->Mat<L,C,real>::operator=(m);
     }
@@ -1058,7 +1058,7 @@ void printMaple(std::ostream& o, const Mat<L,C,real>& m)
     o<<"matrix("<<L<<","<<C<<", [";
     for(std::size_t l=0; l<L; ++l)
     {
-        for(size_type c=0; c<C; ++c)
+        for(std::size_t c=0; c<C; ++c)
         {
             o<<m[l][c];
             o<<",\t";

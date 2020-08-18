@@ -670,35 +670,36 @@ class data_widget_container < sofa::core::topology::Topology::Hexahedron > : pub
 /// sofa::defaulttype::Vec support
 ////////////////////////////////////////////////////////////////
 
-template<int N, class T>
+template<std::size_t N, class T>
 class vector_data_trait < sofa::defaulttype::Vec<N, T> >
 {
 public:
     typedef sofa::defaulttype::Vec<N, T> data_type;
     typedef T value_type;
+    typedef typename data_type::size_type size_type;
     enum { NDIM = 1 };
     enum { SIZE = N };
-    static int size(const data_type&) { return SIZE; }
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
+    static size_type size(const data_type&) { return SIZE; }
+    static const char* header(const data_type& /*d*/, size_type /*i*/ = 0)
     {
         return nullptr;
     }
-    static const value_type* get(const data_type& d, int i = 0)
+    static const value_type* get(const data_type& d, size_type i = 0)
     {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
+        return (i < size(d)) ? &(d[i]) : nullptr;
     }
-    static void set( const value_type& v, data_type& d, int i = 0)
+    static void set( const value_type& v, data_type& d, size_type i = 0)
     {
-        if ((unsigned)i < (unsigned)size(d))
+        if (i < size(d))
             d[i] = v;
     }
-    static void resize( int /*s*/, data_type& /*d*/)
+    static void resize( size_type /*s*/, data_type& /*d*/)
     {
     }
 };
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::header(const data_type& /*d*/, int i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::header(const data_type& /*d*/, size_type i)
 {
     switch(i)
     {
@@ -709,7 +710,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::heade
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::header(const data_type& /*d*/, int i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::header(const data_type& /*d*/, size_type i)
 {
     switch(i)
     {
@@ -720,7 +721,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::head
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::header(const data_type& /*d*/, int i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::header(const data_type& /*d*/, size_type i)
 {
     switch(i)
     {
@@ -732,7 +733,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::heade
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<3, double> >::header(const data_type& /*d*/, int i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<3, double> >::header(const data_type& /*d*/, size_type i)
 {
     switch(i)
     {
@@ -743,7 +744,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<3, double> >::head
     return nullptr;
 }
 
-template<int N, class T>
+template<std::size_t N, class T>
 class data_widget_container < sofa::defaulttype::Vec<N, T> > : public fixed_vector_data_widget_container < sofa::defaulttype::Vec<N, T> >
 {};
 

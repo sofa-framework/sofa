@@ -782,7 +782,7 @@ public:
     }
 
     /// Assignment from a vector with different dimensions.
-    template<size_type M, typename real2>
+    template<std::size_t M, typename real2>
     void operator=(const Vec<M,real2>& v)
     {
         this->Vec<N,real>::operator=(v);

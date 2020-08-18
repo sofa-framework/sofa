@@ -55,6 +55,8 @@ public:
     enum { coord_total_size = Coord::total_size };
     enum { deriv_total_size = Deriv::total_size };
 
+    typedef typename TCoord::size_type size_type;
+
     typedef Coord CPos;
     static const CPos& getCPos(const Coord& c) { return c; }
     static void setCPos(Coord& c, const CPos& v) { c = v; }
@@ -71,7 +73,7 @@ protected:
     /// @{
 
     /// default implementation for size >= 3
-    template<int N, class T>
+    template<size_type N, class T>
     struct Impl
     {
         static void set( Coord& c, T x, T y, T z )

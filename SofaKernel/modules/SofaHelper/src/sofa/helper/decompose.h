@@ -372,7 +372,7 @@ private:
       * QL algorithm with implicit shifting, applies to tridiagonal matrices
       * Derived from numerical recipies
       */
-    template <int iSize>
+    template <std::size_t iSize>
     static void QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaulttype::Vec<iSize,Real> &subDiag, defaulttype::Mat<iSize,iSize,Real> &V );
 
 }; // class Decompose
