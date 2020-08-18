@@ -43,12 +43,12 @@ namespace defaulttype
 
 /** DOF types associated with deformable frames. Each deformable frame generates an affine displacement field, with 12 independent degrees of freedom.
  */
-template<int _spatial_dimensions, typename _Real>
+template<std::size_t _spatial_dimensions, typename _Real>
 class StdAffineTypes
 {
 public:
-    static const unsigned int spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
-    static const unsigned int VSize = spatial_dimensions +  spatial_dimensions * spatial_dimensions;  // number of entries
+    static const std::size_t spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
+    static const std::size_t VSize = spatial_dimensions +  spatial_dimensions * spatial_dimensions;  // number of entries
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
     typedef _Real Real;
@@ -73,7 +73,7 @@ public:
         Coord() { clear(); }
         Coord( const Vec<VSize,Real>& d):MyVec(d) {}
         Coord( const SpatialCoord& c, const Frame& a) { getCenter()=c; getAffine()=a;}
-        void clear()  { MyVec::clear(); for(unsigned int i=0; i<_spatial_dimensions; ++i) getAffine()[i][i]=(Real)1.0; } // init affine part to identity
+        void clear()  { MyVec::clear(); for(std::size_t i=0; i<_spatial_dimensions; ++i) getAffine()[i][i]=(Real)1.0; } // init affine part to identity
 
         typedef Real value_type;
 
@@ -164,10 +164,10 @@ public:
         }
 
 
-        template< int N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
-        template< int N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
     typedef helper::vector<Coord> VecCoord;
@@ -179,7 +179,7 @@ public:
     {
         assert ( ancestors.size() == coefs.size() );
         Coord c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
+        for ( std::size_t i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
         return c;
     }
 
@@ -247,13 +247,13 @@ public:
             }
 
             // translation -> identity
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
-                for(unsigned int j=0; j<spatial_dimensions; ++j)
+            for(std::size_t i=0; i<spatial_dimensions; ++i)
+                for(std::size_t j=0; j<spatial_dimensions; ++j)
                     J(i,j)=(i==j)?1.:0;
 
             // affine part
-            for(unsigned int i=0; i<MSize; ++i)
-                for(unsigned int j=0; j<MSize; ++j)
+            for(std::size_t i=0; i<MSize; ++i)
+                for(std::size_t j=0; j<MSize; ++j)
                     J(i+spatial_dimensions,j+spatial_dimensions)=dQOverdM(i,j);
         }
 
@@ -285,8 +285,8 @@ public:
                     Frame W = getVAffine() * Ainv;
 
                     // make it skew-symmetric
-                    for(unsigned i=0; i<spatial_dimensions; i++) W[i][i] = 0.0;
-                    for(unsigned i=0; i<spatial_dimensions; i++)
+                    for(std::size_t i=0; i<spatial_dimensions; i++) W[i][i] = 0.0;
+                    for(std::size_t i=0; i<spatial_dimensions; i++)
                     {
                         for(unsigned j=i+1; j<spatial_dimensions; j++)
                         {
@@ -316,10 +316,10 @@ public:
 
 
 
-        template< int N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
-        template< int N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
 
     };
 
@@ -330,7 +330,7 @@ public:
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
+        for (std::size_t i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
         return c;
     }
 
