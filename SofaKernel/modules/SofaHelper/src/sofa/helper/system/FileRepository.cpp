@@ -347,6 +347,7 @@ std::string FileRepository::relativeToPath(std::string path, std::string refPath
 
 const std::string FileRepository::getTempPath() const
 {
+    // TODO: replace std::filesystem when all compilers support it. (and not std::experimental::filesystem)
     return boost::filesystem::temp_directory_path().string();
 }
 
