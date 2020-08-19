@@ -64,7 +64,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 
-    typedef std::list<int> ListIndex;
+    typedef std::list<std::size_t> ListIndex;
     typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 protected:
     LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);

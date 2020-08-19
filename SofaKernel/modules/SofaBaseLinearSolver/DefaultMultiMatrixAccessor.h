@@ -112,7 +112,7 @@ public:
 protected:
     bool m_doPrintInfo {false} ;
     defaulttype::BaseMatrix* globalMatrix {nullptr} ;
-    unsigned int globalDim {0} ;
+    std::size_t globalDim {0} ;
 
     //           case1                                           case2
     //      |               |                                  |       |

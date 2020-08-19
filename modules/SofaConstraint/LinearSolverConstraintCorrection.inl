@@ -568,7 +568,7 @@ template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin, int end)
 {
     const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const unsigned int derivDim = Deriv::size();
+    const std::size_t derivDim = Deriv::size();
 
     last_disp = begin;
 
@@ -588,10 +588,10 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
             {
-                const unsigned int dof = colIt.index();
+                const std::size_t dof = colIt.index();
                 Deriv disp;
 
-                for(unsigned int j = 0; j < derivDim; j++)
+                for(std::size_t j = 0; j < derivDim; j++)
                 {
                     disp[j] = (Real)(systemLHVector_buf->element(dof * derivDim + j) * odesolver->getPositionIntegrationFactor());
                 }
@@ -639,11 +639,11 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
     }
 
     // course on indices of the dofs involved invoved in the bloc //
-    std::list<int>::const_iterator it_dof(Vec_I_list_dof[last_force].begin()), it_end(Vec_I_list_dof[last_force].end());
+    std::list<std::size_t>::const_iterator it_dof(Vec_I_list_dof[last_force].begin()), it_end(Vec_I_list_dof[last_force].end());
     for(; it_dof!=it_end; ++it_dof)
     {
-        int dof =(*it_dof) ;
-        for  (unsigned int j=0; j<derivDim; j++)
+        std::size_t dof =(*it_dof) ;
+        for (std::size_t j=0; j<derivDim; j++)
             systemRHVector_buf->set(dof * derivDim + j, constraint_force[dof][j]);
     }
 

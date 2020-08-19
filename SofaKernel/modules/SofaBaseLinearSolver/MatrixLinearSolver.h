@@ -330,7 +330,7 @@ protected:
     class GroupData
     {
     public:
-        int systemSize;
+        std::size_t systemSize;
         bool needInvert;
         Matrix* systemMatrix;
         Vector* systemRHVector;

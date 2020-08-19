@@ -38,7 +38,7 @@ namespace defaulttype
 class BaseVector
 {
 public:
-    typedef int Index;
+    typedef std::size_t Index;
 
     virtual ~BaseVector() {}
 

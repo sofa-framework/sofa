@@ -326,7 +326,7 @@ public:
 
 
 /// Simple full matrix container
-template<int LC, typename T = double>
+template<std::size_t LC, typename T = double>
 class BlockDiagonalMatrix : public defaulttype::BaseMatrix
 {
 public:

@@ -442,11 +442,11 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass
     //    for( unsigned i=0 ; i<dimension; ++i )
     //        m->set( i,i,1);
 
-    int i = index;
-    int bi = 0;
+    std::size_t i = index;
+    std::size_t bi = 0;
     m_massMatrix.split_row_index( i, bi );
 
-    int rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
+    std::size_t rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
     if( m_massMatrix.sortedFind( m_massMatrix.getRowIndex(), i, rowId ) )
     {
         typename MassMatrix::Range rowRange( m_massMatrix.getRowBegin()[rowId], m_massMatrix.getRowBegin()[rowId+1] );
