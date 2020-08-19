@@ -772,6 +772,7 @@ macro(sofa_auto_set_target_properties)
         endif()
         get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
         
+        cmake_policy(SET CMP0057 NEW)
         if(NOT "\$<BUILD_INTERFACE:${include_source_root}>" IN_LIST target_include_dirs)
             target_include_directories(${target} PUBLIC "$<BUILD_INTERFACE:${include_source_root}>")
         endif()
