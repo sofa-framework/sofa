@@ -40,10 +40,12 @@ public:
     SOFA_CLASS(MeshXspLoader,sofa::core::loader::MeshLoader);
 
     /// Inherited from MeshLoader
-    bool load() override;
+    bool doLoad() override;
 
 protected:
     MeshXspLoader();
+
+    void doClearBuffers() override;
 };
 
 

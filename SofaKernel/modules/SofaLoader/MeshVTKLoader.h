@@ -19,23 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_MeshVTKLoader_H
-#define SOFA_COMPONENT_LOADER_MeshVTKLoader_H
+#pragma once
 #include "config.h"
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
+namespace sofa::component::loader
 {
-
-namespace component
-{
-
-namespace loader
-{
-
-
 
 namespace basevtkreader{
     class BaseVTKReader ;
@@ -59,7 +50,7 @@ public:
     core::objectmodel::BaseData* tetrasData;
     core::objectmodel::BaseData* hexasData;
 
-    bool load() override;
+    bool doLoad() override;
 
 protected:
     enum VTKFileType { NONE, LEGACY, XML };
@@ -71,12 +62,9 @@ protected:
     BaseVTKReader* reader;
     bool setInputsMesh();
     bool setInputsData();
+
+    void doClearBuffers() override;
 };
 
-} // namespace loader
+} /// namespace sofa::component::loader
 
-} // namespace component
-
-} // namespace sofa
-
-#endif

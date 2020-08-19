@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_MESHSTLLOADER_H
-#define SOFA_COMPONENT_LOADER_MESHSTLLOADER_H
+#pragma once
 #include <SofaGeneralLoader/config.h>
-
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 // Format doc: http://en.wikipedia.org/wiki/STL_(file_format)
@@ -41,8 +33,6 @@ public:
     SOFA_CLASS(MeshSTLLoader,sofa::core::loader::MeshLoader);
 protected:
     MeshSTLLoader();
-public:
-    bool load() override;
 
 protected:
 
@@ -52,6 +42,10 @@ protected:
     // binary
     bool readBinarySTL(const char* filename);
 
+private:
+    void doClearBuffers() override;
+    bool doLoad() override;
+
 public:
     //Add Data here
     Data <unsigned int> _headerSize; ///< Size of the header binary file (just before the number of facet).
@@ -60,13 +54,5 @@ public:
 
 };
 
+} // namespace sofa::component::loader
 
-
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif

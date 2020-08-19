@@ -30,20 +30,15 @@
 #include <sstream>
 #include <string>
 
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
-{
-
-namespace loader
-{
+using sofa::helper::getWriteOnlyAccessor;
 
 using namespace sofa::defaulttype;
 
-int MeshSTLLoaderClass = core::RegisterObject("Specific mesh loader for STL file format.")
-        .add< MeshSTLLoader >()
-        ;
+static int MeshSTLLoaderClass = core::RegisterObject("Loader for the STL file format. STL can be used to represent the surface of object using with a triangulation.")
+        .add< MeshSTLLoader >();
 
 //Base VTK Loader
 MeshSTLLoader::MeshSTLLoader() : MeshLoader()
@@ -54,14 +49,13 @@ MeshSTLLoader::MeshSTLLoader() : MeshLoader()
 }
 
 
-
-bool MeshSTLLoader::load()
+bool MeshSTLLoader::doLoad()
 {
     const char* filename = m_filename.getFullPath().c_str();
     std::string sfilename(filename);
     if (!sofa::helper::system::DataRepository.findFile(sfilename))
     {
-        msg_error() << "File " << filename << " not found ";
+        msg_error(this) << "File " << filename << " not found ";
         return false;
     }
 
@@ -69,49 +63,78 @@ bool MeshSTLLoader::load()
     if (!file.good())
     {
         file.close();
-        msg_error() << "Cannot read file '" << filename << "'.";
+        msg_error(this) << "Cannot read file '" << filename << "'.";
         return false;
     }
 
+    bool ret = false;
     if( _forceBinary.getValue() )
-        return this->readBinarySTL(filename); // -- Reading binary file
-
-    std::string test;
-    file >> test;
-
-    if ( test == "solid" )
-        return this->readSTL(file);
+        ret = this->readBinarySTL(filename); // -- Reading binary file
     else
     {
-        file.close(); // no longer need for an ascii-open file
-        return this->readBinarySTL(filename); // -- Reading binary file
-    }
+        std::string test;
+        file >> test;
 
+        if ( test == "solid" )
+            ret = this->readSTL(file);
+        else
+        {
+            file.close(); // no longer need for an ascii-open file
+            ret = this->readBinarySTL(filename); // -- Reading binary file
+        }
+    }
+    return ret;
 }
 
+bool isBinarySTLValid(const char* filename, const MeshSTLLoader* _this)
+{
+    // Binary STL files have 80-bytes headers. The following 4-bytes is the number of triangular facets in the file
+    // Each facet is described with a 50-bytes field, so a valid binary STL file verifies the following condition:
+    // nFacets * 50 + 84-bytes header == filename
+
+    long filesize;
+    std::ifstream f(filename, std::ifstream::ate | std::ifstream::binary);
+    filesize = f.tellg();
+    if (filesize < 84)
+    {
+        msg_error(_this) << "Can't read binary STL file: " << filename;
+        return false;
+    }
+    f.seekg(0);
+    char buffer[80];
+    f.read(buffer, 80);
+    uint32_t ntriangles;
+    f.read(reinterpret_cast<char*>(&ntriangles), 4);
+    if (filesize != ntriangles * 50 + 84)
+    {
+        msg_error(_this) << filename << " isn't  binary STL file";
+        return false;
+    }
+    return true;
+}
 
 bool MeshSTLLoader::readBinarySTL(const char *filename)
 {
     dmsg_info() << "Reading binary STL file..." ;
+    if (!isBinarySTLValid(filename, this))
+        return false;
 
-    std::ifstream dataFile (filename, std::ios::in | std::ios::binary);
-
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(this->d_positions.beginWriteOnly());
-    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(this->d_normals.beginWriteOnly());
-    helper::vector<Triangle >& my_triangles = *(this->d_triangles.beginWriteOnly());
+    auto my_positions = getWriteOnlyAccessor(d_positions);
+    auto my_normals = getWriteOnlyAccessor(d_normals);
+    auto my_triangles = getWriteOnlyAccessor(this->d_triangles);
 
     std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
     core::topology::Topology::index_type positionCounter = 0;
     bool useMap = d_mergePositionUsingMap.getValue();
 
-
+    std::ifstream dataFile(filename, std::ios::in | std::ifstream::binary);
 
     // Skipping header file
     char buffer[256];
     dataFile.read(buffer, _headerSize.getValue());
 
     uint32_t nbrFacet;
-    dataFile.read((char*)&nbrFacet, 4);
+    dataFile.read(reinterpret_cast<char*>(&nbrFacet), 4);
 
     my_normals.resize( nbrFacet ); // exact size
     my_positions.reserve( nbrFacet * 3 ); // max size
@@ -189,7 +212,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
             }
         }
 
-        this->addTriangle(&my_triangles, the_tri);
+        this->addTriangle(my_triangles, the_tri);
 
         // Attribute byte count
         uint16_t count;
@@ -202,12 +225,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
         return false;
     }
 
-    this->d_positions.endEdit();
-    this->d_triangles.endEdit();
-    this->d_normals.endEdit();
-
     dmsg_info() << "done!" ;
-
     return true;
 }
 
@@ -217,10 +235,9 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
     Vec3f result;
     std::string line;
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
-    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(d_normals.beginEdit());
-    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
-
+    auto my_positions = getWriteOnlyAccessor(d_positions);
+    auto my_normals = getWriteOnlyAccessor(d_normals);
+    auto my_triangles = getWriteOnlyAccessor(d_triangles);
 
     std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
     core::topology::Topology::index_type positionCounter = 0, vertexCounter = 0;
@@ -283,7 +300,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
         }
         else if (bufferWord == "endfacet")
         {
-            this->addTriangle(&my_triangles, the_tri);
+            this->addTriangle(my_triangles, the_tri);
             vertexCounter = 0;
         }
         else if (bufferWord == "endsolid" || bufferWord == "end")
@@ -292,10 +309,6 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
         }
     }
 
-    d_positions.endEdit();
-    d_triangles.endEdit();
-    d_normals.endEdit();
-
     dataFile.close();
 
     dmsg_info() << "done!" ;
@@ -303,13 +316,11 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
     return true;
 }
 
+void MeshSTLLoader::doClearBuffers()
+{
+    /// Nothing to do if no output is added to the "filename" dataTrackerEngine.
+}
 
-
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
+} /// namespace sofa::component::loader
 
 

@@ -39,10 +39,11 @@ class SOFA_GENERAL_LOADER_API MeshOffLoader : public sofa::core::loader::MeshLoa
 public:
     SOFA_CLASS(MeshOffLoader,sofa::core::loader::MeshLoader);
 
-    bool load() override;
+    bool doLoad() override;
 
 protected:
 
+    void doClearBuffers() override;
     bool readOFF(std::ifstream &file, const char* filename);
 
 

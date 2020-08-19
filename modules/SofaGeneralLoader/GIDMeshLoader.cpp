@@ -48,7 +48,7 @@ GIDMeshLoader::~GIDMeshLoader()
 {
 }
 
-bool GIDMeshLoader::load()
+bool GIDMeshLoader::doLoad()
 {
     std::ifstream file(m_filename.getFullPath().c_str());
 
@@ -652,6 +652,13 @@ bool GIDMeshLoader::readHexahedralElements(std::ifstream &file)
     }
 
     return true;
+}
+
+
+void GIDMeshLoader::doClearBuffers()
+{
+    m_dimensions = 0;
+    m_nNode = 0;
 }
 
 } // namespace loader

@@ -74,7 +74,7 @@ AssimpLoader::~AssimpLoader()
 }
 
 
-bool AssimpLoader::load()
+bool AssimpLoader::doLoad()
 {
     // -- Loading file
     if (!canLoad())
