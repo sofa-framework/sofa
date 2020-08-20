@@ -224,7 +224,7 @@ public:
     /// @}
 
     /// If we use the Data as a link and not as value directly
-    std::string getLinkPath() const { return parentBaseData.getPath(); }
+    virtual std::string getLinkPath() const { return parentBaseData.getPath(); }
     /// Return whether this %Data can be used as a linkPath.
     ///
     /// True by default.
