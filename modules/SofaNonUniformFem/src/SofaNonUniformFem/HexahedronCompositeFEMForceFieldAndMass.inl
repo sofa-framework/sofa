@@ -462,7 +462,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
         for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
         {
             //Get the 8 indices of the coarser Hexa
-            const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->getHexahedra()[i];
+            const auto& points = this->_sparseGrid->getHexahedra()[i];
             //Get the 8 points of the coarser Hexa
             helper::fixed_array<Coord,8> nodes;
 

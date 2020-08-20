@@ -150,7 +150,7 @@ void MultilevelHexahedronSetTopologyContainer::getHexaFaceNeighbors(const unsign
         helper::vector<unsigned int> &neighbors)
 {
     const QuadsInHexahedron &hexaQuads = getQuadsInHexahedron(hexa);
-    const sofa::helper::vector< unsigned int > &quadShell = getHexahedraAroundQuad(hexaQuads[faceId]);
+    const auto &quadShell = getHexahedraAroundQuad(hexaQuads[faceId]);
 
     neighbors.clear();
     neighbors.reserve(quadShell.size()-1);
@@ -166,7 +166,7 @@ void MultilevelHexahedronSetTopologyContainer::getHexaVertexNeighbors(const unsi
         helper::vector<unsigned int> &neighbors)
 {
     helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
-    const sofa::helper::vector< unsigned int > &vertexShell = getHexahedraAroundVertex(m_hexahedron[hexa][vertexId]);
+    const auto &vertexShell = getHexahedraAroundVertex(m_hexahedron[hexa][vertexId]);
 
     neighbors.clear();
     neighbors.reserve(vertexShell.size()-1);

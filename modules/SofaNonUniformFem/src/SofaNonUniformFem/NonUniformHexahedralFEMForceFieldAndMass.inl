@@ -247,7 +247,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::top
 template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const core::topology::HexahedraAdded& hexaAddedEvent)
 {
-    const sofa::helper::vector<unsigned int> &hexaModif = hexaAddedEvent.hexahedronIndexArray;
+    const auto &hexaModif = hexaAddedEvent.hexahedronIndexArray;
 
     dmsg_info() << "HEXAHEDRAADDED hexaId: " << hexaModif ;
     const VecElement& hexahedra = this->_topology->getHexahedra();
@@ -309,7 +309,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const core::to
 template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const core::topology::HexahedraRemoved& hexaRemovedEvent)
 {
-    const sofa::helper::vector<unsigned int> &hexaModif = hexaRemovedEvent.getArray();
+    const auto &hexaModif = hexaRemovedEvent.getArray();
 
     dmsg_info() << "HEXAHEDRAREMOVED hexaId: " << hexaModif ;
 

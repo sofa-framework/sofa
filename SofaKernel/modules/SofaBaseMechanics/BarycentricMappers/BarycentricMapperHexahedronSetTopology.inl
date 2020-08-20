@@ -259,9 +259,9 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
         break;
         case core::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
         {
-            const unsigned int nbHexahedra = this->m_fromTopology->getNbHexahedra();
+            const auto nbHexahedra = this->m_fromTopology->getNbHexahedra();
 
-            const helper::vector<unsigned int> &hexahedra =
+            const auto &hexahedra =
                     ( static_cast< const core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
             //        helper::vector<unsigned int> hexahedra(tab);
 

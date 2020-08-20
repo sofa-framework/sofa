@@ -113,8 +113,8 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionM
         sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
 
         // in the neighborhood, if we find a point in common, we cancel the collision
-        const helper::vector <unsigned int>& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
-        const helper::vector <unsigned int>& verticesAroundVertex2 =topology->getVerticesAroundVertex(index2);
+        const auto& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
+        const auto& verticesAroundVertex2 =topology->getVerticesAroundVertex(index2);
 
         for (unsigned int i1=0; i1<verticesAroundVertex1.size(); i1++)
         {

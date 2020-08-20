@@ -2223,14 +2223,14 @@ int MeshTopology::getQuadIndexInHexahedron(const QuadsInHexahedron &t, QuadID qu
         return -1;
 }
 
-MeshTopology::Edge MeshTopology::getLocalEdgesInTetrahedron (const unsigned int i) const
+MeshTopology::Edge MeshTopology::getLocalEdgesInTetrahedron (const HexahedronID i) const
 {
     assert(i<6);
     const unsigned int edgesInTetrahedronArray[6][2]= {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
     return MeshTopology::Edge (edgesInTetrahedronArray[i][0], edgesInTetrahedronArray[i][1]);
 }
 
-MeshTopology::Edge MeshTopology::getLocalEdgesInHexahedron (const unsigned int i) const
+MeshTopology::Edge MeshTopology::getLocalEdgesInHexahedron (const HexahedronID i) const
 {
     assert(i<12);
     const unsigned int edgesInHexahedronArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
@@ -2238,18 +2238,18 @@ MeshTopology::Edge MeshTopology::getLocalEdgesInHexahedron (const unsigned int i
 }
 
 
-int MeshTopology::computeRelativeOrientationInTri(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_t)
+int MeshTopology::computeRelativeOrientationInTri(const PointID ind_p0, const PointID ind_p1, const PointID ind_t)
 {
     const Triangle& t = getTriangles()[ind_t];
     int i = 0;
-    while(i < (int)t.size())
+    while(i < t.size())
     {
         if(ind_p0 == t[i])
             break;
         ++i;
     }
 
-    if(i == (int)t.size()) //ind_p0 is not a PointID in the triangle ind_t
+    if(i == t.size()) //ind_p0 is not a PointID in the triangle ind_t
         return 0;
 
     if(ind_p1 == t[(i+1)%3]) //p0p1 has the same direction of t
@@ -2260,18 +2260,18 @@ int MeshTopology::computeRelativeOrientationInTri(const unsigned int ind_p0, con
     return 0;
 }
 
-int MeshTopology::computeRelativeOrientationInQuad(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_q)
+int MeshTopology::computeRelativeOrientationInQuad(const PointID ind_p0, const PointID ind_p1, const PointID ind_q)
 {
     const Quad& q = getQuads()[ind_q];
     int i = 0;
-    while(i < (int)q.size())
+    while(i < q.size())
     {
         if(ind_p0 == q[i])
             break;
         ++i;
     }
 
-    if(i == (int)q.size()) //ind_p0 is not a PointID in the quad ind_q
+    if(i == q.size()) //ind_p0 is not a PointID in the quad ind_q
         return 0;
 
     if(ind_p1 == q[(i+1)%4]) //p0p1 has the same direction of q
@@ -2284,7 +2284,7 @@ int MeshTopology::computeRelativeOrientationInQuad(const unsigned int ind_p0, co
 
 void MeshTopology::reOrientateTriangle(TriangleID id)
 {
-    if (id >= (unsigned int)this->getNbTriangles())
+    if (id >= this->getNbTriangles())
     {
         msg_warning() << "reOrientateTriangle Triangle ID out of bounds.";
         return;
@@ -2386,7 +2386,7 @@ bool MeshTopology::checkConnexity()
         return false;
     }
 
-    sofa::helper::vector <unsigned int> elemAll = this->getConnectedElement(0);
+    auto elemAll = this->getConnectedElement(0);
 
     if (elemAll.size() != nbr)
     {
@@ -2419,22 +2419,22 @@ size_t MeshTopology::getNumberOfConnectedComponent()
         return 0;
     }
 
-    sofa::helper::vector <unsigned int> elemAll = this->getConnectedElement(0);
+    auto elemAll = this->getConnectedElement(0);
     unsigned int cpt = 1;
 
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        unsigned int other_ID = (unsigned int)elemAll.size();
+        index_type other_ID = elemAll.size();
 
-        for (unsigned int i = 0; i<elemAll.size(); ++i)
+        for (std::size_t i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)
             {
                 other_ID = i;
                 break;
             }
 
-        sofa::helper::vector <unsigned int> elemTmp = this->getConnectedElement(other_ID);
+        auto elemTmp = this->getConnectedElement(other_ID);
         cpt++;
 
         elemAll.insert(elemAll.begin(), elemTmp.begin(), elemTmp.end());
@@ -2444,7 +2444,7 @@ size_t MeshTopology::getNumberOfConnectedComponent()
 }
 
 
-const sofa::helper::vector <unsigned int> MeshTopology::getConnectedElement(unsigned int elem)
+const sofa::helper::vector <index_type> MeshTopology::getConnectedElement(index_type elem)
 {
     size_t nbr = 0;
 
@@ -2459,8 +2459,8 @@ const sofa::helper::vector <unsigned int> MeshTopology::getConnectedElement(unsi
     else
         nbr = this->getNbEdges();
 
-    sofa::helper::vector <unsigned int> elemAll;
-    sofa::helper::vector <unsigned int> elemOnFront, elemPreviousFront, elemNextFront;
+    sofa::helper::vector <index_type> elemAll;
+    sofa::helper::vector <index_type> elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     unsigned int cpt = 0;
 
@@ -2513,9 +2513,9 @@ const sofa::helper::vector <unsigned int> MeshTopology::getConnectedElement(unsi
 }
 
 
-const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElement(unsigned int elem)
+const sofa::helper::vector <index_type> MeshTopology::getElementAroundElement(index_type elem)
 {
-    sofa::helper::vector <unsigned int> elems;
+    sofa::helper::vector <index_type> elems;
     unsigned int nbr = 0;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
@@ -2554,7 +2554,7 @@ const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElement(
 
     for(unsigned int i = 0; i<nbr; ++i) // for each node of the triangle
     {
-        sofa::helper::vector <unsigned int> elemAV;
+        sofa::helper::vector <index_type> elemAV;
 
         if (UpperTopology == core::topology::HEXAHEDRON)
             elemAV = this->getHexahedraAroundVertex(getHexahedron(elem)[i]);
@@ -2592,10 +2592,10 @@ const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElement(
 }
 
 
-const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElements(sofa::helper::vector <unsigned int> elems)
+const sofa::helper::vector <index_type> MeshTopology::getElementAroundElements(sofa::helper::vector <index_type> elems)
 {
-    sofa::helper::vector <unsigned int> elemAll;
-    sofa::helper::vector <unsigned int> elemTmp;
+    sofa::helper::vector <index_type> elemAll;
+    sofa::helper::vector <index_type> elemTmp;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
     {
@@ -2626,7 +2626,7 @@ const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElements
 
     for (unsigned int i = 0; i <elems.size(); ++i) // for each elementID of input vector
     {
-        sofa::helper::vector <unsigned int> elemTmp2 = this->getElementAroundElement(elems[i]);
+        sofa::helper::vector <index_type> elemTmp2 = this->getElementAroundElement(elems[i]);
 
         elemTmp.insert(elemTmp.end(), elemTmp2.begin(), elemTmp2.end());
     }

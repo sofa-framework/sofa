@@ -135,7 +135,7 @@ public:
      * @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
      * @return The number of components connected together.
      */
-    virtual int getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components);
+    virtual int getNumberConnectedComponents(sofa::helper::vector<EdgeID>& components);
 
 
     /** \brief Returns the Edge array.

@@ -132,9 +132,9 @@ public:
     void setLinkedBase(Base* link);
 
     virtual size_t getSize() const = 0;
-    virtual Base* getLinkedBase(unsigned int index=0) const = 0;
-    virtual BaseData* getLinkedData(unsigned int index=0) const = 0;
-    virtual std::string getLinkedPath(unsigned int index=0) const = 0;
+    virtual Base* getLinkedBase(std::size_t index=0) const = 0;
+    virtual BaseData* getLinkedData(std::size_t index=0) const = 0;
+    virtual std::string getLinkedPath(std::size_t index=0) const = 0;
 
     /// @name Serialization API
     /// @{

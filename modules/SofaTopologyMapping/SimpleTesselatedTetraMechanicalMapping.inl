@@ -66,8 +66,8 @@ template <class TIn, class TOut>
 void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams */, OutDataVecCoord& dOut, const InDataVecCoord& dIn)
 {
     if (!topoMap) return;
-    const helper::vector<int>& pointMap = topoMap->getPointMappedFromPoint();
-    const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge();
+    const auto& pointMap = topoMap->getPointMappedFromPoint();
+    const auto& edgeMap = topoMap->getPointMappedFromEdge();
     if (pointMap.empty() && edgeMap.empty()) return;
     const core::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
@@ -92,8 +92,8 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( const core::Mech
 {
 
     if (!topoMap) return;
-    const helper::vector<int>& pointMap = topoMap->getPointMappedFromPoint();
-    const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge();
+    const auto& pointMap = topoMap->getPointMappedFromPoint();
+    const auto& edgeMap = topoMap->getPointMappedFromEdge();
     if (pointMap.empty() && edgeMap.empty()) return;
     const core::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
@@ -117,8 +117,8 @@ template <class TIn, class TOut>
 void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparams */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
     if (!topoMap) return;
-    const helper::vector<int>& pointMap = topoMap->getPointMappedFromPoint();
-    const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge();
+    const auto& pointMap = topoMap->getPointMappedFromPoint();
+    const auto& edgeMap = topoMap->getPointMappedFromEdge();
     if (pointMap.empty() && edgeMap.empty()) return;
     const core::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
@@ -148,7 +148,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::Con
 
     if (!topoMap) return;
 
-    const helper::vector<int>& pointSource = topoMap->getPointSource();
+    const auto& pointSource = topoMap->getPointSource();
     if (pointSource.empty()) return;
 
     const core::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();

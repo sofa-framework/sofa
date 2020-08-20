@@ -47,7 +47,7 @@ typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyCreateFunction(unsigned int, EdgeRestInformation &ei, const core::topology::BaseMeshTopology::Edge &edge, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyCreateFunction(index_type, EdgeRestInformation &ei, const core::topology::BaseMeshTopology::Edge &edge, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -68,9 +68,9 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
 }
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronCreation(const sofa::helper::vector<unsigned int> &tetrahedronAdded,
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronCreation(const sofa::helper::vector<index_type> &tetrahedronAdded,
         const sofa::helper::vector<Tetrahedron> &,
-        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
+        const sofa::helper::vector<sofa::helper::vector<index_type> > &,
         const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
     if (ff)
@@ -157,7 +157,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
 }
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> &tetrahedronRemoved)
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronDestruction(const sofa::helper::vector<index_type> &tetrahedronRemoved)
 {
     if (ff)
     {
@@ -245,9 +245,9 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
 template< class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::ApplyTopologyChange(const core::topology::TetrahedraAdded* e)
 {
-    const sofa::helper::vector<unsigned int> &tetraAdded = e->getIndexArray();
+    const auto &tetraAdded = e->getIndexArray();
     const sofa::helper::vector<Tetrahedron> &elems = e->getElementArray();
-    const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
+    const auto & ancestors = e->ancestorsList;
     const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
 
     applyTetrahedronCreation(tetraAdded, elems, ancestors, coefs);
@@ -256,7 +256,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::Apply
 template< class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::ApplyTopologyChange(const core::topology::TetrahedraRemoved* e)
 {
-    const sofa::helper::vector<unsigned int> &tetraRemoved = e->getArray();
+    const auto &tetraRemoved = e->getArray();
 
     applyTetrahedronDestruction(tetraRemoved);
 }
@@ -326,22 +326,22 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
         _initialPoints=p;
     }
 
-    size_t i;
+    index_type i;
     // set edge tensor to 0
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
         edgeHandler->applyCreateFunction(i, edgeInf[i],
-                m_topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
+                m_topology->getEdge(i),  (const sofa::helper::vector< index_type > )0,
                 (const sofa::helper::vector< double >)0);
     }
     // create edge tensor by calling the tetrahedron creation function
-    sofa::helper::vector<unsigned int> tetrahedronAdded;
+    sofa::helper::vector<index_type> tetrahedronAdded;
     for (i=0; i<m_topology->getNbTetrahedra(); ++i)
         tetrahedronAdded.push_back(i);
 
     edgeHandler->applyTetrahedronCreation(tetrahedronAdded,
             (const sofa::helper::vector<Tetrahedron>)0,
-            (const sofa::helper::vector<sofa::helper::vector<unsigned int> >)0,
+            (const sofa::helper::vector<sofa::helper::vector<index_type> >)0,
             (const sofa::helper::vector<sofa::helper::vector<double> >)0);
 
     edgeInfo.endEdit();

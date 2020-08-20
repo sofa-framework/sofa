@@ -248,12 +248,12 @@ public:
     size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const helper::vector<unsigned int> getConnectedElement(unsigned int elem) override;
+    virtual const helper::vector<index_type> getConnectedElement(index_type elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const helper::vector<unsigned int> getElementAroundElement(unsigned int elem) override;
+    virtual const helper::vector<index_type> getElementAroundElement(index_type elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const helper::vector<unsigned int> getElementAroundElements(helper::vector<unsigned int> elems) override;
+    virtual const helper::vector<index_type> getElementAroundElements(helper::vector<index_type> elems) override;
     /// @}
 
     // Get point positions (same methods as points accessors but not inherited)
@@ -306,13 +306,13 @@ public:
     // opposite dirction: return -1
     // same direction: return 1
     // otherwise: return 0
-    int computeRelativeOrientationInTri(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_t);
+    int computeRelativeOrientationInTri(const PointID ind_p0, const PointID ind_p1, const PointID ind_t);
 
     // test whether p0p1 has the same orientation as triangle t
     // opposite dirction: return -1
     // same direction: return 1
     // otherwise: return 0
-    int computeRelativeOrientationInQuad(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_q);
+    int computeRelativeOrientationInQuad(const PointID ind_p0, const PointID ind_p1, const PointID ind_q);
 
     /// Will change order of vertices in triangle: t[1] <=> t[2]
     void reOrientateTriangle(TriangleID id) override;
@@ -620,10 +620,10 @@ public:
     /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge
     *
     */
-    Edge getLocalEdgesInTetrahedron (const unsigned int i) const override;
+    Edge getLocalEdgesInTetrahedron (const HexahedronID i) const override;
 
     /** \brief Returns for each index (between 0 and 12) the two vertex indices that are adjacent to that edge */
-    Edge getLocalEdgesInHexahedron (const unsigned int i) const override;
+    Edge getLocalEdgesInHexahedron (const HexahedronID i) const override;
 
   	/** \ brief returns the topologyType */
 	  sofa::core::topology::TopologyObjectType getTopologyType() const override {return UpperTopology;}

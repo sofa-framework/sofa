@@ -67,8 +67,8 @@ void PointInfo::buildFilter(unsigned int p_index)
 
     // get the topology
     BaseMeshTopology* bmt = this->base_mesh_topology;
-    const vector< unsigned int >& edgesAroundVertex = bmt->getEdgesAroundVertex(p_index);
-    const vector< unsigned int >& trianglesAroundVertex = bmt->getTrianglesAroundVertex(p_index);
+    const auto& edgesAroundVertex = bmt->getEdgesAroundVertex(p_index);
+    const auto& trianglesAroundVertex = bmt->getTrianglesAroundVertex(p_index);
 
     if(edgesAroundVertex.size() ==0)
     {
@@ -83,8 +83,8 @@ void PointInfo::buildFilter(unsigned int p_index)
 
     // compute the normal (nMean) of the point : IS IT STORED ANYWHERE ELSE ?
     // 1. using triangle around the point
-    vector< unsigned int >::const_iterator triIt = trianglesAroundVertex.begin();
-    vector< unsigned int >::const_iterator triItEnd = trianglesAroundVertex.end();
+    auto triIt = trianglesAroundVertex.begin();
+    auto triItEnd = trianglesAroundVertex.end();
     sofa::defaulttype::Vector3 nMean;
     while (triIt != triItEnd)
     {
@@ -99,8 +99,8 @@ void PointInfo::buildFilter(unsigned int p_index)
     if (trianglesAroundVertex.empty())
     {
         msg_info_when(debug, "PointInfo") <<" trianglesAroundVertex.empty !";
-        vector< unsigned int >::const_iterator edgeIt = edgesAroundVertex.begin();
-        vector< unsigned int >::const_iterator edgeItEnd = edgesAroundVertex.end();
+        auto edgeIt = edgesAroundVertex.begin();
+        auto edgeItEnd = edgesAroundVertex.end();
 
         while (edgeIt != edgeItEnd)
         {
@@ -126,8 +126,8 @@ void PointInfo::buildFilter(unsigned int p_index)
 
     // Build the set of unit vector that are normal to the planes that defines the cone
     // for each plane, we can "extend" the cone: allow for a larger cone
-    vector< unsigned int >::const_iterator edgeIt = edgesAroundVertex.begin();
-    vector< unsigned int >::const_iterator edgeItEnd = edgesAroundVertex.end();
+    auto edgeIt = edgesAroundVertex.begin();
+    auto edgeItEnd = edgesAroundVertex.end();
 
     m_computedData.clear();
     while (edgeIt != edgeItEnd)

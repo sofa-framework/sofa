@@ -271,18 +271,6 @@ void VectorSpringForceField<DataTypes>::handleEvent( core::objectmodel::Event* e
         {
             sofa::core::objectmodel::KeypressedEvent* ke = static_cast<sofa::core::objectmodel::KeypressedEvent*>( e );
 
-            /// handle ctrl+d key
-            if (ke->getKey()=='D')
-            {
-                if (m_topology->getNbEdges()>12)
-                {
-
-                    sofa::helper::vector<unsigned int> edgeArray;
-                    edgeArray.push_back(12);
-                    edgeMod->removeEdges(edgeArray);
-                }
-                //            edgeMod->splitEdges(edgeArray);
-            }
         }
     }
 }

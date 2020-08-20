@@ -85,12 +85,15 @@ protected:
             }
             if constexpr (N == 2)
             {
+                SOFA_UNUSED(z);
                 c[0] = Real(x);
                 c[1] = Real(y);
                 c[2] = Real(0);
             }
             if constexpr (N == 1)
             {
+                SOFA_UNUSED(y);
+                SOFA_UNUSED(z);
                 c[0] = Real(x);
                 c[1] = Real(0);
                 c[2] = Real(0);
@@ -107,12 +110,15 @@ protected:
             }
             if constexpr (N == 2)
             {
+                SOFA_UNUSED(z);
                 x = T(c[0]);
                 y = T(c[1]);
                 z = T(0);
             }
             if constexpr (N == 1)
             {
+                SOFA_UNUSED(y);
+                SOFA_UNUSED(z);
                 x = T(c[0]);
                 y = T(0);
                 z = T(0);
@@ -129,12 +135,15 @@ protected:
             }
             if constexpr (N == 2)
             {
+                SOFA_UNUSED(z);
                 c[0] += Real(x);
                 c[1] += Real(y);
                 c[2] += Real(0);
             }
             if constexpr (N == 1)
             {
+                SOFA_UNUSED(y);
+                SOFA_UNUSED(z);
                 c[0] += Real(x);
                 c[1] += Real(0);
                 c[2] += Real(0);

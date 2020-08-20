@@ -470,7 +470,7 @@ protected:
     void changeContextLink(BaseContext* before, BaseContext*& after);
 
     /// This method insures that slaves objects have master and context links set correctly
-    void changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add);
+    void changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, bool add);
 
     /// BaseNode can set the context of its own objects
     friend class BaseNode;

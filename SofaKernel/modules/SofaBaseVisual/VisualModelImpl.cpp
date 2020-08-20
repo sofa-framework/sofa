@@ -1515,7 +1515,7 @@ void VisualModelImpl::handleTopologyChange()
 
             last = m_topology->getNbTriangles() - 1;
 
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const sofa::core::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
+            const auto &tab = ( static_cast< const sofa::core::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
 
             Triangle tmp;
 
@@ -1556,7 +1556,7 @@ void VisualModelImpl::handleTopologyChange()
 
             last = m_topology->getNbQuads() - 1;
 
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const sofa::core::topology::QuadsRemoved *>( *itBegin ) )->getArray();
+            const auto &tab = ( static_cast< const sofa::core::topology::QuadsRemoved *>( *itBegin ) )->getArray();
 
             Quad tmp;
 
@@ -1593,7 +1593,7 @@ void VisualModelImpl::handleTopologyChange()
 
                 unsigned int i,j;
 
-                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
+                const auto& tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
                 sofa::helper::vector<unsigned int> lastIndexVec;
 
@@ -1618,7 +1618,7 @@ void VisualModelImpl::handleTopologyChange()
                         lastIndexVec[i_next] = lastIndexVec[i];
                     }
 
-                    const sofa::helper::vector<unsigned int> &shell= m_topology->getTrianglesAroundVertex(lastIndexVec[i]);
+                    const auto &shell= m_topology->getTrianglesAroundVertex(lastIndexVec[i]);
                     for (j=0; j<shell.size(); ++j)
                     {
                         unsigned int ind_j = shell[j];
@@ -1695,7 +1695,7 @@ void VisualModelImpl::handleTopologyChange()
 
                 unsigned int i,j;
 
-                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
+                const auto& tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
                 sofa::helper::vector<unsigned int> lastIndexVec;
                 for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
@@ -1718,7 +1718,7 @@ void VisualModelImpl::handleTopologyChange()
                         lastIndexVec[i_next] = lastIndexVec[i];
                     }
 
-                    const sofa::helper::vector<unsigned int> &shell= m_topology->getQuadsAroundVertex(lastIndexVec[i]);
+                    const auto &shell= m_topology->getQuadsAroundVertex(lastIndexVec[i]);
                     for (j=0; j<shell.size(); ++j)
                     {
                         unsigned int ind_j = shell[j];
@@ -1746,7 +1746,7 @@ void VisualModelImpl::handleTopologyChange()
             {
                 unsigned int i;
 
-                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+                const auto& tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
                 for ( i = 0; i < triangles.size(); ++i)
                 {
@@ -1760,7 +1760,7 @@ void VisualModelImpl::handleTopologyChange()
             {
                 unsigned int i;
 
-                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+                const auto& tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
                 for ( i = 0; i < quads.size(); ++i)
                 {

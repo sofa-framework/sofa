@@ -868,7 +868,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
             size_t i =0;
             bool is_in_next_triangle=false;
             TriangleID ind_triangle=0;
-            unsigned ind_t_false_init;
+            TriangleID ind_t_false_init;
             TriangleID &ind_t_false = ind_t_false_init;
 
             if(shell.size()>1)

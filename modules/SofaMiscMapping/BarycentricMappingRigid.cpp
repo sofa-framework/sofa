@@ -133,7 +133,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
         {
             const unsigned int nbHexahedra = this->m_fromTopology->getNbHexahedra();
 
-            const sofa::helper::vector<unsigned int> &hexahedra =
+            const auto &hexahedra =
                     ( static_cast< const sofa::core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
 
             for ( unsigned int i=0; i<hexahedra.size(); ++i )

@@ -80,7 +80,7 @@ public:
     */
     void updateTopologicalMappingTopDown() override;
 
-    unsigned int getFromIndex(unsigned int ind) override;
+    index_type getFromIndex(index_type ind) override;
 
     sofa::core::objectmodel::Data<bool> swapping; ///< Boolean enabling to swapp hexa-edges  in order to avoid bias effect
 

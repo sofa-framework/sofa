@@ -110,7 +110,7 @@ bool cholInv(Mat<n,n,real>& Inv, const Mat<n,n,real>& M )
 {
     Mat<n,n,real> L;
     if( !cholDcmp(L,M) ) return false;
-    for(unsigned i=0; i<n; i++ )
+    for(std::size_t i=0; i<n; i++ )
     {
         Vec<n,real> v; // initialized to 0
         v[i]=1;

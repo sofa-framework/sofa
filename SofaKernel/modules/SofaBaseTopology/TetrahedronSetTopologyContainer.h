@@ -325,7 +325,7 @@ public:
     inline friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t)
     {
         unsigned int s=0;
-        sofa::helper::vector< unsigned int > value;
+        sofa::helper::vector< HexahedronID > value;
         helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
 
         in >> m_tetrahedron >> t.m_edgesInTetrahedron >> t.m_trianglesInTetrahedron;
@@ -488,7 +488,7 @@ protected:
     sofa::helper::vector< TetrahedraAroundEdge > m_tetrahedraAroundEdge;
 
     /// removed tetrahedron index
-    sofa::helper::vector<unsigned int> m_removedTetraIndex;
+    sofa::helper::vector<TetrahedronID> m_removedTetraIndex;
 
     /// for each triangle provides the set of tetrahedra adjacent to that triangle.
     sofa::helper::vector< TetrahedraAroundTriangle > m_tetrahedraAroundTriangle;

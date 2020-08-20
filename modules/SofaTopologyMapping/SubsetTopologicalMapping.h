@@ -87,8 +87,8 @@ public:
     void updateTopologicalMappingTopDown() override;
 
     bool isTheOutputTopologySubdividingTheInputOne() override { return true; }
-    unsigned int getGlobIndex(unsigned int ind) override;
-    unsigned int getFromIndex(unsigned int ind) override;
+    index_type getGlobIndex(index_type ind) override;
+    index_type getFromIndex(index_type ind) override;
 
 };
 

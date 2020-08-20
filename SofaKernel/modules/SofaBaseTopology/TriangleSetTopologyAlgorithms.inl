@@ -2247,7 +2247,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(EdgeID ind_edge, i
     unsigned ind_pa = edge0[0];
     unsigned ind_pb = edge0[1];
 
-    const helper::vector<unsigned>& triangles0 = m_container->getTrianglesAroundEdge(ind_edge);
+    const helper::vector<TriangleID>& triangles0 = m_container->getTrianglesAroundEdge(ind_edge);
     if (triangles0.size() != 2)
     {
         msg_error() << "InciseAlongEdge: ERROR edge "<<ind_edge<<" is not attached to 2 triangles.";
@@ -2286,7 +2286,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(EdgeID ind_edge, i
         if (ind_edgea == ind_edge)
             break; // full loop
 
-        const helper::vector<unsigned>& tes = m_container->getTrianglesAroundEdge(ind_edgea);
+        const auto& tes = m_container->getTrianglesAroundEdge(ind_edgea);
         if(tes.size() < 2)
             break; // border edge
 
@@ -2318,7 +2318,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(EdgeID ind_edge, i
         if (ind_edgeb == ind_edge)
             break; // full loop
 
-        const helper::vector<unsigned>& tes = m_container->getTrianglesAroundEdge(ind_edgeb);
+        const auto& tes = m_container->getTrianglesAroundEdge(ind_edgeb);
         if(tes.size() < 2)
             break; // border edge
 

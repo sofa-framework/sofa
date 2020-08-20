@@ -224,7 +224,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, Ou
 {
 
 // index of lines:
-    const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
+    const auto& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
     unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
     E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
 
@@ -285,7 +285,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Out
 {
 
 // index of lines:
-    const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
+    const auto& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
     unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
     E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
 
@@ -403,8 +403,8 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
 
 
     // index of lines:
-    const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
-    const fixed_array<unsigned int,3>& edgesInTriangle2 = e2.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e2.getIndex());
+    const auto& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
+    const auto& edgesInTriangle2 = e2.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e2.getIndex());
 
     unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
     unsigned int E2edge1verif, E2edge2verif, E2edge3verif;

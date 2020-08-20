@@ -52,7 +52,7 @@ public:
 
     virtual ~TopologyHandler() {}
 
-    virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange *>& _topologyChangeEvents, const unsigned int _dataSize);
+    virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange *>& _topologyChangeEvents, const std::size_t _dataSize);
 
     virtual void ApplyTopologyChange(const core::topology::EndingEvent* /*event*/) {}
 
@@ -151,17 +151,17 @@ public:
     virtual bool isTopologyDataRegistered() {return false;}
 
     /// Swaps values at indices i1 and i2.
-    virtual void swap( unsigned int /*i1*/, unsigned int /*i2*/ ) {}
+    virtual void swap(std::size_t /*i1*/, std::size_t /*i2*/ ) {}
 
     /// Reorder the values.
-    virtual void renumber( const sofa::helper::vector<unsigned int> &/*index*/ ) {}
+    virtual void renumber( const sofa::helper::vector<std::size_t> &/*index*/ ) {}
 
 protected:
     /// to handle PointSubsetData
-    void setDataSetArraySize(const unsigned int s) { lastElementIndex = s-1; }
+    void setDataSetArraySize(const std::size_t s) { lastElementIndex = s-1; }
 
     /// to handle properly the removal of items, the container must know the index of the last element
-    unsigned int lastElementIndex;
+    std::size_t lastElementIndex;
 };
 
 

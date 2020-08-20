@@ -71,7 +71,7 @@ void LineInfo::buildFilter(unsigned int edge_index)
     m_lineVector = pt2 - pt1;
     m_lineVector.normalize();
 
-    const sofa::helper::vector<unsigned int>& trianglesAroundEdge = bmt->getTrianglesAroundEdge(edge_index);
+    const auto& trianglesAroundEdge = bmt->getTrianglesAroundEdge(edge_index);
 
     if (debug)
         std::cout<<"trianglesAroundEdge: "<<trianglesAroundEdge<<"  -";
