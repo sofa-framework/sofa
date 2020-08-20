@@ -82,7 +82,7 @@ void ParticleSink<DataTypes>::animateBegin(double /*dt*/, double time)
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     int n = int(x.size());
-    helper::vector<unsigned int> remove;
+    helper::vector<index_type> remove;
     for (int i=n-1; i>=0; --i) // always remove points in reverse order
     {
         Real d = x[i]*d_planeNormal.getValue()-d_planeD1.getValue();
