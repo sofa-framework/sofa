@@ -54,10 +54,10 @@ void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
                             };
 
     const vector<Vector3>& points = mesh->getVertices();
-    const vector< vector< vector<int> > >& facets = mesh->getFacets();
+    const auto& facets = mesh->getFacets();
     for (unsigned int i = 0; i < facets.size(); i++)
     {
-        const vector<int>& v = facets[i][0];
+        const auto& v = facets[i][0];
         for (unsigned int j = 2; j < v.size(); j++)
         {
             // get vertices of current triangle

@@ -273,9 +273,9 @@ void CompliantAttachPerformer<DataTypes>::start()
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = pointOnRay;
         _vm->m_positions.endEdit();
-        helper::vector< visualmodel::OglModel::Triangle >& vmtri= *_vm->m_triangles.beginWriteOnly();
+        helper::vector< visualmodel::OglModel::VisualTriangle >& vmtri= *_vm->m_triangles.beginWriteOnly();
         vmtri.resize(1);
-        vmtri[0] = visualmodel::OglModel::Triangle( 0, 0, 1 );
+        vmtri[0] = { 0, 0, 1 };
         _vm->m_triangles.endEdit();
         interactionNode->addObject( _vm );
         _vm->setName("mouse");

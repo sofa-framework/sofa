@@ -110,11 +110,11 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
             mesh = new helper::io::Mesh();
             for (unsigned int i = 0; i<seqPoints.getValue().size(); ++i)
                 mesh->getVertices().push_back(seqPoints.getValue()[i]);
-            const helper::vector < helper::vector <int> >& facets = this->facets.getValue();
+            const auto& facets = this->facets.getValue();
             const SeqTriangles& triangles = this->seqTriangles.getValue();
             const SeqQuads& quads = this->seqQuads.getValue();
             mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
-            for (unsigned int i = 0; i<facets.size(); ++i)
+            for (std::size_t i = 0; i<facets.size(); ++i)
                 mesh->getFacets()[i].push_back(facets[i]);
             for (unsigned int i0 = facets.size(), i = 0; i<triangles.size(); ++i)
             {
@@ -124,7 +124,7 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
                 mesh->getFacets()[i0 + i][0][1] = triangles[i][1];
                 mesh->getFacets()[i0 + i][0][2] = triangles[i][2];
             }
-            for (unsigned int i0 = facets.size() + triangles.size(), i = 0; i<quads.size(); ++i)
+            for (std::size_t i0 = facets.size() + triangles.size(), i = 0; i<quads.size(); ++i)
             {
                 mesh->getFacets()[i0 + i].resize(1);
                 mesh->getFacets()[i0 + i][0].resize(4);
@@ -247,11 +247,11 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int
     }
 
 
-    const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
+    const auto& facets = mesh->getFacets();
     const helper::vector<Vector3>& vertices = mesh->getVertices();
     for (unsigned int f=0; f<facets.size(); f++)
     {
-        const helper::vector<int>& facet = facets[f][0];
+        const auto& facet = facets[f][0];
 
         for (unsigned int j=1; j<facet.size(); j++) // Triangularize
         {

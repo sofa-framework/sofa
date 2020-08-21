@@ -146,9 +146,9 @@ void OglModel::drawGroup(int ig, bool transparent)
 {
     glEnable(GL_NORMALIZE);
 
-    const Inherit::VecEdge& edges = this->getEdges();
-    const Inherit::VecTriangle& triangles = this->getTriangles();
-    const Inherit::VecQuad& quads = this->getQuads();
+    const Inherit::VecVisualEdge& edges = this->getEdges();
+    const Inherit::VecVisualTriangle& triangles = this->getTriangles();
+    const Inherit::VecVisualQuad& quads = this->getQuads();
 
     const VecCoord& vertices = this->getVertices();
     const VecDeriv& vnormals = this->getVnormals();
@@ -234,7 +234,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     }
     if (g.nbe > 0 && !drawPoints)
     {
-        const Edge* indices = nullptr;
+        const VisualEdge* indices = nullptr;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
 
@@ -258,7 +258,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     }
     if (g.nbt > 0 && !drawPoints)
     {
-        const Triangle* indices = nullptr;
+        const VisualTriangle* indices = nullptr;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
 
@@ -281,7 +281,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     }
     if (g.nbq > 0 && !drawPoints)
     {
-        const Quad* indices = nullptr;
+        const VisualQuad* indices = nullptr;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
 
@@ -807,7 +807,7 @@ void OglModel::initVertexBuffer()
 
 void OglModel::initEdgesIndicesBuffer()
 {
-    const Inherit::VecEdge& edges = this->getEdges();
+    const Inherit::VecVisualEdge& edges = this->getEdges();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(edges.size()*sizeof(edges[0])), nullptr, GL_DYNAMIC_DRAW);
@@ -818,7 +818,7 @@ void OglModel::initEdgesIndicesBuffer()
 
 void OglModel::initTrianglesIndicesBuffer()
 {
-    const Inherit::VecTriangle& triangles = this->getTriangles();
+    const Inherit::VecVisualTriangle& triangles = this->getTriangles();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(triangles.size()*sizeof(triangles[0])), nullptr, GL_DYNAMIC_DRAW);
@@ -829,7 +829,7 @@ void OglModel::initTrianglesIndicesBuffer()
 
 void OglModel::initQuadsIndicesBuffer()
 {
-    const Inherit::VecQuad& quads = this->getQuads();
+    const Inherit::VecVisualQuad& quads = this->getQuads();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(quads.size()*sizeof(quads[0])), nullptr, GL_DYNAMIC_DRAW);
@@ -919,7 +919,7 @@ void OglModel::updateVertexBuffer()
 
 void OglModel::updateEdgesIndicesBuffer()
 {
-    const VecEdge& edges = this->getEdges();
+    const VecVisualEdge& edges = this->getEdges();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(edges.size()*sizeof(edges[0])), &edges[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -927,7 +927,7 @@ void OglModel::updateEdgesIndicesBuffer()
 
 void OglModel::updateTrianglesIndicesBuffer()
 {
-    const VecTriangle& triangles = this->getTriangles();
+    const VecVisualTriangle& triangles = this->getTriangles();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(triangles.size()*sizeof(triangles[0])), &triangles[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -935,16 +935,16 @@ void OglModel::updateTrianglesIndicesBuffer()
 
 void OglModel::updateQuadsIndicesBuffer()
 {
-    const VecQuad& quads = this->getQuads();
+    const VecVisualQuad& quads = this->getQuads();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(quads.size()*sizeof(quads[0])), &quads[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 void OglModel::updateBuffers()
 {
-    const Inherit::VecEdge& edges = this->getEdges();
-    const Inherit::VecTriangle& triangles = this->getTriangles();
-    const Inherit::VecQuad& quads = this->getQuads();
+    const Inherit::VecVisualEdge& edges = this->getEdges();
+    const Inherit::VecVisualTriangle& triangles = this->getTriangles();
+    const Inherit::VecVisualQuad& quads = this->getQuads();
 
     const VecCoord& vertices = this->getVertices();
     const VecDeriv& normals = this->getVnormals();

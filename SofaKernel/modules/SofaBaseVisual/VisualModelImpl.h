@@ -36,7 +36,6 @@
 #include <map>
 #include <string>
 
-
 namespace sofa
 {
 
@@ -88,13 +87,18 @@ public:
 
     typedef sofa::defaulttype::Vec<2, float> TexCoord;
     typedef helper::vector<TexCoord> VecTexCoord;
+
+    using index_type = sofa::defaulttype::index_type;
     
-    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
-    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
-    typedef helper::vector<Edge> VecEdge;
-    typedef helper::vector<Triangle> VecTriangle;
-    typedef helper::vector<Quad> VecQuad;
+    //Indices must be unsigned int for drawing
+    using visual_index_type = unsigned int;
+
+    typedef helper::fixed_array<visual_index_type, 2> VisualEdge;
+    typedef helper::fixed_array<visual_index_type, 3> VisualTriangle;
+    typedef helper::fixed_array<visual_index_type, 4> VisualQuad;
+    typedef helper::vector<VisualEdge> VecVisualEdge;
+    typedef helper::vector<VisualTriangle> VecVisualTriangle;
+    typedef helper::vector<VisualQuad> VecVisualQuad;
 
     typedef Vec3State::DataTypes DataTypes;
     typedef DataTypes::Real Real;
@@ -102,6 +106,7 @@ public:
     typedef DataTypes::VecCoord VecCoord;
     typedef DataTypes::Deriv Deriv;
     typedef DataTypes::VecDeriv VecDeriv;
+
 
     bool useTopology; ///< True if list of facets should be taken from the attached topology
     int lastMeshRev; ///< Time stamps from the last time the mesh was updated from the topology
@@ -122,18 +127,18 @@ public:
     topology::PointData< VecTexCoord > m_vtexcoords; ///< coordinates of the texture
     topology::PointData< VecCoord > m_vtangents; ///< tangents for normal mapping
     topology::PointData< VecCoord > m_vbitangents; ///< tangents for normal mapping
-    Data< VecEdge > m_edges; ///< edges of the model
-    Data< VecTriangle > m_triangles; ///< triangles of the model
-    Data< VecQuad > m_quads; ///< quads of the model
+    Data< VecVisualEdge > m_edges; ///< edges of the model
+    Data< VecVisualTriangle > m_triangles; ///< triangles of the model
+    Data< VecVisualQuad > m_quads; ///< quads of the model
   
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertex
     /// If it is empty then each vertex correspond to one position
-    Data< helper::vector<int> > m_vertPosIdx;
+    Data< helper::vector<visual_index_type> > m_vertPosIdx;
 
     /// Similarly this vector store which input normal is used for each vertex
     /// If it is empty then each vertex correspond to one normal
-    Data< helper::vector<int> > m_vertNormIdx;
+    Data< helper::vector<visual_index_type> > m_vertNormIdx;
 
     /// Rendering method.
     virtual void internalDraw(const core::visual::VisualParams* /*vparams*/, bool /*transparent*/) {}
@@ -197,15 +202,15 @@ public:
     public:
         /// tri0: first triangle index of a group
         /// nbt: number of triangle elements
-        int tri0, nbt;
+        visual_index_type tri0, nbt;
 
         /// quad0: first quad index of a group
         /// nbq: number of quad elements
-        int quad0, nbq;
+        visual_index_type quad0, nbq;
 
         /// edge0: first edge index of a group
         /// nbe: number of edge elements
-        int edge0, nbe;
+        visual_index_type edge0, nbe;
 
         std::string materialName;
         std::string groupName;
@@ -322,17 +327,17 @@ public:
         return m_vbitangents.getValue();
     }
 
-    const VecTriangle& getTriangles() const
+    const VecVisualTriangle& getTriangles() const
     {
         return m_triangles.getValue();
     }
 
-    const VecQuad& getQuads() const
+    const VecVisualQuad& getQuads() const
     {
         return m_quads.getValue();
     }
     
-    const VecEdge& getEdges() const
+    const VecVisualEdge& getEdges() const
     {
         return m_edges.getValue();
     }
@@ -362,17 +367,17 @@ public:
         m_vbitangents.setValue(*v);
     }
 
-    void setTriangles(VecTriangle * t)
+    void setTriangles(VecVisualTriangle * t)
     {
         m_triangles.setValue(*t);
     }
 
-    void setQuads(VecQuad * q)
+    void setQuads(VecVisualQuad * q)
     {
         m_quads.setValue(*q);
     }
     
-    void setEdges(VecEdge * e)
+    void setEdges(VecVisualEdge * e)
     {
         m_edges.setValue(*e);
     }
@@ -398,7 +403,7 @@ public:
     /// Append this mesh to an OBJ format stream.
     /// The number of vertices position, normal, and texture coordinates already written is given as parameters
     /// This method should update them
-    void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex, int& count) override;
+    void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, index_type& vindex, index_type& nindex, index_type& tindex, int& count) override;
 
     /// Returns the sofa class name. By default the name of the c++ class is exposed...
     /// More details on the name customization infrastructure is in NameDecoder.h

@@ -39,6 +39,7 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/kdTree.h>
 
+#include <SofaBaseVisual/VisualModelImpl.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa
@@ -344,8 +345,8 @@ protected :
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
-    const helper::vector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
-    const helper::vector<int> *extvertPosIdx;
+    const helper::vector<component::visualmodel::VisualModelImpl::VisualTriangle> *extTriangles;
+    const helper::vector<component::visualmodel::VisualModelImpl::visual_index_type> *extvertPosIdx;
 
     void updateForceMask() override;
 

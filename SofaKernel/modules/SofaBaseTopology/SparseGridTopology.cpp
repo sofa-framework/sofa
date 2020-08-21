@@ -229,7 +229,7 @@ void SparseGridTopology::buildAsFinest(  )
                     mesh = new sofa::helper::io::Mesh();
                     for (unsigned int i = 0; i < seqPoints.getValue().size(); ++i)
                         mesh->getVertices().push_back(seqPoints.getValue()[i]);
-                    const vector < vector <int> >& facets = this->facets.getValue();
+                    const auto& facets = this->facets.getValue();
                     const SeqTriangles& triangles = this->seqTriangles.getValue();
                     const SeqQuads& quads = this->seqQuads.getValue();
                     mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
@@ -637,7 +637,7 @@ template< class T >
 void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > &list_mesh,
         const helper::vector< Data< helper::vector< Vec<3,T> > >* > &list_X)
 {
-    sofa::helper::vector< unsigned int>	triangles;
+    sofa::helper::vector< PointID>	triangles;
     vector< Vector3 >		vertices;
 
     helper::vector<unsigned char> * datas = dataVoxels.beginEdit();
@@ -762,11 +762,11 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
     }
 
     // For each triangle, compute BBox and test each element in bb if needed
-    const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
+    const auto& facets = mesh->getFacets();
 
     for (unsigned int f=0; f<facets.size(); f++)
     {
-        const helper::vector<int>& facet = facets[f][0];
+        const auto& facet = facets[f][0];
         for (unsigned int j=2; j<facet.size(); j++) // Triangularize
         {
             int c0 = verticesHexa[facet[0]];
