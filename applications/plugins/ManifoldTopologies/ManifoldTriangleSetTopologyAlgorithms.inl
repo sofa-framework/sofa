@@ -137,7 +137,7 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& 
 
     sofa::helper::vector< Triangle > triToAdd; triToAdd.resize (2);
     sofa::helper::vector< TriangleID > triToAddID; triToAddID.resize (2);
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors; ancestors.resize(2);
+    sofa::helper::vector< sofa::helper::vector<index_type > > ancestors; ancestors.resize(2);
     sofa::helper::vector< sofa::helper::vector< double > > baryCoefs; baryCoefs.resize (2);
     sofa::helper::vector< TriangleID > trianglesIndex2remove; trianglesIndex2remove.resize(2);
 
@@ -305,9 +305,9 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing(sofa::hel
 
 
 template<class DataTypes>
-int ManifoldTriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath(unsigned int pa, Coord& a, unsigned int pb, Coord& b,
+int ManifoldTriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath(index_type pa, Coord& a, index_type pb, Coord& b,
         sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
-        sofa::helper::vector<unsigned int>& indices_list,
+        sofa::helper::vector<index_type>& indices_list,
         sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
         sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder)
 {
@@ -328,7 +328,7 @@ int ManifoldTriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath(unsigned 
 
 
 template<class DataTypes>
-bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points, bool& reachBorder)
+bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (const sofa::helper::vector<index_type>& edges, sofa::helper::vector<index_type>& new_points, sofa::helper::vector<index_type>& end_points, bool& reachBorder)
 {
     //// STEP 1 - Incise with the TriangleSetTopologyAlgorithms function. Addremovetriangles() automatically reorder the mesh
     bool ok = TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (edges, new_points, end_points, reachBorder);
@@ -392,7 +392,7 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (co
     // Creating ROI of edges from list of vertices.
     for (unsigned int i = 0; i<listVertex.size(); i++)
     {
-        const sofa::helper::vector< unsigned int >& shell = m_container->getEdgesAroundVertex (listVertex[i]);
+        const auto& shell = m_container->getEdgesAroundVertex (listVertex[i]);
 
         for (unsigned int j = 0; j<shell.size(); j++)
         {
