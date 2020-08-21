@@ -388,7 +388,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
     if (!topoMap)
         return;
 
-    const sofa::helper::vector< std::pair< Mesh2PointTopologicalMapping::Element, index_type> >& pointSource = topoMap->getPointSource();
+    const sofa::helper::vector< std::pair< Mesh2PointTopologicalMapping::Element, sofa::defaulttype::index_type> >& pointSource = topoMap->getPointSource();
 
     if (pointSource.empty())
         return;
