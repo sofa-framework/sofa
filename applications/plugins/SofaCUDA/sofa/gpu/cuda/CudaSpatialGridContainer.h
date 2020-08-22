@@ -86,7 +86,7 @@ public:
     /// Change particles ordering inside a given cell have contiguous indices
     ///
     /// Fill the old2new and new2old arrays giving the permutation to apply
-    void reorderIndices(helper::vector<unsigned int>* old2new, helper::vector<unsigned int>* new2old);
+    void reorderIndices(helper::vector<index_type>* old2new, helper::vector<index_type>* new2old);
     GridData data;
 
     Real getCellWidth() const { return cellWidth; }

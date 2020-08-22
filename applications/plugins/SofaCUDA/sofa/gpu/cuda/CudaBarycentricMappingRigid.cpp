@@ -135,9 +135,9 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
         {
             const unsigned int nbHexahedra = this->m_fromTopology->getNbHexahedra();
 
-            const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
+            const auto &hexahedra = ( static_cast< const core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
 
-            for ( unsigned int i=0; i<hexahedra.size(); ++i )
+            for ( std::size_t i=0; i<hexahedra.size(); ++i )
             {
                 // remove all references to the removed cubes from the mapping data
                 unsigned int cubeId = hexahedra[i];
