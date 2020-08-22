@@ -108,7 +108,7 @@ public:
     virtual void init_partial_solve() { msg_warning() << "partial_solve is not implemented yet."; }
 
     ///
-    virtual void partial_solve(std::list<std::size_t>& /*I_last_Disp*/, std::list<std::size_t>& /*I_last_Dforce*/, bool /*NewIn*/) { msg_warning() << "partial_solve is not implemented yet"; }
+    virtual void partial_solve(std::list<defaulttype::BaseMatrix::Index>& /*I_last_Disp*/, std::list<defaulttype::BaseMatrix::Index>& /*I_last_Dforce*/, bool /*NewIn*/) { msg_warning() << "partial_solve is not implemented yet"; }
 
     /// Invert the system, this method is optional because it's called when solveSystem() is called for the first time
     virtual void invertSystem() {}

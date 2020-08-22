@@ -262,23 +262,23 @@ public:
     {
         dest->addPoint(px,py,pz);
     }
-    void addLine(int p1, int p2) override
+    void addLine(index_type p1, index_type p2) override
     {
         dest->addEdge(p1,p2);
     }
-    void addTriangle(int p1, int p2, int p3) override
+    void addTriangle(index_type p1, index_type p2, index_type p3) override
     {
         dest->addTriangle(p1,p2,p3);
     }
-    void addQuad(int p1, int p2, int p3, int p4) override
+    void addQuad(index_type p1, index_type p2, index_type p3, index_type p4) override
     {
         dest->addQuad(p1,p2,p3,p4);
     }
-    void addTetra(int p1, int p2, int p3, int p4) override
+    void addTetra(index_type p1, index_type p2, index_type p3, index_type p4) override
     {
         dest->addTetra(p1,p2,p3,p4);
     }
-    void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8) override
+    void addCube(index_type p1, index_type p2, index_type p3, index_type p4, index_type p5, index_type p6, index_type p7, index_type p8) override
     {
         dest->addHexa(p1,p2,p3,p4,p5,p6,p7,p8);
     }
@@ -314,27 +314,27 @@ void BaseMeshTopology::addPoint(SReal, SReal, SReal)
     msg_error() << "addPoint() not supported.";
 }
 
-void BaseMeshTopology::addEdge(int, int)
+void BaseMeshTopology::addEdge(index_type, index_type)
 {
     msg_error() << "addEdge() not supported.";
 }
 
-void BaseMeshTopology::addTriangle(int, int, int)
+void BaseMeshTopology::addTriangle(index_type, index_type, index_type)
 {
     msg_error() << "addTriangle() not supported.";
 }
 
-void BaseMeshTopology::addQuad(int, int, int, int)
+void BaseMeshTopology::addQuad(index_type, index_type, index_type, index_type)
 {
     msg_error() << "addQuad() not supported.";
 }
 
-void BaseMeshTopology::addTetra(int, int, int, int)
+void BaseMeshTopology::addTetra(index_type, index_type, index_type, index_type)
 {
     msg_error() << "addTetra() not supported.";
 }
 
-void BaseMeshTopology::addHexa(int, int, int, int, int, int, int, int)
+void BaseMeshTopology::addHexa(index_type, index_type, index_type, index_type, index_type, index_type, index_type, index_type)
 {
     msg_error() << "addHexa() not supported.";
 }

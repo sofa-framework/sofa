@@ -101,9 +101,9 @@ public:
 
     void init() override;
 
-    int getNbPoints() const override;
+    std::size_t getNbPoints() const override;
 
-    void setNbPoints(int n) override;
+    void setNbPoints(std::size_t  n) override;
 
     // Complete sequence accessors
 
@@ -264,18 +264,18 @@ public:
     // Points accessors (not always available)
 
     bool hasPos() const override;
-    SReal getPX(int i) const override;
-    SReal getPY(int i) const override;
-    SReal getPZ(int i) const override;
+    SReal getPX(index_type i) const override;
+    SReal getPY(index_type i) const override;
+    SReal getPZ(index_type i) const override;
 
     // for procedural creation without file loader
     void clear() override;
     void addPoint(SReal px, SReal py, SReal pz) override;
-    void addEdge( int a, int b ) override;
-    void addTriangle( int a, int b, int c ) override;
-    void addQuad( int a, int b, int c, int d ) override;
-    void addTetra( int a, int b, int c, int d ) override;
-    void addHexa( int a, int b, int c, int d, int e, int f, int g, int h ) override;
+    void addEdge( index_type a, index_type b ) override;
+    void addTriangle( index_type a, index_type b, index_type c ) override;
+    void addQuad( index_type a, index_type b, index_type c, index_type d ) override;
+    void addTetra( index_type a, index_type b, index_type c, index_type d ) override;
+    void addHexa( index_type a, index_type b, index_type c, index_type d, index_type e, index_type f, index_type g, index_type h ) override;
 
     /// get the current revision of this mesh (use to detect changes)
     int getRevision() const override { return revision; }
@@ -338,7 +338,7 @@ public:
     Data<SeqUV>	seqUVs; ///< List of uv coordinates
 
 protected:
-    int  nbPoints;
+    std::size_t  nbPoints;
 
     bool validTetrahedra;
     bool validHexahedra;

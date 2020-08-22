@@ -64,7 +64,7 @@ TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
 }
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::resize(int size)
+void TriangleCollisionModel<DataTypes>::resize(std::size_t size)
 {
     this->core::CollisionModel::resize(size);
     m_normals.resize(size);
@@ -214,7 +214,7 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
 
 
 template<class DataTypes>
-bool TriangleCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
+bool TriangleCollisionModel<DataTypes>::canCollideWithElement(index_type index, CollisionModel* model2, index_type index2)
 {
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
     if (this->getContext() != model2->getContext()) return true;
@@ -460,7 +460,7 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
 
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams ,int index)
+void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams , std::size_t index)
 {
     Element t(this,index);
 

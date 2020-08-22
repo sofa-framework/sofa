@@ -71,10 +71,10 @@ PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
     addAlias(&d_initPoints,"points");
 }
 
-void PointSetTopologyContainer::setNbPoints(int n)
+void PointSetTopologyContainer::setNbPoints(std::size_t n)
 {
 
-    int diffSize = n - (int)nbPoints.getValue();
+    std::size_t diffSize = n - nbPoints.getValue();
     sofa::helper::WriteAccessor< sofa::Data< sofa::helper::vector<PointID> > > points = this->points;
     points.resize(n);
 
@@ -126,7 +126,7 @@ bool PointSetTopologyContainer::hasPos() const
     return !initPoints.empty();
 }
 
-SReal PointSetTopologyContainer::getPX(int i) const
+SReal PointSetTopologyContainer::getPX(index_type i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
@@ -135,7 +135,7 @@ SReal PointSetTopologyContainer::getPX(int i) const
         return 0.0;
 }
 
-SReal PointSetTopologyContainer::getPY(int i) const
+SReal PointSetTopologyContainer::getPY(index_type i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
@@ -144,7 +144,7 @@ SReal PointSetTopologyContainer::getPY(int i) const
         return 0.0;
 }
 
-SReal PointSetTopologyContainer::getPZ(int i) const
+SReal PointSetTopologyContainer::getPZ(index_type i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
@@ -165,13 +165,13 @@ void PointSetTopologyContainer::init()
 
 }
 
-void PointSetTopologyContainer::addPoints(const unsigned int nPoints)
+void PointSetTopologyContainer::addPoints(const std::size_t nPoints)
 {
     //nbPoints.setValue( nbPoints.getValue() + nPoints);
     setNbPoints( nbPoints.getValue() + nPoints );
 }
 
-void PointSetTopologyContainer::removePoints(const unsigned int nPoints)
+void PointSetTopologyContainer::removePoints(const std::size_t nPoints)
 {
     //nbPoints.setValue(nbPoints.getValue() - nPoints);
     setNbPoints( nbPoints.getValue() - nPoints );

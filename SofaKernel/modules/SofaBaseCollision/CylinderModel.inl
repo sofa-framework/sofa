@@ -59,7 +59,7 @@ CylinderCollisionModel<DataTypes>::CylinderCollisionModel(core::behavior::Mechan
 }
 
 template<class DataTypes>
-void CylinderCollisionModel<DataTypes>::resize(int size)
+void CylinderCollisionModel<DataTypes>::resize(std::size_t size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -123,7 +123,7 @@ void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     using namespace sofa::defaulttype;
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const int ncyl = m_mstate->getSize();
+    const std::size_t ncyl = m_mstate->getSize();
 
     bool updated = false;
     if (ncyl != size)
@@ -175,7 +175,7 @@ void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 
 
 template<class DataTypes>
-void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int i)
+void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, index_type i)
 {
     using namespace sofa::defaulttype;
     Vec<4,float> colour(getColor4f());
@@ -198,7 +198,7 @@ void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
     if (vparams->displayFlags().getShowCollisionModels())
     {
 
-        for (int i=0; i<size; i++){
+        for (index_type i=0; i<size; i++){
             draw(vparams,i);
         }
 
@@ -216,24 +216,24 @@ typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel< DataTyp
 }
 
 template<class DataTypes>
-const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel< DataTypes >::center(int i)const{
+const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel< DataTypes >::center(index_type i)const{
     return DataTypes::getCPos((m_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
 }
 
 template<class DataTypes>
-typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel< DataTypes >::radius(int i) const
+typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel< DataTypes >::radius(index_type i) const
 {
     return this->d_cylinder_radii.getValue()[i];
 }
 
 template<class DataTypes>
-typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel< DataTypes >::point1(int i) const
+typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel< DataTypes >::point1(index_type i) const
 {
     return  center(i) - axis(i) * height(i)/2.0;
 }
 
 template<class DataTypes>
-typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel< DataTypes >::point2(int i) const
+typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel< DataTypes >::point2(index_type i) const
 {
     return  center(i) + axis(i) * height(i)/2.0;
 }
@@ -258,7 +258,7 @@ typename TCylinder<DataTypes>::Real TCylinder<DataTypes >::radius() const
 
 
 template<class DataTypes>
-const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel<DataTypes >::velocity(int index) const {
+const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel<DataTypes >::velocity(index_type index) const {
     return DataTypes::getDPos(((m_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
 }
 
@@ -267,12 +267,12 @@ template<class DataTypes>
 const typename TCylinder<DataTypes>::Coord & TCylinder<DataTypes >::v() const {return this->model->velocity(this->index);}
 
 template<class DataTypes>
-const sofa::defaulttype::Quaternion CylinderCollisionModel<DataTypes >::orientation(int index)const{
+const sofa::defaulttype::Quaternion CylinderCollisionModel<DataTypes >::orientation(index_type index)const{
     return m_mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
 template<class DataTypes>
-typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel<DataTypes >::axis(int index) const {
+typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel<DataTypes >::axis(index_type index) const {
     Coord ax = d_cylinder_local_axes.getValue()[index];
 
     const sofa::defaulttype::Quaternion & ori = orientation(index);
@@ -280,13 +280,13 @@ typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel<DataTyp
 }
 
 template<class DataTypes>
-typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel<DataTypes>::local_axis(int index) const {
+typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel<DataTypes>::local_axis(index_type index) const {
     Coord ax = d_cylinder_local_axes.getValue()[index];
     return ax;
 }
 
 template<class DataTypes>
-typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel<DataTypes>::height(int index) const {
+typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel<DataTypes>::height(index_type index) const {
     return ((d_cylinder_heights.getValue()))[index];
 }
 

@@ -81,8 +81,8 @@ public:
     /// Procedural creation methods
     /// @{
     void clear() override;
-    void addTriangle( int, int, int ) override {}
-    void addTetra( int a, int b, int c, int d ) override;
+    void addTriangle(index_type, index_type, index_type) override {}
+    void addTetra(index_type a, index_type b, index_type c, index_type d ) override;
     /// @}
 
 

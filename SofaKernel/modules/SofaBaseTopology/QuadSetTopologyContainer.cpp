@@ -47,7 +47,7 @@ QuadSetTopologyContainer::QuadSetTopologyContainer()
 }
 
 
-void QuadSetTopologyContainer::addQuad( int a, int b, int c, int d )
+void QuadSetTopologyContainer::addQuad(index_type a, index_type b, index_type c, index_type d )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
     m_quad.push_back(Quad(a,b,c,d));

@@ -89,10 +89,10 @@ public:
 
         for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LineConstIterator jit1 = J->begin(); jit1 != J->end(); jit1++)
         {
-            int l = jit1->first;
+            auto l = jit1->first;
             for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
             {
-                int c = i1->first;
+                auto c = i1->first;
                 MReal val = i1->second;
                 J_local.set(l,c,val);
             }
@@ -102,10 +102,10 @@ public:
 
     void projectForceInConstraintSpace(defaulttype::BaseVector* r,const defaulttype::BaseVector* f) {
         for (typename SparseMatrix<Real>::LineConstIterator jit = J_local.begin(), jitend = J_local.end(); jit != jitend; ++jit) {
-            int row = jit->first;
+            auto row = jit->first;
             double force = f->element(row);
             for (typename SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2) {
-                int col = i2->first;
+                auto col = i2->first;
                 double val = i2->second;
                 r->add(col,val * force);
             }
@@ -173,7 +173,7 @@ public:
 
     typedef BaseMatrixLinearSolver<Matrix, Vector> Inherit;
     typedef NoThreadManager ThreadManager;
-    typedef std::list<int> ListIndex;
+    typedef std::list<std::size_t> ListIndex;
     typedef typename Vector::Real Real;
     typedef typename MatrixLinearSolverInternalData<Vector>::JMatrixType JMatrixType;
     typedef typename MatrixLinearSolverInternalData<Vector>::ResMatrixType ResMatrixType;
@@ -185,7 +185,7 @@ public:
     void resetSystem() override;
 
     /// Reset the current linear system.
-    void resizeSystem(int n);
+    void resizeSystem(std::size_t n);
 
     /// Set the linear system matrix, combining the mechanical M,B,K matrices using the given coefficients
     ///
@@ -200,7 +200,7 @@ public:
     /// Set the linear system matrix (only use for bench)
     void setSystemMatrix(Matrix* matrix);
 
-    unsigned getSystemSize() {
+    std::size_t getSystemSize() {
         return currentGroup->systemSize;
     }
 
@@ -391,7 +391,7 @@ template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resetSystem();
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resizeSystem(int);
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resizeSystem(std::size_t);
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemMBKMatrix(const core::MechanicalParams* mparams);

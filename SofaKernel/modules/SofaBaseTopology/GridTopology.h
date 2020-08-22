@@ -158,11 +158,11 @@ public:
     virtual Vector3 getPointInGrid(int i, int j, int k) const;
 
     /// get X from Point index @param i, will call @sa getPoint
-    SReal getPX(int i)  const override { return getPoint(i)[0]; }
+    SReal getPX(index_type i)  const override { return getPoint(i)[0]; }
     /// get Y from Point index @param i, will call @sa getPoint
-    SReal getPY(int i) const override { return getPoint(i)[1]; }
+    SReal getPY(index_type i) const override { return getPoint(i)[1]; }
     /// get Z from Point index @param i, will call @sa getPoint
-    SReal getPZ(int i) const override { return getPoint(i)[2]; }
+    SReal getPZ(index_type i) const override { return getPoint(i)[2]; }
 
     /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse(core::objectmodel::BaseObjectDescription* arg) override ;

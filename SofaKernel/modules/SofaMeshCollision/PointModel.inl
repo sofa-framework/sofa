@@ -62,7 +62,7 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
 }
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::resize(int size)
+void PointCollisionModel<DataTypes>::resize(std::size_t size)
 {
     this->core::CollisionModel::resize(size);
 }
@@ -98,7 +98,7 @@ void PointCollisionModel<DataTypes>::init()
 
 
 template<class DataTypes>
-bool PointCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
+bool PointCollisionModel<DataTypes>::canCollideWithElement(index_type index, CollisionModel* model2, index_type index2)
 {
 
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
@@ -423,7 +423,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
 
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*, int index)
+void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*, index_type index)
 {
     SOFA_UNUSED(index);
     //TODO(fred roy 2018-06-21)...please implement.

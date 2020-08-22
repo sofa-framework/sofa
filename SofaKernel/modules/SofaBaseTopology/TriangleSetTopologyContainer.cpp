@@ -48,7 +48,7 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer()
 }
 
 
-void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
+void TriangleSetTopologyContainer::addTriangle(index_type a, index_type b, index_type c )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
     m_triangle.push_back(Triangle(a,b,c));

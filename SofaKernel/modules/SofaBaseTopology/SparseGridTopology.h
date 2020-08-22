@@ -97,11 +97,11 @@ public:
 
 
     enum {UP,DOWN,RIGHT,LEFT,BEFORE,BEHIND,NUM_CONNECTED_NODES};
-    typedef helper::vector< helper::fixed_array<int,NUM_CONNECTED_NODES> > NodeAdjacency; ///< a node -> its 6 neighboors
+    typedef helper::vector< helper::fixed_array<index_type,NUM_CONNECTED_NODES> > NodeAdjacency; ///< a node -> its 6 neighboors
     NodeAdjacency _nodeAdjacency;
-    typedef helper::vector< helper::vector<int> >NodeCubesAdjacency; ///< a node -> its 8 neighboor cells
+    typedef helper::vector< helper::vector<index_type> >NodeCubesAdjacency; ///< a node -> its 8 neighboor cells
     NodeCubesAdjacency _nodeCubesAdjacency;
-    typedef helper::vector< helper::vector<int> >NodeCornersAdjacency; ///< a node -> its 8 corners of neighboor cells
+    typedef helper::vector< helper::vector<index_type> >NodeCornersAdjacency; ///< a node -> its 8 corners of neighboor cells
     NodeCornersAdjacency _nodeCornersAdjacency;
 
 
@@ -307,7 +307,7 @@ public :
         return sofa::component::topology::MeshTopology::getHexahedra();
     }
 
-    int getNbPoints() const override
+    std::size_t getNbPoints() const override
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
         return sofa::component::topology::MeshTopology::getNbPoints();

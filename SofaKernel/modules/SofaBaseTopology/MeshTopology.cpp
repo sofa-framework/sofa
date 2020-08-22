@@ -659,57 +659,57 @@ void MeshTopology::addPoint(SReal px, SReal py, SReal pz)
         nbPoints = (int)seqPoints.getValue().size();
 }
 
-void MeshTopology::addEdge( int a, int b )
+void MeshTopology::addEdge( index_type a, index_type b )
 {
     seqEdges.beginEdit()->push_back(Edge(a,b));
     seqEdges.endEdit();
-    if (a >= (int)nbPoints) nbPoints = a+1;
-    if (b >= (int)nbPoints) nbPoints = b+1;
+    if (a >= nbPoints) nbPoints = a+1;
+    if (b >= nbPoints) nbPoints = b+1;
 }
 
-void MeshTopology::addTriangle( int a, int b, int c )
+void MeshTopology::addTriangle( index_type a, index_type b, index_type c )
 {
     seqTriangles.beginEdit()->push_back( Triangle(a,b,c) );
     seqTriangles.endEdit();
-    if (a >= (int)nbPoints) nbPoints = a+1;
-    if (b >= (int)nbPoints) nbPoints = b+1;
-    if (c >= (int)nbPoints) nbPoints = c+1;
+    if (a >= nbPoints) nbPoints = a+1;
+    if (b >= nbPoints) nbPoints = b+1;
+    if (c >= nbPoints) nbPoints = c+1;
 }
 
-void MeshTopology::addQuad(int a, int b, int c, int d)
+void MeshTopology::addQuad(index_type a, index_type b, index_type c, index_type d)
 {
     seqQuads.beginEdit()->push_back(Quad(a,b,c,d));
     seqQuads.endEdit();
-    if (a >= (int)nbPoints) nbPoints = a+1;
-    if (b >= (int)nbPoints) nbPoints = b+1;
-    if (c >= (int)nbPoints) nbPoints = c+1;
-    if (d >= (int)nbPoints) nbPoints = d+1;
+    if (a >= nbPoints) nbPoints = a+1;
+    if (b >= nbPoints) nbPoints = b+1;
+    if (c >= nbPoints) nbPoints = c+1;
+    if (d >= nbPoints) nbPoints = d+1;
 }
 
-void MeshTopology::addTetra( int a, int b, int c, int d )
+void MeshTopology::addTetra( index_type a, index_type b, index_type c, index_type d )
 {
     seqTetrahedra.beginEdit()->push_back( Tetra(a,b,c,d) );
     seqTetrahedra.endEdit();
-    if (a >= (int)nbPoints) nbPoints = a+1;
-    if (b >= (int)nbPoints) nbPoints = b+1;
-    if (c >= (int)nbPoints) nbPoints = c+1;
-    if (d >= (int)nbPoints) nbPoints = d+1;
+    if (a >= nbPoints) nbPoints = a+1;
+    if (b >= nbPoints) nbPoints = b+1;
+    if (c >= nbPoints) nbPoints = c+1;
+    if (d >= nbPoints) nbPoints = d+1;
 }
 
-void MeshTopology::addHexa(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
+void MeshTopology::addHexa(index_type p1, index_type p2, index_type p3, index_type p4, index_type p5, index_type p6, index_type p7, index_type p8)
 {
 
     seqHexahedra.beginEdit()->push_back(Hexa(p1,p2,p3,p4,p5,p6,p7,p8));
 
     seqHexahedra.endEdit();
-    if (p1 >= (int)nbPoints) nbPoints = p1+1;
-    if (p2 >= (int)nbPoints) nbPoints = p2+1;
-    if (p3 >= (int)nbPoints) nbPoints = p3+1;
-    if (p4 >= (int)nbPoints) nbPoints = p4+1;
-    if (p5 >= (int)nbPoints) nbPoints = p5+1;
-    if (p6 >= (int)nbPoints) nbPoints = p6+1;
-    if (p7 >= (int)nbPoints) nbPoints = p7+1;
-    if (p8 >= (int)nbPoints) nbPoints = p8+1;
+    if (p1 >= nbPoints) nbPoints = p1+1;
+    if (p2 >= nbPoints) nbPoints = p2+1;
+    if (p3 >= nbPoints) nbPoints = p3+1;
+    if (p4 >= nbPoints) nbPoints = p4+1;
+    if (p5 >= nbPoints) nbPoints = p5+1;
+    if (p6 >= nbPoints) nbPoints = p6+1;
+    if (p7 >= nbPoints) nbPoints = p7+1;
+    if (p8 >= nbPoints) nbPoints = p8+1;
 }
 
 void MeshTopology::addUV(SReal u, SReal v)
@@ -761,12 +761,12 @@ const MeshTopology::SeqUV& MeshTopology::getUVs()
     return seqUVs.getValue();
 }
 
-int MeshTopology::getNbPoints() const
+std::size_t MeshTopology::getNbPoints() const
 {
     return nbPoints;
 }
 
-void MeshTopology::setNbPoints(int n)
+void MeshTopology::setNbPoints(std::size_t n)
 {
     nbPoints = n;
 }
@@ -2303,17 +2303,17 @@ bool MeshTopology::hasPos() const
     return !seqPoints.getValue().empty();
 }
 
-SReal MeshTopology::getPX(int i) const
+SReal MeshTopology::getPX(index_type i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
 }
 
-SReal MeshTopology::getPY(int i) const
+SReal MeshTopology::getPY(index_type i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][1]:0.0);
 }
 
-SReal MeshTopology::getPZ(int i) const
+SReal MeshTopology::getPZ(index_type i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
 }

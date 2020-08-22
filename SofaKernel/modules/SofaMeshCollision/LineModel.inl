@@ -57,7 +57,7 @@ LineCollisionModel<DataTypes>::LineCollisionModel()
 
 
 template<class DataTypes>
-void LineCollisionModel<DataTypes>::resize(int size)
+void LineCollisionModel<DataTypes>::resize(std::size_t size)
 {
     this->core::CollisionModel::resize(size);
     elems.resize(size);
@@ -367,7 +367,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
 }
 
 template<class DataTypes>
-bool LineCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
+bool LineCollisionModel<DataTypes>::canCollideWithElement(index_type index, CollisionModel* model2, index_type index2)
 {
     if (!this->bSelfCollision.getValue()) return true;
     if (this->getContext() != model2->getContext()) return true;
@@ -557,7 +557,7 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int
 }
 
 template<class DataTypes>
-int LineCollisionModel<DataTypes>::getLineFlags(int i)
+int LineCollisionModel<DataTypes>::getLineFlags(index_type i)
 {
     int f = 0;
     if (topology)

@@ -423,7 +423,7 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
         Edge intersectedEdge[2];
         if(intersectedEdgeID[0]>intersectedEdgeID[1])
         {
-            int temp=intersectedEdgeID[0];
+            index_type temp=intersectedEdgeID[0];
             intersectedEdgeID[0]=intersectedEdgeID[1];
             intersectedEdgeID[1]=temp;
 

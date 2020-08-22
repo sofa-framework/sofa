@@ -58,7 +58,9 @@ public:
 
     typedef CylinderCollisionModel<DataTypes> ParentModel;
 
-    TCylinder(ParentModel* model, int index);
+    using index_type = sofa::defaulttype::index_type;
+
+    TCylinder(ParentModel* model, index_type index);
 
     explicit TCylinder(const core::CollisionElementIterator& i);
 
@@ -111,37 +113,37 @@ public:
     void init() override;
 
     // -- CollisionModel interface
-    void resize(int size) override;
+    void resize(std::size_t size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams* vparams,int index) override;
+    void draw(const core::visual::VisualParams* vparams,index_type index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
 
-    Real radius(int index) const;
+    Real radius(index_type index) const;
 
-    const Coord & center(int i)const;
+    const Coord & center(index_type i)const;
 
     //Returns the direction of the cylinder at index index
-    Coord axis(int index)const;
+    Coord axis(index_type index)const;
     //Returns the direction of the cylinder at index in local coordinates
-    Coord local_axis(int index) const;
+    Coord local_axis(index_type index) const;
 
-    const sofa::defaulttype::Quaternion orientation(int index)const;
+    const sofa::defaulttype::Quaternion orientation(index_type index)const;
 
-    Real height(int index)const;
+    Real height(index_type index)const;
 
-    Coord point1(int i) const;
+    Coord point1(index_type i) const;
 
-    Coord point2(int i) const;
+    Coord point2(index_type i) const;
 
     Real defaultRadius()const;
 
-    const Coord & velocity(int index)const;
+    const Coord & velocity(index_type index)const;
 
     Data<VecReal>& writeRadii();
     Data<VecReal>& writeHeights();
@@ -153,7 +155,7 @@ protected:
 
 
 template<class DataTypes>
-inline TCylinder<DataTypes>::TCylinder(ParentModel* model, int index)
+inline TCylinder<DataTypes>::TCylinder(ParentModel* model, index_type index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 

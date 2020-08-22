@@ -83,10 +83,10 @@ public:
     virtual void setupMatrices();
 
     //give the sum of size of all Real Mechanical State in ordre to set the global matrix dimension
-    int getGlobalDimension() const override;
+    std::size_t getGlobalDimension() const override;
 
     //give position in global matrix of the blog related to a given Mechanical State
-    int getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const override;
+    std::size_t getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const override;
 
     //give the Matrix Reference (Matrix and Offset) related to a given Mechanical State
     MatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const override;
@@ -130,7 +130,7 @@ protected:
     // using matrix buffer in case of interaction between mapped model
 
     //map used for real mechanical state (non-mapped only)
-    std::map< const sofa::core::behavior::BaseMechanicalState*, int > realStateOffsets;
+    std::map< const sofa::core::behavior::BaseMechanicalState*, std::size_t > realStateOffsets;
 
     //map used only for mapped mechanical state
     //a mapped state is added here if and only if its stiffness matrix is guessed by other component (forcefield)

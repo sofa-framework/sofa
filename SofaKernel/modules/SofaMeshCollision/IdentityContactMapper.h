@@ -64,6 +64,7 @@ public:
     typedef mapping::IdentityMapping< InDataTypes, typename IdentityContactMapper::DataTypes > MMapping;
     MCollisionModel* model;
     typename MMapping::SPtr mapping;
+    using index_type = sofa::defaulttype::index_type;
 
     IdentityContactMapper()
         : model(nullptr), mapping(nullptr)
@@ -79,11 +80,11 @@ public:
 
     MMechanicalState* createMapping(const char* name="contactPoints");
 
-    void resize(int /*size*/)
+    void resize(std::size_t /*size*/)
     {
     }
 
-    int addPoint(const Coord&, int index, Real&)
+    index_type addPoint(const Coord&, index_type index, Real&)
     {
         return index;
     }
@@ -129,6 +130,7 @@ public:
     typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
     typedef core::behavior::MechanicalState<DataTypes> MMechanicalState;
     MCollisionModel* model;
+    using index_type = sofa::defaulttype::index_type;
 
     IdentityContactMapper()
         : model(nullptr)
@@ -150,11 +152,11 @@ public:
         return model->getMechanicalState();
     }
 
-    void resize(int /*size*/)
+    void resize(std::size_t /*size*/)
     {
     }
 
-    int addPoint(const Coord& /*P*/, int index, Real&)
+    index_type addPoint(const Coord& /*P*/, index_type index, Real&)
     {
         return index;
     }
@@ -187,7 +189,9 @@ class ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataType
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    int addPoint(const Coord& /*P*/, int index, Real& r)
+    using index_type = sofa::defaulttype::index_type;
+
+    index_type addPoint(const Coord& /*P*/, index_type index, Real& r)
     {
         Sphere e(this->model, index);
         r = e.r();

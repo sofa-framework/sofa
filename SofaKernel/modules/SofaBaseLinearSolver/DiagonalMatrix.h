@@ -332,7 +332,7 @@ class BlockDiagonalMatrix : public defaulttype::BaseMatrix
 public:
     typedef T Real;
     typedef defaulttype::Mat<LC,LC,Real> Bloc;
-    typedef matrix_bloc_traits<Bloc> traits;
+    typedef matrix_bloc_traits<Bloc, Index> traits;
 
     enum { BSIZE = LC };
 

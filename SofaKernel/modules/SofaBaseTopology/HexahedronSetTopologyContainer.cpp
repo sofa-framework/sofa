@@ -53,7 +53,7 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
 }
 
 
-void HexahedronSetTopologyContainer::addHexa( int a, int b, int c, int d, int e, int f, int g, int h )
+void HexahedronSetTopologyContainer::addHexa(index_type a, index_type b, index_type c, index_type d, index_type e, index_type f, index_type g, index_type h )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     m_hexahedron.push_back(Hexahedron(a,b,c,d,e,f,g,h));
@@ -80,7 +80,7 @@ void HexahedronSetTopologyContainer::init()
         {
             for(PointID j=0; j<8; ++j)
             {
-                int a = m_hexahedron[i][j];
+                HexahedronID a = m_hexahedron[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }
@@ -200,7 +200,7 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
     {
         const Hexahedron &h = m_hexahedron[i];
 
-        unsigned int v[4], val;
+        PointID v[4], val;
 
         // Quad 0 :
         v[0]=h[0];

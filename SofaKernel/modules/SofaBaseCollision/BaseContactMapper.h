@@ -69,37 +69,40 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef core::behavior::MechanicalState<DataTypes> MMechanicalState;
+
+    using index_type = sofa::defaulttype::index_type;
+
     virtual ~BaseContactMapper() {}
     virtual MMechanicalState* createMapping(const char* name = "contactPoints") = 0;
     virtual void cleanup() = 0;
-    virtual void resize(int size) = 0;
+    virtual void resize(std::size_t size) = 0;
 
     //after detecting a point in collide, this point need to be added to the mapping
     //There are two way for adding the point, by its nature of referentiel : global or local.
 
     /// Adding a point of the global referentiel to the mapping
-    virtual int addPoint(const Coord& /*P*/, int /*elementId*/, Real& /*r*/)
+    virtual index_type addPoint(const Coord& /*P*/, index_type /*elementId*/, Real& /*r*/)
     {
         dmsg_warning("BaseContactMapper") << " addPoint is called but not implemented" ;
-        return -1;
+        return sofa::defaulttype::InvalidID;
     }
 
     /// Adding a point of the local referentiel(barycentric coordinate) to the mapping
     //TODO use this functions for barycentric contact mapper
-    virtual int addBaryPoint(const sofa::defaulttype::Vector3& /*baryP*/, int /*elementId*/, Real& /*r*/)
-    {
-        dmsg_warning("BaseContactMapper") << " addBaryPoint is called but not implemented" ;
-        return -1;
-    }
+    //virtual index_type addBaryPoint(const sofa::defaulttype::Vector3& /*baryP*/, index_type /*elementId*/, Real& /*r*/)
+    //{
+    //    dmsg_warning("BaseContactMapper") << " addBaryPoint is called but not implemented" ;
+    //    return sofa::defaulttype::InvalidID;
+    //}
 
     /// Adding a point of the global referentiel to the mapping, also giving the local referentiel
     /// Note that it cannot have the same name as addPoint otherwise it creates errors when a subclass only implement the version without barycoords
-    virtual int addPointB(const Coord& P, int elementId, Real& r, const sofa::defaulttype::Vector3& /*baryP*/)
+    virtual index_type addPointB(const Coord& P, index_type elementId, Real& r, const sofa::defaulttype::Vector3& /*baryP*/)
     {
         return addPoint(P, elementId, r);
     }
 
-    int addPointB(const Coord& P, int elementId, Real& r)
+    index_type addPointB(const Coord& P, index_type elementId, Real& r)
     {
         return addPoint(P, elementId, r);
     }

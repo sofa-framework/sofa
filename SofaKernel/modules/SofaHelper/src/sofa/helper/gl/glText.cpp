@@ -119,7 +119,7 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
     std::ostringstream oss;
     oss << text;
     std::string str = oss.str();
-    unsigned int length = str.size();
+    std::size_t length = str.size();
 
     glPushAttrib(GL_TEXTURE_BIT);
     glEnable(GL_TEXTURE_2D);
@@ -135,7 +135,7 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 
     glScalef((float)scale, (float)scale, (float)scale);
 
-    for (unsigned int j = 0; j < length; j++)
+    for (std::size_t j = 0; j < length; j++)
     {
         Vector3 vertex_up_left = Vector3(j*worldWidth, worldHeight, 0.0);
         Vector3 vertex_up_right = Vector3(j*worldWidth + worldWidth, worldHeight, 0.0);
@@ -164,7 +164,7 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
     }
 
     glBegin(GL_QUADS);
-    for (unsigned int j = 0; j < vertices.size(); j++)
+    for (std::size_t j = 0; j < vertices.size(); j++)
     {
         glTexCoord2fv(UVs[j].data());
         glVertex3fv(vertices[j].data());
@@ -201,12 +201,12 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
 
     s_asciiTexture->bind();
 
-    for (unsigned int i = 0; i < positions.size(); i++)
+    for (std::size_t i = 0; i < positions.size(); i++)
     {
         std::ostringstream oss;
         oss << i;
         std::string str = oss.str();
-        unsigned int length = str.size();
+        std::size_t length = str.size();
 
         std::vector<Vector3> vertices;
         std::vector<Vector2> UVs;
@@ -228,7 +228,7 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
         glTranslatef(temp[0] - (worldWidth*length*scale)*0.5, temp[1] + worldHeight*scale*0.5, temp[2]);
         glScalef(scale, scale, scale);
         glRotatef(180.0, 1, 0, 0);
-        for (unsigned int j = 0; j < length; j++)
+        for (std::size_t j = 0; j < length; j++)
         {
             Vector3 vertex_up_left = Vector3(j*worldWidth, worldHeight, 0.0f);
             Vector3 vertex_up_right = Vector3(j*worldWidth + worldWidth, worldHeight, 0.0f);
@@ -257,7 +257,7 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
         }
 
         glBegin(GL_QUADS);
-        for (unsigned int j = 0; j < vertices.size(); j++)
+        for (std::size_t j = 0; j < vertices.size(); j++)
         {
             glTexCoord2fv(UVs[j].data());
             glVertex3fv(vertices[j].data());

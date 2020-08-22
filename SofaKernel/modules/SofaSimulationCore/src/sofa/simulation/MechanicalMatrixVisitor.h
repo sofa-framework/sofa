@@ -98,7 +98,7 @@ public:
     const core::ConstraintParams* cparams;
     defaulttype::BaseMatrix * J;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
-    int offset;
+    std::size_t offset;
 
     MechanicalGetConstraintJacobianVisitor(
         const core::ConstraintParams* cparams, defaulttype::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr)
@@ -133,7 +133,7 @@ public:
     sofa::core::MultiVecCoordId xId;
     sofa::core::MultiVecDerivId vId;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
-    int offset;
+    std::size_t offset;
 
     MechanicalIntegrateConstraintsVisitor(
         const core::ConstraintParams* cparams,
@@ -294,7 +294,7 @@ public:
     sofa::core::ConstMultiVecId src;
     sofa::defaulttype::BaseVector *vect;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
-    int offset;
+    std::size_t offset;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -328,7 +328,7 @@ public:
     const sofa::defaulttype::BaseVector *src;
     sofa::core::MultiVecDerivId dest;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
-    int offset;
+    std::size_t offset;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -362,7 +362,7 @@ public:
     const sofa::defaulttype::BaseVector *src;
     sofa::core::MultiVecId dest;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
-    int offset;
+    std::size_t offset;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

@@ -93,20 +93,20 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size) override;
+    void resize(std::size_t size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
     void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams*, index_type index) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
-    bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
+    bool canCollideWithElement(index_type index, CollisionModel* model2, index_type index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
-    Deriv getNormal(int index){ return (normals.size()) ? normals[index] : Deriv();}
+    Deriv getNormal(index_type index){ return (normals.size()) ? normals[index] : Deriv();}
 
     PointLocalMinDistanceFilter *getFilter() const;
 
@@ -158,7 +158,7 @@ protected:
 
 
 template<class DataTypes>
-inline TPoint<DataTypes>::TPoint(ParentModel* model, int index)
+inline TPoint<DataTypes>::TPoint(ParentModel* model, int index_type)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {
 

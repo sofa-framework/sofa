@@ -131,13 +131,13 @@ void RigidDistanceGridCollisionModel::init()
     sout << "< RigidDistanceGridCollisionModel::init()"<<sendl;
 }
 
-void RigidDistanceGridCollisionModel::resize(int s)
+void RigidDistanceGridCollisionModel::resize(std::size_t s)
 {
     this->core::CollisionModel::resize(s);
     elems.resize(s);
 }
 
-void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
+void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, index_type index)
 {
     if (elems[index].grid == surf) return;
     if (elems[index].grid!=NULL) elems[index].grid->release();
@@ -145,7 +145,7 @@ void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
     modified = true;
 }
 
-void RigidDistanceGridCollisionModel::setNewState(int index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+void RigidDistanceGridCollisionModel::setNewState(index_type index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
 {
     grid->addRef();
     if (elems[index].prevGrid!=NULL)
@@ -278,7 +278,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpa
 #endif /* SOFA_NO_OPENGL */
 }
 
-void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,int index)
+void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,index_type index)
 {
 #ifndef SOFA_NO_OPENGL
     const bool flipped = isFlipped();
@@ -571,13 +571,13 @@ void FFDDistanceGridCollisionModel::init()
     sout << "FFDDistanceGridCollisionModel: "<<c<<" active cubes."<<sendl;
 }
 
-void FFDDistanceGridCollisionModel::resize(int s)
+void FFDDistanceGridCollisionModel::resize(std::size_t s)
 {
     this->core::CollisionModel::resize(s);
     elems.resize(s);
 }
 
-bool FFDDistanceGridCollisionModel::canCollideWithElement(int index, CollisionModel* model2, int index2)
+bool FFDDistanceGridCollisionModel::canCollideWithElement(index_type index, CollisionModel* model2, index_type index2)
 {
     if (model2 != this) return true;
     if (!this->bSelfCollision.getValue()) return true;
@@ -587,7 +587,7 @@ bool FFDDistanceGridCollisionModel::canCollideWithElement(int index, CollisionMo
     return true;
 }
 
-void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
+void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, index_type index)
 {
     elems[index].grid = surf;
 }
@@ -728,7 +728,7 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
 #endif /* SOFA_NO_OPENGL */
 }
 
-void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams,int index)
+void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams, index_type index)
 {
 #ifndef SOFA_NO_OPENGL
     //DistanceGrid* grid = getGrid(index);

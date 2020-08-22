@@ -66,7 +66,7 @@ public:
     /// Procedural creation methods
     /// @{
     void clear() override;
-    void addQuad( int a, int b, int c, int d ) override;
+    void addQuad(index_type a, index_type b, index_type c, index_type d ) override;
     /// @}
 
 

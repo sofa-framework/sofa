@@ -55,7 +55,7 @@ class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
 public:
     typedef CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex> Matrix;
     typedef TBloc Bloc;
-    typedef matrix_bloc_traits<Bloc> traits;
+    typedef matrix_bloc_traits<Bloc, Matrix::Index> traits;
     typedef typename traits::Real Real;
     enum { NL = traits::NL };  ///< Number of rows of a block
     enum { NC = traits::NC };  ///< Number of columns of a block
@@ -101,8 +101,8 @@ public:
     };
     typedef helper::vector<IndexedBloc> VecIndexedBloc;
 
-    static void split_row_index(Index& index, Index& modulo) { bloc_index_func<NL>::split(index, modulo); }
-    static void split_col_index(Index& index, Index& modulo) { bloc_index_func<NC>::split(index, modulo); }
+    static void split_row_index(Index& index, Index& modulo) { bloc_index_func<NL, Index>::split(index, modulo); }
+    static void split_col_index(Index& index, Index& modulo) { bloc_index_func<NC, Index>::split(index, modulo); }
 
     class Range : public std::pair<Index, Index>
     {

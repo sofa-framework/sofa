@@ -243,21 +243,21 @@ public:
     /// Note that this data is only used for initialization and is not maintained afterwards (i.e. topological changes may not be applied)
     /// @{
     bool hasPos() const override { return false; }
-    SReal getPX(int) const override { return 0.0; }
-    SReal getPY(int) const override { return 0.0; }
-    SReal getPZ(int) const override { return 0.0; }
+    SReal getPX(index_type) const override { return 0.0; }
+    SReal getPY(index_type) const override { return 0.0; }
+    SReal getPZ(index_type) const override { return 0.0; }
     /// @}
 
     /// Procedural creation methods
     /// @{
     virtual void clear();
     virtual void addPoint(SReal px, SReal py, SReal pz);
-    virtual void addEdge( int a, int b );
-    void addLine( int a, int b ) { addEdge(a,b); }
-    virtual void addTriangle( int a, int b, int c );
-    virtual void addQuad( int a, int b, int c, int d );
-    virtual void addTetra( int a, int b, int c, int d );
-    virtual void addHexa( int a, int b, int c, int d, int e, int f, int g, int h );
+    virtual void addEdge( index_type a, index_type b );
+    void addLine( index_type a, index_type b ) { addEdge(a,b); }
+    virtual void addTriangle( index_type a, index_type b, index_type c );
+    virtual void addQuad( index_type a, index_type b, index_type c, index_type d );
+    virtual void addTetra( index_type a, index_type b, index_type c, index_type d );
+    virtual void addHexa( index_type a, index_type b, index_type c, index_type d, index_type e, index_type f, index_type g, index_type h );
     /// @}
 
     /// get information about connexity of the mesh
