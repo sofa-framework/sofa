@@ -53,7 +53,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef PointCollisionModel<DataTypes> ParentModel;
 
-    TPoint(ParentModel* model, int index);
+    TPoint(ParentModel* model, sofa::defaulttype::index_type index);
     TPoint() {}
 
     explicit TPoint(const core::CollisionElementIterator& i);
@@ -83,7 +83,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef TPoint<DataTypes> Element;
-    typedef helper::vector<unsigned int> VecIndex;
+    typedef helper::vector<index_type> VecIndex;
 
     friend class TPoint<DataTypes>;
 protected:
@@ -112,7 +112,7 @@ public:
 
     void setFilter(PointLocalMinDistanceFilter * /*lmdFilter*/);
 
-    const Deriv& velocity(int index) const;
+    const Deriv& velocity(index_type index) const;
 
     Data<bool> bothSide; ///< to activate collision on both side of the point model (when surface normals are defined on these points)
 
@@ -158,7 +158,7 @@ protected:
 
 
 template<class DataTypes>
-inline TPoint<DataTypes>::TPoint(ParentModel* model, int index_type)
+inline TPoint<DataTypes>::TPoint(ParentModel* model, sofa::defaulttype::index_type index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {
 
@@ -187,7 +187,7 @@ template<class DataTypes>
 inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(int index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
+inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(index_type index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }

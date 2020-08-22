@@ -157,7 +157,7 @@ std::size_t DefaultMultiMatrixAccessor::getGlobalDimension() const
     return globalDim;
 }
 
-std::size_t DefaultMultiMatrixAccessor::getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const
+int DefaultMultiMatrixAccessor::getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const
 {
     auto it = realStateOffsets.find(mstate);
     if (it != realStateOffsets.end())

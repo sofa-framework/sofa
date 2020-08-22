@@ -2244,8 +2244,8 @@ template<class DataTypes>
 int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(EdgeID ind_edge, int* createdPoints)
 {
     const Edge & edge0=m_container->getEdge(ind_edge);
-    index_type ind_pa = edge0[0];
-    index_type ind_pb = edge0[1];
+    PointID ind_pa = edge0[0];
+    PointID ind_pb = edge0[1];
 
     const helper::vector<TriangleID>& triangles0 = m_container->getTrianglesAroundEdge(ind_edge);
     if (triangles0.size() != 2)
@@ -2255,15 +2255,15 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(EdgeID ind_edge, i
     }
 
     // choose one triangle
-    index_type ind_tri0 = triangles0[0];
+    TriangleID ind_tri0 = triangles0[0];
 
-    index_type ind_tria = ind_tri0;
-    index_type ind_trib = ind_tri0;
-    index_type ind_edgea = ind_edge;
-    index_type ind_edgeb = ind_edge;
+    PointID ind_tria = ind_tri0;
+    PointID ind_trib = ind_tri0;
+    EdgeID ind_edgea = ind_edge;
+    EdgeID ind_edgeb = ind_edge;
 
-    helper::vector<index_type> list_tria;
-    helper::vector<index_type> list_trib;
+    helper::vector<TriangleID> list_tria;
+    helper::vector<TriangleID> list_trib;
 
     for (;;)
     {

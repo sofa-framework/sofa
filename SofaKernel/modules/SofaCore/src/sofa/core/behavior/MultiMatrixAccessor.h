@@ -74,7 +74,7 @@ public:
     virtual void addMappedMechanicalState(const BaseMechanicalState* mstate);
 
     virtual std::size_t getGlobalDimension() const = 0;
-    virtual std::size_t getGlobalOffset(const BaseMechanicalState* mstate) const = 0;
+    virtual int getGlobalOffset(const BaseMechanicalState* mstate) const = 0;
 
     virtual MatrixRef getMatrix(const BaseMechanicalState* mstate) const = 0;
     virtual InteractionMatrixRef getMatrix(const BaseMechanicalState* mstate1, const BaseMechanicalState* mstate2) const = 0;

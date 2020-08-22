@@ -51,7 +51,7 @@ public:
 
 
     std::size_t getGlobalDimension() const override { return matrix->rowSize(); }
-    std::size_t getGlobalOffset(const core::behavior::BaseMechanicalState*) const override { return 0; }
+    int getGlobalOffset(const core::behavior::BaseMechanicalState*) const override { return 0; }
     MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const override;
 
 

@@ -89,8 +89,8 @@ public:
     }
     static void invert(Bloc& result, const Bloc& b) { result.invert(b); }
 
-    static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL>::split(index, modulo); }
-    static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC>::split(index, modulo); }
+    static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
+    static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
     static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
     static const char* Name();

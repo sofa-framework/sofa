@@ -86,7 +86,7 @@ public:
     std::size_t getGlobalDimension() const override;
 
     //give position in global matrix of the blog related to a given Mechanical State
-    std::size_t getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const override;
+    int getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const override;
 
     //give the Matrix Reference (Matrix and Offset) related to a given Mechanical State
     MatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const override;
