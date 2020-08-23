@@ -183,7 +183,7 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
 
         std::vector<sofa::defaulttype::Vector3> tetraVertices;
         std::vector<sofa::defaulttype::Vector3> normalVertices;
-        for (int i = 0; i<size; i++)
+        for (std::size_t i = 0; i<size; i++)
         {
             Tetrahedron t(this, i);
             this->addTetraToDraw(t, tetraVertices, normalVertices);
@@ -215,7 +215,7 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
     Vector3 minElem, maxElem;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    for (int i=0; i<size; i++)
+    for (std::size_t i=0; i<size; i++)
     {
         Tetrahedron t(this,i);
         const Vector3& pt1 = x[t.p1Index()];
@@ -261,7 +261,7 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
         cubeModel->resize(size);  // size = number of Tetrahedrons
         if (!empty())
         {
-            for (int i=0; i<size; i++)
+            for (std::size_t i=0; i<size; i++)
             {
                 Tetrahedron t(this,i);
                 const Vector3& pt1 = x[t.p1Index()];

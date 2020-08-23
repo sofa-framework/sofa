@@ -75,14 +75,14 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::apply ( const core::Mech
     helper::WriteAccessor<OutDataVecCoord> out = dOut;
 
     out.resize(outputTopo->getNbPoints());
-    for(unsigned int i = 0; i < pointMap.size(); ++i)
+    for(std::size_t i = 0; i < pointMap.size(); ++i)
     {
-        if (pointMap[i] != -1)
+        if (pointMap[i] != sofa::defaulttype::InvalidID)
             out[pointMap[i]] = in[i];
     }
-    for(unsigned int i = 0; i < edgeMap.size(); ++i)
+    for(std::size_t i = 0; i < edgeMap.size(); ++i)
     {
-        if (edgeMap[i] != -1)
+        if (edgeMap[i] != sofa::defaulttype::InvalidID)
             out[edgeMap[i]] = (in[ edges[i][0] ]+in[ edges[i][1] ])*0.5f;
     }
 }
@@ -101,14 +101,14 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( const core::Mech
     helper::WriteAccessor<OutDataVecDeriv> out = dOut;
 
     out.resize(outputTopo->getNbPoints());
-    for(unsigned int i = 0; i < pointMap.size(); ++i)
+    for(std::size_t i = 0; i < pointMap.size(); ++i)
     {
-        if (pointMap[i] != -1)
+        if (pointMap[i] != sofa::defaulttype::InvalidID)
             out[pointMap[i]] = in[i];
     }
-    for(unsigned int i = 0; i < edgeMap.size(); ++i)
+    for(std::size_t i = 0; i < edgeMap.size(); ++i)
     {
-        if (edgeMap[i] != -1)
+        if (edgeMap[i] != sofa::defaulttype::InvalidID)
             out[edgeMap[i]] = (in[ edges[i][0] ]+in[ edges[i][1] ])*0.5f;
     }
 }
@@ -126,14 +126,14 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::Mec
     helper::WriteAccessor<InDataVecDeriv> out = dOut;
 
     out.resize(inputTopo->getNbPoints());
-    for(unsigned int i = 0; i < pointMap.size(); ++i)
+    for(std::size_t i = 0; i < pointMap.size(); ++i)
     {
-        if (pointMap[i] != -1)
+        if (pointMap[i] != sofa::defaulttype::InvalidID)
             out[i] += in[pointMap[i]];
     }
-    for(unsigned int i = 0; i < edgeMap.size(); ++i)
+    for(std::size_t i = 0; i < edgeMap.size(); ++i)
     {
-        if (edgeMap[i] != -1)
+        if (edgeMap[i] != sofa::defaulttype::InvalidID)
         {
             out[edges[i][0]] += (in[edgeMap[i]])*0.5f;
             out[edges[i][1]] += (in[edgeMap[i]])*0.5f;
@@ -170,7 +170,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::Con
 
             for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                unsigned int indexIn = colIt.index();
+                index_type indexIn = colIt.index();
                 OutDeriv data = (OutDeriv) colIt.val();
 
                 int source = pointSource[indexIn];

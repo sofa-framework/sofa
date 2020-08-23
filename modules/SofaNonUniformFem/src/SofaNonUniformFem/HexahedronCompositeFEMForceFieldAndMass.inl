@@ -562,7 +562,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     msg_warning()<<"finestChildren.size() : "<<finestChildren.size()<<msgendl;
     msg_warning()<<"finestSparseGrid->getNbHexahedra() : "<<finestSparseGrid->getNbHexahedra()<<msgendl;
 
-    int sizeass=2;
+    std::size_t sizeass=2;
     for(int i=0; i<this->d_nbVirtualFinerLevels.getValue(); ++i)
         sizeass = (sizeass-1)*2+1;
     sizeass = sizeass*sizeass*sizeass;
@@ -845,7 +845,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::findFinestChildren( helper::vec
     }
     else
     {
-        helper::fixed_array<int,8> finerChildren;
+        helper::fixed_array<index_type,8> finerChildren;
         if (level == 0)
         {
             finerChildren = this->_sparseGrid->_hierarchicalCubeMap[elementIndice];
@@ -867,13 +867,15 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::findFinestChildren( helper::vec
 template<class T>
 void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecursively( ElementStiffness &K, ElementMass &M, const index_type elementIndice,  int level)
 {
+    using namespace sofa::defaulttype;
+
     if (level == this->d_nbVirtualFinerLevels.getValue())
     {
         this->computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
     }
     else
     {
-        helper::fixed_array<int,8> finerChildren;
+        helper::fixed_array<index_type,8> finerChildren;
 
         topology::SparseGridTopology::SPtr sparseGrid, finerSparseGrid;
 
@@ -1083,6 +1085,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 template<class T>
 void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecursivelyWithRamifications( ElementStiffness &K, ElementMass &M, const index_type elementIndice,  int level)
 {
+    using namespace sofa::defaulttype;
+
     if (level == this->d_nbVirtualFinerLevels.getValue())
     {
         this->computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
@@ -1122,7 +1126,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-        helper::fixed_array< std::set<int>, 27 > fineNodesPerPositions; // list of fine nodes at each fine positions
+        helper::fixed_array< std::set<index_type>, 27 > fineNodesPerPositions; // list of fine nodes at each fine positions
         for ( int i=0; i<8; ++i) //for 8 virtual finer element positions
         {
             finerK[i].resize( finerChildrenRamificationOriginal[i].size() );
@@ -1158,14 +1162,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-        helper::fixed_array<helper::vector<helper::fixed_array<int,8 > >,8 > finerChildrenRamification; // listes des hexahedra � chaque position, avec des indices fictifs pour les vides
+        helper::fixed_array<helper::vector<helper::fixed_array<index_type,8 > >,8 > finerChildrenRamification; // listes des hexahedra � chaque position, avec des indices fictifs pour les vides
         helper::fixed_array<helper::vector<bool>,8 > isFinerChildrenVirtual; // a boolean, true if ficitf, only created for void
         for ( int i=0; i<8; ++i) //for 8 virtual finer element positions
         {
             if( finerChildrenRamificationOriginal[i].empty() ) // vide
             {
                 // construire un element fictif
-                helper::fixed_array<int,8 > fictifelem;
+                helper::fixed_array<index_type,8 > fictifelem;
                 for(int j=0; j<8; ++j) // fine fictif nodes
                 {
                     fictifelem[j] = *fineNodesPerPositions[FINE_ELEM_IN_COARSE_IN_ASS_FRAME[i][j]].begin();
@@ -1179,7 +1183,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 for(unsigned j=0; j<finerChildrenRamificationOriginal[i].size(); ++j)
                 {
                     const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexahedron( finerChildrenRamificationOriginal[i][j] );
-                    helper::fixed_array<int,8 > elem;
+                    helper::fixed_array<index_type,8 > elem;
                     for(int k=0; k<8; ++k) // fine nodes
                     {
                         elem[k] = finehexa[k];
@@ -1189,13 +1193,13 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 }
             }
         }
-        std::map<int,int> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
+        std::map<index_type,index_type> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
         int idxass = 0;
 
 
         for(int i=0; i<27; ++i)
         {
-            for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+            for( auto it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
             {
                 map_idxq_idxass[*it] = idxass;
                 idxass++;
@@ -1212,7 +1216,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
             for( unsigned c=0; c<finerChildrenRamification[i].size(); ++c)
             {
 
-                helper::fixed_array<int,8>& finehexa = finerChildrenRamification[i][c];
+                auto& finehexa = finerChildrenRamification[i][c];
 
                 if( isFinerChildrenVirtual[i][c] ) // void
                 {
@@ -1312,7 +1316,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
             }
             else
             {
-                for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+                for( auto it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
                 {
                     map_idxq_idxcutass[*it] = idxcutass;
                     map_idxq_coarse[*it] = InvalidID;
@@ -1500,13 +1504,15 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 template<class T>
 void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weight &W, const index_type coarseElementIndice, const index_type elementIndice,  int level)
 {
+    using namespace sofa::defaulttype;
+
     if( elementIndice == InvalidID ) return;
 
     Weight A = _weights[ this->d_nbVirtualFinerLevels.getValue()-level ][elementIndice]* W;
 
     if (level == this->d_nbVirtualFinerLevels.getValue())
     {
-        _finalWeights[ elementIndice ] = std::pair<int,Weight>(coarseElementIndice, A);
+        _finalWeights[ elementIndice ] = std::pair<index_type,Weight>(coarseElementIndice, A);
 
     }
     else
@@ -1527,13 +1533,16 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weig
 template<class T>
 void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeightsRamification( const Weight &W, const index_type coarseElementIndice, const index_type elementIndice,  int level)
 {
+
+    using namespace sofa::defaulttype;
+
     if( elementIndice == InvalidID ) return;
 
     Weight A = _weights[ this->d_nbVirtualFinerLevels.getValue()-level ][elementIndice]* W;
 
     if (level == this->d_nbVirtualFinerLevels.getValue())
     {
-        _finalWeights[ elementIndice ] = std::pair<int,Weight>(coarseElementIndice, A);
+        _finalWeights[ elementIndice ] = std::pair<index_type,Weight>(coarseElementIndice, A);
     }
     else
     {

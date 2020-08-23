@@ -104,7 +104,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::init ( const typename Out::Vec
         {
             Vector3 coefs;
             index_type cube = m_fromTopology->findCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
-            if ( cube==InvalidID )
+            if ( cube==sofa::defaulttype::InvalidID )
             {
                 cube = m_fromTopology->findNearestCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
             }

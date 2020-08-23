@@ -485,15 +485,15 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
     {
         // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
         edge[i] = e1.getCollisionModel()->getCollisionTopology()->getEdge(edgesInTriangle1[i]);
-        if(((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p2Index()) || ((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p1Index()))
+        if((edge[i][0]==e1.p1Index() && edge[i][1]==e1.p2Index()) || (edge[i][0]==e1.p2Index() && edge[i][1]==e1.p1Index()))
         {
             E1edge1verif = edgesInTriangle1[i]; /*std::cout<<"- e1 1: "<<i ;*/
         }
-        if(((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p3Index()) || ((int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p2Index()))
+        if((edge[i][0]==e1.p2Index() && edge[i][1]==e1.p3Index()) || (edge[i][0]==e1.p3Index() && edge[i][1]==e1.p2Index()))
         {
             E1edge2verif = edgesInTriangle1[i]; /*std::cout<<"- e1 2: "<<i ;*/
         }
-        if(((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p3Index()) || ((int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p1Index()))
+        if((edge[i][0]==e1.p1Index() && edge[i][1]==e1.p3Index()) || (edge[i][0]==e1.p3Index() && edge[i][1]==e1.p1Index()))
         {
             E1edge3verif = edgesInTriangle1[i]; /*std::cout<<"- e1 3: "<<i ;*/
         }

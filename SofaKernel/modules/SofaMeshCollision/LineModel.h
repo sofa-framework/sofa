@@ -98,7 +98,7 @@ public :
 protected:
     struct LineData
     {
-        int p[2];
+        index_type p[2];
         // Triangles neighborhood
 //		int tRight, tLeft;
     };

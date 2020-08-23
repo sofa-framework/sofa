@@ -70,6 +70,8 @@ public:
     enum { NIn = Inherit1::NIn };
     enum { NOut = Inherit1::NOut };
 
+    using index_type = sofa::defaulttype::index_type;
+
 public:
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;

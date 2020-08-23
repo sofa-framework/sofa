@@ -173,9 +173,10 @@ template<class DataTypes>
 class ContactMapper<TetrahedronCollisionModel, DataTypes> : public BarycentricContactMapper<TetrahedronCollisionModel, DataTypes>
 {
 public:
+    using index_type = sofa::defaulttype::index_type;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    int addPoint(const Coord& P, int index, Real&)
+    index_type addPoint(const Coord& P, index_type index, Real&)
     {
         Tetrahedron t(this->model, index);
         defaulttype::Vector3 b = t.getBary(P);

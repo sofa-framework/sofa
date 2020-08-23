@@ -81,7 +81,7 @@ typename BarycentricMapperHexahedronSetTopology<In, Out>::index_type
 BarycentricMapperHexahedronSetTopology<In,Out>::setPointInCube ( const index_type pointIndex, const index_type cubeIndex, const SReal* baryCoords )
 {
     if ( pointIndex >= d_map.getValue().size() )
-        return InvalidID;
+        return sofa::defaulttype::InvalidID;
 
     helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
     MappingData& data = vectorData[pointIndex];
@@ -91,7 +91,7 @@ BarycentricMapperHexahedronSetTopology<In,Out>::setPointInCube ( const index_typ
     data.baryCoords[2] = ( Real ) baryCoords[2];
     d_map.endEdit();
 
-    if(cubeIndex == InvalidID)
+    if(cubeIndex == sofa::defaulttype::InvalidID)
         m_invalidIndex.insert(pointIndex);
     else
         m_invalidIndex.erase(pointIndex);
@@ -194,7 +194,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                         iter != m_invalidIndex.cend(); ++iter )
                 {
                     const auto j = *iter;
-                    if ( mapData[j].in_index == InvalidID ) // compute new mapping
+                    if ( mapData[j].in_index == sofa::defaulttype::InvalidID ) // compute new mapping
                     {
                         Vector3 coefs;
                         typename In::Coord pos;
@@ -205,7 +205,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                         // find nearest cell and barycentric coords
                         Real distance = 1e10;
 
-                        index_type index = InvalidID;
+                        index_type index = sofa::defaulttype::InvalidID;
                         // When smoothing a mesh, the element has to be found using the rest position of the point. Then, its position is set using this element.
                         if( this->m_toTopology)
                         {
@@ -228,7 +228,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                             index = m_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
                         }
 
-                        if ( index != -1 )
+                        if ( index != sofa::defaulttype::InvalidID )
                         {
                             mapData[j].baryCoords[0] = ( Real ) coefs[0];
                             mapData[j].baryCoords[1] = ( Real ) coefs[1];

@@ -36,6 +36,8 @@ namespace sofa::component::mapping
 template <class BasicMapping>
 void HexahedronCompositeFEMMapping<BasicMapping>::init()
 {
+    using namespace sofa::defaulttype;
+
     if(_alreadyInit) return;
     _alreadyInit=true;
 
@@ -129,7 +131,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
                 baryCoefs[6] = (Real)((coefs[0]) * (coefs[1]) * (coefs[2]));
                 baryCoefs[7] = (Real)((1 - coefs[0]) * (coefs[1]) * (coefs[2]));
 
-                _finestBarycentricCoord[i] = std::pair<int, helper::fixed_array<Real, 8> >(elementIdx, baryCoefs);
+                _finestBarycentricCoord[i] = std::pair<index_type, helper::fixed_array<Real, 8> >(elementIdx, baryCoefs);
             }
             else
                 msg_error() << "HexahedronCompositeFEMMapping::init()   error finding the corresponding finest cube of vertex " << _p0[i];

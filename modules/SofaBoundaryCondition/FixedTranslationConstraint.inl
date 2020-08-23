@@ -39,18 +39,18 @@ namespace projectiveconstraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedTranslationConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+bool FixedTranslationConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
 {
     return fc != 0;
 }
 
 // Define RemovalFunction
 template< class DataTypes>
-void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
 {
     if (fc)
     {
-        fc->removeIndex((unsigned int) pointIndex);
+        fc->removeIndex((index_type) pointIndex);
     }
 }
 
@@ -85,14 +85,14 @@ void FixedTranslationConstraint<DataTypes>::clearIndices()
 }
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::addIndex(unsigned int index)
+void FixedTranslationConstraint<DataTypes>::addIndex(index_type index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::removeIndex(unsigned int index)
+void FixedTranslationConstraint<DataTypes>::removeIndex(index_type index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -151,7 +151,7 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::Mechani
 
     if (f_fixAll.getValue() == true)
     {
-        for (int i = 0; i < l_topology.get()->getNbPoints(); ++i)
+        for (std::size_t i = 0; i < l_topology.get()->getNbPoints(); ++i)
         {
             clearPos(res[i]);
         }

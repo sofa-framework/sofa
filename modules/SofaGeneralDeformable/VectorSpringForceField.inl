@@ -44,9 +44,9 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
-void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(unsigned int, Spring &t,
+void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(index_type, Spring &t,
         const core::topology::BaseMeshTopology::Edge & e,
-        const sofa::helper::vector<unsigned int> & ancestors,
+        const sofa::helper::vector<index_type> & ancestors,
         const sofa::helper::vector<double> & coefs)
 {
     if (ff)
@@ -105,7 +105,7 @@ bool VectorSpringForceField<DataTypes>::load(const char *filename)
 }
 
 template <class DataTypes>
-void VectorSpringForceField<DataTypes>::resizeArray(unsigned int n)
+void VectorSpringForceField<DataTypes>::resizeArray(std::size_t n)
 {
     helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
     springArrayData.resize(n);

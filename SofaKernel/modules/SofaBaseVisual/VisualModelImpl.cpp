@@ -71,7 +71,7 @@ Vec3State::Vec3State()
     m_vnormals.setGroup("Vector");
 }
 
-void Vec3State::resize(size_t vsize)
+void Vec3State::resize(std::size_t vsize)
 {
     helper::WriteOnlyAccessor< Data<VecCoord > > positions = m_positions;
     if( positions.size() == vsize ) return;
@@ -254,7 +254,7 @@ bool VisualModelImpl::hasTransparent()
         return (material.useDiffuse && material.diffuse[3] < 1.0);
     else
     {
-        for (unsigned int i = 0; i < groups.size(); ++i)
+        for (std::size_t i = 0; i < groups.size(); ++i)
         {
             const Material& m = (groups[i].materialId == -1) ? material : materials[groups[i].materialId];
             if (m.useDiffuse && m.diffuse[3] < 1.0)
@@ -273,7 +273,7 @@ bool VisualModelImpl::hasOpaque()
         return !(material.useDiffuse && material.diffuse[3] < 1.0);
     else
     {
-        for (unsigned int i = 0; i < groups.size(); ++i)
+        for (std::size_t i = 0; i < groups.size(); ++i)
         {
             const Material& m = (groups[i].materialId == -1) ? material : materials[groups[i].materialId];
             if (!(m.useDiffuse && m.diffuse[3] < 1.0))
@@ -377,7 +377,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     std::size_t nbVIn = verticesImport.size();
     // First we compute for each point how many pair of normal/texcoord indices are used
     // The map store the final index of each combinaison
-    vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
+    vector< std::map< std::pair<index_type,index_type>, index_type > > vertTexNormMap;
     vertTexNormMap.resize(nbVIn);
     for (std::size_t i = 0; i < facetsImport.size(); i++)
     {
@@ -388,7 +388,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         const auto& norms = vertNormTexIndex[2];
         for (std::size_t j = 0; j < verts.size(); j++)
         {
-            vertTexNormMap[verts[j]][std::make_pair((tex ? texs[j] : -1), (m_useNormals.getValue() ? norms[j] : 0))] = 0;
+            vertTexNormMap[verts[j]][std::make_pair((tex ? texs[j] : InvalidID), (m_useNormals.getValue() ? norms[j] : 0))] = 0;
         }
     }
 
@@ -435,23 +435,23 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         vtexcoords.resize(nbVIn);
     }
 
-    int nbNOut = 0; /// Number of different normals
-    for (int i = 0, j = 0; i < nbVIn; i++)
+    std::size_t nbNOut = 0; /// Number of different normals
+    for (std::size_t i = 0, j = 0; i < nbVIn; i++)
     {
         positions[i] = verticesImport[i];
 
         if (m_initRestPositions.getValue())
             restPositions[i] = verticesImport[i];
 
-        std::map<int, int> normMap;
-        for (std::map<std::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
+        std::map<std::size_t, std::size_t> normMap;
+        for (auto it = vertTexNormMap[i].begin();
              it != vertTexNormMap[i].end(); ++it)
         {
-            int t = it->first.first;
-            int n = it->first.second;
-            if ( m_useNormals.getValue() && (unsigned)n < normalsImport.size())
+            index_type t = it->first.first;
+            index_type n = it->first.second;
+            if ( m_useNormals.getValue() && n < normalsImport.size())
                 vnormals[j] = normalsImport[n];
-            if ((unsigned)t < texCoordsImport.size())
+            if (t < texCoordsImport.size())
                 vtexcoords[j] = texCoordsImport[t];
 
             if (vsplit)
@@ -519,7 +519,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         }
         else
         {
-            for (unsigned int j = 2; j < verts.size(); j++)
+            for (std::size_t j = 2; j < verts.size(); j++)
             {
                 triangles.push_back({ idxs[0],idxs[j - 1],idxs[j] });
             }
@@ -616,7 +616,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             {
                 //we check how many textures are linked with a material (only if a texture name is not defined in the scn file)
                 bool isATextureLinked = false;
-                for (unsigned int i = 0 ; i < this->materials.getValue().size() ; i++)
+                for (std::size_t i = 0 ; i < this->materials.getValue().size() ; i++)
                 {
                     //we count only the texture with an activated material
                     if (this->materials.getValue()[i].useTexture && this->materials.getValue()[i].activated)
@@ -671,7 +671,7 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
 
-    for (unsigned int i = 0; i < x.size(); i++)
+    for (std::size_t i = 0; i < x.size(); i++)
     {
         x[i] += d;
     }
@@ -682,7 +682,7 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
     {
         VecCoord& restPositions = *(m_restPositions.beginEdit());
 
-        for (unsigned int i = 0; i < restPositions.size(); i++)
+        for (std::size_t i = 0; i < restPositions.size(); i++)
         {
             restPositions[i] += d;
         }
@@ -705,7 +705,7 @@ void VisualModelImpl::applyRotation(const Quat q)
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
 
-    for (unsigned int i = 0; i < x.size(); i++)
+    for (std::size_t i = 0; i < x.size(); i++)
     {
         x[i] = q.rotate(x[i]);
     }
@@ -716,7 +716,7 @@ void VisualModelImpl::applyRotation(const Quat q)
     {
         VecCoord& restPositions = *(m_restPositions.beginEdit());
 
-        for (unsigned int i = 0; i < restPositions.size(); i++)
+        for (std::size_t i = 0; i < restPositions.size(); i++)
         {
             restPositions[i] = q.rotate(restPositions[i]);
         }
@@ -732,7 +732,7 @@ void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
 
-    for (unsigned int i = 0; i < x.size(); i++)
+    for (std::size_t i = 0; i < x.size(); i++)
     {
         x[i][0] *= (Real)sx;
         x[i][1] *= (Real)sy;
@@ -790,8 +790,8 @@ public:
     VisualModelPointHandler(VisualModelImpl* obj, sofa::component::topology::PointData<VecCoord>* data, int algo)
         : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(data), obj(obj), algo(algo) {}
 
-    void applyCreateFunction(unsigned int /*pointIndex*/, Coord& dest, const sofa::core::topology::Point &,
-                             const sofa::helper::vector< unsigned int > &ancestors,
+    void applyCreateFunction(index_type /*pointIndex*/, Coord& dest, const sofa::core::topology::Point &,
+                             const sofa::helper::vector< index_type > &ancestors,
                              const sofa::helper::vector< double > &coefs)
     {
         const VecCoord& x = this->m_topologyData->getValue();
@@ -801,10 +801,10 @@ public:
             {
                 Coord c0 = x[ancestors[0]];
                 dest = c0*coefs[0];
-                for (unsigned int i=1; i<ancestors.size(); ++i)
+                for (std::size_t i=1; i<ancestors.size(); ++i)
                 {
                     Coord ci = x[ancestors[i]];
-                    for (unsigned int j=0; j<ci.size(); ++j)
+                    for (std::size_t j=0; j<ci.size(); ++j)
                         ci[j] += helper::rnear(c0[j]-ci[j]);
                     dest += ci*coefs[i];
                 }
@@ -812,7 +812,7 @@ public:
             else
             {
                 dest = x[ancestors[0]]*coefs[0];
-                for (unsigned int i=1; i<ancestors.size(); ++i)
+                for (std::size_t i=1; i<ancestors.size(); ++i)
                     dest += x[ancestors[i]]*coefs[i];
             }
         }
@@ -820,7 +820,7 @@ public:
         this->m_topologyData->setParent(nullptr);
     }
 
-    void applyDestroyFunction(unsigned int, Coord& )
+    void applyDestroyFunction(index_type, Coord& )
     {
     }
 
@@ -876,7 +876,7 @@ void VisualModelImpl::init()
 
     load(fileMesh.getFullPath(), "", texturename.getFullPath());
 
-    if (m_topology == nullptr || (m_positions.getValue().size()!=0 && m_positions.getValue().size() != (unsigned int)m_topology->getNbPoints()))
+    if (m_topology == nullptr || (m_positions.getValue().size()!=0 && m_positions.getValue().size() != m_topology->getNbPoints()))
     {
         // Fixes bug when neither an .obj file nor a topology is present in the VisualModel Node.
         // Thus nothing will be displayed.
@@ -927,10 +927,10 @@ void VisualModelImpl::computeNormals()
         VecDeriv& normals = *(m_vnormals.beginEdit());
 
         normals.resize(nbn);
-        for (int i = 0; i < nbn; i++)
+        for (std::size_t i = 0; i < nbn; i++)
             normals[i].clear();
 
-        for (unsigned int i = 0; i < triangles.size(); i++)
+        for (std::size_t i = 0; i < triangles.size(); i++)
         {
             const Coord& v1 = vertices[triangles[i][0]];
             const Coord& v2 = vertices[triangles[i][1]];
@@ -942,7 +942,7 @@ void VisualModelImpl::computeNormals()
             normals[triangles[i][2]] += n;
         }
 
-        for (unsigned int i = 0; i < quads.size(); i++)
+        for (std::size_t i = 0; i < quads.size(); i++)
         {
             const Coord & v1 = vertices[quads[i][0]];
             const Coord & v2 = vertices[quads[i][1]];
@@ -959,7 +959,7 @@ void VisualModelImpl::computeNormals()
             normals[quads[i][3]] += n4;
         }
 
-        for (unsigned int i = 0; i < normals.size(); i++)
+        for (std::size_t i = 0; i < normals.size(); i++)
             normals[i].normalize();
 
         m_vnormals.endEdit();
@@ -1059,7 +1059,7 @@ void VisualModelImpl::computeTangents()
         bitangents[i].clear();
     }
     const bool fixMergedUVSeams = m_fixMergedUVSeams.getValue();
-    for (unsigned int i = 0; i < triangles.size() ; i++)
+    for (std::size_t i = 0; i < triangles.size() ; i++)
     {
         const Coord v1 = vertices[triangles[i][0]];
         const Coord v2 = vertices[triangles[i][1]];
@@ -1069,7 +1069,7 @@ void VisualModelImpl::computeTangents()
         TexCoord t3 = texcoords[triangles[i][2]];
         if (fixMergedUVSeams)
         {
-            for (unsigned int j=0; j<t1.size(); ++j)
+            for (std::size_t j=0; j<t1.size(); ++j)
             {
                 t2[j] += helper::rnear(t1[j]-t2[j]);
                 t3[j] += helper::rnear(t1[j]-t3[j]);
@@ -1086,7 +1086,7 @@ void VisualModelImpl::computeTangents()
         bitangents[triangles[i][2]] += b;
     }
 
-    for (unsigned int i = 0; i < quads.size() ; i++)
+    for (std::size_t i = 0; i < quads.size() ; i++)
     {
         const Coord & v1 = vertices[quads[i][0]];
         const Coord & v2 = vertices[quads[i][1]];
@@ -1119,7 +1119,7 @@ void VisualModelImpl::computeTangents()
         tangents  [quads[i][3]] +=        t234 + t341 + t412;
         bitangents[quads[i][3]] +=        b234 + b341 + b412;
     }
-    for (unsigned int i = 0; i < vertices.size(); i++)
+    for (std::size_t i = 0; i < vertices.size(); i++)
     {
         Coord n = normals[i];
         Coord& t = tangents[i];
@@ -1138,7 +1138,7 @@ void VisualModelImpl::computeBBox(const core::ExecParams*, bool)
 
     SReal minBBox[3] = {std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()};
     SReal maxBBox[3] = {-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max()};
-    for (unsigned int i = 0; i < x.size(); i++)
+    for (std::size_t i = 0; i < x.size(); i++)
     {
         const Coord& p = x[i];
         for (int c=0; c<3; c++)
@@ -1168,7 +1168,7 @@ void VisualModelImpl::computeUVSphereProjection()
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     vtexcoords.resize(nbrV);
 
-    for (int i = 0; i < nbrV; ++i)
+    for (std::size_t i = 0; i < nbrV; ++i)
     {
         Coord Vcentered = coords[i] - center;
         float r = sqrtf(Vcentered[0] * Vcentered[0] + Vcentered[1] * Vcentered[1] + Vcentered[2] * Vcentered[2]);
@@ -1365,7 +1365,7 @@ void VisualModelImpl::computeMesh()
 
             vertices.resize(m_topology->getNbPoints());
 
-            for (unsigned int i=0; i<vertices.size(); i++)
+            for (std::size_t i=0; i<vertices.size(); i++)
             {
                 vertices[i][0] = (Real)m_topology->getPX(i);
                 vertices[i][1] = (Real)m_topology->getPY(i);
@@ -1383,7 +1383,7 @@ void VisualModelImpl::computeMesh()
 
                 vertices.resize(mstate->getSize());
 
-                for (unsigned int i=0; i<vertices.size(); i++)
+                for (std::size_t i=0; i<vertices.size(); i++)
                 {
                     vertices[i][0] = (Real)mstate->getPX(i);
                     vertices[i][1] = (Real)mstate->getPY(i);
@@ -1638,7 +1638,7 @@ void VisualModelImpl::handleTopologyChange()
 
                     if (debug_mode)
                     {
-                        for (unsigned int j_loc=0; j_loc<triangles.size(); ++j_loc)
+                        for (std::size_t j_loc=0; j_loc<triangles.size(); ++j_loc)
                         {
                             bool is_forgotten = false;
                             if ((unsigned)triangles[j_loc][0]==last)
@@ -1665,10 +1665,10 @@ void VisualModelImpl::handleTopologyChange()
 
                             if(is_forgotten)
                             {
-                                unsigned int ind_forgotten = j_loc;
+                                std::size_t ind_forgotten = j_loc;
 
                                 bool is_in_shell = false;
-                                for (unsigned int j_glob=0; j_glob<shell.size(); ++j_glob)
+                                for (std::size_t j_glob=0; j_glob<shell.size(); ++j_glob)
                                 {
                                     is_in_shell = is_in_shell || (shell[j_glob] == ind_forgotten);
                                 }
@@ -1698,19 +1698,19 @@ void VisualModelImpl::handleTopologyChange()
             {
                 size_t last = m_topology->getNbPoints() -1;
 
-                unsigned int i,j;
+                index_type i,j;
 
                 const auto& tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
                 sofa::helper::vector<index_type> lastIndexVec;
-                for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
+                for(index_type i_init = 0; i_init < tab.size(); ++i_init)
                 {
                     lastIndexVec.push_back(last - i_init);
                 }
 
                 for ( i = 0; i < tab.size(); ++i)
                 {
-                    unsigned int i_next = i;
+                    index_type i_next = i;
                     bool is_reached = false;
                     while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
                     {
@@ -1786,7 +1786,7 @@ void VisualModelImpl::handleTopologyChange()
 #if 0
             using sofa::core::behavior::BaseMechanicalState;
             BaseMechanicalState* mstate;
-            //const unsigned int nbPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
+            //const index_type nbPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
             m_topology->getContext()->get(mstate);
             /* fjourdes:
             ! THIS IS OBVIOUSLY NOT THE APPROPRIATE WAY TO DO IT !
@@ -1824,7 +1824,7 @@ void VisualModelImpl::handleTopologyChange()
 
                 vertices.resize(mstate->getSize());
 
-                for (unsigned int i=0; i<vertices.size(); i++)
+                for (index_type i=0; i<vertices.size(); i++)
                 {
                     vertices[i][0] = (Real)mstate->getPX(i);
                     vertices[i][1] = (Real)mstate->getPY(i);

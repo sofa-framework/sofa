@@ -133,7 +133,7 @@ void TriangleCollisionModel<DataTypes>::init()
 template<class DataTypes>
 void TriangleCollisionModel<DataTypes>::updateNormals()
 {
-    for (int i=0; i<size; i++)
+    for (std::size_t i=0; i<size; i++)
     {
         Element t(this,i);
         const defaulttype::Vector3& pt1 = t.p1();
@@ -277,7 +277,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         const SReal distance = (SReal)this->proximity.getValue();
-        for (int i=0; i<size; i++)
+        for (std::size_t i=0; i<size; i++)
         {
             Element t(this,i);
 
@@ -333,7 +333,7 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt,
     if (!empty())
     {
         const SReal distance = (SReal)this->proximity.getValue();
-        for (int i=0; i<size; i++)
+        for (std::size_t i=0; i<size; i++)
         {
             Element t(this,i);
             const defaulttype::Vector3& pt1 = t.p1();
@@ -435,7 +435,7 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    for (int i=0; i<size; i++)
+    for (std::size_t i=0; i<size; i++)
     {
         Element t(this,i);
         const defaulttype::Vector3& pt1 = t.p1();
@@ -492,7 +492,7 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
         std::vector< defaulttype::Vec<3,int> > indices;
         std::vector< defaulttype::Vector3 > normals;
         int index=0;
-        for (int i=0; i<size; i++)
+        for (std::size_t i=0; i<size; i++)
         {
             Element t(this,i);
             normals.push_back(t.n());
@@ -512,7 +512,7 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
         if (vparams->displayFlags().getShowNormals())
         {
             std::vector< defaulttype::Vector3 > points;
-            for (int i=0; i<size; i++)
+            for (std::size_t i=0; i<size; i++)
             {
                 Element t(this,i);
                 points.push_back((t.p1()+t.p2()+t.p3())/3.0);

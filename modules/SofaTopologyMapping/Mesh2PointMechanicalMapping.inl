@@ -66,6 +66,8 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
 {
     if (!topoMap) return;
 
+    using sofa::defaulttype::InvalidID;
+
     helper::WriteAccessor< Data<OutVecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
 
@@ -172,6 +174,8 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
 {
     if (!topoMap) return;
 
+    using sofa::defaulttype::InvalidID;
+
     helper::WriteAccessor< Data<OutVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
@@ -277,6 +281,8 @@ template <class TIn, class TOut>
 void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/, Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn)
 {
     if (!topoMap) return;
+
+    using sofa::defaulttype::InvalidID;
 
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<OutVecDeriv> > in = dIn;
@@ -416,10 +422,10 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
             while (colIt != colItEnd)
             {
-                const unsigned int indexUIn = colIt.index();
+                const index_type indexUIn = colIt.index();
                 const OutDeriv data = colIt.val();
                 std::pair< Mesh2PointTopologicalMapping::Element, int> source = pointSource[indexUIn];
-                int indexIn = (int)indexUIn;
+                index_type indexIn = indexUIn;
 
                 switch (source.first)
                 {
@@ -444,7 +450,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     {
                         const auto& edgeMap = topoMap->getPointsMappedFromEdge();
                         bool err = true;
-                        for(unsigned int i = 0; i < edgeMap[source.second].size(); ++i)
+                        for(std::size_t i = 0; i < edgeMap[source.second].size(); ++i)
                         {
                             if (edgeMap[source.second][i] == indexIn)
                             {
@@ -481,7 +487,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     {
                         const auto& triangleMap = topoMap->getPointsMappedFromTriangle();
                         bool err = true;
-                        for(unsigned int i = 0; i < triangleMap[source.second].size(); ++i)
+                        for(std::size_t i = 0; i < triangleMap[source.second].size(); ++i)
                         {
                             if (triangleMap[source.second][i] == indexIn)
                             {
@@ -520,7 +526,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     {
                         const auto& quadMap = topoMap->getPointsMappedFromQuad();
                         bool err = true;
-                        for(unsigned int i = 0; i < quadMap[source.second].size(); ++i)
+                        for(std::size_t i = 0; i < quadMap[source.second].size(); ++i)
                         {
                             if (quadMap[source.second][i] == indexIn)
                             {
@@ -562,7 +568,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     {
                         const auto& tetraMap = topoMap->getPointsMappedFromTetra();
                         bool err = true;
-                        for(unsigned int i = 0; i < tetraMap[source.second].size(); ++i)
+                        for(std::size_t i = 0; i < tetraMap[source.second].size(); ++i)
                         {
                             if (tetraMap[source.second][i] == indexIn)
                             {
@@ -604,7 +610,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     {
                         const auto& hexaMap = topoMap->getPointsMappedFromHexa();
                         bool err = true;
-                        for(unsigned int i = 0; i < hexaMap[source.second].size(); ++i)
+                        for(std::size_t i = 0; i < hexaMap[source.second].size(); ++i)
                         {
                             if (hexaMap[source.second][i] == indexIn)
                             {

@@ -533,7 +533,7 @@ typename TriangularFEMForceField<DataTypes>::Index TriangularFEMForceField<DataT
 
     edgeInfo.endEdit();
 
-    return InvalidID;
+    return sofa::defaulttype::InvalidID;
 }
 
 

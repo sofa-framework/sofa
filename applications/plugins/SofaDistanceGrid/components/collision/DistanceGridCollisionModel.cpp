@@ -174,7 +174,7 @@ void RigidDistanceGridCollisionModel::updateState()
     bool useInitTranslation = (initTranslation != DistanceGrid::Coord());
     bool useInitRotation = (initRotation != Vector3(0,0,0));
 
-    for (int i=0; i<size; i++)
+    for (std::size_t i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
         Vector3 emin, emax;
@@ -217,7 +217,7 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 
     const bool flipped = isFlipped();
     cubeModel->resize(size);
-    for (int i=0; i<size; i++)
+    for (std::size_t i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
         Vector3 emin, emax;
@@ -602,7 +602,7 @@ void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
     updateGrid();
 
     cubeModel->resize(size);
-    for (int i=0; i<size; i++)
+    for (std::size_t i=0; i<size; i++)
     {
         Vector3 emin, emax;
         const DeformedCube& cube = getDeformCube(i);
@@ -624,7 +624,7 @@ void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 
 void FFDDistanceGridCollisionModel::updateGrid()
 {
-    for (int index=0; index<size; index++)
+    for (std::size_t index=0; index<size; index++)
     {
         DeformedCube& cube = getDeformCube( index );
         const sofa::helper::vector<core::topology::BaseMeshTopology::Hexa>& cubeCorners = ffdMesh->getHexahedra();

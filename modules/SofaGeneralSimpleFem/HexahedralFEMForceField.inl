@@ -58,10 +58,10 @@ namespace forcefield
 {
 
 template< class DataTypes>
-void HexahedralFEMForceField<DataTypes>::HFFHexahedronHandler::applyCreateFunction(unsigned int hexahedronIndex,
+void HexahedralFEMForceField<DataTypes>::HFFHexahedronHandler::applyCreateFunction(index_type hexahedronIndex,
         HexahedronInformation &,
         const core::topology::BaseMeshTopology::Hexahedron &,
-        const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<index_type> &,
         const sofa::helper::vector<double> &)
 {
     if (ff)
@@ -145,7 +145,7 @@ void HexahedralFEMForceField<DataTypes>::reinit()
     for (size_t i=0; i<_topology->getNbHexahedra(); ++i)
     {
         hexahedronHandler->applyCreateFunction(i,hexahedronInf[i],
-                _topology->getHexahedron(i),  (const std::vector< unsigned int > )0,
+                _topology->getHexahedron(i),  (const std::vector< index_type > )0,
                 (const std::vector< double >)0);
     }
     hexahedronInfo.createTopologicalEngine(_topology,hexahedronHandler);
@@ -195,7 +195,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 
     const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
-    for(unsigned int i = 0 ; i<_topology->getNbHexahedra(); ++i)
+    for(std::size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
     {
         Transformation R_0_2;
         R_0_2.transpose(hexahedronInf[i].rotation);
@@ -607,7 +607,7 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
-    for(unsigned int e=0 ; e<_topology->getNbHexahedra() ; ++e)
+    for(std::size_t e=0 ; e<_topology->getNbHexahedra() ; ++e)
     {
         const ElementStiffness &Ke = hexahedronInf[e].stiffness;
 
