@@ -75,7 +75,7 @@ public:
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    void clear(int size=0) override;
+    void clear(std::size_t size=0) override;
     void resize( core::State<Out>* toModel ) override;
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
@@ -161,7 +161,7 @@ protected:
     virtual helper::vector<SReal> getBaryCoef(const Real* f)=0;
     virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element)=0;
     virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element)=0;
-    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords)=0;
+    virtual void addPointInElement(const index_type elementIndex, const SReal* baryCoords)=0;
     virtual void computeDistance(double& d, const Vector3& v)=0;
 
     /// Compute the distance between outPos and the element e. If this distance is smaller than the previously stored one,

@@ -72,14 +72,14 @@ void MultilevelHexahedronSetTopologyContainer::init()
     _fineComponents.endEdit();
     _coarseComponents.beginEdit()->reserve(numVoxels);
     _coarseComponents.endEdit();
-    const helper::vector<unsigned int>&  _hexaIndexInRegularGrid= hexaIndexInRegularGrid.getValue();
-    for(unsigned int idx=0; idx<numVoxels; ++idx)
+    const auto&  _hexaIndexInRegularGrid= hexaIndexInRegularGrid.getValue();
+    for(std::size_t idx=0; idx<numVoxels; ++idx)
     {
         //	id = k * nx * ny + j * nx + i;
-        const unsigned int id = _hexaIndexInRegularGrid[idx];
-        const unsigned int i = id % _fineResolution[0];
-        const unsigned int j = (id / _fineResolution[0]) % _fineResolution[1];
-        const unsigned int k = id / (_fineResolution[0] * _fineResolution[1]);
+        const index_type id = _hexaIndexInRegularGrid[idx];
+        const index_type i = id % _fineResolution[0];
+        const index_type j = (id / _fineResolution[0]) % _fineResolution[1];
+        const index_type k = id / (_fineResolution[0] * _fineResolution[1]);
 
         Vec3i pos(i,j,k);
         std::set<Vec3i> voxels;
@@ -110,7 +110,7 @@ void MultilevelHexahedronSetTopologyContainer::clear()
 
     // this will delete all coarse components and their children,
     // i.e., all fine components will be deleted as well
-    for(unsigned int i=0; i<_coarseComponents.getValue().size(); ++i)
+    for(std::size_t i=0; i<_coarseComponents.getValue().size(); ++i)
         delete _coarseComponents.getValue()[i];
 
     _fineComponents.beginEdit()->clear();
@@ -126,58 +126,58 @@ void MultilevelHexahedronSetTopologyContainer::clear()
     _fineComponentInRegularGrid.clear();
 }
 
-void MultilevelHexahedronSetTopologyContainer::getHexaNeighbors(const unsigned int hexa,
-        helper::vector<unsigned int> &neighbors)
+void MultilevelHexahedronSetTopologyContainer::getHexaNeighbors(const index_type hexa,
+        helper::vector<index_type> &neighbors)
 {
-    std::set<unsigned int>	uniqueNeighbors;
+    std::set<index_type>	uniqueNeighbors;
     for(int vertexId=0; vertexId<8; ++vertexId)
     {
-        helper::vector<unsigned int> vneighbors;
+        helper::vector<index_type> vneighbors;
 
         getHexaVertexNeighbors(hexa, vertexId, vneighbors);
 
-        for(unsigned int i=0; i<vneighbors.size(); ++i)
+        for(std::size_t i=0; i<vneighbors.size(); ++i)
             uniqueNeighbors.insert(vneighbors[i]);
     }
 
     neighbors.reserve(uniqueNeighbors.size());
-    for(std::set<unsigned int>::const_iterator iter = uniqueNeighbors.begin(); iter != uniqueNeighbors.end(); ++iter)
+    for(auto iter = uniqueNeighbors.cbegin(); iter != uniqueNeighbors.cend(); ++iter)
         neighbors.push_back(*iter);
 }
 
-void MultilevelHexahedronSetTopologyContainer::getHexaFaceNeighbors(const unsigned int hexa,
-        const unsigned int faceId,
-        helper::vector<unsigned int> &neighbors)
+void MultilevelHexahedronSetTopologyContainer::getHexaFaceNeighbors(const index_type hexa,
+        const index_type faceId,
+        helper::vector<index_type> &neighbors)
 {
     const QuadsInHexahedron &hexaQuads = getQuadsInHexahedron(hexa);
     const auto &quadShell = getHexahedraAroundQuad(hexaQuads[faceId]);
 
     neighbors.clear();
     neighbors.reserve(quadShell.size()-1);
-    for(unsigned int i=0; i<quadShell.size(); ++i)
+    for(std::size_t i=0; i<quadShell.size(); ++i)
     {
         if(quadShell[i] != hexa)
             neighbors.push_back(quadShell[i]);
     }
 }
 
-void MultilevelHexahedronSetTopologyContainer::getHexaVertexNeighbors(const unsigned int hexa,
-        const unsigned int vertexId,
-        helper::vector<unsigned int> &neighbors)
+void MultilevelHexahedronSetTopologyContainer::getHexaVertexNeighbors(const index_type hexa,
+        const index_type vertexId,
+        helper::vector<index_type> &neighbors)
 {
     helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     const auto &vertexShell = getHexahedraAroundVertex(m_hexahedron[hexa][vertexId]);
 
     neighbors.clear();
     neighbors.reserve(vertexShell.size()-1);
-    for(unsigned int i=0; i<vertexShell.size(); ++i)
+    for(std::size_t i=0; i<vertexShell.size(); ++i)
     {
         if(vertexShell[i] != hexa)
             neighbors.push_back(vertexShell[i]);
     }
 }
 
-bool MultilevelHexahedronSetTopologyContainer::getHexaContainsPosition(const unsigned int hexaId,
+bool MultilevelHexahedronSetTopologyContainer::getHexaContainsPosition(const index_type hexaId,
         const defaulttype::Vector3& baryC) const
 {
     const Component& comp = *_coarseComponents.getValue()[hexaId];
@@ -212,47 +212,48 @@ bool MultilevelHexahedronSetTopologyContainer::getHexaContainsPosition(const uns
     return false;
 }
 
-const MultilevelHexahedronSetTopologyContainer::Vec3i& MultilevelHexahedronSetTopologyContainer::getHexaIdxInCoarseRegularGrid(const unsigned int hexaId) const
+const MultilevelHexahedronSetTopologyContainer::Vec3i& MultilevelHexahedronSetTopologyContainer::getHexaIdxInCoarseRegularGrid(const index_type hexaId) const
 {
     return _coarseComponents.getValue()[hexaId]->getVoxelId();
 }
 
-int MultilevelHexahedronSetTopologyContainer::getHexaIdInCoarseRegularGrid(const unsigned int hexaId) const
+int MultilevelHexahedronSetTopologyContainer::getHexaIdInCoarseRegularGrid(const index_type hexaId) const
 {
     const Vec3i& voxelId = getHexaIdxInCoarseRegularGrid(hexaId);
     return voxelId[0] + _coarseResolution[0] * (voxelId[1]  + voxelId[2] * _coarseResolution[1]);
 }
 
-const MultilevelHexahedronSetTopologyContainer::Vec3i& MultilevelHexahedronSetTopologyContainer::getHexaIdxInFineRegularGrid(const unsigned int hexaId) const
+const MultilevelHexahedronSetTopologyContainer::Vec3i& MultilevelHexahedronSetTopologyContainer::getHexaIdxInFineRegularGrid(const index_type hexaId) const
 {
     return _fineComponents.getValue()[hexaId]->getVoxelId();
 }
 
-int MultilevelHexahedronSetTopologyContainer::getHexaIdInFineRegularGrid(const unsigned int hexaId) const
+MultilevelHexahedronSetTopologyContainer::index_type MultilevelHexahedronSetTopologyContainer::getHexaIdInFineRegularGrid(const index_type hexaId) const
 {
     const Vec3i& voxelId = getHexaIdxInFineRegularGrid(hexaId);
     const Vec3i& _fineResolution = fineResolution.getValue();
     return voxelId[0] + _fineResolution[0] * (voxelId[1]  + voxelId[2] * _fineResolution[1]);
 }
 
-int MultilevelHexahedronSetTopologyContainer::getHexaInFineRegularGrid(const Vec3i& voxelId) const
+MultilevelHexahedronSetTopologyContainer::index_type MultilevelHexahedronSetTopologyContainer::getHexaInFineRegularGrid(const Vec3i& voxelId) const
 {
     const Vec3i& _fineResolution = fineResolution.getValue();
     Component* comp = _fineComponentInRegularGrid[voxelId[0] + _fineResolution[0] * (voxelId[1]  + voxelId[2] * _fineResolution[1])];
     if(comp != nullptr)
     {
-        for(unsigned int i=0; i<_fineComponents.getValue().size(); ++i)
+        for(std::size_t i=0; i<_fineComponents.getValue().size(); ++i)
         {
             if(_fineComponents.getValue()[i] == comp)
                 return i;
         }
     }
 
-    return -1;
+    return InvalidID;
 }
 
-int MultilevelHexahedronSetTopologyContainer::getHexaChildren(const unsigned int hexaId,
-        helper::vector<unsigned int>& children) const
+typename MultilevelHexahedronSetTopologyContainer::index_type
+MultilevelHexahedronSetTopologyContainer::getHexaChildren(const index_type hexaId,
+        helper::vector<index_type>& children) const
 {
     std::list<Component*>	compList;
     compList.push_back(_coarseComponents.getValue()[hexaId]);
@@ -275,28 +276,29 @@ int MultilevelHexahedronSetTopologyContainer::getHexaChildren(const unsigned int
 
     children.reserve(compSet.size());
 
-    for(unsigned int i=0; i<_fineComponents.getValue().size(); ++i)
+    for(std::size_t i=0; i<_fineComponents.getValue().size(); ++i)
     {
         if(compSet.find(_fineComponents.getValue()[i]) != compSet.end())
             children.push_back(i);
     }
 
-    return (int) children.size();
+    return children.size();
 }
 
-const std::set<MultilevelHexahedronSetTopologyContainer::Vec3i>& MultilevelHexahedronSetTopologyContainer::getHexaVoxels(const unsigned int hexaId) const
+const std::set<MultilevelHexahedronSetTopologyContainer::Vec3i>& MultilevelHexahedronSetTopologyContainer::getHexaVoxels(const index_type hexaId) const
 {
     return _coarseComponents.getValue()[hexaId]->_voxels;
 }
 
-int MultilevelHexahedronSetTopologyContainer::getHexaParent(const unsigned int hexaId) const
+typename MultilevelHexahedronSetTopologyContainer::index_type
+MultilevelHexahedronSetTopologyContainer::getHexaParent(const index_type hexaId) const
 {
     Component* comp = _fineComponents.getValue()[hexaId];
 
     while( comp->_parent != nullptr)
         comp = comp->_parent;
 
-    for(unsigned int i=0; i<_coarseComponents.getValue().size(); ++i)
+    for(std::size_t i=0; i<_coarseComponents.getValue().size(); ++i)
     {
         if(_coarseComponents.getValue()[i] == comp)
             return i;
@@ -307,9 +309,9 @@ int MultilevelHexahedronSetTopologyContainer::getHexaParent(const unsigned int h
 }
 
 void MultilevelHexahedronSetTopologyContainer::connectionToNodeAdjacency(const Vec3i& connection,
-        std::map<unsigned int, unsigned int>& nodeMap) const
+        std::map<index_type, index_type>& nodeMap) const
 {
-    for(unsigned int i=0; i<8; ++i)
+    for(index_type i=0; i<8; ++i)
         nodeMap[i] = i;
 
     if(connection[0] == 1) // cube is on the right from neighbor

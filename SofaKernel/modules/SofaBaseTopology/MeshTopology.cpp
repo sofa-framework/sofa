@@ -2663,17 +2663,17 @@ const sofa::helper::vector <index_type> MeshTopology::getElementAroundElements(s
 
 /// @}
 
-SReal MeshTopology::getPosX(int i) const
+SReal MeshTopology::getPosX(index_type i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
 }
 
-SReal MeshTopology::getPosY(int i) const
+SReal MeshTopology::getPosY(index_type i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][1]:0.0);
 }
 
-SReal MeshTopology::getPosZ(int i) const
+SReal MeshTopology::getPosZ(index_type i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
 }

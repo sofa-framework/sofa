@@ -148,7 +148,7 @@ protected:
     void saveIndices();//only for incision
     void inciseWithSavedIndices();
 
-    int findIndexInListOfTime(SReal time);
+    index_type findIndexInListOfTime(SReal time);
 };
 
 

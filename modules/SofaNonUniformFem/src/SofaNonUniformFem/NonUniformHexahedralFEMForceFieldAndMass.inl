@@ -355,7 +355,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const core::
 template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const component::topology::MultilevelModification& modEvent)
 {
-    const sofa::helper::vector<unsigned int> &hexaModif = modEvent.getArray();
+    const auto &hexaModif = modEvent.getArray();
 
     dmsg_info() << "MULTILEVEL_MODIFICATION hexaId: " << hexaModif ;
 

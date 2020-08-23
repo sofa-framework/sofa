@@ -42,7 +42,7 @@ BarycentricMapperEdgeSetTopology<In,Out>::BarycentricMapperEdgeSetTopology(topol
 {}
 
 template <class In, class Out>
-int BarycentricMapperEdgeSetTopology<In,Out>::addPointInLine ( const int edgeIndex, const SReal* baryCoords )
+typename BarycentricMapperEdgeSetTopology<In, Out>::index_type BarycentricMapperEdgeSetTopology<In,Out>::addPointInLine ( const index_type edgeIndex, const SReal* baryCoords )
 {
     helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
     vectorData.resize ( d_map.getValue().size() +1 );
@@ -50,11 +50,11 @@ int BarycentricMapperEdgeSetTopology<In,Out>::addPointInLine ( const int edgeInd
     MappingData& data = *vectorData.rbegin();
     data.in_index = edgeIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
-    return (int)d_map.getValue().size()-1;
+    return d_map.getValue().size()-1;
 }
 
 template <class In, class Out>
-int BarycentricMapperEdgeSetTopology<In,Out>::createPointInLine ( const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points )
+typename BarycentricMapperEdgeSetTopology<In, Out>::index_type BarycentricMapperEdgeSetTopology<In,Out>::createPointInLine ( const typename Out::Coord& p, index_type edgeIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[1];
     const Edge& elem = this->m_fromTopology->getEdge ( edgeIndex );
@@ -108,7 +108,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::computeDistance(double& d, const 
 }
 
 template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::addPointInElement(const int elementIndex, const SReal* baryCoords)
+void BarycentricMapperEdgeSetTopology<In,Out>::addPointInElement(const index_type elementIndex, const SReal* baryCoords)
 {
     addPointInLine(elementIndex,baryCoords);
 }

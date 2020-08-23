@@ -944,9 +944,9 @@ void TopologicalChangeProcessor::saveIndices()
                 index_type triIndex;
                 findElementIndex(Vector3(newPosition), triIndex, -1);
 
-                msg_error_when( (triIndex==-1) ) << "Error while searching triangle index." ;
+                msg_error_when( (triIndex==InvalidID) ) << "Error while searching triangle index." ;
 
-                triangleIncisionInformation[i].triangleIndices[0] = (unsigned int) triIndex;
+                triangleIncisionInformation[i].triangleIndices[0] = triIndex;
 
                 sofa::helper::vector< double > newBaryCoef = triangleGeo->computeTriangleBarycoefs( triangleIncisionInformation[i].triangleIndices[0], newPosition);
 
@@ -960,17 +960,17 @@ void TopologicalChangeProcessor::saveIndices()
     }
 }
 
-int TopologicalChangeProcessor::findIndexInListOfTime(SReal time)
+TopologicalChangeProcessor::index_type TopologicalChangeProcessor::findIndexInListOfTime(SReal time)
 {
     double epsilon = 1e-10;
     for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
         if ( fabs(time - triangleIncisionInformation[i].timeToIncise) < epsilon )
         {
-            return (int)i;
+            return i;
         }
     }
-    return -1;
+    return InvalidID;
 }
 
 std::vector<SReal> TopologicalChangeProcessor::getValuesInLine(std::string line, size_t nbElements)
@@ -1360,7 +1360,7 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 
             findElementIndex(triangleIncisionInformation[i].coordinates[j], newTriangleIndexb, currentTriangleIndex);
 
-            if ( newTriangleIndexb == -1)
+            if ( newTriangleIndexb == InvalidID)
             {
                 msg_warning() << "(updateTriangleIncisionInformation): error while finding the point " << triangleIncisionInformation[i].coordinates[j] << " in a new triangle. Current triangle index = " << currentTriangleIndex ;
                 break;

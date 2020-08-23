@@ -47,13 +47,15 @@ class BarycentricMapperQuadSetTopology : public BarycentricMapperTopologyContain
 {
     typedef typename BarycentricMapper<In,Out>::MappingData2D MappingData;
 
+    using index_type = sofa::defaulttype::index_type;
+
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperQuadSetTopology,In,Out),
                SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Quad));
     typedef typename Inherit1::Real Real;
 
-    int addPointInQuad(const int index, const SReal* baryCoords) override;
-    int createPointInQuad(const typename Out::Coord& p, int index, const typename In::VecCoord* points) override;
+    index_type addPointInQuad(const index_type index, const SReal* baryCoords) override;
+    index_type createPointInQuad(const typename Out::Coord& p, index_type index, const typename In::VecCoord* points) override;
 
     virtual ~BarycentricMapperQuadSetTopology();
 protected:
@@ -66,7 +68,7 @@ protected:
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Quad& element) override;
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Quad& element) override;
     void computeDistance(double& d, const Vector3& v) override;
-    void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
+    void addPointInElement(const index_type elementIndex, const SReal* baryCoords) override;
 
     topology::QuadSetTopologyContainer*			m_fromContainer;
     topology::QuadSetGeometryAlgorithms<In>*	m_fromGeomAlgo;

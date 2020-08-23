@@ -64,6 +64,7 @@ public:
     typedef typename HexahedronFEMForceFieldT::VecElementStiffness VecElementMass;
     typedef typename HexahedronFEMForceFieldT::ElementStiffness ElementMass;
     typedef helper::vector<Real> MassVector;
+    using index_type = sofa::defaulttype::index_type;
 
 protected:
     HexahedronFEMForceFieldAndMass();
@@ -73,7 +74,7 @@ public:
     void reinit( ) override;
 
     virtual void computeElementMasses( ); ///< compute the mass matrices
-    virtual void computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, SReal stiffnessFactor=1.0); ///< compute the mass matrix of an element
+    virtual void computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const index_type elementIndice, SReal stiffnessFactor=1.0); ///< compute the mass matrix of an element
     Real integrateMass( int signx, int signy, int signz, Real l0, Real l1, Real l2 );
 
     // -- Mass interface
@@ -114,7 +115,7 @@ public:
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    SReal getElementMass(sofa::defaulttype::index_type index) const override;
+    SReal getElementMass(index_type index) const override;
     // visual model
 
     void draw(const core::visual::VisualParams* vparams) override;

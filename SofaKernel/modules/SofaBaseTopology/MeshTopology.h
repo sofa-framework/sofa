@@ -257,9 +257,9 @@ public:
     /// @}
 
     // Get point positions (same methods as points accessors but not inherited)
-    SReal getPosX(int i) const;
-    SReal getPosY(int i) const;
-    SReal getPosZ(int i) const;
+    SReal getPosX(index_type i) const;
+    SReal getPosY(index_type i) const;
+    SReal getPosZ(index_type i) const;
 
     // Points accessors (not always available)
 

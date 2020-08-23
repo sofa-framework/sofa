@@ -514,15 +514,15 @@ void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, D
 }
 
 template<class DataTypes>
-int TriangularFEMForceField<DataTypes>::getFracturedEdge()
+typename TriangularFEMForceField<DataTypes>::Index TriangularFEMForceField<DataTypes>::getFracturedEdge()
 {
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     if (f_fracturable.getValue())
     {
-        int nbEdges = m_topology->getNbEdges();
+        std::size_t nbEdges = m_topology->getNbEdges();
 
-        for( int i=0; i<nbEdges; i++ )
+        for(std::size_t i=0; i<nbEdges; i++ )
         {
             if (edgeInf[i].fracturable)
             {
@@ -533,7 +533,7 @@ int TriangularFEMForceField<DataTypes>::getFracturedEdge()
 
     edgeInfo.endEdit();
 
-    return -1;
+    return InvalidID;
 }
 
 

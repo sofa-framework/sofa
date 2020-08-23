@@ -513,7 +513,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
             {
                 Weight A; A.identity();
 
-                helper::fixed_array<helper::vector<int>,8 >& finerChildrenRamification = sparseGridRamification->_hierarchicalCubeMapRamification[ i ];
+                auto& finerChildrenRamification = sparseGridRamification->_hierarchicalCubeMapRamification[ i ];
 
                 for(int w=0; w<8; ++w)
                     for(unsigned v=0; v<finerChildrenRamification[w].size(); ++v)
@@ -530,7 +530,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
             {
                 Weight A; A.identity();
 
-                helper::fixed_array<int,8> finerChildren = this->_sparseGrid->_hierarchicalCubeMap[i];
+                auto finerChildren = this->_sparseGrid->_hierarchicalCubeMap[i];
 
                 for(int w=0; w<8; ++w)
                     computeFinalWeights( A, i, finerChildren[w], 1 );
@@ -548,10 +548,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
 
 
 template<class T>
-void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse( ElementStiffness &K, ElementMass &M, const int elementIndice)
+void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse( ElementStiffness &K, ElementMass &M, const index_type elementIndice)
 {
     msg_warning()<<"computeMechanicalMatricesDirectlyFromTheFinestToCoarse"<<msgendl;
-    helper::vector<int> finestChildren;
+    helper::vector<index_type> finestChildren;
 
     //find them
     findFinestChildren( finestChildren, elementIndice );
@@ -578,8 +578,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     helper::vector<ElementMass> finestMasses(finestChildren.size());
 
 
-    std::map<int,int> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
-    int idxass = 0;
+    std::map<index_type, index_type> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
+    index_type idxass = 0;
 
 
 
@@ -625,15 +625,15 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 
-    std::map<int,int> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
-    int idxcutass = 0;
-    std::map<int,bool> map_idxq_coarse;
-    helper::fixed_array<int,8> map_idxcoarse_idxfine;
+    std::map<index_type, index_type> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
+    index_type idxcutass = 0;
+    std::map<index_type,bool> map_idxq_coarse;
+    helper::fixed_array<index_type,8> map_idxcoarse_idxfine;
     const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexahedron( elementIndice );
 
     for(int i=0; i<sizeass; ++i)
     {
-        for( std::map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
+        for( auto it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
             if( (*it).second==i)
             {
                 bool ok=false;
@@ -729,14 +729,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     Coord b = this->_sparseGrid->getPointPos(coarsehexa[6]);
     Coord dx( b[0]-a[0],0,0),dy( 0,b[1]-a[1],0), dz( 0,0,b[2]-a[2]);
     Coord inv_d2( 1.0f/(dx*dx),1.0f/(dy*dy),1.0f/(dz*dz) );
-    for( map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
+    for( auto it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
     {
-        int localidx = (*it).second; // indice du noeud fin dans l'assemblage
+        index_type localidx = (*it).second; // indice du noeud fin dans l'assemblage
 
 
         if( map_idxq_coarse[ (*it).second ] )
         {
-            int localcoarseidx = map_idxq_idxcutass[ (*it).second ];
+            index_type localcoarseidx = map_idxq_idxcutass[ (*it).second ];
             mask.set( localidx*3  , localcoarseidx*3   , 1);
             mask.set( localidx*3+1, localcoarseidx*3+1 , 1);
             mask.set( localidx*3+2, localcoarseidx*3+2 , 1);
@@ -837,7 +837,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 template<class T>
-void HexahedronCompositeFEMForceFieldAndMass<T>::findFinestChildren( helper::vector<int>& finestChildren, const int elementIndice, int level)
+void HexahedronCompositeFEMForceFieldAndMass<T>::findFinestChildren( helper::vector<index_type>& finestChildren, const index_type elementIndice, int level)
 {
     if (level == this->d_nbVirtualFinerLevels.getValue())
     {
@@ -865,7 +865,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::findFinestChildren( helper::vec
 
 
 template<class T>
-void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecursively( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level)
+void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecursively( ElementStiffness &K, ElementMass &M, const index_type elementIndice,  int level)
 {
     if (level == this->d_nbVirtualFinerLevels.getValue())
     {
@@ -896,7 +896,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
         for ( int i=0; i<8; ++i) //for 8 virtual finer element
         {
-            if (finerChildren[i] != -1)
+            if (finerChildren[i] != InvalidID)
             {
                 computeMechanicalMatricesRecursively(finerK[i], finerM[i], finerChildren[i], level+1);
             }
@@ -910,7 +910,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
         for ( int i=0; i<8; ++i) //for 8 virtual finer element
         {
-            if( finerChildren[i]!=-1)
+            if( finerChildren[i]!= InvalidID)
             {
                 for(int j=0; j<8; ++j) // vertices1
                 {
@@ -1066,7 +1066,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
         for(int elem=0; elem<8; ++elem)
         {
-            if( finerChildren[elem] != -1)
+            if( finerChildren[elem] != InvalidID)
             {
                 for(int i=0; i<8; ++i)
                 {
@@ -1081,7 +1081,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 template<class T>
-void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecursivelyWithRamifications( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level)
+void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecursivelyWithRamifications( ElementStiffness &K, ElementMass &M, const index_type elementIndice,  int level)
 {
     if (level == this->d_nbVirtualFinerLevels.getValue())
     {
@@ -1103,7 +1103,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
         // trouver les finer elements par ramification
-        helper::fixed_array<helper::vector<int>,8 >& finerChildrenRamificationOriginal = sparseGrid->_hierarchicalCubeMapRamification[ elementIndice ];
+        auto& finerChildrenRamificationOriginal = sparseGrid->_hierarchicalCubeMapRamification[ elementIndice ];
 
         helper::fixed_array<helper::vector<ElementStiffness>,8> finerK;
         helper::fixed_array<helper::vector<ElementMass>,8> finerM;
@@ -1147,7 +1147,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
             }
         }
         // donner un indice fictif <0 aux points vides
-        int fictifidx = -1;
+        index_type fictifidx = InvalidID;
         for(int i=0; i<27; ++i)
         {
             if( fineNodesPerPositions[i].empty() ) // pas de points ici
@@ -1256,10 +1256,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 }
             }
         }
-        std::map<int,int> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
-        int idxcutass = 0,idxcutasscoarse = 0;
-        std::map<int,int> map_idxq_coarse; // a fine idx -> -1->non coarse, x-> idx coarse node
-        helper::fixed_array<helper::vector<int> ,8> map_idxcoarse_idxfine;
+        std::map<index_type, index_type> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
+        index_type idxcutass = 0,idxcutasscoarse = 0;
+        std::map<index_type, index_type> map_idxq_coarse; // a fine idx -> InvalidID->non coarse, x-> idx coarse node
+        helper::fixed_array<helper::vector<index_type> ,8> map_idxcoarse_idxfine;
 
         linearsolver::NewMatMatrix  mask;
         mask.resize(sizeass*3,8*3);
@@ -1267,7 +1267,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         {
             if( i==0 || i==2||i==6||i==8||i==18||i==20||i==24||i==26)// est un sommet coarse
             {
-                int whichCoarseNode = -1; // what is the idx for this coarse node?
+                int whichCoarseNode = InvalidID; // what is the idx for this coarse node?
                 switch(i)
                 {
                 case 0:
@@ -1296,7 +1296,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                     break;
                 }
 
-                for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+                for( auto it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
                 {
                     map_idxq_idxcutass[*it] = idxcutasscoarse;
                     map_idxq_coarse[*it] = whichCoarseNode;
@@ -1315,7 +1315,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
                 {
                     map_idxq_idxcutass[*it] = idxcutass;
-                    map_idxq_coarse[*it] = -1;
+                    map_idxq_coarse[*it] = InvalidID;
                     idxcutass++;
                     // 						mask
                     int localidx = map_idxq_idxass[*it];
@@ -1337,12 +1337,12 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         linearsolver::NewMatMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
         A.resize(sizeass*3,sizeass*3);
         linearsolver::NewMatMatrix  Ainv;
-        for( std::map<int,int>::iterator it = map_idxq_idxcutass.begin(); it!=map_idxq_idxcutass.end(); ++it)
+        for( auto it = map_idxq_idxcutass.begin(); it!=map_idxq_idxcutass.end(); ++it)
         {
             int colcut = (*it).second;
             int colnoncut = map_idxq_idxass[(*it).first];
 
-            if( map_idxq_coarse[(*it).first] != -1 )
+            if( map_idxq_coarse[(*it).first] != InvalidID )
             {
                 for(int lig=0; lig<sizeass; ++lig)
                 {
@@ -1404,9 +1404,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         WB.resize(sizeass*3,8*3);
 
 
-        for( std::map<int,int>::iterator it= map_idxq_coarse.begin(); it!=map_idxq_coarse.end(); ++it)
+        for( auto it= map_idxq_coarse.begin(); it!=map_idxq_coarse.end(); ++it)
         {
-            if( it->second != -1 )
+            if( it->second != InvalidID )
             {
                 WB.add( map_idxq_idxass[it->first]*3  , it->second*3  , 1.0);
                 WB.add( map_idxq_idxass[it->first]*3+1, it->second*3+1, 1.0);
@@ -1498,9 +1498,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 template<class T>
-void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
+void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weight &W, const index_type coarseElementIndice, const index_type elementIndice,  int level)
 {
-    if( elementIndice == -1 ) return;
+    if( elementIndice == InvalidID ) return;
 
     Weight A = _weights[ this->d_nbVirtualFinerLevels.getValue()-level ][elementIndice]* W;
 
@@ -1515,7 +1515,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weig
 
         sparseGrid = this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level];
 
-        helper::fixed_array<int,8> finerChildren = sparseGrid->_hierarchicalCubeMap[elementIndice];
+        auto& finerChildren = sparseGrid->_hierarchicalCubeMap[elementIndice];
 
         for(int i=0; i<8; ++i)
             computeFinalWeights( A, coarseElementIndice, finerChildren[i], level+1);
@@ -1525,9 +1525,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weig
 
 
 template<class T>
-void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeightsRamification( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
+void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeightsRamification( const Weight &W, const index_type coarseElementIndice, const index_type elementIndice,  int level)
 {
-    if( elementIndice == -1 ) return;
+    if( elementIndice == InvalidID ) return;
 
     Weight A = _weights[ this->d_nbVirtualFinerLevels.getValue()-level ][elementIndice]* W;
 
@@ -1541,7 +1541,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeightsRamification
 
         sparseGrid = dynamic_cast< topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level].get());
 
-        helper::fixed_array<helper::vector<int>,8 >& finerChildrenRamification = sparseGrid->_hierarchicalCubeMapRamification[ elementIndice ];
+        auto& finerChildrenRamification = sparseGrid->_hierarchicalCubeMapRamification[ elementIndice ];
 
         for(int w=0; w<8; ++w)
             for(unsigned v=0; v<finerChildrenRamification[w].size(); ++v)
@@ -1643,14 +1643,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
 
 
-            int a = (*this->getIndexedElements())[con[0]->_hexaIdx][0];
-            int b = (*this->getIndexedElements())[con[0]->_hexaIdx][1];
-            int d = (*this->getIndexedElements())[con[0]->_hexaIdx][3];
-            int c = (*this->getIndexedElements())[con[0]->_hexaIdx][2];
-            int e = (*this->getIndexedElements())[con[0]->_hexaIdx][4];
-            int f = (*this->getIndexedElements())[con[0]->_hexaIdx][5];
-            int h = (*this->getIndexedElements())[con[0]->_hexaIdx][7];
-            int g = (*this->getIndexedElements())[con[0]->_hexaIdx][6];
+            index_type a = (*this->getIndexedElements())[con[0]->_hexaIdx][0];
+            index_type b = (*this->getIndexedElements())[con[0]->_hexaIdx][1];
+            index_type d = (*this->getIndexedElements())[con[0]->_hexaIdx][3];
+            index_type c = (*this->getIndexedElements())[con[0]->_hexaIdx][2];
+            index_type e = (*this->getIndexedElements())[con[0]->_hexaIdx][4];
+            index_type f = (*this->getIndexedElements())[con[0]->_hexaIdx][5];
+            index_type h = (*this->getIndexedElements())[con[0]->_hexaIdx][7];
+            index_type g = (*this->getIndexedElements())[con[0]->_hexaIdx][6];
 
 
 

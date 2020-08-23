@@ -112,7 +112,7 @@ public:
 protected:
     bool m_doPrintInfo {false} ;
     defaulttype::BaseMatrix* globalMatrix {nullptr} ;
-    std::size_t globalDim {0} ;
+    Index globalDim {0} ;
 
     //           case1                                           case2
     //      |               |                                  |       |
@@ -130,7 +130,7 @@ protected:
     // using matrix buffer in case of interaction between mapped model
 
     //map used for real mechanical state (non-mapped only)
-    std::map< const sofa::core::behavior::BaseMechanicalState*, std::size_t > realStateOffsets;
+    std::map< const sofa::core::behavior::BaseMechanicalState*, unsigned int > realStateOffsets;
 
     //map used only for mapped mechanical state
     //a mapped state is added here if and only if its stiffness matrix is guessed by other component (forcefield)

@@ -54,7 +54,7 @@ BarycentricMapperRegularGridTopology<In,Out>::~BarycentricMapperRegularGridTopol
 }
 
 template <class In, class Out>
-void BarycentricMapperRegularGridTopology<In,Out>::clear ( int size )
+void BarycentricMapperRegularGridTopology<In,Out>::clear ( std::size_t size )
 {
     m_updateJ = true;
     m_map.clear();
@@ -62,7 +62,8 @@ void BarycentricMapperRegularGridTopology<In,Out>::clear ( int size )
 }
 
 template <class In, class Out>
-int BarycentricMapperRegularGridTopology<In,Out>::addPointInCube ( const int cubeIndex, const SReal* baryCoords )
+typename BarycentricMapperRegularGridTopology<In, Out>::index_type 
+BarycentricMapperRegularGridTopology<In,Out>::addPointInCube ( const index_type cubeIndex, const SReal* baryCoords )
 {
     m_map.resize ( m_map.size() +1 );
     CubeData& data = *m_map.rbegin();
@@ -70,7 +71,7 @@ int BarycentricMapperRegularGridTopology<In,Out>::addPointInCube ( const int cub
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    return (int)m_map.size()-1;
+    return m_map.size()-1;
 }
 
 template <class In, class Out>
@@ -86,8 +87,8 @@ void BarycentricMapperRegularGridTopology<In,Out>::init ( const typename Out::Ve
         for ( unsigned int i=0; i<out.size(); i++ )
         {
             Vector3 coefs;
-            int cube = m_fromTopology->findCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
-            if ( cube==-1 )
+            index_type cube = m_fromTopology->findCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
+            if ( cube==InvalidID )
                 cube = m_fromTopology->findNearestCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
 
             this->addPointInCube ( cube, coefs.ptr() );
@@ -207,7 +208,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out
 
     for ( size_t i=0; i<m_map.size(); i++ )
     {
-        const int out = i;
+        const index_type out = i;
 
         const topology::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[i].in_index );
 

@@ -276,7 +276,7 @@ typename TetrahedronDiffusionFEMForceField<DataTypes>::VectorReal TetrahedronDif
 
 
 template <class DataTypes>
-typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusionFEMForceField<DataTypes>::getTetraDiffusionCoefficient(unsigned int i)
+typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusionFEMForceField<DataTypes>::getTetraDiffusionCoefficient(index_type i)
 {
     sofa::helper::vector<Real> tetraDiff = this->d_tetraDiffusionCoefficient.getValue();
     if(i <= m_topology->getNbTetrahedra())
@@ -286,7 +286,7 @@ typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusion
     else
     {
         msg_error() << "Tetra i is larger than m_topology->getNbTetrahedra() " ;
-        return -1;
+        return Real(-1);
     }
 }
 

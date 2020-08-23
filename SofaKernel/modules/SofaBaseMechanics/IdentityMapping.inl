@@ -40,7 +40,7 @@ namespace mapping
 template<class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::init()
 {
-    const unsigned n = this->fromModel->getSize();
+    const auto n = this->fromModel->getSize();
 
     this->toModel->resize( n );
 

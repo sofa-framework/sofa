@@ -475,13 +475,13 @@ void MechanicalOperations::m_print( std::ostream& out )
     defaulttype::BaseMatrix* m = s->getSystemBaseMatrix();
     if (!m) return;
     //out << *m;
-    std::size_t ny = m->rowSize();
-    std::size_t nx = m->colSize();
+    auto ny = m->rowSize();
+    auto nx = m->colSize();
     out << "[";
-    for (std::size_t y=0; y<ny; ++y)
+    for (auto y=0; y<ny; ++y)
     {
         out << "[";
-        for (std::size_t x=0; x<nx; x++)
+        for (auto x=0; x<nx; x++)
             out << ' ' << m->element(x,y);
         out << "]";
     }

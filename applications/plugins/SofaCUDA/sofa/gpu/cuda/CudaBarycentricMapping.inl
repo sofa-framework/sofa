@@ -156,16 +156,16 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
 {
     if (!map.empty() && maxNOut == 0)
     {
-        const unsigned int insize = topology->getNbPoints();
+        const index_type insize = topology->getNbPoints();
         const unsigned int gridsize[3] = { (unsigned int)topology->getNx(), (unsigned int)topology->getNy(), (unsigned int)topology->getNz() };
         // compute mapT
         const int nx = gridsize[0];
         const int nxny = gridsize[0]*gridsize[1];
         const int shift[8] = { 0, 1, nx, 1+nx, nxny, 1+nxny, nx+nxny, 1+nx+nxny };
         std::vector<int> nout(insize);
-        for (unsigned int i=0; i<map.size(); i++)
+        for (std::size_t i=0; i<map.size(); i++)
         {
-            int index0 = map[i].in_index;
+            index_type index0 = map[i].in_index;
             for (int j=0; j<8; j++)
                 nout[index0+shift[j]]++;
         }
@@ -180,7 +180,7 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
         nout.resize(insize);
         for (unsigned int i=0; i<map.size(); i++)
         {
-            int index0 = map[i].in_index;
+            index_type index0 = map[i].in_index;
             for (int j=0; j<8; j++)
             {
                 int index = index0+shift[j];

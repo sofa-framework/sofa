@@ -78,7 +78,7 @@ void DefaultMultiMatrixAccessor::setGlobalMatrix(defaulttype::BaseMatrix* matrix
 
 void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate)
 {
-    std::size_t dim = mstate->getMatrixSize();
+    auto dim = mstate->getMatrixSize();
     realStateOffsets[mstate] = globalDim;
     globalDim += dim;
 
@@ -152,7 +152,7 @@ void DefaultMultiMatrixAccessor::setupMatrices()
     }
 }
 
-core::behavior::MultiMatrixAccessor::Index DefaultMultiMatrixAccessor::getGlobalDimension() const
+DefaultMultiMatrixAccessor::Index DefaultMultiMatrixAccessor::getGlobalDimension() const
 {
     return globalDim;
 }
@@ -376,8 +376,8 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
 
             const auto offset1  = K1.offset;
             const auto offset2  = K2.offset;
-            const auto sizeK1 = K1.matrix->rowSize() - offset1;
-            const auto sizeK2 = K2.matrix->rowSize() - offset2;
+            const Index sizeK1 = Index(K1.matrix->rowSize() - offset1);
+            const Index sizeK2 = Index(K2.matrix->rowSize() - offset2);
 
             if(m_doPrintInfo)/////////////////////////////////////////////////////////
             {
@@ -391,15 +391,15 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
             }
 
             // Matrix multiplication  K11 += Jt * K22 * J
-            for(auto i1 =0; i1 < sizeK1 ; ++i1)
+            for(Index i1 =0; i1 < sizeK1 ; ++i1)
             {
-                for(auto j1 =0 ; j1 < sizeK1 ; ++j1)
+                for(Index j1 =0 ; j1 < sizeK1 ; ++j1)
                 {
                     double Jt_K2_J_i1j1 = 0;
 
-                    for(auto i2 =0 ; i2 < sizeK2 ; ++i2)
+                    for(Index i2 =0 ; i2 < sizeK2 ; ++i2)
                     {
-                        for(auto j2 =0 ; j2 < sizeK2 ; ++j2)
+                        for(Index j2 =0 ; j2 < sizeK2 ; ++j2)
                         {
                             const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
                             for(auto k2=0 ; k2 < sizeK2 ; ++k2)

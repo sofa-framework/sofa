@@ -155,41 +155,41 @@ public:
 
     index_type addPoint(const Coord& P, index_type index, Real&)
     {
-        int nbt = this->model->getCollisionTopology()->getNbTriangles();
+        std::size_t nbt = this->model->getCollisionTopology()->getNbTriangles();
         if (index < nbt)
             return this->mapper->createPointInTriangle(P, index, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
         else
         {
-            int qindex = (index - nbt)/2;
-            int nbq = this->model->getCollisionTopology()->getNbQuads();
+            index_type qindex = (index - nbt)/2;
+            std::size_t nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
             {
                 msg_error("ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
                                                               << "model="<<this->model->getName()<<" size="<<this->model->getSize() ;
-                return -1;
+                return sofa::defaulttype::InvalidID;
             }
         }
     }
     index_type addPointB(const Coord& P, index_type index, Real& /*r*/, const defaulttype::Vector3& baryP)
     {
 
-        int nbt = this->model->getCollisionTopology()->getNbTriangles();
+        std::size_t nbt = this->model->getCollisionTopology()->getNbTriangles();
         if (index < nbt)
             return this->mapper->addPointInTriangle(index, baryP.ptr());
         else
         {
             // TODO: barycentric coordinates usage for quads
-            int qindex = (index - nbt)/2;
-            int nbq = this->model->getCollisionTopology()->getNbQuads();
+            index_type qindex = (index - nbt)/2;
+            std::size_t nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
             {
                 msg_error("ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
                             << "model="<<this->model->getName()<<" size="<<this->model->getSize() ;
-                return -1;
+                return sofa::defaulttype::InvalidID;
             }
         }
     }

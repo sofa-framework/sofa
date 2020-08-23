@@ -226,10 +226,10 @@ void SubsetMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /*mparams*/
 
     const InVecDeriv& in = dIn.getValue();
     OutVecDeriv& out = *dOut.beginEdit();
-    const unsigned int fromSize = in.size();
+    const std::size_t fromSize = in.size();
 
     out.resize(indices.size());
-    for(unsigned int i = 0; i < out.size(); ++i)
+    for(std::size_t i = 0; i < out.size(); ++i)
     {
         if(indices[i] < fromSize)
             out[i] = in[ indices[i] ];
@@ -245,7 +245,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::MechanicalParams* /*mparams
 
     const OutVecDeriv& in = dIn.getValue();
     InVecDeriv& out = *dOut.beginEdit();
-    const unsigned int fromSize = out.size();
+    const std::size_t fromSize = out.size();
 
     if (indices.empty())
         return;
@@ -305,7 +305,7 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
         const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
         const IndexArray& indices = f_indices.getValue();
         assert(indices.size() == out.size());
-        const unsigned int fromSize = in.size();
+        const std::size_t fromSize = in.size();
 
         updateJ = false;
         if (matrixJ.get() == 0 ||
@@ -339,8 +339,8 @@ const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJ
         updateJ = false;
 
         const IndexArray& indices = f_indices.getValue();
-        const unsigned rowsBlock = indices.size();
-        const unsigned colsBlock = this->fromModel->getSize();
+        const std::size_t rowsBlock = indices.size();
+        const std::size_t colsBlock = this->fromModel->getSize();
 
         const unsigned rows = rowsBlock * NOut;
         const unsigned cols = colsBlock * NIn;

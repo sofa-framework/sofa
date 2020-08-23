@@ -146,13 +146,13 @@ public:
     int getNz() const { return d_n.getValue()[2]; }
 
     /// Get the one-dimensional index of a grid point given its @param i @param j @param k indices
-    unsigned getIndex( int i, int j, int k ) const;
+    index_type getIndex( int i, int j, int k ) const;
 
     /// Overwrite from @sa MeshTopology::hasPos always @return bool true
     bool hasPos()  const override { return true; }
 
     /// Get Point in grid @return Vector3 given its @param id i. Will call @sa getPointInGrid. This method should be overwritten by children.
-    virtual Vector3 getPoint(int i) const;
+    virtual Vector3 getPoint(index_type i) const;
 
     /// Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
     virtual Vector3 getPointInGrid(int i, int j, int k) const;
@@ -174,15 +174,15 @@ public:
 
 
     Hexa getHexahedron(int x, int y, int z);
-    Hexa getHexaCopy(int i);
-    Quad getQuadCopy(int i);
+    Hexa getHexaCopy(index_type i);
+    Quad getQuadCopy(index_type i);
 
     /// Get Point index in Grid, will call method @sa getIndex
-    int point(int x, int y, int z) const { return getIndex(x,y,z); }
+    index_type point(int x, int y, int z) const { return getIndex(x,y,z); }
     /// Get Hexa index in Grid
-    int hexa(int x, int y, int z) const { return x+(d_n.getValue()[0]-1)*(y+(d_n.getValue()[1]-1)*z); }
+    index_type hexa(int x, int y, int z) const { return x+(d_n.getValue()[0]-1)*(y+(d_n.getValue()[1]-1)*z); }
     /// Get Cube index, similar to \sa hexa method
-    int cube(int x, int y, int z) const { return hexa(x,y,z); }
+    index_type cube(int x, int y, int z) const { return hexa(x,y,z); }
 
     /// Get the actual dimension of this grid using Enum @sa Grid_dimension
     Grid_dimension getDimensions() const;

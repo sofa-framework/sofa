@@ -81,11 +81,11 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
             {
                 helper::vector<MappingData>& mapData = *(d_map.beginEdit());
 
-                for ( std::set<int>::const_iterator iter = m_invalidIndex.begin();
-                        iter != m_invalidIndex.end(); ++iter )
+                for ( auto iter = m_invalidIndex.cbegin();
+                        iter != m_invalidIndex.cend(); ++iter )
                 {
                     const int j = *iter;
-                    if ( mapData[j].in_index == -1 ) // compute new mapping
+                    if ( mapData[j].in_index == InvalidID ) // compute new mapping
                     {
                         Vector3 coefs;
                         defaulttype::Vec3Types::Coord pos;
@@ -98,7 +98,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
 
                         int index = m_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
 
-                        if ( index != -1 )
+                        if ( index != InvalidID )
                         {
                             mapData[j].baryCoords[0] = ( Real ) coefs[0];
                             mapData[j].baryCoords[1] = ( Real ) coefs[1];
@@ -142,7 +142,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                 unsigned int cubeId = hexahedra[i];
                 for ( unsigned int j=0; j<d_map.getValue().size(); ++j )
                 {
-                    if ( d_map.getValue()[j].in_index == ( int ) cubeId ) // invalidate mapping
+                    if ( d_map.getValue()[j].in_index == cubeId ) // invalidate mapping
                     {
                         sofa::defaulttype::Vector3 coefs;
                         coefs[0] = d_map.getValue()[j].baryCoords[0];
@@ -152,7 +152,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                         defaulttype::Vec3Types::Coord restPos = m_fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
 
                         helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
-                        vectorData[j].in_index = -1;
+                        vectorData[j].in_index = InvalidID;
                         vectorData[j].baryCoords[0] = restPos[0];
                         vectorData[j].baryCoords[1] = restPos[1];
                         vectorData[j].baryCoords[2] = restPos[2];
@@ -164,13 +164,13 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
             }
 
             // renumber
-            unsigned int lastCubeId = nbHexahedra-1;
-            for ( unsigned int i=0; i<hexahedra.size(); ++i, --lastCubeId )
+            index_type lastCubeId = nbHexahedra-1;
+            for ( std::size_t i=0; i<hexahedra.size(); ++i, --lastCubeId )
             {
-                unsigned int cubeId = hexahedra[i];
-                for ( unsigned int j=0; j<d_map.getValue().size(); ++j )
+                index_type cubeId = hexahedra[i];
+                for ( std::size_t j=0; j<d_map.getValue().size(); ++j )
                 {
-                    if ( d_map.getValue()[j].in_index == ( int ) lastCubeId )
+                    if ( d_map.getValue()[j].in_index == lastCubeId )
                     {
                         helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
                         vectorData[j].in_index = cubeId;

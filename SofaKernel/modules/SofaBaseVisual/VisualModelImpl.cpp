@@ -1199,22 +1199,22 @@ void VisualModelImpl::flipFaces()
     for (std::size_t i = 0; i < edges.size() ; i++)
     {
         index_type temp = edges[i][1];
-        edges[i][1] = edges[i][0];
-        edges[i][0] = temp;
+        edges[i][1] = visual_index_type(edges[i][0]);
+        edges[i][0] = visual_index_type(temp);
     }
 
     for (std::size_t i = 0; i < triangles.size() ; i++)
     {
         index_type temp = triangles[i][1];
-        triangles[i][1] = triangles[i][2];
-        triangles[i][2] = temp;
+        triangles[i][1] = visual_index_type(triangles[i][2]);
+        triangles[i][2] = visual_index_type(temp);
     }
 
     for (std::size_t i = 0; i < quads.size() ; i++)
     {
         index_type temp = quads[i][1];
-        quads[i][1] = quads[i][3];
-        quads[i][3] = temp;
+        quads[i][1] = visual_index_type(quads[i][3]);
+        quads[i][3] = visual_index_type(temp);
     }
 
     for (std::size_t i = 0; i < vnormals.size(); i++)
@@ -1472,9 +1472,9 @@ void VisualModelImpl::handleTopologyChange()
 
             for (std::size_t i = 0; i < nbAddedTriangles; ++i)
             {
-                t[0] = (ta->triangleArray[i])[0];
-                t[1] = (ta->triangleArray[i])[1];
-                t[2] = (ta->triangleArray[i])[2];
+                t[0] = visual_index_type(ta->triangleArray[i][0]);
+                t[1] = visual_index_type(ta->triangleArray[i][1]);
+                t[2] = visual_index_type(ta->triangleArray[i][2]);
                 triangles[nbTririangles + i] = t;
             }
 
@@ -1629,11 +1629,11 @@ void VisualModelImpl::handleTopologyChange()
                         auto ind_j = shell[j];
 
                         if ((unsigned)triangles[ind_j][0]==last)
-                            triangles[ind_j][0]=tab[i];
+                            triangles[ind_j][0]= visual_index_type(tab[i]);
                         else if ((unsigned)triangles[ind_j][1]==last)
-                            triangles[ind_j][1]=tab[i];
+                            triangles[ind_j][1]= visual_index_type(tab[i]);
                         else if ((unsigned)triangles[ind_j][2]==last)
-                            triangles[ind_j][2]=tab[i];
+                            triangles[ind_j][2]= visual_index_type(tab[i]);
                     }
 
                     if (debug_mode)
@@ -1643,21 +1643,21 @@ void VisualModelImpl::handleTopologyChange()
                             bool is_forgotten = false;
                             if ((unsigned)triangles[j_loc][0]==last)
                             {
-                                triangles[j_loc][0]=tab[i];
+                                triangles[j_loc][0]= visual_index_type(tab[i]);
                                 is_forgotten=true;
                             }
                             else
                             {
                                 if ((unsigned)triangles[j_loc][1]==last)
                                 {
-                                    triangles[j_loc][1]=tab[i];
+                                    triangles[j_loc][1]= visual_index_type(tab[i]);
                                     is_forgotten=true;
                                 }
                                 else
                                 {
                                     if ((unsigned)triangles[j_loc][2]==last)
                                     {
-                                        triangles[j_loc][2]=tab[i];
+                                        triangles[j_loc][2]= visual_index_type(tab[i]);
                                         is_forgotten=true;
                                     }
                                 }
@@ -1696,13 +1696,13 @@ void VisualModelImpl::handleTopologyChange()
             }
             else if (m_topology->getNbQuads()>0)
             {
-                unsigned int last = m_topology->getNbPoints() -1;
+                size_t last = m_topology->getNbPoints() -1;
 
                 unsigned int i,j;
 
                 const auto& tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-                sofa::helper::vector<unsigned int> lastIndexVec;
+                sofa::helper::vector<index_type> lastIndexVec;
                 for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
                 {
                     lastIndexVec.push_back(last - i_init);
@@ -1728,14 +1728,14 @@ void VisualModelImpl::handleTopologyChange()
                     {
                         index_type ind_j = shell[j];
 
-                        if ((unsigned)quads[ind_j][0]==last)
-                            quads[ind_j][0]=tab[i];
-                        else if ((unsigned)quads[ind_j][1]==last)
-                            quads[ind_j][1]=tab[i];
-                        else if ((unsigned)quads[ind_j][2]==last)
-                            quads[ind_j][2]=tab[i];
-                        else if ((unsigned)quads[ind_j][3]==last)
-                            quads[ind_j][3]=tab[i];
+                        if (quads[ind_j][0]==last)
+                            quads[ind_j][0]=visual_index_type(tab[i]);
+                        else if (quads[ind_j][1]==last)
+                            quads[ind_j][1]= visual_index_type(tab[i]);
+                        else if (quads[ind_j][2]==last)
+                            quads[ind_j][2]= visual_index_type(tab[i]);
+                        else if (quads[ind_j][3]==last)
+                            quads[ind_j][3]= visual_index_type(tab[i]);
                     }
 
                     --last;
@@ -1749,30 +1749,26 @@ void VisualModelImpl::handleTopologyChange()
         {
             if (m_topology->getNbTriangles()>0)
             {
-                unsigned int i;
-
                 const auto& tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
-                for ( i = 0; i < triangles.size(); ++i)
+                for (std::size_t i = 0; i < triangles.size(); ++i)
                 {
-                    triangles[i][0]  = tab[triangles[i][0]];
-                    triangles[i][1]  = tab[triangles[i][1]];
-                    triangles[i][2]  = tab[triangles[i][2]];
+                    triangles[i][0]  = visual_index_type(tab[triangles[i][0]]);
+                    triangles[i][1]  = visual_index_type(tab[triangles[i][1]]);
+                    triangles[i][2]  = visual_index_type(tab[triangles[i][2]]);
                 }
 
             }
             else if (m_topology->getNbQuads()>0)
             {
-                unsigned int i;
-
                 const auto& tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
-                for ( i = 0; i < quads.size(); ++i)
+                for (std::size_t i = 0; i < quads.size(); ++i)
                 {
-                    quads[i][0]  = tab[quads[i][0]];
-                    quads[i][1]  = tab[quads[i][1]];
-                    quads[i][2]  = tab[quads[i][2]];
-                    quads[i][3]  = tab[quads[i][3]];
+                    quads[i][0]  = visual_index_type(tab[quads[i][0]]);
+                    quads[i][1]  = visual_index_type(tab[quads[i][1]]);
+                    quads[i][2]  = visual_index_type(tab[quads[i][2]]);
+                    quads[i][3]  = visual_index_type(tab[quads[i][3]]);
                 }
             }
 

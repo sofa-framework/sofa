@@ -501,9 +501,9 @@ void FFDDistanceGridCollisionModel::init()
     {
         Vec3Types::Coord p0 = grid->meshPts[i];
         Vector3 bary;
-        int elem = (ffdRGrid ? ffdRGrid->findCube(p0,bary[0],bary[1],bary[2]) : ffdSGrid->findCube(p0,bary[0],bary[1],bary[2]));
-        if (elem == -1) continue;
-        if ((unsigned)elem >= elems.size())
+        index_type elem = (ffdRGrid ? ffdRGrid->findCube(p0,bary[0],bary[1],bary[2]) : ffdSGrid->findCube(p0,bary[0],bary[1],bary[2]));
+        if (elem == InvalidID) continue;
+        if (elem >= elems.size())
         {
             serr << "ERROR (FFDDistanceGridCollisionModel): point "<<i<<" "<<p0<<" in invalid cube "<<elem<<sendl;
         }
