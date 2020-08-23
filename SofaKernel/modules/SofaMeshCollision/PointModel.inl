@@ -336,7 +336,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
     for (unsigned int i=0; i<trianglesAroundVertex.size(); i++)
     {
         unsigned int t = trianglesAroundVertex[i];
-        const helper::fixed_array<unsigned int,3>& ptr = mesh->getTriangle(t);
+        const auto& ptr = mesh->getTriangle(t);
         defaulttype::Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
         nCur.normalize();
         nMean += nCur;
@@ -347,7 +347,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
         for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
         {
             unsigned int e = edgesAroundVertex[i];
-            const helper::fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
+            const auto& ped = mesh->getEdge(e);
             defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
             nMean += l;
@@ -361,7 +361,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
     for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
     {
         unsigned int e = edgesAroundVertex[i];
-        const helper::fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
+        const auto& ped = mesh->getEdge(e);
         defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();
         double computedAngleCone = dot(nMean , l) * coneFactor;

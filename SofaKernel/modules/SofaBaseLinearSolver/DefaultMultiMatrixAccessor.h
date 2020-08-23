@@ -83,7 +83,7 @@ public:
     virtual void setupMatrices();
 
     //give the sum of size of all Real Mechanical State in ordre to set the global matrix dimension
-    std::size_t getGlobalDimension() const override;
+    Index getGlobalDimension() const override;
 
     //give position in global matrix of the blog related to a given Mechanical State
     int getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const override;

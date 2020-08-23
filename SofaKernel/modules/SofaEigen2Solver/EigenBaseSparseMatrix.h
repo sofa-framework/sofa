@@ -375,7 +375,7 @@ public:
         const ThisMatrix* getMatrix() const { return matrix; }
 
 
-        int getGlobalDimension() const override { return matrix->rowSize(); }
+        Index getGlobalDimension() const override { return matrix->rowSize(); }
         int getGlobalOffset(const core::behavior::BaseMechanicalState*) const override { return 0; }
         MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const override
         {

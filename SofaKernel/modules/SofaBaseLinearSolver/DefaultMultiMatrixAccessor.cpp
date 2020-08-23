@@ -152,7 +152,7 @@ void DefaultMultiMatrixAccessor::setupMatrices()
     }
 }
 
-std::size_t DefaultMultiMatrixAccessor::getGlobalDimension() const
+core::behavior::MultiMatrixAccessor::Index DefaultMultiMatrixAccessor::getGlobalDimension() const
 {
     return globalDim;
 }
