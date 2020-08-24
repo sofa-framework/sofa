@@ -41,8 +41,8 @@ int ValuesFromPositionsClass = core::RegisterObject("Assign values to primitives
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<Rigid3Types>;
+template class ValuesFromPositions<Vec3Types>;
+template class ValuesFromPositions<Rigid3Types>;
  
 
 

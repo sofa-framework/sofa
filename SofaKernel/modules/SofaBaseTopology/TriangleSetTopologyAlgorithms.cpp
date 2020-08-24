@@ -58,9 +58,9 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec1Types>::SplitAlongPath(PointI
 
 
 
-template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec3Types>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec2Types>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec1Types>;
+template class TriangleSetTopologyAlgorithms<Vec3Types>;
+template class TriangleSetTopologyAlgorithms<Vec2Types>;
+template class TriangleSetTopologyAlgorithms<Vec1Types>;
 
 
 

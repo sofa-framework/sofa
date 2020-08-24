@@ -77,7 +77,7 @@ public:
 };
 
 #if  !defined(QUATTORIGIDENGINE_CPP)
-extern template class SOFA_GENERAL_ENGINE_API QuatToRigidEngine<defaulttype::Vec3Types>; 
+extern template class QuatToRigidEngine<defaulttype::Vec3Types>; 
 #endif
 
 } // namespace engine

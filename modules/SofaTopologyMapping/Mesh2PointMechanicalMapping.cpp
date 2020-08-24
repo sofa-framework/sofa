@@ -46,7 +46,7 @@ int Mesh2PointMechanicalMappingClass = core::RegisterObject("Mechanical mapping 
         ;
 
 
-template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
+template class Mesh2PointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
 
 
 

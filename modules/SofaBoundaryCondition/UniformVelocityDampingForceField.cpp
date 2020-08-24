@@ -48,12 +48,12 @@ namespace sofa
                 ;
 
 
-            template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec3Types>;
-            template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec2Types>;
-            template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec1Types>;
-            template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec6Types>;
-            template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Rigid3Types>;
-            template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Rigid2Types>;
+            template class UniformVelocityDampingForceField<Vec3Types>;
+            template class UniformVelocityDampingForceField<Vec2Types>;
+            template class UniformVelocityDampingForceField<Vec1Types>;
+            template class UniformVelocityDampingForceField<Vec6Types>;
+            template class UniformVelocityDampingForceField<Rigid3Types>;
+            template class UniformVelocityDampingForceField<Rigid2Types>;
 
 
         } // namespace forcefield

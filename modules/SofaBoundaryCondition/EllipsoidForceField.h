@@ -119,9 +119,9 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<sofa::defaulttype::Vec1Types>;
+extern template class EllipsoidForceField<sofa::defaulttype::Vec3Types>;
+extern template class EllipsoidForceField<sofa::defaulttype::Vec2Types>;
+extern template class EllipsoidForceField<sofa::defaulttype::Vec1Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)

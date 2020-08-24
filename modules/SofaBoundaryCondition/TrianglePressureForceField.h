@@ -137,7 +137,7 @@ protected :
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_CPP)
 
-extern template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<sofa::defaulttype::Vec3Types>;
+extern template class TrianglePressureForceField<sofa::defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_CPP)

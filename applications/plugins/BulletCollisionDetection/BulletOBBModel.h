@@ -73,7 +73,7 @@ protected:
 typedef TBulletOBBModel<defaulttype::RigidTypes> BulletOBBModel;
 
 #if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletOBBModel<defaulttype::Rigid3Types>;
+extern template class TBulletOBBModel<defaulttype::Rigid3Types>;
 
 #endif
 

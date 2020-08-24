@@ -101,7 +101,7 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POINTCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec3Types>;
+extern template class PointConstraint<defaulttype::Vec3Types>;
 
 #endif
 

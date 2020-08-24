@@ -45,16 +45,16 @@ int MathOpClass = core::RegisterObject("Apply a math operation to combine severa
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<int> >;
-template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<bool> >;
+template class MathOp< helper::vector<int> >;
+template class MathOp< helper::vector<bool> >;
 
-template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<double> >;
-template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec2d> >;
-template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec3d> >;
-template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2Types::VecCoord >;
-template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
-template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3Types::VecCoord >;
-template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3Types::VecDeriv >;
+template class MathOp< helper::vector<double> >;
+template class MathOp< helper::vector<defaulttype::Vec2d> >;
+template class MathOp< helper::vector<defaulttype::Vec3d> >;
+template class MathOp< defaulttype::Rigid2Types::VecCoord >;
+template class MathOp< defaulttype::Rigid2Types::VecDeriv >;
+template class MathOp< defaulttype::Rigid3Types::VecCoord >;
+template class MathOp< defaulttype::Rigid3Types::VecDeriv >;
  
 
 

@@ -45,7 +45,7 @@ int TriangularBiquadraticSpringsForceFieldClass = core::RegisterObject("Biquadra
 
         ;
 
-template class SOFA_GENERAL_DEFORMABLE_API TriangularBiquadraticSpringsForceField<Vec3Types>;
+template class TriangularBiquadraticSpringsForceField<Vec3Types>;
 
 
 

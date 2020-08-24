@@ -139,9 +139,9 @@ int PrecomputedConstraintCorrectionClass = core::RegisterObject("Component compu
 
         ;
 
-template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<Vec3Types>;
-template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<Vec1Types>;
-template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<Rigid3Types>;
+template class PrecomputedConstraintCorrection<Vec3Types>;
+template class PrecomputedConstraintCorrection<Vec1Types>;
+template class PrecomputedConstraintCorrection<Rigid3Types>;
 
 
 } // namespace collision

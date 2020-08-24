@@ -40,7 +40,7 @@ int GenerateCylinderClass = core::RegisterObject("Generate a Cylindrical Tetrahe
         ;
 
 
-template class SOFA_GENERAL_ENGINE_API GenerateCylinder<Vec3Types>;
+template class GenerateCylinder<Vec3Types>;
  
 
 

@@ -43,7 +43,7 @@ int PointConstraintClass = core::RegisterObject("Attach given particles to their
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API PointConstraint<Vec3Types>;
+template class PointConstraint<Vec3Types>;
 
 
 

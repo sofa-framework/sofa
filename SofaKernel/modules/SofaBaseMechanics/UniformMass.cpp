@@ -532,12 +532,12 @@ int UniformMassClass = core::RegisterObject("Define the same mass for all the pa
 /// avoid the code generation of the template for each compilation unit.
 /// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 
-template class SOFA_BASE_MECHANICS_API UniformMass<Vec3Types,double>;
-template class SOFA_BASE_MECHANICS_API UniformMass<Vec2Types,double>;
-template class SOFA_BASE_MECHANICS_API UniformMass<Vec1Types,double>;
-template class SOFA_BASE_MECHANICS_API UniformMass<Vec6Types,double>;
-template class SOFA_BASE_MECHANICS_API UniformMass<Rigid3Types,Rigid3Mass>;
-template class SOFA_BASE_MECHANICS_API UniformMass<Rigid2Types,Rigid2Mass>;
+template class UniformMass<Vec3Types,double>;
+template class UniformMass<Vec2Types,double>;
+template class UniformMass<Vec1Types,double>;
+template class UniformMass<Vec6Types,double>;
+template class UniformMass<Rigid3Types,Rigid3Mass>;
+template class UniformMass<Rigid2Types,Rigid2Mass>;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

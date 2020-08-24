@@ -87,7 +87,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERHEXAHEDRONSETTOPOLOGY_CPP)
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperHexahedronSetTopology< Vec3dTypes, Vec3dTypes >;
+extern template class BarycentricMapperHexahedronSetTopology< Vec3dTypes, Vec3dTypes >;
 
 
 #endif

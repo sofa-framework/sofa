@@ -100,12 +100,12 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec6Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Rigid3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Rigid2Types>;
+extern template class PartialFixedConstraint<defaulttype::Vec3Types>;
+extern template class PartialFixedConstraint<defaulttype::Vec2Types>;
+extern template class PartialFixedConstraint<defaulttype::Vec1Types>;
+extern template class PartialFixedConstraint<defaulttype::Vec6Types>;
+extern template class PartialFixedConstraint<defaulttype::Rigid3Types>;
+extern template class PartialFixedConstraint<defaulttype::Rigid2Types>;
 
 #endif
 

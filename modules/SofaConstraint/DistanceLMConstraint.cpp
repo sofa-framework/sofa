@@ -47,8 +47,8 @@ int DistanceLMConstraintClass = core::RegisterObject("Maintain constant the leng
 
         ;
 
-template class SOFA_CONSTRAINT_API DistanceLMConstraint<Vec3Types>;
-template class SOFA_CONSTRAINT_API DistanceLMConstraint<Rigid3Types>;
+template class DistanceLMConstraint<Vec3Types>;
+template class DistanceLMConstraint<Rigid3Types>;
 
 
 

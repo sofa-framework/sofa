@@ -141,7 +141,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_CPP)
 
-extern template class SOFA_BOUNDARY_CONDITION_API TaitSurfacePressureForceField<defaulttype::Vec3Types>;
+extern template class TaitSurfacePressureForceField<defaulttype::Vec3Types>;
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_CPP)
 

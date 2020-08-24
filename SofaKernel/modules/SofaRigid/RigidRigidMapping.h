@@ -131,7 +131,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)
-extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
+extern template class RigidRigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 #endif
 
 } // namespace mapping

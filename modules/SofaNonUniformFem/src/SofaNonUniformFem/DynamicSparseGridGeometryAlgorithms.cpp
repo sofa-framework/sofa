@@ -47,9 +47,9 @@ int DynamicSparseGridGeometryAlgorithms<Vec1Types>::findNearestElementInRestPos(
     return HexahedronSetGeometryAlgorithms<Vec1Types>::findNearestElementInRestPos(pos, baryC, distance);
 }
 
-template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<Vec2Types>;
-template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<Vec1Types>;
+template class DynamicSparseGridGeometryAlgorithms<Vec3Types>;
+template class DynamicSparseGridGeometryAlgorithms<Vec2Types>;
+template class DynamicSparseGridGeometryAlgorithms<Vec1Types>;
 
 
 } // namespace sofa::component::topology

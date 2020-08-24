@@ -48,10 +48,10 @@ namespace helper
 typedef sofa::helper::system::thread::ctime_t ctime_t;
 typedef sofa::helper::system::thread::CTime CTime;
 
-template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Timer>;
-template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
-template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
-template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
+template class AdvancedTimer::Id<AdvancedTimer::Timer>;
+template class AdvancedTimer::Id<AdvancedTimer::Step>;
+template class AdvancedTimer::Id<AdvancedTimer::Obj>;
+template class AdvancedTimer::Id<AdvancedTimer::Val>;
 
 class TimerData
 {

@@ -50,7 +50,7 @@ int PolynomialRestShapeSpringsForceFieldClass = core::RegisterObject("Simple ela
         ;
 
 
-template class SOFA_DEFORMABLE_API PolynomialRestShapeSpringsForceField<Vec3Types>;
+template class PolynomialRestShapeSpringsForceField<Vec3Types>;
 
 
 } // namespace forcefield

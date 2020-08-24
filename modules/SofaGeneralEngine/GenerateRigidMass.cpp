@@ -40,7 +40,7 @@ int GenerateRigidMassClass = core::RegisterObject("An engine computing the Rigid
 
         ;
 
-template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<Rigid3Types, Rigid3Mass>;
+template class GenerateRigidMass<Rigid3Types, Rigid3Mass>;
 
 
 } // namespace loader

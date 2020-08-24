@@ -78,7 +78,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_CPP)
-extern template class SOFA_USER_INTERACTION_API  SuturePointPerformer<defaulttype::Vec3Types>;
+extern template class  SuturePointPerformer<defaulttype::Vec3Types>;
 
 #endif
 

@@ -338,8 +338,8 @@ int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralIn
         
         ;
 
-template class SOFA_CONSTRAINT_API BilateralInteractionConstraint<Vec3Types>;
-template class SOFA_CONSTRAINT_API BilateralInteractionConstraint<Rigid3Types>;
+template class BilateralInteractionConstraint<Vec3Types>;
+template class BilateralInteractionConstraint<Rigid3Types>;
 
 
 }

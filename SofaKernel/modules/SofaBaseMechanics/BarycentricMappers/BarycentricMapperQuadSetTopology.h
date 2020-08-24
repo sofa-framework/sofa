@@ -78,7 +78,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERQUADSETTOPOLOGY_CPP)
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperQuadSetTopology< Vec3dTypes, Vec3dTypes >;
+extern template class BarycentricMapperQuadSetTopology< Vec3dTypes, Vec3dTypes >;
 
 
 #endif

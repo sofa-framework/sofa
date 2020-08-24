@@ -93,7 +93,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_CPP)
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopology< Vec3dTypes, Vec3dTypes >;
+extern template class BarycentricMapperSparseGridTopology< Vec3dTypes, Vec3dTypes >;
 
 
 #endif

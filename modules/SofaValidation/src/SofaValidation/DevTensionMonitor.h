@@ -91,7 +91,7 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_MISC_DEVTENSIONMONITOR_CPP)
-extern template class SOFA_SOFAVALIDATION_API DevTensionMonitor<defaulttype::Rigid3Types>;
+extern template class DevTensionMonitor<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace sofa::component::misc

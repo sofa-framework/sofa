@@ -49,12 +49,12 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
-template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec3Types>;
-template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec2Types>;
-template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec1Types>;
-template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec6Types>;
-template class SOFA_BASE_MECHANICS_API MechanicalObject<Rigid3Types>;
-template class SOFA_BASE_MECHANICS_API MechanicalObject<Rigid2Types>;
+template class MechanicalObject<Vec3Types>;
+template class MechanicalObject<Vec2Types>;
+template class MechanicalObject<Vec1Types>;
+template class MechanicalObject<Vec6Types>;
+template class MechanicalObject<Rigid3Types>;
+template class MechanicalObject<Rigid2Types>;
 
 
 

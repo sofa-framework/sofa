@@ -36,7 +36,7 @@ int EvalSurfaceDistanceClass = core::RegisterObject("Periodically compute the di
 
         ;
 
-template class SOFA_SOFAVALIDATION_API EvalSurfaceDistance<Vec3Types>;
+template class EvalSurfaceDistance<Vec3Types>;
 
 
 } // namespace sofa::component::misc

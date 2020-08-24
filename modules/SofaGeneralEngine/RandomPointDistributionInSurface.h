@@ -98,7 +98,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_CPP)
-extern template class SOFA_GENERAL_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3Types>;
+extern template class RandomPointDistributionInSurface<defaulttype::Vec3Types>;
 #endif
 
 } // namespace engine

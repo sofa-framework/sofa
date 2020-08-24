@@ -45,10 +45,10 @@ int RegularGridSpringForceFieldClass = core::RegisterObject("Spring acting on th
         .add< RegularGridSpringForceField<Vec6Types> >()
 
         ;
-template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<Vec3Types>;
-template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<Vec2Types>;
-template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<Vec1Types>;
-template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<Vec6Types>;
+template class RegularGridSpringForceField<Vec3Types>;
+template class RegularGridSpringForceField<Vec2Types>;
+template class RegularGridSpringForceField<Vec1Types>;
+template class RegularGridSpringForceField<Vec6Types>;
 
 
 } // namespace interactionforcefield

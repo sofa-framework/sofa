@@ -192,11 +192,11 @@ protected:
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_CPP)
-extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec3Types>;
-extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec2Types>;
-extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec1Types>;
-extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Rigid3Types>;
-extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Rigid2Types>;
+extern template class PairInteractionProjectiveConstraintSet<defaulttype::Vec3Types>;
+extern template class PairInteractionProjectiveConstraintSet<defaulttype::Vec2Types>;
+extern template class PairInteractionProjectiveConstraintSet<defaulttype::Vec1Types>;
+extern template class PairInteractionProjectiveConstraintSet<defaulttype::Rigid3Types>;
+extern template class PairInteractionProjectiveConstraintSet<defaulttype::Rigid2Types>;
 
 
 #endif

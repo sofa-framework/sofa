@@ -40,7 +40,7 @@ namespace core
 {
 	namespace collision
     {
-        template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+        template class IntersectorFactory<component::collision::MinProximityIntersection>;
     }
 }
 

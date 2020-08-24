@@ -39,9 +39,9 @@ int QuadSetTopologyAlgorithmsClass = core::RegisterObject("Quad set topology alg
         .add< QuadSetTopologyAlgorithms<Vec1Types> >()
 
         ;
-template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec3Types>;
-template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec2Types>;
-template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec1Types>;
+template class QuadSetTopologyAlgorithms<Vec3Types>;
+template class QuadSetTopologyAlgorithms<Vec2Types>;
+template class QuadSetTopologyAlgorithms<Vec1Types>;
 
 
 } // namespace topology

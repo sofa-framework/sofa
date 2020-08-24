@@ -141,9 +141,9 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6Types>;
+extern template class FixedPlaneConstraint<defaulttype::Rigid3Types>;
+extern template class FixedPlaneConstraint<defaulttype::Vec3Types>;
+extern template class FixedPlaneConstraint<defaulttype::Vec6Types>;
 
 #endif
 

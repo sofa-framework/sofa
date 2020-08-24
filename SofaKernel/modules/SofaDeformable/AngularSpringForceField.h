@@ -111,8 +111,8 @@ protected :
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_AngularSpringForceField_CPP)
 
-extern template class SOFA_DEFORMABLE_API AngularSpringForceField<sofa::defaulttype::Rigid3Types>;
-//extern template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2Types>;
+extern template class AngularSpringForceField<sofa::defaulttype::Rigid3Types>;
+//extern template class AngularSpringForceField<Rigid2Types>;
 
 
 #endif

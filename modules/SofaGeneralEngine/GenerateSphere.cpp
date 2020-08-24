@@ -40,7 +40,7 @@ int GenerateSphereClass = core::RegisterObject("Generate a sphereical (Bezier) T
         ;
 
 
-template class SOFA_GENERAL_ENGINE_API GenerateSphere<Vec3Types>;
+template class GenerateSphere<Vec3Types>;
  
 
 

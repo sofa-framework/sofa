@@ -41,9 +41,9 @@ int TetrahedronSetTopologyAlgorithmsClass = core::RegisterObject("Tetrahedron se
 
         ;
 
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec3Types>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec2Types>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec1Types>;
+template class TetrahedronSetTopologyAlgorithms<Vec3Types>;
+template class TetrahedronSetTopologyAlgorithms<Vec2Types>;
+template class TetrahedronSetTopologyAlgorithms<Vec1Types>;
 
 
 } // namespace topology

@@ -102,7 +102,7 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)
-extern template class SOFA_CONSTRAINT_API SlidingConstraint< defaulttype::Vec3Types >;
+extern template class SlidingConstraint< defaulttype::Vec3Types >;
 
 #endif
 

@@ -195,7 +195,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)
 
-extern template class SOFA_MISC_FEM_API TetrahedralTensorMassForceField<sofa::defaulttype::Vec3Types>;
+extern template class TetrahedralTensorMassForceField<sofa::defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)

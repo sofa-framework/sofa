@@ -191,28 +191,28 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
 
 
 
-template class SOFA_MISC_MAPPING_API BarycentricMapping< Vec3Types, Rigid3Types >;
-template class SOFA_MISC_MAPPING_API BarycentricMapperRegularGridTopology< Vec3Types, Rigid3Types >;
-template class SOFA_MISC_MAPPING_API BarycentricMapperSparseGridTopology< Vec3Types, Rigid3Types >;
-template class SOFA_MISC_MAPPING_API BarycentricMapperMeshTopology< Vec3Types, Rigid3Types >;
-template class SOFA_MISC_MAPPING_API BarycentricMapperEdgeSetTopology< Vec3Types, Rigid3Types >;
-template class SOFA_MISC_MAPPING_API BarycentricMapperTriangleSetTopology< Vec3Types, Rigid3Types >;
-template class SOFA_MISC_MAPPING_API BarycentricMapperQuadSetTopology< Vec3Types, Rigid3Types >;
-template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopologyRigid< Vec3Types, Rigid3Types >;
-template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3Types, Rigid3Types >;
-template class SOFA_MISC_MAPPING_API BarycentricMapperHexahedronSetTopology< Vec3Types, Rigid3Types >;
+template class BarycentricMapping< Vec3Types, Rigid3Types >;
+template class BarycentricMapperRegularGridTopology< Vec3Types, Rigid3Types >;
+template class BarycentricMapperSparseGridTopology< Vec3Types, Rigid3Types >;
+template class BarycentricMapperMeshTopology< Vec3Types, Rigid3Types >;
+template class BarycentricMapperEdgeSetTopology< Vec3Types, Rigid3Types >;
+template class BarycentricMapperTriangleSetTopology< Vec3Types, Rigid3Types >;
+template class BarycentricMapperQuadSetTopology< Vec3Types, Rigid3Types >;
+template class BarycentricMapperTetrahedronSetTopologyRigid< Vec3Types, Rigid3Types >;
+template class BarycentricMapperTetrahedronSetTopology< Vec3Types, Rigid3Types >;
+template class BarycentricMapperHexahedronSetTopology< Vec3Types, Rigid3Types >;
 
 
 
 
 namespace _topologybarycentricmapper_ {
-template class SOFA_MISC_MAPPING_API TopologyBarycentricMapper< Vec3Types, Rigid3Types >;
+template class TopologyBarycentricMapper< Vec3Types, Rigid3Types >;
 
 
 }
 
 namespace _barycentricmapper_ {
-template class SOFA_MISC_MAPPING_API BarycentricMapper< Vec3Types, Rigid3Types >;
+template class BarycentricMapper< Vec3Types, Rigid3Types >;
 
 
 

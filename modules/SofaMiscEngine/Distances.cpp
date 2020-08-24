@@ -40,7 +40,7 @@ int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
  
         ;
 
-template class SOFA_MISC_ENGINE_API Distances<Vec3Types>;
+template class Distances<Vec3Types>;
  
 
 

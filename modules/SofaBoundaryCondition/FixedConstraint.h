@@ -154,12 +154,12 @@ protected :
 };
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec6Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid2Types>;
+extern template class FixedConstraint<defaulttype::Vec3Types>;
+extern template class FixedConstraint<defaulttype::Vec2Types>;
+extern template class FixedConstraint<defaulttype::Vec1Types>;
+extern template class FixedConstraint<defaulttype::Vec6Types>;
+extern template class FixedConstraint<defaulttype::Rigid3Types>;
+extern template class FixedConstraint<defaulttype::Rigid2Types>;
 
 #endif
 

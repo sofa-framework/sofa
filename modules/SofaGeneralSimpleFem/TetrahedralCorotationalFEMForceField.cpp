@@ -46,7 +46,7 @@ int TetrahedralCorotationalFEMForceFieldClass = core::RegisterObject("Corotation
 
         ;
 
-template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<Vec3Types>;
+template class TetrahedralCorotationalFEMForceField<Vec3Types>;
 
 
 } // namespace forcefield

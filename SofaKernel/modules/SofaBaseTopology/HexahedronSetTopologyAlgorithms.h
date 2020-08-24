@@ -66,11 +66,11 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYALGORITHMS_CPP)
-extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<defaulttype::Vec1Types>;
-//extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<defaulttype::Rigid3Types>;
-//extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<defaulttype::Rigid2Types>;
+extern template class HexahedronSetTopologyAlgorithms<defaulttype::Vec3Types>;
+extern template class HexahedronSetTopologyAlgorithms<defaulttype::Vec2Types>;
+extern template class HexahedronSetTopologyAlgorithms<defaulttype::Vec1Types>;
+//extern template class HexahedronSetTopologyAlgorithms<defaulttype::Rigid3Types>;
+//extern template class HexahedronSetTopologyAlgorithms<defaulttype::Rigid2Types>;
 
 
 #endif

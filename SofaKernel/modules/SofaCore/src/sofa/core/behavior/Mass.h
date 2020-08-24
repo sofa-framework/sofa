@@ -180,12 +180,12 @@ public:
 
 
 #if  !defined(SOFA_CORE_BEHAVIOR_MASS_CPP)
-extern template class SOFA_CORE_API Mass<defaulttype::Vec3Types>;
-extern template class SOFA_CORE_API Mass<defaulttype::Vec2Types>;
-extern template class SOFA_CORE_API Mass<defaulttype::Vec1Types>;
-extern template class SOFA_CORE_API Mass<defaulttype::Vec6Types>;
-extern template class SOFA_CORE_API Mass<defaulttype::Rigid3Types>;
-extern template class SOFA_CORE_API Mass<defaulttype::Rigid2Types>;
+extern template class Mass<defaulttype::Vec3Types>;
+extern template class Mass<defaulttype::Vec2Types>;
+extern template class Mass<defaulttype::Vec1Types>;
+extern template class Mass<defaulttype::Vec6Types>;
+extern template class Mass<defaulttype::Rigid3Types>;
+extern template class Mass<defaulttype::Rigid2Types>;
 
 
 #endif

@@ -366,8 +366,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP)
-extern template class SOFA_SPH_FLUID_API SpatialGridContainer< sofa::defaulttype::Vec3Types >;
-extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< sofa::defaulttype::Vec3Types > >;
+extern template class SpatialGridContainer< sofa::defaulttype::Vec3Types >;
+extern template class SpatialGrid< SpatialGridTypes< sofa::defaulttype::Vec3Types > >;
 
 #endif
 

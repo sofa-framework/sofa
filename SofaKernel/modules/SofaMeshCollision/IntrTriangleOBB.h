@@ -66,7 +66,7 @@ private:
 typedef TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrTriangleOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_CPP)
-extern template class SOFA_MESH_COLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+extern template class TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
 
 #endif
 

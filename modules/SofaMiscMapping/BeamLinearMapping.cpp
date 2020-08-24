@@ -45,7 +45,7 @@ int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocit
 
         ;
 
-template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3Types, Vec3dTypes >;
+template class BeamLinearMapping< Rigid3Types, Vec3dTypes >;
 
 
 

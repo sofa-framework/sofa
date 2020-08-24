@@ -41,9 +41,9 @@ namespace component
 namespace collision
 {
 
-template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2Types>;
-template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3Types>;
-template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
+template class  AttachBodyPerformer<defaulttype::Vec2Types>;
+template class  AttachBodyPerformer<defaulttype::Vec3Types>;
+template class  AttachBodyPerformer<defaulttype::Rigid3Types>;
 
 static helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec2Types> >  AttachBodyPerformerVec2dClass("AttachBody",true);
 static helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3Types> >  AttachBodyPerformerVec3dClass("AttachBody",true);

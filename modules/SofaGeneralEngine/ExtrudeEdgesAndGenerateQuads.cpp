@@ -40,7 +40,7 @@ int ExtrudeEdgesAndGenerateQuadsClass = core::RegisterObject("This engine extrud
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API ExtrudeEdgesAndGenerateQuads<Vec3Types>;
+template class ExtrudeEdgesAndGenerateQuads<Vec3Types>;
  
 
 

@@ -610,8 +610,8 @@ public:
 
 #if  !defined(SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP)
 
-extern template class SOFA_SOFADISTANCEGRID_API ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_SOFADISTANCEGRID_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
+extern template class ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
+extern template class ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 
 #  ifdef _MSC_VER
 // Manual declaration of non-specialized members, to avoid warnings from MSVC.

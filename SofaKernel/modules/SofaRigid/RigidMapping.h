@@ -182,8 +182,8 @@ const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sof
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
+extern template class RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
+extern template class RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
 
 
 

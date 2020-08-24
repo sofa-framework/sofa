@@ -42,8 +42,8 @@ int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/tria
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API SphereROI<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API SphereROI<Rigid3Types>;
+template class SphereROI<Vec3Types>;
+template class SphereROI<Rigid3Types>;
  
 
 

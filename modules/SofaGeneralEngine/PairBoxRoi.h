@@ -129,9 +129,9 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Rigid3Types>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec6Types>; //Phuoc
+extern template class PairBoxROI<defaulttype::Vec3Types>;
+extern template class PairBoxROI<defaulttype::Rigid3Types>;
+extern template class PairBoxROI<defaulttype::Vec6Types>; //Phuoc
  
 #endif
 

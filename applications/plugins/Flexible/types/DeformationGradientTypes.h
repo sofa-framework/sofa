@@ -271,16 +271,16 @@ namespace container
 {
 
 #if  !defined(FLEXIBLE_DeformationGradientTYPES_CPP)
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F331Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F331Types>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F332Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F332Types>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F321Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F321Types>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F311Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F311Types>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F221Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F221Types>;
+extern template class MechanicalObjectInternalData<defaulttype::F331Types>;
+extern template class MechanicalObject<defaulttype::F331Types>;
+extern template class MechanicalObjectInternalData<defaulttype::F332Types>;
+extern template class MechanicalObject<defaulttype::F332Types>;
+extern template class MechanicalObjectInternalData<defaulttype::F321Types>;
+extern template class MechanicalObject<defaulttype::F321Types>;
+extern template class MechanicalObjectInternalData<defaulttype::F311Types>;
+extern template class MechanicalObject<defaulttype::F311Types>;
+extern template class MechanicalObjectInternalData<defaulttype::F221Types>;
+extern template class MechanicalObject<defaulttype::F221Types>;
 #endif
 
 } // namespace container

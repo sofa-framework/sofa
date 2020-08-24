@@ -139,8 +139,8 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_CPP)
-extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3Types>;
+extern template class FixedLMConstraint<defaulttype::Vec3Types>;
+extern template class FixedLMConstraint<defaulttype::Rigid3Types>;
 
 #endif
 

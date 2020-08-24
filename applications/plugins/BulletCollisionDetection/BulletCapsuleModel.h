@@ -83,8 +83,8 @@ typedef TBulletCapsuleModel<defaulttype::Vec3Types> BulletCapsuleModel;
 typedef TBulletCapsuleModel<defaulttype::RigidTypes> BulletRigidCapsuleModel;
 
 #if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCapsuleModel<defaulttype::Vec3Types>;
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCapsuleModel<defaulttype::Rigid3Types>;
+extern template class TBulletCapsuleModel<defaulttype::Vec3Types>;
+extern template class TBulletCapsuleModel<defaulttype::Rigid3Types>;
 
 #endif
 

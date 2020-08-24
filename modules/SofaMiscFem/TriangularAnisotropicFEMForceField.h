@@ -119,7 +119,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)
-extern template class SOFA_MISC_FEM_API TriangularAnisotropicFEMForceField<defaulttype::Vec3Types>;
+extern template class TriangularAnisotropicFEMForceField<defaulttype::Vec3Types>;
 
 #endif
 

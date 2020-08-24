@@ -313,7 +313,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
 
-extern template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<defaulttype::Vec3Types>;
+extern template class TriangularFEMForceFieldOptim<defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)

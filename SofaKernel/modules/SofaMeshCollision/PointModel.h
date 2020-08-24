@@ -200,7 +200,7 @@ using PointModel [[deprecated("The PointModel is now deprecated, please use Poin
 using Point = TPoint<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP)
-extern template class SOFA_MESH_COLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
+extern template class PointCollisionModel<defaulttype::Vec3Types>;
 
 #endif
 

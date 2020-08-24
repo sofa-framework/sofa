@@ -205,8 +205,8 @@ protected:
 };
 
 #if  !defined(FLEXIBLE_RigidConstraint_CPP)
-extern template class SOFA_Flexible_API RigidConstraint<defaulttype::Affine3dTypes>;
-extern template class SOFA_Flexible_API RigidConstraint<defaulttype::Quadratic3dTypes>;
+extern template class RigidConstraint<defaulttype::Affine3dTypes>;
+extern template class RigidConstraint<defaulttype::Quadratic3dTypes>;
 
 #endif
 

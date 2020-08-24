@@ -42,7 +42,7 @@ int IndexValueMapperClass = core::RegisterObject("Input values to output values 
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3Types>;
+template class IndexValueMapper<Vec3Types>;
  
 
 

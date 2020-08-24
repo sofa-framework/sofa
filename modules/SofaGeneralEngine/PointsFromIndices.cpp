@@ -42,8 +42,8 @@ int PointsFromIndicesClass = core::RegisterObject("Find the points given a list 
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Vec3Types>;
-// template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Rigid3Types>;
+template class PointsFromIndices<Vec3Types>;
+// template class PointsFromIndices<Rigid3Types>;
  
 
 

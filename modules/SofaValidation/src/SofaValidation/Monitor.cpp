@@ -39,9 +39,9 @@ int MonitorClass = core::RegisterObject("Monitoring of particles")
         
         ;
 
-template class SOFA_SOFAVALIDATION_API Monitor<Vec3Types>;
-template class SOFA_SOFAVALIDATION_API Monitor<Vec6Types>;
-template class SOFA_SOFAVALIDATION_API Monitor<Rigid3Types>;
+template class Monitor<Vec3Types>;
+template class Monitor<Vec6Types>;
+template class Monitor<Rigid3Types>;
 
 
 } // namespace sofa::component::misc

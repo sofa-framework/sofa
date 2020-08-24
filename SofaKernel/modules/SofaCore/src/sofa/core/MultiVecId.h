@@ -30,7 +30,7 @@ namespace sofa
 namespace core
 {
 
-class SOFA_CORE_API BaseState;
+class BaseState;
 template<class DataTypes> class State;
 
 /// Identify a vector of a given type stored in multiple State instances

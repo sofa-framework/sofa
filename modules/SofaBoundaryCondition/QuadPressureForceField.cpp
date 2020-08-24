@@ -42,7 +42,7 @@ int QuadPressureForceFieldClass = core::RegisterObject("QuadPressure")
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<Vec3Types>;
+template class QuadPressureForceField<Vec3Types>;
 
 
 

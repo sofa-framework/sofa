@@ -34,7 +34,7 @@ namespace interactionforcefield
 
 using namespace sofa::defaulttype;
 
-template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
+template class JointSpring<defaulttype::Rigid3Types>;
 
 } // namespace interactionforcefield
 

@@ -51,11 +51,11 @@ namespace collision
 
 
 #if  !defined(SOFA_BUILD_GPU_CUDA)
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
+extern template class sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+extern template class sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
+extern template class sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+extern template class sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif
 

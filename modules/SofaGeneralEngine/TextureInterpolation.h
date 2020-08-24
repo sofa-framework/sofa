@@ -105,9 +105,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP)
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec1Types>;
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec3Types>;
+extern template class TextureInterpolation<defaulttype::Vec1Types>;
+extern template class TextureInterpolation<defaulttype::Vec2Types>;
+extern template class TextureInterpolation<defaulttype::Vec3Types>;
 #endif
 
 } // namespace engine

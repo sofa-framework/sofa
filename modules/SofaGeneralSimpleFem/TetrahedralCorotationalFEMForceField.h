@@ -266,7 +266,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)
 
-extern template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3Types>;
+extern template class TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)

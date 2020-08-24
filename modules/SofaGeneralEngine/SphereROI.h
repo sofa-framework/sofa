@@ -172,8 +172,8 @@ template<> void SphereROI<defaulttype::Rigid3Types>::doUpdate();
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Rigid3Types>;
+extern template class SphereROI<defaulttype::Vec3Types>;
+extern template class SphereROI<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace engine

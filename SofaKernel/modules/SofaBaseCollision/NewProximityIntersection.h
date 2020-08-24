@@ -61,7 +61,7 @@ namespace core
 namespace collision
 {
 #if  !defined(SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_CPP)
-extern template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
+extern template class IntersectorFactory<component::collision::NewProximityIntersection>;
 #endif
 }
 }

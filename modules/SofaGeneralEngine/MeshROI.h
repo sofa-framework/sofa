@@ -165,9 +165,9 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)
-extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Rigid3Types>;
-extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec6Types>; //Phuoc
+extern template class MeshROI<defaulttype::Vec3Types>;
+extern template class MeshROI<defaulttype::Rigid3Types>;
+extern template class MeshROI<defaulttype::Vec6Types>; //Phuoc
  
 #endif
 

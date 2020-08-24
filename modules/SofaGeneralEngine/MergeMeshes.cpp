@@ -41,11 +41,11 @@ int MergeMeshesClass = core::RegisterObject("Merge several meshes")
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec1Types>;
-template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec2Types>;
-template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid2Types>;
-template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid3Types>;
+template class MergeMeshes<defaulttype::Vec1Types>;
+template class MergeMeshes<defaulttype::Vec2Types>;
+template class MergeMeshes<defaulttype::Vec3Types>;
+template class MergeMeshes<defaulttype::Rigid2Types>;
+template class MergeMeshes<defaulttype::Rigid3Types>;
  
 
 

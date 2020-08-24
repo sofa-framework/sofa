@@ -46,9 +46,9 @@ int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangl
  
         ;
 
-template class SOFA_ENGINE_API BoxROI<Vec3Types>;
-template class SOFA_ENGINE_API BoxROI<Rigid3Types>;
-template class SOFA_ENGINE_API BoxROI<Vec6Types>;
+template class BoxROI<Vec3Types>;
+template class BoxROI<Rigid3Types>;
+template class BoxROI<Vec6Types>;
  
 
 } // namespace boxroi

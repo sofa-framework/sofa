@@ -185,8 +185,8 @@ private:
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3Types>;
+extern template class PatchTestMovementConstraint<defaulttype::Vec3Types>;
+extern template class PatchTestMovementConstraint<defaulttype::Rigid3Types>;
 
 #endif
 

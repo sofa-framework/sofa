@@ -98,8 +98,8 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_CPP)
-extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
-extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
+extern template class IdentityMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class IdentityMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
 
 #endif
 

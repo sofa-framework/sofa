@@ -148,8 +148,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_CPP)
-extern template class SOFA_SOFAVALIDATION_API EvalPointsDistance<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAVALIDATION_API EvalPointsDistance<defaulttype::Rigid3Types>;
+extern template class EvalPointsDistance<defaulttype::Vec3Types>;
+extern template class EvalPointsDistance<defaulttype::Rigid3Types>;
 
 #endif
 

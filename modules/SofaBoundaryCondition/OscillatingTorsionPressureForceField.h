@@ -142,7 +142,7 @@ protected :
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<sofa::defaulttype::Vec3Types>;
+extern template class OscillatingTorsionPressureForceField<sofa::defaulttype::Vec3Types>;
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
 
 } // namespace forcefield

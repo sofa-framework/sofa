@@ -42,8 +42,8 @@ int TorsionForceFieldClass = core::RegisterObject("Applies a torque to specified
 
 ;
 
-template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Rigid3Types>;
+template class TorsionForceField<Vec3Types>;
+template class TorsionForceField<Rigid3Types>;
 
 
 } // namespace forcefield

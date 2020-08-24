@@ -222,9 +222,9 @@ typedef SphereCollisionModel<sofa::defaulttype::Rigid3Types> RigidSphereModel;
 typedef TSphere<sofa::defaulttype::Rigid3Types> RigidSphere;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_CPP)
-extern template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_COLLISION_API SphereCollisionModel<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_COLLISION_API SphereCollisionModel<defaulttype::Rigid3Types>;
+extern template class TSphere<defaulttype::Vec3Types>;
+extern template class SphereCollisionModel<defaulttype::Vec3Types>;
+extern template class SphereCollisionModel<defaulttype::Rigid3Types>;
 
 #endif
 

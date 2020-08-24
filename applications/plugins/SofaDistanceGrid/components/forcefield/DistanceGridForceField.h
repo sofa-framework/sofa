@@ -226,9 +226,9 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_CPP)
-extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec3Types>;
-//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec2Types>;
-//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec1Types>;
+extern template class DistanceGridForceField<defaulttype::Vec3Types>;
+//extern template class DistanceGridForceField<defaulttype::Vec2Types>;
+//extern template class DistanceGridForceField<defaulttype::Vec1Types>;
 
 #endif
 

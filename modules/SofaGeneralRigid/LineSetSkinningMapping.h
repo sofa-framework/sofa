@@ -188,7 +188,7 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)
-extern template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+extern template class LineSetSkinningMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 
 
 #endif

@@ -153,11 +153,11 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Vec6Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<defaulttype::Rigid3Types>;
+extern template class LinearVelocityConstraint<defaulttype::Vec3Types>;
+extern template class LinearVelocityConstraint<defaulttype::Vec2Types>;
+extern template class LinearVelocityConstraint<defaulttype::Vec1Types>;
+extern template class LinearVelocityConstraint<defaulttype::Vec6Types>;
+extern template class LinearVelocityConstraint<defaulttype::Rigid3Types>;
 
 #endif
 

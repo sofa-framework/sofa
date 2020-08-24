@@ -47,7 +47,7 @@ int TriangularTensorMassForceFieldClass = core::RegisterObject("Linear Elastic M
 
         ;
 
-template class SOFA_GENERAL_DEFORMABLE_API TriangularTensorMassForceField<Vec3Types>;
+template class TriangularTensorMassForceField<Vec3Types>;
 
 
 } // namespace forcefield

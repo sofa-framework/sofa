@@ -1989,8 +1989,8 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     tindex+=nbt;
 }
 
-template class SOFA_BASE_VISUAL_API VisualModelPointHandler< VisualModelImpl::VecCoord>;
-template class SOFA_BASE_VISUAL_API VisualModelPointHandler< VisualModelImpl::VecTexCoord>;
+template class VisualModelPointHandler< VisualModelImpl::VecCoord>;
+template class VisualModelPointHandler< VisualModelImpl::VecTexCoord>;
 
 } // namespace visualmodel
 

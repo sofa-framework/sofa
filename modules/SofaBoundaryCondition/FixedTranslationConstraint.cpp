@@ -44,9 +44,9 @@ int FixedTranslationConstraintClass = core::RegisterObject("Attach given rigids 
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid3Types>;
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid2Types>;
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Vec6Types>;
+template class FixedTranslationConstraint<Rigid3Types>;
+template class FixedTranslationConstraint<Rigid2Types>;
+template class FixedTranslationConstraint<Vec6Types>;
 
 
 } // namespace projectiveconstraintset

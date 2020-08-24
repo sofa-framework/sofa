@@ -38,7 +38,7 @@ int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thom
     .add< BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> > >(true)
 ;
 
-template class SOFA_GENERAL_LINEAR_SOLVER_API BTDLinearSolver< BTDMatrix<6, double>, BlockVector<6, double> >;
+template class BTDLinearSolver< BTDMatrix<6, double>, BlockVector<6, double> >;
 
 } // namespace linearsolver
 

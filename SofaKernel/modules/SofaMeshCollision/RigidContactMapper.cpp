@@ -40,10 +40,10 @@ ContactMapperCreator< ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3T
 ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types> > RigidCapsuleContactMapperClass("default", true);
 
 
-template class SOFA_MESH_COLLISION_API ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types>;
-template class SOFA_MESH_COLLISION_API ContactMapper<RigidSphereModel,Vec3Types>;
-template class SOFA_MESH_COLLISION_API ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types>;
-template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types>;
+template class ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types>;
+template class ContactMapper<RigidSphereModel,Vec3Types>;
+template class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types>;
+template class ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types>;
 
 template SOFA_MESH_COLLISION_API void RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::cleanup();
 template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::createMapping(const char*);

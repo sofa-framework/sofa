@@ -67,15 +67,15 @@ public:
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_MINRESLINEARSOLVER_CPP)
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< FullMatrix<SRreal>, FullVector<SRreal> >;
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< SparseMatrix<SRreal>, FullVector<SRreal> >;
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<SRreal>, FullVector<SRreal> >;
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<2,2,SRreal> >, FullVector<SRreal> >;
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,SRreal> >, FullVector<SRreal> >;
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<4,4,SRreal> >, FullVector<SRreal> >;
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<6,6,SRreal> >, FullVector<SRreal> >;
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<8,8,SRreal> >, FullVector<SRreal> >;
+extern template class MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
+extern template class MinResLinearSolver< FullMatrix<SRreal>, FullVector<SRreal> >;
+extern template class MinResLinearSolver< SparseMatrix<SRreal>, FullVector<SRreal> >;
+extern template class MinResLinearSolver< CompressedRowSparseMatrix<SRreal>, FullVector<SRreal> >;
+extern template class MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<2,2,SRreal> >, FullVector<SRreal> >;
+extern template class MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,SRreal> >, FullVector<SRreal> >;
+extern template class MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<4,4,SRreal> >, FullVector<SRreal> >;
+extern template class MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<6,6,SRreal> >, FullVector<SRreal> >;
+extern template class MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<8,8,SRreal> >, FullVector<SRreal> >;
 #endif
 
 } // namespace linearsolver

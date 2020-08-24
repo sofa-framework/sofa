@@ -42,9 +42,9 @@ int SphereForceFieldClass = core::RegisterObject("Repulsion applied by a sphere 
         .add< SphereForceField<Vec1Types> >()
 
         ;
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec1Types>;
+template class SphereForceField<Vec3Types>;
+template class SphereForceField<Vec2Types>;
+template class SphereForceField<Vec1Types>;
 
 
 } // namespace forcefield

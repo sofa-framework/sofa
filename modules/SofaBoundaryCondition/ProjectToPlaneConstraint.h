@@ -157,8 +157,8 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPlaneConstraint_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Vec2Types>;
+extern template class ProjectToPlaneConstraint<defaulttype::Vec3Types>;
+extern template class ProjectToPlaneConstraint<defaulttype::Vec2Types>;
 
 #endif
 

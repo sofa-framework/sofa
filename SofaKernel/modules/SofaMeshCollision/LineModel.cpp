@@ -45,7 +45,7 @@ int LineCollisionModelClass = core::RegisterObject("collision model using a line
         ;
 
 
-template class SOFA_MESH_COLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
+template class LineCollisionModel<defaulttype::Vec3Types>;
 
 
 } // namespace collision

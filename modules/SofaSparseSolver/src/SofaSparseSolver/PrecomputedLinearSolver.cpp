@@ -39,7 +39,7 @@ int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver ba
         .add< PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> > >()
         ;
 
-template class SOFA_SOFASPARSESOLVER_API PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> >;
+template class PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> >;
 
 } // namespace linearsolver
 

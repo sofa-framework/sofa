@@ -174,7 +174,7 @@ public:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_CPP)
 
-extern template class SOFA_DEFORMABLE_API PolynomialSpringsForceField<defaulttype::Vec3Types>;
+extern template class PolynomialSpringsForceField<defaulttype::Vec3Types>;
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_CPP)
 

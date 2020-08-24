@@ -43,8 +43,8 @@ int RigidMappingClass = core::RegisterObject("Set the positions and velocities o
 
         ;
 
-template class SOFA_RIGID_API RigidMapping< Rigid3Types, Vec3dTypes >;
-template class SOFA_RIGID_API RigidMapping< Rigid2Types, Vec2Types >;
+template class RigidMapping< Rigid3Types, Vec3dTypes >;
+template class RigidMapping< Rigid2Types, Vec2Types >;
 
 
 

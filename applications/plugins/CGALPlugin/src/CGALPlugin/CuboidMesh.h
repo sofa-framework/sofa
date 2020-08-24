@@ -108,7 +108,7 @@ public:
 };
 
 #if  !defined(CGALPLUGIN_CUBOIDMESH_CPP)
-extern template class SOFA_CGALPLUGIN_API CuboidMesh<defaulttype::Vec3Types>;
+extern template class CuboidMesh<defaulttype::Vec3Types>;
  
 #endif
 

@@ -198,9 +198,9 @@ int RestShapeSpringsForceFieldClass = core::RegisterObject("Elastic springs gene
 
         ;
 
-template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec3Types>;
-template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec1Types>;
-template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid3Types>;
+template class RestShapeSpringsForceField<Vec3Types>;
+template class RestShapeSpringsForceField<Vec1Types>;
+template class RestShapeSpringsForceField<Rigid3Types>;
 
 
 } // namespace forcefield

@@ -184,7 +184,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_TETRAHEDRONCOLLISIONMODEL_CPP)
-extern template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
+extern template class ContactMapper<TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
 
 #  ifdef _MSC_VER
 // Manual declaration of non-specialized members, to avoid warnings from MSVC.

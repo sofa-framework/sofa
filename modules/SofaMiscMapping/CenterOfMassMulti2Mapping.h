@@ -136,7 +136,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTI2MAPPING_CPP)
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMulti2Mapping< defaulttype::Vec3Types, defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+extern template class CenterOfMassMulti2Mapping< defaulttype::Vec3Types, defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 
 #endif
 

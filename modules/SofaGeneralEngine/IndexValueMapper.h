@@ -72,7 +72,7 @@ public:
 };
 
 #if  !defined(INDEXVALUEMAPPER_CPP_)
-extern template class SOFA_GENERAL_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3Types>;
+extern template class IndexValueMapper<sofa::defaulttype::Vec3Types>;
  
 #endif
 

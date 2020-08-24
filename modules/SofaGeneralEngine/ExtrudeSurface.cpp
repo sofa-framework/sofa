@@ -41,7 +41,7 @@ int ExtrudeSurfaceClass = core::RegisterObject("This class truns on spiral any t
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API ExtrudeSurface<Vec3Types>;
+template class ExtrudeSurface<Vec3Types>;
  
 
 

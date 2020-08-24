@@ -148,13 +148,13 @@ public:
 };
 
 #if  !defined(SOFA_CORE_STATE_CPP)
-extern template class SOFA_CORE_API State<defaulttype::Vec3dTypes>;
-extern template class SOFA_CORE_API State<defaulttype::Vec2Types>;
-extern template class SOFA_CORE_API State<defaulttype::Vec1Types>;
-extern template class SOFA_CORE_API State<defaulttype::Vec6Types>;
-extern template class SOFA_CORE_API State<defaulttype::Rigid3Types>;
-extern template class SOFA_CORE_API State<defaulttype::Rigid2Types>;
-extern template class SOFA_CORE_API State<defaulttype::Vec3fTypes>;
+extern template class State<defaulttype::Vec3dTypes>;
+extern template class State<defaulttype::Vec2Types>;
+extern template class State<defaulttype::Vec1Types>;
+extern template class State<defaulttype::Vec6Types>;
+extern template class State<defaulttype::Rigid3Types>;
+extern template class State<defaulttype::Rigid2Types>;
+extern template class State<defaulttype::Vec3fTypes>;
 
 #endif
 } // namespace core

@@ -46,8 +46,8 @@ int TriangleBendingSpringsClass = core::RegisterObject("Springs added to a train
 
         ;
 
-template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<Vec3Types>;
-template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<Vec2Types>;
+template class TriangleBendingSprings<Vec3Types>;
+template class TriangleBendingSprings<Vec2Types>;
 
 
 } // namespace interactionforcefield

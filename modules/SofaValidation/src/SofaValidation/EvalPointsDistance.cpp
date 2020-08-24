@@ -37,8 +37,8 @@ int EvalPointsDistanceClass = core::RegisterObject("Periodically compute the dis
 
         ;
 
-template class SOFA_SOFAVALIDATION_API EvalPointsDistance<Vec3Types>;
-template class SOFA_SOFAVALIDATION_API EvalPointsDistance<Rigid3Types>;
+template class EvalPointsDistance<Vec3Types>;
+template class EvalPointsDistance<Rigid3Types>;
 
 
 } // namespace sofa::component::misc

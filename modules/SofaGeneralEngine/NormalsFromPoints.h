@@ -72,7 +72,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)
-extern template class SOFA_GENERAL_ENGINE_API NormalsFromPoints<defaulttype::Vec3Types>; 
+extern template class NormalsFromPoints<defaulttype::Vec3Types>; 
 #endif
 
 } // namespace engine

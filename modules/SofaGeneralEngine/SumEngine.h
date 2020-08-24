@@ -62,8 +62,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SumEngine_CPP)
-extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec1d>;
-extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec3d>;
+extern template class SumEngine<defaulttype::Vec1d>;
+extern template class SumEngine<defaulttype::Vec3d>;
 #endif
 
 } // namespace engine

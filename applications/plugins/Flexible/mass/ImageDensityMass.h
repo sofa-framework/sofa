@@ -173,7 +173,7 @@ protected:
 
 
 #if  !defined(SOFA_FLEXIBLE_ImageDensityMass_CPP)
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3Types,core::behavior::ShapeFunction3d,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
+extern template class ImageDensityMass<defaulttype::Vec3Types,core::behavior::ShapeFunction3d,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
 #endif
 
 } // namespace mass

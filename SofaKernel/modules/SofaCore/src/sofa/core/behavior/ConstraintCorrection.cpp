@@ -32,10 +32,10 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-template class SOFA_CORE_API ConstraintCorrection< Vec3Types >;
-template class SOFA_CORE_API ConstraintCorrection< Vec1Types >;
-template class SOFA_CORE_API ConstraintCorrection< Vec2Types >;
-template class SOFA_CORE_API ConstraintCorrection< Rigid3Types >;
+template class ConstraintCorrection< Vec3Types >;
+template class ConstraintCorrection< Vec1Types >;
+template class ConstraintCorrection< Vec2Types >;
+template class ConstraintCorrection< Rigid3Types >;
 
 
 } // namespace behavior

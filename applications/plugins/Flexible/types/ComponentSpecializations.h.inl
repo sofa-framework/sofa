@@ -44,8 +44,8 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
 
 
 #if !defined(FLEXIBLE_COMPILING_CPP)
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::TYPEABSTRACTNAME3dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>;
+extern template class MechanicalObjectInternalData<defaulttype::TYPEABSTRACTNAME3dTypes>;
+extern template class MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>;
 #endif
 
 
@@ -94,9 +94,9 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRAC
 
 #if !defined(FLEXIBLE_COMPILING_CPP)
 #if FLEXIBLE_HAVE_IMAGE
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,defaulttype::TYPEABSTRACTNAME3dMass>;
+extern template class ImageDensityMass<defaulttype::TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,defaulttype::TYPEABSTRACTNAME3dMass>;
 
-extern template class SOFA_Flexible_API UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes,defaulttype::TYPEABSTRACTNAME3dMass>;
+extern template class UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes,defaulttype::TYPEABSTRACTNAME3dMass>;
 #endif
 
 #endif
@@ -118,10 +118,10 @@ namespace behavior
 {
 
 #if !defined(FLEXIBLE_COMPILING_CPP)
-extern template class SOFA_Flexible_API ForceField<defaulttype::TYPEABSTRACTNAME3dTypes>;
-extern template class SOFA_Flexible_API Mass<defaulttype::TYPEABSTRACTNAME3dTypes>;
-extern template class SOFA_Flexible_API ConstraintCorrection<defaulttype::TYPEABSTRACTNAME3dTypes>;
-extern template class SOFA_Flexible_API ProjectiveConstraintSet<defaulttype::TYPEABSTRACTNAME3dTypes>;
+extern template class ForceField<defaulttype::TYPEABSTRACTNAME3dTypes>;
+extern template class Mass<defaulttype::TYPEABSTRACTNAME3dTypes>;
+extern template class ConstraintCorrection<defaulttype::TYPEABSTRACTNAME3dTypes>;
+extern template class ProjectiveConstraintSet<defaulttype::TYPEABSTRACTNAME3dTypes>;
 #endif
 
 
@@ -130,7 +130,7 @@ extern template class SOFA_Flexible_API ProjectiveConstraintSet<defaulttype::TYP
 
 
 #if !defined(FLEXIBLE_COMPILING_CPP)
-extern template class SOFA_Flexible_API Mapping<defaulttype::TYPEABSTRACTNAME3dTypes,defaulttype::Rigid3Types>;
+extern template class Mapping<defaulttype::TYPEABSTRACTNAME3dTypes,defaulttype::Rigid3Types>;
 
 #endif
 

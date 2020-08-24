@@ -41,7 +41,7 @@ int Vertex2FrameClass = core::RegisterObject("")
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API Vertex2Frame<Rigid3Types>;
+template class Vertex2Frame<Rigid3Types>;
  
 
 

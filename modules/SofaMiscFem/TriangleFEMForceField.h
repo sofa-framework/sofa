@@ -174,7 +174,7 @@ protected :
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
 
-extern template class SOFA_MISC_FEM_API TriangleFEMForceField<sofa::defaulttype::Vec3Types>;
+extern template class TriangleFEMForceField<sofa::defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)

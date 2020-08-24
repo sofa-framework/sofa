@@ -68,8 +68,8 @@ private :
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_CHOLESKYSOLVER_CPP)
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
+extern template class CholeskySolver< SparseMatrix<double>, FullVector<double> >;
+extern template class CholeskySolver< FullMatrix<double>, FullVector<double> >;
 
 #endif
 

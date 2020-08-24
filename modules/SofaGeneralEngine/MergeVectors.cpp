@@ -48,19 +48,19 @@ int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<int> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<bool> >;
-//template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<std::string> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2u> >;
+template class MergeVectors< helper::vector<int> >;
+template class MergeVectors< helper::vector<bool> >;
+//template class MergeVectors< helper::vector<std::string> >;
+template class MergeVectors< helper::vector<defaulttype::Vec2u> >;
 
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<double> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2d> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec3d> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec4d> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
+template class MergeVectors< helper::vector<double> >;
+template class MergeVectors< helper::vector<defaulttype::Vec2d> >;
+template class MergeVectors< helper::vector<defaulttype::Vec3d> >;
+template class MergeVectors< helper::vector<defaulttype::Vec4d> >;
+template class MergeVectors< defaulttype::Rigid2Types::VecCoord >;
+template class MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
+template class MergeVectors< defaulttype::Rigid3Types::VecCoord >;
+template class MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
  
 
 

@@ -141,7 +141,7 @@ protected:
 }; // class FEMGridBehaviorModel
 
 #if !defined(SOFA_EXTERNALBEHAVIORMODEL_FEMGRIDBEHAVIORMODEL_CPP)
-extern template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<defaulttype::Vec3Types>;
+extern template class FEMGridBehaviorModel<defaulttype::Vec3Types>;
 #endif
 
 } // namespace externalBehaviorModel

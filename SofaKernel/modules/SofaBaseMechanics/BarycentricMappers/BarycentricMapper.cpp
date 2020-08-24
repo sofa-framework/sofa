@@ -38,7 +38,7 @@ namespace _barycentricmapper_
 
 using namespace sofa::defaulttype;
 
-template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3dTypes, Vec3dTypes >;
+template class BarycentricMapper< Vec3dTypes, Vec3dTypes >;
 
 
 

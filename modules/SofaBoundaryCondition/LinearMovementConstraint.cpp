@@ -58,11 +58,11 @@ int LinearMovementConstraintClass = core::RegisterObject("translate given partic
         .add< LinearMovementConstraint<defaulttype::Rigid3Types> >();
 
 
-template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3Types>;
+template class LinearMovementConstraint<defaulttype::Vec3Types>;
+template class LinearMovementConstraint<defaulttype::Vec2Types>;
+template class LinearMovementConstraint<defaulttype::Vec1Types>;
+template class LinearMovementConstraint<defaulttype::Vec6Types>;
+template class LinearMovementConstraint<defaulttype::Rigid3Types>;
 
 
 } // namespace projectiveconstraintset

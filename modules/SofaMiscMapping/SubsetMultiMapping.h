@@ -108,10 +108,10 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+extern template class SubsetMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SubsetMultiMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
+extern template class SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
+extern template class SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 
 #endif
 

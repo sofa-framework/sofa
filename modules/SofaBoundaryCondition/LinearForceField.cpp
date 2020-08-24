@@ -44,12 +44,12 @@ int LinearForceFieldClass = core::RegisterObject("Linearly interpolated force ap
 // .add< LinearForceField<Rigid2Types> >()
 
         ;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3Types>;
-// template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2Types>;
+template class LinearForceField<Vec3Types>;
+template class LinearForceField<Vec2Types>;
+template class LinearForceField<Vec1Types>;
+template class LinearForceField<Vec6Types>;
+template class LinearForceField<Rigid3Types>;
+// template class LinearForceField<Rigid2Types>;
 
 
 template <>

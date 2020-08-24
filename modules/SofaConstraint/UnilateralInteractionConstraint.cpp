@@ -44,7 +44,7 @@ int UnilateralInteractionConstraintClass = core::RegisterObject("TODO-Unilateral
         ;
 
 
-template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<Vec3Types>;
+template class UnilateralInteractionConstraint<Vec3Types>;
 
 
 

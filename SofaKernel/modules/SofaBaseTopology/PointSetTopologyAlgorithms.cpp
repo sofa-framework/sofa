@@ -41,11 +41,11 @@ int PointSetTopologyAlgorithmsClass = core::RegisterObject("Point set topology a
 
         ;
 
-template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Vec3Types>;
-template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Vec2Types>;
-template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Vec1Types>;
-template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid3Types>;
-template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid2Types>;
+template class PointSetTopologyAlgorithms<Vec3Types>;
+template class PointSetTopologyAlgorithms<Vec2Types>;
+template class PointSetTopologyAlgorithms<Vec1Types>;
+template class PointSetTopologyAlgorithms<Rigid3Types>;
+template class PointSetTopologyAlgorithms<Rigid2Types>;
 
 
 } // namespace topology

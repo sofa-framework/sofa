@@ -379,11 +379,11 @@ defaulttype::Vector6 DiagonalMass<defaulttype::Rigid3Types,defaulttype::Rigid3Ma
 
 
 #if  !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec3Types,double>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec2Types,double>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec1Types,double>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid2Types,defaulttype::Rigid2Mass>;
+extern template class DiagonalMass<defaulttype::Vec3Types,double>;
+extern template class DiagonalMass<defaulttype::Vec2Types,double>;
+extern template class DiagonalMass<defaulttype::Vec1Types,double>;
+extern template class DiagonalMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>;
+extern template class DiagonalMass<defaulttype::Rigid2Types,defaulttype::Rigid2Mass>;
 
 #endif
 

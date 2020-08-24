@@ -115,9 +115,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MISC_MONITOR_CPP)
-extern template class SOFA_SOFAVALIDATION_API Monitor<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAVALIDATION_API Monitor<defaulttype::Vec6Types>;
-extern template class SOFA_SOFAVALIDATION_API Monitor<defaulttype::Rigid3Types>;
+extern template class Monitor<defaulttype::Vec3Types>;
+extern template class Monitor<defaulttype::Vec6Types>;
+extern template class Monitor<defaulttype::Rigid3Types>;
 #endif
 
 

@@ -191,11 +191,11 @@ private:
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3Types>;
+extern template class PartialLinearMovementConstraint<defaulttype::Vec3Types>;
+extern template class PartialLinearMovementConstraint<defaulttype::Vec2Types>;
+extern template class PartialLinearMovementConstraint<defaulttype::Vec1Types>;
+extern template class PartialLinearMovementConstraint<defaulttype::Vec6Types>;
+extern template class PartialLinearMovementConstraint<defaulttype::Rigid3Types>;
 #endif
 
 

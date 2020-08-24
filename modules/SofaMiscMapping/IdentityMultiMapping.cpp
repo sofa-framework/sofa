@@ -44,8 +44,8 @@ int IdentityMultiMappingClass = core::RegisterObject("Concatenate several States
 
         ;
 
-template class SOFA_MISC_MAPPING_API IdentityMultiMapping< Vec3Types, Vec3Types >;
-template class SOFA_MISC_MAPPING_API IdentityMultiMapping< Rigid3Types, Rigid3Types >;
+template class IdentityMultiMapping< Vec3Types, Vec3Types >;
+template class IdentityMultiMapping< Rigid3Types, Rigid3Types >;
 
 
 } // namespace mapping

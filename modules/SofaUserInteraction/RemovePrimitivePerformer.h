@@ -142,7 +142,7 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
-extern template class SOFA_USER_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
+extern template class RemovePrimitivePerformer<defaulttype::Vec3Types>;
 
 #endif
 

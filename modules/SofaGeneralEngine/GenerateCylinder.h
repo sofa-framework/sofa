@@ -92,7 +92,7 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_GENERATECYLINDER_CPP)
-extern template class SOFA_GENERAL_ENGINE_API GenerateCylinder<defaulttype::Vec3Types>;
+extern template class GenerateCylinder<defaulttype::Vec3Types>;
 
 #endif
 

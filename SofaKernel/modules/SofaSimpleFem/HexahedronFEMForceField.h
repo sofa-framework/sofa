@@ -234,7 +234,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
-extern template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<defaulttype::Vec3Types>;
+extern template class HexahedronFEMForceField<defaulttype::Vec3Types>;
 
 #endif
 

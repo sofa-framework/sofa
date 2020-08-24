@@ -40,9 +40,9 @@ int TriangleSetGeometryAlgorithmsClass = core::RegisterObject("Triangle set geom
 
         ;
 
-template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1Types>;
+template class TriangleSetGeometryAlgorithms<Vec3Types>;
+template class TriangleSetGeometryAlgorithms<Vec2Types>;
+template class TriangleSetGeometryAlgorithms<Vec1Types>;
 
 
 

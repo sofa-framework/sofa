@@ -36,7 +36,7 @@ int MeshSplittingEngineClass = core::RegisterObject("This class breaks a mesh in
         .add< MeshSplittingEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3Types>;
+template class MeshSplittingEngine<defaulttype::Vec3Types>;
  
 
 

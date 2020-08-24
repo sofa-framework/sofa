@@ -69,8 +69,8 @@ private:
 typedef TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types> IntrCapsuleOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_CPP)
-extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types>;
+extern template class TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types>;
+extern template class TIntrCapsuleOBB<sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types>;
 
 #endif
 

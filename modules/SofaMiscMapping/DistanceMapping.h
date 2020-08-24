@@ -333,10 +333,10 @@ private:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+extern template class DistanceMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class DistanceMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+extern template class DistanceMultiMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class DistanceMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
 
 
 #endif

@@ -44,11 +44,11 @@ int EdgeSetTopologyAlgorithmsClass = core::RegisterObject("Edge set topology alg
         .add< EdgeSetTopologyAlgorithms<Rigid2Types> >()
 
         ;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec3Types>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec2Types>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec1Types>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Rigid3Types>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Rigid2Types>;
+template class EdgeSetTopologyAlgorithms<Vec3Types>;
+template class EdgeSetTopologyAlgorithms<Vec2Types>;
+template class EdgeSetTopologyAlgorithms<Vec1Types>;
+template class EdgeSetTopologyAlgorithms<Rigid3Types>;
+template class EdgeSetTopologyAlgorithms<Rigid2Types>;
 
 
 } // namespace topology

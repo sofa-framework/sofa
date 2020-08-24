@@ -40,7 +40,7 @@ int ClusteringEngineClass = core::RegisterObject("Group points into overlapping 
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API ClusteringEngine<Vec3Types>;
+template class ClusteringEngine<Vec3Types>;
  
 
 

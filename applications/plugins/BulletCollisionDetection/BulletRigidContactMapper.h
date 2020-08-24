@@ -140,7 +140,7 @@ public:
 };
 
 #if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-extern template class SOFA_BULLETCOLLISIONDETECTION_API ContactMapper<BulletConvexHullModel,Vec3Types>;
+extern template class ContactMapper<BulletConvexHullModel,Vec3Types>;
 #endif
 
 }

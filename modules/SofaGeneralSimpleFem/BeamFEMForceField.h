@@ -234,7 +234,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP)
-extern template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<defaulttype::Rigid3Types>;
+extern template class BeamFEMForceField<defaulttype::Rigid3Types>;
 #endif
 
 }

@@ -77,10 +77,10 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid2Types>;
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid3Types>;
+extern template class AverageCoord<defaulttype::Vec2Types>;
+extern template class AverageCoord<defaulttype::Vec3Types>;
+extern template class AverageCoord<defaulttype::Rigid2Types>;
+extern template class AverageCoord<defaulttype::Rigid3Types>;
  
 #endif
 

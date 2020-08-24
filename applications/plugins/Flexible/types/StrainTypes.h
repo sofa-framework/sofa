@@ -597,15 +597,15 @@ namespace container
 {
 
 #if  !defined(FLEXIBLE_StrainTYPES_CPP)
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E331Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E332Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E333Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E321Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E311Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E221Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I331Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::U331Types>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::U321Types>;
+extern template class MechanicalObject<defaulttype::E331Types>;
+extern template class MechanicalObject<defaulttype::E332Types>;
+extern template class MechanicalObject<defaulttype::E333Types>;
+extern template class MechanicalObject<defaulttype::E321Types>;
+extern template class MechanicalObject<defaulttype::E311Types>;
+extern template class MechanicalObject<defaulttype::E221Types>;
+extern template class MechanicalObject<defaulttype::I331Types>;
+extern template class MechanicalObject<defaulttype::U331Types>;
+extern template class MechanicalObject<defaulttype::U321Types>;
 #endif
 
 } // namespace container

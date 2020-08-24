@@ -393,8 +393,8 @@ public:
 };
 
 #if  !defined(SOFA_HELPER_QUATER_CPP)
-extern template class SOFA_HELPER_API Quater<double>;
-extern template class SOFA_HELPER_API Quater<float>;
+extern template class Quater<double>;
+extern template class Quater<float>;
 #endif
 
 } // namespace helper

@@ -44,8 +44,8 @@ int ShapeMatchingClass = core::RegisterObject("Compute target positions using sh
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API ShapeMatching<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API ShapeMatching<Rigid3Types>;
+template class ShapeMatching<Vec3Types>;
+template class ShapeMatching<Rigid3Types>;
  
 
 

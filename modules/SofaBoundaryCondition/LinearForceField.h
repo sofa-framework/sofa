@@ -144,12 +144,12 @@ SReal SOFA_BOUNDARY_CONDITION_API LinearForceField<defaulttype::Rigid2Types>::ge
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<sofa::defaulttype::Vec6Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<sofa::defaulttype::Rigid3Types>;
-// extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2Types>;
+extern template class LinearForceField<sofa::defaulttype::Vec3Types>;
+extern template class LinearForceField<sofa::defaulttype::Vec2Types>;
+extern template class LinearForceField<sofa::defaulttype::Vec1Types>;
+extern template class LinearForceField<sofa::defaulttype::Vec6Types>;
+extern template class LinearForceField<sofa::defaulttype::Rigid3Types>;
+// extern template class LinearForceField<Rigid2Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)

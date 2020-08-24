@@ -151,7 +151,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MeshSplittingEngine_CPP)
-extern template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3Types>;
+extern template class MeshSplittingEngine<defaulttype::Vec3Types>;
  
 #endif
 

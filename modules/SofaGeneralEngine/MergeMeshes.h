@@ -160,11 +160,11 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MERGEMESHES_CPP)
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec1Types>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid2Types>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid3Types>;
+extern template class MergeMeshes<defaulttype::Vec1Types>;
+extern template class MergeMeshes<defaulttype::Vec2Types>;
+extern template class MergeMeshes<defaulttype::Vec3Types>;
+extern template class MergeMeshes<defaulttype::Rigid2Types>;
+extern template class MergeMeshes<defaulttype::Rigid3Types>;
  
 #endif
 

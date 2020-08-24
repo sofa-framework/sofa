@@ -43,7 +43,7 @@ int HandMappingClass = core::RegisterObject("skin a model from a set of rigid li
         ;
 
 
-template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< Rigid3Types, Vec3Types >;
+template class LineSetSkinningMapping< Rigid3Types, Vec3Types >;
 
 
 

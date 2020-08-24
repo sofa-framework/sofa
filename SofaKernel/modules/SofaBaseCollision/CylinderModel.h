@@ -168,8 +168,8 @@ using CylinderModel [[deprecated("The CylinderModel is now deprecated, please us
 using Cylinder = TCylinder<sofa::defaulttype::Rigid3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP)
-extern template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_COLLISION_API CylinderCollisionModel<defaulttype::Rigid3Types>;
+extern template class TCylinder<defaulttype::Rigid3Types>;
+extern template class CylinderCollisionModel<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace collision

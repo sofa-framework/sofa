@@ -288,7 +288,7 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
 
 ContactMapperCreator< ContactMapper<TetrahedronCollisionModel> > TetrahedronContactMapperClass("default",true);
 
-template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
+template class ContactMapper<TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
 
 } // namespace collision
 

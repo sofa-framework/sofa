@@ -40,8 +40,8 @@ int DifferenceEngineClass = core::RegisterObject("Computing the difference betwe
 
         ;
 
-template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec1d>;
-template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec3d>;
+template class DifferenceEngine<Vec1d>;
+template class DifferenceEngine<Vec3d>;
 
 
 } // namespace engine

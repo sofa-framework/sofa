@@ -64,10 +64,10 @@ int SphereModelClass = core::RegisterObject("Collision model which represents a 
         .addAlias("SphereModel")
         ;
 
-template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3Types>;
-//template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Rigid3Types>; // Can't compile due to type mismatches in pFree() method.
-template class SOFA_BASE_COLLISION_API SphereCollisionModel<defaulttype::Vec3Types>;
-template class SOFA_BASE_COLLISION_API SphereCollisionModel<defaulttype::Rigid3Types>;
+template class TSphere<defaulttype::Vec3Types>;
+//template class TSphere<defaulttype::Rigid3Types>; // Can't compile due to type mismatches in pFree() method.
+template class SphereCollisionModel<defaulttype::Vec3Types>;
+template class SphereCollisionModel<defaulttype::Rigid3Types>;
 
 
 } // namespace collision

@@ -177,12 +177,12 @@ protected:
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_CPP)
-extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec6Types >;
-extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec3Types >;
-extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec2Types >;
-extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec1Types >;
-extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Rigid3Types >;
-extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Rigid2Types >;
+extern template class ProjectiveConstraintSet< defaulttype::Vec6Types >;
+extern template class ProjectiveConstraintSet< defaulttype::Vec3Types >;
+extern template class ProjectiveConstraintSet< defaulttype::Vec2Types >;
+extern template class ProjectiveConstraintSet< defaulttype::Vec1Types >;
+extern template class ProjectiveConstraintSet< defaulttype::Rigid3Types >;
+extern template class ProjectiveConstraintSet< defaulttype::Rigid2Types >;
 
 
 #endif

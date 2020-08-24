@@ -89,11 +89,11 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_NearestPointROI_CPP)
-extern template class SOFA_GENERAL_ENGINE_API NearestPointROI<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API NearestPointROI<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_ENGINE_API NearestPointROI<defaulttype::Vec1Types>;
-extern template class SOFA_GENERAL_ENGINE_API NearestPointROI<defaulttype::Rigid3Types>;
-extern template class SOFA_GENERAL_ENGINE_API NearestPointROI<defaulttype::Rigid2Types>;
+extern template class NearestPointROI<defaulttype::Vec3Types>;
+extern template class NearestPointROI<defaulttype::Vec2Types>;
+extern template class NearestPointROI<defaulttype::Vec1Types>;
+extern template class NearestPointROI<defaulttype::Rigid3Types>;
+extern template class NearestPointROI<defaulttype::Rigid2Types>;
 #endif
 
 } // namespace engine

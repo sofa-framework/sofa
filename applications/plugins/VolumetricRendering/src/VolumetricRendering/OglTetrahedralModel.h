@@ -103,7 +103,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_VISUALMODEL_OGLTETRAHEDRALMODEL_CPP)
-extern template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<defaulttype::Vec3Types>;
+extern template class OglTetrahedralModel<defaulttype::Vec3Types>;
 
 #endif
 

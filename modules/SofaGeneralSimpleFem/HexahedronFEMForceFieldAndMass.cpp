@@ -42,7 +42,7 @@ int HexahedronFEMForceFieldAndMassClass = core::RegisterObject("Hexahedral finit
 
         ;
 
-template class SOFA_GENERAL_SIMPLE_FEM_API HexahedronFEMForceFieldAndMass<Vec3Types>;
+template class HexahedronFEMForceFieldAndMass<Vec3Types>;
 
 
 

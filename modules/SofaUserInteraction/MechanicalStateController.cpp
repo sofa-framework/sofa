@@ -48,11 +48,11 @@ int MechanicalStateControllerClass = core::RegisterObject("Provides a Mouse & Ke
 
         ;
 
-//template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec3Types>;
-//template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec2Types>;
-template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec1Types>;
-template class SOFA_USER_INTERACTION_API MechanicalStateController<Rigid3Types>;
-//template class SOFA_USER_INTERACTION_API MechanicalStateController<Rigid2Types>;
+//template class MechanicalStateController<Vec3Types>;
+//template class MechanicalStateController<Vec2Types>;
+template class MechanicalStateController<Vec1Types>;
+template class MechanicalStateController<Rigid3Types>;
+//template class MechanicalStateController<Rigid2Types>;
 
 
 template <>

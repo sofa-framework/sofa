@@ -42,8 +42,8 @@ int SurfacePressureForceFieldClass = core::RegisterObject("SurfacePressure")
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Rigid3Types>;
+template class SurfacePressureForceField<Vec3Types>;
+template class SurfacePressureForceField<Rigid3Types>;
 
 
 

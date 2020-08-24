@@ -32,12 +32,12 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-template class SOFA_CORE_API PairInteractionForceField<Vec6Types>;
-template class SOFA_CORE_API PairInteractionForceField<Vec3Types>;
-template class SOFA_CORE_API PairInteractionForceField<Vec2Types>;
-template class SOFA_CORE_API PairInteractionForceField<Vec1Types>;
-template class SOFA_CORE_API PairInteractionForceField<Rigid3Types>;
-template class SOFA_CORE_API PairInteractionForceField<Rigid2Types>;
+template class PairInteractionForceField<Vec6Types>;
+template class PairInteractionForceField<Vec3Types>;
+template class PairInteractionForceField<Vec2Types>;
+template class PairInteractionForceField<Vec1Types>;
+template class PairInteractionForceField<Rigid3Types>;
+template class PairInteractionForceField<Rigid2Types>;
 
 
 } // namespace behavior

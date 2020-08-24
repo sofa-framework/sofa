@@ -155,10 +155,10 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3Types>;
+extern template class LinearSolverConstraintCorrection<sofa::defaulttype::Vec3Types>;
+extern template class LinearSolverConstraintCorrection<sofa::defaulttype::Vec2Types>;
+extern template class LinearSolverConstraintCorrection<sofa::defaulttype::Vec1Types>;
+extern template class LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3Types>;
 
 #endif
 

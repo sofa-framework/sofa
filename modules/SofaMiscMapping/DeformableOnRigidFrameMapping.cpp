@@ -40,7 +40,7 @@ int DeformableOnRigidFrameMappingClass = core::RegisterObject("Set the positions
 
         ;
 
-template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3Types, Vec3dTypes >;
+template class DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3Types, Vec3dTypes >;
 
 
 

@@ -29,7 +29,7 @@ namespace collision{
 //----------------------------------------------------------------------------
 // Explicit instantiation.
 //----------------------------------------------------------------------------
-template class SOFA_MESH_COLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+template class TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
 
 //----------------------------------------------------------------------------
 

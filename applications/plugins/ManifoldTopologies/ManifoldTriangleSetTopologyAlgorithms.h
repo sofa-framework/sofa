@@ -132,9 +132,9 @@ private:
 };
 
 #if  !defined(SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP)
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec1Types>;
+extern template class ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec3Types>;
+extern template class ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec2Types>;
+extern template class ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec1Types>;
 #endif
 
 } // namespace topology

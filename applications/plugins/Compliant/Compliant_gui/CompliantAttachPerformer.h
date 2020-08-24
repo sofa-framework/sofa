@@ -115,8 +115,8 @@ public:
 };
 
 #if !defined(SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_CPP)
-extern template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Vec3Types>;
-extern template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Rigid3Types>;
+extern template class  CompliantAttachPerformer<defaulttype::Vec3Types>;
+extern template class  CompliantAttachPerformer<defaulttype::Rigid3Types>;
 #endif
 
 }

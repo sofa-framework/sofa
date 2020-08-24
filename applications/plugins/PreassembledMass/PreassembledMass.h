@@ -120,12 +120,12 @@ public:
 
 #if  !defined(__PreassembledMass_CPP)
 
-extern template class SOFA_PreassembledMass_API PreassembledMass<defaulttype::Vec3Types>; // volume FEM (tetra, hexa)
-extern template class SOFA_PreassembledMass_API PreassembledMass<defaulttype::Vec1Types>; // subspace
-extern template class SOFA_PreassembledMass_API PreassembledMass<defaulttype::Rigid3Types>; // rigid frames
+extern template class PreassembledMass<defaulttype::Vec3Types>; // volume FEM (tetra, hexa)
+extern template class PreassembledMass<defaulttype::Vec1Types>; // subspace
+extern template class PreassembledMass<defaulttype::Rigid3Types>; // rigid frames
 
 #if SOFA_HAVE_FLEXIBLE
-extern template class SOFA_PreassembledMass_API PreassembledMass<defaulttype::Affine3Types>; // affine frames
+extern template class PreassembledMass<defaulttype::Affine3Types>; // affine frames
 #endif
 
 #endif

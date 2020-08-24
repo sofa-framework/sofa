@@ -218,12 +218,12 @@ void UniformMass<defaulttype::Vec6Types,double>::draw(const core::visual::Visual
 
 
 #if  !defined(SOFA_COMPONENT_MASS_UNIFORMMASS_CPP)
-extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec3Types, double>;
-extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec2Types, double>;
-extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec1Types, double>;
-extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec6Types, double>;
-extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
-extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>;
+extern template class UniformMass<defaulttype::Vec3Types, double>;
+extern template class UniformMass<defaulttype::Vec2Types, double>;
+extern template class UniformMass<defaulttype::Vec1Types, double>;
+extern template class UniformMass<defaulttype::Vec6Types, double>;
+extern template class UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
+extern template class UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>;
 
 #endif
 

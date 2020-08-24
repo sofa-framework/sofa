@@ -302,7 +302,7 @@ using TriangleModel [[deprecated("The TriangleModel is now deprecated, please us
 using Triangle = TTriangle<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_CPP)
-extern template class SOFA_MESH_COLLISION_API TriangleCollisionModel<defaulttype::Vec3Types>;
+extern template class TriangleCollisionModel<defaulttype::Vec3Types>;
 #endif
 
 } // namespace collision

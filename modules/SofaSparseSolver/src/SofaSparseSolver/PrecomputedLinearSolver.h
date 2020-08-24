@@ -136,7 +136,7 @@ private :
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECOMPUTEDLINEARSOLVER_CPP)
-extern template class SOFA_SOFASPARSESOLVER_API PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> >;
+extern template class PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> >;
 #endif
 
 } // namespace linearsolver

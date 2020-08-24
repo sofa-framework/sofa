@@ -30,8 +30,8 @@ namespace sofa
 namespace helper
 {
 
-template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec2d>;
-template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec3d>;
+template class kdTree<sofa::defaulttype::Vec2d>;
+template class kdTree<sofa::defaulttype::Vec3d>;
 
 
 }

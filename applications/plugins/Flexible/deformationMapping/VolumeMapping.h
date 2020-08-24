@@ -263,7 +263,7 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_VolumeMapping_CPP)
-extern template class SOFA_Flexible_API VolumeMapping< Vec3Types, Vec1Types >;
+extern template class VolumeMapping< Vec3Types, Vec1Types >;
 
 #endif
 

@@ -179,7 +179,7 @@ public:
 };
 
 #if !defined(CGALPLUGIN_DECIMETEMESH_CPP)
-extern template class SOFA_CGALPLUGIN_API DecimateMesh<defaulttype::Vec3Types>;
+extern template class DecimateMesh<defaulttype::Vec3Types>;
 #endif
 
 } //cgal

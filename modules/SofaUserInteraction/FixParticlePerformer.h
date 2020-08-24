@@ -68,7 +68,7 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP)
-extern template class SOFA_USER_INTERACTION_API FixParticlePerformer<defaulttype::Vec3Types>;
+extern template class FixParticlePerformer<defaulttype::Vec3Types>;
 
 #endif
 

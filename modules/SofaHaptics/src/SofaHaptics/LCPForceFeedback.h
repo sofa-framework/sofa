@@ -143,8 +143,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
-extern template class SOFA_SOFAHAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
-extern template class SOFA_SOFAHAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
+extern template class LCPForceFeedback<defaulttype::Vec1Types>;
+extern template class LCPForceFeedback<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace controller

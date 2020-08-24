@@ -390,8 +390,8 @@ SOFA_HELPER_API inline double Decompose<double>::zeroTolerance()
 }
 
 #if  !defined(SOFA_BUILD_HELPER)
-extern template class SOFA_HELPER_API Decompose<double>;
-extern template class SOFA_HELPER_API Decompose<float>;
+extern template class Decompose<double>;
+extern template class Decompose<float>;
 #endif
 
 } // namespace helper

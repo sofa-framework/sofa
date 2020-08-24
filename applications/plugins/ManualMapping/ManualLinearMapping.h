@@ -119,7 +119,7 @@ public:
 
 #if  !defined(SOFA_COMPONENT_MAPPING_MANUALLINEARMAPPING_CPP)
 
-extern template class SOFA_ManualMapping_API ManualLinearMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class ManualLinearMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 
 
 

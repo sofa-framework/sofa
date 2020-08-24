@@ -243,7 +243,7 @@ public:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)
 
-extern template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<sofa::defaulttype::Vec3Types>;
+extern template class StandardTetrahedralFEMForceField<sofa::defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)

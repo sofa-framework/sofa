@@ -40,7 +40,7 @@ int RandomPointDistributionInSurfaceClass = core::RegisterObject("This class tru
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API RandomPointDistributionInSurface<Vec3Types>;
+template class RandomPointDistributionInSurface<Vec3Types>;
  
 
 

@@ -50,9 +50,9 @@ int ComponentBClass = sofa::core::RegisterObject("Component B")
 
 ;
 
-template class SOFA_TESTPLUGIN_API ComponentB<double>; 
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2Types>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3Types>;
+template class ComponentB<double>; 
+template class ComponentB<sofa::defaulttype::Vec2Types>;
+template class ComponentB<sofa::defaulttype::Rigid3Types>;
 
 
 

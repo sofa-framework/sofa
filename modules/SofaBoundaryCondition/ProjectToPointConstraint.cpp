@@ -46,10 +46,10 @@ int ProjectToPointConstraintClass = core::RegisterObject("Project particles to a
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec6Types>;
+template class ProjectToPointConstraint<Vec3Types>;
+template class ProjectToPointConstraint<Vec2Types>;
+template class ProjectToPointConstraint<Vec1Types>;
+template class ProjectToPointConstraint<Vec6Types>;
 
 
 

@@ -41,8 +41,8 @@ int ProximityROIClass = core::RegisterObject("Find the N closest primitives from
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API ProximityROI<Vec3Types>;
-//template class SOFA_GENERAL_ENGINE_API SphereROI<Rigid3Types>;
+template class ProximityROI<Vec3Types>;
+//template class SphereROI<Rigid3Types>;
  
 
 

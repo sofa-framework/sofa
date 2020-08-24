@@ -44,8 +44,8 @@ int ProjectDirectionConstraintClass = core::RegisterObject("Attach given particl
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec2Types>;
+template class ProjectDirectionConstraint<Vec3Types>;
+template class ProjectDirectionConstraint<Vec2Types>;
 
 
 

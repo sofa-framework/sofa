@@ -121,8 +121,8 @@ void TorsionForceField<Rigid3Types>::addDForce(const core::MechanicalParams *mpa
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TORSIONFORCEFIELD_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Rigid3Types>;
+extern template class TorsionForceField<Vec3Types>;
+extern template class TorsionForceField<Rigid3Types>;
 
 #endif
 

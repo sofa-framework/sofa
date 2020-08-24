@@ -182,10 +182,10 @@ private:
 
 
 #if  !defined(SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_CPP)
-extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec3Types >;
-extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec2Types >;
-extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec1Types >;
-extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Rigid3Types >;
+extern template class ConstraintCorrection< sofa::defaulttype::Vec3Types >;
+extern template class ConstraintCorrection< sofa::defaulttype::Vec2Types >;
+extern template class ConstraintCorrection< sofa::defaulttype::Vec1Types >;
+extern template class ConstraintCorrection< sofa::defaulttype::Rigid3Types >;
 
 #endif
 

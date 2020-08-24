@@ -130,11 +130,11 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)
-extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec1Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid2Types>;
+extern template class PointSetGeometryAlgorithms<defaulttype::Vec3Types>;
+extern template class PointSetGeometryAlgorithms<defaulttype::Vec2Types>;
+extern template class PointSetGeometryAlgorithms<defaulttype::Vec1Types>;
+extern template class PointSetGeometryAlgorithms<defaulttype::Rigid3Types>;
+extern template class PointSetGeometryAlgorithms<defaulttype::Rigid2Types>;
 
 
 #endif

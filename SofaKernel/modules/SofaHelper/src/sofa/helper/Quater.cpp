@@ -29,8 +29,8 @@ namespace helper
 {
 
 // instanciate the classes
-template class SOFA_HELPER_API Quater<double>;
-template class SOFA_HELPER_API Quater<float>;
+template class Quater<double>;
+template class Quater<float>;
 
 // instanciate the friend methods
 //template std::ostream& operator<<(std::ostream& out, Quater<float> Q);

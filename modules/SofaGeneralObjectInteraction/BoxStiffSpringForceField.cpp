@@ -44,10 +44,10 @@ int BoxStiffSpringForceFieldClass = core::RegisterObject("Set Spring between the
 
         ;
 
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec3Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec2Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec1Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec6Types>;
+template class BoxStiffSpringForceField<sofa::defaulttype::Vec3Types>;
+template class BoxStiffSpringForceField<sofa::defaulttype::Vec2Types>;
+template class BoxStiffSpringForceField<sofa::defaulttype::Vec1Types>;
+template class BoxStiffSpringForceField<sofa::defaulttype::Vec6Types>;
 
 
 } // namespace interactionforcefield

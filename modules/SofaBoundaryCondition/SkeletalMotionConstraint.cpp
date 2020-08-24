@@ -41,7 +41,7 @@ int SkeletalMotionConstraintClass = core::RegisterObject("animate a skeleton")
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3Types>;
+template class SkeletalMotionConstraint<defaulttype::Rigid3Types>;
 
 
 } // namespace projectiveconstraintset

@@ -237,17 +237,17 @@ inline std::istream & operator>>(std::istream & stream, Polynomial_LD<FReal,FN> 
 
 #if  !defined(SOFA_HELPER_POLYNOMIAL_LD_CPP)
 
-extern template class SOFA_HELPER_API Monomial_LD<double,1>;
-extern template class SOFA_HELPER_API Monomial_LD<double,2>;
-extern template class SOFA_HELPER_API Monomial_LD<double,3>;
-extern template class SOFA_HELPER_API Monomial_LD<double,4>;
-extern template class SOFA_HELPER_API Monomial_LD<double,5>;
+extern template class Monomial_LD<double,1>;
+extern template class Monomial_LD<double,2>;
+extern template class Monomial_LD<double,3>;
+extern template class Monomial_LD<double,4>;
+extern template class Monomial_LD<double,5>;
 
-extern template class SOFA_HELPER_API Polynomial_LD<double,1>;
-extern template class SOFA_HELPER_API Polynomial_LD<double,2>;
-extern template class SOFA_HELPER_API Polynomial_LD<double,3>;
-extern template class SOFA_HELPER_API Polynomial_LD<double,4>;
-extern template class SOFA_HELPER_API Polynomial_LD<double,5>;
+extern template class Polynomial_LD<double,1>;
+extern template class Polynomial_LD<double,2>;
+extern template class Polynomial_LD<double,3>;
+extern template class Polynomial_LD<double,4>;
+extern template class Polynomial_LD<double,5>;
 
 
 #endif

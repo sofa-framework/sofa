@@ -147,7 +147,7 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_CPP)
-extern template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<defaulttype::Vec3Types>;
+extern template class DistanceLMContactConstraint<defaulttype::Vec3Types>;
 
 #endif
 

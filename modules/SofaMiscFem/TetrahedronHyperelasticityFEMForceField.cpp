@@ -45,7 +45,7 @@ int TetrahedronHyperelasticityFEMForceFieldClass = core::RegisterObject("Generic
 
 ;
 
-template class SOFA_MISC_FEM_API TetrahedronHyperelasticityFEMForceField<Vec3Types>;
+template class TetrahedronHyperelasticityFEMForceField<Vec3Types>;
 
 
 } // namespace forcefield

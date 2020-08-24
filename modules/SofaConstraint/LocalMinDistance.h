@@ -117,7 +117,7 @@ namespace core
 namespace collision
 {
 #if  !defined(SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_CPP)
-extern template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
+extern template class IntersectorFactory<component::collision::LocalMinDistance>;
 #endif
 }
 }

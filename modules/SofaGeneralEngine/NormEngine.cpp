@@ -37,7 +37,7 @@ int NormEngineClass = core::RegisterObject("Convert Vec in Real")
 
         ;
 
-template class SOFA_GENERAL_ENGINE_API NormEngine<defaulttype::Vec3d>;
+template class NormEngine<defaulttype::Vec3d>;
 
 
 } // namespace engine

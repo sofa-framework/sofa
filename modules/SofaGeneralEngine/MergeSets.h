@@ -67,10 +67,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)
-extern template class SOFA_GENERAL_ENGINE_API MergeSets<int>;
-extern template class SOFA_GENERAL_ENGINE_API MergeSets<unsigned int>;
-//extern template class SOFA_GENERAL_ENGINE_API MergeSets<long long>;
-//extern template class SOFA_GENERAL_ENGINE_API MergeSets<unsigned long long>;
+extern template class MergeSets<int>;
+extern template class MergeSets<unsigned int>;
+//extern template class MergeSets<long long>;
+//extern template class MergeSets<unsigned long long>;
 #endif
 
 } // namespace engine

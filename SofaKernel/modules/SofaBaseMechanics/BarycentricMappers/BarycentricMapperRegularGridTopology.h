@@ -94,7 +94,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_CPP)
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperRegularGridTopology< Vec3dTypes, Vec3dTypes >;
+extern template class BarycentricMapperRegularGridTopology< Vec3dTypes, Vec3dTypes >;
 
 
 #endif

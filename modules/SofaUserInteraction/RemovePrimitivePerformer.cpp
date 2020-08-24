@@ -35,7 +35,7 @@ namespace component
 namespace collision
 {
 
-template class SOFA_USER_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
+template class RemovePrimitivePerformer<defaulttype::Vec3Types>;
 
 
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3dTypes> >  RemovePrimitivePerformerVec3dClass("RemovePrimitive",true);

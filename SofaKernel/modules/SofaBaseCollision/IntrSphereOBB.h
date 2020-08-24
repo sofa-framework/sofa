@@ -70,8 +70,8 @@ private:
 typedef TIntrSphereOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrSphereOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_CPP)
-extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Rigid3Types,defaulttype::Rigid3Types>;
+extern template class TIntrSphereOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+extern template class TIntrSphereOBB<defaulttype::Rigid3Types,defaulttype::Rigid3Types>;
 
 #endif
 

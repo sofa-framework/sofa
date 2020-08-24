@@ -134,7 +134,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
-extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3Types>;
+extern template class PenalityContactForceField<defaulttype::Vec3Types>;
 
 #endif
 

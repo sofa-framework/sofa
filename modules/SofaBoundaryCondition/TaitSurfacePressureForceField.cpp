@@ -47,7 +47,7 @@ This ForceField can be used to apply :\n\
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API TaitSurfacePressureForceField<Vec3Types>;
+template class TaitSurfacePressureForceField<Vec3Types>;
 
 
 

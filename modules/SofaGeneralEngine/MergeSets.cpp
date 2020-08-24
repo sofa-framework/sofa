@@ -39,10 +39,10 @@ int MergeSetsClass = core::RegisterObject("Merge two sets of indices using speci
 //.add< MergeSets<unsigned long long> >()
         ;
 
-template class SOFA_GENERAL_ENGINE_API MergeSets<int>;
-template class SOFA_GENERAL_ENGINE_API MergeSets<unsigned int>;
-//template class SOFA_GENERAL_ENGINE_API MergeSets<long long>;
-//template class SOFA_GENERAL_ENGINE_API MergeSets<unsigned long long>;
+template class MergeSets<int>;
+template class MergeSets<unsigned int>;
+//template class MergeSets<long long>;
+//template class MergeSets<unsigned long long>;
 
 } // namespace constraint
 

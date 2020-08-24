@@ -35,7 +35,7 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-template class SOFA_BASE_MECHANICS_API BarycentricMapperQuadSetTopology< Vec3dTypes, Vec3dTypes >;
+template class BarycentricMapperQuadSetTopology< Vec3dTypes, Vec3dTypes >;
 
 
 

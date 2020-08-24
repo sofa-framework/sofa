@@ -33,12 +33,12 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-template class SOFA_CORE_API MechanicalState<Vec3dTypes>;
-template class SOFA_CORE_API MechanicalState<Vec2Types>;
-template class SOFA_CORE_API MechanicalState<Vec1Types>;
-template class SOFA_CORE_API MechanicalState<Vec6Types>;
-template class SOFA_CORE_API MechanicalState<Rigid3Types>;
-template class SOFA_CORE_API MechanicalState<Rigid2Types>;
+template class MechanicalState<Vec3dTypes>;
+template class MechanicalState<Vec2Types>;
+template class MechanicalState<Vec1Types>;
+template class MechanicalState<Vec6Types>;
+template class MechanicalState<Rigid3Types>;
+template class MechanicalState<Rigid2Types>;
 
 
 } // namespace behavior

@@ -41,7 +41,7 @@ int RigidToQuatEngineClass = core::RegisterObject("Transform a couple of Vec3 an
         .addAlias("RigidEngine")
         ;
 
-template class SOFA_GENERAL_ENGINE_API RigidToQuatEngine<sofa::defaulttype::Vec3Types>;
+template class RigidToQuatEngine<sofa::defaulttype::Vec3Types>;
  
 
 

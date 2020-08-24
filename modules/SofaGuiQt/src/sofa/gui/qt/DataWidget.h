@@ -296,7 +296,7 @@ typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgume
 namespace helper
 {
 //delay load of the specialized Factory class. unique definition reside in the cpp file
-extern template class SOFA_SOFAGUIQT_API Factory<std::string, gui::qt::DataWidget, gui::qt::DataWidget::CreatorArgument>;
+extern template class Factory<std::string, gui::qt::DataWidget, gui::qt::DataWidget::CreatorArgument>;
 }
 #endif
 //MOC_SKIP_END

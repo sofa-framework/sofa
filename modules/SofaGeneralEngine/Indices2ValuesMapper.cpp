@@ -42,7 +42,7 @@ int Indices2ValuesMapperClass = core::RegisterObject("?")
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API Indices2ValuesMapper<Vec3Types>;
+template class Indices2ValuesMapper<Vec3Types>;
  
 
 

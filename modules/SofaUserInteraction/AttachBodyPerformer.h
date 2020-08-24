@@ -91,9 +91,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP)
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2Types>;
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3Types>;
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
+extern template class  AttachBodyPerformer<defaulttype::Vec2Types>;
+extern template class  AttachBodyPerformer<defaulttype::Vec3Types>;
+extern template class  AttachBodyPerformer<defaulttype::Rigid3Types>;
 #endif
 
 }

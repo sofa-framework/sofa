@@ -30,7 +30,7 @@ namespace sofa
 
 namespace helper
 {
-template class SOFA_SIMULATION_COMMON_API Factory< std::string, simulation::xml::BaseElement, std::pair<std::string, std::string> >;
+template class Factory< std::string, simulation::xml::BaseElement, std::pair<std::string, std::string> >;
 }
 
 namespace simulation

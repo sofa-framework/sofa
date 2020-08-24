@@ -163,7 +163,7 @@ public:
 };
 
 #if  !defined(SOFA_BUILD_SOFAGUI)
-extern template class SOFA_SOFAGUICOMMON_API Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >;
+extern template class Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >;
 #endif
 
 

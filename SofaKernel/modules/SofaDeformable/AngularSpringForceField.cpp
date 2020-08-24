@@ -43,8 +43,8 @@ int AngularSpringForceFieldClass = core::RegisterObject("Angular springs applied
 
         ;
 
-template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid3Types>;
-//template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2Types>;
+template class AngularSpringForceField<Rigid3Types>;
+//template class AngularSpringForceField<Rigid2Types>;
 
 
 } // namespace forcefield

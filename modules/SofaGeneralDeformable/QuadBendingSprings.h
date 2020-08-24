@@ -76,8 +76,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_QUADBENDINGSPRINGS_CPP)
-extern template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<defaulttype::Vec2Types>;
+extern template class QuadBendingSprings<defaulttype::Vec3Types>;
+extern template class QuadBendingSprings<defaulttype::Vec2Types>;
 
 #endif
 

@@ -44,7 +44,7 @@ int TriangleCollisionModelClass = core::RegisterObject("collision model using a 
         .addAlias("Triangle")
         ;
 
-template class SOFA_MESH_COLLISION_API TriangleCollisionModel<defaulttype::Vec3Types>;
+template class TriangleCollisionModel<defaulttype::Vec3Types>;
 
 
 } // namespace collision

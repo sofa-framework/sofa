@@ -275,8 +275,8 @@ using OBBModel [[deprecated("The OBBModel is now deprecated, please use OBBColli
 using OBB = TOBB<sofa::defaulttype::Rigid3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_OBBMODEL_CPP)
-extern template class SOFA_BASE_COLLISION_API TOBB<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_COLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
+extern template class TOBB<defaulttype::Rigid3Types>;
+extern template class OBBCollisionModel<defaulttype::Rigid3Types>;
 
 #endif
 

@@ -318,7 +318,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP)
-//extern template class SOFA_BASE_LINEAR_SOLVER_API FullVector<bool>;
+//extern template class FullVector<bool>;
 #endif
 
 template<> SOFA_BASE_LINEAR_SOLVER_API void FullVector<bool>::set(Index i, SReal v);

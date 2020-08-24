@@ -183,11 +183,11 @@ private:
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3Types>;
+extern template class LinearMovementConstraint<defaulttype::Vec3Types>;
+extern template class LinearMovementConstraint<defaulttype::Vec2Types>;
+extern template class LinearMovementConstraint<defaulttype::Vec1Types>;
+extern template class LinearMovementConstraint<defaulttype::Vec6Types>;
+extern template class LinearMovementConstraint<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace projectiveconstraintset

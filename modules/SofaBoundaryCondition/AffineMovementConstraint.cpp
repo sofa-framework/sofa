@@ -44,8 +44,8 @@ int AffineMovementConstraintRegister = core::RegisterObject("Constraint the move
  
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3Types>;
+template class AffineMovementConstraint<defaulttype::Vec3Types>;
+template class AffineMovementConstraint<defaulttype::Rigid3Types>;
  
 
 } // namespace projectiveconstraintset

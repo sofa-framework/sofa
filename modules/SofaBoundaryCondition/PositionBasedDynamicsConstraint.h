@@ -110,12 +110,12 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POSITIONBASEDDYNAMICSCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<defaulttype::Vec6Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<defaulttype::Rigid3Types>;
-//extern template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<defaulttype::Rigid2Types>;
+extern template class PositionBasedDynamicsConstraint<defaulttype::Vec3Types>;
+extern template class PositionBasedDynamicsConstraint<defaulttype::Vec2Types>;
+extern template class PositionBasedDynamicsConstraint<defaulttype::Vec1Types>;
+extern template class PositionBasedDynamicsConstraint<defaulttype::Vec6Types>;
+extern template class PositionBasedDynamicsConstraint<defaulttype::Rigid3Types>;
+//extern template class PositionBasedDynamicsConstraint<defaulttype::Rigid2Types>;
 
 #endif
 

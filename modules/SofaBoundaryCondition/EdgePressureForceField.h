@@ -130,7 +130,7 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<sofa::defaulttype::Vec3Types>;
+extern template class EdgePressureForceField<sofa::defaulttype::Vec3Types>;
 
 
 #endif // !defined(SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP)

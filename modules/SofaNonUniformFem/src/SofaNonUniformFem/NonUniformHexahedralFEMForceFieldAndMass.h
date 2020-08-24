@@ -202,7 +202,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
-extern template class SOFA_SOFANONUNIFORMFEM_API NonUniformHexahedralFEMForceFieldAndMass<defaulttype::Vec3Types>;
+extern template class NonUniformHexahedralFEMForceFieldAndMass<defaulttype::Vec3Types>;
 
 #endif
 

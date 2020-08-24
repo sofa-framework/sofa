@@ -32,12 +32,12 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-template class SOFA_CORE_API ForceField<Vec3Types>;
-template class SOFA_CORE_API ForceField<Vec2Types>;
-template class SOFA_CORE_API ForceField<Vec1Types>;
-template class SOFA_CORE_API ForceField<Vec6Types>;
-template class SOFA_CORE_API ForceField<Rigid3Types>;
-template class SOFA_CORE_API ForceField<Rigid2Types>;
+template class ForceField<Vec3Types>;
+template class ForceField<Vec2Types>;
+template class ForceField<Vec1Types>;
+template class ForceField<Vec6Types>;
+template class ForceField<Rigid3Types>;
+template class ForceField<Rigid2Types>;
 
 } // namespace behavior
 

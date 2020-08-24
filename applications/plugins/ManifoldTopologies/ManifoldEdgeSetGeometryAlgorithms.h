@@ -60,11 +60,11 @@ public:
 };
 
 #if !defined(SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Rigid3Types>;
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Rigid2Types>;
+extern template class ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>;
+extern template class ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec2Types>;
+extern template class ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec1Types>;
+extern template class ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Rigid3Types>;
+extern template class ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Rigid2Types>;
 #endif
 
 } // namespace topology

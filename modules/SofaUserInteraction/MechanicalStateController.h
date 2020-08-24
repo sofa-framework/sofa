@@ -157,8 +157,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP)
-extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec1Types>;
-extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Rigid3Types>;
+extern template class MechanicalStateController<defaulttype::Vec1Types>;
+extern template class MechanicalStateController<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace controller

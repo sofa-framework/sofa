@@ -93,7 +93,7 @@ public:
 };
 
 #if !defined(CGALPLUGIN_REFINE2DMESH_CPP)
-template class SOFA_CGALPLUGIN_API Refine2DMesh<sofa::defaulttype::Vec3Types>;
+template class Refine2DMesh<sofa::defaulttype::Vec3Types>;
 #endif
 
 } //cgal

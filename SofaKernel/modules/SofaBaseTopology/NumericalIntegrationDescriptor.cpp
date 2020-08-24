@@ -32,9 +32,9 @@ namespace topology
 using namespace sofa::defaulttype;
 
 
-template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,4>;
-template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,3>;
-template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,1>;
+template class NumericalIntegrationDescriptor<double,4>;
+template class NumericalIntegrationDescriptor<double,3>;
+template class NumericalIntegrationDescriptor<double,1>;
 
 
 

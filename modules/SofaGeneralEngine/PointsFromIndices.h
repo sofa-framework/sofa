@@ -73,7 +73,7 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP)
-extern template class SOFA_GENERAL_ENGINE_API PointsFromIndices<defaulttype::Vec3Types>;
+extern template class PointsFromIndices<defaulttype::Vec3Types>;
  
 #endif
 

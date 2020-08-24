@@ -79,10 +79,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_CPP)
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec1Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec6Types>;
+extern template class BoxStiffSpringForceField<defaulttype::Vec3Types>;
+extern template class BoxStiffSpringForceField<defaulttype::Vec2Types>;
+extern template class BoxStiffSpringForceField<defaulttype::Vec1Types>;
+extern template class BoxStiffSpringForceField<defaulttype::Vec6Types>;
 
 #endif
 

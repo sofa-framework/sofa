@@ -41,8 +41,8 @@ int PlaneROIClass = core::RegisterObject("Find the primitives inside a given pla
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API PlaneROI<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API PlaneROI<Rigid3Types>;
+template class PlaneROI<Vec3Types>;
+template class PlaneROI<Rigid3Types>;
  
 
 

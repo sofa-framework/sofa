@@ -84,7 +84,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)
-extern template class SOFA_GENERAL_ENGINE_API Vertex2Frame<defaulttype::Rigid3Types>;
+extern template class Vertex2Frame<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace engine

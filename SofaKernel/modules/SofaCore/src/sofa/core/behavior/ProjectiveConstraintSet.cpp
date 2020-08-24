@@ -34,12 +34,12 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-template class SOFA_CORE_API ProjectiveConstraintSet<Vec6Types>;
-template class SOFA_CORE_API ProjectiveConstraintSet<Vec3Types>;
-template class SOFA_CORE_API ProjectiveConstraintSet<Vec2Types>;
-template class SOFA_CORE_API ProjectiveConstraintSet<Vec1Types>;
-template class SOFA_CORE_API ProjectiveConstraintSet<Rigid3Types>;
-template class SOFA_CORE_API ProjectiveConstraintSet<Rigid2Types>;
+template class ProjectiveConstraintSet<Vec6Types>;
+template class ProjectiveConstraintSet<Vec3Types>;
+template class ProjectiveConstraintSet<Vec2Types>;
+template class ProjectiveConstraintSet<Vec1Types>;
+template class ProjectiveConstraintSet<Rigid3Types>;
+template class ProjectiveConstraintSet<Rigid2Types>;
 
 } // namespace behavior
 

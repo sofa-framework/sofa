@@ -87,7 +87,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MISC_EVALSURFACEDISTANCE_CPP)
-extern template class SOFA_SOFAVALIDATION_API EvalSurfaceDistance<defaulttype::Vec3Types>;
+extern template class EvalSurfaceDistance<defaulttype::Vec3Types>;
 
 #endif
 

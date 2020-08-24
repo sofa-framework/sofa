@@ -248,12 +248,12 @@ protected:
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_CPP)
-extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec6Types>;
-extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec3Types>;
-extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec2Types>;
-extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec1Types>;
-extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Rigid3Types>;
-extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Rigid2Types>;
+extern template class PairInteractionForceField<defaulttype::Vec6Types>;
+extern template class PairInteractionForceField<defaulttype::Vec3Types>;
+extern template class PairInteractionForceField<defaulttype::Vec2Types>;
+extern template class PairInteractionForceField<defaulttype::Vec1Types>;
+extern template class PairInteractionForceField<defaulttype::Rigid3Types>;
+extern template class PairInteractionForceField<defaulttype::Rigid2Types>;
 
 
 #endif

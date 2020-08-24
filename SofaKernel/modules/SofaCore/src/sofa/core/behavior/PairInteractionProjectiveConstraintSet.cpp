@@ -32,11 +32,11 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<Vec3Types>;
-template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<Vec2Types>;
-template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<Vec1Types>;
-template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<Rigid3Types>;
-template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<Rigid2Types>;
+template class PairInteractionProjectiveConstraintSet<Vec3Types>;
+template class PairInteractionProjectiveConstraintSet<Vec2Types>;
+template class PairInteractionProjectiveConstraintSet<Vec1Types>;
+template class PairInteractionProjectiveConstraintSet<Rigid3Types>;
+template class PairInteractionProjectiveConstraintSet<Rigid2Types>;
 
 
 } // namespace behavior

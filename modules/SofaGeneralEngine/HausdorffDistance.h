@@ -87,11 +87,11 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_CPP)
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec1Types>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Rigid2Types>;
-extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Rigid3Types>;
+extern template class HausdorffDistance<defaulttype::Vec1Types>;
+extern template class HausdorffDistance<defaulttype::Vec2Types>;
+extern template class HausdorffDistance<defaulttype::Vec3Types>;
+extern template class HausdorffDistance<defaulttype::Rigid2Types>;
+extern template class HausdorffDistance<defaulttype::Rigid3Types>;
  
 #endif
 

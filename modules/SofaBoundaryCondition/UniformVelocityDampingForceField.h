@@ -80,12 +80,12 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_UNIFORMVELOCITYDAMPINGFORCEFIELD_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec6Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid2Types>;
+extern template class UniformVelocityDampingForceField<defaulttype::Vec3Types>;
+extern template class UniformVelocityDampingForceField<defaulttype::Vec2Types>;
+extern template class UniformVelocityDampingForceField<defaulttype::Vec1Types>;
+extern template class UniformVelocityDampingForceField<defaulttype::Vec6Types>;
+extern template class UniformVelocityDampingForceField<defaulttype::Rigid3Types>;
+extern template class UniformVelocityDampingForceField<defaulttype::Rigid2Types>;
 
 #endif
 

@@ -30,6 +30,6 @@ namespace sofa
 namespace helper
 {
 //explicit instanciation of our factory class.
-template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
+template class Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
 } // namespace helper
 } // namespace sofa

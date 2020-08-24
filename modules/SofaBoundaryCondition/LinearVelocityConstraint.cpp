@@ -49,11 +49,11 @@ int LinearVelocityConstraintClass = core::RegisterObject("apply velocity to give
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Rigid3Types>;
+template class LinearVelocityConstraint<Vec3Types>;
+template class LinearVelocityConstraint<Vec2Types>;
+template class LinearVelocityConstraint<Vec1Types>;
+template class LinearVelocityConstraint<Vec6Types>;
+template class LinearVelocityConstraint<Rigid3Types>;
 
 
 } // namespace projectiveconstraintset

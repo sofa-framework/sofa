@@ -46,11 +46,11 @@ int PartialLinearMovementConstraintClass = core::RegisterObject("translate given
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3Types>;
+template class PartialLinearMovementConstraint<defaulttype::Vec3Types>;
+template class PartialLinearMovementConstraint<defaulttype::Vec2Types>;
+template class PartialLinearMovementConstraint<defaulttype::Vec1Types>;
+template class PartialLinearMovementConstraint<defaulttype::Vec6Types>;
+template class PartialLinearMovementConstraint<defaulttype::Rigid3Types>;
 
 
 } // namespace projectiveconstraintset

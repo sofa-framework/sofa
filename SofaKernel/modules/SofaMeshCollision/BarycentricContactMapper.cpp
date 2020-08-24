@@ -38,9 +38,9 @@ ContactMapperCreator< ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Ty
 ContactMapperCreator< ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleContactMapperClass("default",true);
 ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleContactMapperClass("default",true);
 
-template class SOFA_MESH_COLLISION_API ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-template class SOFA_MESH_COLLISION_API ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 
 } // namespace collision
 

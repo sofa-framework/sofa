@@ -39,7 +39,7 @@ int DilateEngineClass = core::RegisterObject("Dilates a given mesh by moving ver
         .add< DilateEngine<Vec3Types>>(true) // default template
                                       ;
 
-template class SOFA_GENERAL_ENGINE_API DilateEngine<Vec3Types>;
+template class DilateEngine<Vec3Types>;
 
 } // namespace engine
 

@@ -46,7 +46,7 @@ int FastTetrahedralCorotationalForceFieldClass = core::RegisterObject("Fast Coro
 
         ;
 
-template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<Vec3Types>;
+template class FastTetrahedralCorotationalForceField<Vec3Types>;
 
 
 } // namespace forcefield

@@ -365,7 +365,7 @@ protected:
 
 
 #if  !defined(FLEXIBLE_METACOROTATIONALMESHFEMFORCEFIELD_CPP)
-extern template class SOFA_Flexible_API FlexibleCorotationalMeshFEMForceField<defaulttype::Vec3Types>;
+extern template class FlexibleCorotationalMeshFEMForceField<defaulttype::Vec3Types>;
 #endif
 
 } // namespace forcefield

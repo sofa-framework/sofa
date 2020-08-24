@@ -173,11 +173,11 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec1Types>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Rigid2Types>;
+extern template class EdgeSetGeometryAlgorithms<defaulttype::Vec3Types>;
+extern template class EdgeSetGeometryAlgorithms<defaulttype::Vec2Types>;
+extern template class EdgeSetGeometryAlgorithms<defaulttype::Vec1Types>;
+extern template class EdgeSetGeometryAlgorithms<defaulttype::Rigid3Types>;
+extern template class EdgeSetGeometryAlgorithms<defaulttype::Rigid2Types>;
 
 
 #endif

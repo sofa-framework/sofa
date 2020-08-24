@@ -245,7 +245,7 @@ private:
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3Types>;
+extern template class SkeletalMotionConstraint<defaulttype::Rigid3Types>;
 
 #endif
 

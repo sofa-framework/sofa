@@ -34,7 +34,7 @@ namespace sofa
 {
     namespace helper
     {
-        template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+        template class Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
     }
 
 namespace component

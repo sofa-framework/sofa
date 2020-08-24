@@ -123,9 +123,9 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec1Types>;
+extern template class SphereForceField<defaulttype::Vec3Types>;
+extern template class SphereForceField<defaulttype::Vec2Types>;
+extern template class SphereForceField<defaulttype::Vec1Types>;
 
 #endif
 

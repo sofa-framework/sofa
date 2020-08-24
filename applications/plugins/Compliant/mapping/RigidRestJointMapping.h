@@ -178,7 +178,7 @@ protected:
 
 
 #if !defined(SOFA_COMPLIANT_RIGIDRESTJOINTMAPPING_CPP)
-extern template class SOFA_Compliant_API RigidRestJointMapping<  Rigid3Types, Vec6Types >;
+extern template class RigidRestJointMapping<  Rigid3Types, Vec6Types >;
 #endif
 }
 }

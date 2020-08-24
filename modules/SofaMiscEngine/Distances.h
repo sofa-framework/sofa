@@ -223,7 +223,7 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DISTANCES_CPP)
-extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3Types>; 
+extern template class Distances<defaulttype::Vec3Types>; 
 #endif
 
 } // namespace engine

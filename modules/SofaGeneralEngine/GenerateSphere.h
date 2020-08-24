@@ -101,7 +101,7 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_GENERATESPHERE_CPP)
-extern template class SOFA_GENERAL_ENGINE_API GenerateSphere<defaulttype::Vec3Types>;
+extern template class GenerateSphere<defaulttype::Vec3Types>;
 
 #endif
 

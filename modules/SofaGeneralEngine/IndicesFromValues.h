@@ -79,20 +79,20 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<std::string>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<int>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<unsigned int>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 2> >;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 3> >;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 4> >;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 8> >;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<double>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec2d>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec3d>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
+extern template class IndicesFromValues<std::string>;
+extern template class IndicesFromValues<int>;
+extern template class IndicesFromValues<unsigned int>;
+extern template class IndicesFromValues< helper::fixed_array<unsigned int, 2> >;
+extern template class IndicesFromValues< helper::fixed_array<unsigned int, 3> >;
+extern template class IndicesFromValues< helper::fixed_array<unsigned int, 4> >;
+extern template class IndicesFromValues< helper::fixed_array<unsigned int, 8> >;
+extern template class IndicesFromValues<double>;
+extern template class IndicesFromValues<defaulttype::Vec2d>;
+extern template class IndicesFromValues<defaulttype::Vec3d>;
+// extern template class IndicesFromValues<defaulttype::Rigid2Types::Coord>;
+// extern template class IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
+// extern template class IndicesFromValues<defaulttype::Rigid3Types::Coord>;
+// extern template class IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
  
 #endif
 

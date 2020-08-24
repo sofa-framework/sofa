@@ -178,7 +178,7 @@ public:
 
 using namespace sofa::defaulttype;
 
-extern template class SOFA_DEFORMABLE_API PolynomialRestShapeSpringsForceField<Vec3Types>;
+extern template class PolynomialRestShapeSpringsForceField<Vec3Types>;
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_POLYNOMIAL_RESTSHAPESPRINGFORCEFIELD_CPP)
 

@@ -64,7 +64,7 @@ protected:
 typedef TBulletSphereModel<defaulttype::Vec3Types> BulletSphereModel;
 
 #if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletSphereModel<defaulttype::Vec3Types>;
+extern template class TBulletSphereModel<defaulttype::Vec3Types>;
 
 #endif
 

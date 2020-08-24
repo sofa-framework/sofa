@@ -40,7 +40,7 @@ int QuatToRigidEngineClass = core::RegisterObject("Transform a vector of Rigids 
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API QuatToRigidEngine<sofa::defaulttype::Vec3Types>;
+template class QuatToRigidEngine<sofa::defaulttype::Vec3Types>;
  
 
 

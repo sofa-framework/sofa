@@ -40,8 +40,8 @@ int SumEngineClass = core::RegisterObject("Computing the Sum between two vector 
 
         ;
 
-template class SOFA_GENERAL_ENGINE_API SumEngine<Vec1d>;
-template class SOFA_GENERAL_ENGINE_API SumEngine<Vec3d>;
+template class SumEngine<Vec1d>;
+template class SumEngine<Vec3d>;
 
 
 } // namespace engine

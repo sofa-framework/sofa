@@ -201,8 +201,8 @@ using Capsule = TCapsule<sofa::defaulttype::Vec3Types>;
 
 
 #if  !defined(SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP)
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_COLLISION_API CapsuleCollisionModel<defaulttype::Vec3Types>;
+extern template class TCapsule<defaulttype::Vec3Types>;
+extern template class CapsuleCollisionModel<defaulttype::Vec3Types>;
 #endif
 
 } // namespace collision

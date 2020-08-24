@@ -143,7 +143,7 @@ protected :
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELDANDMASS_CPP)
-extern template class SOFA_GENERAL_SIMPLE_FEM_API HexahedronFEMForceFieldAndMass< defaulttype::Vec3Types >;
+extern template class HexahedronFEMForceFieldAndMass< defaulttype::Vec3Types >;
 
 #endif
 

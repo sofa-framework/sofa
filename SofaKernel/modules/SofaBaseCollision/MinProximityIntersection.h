@@ -70,7 +70,7 @@ namespace core
 namespace collision
 {
 #if  !defined(SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_CPP)
-extern template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+extern template class IntersectorFactory<component::collision::MinProximityIntersection>;
 #endif
 }
 }

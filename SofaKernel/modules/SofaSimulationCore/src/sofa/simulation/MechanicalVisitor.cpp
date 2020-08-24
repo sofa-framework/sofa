@@ -1617,16 +1617,16 @@ std::string MechanicalWriteLMConstraint::getInfos() const
 
 
 
-template class SOFA_SIMULATION_CORE_API MechanicalVAvailVisitor<V_COORD>;
-template class SOFA_SIMULATION_CORE_API MechanicalVAvailVisitor<V_DERIV>;
-template class SOFA_SIMULATION_CORE_API MechanicalVAllocVisitor<V_COORD>;
-template class SOFA_SIMULATION_CORE_API MechanicalVAllocVisitor<V_DERIV>;
-template class SOFA_SIMULATION_CORE_API MechanicalVReallocVisitor<V_COORD>;
-template class SOFA_SIMULATION_CORE_API MechanicalVReallocVisitor<V_DERIV>;
-template class SOFA_SIMULATION_CORE_API MechanicalVFreeVisitor<V_COORD>;
-template class SOFA_SIMULATION_CORE_API MechanicalVFreeVisitor<V_DERIV>;
-template class SOFA_SIMULATION_CORE_API MechanicalVInitVisitor<V_COORD>;
-template class SOFA_SIMULATION_CORE_API MechanicalVInitVisitor<V_DERIV>;
+template class MechanicalVAvailVisitor<V_COORD>;
+template class MechanicalVAvailVisitor<V_DERIV>;
+template class MechanicalVAllocVisitor<V_COORD>;
+template class MechanicalVAllocVisitor<V_DERIV>;
+template class MechanicalVReallocVisitor<V_COORD>;
+template class MechanicalVReallocVisitor<V_DERIV>;
+template class MechanicalVFreeVisitor<V_COORD>;
+template class MechanicalVFreeVisitor<V_DERIV>;
+template class MechanicalVInitVisitor<V_COORD>;
+template class MechanicalVInitVisitor<V_DERIV>;
 
 
 } // namespace simulation

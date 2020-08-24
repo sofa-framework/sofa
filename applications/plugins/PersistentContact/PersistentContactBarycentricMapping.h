@@ -252,7 +252,7 @@ using sofa::defaulttype::Vec3dTypes;
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_CPP)
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3Types, Vec3Types >;
+extern template class PersistentContactBarycentricMapping< Vec3Types, Vec3Types >;
 
 
 #endif

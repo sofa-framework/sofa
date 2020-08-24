@@ -117,7 +117,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDANDMASS_CPP)
 
-extern template class SOFA_SOFANONUNIFORMFEM_API NonUniformHexahedronFEMForceFieldAndMass<sofa::defaulttype::Vec3Types>;
+extern template class NonUniformHexahedronFEMForceFieldAndMass<sofa::defaulttype::Vec3Types>;
 
 
 #endif

@@ -83,18 +83,18 @@ public:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MERGEVECTORS_CPP)
 
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<int> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<bool> >;
-//extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<std::string> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2u> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<double> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2d> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec3d> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec4d> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
+extern template class MergeVectors< helper::vector<int> >;
+extern template class MergeVectors< helper::vector<bool> >;
+//extern template class MergeVectors< helper::vector<std::string> >;
+extern template class MergeVectors< helper::vector<defaulttype::Vec2u> >;
+extern template class MergeVectors< helper::vector<double> >;
+extern template class MergeVectors< helper::vector<defaulttype::Vec2d> >;
+extern template class MergeVectors< helper::vector<defaulttype::Vec3d> >;
+extern template class MergeVectors< helper::vector<defaulttype::Vec4d> >;
+extern template class MergeVectors< defaulttype::Rigid2Types::VecCoord >;
+extern template class MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
+extern template class MergeVectors< defaulttype::Rigid3Types::VecCoord >;
+extern template class MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
  
 #endif
 

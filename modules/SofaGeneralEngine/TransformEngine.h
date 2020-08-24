@@ -76,11 +76,11 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP)
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec1Types>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid2Types>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid3Types>;
+extern template class TransformEngine<defaulttype::Vec1Types>;
+extern template class TransformEngine<defaulttype::Vec2Types>;
+extern template class TransformEngine<defaulttype::Vec3Types>;
+extern template class TransformEngine<defaulttype::Rigid2Types>;
+extern template class TransformEngine<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace engine

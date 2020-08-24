@@ -158,15 +158,15 @@ protected:
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec3Types, defaulttype::Vec3Types>;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec2Types, defaulttype::Vec2Types>;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec1Types, defaulttype::Vec1Types>;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid3Types, defaulttype::Rigid3Types> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid2Types, defaulttype::Rigid2Types> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec3Types, defaulttype::Rigid3Types> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec2Types, defaulttype::Rigid2Types> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid3Types, defaulttype::Vec3Types> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid2Types, defaulttype::Vec2Types> ;
+extern template class MixedInteractionConstraint<defaulttype::Vec3Types, defaulttype::Vec3Types>;
+extern template class MixedInteractionConstraint<defaulttype::Vec2Types, defaulttype::Vec2Types>;
+extern template class MixedInteractionConstraint<defaulttype::Vec1Types, defaulttype::Vec1Types>;
+extern template class MixedInteractionConstraint<defaulttype::Rigid3Types, defaulttype::Rigid3Types> ;
+extern template class MixedInteractionConstraint<defaulttype::Rigid2Types, defaulttype::Rigid2Types> ;
+extern template class MixedInteractionConstraint<defaulttype::Vec3Types, defaulttype::Rigid3Types> ;
+extern template class MixedInteractionConstraint<defaulttype::Vec2Types, defaulttype::Rigid2Types> ;
+extern template class MixedInteractionConstraint<defaulttype::Rigid3Types, defaulttype::Vec3Types> ;
+extern template class MixedInteractionConstraint<defaulttype::Rigid2Types, defaulttype::Vec2Types> ;
 
 
 #endif

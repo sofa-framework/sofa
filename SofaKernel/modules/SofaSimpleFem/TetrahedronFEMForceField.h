@@ -325,7 +325,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP)
-extern template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<defaulttype::Vec3Types>;
+extern template class TetrahedronFEMForceField<defaulttype::Vec3Types>;
 #endif
 
 } // namespace forcefield

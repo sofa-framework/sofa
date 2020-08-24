@@ -79,8 +79,8 @@ protected :
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
-extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
-extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
+extern template class SparseLDLSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
+extern template class SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
 
 #endif
 

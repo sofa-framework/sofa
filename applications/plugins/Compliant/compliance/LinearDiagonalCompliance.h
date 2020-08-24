@@ -57,8 +57,8 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_CPP)
-extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec3Types>;
+extern template class LinearDiagonalCompliance<sofa::defaulttype::Vec1Types>;
+extern template class LinearDiagonalCompliance<sofa::defaulttype::Vec3Types>;
 #endif
 
 }

@@ -89,8 +89,8 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_GENERATEGRID_CPP)
-extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec2Types>;
+extern template class GenerateGrid<defaulttype::Vec3Types>;
+extern template class GenerateGrid<defaulttype::Vec2Types>;
 
 #endif
 

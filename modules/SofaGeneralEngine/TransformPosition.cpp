@@ -40,7 +40,7 @@ int TransformPositionClass = core::RegisterObject("Transform position of 3d poin
         .add< TransformPosition<Vec3Types> >(true)
         ;
 
-template class SOFA_GENERAL_ENGINE_API TransformPosition<Vec3Types>;
+template class TransformPosition<Vec3Types>;
  
 
 

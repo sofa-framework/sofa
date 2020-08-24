@@ -167,9 +167,9 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_ContactMapping_CPP)
-extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
-extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3Types, defaulttype::Vec2Types >;
-extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class ContactMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class ContactMapping< defaulttype::Vec3Types, defaulttype::Vec2Types >;
+extern template class ContactMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 
 #endif
 

@@ -42,7 +42,7 @@ int CenterOfMassMulti2MappingClass = core::RegisterObject("Set the point to the 
 
         ;
 
-template class SOFA_MISC_MAPPING_API CenterOfMassMulti2Mapping< Vec3Types, Rigid3Types, Vec3Types >;
+template class CenterOfMassMulti2Mapping< Vec3Types, Rigid3Types, Vec3Types >;
 
 
 } // namespace mapping

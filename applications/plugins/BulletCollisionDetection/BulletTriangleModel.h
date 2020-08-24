@@ -99,7 +99,7 @@ typedef TBulletTriangleModel<defaulttype::Vec3Types> BulletTriangleModel;
 
 
 #if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletTriangleModel<defaulttype::Vec3Types>;
+extern template class TBulletTriangleModel<defaulttype::Vec3Types>;
 
 #endif
 

@@ -85,7 +85,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_CPP)
-extern template class SOFA_GENERAL_ENGINE_API ExtrudeQuadsAndGenerateHexas<defaulttype::Vec3Types>;
+extern template class ExtrudeQuadsAndGenerateHexas<defaulttype::Vec3Types>;
  
 #endif
 

@@ -427,9 +427,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
-extern template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<defaulttype::Vec3Types,defaulttype::Vec3Types::Real>;
-extern template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<defaulttype::Vec2Types,defaulttype::Vec2Types::Real>;
-extern template class SOFA_MISC_FORCE_FIELD_API MeshMatrixMass<defaulttype::Vec1Types,defaulttype::Vec1Types::Real>;
+extern template class MeshMatrixMass<defaulttype::Vec3Types,defaulttype::Vec3Types::Real>;
+extern template class MeshMatrixMass<defaulttype::Vec2Types,defaulttype::Vec2Types::Real>;
+extern template class MeshMatrixMass<defaulttype::Vec1Types,defaulttype::Vec1Types::Real>;
 
 #endif
 

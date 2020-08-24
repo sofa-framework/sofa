@@ -156,9 +156,9 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP)
-extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec3Types>;
-extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec2Types>;
-extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec1Types>;
+extern template class MeshSpringForceField<defaulttype::Vec3Types>;
+extern template class MeshSpringForceField<defaulttype::Vec2Types>;
+extern template class MeshSpringForceField<defaulttype::Vec1Types>;
 
 #endif
 

@@ -194,8 +194,8 @@ using RigidCapsuleCollisionModel  [[deprecated("The RigidCapsuleCollisionModel i
 using RigidCapsule = TCapsule<sofa::defaulttype::Rigid3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_CPP)
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_COLLISION_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
+extern template class TCapsule<defaulttype::Rigid3Types>;
+extern template class CapsuleCollisionModel<defaulttype::Rigid3Types>;
 
 #endif
 

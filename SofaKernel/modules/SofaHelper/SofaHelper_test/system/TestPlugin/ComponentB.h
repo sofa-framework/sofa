@@ -46,9 +46,9 @@ protected:
 };
 
 #if  !defined(TESTPLUGIN_COMPONENT_B_CPP)
-extern template class SOFA_TESTPLUGIN_API ComponentB<double>;
-extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Vec2Types>;
-extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Rigid3Types>;
+extern template class ComponentB<double>;
+extern template class ComponentB<defaulttype::Vec2Types>;
+extern template class ComponentB<defaulttype::Rigid3Types>;
 
 #endif //  !defined(TESTPLUGIN_COMPONENT_B_CPP)
 

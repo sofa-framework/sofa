@@ -76,8 +76,8 @@ int lCPForceFeedbackClass = sofa::core::RegisterObject("LCP force feedback for t
         .add< LCPForceFeedback<defaulttype::Vec1Types> >()
         .add< LCPForceFeedback<defaulttype::Rigid3Types> >();
 
-template class SOFA_SOFAHAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
-template class SOFA_SOFAHAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
+template class LCPForceFeedback<defaulttype::Vec1Types>;
+template class LCPForceFeedback<defaulttype::Rigid3Types>;
 
 
 } // namespace controller

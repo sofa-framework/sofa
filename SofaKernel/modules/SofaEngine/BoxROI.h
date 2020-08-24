@@ -214,9 +214,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3Types>;
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3Types>;
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6Types>;
+extern template class BoxROI<defaulttype::Vec3Types>;
+extern template class BoxROI<defaulttype::Rigid3Types>;
+extern template class BoxROI<defaulttype::Vec6Types>;
  
 #endif
 

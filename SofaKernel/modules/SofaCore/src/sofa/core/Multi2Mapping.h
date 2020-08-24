@@ -307,13 +307,13 @@ protected:
 
 #if  !defined(SOFA_CORE_MULTI2MAPPING_CPP)
 
-extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec1Types, defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec3Types, defaulttype::Rigid3Types, defaulttype::Vec3Types >;
-extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec3Types, defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec3Types, defaulttype::Vec3Types, defaulttype::Vec3Types >;
-extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec1Types, defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec1Types, defaulttype::Rigid3Types, defaulttype::Vec3Types >;
-extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec1Types, defaulttype::Vec1Types, defaulttype::Rigid3Types >;
+extern template class Multi2Mapping< defaulttype::Vec1Types, defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
+extern template class Multi2Mapping< defaulttype::Vec3Types, defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+extern template class Multi2Mapping< defaulttype::Vec3Types, defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
+extern template class Multi2Mapping< defaulttype::Vec3Types, defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class Multi2Mapping< defaulttype::Vec1Types, defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+extern template class Multi2Mapping< defaulttype::Vec1Types, defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+extern template class Multi2Mapping< defaulttype::Vec1Types, defaulttype::Vec1Types, defaulttype::Rigid3Types >;
 
 
 

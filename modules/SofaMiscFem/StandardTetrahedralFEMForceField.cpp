@@ -43,7 +43,7 @@ int StandardTetrahedralFEMForceFieldClass = core::RegisterObject("Generic Tetrah
 
 ;
 
-template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<Vec3Types>;
+template class StandardTetrahedralFEMForceField<Vec3Types>;
 
 
 } // namespace forcefield

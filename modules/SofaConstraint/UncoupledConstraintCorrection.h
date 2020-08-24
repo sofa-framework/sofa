@@ -154,10 +154,10 @@ void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplia
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec3Types>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec2Types>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec1Types>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid3Types>;
+extern template class UncoupledConstraintCorrection<defaulttype::Vec3Types>;
+extern template class UncoupledConstraintCorrection<defaulttype::Vec2Types>;
+extern template class UncoupledConstraintCorrection<defaulttype::Vec1Types>;
+extern template class UncoupledConstraintCorrection<defaulttype::Rigid3Types>;
 
 #endif
 

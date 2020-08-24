@@ -31,8 +31,8 @@ namespace collision{
 //----------------------------------------------------------------------------
 // Explicit instantiation.
 //----------------------------------------------------------------------------
-template class SOFA_BASE_COLLISION_API TIntrSphereOBB<Vec3Types,Rigid3Types>;
-template class SOFA_BASE_COLLISION_API TIntrSphereOBB<Rigid3Types,Rigid3Types>;
+template class TIntrSphereOBB<Vec3Types,Rigid3Types>;
+template class TIntrSphereOBB<Rigid3Types,Rigid3Types>;
 
 //----------------------------------------------------------------------------
 

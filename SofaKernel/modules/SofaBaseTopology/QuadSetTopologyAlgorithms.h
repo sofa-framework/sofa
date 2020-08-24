@@ -64,11 +64,11 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_CPP)
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec1Types>;
-//extern template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Rigid3Types>;
-//extern template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Rigid2Types>;
+extern template class QuadSetTopologyAlgorithms<defaulttype::Vec3Types>;
+extern template class QuadSetTopologyAlgorithms<defaulttype::Vec2Types>;
+extern template class QuadSetTopologyAlgorithms<defaulttype::Vec1Types>;
+//extern template class QuadSetTopologyAlgorithms<defaulttype::Rigid3Types>;
+//extern template class QuadSetTopologyAlgorithms<defaulttype::Rigid2Types>;
 
 
 #endif

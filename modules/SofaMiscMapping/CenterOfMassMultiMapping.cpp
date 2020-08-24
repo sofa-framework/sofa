@@ -46,9 +46,9 @@ int CenterOfMassMultiMappingClass = core::RegisterObject("Set the point to the c
 
         ;
 
-template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Vec3Types, Vec3Types >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Rigid3Types, Rigid3Types >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Rigid3Types, Vec3Types >;
+template class CenterOfMassMultiMapping< Vec3Types, Vec3Types >;
+template class CenterOfMassMultiMapping< Rigid3Types, Rigid3Types >;
+template class CenterOfMassMultiMapping< Rigid3Types, Vec3Types >;
 
 
 } // namespace mapping

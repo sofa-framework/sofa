@@ -504,10 +504,10 @@ public:
 };
 
 #if  !defined(SOFA_HELPER_ADVANCEDTIMER_CPP)
-extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Timer>;
-extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
-extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
-extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
+extern template class AdvancedTimer::Id<AdvancedTimer::Timer>;
+extern template class AdvancedTimer::Id<AdvancedTimer::Step>;
+extern template class AdvancedTimer::Id<AdvancedTimer::Obj>;
+extern template class AdvancedTimer::Id<AdvancedTimer::Val>;
 #endif
 
 

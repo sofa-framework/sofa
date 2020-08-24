@@ -36,7 +36,7 @@ namespace engine
         .add< ProjectiveTransformEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
+template class ProjectiveTransformEngine<defaulttype::Vec3Types>;
 
 
 } // namespace constraint

@@ -194,7 +194,7 @@ protected :
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
 
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangularTensorMassForceField<sofa::defaulttype::Vec3Types>;
+extern template class TriangularTensorMassForceField<sofa::defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)

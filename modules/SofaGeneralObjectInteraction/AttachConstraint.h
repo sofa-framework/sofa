@@ -121,11 +121,11 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_CPP)
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Rigid3Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Rigid2Types>;
+extern template class AttachConstraint<defaulttype::Vec3Types>;
+extern template class AttachConstraint<defaulttype::Vec2Types>;
+extern template class AttachConstraint<defaulttype::Vec1Types>;
+extern template class AttachConstraint<defaulttype::Rigid3Types>;
+extern template class AttachConstraint<defaulttype::Rigid2Types>;
 #endif
 
 } // namespace projectiveconstraintset

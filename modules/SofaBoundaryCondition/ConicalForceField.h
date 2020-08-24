@@ -126,7 +126,7 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API ConicalForceField<defaulttype::Vec3Types>;
+extern template class ConicalForceField<defaulttype::Vec3Types>;
 
 #endif
 

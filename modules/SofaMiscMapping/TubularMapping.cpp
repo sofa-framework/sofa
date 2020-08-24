@@ -45,7 +45,7 @@ int TubularMappingClass = core::RegisterObject("Create a Tube around rigid point
 
         ;
 
-template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3Types, Vec3dTypes >;
+template class TubularMapping< Rigid3Types, Vec3dTypes >;
 
 
 

@@ -49,9 +49,9 @@ int TetrahedronDiffusionFEMForceFieldClass = core::RegisterObject("Isotropic or 
 
 ;
 
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1Types>;
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2Types>;
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3Types>;
+  template class TetrahedronDiffusionFEMForceField<Vec1Types>;
+  template class TetrahedronDiffusionFEMForceField<Vec2Types>;
+  template class TetrahedronDiffusionFEMForceField<Vec3Types>;
 
 
 

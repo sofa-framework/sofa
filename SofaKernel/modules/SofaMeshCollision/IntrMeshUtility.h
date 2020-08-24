@@ -102,8 +102,8 @@ public:
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRMESHUTILITY_CPP)
 extern template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3Types> >;
-extern template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
-extern template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+extern template class FindContactSet<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+extern template class IntrAxis<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
 extern template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3Types> >;
 
 #endif

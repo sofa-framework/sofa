@@ -104,7 +104,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP)
-extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
+extern template class ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 #endif
 
 }

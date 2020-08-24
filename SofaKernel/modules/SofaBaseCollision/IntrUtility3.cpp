@@ -36,15 +36,15 @@ namespace collision{
 template struct SOFA_BASE_COLLISION_API IntrUtil<double>;
 
 template struct SOFA_BASE_COLLISION_API IntrUtil<TOBB<RigidTypes> >;
-template class SOFA_BASE_COLLISION_API IntrConfiguration<double>;
+template class IntrConfiguration<double>;
 template struct SOFA_BASE_COLLISION_API IntrConfigManager<double>;
 template struct SOFA_BASE_COLLISION_API IntrConfigManager<TOBB<Rigid3Types> >;
-template class SOFA_BASE_COLLISION_API IntrAxis<TOBB<Rigid3Types> >;
-template class SOFA_BASE_COLLISION_API FindContactSet<TOBB<Rigid3Types> >;
+template class IntrAxis<TOBB<Rigid3Types> >;
+template class FindContactSet<TOBB<Rigid3Types> >;
 template SOFA_BASE_COLLISION_API void ClipConvexPolygonAgainstPlane<double> (const Vec<3,double>&, double,int&, Vec<3,double>*);
 template SOFA_BASE_COLLISION_API Vec<3,double> GetPointFromIndex<double> (int, const MyBox<double>&);
 template SOFA_BASE_COLLISION_API Vec<3,Rigid3Types::Real> getPointFromIndex<Rigid3Types> (int index, const TOBB<Rigid3Types>& box);
-template class SOFA_BASE_COLLISION_API CapIntrConfiguration<double>;
+template class CapIntrConfiguration<double>;
 
 //----------------------------------------------------------------------------
 

@@ -41,7 +41,7 @@ int SpiralClass = core::RegisterObject("This class truns on spiral any topologic
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API Spiral<Vec3Types>;
+template class Spiral<Vec3Types>;
  
 
 

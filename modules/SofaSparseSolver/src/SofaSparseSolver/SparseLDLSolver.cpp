@@ -38,8 +38,8 @@ int SparseLDLSolverClass = core::RegisterObject("Direct Linear Solver using a Sp
 
 ;
 
-template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
-template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
+template class SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
+template class SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
 
 
 } // namespace linearsolver

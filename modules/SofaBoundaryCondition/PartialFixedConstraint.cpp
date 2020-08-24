@@ -49,12 +49,12 @@ int PartialFixedConstraintClass = core::RegisterObject("Attach given particles t
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Rigid3Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Rigid2Types>;
+template class PartialFixedConstraint<Vec3Types>;
+template class PartialFixedConstraint<Vec2Types>;
+template class PartialFixedConstraint<Vec1Types>;
+template class PartialFixedConstraint<Vec6Types>;
+template class PartialFixedConstraint<Rigid3Types>;
+template class PartialFixedConstraint<Rigid2Types>;
 
 
 

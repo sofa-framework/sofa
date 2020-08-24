@@ -33,12 +33,12 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-template class SOFA_CORE_API Mass<Vec3Types>;
-template class SOFA_CORE_API Mass<Vec2Types>;
-template class SOFA_CORE_API Mass<Vec1Types>;
-template class SOFA_CORE_API Mass<Vec6Types>;
-template class SOFA_CORE_API Mass<Rigid3Types>;
-template class SOFA_CORE_API Mass<Rigid2Types>;
+template class Mass<Vec3Types>;
+template class Mass<Vec2Types>;
+template class Mass<Vec1Types>;
+template class Mass<Vec6Types>;
+template class Mass<Rigid3Types>;
+template class Mass<Rigid2Types>;
 
 
 } // namespace behavior

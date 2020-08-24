@@ -43,7 +43,7 @@ int DistanceLMContactConstraintClass = core::RegisterObject("Maintain a minimum 
 
         ;
 
-template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<Vec3Types>;
+template class DistanceLMContactConstraint<Vec3Types>;
 
 
 

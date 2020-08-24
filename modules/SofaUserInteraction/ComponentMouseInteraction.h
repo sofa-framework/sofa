@@ -97,9 +97,9 @@ protected :
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec2Types>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3Types>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3Types>;
+extern template class TComponentMouseInteraction<defaulttype::Vec2Types>;
+extern template class TComponentMouseInteraction<defaulttype::Vec3Types>;
+extern template class TComponentMouseInteraction<defaulttype::Rigid3Types>;
 
 #endif
 }
@@ -108,7 +108,7 @@ extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defau
 #if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
 namespace helper
 {
-extern template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+extern template class Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 }
 #endif
 

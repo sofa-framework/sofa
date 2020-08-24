@@ -174,9 +174,9 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
-extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec1Types>;
+extern template class TetrahedronSetGeometryAlgorithms<defaulttype::Vec3Types>;
+extern template class TetrahedronSetGeometryAlgorithms<defaulttype::Vec2Types>;
+extern template class TetrahedronSetGeometryAlgorithms<defaulttype::Vec1Types>;
 #endif
 
 } // namespace topology

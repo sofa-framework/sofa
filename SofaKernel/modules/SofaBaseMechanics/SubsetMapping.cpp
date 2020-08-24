@@ -48,9 +48,9 @@ int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
         .addAlias("SurfaceIdentityMapping")
         ;
 
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1Types, Vec1Types >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3Types, Rigid3Types >;
+template class SubsetMapping< Vec3dTypes, Vec3dTypes >;
+template class SubsetMapping< Vec1Types, Vec1Types >;
+template class SubsetMapping< Rigid3Types, Rigid3Types >;
 
 
 

@@ -47,7 +47,7 @@ int FastTriangularBendingSpringsClass = core::RegisterObject("Springs added to a
 
         ;
 
-template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<Vec3Types>;
+template class FastTriangularBendingSprings<Vec3Types>;
 
 
 

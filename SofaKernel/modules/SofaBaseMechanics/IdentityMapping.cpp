@@ -58,15 +58,15 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
         ;
 
 
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2Types, Vec2Types >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1Types, Vec1Types >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6Types, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6Types, Vec6Types >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3Types, Rigid3Types >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2Types, Rigid2Types >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3Types, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2Types, Vec2Types >;
+template class IdentityMapping< Vec3dTypes, Vec3dTypes >;
+template class IdentityMapping< Vec2Types, Vec2Types >;
+template class IdentityMapping< Vec1Types, Vec1Types >;
+template class IdentityMapping< Vec6Types, Vec3dTypes >;
+template class IdentityMapping< Vec6Types, Vec6Types >;
+template class IdentityMapping< Rigid3Types, Rigid3Types >;
+template class IdentityMapping< Rigid2Types, Rigid2Types >;
+template class IdentityMapping< Rigid3Types, Vec3dTypes >;
+template class IdentityMapping< Rigid2Types, Vec2Types >;
 
 
 

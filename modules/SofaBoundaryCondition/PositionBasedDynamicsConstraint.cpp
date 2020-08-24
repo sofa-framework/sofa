@@ -51,12 +51,12 @@ int PositionBasedDynamicsConstraintClass = core::RegisterObject("Position-based 
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid3Types>;
-//template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid2Types>;
+template class PositionBasedDynamicsConstraint<Vec3Types>;
+template class PositionBasedDynamicsConstraint<Vec2Types>;
+template class PositionBasedDynamicsConstraint<Vec1Types>;
+template class PositionBasedDynamicsConstraint<Vec6Types>;
+template class PositionBasedDynamicsConstraint<Rigid3Types>;
+//template class PositionBasedDynamicsConstraint<Rigid2Types>;
 
 
 

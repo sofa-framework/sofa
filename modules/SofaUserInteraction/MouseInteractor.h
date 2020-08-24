@@ -127,9 +127,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP)
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2Types>;
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3Types>;
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3Types>;
+extern template class MouseInteractor<defaulttype::Vec2Types>;
+extern template class MouseInteractor<defaulttype::Vec3Types>;
+extern template class MouseInteractor<defaulttype::Rigid3Types>;
 
 #endif
 

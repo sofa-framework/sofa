@@ -57,12 +57,12 @@ void FixedConstraint<defaulttype::Rigid2Types >::draw(const core::visual::Visual
 
 
 
-template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Rigid3Types>;
-template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Rigid2Types>;
+template class FixedConstraint<Vec3Types>;
+template class FixedConstraint<Vec2Types>;
+template class FixedConstraint<Vec1Types>;
+template class FixedConstraint<Vec6Types>;
+template class FixedConstraint<Rigid3Types>;
+template class FixedConstraint<Rigid2Types>;
 
 
 

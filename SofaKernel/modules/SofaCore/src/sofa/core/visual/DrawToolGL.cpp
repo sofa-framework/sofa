@@ -41,8 +41,8 @@ namespace helper
 namespace gl
 {
 
-template class SOFA_CORE_API BasicShapesGL_Sphere< sofa::defaulttype::Vector3 >;
-template class SOFA_CORE_API BasicShapesGL_FakeSphere< sofa::defaulttype::Vector3 >;
+template class BasicShapesGL_Sphere< sofa::defaulttype::Vector3 >;
+template class BasicShapesGL_FakeSphere< sofa::defaulttype::Vector3 >;
 
 } // namespace gl
 

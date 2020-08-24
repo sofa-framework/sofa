@@ -80,7 +80,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)
-extern template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<defaulttype::Vec3Types>;
+extern template class SmoothMeshEngine<defaulttype::Vec3Types>;
 #endif
 
 } // namespace engine

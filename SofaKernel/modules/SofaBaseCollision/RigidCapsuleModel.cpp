@@ -43,8 +43,8 @@ int RigidCapsuleCollisionModelClass = core::RegisterObject("Collision model whic
         .addAlias("RigidCapsuleCollisionModel")
         ;
 
-template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3Types>;
-template class SOFA_BASE_COLLISION_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
+template class TCapsule<defaulttype::Rigid3Types>;
+template class CapsuleCollisionModel<defaulttype::Rigid3Types>;
 
 
 

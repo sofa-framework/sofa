@@ -40,7 +40,7 @@ int NormalsFromPointsClass = core::RegisterObject("Compute vertex normals by ave
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API NormalsFromPoints<Vec3Types>;
+template class NormalsFromPoints<Vec3Types>;
  
 
 

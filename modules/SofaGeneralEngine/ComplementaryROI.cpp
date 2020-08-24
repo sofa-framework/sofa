@@ -41,7 +41,7 @@ int ComplementaryROIClass = core::RegisterObject("Find the points that are NOT i
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API ComplementaryROI<Vec3Types>;
+template class ComplementaryROI<Vec3Types>;
  
 
 } // namespace engine

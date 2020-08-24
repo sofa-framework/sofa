@@ -74,9 +74,9 @@ protected:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_FULLCOMPLIANCE_CPP)
-extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec6Types>;
+extern template class FullCompliance<sofa::defaulttype::Vec1Types>;
+extern template class FullCompliance<sofa::defaulttype::Vec3Types>;
+extern template class FullCompliance<sofa::defaulttype::Vec6Types>;
 
 #endif
 

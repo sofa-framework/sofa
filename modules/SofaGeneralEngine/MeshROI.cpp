@@ -42,9 +42,9 @@ int MeshROIClass = core::RegisterObject("Find the primitives (vertex/edge/triang
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API MeshROI<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API MeshROI<Rigid3Types>;
-template class SOFA_GENERAL_ENGINE_API MeshROI<Vec6Types>;
+template class MeshROI<Vec3Types>;
+template class MeshROI<Rigid3Types>;
+template class MeshROI<Vec6Types>;
  
 
 

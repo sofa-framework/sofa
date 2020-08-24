@@ -37,7 +37,7 @@ int NonUniformHexahedralFEMForceFieldAndMassClass = RegisterObject("Non uniform 
 
         ;
 
-template class SOFA_SOFANONUNIFORMFEM_API NonUniformHexahedralFEMForceFieldAndMass<Vec3Types>;
+template class NonUniformHexahedralFEMForceFieldAndMass<Vec3Types>;
 
 
 } // namespace sofa::component::forcefield

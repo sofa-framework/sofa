@@ -39,10 +39,10 @@ int LinearSolverContactCorrectionClass = core::RegisterObject("")
         .add< LinearSolverConstraintCorrection<Rigid3Types> >()
 
         ;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3Types>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec2Types>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1Types>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Rigid3Types>;
+template class LinearSolverConstraintCorrection<Vec3Types>;
+template class LinearSolverConstraintCorrection<Vec2Types>;
+template class LinearSolverConstraintCorrection<Vec1Types>;
+template class LinearSolverConstraintCorrection<Rigid3Types>;
 
 
 

@@ -256,7 +256,7 @@ using  LineModel [[deprecated("The LineModel is now deprecated, please use LineC
 using Line = TLine<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP)
-extern template class SOFA_MESH_COLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
+extern template class LineCollisionModel<defaulttype::Vec3Types>;
 
 #endif
 

@@ -196,8 +196,8 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MISC_PARTICLESOURCE_CPP)
-extern template class SOFA_SPH_FLUID_API ParticleSource<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_SPH_FLUID_API ParticleSource<sofa::defaulttype::Vec2Types>;
+extern template class ParticleSource<sofa::defaulttype::Vec3Types>;
+extern template class ParticleSource<sofa::defaulttype::Vec2Types>;
 #endif
 
 } // namespace misc

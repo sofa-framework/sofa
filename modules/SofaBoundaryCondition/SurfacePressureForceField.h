@@ -173,8 +173,8 @@ void SurfacePressureForceField<defaulttype::Rigid3Types>::verifyDerivative(VecDe
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
 
-extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defaulttype::Rigid3Types>;
+extern template class SurfacePressureForceField<defaulttype::Vec3Types>;
+extern template class SurfacePressureForceField<defaulttype::Rigid3Types>;
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
 

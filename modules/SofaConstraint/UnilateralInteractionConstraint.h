@@ -219,7 +219,7 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
-extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3Types>;
+extern template class UnilateralInteractionConstraint<defaulttype::Vec3Types>;
 
 #endif
 

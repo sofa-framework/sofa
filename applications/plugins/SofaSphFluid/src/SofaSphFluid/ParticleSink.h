@@ -105,8 +105,8 @@ public:
 };
 
 #if !defined(SOFA_COMPONENT_MISC_PARTICLESINK_CPP)
-extern template class SOFA_SPH_FLUID_API ParticleSink<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_SPH_FLUID_API ParticleSink<sofa::defaulttype::Vec2Types>;
+extern template class ParticleSink<sofa::defaulttype::Vec3Types>;
+extern template class ParticleSink<sofa::defaulttype::Vec2Types>;
 #endif
 
 } // namespace misc

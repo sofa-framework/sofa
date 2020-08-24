@@ -27,8 +27,8 @@ namespace component{
 namespace collision{
 
 template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3Types> >;
-template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
-template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+template class FindContactSet<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+template class IntrAxis<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
 template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3Types> >;
 
 

@@ -160,7 +160,7 @@ protected :
 
 
 #if  !defined(CLOSESTPOINTREGISTRATIONFORCEFIELD_CPP)
-extern template class SOFA_REGISTRATION_API ClosestPointRegistrationForceField<defaulttype::Vec3Types>;
+extern template class ClosestPointRegistrationForceField<defaulttype::Vec3Types>;
 
 #endif
 

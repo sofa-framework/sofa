@@ -171,10 +171,10 @@ int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computi
         .add< UncoupledConstraintCorrection< Rigid3Types > >()
     ;
 
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1Types >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec2Types >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec3Types >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3Types >;
+template class UncoupledConstraintCorrection< Vec1Types >;
+template class UncoupledConstraintCorrection< Vec2Types >;
+template class UncoupledConstraintCorrection< Vec3Types >;
+template class UncoupledConstraintCorrection< Rigid3Types >;
 
 
 } // namespace constraintset

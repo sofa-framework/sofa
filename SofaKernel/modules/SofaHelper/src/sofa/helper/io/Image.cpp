@@ -31,7 +31,7 @@ namespace sofa
 namespace helper
 {
 
-template class SOFA_HELPER_API Factory<std::string, sofa::helper::io::Image, std::string>;
+template class Factory<std::string, sofa::helper::io::Image, std::string>;
 
 namespace io
 {

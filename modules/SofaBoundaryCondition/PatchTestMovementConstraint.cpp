@@ -43,8 +43,8 @@ int PatchTestMovementConstraintClass = core::RegisterObject("bilinear constraint
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3Types>;
+template class PatchTestMovementConstraint<defaulttype::Vec3Types>;
+template class PatchTestMovementConstraint<defaulttype::Rigid3Types>;
 
 
 } // namespace projectiveconstraintset

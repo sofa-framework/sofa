@@ -42,7 +42,7 @@ int TriangularFEMForceFieldOptimClass = core::RegisterObject("Corotational Trian
 
         ;
 
-template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<Vec3Types>;
+template class TriangularFEMForceFieldOptim<Vec3Types>;
 
 
 

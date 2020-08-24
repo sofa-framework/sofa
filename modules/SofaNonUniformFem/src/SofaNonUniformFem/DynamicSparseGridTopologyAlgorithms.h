@@ -61,11 +61,11 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_CPP)
-extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec1Types>;
-//extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Rigid3Types>;
-//extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridTopologyAlgorithms<defaulttype::Rigid2Types>;
+extern template class DynamicSparseGridTopologyAlgorithms<defaulttype::Vec3Types>;
+extern template class DynamicSparseGridTopologyAlgorithms<defaulttype::Vec2Types>;
+extern template class DynamicSparseGridTopologyAlgorithms<defaulttype::Vec1Types>;
+//extern template class DynamicSparseGridTopologyAlgorithms<defaulttype::Rigid3Types>;
+//extern template class DynamicSparseGridTopologyAlgorithms<defaulttype::Rigid2Types>;
 
 
 #endif

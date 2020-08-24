@@ -98,7 +98,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP)
-extern template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3Types>;
+extern template class MeshSubsetEngine<defaulttype::Vec3Types>;
  
 #endif
 

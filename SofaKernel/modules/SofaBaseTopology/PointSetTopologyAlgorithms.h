@@ -73,11 +73,11 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_CPP)
-extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec1Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Rigid2Types>;
+extern template class PointSetTopologyAlgorithms<defaulttype::Vec3Types>;
+extern template class PointSetTopologyAlgorithms<defaulttype::Vec2Types>;
+extern template class PointSetTopologyAlgorithms<defaulttype::Vec1Types>;
+extern template class PointSetTopologyAlgorithms<defaulttype::Rigid3Types>;
+extern template class PointSetTopologyAlgorithms<defaulttype::Rigid2Types>;
 #endif
 
 } // namespace topology

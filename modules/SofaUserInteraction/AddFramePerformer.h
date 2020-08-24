@@ -55,7 +55,7 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_CPP)
-extern template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3Types>;
+extern template class  AddFramePerformer<defaulttype::Vec3Types>;
 
 #endif
 

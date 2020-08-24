@@ -192,8 +192,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
-extern template class SOFA_SPH_FLUID_API SPHFluidForceField<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_SPH_FLUID_API SPHFluidForceField<sofa::defaulttype::Vec2Types>;
+extern template class SPHFluidForceField<sofa::defaulttype::Vec3Types>;
+extern template class SPHFluidForceField<sofa::defaulttype::Vec2Types>;
 #endif // !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
 
 } // namespace forcefield

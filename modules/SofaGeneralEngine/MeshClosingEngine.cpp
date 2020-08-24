@@ -36,7 +36,7 @@ int MeshClosingEngineClass = core::RegisterObject("Merge several meshes")
         .add< MeshClosingEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-template class SOFA_GENERAL_ENGINE_API MeshClosingEngine<defaulttype::Vec3Types>;
+template class MeshClosingEngine<defaulttype::Vec3Types>;
  
 
 

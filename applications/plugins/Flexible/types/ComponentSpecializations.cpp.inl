@@ -60,10 +60,10 @@ namespace core
 {
 
 
-    template class SOFA_Flexible_API State< defaulttype::TYPEABSTRACTNAME3dTypes >;
-    template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3Types >;
-    template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Rigid3Types >;
-    template class SOFA_Flexible_API MultiMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class State< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3Types >;
+    template class Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Rigid3Types >;
+    template class MultiMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
 
 
 
@@ -71,10 +71,10 @@ namespace behavior
 {
 
 
-    template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
-    template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3dTypes >;
-    template class SOFA_Flexible_API ConstraintCorrection< defaulttype::TYPEABSTRACTNAME3dTypes >;
-    template class SOFA_Flexible_API ProjectiveConstraintSet< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class ForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class Mass< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class ConstraintCorrection< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class ProjectiveConstraintSet< defaulttype::TYPEABSTRACTNAME3dTypes >;
 
 
 
@@ -167,7 +167,7 @@ int EVALUATOR(TYPEABSTRACTNAME,FixedConstraintClass) = core::RegisterObject ( "A
                         .add< FixedConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
     
         ;
-template class SOFA_Flexible_API FixedConstraint<TYPEABSTRACTNAME3dTypes>;
+template class FixedConstraint<TYPEABSTRACTNAME3dTypes>;
 
 
 
@@ -178,7 +178,7 @@ int EVALUATOR(TYPEABSTRACTNAME,ProjectToPointConstraintClass) = core::RegisterOb
         .add< ProjectToPointConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 
         ;
-template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3dTypes>;
+template class ProjectToPointConstraint<TYPEABSTRACTNAME3dTypes>;
 
 } // namespace projectiveconstraintset
 } // namespace component
@@ -259,7 +259,7 @@ int EVALUATOR(TYPEABSTRACTNAME,MechanicalObjectClass) = core::RegisterObject ( "
 
 
 
-    template class SOFA_Flexible_API MechanicalObject<TYPEABSTRACTNAME3dTypes>;
+    template class MechanicalObject<TYPEABSTRACTNAME3dTypes>;
 
 
 
@@ -331,14 +331,14 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRAC
             ;
 
 
-    template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,TYPEABSTRACTNAME3dMass>;
+    template class ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,TYPEABSTRACTNAME3dMass>;
 
 
 
 #endif
 
 
-    template class SOFA_Flexible_API UniformMass<TYPEABSTRACTNAME3dTypes,TYPEABSTRACTNAME3dMass>;
+    template class UniformMass<TYPEABSTRACTNAME3dTypes,TYPEABSTRACTNAME3dMass>;
 
 
 
@@ -354,7 +354,7 @@ int EVALUATOR(TYPEABSTRACTNAME,MonitorClass) = core::RegisterObject("Monitoring 
 
     ;
 
-    template class SOFA_Flexible_API Monitor<defaulttype::TYPEABSTRACTNAME3dTypes>;
+    template class Monitor<defaulttype::TYPEABSTRACTNAME3dTypes>;
 
 
 
@@ -369,7 +369,7 @@ int EVALUATOR(TYPEABSTRACTNAME,ExtraMonitorClass) = core::RegisterObject("Monito
 
 
 
-    template class SOFA_Flexible_API ExtraMonitor<defaulttype::TYPEABSTRACTNAME3dTypes>;
+    template class ExtraMonitor<defaulttype::TYPEABSTRACTNAME3dTypes>;
 
 
 
@@ -419,7 +419,7 @@ int EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrectionClass) = core::Regis
 
         ;
 
-    template class SOFA_Flexible_API UncoupledConstraintCorrection<defaulttype::TYPEABSTRACTNAME3dTypes>;
+    template class UncoupledConstraintCorrection<defaulttype::TYPEABSTRACTNAME3dTypes>;
 
 
 
@@ -440,8 +440,8 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 
 
 
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
+    template class IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
 
 
 
@@ -456,7 +456,7 @@ int EVALUATOR(TYPEABSTRACTNAME,SubsetMultiMappingClass) = core::RegisterObject("
 
         ;
 
-    template class SOFA_Flexible_API SubsetMultiMapping< TYPEABSTRACTNAME3dTypes, TYPEABSTRACTNAME3dTypes >;
+    template class SubsetMultiMapping< TYPEABSTRACTNAME3dTypes, TYPEABSTRACTNAME3dTypes >;
 
 
 
@@ -472,7 +472,7 @@ namespace engine
     ;
 
 
-    template class SOFA_Flexible_API boxroi::BoxROI< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class boxroi::BoxROI< defaulttype::TYPEABSTRACTNAME3dTypes >;
 
 
 } // namespace engine
@@ -486,7 +486,7 @@ namespace forcefield
     
     ;
 
-            template class SOFA_Flexible_API RestShapeSpringsForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
+            template class RestShapeSpringsForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
     
 
 
@@ -499,7 +499,7 @@ namespace forcefield
     
     ;
 
-            template class SOFA_Flexible_API ConstantForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
+            template class ConstantForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
     
 
     // Register in the Factory
@@ -508,7 +508,7 @@ namespace forcefield
     
     ;
 
-        template class SOFA_Flexible_API UniformVelocityDampingForceField<defaulttype::TYPEABSTRACTNAME3dTypes>;
+        template class UniformVelocityDampingForceField<defaulttype::TYPEABSTRACTNAME3dTypes>;
     
 
 } // namespace forcefield

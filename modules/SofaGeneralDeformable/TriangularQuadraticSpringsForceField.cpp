@@ -52,7 +52,7 @@ int TriangularQuadraticSpringsForceFieldClass = core::RegisterObject("Quadratic 
 
         ;
 
-template class SOFA_GENERAL_DEFORMABLE_API TriangularQuadraticSpringsForceField<Vec3Types>;
+template class TriangularQuadraticSpringsForceField<Vec3Types>;
 
 
 

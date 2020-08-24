@@ -173,8 +173,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)
-extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
-extern template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
+extern template class JointSpring<defaulttype::Rigid3Types>;
+extern template class JointSpringForceField<defaulttype::Rigid3Types>;
 
 #endif
 } // namespace interactionforcefield

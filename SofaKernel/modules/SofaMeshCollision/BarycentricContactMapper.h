@@ -219,9 +219,9 @@ public:
 };
 
 #if !defined(SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP)
-extern template class SOFA_MESH_COLLISION_API ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 
 #  ifdef _MSC_VER
 // Manual declaration of non-specialized members, to avoid warnings from MSVC.

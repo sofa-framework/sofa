@@ -139,11 +139,11 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec6Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Rigid3Types>;
+extern template class PlaneForceField<defaulttype::Vec3Types>;
+extern template class PlaneForceField<defaulttype::Vec2Types>;
+extern template class PlaneForceField<defaulttype::Vec1Types>;
+extern template class PlaneForceField<defaulttype::Vec6Types>;
+extern template class PlaneForceField<defaulttype::Rigid3Types>;
 
 #endif
 

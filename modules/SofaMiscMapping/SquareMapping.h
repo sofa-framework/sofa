@@ -114,7 +114,7 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SquareMapping_CPP)
-extern template class SOFA_MISC_MAPPING_API SquareMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
+extern template class SquareMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
 
 
 #endif

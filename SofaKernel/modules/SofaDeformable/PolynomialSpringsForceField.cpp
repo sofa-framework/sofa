@@ -49,7 +49,7 @@ int PolynomialSpringsForceFieldClass = core::RegisterObject("Simple elastic spri
         .add< PolynomialSpringsForceField<Vec3Types> >()
         ;
 
-template class SOFA_DEFORMABLE_API PolynomialSpringsForceField<Vec3Types>;
+template class PolynomialSpringsForceField<Vec3Types>;
 
 } // namespace interactionforcefield
 

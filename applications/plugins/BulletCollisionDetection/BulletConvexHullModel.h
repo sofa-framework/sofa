@@ -183,7 +183,7 @@ typedef TBulletConvexHull<defaulttype::RigidTypes> BulletConvexHull;
 
 
 #if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletConvexHullModel<defaulttype::Rigid3Types>;
+extern template class TBulletConvexHullModel<defaulttype::Rigid3Types>;
 
 #endif
 

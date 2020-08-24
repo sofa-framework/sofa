@@ -40,9 +40,9 @@ int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry alg
 
         ;
 
-template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec1Types>;
+template class QuadSetGeometryAlgorithms<Vec3Types>;
+template class QuadSetGeometryAlgorithms<Vec2Types>;
+template class QuadSetGeometryAlgorithms<Vec1Types>;
 
 
 } // namespace topology

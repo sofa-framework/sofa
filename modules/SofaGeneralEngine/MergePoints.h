@@ -74,11 +74,11 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec1Types>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid2Types>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid3Types>;
+extern template class MergePoints<defaulttype::Vec1Types>;
+extern template class MergePoints<defaulttype::Vec2Types>;
+extern template class MergePoints<defaulttype::Vec3Types>;
+extern template class MergePoints<defaulttype::Rigid2Types>;
+extern template class MergePoints<defaulttype::Rigid3Types>;
  
 #endif
 

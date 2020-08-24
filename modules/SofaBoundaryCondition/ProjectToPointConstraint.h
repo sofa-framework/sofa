@@ -153,10 +153,10 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec6Types>;
+extern template class ProjectToPointConstraint<defaulttype::Vec3Types>;
+extern template class ProjectToPointConstraint<defaulttype::Vec2Types>;
+extern template class ProjectToPointConstraint<defaulttype::Vec1Types>;
+extern template class ProjectToPointConstraint<defaulttype::Vec6Types>;
 
 #endif
 

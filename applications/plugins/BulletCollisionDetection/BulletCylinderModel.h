@@ -75,7 +75,7 @@ protected:
 typedef TBulletCylinderModel<defaulttype::RigidTypes> BulletCylinderModel;
 
 #if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3Types>;//je pense que les cylindres sont définis sur des rigides dans bullet
+extern template class TBulletCylinderModel<defaulttype::Rigid3Types>;//je pense que les cylindres sont définis sur des rigides dans bullet
 
 #endif
 

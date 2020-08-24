@@ -93,7 +93,7 @@ public:
 namespace helper
 {
 //delay load of the specialized Factory class. unique definition reside in the cpp file.
-extern template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
+extern template class Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
 }
 #endif
 

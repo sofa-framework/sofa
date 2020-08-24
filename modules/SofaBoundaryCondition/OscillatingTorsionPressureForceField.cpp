@@ -42,7 +42,7 @@ int OscillatingTorsionPressureForceFieldClass = core::RegisterObject("Oscillatin
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<Vec3Types>;
+template class OscillatingTorsionPressureForceField<Vec3Types>;
 
 
 

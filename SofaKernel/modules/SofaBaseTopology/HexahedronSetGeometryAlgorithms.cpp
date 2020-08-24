@@ -39,9 +39,9 @@ int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set 
 
         ;
 
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1Types>;
+template class HexahedronSetGeometryAlgorithms<Vec3Types>;
+template class HexahedronSetGeometryAlgorithms<Vec2Types>;
+template class HexahedronSetGeometryAlgorithms<Vec1Types>;
 
 
 } // namespace topology

@@ -66,11 +66,11 @@ void AttachConstraint<Rigid3Types>::calcRestRotations()
     }
 }
 
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec3Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec2Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec1Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Rigid3Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Rigid2Types>;
+template class AttachConstraint<Vec3Types>;
+template class AttachConstraint<Vec2Types>;
+template class AttachConstraint<Vec1Types>;
+template class AttachConstraint<Rigid3Types>;
+template class AttachConstraint<Rigid2Types>;
 
 
 

@@ -48,12 +48,12 @@ int ConstantForceFieldClass = core::RegisterObject("Constant forces applied to g
         .add< ConstantForceField<Rigid2Types> >()
 
         ;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Rigid3Types>;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Rigid2Types>;
+template class ConstantForceField<Vec3Types>;
+template class ConstantForceField<Vec2Types>;
+template class ConstantForceField<Vec1Types>;
+template class ConstantForceField<Vec6Types>;
+template class ConstantForceField<Rigid3Types>;
+template class ConstantForceField<Rigid2Types>;
 
 
 } // namespace sofa::component::forcefield

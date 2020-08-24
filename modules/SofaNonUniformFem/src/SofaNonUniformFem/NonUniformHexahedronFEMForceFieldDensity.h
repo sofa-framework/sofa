@@ -107,7 +107,7 @@ using sofa::defaulttype::Vec3fTypes;
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_CPP)
 
-extern template class SOFA_SOFANONUNIFORMFEM_API NonUniformHexahedronFEMForceFieldDensity<Vec3Types>;
+extern template class NonUniformHexahedronFEMForceFieldDensity<Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_CPP)

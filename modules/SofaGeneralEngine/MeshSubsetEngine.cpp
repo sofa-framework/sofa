@@ -36,7 +36,7 @@ int MeshSubsetEngineClass = core::RegisterObject("Extract a mesh subset based on
         .add< MeshSubsetEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3Types>;
+template class MeshSubsetEngine<defaulttype::Vec3Types>;
  
 
 

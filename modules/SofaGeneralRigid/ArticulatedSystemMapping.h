@@ -230,7 +230,7 @@ private:
 
 #if  !defined(SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP)
 
-extern template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
+extern template class ArticulatedSystemMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 
 
 

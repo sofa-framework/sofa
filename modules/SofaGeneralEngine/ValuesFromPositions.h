@@ -154,8 +154,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP)
-extern template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<defaulttype::Rigid3Types>; 
+extern template class ValuesFromPositions<defaulttype::Vec3Types>;
+extern template class ValuesFromPositions<defaulttype::Rigid3Types>; 
 #endif
 
 } // namespace engine

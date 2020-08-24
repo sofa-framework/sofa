@@ -234,7 +234,7 @@ using sofa::defaulttype::Vec3fTypes;
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
 
-extern template class SOFA_MISC_FEM_API TetrahedronHyperelasticityFEMForceField<Vec3Types>;
+extern template class TetrahedronHyperelasticityFEMForceField<Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
