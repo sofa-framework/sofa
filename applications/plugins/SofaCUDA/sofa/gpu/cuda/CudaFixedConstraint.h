@@ -38,6 +38,7 @@ template<class TCoord, class TDeriv, class TReal>
 class FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
 {
 public:
+    using index_type = sofa::defaulttype::index_type;
     typedef FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > Data;
     typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
     typedef FixedConstraint<DataTypes> Main;
@@ -48,17 +49,17 @@ public:
     typedef typename Main::SetIndexArray SetIndexArray;
 
     // min/max fixed indices for contiguous constraints
-    int minIndex;
-    int maxIndex;
+    index_type minIndex;
+    index_type maxIndex;
     // vector of indices for general case
     gpu::cuda::CudaVector<int> cudaIndices;
 
 
     static void init(Main* m);
 
-    static void addConstraint(Main* m, unsigned int index);
+    static void addConstraint(Main* m, index_type index);
 
-    static void removeConstraint(Main* m, unsigned int index);
+    static void removeConstraint(Main* m, index_type index);
 
     static void projectResponse(Main* m, VecDeriv& dx);
 };
@@ -67,6 +68,7 @@ template <int N, class real>
 class FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real > >
 {
 public:
+    using index_type = sofa::defaulttype::index_type;
     typedef FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> > Data;
     typedef gpu::cuda::CudaRigidTypes<N, real> DataTypes;
     typedef FixedConstraint<DataTypes> Main;
@@ -85,9 +87,9 @@ public:
 
     static void init(Main* m);
 
-    static void addConstraint(Main* m, unsigned int index);
+    static void addConstraint(Main* m, index_type index);
 
-    static void removeConstraint(Main* m, unsigned int index);
+    static void removeConstraint(Main* m, index_type index);
 
     static void projectResponse(Main* m, VecDeriv& dx);
 };
@@ -95,8 +97,8 @@ public:
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaFixedConstraint_DeclMethods(T) \
     template<> void FixedConstraint< T >::init(); \
-    template<> void FixedConstraint< T >::addConstraint(unsigned int index); \
-    template<> void FixedConstraint< T >::removeConstraint(unsigned int index); \
+    template<> void FixedConstraint< T >::addConstraint(index_type index); \
+    template<> void FixedConstraint< T >::removeConstraint(index_type index); \
     template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
 
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3fTypes);
