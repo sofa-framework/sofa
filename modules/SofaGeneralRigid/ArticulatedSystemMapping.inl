@@ -94,13 +94,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     apply(xtoData.wref(),
             xfrom,
             m_fromRootModel == nullptr ? nullptr : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue());
-
-    if (xfrom.size() > xtoData.size())
-    {
-        msg_error() << "Input model '" << m_fromModel->getName() << "' size: " << xfrom.size() << " is bigger than output model '" << m_toModel->getName() << "' size: " << xtoData.size();
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
     
     Inherit::init();
     /*
