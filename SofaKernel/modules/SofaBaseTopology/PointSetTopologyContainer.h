@@ -52,7 +52,7 @@ public:
     typedef defaulttype::Vec3Types InitTypes;
 
 protected:
-    PointSetTopologyContainer(int nPoints = 0);
+    PointSetTopologyContainer( std::size_t nPoints = 0);
 
     ~PointSetTopologyContainer() override {}
 public:
@@ -191,7 +191,7 @@ protected:
 
 private:
     
-    Data<unsigned int> nbPoints; ///< Number of points
+    Data<std::size_t> nbPoints; ///< Number of points
 
     Data<sofa::helper::vector<PointID> > points; ///< List of point indices
 };

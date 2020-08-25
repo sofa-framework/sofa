@@ -61,11 +61,11 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
         .add< PointSetTopologyContainer >()
         ;
 
-PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
+PointSetTopologyContainer::PointSetTopologyContainer( std::size_t npoints)
     : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
     , d_checkTopology (initData(&d_checkTopology, false, "checkTopology", "Parameter to activate internal topology checks (might slow down the simulation)"))
     , m_pointTopologyDirty(false)
-    , nbPoints (initData(&nbPoints, (unsigned int )npoints, "nbPoints", "Number of points"))
+    , nbPoints (initData(&nbPoints, std::size_t(npoints), "nbPoints", "Number of points"))
     , points(initData(&points, "points","List of point indices"))
 {
     addAlias(&d_initPoints,"points");
@@ -74,7 +74,7 @@ PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
 void PointSetTopologyContainer::setNbPoints(std::size_t n)
 {
 
-    std::size_t diffSize = n - nbPoints.getValue();
+    int diffSize = n - nbPoints.getValue();
     sofa::helper::WriteAccessor< sofa::Data< sofa::helper::vector<PointID> > > points = this->points;
     points.resize(n);
 
@@ -186,7 +186,7 @@ void PointSetTopologyContainer::addPoint()
 void PointSetTopologyContainer::removePoint()
 {
     //nbPoints.setValue(nbPoints.getValue()-1);
-    setNbPoints( nbPoints.getValue() -1 );
+    setNbPoints( nbPoints.getValue() - 1 );
 }
 
 
