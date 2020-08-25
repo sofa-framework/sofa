@@ -127,6 +127,12 @@ MeshLoader::MeshLoader() : BaseLoader()
         &d_highOrderEdgePositions, &d_highOrderTrianglePositions, &d_highOrderQuadPositions, &d_highOrderHexahedronPositions, &d_highOrderTetrahedronPositions,
         &d_edgesGroups, &d_quadsGroups, &d_polygonsGroups, &d_pyramidsGroups, &d_hexahedraGroups, &d_trianglesGroups, &d_pentahedraGroups, &d_tetrahedraGroups}
     );
+
+    addUpdateCallback("updateTransformPosition", {&d_translation, &d_rotation, &d_scale, &d_transformation}, [this](const core::DataTracker& )
+    {
+        reinit();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {&d_positions});
 }
 
 void MeshLoader::clearBuffers()
