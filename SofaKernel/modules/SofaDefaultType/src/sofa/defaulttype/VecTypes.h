@@ -88,15 +88,12 @@ protected:
                 SOFA_UNUSED(z);
                 c[0] = Real(x);
                 c[1] = Real(y);
-                c[2] = Real(0);
             }
             if constexpr (N == 1)
             {
                 SOFA_UNUSED(y);
                 SOFA_UNUSED(z);
                 c[0] = Real(x);
-                c[1] = Real(0);
-                c[2] = Real(0);
             }
         }
 
@@ -138,15 +135,12 @@ protected:
                 SOFA_UNUSED(z);
                 c[0] += Real(x);
                 c[1] += Real(y);
-                c[2] += Real(0);
             }
             if constexpr (N == 1)
             {
                 SOFA_UNUSED(y);
                 SOFA_UNUSED(z);
                 c[0] += Real(x);
-                c[1] += Real(0);
-                c[2] += Real(0);
             }
         }
     };
