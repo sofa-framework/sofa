@@ -50,18 +50,39 @@ RequiredPlugin::RequiredPlugin()
     , d_stopAfterFirstSuffixFound( initData(&d_stopAfterFirstSuffixFound , true, "stopAfterFirstSuffixFound", "For each plugin name, stop after the first suffix that is loaded successfully"))
     , d_requireOne ( initData(&d_requireOne , false, "requireOne", "Display an error message if no plugin names were successfully loaded"))
     , d_requireAll ( initData(&d_requireAll , true, "requireAll", "Display an error message if any plugin names failed to be loaded"))
+    , d_loadedPlugins(initData(&d_loadedPlugins, "loadedPlugins", "List of the plugins that are have been loaded."))
 {
     this->f_printLog.setValue(true); // print log by default, to identify which pluging is responsible in case of a crash during loading
+
+    /// Add a callback to update the required plugin when its data are changed
+    addUpdateCallback("reloadPlugins", {&name,
+                                    &d_pluginName, &d_suffixMap, &d_stopAfterFirstNameFound, &d_stopAfterFirstSuffixFound,
+                                    &d_requireAll, &d_requireOne},
+                      [this](const sofa::core::DataTracker&)
+    {
+        clearLoggedMessages();
+        /// Reload the plugins and check at least one is loaded.
+        if(loadPlugin())
+            return sofa::core::objectmodel::ComponentState::Valid;
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }, {&d_loadedPlugins});
 }
 
 void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
+    d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+
     Inherit1::parse(arg);
-    loadPlugin();
+    if(loadPlugin())
+        d_componentState = sofa::core::objectmodel::ComponentState::Valid;
 }
 
-void RequiredPlugin::loadPlugin()
+bool RequiredPlugin::loadPlugin()
 {
+    /// Get a write accessor to the loadedPlugin
+    auto loadedPlugins = sofa::helper::getWriteOnlyAccessor(d_loadedPlugins);
+    loadedPlugins.clear();
+
     sofa::helper::system::PluginManager* pluginManager = &sofa::helper::system::PluginManager::getInstance();
     std::string defaultSuffix = pluginManager->getDefaultSuffix();
     const helper::vector<helper::fixed_array<std::string,2> >& sMap = d_suffixMap.getValue();
@@ -80,34 +101,33 @@ void RequiredPlugin::loadPlugin()
     if (suffixVec.empty())
         suffixVec.push_back(defaultSuffix);
 
+    /// Copy the lost of names provided as arguments
+    const helper::vector<std::string>& nameVec = d_pluginName.getValue();
+    helper::vector<std::string> pluginsToLoad = nameVec;
+
     /// In case the pluginName is not set we copy the provided name into the set to load.
     if(!d_pluginName.isSet() && name.isSet())
     {
-        helper::WriteOnlyAccessor<Data<helper::vector<std::string>>> pluginsName = d_pluginName ;
-        pluginsName.push_back(this->getName());
+        pluginsToLoad.push_back(this->getName());
     }
 
-    const helper::vector<std::string>& nameVec = d_pluginName.getValue();
-    helper::vector<std::string> nameVecCopy = nameVec;
-
-    helper::vector< std::string > loaded;
     helper::vector< std::string > failed;
     std::ostringstream errmsg;
-    for (std::size_t nameIndex = 0; nameIndex < nameVecCopy.size(); ++nameIndex)
+    for (auto& pluginName : pluginsToLoad)
     {
-        const std::string& name = FileSystem::cleanPath( nameVecCopy[nameIndex] ); // name is not necessarily a path
+        const std::string& name = FileSystem::cleanPath( pluginName ); // name is not necessarily a path
         bool nameLoaded = false;
-        for (std::size_t suffixIndex = 0; suffixIndex < suffixVec.size(); ++suffixIndex)
+        for (auto& suffix : suffixVec)
         {
-            const std::string& suffix = suffixVec[suffixIndex];
             if ( pluginManager->pluginIsLoaded(name) )
             {
+                loadedPlugins.push_back(name);
                 nameLoaded = true;
                 if (d_stopAfterFirstSuffixFound.getValue()) break;
             }
             else if ( pluginManager->loadPlugin(name, suffix, true, true, &errmsg) )
             {
-                loaded.push_back(name);
+                loadedPlugins.push_back(name);
                 nameLoaded = true;
                 if (d_stopAfterFirstSuffixFound.getValue()) break;
             }
@@ -121,20 +141,24 @@ void RequiredPlugin::loadPlugin()
             break;
         }
     }
+
+    bool hasFailed=false;
     if (!failed.empty())
     {
-        if ((d_requireAll.getValue() || (d_requireOne.getValue() && loaded.empty())))
+        if ((d_requireAll.getValue() || (d_requireOne.getValue() && loadedPlugins.empty())))
         {
+            hasFailed = true;
             msg_error() << errmsg.str() << msgendl
                         << "Failed to load: " << failed ;
         }
         else
         {
             msg_warning() << errmsg.str() << msgendl
-                          << "Failed to load optional: " << failed;
+                          << "Unable to load optional: " << failed;
         }
     }
     pluginManager->init();
+    return !hasFailed;
 }
 
 } // namespace misc
