@@ -58,6 +58,7 @@ namespace visualmodel
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 using namespace sofa::core::loader;
+using sofa::helper::types::RGBAColor;
 using helper::vector;
 
 Vec3State::Vec3State()

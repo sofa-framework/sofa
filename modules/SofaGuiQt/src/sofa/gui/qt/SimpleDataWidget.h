@@ -42,7 +42,7 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QComboBox>
-
+#include <sofa/helper/Quater.h>
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
 #endif

@@ -22,7 +22,18 @@
 #include <sofa/simulation/PrintVisitor.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
-
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/collision/Pipeline.h>
 namespace sofa
 {
 

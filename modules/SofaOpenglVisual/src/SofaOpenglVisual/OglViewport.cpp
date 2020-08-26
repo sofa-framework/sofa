@@ -24,6 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/BehaviorModel.h>
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/fixed_array.h>

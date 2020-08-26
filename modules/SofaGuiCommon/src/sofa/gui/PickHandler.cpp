@@ -24,6 +24,7 @@
 #include <SofaUserInteraction/ComponentMouseInteraction.h>
 #include <SofaUserInteraction/RayContact.h>
 
+#include <sofa/core/collision/Pipeline.h>
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>

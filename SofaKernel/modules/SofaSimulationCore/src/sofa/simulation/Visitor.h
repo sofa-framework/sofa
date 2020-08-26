@@ -30,6 +30,7 @@
 #include <sofa/core/ExecParams.h>
 
 #include <sofa/helper/set.h>
+#include <sofa/helper/system/thread/CTime.h>
 #include <iostream>
 
 #ifdef SOFA_DUMP_VISITOR_INFO

@@ -39,6 +39,8 @@ namespace sofa
 namespace gui
 {
 
+using sofa::helper::types::RGBAColor;
+
 class BaseViewer;
 
 class SOFA_SOFAGUICOMMON_API BaseGUI
@@ -78,7 +80,7 @@ public:
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {}
     virtual void setViewerResolution(int /* width */, int /* height */) {}
     virtual void setFullScreen() {}
-    virtual void setBackgroundColor(const defaulttype::RGBAColor& /*color*/) {}
+    virtual void setBackgroundColor(const RGBAColor& /*color*/) {}
     virtual void setBackgroundImage(const std::string& /*image*/) {}
 
     virtual BaseViewer* getViewer() {return nullptr;}

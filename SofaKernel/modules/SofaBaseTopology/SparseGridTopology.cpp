@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/core/behavior/MechanicalState.h>
+
 #include <sofa/simulation/Node.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -35,8 +37,6 @@
 #include <fstream>
 #include <string>
 #include <cmath>
-
-
 
 using std::pair;
 using sofa::core::loader::VoxelLoader;

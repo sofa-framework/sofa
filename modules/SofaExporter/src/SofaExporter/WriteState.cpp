@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaExporter/WriteState.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/OdeSolver.h>
 
 namespace sofa
 {

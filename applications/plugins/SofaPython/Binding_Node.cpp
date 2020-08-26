@@ -19,13 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <cstdio>
 #include "PythonMacros.h"
 #include <sofa/simulation/Simulation.h>
+#include <sofa/core/BehaviorModel.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
+#include <sofa/core/visual/VisualLoop.h>
 using namespace sofa::simulation;
 
 #include <sofa/core/ExecParams.h>

@@ -44,6 +44,8 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/ArgumentParser.h>
 
+#include <sofa/core/Mapping.h>
+
 namespace sofa {
 
 

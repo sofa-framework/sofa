@@ -24,6 +24,7 @@
 #include <sofa/helper/config.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
+#include <sofa/helper/system/thread/CTime.h>
 
 #include <iostream>
 #include <string>

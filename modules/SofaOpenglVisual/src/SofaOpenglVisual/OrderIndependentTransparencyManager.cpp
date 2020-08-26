@@ -22,6 +22,7 @@
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaOpenglVisual/OrderIndependentTransparencyManager.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/BehaviorModel.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>

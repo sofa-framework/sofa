@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaHaptics/NullForceFeedbackT.h>
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/defaulttype/VecTypes.h>
 using namespace std;
 
 namespace sofa

@@ -22,6 +22,7 @@
 #include <SofaOpenglVisual/CompositingVisualLoop.h>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaBaseVisual/VisualStyle.h>
+#include <sofa/core/BehaviorModel.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/simulation/VisualVisitor.h>
 

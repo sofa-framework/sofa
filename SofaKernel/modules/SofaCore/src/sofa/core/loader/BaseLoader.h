@@ -22,6 +22,7 @@
 #ifndef SOFA_CORE_LOADER_BASELOADER_H
 #define SOFA_CORE_LOADER_BASELOADER_H
 
+#include <cstdio>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 

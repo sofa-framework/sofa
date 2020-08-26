@@ -19,11 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseTopology.h>
 #include <SofaValidation/CompareTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sstream>
 #include <sofa/core/ObjectFactory.h>
 
