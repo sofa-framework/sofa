@@ -60,7 +60,7 @@ void DataFileName::updatePath()
         std::string fullpath = parentDataFileName->getFullPath();
         if (getPathType() != BOTH && getPathType() != parentDataFileName->getPathType())
         {
-            msg_error(this->getName()) << "This DataFileName only accepts " << (getPathType() == FILE ? "directories" : "files");
+            msg_error(this->getName()) << "This DataFileName only accepts " << (getPathType() == FILE_TYPE ? "directories" : "files");
         }
         else
         {
@@ -78,7 +78,7 @@ void DataFileName::updatePath()
 
         if (getPathType() != BOTH && (fs::FileSystem::exists(fullpath) && getPathType() != fs::FileSystem::isDirectory(fullpath)))
         {
-            msg_error(this->getName()) << "This DataFileName only accepts " << (getPathType() == FILE ? "directories" : "files");
+            msg_error(this->getName()) << "This DataFileName only accepts " << (getPathType() == FILE_TYPE ? "directories" : "files");
         }
         else
         {
