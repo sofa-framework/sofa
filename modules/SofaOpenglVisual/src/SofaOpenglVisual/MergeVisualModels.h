@@ -73,7 +73,7 @@ protected:
     {
         unsigned int nb = d_nbInput.getValue();
 
-        unsigned int nbpos = 0, nbvert = 0, nbedges = 0, nbtris = 0, nbquads = 0, nbrTexC = 0;
+        size_t nbpos = 0, nbvert = 0, nbedges = 0, nbtris = 0, nbquads = 0, nbrTexC = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
             nbpos += (*vl_input[i])->m_positions.getValue().size();
@@ -89,7 +89,7 @@ protected:
         pos.resize( nbpos );
 
         {
-            unsigned offset = 0;
+            size_t offset = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
                 const VecCoord& in = (*vl_input[i])->m_positions.getValue();
@@ -106,7 +106,7 @@ protected:
             VecCoord& vert = *this->m_vertices2.beginWriteOnly();
             vert.resize( nbvert );
 
-            unsigned offset = 0;
+            size_t offset = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
                 const VecCoord& in = (*vl_input[i])->m_vertices2.getValue();
@@ -122,8 +122,8 @@ protected:
             helper::vector<int>& vertIdx = *this->m_vertPosIdx.beginWriteOnly();
             vertIdx.resize( nbvert );
 
-            unsigned offset = 0;
-            unsigned offsetIdx = 0;
+            size_t offset = 0;
+            size_t offsetIdx = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
                 const helper::vector<int>& in = (*vl_input[i])->m_vertPosIdx.getValue();
@@ -145,8 +145,8 @@ protected:
             helper::vector<int>& vertIdx = *this->m_vertNormIdx.beginWriteOnly();
             vertIdx.resize( nbvert );
 
-            unsigned offset = 0;
-            unsigned offsetIdx = 0;
+            size_t offset = 0;
+            size_t offsetIdx = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
                 const helper::vector<int>& in = (*vl_input[i])->m_vertNormIdx.getValue();
@@ -170,7 +170,7 @@ protected:
             VecTexCoord& vert = *this->m_vtexcoords.beginWriteOnly();
             vert.resize(nbrTexC);
 
-            unsigned offset = 0;
+            size_t offset = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
                 const VecTexCoord& in = (*vl_input[i])->m_vtexcoords.getValue();
@@ -183,14 +183,14 @@ protected:
 
 
 
-        unsigned offsetPoint = 0;
+        unsigned int offsetPoint = 0;
 
 
 
         Inherit::VecEdge& edges = *this->m_edges.beginWriteOnly();
         edges.resize( nbedges );
 
-        unsigned offsetEdge = 0;
+        size_t offsetEdge = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
             const Inherit::VecEdge& in = (*vl_input[i])->m_edges.getValue();
@@ -204,7 +204,7 @@ protected:
             }
 
             offsetEdge += in.size();
-            offsetPoint += (*vl_input[i])->m_vertices2.getValue().size();
+            offsetPoint += (unsigned int)((*vl_input[i])->m_vertices2.getValue().size());
         }
         this->m_edges.endEdit();
 
@@ -216,7 +216,7 @@ protected:
         tris.resize( nbtris );
 
         offsetPoint = 0;
-        unsigned offsetTri = 0;
+        size_t offsetTri = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
             const Inherit::VecTriangle& in = (*vl_input[i])->m_triangles.getValue();
@@ -231,7 +231,7 @@ protected:
             }
 
             offsetTri += in.size();
-            offsetPoint += (*vl_input[i])->m_vertices2.getValue().size();
+            offsetPoint += (unsigned int)((*vl_input[i])->m_vertices2.getValue().size());
         }
         this->m_triangles.endEdit();
 
@@ -241,7 +241,7 @@ protected:
         quads.resize( nbquads );
 
         offsetPoint = 0;
-        unsigned offsetQuad = 0;
+        size_t offsetQuad = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
             const Inherit::VecQuad& in = (*vl_input[i])->m_quads.getValue();
@@ -257,7 +257,7 @@ protected:
             }
 
             offsetQuad += in.size();
-            offsetPoint += (*vl_input[i])->m_vertices2.getValue().size();
+            offsetPoint += (unsigned int)((*vl_input[i])->m_vertices2.getValue().size());
         }
         this->m_quads.endEdit();
     }

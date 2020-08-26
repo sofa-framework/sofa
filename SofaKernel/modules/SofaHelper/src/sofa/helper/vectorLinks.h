@@ -98,7 +98,7 @@ public:
         }
         else
         {
-            for (unsigned int i=this->size(); i<size; ++i)
+            for (size_t i=this->size(); i<size; ++i)
             {
                 std::ostringstream oname, ohelp;
                 oname << m_name << (i+1);

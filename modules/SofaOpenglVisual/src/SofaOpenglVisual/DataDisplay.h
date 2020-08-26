@@ -60,8 +60,8 @@ public:
     Data<VecPointData> f_pointQuadData; ///< Data associated with nodes per quad
     Data<defaulttype::RGBAColor> f_colorNaN; ///< Color for NaNs
     Data<defaulttype::Vec2f> d_userRange; ///< Clamp to this values (if max>min)
-    Data<float> d_currentMin; ///< Current min range
-    Data<float> d_currentMax; ///< Current max range
+    Data<Real> d_currentMin; ///< Current min range
+    Data<Real> d_currentMax; ///< Current max range
     Data<float> d_shininess; ///< Shininess for rendering point-based data [0,128].  <0 means no specularity
 
     visualmodel::OglColorMap *colorMap;
