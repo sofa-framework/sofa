@@ -28,11 +28,11 @@ extern "C" {
 
 SOFA_SOFAPYTHON_API void initExternalModule()
 {
-    static bool first = true;
-    if (first)
+    static bool firstPythonInit = true;
+    if (firstPythonInit)
     {
         sofa::simulation::PythonEnvironment::Init();
-        first = false;
+        firstPythonInit = false;
     }
 }
 
