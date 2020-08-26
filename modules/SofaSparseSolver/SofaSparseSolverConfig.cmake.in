@@ -1,5 +1,6 @@
 # CMake package configuration file for the SofaSparseSolver module
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 set(SOFASPARSESOLVER_HAVE_METIS @SOFASPARSESOLVER_HAVE_METIS@)

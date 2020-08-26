@@ -1,5 +1,6 @@
 # CMake package configuration file for the SceneCreator library
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 set(SCENECREATOR_HAVE_SOFASPARSESOLVER @SCENECREATOR_HAVE_SOFASPARSESOLVER@)
