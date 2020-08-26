@@ -59,7 +59,9 @@ public:
     /// Topology global typedefs
     //typedef int index_type;
     typedef std::size_t index_type;
-    enum { InvalidID = sofa::defaulttype::InvalidID };
+    //enum { InvalidID = sofa::defaulttype::InvalidID };
+    static constexpr index_type InvalidID = sofa::defaulttype::InvalidID;
+
     typedef index_type                 ElemID;
     typedef index_type                 PointID;
     typedef index_type                 EdgeID;
