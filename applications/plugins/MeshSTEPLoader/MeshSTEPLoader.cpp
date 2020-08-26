@@ -55,7 +55,7 @@ MeshSTEPLoader::MeshSTEPLoader():MeshLoader()
     _indicesComponents.setPersistent(false);
 }
 
-bool MeshSTEPLoader::load()
+bool MeshSTEPLoader::doLoad()
 {
     dmsg_info() << "Loading STEP file: " << m_filename;
 
@@ -76,6 +76,17 @@ bool MeshSTEPLoader::load()
     file.close();
 
     return fileRead;
+}
+
+void MeshSTEPLoader::doClearBuffers()
+{
+    _uv.beginEdit()->clear();
+    _uv.endEdit();
+    _indicesComponents.beginEdit()->clear();
+    _indicesComponents.endEdit();
+    _debug.setValue(false);
+    _aDeflection.setValue(0.1);
+    _keepDuplicate.setValue(true);
 }
 
 bool MeshSTEPLoader::readSTEP(const char* fileName)

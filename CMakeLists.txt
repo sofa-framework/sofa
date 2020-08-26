@@ -219,6 +219,12 @@ if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
     set(SOFA_WITH_DOUBLE 1)
 endif()
 
+### Deprecated components
+option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile SOFA with all deprecated components" ON)
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
+    message(DEPRECATION "Deprecated components are activated (SOFA_WITH_DEPRECATED_COMPONENTS variable is ON)")
+endif()
+
 ### Extlibs
 add_subdirectory(extlibs)
 
@@ -320,12 +326,6 @@ if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
         message("Adding external directory: ${name} (${dir})")
         add_subdirectory(${dir} "${CMAKE_CURRENT_BINARY_DIR}/external_directories/${name}")
     endforeach()
-endif()
-
-### Deprecated components
-option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile SOFA with all deprecated components" ON)
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    message(DEPRECATION "Deprecated components are activated (SOFA_WITH_DEPRECATED_COMPONENTS variable is ON)")
 endif()
 
 ## Custom

@@ -48,9 +48,11 @@ public:
 protected:
     MeshTrianLoader();
 public:
-    bool load() override;
+    bool doLoad() override;
 
 protected:
+
+    void doClearBuffers() override;
 
     bool readTrian(const char* filename);
 
@@ -62,7 +64,6 @@ public:
     Data <helper::vector < helper::fixed_array <int,3> > > neighborTable; ///< Table of neighborhood triangle indices for each triangle.
     Data <helper::vector < helper::vector <unsigned int> > > edgesOnBorder; ///< List of edges which are on the border of the mesh loaded.
     Data <helper::vector <unsigned int> > trianglesOnBorderList; ///< List of triangle indices which are on the border of the mesh loaded.
-
 };
 
 

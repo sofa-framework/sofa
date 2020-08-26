@@ -94,7 +94,7 @@ public:
 
     MeshSTEPLoader();
 
-    virtual bool load() override;
+    virtual bool doLoad() override;
 
     template <class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
@@ -103,6 +103,8 @@ public:
     }
 
 protected:
+    void doClearBuffers() override;
+
     // Read STEP file and classify the type of object
     bool readSTEP(const char* fileName);
 

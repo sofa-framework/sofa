@@ -174,13 +174,13 @@ public:
     /// number of rows
     Index rowSize(void) const override
     {
-        return compressedMatrix.rows();
+        return Index(compressedMatrix.rows());
     }
 
     /// number of columns
     Index colSize(void) const override
     {
-        return compressedMatrix.cols();
+        return Index(compressedMatrix.cols());
     }
 
     inline void reserve(typename CompressedMatrix::Index reserveSize)

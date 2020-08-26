@@ -124,7 +124,7 @@ void DataTrackerEngine::addCallback( std::function<sofa::core::objectmodel::Comp
 void DataTrackerEngine::update()
 {
     updateAllInputsIfDirty();
-    core::objectmodel::ComponentState cs;
+    core::objectmodel::ComponentState cs = core::objectmodel::ComponentState::Valid;
 
     for(auto& callback : m_callbacks)
         cs = callback();

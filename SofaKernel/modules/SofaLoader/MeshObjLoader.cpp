@@ -24,25 +24,19 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
+#include <sofa/helper/accessor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using namespace sofa::helper::types;
+using sofa::helper::getWriteOnlyAccessor;
+using sofa::helper::getWriteAccessor;
 
-int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file format.")
-        .add< MeshObjLoader >()
-        ;
-
-
+static int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file format.")
+        .add< MeshObjLoader >();
 
 MeshObjLoader::MeshObjLoader()
     : MeshLoader()
@@ -78,35 +72,17 @@ MeshObjLoader::MeshObjLoader()
     d_vertPosIdx.setGroup("Geometry");
     d_vertNormIdx.setGroup("Geometry");
 
-    //BUGFIX: data loaded from OBJ file should not be saved to XML
-    d_faceList.setPersistent(false);
-    d_texIndexList.setPersistent(false);
-    d_texCoordsList.setPersistent(false);
-    d_normalsIndexList.setPersistent(false);
-    d_normalsList.setPersistent(false);
-    d_positionsList.setPersistent(false);
-    d_texCoords.setPersistent(false);
-    d_positions.setPersistent(false);
-    d_normals.setPersistent(false);
-    d_edges.setPersistent(false);
-    d_triangles.setPersistent(false);
-    d_quads.setPersistent(false);
-    d_edgesGroups.setPersistent(false);
-    d_trianglesGroups.setPersistent(false);
-    d_quadsGroups.setPersistent(false);
-    d_texCoords.setPersistent(false);
-    d_vertPosIdx.setPersistent(false);
-    d_vertNormIdx.setPersistent(false);
+    addOutputsToCallback("filename", {&d_texCoordsList, &d_normalsList,
+        &d_material, &d_materials, &d_faceList, &d_normalsIndexList,
+        &d_texIndexList});
 }
-
 
 MeshObjLoader::~MeshObjLoader()
 {
 
 }
 
-
-bool MeshObjLoader::load()
+bool MeshObjLoader::doLoad()
 {
     dmsg_info() << "Loading OBJ file: " << m_filename;
 
@@ -118,23 +94,41 @@ bool MeshObjLoader::load()
 
     if (!file.good())
     {
-        msg_error() << "Error: MeshObjLoader: Cannot read file '" << m_filename << "'.";
+        msg_error() << "Cannot read file '" << m_filename << "'.";
         return false;
     }
 
     // -- Reading file
-    fileRead = this->readOBJ (file,filename);
+    fileRead = readOBJ (file,filename);
     file.close();
 
     return fileRead;
 }
 
+///
+/// \brief MeshObjLoader::clearBuffers
+/// Clear all the buffer containing the data loaded from the file.
+///
+void MeshObjLoader::doClearBuffers()
+{
+    getWriteOnlyAccessor(d_texCoordsList).clear();
+    getWriteOnlyAccessor(d_normalsList).clear();
+
+    getWriteAccessor(d_material)->activated = false;
+    getWriteOnlyAccessor(d_materials).clear();
+    getWriteOnlyAccessor(d_faceList)->clear();
+    getWriteOnlyAccessor(d_normalsIndexList)->clear();
+    getWriteOnlyAccessor(d_texIndexList)->clear();
+}
 
 void MeshObjLoader::addGroup (const PrimitiveGroup& g)
 {
-    helper::vector< PrimitiveGroup>& my_edgesGroups = *(d_edgesGroups.beginEdit());
-    helper::vector< PrimitiveGroup>& my_trianglesGroups = *(d_trianglesGroups.beginEdit());
-    helper::vector< PrimitiveGroup>& my_quadsGroups = *(d_quadsGroups.beginEdit());
+    /// Get the accessors to the data vectors.
+    /// The accessors are using the RAII design pattern to handle automatically
+    /// the beginEdit/endEdit pairs.
+    auto my_edgesGroups = getWriteOnlyAccessor(d_edgesGroups);
+    auto my_trianglesGroups = getWriteOnlyAccessor(d_trianglesGroups);
+    auto my_quadsGroups = getWriteOnlyAccessor(d_quadsGroups);
 
     switch (faceType)
     {
@@ -149,46 +143,42 @@ void MeshObjLoader::addGroup (const PrimitiveGroup& g)
         break;
     default: break;
     }
-
-    d_edgesGroups.endEdit();
-    d_trianglesGroups.endEdit();
-    d_quadsGroups.endEdit();
 }
 
 bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 {
- 
     const bool handleSeams = d_handleSeams.getValue();
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
-    helper::vector<sofa::defaulttype::Vector2>& my_texCoords = *(d_texCoordsList.beginEdit());
-    helper::vector<sofa::defaulttype::Vector3>& my_normals   = *(d_normalsList.beginEdit());
+    auto my_positions = getWriteOnlyAccessor(d_positions);
+    auto my_texCoords = getWriteOnlyAccessor(d_texCoordsList);
+    auto my_normals   = getWriteOnlyAccessor(d_normalsList);
 
-    Material& material = *(d_material.beginEdit());
-    helper::vector<Material>& my_materials = *(d_materials.beginEdit());
-    helper::SVector< helper::SVector <int> >& my_faceList = *(d_faceList.beginEdit() );
-    helper::SVector< helper::SVector <int> >& my_normalsList = *(d_normalsIndexList.beginEdit());
-    helper::SVector< helper::SVector <int> >& my_texturesList   = *(d_texIndexList.beginEdit());
+    auto material = getWriteOnlyAccessor(d_material);
+    auto my_materials = getWriteOnlyAccessor(d_materials);
+    auto my_faceList = getWriteOnlyAccessor(d_faceList);
+    auto my_normalsList = getWriteOnlyAccessor(d_normalsIndexList);
+    auto my_texturesList  = getWriteOnlyAccessor(d_texIndexList);
     helper::vector<int> nodes, nIndices, tIndices;
 
-    helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
-    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
-    helper::vector<Quad >& my_quads = *(d_quads.beginEdit());
+    auto my_edges = getWriteOnlyAccessor(d_edges);
+    auto my_triangles = getWriteOnlyAccessor(d_triangles);
+    auto my_quads = getWriteOnlyAccessor(d_quads);
 
     //BUGFIX: clear pre-existing data before loading the file
     my_positions.clear();
-    material.activated = false;
+    material->activated = false;
     my_texCoords.clear();
     my_normals.clear();
     my_materials.clear();
-    my_faceList.clear();
-    my_normalsList.clear();
-    my_texturesList.clear();
+    my_faceList->clear();
+    my_normalsList->clear();
+    my_texturesList->clear();
     my_edges.clear();
     my_triangles.clear();
     my_quads.clear();
-    d_edgesGroups.beginEdit()->clear(); d_edgesGroups.endEdit();
-    d_trianglesGroups.beginEdit()->clear(); d_trianglesGroups.endEdit();
-    d_quadsGroups.beginEdit()->clear(); d_quadsGroups.endEdit();
+
+    getWriteOnlyAccessor(d_edgesGroups).clear();
+    getWriteOnlyAccessor(d_trianglesGroups).clear();
+    getWriteOnlyAccessor(d_quadsGroups).clear();
 
     int vtn[3];
     Vector3 result;
@@ -223,7 +213,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         }
         else if (token == "vn")
         {
-            // normal 
+            // normal
             values >> result[0] >> result[1] >> result[2];
             my_normals.push_back(Vector3(result[0],result[1], result[2]));
         }
@@ -240,7 +230,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 std::string materialLibaryName;
                 values >> materialLibaryName;
                 std::string mtlfile = sofa::helper::system::SetDirectory::GetRelativeFromFile(materialLibaryName.c_str(), filename);
-                this->readMTL(mtlfile.c_str(), my_materials);
+                this->readMTL(mtlfile.c_str(), my_materials.wref());
             }
         }
         else if (token == "usemtl" || token == "g")
@@ -264,8 +254,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                     if (it->name == curMaterialName)
                     {
                         (*it).activated = true;
-                        if (!material.activated)
-                            material = *it;
+                        if (!material->activated)
+                            material.wref() = *it;
                         curMaterialId = it - my_materials.begin();
                         break;
                     }
@@ -328,18 +318,18 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 nIndices.push_back(vtn[2]);
             }
 
-            my_faceList.push_back(nodes);
-            my_normalsList.push_back(nIndices);
-            my_texturesList.push_back(tIndices);
+            my_faceList->push_back(nodes);
+            my_normalsList->push_back(nIndices);
+            my_texturesList->push_back(tIndices);
 
             if (nodes.size() == 2) // Edge
             {
                 if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
                 {
                     if (nodes[0]<nodes[1])
-                        addEdge(&my_edges, Edge(nodes[0], nodes[1]));
+                        addEdge(&my_edges.wref(), Edge(nodes[0], nodes[1]));
                     else
-                        addEdge(&my_edges, Edge(nodes[1], nodes[0]));
+                        addEdge(&my_edges.wref(), Edge(nodes[1], nodes[0]));
                 }
                 ++nbFaces[MeshObjLoader::EDGE];
                 faceType = MeshObjLoader::EDGE;
@@ -348,7 +338,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             {
                 if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
                 {
-                    addQuad(&my_quads, Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                    addQuad(&my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
                 }
                 ++nbFaces[MeshObjLoader::QUAD];
                 faceType = MeshObjLoader::QUAD;
@@ -358,7 +348,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
                 {
                     for (size_t j=2; j<nodes.size(); j++)
-                        addTriangle(&my_triangles, Triangle(nodes[0], nodes[j-1], nodes[j]));
+                        addTriangle(&my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
                 }
                 ++nbFaces[MeshObjLoader::TRIANGLE];
                 faceType = MeshObjLoader::TRIANGLE;
@@ -380,11 +370,15 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         }
 
     if (!d_handleSeams.getValue())
-    { // default mode, vertices are never duplicated, only one texcoord and normal is used per vertex
-        helper::vector<sofa::defaulttype::Vector2>& vTexCoords = *d_texCoords.beginEdit();
-        helper::vector<sofa::defaulttype::Vector3>& vNormals   = *d_normals.beginEdit();
-        helper::vector<sofa::defaulttype::Vector3>& vVertices  = *d_positions.beginEdit();
-        vVertices = my_positions;
+    {
+        /// default mode, vertices are never duplicated, only one texcoord and normal is used per vertex
+        auto vTexCoords = getWriteOnlyAccessor(d_texCoords);
+        auto vNormals   = getWriteOnlyAccessor(d_normals);
+        auto vVertices  = getWriteOnlyAccessor(d_positions);
+
+        /// Copy the complete array.
+        vVertices.wref() = my_positions.ref();
+
         size_t vertexCount = my_positions.size();
         if( my_texCoords.size() > 0 )
         {
@@ -402,11 +396,11 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         {
             vNormals.resize(0);
         }
-        for (size_t fi=0; fi<my_faceList.size(); ++fi)
+        for (size_t fi=0; fi<my_faceList->size(); ++fi)
         {
-            const helper::SVector<int>& nodes = my_faceList[fi];
-            const helper::SVector<int>& nIndices = my_normalsList[fi];
-            const helper::SVector<int>& tIndices = my_texturesList[fi];
+            const helper::SVector<int>& nodes = (*my_faceList)[fi];
+            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
+            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
             for (size_t i = 0; i < nodes.size(); ++i)
             {
                 unsigned int pi = nodes[i];
@@ -434,11 +428,11 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         // The map store the final index of each combinaison
         std::vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
         vertTexNormMap.resize(nbVIn);
-        for (size_t fi=0; fi<my_faceList.size(); ++fi)
+        for (size_t fi=0; fi<my_faceList->size(); ++fi)
         {
-            const helper::SVector<int>& nodes = my_faceList[fi];
-            const helper::SVector<int>& nIndices = my_normalsList[fi];
-            const helper::SVector<int>& tIndices = my_texturesList[fi];
+            const helper::SVector<int>& nodes = (*my_faceList)[fi];
+            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
+            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
             for (size_t i = 0; i < nodes.size(); ++i)
             {
                 unsigned int pi = nodes[i];
@@ -457,17 +451,17 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             nbVOut += s;
         }
 
-		dmsg_info() << nbVIn << " input positions, " << nbVOut << " final vertices.";
+        dmsg_info() << nbVIn << " input positions, " << nbVOut << " final vertices.";
 
         if (nbVIn != nbVOut)
             vsplit = true;
 
         // Then we can create the final arrays
         helper::vector<sofa::defaulttype::Vector3> vertices2;
-        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3> > > vnormals = d_normals;
-        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector2> > > vtexcoords = d_texCoords;
-        helper::WriteAccessor<Data<helper::vector<int> > > vertPosIdx = d_vertPosIdx;
-        helper::WriteAccessor<Data<helper::vector<int> > > vertNormIdx = d_vertNormIdx;
+        auto vnormals = getWriteAccessor(d_normals);
+        auto vtexcoords = getWriteAccessor(d_texCoords);
+        auto vertPosIdx = getWriteOnlyAccessor(d_vertPosIdx);
+        auto vertNormIdx = getWriteOnlyAccessor(d_vertNormIdx);
 
         vertices2.resize(nbVOut);
         vnormals.resize(nbVOut);
@@ -518,11 +512,11 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
         // Then we create the triangles and quads
         
-        for (size_t fi=0; fi<my_faceList.size(); ++fi)
+        for (size_t fi=0; fi<my_faceList->size(); ++fi)
         {
-            const helper::SVector<int>& verts = my_faceList[fi];
-            const helper::SVector<int>& nIndices = my_normalsList[fi];
-            const helper::SVector<int>& tIndices = my_texturesList[fi];
+            const helper::SVector<int>& verts = (*my_faceList)[fi];
+            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
+            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
             std::vector<int> nodes;
             nodes.resize(verts.size());
             for (size_t i = 0; i < verts.size(); ++i)
@@ -541,18 +535,18 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             if (nodes.size() == 2) // Edge
             {
                 if (nodes[0]<nodes[1])
-                    addEdge(&my_edges, Edge(nodes[0], nodes[1]));
+                    addEdge(&my_edges.wref(), Edge(nodes[0], nodes[1]));
                 else
-                    addEdge(&my_edges, Edge(nodes[1], nodes[0]));
+                    addEdge(&my_edges.wref(), Edge(nodes[1], nodes[0]));
             }
             else if (nodes.size()==4 && !this->d_triangulate.getValue()) // Quad
             {
-                addQuad(&my_quads, Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                addQuad(&my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
             }
             else // Triangulate
             {
                 for (size_t j=2; j<nodes.size(); j++)
-                    addTriangle(&my_triangles, Triangle(nodes[0], nodes[j-1], nodes[j]));
+                    addTriangle(&my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
             }
         }
         for (size_t i=0; i<vnormals.size(); ++i)
@@ -604,26 +598,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         }
     }
 
-    d_edgesGroups.endEdit();
-    d_trianglesGroups.endEdit();
-    d_quadsGroups.endEdit();
-    d_positions.endEdit();
-    d_edges.endEdit();
-    d_triangles.endEdit();
-    d_quads.endEdit();
-    d_normalsList.endEdit();
-    d_normalsIndexList.endEdit();
-    d_material.endEdit();
-    d_materials.endEdit();
-    d_texIndexList.endEdit();
-    d_texCoordsList.endEdit();
-    d_texCoords.endEdit();
-    d_faceList.endEdit();
-    //vertices.endEdit();
-    d_normals.endEdit();
     return true;
 }
-
 
 
 // -----------------------------------------------------
@@ -639,7 +615,7 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
     const char *single_string_format = "%127s"; // Better than "%s" for scanf
     const char *double_string_format = "%127s %127s"; // Better than "%s %s"
 
-    file = fopen(filename, "r");    
+    file = fopen(filename, "r");
     if (!file) {
         msg_info() << "readMTL(): can't open material file " << filename;
         return false;
@@ -657,8 +633,8 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
             /* eat up rest of line */
             if ( fgets(buf, sizeof(buf), file) == nullptr)
             {
-				if (feof(file))
-					msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case #.";
+                if (feof(file))
+                    msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case #.";
                 else
                     msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case #.";
             }
@@ -675,9 +651,9 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
             if ( fgets(buf, sizeof(buf), file) == nullptr)
             {
                 if (feof (file) )
-                    msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case n.";
+                    msg_error() << "Problem while reading file, fgets function has encounter end of file. case n.";
                 else
-                    msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case n.";
+                    msg_error() << "Problem while reading file, fgets function has encounter an error. case n.";
             }
             sscanf(buf, double_string_format, buf, buf);
             mat->name = buf;
@@ -689,12 +665,12 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
             {
                 float optical_density;
                 if ( fscanf(file, "%f", &optical_density) == EOF )
-                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case N i.";
+                    msg_error() << "Problem while reading file, fscanf function has encounter an error. case N i.";
                 break;
             }
             case 's':
                 if (fscanf(file, "%f", &mat->shininess) == EOF )
-                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case N s.";
+                    msg_error() << "Problem while reading file, fscanf function has encounter an error. case N s.";
 
                 mat->useShininess = true;
                 break;
@@ -703,9 +679,9 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                 if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) )
-                        msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case N.";
+                        msg_error() << "Problem while reading file, fgets function has encounter end of file. case N.";
                     else
-                        msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case N.";
+                        msg_error() << "Problem while reading file, fgets function has encounter an error. case N.";
                 }
                 break;
             }
@@ -715,17 +691,17 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
             {
             case 'd':
                 if ( fscanf(file, "%f %f %f", &mat->diffuse[0], &mat->diffuse[1], &mat->diffuse[2]) == EOF)
-                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K d.";
+                    msg_error() << "Problem while reading file, fscanf function has encounter an error. case K d.";
                 mat->useDiffuse = true;
                 break;
             case 's':
                 if ( fscanf(file, "%f %f %f", &mat->specular[0], &mat->specular[1], &mat->specular[2]) == EOF)
-                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K s.";
+                    msg_error() << "Problem while reading file, fscanf function has encounter an error. case K s.";
                 mat->useSpecular = true;
                 break;
             case 'a':
                 if ( fscanf(file, "%f %f %f", &mat->ambient[0], &mat->ambient[1], &mat->ambient[2]) == EOF)
-                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K a.";
+                    msg_error() << "Problem while reading file, fscanf function has encounter an error. case K a.";
                 mat->useAmbient = true;
                 break;
             default:
@@ -733,89 +709,89 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                 if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) )
-                        msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case K.";
+                        msg_error() << "Problem while reading file, fgets function has encounter end of file. case K.";
                     else
-                        msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case K.";
+                        msg_error() << "Problem while reading file, fgets function has encounter an error. case K.";
                 }
                 break;
             }
             break;
         case 'd':
         case 'T':
-			if (!mat)
-			{
-				msg_error("MeshOBJ") << "readMTL 'T' no material";
-				break;
-			}
+            if (!mat)
+            {
+                msg_error() << "Problem while reading file, readMTL 'T' no material";
+                break;
+            }
             // transparency value
             if ( fscanf(file, "%f", &mat->diffuse[3]) == EOF)
-                msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case T i.";
+                msg_error() << "Problem while reading file, fscanf function has encounter an error. case T i.";
             break;
 
-		case 'm':
-		{
-			if (!mat)
-			{
-				msg_error("MeshOBJ") << "readMTL 'm' no material";
-				break;
-			}
-			//texture map
-			char charFilename[128] = { 0 };
-			if (fgets(charFilename, sizeof(charFilename), file) == nullptr)
-			{
-				msg_error("MeshOBJ") << "fgets has encountered an error";
-			}
-			else
-			{
-				mat->useTexture = true;
+        case 'm':
+        {
+            if (!mat)
+            {
+                msg_error() << "Problem while reading file, readMTL 'm' no material";
+                break;
+            }
+            //texture map
+            char charFilename[128] = { 0 };
+            if (fgets(charFilename, sizeof(charFilename), file) == nullptr)
+            {
+                msg_error() << "Problem while reading file, fgets has encountered an error";
+            }
+            else
+            {
+                mat->useTexture = true;
 
-				//store the filename of the texture map in the material
-				std::string stringFilename(charFilename);
+                //store the filename of the texture map in the material
+                std::string stringFilename(charFilename);
 
-				//delete carriage return from the string assuming the next property of the .mtl file is at the next line
-				stringFilename.erase(stringFilename.end() - 1, stringFilename.end());
-				stringFilename.erase(stringFilename.begin(), stringFilename.begin() + 1);
-				mat->textureFilename = stringFilename;
-			}
+                //delete carriage return from the string assuming the next property of the .mtl file is at the next line
+                stringFilename.erase(stringFilename.end() - 1, stringFilename.end());
+                stringFilename.erase(stringFilename.begin(), stringFilename.begin() + 1);
+                mat->textureFilename = stringFilename;
+            }
 
-			break;
-		}
-		case 'b':
-		{
-			if (!mat)
-			{
-				msg_error("MeshOBJ") << "readMTL 'b' no material";
-				break;
-			}
-			//bump mapping texture map
-			char charFilename[128] = { 0 };
-			if (fgets(charFilename, sizeof(charFilename), file) == nullptr)
-			{
-				msg_error("MeshOBJ") << "fgets has encountered an error";
-			}
-			else
-			{
-				mat->useBumpMapping = true;
+            break;
+        }
+        case 'b':
+        {
+            if (!mat)
+            {
+                msg_error() << "Problem while reading file, readMTL 'b' no material";
+                break;
+            }
+            //bump mapping texture map
+            char charFilename[128] = { 0 };
+            if (fgets(charFilename, sizeof(charFilename), file) == nullptr)
+            {
+                msg_error() << "Problem while reading file, fgets has encountered an error";
+            }
+            else
+            {
+                mat->useBumpMapping = true;
 
-				//store the filename of the texture map in the material
-				std::string stringFilename(charFilename);
+                //store the filename of the texture map in the material
+                std::string stringFilename(charFilename);
 
-				//delete carriage return from the string assuming the next property of the .mtl file is at the next line
-				stringFilename.erase(stringFilename.end() - 1, stringFilename.end());
-				stringFilename.erase(stringFilename.begin(), stringFilename.begin() + 1);
-				mat->bumpTextureFilename = stringFilename;
-			}
+                //delete carriage return from the string assuming the next property of the .mtl file is at the next line
+                stringFilename.erase(stringFilename.end() - 1, stringFilename.end());
+                stringFilename.erase(stringFilename.begin(), stringFilename.begin() + 1);
+                mat->bumpTextureFilename = stringFilename;
+            }
 
-			break;
-		}
+            break;
+        }
         default:
             /* eat up rest of line */
             if ( fgets(buf, sizeof(buf), file) == nullptr)
             {
                 if (feof (file) )
-                    msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case default.";
+                    msg_error() << "Problem while reading file, fgets function has encounter end of file. case default.";
                 else
-                    msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case default.";
+                    msg_error() << "Problem while reading file, fgets function has encounter an error. case default.";
             }
             break;
         }
@@ -834,10 +810,5 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
 }
 
 
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::loader
 

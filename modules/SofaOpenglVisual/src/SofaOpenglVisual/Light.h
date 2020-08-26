@@ -81,8 +81,8 @@ public:
     Data<defaulttype::RGBAColor> d_color; ///< Set the color of the light. (default=[1.0,1.0,1.0,1.0])
     Data<GLuint> d_shadowTextureSize; ///< [Shadowing] Set size for shadow texture 
     Data<bool> d_drawSource; ///< Draw Light Source
-    Data<double> d_zNear; ///< [Shadowing] Light's ZNear
-    Data<double> d_zFar; ///< [Shadowing] Light's ZFar
+    Data<float> d_zNear; ///< [Shadowing] Light's ZNear
+    Data<float> d_zFar; ///< [Shadowing] Light's ZFar
     Data<bool> d_shadowsEnabled; ///< [Shadowing] Enable Shadow from this light
     Data<bool> d_softShadows; ///< [Shadowing] Turn on Soft Shadow from this light
     Data<float> d_shadowFactor; ///< [Shadowing] Shadow Factor (decrease/increase darkness)

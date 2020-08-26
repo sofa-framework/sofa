@@ -44,18 +44,19 @@ int MeshGmshLoaderClass = core::RegisterObject("Specific mesh loader for Gmsh fi
         .add< MeshGmshLoader >()
         ;
 
-bool MeshGmshLoader::load()
+bool MeshGmshLoader::doLoad()
 {
     string cmd;
-    bool fileRead = false;
     unsigned int gmshFormat = 0;
 
+    if (!canLoad())
+    {
+        msg_error(this) << "Can't load file " << m_filename.getFullPath().c_str();
+        return false;
+    }
     // -- Loading file
     const char* filename = m_filename.getFullPath().c_str();
     std::ifstream file(filename);
-
-    if (!canLoad())
-        return false;
 
     // -- Looking for Gmsh version of this file.
     std::getline(file, cmd); //Version
@@ -106,6 +107,7 @@ bool MeshGmshLoader::load()
 
         copyMeshToData(_mesh);
         delete _mesh;
+        return true;
     }
     else //if it enter this "else", it means there is a problem before in the factory or in canLoad()
     {
@@ -113,8 +115,12 @@ bool MeshGmshLoader::load()
         file.close();
         return false;
     }
+}
 
-    return fileRead;
+
+void MeshGmshLoader::doClearBuffers()
+{
+    /// Nothing to do if no output is added to the "filename" dataTrackerEngine.
 }
 
 void MeshGmshLoader::addInGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group,int tag,int /*eid*/) {

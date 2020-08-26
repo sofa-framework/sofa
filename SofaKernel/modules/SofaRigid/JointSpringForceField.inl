@@ -405,7 +405,6 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         Vector3 v1(p2[springs[i].m2].getCenter()[0], p2[springs[i].m2].getCenter()[1], p2[springs[i].m2].getCenter()[2]);
 
         vertices.push_back(v0);
-        colors.push_back(color);
         vertices.push_back(v1);
         colors.push_back(color);
 
