@@ -145,6 +145,23 @@ template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,double>, i
 template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,float >, int >::Name() { return "12f"; }
 template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,double>, int >::Name() { return "12d"; }
 
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,float >, std::size_t >::Name() { return "1f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,double>, std::size_t >::Name() { return "1d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,float >, std::size_t >::Name() { return "2f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,double>, std::size_t >::Name() { return "2d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,float >, std::size_t >::Name() { return "3f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,double>, std::size_t >::Name() { return "3d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,float >, std::size_t >::Name() { return "4f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,double>, std::size_t >::Name() { return "4d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,float >, std::size_t >::Name() { return "6f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,double>, std::size_t >::Name() { return "6d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,float >, std::size_t >::Name() { return "8f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,double>, std::size_t >::Name() { return "8d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,float >, std::size_t >::Name() { return "9f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,double>, std::size_t >::Name() { return "9d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,float >, std::size_t >::Name() { return "12f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,double>, std::size_t >::Name() { return "12d"; }
+
 template <typename IndexType>
 class matrix_bloc_traits < float, IndexType >
 {

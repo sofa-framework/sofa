@@ -24,6 +24,7 @@
 
 #include <sofa/defaulttype/config.h>
 #include <iostream>
+#include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa
 {
@@ -38,7 +39,7 @@ namespace defaulttype
 class BaseVector
 {
 public:
-    typedef int Index;
+    typedef sofa::defaulttype::index_type Index;
 
     virtual ~BaseVector() {}
 

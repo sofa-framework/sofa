@@ -101,7 +101,7 @@ index_type TopologicalChangeManager::removeItemsFromTriangleModel(sofa::componen
             return 0;
         }
 
-        int nbt = topo_curr->getNbTriangles();
+        auto nbt = topo_curr->getNbTriangles();
         for (unsigned int i=0; i<indices.size(); ++i)
         {
             items.insert(indices[i] < nbt ? indices[i] : (indices[i]+nbt)/2);

@@ -49,7 +49,7 @@ namespace linearsolver
 #define EMIT_EXTRA_MESSAGE false
 #endif
 
-template<typename TBloc, typename TVecBloc = helper::vector<TBloc>, typename TVecIndex = helper::vector<int> >
+template<typename TBloc, typename TVecBloc = helper::vector<TBloc>, typename TVecIndex = helper::vector<sofa::defaulttype::index_type> >
 class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
 {
 public:

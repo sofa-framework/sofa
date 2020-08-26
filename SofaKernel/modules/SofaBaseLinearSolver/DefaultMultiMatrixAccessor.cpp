@@ -402,7 +402,7 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
                         for(Index j2 =0 ; j2 < sizeK2 ; ++j2)
                         {
                             const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
-                            for(auto k2=0 ; k2 < sizeK2 ; ++k2)
+                            for(Index k2=0 ; k2 < sizeK2 ; ++k2)
                             {
                                 const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
                                 const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
@@ -455,15 +455,15 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
                 //===========================
                 //          I_12 += Jt * I_32
                 //===========================
-                const auto offR_I_12  = I_12.offRow;                       //      row offset of I12 matrix
-                const auto offC_I_12  = I_12.offCol;                       //    colum offset of I12 matrix
-                const auto nbR_I_12   = I_12.matrix->rowSize() - offR_I_12;//number of rows   of I12 matrix
-                const auto nbC_I_12   = I_12.matrix->colSize() - offC_I_12;//number of colums of I12 matrix
+                const Index offR_I_12  = I_12.offRow;                       //      row offset of I12 matrix
+                const Index offC_I_12  = I_12.offCol;                       //    colum offset of I12 matrix
+                const Index nbR_I_12   = I_12.matrix->rowSize() - offR_I_12;//number of rows   of I12 matrix
+                const Index nbC_I_12   = I_12.matrix->colSize() - offC_I_12;//number of colums of I12 matrix
 
-                const auto offR_I_32  = I_32.offRow;                     //      row offset of I32 matrix
-                const auto offC_I_32  = I_32.offCol;                     //    colum offset of I32 matrix
-                const auto nbR_I_32 = I_32.matrix->rowSize() - offR_I_32;//number of rows   of I32 matrix
-                const auto nbC_I_32 = I_32.matrix->colSize() - offC_I_32;//number of colums of I32 matrix
+                const Index offR_I_32  = I_32.offRow;                     //      row offset of I32 matrix
+                const Index offC_I_32  = I_32.offCol;                     //    colum offset of I32 matrix
+                const Index nbR_I_32 = I_32.matrix->rowSize() - offR_I_32;//number of rows   of I32 matrix
+                const Index nbC_I_32 = I_32.matrix->colSize() - offC_I_32;//number of colums of I32 matrix
 
 
                 if(m_doPrintInfo)/////////////////////////////////////////////////////////
@@ -480,12 +480,12 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
                 }
 
                 // Matrix multiplication   I_12 += Jt * I_32
-                for(auto _i = 0; _i < nbR_I_12 ; _i++)
+                for(Index _i = 0; _i < nbR_I_12 ; _i++)
                 {
-                    for(auto _j = 0; _j < nbC_I_12 ; _j++)
+                    for(Index _j = 0; _j < nbC_I_12 ; _j++)
                     {
                         double Jt_I32_ij = 0;
-                        for(auto _k = 0; _k < nbR_I_32 ; _k++)
+                        for(Index _k = 0; _k < nbR_I_32 ; _k++)
                         {
                             const double Jt_ik    = (double) matrixJ->element( _k, _i ) ;
                             const double  I_32_kj = (double) I_32.matrix->element( offR_I_32 + _k, offC_I_32+_j) ;
@@ -504,15 +504,15 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
                 //=========================================
                 //          I_21 +=      I_23 * J
                 //=========================================
-                const auto offR_I_21  = I_21.offRow;
-                const auto offC_I_21  = I_21.offCol;
-                const auto nbR_I_21 = I_21.matrix->rowSize() - offR_I_21;
-                const auto nbC_I_21 = I_21.matrix->colSize() - offC_I_21;
+                const Index offR_I_21  = I_21.offRow;
+                const Index offC_I_21  = I_21.offCol;
+                const Index nbR_I_21 = I_21.matrix->rowSize() - offR_I_21;
+                const Index nbC_I_21 = I_21.matrix->colSize() - offC_I_21;
 
-                const auto offR_I_23  = I_23.offRow;
-                const auto offC_I_23  = I_23.offCol;
-                const auto nbR_I_23   = I_23.matrix->rowSize() - offR_I_23;
-                const auto nbC_I_23   = I_23.matrix->colSize() - offC_I_23;
+                const Index offR_I_23  = I_23.offRow;
+                const Index offC_I_23  = I_23.offCol;
+                const Index nbR_I_23   = I_23.matrix->rowSize() - offR_I_23;
+                const Index nbC_I_23   = I_23.matrix->colSize() - offC_I_23;
 
                 if(m_doPrintInfo)/////////////////////////////////////////////////////////
                 {
@@ -528,12 +528,12 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
 
 
                 // Matrix multiplication  I_21 +=  I_23 * J
-                for(auto _i = 0; _i < nbR_I_21 ; _i++)
+                for(Index _i = 0; _i < nbR_I_21 ; _i++)
                 {
-                    for(auto _j = 0; _j < nbC_I_21 ; _j++)
+                    for(Index _j = 0; _j < nbC_I_21 ; _j++)
                     {
                         double I23_J_ij = 0;
-                        for(auto _k = 0; _k < nbC_I_23 ; _k++)
+                        for(Index _k = 0; _k < nbC_I_23 ; _k++)
                         {
                             const double I_23_ik = (double) I_23.matrix->element( offR_I_23 + _i, offC_I_23+_k) ;
                             const double J_kj    = (double) matrixJ->element( _k, _j ) ;

@@ -1085,7 +1085,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, index_type& tr
         }
     }
 
-    std::vector<unsigned int> finalTriIndices;
+    std::vector<index_type> finalTriIndices;
     finalTriIndices.clear();
 
     for (size_t i = 0 ; i < triIndices.size() ; i++)
@@ -1098,7 +1098,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, index_type& tr
         {
             finalTriIndices.push_back(triIndices[i]);
 
-            if ((int)triIndices[i] == oldTriangleIndex)
+            if (triIndices[i] == oldTriangleIndex)
             {
                 triangleIndex = oldTriangleIndex;
                 return;
@@ -1149,7 +1149,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, index_type& tr
 
         if (isPointInTriangle)
         {
-            if ( (int)i == oldTriangleIndex)
+            if ( i == oldTriangleIndex)
             {
                 triangleIndex = i;
                 return;
@@ -1366,7 +1366,7 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
                 break;
             }
 
-            msg_info_when((int)currentTriangleIndex != newTriangleIndexb)
+            msg_info_when(currentTriangleIndex != newTriangleIndexb)
                           << "(updateTriangleIncisionInformation): incision point which was in triangle " << currentTriangleIndex
                           << " has been updated to " << newTriangleIndexb  ;
 
