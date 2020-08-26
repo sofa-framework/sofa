@@ -631,7 +631,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     helper::fixed_array<index_type,8> map_idxcoarse_idxfine;
     const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexahedron( elementIndice );
 
-    for(int i=0; i<sizeass; ++i)
+    for(std::size_t i=0; i<sizeass; ++i)
     {
         for( auto it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
             if( (*it).second==i)
@@ -666,7 +666,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     linearsolver::NewMatMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
     A.resize(sizeass*3,sizeass*3);
     linearsolver::NewMatMatrix  Ainv;
-    for ( int i=0; i<sizeass; ++i)
+    for ( std::size_t i=0; i<sizeass; ++i)
     {
         int col = map_idxq_idxcutass[i];
 

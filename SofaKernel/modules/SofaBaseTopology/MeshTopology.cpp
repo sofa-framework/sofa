@@ -2241,7 +2241,7 @@ MeshTopology::Edge MeshTopology::getLocalEdgesInHexahedron (const HexahedronID i
 int MeshTopology::computeRelativeOrientationInTri(const PointID ind_p0, const PointID ind_p1, const PointID ind_t)
 {
     const Triangle& t = getTriangles()[ind_t];
-    int i = 0;
+    std::size_t i = 0;
     while(i < t.size())
     {
         if(ind_p0 == t[i])
@@ -2263,7 +2263,7 @@ int MeshTopology::computeRelativeOrientationInTri(const PointID ind_p0, const Po
 int MeshTopology::computeRelativeOrientationInQuad(const PointID ind_p0, const PointID ind_p1, const PointID ind_q)
 {
     const Quad& q = getQuads()[ind_q];
-    int i = 0;
+    std::size_t i = 0;
     while(i < q.size())
     {
         if(ind_p0 == q[i])

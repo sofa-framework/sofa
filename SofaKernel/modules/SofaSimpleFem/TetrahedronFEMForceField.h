@@ -157,7 +157,7 @@ protected:
     /// @name Full system matrix assembly support
     /// @{
 
-    typedef std::pair<int,Real> Col_Value;
+    typedef std::pair<index_type,Real> Col_Value;
     typedef helper::vector< Col_Value > CompressedValue;
     typedef helper::vector< CompressedValue > CompressedMatrix;
 

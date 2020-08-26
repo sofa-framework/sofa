@@ -87,9 +87,9 @@ void OBBCollisionModel<DataTypes>::resize(std::size_t size){
 
     VecCoord & vext = *(ext.beginEdit());
 
-    if ((int)vext.size() < size)
+    if (vext.size() < size)
     {
-        while((int)vext.size() < size)
+        while(vext.size() < size)
             vext.push_back(Coord(default_ext.getValue(),default_ext.getValue(),default_ext.getValue()));
     }
     else
@@ -123,7 +123,7 @@ void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
 
         std::vector<Coord> vs;
         vs.reserve(8);
-        for (int i=0; i<size; i++)
+        for (std::size_t i=0; i<size; i++)
         {
             vs.clear();
             vertices(i,vs);
@@ -457,7 +457,7 @@ void OBBCollisionModel<DataTypes>::computeBBox(const core::ExecParams*, bool onl
 
     std::vector<Coord> p;
     const std::size_t npoints = _mstate->getSize();
-    for(int i = 0 ; i < npoints ; ++i )
+    for(std::size_t i = 0 ; i < npoints ; ++i )
     {
         vertices(i,p);
         for (unsigned int j=0; j<8; j++)

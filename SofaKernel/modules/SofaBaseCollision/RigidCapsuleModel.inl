@@ -73,9 +73,9 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::resize(
     VecReal & capsule_radii = *d_capsule_radii.beginEdit();
     VecReal & capsule_heights = *d_capsule_heights.beginEdit();
 
-    if ((int)capsule_radii.size() < size)
+    if (capsule_radii.size() < size)
     {
-        while((int)capsule_radii.size() < size)
+        while(capsule_radii.size() < size)
             capsule_radii.push_back(d_default_radius.getValue());
     }
     else
@@ -83,9 +83,9 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::resize(
         capsule_radii.reserve(size);
     }
 
-    if ((int)capsule_heights.size() < size)
+    if (capsule_heights.size() < size)
     {
-        while((int)capsule_heights.size() < size)
+        while(capsule_heights.size() < size)
             capsule_heights.push_back(d_default_height.getValue());
     }
     else
@@ -184,7 +184,7 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(co
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());//maybe ??
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
 
-        for (int i=0; i<size; i++){
+        for (std::size_t i=0; i<size; i++){
             vparams->drawTool()->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);
         }
 

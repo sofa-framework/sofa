@@ -58,6 +58,8 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
+    using index_type = sofa::defaulttype::index_type;
+
     class Mat3 : public sofa::helper::fixed_array<Deriv,3>
     {
     public:
@@ -195,8 +197,8 @@ public:
             ,ff(ff)
         {
         }
-        void applyCreateFunction(unsigned int, EdgeRestInformation &t, const core::topology::BaseMeshTopology::Edge &,
-                const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+        void applyCreateFunction(index_type, EdgeRestInformation &t, const core::topology::BaseMeshTopology::Edge &,
+                const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &);
 
     protected:
         TriangularBiquadraticSpringsForceField<DataTypes>* ff;
@@ -214,11 +216,11 @@ public:
         {
         }
 
-        void applyCreateFunction(unsigned int, TriangleRestInformation &t,
+        void applyCreateFunction(index_type, TriangleRestInformation &t,
                 const core::topology::BaseMeshTopology::Triangle &,
-                const sofa::helper::vector<unsigned int> &,
+                const sofa::helper::vector<index_type> &,
                 const sofa::helper::vector<double> &);
-        void applyDestroyFunction(unsigned int, TriangleRestInformation &);
+        void applyDestroyFunction(index_type, TriangleRestInformation &);
 
 
     protected:

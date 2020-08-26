@@ -96,7 +96,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                         // find nearest cell and barycentric coords
                         Real distance = 1e10;
 
-                        int index = m_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
+                        index_type index = m_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
 
                         if ( index != InvalidID )
                         {

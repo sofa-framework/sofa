@@ -101,7 +101,7 @@ void QuadPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /
     VecDeriv& f = *d_f.beginEdit();
     Deriv force;
 
-    const sofa::helper::vector <unsigned int>& my_map = quadPressureMap.getMap2Elements();
+    const sofa::helper::vector <index_type>& my_map = quadPressureMap.getMap2Elements();
     const sofa::helper::vector<QuadPressureInformation>& my_subset = quadPressureMap.getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
@@ -146,7 +146,7 @@ void QuadPressureForceField<DataTypes>::initQuadInformation()
     if(!quadGeo)
         return;
 
-    const sofa::helper::vector <unsigned int>& my_map = quadPressureMap.getMap2Elements();
+    const sofa::helper::vector <index_type>& my_map = quadPressureMap.getMap2Elements();
     sofa::helper::vector<QuadPressureInformation>& my_subset = *(quadPressureMap).beginEdit();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
@@ -186,7 +186,7 @@ void QuadPressureForceField<DataTypes>::selectQuadsAlongPlane()
     }
 
     sofa::helper::vector<QuadPressureInformation>& my_subset = *(quadPressureMap).beginEdit();
-    helper::vector<unsigned int> inputQuads;
+    helper::vector<index_type> inputQuads;
 
     for (size_t n=0; n<m_topology->getNbQuads(); ++n)
     {
@@ -210,7 +210,7 @@ template <class DataTypes>
 void QuadPressureForceField<DataTypes>::selectQuadsFromString()
 {
     sofa::helper::vector<QuadPressureInformation>& my_subset = *(quadPressureMap).beginEdit();
-    helper::vector<unsigned int> _quadList = quadList.getValue();
+    helper::vector<index_type> _quadList = quadList.getValue();
 
     quadPressureMap.setMap2Elements(_quadList);
 
@@ -253,7 +253,7 @@ void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     std::vector<sofa::defaulttype::Vector3> vertices;
     sofa::defaulttype::RGBAColor color = sofa::defaulttype::RGBAColor::green();
 
-    const sofa::helper::vector <unsigned int>& my_map = quadPressureMap.getMap2Elements();
+    const sofa::helper::vector <index_type>& my_map = quadPressureMap.getMap2Elements();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {

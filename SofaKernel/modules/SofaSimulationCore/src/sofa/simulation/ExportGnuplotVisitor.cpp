@@ -35,7 +35,7 @@ simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::N
     if (node->interactionForceField.getSize() != 0)
     {
         std::size_t size = node->interactionForceField.getSize();
-        for(int i = 0; i < size; i++)
+        for(std::size_t i = 0; i < size; i++)
         {
             if (node->interactionForceField.getValue()[i] )
             {

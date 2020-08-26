@@ -87,14 +87,6 @@ public:
         return sofa::defaulttype::InvalidID;
     }
 
-    /// Adding a point of the local referentiel(barycentric coordinate) to the mapping
-    //TODO use this functions for barycentric contact mapper
-    //virtual index_type addBaryPoint(const sofa::defaulttype::Vector3& /*baryP*/, index_type /*elementId*/, Real& /*r*/)
-    //{
-    //    dmsg_warning("BaseContactMapper") << " addBaryPoint is called but not implemented" ;
-    //    return sofa::defaulttype::InvalidID;
-    //}
-
     /// Adding a point of the global referentiel to the mapping, also giving the local referentiel
     /// Note that it cannot have the same name as addPoint otherwise it creates errors when a subclass only implement the version without barycoords
     virtual index_type addPointB(const Coord& P, index_type elementId, Real& r, const sofa::defaulttype::Vector3& /*baryP*/)

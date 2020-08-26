@@ -68,7 +68,7 @@ void QuadSetTopologyContainer::init()
         {
             for(PointID j=0; j<4; ++j)
             {
-                int a = m_quads[i][j];
+                index_type a = m_quads[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }

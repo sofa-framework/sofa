@@ -119,12 +119,12 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(index_type index, Col
         for (unsigned int i1=0; i1<verticesAroundVertex1.size(); i1++)
         {
 
-            unsigned int v1 = verticesAroundVertex1[i1];
+            index_type v1 = verticesAroundVertex1[i1];
 
             for (unsigned int i2=0; i2<verticesAroundVertex2.size(); i2++)
             {
 
-                if (v1 == verticesAroundVertex2[i2] || v1 == (unsigned int)index2 || index == (int)verticesAroundVertex2[i2])
+                if (v1 == verticesAroundVertex2[i2] || v1 == index2 || index == verticesAroundVertex2[i2])
                 {
                     return false;
                 }

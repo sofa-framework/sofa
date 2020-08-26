@@ -76,7 +76,9 @@ public:
     typedef Data<VecDeriv>                  DataVecDeriv;
     typedef VecCoord Vector;
 
-    typedef unsigned int Index;
+    using index_type = sofa::defaulttype::index_type;
+
+    typedef index_type Index;
     typedef BaseMeshTopology::Edge Element;
     typedef helper::vector<BaseMeshTopology::Edge> VecElement;
     typedef Vec<3, Real> Vec3;
@@ -156,9 +158,9 @@ protected:
         BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, EdgeData<helper::vector<BeamInfo> >* data)
             :TopologyDataHandler<BaseMeshTopology::Edge, helper::vector<BeamInfo> >(data),ff(ff) {}
 
-        void applyCreateFunction(unsigned int edgeIndex, BeamInfo&,
+        void applyCreateFunction(index_type edgeIndex, BeamInfo&,
                                  const BaseMeshTopology::Edge& e,
-                                 const helper::vector<unsigned int> &,
+                                 const helper::vector<index_type> &,
                                  const helper::vector< double > &);
 
     protected:
@@ -207,7 +209,7 @@ public:
     void init() override;
     void bwdInit() override;
     void reinit() override;
-    virtual void reinitBeam(unsigned int i);
+    virtual void reinitBeam(index_type i);
     void addForce(const MechanicalParams* mparams, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
     void addDForce(const MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
     void addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix ) override;
@@ -217,8 +219,8 @@ public:
 
     void setUpdateStiffnessMatrix(bool val);
     void setComputeGlobalMatrix(bool val);
-    void setBeam(unsigned int i, double E, double L, double nu, double r, double rInner);
-    void initBeams(unsigned int size);
+    void setBeam(index_type i, double E, double L, double nu, double r, double rInner);
+    void initBeams(std::size_t size);
 
 protected:
 

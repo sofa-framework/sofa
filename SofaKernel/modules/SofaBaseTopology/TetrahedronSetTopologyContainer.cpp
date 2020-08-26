@@ -76,7 +76,7 @@ void TetrahedronSetTopologyContainer::init()
         {
             for(PointID j=0; j<4; ++j)
             {
-                int a = m_tetrahedron[i][j];
+                index_type a = m_tetrahedron[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }

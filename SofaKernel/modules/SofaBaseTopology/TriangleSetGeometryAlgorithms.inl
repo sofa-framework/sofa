@@ -2120,7 +2120,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::getTriangleInDirection(PointID p, 
             if (is_inside) return ind_t;
         }
     }
-    return (TriangleID)-1;
+    return -1;
 }
 
 /// Write the current mesh into a msh file

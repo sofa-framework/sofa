@@ -149,7 +149,7 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
 
         std::vector<Vector3> points;
         std::vector<float> radius;
-        for (int i=0; i<npoints; i++)
+        for (std::size_t i=0; i<npoints; i++)
         {
             TSphere<DataTypes> t(this,i);
             if (t.isActive())
@@ -199,7 +199,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
-        for (int i=0; i<size; i++)
+        for (std::size_t i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
             const typename TSphere<DataTypes>::Real r = p.r() + distance;
@@ -241,7 +241,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
     if (!empty())
     {
         const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
-        for (int i=0; i<size; i++)
+        for (std::size_t i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
             const Vector3& pt = p.p();

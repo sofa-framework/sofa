@@ -69,7 +69,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
     InCoord translation0 = this->fromModel->read(core::ConstVecCoordId::position())->getValue()[0] - _sparseGrid->getPointPos(0);
 
-    for(int i=0; i<_finestSparseGrid->getNbPoints(); ++i)
+    for(std::size_t i=0; i<_finestSparseGrid->getNbPoints(); ++i)
         _qFine0.push_back( _finestSparseGrid->getPointPos(i)+translation0 );
 
     _qFine = _qFine0;

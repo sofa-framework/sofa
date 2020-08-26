@@ -262,18 +262,6 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
 
     springArray.endEdit();
 }
-template<class DataTypes>
-void VectorSpringForceField<DataTypes>::handleEvent( core::objectmodel::Event* e )
-{
-    if (useTopology)
-    {
-        if (sofa::core::objectmodel::KeypressedEvent::checkEventType(e))
-        {
-            sofa::core::objectmodel::KeypressedEvent* ke = static_cast<sofa::core::objectmodel::KeypressedEvent*>( e );
-
-        }
-    }
-}
 
 template<class DataTypes>
 //void VectorSpringForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& p, const VecDeriv& v)

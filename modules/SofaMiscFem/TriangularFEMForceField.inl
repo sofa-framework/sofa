@@ -56,7 +56,7 @@ using namespace sofa::core::topology;
 // --------------------------------------------------------------------------------------
 
 template< class DataTypes>
-void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, TriangleInformation &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(index_type triangleIndex, TriangleInformation &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -316,7 +316,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
 
     for (Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
     {
-        triangleHandler->applyCreateFunction(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0, (const sofa::helper::vector< double >)0);
+        triangleHandler->applyCreateFunction(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::helper::vector< index_type > )0, (const sofa::helper::vector< double >)0);
     }
 
     edgeInfo.endEdit();
@@ -361,7 +361,7 @@ SReal TriangularFEMForceField<DataTypes>::getPotentialEnergy(const core::Mechani
 // --- Get the rotation of node
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned int nodeIdx)
+void TriangularFEMForceField<DataTypes>::getRotation(Transformation& R, index_type nodeIdx)
 {
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
     int numNeiTri=m_topology->getTrianglesAroundVertex(nodeIdx).size();

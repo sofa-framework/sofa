@@ -67,9 +67,9 @@ void CylinderCollisionModel<DataTypes>::resize(std::size_t size)
     VecReal & Cylinder_heights = *d_cylinder_heights.beginEdit();
     VecAxisCoord & Cylinder_local_axes = *d_cylinder_local_axes.beginEdit();
 
-    if (int(Cylinder_radii.size()) < size)
+    if (Cylinder_radii.size() < size)
     {
-        while(int(Cylinder_radii.size())< size)
+        while(Cylinder_radii.size()< size)
             Cylinder_radii.push_back(d_default_radius.getValue());
     }
     else
@@ -77,9 +77,9 @@ void CylinderCollisionModel<DataTypes>::resize(std::size_t size)
         Cylinder_radii.reserve(size);
     }
 
-    if (int(Cylinder_heights.size()) < size)
+    if (Cylinder_heights.size() < size)
     {
-        while(int(Cylinder_heights.size()) < size)
+        while(Cylinder_heights.size() < size)
             Cylinder_heights.push_back(d_default_height.getValue());
     }
     else
@@ -87,9 +87,9 @@ void CylinderCollisionModel<DataTypes>::resize(std::size_t size)
         Cylinder_heights.reserve(size);
     }
 
-    if (int(Cylinder_local_axes.size()) < size)
+    if (Cylinder_local_axes.size() < size)
     {
-        while(int(Cylinder_local_axes.size()) < size)
+        while(Cylinder_local_axes.size() < size)
             Cylinder_local_axes.push_back(d_default_local_axis.getValue());
     }
     else
@@ -142,7 +142,7 @@ void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         typename TCylinder<DataTypes>::Real r;
-        for (int i=0; i<ncyl; i++)
+        for (std::size_t i=0; i<ncyl; i++)
         {
             r = radius(i);
             SReal h2 = height(i)/2.0;

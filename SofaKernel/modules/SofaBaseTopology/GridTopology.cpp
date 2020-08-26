@@ -346,7 +346,7 @@ void GridTopology::computePointList()
     SeqPoints& seq_P= *(seqPoints.beginWriteOnly());
     seq_P.resize(nbPoints);
 
-    for (int i=0; i<nbPoints; i++)
+    for (std::size_t i=0; i<nbPoints; i++)
     {
         seq_P[i] = this->getPoint(i);
     }

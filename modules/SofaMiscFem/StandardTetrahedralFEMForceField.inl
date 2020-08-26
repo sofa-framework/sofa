@@ -51,10 +51,10 @@ namespace forcefield
 {
 
 template< class DataTypes>
-void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCreateFunction(unsigned int tetrahedronIndex,
+void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
                                                                                             TetrahedronRestInformation & tinfo,
                                                                                             const core::topology::BaseMeshTopology::Tetrahedron &,
-                                                                                            const sofa::helper::vector<unsigned int> &,
+                                                                                            const sofa::helper::vector<Index> &,
                                                                                             const sofa::helper::vector<double> &)
 {
     if (ff) {
@@ -251,7 +251,7 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
     /// initialize the data structure associated with each tetrahedron
     for (size_t i=0;i<m_topology->getNbTetrahedra();++i) {
             tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
-                        m_topology->getTetrahedron(i),  (const helper::vector< unsigned int > )0,
+                        m_topology->getTetrahedron(i),  (const helper::vector< Index > )0,
                         (const helper::vector< double >)0);
     }
     /// set the call back function upon creation of a tetrahedron
@@ -542,8 +542,8 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
     for(l=0; l<nbEdges; l++ )
     {
         einfo=&edgeInf[l];
-        unsigned int v0=edgeArray[l][0];
-        unsigned int v1=edgeArray[l][1];
+        Index v0=edgeArray[l][0];
+        Index v1=edgeArray[l][1];
 
         deltax= dx[v0] - dx[v1];
         dv0 = einfo->DfDx * deltax;

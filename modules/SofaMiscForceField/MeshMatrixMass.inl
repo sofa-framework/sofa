@@ -1992,7 +1992,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
     sofa::defaulttype::BaseMatrix* mat = r.matrix;
     Real mFactor = Real(mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue()));
 
-    if(int(mat->colSize()) != (m_topology->getNbPoints()*N) || int(mat->rowSize()) != (m_topology->getNbPoints()*N))
+    if((mat->colSize()) != (m_topology->getNbPoints()*N) || (mat->rowSize()) != (m_topology->getNbPoints()*N))
     {
         msg_error() <<"Wrong size of the input Matrix: need resize in addMToMatrix function.";
         mat->resize(m_topology->getNbPoints()*N,m_topology->getNbPoints()*N);

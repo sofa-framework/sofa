@@ -67,9 +67,9 @@ void CapsuleCollisionModel<DataTypes>::resize(std::size_t size)
 
     VecReal & capsule_radii = *_capsule_radii.beginEdit();
 
-    if ((int)capsule_radii.size() < size)
+    if (capsule_radii.size() < size)
     {
-        while((int)capsule_radii.size() < size)
+        while(capsule_radii.size() < size)
             capsule_radii.push_back(_default_radius.getValue());
     }
     else
@@ -148,7 +148,7 @@ void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         typename TCapsule<DataTypes>::Real r;
 
         //const typename TCapsule<DataTypes>::Real distance = (typename TCapsule<DataTypes>::Real)this->proximity.getValue();
-        for (int i=0; i<ncap; i++)
+        for (std::size_t i=0; i<ncap; i++)
         {
             const Coord p1 = point1(i);
             const Coord p2 = point2(i);
@@ -195,7 +195,7 @@ void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vp
         // Check topological modifications
         //const int npoints = _mstate->getSize()/2;
 
-        for (int i=0; i<size; i++){
+        for (std::size_t i=0; i<size; i++){
             vparams->drawTool()->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);
         }
 

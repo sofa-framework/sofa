@@ -1408,7 +1408,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
 
         // Tesselation of each cube into 6 tetrahedra
         tetrahedra->reserve(nbcubes*6);
-        for (int i=0; i<nbcubes; i++)
+        for (std::size_t i=0; i<nbcubes; i++)
         {
             core::topology::BaseMeshTopology::Hexa c = m_topology->getHexahedron(i);
             if (!((i%nx)&1))

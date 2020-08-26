@@ -127,7 +127,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
         }
         else
         {
-            clearMap2dAndReserve ( int(out.size()) );
+            clearMap2dAndReserve ( (out.size()) );
             size_t nbTriangles = triangles.size();
             bases.resize ( triangles.size() +quads.size() );
             centers.resize ( triangles.size() +quads.size() );
@@ -162,7 +162,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                     Vec3d v = bases[t] * ( outPos - in[triangles[t][0]] );
                     double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
                     if ( d>0 ) d = ( outPos-centers[t] ).norm2();
-                    if ( d<distance ) { coefs = v; distance = d; index = int(t); }
+                    if ( d<distance ) { coefs = v; distance = d; index = (t); }
                 }
                 for ( std::size_t q = 0; q < quads.size(); q++ )
                 {
@@ -171,7 +171,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                     if ( d>0 ) d = ( outPos-centers[nbTriangles+q] ).norm2();
                     if ( d<distance ) { coefs = v; distance = d; index = nbTriangles+q; }
                 }
-                if ( index < int(nbTriangles) )
+                if ( index < (nbTriangles) )
                     addPointInTriangle ( index, coefs.ptr() );
                 else
                     addPointInQuad ( index-nbTriangles, coefs.ptr() );
@@ -215,16 +215,16 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                 Vector3 v = bases[t] * ( pos - in[tetras[t][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
                 if ( d>0 ) d = ( pos-centers[t] ).norm2();
-                if ( d<distance ) { coefs = v; distance = d; index = int(t); }
+                if ( d<distance ) { coefs = v; distance = d; index = (t); }
             }
             for ( std::size_t h = 0; h < hexas.size(); h++ )
             {
                 Vector3 v = bases[nbTetras+h] * ( pos - in[hexas[h][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( -v[2],v[0]-1 ),std::max ( v[1]-1,v[2]-1 ) ) );
                 if ( d>0 ) d = ( pos-centers[nbTetras+h] ).norm2();
-                if ( d<distance ) { coefs = v; distance = d; index = int(nbTetras+h); }
+                if ( d<distance ) { coefs = v; distance = d; index = (nbTetras+h); }
             }
-            if ( index < int(nbTetras) )
+            if ( index < (nbTetras) )
                 addPointInTetra ( index, coefs.ptr() );
             else
                 addPointInCube ( index-nbTetras, coefs.ptr() );

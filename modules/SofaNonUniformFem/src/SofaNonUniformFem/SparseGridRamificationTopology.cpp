@@ -142,8 +142,8 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
         for(int y=0; y<getNy()-1; ++y)
             for(int x=0; x<getNx()-1; ++x)
             {
-                const int cubeIdxRG = _regularGrid->cube(x,y,z);
-                const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
+                const index_type cubeIdxRG = _regularGrid->cube(x,y,z);
+                const index_type cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if(cubeIdx != InvalidID) // if existing in SG (ie not outside)
                 {
@@ -523,7 +523,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
         for( int child = 0; child < 8 ; child ++)
         {
-            int childIdx = children[child];
+            index_type childIdx = children[child];
 
             if( childIdx != InvalidID)
             {
@@ -593,7 +593,7 @@ void SparseGridRamificationTopology::buildFromFiner()
         {
             for(int x=0; x<_finerSparseGrid->getNx()-1; ++x)
             {
-                int fineIdx = _finerSparseGrid->_indicesOfRegularCubeInSparseGrid[ _finerSparseGrid->_regularGrid->cube(x,y,z) ];
+                index_type fineIdx = _finerSparseGrid->_indicesOfRegularCubeInSparseGrid[ _finerSparseGrid->_regularGrid->cube(x,y,z) ];
                 if( fineIdx != InvalidID)
                 {
 
@@ -880,7 +880,7 @@ typename SparseGridRamificationTopology::index_type SparseGridRamificationTopolo
 
     SparseGridRamificationTopology* finestSparseGridTopology = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[0].get());
 
-    int finestSparseCube = finestSparseGridTopology->SparseGridTopology::findCube(pos,fx,fy,fz);
+    index_type finestSparseCube = finestSparseGridTopology->SparseGridTopology::findCube(pos,fx,fy,fz);
 
     if( finestSparseCube == InvalidID ) return InvalidID;
 
@@ -901,7 +901,7 @@ typename SparseGridRamificationTopology::index_type SparseGridRamificationTopolo
 
     SparseGridRamificationTopology* finestSparseGridTopology = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[0].get());
 
-    int finestSparseCube = finestSparseGridTopology->SparseGridTopology::findNearestCube(pos,fx,fy,fz);
+    index_type finestSparseCube = finestSparseGridTopology->SparseGridTopology::findNearestCube(pos,fx,fy,fz);
 
     if( finestSparseCube == InvalidID ) return InvalidID;
 
@@ -955,8 +955,8 @@ void SparseGridRamificationTopology::findCoarsestParents()
         {
             for(int x=0; x<getNx()-1; ++x)
             {
-                const int cubeIdxRG = _regularGrid->cube(x,y,z);
-                const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
+                const index_type cubeIdxRG = _regularGrid->cube(x,y,z);
+                const index_type cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx!= InvalidID)
                 {
@@ -1007,8 +1007,8 @@ void SparseGridRamificationTopology::printNeighborhood()
             for(int x=0; x<getNx()-1; ++x)
             {
 
-                const int cubeIdxRG = _regularGrid->cube(x,y,z);
-                const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
+                const index_type cubeIdxRG = _regularGrid->cube(x,y,z);
+                const index_type cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx==InvalidID)
                     sout << "     ";
@@ -1025,8 +1025,8 @@ void SparseGridRamificationTopology::printNeighborhood()
 
             for(int x=0; x<getNx()-1; ++x)
             {
-                const int cubeIdxRG = _regularGrid->cube(x,y,z);
-                const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
+                const index_type cubeIdxRG = _regularGrid->cube(x,y,z);
+                const index_type cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx== InvalidID)
                     sout << "     ";
@@ -1062,8 +1062,8 @@ void SparseGridRamificationTopology::printNeighbors()
         {
             for(int x=0; x<getNx()-1; ++x)
             {
-                const int cubeIdxRG = _regularGrid->cube(x,y,z);
-                const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
+                const index_type cubeIdxRG = _regularGrid->cube(x,y,z);
+                const index_type cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx== InvalidID)
                     sout << "  ";
@@ -1091,8 +1091,8 @@ void SparseGridRamificationTopology::printNbConnexions()
         {
             for(int x=0; x<getNx()-1; ++x)
             {
-                const int cubeIdxRG = _regularGrid->cube(x,y,z);
-                const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
+                const index_type cubeIdxRG = _regularGrid->cube(x,y,z);
+                const index_type cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx== InvalidID)
                     sout << "  ";
@@ -1124,8 +1124,8 @@ void SparseGridRamificationTopology::printParents()
             {
                 for(int x=0; x<finestSGRT->getNx()-1; ++x)
                 {
-                    const int cubeIdxRG = finestSGRT->_regularGrid->cube(x,y,z);
-                    const int cubeIdx = finestSGRT->_indicesOfRegularCubeInSparseGrid[cubeIdxRG];
+                    const index_type cubeIdxRG = finestSGRT->_regularGrid->cube(x,y,z);
+                    const index_type cubeIdx = finestSGRT->_indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                     if( cubeIdx== InvalidID)
                         sout << " ";
@@ -1154,8 +1154,8 @@ void SparseGridRamificationTopology::printParents()
         {
             for(int x=0; x<getNx()-1; ++x)
             {
-                const int cubeIdxRG = _regularGrid->cube(x,y,z);
-                const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
+                const index_type cubeIdxRG = _regularGrid->cube(x,y,z);
+                const index_type cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx== InvalidID)
                     sout << " ";
@@ -1187,8 +1187,8 @@ void SparseGridRamificationTopology::printHexaIdx()
         {
             for(int x=0; x<getNx()-1; ++x)
             {
-                const int cubeIdxRG = _regularGrid->cube(x,y,z);
-                const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
+                const index_type cubeIdxRG = _regularGrid->cube(x,y,z);
+                const index_type cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx== InvalidID)
                     sout << "  ";

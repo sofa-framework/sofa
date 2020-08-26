@@ -69,7 +69,7 @@ void TriangleSetTopologyContainer::init()
         {
             for(PointID j=0; j<3; ++j)
             {
-                int a = m_triangle[i][j];
+                index_type a = m_triangle[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }
