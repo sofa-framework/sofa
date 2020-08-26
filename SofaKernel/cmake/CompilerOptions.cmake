@@ -1,5 +1,10 @@
 #### Compiler options
 
+if(COMPILEROPTIONS_LOADED)
+    return()
+endif()
+set(COMPILEROPTIONS_LOADED 1)
+
 ## GCC-specific
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     ## Find out the version of g++ (and save it in GCXX_VERSION)

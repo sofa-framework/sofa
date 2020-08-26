@@ -88,6 +88,11 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
+if(FINDPACKAGEHANDLESTANDARDARGS_LOADED)
+    return()
+endif()
+set(FINDPACKAGEHANDLESTANDARDARGS_LOADED 1)
+
 include(FindPackageMessage)
 include(CMakeParseArguments)
 

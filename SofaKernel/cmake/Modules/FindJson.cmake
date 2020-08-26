@@ -13,6 +13,11 @@
 #  JSON_INCLUDE_DIR - the json include directory
 #  JSON_VERSION - json version
 
+if(FINDJSON_LOADED)
+    return()
+endif()
+set(FINDJSON_LOADED 1)
+
 if(NOT Json_FIND_VERSION)
     if(NOT Json_FIND_VERSION_MAJOR)
         set(Json_FIND_VERSION_MAJOR 0)

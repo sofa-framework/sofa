@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 
+if(GENERATEPLUGINCONFIG_LOADED)
+    return()
+endif()
+set(GENERATEPLUGINCONFIG_LOADED 1)
+
 macro(sofa_generate_plugin_config config_filename)
     # Generate default list of plugins (according to the options)
     get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)
