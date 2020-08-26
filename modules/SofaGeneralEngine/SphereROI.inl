@@ -24,7 +24,7 @@
 
 #include <SofaGeneralEngine/SphereROI.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -461,7 +461,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->saveLastState();
 
     const VecCoord* x0 = &f_X0.getValue();
-    const sofa::defaulttype::RGBAColor& color = sofa::defaulttype::RGBAColor::cyan();
+    const sofa::helper::types::RGBAColor& color = sofa::helper::types::RGBAColor::cyan();
 
     if(p_drawSphere.getValue()) // old classical drawing by points
     {

@@ -24,7 +24,7 @@
 
 #include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/helper/rmath.h>
 #include <cassert>
 #include <iostream>
@@ -366,7 +366,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
     if (!bDraw.getValue()) return;
 
     vparams->drawTool()->saveLastState();
-    sofa::defaulttype::RGBAColor colorValue;
+    sofa::helper::types::RGBAColor colorValue;
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     Real1 cx2=0, cy2=0, cz2=0;

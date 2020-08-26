@@ -25,7 +25,7 @@
 #include <SofaGeneralDeformable/TriangularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 
@@ -731,22 +731,22 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
             {
                 if (d<edgeInf[i].restlength*0.9999)
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor::red());
+                    colors.push_back(sofa::helper::types::RGBAColor::red());
                 }
                 else
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor::green());
+                    colors.push_back(sofa::helper::types::RGBAColor::green());
                 }
             }
             else
             {
                 if (d<edgeInf[i].restlength*0.9999)
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
+                    colors.push_back(sofa::helper::types::RGBAColor(1,0.5, 0,1));
                 }
                 else
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
+                    colors.push_back(sofa::helper::types::RGBAColor(0,1,0.5,1));
                 }
             }
 

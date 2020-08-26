@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -98,7 +98,7 @@ public:
     Data<Coord> vradius; ///< ellipsoid radius
     Data<Real> stiffness; ///< force stiffness (positive to repulse outward, negative inward)
     Data<Real> damping; ///< force damping
-    Data<defaulttype::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+    Data<sofa::helper::types::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
 protected:
     EllipsoidForceField();
 

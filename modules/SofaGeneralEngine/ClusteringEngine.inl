@@ -25,7 +25,7 @@
 #include <SofaGeneralEngine/ClusteringEngine.h>
 #include <iostream>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <fstream>
 
 #include <sofa/helper/logging/Messaging.h>
@@ -392,8 +392,8 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
             g = (float)((i*1357)%13)/13;
             b = (float)((i*4829)%17)/17;
 
-            colors.push_back(sofa::defaulttype::RGBAColor(r, g, b, 1.0));
-            colors.push_back(sofa::defaulttype::RGBAColor(r, g, b, 1.0));
+            colors.push_back(sofa::helper::types::RGBAColor(r, g, b, 1.0));
+            colors.push_back(sofa::helper::types::RGBAColor(r, g, b, 1.0));
 
             VI::const_iterator it, itEnd;
             for (it = clust[i].begin()+1, itEnd = clust[i].end(); it != itEnd ; ++it)

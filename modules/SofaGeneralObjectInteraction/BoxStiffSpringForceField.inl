@@ -24,7 +24,7 @@
 
 #include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include <map>
@@ -175,7 +175,7 @@ void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     vparams->drawTool()->saveLastState();
 
-    sofa::defaulttype::RGBAColor color;
+    sofa::helper::types::RGBAColor color;
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     ///draw the constraint box
@@ -195,7 +195,7 @@ void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams*
     const Real& Zmin2=b2[2];
     const Real& Zmax2=b2[5];
 
-    color = sofa::defaulttype::RGBAColor(0,0.5,0.5,1);
+    color = sofa::helper::types::RGBAColor(0,0.5,0.5,1);
     vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmin1));
     vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmax1));
     vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmin1));
@@ -223,7 +223,7 @@ void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams*
     vparams->drawTool()->drawLines(vertices,1,color);
     vertices.clear();
 
-    color = sofa::defaulttype::RGBAColor(0.5,0.5,0,1);
+    color = sofa::helper::types::RGBAColor(0.5,0.5,0,1);
 
     vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmin2));
     vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmax2));

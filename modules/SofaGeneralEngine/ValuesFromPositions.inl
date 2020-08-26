@@ -24,7 +24,7 @@
 
 #include <SofaGeneralEngine/ValuesFromPositions.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
@@ -423,7 +423,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
         std::vector<sofa::defaulttype::Vec4f> colors;
 
         float vectorLength = p_vectorLength.getValue();
-        sofa::defaulttype::Vec4f color = sofa::defaulttype::RGBAColor::black();
+        sofa::defaulttype::Vec4f color = sofa::helper::types::RGBAColor::black();
         std::vector<sofa::defaulttype::Vector3> vertices;
         for (unsigned int i =0; i<tetrahedronVectors.size(); i++)
         {

@@ -24,7 +24,7 @@
 
 #include <SofaGeneralEngine/PlaneROI.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -408,7 +408,7 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->disableLighting();
 
     const VecCoord* x0 = &f_X0.getValue();
-    const sofa::defaulttype::RGBAColor& color = sofa::defaulttype::RGBAColor::cyan();
+    const sofa::helper::types::RGBAColor& color = sofa::helper::types::RGBAColor::cyan();
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     if( _drawSize.getValue() == 0) // old classical drawing by points

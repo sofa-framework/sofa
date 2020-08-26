@@ -25,7 +25,7 @@
 
 #include <SofaGeneralRigid/LineSetSkinningMapping.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -219,7 +219,7 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
             defaulttype::Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
 
-            colorVector.push_back(sofa::defaulttype::RGBAColor(iline.weight, 0.0, (1.0-iline.weight),1.0));
+            colorVector.push_back(sofa::helper::types::RGBAColor(iline.weight, 0.0, (1.0-iline.weight),1.0));
             vertices.push_back(sofa::defaulttype::Vector3( xto[verticeIndex] ));
             vertices.push_back(sofa::defaulttype::Vector3( v ));
         }

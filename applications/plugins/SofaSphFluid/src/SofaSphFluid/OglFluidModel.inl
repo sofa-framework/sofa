@@ -31,7 +31,7 @@ OglFluidModel<DataTypes>::OglFluidModel()
     , d_spriteBlurRadius(initData(&d_spriteBlurRadius,  float(10.f), "spriteBlurRadius", "Blur radius (in pixels)"))
     , d_spriteBlurScale(initData(&d_spriteBlurScale, 0.1f, "spriteBlurScale", "Blur scale"))
     , d_spriteBlurDepthFalloff(initData(&d_spriteBlurDepthFalloff, 1.0f,"spriteBlurDepthFalloff", "Blur Depth Falloff"))
-    , d_spriteDiffuseColor(initData(&d_spriteDiffuseColor, sofa::defaulttype::RGBAColor::blue(),"spriteDiffuseColor", "Diffuse Color"))
+    , d_spriteDiffuseColor(initData(&d_spriteDiffuseColor, sofa::helper::types::RGBAColor::blue(),"spriteDiffuseColor", "Diffuse Color"))
 {
 }
 
@@ -521,7 +521,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
-    const sofa::defaulttype::RGBAColor& diffuse = d_spriteDiffuseColor.getValue();
+    const sofa::helper::types::RGBAColor& diffuse = d_spriteDiffuseColor.getValue();
 
     m_spriteShadeShader.TurnOn();
 

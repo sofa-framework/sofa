@@ -28,7 +28,7 @@
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -129,7 +129,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
     Data<float> d_showObjectScale; ///< Scale for object display
-    Data<defaulttype::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
+    Data<sofa::helper::types::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
 
 protected:
     DistanceFromTargetMapping();

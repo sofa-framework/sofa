@@ -43,8 +43,8 @@ using sofa::core::ExecParams ;
 #include <SofaOpenglVisual/OglLabel.h>
 using sofa::component::visualmodel::OglLabel ;
 
-#include <sofa/defaulttype/RGBAColor.h>
-using sofa::defaulttype::RGBAColor ;
+#include <sofa/helper/types/RGBAColor.h>
+using sofa::helper::types::RGBAColor ;
 
 #include <SofaBaseMechanics/initBaseMechanics.h>
 

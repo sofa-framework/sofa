@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/ConicalForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/helper/rmath.h>
 #include <cassert>
 #include <iostream>
@@ -47,7 +47,7 @@ ConicalForceField<DataTypes>::ConicalForceField()
 
     , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
     , damping(initData(&damping, (Real)5, "damping", "force damping"))
-    , color(initData(&color, defaulttype::RGBAColor(0.0f,0.0f,1.0f,1.0f), "color", "cone color. (default=0.0,0.0,0.0,1.0,1.0)"))
+    , color(initData(&color, sofa::helper::types::RGBAColor(0.0f,0.0f,1.0f,1.0f), "color", "cone color. (default=0.0,0.0,0.0,1.0,1.0)"))
 {
 }
 
@@ -183,7 +183,7 @@ void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     vparams->drawTool()->enableBlending();
     vparams->drawTool()->enableLighting();
 
-    sofa::defaulttype::RGBAColor rgbcolor(color.getValue()[0], color.getValue()[1], color.getValue()[2], 0.5);
+    sofa::helper::types::RGBAColor rgbcolor(color.getValue()[0], color.getValue()[1], color.getValue()[2], 0.5);
 
     vparams->drawTool()->drawCone(c, c+height, 0, b, rgbcolor);
 

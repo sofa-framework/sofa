@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -100,7 +100,7 @@ public:
 
     Data<Real> stiffness; ///< force stiffness
     Data<Real> damping; ///< force damping
-    Data<defaulttype::RGBAColor> color; ///< cone color. (default=0.0,0.0,0.0,1.0,1.0)
+    Data<sofa::helper::types::RGBAColor> color; ///< cone color. (default=0.0,0.0,0.0,1.0,1.0)
 protected:
     ConicalForceField();
 
