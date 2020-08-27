@@ -5,7 +5,7 @@ Welcome to the SOFA Community! Here is a brief summary of how it is structured:
 - SOFA Developpers: people programming into SOFA, modifying the API, writing plugins.
 - SOFA Contributors: (awesome) people proposing their changes in SOFA code via pull-requests.
 - SOFA Reviewers: people reviewing and merging the pull-requests. This group is validated by the Scientific and Technical Committee (STC).
-- SOFA Consortium: research centers and companies willing to share the cost of development and maintenance of SOFA, hosted by the Inria Foundation.
+- SOFA Consortium: research centers and companies willing to share the cost of development and maintenance of SOFA, hosted by Inria.
 - SOFA Consortium Staff: administrators of SOFA and its ecosystem. This group is directed by the Executive Committee (EC).
 
 All SOFA Developpers are gladly invited to the SOFA-dev meetings.  

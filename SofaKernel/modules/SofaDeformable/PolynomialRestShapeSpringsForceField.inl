@@ -25,16 +25,8 @@
 #pragma once
 
 #include <sofa/core/behavior/ForceField.inl>
-#include "PolynomialRestShapeSpringsForceField.h"
+#include <SofaDeformable/PolynomialRestShapeSpringsForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/config.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <assert.h>
-#include <iostream>
-#include <fstream>
 #include <sofa/helper/AdvancedTimer.h>
 
 

@@ -143,6 +143,8 @@ public:
 
     void displayPaths() {std::cout<<(*this)<<std::endl;}
 
+    const std::string getTempPath() const;
+
 protected:
 
     /// A protocol like http: or file: which will bypass the file search if found in the filename of the findFile* functions that directly returns the path as if the function succeeded

@@ -38,6 +38,7 @@ public:
     SOFA_CLASS(SphereLoader,sofa::core::loader::BaseLoader);
 protected:
     SphereLoader();
+
 public:
     // Point coordinates in 3D in double.
     Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions; ///< Sphere centers

@@ -22,7 +22,7 @@
         <MechanicalObject name="dofs" src="@meshLoader" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass  name="computed using mass density" massDensity="1" />
-        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="6000" computeGlobalMatrix="0" />
+        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
         <PrecomputedConstraintCorrection recompute="true"/>
 
         <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
@@ -72,8 +72,8 @@
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
         <MechanicalObject name="instrumentState" template="Rigid3d" />
-        <UniformMass name="mass" totalMass="0.005" />
-        <LCPForceFeedback activate="true" forceCoef="0.005"/> <!-- ADDED : Compute a force-feedback for the device -->
+        <UniformMass name="mass" totalMass="0.5" />
+        <LCPForceFeedback activate="true" forceCoef="0.1"/> <!-- ADDED : Compute a force-feedback for the device -->
         <UncoupledConstraintCorrection/>
         <Node name="VisualModel" >
             <MeshObjLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />

@@ -38,10 +38,12 @@ public:
     typedef helper::WriteAccessor< Data< helper::vector< Triangle > > > waTtriangles;
     typedef helper::WriteAccessor< Data< helper::vector< Tetrahedron > > > waTetrahedra;
 
-    bool load() override
+    bool doLoad() override
     {
         return true;
     }
+
+    void doClearBuffers() override {}
 };
 
 /** Test suite for MeshLoader

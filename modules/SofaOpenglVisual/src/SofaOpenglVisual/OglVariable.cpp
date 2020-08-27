@@ -352,8 +352,9 @@ void OglIntVectorVariable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<GLint>& v = value.getValue();
     const GLint* vptr = v.empty() ? nullptr : &(v[0]);
+    int count = int(v.size());
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setIntVector(idShader, idstr.c_str(), v.size(), vptr);
+        (*it)->setIntVector(idShader, idstr.c_str(), count, vptr);
 }
 
 void OglIntVector2Variable::initVisual()
@@ -362,8 +363,9 @@ void OglIntVector2Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<GLint>& v = value.getValue();
     const GLint* vptr = v.empty() ? nullptr : &(v[0]);
+    int count = int(v.size()/2);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setIntVector2(idShader, idstr.c_str(), v.size()/2, vptr);
+        (*it)->setIntVector2(idShader, idstr.c_str(), count, vptr);
 }
 
 void OglIntVector3Variable::initVisual()
@@ -372,8 +374,9 @@ void OglIntVector3Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<GLint>& v = value.getValue();
     const GLint* vptr = v.empty() ? nullptr : &(v[0]);
+    int count = int(v.size()/3);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setIntVector3(idShader, idstr.c_str(), v.size()/3, vptr);
+        (*it)->setIntVector3(idShader, idstr.c_str(), count, vptr);
 }
 
 void OglIntVector4Variable::initVisual()
@@ -382,8 +385,9 @@ void OglIntVector4Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<GLint>& v = value.getValue();
     const GLint* vptr = v.empty() ? nullptr : &(v[0]);
+    int count = int(v.size()/4);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setIntVector4(idShader, idstr.c_str(), v.size()/4, vptr);
+        (*it)->setIntVector4(idShader, idstr.c_str(), count, vptr);
 }
 
 
@@ -434,8 +438,9 @@ void OglFloatVectorVariable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0]);
+    int count = int(v.size());
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setFloatVector(idShader, idstr.c_str(), v.size(), vptr);
+        (*it)->setFloatVector(idShader, idstr.c_str(), count, vptr);
 }
 
 void OglFloatVector2Variable::initVisual()
@@ -444,8 +449,9 @@ void OglFloatVector2Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<defaulttype::Vec2f>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0][0]);
+    int count = int(v.size());
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setFloatVector2(idShader, idstr.c_str(), (int)v.size(), vptr);
+        (*it)->setFloatVector2(idShader, idstr.c_str(), count, vptr);
 }
 
 void OglFloatVector3Variable::initVisual()
@@ -454,8 +460,9 @@ void OglFloatVector3Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<defaulttype::Vec3f>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0][0]);
+    int count = int(v.size());
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setFloatVector3(idShader, idstr.c_str(), (int)v.size(), vptr);
+        (*it)->setFloatVector3(idShader, idstr.c_str(), count, vptr);
 }
 
 void OglFloatVector4Variable::initVisual()
@@ -464,8 +471,9 @@ void OglFloatVector4Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<defaulttype::Vec4f>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0][0]);
+    int count = int(v.size());
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setFloatVector4(idShader, idstr.c_str(), (int)v.size(), vptr);
+        (*it)->setFloatVector4(idShader, idstr.c_str(), count, vptr);
 }
 
 
@@ -498,8 +506,9 @@ void OglMatrix2Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0]);
     const bool transp = transpose.getValue();
+    int count = int(v.size()/4);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setMatrix2(idShader, idstr.c_str(), v.size()/4, transp, vptr);
+        (*it)->setMatrix2(idShader, idstr.c_str(), count, transp, vptr);
 }
 
 OglMatrix3Variable::OglMatrix3Variable()
@@ -530,8 +539,9 @@ void OglMatrix3Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0]);
     const bool transp = transpose.getValue();
+    int count = int(v.size() / 9);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setMatrix3(idShader, idstr.c_str(), v.size()/9, transp, vptr);
+        (*it)->setMatrix3(idShader, idstr.c_str(), count, transp, vptr);
 }
 
 OglMatrix4Variable::OglMatrix4Variable()
@@ -562,8 +572,9 @@ void OglMatrix4Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0]);
     const bool transp = transpose.getValue();
+    int count = int(v.size() / 16);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setMatrix4(idShader, idstr.c_str(), v.size()/16, transp, vptr);
+        (*it)->setMatrix4(idShader, idstr.c_str(), count, transp, vptr);
 }
 
 OglMatrix2x3Variable::OglMatrix2x3Variable()
@@ -594,8 +605,9 @@ void OglMatrix2x3Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0]);
     const bool transp = transpose.getValue();
+    int count = int(v.size() / 6);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setMatrix2x3(idShader, idstr.c_str(), v.size()/6, transp, vptr);
+        (*it)->setMatrix2x3(idShader, idstr.c_str(), count, transp, vptr);
 }
 
 
@@ -627,8 +639,9 @@ void OglMatrix3x2Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0]);
     const bool transp = transpose.getValue();
+    int count = int(v.size() / 6);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setMatrix3x2(idShader, idstr.c_str(), v.size()/6, transp, vptr);
+        (*it)->setMatrix3x2(idShader, idstr.c_str(), count, transp, vptr);
 }
 
 OglMatrix2x4Variable::OglMatrix2x4Variable()
@@ -659,8 +672,9 @@ void OglMatrix2x4Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0]);
     const bool transp = transpose.getValue();
+    int count = int(v.size() / 8);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setMatrix2x4(idShader, idstr.c_str(), v.size()/8, transp, vptr);
+        (*it)->setMatrix2x4(idShader, idstr.c_str(), count, transp, vptr);
 }
 
 OglMatrix4x2Variable::OglMatrix4x2Variable()
@@ -691,8 +705,9 @@ void OglMatrix4x2Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0]);
     const bool transp = transpose.getValue();
+    int count = int(v.size() / 8);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setMatrix4x2(idShader, idstr.c_str(), v.size()/8, transp, vptr);
+        (*it)->setMatrix4x2(idShader, idstr.c_str(), count, transp, vptr);
 }
 
 OglMatrix3x4Variable::OglMatrix3x4Variable()
@@ -723,8 +738,9 @@ void OglMatrix3x4Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0]);
     const bool transp = transpose.getValue();
+    int count = int(v.size() / 12);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setMatrix3x4(idShader, idstr.c_str(), v.size()/12, transp, vptr);
+        (*it)->setMatrix3x4(idShader, idstr.c_str(), count, transp, vptr);
 }
 
 OglMatrix4x3Variable::OglMatrix4x3Variable()
@@ -755,8 +771,9 @@ void OglMatrix4x3Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0]);
     const bool transp = transpose.getValue();
+    int count = int(v.size() / 12);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setMatrix4x3(idShader, idstr.c_str(), v.size()/12, transp, vptr);
+        (*it)->setMatrix4x3(idShader, idstr.c_str(), count, transp, vptr);
 }
 
 OglMatrix4VectorVariable::OglMatrix4VectorVariable()
@@ -776,8 +793,9 @@ void OglMatrix4VectorVariable::initVisual()
 
     const float* vptr = v.empty() ? nullptr : &(v[0][0][0]);
     bool transp = transpose.getValue();
+    int count = int(v.size());
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->setMatrix4(idShader, idstr.c_str(), v.size(), transp, vptr);
+        (*it)->setMatrix4(idShader, idstr.c_str(), count, transp, vptr);
 }
 
 

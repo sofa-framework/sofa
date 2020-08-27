@@ -47,6 +47,7 @@ public:
 protected:
     VoxelGridLoader();
     ~VoxelGridLoader() override;
+
 public:
     void init() override;
 
