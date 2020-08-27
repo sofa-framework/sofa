@@ -33,8 +33,8 @@ namespace communication
 CommunicationSubscriber::CommunicationSubscriber()
     : d_subject(initData(&d_subject, (std::string)"", "subject", "ServerCommunication will parse and analyse only subscribed subject (default="")"))
     , d_datasName(initData(&d_datasName, (std::string)"x", "datas", "Datas name will be used to store data(default=x)"))
-    , l_communication(initLink("communication","Required link, subscriber will define which kind of subject the communication have to listen"))
     , l_target(initLink("target","Required link, subscriber will define which BaseObject will be used for read/write data"))
+    , l_communication(initLink("communication","Required link, subscriber will define which kind of subject the communication have to listen"))
 {
 }
 
