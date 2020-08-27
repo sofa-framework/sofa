@@ -49,7 +49,7 @@ public :
     css *S;
     csn *N;
     cs A;
-    helper::vector<defaulttype::BaseMatrix::Index> A_i, A_p;
+    helper::vector<int> A_i, A_p;
     helper::vector<Real> A_x;
     Real * tmp;
     SparseLUInvertData()

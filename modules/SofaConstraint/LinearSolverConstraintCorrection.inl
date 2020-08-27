@@ -291,7 +291,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyVelocityCorrection(cons
 {
     if (mstate)
     {
-        const unsigned int numDOFs = mstate->getSize();
+        const std::size_t numDOFs = mstate->getSize();
 
         auto v  = sofa::helper::write(v_d,cparams);
         auto dv = sofa::helper::write(dv_d, cparams); 
