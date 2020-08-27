@@ -21,10 +21,7 @@
 # Copyright (c) 2009 Benoit Jacob <jacob.benoit.1@gmail.com>
 # Redistribution and use is allowed according to the terms of the 2-clause BSD license.
 
-if(FINDEIGEN_LOADED)
-    return()
-endif()
-set(FINDEIGEN_LOADED 1)
+include_guard()
 
 if(NOT Eigen3_FIND_VERSION)
   if(NOT Eigen3_FIND_VERSION_MAJOR)

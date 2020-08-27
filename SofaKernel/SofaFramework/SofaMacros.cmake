@@ -1,8 +1,4 @@
-if(SOFAMACRO_LOADED)
-    return()
-endif()
-set(SOFAMACRO_LOADED 1)
-
+include_guard(GLOBAL)
 include(CMakePackageConfigHelpers)
 include(CMakeParseLibraryList)
 
@@ -661,7 +657,7 @@ macro(sofa_create_package)
     ## <package_name>ConfigVersion.cmake
     set(filename ${ARG_PACKAGE_NAME}ConfigVersion.cmake)
     write_basic_package_version_file(${filename} VERSION ${ARG_PACKAGE_VERSION} COMPATIBILITY ExactVersion)
-    set(PACKAGE_GUARD "if(${ARG_PACKAGE_NAME}_${ARG_PACKAGE_VERSION}_LOADED)\nreturn()\nendif()\nset(${ARG_PACKAGE_NAME}_${ARG_PACKAGE_VERSION}_LOADED 1)")
+    set(PACKAGE_GUARD "include_guard(GLOBAL)")
     configure_file("${CMAKE_CURRENT_BINARY_DIR}/${filename}" "${CMAKE_BINARY_DIR}/cmake/${filename}" COPYONLY)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION "lib/cmake/${ARG_PACKAGE_NAME}" COMPONENT headers)
 

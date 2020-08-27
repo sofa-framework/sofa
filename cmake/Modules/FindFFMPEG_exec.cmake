@@ -4,10 +4,7 @@
 # FFMPEG_EXEC_FOUND - system has ffmpeg executable
 # FFMPEG_EXEC_FILE - the ffmpeg executable file
 
-if(FINDFFMPEG_LOADED)
-    return()
-endif()
-set(FINDFFMPEG_LOADED 1)
+include_guard(GLOBAL)
 
 find_program(FFMPEG_EXEC
 	NAMES ffmpeg
