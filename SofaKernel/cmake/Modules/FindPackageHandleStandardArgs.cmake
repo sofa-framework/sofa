@@ -88,6 +88,7 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
+include_guard(GLOBAL)
 include(FindPackageMessage)
 include(CMakeParseArguments)
 

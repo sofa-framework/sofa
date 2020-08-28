@@ -1,5 +1,6 @@
 # CMake package configuration file for SofaGui
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 set(SOFAGUI_TARGETS @SOFAGUI_TARGETS@)

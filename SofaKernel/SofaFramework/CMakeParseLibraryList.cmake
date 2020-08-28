@@ -10,6 +10,13 @@
 #                         GENERAL <out_gen_list>)
 
 # CMake module
+
+if(CMAKEPARSELIBRARYLIST_LOADED)
+    message("============================= Skipping CMakeParseLibrary")
+    return()
+endif()
+set(CMAKEPARSELIBRARYLIST_LOADED 1)
+
 include(CMakeParseArguments)
 
 function(PARSE_LIBRARY_LIST)
