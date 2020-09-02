@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/ParabolicConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -233,7 +233,7 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
     Real nbStep = t/dt;
 
     vparams->drawTool()->disableLighting();
-    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     for (unsigned int i=0 ; i< nbStep ; i++)

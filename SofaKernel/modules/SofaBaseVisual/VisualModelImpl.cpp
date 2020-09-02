@@ -54,7 +54,7 @@ namespace component
 
 namespace visualmodel
 {
-
+using sofa::helper::types::RGBAColor;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 using namespace sofa::core::loader;

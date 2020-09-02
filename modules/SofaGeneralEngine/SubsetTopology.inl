@@ -25,7 +25,7 @@
 #include <SofaGeneralEngine/SubsetTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <limits>
 
 namespace sofa
@@ -795,7 +795,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->saveLastState();
 
     const VecCoord* x0 = &f_X0.getValue();
-    const sofa::defaulttype::RGBAColor& color = sofa::defaulttype::RGBAColor::cyan();
+    const sofa::helper::types::RGBAColor& color = sofa::helper::types::RGBAColor::cyan();
 
     if( p_drawROI.getValue())
     {

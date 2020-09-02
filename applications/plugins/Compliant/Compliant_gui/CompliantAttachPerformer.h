@@ -101,7 +101,7 @@ class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerfor
     SReal _compliance;
     bool _isCompliance;
     SReal _arrowSize;
-    defaulttype::RGBAColor _color;
+    sofa::helper::types::RGBAColor _color;
     bool _visualmodel;  // to be able to export the mouse spring in obj
 
 

@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/HermiteSplineConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -241,7 +241,7 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
-    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
 
     const Vec3R& mx0 = m_x0.getValue();
     const Vec3R& mx1 = m_x0.getValue();
@@ -262,7 +262,7 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     }
     vparams->drawTool()->drawLineStrip(vertices, 2, color);
 
-    color = sofa::defaulttype::RGBAColor::red();
+    color = sofa::helper::types::RGBAColor::red();
 
     vertices.clear();
     vertices.push_back(sofa::defaulttype::Vector3(mx0[0], mx0[1], mx0[2]));

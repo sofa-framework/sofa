@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/visual/VisualModel.h>
 
@@ -78,7 +78,7 @@ protected:
     void computeShadowMapSize();
     void blurDepthTexture();
 public:
-    Data<defaulttype::RGBAColor> d_color; ///< Set the color of the light. (default=[1.0,1.0,1.0,1.0])
+    Data<sofa::helper::types::RGBAColor> d_color; ///< Set the color of the light. (default=[1.0,1.0,1.0,1.0])
     Data<GLuint> d_shadowTextureSize; ///< [Shadowing] Set size for shadow texture 
     Data<bool> d_drawSource; ///< Draw Light Source
     Data<float> d_zNear; ///< [Shadowing] Light's ZNear

@@ -25,7 +25,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa::component::forcefield
 {
@@ -69,7 +69,7 @@ public:
     Data< SReal > d_showArrowSize;
 
     /// display color
-    Data< defaulttype::RGBAColor > d_color;
+    Data< sofa::helper::types::RGBAColor > d_color;
 
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
     Data< bool > indexFromEnd;

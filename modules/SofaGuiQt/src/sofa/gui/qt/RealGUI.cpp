@@ -1302,7 +1302,7 @@ void RealGUI::setFullScreen (bool enable)
 
 //------------------------------------
 
-void RealGUI::setBackgroundColor(const defaulttype::RGBAColor& c)
+void RealGUI::setBackgroundColor(const sofa::helper::types::RGBAColor& c)
 {
     background[0]->setText(QString::number(c[0]));
     background[1]->setText(QString::number(c[1]));

@@ -1,5 +1,5 @@
 # CMake package configuration file for the Flexible plugin
-
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 set(FLEXIBLE_HAVE_SOFAPYTHON @FLEXIBLE_HAVE_SOFAPYTHON@)

@@ -1,5 +1,6 @@
 # CMake package configuration file for the image plugin
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 set(IMAGE_HAVE_SOFAGUI @IMAGE_HAVE_SOFAGUI@)

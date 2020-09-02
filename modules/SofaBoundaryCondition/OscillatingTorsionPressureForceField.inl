@@ -26,7 +26,7 @@
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <vector>
 #include <set>
 
@@ -314,7 +314,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     vparams->drawTool()->disableLighting();
-    sofa::defaulttype::RGBAColor color = sofa::defaulttype::RGBAColor::green();
+    sofa::helper::types::RGBAColor color = sofa::helper::types::RGBAColor::green();
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     const sofa::helper::vector <unsigned int>& my_map = trianglePressureMap.getMap2Elements();

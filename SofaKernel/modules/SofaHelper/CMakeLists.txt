@@ -140,6 +140,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/vector_algebra.h
     ${SRC_ROOT}/vector_device.h
     ${SRC_ROOT}/types/RGBAColor.h
+    ${SRC_ROOT}/types/RGBAColor_fwd.h
     ${SRC_ROOT}/types/Material.h
     ${SRC_ROOT}/logging/Messaging.h
     ${SRC_ROOT}/logging/Message.h

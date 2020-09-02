@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
@@ -574,11 +574,11 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
         int b = m_topology->getTriangle(i)[1];
         int c = m_topology->getTriangle(i)[2];
 
-        colors.push_back(sofa::defaulttype::RGBAColor::green());
+        colors.push_back(sofa::helper::types::RGBAColor::green());
         vertices.push_back(x[a]);
-        colors.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+        colors.push_back(sofa::helper::types::RGBAColor(0,0.5,0.5,1));
         vertices.push_back(x[b]);
-        colors.push_back(sofa::defaulttype::RGBAColor::blue());
+        colors.push_back(sofa::helper::types::RGBAColor::blue());
         vertices.push_back(x[c]);
     }
     vparams->drawTool()->drawTriangles(vertices, normals, colors);

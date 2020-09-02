@@ -24,7 +24,7 @@
 
 #include <SofaGeneralEngine/MeshROI.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -625,7 +625,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
                 vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
             }
 
-            vparams->drawTool()->drawPoints(vertices, drawSize, sofa::defaulttype::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
+            vparams->drawTool()->drawPoints(vertices, drawSize, sofa::helper::types::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
         }
         // draw ROI edges
         if(d_drawEdges.getValue())
@@ -641,7 +641,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
                     vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
                 }
             }
-            vparams->drawTool()->drawLines(vertices, drawSize, sofa::defaulttype::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
+            vparams->drawTool()->drawLines(vertices, drawSize, sofa::helper::types::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
         }
         // draw ROI triangles
         if(d_drawTriangles.getValue())
@@ -657,7 +657,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
                     vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
                 }
             }
-            vparams->drawTool()->drawTriangles(vertices, sofa::defaulttype::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
+            vparams->drawTool()->drawTriangles(vertices, sofa::helper::types::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
         }
     }
     // draw the bounding box
@@ -668,7 +668,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
         const sofa::defaulttype::Vector3 minBBox(b[0], b[1], b[2]);
         const sofa::defaulttype::Vector3 maxBBox(b[3], b[4], b[5]);
 
-        vparams->drawTool()->setMaterial(sofa::defaulttype::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
+        vparams->drawTool()->setMaterial(sofa::helper::types::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
         vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, drawSize);
 
     }
@@ -682,7 +682,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
             CPos p = (DataTypes::getCPos(pointsROI[i]));
             vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
         }
-        vparams->drawTool()->drawPoints(vertices, drawSize, sofa::defaulttype::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
+        vparams->drawTool()->drawPoints(vertices, drawSize, sofa::helper::types::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
     // draw edges in ROI
     if( d_drawEdges.getValue())
@@ -700,7 +700,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
             }
         }
         
-        vparams->drawTool()->drawLines(vertices, drawSize, sofa::defaulttype::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
+        vparams->drawTool()->drawLines(vertices, drawSize, sofa::helper::types::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
     // draw triangles in ROI
     if( d_drawTriangles.getValue())
@@ -717,7 +717,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
                 vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
             }
         }
-        vparams->drawTool()->drawTriangles(vertices, sofa::defaulttype::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
+        vparams->drawTool()->drawTriangles(vertices, sofa::helper::types::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
     // draw tetrahedra in ROI
     if( d_drawTetrahedra.getValue())
@@ -745,7 +745,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
             vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
         }
        
-        vparams->drawTool()->drawLines(vertices, drawSize, sofa::defaulttype::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
+        vparams->drawTool()->drawLines(vertices, drawSize, sofa::helper::types::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
 
     vparams->drawTool()->restoreLastState();

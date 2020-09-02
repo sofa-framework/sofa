@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/EllipsoidForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <cassert>
 #include <iostream>
 
@@ -66,7 +66,7 @@ EllipsoidForceField<DataTypes>::EllipsoidForceField()
     , vradius(initData(&vradius, "vradius", "ellipsoid radius"))
     , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
     , damping(initData(&damping, (Real)5, "damping", "force damping"))
-    , color(initData(&color, defaulttype::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=0,0.5,1.0,1.0)"))
+    , color(initData(&color, sofa::helper::types::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=0,0.5,1.0,1.0)"))
 {
 }
 

@@ -28,7 +28,7 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
 #include <sofa/core/loader/VoxelLoader.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <algorithm>
 #include <functional>
 #include <queue>
@@ -707,7 +707,7 @@ void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
     // Display the distance on each hexa of the grid
     if ( showDistanceMap.getValue() )
     {
-        sofa::defaulttype::RGBAColor color(1.0f, 0.0f, 0.3f, 1.0f);
+        sofa::helper::types::RGBAColor color(1.0f, 0.0f, 0.3f, 1.0f);
 
         const helper::vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
         for ( unsigned int j = 0; j < distMap.size(); j++ )

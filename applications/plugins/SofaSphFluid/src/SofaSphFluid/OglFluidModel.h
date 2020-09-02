@@ -6,7 +6,7 @@
 #include <sofa/helper/gl/FrameBufferObject.h>
 #include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -66,7 +66,7 @@ public:
     Data<float> d_spriteBlurRadius;
     Data<float> d_spriteBlurScale;
     Data<float> d_spriteBlurDepthFalloff;
-    Data<sofa::defaulttype::RGBAColor> d_spriteDiffuseColor;
+    Data<sofa::helper::types::RGBAColor> d_spriteDiffuseColor;
 
 
     void init() override;

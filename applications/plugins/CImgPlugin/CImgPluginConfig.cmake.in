@@ -1,5 +1,6 @@
 # CMake package configuration file for the plugin '@PROJECT_NAME@'
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 set(CIMGPLUGIN_HAVE_JPEG @CIMGPLUGIN_HAVE_JPEG@)

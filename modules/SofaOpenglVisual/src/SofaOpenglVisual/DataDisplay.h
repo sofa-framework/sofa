@@ -29,7 +29,7 @@
 #include <SofaOpenglVisual/OglColorMap.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -58,7 +58,7 @@ public:
     Data<VecCellData> f_quadData; ///< Data associated with quads
     Data<VecPointData> f_pointTriangleData; ///< Data associated with nodes per triangle
     Data<VecPointData> f_pointQuadData; ///< Data associated with nodes per quad
-    Data<defaulttype::RGBAColor> f_colorNaN; ///< Color for NaNs
+    Data<sofa::helper::types::RGBAColor> f_colorNaN; ///< Color for NaNs
     Data<defaulttype::Vec2f> d_userRange; ///< Clamp to this values (if max>min)
     Data<Real> d_currentMin; ///< Current min range
     Data<Real> d_currentMax; ///< Current max range
