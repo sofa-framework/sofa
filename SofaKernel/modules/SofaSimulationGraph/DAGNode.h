@@ -139,6 +139,8 @@ public:
     /// compute the traversal order from this Node
     void precomputeTraversalOrder( const core::ExecParams* params ) override;
 
+    virtual void moveChild(BaseNode::SPtr node) override;
+
 protected:
 
     /// bottom-up traversal, returning the first node which have a descendancy containing both node1 & node2
@@ -147,7 +149,6 @@ protected:
 
     LinkParents l_parents;
 
-    virtual void moveChild(BaseNode::SPtr node) override;
 
     virtual void doAddChild(BaseNode::SPtr node) override;
     virtual void doRemoveChild(BaseNode::SPtr node) override;
