@@ -23,7 +23,7 @@
 
 #include <CGALPlugin/Refine2DMesh.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #define CGAL_MESH_2_VERBOSE
 
@@ -377,7 +377,7 @@ namespace cgal
 
 			const VecCoord& seeds = d_seedPoints.getValue();
             sofa::helper::vector<sofa::defaulttype::Vec3> points;
-            sofa::defaulttype::RGBAColor color(0.0, 0.0, 1.0, 1);
+            sofa::helper::types::RGBAColor color(0.0, 0.0, 1.0, 1);
 
             for (unsigned int i = 0; i < seeds.size(); i++)
                 points.push_back(seeds[i]);
@@ -392,7 +392,7 @@ namespace cgal
 
             const VecCoord& regions = d_regionPoints.getValue();
             sofa::helper::vector<sofa::defaulttype::Vec3> points;
-            sofa::defaulttype::RGBAColor color(1.0, 0.0, 0.0, 1);
+            sofa::helper::types::RGBAColor color(1.0, 0.0, 0.0, 1);
 
             for (unsigned int i = 0; i < regions.size(); i++)
                 points.push_back(regions[i]);

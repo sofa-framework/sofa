@@ -24,7 +24,7 @@
 
 #include "TriangleFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <fstream> // for reading the file
@@ -689,11 +689,11 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         Index b = (*it)[1];
         Index c = (*it)[2];
 
-        colorVector.push_back(sofa::defaulttype::RGBAColor(0,1,0,1));
+        colorVector.push_back(sofa::helper::types::RGBAColor(0,1,0,1));
         vertices.push_back(sofa::defaulttype::Vector3(x[a]));
-        colorVector.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+        colorVector.push_back(sofa::helper::types::RGBAColor(0,0.5,0.5,1));
         vertices.push_back(sofa::defaulttype::Vector3(x[b]));
-        colorVector.push_back(sofa::defaulttype::RGBAColor(0,0,1,1));
+        colorVector.push_back(sofa::helper::types::RGBAColor(0,0,1,1));
         vertices.push_back(sofa::defaulttype::Vector3(x[c]));
     }
     vparams->drawTool()->drawTriangles(vertices,colorVector);

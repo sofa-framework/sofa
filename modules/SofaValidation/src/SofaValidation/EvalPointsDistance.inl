@@ -27,7 +27,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <iomanip>
 
@@ -239,7 +239,7 @@ void EvalPointsDistance<DataTypes>::doDraw(const core::visual::VisualParams* vpa
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
-    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
 
     for (int i=0; i<n; ++i)
     {

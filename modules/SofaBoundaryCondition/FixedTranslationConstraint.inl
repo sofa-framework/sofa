@@ -25,7 +25,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/FixedTranslationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa
@@ -213,7 +213,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
-    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (f_fixAll.getValue() == true)
     {

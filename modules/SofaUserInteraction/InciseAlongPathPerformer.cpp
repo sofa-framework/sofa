@@ -278,7 +278,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
-    sofa::defaulttype::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
+    sofa::helper::types::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
     std::vector<sofa::defaulttype::Vector3> vertices;
     for (unsigned int i = 1; i<positions.size(); ++i)
     {

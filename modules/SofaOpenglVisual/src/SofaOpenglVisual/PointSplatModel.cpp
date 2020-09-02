@@ -36,7 +36,7 @@
 
 #include <SofaBaseTopology/TopologyData.inl>
 
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -59,7 +59,7 @@ PointSplatModel::PointSplatModel() //const std::string &name, std::string filena
     : radius(initData(&radius, 1.0f, "radius", "Radius of the spheres.")),
       textureSize(initData(&textureSize, 32, "textureSize", "Size of the billboard texture.")),
       alpha(initData(&alpha, 1.0f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
-      color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=[1.0,1.0,1.0,1.0])")),
+      color(initData(&color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=[1.0,1.0,1.0,1.0])")),
       _topology(nullptr),
       _mstate(nullptr),
       texture_data(nullptr),
@@ -222,7 +222,7 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
             m = 0.5f + 2.0f * pData[i] / 255.0f;
         }
 
-        const defaulttype::RGBAColor& mc = color.getValue() ;
+        const sofa::helper::types::RGBAColor& mc = color.getValue() ;
         glColor4f (m*mc.r(), m*mc.g(), m*mc.b(), mc.a());
 
         glBegin( GL_QUADS );

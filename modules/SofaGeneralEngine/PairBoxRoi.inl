@@ -25,7 +25,7 @@
 #include <SofaGeneralEngine/PairBoxRoi.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <limits>
 
 namespace sofa
@@ -191,7 +191,7 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->_drawSize.getValue())
         return;
 
-    sofa::defaulttype::RGBAColor color(1.0f, 0.4f, 0.4f, 1.0f);
+    sofa::helper::types::RGBAColor color(1.0f, 0.4f, 0.4f, 1.0f);
 
     vparams->drawTool()->saveLastState();
     /// Draw inclusive box

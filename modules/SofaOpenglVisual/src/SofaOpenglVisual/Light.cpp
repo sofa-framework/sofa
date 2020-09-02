@@ -63,7 +63,7 @@ const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "shaders/softSha
 
 Light::Light()
     : m_lightID(0), m_shadowTexWidth(0),m_shadowTexHeight(0)
-    , d_color(initData(&d_color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Set the color of the light. (default=[1.0,1.0,1.0,1.0])"))
+    , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "Set the color of the light. (default=[1.0,1.0,1.0,1.0])"))
     , d_shadowTextureSize(initData(&d_shadowTextureSize, (GLuint)0, "shadowTextureSize", "[Shadowing] Set size for shadow texture "))
     , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
     , d_zNear(initData(&d_zNear, "zNear", "[Shadowing] Light's ZNear"))

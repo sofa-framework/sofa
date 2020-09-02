@@ -2115,7 +2115,7 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
-    sofa::defaulttype::RGBAColor color(1.0,1.0,1.0,1.0);
+    sofa::helper::types::RGBAColor color(1.0,1.0,1.0,1.0);
 
     vparams->drawTool()->drawPoints(points, 2, color);
 
@@ -2123,7 +2123,7 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
 
     if(d_showCenterOfGravity.getValue())
     {
-        color = sofa::defaulttype::RGBAColor(1.0,1.0,0,1.0);
+        color = sofa::helper::types::RGBAColor(1.0,1.0,0,1.0);
         gravityCenter /= totalMass;
         for(unsigned int i=0 ; i<Coord::spatial_dimensions ; i++)
         {

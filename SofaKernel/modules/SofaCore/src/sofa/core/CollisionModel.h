@@ -26,7 +26,7 @@
 #include <sofa/core/CollisionElement.h>
 
 //todo(dmarchal 2018-06-19) I really wonder why a collision model has a dependency to a RGBAColors.
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -382,7 +382,7 @@ public:
     /// Set a color that can be used to display this CollisionModel
 
     void setColor4f(const float *c) {
-        color.setValue(defaulttype::RGBAColor(c[0],c[1],c[2],c[3]));
+        color.setValue(sofa::helper::types::RGBAColor(c[0],c[1],c[2],c[3]));
     }
 
     /// Set of differents parameters
@@ -426,7 +426,7 @@ protected:
     Data<std::string> contactResponse;
 
     /// color used to display the collision model if requested
-    Data<defaulttype::RGBAColor> color;
+    Data<sofa::helper::types::RGBAColor> color;
 
     /// No collision can occur between collision
     /// models included in a common group (i.e. sharing a common id)

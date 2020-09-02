@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/LinearVelocityConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
@@ -353,7 +353,7 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
-    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
     const VecDeriv& keyVelocities = d_keyVelocities.getValue();
     const SetIndexArray & indices = d_indices.getValue();
     for (unsigned int i=0 ; i<keyVelocities.size()-1 ; i++)

@@ -1568,24 +1568,24 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
 
-    sofa::defaulttype::RGBAColor colour;
+    sofa::helper::types::RGBAColor colour;
     switch(d_drawColor.getValue() )
     {
     case 3:
-        colour=sofa::defaulttype::RGBAColor(0.2f, 0.8f, 0.2f,1.0f);
+        colour=sofa::helper::types::RGBAColor(0.2f, 0.8f, 0.2f,1.0f);
         break;
 
     case 2:
-        colour=sofa::defaulttype::RGBAColor(0.2f, 0.3f, 0.8f,1.0f);
+        colour=sofa::helper::types::RGBAColor(0.2f, 0.3f, 0.8f,1.0f);
         break;
 
     case 1:
-        colour=sofa::defaulttype::RGBAColor(0.95f, 0.3f, 0.2f,1.0f);
+        colour=sofa::helper::types::RGBAColor(0.95f, 0.3f, 0.2f,1.0f);
         break;
 
     case 0:
     default:
-        colour=sofa::defaulttype::RGBAColor(0.9f, 0.9f, 0.2f,1.0f);
+        colour=sofa::helper::types::RGBAColor(0.9f, 0.9f, 0.2f,1.0f);
     }
 
 
@@ -1620,7 +1620,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
     if (vparams->displayFlags().getShowBehaviorModels())
     {
-        colour=sofa::defaulttype::RGBAColor(0.95f, 0.95f, 0.7f,1.0f);
+        colour=sofa::helper::types::RGBAColor(0.95f, 0.95f, 0.7f,1.0f);
 
         std::vector< sofa::defaulttype::Vector3 > points;
         for(unsigned i=0; i<x.size(); ++i)
@@ -1667,20 +1667,20 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
             switch( con.size() )
             {
             case 1:
-                colour=sofa::defaulttype::RGBAColor(0.7f, 0.7f, 0.1f, .4f);
+                colour=sofa::helper::types::RGBAColor(0.7f, 0.7f, 0.1f, .4f);
                 break;
             case 2:
-                colour=sofa::defaulttype::RGBAColor(0.1f, 0.9f, 0.1f, .4f);
+                colour=sofa::helper::types::RGBAColor(0.1f, 0.9f, 0.1f, .4f);
                 break;
             case 3:
-                colour=sofa::defaulttype::RGBAColor(0.9f, 0.1f, 0.1f, .4f);
+                colour=sofa::helper::types::RGBAColor(0.9f, 0.1f, 0.1f, .4f);
                 break;
             case 4:
-                colour=sofa::defaulttype::RGBAColor(0.1f, 0.1f, 0.9f, .4f);
+                colour=sofa::helper::types::RGBAColor(0.1f, 0.1f, 0.9f, .4f);
                 break;
             case 5:
             default:
-                colour=sofa::defaulttype::RGBAColor(0.2f, 0.2f, 0.2f, .4f);
+                colour=sofa::helper::types::RGBAColor(0.2f, 0.2f, 0.2f, .4f);
                 break;
             }
 

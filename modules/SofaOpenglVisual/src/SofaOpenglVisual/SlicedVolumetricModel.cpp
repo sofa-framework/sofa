@@ -65,7 +65,7 @@ const int SlicedVolumetricModel::__edges__[12][2] = {{ 0,1 }, { 3,2 }, { 4,5 }, 
 SlicedVolumetricModel::SlicedVolumetricModel() //const std::string &name, std::string filename, std::string loader, std::string textureName)
     :
     alpha(initData(&alpha, 0.2f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
-    color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=1.0,1.0,1.0,1.0)")),
+    color(initData(&color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=1.0,1.0,1.0,1.0)")),
     _nbPlanes(initData(&_nbPlanes, 100, "nbSlices", "Number of billboards.")),
     _topology(nullptr),
     _mstate(nullptr),

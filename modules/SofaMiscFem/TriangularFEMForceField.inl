@@ -27,7 +27,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/ColorMap.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <SofaBaseTopology/TopologyData.inl>
 
@@ -1422,7 +1422,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     vparams->drawTool()->disableLighting();
 
-    sofa::defaulttype::RGBAColor color;
+    sofa::helper::types::RGBAColor color;
     std::vector<sofa::defaulttype::Vec4f> colorVector;
     std::vector<sofa::defaulttype::Vector3> vertices;
 
@@ -1437,11 +1437,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             Index b = m_topology->getTriangle(i)[1];
             Index c = m_topology->getTriangle(i)[2];
 
-            colorVector.push_back(sofa::defaulttype::RGBAColor(0,1,0,1));
+            colorVector.push_back(sofa::helper::types::RGBAColor(0,1,0,1));
             vertices.push_back(sofa::defaulttype::Vector3(x[a]));
-            colorVector.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+            colorVector.push_back(sofa::helper::types::RGBAColor(0,0.5,0.5,1));
             vertices.push_back(sofa::defaulttype::Vector3(x[b]));
-            colorVector.push_back(sofa::defaulttype::RGBAColor(0,0,1,1));
+            colorVector.push_back(sofa::helper::types::RGBAColor(0,0,1,1));
             vertices.push_back(sofa::defaulttype::Vector3(x[c]));
         }
         vparams->drawTool()->drawTriangles(vertices,colorVector);
@@ -1459,7 +1459,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     if (showStressVector.getValue())
     {
-        color = sofa::defaulttype::RGBAColor(1,0,1,1);
+        color = sofa::helper::types::RGBAColor(1,0,1,1);
         for(unsigned int i=0; i<nbTriangles; ++i)
         {
             Index a = m_topology->getTriangle(i)[0];
@@ -1541,7 +1541,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         {
             if (triangleInf[i].differenceToCriteria > 0)
             {
-                color = sofa::defaulttype::RGBAColor( 0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference ) /  (maxDifference - minDifference) , 0.0 , 0.0, 0.5);
+                color = sofa::helper::types::RGBAColor( 0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference ) /  (maxDifference - minDifference) , 0.0 , 0.0, 0.5);
 
                 Index a = m_topology->getTriangle(i)[0];
                 Index b = m_topology->getTriangle(i)[1];
