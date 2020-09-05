@@ -24,18 +24,9 @@
 ******************************************************************************/
 #pragma once
 
+#include <SofaDeformable/PolynomialSpringsForceField.h>
 #include <sofa/core/behavior/ForceField.inl>
-#include "PolynomialSpringsForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/config.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <assert.h>
-#include <math.h>
-#include <iostream>
-#include <fstream>
 #include <sofa/helper/AdvancedTimer.h>
 
 
@@ -69,7 +60,7 @@ PolynomialSpringsForceField<DataTypes>::PolynomialSpringsForceField(MechanicalSt
     , d_compressible(initData(&d_compressible, false, "compressible", "Indicates if object compresses without reactio force"))
     , d_drawMode(initData(&d_drawMode, 0, "drawMode", "The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
     , d_showArrowSize(initData(&d_showArrowSize, 0.01f, "showArrowSize","size of the axis"))
-    , d_springColor(initData(&d_springColor, defaulttype::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f), "springColor", "spring color"))
+    , d_springColor(initData(&d_springColor, sofa::helper::types::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f), "springColor", "spring color"))
     , d_showIndicesScale(initData(&d_showIndicesScale, (float)0.02, "showIndicesScale", "Scale for indices display. (default=0.02)"))
     , m_dimension(Coord::total_size)
 {

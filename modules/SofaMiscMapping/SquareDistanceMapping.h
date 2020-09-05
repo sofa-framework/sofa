@@ -29,7 +29,7 @@
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 
 namespace sofa
@@ -95,7 +95,7 @@ public:
 //    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
 //    Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
     Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< defaulttype::RGBAColor > d_color;         ///< drawing color
+    Data< sofa::helper::types::RGBAColor > d_color;         ///< drawing color
     Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     void init() override;

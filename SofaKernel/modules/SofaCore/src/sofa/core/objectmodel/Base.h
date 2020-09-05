@@ -180,6 +180,9 @@ public:
                            std::initializer_list<BaseData*> outputs);
     void addOutputsToCallback(const std::string& name, std::initializer_list<BaseData*> outputs);
 
+
+    virtual std::string getPathName() const { return ""; }
+
     /// Accessor to the object name
     const std::string& getName() const
     {

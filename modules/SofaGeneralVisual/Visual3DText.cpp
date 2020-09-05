@@ -23,7 +23,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include "Visual3DText.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/helper/system/gl.h>
 
 
@@ -46,7 +46,7 @@ Visual3DText::Visual3DText()
     : d_text(initData(&d_text, "text", "Test to display"))
     , d_position(initData(&d_position, defaulttype::Vec3f(), "position", "3d position"))
     , d_scale(initData(&d_scale, 1.f, "scale", "text scale"))
-    , d_color(initData(&d_color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "text color. (default=[1.0,1.0,1.0,1.0])"))
+    , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "text color. (default=[1.0,1.0,1.0,1.0])"))
     , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
 {
 }

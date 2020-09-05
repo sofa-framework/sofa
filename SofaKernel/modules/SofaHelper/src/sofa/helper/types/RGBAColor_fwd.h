@@ -19,65 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_3DTEXT_H
-#define SOFA_COMPONENT_VISUALMODEL_3DTEXT_H
+#pragma once
 
-#include "config.h"
-
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/helper/types/RGBAColor.h>
-namespace sofa
+namespace sofa::helper::types
 {
-namespace core
-{
-namespace topology
-{
-class BaseMeshTopology;
+    class RGBAColor;
 }
-namespace behavior
-{
-class BaseMechanicalState;
-}
-}
-
-namespace component
-{
-
-namespace visualmodel
-{
-
-
-/// Draw camera-oriented (billboard) 3D text
-class SOFA_GENERAL_VISUAL_API Visual3DText : public core::visual::VisualModel
-{
-
-public:
-    SOFA_CLASS(Visual3DText,core::visual::VisualModel);
-
-protected:
-    Visual3DText();
-
-public:
-    void init() override;
-
-    void reinit() override;
-
-    void drawTransparent(const core::visual::VisualParams* vparams) override;
-
-public:
-    Data<std::string> d_text; ///< Test to display
-    Data<defaulttype::Vec3f> d_position; ///< 3d position
-    Data<float> d_scale; ///< text scale
-    Data<sofa::helper::types::RGBAColor> d_color; ///< text color. (default=[1.0,1.0,1.0,1.0])
-    Data<bool> d_depthTest; ///< perform depth test
-
-
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif

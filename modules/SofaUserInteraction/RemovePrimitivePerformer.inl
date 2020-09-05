@@ -661,7 +661,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
     std::vector<sofa::defaulttype::Vector3> vertices_quads;
     std::vector<sofa::defaulttype::Vector3> vertices_triangles;
-    sofa::defaulttype::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
+    sofa::helper::types::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
 
     for (unsigned int i=0; i<selectedElem.size(); ++i)
     {

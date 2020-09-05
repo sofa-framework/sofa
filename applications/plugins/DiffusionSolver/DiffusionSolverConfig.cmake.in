@@ -1,5 +1,5 @@
 # CMake package configuration file for the DiffusionSolver library.
-
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 find_package(CImgPlugin REQUIRED)

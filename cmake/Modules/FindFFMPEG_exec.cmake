@@ -4,6 +4,8 @@
 # FFMPEG_EXEC_FOUND - system has ffmpeg executable
 # FFMPEG_EXEC_FILE - the ffmpeg executable file
 
+include_guard(GLOBAL)
+
 find_program(FFMPEG_EXEC
 	NAMES ffmpeg
 	HINTS ${_FFMPEG_EXEC_DIRS} /usr/bin /usr/local/bin /opt/local/bin /sw/bin

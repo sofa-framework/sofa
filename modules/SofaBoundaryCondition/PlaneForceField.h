@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 namespace sofa
 {
 
@@ -87,7 +87,7 @@ public:
     Data< defaulttype::Vec<2,int> > d_localRange;
 
     Data<bool>                   d_drawIsEnabled; ///< enable/disable drawing of plane. (default=false)
-    Data<defaulttype::RGBAColor> d_drawColor; ///< plane color. (default=[0.0,0.5,0.2,1.0])
+    Data<sofa::helper::types::RGBAColor> d_drawColor; ///< plane color. (default=[0.0,0.5,0.2,1.0])
     Data<Real>                   d_drawSize; ///< plane display size if draw is enabled. (default=10)
 
 protected:
@@ -103,8 +103,8 @@ public:
     void setDamping(Real damp){ d_damping.setValue( damp ); }
     Real getDamping() const { return d_damping.getValue(); }
 
-    void setDrawColor(const defaulttype::RGBAColor& newvalue){ d_drawColor.setValue(newvalue); }
-    const defaulttype::RGBAColor& getDrawColor() const { return d_drawColor.getValue(); }
+    void setDrawColor(const sofa::helper::types::RGBAColor& newvalue){ d_drawColor.setValue(newvalue); }
+    const sofa::helper::types::RGBAColor& getDrawColor() const { return d_drawColor.getValue(); }
 
     //TODO(dmarchal): do we really need a rotate operation into a plan class ?
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)

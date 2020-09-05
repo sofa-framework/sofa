@@ -304,7 +304,7 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    sofa::defaulttype::RGBAColor color(1.0, 0.0, 1.0, 1.0);
+    sofa::helper::types::RGBAColor color(1.0, 0.0, 1.0, 1.0);
     vparams->drawTool()->setPolygonMode(0, true);
     std::vector<sofa::defaulttype::Vector3> vertices;
 

@@ -25,7 +25,7 @@
 #include <SofaGeneralDeformable/QuadularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 #include <sofa/core/topology/TopologyChange.h>
@@ -749,10 +749,10 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
     std::vector<sofa::defaulttype::Vector3> vertices;
     std::vector<sofa::defaulttype::Vec4f> colors;
-    sofa::defaulttype::RGBAColor green_color = sofa::defaulttype::RGBAColor::green();
-    sofa::defaulttype::RGBAColor red_color   = sofa::defaulttype::RGBAColor::red();
-    sofa::defaulttype::RGBAColor color1 = sofa::defaulttype::RGBAColor(1,0.5, 0,1);
-    sofa::defaulttype::RGBAColor color2 = sofa::defaulttype::RGBAColor(0,1,0.5,1);
+    sofa::helper::types::RGBAColor green_color = sofa::helper::types::RGBAColor::green();
+    sofa::helper::types::RGBAColor red_color   = sofa::helper::types::RGBAColor::red();
+    sofa::helper::types::RGBAColor color1 = sofa::helper::types::RGBAColor(1,0.5, 0,1);
+    sofa::helper::types::RGBAColor color2 = sofa::helper::types::RGBAColor(0,1,0.5,1);
 
     for(unsigned int i=0; i<edgeInf.size(); ++i)
     {
@@ -810,7 +810,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
         for(unsigned int j = 0 ; j<4 ; j++)
             vertices.push_back(x[m_topology->getQuad(i)[j]]);
     }
-    vparams->drawTool()->drawQuads(vertices, sofa::defaulttype::RGBAColor::red());
+    vparams->drawTool()->drawQuads(vertices, sofa::helper::types::RGBAColor::red());
 
     vparams->drawTool()->restoreLastState();
 }

@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
 #include "config.h"
 
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -84,7 +84,7 @@ public:
     Data< helper::vector< unsigned int > > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
     Data< bool > d_recompute_indices; ///< Recompute indices (should be false for BBOX)
     Data< bool > d_drawSpring; ///< draw Spring
-    Data< defaulttype::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
+    Data< sofa::helper::types::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
 
     SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;

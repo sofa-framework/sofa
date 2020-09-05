@@ -24,7 +24,7 @@
 
 #include <SofaGeneralRigid/SkinningMapping.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/io/Mesh.h>
@@ -385,7 +385,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 
             for ( unsigned int m=0 ; m<nbref && m_weights[i][m]>0.; m++ )
             {
-                colorVector.push_back( sofa::defaulttype::RGBAColor( m_weights[i][m],m_weights[i][m],0,1 ));
+                colorVector.push_back( sofa::helper::types::RGBAColor( m_weights[i][m],m_weights[i][m],0,1 ));
                 vertices.push_back(sofa::defaulttype::Vector3( xfrom[index[i][m]].getCenter() ));
                 vertices.push_back(sofa::defaulttype::Vector3( xto[i] ));
             }
@@ -439,7 +439,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
                     if(index[i][m]==showFromIndex.getValue())
                         color = (m_weights[i][m] - minValue) / (maxValue - minValue);
 
-                colorVector.push_back(sofa::defaulttype::RGBAColor( color, 0.0, 0.0, 1.0 ));
+                colorVector.push_back(sofa::helper::types::RGBAColor( color, 0.0, 0.0, 1.0 ));
                 vertices.push_back( sofa::defaulttype::Vector3(xto[i][0], xto[i][1], xto[i][2]));
             }
             vparams->drawTool()->drawPoints(vertices,10,colorVector);

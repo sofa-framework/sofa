@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -75,7 +75,7 @@ private:
 private:
     Data<float>		radius; ///< Radius of the cylinder.
     // Data<float>		alpha;
-    Data<defaulttype::RGBAColor>	color; ///< Color of the cylinders.
+    Data<sofa::helper::types::RGBAColor>	color; ///< Color of the cylinders.
 
     typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;
     Data<SeqEdges> d_edges; ///< List of edge indices

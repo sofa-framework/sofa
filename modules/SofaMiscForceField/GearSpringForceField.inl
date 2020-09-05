@@ -25,7 +25,7 @@
 #include <SofaMiscForceField/GearSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <cassert>
 #include <iostream>
@@ -324,7 +324,7 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
     vparams->drawTool()->disableLighting();
-    sofa::defaulttype::RGBAColor color(1, 1, 0, 1);
+    sofa::helper::types::RGBAColor color(1, 1, 0, 1);
     const helper::vector<Spring>& springs = this->springs.getValue();
 
     float radius = showFactorSize.getValue() / 15; //see helper/gl/Cylinder.cpp

@@ -1,5 +1,5 @@
 # CMake package configuration file for SofaAdvanced
-
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 set(SOFAADVANCED_TARGETS @SOFAADVANCED_TARGETS@)

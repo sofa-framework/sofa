@@ -1,5 +1,6 @@
 # CMake package configuration file for SofaGeneral
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 set(SOFAGENERAL_TARGETS @SOFAGENERAL_TARGETS@)

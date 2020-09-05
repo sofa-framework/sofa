@@ -24,7 +24,7 @@
 
 #include <SofaGeneralEngine/ExtrudeSurface.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -240,7 +240,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
     }
 
-    vparams->drawTool()->drawTriangles(vertices, sofa::defaulttype::RGBAColor::red());
+    vparams->drawTool()->drawTriangles(vertices, sofa::helper::types::RGBAColor::red());
     vertices.clear();
 
     //Triangles From Extrusion
@@ -254,7 +254,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
             vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
         }
     }
-    vparams->drawTool()->drawTriangles(vertices, sofa::defaulttype::RGBAColor::green());
+    vparams->drawTool()->drawTriangles(vertices, sofa::helper::types::RGBAColor::green());
 
     //Border Triangles
     for (unsigned int i=surfaceTriangles.size()*2 ; i<extrusionTriangles.size() ; i++)
@@ -267,7 +267,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
             vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
         }
     }
-    vparams->drawTool()->drawTriangles(vertices, sofa::defaulttype::RGBAColor::blue());
+    vparams->drawTool()->drawTriangles(vertices, sofa::helper::types::RGBAColor::blue());
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);

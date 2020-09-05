@@ -361,6 +361,7 @@ void LightManager::draw(const core::visual::VisualParams* )
 
     for(unsigned int i=0 ; i < m_lights.size() ; i++)
     {
+        float val = float(i * 20);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_lights[i]->getDepthTexture());
 
@@ -369,19 +370,19 @@ void LightManager::draw(const core::visual::VisualParams* )
 
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         glBegin(GL_QUADS);
-        glColor3f(1.0,0.0,0.0) ; glTexCoord2f(0,0); glVertex3f(0 + i*20, 20, -10);
-        glColor3f(0.0,1.0,0.0) ; glTexCoord2f(1,0); glVertex3f(0 + i*20, 40, -10);
-        glColor3f(0.0,0.0,1.0) ; glTexCoord2f(1,1); glVertex3f(20 + i*20, 40, -10);
-        glColor3f(0.0,0.0,0.0) ; glTexCoord2f(0,1); glVertex3f(20 + i*20, 20, -10);
+        glColor3f(1.0,0.0,0.0); glTexCoord2f(0,0); glVertex3f(val, 20, -10);
+        glColor3f(0.0,1.0,0.0); glTexCoord2f(1,0); glVertex3f(val, 40, -10);
+        glColor3f(0.0,0.0,1.0); glTexCoord2f(1,1); glVertex3f(20 + val, 40, -10);
+        glColor3f(0.0,0.0,0.0); glTexCoord2f(0,1); glVertex3f(20 + val, 20, -10);
         glEnd();
         glBindTexture(GL_TEXTURE_2D, m_lights[i]->getColorTexture());
 
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         glBegin(GL_QUADS);
-        glColor3f(1.0,0.0,0.0) ; glTexCoord2f(0,0); glVertex3f(40 + i*20, 20, -10);
-        glColor3f(0.0,1.0,0.0) ; glTexCoord2f(1,0); glVertex3f(40 + i*20, 40, -10);
-        glColor3f(0.0,0.0,1.0) ; glTexCoord2f(1,1); glVertex3f(60 + i*20, 40, -10);
-        glColor3f(0.0,0.0,0.0) ; glTexCoord2f(0,1); glVertex3f(60 + i*20, 20, -10);
+        glColor3f(1.0,0.0,0.0) ; glTexCoord2f(0,0); glVertex3f(40 + val, 20, -10);
+        glColor3f(0.0,1.0,0.0) ; glTexCoord2f(1,0); glVertex3f(40 + val, 40, -10);
+        glColor3f(0.0,0.0,1.0) ; glTexCoord2f(1,1); glVertex3f(60 + val, 40, -10);
+        glColor3f(0.0,0.0,0.0) ; glTexCoord2f(0,1); glVertex3f(60 + val, 20, -10);
         glEnd();
     }
 

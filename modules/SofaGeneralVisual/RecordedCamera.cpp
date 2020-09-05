@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaGeneralVisual/RecordedCamera.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -577,7 +577,7 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
             return;
 
         vparams->drawTool()->disableLighting();
-        sofa::defaulttype::RGBAColor color(0,1,0.5,1);
+        sofa::helper::types::RGBAColor color(0,1,0.5,1);
         std::vector<sofa::defaulttype::Vector3> vertices;
 
         // Camera positions
@@ -611,7 +611,7 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
             return;
 
         vparams->drawTool()->disableLighting();
-        sofa::defaulttype::RGBAColor color(0,1,0.5,1);
+        sofa::helper::types::RGBAColor color(0,1,0.5,1);
         std::vector<sofa::defaulttype::Vector3> vertices;
 
         // Camera positions

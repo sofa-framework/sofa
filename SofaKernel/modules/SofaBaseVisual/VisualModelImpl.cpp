@@ -54,7 +54,7 @@ namespace component
 
 namespace visualmodel
 {
-
+using sofa::helper::types::RGBAColor;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 using namespace sofa::core::loader;
@@ -351,7 +351,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             else if (verts.size() == 4)
                 nbf[NBQ] += 1;
             else
-                nbf[NBT] += verts.size()-2;
+                nbf[NBT] += int(verts.size()-2);
         }
         facet2tq[facetsImport.size()] = nbf;
         groups.resize(objLoader.getGroups().size());
@@ -375,7 +375,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         }
     }
 
-    int nbVIn = verticesImport.size();
+    size_t nbVIn = verticesImport.size();
     // First we compute for each point how many pair of normal/texcoord indices are used
     // The map store the final index of each combinaison
     vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
@@ -394,12 +394,11 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     }
 
     // Then we can compute how many vertices are created
-    int nbVOut = 0;
+    size_t nbVOut = 0;
     bool vsplit = false;
-    for (int i = 0; i < nbVIn; i++)
+    for (size_t i = 0; i < nbVIn; i++)
     {
-        int s = vertTexNormMap[i].size();
-        nbVOut += s;
+        nbVOut += vertTexNormMap[i].size();
     }
 
     msg_info() << nbVIn << " input positions, " << nbVOut << " final vertices.   ";
@@ -437,7 +436,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     }
 
     int nbNOut = 0; /// Number of different normals
-    for (int i = 0, j = 0; i < nbVIn; i++)
+    for (int i = 0, j = 0; i < int(nbVIn); i++)
     {
         positions[i] = verticesImport[i];
 
@@ -475,7 +474,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 //        nbNOut = nbVOut;
 //    else if (nbNOut == nbVOut)
 //        vertNormIdx.resize(0);
-    if( vsplit && nbNOut == nbVOut )
+    if( vsplit && nbNOut == int(nbVOut) )
         vertNormIdx.resize(0);
 
 
@@ -498,12 +497,12 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         const vector<int>& verts = vertNormTexIndex[0];
         const vector<int>& texs = vertNormTexIndex[1];
         const vector<int>& norms = vertNormTexIndex[2];
-        vector<int> idxs;
+        vector<Topology::PointID> idxs;
         idxs.resize(verts.size());
-        for (unsigned int j = 0; j < verts.size(); j++)
+        for (size_t j = 0; j < verts.size(); j++)
         {
-            idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (m_useNormals.getValue() ? norms[j] : 0))];
-            if ((unsigned)idxs[j] >= (unsigned)nbVOut)
+            idxs[j] = Topology::PointID(vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (m_useNormals.getValue() ? norms[j] : 0))]);
+            if (idxs[j] >= nbVOut)
             {
                 msg_error() << this->getPathName()<<" index "<<idxs[j]<<" out of range";
                 idxs[j] = 0;
@@ -761,22 +760,26 @@ void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
 
 void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
 {
+    float dUf = float(dU);
+    float dVf = float(dV);
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
-        vtexcoords[i][0] += dU;
-        vtexcoords[i][1] += dV;
+        vtexcoords[i][0] += dUf;
+        vtexcoords[i][1] += dVf;
     }
     m_vtexcoords.endEdit();
 }
 
 void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
 {
+    float scaleUf = float(scaleU);
+    float scaleVf = float(scaleV);
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
-        vtexcoords[i][0] *= scaleU;
-        vtexcoords[i][1] *= scaleV;
+        vtexcoords[i][0] *= scaleUf;
+        vtexcoords[i][1] *= scaleVf;
     }
     m_vtexcoords.endEdit();
 }
@@ -923,15 +926,15 @@ void VisualModelImpl::computeNormals()
 
     if (vertNormIdx.empty())
     {
-        int nbn = (vertices).size();
+        size_t nbn = vertices.size();
 
         VecDeriv& normals = *(m_vnormals.beginEdit());
 
         normals.resize(nbn);
-        for (int i = 0; i < nbn; i++)
+        for (size_t i = 0; i < nbn; i++)
             normals[i].clear();
 
-        for (unsigned int i = 0; i < triangles.size(); i++)
+        for (size_t i = 0; i < triangles.size(); i++)
         {
             const Coord& v1 = vertices[triangles[i][0]];
             const Coord& v2 = vertices[triangles[i][1]];
@@ -943,7 +946,7 @@ void VisualModelImpl::computeNormals()
             normals[triangles[i][2]] += n;
         }
 
-        for (unsigned int i = 0; i < quads.size(); i++)
+        for (size_t i = 0; i < quads.size(); i++)
         {
             const Coord & v1 = vertices[quads[i][0]];
             const Coord & v2 = vertices[quads[i][1]];
@@ -960,7 +963,7 @@ void VisualModelImpl::computeNormals()
             normals[quads[i][3]] += n4;
         }
 
-        for (unsigned int i = 0; i < normals.size(); i++)
+        for (size_t i = 0; i < normals.size(); i++)
             normals[i].normalize();
 
         m_vnormals.endEdit();
@@ -969,7 +972,7 @@ void VisualModelImpl::computeNormals()
     {
         vector<Coord> normals;
         int nbn = 0;
-        for (unsigned int i = 0; i < vertNormIdx.size(); i++)
+        for (size_t i = 0; i < vertNormIdx.size(); i++)
         {
             if (vertNormIdx[i] >= nbn)
                 nbn = vertNormIdx[i]+1;
@@ -979,7 +982,7 @@ void VisualModelImpl::computeNormals()
         for (int i = 0; i < nbn; i++)
             normals[i].clear();
 
-        for (unsigned int i = 0; i < triangles.size() ; i++)
+        for (size_t i = 0; i < triangles.size() ; i++)
         {
             const Coord & v1 = vertices[triangles[i][0]];
             const Coord & v2 = vertices[triangles[i][1]];
@@ -991,7 +994,7 @@ void VisualModelImpl::computeNormals()
             normals[vertNormIdx[triangles[i][2]]] += n;
         }
 
-        for (unsigned int i = 0; i < quads.size() ; i++)
+        for (size_t i = 0; i < quads.size() ; i++)
         {
             const Coord & v1 = vertices[quads[i][0]];
             const Coord & v2 = vertices[quads[i][1]];
@@ -1008,14 +1011,14 @@ void VisualModelImpl::computeNormals()
             normals[vertNormIdx[quads[i][3]]] += n4;
         }
 
-        for (unsigned int i = 0; i < normals.size(); i++)
+        for (size_t i = 0; i < normals.size(); i++)
         {
             normals[i].normalize();
         }
 
         VecDeriv& vnormals = *(m_vnormals.beginEdit());
         vnormals.resize(vertices.size());
-        for (unsigned int i = 0; i < vertices.size(); i++)
+        for (size_t i = 0; i < vertices.size(); i++)
         {
             vnormals[i] = normals[vertNormIdx[i]];
         }
@@ -1162,19 +1165,19 @@ void VisualModelImpl::computeUVSphereProjection()
     // Map mesh vertices to sphere
     // transform cart to spherical coordinates (r, theta, phi) and sphere to cart back with radius = 1
     const VecCoord& coords = getVertices();
-    int nbrV = coords.size();
+    size_t nbrV = coords.size();
     VecCoord m_sphereV;
     m_sphereV.resize(nbrV);
 
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     vtexcoords.resize(nbrV);
 
-    for (int i = 0; i < nbrV; ++i)
+    for (size_t i = 0; i < nbrV; ++i)
     {
         Coord Vcentered = coords[i] - center;
-        float r = sqrtf(Vcentered[0] * Vcentered[0] + Vcentered[1] * Vcentered[1] + Vcentered[2] * Vcentered[2]);
-        float theta = acos(Vcentered[2] / r);
-        float phi = atan2(Vcentered[1], Vcentered[0]);
+        SReal r = sqrt(Vcentered[0] * Vcentered[0] + Vcentered[1] * Vcentered[1] + Vcentered[2] * Vcentered[2]);
+        SReal theta = acos(Vcentered[2] / r);
+        SReal phi = atan2(Vcentered[1], Vcentered[0]);
 
         r = 1.0;
         m_sphereV[i][0] = r * sin(theta)*cos(phi) + center[0];
@@ -1183,8 +1186,8 @@ void VisualModelImpl::computeUVSphereProjection()
 
         Coord pos = m_sphereV[i] - center;
         pos.normalize();
-        vtexcoords[i][0] = 0.5 + atan2(pos[1], pos[0]) / (2 * R_PI);
-        vtexcoords[i][1] = 0.5 - asin(pos[2]) / R_PI;
+        vtexcoords[i][0] = float(0.5 + atan2(pos[1], pos[0]) / (2 * R_PI));
+        vtexcoords[i][1] = float(0.5 - asin(pos[2]) / R_PI);
     }
 
     m_vtexcoords.endEdit();
@@ -1368,9 +1371,9 @@ void VisualModelImpl::computeMesh()
 
             for (unsigned int i=0; i<vertices.size(); i++)
             {
-                vertices[i][0] = (Real)m_topology->getPX(i);
-                vertices[i][1] = (Real)m_topology->getPY(i);
-                vertices[i][2] = (Real)m_topology->getPZ(i);
+                vertices[i][0] = SReal(m_topology->getPX(i));
+                vertices[i][1] = SReal(m_topology->getPY(i));
+                vertices[i][2] = SReal(m_topology->getPZ(i));
             }
 
         }
@@ -1462,8 +1465,8 @@ void VisualModelImpl::handleTopologyChange()
 
             const sofa::core::topology::TrianglesAdded *ta = static_cast< const sofa::core::topology::TrianglesAdded * >( *itBegin );
             Triangle t;
-            const unsigned int nbAddedTriangles = ta->getNbAddedTriangles();
-            const unsigned int nbTririangles = triangles.size();
+            const size_t nbAddedTriangles = ta->getNbAddedTriangles();
+            const size_t nbTririangles = triangles.size();
             triangles.resize(nbTririangles + nbAddedTriangles);
 
             for (unsigned int i = 0; i < nbAddedTriangles; ++i)
@@ -1487,8 +1490,8 @@ void VisualModelImpl::handleTopologyChange()
 
             const sofa::core::topology::QuadsAdded *qa = static_cast< const sofa::core::topology::QuadsAdded * >( *itBegin );
             Quad q;
-            const unsigned int nbAddedQuads = qa->getNbAddedQuads();
-            const unsigned int nbQuaduads = quads.size();
+            const size_t nbAddedQuads = qa->getNbAddedQuads();
+            const size_t nbQuaduads = quads.size();
             quads.resize(nbQuaduads + nbAddedQuads);
 
             for (unsigned int i = 0; i < nbAddedQuads; ++i)
@@ -1512,7 +1515,7 @@ void VisualModelImpl::handleTopologyChange()
                 groups.endEdit();
             }
 
-            unsigned int last;
+            size_t last;
 
             last = m_topology->getNbTriangles() - 1;
 
@@ -1528,7 +1531,7 @@ void VisualModelImpl::handleTopologyChange()
                 triangles[ind_k] = triangles[last];
                 triangles[last] = tmp;
 
-                unsigned int ind_last = triangles.size() - 1;
+                size_t ind_last = triangles.size() - 1;
 
                 if(last != ind_last)
                 {
@@ -1553,7 +1556,7 @@ void VisualModelImpl::handleTopologyChange()
                 groups.endEdit();
             }
 
-            unsigned int last;
+            size_t last;
 
             last = m_topology->getNbQuads() - 1;
 
@@ -1569,7 +1572,7 @@ void VisualModelImpl::handleTopologyChange()
                 quads[ind_k] = quads[last];
                 quads[last] = tmp;
 
-                unsigned int ind_last = quads.size() - 1;
+                size_t ind_last = quads.size() - 1;
 
                 if(last != ind_last)
                 {
@@ -1893,7 +1896,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     const helper::vector<int> &vertPosIdx = m_vertPosIdx.getValue();
     const helper::vector<int> &vertNormIdx = m_vertNormIdx.getValue();
 
-    int nbv = x.size();
+    int nbv = int(x.size());
 
     for (int i=0; i<nbv; i++)
     {
@@ -1904,7 +1907,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
 
     if (vertNormIdx.empty())
     {
-        nbn = vnormals.size();
+        nbn = int(vnormals.size());
         for (int i=0; i<nbn; i++)
         {
             *out << "vn "<< std::fixed << vnormals[i][0]<<' '<< std::fixed <<vnormals[i][1]<<' '<< std::fixed <<vnormals[i][2]<<'\n';
@@ -1932,7 +1935,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     int nbt = 0;
     if (!vtexcoords.empty())
     {
-        nbt = vtexcoords.size();
+        nbt = int(vtexcoords.size());
         for (int i=0; i<nbt; i++)
         {
             *out << "vt "<< std::fixed << vtexcoords[i][0]<<' '<< std::fixed <<vtexcoords[i][1]<<'\n';

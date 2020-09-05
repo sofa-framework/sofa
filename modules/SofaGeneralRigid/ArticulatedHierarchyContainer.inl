@@ -65,7 +65,7 @@ ArticulationCenter* ArticulatedHierarchyContainer::getArticulationCenterAsChild(
         if ((*ac)->childIndex.getValue() == index)
             return (*ac);
     }
-    return (*ac);
+    return nullptr;
 }
 
 helper::vector<ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantList(int index)
@@ -74,10 +74,18 @@ helper::vector<ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantLi
     acendantList.clear();
     while (index !=0)
     {
-        acendantList.push_back(getArticulationCenterAsChild(index));
+        ArticulationCenter* AC = getArticulationCenterAsChild(index);
+        if (AC != nullptr)
+            acendantList.push_back(AC);
+        else {
+            msg_error() << "getArticulationCenterAsChild not found for index: " << index;
+            break;
+        }
+
         index = acendantList[i]->parentIndex.getValue();
         i++;
     }
+    
     return acendantList;
 }
 

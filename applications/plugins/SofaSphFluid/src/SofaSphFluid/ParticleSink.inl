@@ -230,7 +230,7 @@ void ParticleSink<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vertices.push_back(sofa::defaulttype::Vector3(corners[1]));
     vertices.push_back(sofa::defaulttype::Vector3(corners[2]));
     vertices.push_back(sofa::defaulttype::Vector3(corners[3]));
-    vparams->drawTool()->drawQuad(vertices[0],vertices[1],vertices[2],vertices[3], cross((vertices[1] - vertices[0]), (vertices[2] - vertices[0])), defaulttype::RGBAColor(0.0f, 0.5f, 0.2f, 1.0f));
+    vparams->drawTool()->drawQuad(vertices[0],vertices[1],vertices[2],vertices[3], cross((vertices[1] - vertices[0]), (vertices[2] - vertices[0])), sofa::helper::types::RGBAColor(0.0f, 0.5f, 0.2f, 1.0f));
 
     vparams->drawTool()->restoreLastState();
 }

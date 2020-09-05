@@ -59,10 +59,10 @@ DataDisplay::DataDisplay()
     , f_quadData(initData(&f_quadData, "quadData", "Data associated with quads"))
     , f_pointTriangleData(initData(&f_pointTriangleData, "pointTriangleData", "Data associated with nodes per triangle"))
     , f_pointQuadData(initData(&f_pointQuadData, "pointQuadData", "Data associated with nodes per quad"))
-    , f_colorNaN(initData(&f_colorNaN, defaulttype::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
+    , f_colorNaN(initData(&f_colorNaN, sofa::helper::types::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
     , d_userRange(initData(&d_userRange, defaulttype::Vec2f(1,-1), "userRange", "Clamp to this values (if max>min)"))
-    , d_currentMin(initData(&d_currentMin, 0.f, "currentMin", "Current min range"))
-    , d_currentMax(initData(&d_currentMax, 0.f, "currentMax", "Current max range"))
+    , d_currentMin(initData(&d_currentMin, Real(0.0), "currentMin", "Current min range"))
+    , d_currentMax(initData(&d_currentMax, Real(0.0), "currentMax", "Current max range"))
     , d_shininess(initData(&d_shininess, -1.f, "shininess", "Shininess for rendering point-based data [0,128].  <0 means no specularity"))
     , state(nullptr)
     , m_topology(nullptr)
@@ -257,12 +257,12 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         if( !triData.empty() )
         {
             // Triangles
-            int nbTriangles = m_topology->getNbTriangles();
-            for (int i=0; i<nbTriangles; i++)
+            size_t nbTriangles = m_topology->getNbTriangles();
+            for (unsigned int i=0; i<nbTriangles; i++)
             {
                 Vec4f color = isnan(triData[i])
                     ? f_colorNaN.getValue()
-                    : defaulttype::RGBAColor::fromVec4(eval(triData[i]));
+                    : sofa::helper::types::RGBAColor::fromVec4(eval(triData[i]));
                 const Triangle& t = m_topology->getTriangle(i);
                 vparams->drawTool()->drawTriangle(
                     x[ t[0] ], x[ t[1] ], x[ t[2] ],
@@ -274,19 +274,19 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             glEnable( GL_LIGHTING );
             // Triangles
-            int nbTriangles = m_topology->getNbTriangles();
+            size_t nbTriangles = m_topology->getNbTriangles();
             glBegin(GL_TRIANGLES);
-            for (int i=0; i<nbTriangles; i++)
+            for (unsigned int i=0; i<nbTriangles; i++)
             {
                 Vec4f color0 = isnan(pointTriData[i*3])
                     ? f_colorNaN.getValue()
-                    : defaulttype::RGBAColor::fromVec4(eval(pointTriData[i*3]));
+                    : sofa::helper::types::RGBAColor::fromVec4(eval(pointTriData[i*3]));
                 Vec4f color1 = isnan(pointTriData[i*3+1])
                         ? f_colorNaN.getValue()
-                        : defaulttype::RGBAColor::fromVec4(eval(pointTriData[i*3+1]));
+                        : sofa::helper::types::RGBAColor::fromVec4(eval(pointTriData[i*3+1]));
                 Vec4f color2 = isnan(pointTriData[i*3+2])
                     ? f_colorNaN.getValue()
-                    : defaulttype::RGBAColor::fromVec4(eval(pointTriData[i*3+2]));
+                    : sofa::helper::types::RGBAColor::fromVec4(eval(pointTriData[i*3+2]));
                 const Triangle& t = m_topology->getTriangle(i);
 
                 glNormal3fv(m_normals[t[0]].ptr());
@@ -308,12 +308,12 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         if( !quadData.empty() )
         {
             glDisable( GL_LIGHTING );
-            int nbQuads = m_topology->getNbQuads();
-            for (int i=0; i<nbQuads; i++)
+            size_t nbQuads = m_topology->getNbQuads();
+            for (unsigned int i=0; i<nbQuads; i++)
             {
                 Vec4f color = isnan(quadData[i])
                     ? f_colorNaN.getValue()
-                    : defaulttype::RGBAColor::fromVec4(eval(quadData[i]));
+                    : sofa::helper::types::RGBAColor::fromVec4(eval(quadData[i]));
                 const Quad& t = m_topology->getQuad(i);
                 vparams->drawTool()->drawQuad(
                     x[ t[0] ], x[ t[1] ], x[ t[2] ], x[ t[3] ],
@@ -324,22 +324,22 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         else if( !pointQuadData.empty() )
         {
             glEnable( GL_LIGHTING );
-            int nbQuads = m_topology->getNbQuads();
+            size_t nbQuads = m_topology->getNbQuads();
             glBegin(GL_QUADS);
-            for (int i=0; i<nbQuads; i++)
+            for (unsigned int i=0; i<nbQuads; i++)
             {
                 Vec4f color0 = isnan(pointQuadData[i*4])
                     ? f_colorNaN.getValue()
-                    : defaulttype::RGBAColor::fromVec4(eval(pointQuadData[i*4]));
+                    : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4]));
                 Vec4f color1 = isnan(pointQuadData[i*4+1])
                         ? f_colorNaN.getValue()
-                        : defaulttype::RGBAColor::fromVec4(eval(pointQuadData[i*4+1]));
+                        : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4+1]));
                 Vec4f color2 = isnan(pointQuadData[i*4+2])
                     ? f_colorNaN.getValue()
-                    : defaulttype::RGBAColor::fromVec4(eval(pointQuadData[i*4+2]));
+                    : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4+2]));
                 Vec4f color3 = isnan(pointQuadData[i*4+3])
                     ? f_colorNaN.getValue()
-                    : defaulttype::RGBAColor::fromVec4(eval(pointQuadData[i*4+3]));
+                    : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4+3]));
                 const Quad& q = m_topology->getQuad(i);
 
                 glNormal3fv(m_normals[q[0]].ptr());
@@ -371,7 +371,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             Vec4f color = isnan(ptData[i])
                 ? f_colorNaN.getValue()
-                : defaulttype::RGBAColor::fromVec4(eval(ptData[i]));
+                : sofa::helper::types::RGBAColor::fromVec4(eval(ptData[i]));
             vparams->drawTool()->drawPoint(x[i], color);
         }
 
@@ -389,7 +389,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             for (int j=0; j<3; j++) {
                 color[j] = isnan(ptData[t[j]])
                     ? f_colorNaN.getValue()
-                    : defaulttype::RGBAColor::fromVec4(eval(ptData[t[j]]));
+                    : sofa::helper::types::RGBAColor::fromVec4(eval(ptData[t[j]]));
             }
 
             glNormal3fv(m_normals[t[0]].ptr());
@@ -409,7 +409,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
         // Quads
         glBegin(GL_QUADS);
-        for (size_t i=0; i<m_topology->getNbQuads(); ++i)
+        for (sofa::core::topology::Topology::QuadID i=0; i<m_topology->getNbQuads(); ++i)
         {
             const Quad &q = m_topology->getQuad(i);
             Vec4f color[4];
@@ -417,7 +417,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             {
                 color[j] = isnan(ptData[q[j]])
                 ? f_colorNaN.getValue()
-                : defaulttype::RGBAColor::fromVec4(eval(ptData[q[j]]));
+                : sofa::helper::types::RGBAColor::fromVec4(eval(ptData[q[j]]));
             }
 
             glNormal3fv(m_normals[q[0]].ptr());
@@ -453,7 +453,7 @@ void DataDisplay::computeNormals()
 
     m_normals.resize(x.size(),Vec3f(0,0,0));
 
-    for (size_t i=0; i<m_topology->getNbTriangles(); ++i)
+    for (sofa::core::topology::Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
     {
         const Triangle &t = m_topology->getTriangle(i);
 
@@ -467,7 +467,7 @@ void DataDisplay::computeNormals()
         m_normals[t[2]] += n;
     }
 
-    for (size_t i=0; i<m_topology->getNbQuads(); ++i)
+    for (sofa::core::topology::Topology::QuadID i=0; i<m_topology->getNbQuads(); ++i)
     {
         const Quad &q = m_topology->getQuad(i);
 

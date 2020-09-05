@@ -12,6 +12,7 @@
 #  JSON_FOUND - system has json lib with correct version
 #  JSON_INCLUDE_DIR - the json include directory
 #  JSON_VERSION - json version
+include_guard(GLOBAL)
 
 if(NOT Json_FIND_VERSION)
     if(NOT Json_FIND_VERSION_MAJOR)
