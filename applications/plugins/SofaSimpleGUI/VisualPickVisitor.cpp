@@ -1,4 +1,5 @@
 #include "VisualPickVisitor.h"
+#include <sofa/core/visual/Shader.h>
 #include <iostream>
 using std::cout;
 using std::cerr;

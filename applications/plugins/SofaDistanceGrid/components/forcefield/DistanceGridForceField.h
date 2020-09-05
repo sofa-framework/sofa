@@ -28,6 +28,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -37,6 +38,8 @@ namespace component
 
 namespace forcefield
 {
+
+using sofa::core::objectmodel::DataFileName;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>

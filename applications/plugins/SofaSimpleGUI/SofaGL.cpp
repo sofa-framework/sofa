@@ -3,6 +3,7 @@
 #include "VisualPickVisitor.h"
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/core/visual/VisualLoop.h>
 
 using std::cout;
 using std::cerr;

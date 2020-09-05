@@ -49,7 +49,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SPH_FLUID")
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseMechanics)
 
 if(SofaOpenglVisual_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
+    target_link_libraries(${PROJECT_NAME} SofaOpenglVisual tbb)
 endif()
 
 

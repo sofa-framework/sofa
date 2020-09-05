@@ -32,12 +32,13 @@
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
-
+#include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PipeProcess.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/atomic.h>
-
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/helper/AdvancedTimer.h>

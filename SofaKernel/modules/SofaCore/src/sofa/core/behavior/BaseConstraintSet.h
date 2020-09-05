@@ -22,8 +22,9 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASECONSTRAINTSET_H
 #define SOFA_CORE_BEHAVIOR_BASECONSTRAINTSET_H
 
-#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/config.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/defaulttype/BaseVector.h>
 
 
@@ -35,8 +36,8 @@ namespace core
 
 namespace behavior
 {
-
-class SOFA_CORE_API BaseConstraintSet : public virtual objectmodel::BaseObject
+using sofa::core::objectmodel::BaseObject;
+class SOFA_CORE_API BaseConstraintSet : public virtual BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseConstraintSet, objectmodel::BaseObject);

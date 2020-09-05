@@ -26,6 +26,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/LocalStorage.h>
 
+#include <sofa/core/BehaviorModel.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/ExecParams.h>
 
