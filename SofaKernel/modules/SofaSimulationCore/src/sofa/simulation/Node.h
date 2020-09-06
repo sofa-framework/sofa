@@ -91,6 +91,9 @@ namespace sofa::simulation
     class VisitorScheduler;
 }
 
+///TODO(dmarchal - 08/0982020): understand why the Pipeline cannot be forwarded declared on windows.
+#include <sofa/core/collision/Pipeline.h>
+
 #include <type_traits>
 #include <string>
 #include <stack>
