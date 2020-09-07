@@ -27,8 +27,10 @@ using sofa::helper::system::FileSystem;
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
 
-#include <boost/filesystem.hpp>
 #include <fstream>
+
+#include <filesystem>
+
 
 using sofa::helper::Utils;
 
@@ -316,16 +318,16 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
         {
             const std::string& dir = *i;
 
-            boost::filesystem::recursive_directory_iterator iter(dir);
-            boost::filesystem::recursive_directory_iterator end;
+            std::filesystem::recursive_directory_iterator iter(dir);
+            std::filesystem::recursive_directory_iterator end;
 
             while (iter != end)
             {
-                if ( iter.level() > maxRecursiveDepth )
+                if ( iter.depth() > maxRecursiveDepth )
                 {
-                    iter.no_push(); // skip
+                    iter.disable_recursion_pending(); // skip
                 }
-                else if ( !boost::filesystem::is_directory(iter->path()) )
+                else if ( !std::filesystem::is_directory(iter->path()) )
                 {
                     const std::string path = iter->path().string();
                     const std::string filename = iter->path().filename().string();
@@ -337,12 +339,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
                     }
                 }
 
-                boost::system::error_code ec;
-                iter.increment(ec);
-                if (ec)
-                {
-                    msg_error("PluginManager") << "Error while accessing " << iter->path().string() << ": " << ec.message();
-                }
+                iter++;
             }
         }
     }
@@ -351,10 +348,13 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
 
 bool PluginManager::pluginIsLoaded(const std::string& plugin)
 {
+    // check if path valid
     std::string pluginPath = plugin;
-
-    if (!FileSystem::isFile(plugin)) {
-        pluginPath = findPlugin(plugin);
+    std::filesystem::path sysPath(pluginPath);
+    if (!std::filesystem::exists(sysPath))
+    {
+        // Plugin is not a file, try to find the plugin real path
+        pluginPath = findPlugin(pluginPath);
     }
 
     return m_pluginMap.find(pluginPath) != m_pluginMap.end();
