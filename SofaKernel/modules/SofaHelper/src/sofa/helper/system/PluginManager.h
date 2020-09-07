@@ -170,6 +170,7 @@ public:
 
     std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, int maxRecursiveDepth = 6);
     bool pluginIsLoaded(const std::string& plugin);
+    bool checkDuplicatedPlugin(const Plugin& plugin, const std::string& pluginPath);
 
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
     {

@@ -171,6 +171,12 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
             return false;
         }
         getPluginEntry(p.getModuleName,d);
+
+        if (checkDuplicatedPlugin(p, pluginPath))
+        {
+            return true;
+        }
+
         getPluginEntry(p.getModuleDescription,d);
         getPluginEntry(p.getModuleLicense,d);
         getPluginEntry(p.getModuleComponentList,d);
@@ -358,6 +364,23 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
     }
 
     return m_pluginMap.find(pluginPath) != m_pluginMap.end();
+}
+
+
+bool PluginManager::checkDuplicatedPlugin(const Plugin& plugin, const std::string& pluginPath)
+{
+    for (auto itP : m_pluginMap)
+    {
+        std::string name(itP.second.getModuleName());
+        std::string plugName(plugin.getModuleName());
+        if (name.compare(plugName) == 0 && pluginPath.compare(itP.first) != 0)
+        {
+            msg_warning("PluginManager") << "Trying to load plugin (" + name + ", from path: " + pluginPath + ") already registered from path: " + itP.first;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 }
