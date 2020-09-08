@@ -22,6 +22,7 @@
 #ifndef SOFA_SIMULATION_SCENECHECKAPICHANGES_H
 #define SOFA_SIMULATION_SCENECHECKAPICHANGES_H
 
+#include <sofa/version.h>
 #include "config.h"
 #include "SceneCheck.h"
 #include <string>
@@ -66,7 +67,7 @@ public:
     void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct);
 private:
     std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"20.06"};
+    std::string m_selectedApiLevel {SOFA_VERSION_STR};
 
     std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets;
 };

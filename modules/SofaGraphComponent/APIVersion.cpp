@@ -39,6 +39,7 @@ using sofa::core::ObjectFactory ;
 using sofa::core::RegisterObject ;
 
 #include "APIVersion.h"
+#include <sofa/version.h>
 
 namespace sofa
 {
@@ -50,7 +51,7 @@ namespace _apiversion_
 {
 
 APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06', ...)"))
+     d_level ( initData(&d_level, std::string(SOFA_VERSION_STR), "level", "The API Level of the scene ('17.06', '17.12', '18.06', ...)"))
 {
 }
 
@@ -67,13 +68,13 @@ void APIVersion::init()
 void APIVersion::checkInputData()
 {
     if(!d_level.isSet() && !name.isSet() ){
-        msg_warning() << "The level is not set. Using 17.06 as default value. " ;
+        msg_warning() << "The level is not set. Using " << SOFA_VERSION_STR << " as default value. " ;
         return ;
     }
     if( !d_level.isSet() && name.isSet() ){
         d_level.setValue(getName());
     }
-    std::vector<std::string> allowedVersion = { "17.06", "17.12", "18.06", "18.12" } ;
+    std::vector<std::string> allowedVersion = { "17.06", "17.12", "18.06", "18.12", SOFA_VERSION_STR } ;
     if( std::find( allowedVersion.begin(), allowedVersion.end(), d_level.getValue()) == allowedVersion.end() )
     {
         msg_warning() << "The provided level '"<< d_level.getValue() <<"' is now valid. " ;
