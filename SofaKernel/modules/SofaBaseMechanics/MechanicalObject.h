@@ -153,7 +153,7 @@ public:
     Data< bool >  showVectors; ///< Show velocity. (default=false)
     Data< float > showVectorsScale; ///< Scale for vectors display. (default=0.0001)
     Data< int > drawMode; ///< The way vectors will be drawn: - 0: Line - 1:Cylinder - 2: Arrow.  The DOFS will be drawn: - 0: point - >1: sphere. (default=0)
-    Data< defaulttype::Vec4f > d_color;  ///< drawing color
+    Data< helper::types::RGBAColor > d_color;  ///< drawing color
 
     void init() override;
     void reinit() override;
