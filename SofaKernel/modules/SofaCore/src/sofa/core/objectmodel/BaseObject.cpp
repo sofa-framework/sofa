@@ -256,7 +256,7 @@ void BaseObject::init()
     {
         if (data->isRequired() && !data->isSet())
         {
-            msg_warning() << "Required data \"" << data->getName() << "\" has not been set. (Current value is " << data->getValueString() << ")" ;
+            msg_error() << "Required data \"" << data->getName() << "\" has not been set. (Current value is " << data->getValueString() << ")" ;
         }
     }
 }
