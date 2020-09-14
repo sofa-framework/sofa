@@ -283,6 +283,8 @@ protected:
         if(!inTex->isEmpty()) { texture->unbind(); 	glDisable( GL_TEXTURE_2D ); }
 
         glPopAttrib();
+#else
+        SOFA_UNUSED(vparams);
 #endif /* SOFA_NO_OPENGL */
     }
 };

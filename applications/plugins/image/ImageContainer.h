@@ -576,6 +576,8 @@ protected:
 
         glPopMatrix ();
         glPopAttrib();
+#else
+        SOFA_UNUSED(vparams);
 #endif /* SOFA_NO_OPENGL */
     }
 

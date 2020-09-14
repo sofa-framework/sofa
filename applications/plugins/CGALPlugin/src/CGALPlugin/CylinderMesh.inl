@@ -495,6 +495,8 @@ void CylinderMesh<DataTypes>::orientate()
 template <class DataTypes>
 void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams*)
 {
+#ifndef SOFA_NO_OPENGL
+
     if (m_viewPoints.getValue())
     {
         glDisable(GL_LIGHTING);
@@ -617,8 +619,7 @@ void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams*)
         glEnd();
         glEnable(GL_LIGHTING);
     }
-
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 } //cgal
