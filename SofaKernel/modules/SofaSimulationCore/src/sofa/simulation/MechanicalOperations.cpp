@@ -503,6 +503,7 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     if (matrix != nullptr)
     {
         executeVisitor( MechanicalAddMBK_ToMatrixVisitor(&mparams, matrix) );
+        executeVisitor( MechanicalApplyProjectiveConstraint_ToMatrixVisitor(&mparams, matrix) );
     }
 }
 
@@ -514,6 +515,7 @@ void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiM
     if (matrix != nullptr)
     {
         executeVisitor( MechanicalAddSubMBK_ToMatrixVisitor(&mparams, matrix, subMatrixIndex) );
+        executeVisitor( MechanicalApplyProjectiveConstraint_ToMatrixVisitor(&mparams, matrix) );
     }
 }
 

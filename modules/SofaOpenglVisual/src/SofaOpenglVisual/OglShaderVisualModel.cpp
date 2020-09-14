@@ -164,7 +164,7 @@ void OglShaderVisualModel::computeRestPositions()
     //Get the position of the new point (should be the rest position to avoid artefact !
     if (restpositions.size()!=positions.size()) {
         VecCoord& restVertices = *(m_restPositions.beginEdit());
-        for (unsigned int i=restVertices.size(); i<positions.size(); i++) {
+        for (size_t i=restVertices.size(); i<positions.size(); i++) {
             restVertices.push_back(positions[i]);
         }
         m_restPositions.endEdit();

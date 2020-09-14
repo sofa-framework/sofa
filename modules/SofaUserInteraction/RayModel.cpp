@@ -110,7 +110,7 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams,int index
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
-    sofa::defaulttype::RGBAColor color(1.0, 0.0, 1.0, 1.0);
+    sofa::helper::types::RGBAColor color(1.0, 0.0, 1.0, 1.0);
     vparams->drawTool()->drawLine(p1,p2,color);
     vparams->drawTool()->restoreLastState();
 }

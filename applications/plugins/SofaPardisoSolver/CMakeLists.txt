@@ -49,4 +49,9 @@ target_link_libraries(${PROJECT_NAME} ${LINKER_DEPENDENCIES})
 
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(SofaPardisoSolver ${SOFAPARDISOSOLVER_VERSION} SofaPardisoSolver SofaPardisoSolver)
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${SOFAPARDISOSOLVER_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    )

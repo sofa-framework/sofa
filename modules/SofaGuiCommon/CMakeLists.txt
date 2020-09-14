@@ -40,4 +40,9 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaCommon SofaGeneral SofaMisc)
 
-sofa_install_targets(SofaGui SofaGuiCommon "SofaGui" "src")
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaGui
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "SofaGui"
+    )

@@ -24,4 +24,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree SofaHelper)
 target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml) # Private because not exported in API
 
-sofa_install_targets(SofaCommon ${PROJECT_NAME} "SofaCommon/${PROJECT_NAME}")
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaCommon
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    )

@@ -286,4 +286,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${QWT_VERSION})
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_create_package(Qwt ${QWT_VERSION} qwt .)
+sofa_create_package_with_targets(
+    PACKAGE_NAME Qwt
+    PACKAGE_VERSION ${QWT_VERSION}
+    TARGETS qwt
+    INCLUDE_INSTALL_DIR "."
+    )

@@ -54,8 +54,9 @@ protected:
 
 public:
     /// Main Load method inherites from \sa sofa::core::loader::MeshLoader::load()
-    virtual bool load() override;
-    
+    virtual bool doLoad() override;
+    virtual void doClearBuffers() override {}
+
 
     int getpPreprocessing() {
         return pp_Loadsteps;

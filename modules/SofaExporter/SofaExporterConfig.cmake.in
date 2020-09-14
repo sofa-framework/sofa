@@ -1,4 +1,5 @@
 # CMake package configuration file for the SofaExporter module
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 set(SOFAEXPORTER_HAVE_ZLIB @SOFAEXPORTER_HAVE_ZLIB@)

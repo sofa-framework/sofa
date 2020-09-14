@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 
 namespace sofa
@@ -198,7 +198,7 @@ void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     vparams->drawTool()->saveLastState();
 
     const SetIndexArray & indices = f_indices.getValue();
-    sofa::defaulttype::RGBAColor color = sofa::defaulttype::RGBAColor::yellow();
+    sofa::helper::types::RGBAColor color = sofa::helper::types::RGBAColor::yellow();
 
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();

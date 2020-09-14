@@ -97,7 +97,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity. (default=false)"))
     , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere. (default=0)"))
-    , d_color(initData(&d_color, defaulttype::Vec4f(1,1,1,1), "showColor", "Color for object display. (default=[1 1 1 1])"))
+    , d_color(initData(&d_color, helper::types::RGBAColor::white(), "showColor", "Color for object display. (default=[1 1 1 1])"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -1587,13 +1587,17 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
     {
         const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
 
-#if !defined(NDEBUG)
-        const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
-        if (!val.empty() && val.size() != (unsigned int)this->getSize())
+#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+        if(d!=NULL)
         {
-            msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+            const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
+            if (!val.empty() && val.size() != (unsigned int)this->getSize())
+            {
+                msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+            }
         }
-#endif
+#endif // defined(SOFA_DEBUG) || !defined(NDEBUG)
+
         return d;
     }
     else

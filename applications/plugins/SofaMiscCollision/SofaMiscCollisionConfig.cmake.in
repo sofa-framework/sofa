@@ -1,5 +1,6 @@
 # CMake package configuration file for the SofaMiscCollision plugin
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 set(SOFAMISCCOLLISION_HAVE_SOFASPHFLUID @SOFAMISCCOLLISION_HAVE_SOFASPHFLUID@)

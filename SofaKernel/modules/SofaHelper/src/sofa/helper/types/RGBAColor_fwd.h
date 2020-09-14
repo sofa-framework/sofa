@@ -19,16 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_VOLUMETRICDATA_CONFIG_H
-#define SOFA_VOLUMETRICDATA_CONFIG_H
+#pragma once
 
-#include <sofa/config.h>
-
-#ifdef SOFA_BUILD_VOLUMETRICDATA
-#  define SOFA_TARGET SofaVolumetricData
-#  define SOFA_VOLUMETRICDATA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_VOLUMETRICDATA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#endif
+namespace sofa::helper::types
+{
+    class RGBAColor;
+}

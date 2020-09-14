@@ -64,9 +64,9 @@ endif()
 target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGraphComponent SofaUserInteraction SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField SofaCore)
 
 ## Install rules for the library; CMake package configurations files
-sofa_generate_package(
-    NAME ${PROJECT_NAME}
-    TARGETS ${PROJECT_NAME}
-    VERSION ${PROJECT_VERSION}
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     RELOCATABLE "plugins"
     )

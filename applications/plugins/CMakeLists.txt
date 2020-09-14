@@ -11,7 +11,6 @@ sofa_add_plugin(SofaSphFluid SofaSphFluid)
 sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON) # Contains DefaultCollisionGroupManager
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollision
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
-sofa_add_plugin(SofaVolumetricData SofaVolumetricData) # Depends on SofaDistanceGrid, SofaImplicitField
 sofa_add_plugin(MultiThreading MultiThreading)
 sofa_add_plugin(DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
 sofa_add_plugin(image image)           # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
@@ -27,9 +26,8 @@ sofa_add_plugin(Flexible Flexible)     # Depends on image, CImgPlugin, SofaHighO
 sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
 sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant
 sofa_add_plugin(PreassembledMass PreassembledMass) # Depends on Flexible and Compliant
-sofa_add_plugin(ARTrack ARTrack)
 sofa_add_plugin(ExternalBehaviorModel ExternalBehaviorModel)
-sofa_add_plugin(InvertibleFVM InvertibleFVM)
+sofa_add_plugin_external(InvertibleFVM InvertibleFVM)
 sofa_add_plugin(MeshSTEPLoader MeshSTEPLoader)
 sofa_add_plugin(PluginExample PluginExample)
 sofa_add_plugin(ManifoldTopologies ManifoldTopologies)
@@ -40,7 +38,6 @@ sofa_add_plugin(Xitact Xitact)
 sofa_add_plugin(Haption Haption)
 sofa_add_plugin(ManualMapping ManualMapping)
 sofa_add_plugin(PersistentContact PersistentContact)
-# sofa_add_plugin(SofaPML SofaPML)
 sofa_add_plugin(Sensable Sensable)
 sofa_add_plugin(SensableEmulation SensableEmulation)
 sofa_add_plugin(SofaHAPI SofaHAPI)

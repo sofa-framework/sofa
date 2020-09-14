@@ -24,7 +24,7 @@
 
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/defaulttype/Vec.h>
 #include <algorithm> // for std::min
 
@@ -521,8 +521,8 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    sofa::defaulttype::RGBAColor colorActive = sofa::defaulttype::RGBAColor::magenta();
-    sofa::defaulttype::RGBAColor colorNotActive = sofa::defaulttype::RGBAColor::green();
+    sofa::helper::types::RGBAColor colorActive = sofa::helper::types::RGBAColor::magenta();
+    sofa::helper::types::RGBAColor colorNotActive = sofa::helper::types::RGBAColor::green();
     std::vector< sofa::defaulttype::Vector3 > vertices;
 
     unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());

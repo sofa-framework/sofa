@@ -39,9 +39,11 @@ class SOFA_GENERAL_LOADER_API MeshGmshLoader : public sofa::core::loader::MeshLo
 public:
     SOFA_CLASS(MeshGmshLoader,sofa::core::loader::MeshLoader);
 
-    bool load() override;
+    bool doLoad() override;
 
 protected:
+
+    void doClearBuffers() override;
 
     bool readGmsh(std::ifstream &file, const unsigned int gmshFormat);
 

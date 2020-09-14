@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -47,7 +47,7 @@ protected:
     BackgroundSetting();                                         ///< Default constructor
 
 public:
-    Data<defaulttype::RGBAColor> color;                          ///< Color of the Background of the Viewer.
+    Data<sofa::helper::types::RGBAColor> color;                          ///< Color of the Background of the Viewer.
     sofa::core::objectmodel::DataFileName image;                 ///< Image to be used as background of the viewer.
 
 };

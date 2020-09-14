@@ -25,9 +25,10 @@
 #include <SofaBaseUtils/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::FileRepository;
-
+using sofa::core::objectmodel::DataFileName;
 
 namespace sofa
 {
@@ -49,10 +50,10 @@ protected:
     FileRepository* m_repository;
 
 public:
-    //cannot be a DataFilename
-    Data<std::string> d_repositoryPath; ///< Path to add to the pool of resources
+    DataFileName d_repositoryPath; ///< Path to add to the pool of resources
 
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+    bool updateRepositoryPath();
     void cleanup() override;
 
 private:

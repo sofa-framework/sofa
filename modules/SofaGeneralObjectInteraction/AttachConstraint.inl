@@ -624,7 +624,7 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
     const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    sofa::defaulttype::RGBAColor color(1,0.5,0.5,1);
+    sofa::helper::types::RGBAColor color(1,0.5,0.5,1);
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
@@ -636,7 +636,7 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
     vparams->drawTool()->drawPoints(vertices,10,color);
     vertices.clear();
 
-    color = sofa::defaulttype::RGBAColor(1,0.5,0.5,1);
+    color = sofa::helper::types::RGBAColor(1,0.5,0.5,1);
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         if (activeFlags.size() > i && !activeFlags[i])

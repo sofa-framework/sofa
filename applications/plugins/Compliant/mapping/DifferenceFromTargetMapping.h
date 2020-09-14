@@ -5,7 +5,7 @@
 
 #include "ConstantAssembledMapping.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -43,7 +43,7 @@ public:
 
     Data< bool > d_inverted; ///< target-p (rather than p-target)
     Data< SReal > d_showObjectScale; ///< drawing size
-    Data< defaulttype::RGBAColor > d_color; ///< drawing color
+    Data< sofa::helper::types::RGBAColor > d_color; ///< drawing color
 
 
     DifferenceFromTargetMapping()
@@ -52,7 +52,7 @@ public:
         , d_targetIndices( initData(&d_targetIndices, "targetIndices", "target indices in target positions which who computes deltas") )
         , d_inverted( initData(&d_inverted, false, "inverted", "target-p (rather than p-target)") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(0), "showObjectScale", "Scale for object display"))
-        , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+        , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     {
 
         // backward compatibility with OffsetMapping, a previous identical mapping

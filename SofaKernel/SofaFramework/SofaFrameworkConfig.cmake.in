@@ -1,6 +1,7 @@
 # CMake package configuration file for SofaFramework
 cmake_minimum_required(VERSION 3.12)
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 get_filename_component(SOFA_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)

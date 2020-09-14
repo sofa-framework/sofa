@@ -27,7 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
@@ -484,7 +484,7 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
         return;
 
     sofa::helper::vector<defaulttype::Vector3> vertices;
-    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
     {

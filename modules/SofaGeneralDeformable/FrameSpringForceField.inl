@@ -25,7 +25,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaGeneralDeformable/FrameSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <cassert>
 #include <iostream>
 
@@ -195,26 +195,26 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         {
             if ( d < restLength *0.9999 )
             {
-                colors.push_back(sofa::defaulttype::RGBAColor::red());
-                colors.push_back(sofa::defaulttype::RGBAColor::red());
+                colors.push_back(sofa::helper::types::RGBAColor::red());
+                colors.push_back(sofa::helper::types::RGBAColor::red());
             }
             else
             {
-                colors.push_back(sofa::defaulttype::RGBAColor::green());
-                colors.push_back(sofa::defaulttype::RGBAColor::green());
+                colors.push_back(sofa::helper::types::RGBAColor::green());
+                colors.push_back(sofa::helper::types::RGBAColor::green());
             }
         }
         else
         {
             if ( d < restLength *0.9999 )
             {
-                colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
-                colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
+                colors.push_back(sofa::helper::types::RGBAColor(1,0.5, 0,1));
+                colors.push_back(sofa::helper::types::RGBAColor(1,0.5, 0,1));
             }
             else
             {
-                colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
-                colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
+                colors.push_back(sofa::helper::types::RGBAColor(0,1,0.5,1));
+                colors.push_back(sofa::helper::types::RGBAColor(0,1,0.5,1));
             }
 
         }

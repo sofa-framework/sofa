@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/EdgePressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <vector>
 #include <set>
 
@@ -432,7 +432,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     vparams->drawTool()->disableLighting();
 
-    const sofa::defaulttype::RGBAColor& color = sofa::defaulttype::RGBAColor::yellow();
+    const sofa::helper::types::RGBAColor& color = sofa::helper::types::RGBAColor::yellow();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
 

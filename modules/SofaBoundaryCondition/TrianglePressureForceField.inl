@@ -27,7 +27,7 @@
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <vector>
 #include <set>
 
@@ -266,7 +266,7 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
 
     vparams->drawTool()->disableLighting();
 
-    const sofa::defaulttype::RGBAColor&  color = sofa::defaulttype::RGBAColor::green();
+    const sofa::helper::types::RGBAColor&  color = sofa::helper::types::RGBAColor::green();
     std::vector< sofa::defaulttype::Vector3 > vertices;
 
     const sofa::helper::vector <unsigned int>& my_map = trianglePressureMap.getMap2Elements();

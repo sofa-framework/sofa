@@ -81,6 +81,15 @@ public:
 
 protected:
     MeshLoader();
+
+protected:
+    virtual void clearBuffers() final;
+
+private:
+    virtual bool doLoad() = 0;
+
+    virtual void doClearBuffers() = 0;
+
 public:
     bool canLoad() override;
 
@@ -91,6 +100,7 @@ public:
 
     void reinit() override;
 
+    virtual bool load() final;
 
     /// Apply Homogeneous transformation to the positions
     virtual void applyTransformation (sofa::defaulttype::Matrix4 const& T);
@@ -201,6 +211,7 @@ protected:
     void addEdge(helper::vector<Edge>* pEdges, Topology::EdgeID p0, Topology::EdgeID p1);
 
     void addTriangle(helper::vector<Triangle>* pTriangles, const Triangle& p);
+    void addTriangle(helper::WriteOnlyAccessor<Data<helper::vector<Triangle>>>& pTriangles, const Triangle& p);
     void addTriangle(helper::vector<Triangle>* pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2);
 
     void addQuad(helper::vector<Quad>* pQuads, const Quad& p);

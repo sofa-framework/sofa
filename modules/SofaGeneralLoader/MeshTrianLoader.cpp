@@ -54,7 +54,7 @@ MeshTrianLoader::MeshTrianLoader() : MeshLoader()
 
 
 
-bool MeshTrianLoader::load()
+bool MeshTrianLoader::doLoad()
 {
     msg_info() << "Loading Trian file: " << m_filename;
 
@@ -78,6 +78,16 @@ bool MeshTrianLoader::load()
 
     file.close();
     return fileRead;
+}
+
+void MeshTrianLoader::doClearBuffers()
+{
+    neighborTable.beginEdit()->clear();
+    neighborTable.endEdit();
+    edgesOnBorder.beginEdit()->clear();
+    edgesOnBorder.endEdit();
+    trianglesOnBorderList.beginEdit()->clear();
+    trianglesOnBorderList.endEdit();
 }
 
 

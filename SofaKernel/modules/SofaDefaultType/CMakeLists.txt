@@ -51,7 +51,12 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DEFAULTTYPE")
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework" "src")
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaFramework
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "SofaFramework"
+    )
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaDefaultType_test)

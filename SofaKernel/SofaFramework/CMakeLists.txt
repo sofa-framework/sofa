@@ -64,10 +64,10 @@ install(FILES CMakeParseLibraryList.cmake DESTINATION lib/cmake/${PROJECT_NAME} 
 configure_file(SofaMacros.cmake ${CMAKE_BINARY_DIR}/cmake/SofaMacros.cmake COPYONLY)
 install(FILES SofaMacros.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
 
-sofa_generate_package(
-    NAME ${PROJECT_NAME}
-    VERSION ${Sofa_VERSION}
-    TARGETS ${PROJECT_NAME}
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     )
