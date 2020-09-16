@@ -81,7 +81,7 @@ public:
     typedef BaseMeshTopology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
-    typedef unsigned int PointID;
+    typedef BaseMeshTopology::PointID PointID;
     typedef BaseMeshTopology::Edge Edge;
     typedef BaseMeshTopology::Triangle Triangle;
     typedef BaseMeshTopology::Tetra Tetra;
