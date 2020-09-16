@@ -169,14 +169,20 @@ void PythonEnvironment::Init()
 
     // Add the paths to the plugins' python modules to sys.path.  Those paths
     // are read from all the files in 'etc/sofa/python.d'
-    std::string confDir = Utils::getSofaPathPrefix() + "/etc/sofa/python.d";
-    if (FileSystem::exists(confDir))
+    std::vector< std::string > paths = sofa::helper::system::DataRepository.getPaths();
+    paths.push_back(Utils::getSofaPathPrefix());
+    for (auto path : paths)
     {
-        std::vector<std::string> files;
-        FileSystem::listDirectory(confDir, files);
-        for (size_t i=0; i<files.size(); i++)
+        std::string confDir = path + "/etc/sofa/python.d";
+        if (FileSystem::exists(confDir))
         {
-            addPythonModulePathsFromConfigFile(confDir + "/" + files[i]);
+            std::vector<std::string> files;
+            FileSystem::listDirectory(confDir, files);
+
+            for (size_t i = 0; i < files.size(); i++)
+            {
+                addPythonModulePathsFromConfigFile(confDir + "/" + files[i]);
+            }
         }
     }
 
