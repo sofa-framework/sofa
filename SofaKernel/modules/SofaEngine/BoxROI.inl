@@ -108,6 +108,13 @@ BoxROI<DataTypes>::BoxROI()
 {
     sofa::helper::getWriteOnlyAccessor(d_indices).push_back(0);
 
+    addAlias(&d_pointsInROI,"pointsInBox");
+    addAlias(&d_edgesInROI,"edgesInBox");
+    addAlias(&d_trianglesInROI,"f_trianglesInBox");
+    addAlias(&d_tetrahedraInROI,"f_tetrahedraInBox");
+    addAlias(&d_hexahedraInROI,"f_tetrahedraInBox");
+    addAlias(&d_quadInROI,"f_quadInBOX");
+
     addInput(&d_alignedBoxes);
     addInput(&d_orientedBoxes);
 
@@ -132,6 +139,22 @@ BoxROI<DataTypes>::BoxROI()
     addOutput(&d_quadInROI);
     addOutput(&d_nbIndices);
 }
+
+template<class DataTypes>
+void BoxROI::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+{
+    if (arg->getAttribute("rest_position")!=nullptr)
+    {
+        msg_deprecated() << "The 'rest_position' data field has been deprecated in Sofa 20.06. Use the attribute 'position' instead." << msgendl
+                            "Please contact sofa-dev team in case you need similar.";
+    }
+    if (arg->getAttribute("isVisible")!=nullptr)
+    {
+        msg_deprecated() << "The 'isVisible' data field has been deprecated in Sofa 20.06. Use the attribute 'drawBoxes' instead." << msgendl
+                            "Please contact sofa-dev team in case you need similar.";
+    }
+}
+
 
 template <class DataTypes>
 void BoxROI<DataTypes>::init()

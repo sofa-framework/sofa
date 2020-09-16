@@ -89,6 +89,7 @@ public:
     typedef BaseMeshTopology::Quad Quad;
 
 public:
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
     void init() override;
     void reinit() override;
     void doUpdate() override;
@@ -168,8 +169,6 @@ public:
     Data<bool> d_drawQuads; ///< Draw Quads. (default = false)
     Data<double> d_drawSize; ///< rendering size for box and topological elements
     Data<bool> d_doUpdate; ///< If true, updates the selection at the beginning of simulation steps. (default = true)
-
-
 protected:
 
     struct OrientedBox
