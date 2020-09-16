@@ -285,6 +285,23 @@ bool VisualModelImpl::hasOpaque()
 
 void VisualModelImpl::drawVisual(const core::visual::VisualParams* vparams)
 {
+    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Loading)
+    {
+        if (m_topoChanged)
+        {
+            deleteBuffers();
+            m_topoChanged = false;
+        }
+        if (m_textureChanged)
+        {
+            deleteTextures();
+            m_textureChanged = false;
+        }
+        init();
+        initVisual();
+        updateBuffers();
+        d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+    }
     //Update external buffers (like VBO) if the mesh change AFTER doing the updateVisual() process
     if(m_vertices2.isDirty())
     {
@@ -911,6 +928,23 @@ void VisualModelImpl::init()
 
     VisualModel::init();
     updateVisual();
+
+    addUpdateCallback("updateTopo", {&m_edges, &m_triangles, &m_quads, &fileMesh},
+                      [&](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
+    {
+        std::cout << "updating TOPO" << std::endl;
+        SOFA_UNUSED(tracker);
+        m_topoChanged = true;
+        return sofa::core::objectmodel::ComponentState::Loading;
+    }, {&d_componentState});
+
+    addUpdateCallback("updateTextures", {&texturename, &m_vtexcoords},
+                      [&](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        m_textureChanged = true;
+        return sofa::core::objectmodel::ComponentState::Loading;
+    }, {&d_componentState});
 }
 
 void VisualModelImpl::computeNormals()
