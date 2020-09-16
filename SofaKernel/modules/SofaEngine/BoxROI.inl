@@ -141,7 +141,7 @@ BoxROI<DataTypes>::BoxROI()
 }
 
 template<class DataTypes>
-void BoxROI::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+void BoxROI<DataTypes>::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
     if (arg->getAttribute("rest_position")!=nullptr)
     {
