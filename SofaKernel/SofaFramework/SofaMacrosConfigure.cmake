@@ -120,15 +120,11 @@ macro(sofa_add_generic directory name type)
         get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)
         get_property(_allTargetNames GLOBAL PROPERTY __GlobalTargetNameList__)
 
-        # if(NOT ${name} IN_LIST _allTargets) # ONLY CMAKE >= 3.3 and policy to NEW
-        list (FIND _allTargets ${name} _index)
-        if(NOT ${_index} GREATER -1)
+        if(NOT ${name} IN_LIST _allTargets)
             set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${name})
         endif()
 
-        #if(NOT ${option} IN_LIST _allTargetNames)# ONLY CMAKE >= 3.3 and policy to NEW
-        list (FIND _allTargetNames ${option} _index)
-        if(NOT ${_index} GREATER -1)
+        if(NOT ${option} IN_LIST _allTargetNames)
             set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
         endif()
     else()
