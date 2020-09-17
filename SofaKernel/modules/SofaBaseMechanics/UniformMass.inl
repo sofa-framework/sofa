@@ -662,6 +662,9 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
     if ( !vparams->displayFlags().getShowBehaviorModels() )
         return;
 
+    if (!mstate.get())
+        return;
+
     ReadAccessor<VecCoord> x = mstate->read(ConstVecCoordId::position())->getValue();
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
