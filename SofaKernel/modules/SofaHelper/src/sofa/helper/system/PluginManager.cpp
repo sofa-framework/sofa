@@ -169,6 +169,12 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
             return false;
         }
         getPluginEntry(p.getModuleName,d);
+
+        if (checkDuplicatedPlugin(p, pluginPath))
+        {
+            return true;
+        }
+
         getPluginEntry(p.getModuleDescription,d);
         getPluginEntry(p.getModuleLicense,d);
         getPluginEntry(p.getModuleComponentList,d);
@@ -234,7 +240,7 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
     std::string pluginPath = plugin;
 
     if (!FileSystem::isFile(plugin)) {
-        pluginPath = findPlugin(plugin);
+        return getPluginByName(plugin);
     }
 
     if (!pluginPath.empty() && m_pluginMap.find(pluginPath) != m_pluginMap.end())
@@ -246,6 +252,21 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
         msg_info("PluginManager") << "Plugin not found in loaded plugins: " << plugin << msgendl;
         return nullptr;
     }
+}
+
+Plugin* PluginManager::getPluginByName(const std::string& pluginName)
+{
+    for (PluginMap::iterator itP = m_pluginMap.begin(); itP != m_pluginMap.end(); ++itP)
+    {
+        std::string name(itP->second.getModuleName());
+        if (name.compare(pluginName) == 0)
+        {
+            return &itP->second;
+        }
+    }
+
+    msg_info("PluginManager") << "Plugin not found in loaded plugins: " << pluginName << msgendl;
+    return nullptr;
 }
 
 std::istream& PluginManager::readFromStream(std::istream & in)
@@ -358,6 +379,23 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
     }
 
     return m_pluginMap.find(pluginPath) != m_pluginMap.end();
+}
+
+
+bool PluginManager::checkDuplicatedPlugin(const Plugin& plugin, const std::string& pluginPath)
+{
+    for (auto itP : m_pluginMap)
+    {
+        std::string name(itP.second.getModuleName());
+        std::string plugName(plugin.getModuleName());
+        if (name.compare(plugName) == 0 && pluginPath.compare(itP.first) != 0)
+        {
+            msg_warning("PluginManager") << "Trying to load plugin (" + name + ", from path: " + pluginPath + ") already registered from path: " + itP.first;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 }

@@ -34,7 +34,7 @@ namespace core
 namespace objectmodel
 {
 
-enum PathType {
+enum class PathType {
     FILE,
     DIRECTORY,
     BOTH
@@ -53,13 +53,13 @@ public:
 
     DataFileName( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(helpMsg, isDisplayed, isReadOnly),
-          m_pathType(FILE)
+          m_pathType(PathType::FILE)
     {
     }
 
     DataFileName( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(value, helpMsg, isDisplayed, isReadOnly),
-        m_pathType(FILE)
+        m_pathType(PathType::FILE)
     {
         updatePath();
     }
@@ -69,7 +69,7 @@ public:
      */
     explicit DataFileName(const BaseData::BaseInitData& init)
         : Inherit(init),
-          m_pathType(FILE)
+          m_pathType(PathType::FILE)
     {
     }
 
@@ -78,7 +78,7 @@ public:
      */
     explicit DataFileName(const Inherit::InitData& init)
         : Inherit(init),
-          m_pathType(FILE)
+          m_pathType(PathType::FILE)
     {
         updatePath();
     }
@@ -170,13 +170,13 @@ public:
 
     DataFileNameVector( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : Inherit(helpMsg, isDisplayed, isReadOnly),
-          m_pathType(FILE)
+          m_pathType(PathType::FILE)
     {
     }
 
     DataFileNameVector( const sofa::helper::vector<std::string>& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(value, helpMsg, isDisplayed, isReadOnly),
-          m_pathType(FILE)
+          m_pathType(PathType::FILE)
     {
         updatePath();
     }
@@ -186,7 +186,7 @@ public:
      */
     explicit DataFileNameVector(const BaseData::BaseInitData& init)
         : Inherit(init),
-          m_pathType(FILE)
+          m_pathType(PathType::FILE)
     {
     }
 
@@ -195,7 +195,7 @@ public:
      */
     explicit DataFileNameVector(const Inherit::InitData& init)
         : Inherit(init),
-          m_pathType(FILE)
+          m_pathType(PathType::FILE)
     {
         updatePath();
     }
