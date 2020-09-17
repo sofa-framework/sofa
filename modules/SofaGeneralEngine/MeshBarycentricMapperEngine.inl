@@ -30,13 +30,13 @@ namespace sofa::component::engine
 template <class DataTypes>
 MeshBarycentricMapperEngine<DataTypes>::MeshBarycentricMapperEngine()
     : d_inputPositions( initData (&d_inputPositions, "inputPositions", "Initial positions of the master points"))
-    , d_mappedPointPositions( initData (&d_mappedPointPositions, "mappedPointPositions", "Initial positions of the mapped points"))
+    , d_mappedPointPositions( initData (&d_mappedPointPositions, "mappedPointPositions", "Initial positions of the points to be mapped"))
     , d_barycentricPositions(initData (&d_barycentricPositions, "barycentricPositions", "Output : Barycentric positions of the mapped points"))
-    , d_tableElements(initData (&d_tableElements, "tableElements", "Output : Table that provides the element index to which each input point belongs"))
+    , d_tableElements(initData (&d_tableElements, "tableElements", "Output : Table that provides the index of the element to which each input point belongs"))
     , d_bComputeLinearInterpolation(initData(&d_bComputeLinearInterpolation, false, "computeLinearInterpolation", "if true, computes a linear interpolation (debug)"))
     , d_interpolationIndices(initData(&d_interpolationIndices, "linearInterpolationIndices", "Indices of a linear interpolation"))
     , d_interpolationValues(initData(&d_interpolationValues, "linearInterpolationValues", "Values of a linear interpolation"))
-    , l_topology(initLink("InputMeshName", "Name and path of Input mesh Topology"))
+    , l_topology(initLink("topology", "Name of the master topology"))
 {
 }
 
@@ -305,6 +305,7 @@ void MeshBarycentricMapperEngine<DataTypes>::draw(const core::visual::VisualPara
 
 
 }
+
 
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::addPointInLine(const int /*lineIndex*/, const SReal* /*baryCoords*/)
