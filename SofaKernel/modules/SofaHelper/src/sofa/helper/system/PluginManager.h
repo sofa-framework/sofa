@@ -132,6 +132,7 @@ private:
 class SOFA_HELPER_API PluginManager
 {
 public:
+    /// Map to store the list of plugin registered, key is the plugin path
     typedef std::map<std::string, Plugin > PluginMap;
     typedef PluginMap::iterator PluginIterator;
 
@@ -170,6 +171,7 @@ public:
 
     std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, int maxRecursiveDepth = 6);
     bool pluginIsLoaded(const std::string& plugin);
+    bool checkDuplicatedPlugin(const Plugin& plugin, const std::string& pluginPath);
 
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
     {
@@ -183,6 +185,7 @@ public:
     PluginMap& getPluginMap()  { return m_pluginMap; }
 
     Plugin* getPlugin(const std::string& plugin, const std::string& = getDefaultSuffix(), bool = true);
+    Plugin* getPluginByName(const std::string& pluginName);
 
     void readFromIniFile(const std::string& path);
     void writeToIniFile(const std::string& path);
