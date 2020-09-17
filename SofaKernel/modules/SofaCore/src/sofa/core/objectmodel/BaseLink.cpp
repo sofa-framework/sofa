@@ -229,6 +229,11 @@ void BaseLink::setLinkedBase(Base* link)
     auto owner = getOwnerBase();
     BaseNode* n = dynamic_cast<BaseNode*>(link);
     BaseObject* o = dynamic_cast<BaseObject*>(link);
+    if (!n && !o)
+    {
+        read("@");
+        return;
+    }
     auto pathname = n != nullptr ? n->getPathName() : o->getPathName();
     if (!this->read("@" + pathname))
     {
