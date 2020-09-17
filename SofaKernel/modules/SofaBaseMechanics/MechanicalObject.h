@@ -129,6 +129,7 @@ public:
     Data< VecDeriv > f; ///< force vector of the degrees of freedom
     Data< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
 #endif
+    Data< VecCoord > d_init_x; ///< position coordinates of the degrees of freedom
 
     Data< VecDeriv > externalForces; ///< externalForces vector of the degrees of freedom
     Data< VecDeriv > dx; ///< dx vector of the degrees of freedom
@@ -401,6 +402,7 @@ protected :
 
     //int vsize; ///< Number of elements to allocate in vectors
     Data< int > d_size; ///< Size of the vectors
+    Data< int > d_init_size; ///< Size of the vectors
 
     SingleLink< MechanicalObject<DataTypes>, core::topology::BaseMeshTopology,BaseLink::FLAG_STRONGLINK|BaseLink::FLAG_STOREPATH> l_topology;
 
