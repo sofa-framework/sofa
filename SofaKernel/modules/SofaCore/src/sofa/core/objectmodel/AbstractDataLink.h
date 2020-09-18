@@ -73,13 +73,13 @@ protected:
     /// This design delegates to child class the work of actually storing
     /// the real Data.
     /// Real implementation for the setTarget() method
-    virtual void __doSetTarget__(BaseData* target) = 0;
+    virtual void _doSetTarget_(BaseData* target) = 0;
 
     /// Real implementation for the getTarget() method
-    virtual BaseData* __doGetTarget__() = 0;
+    virtual BaseData* _doGetTarget_() = 0;
 
     /// Real implementation for the GetOwner() method
-    virtual const BaseData& __doGetOwner__() = 0;
+    virtual const BaseData& _doGetOwner_() = 0;
     ///////////////////////////////////////////////////////////////////////////
 
     std::string m_path {""};

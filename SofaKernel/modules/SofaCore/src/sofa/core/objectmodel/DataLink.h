@@ -60,19 +60,19 @@ public:
 
 protected:
     /// Take the "generic" data and cast it to the expected type.
-    void __doSetTarget__(BaseData* target) override
+    void _doSetTarget_(BaseData* target) override
     {
         setTarget(dynamic_cast<T*>(target));
     }
 
     /// Returns the typed data to its abstract one
-    BaseData* __doGetTarget__() override
+    BaseData* _doGetTarget_() override
     {
         return DataLink::getTarget();
     }
 
     /// Returns the typed data to its abstract one.
-    const BaseData& __doGetOwner__() override
+    const BaseData& _doGetOwner_() override
     {
         return DataLink::getOwner();
     }

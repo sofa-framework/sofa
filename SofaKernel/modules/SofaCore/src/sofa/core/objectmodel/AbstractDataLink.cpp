@@ -28,13 +28,13 @@ namespace sofa::core::objectmodel
 
 /// Get the DataField having thins link as an attribute
 /// there is a one to one owner relationship.
-const BaseData& AbstractDataLink::getOwner() { return __doGetOwner__(); }
+const BaseData& AbstractDataLink::getOwner() { return _doGetOwner_(); }
 
 /// Change the targetted DataField
-void AbstractDataLink::setTarget(BaseData* target){ __doSetTarget__(target); }
+void AbstractDataLink::setTarget(BaseData* target){ _doSetTarget_(target); }
 
 /// Get the targetted DataField
-BaseData* AbstractDataLink::getTarget(){ return __doGetTarget__(); }
+BaseData* AbstractDataLink::getTarget(){ return _doGetTarget_(); }
 
 const std::string AbstractDataLink::getPath() const
 {
