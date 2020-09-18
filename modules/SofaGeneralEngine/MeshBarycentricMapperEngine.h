@@ -63,6 +63,7 @@ public:
     void addPointInTetra(const int tetraIndex, const SReal* baryCoords, const unsigned int pointIndex);
     void addPointInCube(const int cubeIndex, const SReal* baryCoords);
 
+
     Data<VecCoord> d_inputPositions; ///< Initial positions of the master points
     Data<VecCoord> d_mappedPointPositions; ///< Initial positions of the mapped points
     Data<VecCoord> d_barycentricPositions; ///< Output : Barycentric positions of the mapped points
@@ -73,6 +74,16 @@ public:
     Data< sofa::helper::vector<sofa::helper::vector< Real > > > d_interpolationValues; ///< Values of a linear interpolation
     
     SingleLink<MeshBarycentricMapperEngine<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology; ///< Name and path of Input mesh Topology
+
+    //Temporary function to warn the user when old attribute names are used
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        if (arg->getAttribute("InputMeshName"))
+        {
+            msg_warning() << "input data 'InputMeshName' changed for 'topology', please update your scene (see PR#1487)";
+        }
+        MeshBarycentricMapperEngine::parse(arg);
+    }
 
 private:
     sofa::helper::vector<sofa::helper::vector< unsigned int > >* linearInterpolIndices;
