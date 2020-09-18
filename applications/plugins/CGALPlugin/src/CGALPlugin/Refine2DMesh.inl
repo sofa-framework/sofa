@@ -292,65 +292,65 @@ namespace cgal
 		
 		std::set<PointID> bdPoints;
 		
-		// for (unsigned int i=0 ; i<edges.size() ; i++)
-		// {
-		// 	Edge e = edges[i];
-		// 	Vertex_handle va = mapPointVertexHandle[e[0]], vb = mapPointVertexHandle[e[1]];
-		// 	for (typename CDT::Vertices_in_constraint_iterator it =   
-		// 		 cdt.vertices_in_constraint_begin(va,vb), succ = it, itend =
-		// 		 cdt.vertices_in_constraint_end(va,vb); ++succ != itend; ++it)
-		// 	{
-		// 		std::pair<Vertex_handle, Vertex_handle> edge(*it, *succ);
-		// 		bool first = true;
-		// 		Vertex_handle prev;
-		// 		while (edge.first != edge.second)
-		// 		{
-		// 			std::pair<Vertex_handle, Vertex_handle> edge2 = edge;
-		// 			if (!cdt.is_edge(edge2.first, edge2.second))
-		// 			{
-		// 				Face_handle f; int i;
-		// 				if (!cdt.includes_edge(edge.first, edge.second, edge2.second, f, i))
-		// 				{
-		// 					typename CDT::Vertex_circulator vit = cdt.incident_vertices(edge.first), vitend = vit;
-		// 					Coord p0 ( edge2.first->point()[0], edge2.first->point()[1], 0 );
-		// 					Coord dir1 ( edge2.second->point()[0] - p0[0], edge2.second->point()[1] - p0[1], 0 );
-		// 					dir1.normalize();
-		// 					Real best_fit = -1;
-		// 					for (int ei=0; ei == 0 || vit != vitend; ++ei, ++vit)
-		// 					{
-		// 						Vertex_handle v = vit;
-		// 						if (!first && prev == v) continue; // do not go back
-		// 						Coord dir2 ( v->point()[0] - p0[0], v->point()[1] - p0[1], 0 );
-		// 						dir2.normalize();
-		// 						Real fit = dir1 * dir2;
-		// 						if (fit > best_fit)
-		// 						{
-		// 							best_fit = fit;
-		// 							edge2.second = v;
-		// 						}
-		// 					}
-		// 					if (best_fit < 0)
-		// 					{
-		// 						serr << "Invalid constrained edge." << sendl;
-		// 						break;
-		// 					}
-		// 				}
-		// 			}
-		// 			CGAL_assertion( cdt.is_edge(edge2.first, edge2.second));
-		// 			CGAL_assertion( mapping.find(edge2.first) != mapping.end());
-		// 			CGAL_assertion( mapping.find(edge2.second) != mapping.end());
-		// 			bdPoints.insert(mapping[edge2.first]);
-		// 			bdPoints.insert(mapping[edge2.second]);
-		// 			newEdges.push_back(Edge(mapping[edge2.first], mapping[edge2.second]));
-		// 			if (i < edgesData1.size())
-		// 			newEdgesData1.push_back(edgesData1[i]);
-		// 			if (i < edgesData2.size())
-		// 			newEdgesData2.push_back(edgesData2[i]);
-		// 			prev = edge.first;
-		// 			edge.first = edge2.second;
-		// 		}
-		// 	}
-		// }
+		for (unsigned int i=0 ; i<edges.size() ; i++)
+		{
+			Edge e = edges[i];
+			Vertex_handle va = mapPointVertexHandle[e[0]], vb = mapPointVertexHandle[e[1]];
+			for (typename CDT::Vertices_in_constraint_iterator it =   
+				 cdt.vertices_in_constraint_begin(va,vb), succ = it, itend =
+				 cdt.vertices_in_constraint_end(va,vb); ++succ != itend; ++it)
+			{
+				std::pair<Vertex_handle, Vertex_handle> edge(*it, *succ);
+				bool first = true;
+				Vertex_handle prev;
+				while (edge.first != edge.second)
+				{
+					std::pair<Vertex_handle, Vertex_handle> edge2 = edge;
+					if (!cdt.is_edge(edge2.first, edge2.second))
+					{
+						Face_handle f; int i;
+						if (!cdt.includes_edge(edge.first, edge.second, edge2.second, f, i))
+						{
+							typename CDT::Vertex_circulator vit = cdt.incident_vertices(edge.first), vitend = vit;
+							Coord p0 ( edge2.first->point()[0], edge2.first->point()[1], 0 );
+							Coord dir1 ( edge2.second->point()[0] - p0[0], edge2.second->point()[1] - p0[1], 0 );
+							dir1.normalize();
+							Real best_fit = -1;
+							for (int ei=0; ei == 0 || vit != vitend; ++ei, ++vit)
+							{
+								Vertex_handle v = vit;
+								if (!first && prev == v) continue; // do not go back
+								Coord dir2 ( v->point()[0] - p0[0], v->point()[1] - p0[1], 0 );
+								dir2.normalize();
+								Real fit = dir1 * dir2;
+								if (fit > best_fit)
+								{
+									best_fit = fit;
+									edge2.second = v;
+								}
+							}
+							if (best_fit < 0)
+							{
+								serr << "Invalid constrained edge." << sendl;
+								break;
+							}
+						}
+					}
+					CGAL_assertion( cdt.is_edge(edge2.first, edge2.second));
+					CGAL_assertion( mapping.find(edge2.first) != mapping.end());
+					CGAL_assertion( mapping.find(edge2.second) != mapping.end());
+					bdPoints.insert(mapping[edge2.first]);
+					bdPoints.insert(mapping[edge2.second]);
+					newEdges.push_back(Edge(mapping[edge2.first], mapping[edge2.second]));
+					if (i < edgesData1.size())
+					newEdgesData1.push_back(edgesData1[i]);
+					if (i < edgesData2.size())
+					newEdgesData2.push_back(edgesData2[i]);
+					prev = edge.first;
+					edge.first = edge2.second;
+				}
+			}
+		}
 		
 		/*
 		 for (typename CDT::Subconstraint_iterator scit = cdt.subconstraints_begin();
