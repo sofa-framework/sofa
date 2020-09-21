@@ -153,6 +153,7 @@ void BoxROI<DataTypes>::parse( sofa::core::objectmodel::BaseObjectDescription* a
         msg_deprecated() << "The 'isVisible' data field has been deprecated in Sofa 20.06. Use the attribute 'drawBoxes' instead." << msgendl
                             "Please contact sofa-dev team in case you need similar.";
     }
+    Inherit1::parse(arg);
 }
 
 
