@@ -22,6 +22,8 @@
 #include <SofaGeneralLoader/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
+#include <sofa/helper/Quater.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sstream>
 
@@ -39,15 +41,41 @@ int SphereLoaderClass = core::RegisterObject("Loader for sphere model descriptio
 
 SphereLoader::SphereLoader()
     :BaseLoader(),
-     positions(initData(&positions,"position","Sphere centers")),
-     radius(initData(&radius,"listRadius","Radius of each sphere")),
-     d_scale(initData(&d_scale,"scale","Scale applied to sphere positions & radius")),
-     d_translation(initData(&d_translation,"translation","Translation applied to sphere positions"))
-
+     d_positions(initData(&d_positions,"position","Sphere centers")),
+     d_radius(initData(&d_radius,"listRadius","Radius of each sphere")),
+     d_scale(initData(&d_scale, Vec3(1.0, 1.0, 1.0), "scale","Scale applied to sphere positions & radius")),
+     d_rotation(initData(&d_rotation, Vec3(), "rotation", "Rotation of the DOFs")),
+     d_translation(initData(&d_translation, Vec3(),"translation","Translation applied to sphere positions"))
 {
-    addAlias(&positions,"sphere_centers");
+    addAlias(&d_positions,"sphere_centers");
+    addAlias(&d_scale, "scale3d");
 }
 
+
+void SphereLoader::init()
+{
+    this->reinit();
+}
+
+void SphereLoader::reinit()
+{    
+    const Vec3& scale = d_scale.getValue();
+    const Vec3& rotation = d_rotation.getValue();
+    const Vec3& translation = d_translation.getValue();
+
+    if (d_scale != Vec3(1.0, 1.0, 1.0) || d_rotation != Vec3(0.0, 0.0, 0.0) || d_translation != Vec3(0.0, 0.0, 0.0))
+    {
+        Matrix4 transformation = Matrix4::transformTranslation(translation) *
+            Matrix4::transformRotation(helper::Quater< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
+            Matrix4::transformScale(scale);
+
+        sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3, SReal> > > > my_positions = d_positions;
+        for (size_t i = 0; i < my_positions.size(); i++)
+        {
+            my_positions[i] = transformation.transform(my_positions[i]);
+        }
+    }
+}
 bool SphereLoader::load()
 {
     radius.beginEdit()->clear();
@@ -72,8 +100,8 @@ bool SphereLoader::load()
         return false;
     }
 
-    helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_positions = *positions.beginEdit();
-    helper::vector<SReal>& my_radius = *radius.beginEdit();
+    helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_positions = *d_positions.beginEdit();
+    helper::vector<SReal>& my_radius = *d_radius.beginEdit();
 
     int totalNumSpheres=0;
 
@@ -153,8 +181,8 @@ bool SphereLoader::load()
         }
     }
 
-    positions.endEdit();
-    radius.endEdit();
+    d_positions.endEdit();
+    d_radius.endEdit();
 
     return true;
 }
