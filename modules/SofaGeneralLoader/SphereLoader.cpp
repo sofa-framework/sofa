@@ -78,8 +78,8 @@ void SphereLoader::reinit()
 }
 bool SphereLoader::load()
 {
-    radius.beginEdit()->clear();
-    radius.endEdit();
+    d_radius.beginEdit()->clear();
+    d_radius.endEdit();
 
     // Make sure that fscanf() uses a dot '.' as the decimal separator.
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
