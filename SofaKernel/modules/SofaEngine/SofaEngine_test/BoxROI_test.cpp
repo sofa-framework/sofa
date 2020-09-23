@@ -110,15 +110,6 @@ struct BoxROITest :  public ::testing::Test
         for(auto& attrname : attrnames)
             EXPECT_NE( m_boxroi->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'.";
 
-        /// List of the attributes that are deprecated.
-        vector<string> deprecatednames = {
-              "pointsInBox", "edgesInBox", "f_trianglesInBox", "f_tetrahedraInBox", "f_tetrahedraInBox", "f_quadInBOX",
-              "rest_position", "isVisible"
-        };
-
-        for(auto& attrname : deprecatednames)
-            EXPECT_NE( m_boxroi->findData(attrname), nullptr ) << "Missing deprecated attribute with name '" << attrname << "'.";
-
         return;
     }
 

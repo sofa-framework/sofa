@@ -28,6 +28,7 @@
 #include <limits>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/helper/accessor.h>
 
 namespace sofa
 {
@@ -104,12 +105,9 @@ BoxROI<DataTypes>::BoxROI()
     /// In case you want to remove or rename an attribute, please keep it as-is but add a warning message
     /// using msg_warning saying to the user of this component that the attribute is deprecated and solutions/replacement
     /// he has to fix his scene.
-
-    /// Deprecated input attributes
-    , d_deprecatedX0( initData (&d_deprecatedX0, "rest_position", "(deprecated) Replaced with the attribute 'position'") )
-    , d_deprecatedIsVisible( initData(&d_deprecatedIsVisible, false, "isVisible","(deprecated)Replaced with the attribute 'drawBoxes'") )
 {
-    //Adding alias to handle old BoxROI outputs
+    sofa::helper::getWriteOnlyAccessor(d_indices).push_back(0);
+
     addAlias(&d_pointsInROI,"pointsInBox");
     addAlias(&d_edgesInROI,"edgesInBox");
     addAlias(&d_trianglesInROI,"f_trianglesInBox");
@@ -117,31 +115,51 @@ BoxROI<DataTypes>::BoxROI()
     addAlias(&d_hexahedraInROI,"f_tetrahedraInBox");
     addAlias(&d_quadInROI,"f_quadInBOX");
 
-    /// Display as few as possible the deprecated data.
-    d_deprecatedX0.setDisplayed(false);
-    d_deprecatedIsVisible.setDisplayed(false);
+    addInput(&d_alignedBoxes);
+    addInput(&d_orientedBoxes);
 
-    d_indices.beginEdit()->push_back(0);
-    d_indices.endEdit();
+    addInput(&d_X0);
+    addInput(&d_edges);
+    addInput(&d_triangles);
+    addInput(&d_tetrahedra);
+    addInput(&d_hexahedra);
+    addInput(&d_quad);
+
+    addOutput(&d_indices);
+    addOutput(&d_edgeIndices);
+    addOutput(&d_triangleIndices);
+    addOutput(&d_tetrahedronIndices);
+    addOutput(&d_hexahedronIndices);
+    addOutput(&d_quadIndices);
+    addOutput(&d_pointsInROI);
+    addOutput(&d_edgesInROI);
+    addOutput(&d_trianglesInROI);
+    addOutput(&d_tetrahedraInROI);
+    addOutput(&d_hexahedraInROI);
+    addOutput(&d_quadInROI);
+    addOutput(&d_nbIndices);
 }
+
+template<class DataTypes>
+void BoxROI<DataTypes>::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+{
+    if (arg->getAttribute("rest_position")!=nullptr)
+    {
+        msg_deprecated() << "The 'rest_position' data field has been deprecated in Sofa 20.06. Use the attribute 'position' instead." << msgendl
+                            "Please contact sofa-dev team in case you need similar.";
+    }
+    if (arg->getAttribute("isVisible")!=nullptr)
+    {
+        msg_deprecated() << "The 'isVisible' data field has been deprecated in Sofa 20.06. Use the attribute 'drawBoxes' instead." << msgendl
+                            "Please contact sofa-dev team in case you need similar.";
+    }
+    Inherit1::parse(arg);
+}
+
 
 template <class DataTypes>
 void BoxROI<DataTypes>::init()
 {
-    if(d_deprecatedX0.isSet()){
-        msg_error(this) <<  "The field named 'rest_position' is now deprecated.\n"
-                              "Using deprecated attributes may results in invalid simulation as well as slow performances. \n"
-                              "To remove this error message you need to fix your sofa scene by changing the field's name from 'rest_position' to 'position'.\n" ;
-                               d_X0.copyValue(&d_deprecatedX0);
-    }
-
-    if(d_deprecatedIsVisible.isSet()){
-        msg_error(this) <<  "The field named 'isVisible' is now deprecated.\n"
-                              "Using deprecated attributes may results in invalid simulation as well as slow performances. \n"
-                              "To remove this error message you need to fix your sofa scene by changing the field's name from 'isVisible' to 'drawBoxes'.\n" ;
-                              d_drawBoxes.copyValue(&d_deprecatedIsVisible);
-    }
-
     /// If the position attribute is not set we are trying to
     /// automatically load the positions from the current context MechanicalState if any, then
     /// in a MeshLoad if any and in case of failure it will finally search it in the parent's
@@ -277,26 +295,6 @@ void BoxROI<DataTypes>::init()
         }*/
     }
 
-    addInput(&d_X0);
-    addInput(&d_edges);
-    addInput(&d_triangles);
-    addInput(&d_tetrahedra);
-    addInput(&d_hexahedra);
-    addInput(&d_quad);
-
-    addOutput(&d_indices);
-    addOutput(&d_edgeIndices);
-    addOutput(&d_triangleIndices);
-    addOutput(&d_tetrahedronIndices);
-    addOutput(&d_hexahedronIndices);
-    addOutput(&d_quadIndices);
-    addOutput(&d_pointsInROI);
-    addOutput(&d_edgesInROI);
-    addOutput(&d_trianglesInROI);
-    addOutput(&d_tetrahedraInROI);
-    addOutput(&d_hexahedraInROI);
-    addOutput(&d_quadInROI);
-    addOutput(&d_nbIndices);
 
     d_componentState.setValue(ComponentState::Valid) ;
 
@@ -304,34 +302,33 @@ void BoxROI<DataTypes>::init()
     bool tmp=d_doUpdate.getValue() ;
     d_doUpdate.setValue(true);
     setDirtyValue();
-    reinit();
+    if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
+    {
+        auto alignedBoxes = sofa::helper::getWriteOnlyAccessor(d_alignedBoxes);
+        alignedBoxes.push_back(Vec6(0,0,0,1,1,1));
+    }
+
+    auto alignedBoxes = sofa::helper::getWriteOnlyAccessor(d_alignedBoxes);
+    if (!alignedBoxes.empty())
+    {
+        for (unsigned int bi=0; bi<alignedBoxes.size(); ++bi)
+        {
+            if (alignedBoxes[bi][0] > alignedBoxes[bi][3]) std::swap(alignedBoxes[bi][0], alignedBoxes[bi][3]);
+            if (alignedBoxes[bi][1] > alignedBoxes[bi][4]) std::swap(alignedBoxes[bi][1], alignedBoxes[bi][4]);
+            if (alignedBoxes[bi][2] > alignedBoxes[bi][5]) std::swap(alignedBoxes[bi][2], alignedBoxes[bi][5]);
+        }
+    }
+
+    computeOrientedBoxes();
+
+    update();
     d_doUpdate.setValue(tmp);
 }
 
 template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
-    if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
-    {
-        d_alignedBoxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
-        d_alignedBoxes.endEdit();
-    }
-
-    vector<Vec6>& alignedBoxes = *(d_alignedBoxes.beginEdit());
-    if (!alignedBoxes.empty())
-    {
-        for (unsigned int bi=0; bi<alignedBoxes.size(); ++bi)
-        {
-            if (alignedBoxes[bi][0] > alignedBoxes[bi][3]) std::swap(alignedBoxes[bi][0],alignedBoxes[bi][3]);
-            if (alignedBoxes[bi][1] > alignedBoxes[bi][4]) std::swap(alignedBoxes[bi][1],alignedBoxes[bi][4]);
-            if (alignedBoxes[bi][2] > alignedBoxes[bi][5]) std::swap(alignedBoxes[bi][2],alignedBoxes[bi][5]);
-        }
-    }
-    d_alignedBoxes.endEdit();
-
-    computeOrientedBoxes();
-
-    update();
+    init();
 }
 
 
@@ -727,14 +724,6 @@ void BoxROI<DataTypes>::doUpdate()
 
         d_nbIndices.setValue(indices.size());
     }
-
-    d_indices.endEdit();
-    d_edgeIndices.endEdit();
-    d_triangleIndices.endEdit();
-    d_tetrahedronIndices.endEdit();
-    d_hexahedronIndices.endEdit();
-    d_quadIndices.endEdit();
-
 }
 
 
