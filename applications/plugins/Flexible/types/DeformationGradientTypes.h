@@ -48,11 +48,11 @@ Order 1 corresponds to a traditional deformation gradient, while order 2 corresp
 In the names of the instanciated classes, the suffix corresponds to the parameters.
 For instance, F332d moves in 3 spatial dimensions, is attached to a  volumetric object (3 dimensions), represents the deformation using an elaston (order=2), and encodes floating point numbers at double precision.
 */
-template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
+template< std::size_t _spatial_dimensions,  std::size_t _material_dimensions, int _order, typename _Real>
 struct DefGradientTypes
 {
-    static const unsigned int spatial_dimensions = _spatial_dimensions;   ///< Number of dimensions the frame is moving in, typically 3
-    static const unsigned int material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
+    static const std::size_t spatial_dimensions = _spatial_dimensions;   ///< Number of dimensions the frame is moving in, typically 3
+    static const std::size_t material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
     typedef _Real Real;
 
     typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
@@ -78,11 +78,11 @@ struct DefGradientTypes
         Deriv( const Basis& d):b(d) {}
         void clear() {  b.clear();}
 
-        static const unsigned int total_size = VSize;
+        static const  std::size_t total_size = VSize;
         typedef Real value_type;
-        typedef int size_type;
+        typedef std::size_t size_type;
 
-        static unsigned int size() { return VSize; }
+        static std::size_t size() { return VSize; }
 
         /// seen as a vector
         Real* ptr() { return b.ptr(); }
@@ -91,8 +91,8 @@ struct DefGradientTypes
         BasisVec& getVec() { return b.getVec(); }
         const BasisVec& getVec() const { return b.getVec(); }
 
-        Real& operator[](int i) { return getVec()[i]; }
-        const Real& operator[](int i) const    { return getVec()[i]; }
+        Real& operator[]( std::size_t i) { return getVec()[i]; }
+        const Real& operator[]( std::size_t i) const    { return getVec()[i]; }
 
         /// basis
         Basis& getBasis() { return b; }
@@ -101,11 +101,11 @@ struct DefGradientTypes
         Frame& getF() { return *reinterpret_cast<Frame*>(&b.getVal()); }
         const Frame& getF() const { return *reinterpret_cast<const Frame*>(&b.getVal()); }
 
-        Frame& getGradientF(int i) { return *reinterpret_cast<Frame*>(&b.getGradient()[i]); }
-        const Frame& getGradientF(int i) const { return *reinterpret_cast<const Frame*>(&b.getGradient()[i]); }
+        Frame& getGradientF( std::size_t i) { return *reinterpret_cast<Frame*>(&b.getGradient()[i]); }
+        const Frame& getGradientF( std::size_t i) const { return *reinterpret_cast<const Frame*>(&b.getGradient()[i]); }
 
-        Frame& getHessianF(int i,int j) { return *reinterpret_cast<Frame*>(&b.getHessian()(i,j)); }
-        const Frame& getHessianF(int i,int j) const { return *reinterpret_cast<const Frame*>(&b.getHessian()(i,j)); }
+        Frame& getHessianF( std::size_t i, std::size_t j) { return *reinterpret_cast<Frame*>(&b.getHessian()(i,j)); }
+        const Frame& getHessianF( std::size_t i, std::size_t j) const { return *reinterpret_cast<const Frame*>(&b.getHessian()(i,j)); }
 
         Deriv operator +(const Deriv& a) const { return Deriv(getVec()+a.getVec()); }
         void operator +=(const Deriv& a) { getVec()+=a.getVec(); }
@@ -169,7 +169,7 @@ struct DefGradientTypes
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
+        for (  std::size_t i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
         return c;
     }
 
@@ -197,7 +197,7 @@ struct DefGradientTypes
     static Deriv randomDeriv( Real minMagnitude, Real maxMagnitude )
     {
         Deriv result;
-        for( unsigned int i=0 ; i<VSize ; ++i )
+        for(  std::size_t i=0 ; i<VSize ; ++i )
             result[i] = Real(helper::drand(minMagnitude,maxMagnitude));
         return result;
     }

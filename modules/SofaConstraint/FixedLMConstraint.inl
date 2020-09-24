@@ -41,7 +41,7 @@ namespace constraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int /*nbPoints*/, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type /*nbPoints*/, const sofa::helper::vector< index_type > &, const sofa::helper::vector< double >& )
 {
     if (fc)
     {
@@ -55,11 +55,11 @@ bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsig
 
 // Define RemovalFunction
 template< class DataTypes>
-void FixedLMConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void FixedLMConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
 {
     if (fc)
     {
-        fc->removeConstraint((unsigned int) pointIndex);
+        fc->removeConstraint((index_type) pointIndex);
     }
     return;
 }
@@ -83,14 +83,14 @@ void FixedLMConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void FixedLMConstraint<DataTypes>::addConstraint(unsigned int index)
+void FixedLMConstraint<DataTypes>::addConstraint(index_type index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void FixedLMConstraint<DataTypes>::removeConstraint(unsigned int index)
+void FixedLMConstraint<DataTypes>::removeConstraint(index_type index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -105,7 +105,7 @@ void FixedLMConstraint<DataTypes>::initFixedPosition()
     const SetIndexArray & indices = this->f_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-        unsigned int index=*it;
+        index_type index=*it;
         this->restPosition.insert(std::make_pair(index, x[index]));
     }
 }
@@ -161,7 +161,7 @@ void FixedLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-        const unsigned int index=*it;
+        const index_type index=*it;
 
         //Constraint degree of freedom along X direction
         c->writeLine(cIndex).addCol(index,X);
@@ -189,7 +189,7 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNu
     unsigned int counter=0;
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it,++counter)
     {
-        const unsigned int index = *it;
+        const index_type index = *it;
 
         core::behavior::ConstraintGroup *constraint = this->addGroupConstraint(Order);
         SReal correctionX=0,correctionY=0,correctionZ=0;

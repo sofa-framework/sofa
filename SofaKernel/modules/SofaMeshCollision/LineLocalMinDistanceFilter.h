@@ -62,7 +62,7 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to this LineInfo.
      */
-    bool validate(const unsigned int edge_index, const defaulttype::Vector3& PQ) override;
+    bool validate(const index_type edge_index, const defaulttype::Vector3& PQ) override;
 
     /**
      * @brief Output stream.
@@ -84,7 +84,7 @@ public:
     /**
      * @brief Computes the region of interest cone of the Line primitive.
      */
-    void buildFilter(unsigned int /*e*/) override;
+    void buildFilter(index_type /*e*/) override;
 
 protected:
 
@@ -149,7 +149,7 @@ public:
     public:
         PointInfoHandler(LineLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
 
-        void applyCreateFunction(unsigned int pointIndex, PointInfo& m, const sofa::helper::vector< unsigned int > &,
+        void applyCreateFunction(index_type pointIndex, PointInfo& m, const sofa::helper::vector< index_type > &,
                 const sofa::helper::vector< double > &);
     protected:
         LineLocalMinDistanceFilter* f;
@@ -163,7 +163,7 @@ public:
     public:
         LineInfoHandler(LineLocalMinDistanceFilter* _f, topology::EdgeData<helper::vector<LineInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<LineInfo> >(_data), f(_f) {}
 
-        void applyCreateFunction(unsigned int edgeIndex, LineInfo& m, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector< unsigned int > &,
+        void applyCreateFunction(index_type edgeIndex, LineInfo& m, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector< index_type > &,
                 const sofa::helper::vector< double > &);
     protected:
         LineLocalMinDistanceFilter* f;

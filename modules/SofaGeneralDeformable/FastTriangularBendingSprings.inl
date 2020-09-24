@@ -41,7 +41,7 @@ namespace forcefield
 typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(unsigned int /*edgeIndex*/, EdgeSpring &ei, const core::topology::BaseMeshTopology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(index_type /*edgeIndex*/, EdgeSpring &ei, const core::topology::BaseMeshTopology::Edge &, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -53,7 +53,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCrea
 
 
 template< class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded, const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> &, const sofa::helper::vector<sofa::helper::vector<unsigned int> > &, const sofa::helper::vector<sofa::helper::vector<double> > &)
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleCreation(const sofa::helper::vector<index_type> &triangleAdded, const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> &, const sofa::helper::vector<sofa::helper::vector<index_type> > &, const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
     using namespace sofa::component::topology;
     if (ff)
@@ -78,7 +78,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
                 EdgeSpring &ei = edgeData[te2[j]]; // edge spring
                 unsigned int edgeIndex = te2[j];
 
-                const sofa::helper::vector< unsigned int > shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
+                const auto& shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
                     
                 if (shell.size()==2)   // there is another triangle attached to this edge, so a spring is needed
                 {
@@ -125,7 +125,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
 
 
 template< class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved)
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<index_type> &triangleRemoved)
 {
     using namespace sofa::component::topology;
     if (ff)
@@ -145,7 +145,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
                 EdgeSpring &ei = edgeData[te[j]];
                 unsigned int edgeIndex = te[j];
 
-                const sofa::helper::vector< unsigned int > shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
+                const auto& shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
 
                 //check if there is going to be only 2 triangles after modification
                 bool valid=false;
@@ -232,9 +232,9 @@ template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
 {
     using namespace sofa::component::topology;
-    const sofa::helper::vector<unsigned int> &triangleAdded = e->getIndexArray();
+    const auto &triangleAdded = e->getIndexArray();
     const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> &elems = e->getElementArray();
-    const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
+    const auto & ancestors = e->ancestorsList;
     const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
 
     applyTriangleCreation(triangleAdded, elems, ancestors, coefs);
@@ -243,13 +243,13 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopo
 template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
 {
-    const sofa::helper::vector<unsigned int> &triangleRemoved = e->getArray();
+    const auto &triangleRemoved = e->getArray();
 
     applyTriangleDestruction(triangleRemoved);
 }
 
 template<class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDestruction(const sofa::helper::vector<unsigned int> &tab)
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDestruction(const sofa::helper::vector<index_type> &tab)
 {
     if(ff)
     {
@@ -279,7 +279,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
             if(is_reached)
                 lastIndexVec[i_next] = lastIndexVec[i];
 
-            const sofa::helper::vector<unsigned int> &shell= ff->m_topology->getTrianglesAroundVertex(lastIndexVec[i]);
+            const auto &shell= ff->m_topology->getTrianglesAroundVertex(lastIndexVec[i]);
             for (j=0; j<shell.size(); ++j)
             {
                 core::topology::BaseMeshTopology::EdgesInTriangle tej = ff->m_topology->getEdgesInTriangle(shell[j]);
@@ -307,7 +307,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
 
 
 template<class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRenumbering(const sofa::helper::vector<unsigned int> &newIndices)
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRenumbering(const sofa::helper::vector<index_type> &newIndices)
 {
     if(ff)
     {
@@ -326,14 +326,14 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
 template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::PointsRemoved* e)
 {
-    const sofa::helper::vector<unsigned int> & tab = e->getArray();
+    const auto & tab = e->getArray();
     applyPointDestruction(tab);
 }
 
 template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::PointsRenumbering* e)
 {
-    const sofa::helper::vector<unsigned int> &newIndices = e->getIndexArray();
+    const auto &newIndices = e->getIndexArray();
     applyPointRenumbering(newIndices);
 }
 
@@ -400,22 +400,22 @@ void FastTriangularBendingSprings<DataTypes>::reinit()
     edgeInf.resize(m_topology->getNbEdges());
 
     // set edge tensor to 0
-    for (unsigned int i=0; i<m_topology->getNbEdges(); ++i)
+    for (index_type i=0; i<m_topology->getNbEdges(); ++i)
     {
 
         d_edgeHandler->applyCreateFunction(i, edgeInf[i],
-                m_topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
+                m_topology->getEdge(i),  (const sofa::helper::vector< index_type > )0,
                 (const sofa::helper::vector< double >)0);
     }
 
     // create edge tensor by calling the triangle creation function
-    sofa::helper::vector<unsigned int> triangleAdded;
+    sofa::helper::vector<index_type> triangleAdded;
     for (unsigned int i=0; i<m_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
 
     d_edgeHandler->applyTriangleCreation(triangleAdded,
             (const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>)0,
-            (const sofa::helper::vector<sofa::helper::vector<unsigned int> >)0,
+            (const sofa::helper::vector<sofa::helper::vector<index_type> >)0,
             (const sofa::helper::vector<sofa::helper::vector<double> >)0);
 
     d_edgeSprings.endEdit();
@@ -562,7 +562,7 @@ void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::getStiffness( Stiffne
 }
 
 template<class _DataTypes>
-void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::replaceIndex( unsigned oldIndex, unsigned newIndex )
+void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::replaceIndex(index_type oldIndex, index_type newIndex )
 {
     for(unsigned i=0; i<4; i++)
         if( vid[i] == oldIndex )
@@ -570,7 +570,7 @@ void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::replaceIndex( unsigne
 }
 
 template<class _DataTypes>
-void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::replaceIndices( const helper::vector<unsigned> &newIndices )
+void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::replaceIndices( const helper::vector<index_type> &newIndices )
 {
     for(unsigned i=0; i<4; i++)
         vid[i] = newIndices[vid[i]];

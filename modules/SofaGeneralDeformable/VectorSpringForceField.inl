@@ -44,9 +44,9 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
-void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(unsigned int, Spring &t,
+void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(index_type, Spring &t,
         const core::topology::BaseMeshTopology::Edge & e,
-        const sofa::helper::vector<unsigned int> & ancestors,
+        const sofa::helper::vector<index_type> & ancestors,
         const sofa::helper::vector<double> & coefs)
 {
     if (ff)
@@ -105,7 +105,7 @@ bool VectorSpringForceField<DataTypes>::load(const char *filename)
 }
 
 template <class DataTypes>
-void VectorSpringForceField<DataTypes>::resizeArray(unsigned int n)
+void VectorSpringForceField<DataTypes>::resizeArray(std::size_t n)
 {
     helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
     springArrayData.resize(n);
@@ -261,30 +261,6 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
     }
 
     springArray.endEdit();
-}
-template<class DataTypes>
-void VectorSpringForceField<DataTypes>::handleEvent( core::objectmodel::Event* e )
-{
-    if (useTopology)
-    {
-        if (sofa::core::objectmodel::KeypressedEvent::checkEventType(e))
-        {
-            sofa::core::objectmodel::KeypressedEvent* ke = static_cast<sofa::core::objectmodel::KeypressedEvent*>( e );
-
-            /// handle ctrl+d key
-            if (ke->getKey()=='D')
-            {
-                if (m_topology->getNbEdges()>12)
-                {
-
-                    sofa::helper::vector<unsigned int> edgeArray;
-                    edgeArray.push_back(12);
-                    edgeMod->removeEdges(edgeArray);
-                }
-                //            edgeMod->splitEdges(edgeArray);
-            }
-        }
-    }
 }
 
 template<class DataTypes>

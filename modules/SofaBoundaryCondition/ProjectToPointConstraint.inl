@@ -41,7 +41,7 @@ namespace projectiveconstraintset
 {
 
 template< class DataTypes>
-bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
 {
     if (fc)
     {
@@ -54,11 +54,11 @@ bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunctio
 }
 
 template< class DataTypes>
-void ProjectToPointConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, core::objectmodel::Data<value_type> &)
+void ProjectToPointConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, core::objectmodel::Data<value_type> &)
 {
     if (fc)
     {
-        fc->removeConstraint((unsigned int) pointIndex);
+        fc->removeConstraint((index_type) pointIndex);
     }
 }
 
@@ -95,14 +95,14 @@ void ProjectToPointConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void ProjectToPointConstraint<DataTypes>::addConstraint(unsigned int index)
+void ProjectToPointConstraint<DataTypes>::addConstraint(index_type index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectToPointConstraint<DataTypes>::removeConstraint(unsigned int index)
+void ProjectToPointConstraint<DataTypes>::removeConstraint(index_type index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -141,10 +141,10 @@ void ProjectToPointConstraint<DataTypes>::init()
     const SetIndexArray & indices = f_indices.getValue();
 
     std::stringstream sstream;
-    unsigned int maxIndex=this->mstate->getSize();
+    index_type maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
     {
-        const unsigned int index=indices[i];
+        const index_type index=indices[i];
         if (index >= maxIndex)
         {
             sstream << "Index " << index << " not valid!\n";

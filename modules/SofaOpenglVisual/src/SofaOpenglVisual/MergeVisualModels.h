@@ -119,18 +119,18 @@ protected:
 
 
         {
-            helper::vector<int>& vertIdx = *this->m_vertPosIdx.beginWriteOnly();
+            auto& vertIdx = *this->m_vertPosIdx.beginWriteOnly();
             vertIdx.resize( nbvert );
 
             size_t offset = 0;
             size_t offsetIdx = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
-                const helper::vector<int>& in = (*vl_input[i])->m_vertPosIdx.getValue();
+                const auto& in = (*vl_input[i])->m_vertPosIdx.getValue();
 
                 for( size_t j=0;j<in.size();++j)
                 {
-                    int& e = vertIdx[offset+j];
+                    auto& e = vertIdx[offset+j];
                     e = in[j];
                     e += offsetIdx;
                 }
@@ -142,18 +142,18 @@ protected:
         }
 
         {
-            helper::vector<int>& vertIdx = *this->m_vertNormIdx.beginWriteOnly();
+            auto& vertIdx = *this->m_vertNormIdx.beginWriteOnly();
             vertIdx.resize( nbvert );
 
             size_t offset = 0;
             size_t offsetIdx = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
-                const helper::vector<int>& in = (*vl_input[i])->m_vertNormIdx.getValue();
+                const auto& in = (*vl_input[i])->m_vertNormIdx.getValue();
 
                 for( size_t j=0;j<in.size();++j)
                 {
-                    int& e = vertIdx[offset+j];
+                    auto& e = vertIdx[offset+j];
                     e = in[j];
                     e += offsetIdx;
                 }
@@ -187,17 +187,17 @@ protected:
 
 
 
-        Inherit::VecEdge& edges = *this->m_edges.beginWriteOnly();
+        Inherit::VecVisualEdge& edges = *this->m_edges.beginWriteOnly();
         edges.resize( nbedges );
 
         size_t offsetEdge = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
-            const Inherit::VecEdge& in = (*vl_input[i])->m_edges.getValue();
+            const Inherit::VecVisualEdge& in = (*vl_input[i])->m_edges.getValue();
 
             for( size_t j=0;j<in.size();++j)
             {
-                Edge& e = edges[offsetEdge+j];
+                VisualEdge& e = edges[offsetEdge+j];
                 e = in[j];
                 e[0] += offsetPoint;
                 e[1] += offsetPoint;
@@ -212,18 +212,18 @@ protected:
 
 
 
-        Inherit::VecTriangle& tris = *this->m_triangles.beginWriteOnly();
+        Inherit::VecVisualTriangle& tris = *this->m_triangles.beginWriteOnly();
         tris.resize( nbtris );
 
         offsetPoint = 0;
         size_t offsetTri = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
-            const Inherit::VecTriangle& in = (*vl_input[i])->m_triangles.getValue();
+            const Inherit::VecVisualTriangle& in = (*vl_input[i])->m_triangles.getValue();
 
             for( size_t j=0;j<in.size();++j)
             {
-                Triangle& t = tris[offsetTri+j];
+                VisualTriangle& t = tris[offsetTri+j];
                 t = in[j];
                 t[0] += offsetPoint;
                 t[1] += offsetPoint;
@@ -237,18 +237,18 @@ protected:
 
 
 
-        Inherit::VecQuad& quads = *this->m_quads.beginWriteOnly();
+        Inherit::VecVisualQuad& quads = *this->m_quads.beginWriteOnly();
         quads.resize( nbquads );
 
         offsetPoint = 0;
         size_t offsetQuad = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
-            const Inherit::VecQuad& in = (*vl_input[i])->m_quads.getValue();
+            const Inherit::VecVisualQuad& in = (*vl_input[i])->m_quads.getValue();
 
             for( size_t j=0;j<in.size();++j)
             {
-                Quad& q = quads[offsetQuad+j];
+                VisualQuad& q = quads[offsetQuad+j];
                 q = in[j];
                 q[0] += offsetPoint;
                 q[1] += offsetPoint;

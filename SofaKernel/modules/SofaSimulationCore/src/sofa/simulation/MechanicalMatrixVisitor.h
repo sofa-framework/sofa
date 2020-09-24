@@ -53,12 +53,12 @@ namespace simulation
 class SOFA_SIMULATION_CORE_API MechanicalGetMatrixDimensionVisitor : public BaseMechanicalVisitor
 {
 public:
-    unsigned int * const nbRow;
-    unsigned int * const nbCol;
+    std::size_t* const nbRow;
+    std::size_t* const nbCol;
     sofa::core::behavior::MultiMatrixAccessor* matrix;
 
     MechanicalGetMatrixDimensionVisitor(
-        const core::ExecParams* params, unsigned int * const _nbRow, unsigned int * const _nbCol,
+        const core::ExecParams* params, std::size_t* const _nbRow, std::size_t* const _nbCol,
         sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
     {}

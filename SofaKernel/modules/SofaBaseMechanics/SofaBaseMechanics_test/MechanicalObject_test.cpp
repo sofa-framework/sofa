@@ -53,10 +53,10 @@ TYPED_TEST_CASE(MechanicalObject_test, DataTypesList);
 namespace TestHelpers
 {
 
-template<typename T, int INDEX>
+template<typename T, std::size_t INDEX>
 struct CheckPositionImpl;
 
-template<int N, typename REAL>
+template<std::size_t N, typename REAL>
 struct CheckPositionImpl<Vec<N, REAL>, 1>
 {
     void operator () (const Vec<N, REAL>& vec)
@@ -65,7 +65,7 @@ struct CheckPositionImpl<Vec<N, REAL>, 1>
     }
 };
 
-template<int N, typename REAL>
+template<std::size_t N, typename REAL>
 struct CheckPositionImpl<Vec<N, REAL>, 2>
 {
     void operator () (const Vec<N, REAL>& vec)
@@ -75,7 +75,7 @@ struct CheckPositionImpl<Vec<N, REAL>, 2>
     }
 };
 
-template<int N, typename REAL>
+template<std::size_t N, typename REAL>
 struct CheckPositionImpl<Vec<N, REAL>, 3>
 {
     void operator () (const Vec<N, REAL>& vec)

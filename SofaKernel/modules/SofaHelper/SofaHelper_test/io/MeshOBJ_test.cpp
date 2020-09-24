@@ -68,15 +68,15 @@ protected:
         void testBench()
         {
             EXPECT_EQ(nbVertices, mesh.getVertices().size());
-            const sofa::helper::vector< helper::vector < helper::vector <int> > > & facets = mesh.getFacets();
+            const auto& facets = mesh.getFacets();
             unsigned int fileNbLines, fileNbTriangles, fileNbQuads;
             fileNbLines = fileNbTriangles = fileNbQuads = 0;
             for (unsigned int i = 0; i < facets.size(); i++)
             {
-                const helper::vector<helper::vector<int> >& vtnFacet = facets[i];
+                const auto& vtnFacet = facets[i];
                 if (vtnFacet[0].size() > 0)
                 {
-                    const helper::vector<int>& facet = vtnFacet[0];
+                    const auto& facet = vtnFacet[0];
                     switch (facet.size())
                     {
                     case 2:

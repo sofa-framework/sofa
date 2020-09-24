@@ -100,7 +100,7 @@ public:
     */
     void updateTopologicalMappingTopDown() override;
 
-    unsigned int getFromIndex(unsigned int ind) override;
+    index_type getFromIndex(index_type ind) override;
 
 protected:
     Data<unsigned int> m_nbPointsOnEachCircle; ///< number of points to create along the circles around each point of the input topology (10 by default)

@@ -90,11 +90,16 @@ public:
     VecMass d_vertexMass; ///< values of the particles masses
 
     typedef core::topology::BaseMeshTopology::Point Point;
+    typedef core::topology::BaseMeshTopology::PointID PointID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::EdgeID EdgeID;
     typedef core::topology::BaseMeshTopology::Quad Quad;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::TriangleID TriangleID;
     typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
+    typedef core::topology::BaseMeshTopology::TetrahedronID TetrahedronID;
     typedef core::topology::BaseMeshTopology::Hexahedron Hexahedron;
+    typedef core::topology::BaseMeshTopology::HexahedronID HexahedronID;
 
     class DMassPointHandler : public topology::TopologyDataHandler<Point,MassVector>
     {
@@ -104,25 +109,25 @@ public:
             : topology::TopologyDataHandler<Point,MassVector>(_data), dm(_dm)
         {}
 
-        void applyCreateFunction(unsigned int pointIndex, TMassType& m, const Point&, const sofa::helper::vector< unsigned int > &,
+        void applyCreateFunction(PointID pointIndex, TMassType& m, const Point&, const sofa::helper::vector< PointID > &,
                                  const sofa::helper::vector< double > &);
 
         using topology::TopologyDataHandler<Point,MassVector>::ApplyTopologyChange;
 
         ///////////////////////// Functions on Points //////////////////////////////////////
         /// Apply removing points.
-        void applyPointDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
+        void applyPointDestruction(const sofa::helper::vector<PointID> & /*indices*/);
         /// Callback to remove points.
         virtual void ApplyTopologyChange(const core::topology::PointsRemoved* /*event*/);
 
         ///////////////////////// Functions on Edges //////////////////////////////////////
         /// Apply adding edges elements.
-        void applyEdgeCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+        void applyEdgeCreation(const sofa::helper::vector< EdgeID >& /*indices*/,
                                const sofa::helper::vector< Edge >& /*elems*/,
-                               const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                               const sofa::helper::vector< sofa::helper::vector< EdgeID > >& /*ancestors*/,
                                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
         /// Apply removing edges elements.
-        void applyEdgeDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
+        void applyEdgeDestruction(const sofa::helper::vector<EdgeID> & /*indices*/);
 
         /// Callback to add edges elements.
         virtual void ApplyTopologyChange(const core::topology::EdgesAdded* /*event*/);
@@ -131,12 +136,12 @@ public:
 
         ///////////////////////// Functions on Triangles //////////////////////////////////////
         /// Apply adding triangles elements.
-        void applyTriangleCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+        void applyTriangleCreation(const sofa::helper::vector< TriangleID >& /*indices*/,
                                    const sofa::helper::vector< Triangle >& /*elems*/,
-                                   const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                                   const sofa::helper::vector< sofa::helper::vector< TriangleID > >& /*ancestors*/,
                                    const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
         /// Apply removing triangles elements.
-        void applyTriangleDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
+        void applyTriangleDestruction(const sofa::helper::vector<TriangleID> & /*indices*/);
 
         /// Callback to add triangles elements.
         virtual void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
@@ -145,12 +150,12 @@ public:
 
         ///////////////////////// Functions on Tetrahedron //////////////////////////////////////
         /// Apply adding tetrahedron elements.
-        void applyTetrahedronCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+        void applyTetrahedronCreation(const sofa::helper::vector< TetrahedronID >& /*indices*/,
                                       const sofa::helper::vector< Tetrahedron >& /*elems*/,
-                                      const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                                      const sofa::helper::vector< sofa::helper::vector< TetrahedronID > >& /*ancestors*/,
                                       const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
         /// Apply removing tetrahedron elements.
-        void applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
+        void applyTetrahedronDestruction(const sofa::helper::vector<TetrahedronID> & /*indices*/);
 
         /// Callback to add tetrahedron elements.
         virtual void ApplyTopologyChange(const core::topology::TetrahedraAdded* /*event*/);
@@ -159,12 +164,12 @@ public:
 
         ///////////////////////// Functions on Hexahedron //////////////////////////////////////
         /// Apply adding hexahedron elements.
-        void applyHexahedronCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+        void applyHexahedronCreation(const sofa::helper::vector< HexahedronID >& /*indices*/,
                                      const sofa::helper::vector< Hexahedron >& /*elems*/,
-                                     const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                                     const sofa::helper::vector< sofa::helper::vector< HexahedronID > >& /*ancestors*/,
                                      const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
         /// Apply removing hexahedron elements.
-        void applyHexahedronDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
+        void applyHexahedronDestruction(const sofa::helper::vector<HexahedronID> & /*indices*/);
         /// Callback to add hexahedron elements.
         virtual void ApplyTopologyChange(const core::topology::HexahedraAdded* /*event*/);
         /// Callback to remove hexahedron elements.
@@ -254,7 +259,7 @@ protected:
 public:
 
     SReal getTotalMass() const { return d_totalMass.getValue(); }
-    int getMassCount() { return d_vertexMass.getValue().size(); }
+    std::size_t getMassCount() { return d_vertexMass.getValue().size(); }
 
     /// Print key mass informations (totalMass, vertexMass and massDensity)
     void printMass();
@@ -311,8 +316,8 @@ public:
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
 
-    SReal getElementMass(unsigned int index) const override;
-    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
+    SReal getElementMass(sofa::defaulttype::index_type index) const override;
+    void getElementMass(sofa::defaulttype::index_type, defaulttype::BaseMatrix *m) const override;
 
     bool isDiagonal() override {return true;}
 

@@ -44,14 +44,14 @@ namespace projectiveconstraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool LinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+bool LinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
 {
     return lc != 0;
 }
 
 // Define RemovalFunction
 template< class DataTypes>
-void LinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void LinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
 {
     if (lc)
     {
@@ -99,14 +99,14 @@ void LinearMovementConstraint<DataTypes>::clearIndices()
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::addIndex(unsigned int index)
+void LinearMovementConstraint<DataTypes>::addIndex(index_type index)
 {
     m_indices.beginEdit()->push_back(index);
     m_indices.endEdit();
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::removeIndex(unsigned int index)
+void LinearMovementConstraint<DataTypes>::removeIndex(index_type index)
 {
     removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();

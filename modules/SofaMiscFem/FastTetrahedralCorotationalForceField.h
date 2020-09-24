@@ -73,7 +73,7 @@ public:
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
     typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
     typedef core::topology::BaseMeshTopology::Tetra Tetrahedron;
-    typedef unsigned int Index;
+    typedef sofa::defaulttype::index_type Index;
     
 
 protected:    
@@ -117,6 +117,8 @@ protected:
     public:
         typedef typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
 
+        using index_type = sofa::defaulttype::index_type;
+
         FTCFTetrahedronHandler(FastTetrahedralCorotationalForceField<DataTypes>* ff,
                 topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> >* data )
             :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >(data)
@@ -125,9 +127,9 @@ protected:
 
         }
 
-        void applyCreateFunction(unsigned int, TetrahedronRestInformation &t,
+        void applyCreateFunction(index_type, TetrahedronRestInformation &t,
                                  const core::topology::BaseMeshTopology::Tetrahedron&,
-                                 const sofa::helper::vector<unsigned int> &,
+                                 const sofa::helper::vector<index_type> &,
                                  const sofa::helper::vector<double> &);
 
     protected:

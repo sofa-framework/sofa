@@ -47,10 +47,10 @@ class CudaPointCollisionModel;
 class CudaPoint : public core::TCollisionElementIterator<CudaPointCollisionModel>
 {
 public:
-    CudaPoint(CudaPointCollisionModel* model, int index);
+    CudaPoint(CudaPointCollisionModel* model, index_type index);
 
-    int i0();
-    int getSize();
+    index_type i0();
+    std::size_t getSize();
 
     explicit CudaPoint(const core::CollisionElementIterator& i);
 };
@@ -68,7 +68,7 @@ public:
     typedef CudaPoint Element;
     friend class CudaPoint;
 
-    Data<int> groupSize; ///< number of point per collision element
+    Data<std::size_t> groupSize; ///< number of point per collision element
 
     CudaPointCollisionModel();
 
@@ -76,13 +76,13 @@ public:
 
     // -- CollisionModel interface
 
-    virtual void resize(int size) override;
+    virtual void resize(std::size_t size) override;
 
     virtual void computeBoundingTree(int maxDepth=0) override;
 
     //virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
 
-    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams*,index_type index) override;
 
     void draw(const core::visual::VisualParams*) override;
 
@@ -93,7 +93,7 @@ protected:
     core::behavior::MechanicalState<InDataTypes>* mstate;
 };
 
-inline CudaPoint::CudaPoint(CudaPointCollisionModel* model, int index)
+inline CudaPoint::CudaPoint(CudaPointCollisionModel* model, index_type index)
     : core::TCollisionElementIterator<CudaPointCollisionModel>(model, index)
 {}
 
@@ -102,12 +102,12 @@ inline CudaPoint::CudaPoint(const core::CollisionElementIterator& i)
 {
 }
 
-inline int CudaPoint::i0()
+inline CudaPoint::index_type CudaPoint::i0()
 {
     return model->groupSize.getValue()*index;
 }
 
-inline int CudaPoint::getSize()
+inline std::size_t CudaPoint::getSize()
 {
     if (index == model->getSize()-1)
         return model->getMechanicalState()->getSize();

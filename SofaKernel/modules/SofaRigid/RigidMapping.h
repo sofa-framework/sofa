@@ -168,7 +168,7 @@ protected:
     StiffnessSparseMatrixEigen geometricStiffnessMatrix;
 };
 
-template <int N, class Real>
+template <std::size_t N, class Real>
 struct RigidMappingMatrixHelper;
 
 

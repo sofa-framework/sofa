@@ -29,7 +29,7 @@ namespace sofa
 namespace defaulttype
 {
 
-typedef unsigned int index_type;
+typedef std::size_t index_type;
 constexpr index_type InvalidID = UINT_MAX;
 
 

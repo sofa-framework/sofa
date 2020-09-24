@@ -1519,7 +1519,7 @@ void Decompose<Real>::eigenDecomposition( const defaulttype::Mat<2,2,Real> &A, d
 
 
 template <typename Real>
-template <int iSize>
+template <std::size_t iSize>
 void Decompose<Real>::QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaulttype::Vec<iSize,Real> &subDiag, defaulttype::Mat<iSize,iSize,Real> &V )
 {
     static const int iMaxIter = 32;

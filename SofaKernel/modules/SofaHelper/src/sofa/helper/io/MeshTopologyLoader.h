@@ -37,22 +37,24 @@ namespace io
 class SOFA_HELPER_API MeshTopologyLoader
 {
 public:
+    using index_type = sofa::defaulttype::index_type;
+
     MeshTopologyLoader():m_mesh(nullptr) {}
     virtual ~MeshTopologyLoader() {}
     bool load(const char *filename);
-    virtual void setNbPoints(int /*n*/) {}
-    virtual void setNbLines(int /*n*/) {}
-    virtual void setNbEdges(int /*n*/) {}
-    virtual void setNbTriangles(int /*n*/) {}
-    virtual void setNbQuads(int /*n*/) {}
-    virtual void setNbTetrahedra(int /*n*/) {}
-    virtual void setNbCubes(int /*n*/) {}
+    virtual void setNbPoints(index_type /*n*/) {}
+    virtual void setNbLines(index_type /*n*/) {}
+    virtual void setNbEdges(index_type /*n*/) {}
+    virtual void setNbTriangles(index_type /*n*/) {}
+    virtual void setNbQuads(index_type /*n*/) {}
+    virtual void setNbTetrahedra(index_type /*n*/) {}
+    virtual void setNbCubes(index_type /*n*/) {}
     virtual void addPoint(SReal /*px*/, SReal /*py*/, SReal /*pz*/) {}
-    virtual void addLine(int /*p1*/, int /*p2*/) {}
-    virtual void addTriangle(int /*p1*/, int /*p2*/, int /*p3*/) {}
-    virtual void addQuad(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
-    virtual void addTetra(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
-    virtual void addCube(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/, int /*p5*/, int /*p6*/, int /*p7*/, int /*p8*/) {}
+    virtual void addLine(index_type /*p1*/, index_type /*p2*/) {}
+    virtual void addTriangle(index_type /*p1*/, index_type /*p2*/, index_type /*p3*/) {}
+    virtual void addQuad(index_type /*p1*/, index_type /*p2*/, index_type /*p3*/, index_type /*p4*/) {}
+    virtual void addTetra(index_type /*p1*/, index_type /*p2*/, index_type /*p3*/, index_type /*p4*/) {}
+    virtual void addCube(index_type /*p1*/, index_type /*p2*/, index_type /*p3*/, index_type /*p4*/, index_type /*p5*/, index_type /*p6*/, index_type /*p7*/, index_type /*p8*/) {}
 private:
     /// method will create a MeshObj which will parse the file. Then data are loaded into the current topology
     bool loadObj(const char *filename);

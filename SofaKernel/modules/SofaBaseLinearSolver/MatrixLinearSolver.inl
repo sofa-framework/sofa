@@ -76,7 +76,7 @@ void MatrixLinearSolver<Matrix,Vector>::resetSystem()
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
+void MatrixLinearSolver<Matrix,Vector>::resizeSystem(std::size_t n)
 {
     if (!this->frozen)
     {
@@ -117,7 +117,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
         simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
         SReal dim = 0;
         simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
-        currentGroup->systemSize = dim;
+        currentGroup->systemSize = std::size_t(dim);
         currentGroup->matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
 
         simulation::common::MechanicalOperations mops(mparams, this->getContext());
@@ -243,11 +243,11 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
             const typename SparseMatrix<Real>::LineConstIterator jitend = j->end();
             for (typename SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
             {
-                int row2 = jit->first;
+                auto row2 = jit->first;
                 double acc = 0.0;
                 for (typename SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
                 {
-                    int col2 = i2->first;
+                    auto col2 = i2->first;
                     double val2 = i2->second;
                     acc += val2 * currentGroup->systemLHVector->element(col2);
                 }
@@ -271,7 +271,8 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJtLocal(Matrix * /*M*/,ResMatrixT
     for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
     {
         // STEP 1 : put each line of matrix Jt in the right hand term of the system
-        for (typename JMatrixType::Index i=0; i<J->colSize(); i++) currentGroup->systemRHVector->set(i,J->element(row,i)); // currentGroup->systemMatrix->rowSize()
+        for (typename JMatrixType::Index i=0; i<J->colSize(); i++) 
+            currentGroup->systemRHVector->set(i, J->element(row,i)); // currentGroup->systemMatrix->rowSize()
 
         // STEP 2 : solve the system :
         solveSystem();

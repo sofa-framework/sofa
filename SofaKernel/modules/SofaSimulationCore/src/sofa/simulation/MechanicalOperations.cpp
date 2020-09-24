@@ -475,13 +475,13 @@ void MechanicalOperations::m_print( std::ostream& out )
     defaulttype::BaseMatrix* m = s->getSystemBaseMatrix();
     if (!m) return;
     //out << *m;
-    int ny = m->rowSize();
-    int nx = m->colSize();
+    auto ny = m->rowSize();
+    auto nx = m->colSize();
     out << "[";
-    for (int y=0; y<ny; ++y)
+    for (defaulttype::BaseMatrix::Index y=0; y<ny; ++y)
     {
         out << "[";
-        for (int x=0; x<nx; x++)
+        for (defaulttype::BaseMatrix::Index x=0; x<nx; x++)
             out << ' ' << m->element(x,y);
         out << "]";
     }
@@ -490,7 +490,7 @@ void MechanicalOperations::m_print( std::ostream& out )
 
 
 // BaseMatrix & BaseVector Computations
-void MechanicalOperations::getMatrixDimension(unsigned int *  const nbRow, unsigned int * const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MechanicalOperations::getMatrixDimension(std::size_t*  const nbRow, std::size_t* const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     executeVisitor( MechanicalGetMatrixDimensionVisitor(&mparams, nbRow, nbCol, matrix) );
 }

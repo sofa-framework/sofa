@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa
 {
@@ -44,6 +45,8 @@ class LocalMinDistanceFilter;
 class SOFA_MESH_COLLISION_API InfoFilter
 {
 public:
+    using index_type = sofa::defaulttype::index_type;
+
     /**
      * @brief Default constructor.
      *
@@ -65,7 +68,7 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to the InfoFilter.
      */
-    virtual bool validate(const unsigned int /*edge_index*/, const defaulttype::Vector3& /*PQ*/) = 0;
+    virtual bool validate(const index_type /*edge_index*/, const defaulttype::Vector3& /*PQ*/) = 0;
 
     /**
      * @brief Returns cone information validity (up to date or not?).
@@ -100,7 +103,7 @@ protected:
      * If the collision primitive is mapped to a rigid MState, the computation is only an update according to the
      * rigid transformation.
      */
-    virtual void buildFilter( unsigned int /*edge_index*/) = 0;
+    virtual void buildFilter( index_type /*edge_index*/) = 0;
 
     int m_revision; ///< Last filter update revision.
 

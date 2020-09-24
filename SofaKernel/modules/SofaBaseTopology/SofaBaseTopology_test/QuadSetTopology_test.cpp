@@ -125,7 +125,7 @@ bool QuadSetTopology_test::testQuadBuffers()
 
     const QuadSetTopologyContainer::Quad& elem2 = topoCon->getQuad(1000);
     for (int i = 0; i<elemSize; ++i)
-        EXPECT_EQ(elem2[i], -1);
+        EXPECT_EQ(elem2[i], sofa::defaulttype::InvalidID);
 
 
     if(scene != nullptr)

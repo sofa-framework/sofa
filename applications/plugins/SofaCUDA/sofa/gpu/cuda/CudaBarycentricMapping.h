@@ -49,9 +49,11 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::CubeData CubeData;
+    using index_type = sofa::defaulttype::index_type;
+
 protected:
     gpu::cuda::CudaVector<CubeData> map;
-    int maxNOut;
+    std::size_t maxNOut;
     gpu::cuda::CudaVector< std::pair<int,float> > mapT;
     topology::RegularGridTopology* topology;
     void calcMapT();
@@ -63,9 +65,9 @@ public:
     void setMaskFrom(helper::StateMask *) {}
     void setMaskTo  (helper::StateMask *) {}
 
-    void clear(int reserve=0);
+    void clear(std::size_t reserve=0);
 
-    int addPointInCube(const int cubeIndex, const SReal* baryCoords);
+    index_type addPointInCube(const index_type cubeIndex, const SReal* baryCoords);
 
     bool isEmpty() { return map.size() == 0; }
     void setTopology(topology::RegularGridTopology* _topology) { topology = _topology; }
@@ -101,6 +103,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::CubeData CubeData;
+    using index_type = sofa::defaulttype::index_type;
 protected:
     gpu::cuda::CudaVector<CubeData> map;
     topology::SparseGridTopology* topology;
@@ -123,9 +126,9 @@ public:
     void setMaskFrom(helper::StateMask *) {}
     void setMaskTo  (helper::StateMask *) {}
 
-    void clear(int reserve=0);
+    void clear(std::size_t reserve=0);
 
-    int addPointInCube(const int cubeIndex, const SReal* baryCoords);
+    index_type addPointInCube(const index_type cubeIndex, const SReal* baryCoords);
 
     bool isEmpty() { return map.size() == 0; }
     void setTopology(topology::RegularGridTopology* _topology) { topology = _topology; }
@@ -160,6 +163,8 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
+    using index_type = sofa::defaulttype::index_type;
+
     class MapData
     {
     public:
@@ -174,16 +179,16 @@ public:
         //float val[BSIZE];
     };
 protected:
-    int maxNIn;
-    int maxNOut;
-    int insize,size;
+    std::size_t maxNIn;
+    std::size_t maxNOut;
+    std::size_t insize,size;
     gpu::cuda::CudaVector< MapData > map;
     gpu::cuda::CudaVector< MapData > mapT;
     core::topology::BaseMeshTopology* topology;
-    void resizeMap(int size2, int maxNIn2);
-    void setMap(int outIndex, int j, int inIndex, Real val);
-    float getMapValue(int outIndex, int j);
-    int getMapIndex(int outIndex, int j);
+    void resizeMap(std::size_t size2, std::size_t maxNIn2);
+    void setMap(index_type outIndex, index_type j, index_type inIndex, Real val);
+    float getMapValue(index_type outIndex, index_type j);
+    index_type getMapIndex(index_type outIndex, index_type j);
     void calcMapT();
 public:
     BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology)
@@ -196,20 +201,20 @@ public:
     void setMaskFrom(helper::StateMask *) {}
     void setMaskTo  (helper::StateMask *) {}
 
-    void clear(int reserve=0);
+    void clear(std::size_t reserve=0);
 
-    int addPointInLine(const int lineIndex, const SReal* baryCoords);
-    int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points);
+    index_type addPointInLine(const index_type lineIndex, const SReal* baryCoords);
+    index_type createPointInLine(const typename Out::Coord& p, index_type lineIndex, const typename In::VecCoord* points);
 
-    int addPointInTriangle(const int triangleIndex, const SReal* baryCoords);
-    int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points);
+    index_type addPointInTriangle(const index_type triangleIndex, const SReal* baryCoords);
+    index_type createPointInTriangle(const typename Out::Coord& p, index_type triangleIndex, const typename In::VecCoord* points);
 
-    int addPointInQuad(const int quadIndex, const SReal* baryCoords);
-    int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points);
+    index_type addPointInQuad(const index_type quadIndex, const SReal* baryCoords);
+    index_type createPointInQuad(const typename Out::Coord& p, index_type quadIndex, const typename In::VecCoord* points);
 
-    int addPointInTetra(const int tetraIndex, const SReal* baryCoords);
+    index_type addPointInTetra(const index_type tetraIndex, const SReal* baryCoords);
 
-    int addPointInCube(const int cubeIndex, const SReal* baryCoords);
+    index_type addPointInCube(const index_type cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
@@ -247,6 +252,8 @@ public:
 
     BarycentricMapperMeshTopology< In, Out > internalMapper;
 
+    using index_type = sofa::defaulttype::index_type;
+
 public:
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
         : Inherit(fromTopology, _toTopology),
@@ -255,11 +262,11 @@ public:
 
     virtual ~BarycentricMapperTetrahedronSetTopology() {}
 
-    void clear(int reserve=0) {
+    void clear(std::size_t reserve=0) {
         internalMapper.clear(reserve);
     }
 
-    int addPointInTetra(const int index, const SReal* baryCoords) {
+    index_type addPointInTetra(const index_type index, const SReal* baryCoords) {
         return internalMapper.addPointInTetra(index,baryCoords);
     }
 

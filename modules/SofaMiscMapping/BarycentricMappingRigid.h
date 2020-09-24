@@ -76,6 +76,8 @@ public:
 
     typedef typename Inherit::ForceMask ForceMask;
 
+    using index_type = sofa::defaulttype::index_type;
+
 protected:
     topology::PointData< sofa::helper::vector<MappingData > >  map; ///< mapper data
     topology::PointData< sofa::helper::vector<MappingOrientData > >  mapOrient; ///< mapper data for mapped frames
@@ -97,10 +99,10 @@ protected:
     virtual ~BarycentricMapperTetrahedronSetTopologyRigid() {}
 
 public:
-    void clear(int reserve=0) override;
+    void clear(std::size_t reserve=0) override;
 
-    int addPointInTetra(const int index, const SReal* baryCoords) override;
-    int addPointOrientationInTetra( const int tetraIndex, const sofa::defaulttype::Matrix3 baryCoorsOrient );
+    index_type addPointInTetra(const index_type index, const SReal* baryCoords) override;
+    index_type addPointOrientationInTetra( const index_type tetraIndex, const sofa::defaulttype::Matrix3 baryCoorsOrient );
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 

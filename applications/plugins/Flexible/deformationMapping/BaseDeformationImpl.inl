@@ -38,7 +38,7 @@ namespace component
 namespace mapping
 {
 
-template<int matdim,typename Real>
+template<size_t matdim,typename Real>
 void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype::Vec<3,Real> &p, const float& scale)
 {
 #ifndef SOFA_NO_OPENGL
@@ -73,7 +73,7 @@ void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype:
 }
 
 /** inversion of rectangular deformation gradients (used in backward mapping) **/
-template <int L,typename Real>
+template <size_t L,typename Real>
 inline static void invert(defaulttype::Mat<L,L,Real> &Minv, const defaulttype::Mat<L,L,Real> &M)
 {
     //    Eigen::Map<const Eigen::Matrix<Real,L,L,Eigen::RowMajor> >  eM(&M[0][0]);
@@ -82,7 +82,7 @@ inline static void invert(defaulttype::Mat<L,L,Real> &Minv, const defaulttype::M
     Minv.invert(M);
 }
 
-template <int L,typename Real>
+template <size_t L,typename Real>
 inline static void invert(defaulttype::Mat<1,L,Real> &Minv, const defaulttype::Mat<L,1,Real> &M)
 {
     Real n2inv=0; for(size_t i=0; i<L; i++) n2inv+=M[i][0]*M[i][0];
@@ -107,11 +107,11 @@ inline static Mat identity()
 {
     Mat F;
     if(Mat::nbLines>=Mat::nbCols) for(int i=0; i<Mat::nbCols; i++) F[i][i]=1.0;
-    else for(int i=0; i<Mat::nbLines; i++) F[i][i]=1.0;
+    else for(size_t i=0; i<Mat::nbLines; i++) F[i][i]=1.0;
     return F;
 }
 
-template <int C,int L,typename Real>
+template <size_t C,size_t L,typename Real>
 inline static void identity(defaulttype::Mat<C,L,Real> &F)
 {
     F.clear();
@@ -119,7 +119,7 @@ inline static void identity(defaulttype::Mat<C,L,Real> &F)
     else for(size_t i=0; i<L; i++) F[i][i]=1.0;
 }
 
-template <int C1,int L1,int C2,int L2,typename Real>
+template <size_t C1,size_t L1,size_t C2,size_t L2,typename Real>
 inline static void copy(defaulttype::Mat<C1,L1,Real> &F1, const defaulttype::Mat<C2,L2,Real> &F2)
 {
     F1.clear();

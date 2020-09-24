@@ -77,7 +77,7 @@ public:
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
     void updateTopologicalMappingTopDown() override;
 
-    unsigned int getGlobIndex(unsigned int ind) override
+    index_type getGlobIndex(index_type ind) override
     {
         if(ind<pointSource.size())
         {
@@ -89,7 +89,7 @@ public:
         }
     }
 
-    unsigned int getFromIndex(unsigned int ind) override
+    index_type getFromIndex(index_type ind) override
     {
         return ind;
     }
@@ -105,12 +105,12 @@ public:
         NB_ELEMENTS
     };
 
-    const helper::vector< helper::vector<int> >& getPointsMappedFromPoint() const { return pointsMappedFrom[POINT]; }
-    const helper::vector< helper::vector<int> >& getPointsMappedFromEdge() const { return pointsMappedFrom[EDGE]; }
-    const helper::vector< helper::vector<int> >& getPointsMappedFromTriangle() const { return pointsMappedFrom[TRIANGLE]; }
-    const helper::vector< helper::vector<int> >& getPointsMappedFromQuad() const { return pointsMappedFrom[QUAD]; }
-    const helper::vector< helper::vector<int> >& getPointsMappedFromTetra() const { return pointsMappedFrom[TETRA]; }
-    const helper::vector< helper::vector<int> >& getPointsMappedFromHexa() const { return pointsMappedFrom[HEXA]; }
+    const helper::vector< helper::vector<index_type> >& getPointsMappedFromPoint() const { return pointsMappedFrom[POINT]; }
+    const helper::vector< helper::vector<index_type> >& getPointsMappedFromEdge() const { return pointsMappedFrom[EDGE]; }
+    const helper::vector< helper::vector<index_type> >& getPointsMappedFromTriangle() const { return pointsMappedFrom[TRIANGLE]; }
+    const helper::vector< helper::vector<index_type> >& getPointsMappedFromQuad() const { return pointsMappedFrom[QUAD]; }
+    const helper::vector< helper::vector<index_type> >& getPointsMappedFromTetra() const { return pointsMappedFrom[TETRA]; }
+    const helper::vector< helper::vector<index_type> >& getPointsMappedFromHexa() const { return pointsMappedFrom[HEXA]; }
 
     const helper::vector< Vec3d >& getPointBaryCoords() const { return pointBaryCoords.getValue(); }
     const helper::vector< Vec3d >& getEdgeBaryCoords() const { return edgeBaryCoords.getValue(); }
@@ -119,7 +119,7 @@ public:
     const helper::vector< Vec3d >& getTetraBaryCoords() const { return tetraBaryCoords.getValue(); }
     const helper::vector< Vec3d >& getHexaBaryCoords() const { return hexaBaryCoords.getValue(); }
 
-    const helper::vector< std::pair<Element,int> >& getPointSource() const { return pointSource;}
+    const helper::vector< std::pair<Element, index_type> >& getPointSource() const { return pointSource;}
 
 protected:
 
@@ -134,23 +134,23 @@ protected:
     Data< bool > copyTriangles; ///< Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)
 	Data< bool > copyTetrahedra; ///< Activate mapping of input tetrahedras into the output topology (requires at least one item in pointBaryCoords)
 
-    helper::fixed_array< helper::vector< helper::vector<int> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
+    helper::fixed_array< helper::vector< helper::vector<index_type> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
 
-    helper::vector< std::pair<Element,int> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
+    helper::vector< std::pair<Element, index_type> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
 
     std::set<unsigned int> pointsToRemove;
 
-    size_t addInputPoint(unsigned int i, PointSetTopologyModifier* toPointMod=nullptr); ///< Returns the number of points added inside the output topology. 
-    void addInputEdge(unsigned int i, PointSetTopologyModifier* toPointMod=nullptr);
-    void addInputTriangle(unsigned int i, PointSetTopologyModifier* toPointMod=nullptr);
-    void addInputTetrahedron(unsigned int i, PointSetTopologyModifier* toPointMod=nullptr);
+    size_t addInputPoint(index_type i, PointSetTopologyModifier* toPointMod=nullptr); ///< Returns the number of points added inside the output topology. 
+    void addInputEdge(index_type i, PointSetTopologyModifier* toPointMod=nullptr);
+    void addInputTriangle(index_type i, PointSetTopologyModifier* toPointMod=nullptr);
+    void addInputTetrahedron(index_type i, PointSetTopologyModifier* toPointMod=nullptr);
 
-    void swapInput(Element elem, int i1, int i2);
-    void removeInput(Element elem, const sofa::helper::vector<unsigned int>& tab );
-    void renumberInput(Element elem, const sofa::helper::vector<unsigned int>& index );
+    void swapInput(Element elem, index_type i1, index_type i2);
+    void removeInput(Element elem, const sofa::helper::vector<index_type>& tab );
+    void renumberInput(Element elem, const sofa::helper::vector<index_type>& index );
 
-    void swapOutputPoints(int i1, int i2, bool removeLast = false);
-    void removeOutputPoints( const sofa::helper::vector<unsigned int>& tab );
+    void swapOutputPoints(index_type i1, index_type i2, bool removeLast = false);
+    void removeOutputPoints( const sofa::helper::vector<index_type>& tab );
 
 protected:
     bool internalCheck(const char* step, const helper::fixed_array <size_t, NB_ELEMENTS >& nbInputRemoved);

@@ -57,7 +57,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapper<In,Out>::getJ(int outSize
 }
 
 template<class In, class Out>
-void BarycentricMapper<In,Out>::applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in)
+void BarycentricMapper<In,Out>::applyOnePoint( const index_type& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
     SOFA_UNUSED(hexaId);
     SOFA_UNUSED(out);

@@ -27,7 +27,6 @@
 #include <sofa/core/VecId.h>
 
 
-
 namespace sofa
 {
 
@@ -114,7 +113,7 @@ public:
     *
     * \param ancestorElems are the ancestors topology info used in the points modifications
     */
-    virtual void initPointsAdded(const helper::vector< unsigned int > &indices, const helper::vector< PointAncestorElem > &ancestorElems
+    virtual void initPointsAdded(const helper::vector< sofa::defaulttype::index_type > &indices, const helper::vector< PointAncestorElem > &ancestorElems
         , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs );
 };
 
@@ -122,6 +121,8 @@ public:
 class SOFA_CORE_API TopologyModifier : public sofa::core::topology::BaseTopologyObject
 {
 public:
+    typedef std::size_t index_type;
+
     SOFA_CLASS(TopologyModifier, BaseTopologyObject);
 
 protected:
@@ -167,7 +168,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<unsigned int> & /*items*/);
+    virtual void removeItems(const sofa::helper::vector<index_type> & /*items*/);
 
 protected:
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.

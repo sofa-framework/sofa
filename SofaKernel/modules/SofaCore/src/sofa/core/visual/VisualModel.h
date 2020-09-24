@@ -24,6 +24,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa
 {
@@ -167,7 +168,8 @@ public:
      *  The number of vertices position, normal, and texture coordinates already written is given as parameters.
      *  This method should update them.
      */
-    virtual void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, int& /*vindex*/, int& /*nindex*/, int& /*tindex*/, int& /*count*/)
+    virtual void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, 
+        sofa::defaulttype::index_type& /*vindex*/, sofa::defaulttype::index_type& /*nindex*/, sofa::defaulttype::index_type& /*tindex*/, int& /*count*/)
     {
     }
 
