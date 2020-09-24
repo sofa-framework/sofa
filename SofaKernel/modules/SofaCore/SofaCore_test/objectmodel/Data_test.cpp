@@ -62,43 +62,6 @@ TEST_F(Data_test, getNameWithValueTypeInfo)
     EXPECT_EQ(dataVectorColor.getValueTypeInfo()->name(), "vector<RGBAColor>");
 }
 
-/**  Test suite for data link.
-Create two datas and a link between them.
-Set the value of data1 and check if the boolean is dirty of data2 is true and that the value of data2 is right.
-  */
-struct DataLink_test: public BaseTest
-{
-    Data<int> data1;
-    Data<int> data2;
-
-    /// Create a link between the two datas
-    void SetUp() override
-    {
-        // Link
-        data2.setParent(&data1);
-    }
-
-    // Test if the output is updated only if necessary
-    void testDataLink()
-    {
-        data1.setValue(1);
-        ASSERT_FALSE(data1.isDirty());
-        ASSERT_TRUE(data2.isDirty());
-        ASSERT_TRUE(data2.getValue()!=0);
-
-    }
-
-};
-
-
-/////////////////////////////////////
-
-
-TEST_F(DataLink_test , testDataLink )
-{
-    this->testDataLink();
-}
-
 /** Test suite for vectorData
  *
  * @author Thomas Lemaire @date 2014
@@ -130,6 +93,7 @@ struct vectorData_test: public ::testing::Test
         vDataInt.resize(5);
         vDataInt[3]->setParent(&data1);
         data1.setValue(1);
+        ASSERT_NE(vDataInt[3]->getParent(),nullptr);
         ASSERT_EQ(vDataInt[3]->getValue(),1);
     }
 
