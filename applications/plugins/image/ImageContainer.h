@@ -553,12 +553,17 @@ protected:
 
         vparams->drawTool()->saveLastState();
 
-        float color[]= {1.,0.5,0.5,0.};
+        const sofa::helper::types::RGBAColor color(1.0,0.5,0.5,0.5);
         vparams->drawTool()->setMaterial(color);
 
+        std::vector<defaulttype::Vector3> corners;
         defaulttype::Vec<8,defaulttype::Vector3> c;
+        corners.resize(8);
         getCorners(c);
-        vparams->drawTool()->drawLineLoop(c,2.0,color);
+        for(unsigned int i=0;i<8;i++)
+            corners[i]=c[i];
+
+        vparams->drawTool()->drawLineLoop(corners,2.0,color);
 
         vparams->drawTool()->restoreLastState();
     }
