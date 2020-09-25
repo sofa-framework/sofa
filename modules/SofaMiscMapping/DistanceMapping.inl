@@ -351,17 +351,15 @@ template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
-#ifndef SOFA_NO_OPENGL
-    glPushAttrib(GL_LIGHTING_BIT);
+
+    vparams->drawTool()->saveLastState();
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     const SeqEdges& links = m_edgeContainer->getEdges();
 
-
-
     if( d_showObjectScale.getValue() == 0 )
     {
-        glDisable(GL_LIGHTING);
+        vparams->drawTool()->disableLighting();
         helper::vector< defaulttype::Vector3 > points;
         for(unsigned i=0; i<links.size(); i++ )
         {
@@ -372,7 +370,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     }
     else
     {
-        glEnable(GL_LIGHTING);
+        vparams->drawTool()->enableLighting();
         for(unsigned i=0; i<links.size(); i++ )
         {
             defaulttype::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
@@ -380,9 +378,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }
-
-    glPopAttrib();
-#endif // SOFA_NO_OPENGL
+    vparams->drawTool()->restoreLastState();
 }
 
 
