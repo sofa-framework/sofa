@@ -184,13 +184,13 @@ protected:
         vparams->drawTool()->setMaterial(color);
         vparams->drawTool()->enableLighting();
 
-        unsigned int size = tri.size();
+        std::size_t size = tri.size();
         std::vector<defaulttype::Vector3> points;
         std::vector<defaulttype::Vector3> normals;
         points.resize(3*size);
         normals.resize(size);
 
-        for (unsigned int i=0; i<size; ++i)
+        for (std::size_t i=0; i<size; ++i)
         {
             points[3*i] = pos[ tri[i][0] ];
             points[3*i+1] = pos[ tri[i][1] ];

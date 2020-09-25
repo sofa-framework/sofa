@@ -270,7 +270,7 @@ void SquareDistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vp
     {
         vparams->drawTool()->disableLighting();
         helper::vector< defaulttype::Vector3 > points;
-        for(unsigned i=0; i<links.size(); i++ )
+        for(std::size_t i=0; i<links.size(); i++ )
         {
             points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
             points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][1]]) ));
@@ -280,7 +280,7 @@ void SquareDistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vp
     else
     {
         vparams->drawTool()->enableLighting();
-        for(unsigned i=0; i<links.size(); i++ )
+        for(std::size_t i=0; i<links.size(); i++ )
         {
             defaulttype::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
             defaulttype::Vector3 p1 = TIn::getCPos(pos[links[i][1]]);

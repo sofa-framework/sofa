@@ -518,7 +518,7 @@ void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams* vpara
         vparams->drawTool()->drawPoints(points,8,defaulttype::Vec4f(1.0, 0.0, 0.0,1));
         points.clear();
         // Boundary centers
-        unsigned int size = points.size()-(m_nbCenters+m_nbVertices);
+        int size = (int)points.size()-(m_nbCenters+m_nbVertices);
         points.resize(size);
         for (int i = 0; i < size; ++i)
             points = coords[m_nbCenters+m_nbVertices+i];

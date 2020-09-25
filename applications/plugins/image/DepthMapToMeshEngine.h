@@ -263,7 +263,7 @@ protected:
         }
 
         glBegin(GL_TRIANGLES);
-        for (unsigned int i=0; i<tri.size(); ++i)
+        for (std::size_t i=0; i<tri.size(); ++i)
         {
             const defaulttype::Vec<3,Real>& a = pos[ tri[i][0] ];
             const defaulttype::Vec<3,Real>& b = pos[ tri[i][1] ];
