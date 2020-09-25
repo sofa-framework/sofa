@@ -180,15 +180,17 @@ protected:
         raPositions pos(this->position);
         raTriangles tri(this->triangles);
 
-        float color[]= {0.5,0.5,0.5,0.};
+        const sofa::defaulttype::Vec4f color(0.5,0.5,0.5,0.5);
         vparams->drawTool()->setMaterial(color);
         vparams->drawTool()->enableLighting();
 
         std::size_t size = tri.size();
         std::vector<defaulttype::Vector3> points;
         std::vector<defaulttype::Vector3> normals;
+        std::vector<defaulttype::Vec4f> colors;
         points.resize(3*size);
         normals.resize(size);
+        colors.resize(size);
 
         for (std::size_t i=0; i<size; ++i)
         {
@@ -197,10 +199,11 @@ protected:
             points[3*i+2] = pos[ tri[i][2] ];
             normals[i] = cross((points[3*i]-points[3*i+1]),(points[3*i]-points[3*i+2]));
             normals[i].normalize();
+            colors[i] = color;
         }
         // Draw triangles
         if(!wireframe)
-            vparams->drawTool()->drawTriangles(points,normals,color);
+            vparams->drawTool()->drawTriangles(points,normals,colors);
         // Wireframe mode: draw line loop
         else
             vparams->drawTool()->drawLineLoop(points,1.0,color);

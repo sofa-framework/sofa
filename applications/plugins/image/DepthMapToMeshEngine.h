@@ -252,8 +252,7 @@ protected:
         raTriangles tri(this->triangles);
         raTexture inTex(this->texImage);
 
-        float color[]= {0.5,0.5,0.5,0.};
-        vparams->drawTool()->setMaterial(color);
+        vparams->drawTool()->setMaterial({0.5,0.5,0.5,0.});
 
         vparams->drawTool()->enableLighting();
 
