@@ -553,8 +553,8 @@ protected:
 
         vparams->drawTool()->saveLastState();
 
-        const sofa::helper::types::RGBAColor color(1.0,0.5,0.5,0.5);
-        vparams->drawTool()->setMaterial(color);
+        float color[]= {1.,0.5,0.5,0.5};
+        vparams->drawTool()->setMaterial({1.,0.5,0.5,0.5});
 
         std::vector<defaulttype::Vector3> corners;
         defaulttype::Vec<8,defaulttype::Vector3> c;
