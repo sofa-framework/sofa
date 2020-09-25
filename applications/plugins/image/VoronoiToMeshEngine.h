@@ -407,8 +407,6 @@ protected:
 
     void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
-
         if (!vparams->displayFlags().getShowVisualModels()) return;
         if (!this->showMesh.getValue()) return;
 
@@ -424,9 +422,6 @@ protected:
             points[2*i+1][0]=pos[Edges[i][1]][0];          points[2*i+1][1]=pos[Edges[i][1]][1];          points[2*i+1][2]=pos[Edges[i][1]][2];
         }
         vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(0.7,1,0.7,1));
-#else
-        SOFA_UNUSED(vparams);
-#endif /* SOFA_NO_OPENGL */
     }
 };
 

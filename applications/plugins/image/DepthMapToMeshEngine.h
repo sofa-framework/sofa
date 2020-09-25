@@ -232,8 +232,6 @@ protected:
 
     void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
-
         // need a valid opengl context to initialize an opengl texture, a context is not always bound during the init phase so we init the texture here
         if(!texture)
         {
@@ -247,23 +245,22 @@ protected:
 
         if (!vparams->displayFlags().getShowVisualModels()) return;
 
+        vparams->drawTool()->saveLastState();
+
         raPositions pos(this->position);
         raTexCoords tc(this->texCoord);
         raTriangles tri(this->triangles);
-        raImage in(this->image);
         raTexture inTex(this->texImage);
 
-        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
+        float color[]= {0.5,0.5,0.5,0.};
+        vparams->drawTool()->setMaterial(color);
 
-        float color[]= {0.5,0.5,0.5,0.}, specular[]= {0.,0.,0.,0.};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
-        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
-        glColor4fv(color);
+        vparams->drawTool()->enableLighting();
 
-        glEnable( GL_LIGHTING);
-
-        if(!inTex->isEmpty()) { glEnable( GL_TEXTURE_2D ); texture->bind();}
+        if(!inTex->isEmpty()) {
+            glEnable( GL_TEXTURE_2D );
+            texture->bind();
+        }
 
         glBegin(GL_TRIANGLES);
         for (unsigned int i=0; i<tri.size(); ++i)
@@ -278,14 +275,13 @@ protected:
             glTexCoord2d(tc[tri[i][1]][0],tc[tri[i][1]][1]); glVertex3d(b[0],b[1],b[2]);
             glTexCoord2d(tc[tri[i][2]][0],tc[tri[i][2]][1]); glVertex3d(c[0],c[1],c[2]);
         }
-        glEnd();
 
-        if(!inTex->isEmpty()) { texture->unbind(); 	glDisable( GL_TEXTURE_2D ); }
+        if(!inTex->isEmpty()) {
+            texture->unbind();
+            glDisable( GL_TEXTURE_2D );
+        }
 
-        glPopAttrib();
-#else
-        SOFA_UNUSED(vparams);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->restoreLastState();
     }
 };
 
