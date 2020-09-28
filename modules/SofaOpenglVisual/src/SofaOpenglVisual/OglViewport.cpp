@@ -350,6 +350,17 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 
         //gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2],0 ,0 ,0, cameraDirection[0], cameraDirection[1], cameraDirection[2]);
     }
+
+    GLdouble modelViewMatrix[16];
+    GLdouble lastModelViewMatrix[16];
+    GLdouble projectionMatrix[16];
+    GLdouble lastProjectionMatrix[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, projectionMatrix);
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelViewMatrix);
+    vp->getProjectionMatrix(lastProjectionMatrix);
+    vp->getModelViewMatrix(lastModelViewMatrix);
+    vp->setProjectionMatrix(projectionMatrix);
+    vp->setModelViewMatrix(modelViewMatrix);
     vp->viewport() = Viewport(x0,y0,screenSize[0],screenSize[1]);
     vp->pass() = core::visual::VisualParams::Std;
     simulation::VisualDrawVisitor vdv( vp );
@@ -359,6 +370,8 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     simulation::VisualDrawVisitor vdvt( vp );
     vdvt.setTags(this->getTags());
     vdvt.execute ( getContext() );
+    vp->setProjectionMatrix(lastProjectionMatrix);
+    vp->setModelViewMatrix(lastModelViewMatrix);
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
