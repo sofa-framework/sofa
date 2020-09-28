@@ -59,7 +59,7 @@ struct MapMapSparseMatrixToEigenSparseVec
             for (auto col = row.begin(), colend = row.end(); col !=colend; ++col)
             {
                 const TVec& vec = col.val();
-                int   colIndex  = col.index() * TVec::size();
+                std::size_t   colIndex  = col.index() * TVec::size();
 
                 for (std::size_t i = 0; i < TVec::size(); ++i)
                 {
@@ -77,14 +77,14 @@ struct MapMapSparseMatrixToEigenSparseVec
 
 };
 
-template< int N, typename Real >
+template< std::size_t N, typename Real >
 class MapMapSparseMatrixToEigenSparse< sofa::defaulttype::Vec<N,Real> >
     : public  MapMapSparseMatrixToEigenSparseVec< sofa::defaulttype::Vec<N, Real>, Real >
 {
 
 };
 
-template< int N, typename Real >
+template< std::size_t N, typename Real >
 class MapMapSparseMatrixToEigenSparse< sofa::defaulttype::RigidDeriv<N, Real > >
     : public MapMapSparseMatrixToEigenSparseVec< sofa::defaulttype::RigidDeriv<N, Real>, Real >
 {
@@ -152,14 +152,14 @@ struct EigenSparseToMapMapSparseMatrixVec
     }
 };
 
-template< int N, typename Real>
+template< std::size_t N, typename Real>
 class EigenSparseToMapMapSparseMatrix< sofa::defaulttype::Vec<N, Real> > :
     public EigenSparseToMapMapSparseMatrixVec<sofa::defaulttype::Vec<N, Real>, Real>
 {
 
 };
 
-template< int N, typename Real>
+template< std::size_t N, typename Real>
 class EigenSparseToMapMapSparseMatrix< sofa::defaulttype::RigidDeriv<N, Real> > :
     public EigenSparseToMapMapSparseMatrixVec<sofa::defaulttype::RigidDeriv<N, Real>, Real>
 {

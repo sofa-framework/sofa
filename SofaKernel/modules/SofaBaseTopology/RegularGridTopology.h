@@ -83,7 +83,7 @@ public:
      * @param position The world coordinates of the queried node.
      * @return The index of the node, or -1 if no such node exists at that position.
      */
-    virtual int findPoint(const Vector3& position) const;
+    virtual index_type findPoint(const Vector3& position) const;
 
     /**
      * Get the index of a node located at a given position.
@@ -96,7 +96,7 @@ public:
      *
      * @return The index of the node, or -1 if no such node exists at that position.
      */
-    virtual int findPoint(const Vector3& position, SReal epsilon) const;
+    virtual index_type findPoint(const Vector3& position, SReal epsilon) const;
 
 
     /// set the spatial extent
@@ -121,9 +121,9 @@ public:
 
 
     /// Get the one-dimensional index of a grid cube, give its three-dimensional indices
-    unsigned getCubeIndex( int i, int j, int k ) const;
+    index_type getCubeIndex( int i, int j, int k ) const;
     /// Get the position of the given cube
-    Vector3 getCubeCoordinate( int i ) const;
+    Vector3 getCubeCoordinate(RegularGridTopology::index_type i ) const;
 
     /// get min value of the grid bounding box @return Vector3
     Vector3   getMin() const { return d_min.getValue();}
@@ -131,22 +131,22 @@ public:
     Vector3   getMax() const { return d_max.getValue();}
 
     /// return the cube containing the given point (or -1 if not found).
-    virtual int findCube(const Vector3& pos);
-    int findHexa(const Vector3& pos) { return findCube(pos); }
+    virtual index_type findCube(const Vector3& pos);
+    index_type findHexa(const Vector3& pos) { return findCube(pos); }
 
     /// return the nearest cube (or -1 if not found).
-    virtual int findNearestCube(const Vector3& pos);
-    int findNearestHexa(const Vector3& pos) { return findNearestCube(pos); }
+    virtual index_type findNearestCube(const Vector3& pos);
+    index_type findNearestHexa(const Vector3& pos) { return findNearestCube(pos); }
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
-    int findHexa(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) { return findCube(pos, fx, fy, fz); }
+    virtual index_type findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
+    index_type findHexa(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) { return findCube(pos, fx, fy, fz); }
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
-    int findNearestHexa(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) { return findNearestCube(pos, fx, fy, fz); }
+    virtual index_type findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
+    index_type findNearestHexa(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) { return findNearestCube(pos, fx, fy, fz); }
 
     /// Overload Method of @sa GridTopology::createTexCoords called at init if @sa d_createTexCoords is true
     void createTexCoords() override;

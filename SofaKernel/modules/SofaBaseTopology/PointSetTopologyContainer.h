@@ -52,7 +52,7 @@ public:
     typedef defaulttype::Vec3Types InitTypes;
 
 protected:
-    PointSetTopologyContainer(int nPoints = 0);
+    PointSetTopologyContainer( std::size_t nPoints = 0);
 
     ~PointSetTopologyContainer() override {}
 public:
@@ -71,7 +71,7 @@ public:
     /// @{
 
     /** \brief Returns the number of vertices in this topology. */
-    int getNbPoints() const override { return (int)nbPoints.getValue(); }
+    std::size_t getNbPoints() const override { return nbPoints.getValue(); }
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
@@ -82,20 +82,20 @@ public:
     Data<InitTypes::VecCoord>& getPointDataArray() {return d_initPoints;}
 
     /** \brief Set the number of vertices in this topology. */
-    void setNbPoints(int n) override;
+    void setNbPoints(std::size_t n) override;
 
 
     /** \brief check if vertices in this topology have positions. */
     bool hasPos() const override;
 
     /** \brief Returns the X coordinate of the ith DOF. */
-    SReal getPX(int i) const override;
+    SReal getPX(index_type i) const override;
 
     /** \brief Returns the Y coordinate of the ith DOF. */
-    SReal getPY(int i) const override;
+    SReal getPY(index_type i) const override;
 
     /** \brief Returns the Z coordinate of the ith DOF. */
-    SReal getPZ(int i) const override;
+    SReal getPZ(index_type i) const override;
 
    	/** \brief Returns the type of the topology */
    	sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::POINT;}
@@ -122,7 +122,7 @@ public:
      *
      * @param The number of point to add.
      */
-    void addPoints(const unsigned int nPoints);
+    void addPoints(const std::size_t nPoints);
 
 
     /** \brief remove one DOF in this topology (simply decrement the number of DOF)
@@ -135,7 +135,7 @@ public:
      *
      * @param The number of point to remove.
      */
-    void removePoints(const unsigned int nPoints);
+    void removePoints(const std::size_t nPoints);
 
     /// @}
 
@@ -191,7 +191,7 @@ protected:
 
 private:
     
-    Data<unsigned int> nbPoints; ///< Number of points
+    Data<std::size_t> nbPoints; ///< Number of points
 
     Data<sofa::helper::vector<PointID> > points; ///< List of point indices
 };

@@ -50,28 +50,30 @@ public:
     typedef typename Inherit1::Real Real;
     typedef typename core::behavior::BaseMechanicalState::ForceMask ForceMask;
 
+    using index_type = sofa::defaulttype::index_type;
+
     ForceMask *maskFrom;
     ForceMask *maskTo;
 
-    virtual int addPointInLine(const int lineIndex, const SReal* baryCoords);
-    virtual int setPointInLine(const int pointIndex, const int lineIndex, const SReal* baryCoords);
-    virtual int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points);
+    virtual index_type addPointInLine(const index_type lineIndex, const SReal* baryCoords);
+    virtual index_type setPointInLine(const index_type pointIndex, const index_type lineIndex, const SReal* baryCoords);
+    virtual index_type createPointInLine(const typename Out::Coord& p, index_type lineIndex, const typename In::VecCoord* points);
 
-    virtual int addPointInTriangle(const int triangleIndex, const SReal* baryCoords);
-    virtual int setPointInTriangle(const int pointIndex, const int triangleIndex, const SReal* baryCoords);
-    virtual int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points);
+    virtual index_type addPointInTriangle(const index_type triangleIndex, const SReal* baryCoords);
+    virtual index_type setPointInTriangle(const index_type pointIndex, const index_type triangleIndex, const SReal* baryCoords);
+    virtual index_type createPointInTriangle(const typename Out::Coord& p, index_type triangleIndex, const typename In::VecCoord* points);
 
-    virtual int addPointInQuad(const int quadIndex, const SReal* baryCoords);
-    virtual int setPointInQuad(const int pointIndex, const int quadIndex, const SReal* baryCoords);
-    virtual int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points);
+    virtual index_type addPointInQuad(const index_type quadIndex, const SReal* baryCoords);
+    virtual index_type setPointInQuad(const index_type pointIndex, const index_type quadIndex, const SReal* baryCoords);
+    virtual index_type createPointInQuad(const typename Out::Coord& p, index_type quadIndex, const typename In::VecCoord* points);
 
-    virtual int addPointInTetra(const int tetraIndex, const SReal* baryCoords);
-    virtual int setPointInTetra(const int pointIndex, const int tetraIndex, const SReal* baryCoords);
-    virtual int createPointInTetra(const typename Out::Coord& p, int tetraIndex, const typename In::VecCoord* points);
+    virtual index_type addPointInTetra(const index_type tetraIndex, const SReal* baryCoords);
+    virtual index_type setPointInTetra(const index_type pointIndex, const index_type tetraIndex, const SReal* baryCoords);
+    virtual index_type createPointInTetra(const typename Out::Coord& p, index_type tetraIndex, const typename In::VecCoord* points);
 
-    virtual int addPointInCube(const int cubeIndex, const SReal* baryCoords);
-    virtual int setPointInCube(const int pointIndex, const int cubeIndex, const SReal* baryCoords);
-    virtual int createPointInCube(const typename Out::Coord& p, int cubeIndex, const typename In::VecCoord* points);
+    virtual index_type addPointInCube(const index_type cubeIndex, const SReal* baryCoords);
+    virtual index_type setPointInCube(const index_type pointIndex, const index_type cubeIndex, const SReal* baryCoords);
+    virtual index_type createPointInCube(const typename Out::Coord& p, index_type cubeIndex, const typename In::VecCoord* points);
 
     virtual void setToTopology( topology::PointSetTopologyContainer* toTopology) {this->m_toTopology = toTopology;}
     const topology::PointSetTopologyContainer *getToTopology() const {return m_toTopology;}

@@ -160,7 +160,7 @@ public:
     {
         return rend();
     }
-    unsigned int size() const
+    std::size_t size() const
     {
         return (!elems[0])?0:1;
     }
@@ -180,19 +180,19 @@ public:
     {
         return elems[0];
     }
-    const TPtr& operator[](unsigned int i) const
+    const TPtr& operator[](std::size_t i) const
     {
         return elems[i];
     }
-    TPtr& operator[](unsigned int i)
+    TPtr& operator[](std::size_t i)
     {
         return elems[i];
     }
-    const TPtr& operator()(unsigned int i) const
+    const TPtr& operator()(std::size_t i) const
     {
         return elems[i];
     }
-    TPtr& operator()(unsigned int i)
+    TPtr& operator()(std::size_t i)
     {
         return elems[i];
     }
@@ -216,17 +216,17 @@ public:
     {
         c.clear();
     }
-    static unsigned int add(T& c, TDestPtr v)
+    static std::size_t add(T& c, TDestPtr v)
     {
         c.get() = v;
         return 0;
     }
-    static unsigned int find(const T& c, TDestPtr v)
+    static std::size_t find(const T& c, TDestPtr v)
     {
         if (c.get() == v) return 0;
         else return 1;
     }
-    static void remove(T& c, unsigned index)
+    static void remove(T& c, std::size_t index)
     {
         if (!index)
             c.clear();
@@ -246,20 +246,20 @@ public:
     {
         c.clear();
     }
-    static unsigned int add(T& c, TDestPtr v)
+    static std::size_t add(T& c, TDestPtr v)
     {
-        unsigned int index = static_cast<unsigned int>(c.size());
+        std::size_t index = c.size();
         c.push_back(TValueType(v));
         return index;
     }
-    static unsigned int find(const T& c, TDestPtr v)
+    static std::size_t find(const T& c, TDestPtr v)
     {
         size_t s = c.size();
         for (size_t i=0; i<s; ++i)
-            if (c[i] == v) return static_cast<unsigned int>(i);
-        return static_cast<unsigned int>(s);
+            if (c[i] == v) return i;
+        return s;
     }
-    static void remove(T& c, unsigned index)
+    static void remove(T& c, std::size_t index)
     {
         c.erase( c.begin()+index );
     }
@@ -402,7 +402,7 @@ public:
     bool add(DestPtr v)
     {
         if (!v) return false;
-        unsigned int index = TraitsContainer::add(m_value,v);
+        std::size_t index = TraitsContainer::add(m_value,v);
         updateCounter();
         added(v, index);
         return true;
@@ -411,7 +411,7 @@ public:
     bool add(DestPtr v, const std::string& path)
     {
         if (!v && path.empty()) return false;
-        unsigned int index = TraitsContainer::add(m_value,v);
+        std::size_t index = TraitsContainer::add(m_value,v);
         TraitsValueType::setPath(m_value[index],path);
         updateCounter();
         added(v, index);
@@ -430,7 +430,7 @@ public:
     bool remove(DestPtr v)
     {
         if (!v) return false;
-        unsigned int index = TraitsContainer::find(m_value,v);
+        std::size_t index = TraitsContainer::find(m_value,v);
         if (index >= m_value.size()) return false;
         TraitsContainer::remove(m_value,index);
         updateCounter();
@@ -438,7 +438,7 @@ public:
         return true;
     }
 
-    bool removeAt(unsigned int index)
+    bool removeAt(std::size_t index)
     {
         if (index >= m_value.size())
             return false;
@@ -453,8 +453,8 @@ public:
     bool removePath(const std::string& path)
     {
         if (path.empty()) return false;
-        unsigned int n = m_value.size();
-        for (unsigned int index=0; index<n; ++index)
+        std::size_t n = m_value.size();
+        for (std::size_t index=0; index<n; ++index)
         {
             std::string p = getPath(index);
             if (p == path)
@@ -484,7 +484,7 @@ public:
         return size();
     }
 
-    std::string getPath(unsigned int index) const
+    std::string getPath(std::size_t index) const
     {
         if (index >= m_value.size())
             return std::string();
@@ -500,15 +500,15 @@ public:
         return path;
     }
 
-    Base* getLinkedBase(unsigned int index=0) const override
+    Base* getLinkedBase(std::size_t index=0) const override
     {
         return TraitsDestCasts::getBase(getIndex(index));
     }
-    BaseData* getLinkedData(unsigned int index=0) const override
+    BaseData* getLinkedData(std::size_t index=0) const override
     {
         return TraitsDestCasts::getData(getIndex(index));
     }
-    std::string getLinkedPath(unsigned int index=0) const override
+    std::string getLinkedPath(std::size_t index=0) const override
     {
         return getPath(index);
     }
@@ -588,8 +588,8 @@ public:
             // Remove the objects from the container that are not in the new list
             // TODO epernod 2018-08-01: This cast from size_t to unsigned int remove a large amount of warnings.
             // But need to be rethink in the future. The problem is if index i is a site_t, then we need to template container<size_t> which impact the whole architecture.
-            unsigned int csize = static_cast<unsigned int>(container.size());
-            for (unsigned int i = 0; i != csize; i++)
+            std::size_t csize = container.size();
+            for (std::size_t i = 0; i != csize; i++)
             {
                 DestPtr dest(container[i]);
                 bool destFound = false;
@@ -649,7 +649,7 @@ protected:
     OwnerType* m_owner {nullptr};
     Container m_value;
 
-    DestType* getIndex(unsigned int index) const
+    DestType* getIndex(std::size_t index) const
     {
         if (index < m_value.size())
             return TraitsDestPtr::get(TraitsValueType::get(m_value[index]));
@@ -657,8 +657,8 @@ protected:
             return nullptr;
     }
 
-    virtual void added(DestPtr ptr, unsigned int index) = 0;
-    virtual void removed(DestPtr ptr, unsigned int index) = 0;
+    virtual void added(DestPtr ptr, std::size_t index) = 0;
+    virtual void removed(DestPtr ptr, std::size_t index) = 0;
 };
 
 /**
@@ -682,7 +682,7 @@ public:
     typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
     typedef typename Inherit::TraitsFindDest TraitsFindDest;
 
-    typedef void (OwnerType::*ValidatorFn)(DestPtr v, unsigned int index, bool add);
+    typedef void (OwnerType::*ValidatorFn)(DestPtr v, std::size_t index, bool add);
 
     MultiLink(const BaseLink::InitLink<OwnerType>& init)
         : Inherit(init), m_validator(nullptr)
@@ -726,8 +726,8 @@ public:
     {
         if (!this->m_owner) return false;
         bool ok = true;
-        unsigned int n = static_cast<unsigned int>(this->getSize());
-        for (unsigned int i = 0; i<n; ++i)
+        std::size_t n = this->getSize();
+        for (std::size_t i = 0; i<n; ++i)
         {
             ValueType& value = this->m_value[i];
             std::string path;
@@ -756,8 +756,8 @@ public:
 
         [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
 
-    DestType* get(unsigned int index, const core::ExecParams*) const { return get(index); }
-    DestType* get(unsigned int index) const
+    DestType* get(std::size_t index, const core::ExecParams*) const { return get(index); }
+    DestType* get(std::size_t index) const
     {
         if (index < this->m_value.size())
             return TraitsDestPtr::get(TraitsValueType::get(this->m_value[index]));
@@ -765,7 +765,7 @@ public:
             return nullptr;
     }
 
-    DestType* operator[](unsigned int index) const
+    DestType* operator[](std::size_t index) const
     {
         return get(index);
     }
@@ -773,13 +773,13 @@ public:
 protected:
     ValidatorFn m_validator;
 
-    void added(DestPtr val, unsigned int index)
+    void added(DestPtr val, std::size_t index)
     {
         if (m_validator)
             (this->m_owner->*m_validator)(val, index, true);
     }
 
-    void removed(DestPtr val, unsigned int index)
+    void removed(DestPtr val, std::size_t index)
     {
         if (m_validator)
             (this->m_owner->*m_validator)(val, index, false);
@@ -942,7 +942,7 @@ protected:
     ValidatorFn m_validator;
 
 
-    void added(DestPtr val, unsigned int /*index*/)
+    void added(DestPtr val, std::size_t /*index*/)
     {
         if (m_validator)
         {
@@ -953,7 +953,7 @@ protected:
         }
     }
 
-    void removed(DestPtr val, unsigned int /*index*/)
+    void removed(DestPtr val, std::size_t /*index*/)
     {
         if (m_validator)
         {

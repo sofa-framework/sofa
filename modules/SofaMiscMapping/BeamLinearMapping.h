@@ -116,7 +116,7 @@ public:
 
 
 
-template <int N, class Real> struct RigidMappingMatrixHelper;
+template <std::size_t N, class Real> struct RigidMappingMatrixHelper;
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_CPP)

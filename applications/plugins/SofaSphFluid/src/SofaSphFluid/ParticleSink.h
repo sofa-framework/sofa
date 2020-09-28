@@ -74,6 +74,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
+    using index_type = sofa::defaulttype::index_type;
 
     Data<Deriv> d_planeNormal; ///< plane normal
     Data<Real> d_planeD0; ///< plane d coef at which particles acceleration is constrained to 0

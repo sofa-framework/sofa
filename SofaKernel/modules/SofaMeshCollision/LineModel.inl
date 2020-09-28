@@ -57,7 +57,7 @@ LineCollisionModel<DataTypes>::LineCollisionModel()
 
 
 template<class DataTypes>
-void LineCollisionModel<DataTypes>::resize(int size)
+void LineCollisionModel<DataTypes>::resize(std::size_t size)
 {
     this->core::CollisionModel::resize(size);
     elems.resize(size);
@@ -146,7 +146,7 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
             {
                 const core::topology::EdgesAdded *ta = static_cast< const core::topology::EdgesAdded * >( *itBegin );
 
-                for (unsigned int i = 0; i < ta->getNbAddedEdges(); ++i)
+                for (std::size_t i = 0; i < ta->getNbAddedEdges(); ++i)
                 {
                     elems[elems.size() - ta->getNbAddedEdges() + i].p[0] = (ta->edgeArray[i])[0];
                     elems[elems.size() - ta->getNbAddedEdges() + i].p[1] = (ta->edgeArray[i])[1];
@@ -160,8 +160,8 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
 
             case core::topology::EDGESREMOVED :
             {
-                unsigned int last;
-                unsigned int ind_last;
+                index_type last;
+                index_type ind_last;
 
                 if (bmt)
                 {
@@ -172,12 +172,12 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
                     last = elems.size() -1;
                 }
 
-                const sofa::helper::vector< unsigned int > &tab = ( static_cast< const core::topology::EdgesRemoved *>( *itBegin ) )->getArray();
+                const auto &tab = ( static_cast< const core::topology::EdgesRemoved *>( *itBegin ) )->getArray();
 
                 LineData tmp;
-                for (unsigned int i = 0; i < tab.size(); ++i)
+                for (std::size_t i = 0; i < tab.size(); ++i)
                 {
-                    unsigned int ind_k = tab[i];
+                    index_type ind_k = tab[i];
 
                     tmp = elems[ind_k];
                     elems[ind_k] = elems[last];
@@ -204,20 +204,20 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
             {
                 if (bmt)
                 {
-                    unsigned int last = bmt->getNbPoints() - 1;
+                    index_type last = bmt->getNbPoints() - 1;
 
-                    unsigned int i,j;
-                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const core::topology::PointsRemoved * >( *itBegin ) )->getArray();
+                    index_type i,j;
+                    const auto& tab = ( static_cast< const core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-                    sofa::helper::vector<unsigned int> lastIndexVec;
-                    for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
+                    sofa::helper::vector<index_type> lastIndexVec;
+                    for(index_type i_init = 0; i_init < tab.size(); ++i_init)
                     {
                         lastIndexVec.push_back(last - i_init);
                     }
 
                     for ( i = 0; i < tab.size(); ++i)
                     {
-                        unsigned int i_next = i;
+                        index_type i_next = i;
                         bool is_reached = false;
                         while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
                         {
@@ -230,11 +230,11 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
                             lastIndexVec[i_next] = lastIndexVec[i];
                         }
 
-                        const sofa::helper::vector<unsigned int> &shell = bmt->getEdgesAroundVertex(lastIndexVec[i]);
+                        const auto &shell = bmt->getEdgesAroundVertex(lastIndexVec[i]);
 
                         for (j = 0; j < shell.size(); ++j)
                         {
-                            unsigned int ind_j = shell[j];
+                            index_type ind_j = shell[j];
 
                             if ((unsigned)elems[ind_j].p[0] == last)
                             {
@@ -259,9 +259,9 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
             {
                 if (bmt)
                 {
-                    unsigned int i;
+                    index_type i;
 
-                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+                    const auto& tab = ( static_cast< const core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
                     for ( i = 0; i < elems.size(); ++i)
                     {
@@ -297,13 +297,13 @@ void LineCollisionModel<DataTypes>::updateFromTopology()
 
         needsUpdate = true;
 
-        const unsigned int nbPoints = mstate->getSize();
-        const unsigned int nbLines = bmt->getNbEdges();
+        const std::size_t nbPoints = mstate->getSize();
+        const std::size_t nbLines = bmt->getNbEdges();
 
         resize( nbLines );
-        int index = 0;
+        index_type index = 0;
 
-        for (unsigned int i = 0; i < nbLines; i++)
+        for (std::size_t i = 0; i < nbLines; i++)
         {
             core::topology::BaseMeshTopology::Line idx = bmt->getEdge(i);
 
@@ -331,7 +331,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
             vparams->drawTool()->setPolygonMode(0,true);
 
         std::vector< defaulttype::Vector3 > points;
-        for (int i=0; i<size; i++)
+        for (std::size_t i=0; i<size; i++)
         {
             TLine<DataTypes> l(this,i);
             if(l.isActive())
@@ -346,7 +346,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         if (m_displayFreePosition.getValue())
         {
             std::vector< defaulttype::Vector3 > pointsFree;
-            for (int i=0; i<size; i++)
+            for (std::size_t i=0; i<size; i++)
             {
                 TLine<DataTypes> l(this,i);
                 if(l.isActive())
@@ -367,7 +367,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
 }
 
 template<class DataTypes>
-bool LineCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
+bool LineCollisionModel<DataTypes>::canCollideWithElement(index_type index, CollisionModel* model2, index_type index2)
 {
     if (!this->bSelfCollision.getValue()) return true;
     if (this->getContext() != model2->getContext()) return true;
@@ -375,8 +375,8 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionMo
     /*
         TODO : separate 2 case: the model is only composed of lines or is composed of triangles
     */
-    int p11 = elems[index].p[0];
-    int p12 = elems[index].p[1];
+    index_type p11 = elems[index].p[0];
+    index_type p12 = elems[index].p[1];
 
 
     if (!topology)
@@ -384,27 +384,27 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionMo
         msg_error() << "no topology found";
         return true;
     }
-    const helper::vector <unsigned int>& EdgesAroundVertex11 =topology->getEdgesAroundVertex(p11);
-    const helper::vector <unsigned int>& EdgesAroundVertex12 =topology->getEdgesAroundVertex(p12);
+    const auto& EdgesAroundVertex11 =topology->getEdgesAroundVertex(p11);
+    const auto& EdgesAroundVertex12 =topology->getEdgesAroundVertex(p12);
 
     if (model2 == this)
     {
         // if point in common, return false:
-        int p21 = elems[index2].p[0];
-        int p22 = elems[index2].p[1];
+        index_type p21 = elems[index2].p[0];
+        index_type p22 = elems[index2].p[1];
 
         if (p11==p21 || p11==p22 || p12==p21 || p12==p22)
             return false;
 
 
         // in the neighborhood, if we find a segment in common, we cancel the collision
-        const helper::vector <unsigned int>& EdgesAroundVertex21 =topology->getEdgesAroundVertex(p21);
-        const helper::vector <unsigned int>& EdgesAroundVertex22 =topology->getEdgesAroundVertex(p22);
+        const auto& EdgesAroundVertex21 =topology->getEdgesAroundVertex(p21);
+        const auto& EdgesAroundVertex22 =topology->getEdgesAroundVertex(p22);
 
-        for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
+        for (std::size_t i1=0; i1<EdgesAroundVertex11.size(); i1++)
         {
-            unsigned int e11 = EdgesAroundVertex11[i1];
-            unsigned int i2;
+            index_type e11 = EdgesAroundVertex11[i1];
+            std::size_t i2;
             for (i2=0; i2<EdgesAroundVertex21.size(); i2++)
             {
                 if (e11==EdgesAroundVertex21[i2])
@@ -417,10 +417,10 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionMo
             }
         }
 
-        for (unsigned int i1=0; i1<EdgesAroundVertex12.size(); i1++)
+        for (std::size_t i1=0; i1<EdgesAroundVertex12.size(); i1++)
         {
-            unsigned int e11 = EdgesAroundVertex12[i1];
-            unsigned int i2;
+            index_type e11 = EdgesAroundVertex12[i1];
+            std::size_t i2;
             for (i2=0; i2<EdgesAroundVertex21.size(); i2++)
             {
                 if (e11==EdgesAroundVertex21[i2])
@@ -445,17 +445,17 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionMo
             return false;
 
         // if the point belong to the a segment in the neighborhood, return false
-        for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
+        for (std::size_t i1=0; i1<EdgesAroundVertex11.size(); i1++)
         {
-            unsigned int e11 = EdgesAroundVertex11[i1];
+            index_type e11 = EdgesAroundVertex11[i1];
             p11 = elems[e11].p[0];
             p12 = elems[e11].p[1];
             if (index2==p11 || index2==p12)
                 return false;
         }
-        for (unsigned int i1=0; i1<EdgesAroundVertex12.size(); i1++)
+        for (std::size_t i1=0; i1<EdgesAroundVertex12.size(); i1++)
         {
-            unsigned int e12 = EdgesAroundVertex12[i1];
+            index_type e12 = EdgesAroundVertex12[i1];
             p11 = elems[e12].p[0];
             p12 = elems[e12].p[1];
             if (index2==p11 || index2==p12)
@@ -479,13 +479,12 @@ void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
     needsUpdate = false;
-    defaulttype::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
     {
         const SReal distance = (SReal)this->proximity.getValue();
-        for (int i=0; i<size; i++)
+        for (std::size_t i=0; i<size; i++)
         {
             defaulttype::Vector3 minElem, maxElem;
             TLine<DataTypes> l(this,i);
@@ -528,7 +527,7 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int
     if (!empty())
     {
         const SReal distance = (SReal)this->proximity.getValue();
-        for (int i=0; i<size; i++)
+        for (std::size_t i=0; i<size; i++)
         {
             TLine<DataTypes> t(this,i);
             const defaulttype::Vector3& pt1 = t.p1();
@@ -557,16 +556,16 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int
 }
 
 template<class DataTypes>
-int LineCollisionModel<DataTypes>::getLineFlags(int i)
+int LineCollisionModel<DataTypes>::getLineFlags(index_type i)
 {
     int f = 0;
     if (topology)
     {
         sofa::core::topology::BaseMeshTopology::Edge e(elems[i].p[0], elems[i].p[1]);
         i = getElemEdgeIndex(i);
-        if ((unsigned)i < (unsigned)topology->getNbEdges())
+        if (i < topology->getNbEdges())
         {
-            for (unsigned int j=0; j<2; ++j)
+            for (std::size_t j=0; j<2; ++j)
             {
                 const sofa::core::topology::BaseMeshTopology::EdgesAroundVertex& eav = topology->getEdgesAroundVertex(e[j]);
                 if (eav[0] == (sofa::core::topology::BaseMeshTopology::EdgeID)i)
@@ -603,7 +602,7 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    for (int i=0; i<size; i++)
+    for (std::size_t i=0; i<size; i++)
     {
         Element e(this,i);
         const defaulttype::Vector3& pt1 = e.p1();

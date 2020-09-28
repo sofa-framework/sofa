@@ -142,12 +142,12 @@ struct TestSparseMatrices : public Sofa_test<_Real>
 
     /// generating a random Mat
     /// if sparse=0 a lot a null entries will be created
-    template<int nbrows,int nbcols>
+    template<std::size_t nbrows,std::size_t nbcols>
     static void generateRandomMat( defaulttype::Mat<nbrows,nbcols,Real>& mat, bool sparse=false )
     {
-        for( int j=0; j<mat.nbCols; j++)
+        for( std::size_t j=0; j<mat.nbCols; j++)
         {
-            for( int i=0; i<mat.nbLines; i++)
+            for( std::size_t i=0; i<mat.nbLines; i++)
             {
                 Real random = Real(helper::drand(1));
                 if( sparse && random > -0.5 && random < 0.5 ) random = 0;
@@ -157,14 +157,14 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     }
 
     /// filling a BaseMatrix from a given Mat
-    template<int nbrows,int nbcols>
+    template<std::size_t nbrows,std::size_t nbcols>
     static void copyFromMat( defaulttype::BaseMatrix& baseMat, const defaulttype::Mat<nbrows,nbcols,Real>& mat )
     {
         baseMat.resize(mat.nbLines,mat.nbCols);
 
-        for( int j=0; j<mat.nbCols; j++)
+        for( std::size_t j=0; j<mat.nbCols; j++)
         {
-            for( int i=0; i<mat.nbLines; i++)
+            for( std::size_t i=0; i<mat.nbLines; i++)
             {
                 if( !baseMat.isSparse() || mat(i,j)!=0 ) baseMat.add( i, j, mat(i,j) );
             }

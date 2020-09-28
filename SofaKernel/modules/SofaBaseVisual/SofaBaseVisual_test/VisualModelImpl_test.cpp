@@ -81,11 +81,11 @@ TEST( VisualModelImpl_test , checkThatMembersAreCorrectlyConstructed )
     ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecCoord(), visualModel.m_vtangents.getValue()));
     ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecCoord(), visualModel.m_vbitangents.getValue()));
 
-    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecEdge(), visualModel.m_edges.getValue()));
-    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecTriangle(), visualModel.m_triangles.getValue()));
-    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecQuad(), visualModel.m_quads.getValue()));
-    ASSERT_EQ(true_var, Vector_Comparison(helper::vector<int>(), visualModel.m_vertPosIdx.getValue()));
-    ASSERT_EQ(true_var, Vector_Comparison(helper::vector<int>(), visualModel.m_vertNormIdx.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecVisualEdge(), visualModel.m_edges.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecVisualTriangle(), visualModel.m_triangles.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecVisualQuad(), visualModel.m_quads.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(helper::vector<component::visualmodel::VisualModelImpl::visual_index_type>(), visualModel.m_vertPosIdx.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(helper::vector<component::visualmodel::VisualModelImpl::visual_index_type>(), visualModel.m_vertNormIdx.getValue()));
 
     ASSERT_EQ(core::objectmodel::DataFileName().getValue(), visualModel.fileMesh.getValue());
     ASSERT_EQ(core::objectmodel::DataFileName().getValue(), visualModel.texturename.getValue());

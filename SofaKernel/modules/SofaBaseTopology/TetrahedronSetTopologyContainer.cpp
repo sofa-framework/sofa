@@ -54,7 +54,7 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
 
 
 
-void TetrahedronSetTopologyContainer::addTetra( int a, int b, int c, int d )
+void TetrahedronSetTopologyContainer::addTetra(index_type a, index_type b, index_type c, index_type d )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     m_tetrahedron.push_back(Tetra(a,b,c,d));
@@ -76,7 +76,7 @@ void TetrahedronSetTopologyContainer::init()
         {
             for(PointID j=0; j<4; ++j)
             {
-                int a = m_tetrahedron[i][j];
+                index_type a = m_tetrahedron[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }

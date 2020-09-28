@@ -80,6 +80,8 @@ public:
 
     typedef sofa::helper::Quater<Real> Quat;
 
+    using index_type = sofa::defaulttype::index_type;
+
     enum {
         LARGE = 0,   ///< Symbol of small displacements triangle solver
         SMALL = 1,   ///< Symbol of large displacements triangle solver
@@ -212,9 +214,9 @@ public:
     public:
         TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleInformation> >(_data), ff(_ff) {}
 
-        void applyCreateFunction(unsigned int triangleIndex, TriangleInformation& ,
+        void applyCreateFunction(index_type triangleIndex, TriangleInformation& ,
                 const core::topology::BaseMeshTopology::Triangle & t,
-                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< index_type > &,
                 const sofa::helper::vector< double > &);
 
     protected:
@@ -245,7 +247,7 @@ public:
 
 public:
 
-    int  getFracturedEdge();
+    Index getFracturedEdge();
     void getFractureCriteria(int element, Deriv& direction, Real& value);
     /// Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
     void computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &direction, const defaulttype::Vec<3,Real> &stress);
@@ -259,7 +261,7 @@ public:
     void computeStress(defaulttype::Vec<3,Real> &stress, Index elementIndex);
 
     // Getting the rotation of the vertex by averaing the rotation of neighboring elements
-    void getRotation(Transformation& R, unsigned int nodeIdx);
+    void getRotation(Transformation& R, index_type nodeIdx);
     void getRotations();
 
 protected :

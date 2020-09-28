@@ -40,7 +40,7 @@ namespace mapping
 template<class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::init()
 {
-    const unsigned n = this->fromModel->getSize();
+    const auto n = this->fromModel->getSize();
 
     this->toModel->resize( n );
 
@@ -75,7 +75,7 @@ void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     helper::WriteOnlyAccessor< Data<VecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
 
-    for(unsigned int i=0; i<out.size(); i++)
+    for(std::size_t i=0; i<out.size(); i++)
     {
         helper::eq(out[i], in[i]);
     }

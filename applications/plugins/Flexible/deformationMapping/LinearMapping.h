@@ -152,7 +152,7 @@ public :
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
-        unsigned int size=this->f_pos0.getValue().size();
+        std::size_t size=this->f_pos0.getValue().size();
 
         bool dw  = !this->f_dw.getValue().empty();
         bool ddw = !this->f_ddw.getValue().empty();
@@ -160,13 +160,13 @@ public :
 
         static const MaterialToSpatial FI = identity<MaterialToSpatial>();
         this->jacobian.resize(size);
-        for(unsigned int i=0; i<size; i++ )
+        for( std::size_t i=0; i<size; i++ )
         {
-            unsigned int nbref=this->f_index.getValue()[i].size();
+            std::size_t nbref=this->f_index.getValue()[i].size();
             this->jacobian[i].resize(nbref);
-            for(unsigned int j=0; j<nbref; j++ )
+            for( std::size_t j=0; j<nbref; j++ )
             {
-                unsigned int index=this->f_index.getValue()[i][j];
+                std::size_t index=this->f_index.getValue()[i][j];
                 this->jacobian[i][j].init( in[index],out[i],this->f_pos0.getValue()[i],
                                            F0 ? this->f_F0.getValue()[i] : FI,
                                            this->f_w.getValue()[i][j],

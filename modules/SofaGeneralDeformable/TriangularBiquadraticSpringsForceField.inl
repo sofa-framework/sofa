@@ -43,10 +43,10 @@ typedef core::topology::BaseMeshTopology::Triangle			Triangle;
 typedef core::topology::BaseMeshTopology::EdgesInTriangle		EdgesInTriangle;
 
 template< class DataTypes >
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyCreateFunction(unsigned int triangleIndex,
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyCreateFunction(index_type triangleIndex,
         TriangleRestInformation &tinfo,
         const Triangle &,
-        const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<index_type> &,
         const sofa::helper::vector<double> &)
 {
     using namespace sofa::defaulttype;
@@ -106,7 +106,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
 }
 
 template< class DataTypes >
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyDestroyFunction(unsigned int triangleIndex,
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyDestroyFunction(index_type triangleIndex,
         TriangleRestInformation  &tinfo)
 {
     using namespace	sofa::component::topology;
@@ -133,10 +133,10 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
 }
 
 template< class DataTypes >
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeHandler::applyCreateFunction(unsigned int edgeIndex,
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeHandler::applyCreateFunction(index_type edgeIndex,
         EdgeRestInformation &ei,
         const core::topology::Edge &,
-        const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<index_type> &,
         const sofa::helper::vector<double> &)
 
 {
@@ -227,13 +227,13 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     unsigned int i;
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
-        edgeHandler->applyCreateFunction(i,edgeInf[i], m_topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
+        edgeHandler->applyCreateFunction(i,edgeInf[i], m_topology->getEdge(i),  (const sofa::helper::vector< index_type > )0,
                 (const sofa::helper::vector< double >)0 );
     }
     for (i=0; i<m_topology->getNbTriangles(); ++i)
     {
         triangleHandler->applyCreateFunction(i, triangleInf[i],
-                m_topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0,
+                m_topology->getTriangle(i),  (const sofa::helper::vector< index_type > )0,
                 (const sofa::helper::vector< double >)0);
     }
 

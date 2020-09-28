@@ -69,10 +69,12 @@ protected:
 template <class DataTypes>
 class SOFA_USER_INTERACTION_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
 {
+    using index_type = sofa::defaulttype::index_type;
+
     typedef typename DataTypes::Real               Real;
     typedef typename DataTypes::Coord              Coord;
     typedef typename DataTypes::VecCoord           VecCoord;
-    typedef sofa::helper::vector <unsigned int>    VecIds;
+    typedef sofa::helper::vector <index_type>    VecIds;
 
 public:
     RemovePrimitivePerformer(BaseMouseInteractor *i);

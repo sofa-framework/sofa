@@ -75,7 +75,7 @@ public:
 
 protected:
     // 3D space
-    template<int spatial_dimensions, class DUMMY=void/*hack since template specialization of a nested class is not possible without specialization of the base class, but partial specialization is... */>
+    template<std::size_t spatial_dimensions, class DUMMY=void/*hack since template specialization of a nested class is not possible without specialization of the base class, but partial specialization is... */>
     struct InternalShapeFunction
     {
         static void getBasisFrom2DElements( Basis& b, const Coord& p0, const Coord& p1, const Coord& p2 )
@@ -109,9 +109,9 @@ protected:
         static void computeHexaTrilinearWeights(Coord &w, const Coord p[8], const Coord &x,const Real &tolerance)
         {
             w[0]=0.5; w[1]=0.5; w[2]=0.5; // initial guess
-            static const unsigned int MAXIT=20;
+            static const std::size_t MAXIT=20;
             static const Real MIN_DETERMINANT = 1.0e-100;
-            unsigned int it=0;
+            std::size_t it=0;
             while( it < MAXIT)
             {
                 Coord g(1.-w[0],1.-w[1],1.-w[2]);
@@ -162,7 +162,7 @@ protected:
                     //no 3D elements, nor 2D elements -> map on 1D elements
                     B->f_nbRef.setValue(2);
                     B->bases.resize ( edges.size() );
-                    for (unsigned int e=0; e<edges.size(); e++ )
+                    for (std::size_t e=0; e<edges.size(); e++ )
                     {
                         Coord V12 = ( parent[edges[e][1]]-parent[edges[e][0]] );
                         B->bases[e][0] = V12/V12.norm2();
@@ -174,15 +174,15 @@ protected:
                     if(quads.size()) B->f_nbRef.setValue(4);
                     else B->f_nbRef.setValue(3);
                     B->bases.resize ( triangles.size() +quads.size() );
-                    for ( unsigned int t = 0; t < triangles.size(); t++ )
+                    for ( std::size_t t = 0; t < triangles.size(); t++ )
                     {
                         Basis m,mt;
                         getBasisFrom2DElements( m, parent[triangles[t][0]], parent[triangles[t][1]], parent[triangles[t][2]] );
                         mt.transpose ( m );
                         B->bases[t].invert ( mt );
                     }
-                    int c0 = triangles.size();
-                    for ( unsigned int c = 0; c < quads.size(); c++ )
+                    std::size_t c0 = triangles.size();
+                    for ( std::size_t c = 0; c < quads.size(); c++ )
                     {
                         Basis m,mt;
                         getBasisFrom2DElements( m, parent[quads[c][0]], parent[quads[c][1]], parent[quads[c][3]] );
@@ -197,7 +197,7 @@ protected:
                 if(cubes.size()) B->f_nbRef.setValue(8);
                 else B->f_nbRef.setValue(4);
                 B->bases.resize ( tetrahedra.size() +cubes.size() );
-                for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
+                for ( std::size_t t = 0; t < tetrahedra.size(); t++ )
                 {
                     Basis m,mt;
                     m[0] = parent[tetrahedra[t][1]]-parent[tetrahedra[t][0]];
@@ -206,8 +206,8 @@ protected:
                     mt.transpose ( m );
                     B->bases[t].invert ( mt );
                 }
-                int c0 = tetrahedra.size();
-                for ( unsigned int c = 0; c < cubes.size(); c++ )
+                std::size_t c0 = tetrahedra.size();
+                for (std::size_t c = 0; c < cubes.size(); c++ )
                 {
                     Basis m,mt;
                     m[0] = parent[cubes[c][1]]-parent[cubes[c][0]];
@@ -251,7 +251,7 @@ protected:
                 {
                     if ( edges.empty() ) return;
                     //no 3D elements, nor 2D elements -> map on 1D elements
-                    for ( unsigned int i = 0; i < edges.size(); i++ )
+                    for ( std::size_t i = 0; i < edges.size(); i++ )
                         if(cell==-1 || cell==(int)i)
                         {
                             Coord v = B->bases[i] * ( childPosition - parent[edges[i][0]] );
@@ -269,15 +269,15 @@ protected:
                 else
                 {
                     // no 3D elements -> map on 2D elements
-                    for ( unsigned int i = 0; i < triangles.size(); i++ )
+                    for ( std::size_t i = 0; i < triangles.size(); i++ )
                         if(cell==-1 || cell==(int)i)
                         {
                             Coord v = B->bases[i] * ( childPosition - parent[triangles[i][0]] );
                             double d = getDistanceTriangle( v );
                             if ( d<=distance ) { coefs = v; distance = d; index = i; }
                         }
-                    int c0 = triangles.size();
-                    for ( unsigned int i = 0; i < quads.size(); i++ )
+                    std::size_t c0 = triangles.size();
+                    for ( std::size_t i = 0; i < quads.size(); i++ )
                         if(cell==-1 || cell==(int)(i+c0))
                         {
                             Coord v = B->bases[c0+i] * ( childPosition - parent[quads[i][0]] );
@@ -297,7 +297,7 @@ protected:
                         Real gx=(Real)1.-fx,gy=(Real)1.-fy;
                         Gradient dfx=B->bases[index-c0][0],dfy=B->bases[index-c0][1];
                         Gradient dgx=-dfx,dgy=-dfy;
-                        for ( unsigned int i = 0; i < 4; i++ ) ref[i]=quads[index-c0][i];
+                        for ( std::size_t i = 0; i < 4; i++ ) ref[i]=quads[index-c0][i];
                         // weights
                         w[0]=gx*gy; w[1]=fx*gy; w[2]=fx*fy; w[3]=gx*fy;
                         if(dw)
@@ -320,15 +320,15 @@ protected:
             else
             {
                 // map on 3D elements
-                for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
+                for (std::size_t i = 0; i < tetrahedra.size(); i++ )
                     if(cell==-1 || cell==(int)i)
                     {
                         Coord v = B->bases[i] * ( childPosition - parent[tetrahedra[i][0]] );
                         double d = getDistanceTetra( v );
                         if ( d<=distance ) { coefs = v; distance = d; index = i; }
                     }
-                int c0 = tetrahedra.size();
-                for ( unsigned int i = 0; i < cubes.size(); i++ )
+                std::size_t c0 = tetrahedra.size();
+                for ( std::size_t i = 0; i < cubes.size(); i++ )
                     if(cell==-1 || cell==(int)(i+c0))
                     {
                         Coord v = B->bases[c0+i] * ( childPosition - parent[cubes[i][0]] );  // for cuboid hexahedra
@@ -438,7 +438,7 @@ protected:
                 //no 2D elements -> map on 1D elements
                 B->f_nbRef.setValue(2);
                 B->bases.resize ( edges.size() );
-                for (unsigned int e=0; e<edges.size(); e++ )
+                for (std::size_t e=0; e<edges.size(); e++ )
                 {
                     Coord V12 = ( parent[edges[e][1]]-parent[edges[e][0]] );
                     B->bases[e][0] = V12/V12.norm2();
@@ -450,15 +450,15 @@ protected:
                 if(quads.size()) B->f_nbRef.setValue(4);
                 else B->f_nbRef.setValue(3);
                 B->bases.resize ( triangles.size() +quads.size() );
-                for ( unsigned int t = 0; t < triangles.size(); t++ )
+                for ( std::size_t t = 0; t < triangles.size(); t++ )
                 {
                     Basis m,mt;
                     getBasisFrom2DElements( m, parent[triangles[t][0]], parent[triangles[t][1]], parent[triangles[t][2]] );
                     mt.transpose ( m );
                     B->bases[t].invert ( mt );
                 }
-                int c0 = triangles.size();
-                for ( unsigned int c = 0; c < quads.size(); c++ )
+                std::size_t c0 = triangles.size();
+                for ( std::size_t c = 0; c < quads.size(); c++ )
                 {
                     Basis m,mt;
                     getBasisFrom2DElements( m, parent[quads[c][0]], parent[quads[c][1]], parent[quads[c][3]] );
@@ -496,7 +496,7 @@ protected:
             {
                 if ( edges.empty() ) return;
                 //no 2D elements -> map on 1D elements
-                for ( unsigned int i = 0; i < edges.size(); i++ )
+                for ( std::size_t i = 0; i < edges.size(); i++ )
                     if(cell==-1 || cell==(int)i)
                     {
                         Coord v = B->bases[i] * ( childPosition - parent[edges[i][0]] );
@@ -514,15 +514,15 @@ protected:
             else
             {
                 // map on 2D elements
-                for ( unsigned int i = 0; i < triangles.size(); i++ )
+                for ( std::size_t i = 0; i < triangles.size(); i++ )
                     if(cell==-1 || cell==(int)i)
                     {
                         Coord v = B->bases[i] * ( childPosition - parent[triangles[i][0]] );
                         double d = getDistanceTriangle( v );
                         if ( d<=distance ) { coefs = v; distance = d; index = i; }
                     }
-                int c0 = triangles.size();
-                for ( unsigned int i = 0; i < quads.size(); i++ )
+                std::size_t c0 = triangles.size();
+                for ( std::size_t i = 0; i < quads.size(); i++ )
                     if(cell==-1 || cell==(int)(i+c0))
                     {
                         Coord v = B->bases[c0+i] * ( childPosition - parent[quads[i][0]] );
@@ -580,8 +580,8 @@ public:
     inline Hessian covs(const Gradient& v1, const Gradient& v2) const
     {
         Hessian res;
-        for ( int i = 0; i < Hessian::nbLines; ++i)
-            for ( int j = i; j < Hessian::nbCols; ++j)
+        for ( std::size_t i = 0; i < Hessian::nbLines; ++i)
+            for ( std::size_t j = i; j < Hessian::nbCols; ++j)
                 res(i,j) = res(j,i) = v1[i] * v2[j] + v2[i] * v1[j];
         return res;
     }

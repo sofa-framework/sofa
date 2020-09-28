@@ -58,13 +58,15 @@ public:
     enum { NIn = Inherit1::NIn };
     enum { NOut = Inherit1::NOut };
 
+    using index_type = sofa::defaulttype::index_type;
+
 public:
     ~BarycentricMapperSparseGridTopology() override ;
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    void clear(int reserve=0) override;
-    int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
+    void clear(std::size_t reserve=0) override;
+    index_type addPointInCube(const index_type cubeIndex, const SReal* baryCoords) override;
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;

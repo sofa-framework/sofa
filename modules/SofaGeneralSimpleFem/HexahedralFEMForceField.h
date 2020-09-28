@@ -105,15 +105,14 @@ public:
 
 protected:
 
-
-
-
     typedef defaulttype::Mat<3, 3, Real> Mat33;
     typedef Mat33 Transformation; ///< matrix for rigid transformations like rotations
 
     typedef std::pair<int,Real> Col_Value;
     typedef helper::vector< Col_Value > CompressedValue;
     typedef helper::vector< CompressedValue > CompressedMatrix;
+
+    using index_type = sofa::defaulttype::index_type;
 
     /// the information stored for each hexahedron
     class HexahedronInformation
@@ -210,8 +209,8 @@ public:
         {
         }
 
-        void applyCreateFunction(unsigned int, HexahedronInformation &t, const core::topology::BaseMeshTopology::Hexahedron &,
-                const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+        void applyCreateFunction(index_type, HexahedronInformation &t, const core::topology::BaseMeshTopology::Hexahedron &,
+                const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &);
     protected:
         HexahedralFEMForceField<DataTypes>* ff;
     };

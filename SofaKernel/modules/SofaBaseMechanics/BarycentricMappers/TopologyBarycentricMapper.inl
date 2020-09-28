@@ -37,7 +37,8 @@ namespace _topologybarycentricmapper_
 {
 
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::addPointInLine(const int lineIndex, const SReal* baryCoords)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::addPointInLine(const index_type lineIndex, const SReal* baryCoords)
 {
     SOFA_UNUSED(lineIndex);
     SOFA_UNUSED(baryCoords);
@@ -45,7 +46,8 @@ int TopologyBarycentricMapper<In,Out>::addPointInLine(const int lineIndex, const
 }
 
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::setPointInLine(const int pointIndex, const int lineIndex, const SReal* baryCoords)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::setPointInLine(const index_type pointIndex, const index_type lineIndex, const SReal* baryCoords)
 {
     SOFA_UNUSED(pointIndex);
     SOFA_UNUSED(lineIndex);
@@ -54,7 +56,8 @@ int TopologyBarycentricMapper<In,Out>::setPointInLine(const int pointIndex, cons
 }
 
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::createPointInLine(const typename Out::Coord& p, index_type lineIndex, const typename In::VecCoord* points)
 {
     SOFA_UNUSED(p);
     SOFA_UNUSED(lineIndex);
@@ -63,14 +66,16 @@ int TopologyBarycentricMapper<In,Out>::createPointInLine(const typename Out::Coo
 }
 
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::addPointInTriangle(const int triangleIndex, const SReal* baryCoords)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::addPointInTriangle(const index_type triangleIndex, const SReal* baryCoords)
 {
     SOFA_UNUSED(triangleIndex);
     SOFA_UNUSED(baryCoords);
     return 0;
 }
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::setPointInTriangle(const int pointIndex, const int triangleIndex, const SReal* baryCoords)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::setPointInTriangle(const index_type pointIndex, const index_type triangleIndex, const SReal* baryCoords)
 {
     SOFA_UNUSED(pointIndex);
     SOFA_UNUSED(triangleIndex);
@@ -78,7 +83,8 @@ int TopologyBarycentricMapper<In,Out>::setPointInTriangle(const int pointIndex, 
     return 0;
 }
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::createPointInTriangle(const typename Out::Coord& p, index_type triangleIndex, const typename In::VecCoord* points)
 {
     SOFA_UNUSED(p);
     SOFA_UNUSED(triangleIndex);
@@ -87,14 +93,16 @@ int TopologyBarycentricMapper<In,Out>::createPointInTriangle(const typename Out:
 }
 
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::addPointInQuad(const int quadIndex, const SReal* baryCoords)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::addPointInQuad(const index_type quadIndex, const SReal* baryCoords)
 {
     SOFA_UNUSED(quadIndex);
     SOFA_UNUSED(baryCoords);
     return 0;
 }
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::setPointInQuad(const int pointIndex, const int quadIndex, const SReal* baryCoords)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::setPointInQuad(const index_type pointIndex, const index_type quadIndex, const SReal* baryCoords)
 {
     SOFA_UNUSED(pointIndex);
     SOFA_UNUSED(quadIndex);
@@ -102,7 +110,8 @@ int TopologyBarycentricMapper<In,Out>::setPointInQuad(const int pointIndex, cons
     return 0;
 }
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::createPointInQuad(const typename Out::Coord& p, index_type quadIndex, const typename In::VecCoord* points)
 {
     SOFA_UNUSED(p);
     SOFA_UNUSED(quadIndex);
@@ -111,14 +120,16 @@ int TopologyBarycentricMapper<In,Out>::createPointInQuad(const typename Out::Coo
 }
 
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::addPointInTetra(const int tetraIndex, const SReal* baryCoords)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::addPointInTetra(const index_type tetraIndex, const SReal* baryCoords)
 {
     SOFA_UNUSED(tetraIndex);
     SOFA_UNUSED(baryCoords);
     return 0;
 }
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::setPointInTetra(const int pointIndex, const int tetraIndex, const SReal* baryCoords)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::setPointInTetra(const index_type pointIndex, const index_type tetraIndex, const SReal* baryCoords)
 {
     SOFA_UNUSED(pointIndex);
     SOFA_UNUSED(tetraIndex);
@@ -126,7 +137,8 @@ int TopologyBarycentricMapper<In,Out>::setPointInTetra(const int pointIndex, con
     return 0;
 }
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::createPointInTetra(const typename Out::Coord& p, int tetraIndex, const typename In::VecCoord* points)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::createPointInTetra(const typename Out::Coord& p, index_type tetraIndex, const typename In::VecCoord* points)
 {
     SOFA_UNUSED(p);
     SOFA_UNUSED(tetraIndex);
@@ -135,14 +147,16 @@ int TopologyBarycentricMapper<In,Out>::createPointInTetra(const typename Out::Co
 }
 
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::addPointInCube(const int cubeIndex, const SReal* baryCoords)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::addPointInCube(const index_type cubeIndex, const SReal* baryCoords)
 {
     SOFA_UNUSED(cubeIndex);
     SOFA_UNUSED(baryCoords);
     return 0;
 }
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::setPointInCube(const int pointIndex, const int cubeIndex, const SReal* baryCoords)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::setPointInCube(const index_type pointIndex, const index_type cubeIndex, const SReal* baryCoords)
 {
     SOFA_UNUSED(pointIndex);
     SOFA_UNUSED(cubeIndex);
@@ -150,7 +164,8 @@ int TopologyBarycentricMapper<In,Out>::setPointInCube(const int pointIndex, cons
     return 0;
 }
 template<class In, class Out>
-int TopologyBarycentricMapper<In,Out>::createPointInCube(const typename Out::Coord& p, int cubeIndex, const typename In::VecCoord* points)
+typename TopologyBarycentricMapper<In, Out>::index_type 
+TopologyBarycentricMapper<In,Out>::createPointInCube(const typename Out::Coord& p, index_type cubeIndex, const typename In::VecCoord* points)
 {
     SOFA_UNUSED(p);
     SOFA_UNUSED(cubeIndex);

@@ -118,7 +118,7 @@ public:
       /// Get diffusion coefficient coefficient
       sofa::helper::vector<Real> getDiffusionCoefficient();
       /// Get diffusion coefficient for tetra i
-      Real getTetraDiffusionCoefficient(unsigned int i);
+      Real getTetraDiffusionCoefficient(index_type i);
 
       /// Set diffusion coefficient with constant value
       void setDiffusionCoefficient(const Real val);

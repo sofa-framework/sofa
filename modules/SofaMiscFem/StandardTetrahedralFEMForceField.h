@@ -81,8 +81,6 @@ class StandardTetrahedralFEMForceField: public core::behavior::ForceField<DataTy
 	typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
 
-
-
 public :
 	
 	typename sofa::component::fem::MaterialParameters<DataTypes> globalParameters;
@@ -211,9 +209,9 @@ public:
           {
           }
 
-          void applyCreateFunction(unsigned int, TetrahedronRestInformation &t,
+          void applyCreateFunction(Index, TetrahedronRestInformation &t,
                                    const core::topology::BaseMeshTopology::Tetrahedron&,
-                                   const sofa::helper::vector<unsigned int> &,
+                                   const sofa::helper::vector<Index> &,
                                    const sofa::helper::vector<double> &);
 
          protected:

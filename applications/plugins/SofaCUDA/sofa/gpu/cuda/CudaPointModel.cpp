@@ -44,12 +44,12 @@ int CudaPointCollisionModelClass = core::RegisterObject("GPU-based point collisi
 using namespace defaulttype;
 
 CudaPointCollisionModel::CudaPointCollisionModel()
-    : groupSize( initData( &groupSize, (int)BSIZE, "groupSize", "number of point per collision element" ) )
+    : groupSize( initData( &groupSize, (std::size_t)BSIZE, "groupSize", "number of point per collision element" ) )
     , mstate(NULL)
 {
 }
 
-void CudaPointCollisionModel::resize(int size)
+void CudaPointCollisionModel::resize(std::size_t size)
 {
     this->core::CollisionModel::resize(size);
 }
@@ -65,22 +65,22 @@ void CudaPointCollisionModel::init()
         return;
     }
 
-    const int npoints = mstate->getSize();
-    int gsize = groupSize.getValue();
-    int nelems = (npoints + gsize-1)/gsize;
+    const std::size_t npoints = mstate->getSize();
+    std::size_t gsize = groupSize.getValue();
+    std::size_t nelems = (npoints + gsize-1)/gsize;
     resize(nelems);
 }
 
-void CudaPointCollisionModel::draw(const core::visual::VisualParams* ,int index)
+void CudaPointCollisionModel::draw(const core::visual::VisualParams* , index_type index)
 {
 #ifndef SOFA_NO_OPENGL
     const int gsize = groupSize.getValue();
     CudaPoint t(this,index);
     glBegin(GL_POINTS);
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-    int i0 = index*gsize;
-    int n = (index==size-1) ? x.size()-i0 : gsize;
-    for (int p=0; p<n; p++)
+    auto i0 = index*gsize;
+    auto n = (index==size-1) ? x.size()-i0 : gsize;
+    for (auto p=0; p<n; p++)
     {
         glVertex3fv(x[i0+p].ptr());
     }

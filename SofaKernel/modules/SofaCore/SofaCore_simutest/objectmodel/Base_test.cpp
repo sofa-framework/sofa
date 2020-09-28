@@ -114,15 +114,5 @@ TEST_F(Base_test , testGetClassName)
     EXPECT_EQ(o.getTemplateName(), "");
     EXPECT_EQ(o.getTypeName(), "CustomBaseObject");
     EXPECT_EQ(o.getClass()->className, "CustomBaseObject");
-
-    CustomBaseObjectT<Rigid3Types> ot;
-    EXPECT_EQ(ot.getClassName(), "MyFakeClassName");
-    EXPECT_EQ(ot.getTypeName(), "CustomBaseObjectTStdRigidTypes<3,double>>");
-    EXPECT_EQ(ot.getTemplateName(), Rigid3Types::Name());
-
-    Base* b = &ot;
-    EXPECT_EQ(b->getClassName(), "MyFakeClassName");
-    EXPECT_EQ(b->getTypeName(), "CustomBaseObjectTStdRigidTypes<3,double>>");
-    EXPECT_EQ(b->getTemplateName(), Rigid3Types::Name());
 }
 

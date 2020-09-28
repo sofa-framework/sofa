@@ -111,7 +111,7 @@ void Hexa2TetraTopologicalMapping::init()
     // Set the same number of points
     toModel->setNbPoints(fromModel->getNbPoints());
 
-    sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <index_type>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
@@ -202,7 +202,7 @@ void Hexa2TetraTopologicalMapping::init()
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-unsigned int Hexa2TetraTopologicalMapping::getFromIndex(unsigned int /*ind*/)
+index_type Hexa2TetraTopologicalMapping::getFromIndex(index_type /*ind*/)
 {
 
     return Topology::InvalidID;

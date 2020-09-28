@@ -24,7 +24,6 @@
 
 #include "BaseDeformationMultiMapping.h"
 #include "BaseDeformationImpl.inl"
-#include <SofaBaseVisual/VisualModelImpl.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/glu.h>

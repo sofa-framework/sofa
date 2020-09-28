@@ -145,7 +145,7 @@ namespace projectiveconstraintset
 // CudaVectorTypes specializations
 /////////////////////////////////////
 template<class TCoord, class TDeriv, class TReal>
-void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addIndex(Main* m, unsigned index)
+void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addIndex(Main* m, index_type index)
 {
     Data& data = *m->data;
 
@@ -159,7 +159,7 @@ void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 }// LinearMovementConstraintInternalData::addIndex
 
 template<class TCoord, class TDeriv, class TReal>
-void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::removeIndex(Main* m, unsigned index)
+void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::removeIndex(Main* m, index_type index)
 {
     // Data& data = m->data;
 
@@ -284,7 +284,7 @@ void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 /////////////////////////////////////
 
 template<int N, class real>
-void LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addIndex(Main* m, unsigned index)
+void LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addIndex(Main* m, index_type index)
 {
     Data& data = *m->data;
 
@@ -298,7 +298,7 @@ void LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >:
 }// LinearMovementConstraintInternalData::addIndex
 
 template<int N, class real>
-void LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeIndex(Main* m, unsigned index)
+void LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeIndex(Main* m, index_type index)
 {
     // Data& data = m->data;
 
@@ -429,13 +429,13 @@ void LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >:
 // }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::addIndex(unsigned int index)
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::addIndex(index_type index)
 {
     data->addIndex(this, index);
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::removeIndex(unsigned int index)
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::removeIndex(index_type index)
 {
     data->removeIndex(this, index);
 }
@@ -471,13 +471,13 @@ void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectVelocity(cons
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::addIndex(unsigned int index)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::addIndex(index_type index)
 {
     data->addIndex(this, index);
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::removeIndex(unsigned int index)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::removeIndex(index_type index)
 {
     data->removeIndex(this, index);
 }
@@ -520,13 +520,13 @@ void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectVelocity(co
 // }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::addIndex(unsigned int index)
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::addIndex(index_type index)
 {
     data->addIndex(this, index);
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::removeIndex(unsigned int index)
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::removeIndex(index_type index)
 {
     data->removeIndex(this, index);
 }
@@ -562,13 +562,13 @@ void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectVelocity(cons
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::addIndex(unsigned int index)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::addIndex(index_type index)
 {
     data->addIndex(this, index);
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::removeIndex(unsigned int index)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::removeIndex(index_type index)
 {
     data->removeIndex(this, index);
 }

@@ -52,6 +52,8 @@ class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetTopologyContainer : public Edg
 public:
     SOFA_CLASS(ManifoldEdgeSetTopologyContainer,EdgeSetTopologyContainer);
 
+    using index_type = sofa::defaulttype::index_type;
+
     ManifoldEdgeSetTopologyContainer();
 
     ~ManifoldEdgeSetTopologyContainer() override {}
@@ -69,7 +71,7 @@ public:
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
     @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
     */
-    virtual int getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components) override;
+    virtual int getNumberConnectedComponents(sofa::helper::vector<index_type>& components) override;
 
 protected:
     /** \brief Creates the EdgeSetIndex.
@@ -86,19 +88,19 @@ private:
     {
     public:
 
-        ConnectedComponent(unsigned int FirstVertexIndex=-1, unsigned int LastVertexIndex=-1, unsigned int size=0,unsigned int ccIndex=0)
+        ConnectedComponent(index_type FirstVertexIndex=-1, index_type LastVertexIndex=-1, index_type size=0,index_type ccIndex=0)
             : FirstVertexIndex(FirstVertexIndex), LastVertexIndex(LastVertexIndex), size(size), ccIndex(ccIndex)
         {}
 
         virtual ~ConnectedComponent() {}
 
     public:
-        unsigned int FirstVertexIndex; // index of the first vertex on the line
-        unsigned int LastVertexIndex; // index of the last vertex on the line
+        index_type FirstVertexIndex; // index of the first vertex on the line
+        index_type LastVertexIndex; // index of the last vertex on the line
 
-        unsigned int size; // number of the vertices on the line
+        index_type size; // number of the vertices on the line
 
-        unsigned int ccIndex; // index of the connected component stored in the m_ConnectedComponentArray
+        index_type ccIndex; // index of the connected component stored in the m_ConnectedComponentArray
     };
 
     /// \brief Resets the array of connected components and the ComponentVertex array (which are not valide anymore).
@@ -114,41 +116,41 @@ private:
     virtual int getNumberOfConnectedComponents();
 
     /// \brief Returns the FirstVertexIndex of the ith connected component.
-    virtual int getFirstVertexIndex(unsigned int i);
+    virtual int getFirstVertexIndex(index_type i);
 
     /// \brief Returns the LastVertexIndex of the ith connected component.
-    virtual int getLastVertexIndex(unsigned int i);
+    virtual int getLastVertexIndex(index_type i);
 
     /// \brief Returns the size of the ith connected component.
-    virtual int getComponentSize(unsigned int i);
+    virtual int getComponentSize(index_type i);
 
     /// \brief Returns the index of the ith connected component.
-    virtual int getComponentIndex(unsigned int i);
+    virtual int getComponentIndex(index_type i);
 
     /// \brief Returns true iff the ith connected component is closed (ie : iff FirstVertexIndex == LastVertexIndex).
-    virtual bool isComponentClosed(unsigned int i);
+    virtual bool isComponentClosed(index_type i);
 
     /// \brief Returns the indice of the vertex which is next to the vertex indexed by i.
-    int getNextVertex(const unsigned int i);
+    int getNextVertex(const index_type i);
 
     /// \brief Returns the indice of the vertex which is previous to the vertex indexed by i.
-    int getPreviousVertex(const unsigned int i);
+    int getPreviousVertex(const index_type i);
 
     /// \brief Returns the indice of the edge which is next to the edge indexed by i.
-    int getNextEdge(const unsigned int i);
+    int getNextEdge(const index_type i);
 
     /// \brief Returns the indice of the edge which is previous to the edge indexed by i.
-    int getPreviousEdge(const unsigned int i);
+    int getPreviousEdge(const index_type i);
 
     /// \brief Returns the ComponentVertex array.
-    const sofa::helper::vector< unsigned int > &getComponentVertexArray() const;
+    const sofa::helper::vector< index_type > &getComponentVertexArray() const;
 
     /// \brief Returns the array of connected components.
     const sofa::helper::vector< ConnectedComponent > &getConnectedComponentArray() const;
 
 private:
     /** The array that stores for each vertex index, the connected component the vertex belongs to */
-    sofa::helper::vector< unsigned int > m_ComponentVertexArray;
+    sofa::helper::vector< index_type > m_ComponentVertexArray;
 
     /** The array that stores the connected components */
     sofa::helper::vector< ConnectedComponent > m_ConnectedComponentArray;

@@ -238,7 +238,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         mparams.setSymmetricMatrix(false);
-
         inDofs->resize(parentInit.size());
         WriteInVecCoord xin = inDofs->writePositions();
         copyToData(xin,parentInit); // xin = parentInit
@@ -317,7 +316,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         ReadOutVecDeriv vout = outDofs->readVelocities();
         copyFromData( vc, vout);
         //          cout<<"child velocity vc = " << vc << endl;
-
 
         // apply geometric stiffness
         inDofs->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
@@ -490,8 +488,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                 break;
             }
         }
-
-
 
         if(!succeed)
         { ADD_FAILURE() << "Failed Seed number = " << BaseSofa_test::seed << std::endl;}

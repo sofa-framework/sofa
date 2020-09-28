@@ -62,7 +62,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
         {
             toModel->clear();
 
-            for (int i=0; i<fromModel->getNbPoints(); ++i)
+            for (std::size_t i=0; i<fromModel->getNbPoints(); ++i)
             {
                 // points mapped from points
                 pointMappedFromPoint.push_back(i);
@@ -72,7 +72,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
             size_t pointIndex = pointMappedFromPoint.size();
             Vector3 pA, pB, p;
 
-            for (unsigned int i=0; i<fromModel->getNbHexahedra(); ++i)
+            for (std::size_t i=0; i<fromModel->getNbHexahedra(); ++i)
             {
                 core::topology::BaseMeshTopology::Hexa h = fromModel->getHexahedron(i);
 

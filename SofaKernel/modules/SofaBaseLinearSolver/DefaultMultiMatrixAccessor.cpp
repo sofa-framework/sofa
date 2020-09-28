@@ -54,7 +54,7 @@ DefaultMultiMatrixAccessor::~DefaultMultiMatrixAccessor()
 void DefaultMultiMatrixAccessor::clear()
 {
     globalDim = 0;
-    for (std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
+    for (auto it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
         it->second = -1;
 
     for (std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
@@ -78,7 +78,7 @@ void DefaultMultiMatrixAccessor::setGlobalMatrix(defaulttype::BaseMatrix* matrix
 
 void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate)
 {
-    unsigned int dim = mstate->getMatrixSize();
+    auto dim = mstate->getMatrixSize();
     realStateOffsets[mstate] = globalDim;
     globalDim += dim;
 
@@ -125,12 +125,12 @@ void DefaultMultiMatrixAccessor::addMappedMechanicalState(const sofa::core::beha
 
 void DefaultMultiMatrixAccessor::setupMatrices()
 {
-    std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end();
+    auto it = realStateOffsets.begin(), itend = realStateOffsets.end();
     while (it != itend)
     {
         if (it->second < 0)
         {
-            std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it2 = it;
+            auto it2 = it;
             ++it;
             realStateOffsets.erase(it2);
         }
@@ -152,14 +152,14 @@ void DefaultMultiMatrixAccessor::setupMatrices()
     }
 }
 
-int DefaultMultiMatrixAccessor::getGlobalDimension() const
+DefaultMultiMatrixAccessor::Index DefaultMultiMatrixAccessor::getGlobalDimension() const
 {
     return globalDim;
 }
 
 int DefaultMultiMatrixAccessor::getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const
 {
-    std::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator it = realStateOffsets.find(mstate);
+    auto it = realStateOffsets.find(mstate);
     if (it != realStateOffsets.end())
         return it->second;
     return -1;
@@ -168,7 +168,7 @@ int DefaultMultiMatrixAccessor::getGlobalOffset(const sofa::core::behavior::Base
 DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const
 {
     MatrixRef r;
-    std::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator itRealState = realStateOffsets.find(mstate);
+    auto itRealState = realStateOffsets.find(mstate);
 
     if (itRealState != realStateOffsets.end()) //case where mechanical state is a non mapped state
     {
@@ -268,8 +268,8 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
         }
         else// the interaction is not added, we need to creat it and its matrix
         {
-            std::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator it1 = realStateOffsets.find(mstate1);
-            std::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator it2 = realStateOffsets.find(mstate2);
+            auto it1 = realStateOffsets.find(mstate1);
+            auto it2 = realStateOffsets.find(mstate2);
 
             if(it1 != realStateOffsets.end() && it2 != realStateOffsets.end())// case where all of two ms are real DOF (non-mapped)
             {
@@ -346,8 +346,8 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
         const BaseMechanicalState* outstate  = const_cast<const BaseMechanicalState*>(m_mapping->getMechTo()[0]);
 
         const defaulttype::BaseMatrix* matrixJ = m_mapping->getJ();
-        const unsigned int nbR_J = matrixJ->rowSize();
-        const unsigned int nbC_J = matrixJ->colSize();
+        const auto nbR_J = matrixJ->rowSize();
+        const auto nbC_J = matrixJ->colSize();
 
         if(m_doPrintInfo)/////////////////////////////////////////////////////////
         {
@@ -374,10 +374,10 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
             MatrixRef K1 = this->getMatrix(instate);
             MatrixRef K2 = this->getMatrix(outstate);
 
-            const unsigned int offset1  = K1.offset;
-            const unsigned int offset2  = K2.offset;
-            const unsigned int sizeK1 = K1.matrix->rowSize() - offset1;
-            const unsigned int sizeK2 = K2.matrix->rowSize() - offset2;
+            const auto offset1  = K1.offset;
+            const auto offset2  = K2.offset;
+            const Index sizeK1 = Index(K1.matrix->rowSize() - offset1);
+            const Index sizeK2 = Index(K2.matrix->rowSize() - offset2);
 
             if(m_doPrintInfo)/////////////////////////////////////////////////////////
             {
@@ -391,18 +391,18 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
             }
 
             // Matrix multiplication  K11 += Jt * K22 * J
-            for(unsigned int i1 =0; i1 < sizeK1 ; ++i1)
+            for(Index i1 =0; i1 < sizeK1 ; ++i1)
             {
-                for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
+                for(Index j1 =0 ; j1 < sizeK1 ; ++j1)
                 {
                     double Jt_K2_J_i1j1 = 0;
 
-                    for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
+                    for(Index i2 =0 ; i2 < sizeK2 ; ++i2)
                     {
-                        for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
+                        for(Index j2 =0 ; j2 < sizeK2 ; ++j2)
                         {
                             const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
-                            for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
+                            for(Index k2=0 ; k2 < sizeK2 ; ++k2)
                             {
                                 const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
                                 const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
@@ -455,15 +455,15 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
                 //===========================
                 //          I_12 += Jt * I_32
                 //===========================
-                const unsigned int offR_I_12  = I_12.offRow;                       //      row offset of I12 matrix
-                const unsigned int offC_I_12  = I_12.offCol;                       //    colum offset of I12 matrix
-                const unsigned int nbR_I_12   = I_12.matrix->rowSize() - offR_I_12;//number of rows   of I12 matrix
-                const unsigned int nbC_I_12   = I_12.matrix->colSize() - offC_I_12;//number of colums of I12 matrix
+                const Index offR_I_12  = I_12.offRow;                       //      row offset of I12 matrix
+                const Index offC_I_12  = I_12.offCol;                       //    colum offset of I12 matrix
+                const Index nbR_I_12   = I_12.matrix->rowSize() - offR_I_12;//number of rows   of I12 matrix
+                const Index nbC_I_12   = I_12.matrix->colSize() - offC_I_12;//number of colums of I12 matrix
 
-                const unsigned int offR_I_32  = I_32.offRow;                     //      row offset of I32 matrix
-                const unsigned int offC_I_32  = I_32.offCol;                     //    colum offset of I32 matrix
-                const unsigned int nbR_I_32 = I_32.matrix->rowSize() - offR_I_32;//number of rows   of I32 matrix
-                const unsigned int nbC_I_32 = I_32.matrix->colSize() - offC_I_32;//number of colums of I32 matrix
+                const Index offR_I_32  = I_32.offRow;                     //      row offset of I32 matrix
+                const Index offC_I_32  = I_32.offCol;                     //    colum offset of I32 matrix
+                const Index nbR_I_32 = I_32.matrix->rowSize() - offR_I_32;//number of rows   of I32 matrix
+                const Index nbC_I_32 = I_32.matrix->colSize() - offC_I_32;//number of colums of I32 matrix
 
 
                 if(m_doPrintInfo)/////////////////////////////////////////////////////////
@@ -480,12 +480,12 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
                 }
 
                 // Matrix multiplication   I_12 += Jt * I_32
-                for(unsigned int _i = 0; _i < nbR_I_12 ; _i++)
+                for(Index _i = 0; _i < nbR_I_12 ; _i++)
                 {
-                    for(unsigned int _j = 0; _j < nbC_I_12 ; _j++)
+                    for(Index _j = 0; _j < nbC_I_12 ; _j++)
                     {
                         double Jt_I32_ij = 0;
-                        for(unsigned int _k = 0; _k < nbR_I_32 ; _k++)
+                        for(Index _k = 0; _k < nbR_I_32 ; _k++)
                         {
                             const double Jt_ik    = (double) matrixJ->element( _k, _i ) ;
                             const double  I_32_kj = (double) I_32.matrix->element( offR_I_32 + _k, offC_I_32+_j) ;
@@ -504,15 +504,15 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
                 //=========================================
                 //          I_21 +=      I_23 * J
                 //=========================================
-                const unsigned int offR_I_21  = I_21.offRow;
-                const unsigned int offC_I_21  = I_21.offCol;
-                const unsigned int nbR_I_21 = I_21.matrix->rowSize() - offR_I_21;
-                const unsigned int nbC_I_21 = I_21.matrix->colSize() - offC_I_21;
+                const Index offR_I_21  = I_21.offRow;
+                const Index offC_I_21  = I_21.offCol;
+                const Index nbR_I_21 = I_21.matrix->rowSize() - offR_I_21;
+                const Index nbC_I_21 = I_21.matrix->colSize() - offC_I_21;
 
-                const unsigned int offR_I_23  = I_23.offRow;
-                const unsigned int offC_I_23  = I_23.offCol;
-                const unsigned int nbR_I_23   = I_23.matrix->rowSize() - offR_I_23;
-                const unsigned int nbC_I_23   = I_23.matrix->colSize() - offC_I_23;
+                const Index offR_I_23  = I_23.offRow;
+                const Index offC_I_23  = I_23.offCol;
+                const Index nbR_I_23   = I_23.matrix->rowSize() - offR_I_23;
+                const Index nbC_I_23   = I_23.matrix->colSize() - offC_I_23;
 
                 if(m_doPrintInfo)/////////////////////////////////////////////////////////
                 {
@@ -528,12 +528,12 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
 
 
                 // Matrix multiplication  I_21 +=  I_23 * J
-                for(unsigned int _i = 0; _i < nbR_I_21 ; _i++)
+                for(Index _i = 0; _i < nbR_I_21 ; _i++)
                 {
-                    for(unsigned int _j = 0; _j < nbC_I_21 ; _j++)
+                    for(Index _j = 0; _j < nbC_I_21 ; _j++)
                     {
                         double I23_J_ij = 0;
-                        for(unsigned int _k = 0; _k < nbC_I_23 ; _k++)
+                        for(Index _k = 0; _k < nbC_I_23 ; _k++)
                         {
                             const double I_23_ik = (double) I_23.matrix->element( offR_I_23 + _i, offC_I_23+_k) ;
                             const double J_kj    = (double) matrixJ->element( _k, _j ) ;

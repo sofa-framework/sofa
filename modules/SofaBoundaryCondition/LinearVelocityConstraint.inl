@@ -43,18 +43,18 @@ namespace projectiveconstraintset
 
 // Define TestNewPointFunction
 template< class TDataTypes>
-bool LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+bool LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
 {
     return lc != 0;
 }
 
 // Define RemovalFunction
 template< class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
 {
     if (lc)
     {
-        lc->removeIndex((unsigned int) pointIndex);
+        lc->removeIndex((index_type) pointIndex);
     }
 }
 
@@ -93,14 +93,14 @@ void LinearVelocityConstraint<TDataTypes>::clearIndices()
 }
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::addIndex(unsigned int index)
+void LinearVelocityConstraint<TDataTypes>::addIndex(index_type index)
 {
     d_indices.beginEdit()->push_back(index);
     d_indices.endEdit();
 }
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::removeIndex(unsigned int index)
+void LinearVelocityConstraint<TDataTypes>::removeIndex(index_type index)
 {
     removeValue(*d_indices.beginEdit(),index);
     d_indices.endEdit();

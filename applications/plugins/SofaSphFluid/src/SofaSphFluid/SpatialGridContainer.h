@@ -30,6 +30,7 @@
 #include <sofa/helper/rmath.h>
 #include <list>
 
+#include <sofa/defaulttype/TopologyTypes.h>
 
 // I need C++0x !!! 
 // a: we all do ;-)
@@ -133,6 +134,7 @@ public:
     typedef typename DataTypes::GridData GridData;
     //typedef typename DataTypes::NeighborListener NeighborListener;
     typedef typename DataTypes::ParticleField ParticleField;
+    using index_type = sofa::defaulttype::index_type;
 
 public:
     SpatialGrid(Real cellWidth);
@@ -163,7 +165,7 @@ public:
     /// Change particles ordering inside a given cell have contiguous indices
     ///
     /// Fill the old2new and new2old arrays giving the permutation to apply
-    void reorderIndices(helper::vector<unsigned int>* old2new, helper::vector<unsigned int>* new2old);
+    void reorderIndices(helper::vector<index_type>* old2new, helper::vector<index_type>* new2old);
 
     enum { GRIDDIM_LOG2 = DataTypes::GRIDDIM_LOG2, GRIDDIM = 1<<GRIDDIM_LOG2 };
     enum { NCELL = GRIDDIM*GRIDDIM*GRIDDIM };
@@ -313,6 +315,9 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef SpatialGridTypes<DataTypes> GridTypes;
     typedef SpatialGrid< GridTypes > Grid;
+
+    using index_type = sofa::defaulttype::index_type;
+
     Grid* grid;
     Data<Real> d_cellWidth; ///< Width each cell in the grid. If it is used to compute neighboors, it should be greater that the max radius considered.
     Data<bool> d_showGrid; ///< activate rendering of the grid

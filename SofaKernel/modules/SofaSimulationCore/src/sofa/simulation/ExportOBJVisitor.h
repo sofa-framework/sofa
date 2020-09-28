@@ -27,7 +27,7 @@
 #include <sofa/simulation/Node.h>
 #include <string>
 #include <iostream>
-
+#include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa
 {
@@ -53,9 +53,9 @@ public:
 
 protected:
     int ID;
-    int vindex;
-    int nindex;
-    int tindex;
+    sofa::defaulttype::index_type vindex;
+    sofa::defaulttype::index_type nindex;
+    sofa::defaulttype::index_type tindex;
     int count;
 };
 

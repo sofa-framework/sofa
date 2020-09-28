@@ -443,7 +443,7 @@ void BaseMechanicalVisitor::end(simulation::Node* node, core::objectmodel::BaseO
 
 Visitor::Result MechanicalGetDimensionVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
 {
-    const unsigned int n = mm->getMatrixSize();
+    const std::size_t n = mm->getMatrixSize();
     *ctx->nodeData += (SReal)n;
     return RESULT_CONTINUE;
 }
@@ -1347,7 +1347,7 @@ Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalMapping(simulation:
 
 
 /// get the closest pickable particle
-void MechanicalPickParticlesVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength )
+void MechanicalPickParticlesVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, sofa::defaulttype::index_type& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength )
 {
     mstate = nullptr;
 

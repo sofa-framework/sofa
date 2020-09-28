@@ -68,6 +68,8 @@ public:
     simulation::Node::SPtr child;
     typename MMapping::SPtr mapping;
     typename MMechanicalState::SPtr outmodel;
+    using index_type = sofa::defaulttype::index_type;
+
     int nbp;
     bool needInit;
 
@@ -78,8 +80,8 @@ public:
     MMechanicalState* createMapping(const char* name="contactPoints");
 
     void cleanup();
-    void resize(int size);
-    int addPoint(const Coord& P, int index, Real&);
+    void resize(std::size_t size);
+    index_type addPoint(const Coord& P, index_type index, Real&);
     void update();
     void updateXfree();
 };

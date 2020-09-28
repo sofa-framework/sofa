@@ -116,8 +116,8 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
     helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
 
     // update nbr point if needed
-    unsigned int nbrP = m_container->getNbPoints();
-    for(unsigned int i=0; i<8; ++i)
+    std::size_t nbrP = m_container->getNbPoints();
+    for(std::size_t i=0; i<8; ++i)
         if (t[i] + 1 > nbrP) // point not well init
         {
             nbrP = t[i] + 1;

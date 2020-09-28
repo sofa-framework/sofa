@@ -38,13 +38,13 @@ struct SE3 {
 	typedef vec6 twist;
     
 	// easy mappings between sofa/eigen vectors
-	template<int I>
+    template<std::size_t I>
 	static Eigen::Map< Eigen::Matrix<real, I, 1> > map(::sofa::defaulttype::Vec<I, real>& v) {
 		return Eigen::Map< Eigen::Matrix<real, I, 1> >(v.ptr());
 	}
 
 
-	template<int I>
+    template<std::size_t I>
 	static Eigen::Map<const Eigen::Matrix<real, I, 1> > map(const ::sofa::defaulttype::Vec<I, real>& v) {
 		return Eigen::Map<const Eigen::Matrix<real, I, 1> >(v.ptr());
 	}

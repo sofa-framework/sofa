@@ -90,7 +90,7 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::HEXAHEDRAREMOVED:
             {
-                sofa::helper::vector<unsigned int> tab = ( static_cast< const HexahedraRemoved *>( *changeIt ) )->getArray();
+                auto tab = ( static_cast< const HexahedraRemoved *>( *changeIt ) )->getArray();
                 to_pstm->removePointsWarning(tab, true);
                 to_pstm->propagateTopologicalChanges();
                 to_pstm->removePointsProcess(tab, true);

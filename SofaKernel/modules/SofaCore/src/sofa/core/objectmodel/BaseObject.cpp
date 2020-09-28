@@ -84,7 +84,7 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 }
 
 /// This method insures that slaves objects have master and context links set correctly
-void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add)
+void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, bool add)
 {
     if (!ptr) return;
     if (add) { ptr->l_master.set(this); ptr->l_context.set(getContext()); }
@@ -147,7 +147,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 
     if (attributeList != nullptr)
     {
-        for (unsigned int j = 0; j<attributeList->size(); ++j)
+        for (std::size_t j = 0; j<attributeList->size(); ++j)
         {
             it_map = dataLoaderMap.find ((*attributeList)[j]);
             if (it_map != dataLoaderMap.end())
