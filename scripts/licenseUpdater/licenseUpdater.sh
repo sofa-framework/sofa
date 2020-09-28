@@ -65,7 +65,7 @@ main() {
         if [ ! -e "$file" ]; then
             echo "ERROR: missing $file in $SCRIPT_DIR"; exit 1
         fi
-        LICENSE_HEADER="$(prepare-header "$file")"
+        LICENSE_HEADER="$(cat "$file")"
     fi
 
     local files_count="$(files-to-update | wc -l)"
