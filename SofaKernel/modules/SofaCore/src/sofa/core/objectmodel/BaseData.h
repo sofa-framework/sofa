@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/Link.h>
+#include <sofa/core/objectmodel/DataLink.h>
 
 namespace sofa
 {
@@ -285,7 +286,7 @@ public:
     /// Check if a given Data can be linked as a parent of this data
     virtual bool validParent(BaseData* parent);
 
-    BaseData* getParent() const { return parentData.get(); }
+    BaseData* getParent() { return parentData.getTarget(); }
 
     /// Update the value of this %Data
     void update() override;
@@ -350,7 +351,7 @@ protected:
     std::string m_name;
 
     /// Parent Data
-    SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentData;
+    DataLink<BaseData> parentData;
 
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);

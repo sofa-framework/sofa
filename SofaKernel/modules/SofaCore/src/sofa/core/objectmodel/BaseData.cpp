@@ -44,7 +44,7 @@ BaseData::BaseData(const std::string& h, DataFlags dataflags)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counter(), m_isSet(), m_dataFlags(dataflags)
     , m_owner(nullptr), m_name("")
-    , parentData(initLink("parent", "Linked Data, from which values are automatically copied"))
+    , parentData(*this)
 {
     m_counter = 0;
     m_isSet = false;
@@ -59,7 +59,7 @@ BaseData::BaseData( const char* helpMsg, bool isDisplayed, bool isReadOnly) : Ba
 BaseData::BaseData( const std::string& h, bool isDisplayed, bool isReadOnly)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counter(), m_isSet(), m_dataFlags(FLAG_DEFAULT), m_owner(nullptr), m_name("")
-    , parentData(initLink("parent", "Linked Data, from which values are automatically copied"))
+    , parentData(*this)
 {
     m_counter = 0;
     m_isSet = false;
@@ -72,7 +72,7 @@ BaseData::BaseData( const BaseInitData& init)
     : help(init.helpMsg), ownerClass(init.ownerClass), group(init.group), widget(init.widget)
     , m_counter(), m_isSet(), m_dataFlags(init.dataFlags)
     , m_owner(init.owner), m_name(init.name)
-    , parentData(initLink("parent", "Linked Data, from which values are automatically copied"))
+    , parentData(*this)
 {
     m_counter = 0;
     m_isSet = false;
@@ -110,15 +110,15 @@ bool BaseData::validParent(BaseData* parent)
 
 bool BaseData::setParent(BaseData* parent, const std::string& path)
 {
-    // First remove previous parents
+    /// First remove previous parents
     while (!this->inputs.empty())
         this->delInput(*this->inputs.begin());
+
     if (parent && !validParent(parent))
     {
         if (m_owner)
         {
-            msg_error(m_owner) << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName();
-            
+            msg_error(m_owner) << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName();        
             msg_error_when(!this->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: destination Data " << getName() << " has an unknown type";
             msg_error_when(!parent->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: source Data " << parent->getName() << " has an unknown type";
         }
@@ -126,9 +126,9 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
     }
 
     if (path.empty())
-        parentData.set(parent);
+        parentData.setTarget(parent);
     else
-        parentData.set(parent, path);
+        parentData.setPath(path);
 
     if (parent)
     {
@@ -145,22 +145,14 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
 
 bool BaseData::setParent(const std::string& path)
 {
-    BaseData* parent = nullptr;
-    if (this->findDataLinkDest(parent, path, &parentData))
-        return setParent(parent, path);
-    else // simply set the path
-    {
-        if (parentData.get())
-            this->delInput(parentData.get());
-        parentData.set(parent, path);
-        return false;
-    }
+    parentData.setPath(path);
+    return true;
 }
 
 void BaseData::doDelInput(DDGNode* n)
 {
-    if (parentData == n)
-        parentData.set(nullptr);
+    if (parentData.getTarget() == n)
+        parentData.setTarget(nullptr);
     DDGNode::doDelInput(n);
 }
 
@@ -174,13 +166,14 @@ void BaseData::update()
             (*it)->update();
         }
     }
-    if (parentData)
-    {
+    auto parent = parentData.resolvePathAndGetTarget();
+    if (parent)
+    {        
 #ifdef SOFA_DDG_TRACE
         if (m_owner)
             m_owner->sout << "Data " << m_name << ": update from parent " << parentBaseData->m_name<< m_owner->sendl;
 #endif
-        updateFromParentValue(parentData);
+        updateFromParentValue(parent);
         // If the value is dirty clean it
         if(this->isDirty())
         {
@@ -299,6 +292,7 @@ bool BaseData::copyValue(const BaseData* parent)
 
 bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)
 {
+    std::cout << "FIND LINK DATA DEST......" << path << std::endl;
     if (m_owner)
         return m_owner->findDataLinkDest(ptr, path, link);
     else
