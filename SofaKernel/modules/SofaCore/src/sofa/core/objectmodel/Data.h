@@ -42,18 +42,6 @@ class TData : public BaseData
 public:
     typedef T value_type;
 
-    /// @name Class reflection system
-    /// @{
-    typedef TClass<TData<T>,BaseData> MyClass;
-    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
-    const BaseClass* getClass() const { return GetClass(); }
-    static std::string templateName(const TData<T>* = nullptr)
-    {
-        T* ptr = nullptr;
-        return BaseData::typeName(ptr);
-    }
-    /// @}
-
     explicit TData(const BaseInitData& init) : BaseData(init)
     {
     }
@@ -289,20 +277,6 @@ public:
     using TData<T>::setDirtyOutputs;
     using TData<T>::updateIfDirty;
     using TData<T>::notifyEndEdit;
-
-    /// @name Class reflection system
-    /// @{
-    typedef TClass<Data<T>, TData<T> > MyClass;
-    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
-    virtual const BaseClass* getClass() const
-    { return GetClass(); }
-
-    static std::string templateName(const Data<T>* = nullptr)
-    {
-        T* ptr = nullptr;
-        return BaseData::typeName(ptr);
-    }
-    /// @}
 
     /// @name Construction / destruction
     /// @{
