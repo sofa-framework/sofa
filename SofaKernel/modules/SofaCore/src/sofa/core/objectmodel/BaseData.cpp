@@ -290,25 +290,6 @@ bool BaseData::copyValue(const BaseData* parent)
     return false;
 }
 
-bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)
-{
-    std::cout << "FIND LINK DATA DEST......" << path << std::endl;
-    if (m_owner)
-        return m_owner->findDataLinkDest(ptr, path, link);
-    else
-    {
-        msg_error("BaseData") << "findDataLinkDest: no owner defined for Data " << getName() << ", cannot lookup Data link " << path;
-        return false;
-    }
-}
-
-/// Add a link.
-/// Note that this method should only be called if the link was not initialized with the initLink method
-void BaseData::addLink(BaseLink* l)
-{
-    m_vecLink.push_back(l);
-}
-
 std::string BaseData::decodeTypeName(const std::type_info& t)
 {
     return sofa::helper::NameDecoder::decodeTypeName(t);

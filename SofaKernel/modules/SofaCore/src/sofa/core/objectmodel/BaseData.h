@@ -25,7 +25,6 @@
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseClass.h>
-#include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/DataLink.h>
 
 namespace sofa
@@ -291,38 +290,7 @@ public:
     /// Update the value of this %Data
     void update() override;
 
-    /// @name Links management
-    /// @{
-
-    typedef std::vector<BaseLink*> VecLink;
-    /// Accessor to the vector containing all the fields of this object
-    const VecLink& getLinks() const { return m_vecLink; }
-
-    virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
-
-    template<class DataT>
-    bool findDataLinkDest(DataT*& ptr, const std::string& path, const BaseLink* link)
-    {
-        BaseData* base = nullptr;
-        if (!findDataLinkDest(base, path, link)) return false;
-        ptr = dynamic_cast<DataT*>(base);
-        return (ptr != nullptr);
-    }
-
-    /// Add a link.
-    void addLink(BaseLink* l);
-
 protected:
-
-    BaseLink::InitLink<BaseData>
-    initLink(const std::string& name, const std::string& help)
-    {
-        return BaseLink::InitLink<BaseData>(this, name, help);
-    }
-
-    /// List of links
-    VecLink m_vecLink;
-
     /// @}
 
     /// Delegates from DDGNode.
