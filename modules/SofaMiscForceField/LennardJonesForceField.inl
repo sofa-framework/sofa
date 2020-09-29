@@ -56,10 +56,8 @@ LennardJonesForceField<DataTypes>::LennardJonesForceField()
 }
 
 template<class DataTypes>
-void LennardJonesForceField<DataTypes>::init()
+void LennardJonesForceField<DataTypes>::doInit()
 {
-    this->Inherit::init();
-
     assert( this->mstate );
 
     if(aInit.getValue()!=0)

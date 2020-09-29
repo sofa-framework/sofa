@@ -53,9 +53,9 @@ template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3Types>;
 
 
 template <>
-void LinearForceField<Rigid3Types>::init()
+void LinearForceField<Rigid3Types>::doInit()
 {
-    Inherit::init();
+
 }
 
 template <>

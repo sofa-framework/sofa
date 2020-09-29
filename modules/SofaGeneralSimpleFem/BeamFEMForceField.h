@@ -206,7 +206,7 @@ public:
 
 public:
 
-    void init() override;
+    void doInit() override;
     void bwdInit() override;
     void reinit() override;
     virtual void reinitBeam(index_type i);

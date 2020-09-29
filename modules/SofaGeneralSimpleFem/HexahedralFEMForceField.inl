@@ -111,10 +111,8 @@ HexahedralFEMForceField<DataTypes>::~HexahedralFEMForceField()
 
 
 template <class DataTypes>
-void HexahedralFEMForceField<DataTypes>::init()
+void HexahedralFEMForceField<DataTypes>::doInit()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
-
     this->getContext()->get(_topology);
 
     if (_topology==nullptr)

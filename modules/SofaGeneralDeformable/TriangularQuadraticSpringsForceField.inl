@@ -156,11 +156,8 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::~Tri
     if(edgeHandler) delete edgeHandler;
 }
 
-template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>::init()
+template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>::doInit()
 {
-    msg_info() << "initializing TriangularQuadraticSpringsForceField";
-    this->Inherited::init();
-
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";

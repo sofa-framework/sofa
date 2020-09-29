@@ -204,7 +204,7 @@ public:
 
     void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
 
-    void init() override;
+    void doInit() override;
     void reinit() override;
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;

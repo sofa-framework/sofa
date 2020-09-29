@@ -69,9 +69,8 @@ TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::init()
+void TriangleFEMForceField<DataTypes>::doInit()
 {
-    this->Inherited::init();
     if (f_method.getValue() == "small")
         method = SMALL;
     else if (f_method.getValue() == "large")

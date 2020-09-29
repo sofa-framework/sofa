@@ -907,7 +907,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(c
 using sofa::core::topology::TopologyObjectType;
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::init()
+void MeshMatrixMass<DataTypes, MassType>::doInit()
 {
     m_massLumpingCoeff = 0.0;
 
@@ -917,7 +917,6 @@ void MeshMatrixMass<DataTypes, MassType>::init()
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    Inherited::init();
     initTopologyHandlers(topoType);
 
     massInitialization();

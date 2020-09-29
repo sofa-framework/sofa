@@ -60,10 +60,8 @@ QuadPressureForceField<DataTypes>::QuadPressureForceField()
 }
 
 template <class DataTypes>
-void QuadPressureForceField<DataTypes>::init()
+void QuadPressureForceField<DataTypes>::doInit()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
-
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";

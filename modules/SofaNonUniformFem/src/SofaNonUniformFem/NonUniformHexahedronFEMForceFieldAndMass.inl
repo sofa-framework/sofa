@@ -39,13 +39,10 @@ NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::NonUniformHexahedronFEMForc
 }
 
 template <class DataTypes>
-void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
+void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::doInit()
 {
     if(this->_alreadyInit)return;
     else this->_alreadyInit=true;
-
-
-    this->core::behavior::ForceField<DataTypes>::init();
 
     if (l_topology.empty())
     {

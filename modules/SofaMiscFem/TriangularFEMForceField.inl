@@ -138,10 +138,8 @@ TriangularFEMForceField<DataTypes>::~TriangularFEMForceField()
 // --- Initialization stage
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::init()
+void TriangularFEMForceField<DataTypes>::doInit()
 {
-    this->Inherited::init();
-
 #ifdef PLOT_CURVE
     allGraphStress.clear();
     allGraphCriteria.clear();

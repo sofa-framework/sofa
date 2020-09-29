@@ -85,7 +85,7 @@ public:
     void setDamping(Real v) { damping.setValue(v); }
 
 
-    void init() override;
+    void doInit() override;
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;

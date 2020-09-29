@@ -464,11 +464,8 @@ TriangularBendingSprings<DataTypes>::~TriangularBendingSprings()
 
 
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::init()
+void TriangularBendingSprings<DataTypes>::doInit()
 {
-    //msg_error() << "initializing TriangularBendingSprings" ;
-    this->Inherited::init();
-
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";

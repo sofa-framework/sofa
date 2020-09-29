@@ -79,7 +79,7 @@ void ConstantForceField<DataTypes>::parse(BaseObjectDescription* arg)
 
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::init()
+void ConstantForceField<DataTypes>::doInit()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
        
@@ -188,9 +188,6 @@ void ConstantForceField<DataTypes>::init()
         }
         msg_info() << "Input totalForce is used for initialization";
     }
-
-    // init from ForceField
-    Inherit::init();
 
     // add to tracker
     this->trackInternalData(d_indices);

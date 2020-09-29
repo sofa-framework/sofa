@@ -500,10 +500,8 @@ QuadularBendingSprings<DataTypes>::~QuadularBendingSprings()
 
 
 template<class DataTypes>
-void QuadularBendingSprings<DataTypes>::init()
+void QuadularBendingSprings<DataTypes>::doInit()
 {
-    this->Inherited::init();
-
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
