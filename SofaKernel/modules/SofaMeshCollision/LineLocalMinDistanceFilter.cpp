@@ -270,7 +270,7 @@ void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(index_type
     }
 }
 
-bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
+bool LineLocalMinDistanceFilter::validPoint(const index_type pointIndex, const defaulttype::Vector3 &PQ)
 {
     PointInfo & Pi = m_pointInfo[pointIndex];
     if(this->isRigid())
@@ -284,7 +284,7 @@ bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const defaultt
     return Pi.validate(pointIndex,PQ);
 }
 
-bool LineLocalMinDistanceFilter::validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
+bool LineLocalMinDistanceFilter::validLine(const index_type /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
 {
     return true;
 }

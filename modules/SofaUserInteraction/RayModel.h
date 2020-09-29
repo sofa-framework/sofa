@@ -43,7 +43,7 @@ class RayCollisionModel;
 class Ray : public core::TCollisionElementIterator<RayCollisionModel>
 {
 public:
-    Ray(RayCollisionModel* model, int index);
+    Ray(RayCollisionModel* model, index_type index);
 
     explicit Ray(const core::CollisionElementIterator& i);
 
@@ -82,11 +82,11 @@ public:
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
     // ----------------------------
-    int addRay(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction, SReal length);
-    Ray getRay(int index) { return Ray(this, index); }
+    index_type addRay(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction, SReal length);
+    Ray getRay(index_type index) { return Ray(this, index); }
 
-    int getNbRay() const { return size; }
-    void setNbRay(int n) { resize(n); }
+    std::size_t getNbRay() const { return size; }
+    void setNbRay(std::size_t n) { resize(n); }
 
 
     void applyTranslation(const double dx,const double dy,const double dz);
@@ -106,7 +106,7 @@ protected:
 
 };
 
-inline Ray::Ray(RayCollisionModel* model, int index)
+inline Ray::Ray(RayCollisionModel* model, index_type index)
     : core::TCollisionElementIterator<RayCollisionModel>(model, index)
 {}
 

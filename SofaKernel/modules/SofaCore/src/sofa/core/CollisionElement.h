@@ -49,9 +49,10 @@ class CollisionElementIterator;
 class BaseCollisionElementIterator
 {
 public:
-    typedef std::vector<int>::const_iterator VIterator;
-
     using index_type = sofa::defaulttype::index_type;
+
+    typedef std::vector<index_type>::const_iterator VIterator;
+
 
     /// Constructor.
     /// In most cases it will be used by the CollisionModel to
@@ -131,7 +132,7 @@ protected:
     index_type index;      ///< index of the referenced element inside the CollisionModel.
     VIterator it; ///< current position in a vector of indices, in case this iterator traverse a non-contiguous set of indices
     VIterator itend; ///< end position in a vector of indices, in case this iterator traverse a non-contiguous set of indices
-    static std::vector<int> SOFA_CORE_API emptyVector; ///< empty vector to be able to initialize the iterator to an empty pair
+    static std::vector<index_type> SOFA_CORE_API emptyVector; ///< empty vector to be able to initialize the iterator to an empty pair
 };
 
 /**
@@ -150,7 +151,7 @@ class TCollisionElementIterator : public BaseCollisionElementIterator
 {
 public:
     typedef TModel Model;
-    typedef std::vector<int>::const_iterator VIterator;
+    typedef BaseCollisionElementIterator::VIterator VIterator;
 
     /// Constructor.
     /// In most cases it will be used by the CollisionModel to

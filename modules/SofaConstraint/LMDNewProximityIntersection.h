@@ -51,6 +51,9 @@ public:
     SOFA_CLASS(LMDNewProximityIntersection,BaseProximityIntersection);
 
     Data<bool> useLineLine; ///< Line-line collision detection enabled
+
+    using index_type = sofa::defaulttype::index_type;
+
 protected:
     LMDNewProximityIntersection();
 public:
@@ -86,16 +89,16 @@ public:
     int computeIntersection(Ray&, Triangle&, OutputVector*);
 
     template< class TFilter1, class TFilter2 >
-    static inline int doIntersectionLineLine(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id, int indexLine1, int indexLine2, TFilter1 &f1, TFilter2 &f2);
+    static inline int doIntersectionLineLine(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, index_type id, index_type indexLine1, index_type indexLine2, TFilter1 &f1, TFilter2 &f2);
 
     template< class TFilter1, class TFilter2 >
-    static inline int doIntersectionLinePoint(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexLine1, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems = false);
+    static inline int doIntersectionLinePoint(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, index_type id, index_type indexLine1, index_type indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems = false);
 
     template< class TFilter1, class TFilter2 >
-    static inline int doIntersectionPointPoint(double dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexPoint1, int indexPoint2, TFilter1 &f1, TFilter2 &f2);
+    static inline int doIntersectionPointPoint(double dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, index_type id, index_type indexPoint1, index_type indexPoint2, TFilter1 &f1, TFilter2 &f2);
 
     template< class TFilter1, class TFilter2 >
-    static inline int doIntersectionTrianglePoint(double dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& n, const defaulttype::Vector3& q, OutputVector* contacts, int id, Triangle &e1, unsigned int *edgesIndices, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems = false);
+    static inline int doIntersectionTrianglePoint(double dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& n, const defaulttype::Vector3& q, OutputVector* contacts, index_type id, Triangle &e1, index_type* edgesIndices, index_type indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems = false);
 
     /**
      * @brief Method called at the beginning of the collision detection between model1 and model2.

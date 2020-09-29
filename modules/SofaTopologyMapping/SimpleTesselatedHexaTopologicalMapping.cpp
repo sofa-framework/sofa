@@ -86,8 +86,8 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                 Vector3 p7(fromModel->getPX(h[7]), fromModel->getPY(h[7]), fromModel->getPZ(h[7]));
 
                 // points mapped from edges
-                std::pair<std::map<fixed_array<int,2>, int>::iterator, bool> insert_result;
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[0],h[1]),pointIndex));
+                std::pair<std::map<fixed_array<index_type,2>, index_type>::iterator, bool> insert_result;
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[0],h[1]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p0+p1)/2;
@@ -95,7 +95,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[1],h[(2)]),pointIndex));
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[1],h[(2)]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p1+p2)/2;
@@ -103,7 +103,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[3],h[2]),pointIndex));
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[3],h[2]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p3+p2)/2;
@@ -111,7 +111,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[0],h[3]),pointIndex));
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[0],h[3]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p0+p3)/2;
@@ -119,7 +119,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[0],h[4]),pointIndex));
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[0],h[4]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p0+p4)/2;
@@ -127,7 +127,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[1],h[5]),pointIndex));
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[1],h[5]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p1+p5)/2;
@@ -135,7 +135,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[2],h[6]),pointIndex));
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[2],h[6]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p2+p6)/2;
@@ -143,7 +143,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[3],h[7]),pointIndex));
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[3],h[7]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p3+p7)/2;
@@ -151,7 +151,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[4],h[5]),pointIndex));
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[4],h[5]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p4+p5)/2;
@@ -159,7 +159,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[5],h[6]),pointIndex));
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[5],h[6]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p5+p6)/2;
@@ -167,7 +167,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[7],h[6]),pointIndex));
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[7],h[6]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p7+p6)/2;
@@ -175,7 +175,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[4],h[7]),pointIndex));
+                insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<index_type,2>(h[4],h[7]),pointIndex));
                 if(insert_result.second)
                 {
                     p = (p4+p7)/2;
@@ -184,8 +184,8 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                 }
 
                 // points mapped from facets
-                std::pair<std::map<fixed_array<int,4>, int>::iterator, bool> insert_facets_result;
-                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<int,4>(h[0], h[1], h[2], h[3]), pointIndex));
+                std::pair<std::map<fixed_array<index_type,4>, index_type>::iterator, bool> insert_facets_result;
+                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<index_type,4>(h[0], h[1], h[2], h[3]), pointIndex));
                 if (insert_facets_result.second)
                 {
                     p = (p0+p1+p2+p3)/4;
@@ -193,7 +193,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<int,4>(h[0], h[1], h[5], h[4]), pointIndex));
+                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<index_type,4>(h[0], h[1], h[5], h[4]), pointIndex));
                 if (insert_facets_result.second)
                 {
                     p = (p0+p1+p5+p4)/4;
@@ -201,7 +201,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<int,4>(h[1], h[2], h[6], h[5]), pointIndex));
+                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<index_type,4>(h[1], h[2], h[6], h[5]), pointIndex));
                 if (insert_facets_result.second)
                 {
                     p = (p1+p2+p6+p5)/4;
@@ -209,7 +209,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<int,4>(h[3], h[2], h[6], h[7]), pointIndex));
+                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<index_type,4>(h[3], h[2], h[6], h[7]), pointIndex));
                 if (insert_facets_result.second)
                 {
                     p = (p3+p2+p6+p7)/4;
@@ -217,7 +217,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<int,4>(h[0], h[3], h[7], h[4]), pointIndex));
+                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<index_type,4>(h[0], h[3], h[7], h[4]), pointIndex));
                 if (insert_facets_result.second)
                 {
                     p = (p0+p4+p7+p3)/4;
@@ -225,7 +225,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                     pointIndex++;
                 }
 
-                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<int,4>(h[4], h[5], h[6], h[7]), pointIndex));
+                insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<index_type,4>(h[4], h[5], h[6], h[7]), pointIndex));
                 if (insert_facets_result.second)
                 {
                     p = (p4+p5+p6+p7)/4;
@@ -254,75 +254,75 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                 Vec3d p7(fromModel->getPX(h[7]), fromModel->getPY(h[7]), fromModel->getPZ(h[7]));
 
                 toModel->addHexa(h[0],
-                        pointMappedFromEdge[fixed_array<int,2>(h[0],h[1])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[0],h[1],h[2],h[3])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[0],h[3])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[0],h[4])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[0],h[1],h[5],h[4])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[0],h[1])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[1],h[2],h[3])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[0],h[3])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[0],h[4])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[1],h[5],h[4])],
                         pointMappedFromHexa[i],
-                        pointMappedFromFacet[fixed_array<int,4>(h[0],h[3],h[7],h[4])]);
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[3],h[7],h[4])]);
 
-                toModel->addHexa(pointMappedFromEdge[fixed_array<int,2>(h[0],h[1])],
+                toModel->addHexa(pointMappedFromEdge[fixed_array<index_type,2>(h[0],h[1])],
                         h[1],
-                        pointMappedFromEdge[fixed_array<int,2>(h[1],h[2])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[0],h[1],h[2],h[3])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[0],h[1],h[5],h[4])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[1],h[5])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[1],h[2],h[6],h[5])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[1],h[2])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[1],h[2],h[3])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[1],h[5],h[4])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[1],h[5])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[1],h[2],h[6],h[5])],
                         pointMappedFromHexa[i]);
 
-                toModel->addHexa(pointMappedFromFacet[fixed_array<int,4>(h[0],h[1],h[2],h[3])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[1],h[2])],
+                toModel->addHexa(pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[1],h[2],h[3])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[1],h[2])],
                         h[2],
-                        pointMappedFromEdge[fixed_array<int,2>(h[3],h[2])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[3],h[2])],
                         pointMappedFromHexa[i],
-                        pointMappedFromFacet[fixed_array<int,4>(h[1],h[2],h[6],h[5])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[2],h[6])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[3],h[2],h[6],h[7])]);
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[1],h[2],h[6],h[5])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[2],h[6])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[3],h[2],h[6],h[7])]);
 
-                toModel->addHexa(pointMappedFromEdge[fixed_array<int,2>(h[0],h[3])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[0],h[1],h[2],h[3])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[3],h[2])],
+                toModel->addHexa(pointMappedFromEdge[fixed_array<index_type,2>(h[0],h[3])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[1],h[2],h[3])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[3],h[2])],
                         h[3],
-                        pointMappedFromFacet[fixed_array<int,4>(h[0],h[3],h[7],h[4])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[3],h[7],h[4])],
                         pointMappedFromHexa[i],
-                        pointMappedFromFacet[fixed_array<int,4>(h[3],h[2],h[6],h[7])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[3],h[7])]);
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[3],h[2],h[6],h[7])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[3],h[7])]);
 
-                toModel->addHexa(pointMappedFromEdge[fixed_array<int,2>(h[0],h[4])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[0],h[1],h[5],h[4])],
+                toModel->addHexa(pointMappedFromEdge[fixed_array<index_type,2>(h[0],h[4])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[1],h[5],h[4])],
                         pointMappedFromHexa[i],
-                        pointMappedFromFacet[fixed_array<int,4>(h[0],h[3],h[7],h[4])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[3],h[7],h[4])],
                         h[4],
-                        pointMappedFromEdge[fixed_array<int,2>(h[4],h[5])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[4],h[5],h[6],h[7])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[4],h[7])]);
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[4],h[5])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[4],h[5],h[6],h[7])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[4],h[7])]);
 
-                toModel->addHexa(pointMappedFromFacet[fixed_array<int,4>(h[0],h[1],h[5],h[4])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[1],h[5])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[1],h[2],h[6],h[5])],
+                toModel->addHexa(pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[1],h[5],h[4])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[1],h[5])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[1],h[2],h[6],h[5])],
                         pointMappedFromHexa[i],
-                        pointMappedFromEdge[fixed_array<int,2>(h[4],h[5])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[4],h[5])],
                         h[5],
-                        pointMappedFromEdge[fixed_array<int,2>(h[5],h[6])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[4],h[5],h[6],h[7])]);
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[5],h[6])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[4],h[5],h[6],h[7])]);
 
                 toModel->addHexa(pointMappedFromHexa[i],
-                        pointMappedFromFacet[fixed_array<int,4>(h[1],h[2],h[6],h[5])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[2],h[6])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[3],h[2],h[6],h[7])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[4],h[5],h[6],h[7])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[5],h[6])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[1],h[2],h[6],h[5])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[2],h[6])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[3],h[2],h[6],h[7])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[4],h[5],h[6],h[7])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[5],h[6])],
                         h[6],
-                        pointMappedFromEdge[fixed_array<int,2>(h[7],h[6])]);
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[7],h[6])]);
 
-                toModel->addHexa(pointMappedFromFacet[fixed_array<int,4>(h[0],h[3],h[7],h[4])],
+                toModel->addHexa(pointMappedFromFacet[fixed_array<index_type,4>(h[0],h[3],h[7],h[4])],
                         pointMappedFromHexa[i],
-                        pointMappedFromFacet[fixed_array<int,4>(h[3],h[2],h[6],h[7])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[3],h[7])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[4],h[7])],
-                        pointMappedFromFacet[fixed_array<int,4>(h[4],h[5],h[6],h[7])],
-                        pointMappedFromEdge[fixed_array<int,2>(h[7],h[6])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[3],h[2],h[6],h[7])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[3],h[7])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[4],h[7])],
+                        pointMappedFromFacet[fixed_array<index_type,4>(h[4],h[5],h[6],h[7])],
+                        pointMappedFromEdge[fixed_array<index_type,2>(h[7],h[6])],
                         h[7]);
             }
 

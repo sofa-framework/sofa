@@ -368,7 +368,7 @@ public:
     /// @{
 
     void printDOF(core::ConstVecId, std::ostream& =std::cerr, int firstIndex=0, int range=-1 ) const override;
-    unsigned printDOFWithElapsedTime(core::ConstVecId, unsigned =0, unsigned =0, std::ostream& =std::cerr ) override;
+    int printDOFWithElapsedTime(core::ConstVecId, unsigned =0, unsigned =0, std::ostream& =std::cerr ) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -419,17 +419,17 @@ protected :
     /**
      * @brief Inserts VecCoord DOF coordinates vector at index in the vectorsCoord container.
      */
-    void setVecCoord(unsigned int /*index*/, Data< VecCoord >* /*vCoord*/);
+    void setVecCoord(index_type /*index*/, Data< VecCoord >* /*vCoord*/);
 
     /**
      * @brief Inserts VecDeriv DOF derivates vector at index in the vectorsDeriv container.
      */
-    void setVecDeriv(unsigned int /*index*/, Data< VecDeriv >* /*vDeriv*/);
+    void setVecDeriv(index_type /*index*/, Data< VecDeriv >* /*vDeriv*/);
 
     /**
      * @brief Inserts MatrixDeriv DOF  at index in the MatrixDeriv container.
      */
-    void setVecMatrixDeriv(unsigned int /*index*/, Data< MatrixDeriv> * /*mDeriv*/);
+    void setVecMatrixDeriv(index_type /*index*/, Data< MatrixDeriv> * /*mDeriv*/);
 
 
     /// @}

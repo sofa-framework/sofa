@@ -2025,25 +2025,25 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
                     }
                 }
             }
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[2],true) += tmpBlock[0][2];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[3],true) += tmpBlock[0][3];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[0]),true) += tmpBlock[0][0];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[1]),true) += tmpBlock[0][1];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[2]),true) += tmpBlock[0][2];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[3]),true) += tmpBlock[0][3];
 
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[0],true) += tmpBlock[1][0];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[1],true) += tmpBlock[1][1];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[2],true) += tmpBlock[1][2];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[3],true) += tmpBlock[1][3];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[0]),true) += tmpBlock[1][0];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[1]),true) += tmpBlock[1][1];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[2]),true) += tmpBlock[1][2];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[3]),true) += tmpBlock[1][3];
 
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[0],true) += tmpBlock[2][0];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[1],true) += tmpBlock[2][1];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[2],true) += tmpBlock[2][2];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[3],true) += tmpBlock[2][3];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[0]),true) += tmpBlock[2][0];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[1]),true) += tmpBlock[2][1];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[2]),true) += tmpBlock[2][2];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[3]),true) += tmpBlock[2][3];
 
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[0],true) += tmpBlock[3][0];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[1],true) += tmpBlock[3][1];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[2],true) += tmpBlock[3][2];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[3],true) += tmpBlock[3][3];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[0]),true) += tmpBlock[3][0];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[1]),true) += tmpBlock[3][1];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[2]),true) += tmpBlock[3][2];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[3]),true) += tmpBlock[3][3];
         }
     }
     else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * >(mat))
@@ -2069,25 +2069,25 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
                 }
             }
 
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[2],true) += tmpBlock[0][2];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[3],true) += tmpBlock[0][3];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[0]),true) += tmpBlock[0][0];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[1]),true) += tmpBlock[0][1];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[2]),true) += tmpBlock[0][2];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[3]),true) += tmpBlock[0][3];
 
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[0],true) += tmpBlock[1][0];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[1],true) += tmpBlock[1][1];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[2],true) += tmpBlock[1][2];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[3],true) += tmpBlock[1][3];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[0]),true) += tmpBlock[1][0];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[1]),true) += tmpBlock[1][1];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[2]),true) += tmpBlock[1][2];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[3]),true) += tmpBlock[1][3];
 
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[0],true) += tmpBlock[2][0];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[1],true) += tmpBlock[2][1];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[2],true) += tmpBlock[2][2];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[3],true) += tmpBlock[2][3];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[0]),true) += tmpBlock[2][0];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[1]),true) += tmpBlock[2][1];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[2]),true) += tmpBlock[2][2];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[3]),true) += tmpBlock[2][3];
 
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[0],true) += tmpBlock[3][0];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[1],true) += tmpBlock[3][1];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[2],true) += tmpBlock[3][2];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[3],true) += tmpBlock[3][3];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[0]),true) += tmpBlock[3][0];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[1]),true) += tmpBlock[3][1];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[2]),true) += tmpBlock[3][2];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[3]),true) += tmpBlock[3][3];
         }
     }
     else
@@ -2182,25 +2182,25 @@ void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::Bas
                     }
                 }
             }
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[2],true) += tmpBlock[0][2];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[3],true) += tmpBlock[0][3];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[0]),true) += tmpBlock[0][0];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[1]),true) += tmpBlock[0][1];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[2]),true) += tmpBlock[0][2];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[3]),true) += tmpBlock[0][3];
 
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[0],true) += tmpBlock[1][0];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[1],true) += tmpBlock[1][1];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[2],true) += tmpBlock[1][2];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[3],true) += tmpBlock[1][3];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[0]),true) += tmpBlock[1][0];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[1]),true) += tmpBlock[1][1];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[2]),true) += tmpBlock[1][2];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[3]),true) += tmpBlock[1][3];
 
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[0],true) += tmpBlock[2][0];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[1],true) += tmpBlock[2][1];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[2],true) += tmpBlock[2][2];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[3],true) += tmpBlock[2][3];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[0]),true) += tmpBlock[2][0];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[1]),true) += tmpBlock[2][1];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[2]),true) += tmpBlock[2][2];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[3]),true) += tmpBlock[2][3];
 
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[0],true) += tmpBlock[3][0];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[1],true) += tmpBlock[3][1];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[2],true) += tmpBlock[3][2];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[3],true) += tmpBlock[3][3];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[0]),true) += tmpBlock[3][0];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[1]),true) += tmpBlock[3][1];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[2]),true) += tmpBlock[3][2];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[3]),true) += tmpBlock[3][3];
         }
     } else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * >(mat)) {
         for(unsigned e = 0;e< itTetraBuild.size();e++) {
@@ -2223,25 +2223,25 @@ void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::Bas
                     }
                 }
             }
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[2],true) += tmpBlock[0][2];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[3],true) += tmpBlock[0][3];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[0]),true) += tmpBlock[0][0];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[1]),true) += tmpBlock[0][1];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[2]),true) += tmpBlock[0][2];
+            *crsmat->wbloc(offd3 + int((*it)[0]), offd3 + int((*it)[3]),true) += tmpBlock[0][3];
 
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[0],true) += tmpBlock[1][0];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[1],true) += tmpBlock[1][1];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[2],true) += tmpBlock[1][2];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[3],true) += tmpBlock[1][3];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[0]),true) += tmpBlock[1][0];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[1]),true) += tmpBlock[1][1];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[2]),true) += tmpBlock[1][2];
+            *crsmat->wbloc(offd3 + int((*it)[1]), offd3 + int((*it)[3]),true) += tmpBlock[1][3];
 
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[0],true) += tmpBlock[2][0];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[1],true) += tmpBlock[2][1];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[2],true) += tmpBlock[2][2];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[3],true) += tmpBlock[2][3];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[0]),true) += tmpBlock[2][0];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[1]),true) += tmpBlock[2][1];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[2]),true) += tmpBlock[2][2];
+            *crsmat->wbloc(offd3 + int((*it)[2]), offd3 + int((*it)[3]),true) += tmpBlock[2][3];
 
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[0],true) += tmpBlock[3][0];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[1],true) += tmpBlock[3][1];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[2],true) += tmpBlock[3][2];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[3],true) += tmpBlock[3][3];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[0]),true) += tmpBlock[3][0];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[1]),true) += tmpBlock[3][1];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[2]),true) += tmpBlock[3][2];
+            *crsmat->wbloc(offd3 + int((*it)[3]), offd3 + int((*it)[3]),true) += tmpBlock[3][3];
         }
     } else {
         for(unsigned e = 0;e< itTetraBuild.size();e++) {
@@ -2286,7 +2286,7 @@ void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *
             typename VecElement::const_iterator it;
             for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
             {
-                Index a = (*it)[0];
+                Index a = int((*it)[0]);
                 Index b = (*it)[1];
                 Index c = (*it)[2];
                 Index d = (*it)[3];

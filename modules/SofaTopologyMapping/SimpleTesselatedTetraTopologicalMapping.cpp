@@ -178,8 +178,8 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
             {
             case core::topology::POINTSINDICESSWAP:
             {
-                unsigned int i1 = ( static_cast< const PointsIndicesSwap * >( *changeIt ) )->index[0];
-                unsigned int i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
+                auto i1 = ( static_cast< const PointsIndicesSwap * >( *changeIt ) )->index[0];
+                auto i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
                 // i1 and i2 swapped in output model
 
                 swapOutputPoints(i1,i2);
@@ -248,8 +248,8 @@ void SimpleTesselatedTetraTopologicalMapping::swapOutputPoints(index_type i1, in
     helper::ReadAccessor< Data< sofa::helper::vector<index_type> > > pointSourceData = d_pointSource;
 
     // first update pointSourceData
-    int i1Source = pointSourceData[i1];
-    int i2Source = pointSourceData[i2];
+    auto i1Source = pointSourceData[i1];
+    auto i2Source = pointSourceData[i2];
 
     setPointSource(i1, i2Source);
     setPointSource(i2, i1Source);
@@ -266,7 +266,7 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputPoints( const sofa::he
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapOutputPoints( index[i], last );
-        int source = pointSourceData[last];
+        auto source = pointSourceData[last];
         if (source > 0)
         {
             pointMappedFromPointData[source-1] = InvalidID;
@@ -390,8 +390,8 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
             {
             case core::topology::POINTSINDICESSWAP:
             {
-                unsigned int i1 = ( static_cast< const PointsIndicesSwap * >( *changeIt ) )->index[0];
-                unsigned int i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
+                auto i1 = ( static_cast< const PointsIndicesSwap * >( *changeIt ) )->index[0];
+                auto i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
                 // i1 and i2 swapped in input model
                 swapInputPoints(i1,i2);
                 break;

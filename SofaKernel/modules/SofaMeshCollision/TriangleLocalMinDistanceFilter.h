@@ -102,6 +102,8 @@ class SOFA_MESH_COLLISION_API TriangleLocalMinDistanceFilter : public LocalMinDi
 public:
     SOFA_CLASS(TriangleLocalMinDistanceFilter, LocalMinDistanceFilter);
 
+    using index_type = sofa::defaulttype::index_type;
+
 protected:
     TriangleLocalMinDistanceFilter();
     ~TriangleLocalMinDistanceFilter() override;
@@ -129,17 +131,17 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const int pointIndex, const defaulttype::Vector3 &PQ);
+    bool validPoint(const index_type pointIndex, const defaulttype::Vector3 &PQ);
 
     /**
      * @brief Line Collision Primitive validation method.
      */
-    bool validLine(const int lineIndex, const defaulttype::Vector3 &PQ);
+    bool validLine(const index_type lineIndex, const defaulttype::Vector3 &PQ);
 
     /**
      * @brief Triangle Collision Primitive validation method.
      */
-    bool validTriangle(const int triangleIndex, const defaulttype::Vector3 &PQ);
+    bool validTriangle(const index_type triangleIndex, const defaulttype::Vector3 &PQ);
 
     //@}
 

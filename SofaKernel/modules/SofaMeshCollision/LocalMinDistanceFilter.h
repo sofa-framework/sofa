@@ -126,6 +126,9 @@ class SOFA_MESH_COLLISION_API LocalMinDistanceFilter : public virtual core::obje
 {
 public:
     SOFA_CLASS(LocalMinDistanceFilter,sofa::core::objectmodel::BaseObject);
+
+    using index_type = sofa::defaulttype::index_type;
+
 protected:
     /**
      * @brief Default constructor.
@@ -211,10 +214,12 @@ private:
 class SOFA_MESH_COLLISION_API EmptyFilter
 {
 public:
+    using index_type = sofa::defaulttype::index_type;
+
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const int /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validPoint(const index_type /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
     {
         return true;
     }
@@ -222,7 +227,7 @@ public:
     /**
      * @brief Line Collision Primitive validation method.
      */
-    bool validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validLine(const index_type /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
     {
         return true;
     }
@@ -230,7 +235,7 @@ public:
     /**
      * @brief Triangle Collision Primitive validation method.
      */
-    bool validTriangle(const int /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validTriangle(const index_type /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
     {
         return true;
     }

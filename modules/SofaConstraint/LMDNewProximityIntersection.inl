@@ -42,10 +42,10 @@ namespace collision
 {
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id, int indexLine1, int indexLine2,  TFilter1 &f1, TFilter2 &f2)
+inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, index_type id, index_type indexLine1, index_type indexLine2,  TFilter1 &f1, TFilter2 &f2)
 {
     bool debug=false;
-    if(indexLine1==-1 || indexLine2==-1)
+    if(indexLine1==InvalidID || indexLine2== InvalidID)
         debug=true;
 
 
@@ -119,7 +119,7 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexLine1, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
+inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, index_type id, index_type indexLine1, index_type indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
 {
     std::cout<<"doIntersectionLinePoint is called"<<std::endl;
     const defaulttype::Vector3 AB = p2-p1;
@@ -170,7 +170,7 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexPoint1, int indexPoint2, TFilter1 &f1, TFilter2 &f2)
+inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, index_type id, index_type indexPoint1, index_type indexPoint2, TFilter1 &f1, TFilter2 &f2)
 {
     defaulttype::Vector3 pq;
     pq = q-p;
@@ -196,7 +196,7 @@ inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, c
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& /*n*/, const defaulttype::Vector3& q, OutputVector* contacts, int id,  Triangle &e1, unsigned int *edgesIndices, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
+inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& /*n*/, const defaulttype::Vector3& q, OutputVector* contacts, index_type id,  Triangle &e1, index_type* edgesIndices, index_type indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
 {
     const defaulttype::Vector3 AB = p2-p1;
     const defaulttype::Vector3 AC = p3-p1;
@@ -375,7 +375,7 @@ bool LMDNewProximityIntersection::testIntersection(TSphere<T>& e1, Point& e2)
 
     EmptyFilter emptyFilter;
 
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), &contacts, -1, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), &contacts, InvalidID, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     return (n > 0);
 }
@@ -408,7 +408,7 @@ bool LMDNewProximityIntersection::testIntersection(TSphere<T1>& e1, TSphere<T2>&
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
     EmptyFilter emptyFilter;
 
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), &contacts, -1, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), &contacts, InvalidID, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     return (n > 0);
 }
@@ -445,7 +445,7 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, O
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     EmptyFilter emptyFilter;
-    int id= e2.getIndex();
+    auto id= e2.getIndex();
 
     int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.center(), contacts, id, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
@@ -474,7 +474,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
 
 // index of lines:
     const auto& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
-    unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
+    index_type E1edge1verif, E1edge2verif, E1edge3verif;
     E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
 
 
@@ -499,7 +499,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
         }
     }
 
-    unsigned int e1_edgesIndex[3];
+    index_type e1_edgesIndex[3];
     e1_edgesIndex[0]=E1edge1verif; e1_edgesIndex[1]=E1edge2verif; e1_edgesIndex[2]=E1edge3verif;
 
 
@@ -507,7 +507,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
     const double dist2 = alarmDist*alarmDist;
     EmptyFilter emptyFilter;
 
-    int id= e2.getIndex();
+    index_type id= e2.getIndex();
 
     int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.center(), contacts, id, e1, e1_edgesIndex, e2.getIndex(), emptyFilter, emptyFilter);
 

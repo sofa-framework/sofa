@@ -107,6 +107,8 @@ class SOFA_MESH_COLLISION_API LineLocalMinDistanceFilter : public LocalMinDistan
 public:
     SOFA_CLASS(LineLocalMinDistanceFilter,sofa::component::collision::LocalMinDistanceFilter);
 
+    using index_type = sofa::defaulttype::index_type;
+
 protected:
     LineLocalMinDistanceFilter();
     ~LineLocalMinDistanceFilter() override;
@@ -130,14 +132,14 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const int pointIndex, const defaulttype::Vector3 &PQ);
+    bool validPoint(const index_type pointIndex, const defaulttype::Vector3 &PQ);
 
 
 
     /**
      * @brief Line Collision Primitive validation method.
      */
-    bool validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/);
+    bool validLine(const index_type /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/);
 
     //@}
 

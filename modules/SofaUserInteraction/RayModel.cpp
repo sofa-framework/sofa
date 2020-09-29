@@ -89,9 +89,9 @@ void RayCollisionModel::init()
 }
 
 
-int RayCollisionModel::addRay(const Vector3& origin, const Vector3& direction, SReal length)
+index_type RayCollisionModel::addRay(const Vector3& origin, const Vector3& direction, SReal length)
 {
-    int i = size;
+    std::size_t i = size;
     resize(i);
     Ray r = getRay(i);
     r.setOrigin(origin);
