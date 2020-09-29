@@ -53,6 +53,8 @@ public:
     using Inherit1::mstate2;
     using Inherit1::springs;
 
+    using index_type = sofa::defaulttype::index_type;
+
 protected:
     Data< Real >  d_linesStiffness; ///< Stiffness for the Lines
     Data< Real >  d_linesDamping; ///< Damping for the Lines

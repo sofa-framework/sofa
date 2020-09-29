@@ -268,8 +268,8 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT
                 const Element& element = elements[d_map.getValue()[indexIn].in_index];
 
                 helper::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[indexIn].baryCoords);
-                for (auto j=0; j<element.size(); j++)
-                    o.addCol(BaseMatrix::Index(element[j]), data*baryCoef[j]);
+                for (std::size_t j=0; j<element.size(); j++)
+                    o.addCol(defaulttype::BaseMatrix::Index(element[j]), data*baryCoef[j]);
             }
         }
     }
@@ -298,8 +298,8 @@ const defaulttype::BaseMatrix* BarycentricMapperTopologyContainer<In,Out,Mapping
         const Element& element = elements[d_map.getValue()[outId].in_index];
 
         helper::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[outId].baryCoords);
-        for (auto j=0; j<element.size(); j++)
-            this->addMatrixContrib(m_matrixJ, BaseMatrix::Index(outId), BaseMatrix::Index(element[j]), baryCoef[j]);
+        for (std::size_t j=0; j<element.size(); j++)
+            this->addMatrixContrib(m_matrixJ, defaulttype::BaseMatrix::Index(outId), defaulttype::BaseMatrix::Index(element[j]), baryCoef[j]);
     }
 
     m_matrixJ->compress();

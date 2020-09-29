@@ -66,6 +66,9 @@ public:
 
     typedef std::list<defaulttype::BaseMatrix::Index> ListIndex;
     typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
+
+    using index_type = sofa::defaulttype::index_type;
+
 protected:
     LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
 

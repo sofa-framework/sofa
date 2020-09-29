@@ -894,7 +894,7 @@ void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * des
             {
                 Real tmp = (Real)0.0;
                 sofa::defaulttype::DataTypeInfo<Coord>::getValue(vSrc[i], j, tmp);
-                dest->set(BaseVector::Index(offset + i * coordDim + j), tmp);
+                dest->set(defaulttype::BaseVector::Index(offset + i * coordDim + j), tmp);
             }
         }
 
@@ -911,7 +911,7 @@ void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * des
             {
                 Real tmp;
                 sofa::defaulttype::DataTypeInfo<Deriv>::getValue(vSrc[i], j, tmp);
-                dest->set(BaseVector::Index(offset + i * derivDim + j), tmp);
+                dest->set(defaulttype::BaseVector::Index(offset + i * derivDim + j), tmp);
             }
         }
 
@@ -932,7 +932,7 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, con
             for (auto j = 0; j < coordDim; j++)
             {
                 Real tmp;
-                tmp = (Real)src->element(BaseVector::Index(offset + i * coordDim + j));
+                tmp = (Real)src->element(defaulttype::BaseVector::Index(offset + i * coordDim + j));
                 sofa::defaulttype::DataTypeInfo<Coord>::setValue(vDest[i], j, tmp);
             }
         }
@@ -949,7 +949,7 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, con
             for (auto j = 0; j < derivDim; j++)
             {
                 Real tmp;
-                tmp = (Real)src->element(BaseVector::Index(offset + i * derivDim + j));
+                tmp = (Real)src->element(defaulttype::BaseVector::Index(offset + i * derivDim + j));
                 defaulttype::DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp);
             }
         }
@@ -972,7 +972,7 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
             {
                 Real tmp = (Real)0.0;
                 defaulttype::DataTypeInfo<Coord>::getValue(vSrc[i], j, tmp);
-                dest->add(BaseVector::Index(offset + i * coordDim + j), tmp);
+                dest->add(defaulttype::BaseVector::Index(offset + i * coordDim + j), tmp);
             }
         }
 
@@ -989,7 +989,7 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
             {
                 Real tmp;
                 defaulttype::DataTypeInfo<Deriv>::getValue(vSrc[i], j, tmp);
-                dest->add(BaseVector::Index(offset + i * derivDim + j), tmp);
+                dest->add(defaulttype::BaseVector::Index(offset + i * derivDim + j), tmp);
             }
         }
 
@@ -1011,7 +1011,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(sofa::core::VecId de
             {
                 Real tmp = (Real)0.0;
                 defaulttype::DataTypeInfo<Coord>::getValue(vDest[i], j, tmp);
-                defaulttype::DataTypeInfo<Coord>::setValue(vDest[i], j, tmp + src->element(BaseVector::Index(offset + i * coordDim + j)));
+                defaulttype::DataTypeInfo<Coord>::setValue(vDest[i], j, tmp + src->element(defaulttype::BaseVector::Index(offset + i * coordDim + j)));
             }
         }
 
@@ -1028,7 +1028,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(sofa::core::VecId de
             {
                 Real tmp = (Real)0.0;
                 defaulttype::DataTypeInfo<Deriv>::getValue(vDest[i], j, tmp);
-                defaulttype::DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp + src->element(BaseVector::Index(offset + i * derivDim + j)));
+                defaulttype::DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp + src->element(defaulttype::BaseVector::Index(offset + i * derivDim + j)));
             }
         }
 
@@ -1050,7 +1050,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(sofa::core::Vec
             {
                 Real tmp = (Real)0.0;
                 defaulttype::DataTypeInfo<Coord>::getValue(vDest[i+offset],j,tmp);
-                defaulttype::DataTypeInfo<Coord>::setValue(vDest[i+offset],j, tmp + src->element(BaseVector::Index(i*coordDim+j)));
+                defaulttype::DataTypeInfo<Coord>::setValue(vDest[i+offset],j, tmp + src->element(defaulttype::BaseVector::Index(i*coordDim+j)));
             }
         }
         offset += unsigned(nbEntries);
@@ -1067,7 +1067,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(sofa::core::Vec
             {
                 Real tmp = (Real)0.0;
                 defaulttype::DataTypeInfo<Deriv>::getValue(vDest[i+offset],j,tmp);
-                defaulttype::DataTypeInfo<Deriv>::setValue(vDest[i+offset],j, tmp + src->element(BaseVector::Index(i*derivDim+j)));
+                defaulttype::DataTypeInfo<Deriv>::setValue(vDest[i+offset],j, tmp + src->element(defaulttype::BaseVector::Index(i*derivDim+j)));
             }
         }
         offset += unsigned(nbEntries);
@@ -2587,7 +2587,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ConstraintPa
             const Deriv n = colIt.val();
 
             for (unsigned int r = 0; r < N; ++r) {
-                J->add(BaseVector::Index(cid), BaseVector::Index(off + dof * N + r), n[r]);
+                J->add(defaulttype::BaseVector::Index(cid), defaulttype::BaseVector::Index(off + dof * N + r), n[r]);
             }
         }
     }

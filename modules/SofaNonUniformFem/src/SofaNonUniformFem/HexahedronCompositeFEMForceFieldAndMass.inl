@@ -562,7 +562,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     msg_warning()<<"finestChildren.size() : "<<finestChildren.size()<<msgendl;
     msg_warning()<<"finestSparseGrid->getNbHexahedra() : "<<finestSparseGrid->getNbHexahedra()<<msgendl;
 
-    BaseMatrix::Index sizeass=2;
+    defaulttype::BaseMatrix::Index sizeass=2;
     for(auto i=0; i<this->d_nbVirtualFinerLevels.getValue(); ++i)
         sizeass = (sizeass-1)*2+1;
     sizeass = sizeass*sizeass*sizeass;
@@ -578,8 +578,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     helper::vector<ElementMass> finestMasses(finestChildren.size());
 
 
-    std::map< index_type, BaseMatrix::Index> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
-    BaseMatrix::Index idxass = 0;
+    std::map< index_type, defaulttype::BaseMatrix::Index> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
+    defaulttype::BaseMatrix::Index idxass = 0;
 
 
 
@@ -625,10 +625,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 
-    std::map<index_type, BaseMatrix::Index> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
-    BaseMatrix::Index idxcutass = 0;
-    std::map<BaseMatrix::Index,bool> map_idxq_coarse;
-    helper::fixed_array<BaseMatrix::Index,8> map_idxcoarse_idxfine;
+    std::map<index_type, defaulttype::BaseMatrix::Index> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
+    defaulttype::BaseMatrix::Index idxcutass = 0;
+    std::map<defaulttype::BaseMatrix::Index,bool> map_idxq_coarse;
+    helper::fixed_array<defaulttype::BaseMatrix::Index,8> map_idxcoarse_idxfine;
     const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexahedron( elementIndice );
 
     for(auto i=0; i<sizeass; ++i)
@@ -804,8 +804,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     linearsolver::NewMatMatrix Kc, Mc; // coarse stiffness
     Kc = WBmeca.t() * assembledStiffness * WBmeca;
     Mc = WBmeca.t() * assembledMass * WBmeca;
-    for(BaseMatrix::Index i=0; i<8*3; ++i)
-        for(BaseMatrix::Index j=0; j<8*3; ++j)
+    for(defaulttype::BaseMatrix::Index i=0; i<8*3; ++i)
+        for(defaulttype::BaseMatrix::Index j=0; j<8*3; ++j)
         {
             K[i][j]=(Real)Kc.element(i,j);
             M[i][j]=(Real)Mc.element(i,j);
