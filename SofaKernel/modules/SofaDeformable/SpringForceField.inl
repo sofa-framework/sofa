@@ -66,7 +66,7 @@ class SpringForceField<DataTypes>::Loader : public helper::io::XspLoaderDataHook
 public:
     SpringForceField<DataTypes>* dest;
     Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
-    void addSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos) override
+    void addSpring(index_type m1, index_type m2, SReal ks, SReal kd, SReal initpos) override
     {
         helper::vector<Spring>& springs = *dest->springs.beginEdit();
         springs.push_back(Spring(m1,m2,ks,kd,initpos));
@@ -91,7 +91,7 @@ bool SpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void SpringForceField<DataTypes>::reinit()
 {
-    for (unsigned int i=0; i<springs.getValue().size(); ++i)
+    for (auto i=0; i<springs.getValue().size(); ++i)
     {
         (*springs.beginEdit())[i].ks = (Real) ks.getValue();
         (*springs.beginEdit())[i].kd = (Real) kd.getValue();
@@ -108,10 +108,10 @@ void SpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring)
+void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, index_type /*i*/, const Spring& spring)
 {
-    int a = spring.m1;
-    int b = spring.m2;
+    auto a = spring.m1;
+    auto b = spring.m2;
     typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
     Real d = u.norm();
     if( spring.enabled && d<1.0e-4 ) // null length => no force
@@ -149,7 +149,7 @@ void SpringForceField<DataTypes>::addForce(
     f1.resize(x1.size());
     f2.resize(x2.size());
     this->m_potentialEnergy = 0;
-    for (unsigned int i=0; i<this->springs.getValue().size(); i++)
+    for (auto i=0; i<this->springs.getValue().size(); i++)
     {
         this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
@@ -173,10 +173,10 @@ SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
 
     SReal ener = 0;
 
-    for (unsigned int i=0; i<springs.size(); i++)
+    for (auto i=0; i<springs.size(); i++)
     {
-        int a = springs[i].m1;
-        int b = springs[i].m2;
+        auto a = springs[i].m1;
+        auto b = springs[i].m2;
         Coord u = p2[b]-p1[a];
         Real d = u.norm();
         Real elongation = (Real)(d - springs[i].initpos);
@@ -207,7 +207,7 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     std::vector< Vector3 > points[4];
     bool external = (this->mstate1!=this->mstate2);
     const helper::vector<Spring>& springs = this->springs.getValue();
-    for (unsigned int i=0; i<springs.size(); i++)
+    for (auto i=0; i<springs.size(); i++)
     {
         if (!springs[i].enabled) continue;
         Real d = (p2[springs[i].m2]-p1[springs[i].m1]).norm();
@@ -258,28 +258,28 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     }
     else if (drawMode.getValue() == 1)
     {
-        const unsigned int numLines0=points[0].size()/2;
-        const unsigned int numLines1=points[1].size()/2;
-        const unsigned int numLines2=points[2].size()/2;
-        const unsigned int numLines3=points[3].size()/2;
+        const auto numLines0=points[0].size()/2;
+        const auto numLines1=points[1].size()/2;
+        const auto numLines2=points[2].size()/2;
+        const auto numLines3=points[3].size()/2;
 
-        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawCylinder(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
-        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawCylinder(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
-        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawCylinder(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
-        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawCylinder(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
+        for (auto i=0; i<numLines0; ++i) vparams->drawTool()->drawCylinder(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
+        for (auto i=0; i<numLines1; ++i) vparams->drawTool()->drawCylinder(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
+        for (auto i=0; i<numLines2; ++i) vparams->drawTool()->drawCylinder(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
+        for (auto i=0; i<numLines3; ++i) vparams->drawTool()->drawCylinder(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
 
     }
     else if (drawMode.getValue() == 2)
     {
-        const unsigned int numLines0=points[0].size()/2;
-        const unsigned int numLines1=points[1].size()/2;
-        const unsigned int numLines2=points[2].size()/2;
-        const unsigned int numLines3=points[3].size()/2;
+        const auto numLines0=points[0].size()/2;
+        const auto numLines1=points[1].size()/2;
+        const auto numLines2=points[2].size()/2;
+        const auto numLines3=points[3].size()/2;
 
-        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawArrow(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
-        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawArrow(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
-        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawArrow(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
-        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawArrow(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
+        for (auto i=0; i<numLines0; ++i) vparams->drawTool()->drawArrow(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
+        for (auto i=0; i<numLines1; ++i) vparams->drawTool()->drawArrow(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
+        for (auto i=0; i<numLines2; ++i) vparams->drawTool()->drawArrow(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
+        for (auto i=0; i<numLines3; ++i) vparams->drawTool()->drawArrow(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
     }
     else
     {
@@ -337,18 +337,18 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
                 {
                 case core::topology::POINTSREMOVED:
                 {
-                    int nbPoints = _topology->getNbPoints();
+                    auto nbPoints = _topology->getNbPoints();
                     const auto& tab = (static_cast<const sofa::core::topology::PointsRemoved *>(*changeIt))->getArray();
 
                     helper::vector<Spring>& springs = *this->springs.beginEdit();
                     // springs.push_back(Spring(m1,m2,ks,kd,initpos));
 
-                    for(unsigned int i=0; i<tab.size(); ++i)
+                    for(auto i=0; i<tab.size(); ++i)
                     {
-                        int pntId = tab[i];
+                        auto pntId = tab[i];
                         nbPoints -= 1;
 
-                        for(unsigned int j=0; j<springs.size(); ++j)
+                        for(auto j=0; j<springs.size(); ++j)
                         {
                             Spring& spring = springs[j];
                             if(spring.m2 == pntId)
@@ -385,7 +385,7 @@ void SpringForceField<DataTypes>::updateForceMask()
 {
     const helper::vector<Spring>& springs= this->springs.getValue();
 
-    for( unsigned int i=0, iend=springs.size() ; i<iend ; ++i )
+    for( std::size_t i=0, iend=springs.size() ; i<iend ; ++i )
     {
         const Spring& s = springs[i];
         this->mstate1->forceMask.insertEntry(s.m1);

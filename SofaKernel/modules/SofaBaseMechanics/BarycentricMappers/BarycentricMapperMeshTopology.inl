@@ -497,8 +497,8 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                     index_type index = m_map1d[indexIn].in_index;
                     {
                         const Edge& line = lines[index];
-                        o.addCol( line[0], data * ( 1-fx ) );
-                        o.addCol( line[1], data * fx );
+                        o.addCol( BaseMatrix::Index(line[0]), data * ( 1-fx ) );
+                        o.addCol( BaseMatrix::Index(line[1]), data * fx );
                     }
                 }
                 // 2D elements : triangle or quad
@@ -510,17 +510,17 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                     if ( index < iTri ) // triangle
                     {
                         const Triangle& triangle = triangles[index];
-                        o.addCol( triangle[0], data * ( 1-fx-fy ) );
-                        o.addCol( triangle[1], data * fx );
-                        o.addCol( triangle[2], data * fy );
+                        o.addCol( BaseMatrix::Index(triangle[0]), data * ( 1-fx-fy ) );
+                        o.addCol( BaseMatrix::Index(triangle[1]), data * fx );
+                        o.addCol( BaseMatrix::Index(triangle[2]), data * fy );
                     }
                     else // quad
                     {
                         const Quad& quad = quads[index - iTri];
-                        o.addCol( quad[0], data * ( ( 1-fx ) * ( 1-fy ) ) );
-                        o.addCol( quad[1], data * ( ( fx ) * ( 1-fy ) ) );
-                        o.addCol( quad[3], data * ( ( 1-fx ) * ( fy ) ) );
-                        o.addCol( quad[2], data * ( ( fx ) * ( fy ) ) );
+                        o.addCol( BaseMatrix::Index(quad[0]), data * ( ( 1-fx ) * ( 1-fy ) ) );
+                        o.addCol( BaseMatrix::Index(quad[1]), data * ( ( fx ) * ( 1-fy ) ) );
+                        o.addCol( BaseMatrix::Index(quad[3]), data * ( ( 1-fx ) * ( fy ) ) );
+                        o.addCol( BaseMatrix::Index(quad[2]), data * ( ( fx ) * ( fy ) ) );
                     }
                 }
                 // 3D elements : tetra or hexa
@@ -533,26 +533,26 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                     if ( index < iTetra ) // tetra
                     {
                         const Tetra& tetra = tetrahedra[index];
-                        o.addCol ( tetra[0], data * ( 1-fx-fy-fz ) );
-                        o.addCol ( tetra[1], data * fx );
-                        o.addCol ( tetra[2], data * fy );
-                        o.addCol ( tetra[3], data * fz );
+                        o.addCol ( BaseMatrix::Index(tetra[0]), data * ( 1-fx-fy-fz ) );
+                        o.addCol ( BaseMatrix::Index(tetra[1]), data * fx );
+                        o.addCol ( BaseMatrix::Index(tetra[2]), data * fy );
+                        o.addCol ( BaseMatrix::Index(tetra[3]), data * fz );
                     }
                     else // hexa
                     {
                         const Hexa& hexa = hexas[index-iTetra];
 
-                        o.addCol ( hexa[0],data * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ) ) ;
-                        o.addCol ( hexa[1],data * ( ( fx ) * ( 1-fy ) * ( 1-fz ) ) ) ;
+                        o.addCol ( BaseMatrix::Index(hexa[0]),data * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ) ) ;
+                        o.addCol ( BaseMatrix::Index(hexa[1]),data * ( ( fx ) * ( 1-fy ) * ( 1-fz ) ) ) ;
 
-                        o.addCol ( hexa[3],data * ( ( 1-fx ) * ( fy ) * ( 1-fz ) ) ) ;
-                        o.addCol ( hexa[2],data * ( ( fx ) * ( fy ) * ( 1-fz ) ) ) ;
+                        o.addCol ( BaseMatrix::Index(hexa[3]),data * ( ( 1-fx ) * ( fy ) * ( 1-fz ) ) ) ;
+                        o.addCol ( BaseMatrix::Index(hexa[2]),data * ( ( fx ) * ( fy ) * ( 1-fz ) ) ) ;
 
-                        o.addCol ( hexa[4],data * ( ( 1-fx ) * ( 1-fy ) * ( fz ) ) ) ;
-                        o.addCol ( hexa[5],data * ( ( fx ) * ( 1-fy ) * ( fz ) ) ) ;
+                        o.addCol ( BaseMatrix::Index(hexa[4]),data * ( ( 1-fx ) * ( 1-fy ) * ( fz ) ) ) ;
+                        o.addCol ( BaseMatrix::Index(hexa[5]),data * ( ( fx ) * ( 1-fy ) * ( fz ) ) ) ;
 
-                        o.addCol ( hexa[7],data * ( ( 1-fx ) * ( fy ) * ( fz ) ) ) ;
-                        o.addCol ( hexa[6],data * ( ( fx ) * ( fy ) * ( fz ) ) ) ;
+                        o.addCol ( BaseMatrix::Index(hexa[7]),data * ( ( 1-fx ) * ( fy ) * ( fz ) ) ) ;
+                        o.addCol ( BaseMatrix::Index(hexa[6]),data * ( ( fx ) * ( fy ) * ( fz ) ) ) ;
                     }
                 }
             }
@@ -728,8 +728,8 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
             size_t index = m_map1d[i].in_index;
             {
                 const Edge& line = lines[index];
-                this->addMatrixContrib(m_matrixJ, out, line[0],  ( 1-fx ));
-                this->addMatrixContrib(m_matrixJ, out, line[1],  fx);
+                this->addMatrixContrib(m_matrixJ, BaseMatrix::Index(out), BaseMatrix::Index(line[0]),  ( 1-fx ));
+                this->addMatrixContrib(m_matrixJ, BaseMatrix::Index(out), BaseMatrix::Index(line[1]),  fx);
             }
         }
     }
@@ -739,24 +739,24 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
         const size_t c0 = triangles.size();
         for ( size_t i=0; i<m_map2d.size(); i++ )
         {
-            const size_t out = i+i0;
+            const BaseMatrix::Index out = BaseMatrix::Index(i+i0);
             const Real fx = ( Real ) m_map2d[i].baryCoords[0];
             const Real fy = ( Real ) m_map2d[i].baryCoords[1];
             size_t index = m_map2d[i].in_index;
             if ( index<c0 )
             {
                 const Triangle& triangle = triangles[index];
-                this->addMatrixContrib(m_matrixJ, out, triangle[0],  ( 1-fx-fy ));
-                this->addMatrixContrib(m_matrixJ, out, triangle[1],  fx);
-                this->addMatrixContrib(m_matrixJ, out, triangle[2],  fy);
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(triangle[0]),  ( 1-fx-fy ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(triangle[1]),  fx);
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(triangle[2]),  fy);
             }
             else
             {
                 const Quad& quad = quads[index-c0];
-                this->addMatrixContrib(m_matrixJ, out, quad[0],  ( ( 1-fx ) * ( 1-fy ) ));
-                this->addMatrixContrib(m_matrixJ, out, quad[1],  ( ( fx ) * ( 1-fy ) ));
-                this->addMatrixContrib(m_matrixJ, out, quad[3],  ( ( 1-fx ) * ( fy ) ));
-                this->addMatrixContrib(m_matrixJ, out, quad[2],  ( ( fx ) * ( fy ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(quad[0]),  ( ( 1-fx ) * ( 1-fy ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(quad[1]),  ( ( fx ) * ( 1-fy ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(quad[3]),  ( ( 1-fx ) * ( fy ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(quad[2]),  ( ( fx ) * ( fy ) ));
             }
         }
     }
@@ -766,7 +766,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
         const size_t c0 = tetrahedra.size();
         for ( size_t i=0; i<m_map3d.size(); i++ )
         {
-            const size_t out = i+i0;
+            const BaseMatrix::Index out = BaseMatrix::Index(i+i0);
             const Real fx = ( Real ) m_map3d[i].baryCoords[0];
             const Real fy = ( Real ) m_map3d[i].baryCoords[1];
             const Real fz = ( Real ) m_map3d[i].baryCoords[2];
@@ -774,26 +774,26 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
             if ( index<c0 )
             {
                 const Tetra& tetra = tetrahedra[index];
-                this->addMatrixContrib(m_matrixJ, out, tetra[0],  ( 1-fx-fy-fz ));
-                this->addMatrixContrib(m_matrixJ, out, tetra[1],  fx);
-                this->addMatrixContrib(m_matrixJ, out, tetra[2],  fy);
-                this->addMatrixContrib(m_matrixJ, out, tetra[3],  fz);
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(tetra[0]),  ( 1-fx-fy-fz ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(tetra[1]),  fx);
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(tetra[2]),  fy);
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(tetra[3]),  fz);
             }
             else
             {
                 const Hexa& cube = cubes[index-c0];
 
-                this->addMatrixContrib(m_matrixJ, out, cube[0],  ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-                this->addMatrixContrib(m_matrixJ, out, cube[1],  ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[0]),  ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[1]),  ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 
-                this->addMatrixContrib(m_matrixJ, out, cube[3],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-                this->addMatrixContrib(m_matrixJ, out, cube[2],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[3]),  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[2]),  ( ( fx ) * ( fy ) * ( 1-fz ) ));
 
-                this->addMatrixContrib(m_matrixJ, out, cube[4],  ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
-                this->addMatrixContrib(m_matrixJ, out, cube[5],  ( ( fx ) * ( 1-fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[4]),  ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[5]),  ( ( fx ) * ( 1-fy ) * ( fz ) ));
 
-                this->addMatrixContrib(m_matrixJ, out, cube[7],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
-                this->addMatrixContrib(m_matrixJ, out, cube[6],  ( ( fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[7]),  ( ( 1-fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[6]),  ( ( fx ) * ( fy ) * ( fz ) ));
             }
         }
     }

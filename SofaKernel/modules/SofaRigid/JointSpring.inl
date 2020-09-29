@@ -34,7 +34,7 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
-JointSpring<DataTypes>::JointSpring(int m1 , int m2,
+JointSpring<DataTypes>::JointSpring(index_type m1 , index_type m2,
                                     Real softKst, Real hardKst , Real softKsr , Real hardKsr , Real blocKsr,
                                     Real axmin , Real axmax , Real aymin , Real aymax , Real azmin , Real azmax,
                                     Real kd):

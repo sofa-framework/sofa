@@ -97,8 +97,8 @@ void RegularGridSpringForceField<DataTypes>::addForce(const core::MechanicalPara
             const int nx = topology->getNx();
             const int ny = topology->getNy();
             const int nz = topology->getNz();
-            int index = springs.size();
-            int size = index;
+            auto index = springs.size();
+            auto size = index;
             if (this->linesStiffness.getValue() != 0.0 || this->linesDamping.getValue() != 0.0)
                 size += ((nx-1)*ny*nz+nx*(ny-1)*nz+nx*ny*(nz-1));
             if (this->quadsStiffness.getValue() != 0.0 || this->quadsDamping.getValue() != 0.0)
@@ -281,7 +281,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalPar
             const int nx = topology->getNx();
             const int ny = topology->getNy();
             const int nz = topology->getNz();
-            int index = springs.size();
+            auto index = springs.size();
             if (this->linesStiffness.getValue() != 0.0 || this->linesDamping.getValue() != 0.0)
             {
                 typename RegularGridSpringForceField<DataTypes>::Spring spring;

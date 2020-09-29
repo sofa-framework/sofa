@@ -45,15 +45,16 @@ template<class T>
 class LinearSpring
 {
 public:
+    using index_type = sofa::defaulttype::index_type;
     typedef T Real;
-    int  m1, m2;            ///< the two extremities of the spring: masses m1 and m2
+    index_type  m1, m2;     ///< the two extremities of the spring: masses m1 and m2
     Real ks;                ///< spring stiffness
     Real kd;                ///< damping factor
     Real initpos;           ///< rest length of the spring
     bool elongationOnly;    ///< only forbid elongation, not compression
     bool enabled;           ///< false to disable this spring (i.e. broken)
 
-    LinearSpring(int m1=0, int m2=0, Real ks=0.0, Real kd=0.0, Real initpos=0.0, bool noCompression=false, bool enabled=true)
+    LinearSpring(index_type m1=0, index_type m2=0, Real ks=0.0, Real kd=0.0, Real initpos=0.0, bool noCompression=false, bool enabled=true)
         : m1(m1), m2(m2), ks(ks), kd(kd), initpos(initpos), elongationOnly(noCompression), enabled(enabled)
     {
     }
@@ -86,6 +87,8 @@ class SpringForceField : public core::behavior::PairInteractionForceField<DataTy
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(SpringForceField,DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionForceField,DataTypes));
+
+    using index_type = sofa::defaulttype::index_type;
 
     typedef typename core::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -122,7 +125,7 @@ protected:
     SpringForceFieldInternalData<DataTypes> data;
     friend class SpringForceFieldInternalData<DataTypes>;
 
-    virtual void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring);
+    virtual void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, index_type /*i*/, const Spring& spring);
 
     SpringForceField(SReal _ks=100.0, SReal _kd=5.0);
     SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
@@ -161,7 +164,7 @@ public:
 
     // -- Modifiers
 
-    void clear(int reserve=0)
+    void clear(std::size_t reserve=0)
     {
         sofa::helper::vector<Spring>& springs = *this->springs.beginEdit();
         springs.clear();
@@ -169,7 +172,7 @@ public:
         this->springs.endEdit();
     }
 
-    void removeSpring(unsigned int idSpring)
+    void removeSpring(index_type idSpring)
     {
         if (idSpring >= (this->springs.getValue()).size())
             return;
@@ -179,7 +182,7 @@ public:
         this->springs.endEdit();
     }
 
-    void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initlen)
+    void addSpring(index_type m1, index_type m2, SReal ks, SReal kd, SReal initlen)
     {
         springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
         springs.endEdit();

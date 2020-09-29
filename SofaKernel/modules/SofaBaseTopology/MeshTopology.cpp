@@ -87,8 +87,8 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
         Edge e;
         for (unsigned int j=0; j<6; ++j)
         {
-            unsigned int v1=t[edgesInTetrahedronArray[j][0]];
-            unsigned int v2=t[edgesInTetrahedronArray[j][1]];
+            auto v1=t[edgesInTetrahedronArray[j][0]];
+            auto v2=t[edgesInTetrahedronArray[j][1]];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
@@ -126,8 +126,8 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
         Edge e;
         for (unsigned int j=0; j<12; ++j)
         {
-            unsigned int v1=h[edgeHexahedronDescriptionArray[j][0]];
-            unsigned int v2=h[edgeHexahedronDescriptionArray[j][1]];
+            auto v1=h[edgeHexahedronDescriptionArray[j][0]];
+            auto v2=h[edgeHexahedronDescriptionArray[j][1]];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
@@ -173,8 +173,8 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
         Edge e;
         for (unsigned int j=0; j<3; ++j)
         {
-            unsigned int v1=t[(j+1)%3];
-            unsigned int v2=t[(j+2)%3];
+            auto v1=t[(j+1)%3];
+            auto v2=t[(j+2)%3];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
@@ -206,8 +206,8 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
         Edge e;
         for (unsigned int j=0; j<4; ++j)
         {
-            unsigned int v1=t[(j+1)%4];
-            unsigned int v2=t[(j+2)%4];
+            auto v1=t[(j+1)%4];
+            auto v2=t[(j+2)%4];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
@@ -250,11 +250,11 @@ void MeshTopology::TriangleUpdate::doUpdate()
     SeqTriangles& seqTriangles = *topology->seqTriangles.beginEdit();
     seqTriangles.clear();
     // create a temporary map to find redundant triangles
-    std::map<Triangle,unsigned int> triangleMap;
-    std::map<Triangle,unsigned int>::iterator itt;
+    std::map<Triangle, TriangleID> triangleMap;
+    std::map<Triangle, TriangleID>::iterator itt;
     Triangle tr;
-    unsigned int triangleIndex;
-    unsigned int v[3],val;
+    TriangleID triangleIndex;
+    PointID v[3],val;
     /// create the m_edge array at the same time than it fills the m_trianglesInTetrahedron array
     for (unsigned int i = 0; i < tetrahedra.size(); ++i)
     {
@@ -308,11 +308,11 @@ void MeshTopology::QuadUpdate::doUpdate()
     const SeqHexahedra& hexahedra = topology->getHexahedra(); // do not use seqQuads directly as it might not be up-to-date
 
     // create a temporary map to find redundant quads
-    std::map<Quad,unsigned int> quadMap;
-    std::map<Quad,unsigned int>::iterator itt;
+    std::map<Quad, QuadID> quadMap;
+    std::map<Quad, QuadID>::iterator itt;
     Quad qu;
-    unsigned int v[4],val;
-    unsigned int quadIndex;
+    PointID v[4],val;
+    QuadID quadIndex;
     /// create the m_edge array at the same time than it fills the m_edgesInHexahedron array
     for (unsigned int i = 0; i < hexahedra.size(); ++i)
     {
@@ -558,42 +558,42 @@ void MeshTopology::init()
     // compute the number of points, if the topology is charged from the scene or if it was loaded from a MeshLoader without any points data.
     if (nbPoints==0)
     {
-        unsigned int n = 0;
-        for (unsigned int i=0; i<seqEdges.getValue().size(); i++)
+        std::size_t n = 0;
+        for (auto i=0; i<seqEdges.getValue().size(); i++)
         {
-            for (unsigned int j=0; j<seqEdges.getValue()[i].size(); j++)
+            for (auto j=0; j<seqEdges.getValue()[i].size(); j++)
             {
                 if (n <= seqEdges.getValue()[i][j])
                     n = 1 + seqEdges.getValue()[i][j];
             }
         }
-        for (unsigned int i=0; i<seqTriangles.getValue().size(); i++)
+        for (auto i=0; i<seqTriangles.getValue().size(); i++)
         {
-            for (unsigned int j=0; j<seqTriangles.getValue()[i].size(); j++)
+            for (auto j=0; j<seqTriangles.getValue()[i].size(); j++)
             {
                 if (n <= seqTriangles.getValue()[i][j])
                     n = 1 + seqTriangles.getValue()[i][j];
             }
         }
-        for (unsigned int i=0; i<seqQuads.getValue().size(); i++)
+        for (auto i=0; i<seqQuads.getValue().size(); i++)
         {
-            for (unsigned int j=0; j<seqQuads.getValue()[i].size(); j++)
+            for (auto j=0; j<seqQuads.getValue()[i].size(); j++)
             {
                 if (n <= seqQuads.getValue()[i][j])
                     n = 1 + seqQuads.getValue()[i][j];
             }
         }
-        for (unsigned int i=0; i<seqTetrahedra.getValue().size(); i++)
+        for (auto i=0; i<seqTetrahedra.getValue().size(); i++)
         {
-            for (unsigned int j=0; j<seqTetrahedra.getValue()[i].size(); j++)
+            for (auto j=0; j<seqTetrahedra.getValue()[i].size(); j++)
             {
                 if (n <= seqTetrahedra.getValue()[i][j])
                     n = 1 + seqTetrahedra.getValue()[i][j];
             }
         }
-        for (unsigned int i=0; i<seqHexahedra.getValue().size(); i++)
+        for (auto i=0; i<seqHexahedra.getValue().size(); i++)
         {
-            for (unsigned int j=0; j<seqHexahedra.getValue()[i].size(); j++)
+            for (auto j=0; j<seqHexahedra.getValue()[i].size(); j++)
             {
                 if (n <= seqHexahedra.getValue()[i][j])
                     n = 1 + seqHexahedra.getValue()[i][j];
@@ -859,7 +859,7 @@ void MeshTopology::createEdgesAroundVertexArray ()
         else*/
     {
         // 1D mesh : put inbound edges before outbound edges
-        for (unsigned int i = 0; i < edges.size(); ++i)
+        for (auto i = 0; i < edges.size(); ++i)
         {
             // adding edge i in the edge shell of both points
             m_edgesAroundVertex[ edges[i][0] ].push_back( i );
@@ -974,19 +974,19 @@ void MeshTopology::createOrientedTrianglesAroundVertexArray()
     m_orientedEdgesAroundVertex.clear();
     m_orientedEdgesAroundVertex.resize(nbPoints);
 
-    for(unsigned int i = 0; i < (unsigned int)nbPoints; ++i)
+    for(auto i = 0; i < nbPoints; ++i)
         //for each point: i
     {
-        unsigned int startEdge = InvalidID;
-        unsigned int currentEdge = InvalidID;
-        unsigned int nextEdge = InvalidID;
-        unsigned int lastTri = InvalidID;
+        EdgeID startEdge = InvalidID;
+        EdgeID currentEdge = InvalidID;
+        EdgeID nextEdge = InvalidID;
+        TriangleID lastTri = InvalidID;
 
         // skip points not attached to any edge
         if (m_edgesAroundVertex[i].empty()) continue;
 
         //find the start edge for a boundary point
-        for(unsigned int j = 0; j < m_edgesAroundVertex[i].size() && startEdge == InvalidID; ++j)
+        for(auto j = 0; j < m_edgesAroundVertex[i].size() && startEdge == InvalidID; ++j)
             //for each edge adjacent to the point: m_edgesAroundVertex[i][j]
         {
             const TrianglesAroundEdge& eTris = getTrianglesAroundEdge(m_edgesAroundVertex[i][j]);
@@ -995,13 +995,13 @@ void MeshTopology::createOrientedTrianglesAroundVertexArray()
             {
                 //find out if there is a next edge in the right orientation around the point i
                 const EdgesInTriangle& tEdges = getEdgesInTriangle(eTris[0]);
-                for(unsigned int k = 0; k < tEdges.size() && startEdge == InvalidID; ++k)
+                for(auto k = 0; k < tEdges.size() && startEdge == InvalidID; ++k)
                     //for each edge of the triangle: tEdges[k]
                 {
                     if(tEdges[k] != m_edgesAroundVertex[i][j])
                         // pick up the edge which is not the current one
                     {
-                        for(unsigned int p = 0; p < 2; ++p)
+                        for(auto p = 0; p < 2; ++p)
                             //for each end point of the edge: edges[tEdges[k]][p]
                         {
                             if(edges[tEdges[k]][p] == i)
@@ -1032,17 +1032,17 @@ void MeshTopology::createOrientedTrianglesAroundVertexArray()
             currentEdge = startEdge;
             //find the next edge around the point i
             const TrianglesAroundEdge& eTris = getTrianglesAroundEdge(currentEdge);
-            for(unsigned int j = 0; j < eTris.size() && nextEdge == InvalidID; ++j)
+            for(auto j = 0; j < eTris.size() && nextEdge == InvalidID; ++j)
                 //for each triangle adjacent to the currentEdge: eTris[j]
             {
                 const EdgesInTriangle& tEdges = getEdgesInTriangle(eTris[j]);
-                for(unsigned int k = 0; k < tEdges.size() && nextEdge == InvalidID; ++k)
+                for(auto k = 0; k < tEdges.size() && nextEdge == InvalidID; ++k)
                     //for each edge of the triangle: tEdges[k]
                 {
                     if(tEdges[k] != currentEdge)
                         // pick up the edge which is not the current one
                     {
-                        for(unsigned int p = 0; p < 2; ++p)
+                        for(auto p = 0; p < 2; ++p)
                             //for each end point of the edge: edges[tEdges[k]][p]
                         {
                             if(edges[tEdges[k]][p] == i)
@@ -1075,7 +1075,7 @@ void MeshTopology::createOrientedTrianglesAroundVertexArray()
                 m_orientedEdgesAroundVertex[i].push_back(currentEdge);
                 break;
             }
-            for(unsigned int j = 0; j < eTris.size() && nextEdge == InvalidID; ++j)
+            for(auto j = 0; j < eTris.size() && nextEdge == InvalidID; ++j)
                 // for each triangle adjacent to the currentEdge: eTris[j]
             {
                 if(eTris[j] != lastTri)
@@ -1085,7 +1085,7 @@ void MeshTopology::createOrientedTrianglesAroundVertexArray()
                     lastTri = eTris[j];
                     //find the nextEdge
                     const EdgesInTriangle& tEdges = getEdgesInTriangle(eTris[j]);
-                    for(unsigned int k = 0; k < tEdges.size(); ++k)
+                    for(auto k = 0; k < tEdges.size(); ++k)
                     {
                         if(tEdges[k] != currentEdge && (edges[tEdges[k]][0] == i || edges[tEdges[k]][1] == i))
                         {
@@ -1098,7 +1098,7 @@ void MeshTopology::createOrientedTrianglesAroundVertexArray()
             currentEdge = nextEdge;
             nextEdge = InvalidID;
             // FIX: check is currentEdge is not already in orientedEdgesAroundVertex to avoid infinite loops in case of non manifold topology
-            for (unsigned int j = 0; i < m_orientedEdgesAroundVertex[i].size(); ++i)
+            for (auto j = 0; i < m_orientedEdgesAroundVertex[i].size(); ++i)
             {
                 if (m_orientedEdgesAroundVertex[i][j] == currentEdge)
                 {
@@ -1120,7 +1120,7 @@ void MeshTopology::createTrianglesAroundEdgeArray ()
     const vector< EdgesInTriangle > &tea=m_edgesInTriangle;
     unsigned int j;
 
-    for (unsigned int i = 0; i < triangles.size(); ++i)
+    for (auto i = 0; i < triangles.size(); ++i)
     {
         const Triangle &t=triangles[i];
         // adding triangle i in the triangle shell of all edges
@@ -1186,10 +1186,10 @@ void MeshTopology::createOrientedQuadsAroundVertexArray()
     for(unsigned int i = 0; i < (unsigned int)nbPoints; ++i)
         //for each point: i
     {
-        unsigned int startEdge = InvalidID;
-        unsigned int currentEdge = InvalidID;
-        unsigned int nextEdge = InvalidID;
-        unsigned int lastQuad = InvalidID;
+        EdgeID startEdge = InvalidID;
+        EdgeID currentEdge = InvalidID;
+        EdgeID nextEdge = InvalidID;
+        QuadID lastQuad = InvalidID;
 
         //find the start edge for a boundary point
         for(unsigned int j = 0; j < m_edgesAroundVertex[i].size() && startEdge == InvalidID; ++j)
@@ -2290,7 +2290,7 @@ void MeshTopology::reOrientateTriangle(TriangleID id)
         return;
     }
     Triangle& tri = (*seqTriangles.beginEdit())[id];
-    unsigned int tmp = tri[1];
+    auto tmp = tri[1];
     tri[1] = tri[2];
     tri[2] = tmp;
     seqTriangles.endEdit();
@@ -2462,7 +2462,7 @@ const sofa::helper::vector <index_type> MeshTopology::getConnectedElement(index_
     sofa::helper::vector <index_type> elemAll;
     sofa::helper::vector <index_type> elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
-    unsigned int cpt = 0;
+    std::size_t cpt = 0;
 
     // init algo
     elemAll.push_back(elem);
@@ -2476,12 +2476,12 @@ const sofa::helper::vector <index_type> MeshTopology::getConnectedElement(index_
         elemNextFront = this->getElementAroundElements(elemOnFront); // for each elementID on the propagation front
 
         // Second Step - Avoid backward direction
-        for (unsigned int i = 0; i<elemNextFront.size(); ++i)
+        for (auto i = 0; i<elemNextFront.size(); ++i)
         {
             bool find = false;
-            unsigned int id = elemNextFront[i];
+            auto id = elemNextFront[i];
 
-            for (unsigned int j = 0; j<elemAll.size(); ++j)
+            for (auto j = 0; j<elemAll.size(); ++j)
                 if (id == elemAll[j])
                 {
                     find = true;
@@ -2496,7 +2496,7 @@ const sofa::helper::vector <index_type> MeshTopology::getConnectedElement(index_
         }
 
         // cpt for connexity
-        cpt += (unsigned int)elemPreviousFront.size();
+        cpt += elemPreviousFront.size();
 
         if (elemPreviousFront.empty())
         {
@@ -2552,7 +2552,7 @@ const sofa::helper::vector <index_type> MeshTopology::getElementAroundElement(in
 
     //Triangle the_tri = this->getTriangle(elem);
 
-    for(unsigned int i = 0; i<nbr; ++i) // for each node of the triangle
+    for(unsigned i = 0; i<nbr; ++i) // for each node of the triangle
     {
         sofa::helper::vector <index_type> elemAV;
 
@@ -2571,12 +2571,12 @@ const sofa::helper::vector <index_type> MeshTopology::getElementAroundElement(in
         for (unsigned int j = 0; j<elemAV.size(); ++j) // for each element around the node
         {
             bool find = false;
-            unsigned int id = elemAV[j];
+            auto id = elemAV[j];
 
             if (id == elem)
                 continue;
 
-            for (unsigned int k = 0; k<elems.size(); ++k) // check no redundancy
+            for (auto k = 0; k<elems.size(); ++k) // check no redundancy
                 if (id == elems[k])
                 {
                     find = true;
@@ -2634,9 +2634,9 @@ const sofa::helper::vector <index_type> MeshTopology::getElementAroundElements(s
     for (unsigned int i = 0; i<elemTmp.size(); ++i) // for each elementID found
     {
         bool find = false;
-        unsigned int id = elemTmp[i];
+        auto id = elemTmp[i];
 
-        for (unsigned int j = 0; j<elems.size(); ++j) // check no redundancy with input vector
+        for (auto j = 0; j<elems.size(); ++j) // check no redundancy with input vector
             if (id == elems[j])
             {
                 find = true;
@@ -2645,7 +2645,7 @@ const sofa::helper::vector <index_type> MeshTopology::getElementAroundElements(s
 
         if (!find)
         {
-            for (unsigned int j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
+            for (auto j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
                 if (id == elemAll[j])
                 {
                     find = true;

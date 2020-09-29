@@ -72,7 +72,7 @@ MeshSpringForceField<DataTypes>::~MeshSpringForceField()
 }
 
 template<class DataTypes>
-void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping)
+void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<int,int> >& sset, index_type m1, index_type m2, Real stiffness, Real damping)
 {
     if (d_localRange.getValue()[0] >= 0)
     {
@@ -261,7 +261,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
                 G = 1. - B;
             }
 
-            vparams->drawTool()->drawLines(points, drawSpringSize, sofa::defaulttype::Vec4f(R, G, B, 1.f));
+            vparams->drawTool()->drawLines(points, drawSpringSize, { float(R), float(G), float(B) , 1.0f });
         }
     }
 }

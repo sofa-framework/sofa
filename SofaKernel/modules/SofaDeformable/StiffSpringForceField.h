@@ -49,6 +49,8 @@ class StiffSpringForceField : public sofa::component::interactionforcefield::Spr
 public:
     SOFA_CLASS(SOFA_TEMPLATE(StiffSpringForceField,DataTypes), SOFA_TEMPLATE(SpringForceField,DataTypes));
 
+    using index_type = sofa::defaulttype::index_type;
+
     typedef SpringForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -58,7 +60,7 @@ public:
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef helper::vector<index_type> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 
@@ -76,10 +78,10 @@ protected:
     sofa::helper::vector<Mat>  dfdx;
 
     /// Accumulate the spring force and compute and store its stiffness
-    void addSpringForce(Real& potentialEnergy, VecDeriv& f1,const  VecCoord& p1,const VecDeriv& v1, VecDeriv& f2,const  VecCoord& p2,const  VecDeriv& v2, int i, const Spring& spring) override;
+    void addSpringForce(Real& potentialEnergy, VecDeriv& f1,const  VecCoord& p1,const VecDeriv& v1, VecDeriv& f2,const  VecCoord& p2,const  VecDeriv& v2, index_type i, const Spring& spring) override;
 
     /// Apply the stiffness, i.e. accumulate df given dx
-    virtual void addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, int i, const Spring& spring, double kFactor, double bFactor);
+    virtual void addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, index_type i, const Spring& spring, double kFactor, double bFactor);
 
     StiffSpringForceField(double ks=100.0, double kd=5.0);
     StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);

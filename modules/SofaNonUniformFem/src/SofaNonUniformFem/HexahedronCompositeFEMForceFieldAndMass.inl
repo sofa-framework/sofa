@@ -562,8 +562,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     msg_warning()<<"finestChildren.size() : "<<finestChildren.size()<<msgendl;
     msg_warning()<<"finestSparseGrid->getNbHexahedra() : "<<finestSparseGrid->getNbHexahedra()<<msgendl;
 
-    std::size_t sizeass=2;
-    for(int i=0; i<this->d_nbVirtualFinerLevels.getValue(); ++i)
+    BaseMatrix::Index sizeass=2;
+    for(auto i=0; i<this->d_nbVirtualFinerLevels.getValue(); ++i)
         sizeass = (sizeass-1)*2+1;
     sizeass = sizeass*sizeass*sizeass;
 
@@ -578,8 +578,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     helper::vector<ElementMass> finestMasses(finestChildren.size());
 
 
-    std::map<index_type, index_type> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
-    index_type idxass = 0;
+    std::map< index_type, BaseMatrix::Index> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
+    BaseMatrix::Index idxass = 0;
 
 
 
@@ -604,11 +604,11 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
         // assembly
         for(int j=0; j<8; ++j) // vertices1
         {
-            int v1 = map_idxq_idxass[hexa[j]];
+            auto v1 = map_idxq_idxass[hexa[j]];
 
             for(int k=0; k<8; ++k) // vertices2
             {
-                int v2 = map_idxq_idxass[hexa[k]];
+                auto v2 = map_idxq_idxass[hexa[k]];
 
 
 
@@ -625,13 +625,13 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 
-    std::map<index_type, index_type> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
-    index_type idxcutass = 0;
-    std::map<index_type,bool> map_idxq_coarse;
-    helper::fixed_array<index_type,8> map_idxcoarse_idxfine;
+    std::map<index_type, BaseMatrix::Index> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
+    BaseMatrix::Index idxcutass = 0;
+    std::map<BaseMatrix::Index,bool> map_idxq_coarse;
+    helper::fixed_array<BaseMatrix::Index,8> map_idxcoarse_idxfine;
     const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexahedron( elementIndice );
 
-    for(std::size_t i=0; i<sizeass; ++i)
+    for(auto i=0; i<sizeass; ++i)
     {
         for( auto it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
             if( (*it).second==i)
@@ -666,13 +666,13 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     linearsolver::NewMatMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
     A.resize(sizeass*3,sizeass*3);
     linearsolver::NewMatMatrix  Ainv;
-    for ( std::size_t i=0; i<sizeass; ++i)
+    for ( auto i=0; i<sizeass; ++i)
     {
-        int col = map_idxq_idxcutass[i];
+        auto col = map_idxq_idxcutass[i];
 
         if( map_idxq_coarse[i] )
         {
-            for(std::size_t lig=0; lig<sizeass; ++lig)
+            for(auto lig=0; lig<sizeass; ++lig)
             {
                 for(int m=0; m<3; ++m)
                     for(int n=0; n<3; ++n)
@@ -681,7 +681,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
         }
         else
         {
-            for(std::size_t lig=0; lig<sizeass; ++lig)
+            for(auto lig=0; lig<sizeass; ++lig)
             {
                 for(int m=0; m<3; ++m)
                     for(int n=0; n<3; ++n)
@@ -708,10 +708,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     W = - Ainvf * Kg;
     linearsolver::NewMatMatrix  WB;
     WB.resize(sizeass*3,8*3);
-    for(std::size_t i=0; i<sizeass*3; ++i)
+    for(auto i=0; i<sizeass*3; ++i)
     {
-        int idx = i/3;
-        int mod = i%3;
+        auto idx = i/3;
+        auto mod = i%3;
         if( map_idxq_coarse[idx] )
             WB.add( i , map_idxq_idxcutass[idx]*3+mod , 1.0);
         else
@@ -731,12 +731,12 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     Coord inv_d2( 1.0f/(dx*dx),1.0f/(dy*dy),1.0f/(dz*dz) );
     for( auto it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
     {
-        index_type localidx = (*it).second; // indice du noeud fin dans l'assemblage
+        auto localidx = (*it).second; // indice du noeud fin dans l'assemblage
 
 
         if( map_idxq_coarse[ (*it).second ] )
         {
-            index_type localcoarseidx = map_idxq_idxcutass[ (*it).second ];
+            auto localcoarseidx = map_idxq_idxcutass[ (*it).second ];
             mask.set( localidx*3  , localcoarseidx*3   , 1);
             mask.set( localidx*3+1, localcoarseidx*3+1 , 1);
             mask.set( localidx*3+2, localcoarseidx*3+2 , 1);
@@ -777,9 +777,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     // apply the mask to take only concerned values (an edge stays an edge, a face stays a face, if corner=1 opposite borders=0....)
     linearsolver::NewMatMatrix WBmeca;
     WBmeca.resize(sizeass*3,8*3);
-    for(std::size_t i=0; i<sizeass*3; ++i)
+    for(auto i=0; i<sizeass*3; ++i)
     {
-        for(std::size_t j=0; j<8*3; ++j)
+        for(auto j=0; j<8*3; ++j)
         {
             if( mask.element(i,j) /*WEIGHT_MASK[i][j]*/ )
                 WBmeca.set(i,j,WB.element(i,j));
@@ -788,14 +788,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     msg_warning()<<"WBmeca brut : "<<WBmeca<<msgendl;
 
     // normalize the coefficient to obtain sum(coefs)==1
-    for(std::size_t i=0; i<sizeass*3; ++i)
+    for(auto i=0; i<sizeass*3; ++i)
     {
         SReal sum = 0.0;
-        for(std::size_t j=0; j<8*3; ++j)
+        for(auto j=0; j<8*3; ++j)
         {
             sum += WBmeca.element(i,j);
         }
-        for(std::size_t j=0; j<8*3; ++j)
+        for(auto j=0; j<8*3; ++j)
         {
             WBmeca.set(i,j, WBmeca.element(i,j) / sum );
         }
@@ -804,8 +804,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     linearsolver::NewMatMatrix Kc, Mc; // coarse stiffness
     Kc = WBmeca.t() * assembledStiffness * WBmeca;
     Mc = WBmeca.t() * assembledMass * WBmeca;
-    for(int i=0; i<8*3; ++i)
-        for(int j=0; j<8*3; ++j)
+    for(BaseMatrix::Index i=0; i<8*3; ++i)
+        for(BaseMatrix::Index j=0; j<8*3; ++j)
         {
             K[i][j]=(Real)Kc.element(i,j);
             M[i][j]=(Real)Mc.element(i,j);
@@ -815,7 +815,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
         WB = WBmeca;
     }
 
-    for(unsigned i=0 ; i < finestChildren.size() ; ++i )
+    for(auto i=0 ; i < finestChildren.size() ; ++i )
     {
         const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexahedron( finestChildren[i] );
         for(int j=0; j<8; ++j)
@@ -1193,8 +1193,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 }
             }
         }
-        std::map<index_type,index_type> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
-        int idxass = 0;
+        std::map<index_type,BaseMatrix::Index> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
+        BaseMatrix::Index idxass = 0;
 
 
         for(int i=0; i<27; ++i)
@@ -1222,11 +1222,11 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 {
                     for(int j=0; j<8; ++j) // vertices1
                     {
-                        int v1 = map_idxq_idxass[finehexa[j]];
+                        auto v1 = map_idxq_idxass[finehexa[j]];
 
                         for(int k=0; k<8; ++k) // vertices2
                         {
-                            int v2 = map_idxq_idxass[finehexa[k]];
+                            auto v2 = map_idxq_idxass[finehexa[k]];
 
                             for(int m=0; m<3; ++m)
                                 for(int n=0; n<3; ++n)
@@ -1242,11 +1242,11 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                     // assembly
                     for(int j=0; j<8; ++j) // vertices1
                     {
-                        int v1 = map_idxq_idxass[finehexa[j]];
+                        auto v1 = map_idxq_idxass[finehexa[j]];
 
                         for(int k=0; k<8; ++k) // vertices2
                         {
-                            int v2 = map_idxq_idxass[finehexa[k]];
+                            auto v2 = map_idxq_idxass[finehexa[k]];
 
                             for(int m=0; m<3; ++m)
                                 for(int n=0; n<3; ++n)
@@ -1260,9 +1260,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 }
             }
         }
-        std::map<index_type, index_type> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
-        index_type idxcutass = 0,idxcutasscoarse = 0;
-        std::map<index_type, index_type> map_idxq_coarse; // a fine idx -> InvalidID->non coarse, x-> idx coarse node
+        std::map<index_type, BaseMatrix::Index> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
+        BaseMatrix::Index idxcutass = 0,idxcutasscoarse = 0;
+        std::map<index_type, BaseMatrix::Index> map_idxq_coarse; // a fine idx -> InvalidID->non coarse, x-> idx coarse node
         helper::fixed_array<helper::vector<index_type> ,8> map_idxcoarse_idxfine;
 
         linearsolver::NewMatMatrix  mask;
@@ -1271,7 +1271,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         {
             if( i==0 || i==2||i==6||i==8||i==18||i==20||i==24||i==26)// est un sommet coarse
             {
-                int whichCoarseNode = InvalidID; // what is the idx for this coarse node?
+                BaseMatrix::Index whichCoarseNode = -1; // what is the idx for this coarse node?
                 switch(i)
                 {
                 case 0:
@@ -1308,7 +1308,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                     idxcutasscoarse++;
 
                     //mask
-                    int localidx = map_idxq_idxass[*it];
+                    auto localidx = map_idxq_idxass[*it];
                     mask.set( localidx*3  , whichCoarseNode*3   , 1);
                     mask.set( localidx*3+1, whichCoarseNode*3+1 , 1);
                     mask.set( localidx*3+2, whichCoarseNode*3+2 , 1);
@@ -1319,10 +1319,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 for( auto it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
                 {
                     map_idxq_idxcutass[*it] = idxcutass;
-                    map_idxq_coarse[*it] = InvalidID;
+                    map_idxq_coarse[*it] = -1;
                     idxcutass++;
                     // 						mask
-                    int localidx = map_idxq_idxass[*it];
+                    auto localidx = map_idxq_idxass[*it];
                     for(int j=0; j<8; ++j)
                     {
                         if( MIDDLE_INTERPOLATION[i][j] != 0 )
@@ -1346,7 +1346,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
             int colcut = (*it).second;
             int colnoncut = map_idxq_idxass[(*it).first];
 
-            if( map_idxq_coarse[(*it).first] != InvalidID )
+            if( map_idxq_coarse[(*it).first] != -1 )
             {
                 for(int lig=0; lig<sizeass; ++lig)
                 {
@@ -1410,7 +1410,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
         for( auto it= map_idxq_coarse.begin(); it!=map_idxq_coarse.end(); ++it)
         {
-            if( it->second != InvalidID )
+            if( it->second != -1 )
             {
                 WB.add( map_idxq_idxass[it->first]*3  , it->second*3  , 1.0);
                 WB.add( map_idxq_idxass[it->first]*3+1, it->second*3+1, 1.0);

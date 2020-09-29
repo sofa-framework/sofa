@@ -48,14 +48,16 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef defaulttype::Vec<N,Real> Vector;
 
+    using index_type = sofa::defaulttype::index_type;
+
     /// Constructors
-    JointSpring(int m1 = 0,int m2 = 0,
+    JointSpring(index_type m1 = 0, index_type m2 = 0,
                 Real softKst = 0, Real hardKst = 10000, Real softKsr = 0, Real hardKsr = 10000, Real blocKsr = 100,
                 Real axmin = -100000, Real axmax = 100000, Real aymin = -100000, Real aymax = 100000, Real azmin = -100000, Real azmax= 100000,
                 Real kd = 0);
 
     /// Attributes
-    int  m1, m2;                    ///< the two extremities of the spring: masses m1 and m2
+    index_type  m1, m2;             ///< the two extremities of the spring: masses m1 and m2
     Real kd;                        ///< damping factor
     Vector torsion;                 ///< torsion of the springs in axis/angle format
     Vector lawfulTorsion;           ///< projected torsion in allowed angles

@@ -75,7 +75,7 @@ protected:
     /// Link to be set to the topology container in the component graph.
     SingleLink<MeshSpringForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    void addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping);
+    void addSpring(std::set<std::pair<int,int> >& sset, index_type m1, index_type m2, Real stiffness, Real damping);
 
     MeshSpringForceField() ;
     virtual ~MeshSpringForceField();
