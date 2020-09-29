@@ -119,7 +119,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::compute
 
         for(unsigned int j=0; j<element.size(); j++)
         {
-            unsigned int pointId = element[j];
+            auto pointId = element[j];
             for(int k=0; k<3; k++)
             {
                 if(in[pointId][k]<min[k]) min[k]=in[pointId][k];
@@ -262,14 +262,14 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT
 
             for ( ; colIt != colItEnd; ++colIt)
             {
-                unsigned indexIn = colIt.index();
+                auto indexIn = colIt.index();
                 InDeriv data = InDeriv(Out::getDPos(colIt.val()));
 
                 const Element& element = elements[d_map.getValue()[indexIn].in_index];
 
                 helper::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[indexIn].baryCoords);
-                for (unsigned int j=0; j<element.size(); j++)
-                    o.addCol(element[j], data*baryCoef[j]);
+                for (auto j=0; j<element.size(); j++)
+                    o.addCol(BaseMatrix::Index(element[j]), data*baryCoef[j]);
             }
         }
     }
@@ -298,8 +298,8 @@ const defaulttype::BaseMatrix* BarycentricMapperTopologyContainer<In,Out,Mapping
         const Element& element = elements[d_map.getValue()[outId].in_index];
 
         helper::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[outId].baryCoords);
-        for (unsigned int j=0; j<element.size(); j++)
-            this->addMatrixContrib(m_matrixJ, outId, element[j], baryCoef[j]);
+        for (auto j=0; j<element.size(); j++)
+            this->addMatrixContrib(m_matrixJ, BaseMatrix::Index(outId), BaseMatrix::Index(element[j]), baryCoef[j]);
     }
 
     m_matrixJ->compress();
@@ -424,7 +424,7 @@ Vec3i BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::getGri
 {
     Vec3i i_x;
     for(int i=0; i<3; i++)
-        i_x[i]=floor(pos[i]*m_convFactor);
+        i_x[i]=int(floor(pos[i]*m_convFactor));
 
     return i_x;
 }

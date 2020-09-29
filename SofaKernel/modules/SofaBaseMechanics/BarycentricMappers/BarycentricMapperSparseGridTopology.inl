@@ -167,26 +167,26 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
     else
         m_matrixJ->clear();
 
-    for ( size_t i=0; i<m_map.size(); i++ )
+    for ( auto i=0; i<m_map.size(); i++ )
     {
-        const index_type out = i;
+        const auto out = BaseMatrix::Index(i);
 
         const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( this->m_map[i].in_index );
 
         const Real fx = ( Real ) m_map[i].baryCoords[0];
         const Real fy = ( Real ) m_map[i].baryCoords[1];
         const Real fz = ( Real ) m_map[i].baryCoords[2];
-        this->addMatrixContrib(m_matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(m_matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[0]), ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[1]), ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 
-        this->addMatrixContrib(m_matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(m_matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[3]), ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[2]), ( ( fx ) * ( fy ) * ( 1-fz ) ));
 
-        this->addMatrixContrib(m_matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
-        this->addMatrixContrib(m_matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[4]), ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[5]), ( ( fx ) * ( 1-fy ) * ( fz ) ));
 
-        this->addMatrixContrib(m_matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
-        this->addMatrixContrib(m_matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[7]), ( ( 1-fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[6]), ( ( fx ) * ( fy ) * ( fz ) ));
     }
     m_matrixJ->compress();
     m_updateJ = false;
@@ -264,31 +264,31 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::MatrixD
                 const OutReal oneMinusFz = 1-fz;
 
                 OutReal f = ( oneMinusFx * oneMinusFy * oneMinusFz );
-                o.addCol ( cube[0],  ( data * f ) );
+                o.addCol (BaseMatrix::Index(cube[0]),  ( data * f ) );
 
                 f = ( ( fx ) * oneMinusFy * oneMinusFz );
-                o.addCol ( cube[1],  ( data * f ) );
+                o.addCol (BaseMatrix::Index(cube[1]),  ( data * f ) );
 
 
                 f = ( oneMinusFx * ( fy ) * oneMinusFz );
-                o.addCol ( cube[3],  ( data * f ) );
+                o.addCol (BaseMatrix::Index(cube[3]),  ( data * f ) );
 
                 f = ( ( fx ) * ( fy ) * oneMinusFz );
-                o.addCol ( cube[2],  ( data * f ) );
+                o.addCol (BaseMatrix::Index(cube[2]),  ( data * f ) );
 
 
                 f = ( oneMinusFx * oneMinusFy * ( fz ) );
-                o.addCol ( cube[4],  ( data * f ) );
+                o.addCol (BaseMatrix::Index(cube[4]),  ( data * f ) );
 
                 f = ( ( fx ) * oneMinusFy * ( fz ) );
-                o.addCol ( cube[5],  ( data * f ) );
+                o.addCol (BaseMatrix::Index(cube[5]),  ( data * f ) );
 
 
                 f = ( oneMinusFx * ( fy ) * ( fz ) );
-                o.addCol ( cube[7],  ( data * f ) );
+                o.addCol (BaseMatrix::Index(cube[7]),  ( data * f ) );
 
                 f = ( ( fx ) * ( fy ) * ( fz ) );
-                o.addCol ( cube[6],  ( data * f ) );
+                o.addCol (BaseMatrix::Index(cube[6]),  ( data * f ) );
             }
         }
     }

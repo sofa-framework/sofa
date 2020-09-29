@@ -152,7 +152,7 @@ protected:
     Real m_gridCellSize;
     Real m_convFactor;
     std::unordered_map<Key, helper::vector<unsigned int>, HashFunction, HashEqual> m_hashTable;
-    unsigned int m_hashTableSize;
+    std::size_t m_hashTableSize;
 
 
     BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology);

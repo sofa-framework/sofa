@@ -123,10 +123,10 @@ void LinearSolverConstraintCorrection<TDataTypes>::computeJ(sofa::defaulttype::B
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    const unsigned int numDOFs = mstate->getSize();
-    const unsigned int N = Deriv::size();
-    const unsigned int numDOFReals = numDOFs*N;
-    const unsigned int totalNumConstraints = W->rowSize();
+    const auto numDOFs = mstate->getSize();
+    const auto N = BaseMatrix::Index(Deriv::size());
+    const auto numDOFReals = BaseMatrix::Index(numDOFs*N);
+    const auto totalNumConstraints = BaseMatrix::Index(W->rowSize());
 
     J.resize(totalNumConstraints, numDOFReals);
 
@@ -134,16 +134,16 @@ void LinearSolverConstraintCorrection<TDataTypes>::computeJ(sofa::defaulttype::B
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        const int cid = rowIt.index();
+        const auto cid = rowIt.index();
 
         MatrixDerivColConstIterator colItEnd = rowIt.end();
 
         for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            const unsigned int dof = colIt.index();
+            const auto dof = colIt.index();
             const Deriv n = colIt.val();
 
-            for (unsigned int r = 0; r < N; ++r)
+            for (auto r = 0; r < N; ++r)
             {
                 J.add(cid, dof * N + r, n[r]);
             }
@@ -205,14 +205,14 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttyp
 
     const double factor = odesolver->getPositionIntegrationFactor();
 
-    const unsigned int numDOFs = mstate->getSize();
-    const unsigned int N = Deriv::size();
-    const unsigned int numDOFReals = numDOFs*N;
+    const auto numDOFs = mstate->getSize();
+    const auto N = Deriv::size();
+    const auto numDOFReals = defaulttype::BaseMatrix::Index(numDOFs*N);
     static linearsolver::SparseMatrix<SReal> J; //local J
-    if (J.rowSize() != (defaulttype::BaseMatrix::Index)numDOFReals)
+    if (J.rowSize() != numDOFReals)
     {
         J.resize(numDOFReals,numDOFReals);
-        for (unsigned int i=0; i<numDOFReals; ++i)
+        for (auto i=0; i<numDOFReals; ++i)
             J.set(i,i,1);
     }
 
@@ -238,7 +238,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection(const 
 {
     if (mstate)
     {
-        const unsigned int numDOFs = mstate->getSize();
+        const auto numDOFs = mstate->getSize();
 
         auto x = sofa::helper::write(x_d, cparams);
         auto v = sofa::helper::write(v_d, cparams);
@@ -251,7 +251,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection(const 
         const double positionFactor = odesolver->getPositionIntegrationFactor();
         const double velocityFactor = odesolver->getVelocityIntegrationFactor();
 
-        for (unsigned int i = 0; i < numDOFs; i++)
+        for (auto i = 0; i < numDOFs; i++)
         {
             const Deriv dxi = correction[i] * positionFactor;
             const Deriv dvi = correction[i] * velocityFactor;
@@ -268,7 +268,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyPositionCorrection(cons
 {
     if (mstate)
     {
-        const unsigned int numDOFs = mstate->getSize();
+        const auto numDOFs = mstate->getSize();
         auto x  = sofa::helper::write(x_d, cparams);
         auto dx = sofa::helper::write(dx_d, cparams);
 
@@ -276,7 +276,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyPositionCorrection(cons
         const VecCoord& x_free = cparams->readX(mstate)->getValue();
 
         const double positionFactor = odesolver->getPositionIntegrationFactor();
-        for (unsigned int i = 0; i < numDOFs; i++)
+        for (auto i = 0; i < numDOFs; i++)
         {
             const Deriv dxi = correction[i] * positionFactor;
             x[i] = x_free[i] + dxi;
@@ -317,14 +317,14 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     core::VecDerivId forceID(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
     core::VecDerivId dxID = core::VecDerivId::dx();
 
-    const unsigned int numDOFs = mstate->getSize();
+    const auto numDOFs = mstate->getSize();
 
     Data<VecDeriv>& dataDx = *mstate->write(dxID);
     VecDeriv& dx = *dataDx.beginEdit();
 
     dx.clear();
     dx.resize(numDOFs);
-    for (unsigned int i=0; i< numDOFs; i++)
+    for (auto i=0; i< numDOFs; i++)
         dx[i] = Deriv();
 
     Data<VecDeriv>& dataForce = *mstate->write(forceID);
@@ -332,7 +332,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
 
     force.clear();
     force.resize(numDOFs);
-    for (unsigned int i=0; i< numDOFs; i++)
+    for (auto i=0; i< numDOFs; i++)
         force[i] = Deriv();
 
     const MatrixDeriv& c = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
@@ -374,7 +374,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     const VecCoord& x_free = xfreeData.getValue();
     const VecDeriv& v_free = vfreeData.getValue();
 
-    for (unsigned int i=0; i< numDOFs; i++)
+    for (auto i=0; i< numDOFs; i++)
     {
         //sout << "dx("<<i<<")="<<dx[i]<<sendl;
         Deriv dxi = dx[i]*positionFactor;
@@ -436,8 +436,8 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
     constraint_dofs.clear();
 
-    const unsigned int nbConstraints = constraints.size();
-    std::vector<unsigned int> VecMinDof;
+    const auto nbConstraints = constraints.size();
+    std::vector<index_type> VecMinDof;
     VecMinDof.resize(nbConstraints);
 
     unsigned int c = 0;
@@ -530,15 +530,15 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     systemRHVector_buf = linearsolvers[0]->getSystemRHBaseVector();
     systemLHVector_buf = linearsolvers[0]->getSystemLHBaseVector();
 
-    const unsigned int derivDim = Deriv::size();
-    const unsigned int systemSize = mstate->getSize() * derivDim;
+    const auto derivDim = Deriv::size();
+    const auto systemSize = BaseVector::Index(mstate->getSize() * derivDim);
     systemRHVector_buf->resize(systemSize) ;
     systemLHVector_buf->resize(systemSize) ;
 
-    for ( size_t i=0; i<mstate->getSize(); i++)
+    for ( auto i=0; i<mstate->getSize(); i++)
     {
-        for  (unsigned int j=0; j<derivDim; j++)
-            systemRHVector_buf->set(i*derivDim+j, constraint_force[i][j]);
+        for  (auto j=0; j<derivDim; j++)
+            systemRHVector_buf->set(BaseVector::Index(i*derivDim+j), constraint_force[i][j]);
     }
 
     // Init the internal data of the solver for partial solving
@@ -560,7 +560,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     Vec_I_list_dof.resize(maxIdConstraint + 1);
 
     last_disp = 0;
-    last_force = nbConstraints - 1;
+    last_force = defaulttype::BaseMatrix::Index(nbConstraints - 1);
     _new_force = false;
 }
 
@@ -588,12 +588,12 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
             {
-                const std::size_t dof = colIt.index();
+                const auto dof = colIt.index();
                 Deriv disp;
 
-                for(std::size_t j = 0; j < derivDim; j++)
+                for(auto j = 0; j < derivDim; j++)
                 {
-                    disp[j] = (Real)(systemLHVector_buf->element(dof * derivDim + j) * odesolver->getPositionIntegrationFactor());
+                    disp[j] = (Real)(systemLHVector_buf->element(BaseVector::Index(dof * derivDim + j)) * odesolver->getPositionIntegrationFactor());
                 }
 
                 d[i] += colIt.val() * disp;
@@ -608,7 +608,7 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
 
 
     const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const unsigned int derivDim = Deriv::size();
+    const auto derivDim = Deriv::size();
 
 
     last_force = begin;
@@ -630,7 +630,7 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
                 const Deriv n = colIt.val();
-                const unsigned int dof = colIt.index();
+                const auto dof = colIt.index();
 
                 constraint_force[dof] += n * df[i]; // sum of the constraint force in the DOF space
 
@@ -642,9 +642,9 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
     auto it_dof(Vec_I_list_dof[last_force].cbegin()), it_end(Vec_I_list_dof[last_force].cend());
     for(; it_dof!=it_end; ++it_dof)
     {
-        std::size_t dof =(*it_dof) ;
-        for (std::size_t j=0; j<derivDim; j++)
-            systemRHVector_buf->set(dof * derivDim + j, constraint_force[dof][j]);
+        auto dof =(*it_dof) ;
+        for (auto j=0; j<derivDim; j++)
+            systemRHVector_buf->set(BaseVector::Index(dof * derivDim + j), constraint_force[dof][j]);
     }
 
 }
@@ -658,17 +658,17 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
     // use the OdeSolver to get the position integration factor
     const double factor = odesolver->getPositionIntegrationFactor(); //*odesolver->getPositionIntegrationFactor(); // dt*dt
 
-    const unsigned int numDOFs = mstate->getSize();
-    const unsigned int N = Deriv::size();
-    const unsigned int numDOFReals = numDOFs*N;
+    const auto numDOFs = mstate->getSize();
+    const auto N = BaseMatrix::Index(Deriv::size());
+    const auto numDOFReals = numDOFs*N;
 
     // Compute J
     const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const unsigned int totalNumConstraints = W->rowSize();
+    const auto totalNumConstraints = W->rowSize();
 
-    J.resize(totalNumConstraints, numDOFReals);
+    J.resize(BaseMatrix::Index(totalNumConstraints), BaseMatrix::Index(numDOFReals));
 
-    for (int i = begin; i <= end; i++)
+    for (BaseMatrix::Index i = begin; i <= end; i++)
     {
 
 
@@ -683,10 +683,10 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
 
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                const unsigned int dof = colIt.index();
+                const auto dof = colIt.index();
                 const Deriv n = colIt.val();
 
-                for (unsigned int r = 0; r < N; ++r)
+                for (auto r = 0; r < N; ++r)
                     J.add(i, dof * N + r, n[r]);
 
                 if (debug!=0)

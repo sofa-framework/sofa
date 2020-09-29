@@ -199,7 +199,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
-        int index = map[i].in_index;
+        auto index = map[i].in_index;
         const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
 
         sofa::defaulttype::Vector3 rotatedPosition= in[tetra[0]] * ( 1-fx-fy-fz ) + in[tetra[1]] * fx + in[tetra[2]] * fy + in[tetra[3]] * fz ;
@@ -212,7 +212,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
     //point running over each DoF (assoc. with frame) in the out vector; get it from the mapOrient[0]
     for (unsigned int point = 0; point < mapOrient.size(); point++)
     {
-        int index = mapOrient[point][0].in_index;
+        auto index = mapOrient[point][0].in_index;
         const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
 
         //compute the rotation of the rigid point using the "basis" approach
@@ -262,7 +262,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out:
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
-        int index = map[i].in_index;
+        auto index = map[i].in_index;
         const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
         Out::setDPos(out[i] , in[tetra[0]] * ( 1-fx-fy-fz )
                 + in[tetra[1]] * fx
@@ -307,7 +307,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
         const OutReal fx = ( OutReal ) map[i].baryCoords[0];
         const OutReal fy = ( OutReal ) map[i].baryCoords[1];
         const OutReal fz = ( OutReal ) map[i].baryCoords[2];
-        int index = map[i].in_index;
+        auto index = map[i].in_index;
         const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
         out[tetra[0]] += v * ( 1-fx-fy-fz );
         out[tetra[1]] += v * fx;
@@ -370,28 +370,32 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigi
         const OutReal fz = ( OutReal ) map[beamNode].baryCoords[2];
 
 
-        int index = map[beamNode].in_index;
+        auto index = map[beamNode].in_index;
         const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
 
-        for (int dim = 0; dim < 3; dim++)
+        const auto row6b = BaseMatrix::Index(beamNode * 6);
+
+        for (BaseMatrix::Index dim = 0; dim < 3; dim++)
         {
-            matrixJ->add(beamNode*6+dim, 3*tetra[0]+dim, 1-fx-fy-fz);
-            matrixJ->add(beamNode*6+dim, 3*tetra[1]+dim, fx);
-            matrixJ->add(beamNode*6+dim, 3*tetra[2]+dim, fy);
-            matrixJ->add(beamNode*6+dim, 3*tetra[3]+dim, fz);
+            matrixJ->add(row6b+dim, BaseMatrix::Index(3 * tetra[0]+dim), 1-fx-fy-fz);
+            matrixJ->add(row6b+dim, BaseMatrix::Index(3 * tetra[1]+dim), fx);
+            matrixJ->add(row6b+dim, BaseMatrix::Index(3 * tetra[2]+dim), fy);
+            matrixJ->add(row6b+dim, BaseMatrix::Index(3 * tetra[3]+dim), fz);
         }
 
         for (int vert = 0; vert < 4; vert++)
         {
             sofa::defaulttype::Vector3 v;
-            for (size_t dim = 0; dim < 3; dim++)
+            for (auto dim = 0; dim < 3; dim++)
                 v[dim] = actualTetraPosition[tetra[vert]][dim] - actualPos[beamNode][dim];
-            matrixJ->add(beamNode*6+3, 3*tetra[vert]+1, -v[2]);
-            matrixJ->add(beamNode*6+3, 3*tetra[vert]+2, +v[1]);
-            matrixJ->add(beamNode*6+4, 3*tetra[vert]+0, +v[2]);
-            matrixJ->add(beamNode*6+4, 3*tetra[vert]+2, -v[0]);
-            matrixJ->add(beamNode*6+5, 3*tetra[vert]+0, -v[1]);
-            matrixJ->add(beamNode*6+5, 3*tetra[vert]+1, +v[0]);
+
+            const auto col3v = BaseMatrix::Index(3 * tetra[vert]);
+            matrixJ->add(row6b +3, col3v+1, -v[2]);
+            matrixJ->add(row6b +3, col3v+2, +v[1]);
+            matrixJ->add(row6b +4, col3v+0, +v[2]);
+            matrixJ->add(row6b +4, col3v+2, -v[0]);
+            matrixJ->add(row6b +5, col3v+0, -v[1]);
+            matrixJ->add(row6b +5, col3v+1, +v[0]);
         }
     }
 
@@ -429,13 +433,13 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT ( typename In
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
                 const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
-                int index = map[indexIn].in_index;
+                auto index = map[indexIn].in_index;
                 const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
 
-                o.addCol (tetra[0], data * ( 1-fx-fy-fz ) );
-                o.addCol (tetra[1], data * fx );
-                o.addCol (tetra[2], data * fy );
-                o.addCol (tetra[3], data * fz );
+                o.addCol (BaseMatrix::Index(tetra[0]), data * ( 1-fx-fy-fz ) );
+                o.addCol (BaseMatrix::Index(tetra[1]), data * fx );
+                o.addCol (BaseMatrix::Index(tetra[2]), data * fy );
+                o.addCol (BaseMatrix::Index(tetra[3]), data * fz );
             }
         }
     }
@@ -457,7 +461,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
             const Real fx = map[i].baryCoords[0];
             const Real fy = map[i].baryCoords[1];
             const Real fz = map[i].baryCoords[2];
-            int index = map[i].in_index;
+            auto index = map[i].in_index;
             const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
             Real f[4];
             f[0] = ( 1-fx-fy-fz );
@@ -490,7 +494,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
         //const OutReal fx = ( OutReal ) map[i].baryCoords[0];
         //const OutReal fy = ( OutReal ) map[i].baryCoords[1];
         //const OutReal fz = ( OutReal ) map[i].baryCoords[2];
-        int index = map[i].in_index;
+        auto index = map[i].in_index;
         const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
 
         //out[tetra[0]] += v * ( 1-fx-fy-fz );

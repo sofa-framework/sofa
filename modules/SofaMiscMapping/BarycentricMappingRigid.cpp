@@ -84,7 +84,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                 for ( auto iter = m_invalidIndex.cbegin();
                         iter != m_invalidIndex.cend(); ++iter )
                 {
-                    const int j = *iter;
+                    const auto j = *iter;
                     if ( mapData[j].in_index == InvalidID ) // compute new mapping
                     {
                         Vector3 coefs;
@@ -131,7 +131,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
         break;
         case core::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
         {
-            const unsigned int nbHexahedra = this->m_fromTopology->getNbHexahedra();
+            const auto nbHexahedra = this->m_fromTopology->getNbHexahedra();
 
             const auto &hexahedra =
                     ( static_cast< const sofa::core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
@@ -139,8 +139,8 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
             for ( unsigned int i=0; i<hexahedra.size(); ++i )
             {
                 // remove all references to the removed cubes from the mapping data
-                unsigned int cubeId = hexahedra[i];
-                for ( unsigned int j=0; j<d_map.getValue().size(); ++j )
+                auto cubeId = hexahedra[i];
+                for (auto j=0; j<d_map.getValue().size(); ++j )
                 {
                     if ( d_map.getValue()[j].in_index == cubeId ) // invalidate mapping
                     {

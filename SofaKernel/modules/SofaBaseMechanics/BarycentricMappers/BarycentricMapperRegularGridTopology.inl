@@ -208,24 +208,24 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out
 
     for ( size_t i=0; i<m_map.size(); i++ )
     {
-        const index_type out = i;
+        const auto out = BaseMatrix::Index(i);
 
         const topology::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[i].in_index );
 
         const Real fx = ( Real ) m_map[i].baryCoords[0];
         const Real fy = ( Real ) m_map[i].baryCoords[1];
         const Real fz = ( Real ) m_map[i].baryCoords[2];
-        this->addMatrixContrib(m_matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(m_matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[0]), ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[1]), ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 
-        this->addMatrixContrib(m_matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(m_matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[3]), ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[2]), ( ( fx ) * ( fy ) * ( 1-fz ) ));
 
-        this->addMatrixContrib(m_matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
-        this->addMatrixContrib(m_matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[4]), ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[5]), ( ( fx ) * ( 1-fy ) * ( fz ) ));
 
-        this->addMatrixContrib(m_matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
-        this->addMatrixContrib(m_matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[7]), ( ( 1-fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, BaseMatrix::Index(cube[6]), ( ( fx ) * ( fy ) * ( fz ) ));
     }
     m_updateJ = false;
     return m_matrixJ;
@@ -296,7 +296,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::Matrix
 
             for ( ; colIt != colItEnd; ++colIt)
             {
-                unsigned int indexIn = colIt.index();
+                auto indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
                 const topology::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[indexIn].in_index );
@@ -308,17 +308,17 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::Matrix
                 const OutReal oneMinusFy = 1-fy;
                 const OutReal oneMinusFz = 1-fz;
 
-                o.addCol(cube[0], data * ((oneMinusFx) * (oneMinusFy) * (oneMinusFz)));
-                o.addCol(cube[1], data * ((fx) * (oneMinusFy) * (oneMinusFz)));
+                o.addCol(BaseMatrix::Index(cube[0]), data * ((oneMinusFx) * (oneMinusFy) * (oneMinusFz)));
+                o.addCol(BaseMatrix::Index(cube[1]), data * ((fx) * (oneMinusFy) * (oneMinusFz)));
 
-                o.addCol(cube[3], data * ((oneMinusFx) * (fy) * (oneMinusFz)));
-                o.addCol(cube[2], data * ((fx) * (fy) * (oneMinusFz)));
+                o.addCol(BaseMatrix::Index(cube[3]), data * ((oneMinusFx) * (fy) * (oneMinusFz)));
+                o.addCol(BaseMatrix::Index(cube[2]), data * ((fx) * (fy) * (oneMinusFz)));
 
-                o.addCol(cube[4], data * ((oneMinusFx) * (oneMinusFy) * (fz)));
-                o.addCol(cube[5], data * ((fx) * (oneMinusFy) * (fz)));
+                o.addCol(BaseMatrix::Index(cube[4]), data * ((oneMinusFx) * (oneMinusFy) * (fz)));
+                o.addCol(BaseMatrix::Index(cube[5]), data * ((fx) * (oneMinusFy) * (fz)));
 
-                o.addCol(cube[7], data * ((oneMinusFx) * (fy) * (fz)));
-                o.addCol(cube[6], data * ((fx) * (fy) * (fz)));
+                o.addCol(BaseMatrix::Index(cube[7]), data * ((oneMinusFx) * (fy) * (fz)));
+                o.addCol(BaseMatrix::Index(cube[6]), data * ((fx) * (fy) * (fz)));
             }
         }
     }
