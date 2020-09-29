@@ -101,7 +101,7 @@ public:
 
       //@{
       /** Other usual SOFA functions */
-      void init() override;
+      void doInit() override;
       void reinit() override;
       void draw(const core::visual::VisualParams*) override;
       //@}

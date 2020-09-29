@@ -1324,7 +1324,7 @@ TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
 
 
 template <class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::init()
+void TetrahedronFEMForceField<DataTypes>::doInit()
 {
     d_componentState.setValue(ComponentState::Invalid) ;
 
@@ -1343,8 +1343,6 @@ void TetrahedronFEMForceField<DataTypes>::init()
     // ParallelDataThrd is used to build the matrix asynchronusly (when listening = true)
     // This feature is activated when callin handleEvent with ParallelizeBuildEvent
     // At init parallelDataSimu == parallelDataThrd (and it's the case since handleEvent is called)
-
-    this->core::behavior::ForceField<DataTypes>::init();
 
     /// Take the user provide topology.
     if (l_topology.empty())

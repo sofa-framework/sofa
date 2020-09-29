@@ -848,7 +848,7 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::init()
+void DiagonalMass<DataTypes, MassType>::doInit()
 {
     this->d_componentState.setValue(ComponentState::Valid);
 
@@ -861,7 +861,6 @@ void DiagonalMass<DataTypes, MassType>::init()
         msg_warning() << "File given as input for DiagonalMass, in this a case:" << msgendl
                       << "the topology won't be used to compute the mass" << msgendl
                       << "the update, the coherency and the tracking of mass information data are disable (listening = false)";
-        Inherited::init();
     }
     else
     {
@@ -870,7 +869,6 @@ void DiagonalMass<DataTypes, MassType>::init()
             this->d_componentState.setValue(ComponentState::Invalid);
             return;
         }
-        Inherited::init();
         initTopologyHandlers();
 
         // TODO(dmarchal 2018-11-10): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)

@@ -109,7 +109,7 @@ public:
     void loadRigidMass(const std::string& filename);
 
     void reinit() override;
-    void init() override;
+    void doInit() override;
     void initDefaultImpl() ;
     void doUpdateInternal() override;
     void handleEvent(sofa::core::objectmodel::Event *event) override;
@@ -202,7 +202,7 @@ private:
 
 //Specialization for rigids
 template <>
-void UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::init();
+void UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::doInit();
 template <>
 void UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::loadRigidMass ( const std::string&  );
 template <>

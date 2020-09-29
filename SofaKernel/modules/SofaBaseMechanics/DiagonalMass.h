@@ -236,7 +236,7 @@ public:
     void clear();
 
     void reinit() override;
-    void init() override;
+    void doInit() override;
     void handleEvent(sofa::core::objectmodel::Event* ) override;
 
     void doUpdateInternal() override;
@@ -371,9 +371,9 @@ void DiagonalMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::reinit();
 template <>
 void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::reinit();
 template <>
-void DiagonalMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::init();
+void DiagonalMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::doInit();
 template <>
-void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::init();
+void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::doInit();
 template <>
 void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::draw(const core::visual::VisualParams* vparams);
 template <>

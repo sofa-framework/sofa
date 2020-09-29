@@ -64,7 +64,9 @@ protected:
 
     ~ForceField() override;
 public:
-    void init() override;
+    void init() final;
+
+    virtual void doInit() {};
 
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return mstate.get(); }
