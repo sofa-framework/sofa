@@ -101,7 +101,7 @@ template<class T>
 class CudaBaseVectorType : public BaseVector {
 public :
     typedef T Real;
-    typedef typename BaseVector::Index Index;
+    typedef typename sofa::defaulttype::BaseVectorIndex Index;
 
     virtual void resize(Index nbRow) = 0;
     virtual Index size() const = 0;

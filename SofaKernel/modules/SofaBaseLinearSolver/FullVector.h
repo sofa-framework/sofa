@@ -44,7 +44,7 @@ class FullVector : public defaulttype::BaseVector
 {
 public:
     typedef T Real;
-    typedef defaulttype::BaseVector::Index Index;
+    typedef sofa::defaulttype::BaseVectorIndex Index;
     typedef T* Iterator;
     typedef const T* ConstIterator;
 

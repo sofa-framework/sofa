@@ -202,7 +202,7 @@ void copyKToEigenFormat(CompressedRowSparseMatrix< T >* K, Eigen::SparseMatrix<d
     {
         row = K->rowIndex[it_rows_k] ;
         typename CompressedRowSparseMatrix<T>::Range rowRange( K->rowBegin[it_rows_k], K->rowBegin[it_rows_k+1] );
-        for(sofa::defaulttype::BaseVector::Index xj = rowRange.begin() ; xj < rowRange.end() ; xj++ )  // for each non-null block
+        for(sofa::defaulttype::BaseVectorIndex xj = rowRange.begin() ; xj < rowRange.end() ; xj++ )  // for each non-null block
         {
             int col = K->colsIndex[xj];     // block column
             const T& k = K->colsValue[xj]; // non-null element of the matrix
