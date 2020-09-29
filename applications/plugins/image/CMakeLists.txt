@@ -3,8 +3,8 @@ project(image VERSION 0.1)
 
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
-find_package(OpenGL QUIET)
 
+sofa_find_package(OpenGL QUIET)
 sofa_find_package(SofaGui QUIET)
 sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(Newmat REQUIRED)
@@ -77,6 +77,8 @@ set(README_FILES
 if(OpenGL_FOUND)
     list(APPEND SOURCE_FILES DepthMapToMeshEngine.cpp)
     list(APPEND HEADER_FILES DepthMapToMeshEngine.h)
+else()
+    message(STATUS "image: could not find OpenGL library, won't build the DepthMapToMeshEngine")
 endif()
 
 
