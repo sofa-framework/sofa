@@ -37,5 +37,4 @@
 #ifndef QWT_EXPORT
 #define QWT_EXPORT
 #endif
-#include <QPainterPath>
 #endif
