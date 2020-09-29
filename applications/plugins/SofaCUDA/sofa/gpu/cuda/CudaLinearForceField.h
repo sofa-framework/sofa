@@ -76,7 +76,7 @@ public:
 
 
 template<>
-void LinearForceField< gpu::cuda::CudaRigid3fTypes >::init();
+void LinearForceField< gpu::cuda::CudaRigid3fTypes >::doInit();
 
 template<>
 void LinearForceField< gpu::cuda::CudaRigid3fTypes >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);

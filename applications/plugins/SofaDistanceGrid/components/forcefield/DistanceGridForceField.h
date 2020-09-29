@@ -196,7 +196,7 @@ protected:
         this->addAlias(&fileDistanceGrid,"fileDistanceGrid");
     }
 public:
-    void init() override;
+    void doInit() override;
 
     void setMState(  core::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }
 
