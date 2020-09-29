@@ -110,14 +110,6 @@ void QGraphStatWidget::flushSeries()
     }
 }
 
-void QGraphStatWidget::updateVisualization()
-{
-    //std::cout << "updateVisualization()" << std::endl;
-   /* for( unsigned i=0 ; i<_numberOfCurves ; ++i )
-        _curves[i]->setRawSamples( &_XHistory[0], &(_YHistory[i][0]), _XHistory.size() );
-    _graph->replot();*/
-}
-
 
 void QGraphStatWidget::setCurve( unsigned index, const QString& name, const QColor& color )
 {

@@ -583,15 +583,13 @@ void ModifyObject::updateTables()
 #endif
 #if SOFAGUIQT_HAVE_QWT
     if (energy)
-    {
-        energy->step();
-        if (dialogTab->currentWidget() == energy) energy->updateVisualization();
+    {        
+        if (dialogTab->currentWidget() == energy) energy->step();
     }
 
     if (momentum)
     {
-        momentum->step();
-        if (dialogTab->currentWidget() == momentum) momentum->updateVisualization();
+        if (dialogTab->currentWidget() == momentum) momentum->step();
     }
 #endif
 

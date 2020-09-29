@@ -63,8 +63,6 @@ public:
     /// the only function that should be overloaded
     virtual void stepImpl() = 0;
 
-    void updateVisualization();
-
 protected:
     /// set the index-th curve (index must be < _numberOfCurves)
     void setCurve( unsigned index, const QString& name, const QColor& color );
