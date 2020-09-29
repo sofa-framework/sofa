@@ -17,7 +17,7 @@ find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
 
 if(IMAGE_HAVE_OPENGL)
-    find_package(OpengL QUIET REQUIRED)
+    find_package(OpenGL QUIET REQUIRED)
 endif()
 if(IMAGE_HAVE_SOFAGUI)
     find_package(SofaGui QUIET REQUIRED)
