@@ -8,6 +8,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/BaseVector.h
     ${SRC_ROOT}/BoundingBox.h
     ${SRC_ROOT}/DataTypeInfo.h
+    ${SRC_ROOT}/DefaultTypeFwd.h
     ${SRC_ROOT}/Frame.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
     ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h

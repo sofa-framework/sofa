@@ -47,7 +47,7 @@ class FullMatrix : public defaulttype::BaseMatrix
 {
 public:
     typedef T Real;
-    typedef typename defaulttype::BaseMatrix::Index Index;
+    typedef typename defaulttype::BaseMatrixIndex Index;
     typedef FullVector<Real> Line;
 
     class LineConstIterator

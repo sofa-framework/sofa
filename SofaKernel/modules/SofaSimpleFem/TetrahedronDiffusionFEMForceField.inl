@@ -28,6 +28,7 @@
 #include <iostream> //for debugging
 #include <sofa/core/visual/VisualParams.h>
 
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 

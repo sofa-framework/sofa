@@ -101,7 +101,7 @@ SReal UniformStiffness<DataTypes>::getPotentialEnergy( const core::MechanicalPar
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* UniformStiffness<DataTypes>::getStiffnessMatrix(const core::MechanicalParams*)
 {
-    if( resizable.getValue() && (defaulttype::BaseMatrix::Index)this->mstate->getSize() != matC.rows() ) reinit();
+    if( resizable.getValue() && (defaulttype::BaseMatrixIndex)this->mstate->getSize() != matC.rows() ) reinit();
 
     return &matC;
 }
@@ -122,7 +122,7 @@ void UniformStiffness<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * 
 template<class DataTypes>
 void UniformStiffness<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /*v*/)
 {
-    if( resizable.getValue() &&  (defaulttype::BaseMatrix::Index)x.getValue().size() != matK.compressedMatrix.rows() ) reinit();
+    if( resizable.getValue() &&  (defaulttype::BaseMatrixIndex)x.getValue().size() != matK.compressedMatrix.rows() ) reinit();
     matK.addMult( f, x  );
 }
 

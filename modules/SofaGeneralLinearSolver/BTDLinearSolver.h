@@ -276,7 +276,7 @@ class BTDMatrix : public defaulttype::BaseMatrix
 public:
     enum { BSIZE = N };
     typedef T Real;
-    typedef typename defaulttype::BaseMatrix::Index Index;
+    typedef typename defaulttype::BaseMatrixIndex Index;
 
     class TransposedBloc
     {

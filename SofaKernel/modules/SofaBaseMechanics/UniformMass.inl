@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/Topology.h>
@@ -646,8 +647,7 @@ void UniformMass<DataTypes, MassType>::getElementMass (sofa::defaulttype::index_
                                                         BaseMatrix *m ) const
 {
     SOFA_UNUSED(index);
-
-    static const BaseMatrix::Index dimension = BaseMatrix::Index(DataTypeInfo<Deriv>::size());
+    static const sofa::defaulttype::BaseMatrixIndex dimension = DataTypeInfo<Deriv>::size() ;
     if ( m->rowSize() != dimension || m->colSize() != dimension )
         m->resize ( dimension, dimension );
 

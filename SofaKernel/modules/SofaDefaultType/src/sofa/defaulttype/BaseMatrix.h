@@ -23,6 +23,7 @@
 #define SOFA_DEFAULTTYPE_BASEMATRIX_H
 
 #include <sofa/defaulttype/config.h>
+#include <sofa/defaulttype/DefaultTypeFwd.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/logging/Messaging.h>
@@ -32,6 +33,7 @@
 #include <vector>
 #include <cassert>
 #include <climits>
+
 
 namespace sofa
 {

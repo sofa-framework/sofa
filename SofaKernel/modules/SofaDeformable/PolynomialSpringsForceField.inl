@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
-
+#include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa
 {

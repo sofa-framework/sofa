@@ -43,7 +43,7 @@ class BlocMatrixWriter
 {
 public:
     typedef TBloc Bloc;
-    typedef matrix_bloc_traits<Bloc, defaulttype::BaseMatrix::Index> traits;
+    typedef matrix_bloc_traits<Bloc, defaulttype::BaseMatrixIndex> traits;
     typedef typename traits::Real Real;
     enum { NL = traits::NL };
     enum { NC = traits::NC };

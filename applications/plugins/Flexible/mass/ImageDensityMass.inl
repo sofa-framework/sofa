@@ -433,7 +433,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass
 
     //    std::cerr<<"ImageDensityMass::getElementMass "<<std::endl;
 
-    static const BaseMatrix::Index dimension = (BaseMatrix::Index) DataTypes::deriv_total_size;
+    static const BaseMatrixIndex dimension = (BaseMatrixIndex) DataTypes::deriv_total_size;
 
     if( m->rowSize() != dimension || m->colSize() != dimension ) m->resize( dimension, dimension );
 
@@ -442,11 +442,11 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass
     //    for( unsigned i=0 ; i<dimension; ++i )
     //        m->set( i,i,1);
 
-    BaseMatrix::Index i = index;
-    BaseMatrix::Index bi = 0;
+    BaseMatrixIndex i = index;
+    BaseMatrixIndex bi = 0;
     m_massMatrix.split_row_index( i, bi );
 
-    BaseMatrix::Index rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
+    BaseMatrixIndex rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
     if( m_massMatrix.sortedFind( m_massMatrix.getRowIndex(), i, rowId ) )
     {
         typename MassMatrix::Range rowRange( m_massMatrix.getRowBegin()[rowId], m_massMatrix.getRowBegin()[rowId+1] );

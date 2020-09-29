@@ -478,10 +478,10 @@ void MechanicalOperations::m_print( std::ostream& out )
     auto ny = m->rowSize();
     auto nx = m->colSize();
     out << "[";
-    for (defaulttype::BaseMatrix::Index y=0; y<ny; ++y)
+    for (defaulttype::BaseMatrixIndex y=0; y<ny; ++y)
     {
         out << "[";
-        for (defaulttype::BaseMatrix::Index x=0; x<nx; x++)
+        for (defaulttype::BaseMatrixIndex x=0; x<nx; x++)
             out << ' ' << m->element(x,y);
         out << "]";
     }

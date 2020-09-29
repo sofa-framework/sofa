@@ -160,7 +160,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 
     if (share_matrix.getValue()) internalData.setMinv(internalData.getSharedMatrix(fname));
 
-    if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == (defaulttype::BaseMatrix::Index)systemSize)
+    if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == (defaulttype::BaseMatrixIndex)systemSize)
     {
         msg_info("PrecomputedWarpPreconditioner") << "shared matrix : " << fname << " is already built." ;
     }

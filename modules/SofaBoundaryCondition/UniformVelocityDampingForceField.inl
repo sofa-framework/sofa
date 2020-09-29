@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_UNIFORMVELOCITYDAMPINGFORCEFIELD_INL
 
 #include "UniformVelocityDampingForceField.h"
-
+#include <sofa/defaulttype/BaseMatrix.h>
 namespace sofa
 {
 

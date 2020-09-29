@@ -28,7 +28,7 @@
 #include <SofaDeformable/PolynomialRestShapeSpringsForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
-
+#include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa
 {

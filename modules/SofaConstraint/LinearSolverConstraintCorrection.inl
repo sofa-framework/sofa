@@ -209,7 +209,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttyp
     const unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs*N;
     static linearsolver::SparseMatrix<SReal> J; //local J
-    if (J.rowSize() != (defaulttype::BaseMatrix::Index)numDOFReals)
+    if (J.rowSize() != (defaulttype::BaseMatrixIndex)numDOFReals)
     {
         J.resize(numDOFReals,numDOFReals);
         for (unsigned int i=0; i<numDOFReals; ++i)

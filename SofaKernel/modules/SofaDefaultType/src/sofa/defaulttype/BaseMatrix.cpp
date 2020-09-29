@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/DefaultTypeFwd.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/logging/Messaging.h>
@@ -202,7 +203,7 @@ template<bool add, bool transpose>
 class BaseMatrixLinearOpMV
 {
 public:
-    typedef typename BaseMatrix::Index Index;
+    typedef BaseMatrixIndex Index;
     template <class M, class V1, class V2>
     static inline void opFull(const M* mat, V1& result, const V2& v)
     {
@@ -575,7 +576,7 @@ template< bool transpose>
 class BaseMatrixLinearOpAM
 {
 public:
-    typedef typename BaseMatrix::Index Index;
+    typedef BaseMatrixIndex Index;
     template <class M1, class M2 >
     static inline void opFull(const M1 * m1, M2 * m2, double fact)
     {

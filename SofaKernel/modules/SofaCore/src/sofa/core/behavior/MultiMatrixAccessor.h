@@ -41,7 +41,7 @@ namespace behavior
 class SOFA_CORE_API MultiMatrixAccessor
 {
 public:
-    using Index = defaulttype::BaseMatrix::Index;
+    using Index = defaulttype::BaseMatrixIndex;
 
     virtual ~MultiMatrixAccessor();
 

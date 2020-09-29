@@ -135,7 +135,7 @@ SReal UniformCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalPa
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getComplianceMatrix(const core::MechanicalParams*)
 {
-    if( resizable.getValue() && (defaulttype::BaseMatrix::Index)this->mstate->getSize() != matC.rows() ) reinit();
+    if( resizable.getValue() && (defaulttype::BaseMatrixIndex)this->mstate->getSize() != matC.rows() ) reinit();
 
     return &matC;
 }
@@ -159,7 +159,7 @@ void UniformCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix *
 template<class DataTypes>
 void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /*v*/)
 {
-    if( resizable.getValue() &&  (defaulttype::BaseMatrix::Index)x.getValue().size() != matK.compressedMatrix.rows() ) reinit();
+    if( resizable.getValue() &&  (defaulttype::BaseMatrixIndex)x.getValue().size() != matK.compressedMatrix.rows() ) reinit();
 
 //    if( matK.compressedMatrix.nonZeros() )
         matK.addMult( f, x  );

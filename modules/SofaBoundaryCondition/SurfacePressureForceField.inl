@@ -25,6 +25,7 @@
 #include <SofaBoundaryCondition/SurfacePressureForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <vector>
 #include <set>
