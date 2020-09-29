@@ -46,8 +46,8 @@ public:
     QEnergyStatWidget( QWidget* parent, simulation::Node* node );
 
     ~QEnergyStatWidget();
-
-    void step();
+            
+    void stepImpl() override;
 
 };
 

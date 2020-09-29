@@ -31,10 +31,10 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include <qwt_legend.h>
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-
+#include <QtCharts/QChartView>
+#include <QtCharts/QChart>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
 
 namespace sofa
 {
@@ -50,29 +50,39 @@ class QGraphStatWidget : public QWidget
     Q_OBJECT
 
 public:
-
-    QGraphStatWidget( QWidget* parent, simulation::Node* node, const QString& title, unsigned numberOfCurves );
+    QGraphStatWidget( QWidget* parent, simulation::Node* node, const QString& title, unsigned numberOfCurves, int bufferSize );
     virtual ~QGraphStatWidget();
+
+    /// Main method called to update the graph
+    virtual void step() final;
+
     /// the only function that should be overloaded
-    virtual void step();
+    virtual void stepImpl() = 0;
 
     void updateVisualization();
 
-
 protected:
-
     /// set the index-th curve (index must be < _numberOfCurves)
     void setCurve( unsigned index, const QString& name, const QColor& color );
-    unsigned _numberOfCurves;
 
-    simulation::Node *_node;
+    void reduceSeries();
 
-    std::vector< double > _XHistory; ///< X-axis values (by default take the node time)
-    std::vector< std::vector< double > > _YHistory; ///< Y-axis values, one for each curve (_numberOfCurves)
+    simulation::Node *m_node;
+
+    /// Pointer to the chart Data
+    QtCharts::QChart *m_chart;
+    QtCharts::QChartView* m_chartView;
+    std::vector< QtCharts::QLineSeries *> m_curves;
+    QtCharts::QValueAxis* m_axisX;
+    QtCharts::QValueAxis* m_axisY;
 
 
-    QwtPlot *_graph;
-    std::vector< QwtPlotCurve* > _curves; ///< resized to _numberOfCurves
+    SReal m_yMin;
+    SReal m_yMax;
+    int m_bufferSize;
+
+    SReal m_lastTime;
+    int m_cptStep;
 };
 
 

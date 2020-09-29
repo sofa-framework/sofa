@@ -29,7 +29,7 @@ namespace gui
 namespace qt
 {
 
-QMomentumStatWidget::QMomentumStatWidget( QWidget* parent, simulation::Node* node ) : QGraphStatWidget( parent, node, "Momenta", 6 )
+QMomentumStatWidget::QMomentumStatWidget( QWidget* parent, simulation::Node* node ) : QGraphStatWidget( parent, node, "Momenta", 6, 500 )
 {
     setCurve( 0, "Linear X", Qt::red );
     setCurve( 1, "Linear Y", Qt::green );
@@ -46,16 +46,23 @@ QMomentumStatWidget::~QMomentumStatWidget()
     delete m_momentumVisitor;
 }
 
-void QMomentumStatWidget::step()
+void QMomentumStatWidget::stepImpl()
 {
-    QGraphStatWidget::step(); // time history
+    if (m_curves.size() != 6) {
+        msg_warning("QMomentumStatWidget") << "Wrong number of curves: " << m_curves.size() << ", should be 3.";
+        return;
+    }
 
-    m_momentumVisitor->execute( _node->getContext() );
+    m_momentumVisitor->execute( m_node->getContext() );
 
     const defaulttype::Vector6& momenta = m_momentumVisitor->getMomentum();
 
-    // Add Momentum
-    for( unsigned i=0 ; i<6 ; ++i ) _YHistory[i].push_back( momenta[i] );
+    // Update series
+    SReal time = m_node->getTime();
+    for (unsigned i = 0; i < 6; ++i)
+    {
+        m_curves[i]->append(time, momenta[i]);
+    }
 }
 
 

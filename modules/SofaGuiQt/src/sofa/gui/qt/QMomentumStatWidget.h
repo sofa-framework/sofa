@@ -47,7 +47,7 @@ public:
 
     virtual ~QMomentumStatWidget();
 
-    virtual void step();
+    void stepImpl() override;
 };
 
 

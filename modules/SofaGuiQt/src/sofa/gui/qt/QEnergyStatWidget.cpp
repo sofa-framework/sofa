@@ -30,13 +30,14 @@ namespace qt
 {
 
 QEnergyStatWidget::QEnergyStatWidget( QWidget* parent, simulation::Node* node )
-    : QGraphStatWidget( parent, node, "Energy", 3 )
+    : QGraphStatWidget( parent, node, "Energy", 3, 500 )
 {
     setCurve( 0, "Kinetic", Qt::red );
     setCurve( 1, "Potential", Qt::green );
     setCurve( 2, "Mechanical", Qt::blue );
 
     m_energyVisitor   = new sofa::simulation::MechanicalComputeEnergyVisitor(core::MechanicalParams::defaultInstance());
+    m_yMin = 0;
 }
 
 QEnergyStatWidget::~QEnergyStatWidget()
@@ -44,18 +45,29 @@ QEnergyStatWidget::~QEnergyStatWidget()
     delete m_energyVisitor;
 }
 
-void QEnergyStatWidget::step()
+void QEnergyStatWidget::stepImpl()
 {
-    //Add Time
-    QGraphStatWidget::step();
+    if (m_curves.size() != 3) {
+        msg_warning("QEnergyStatWidget") << "Wrong number of curves: " << m_curves.size() << ", should be 3.";
+        return;
+    }
+    m_energyVisitor->execute(m_node->getContext() );
 
-    m_energyVisitor->execute( _node->getContext() );
+    // Update series
+    SReal time = m_node->getTime();
+    SReal kinectic = m_energyVisitor->getKineticEnergy();
+    SReal potential = m_energyVisitor->getPotentialEnergy();
 
-    _YHistory[0].push_back( m_energyVisitor->getKineticEnergy() );
-    _YHistory[1].push_back( m_energyVisitor->getPotentialEnergy() );
-
+    m_curves[0]->append(time, kinectic);
+    m_curves[1]->append(time, potential);
     //Add Mechanical Energy
-    _YHistory[2].push_back( _YHistory[0].back() + _YHistory[1].back() );
+    m_curves[2]->append(time, kinectic + potential);
+
+    if (potential > m_yMax)
+    {
+        m_yMax = potential;
+        m_axisY->setRange(0, m_yMax*1.1);
+    }
 }
 
 
