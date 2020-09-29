@@ -275,6 +275,29 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             }
         }
 
+#ifdef SOFAGUIQT_HAVE_QWT
+        //Energy Widget
+        if (simulation::Node* real_node = dynamic_cast<simulation::Node*>(node))
+        {
+            if (dialogFlags_.REINIT_FLAG)
+            {
+                energy = new QEnergyStatWidget(dialogTab, real_node);
+                dialogTab->addTab(energy, QString("Energy Stats"));
+            }
+        }
+
+        //Momentum Widget
+        if (simulation::Node* real_node = dynamic_cast<simulation::Node*>(node))
+        {
+            if (dialogFlags_.REINIT_FLAG)
+            {
+                momentum = new QMomentumStatWidget(dialogTab, real_node);
+                dialogTab->addTab(momentum, QString("Momentum Stats"));
+            }
+        }
+#endif
+
+
         /// Info Widget
         {
             QDataDescriptionWidget* description=new QDataDescriptionWidget(dialogTab, node);
