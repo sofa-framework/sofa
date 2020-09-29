@@ -20,7 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "QGraphStatWidget.h"
+#include <sofa/gui/qt/QGraphStatWidget.h>
+#include <QtCharts/QChartView>
+#include <QtCharts/QChart>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
 
 namespace sofa
 {
@@ -38,7 +42,7 @@ QGraphStatWidget::QGraphStatWidget( QWidget* parent, simulation::Node* node, con
     , m_yMin(10000)
     , m_yMax(-10000)
     , m_lastTime(0.0)
-    , m_cptStep(0)    
+    , m_cptStep(0) 
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(0);
@@ -59,8 +63,8 @@ QGraphStatWidget::QGraphStatWidget( QWidget* parent, simulation::Node* node, con
     m_chart->addAxis(m_axisY, Qt::AlignLeft);
     m_chart->legend()->setAlignment(Qt::AlignBottom);
 
-    m_chartView = new QChartView(m_chart, this);
-    layout->addWidget(m_chartView);
+    QChartView* chartView = new QChartView(m_chart, this);
+    layout->addWidget(chartView);
     
     m_curves.resize(numberOfCurves);
 
@@ -68,7 +72,7 @@ QGraphStatWidget::QGraphStatWidget( QWidget* parent, simulation::Node* node, con
 
 QGraphStatWidget::~QGraphStatWidget()
 {
-    //delete _graph;
+    
 }
 
 void QGraphStatWidget::step()
@@ -77,29 +81,32 @@ void QGraphStatWidget::step()
     if (time <= m_lastTime)
         return;
 
+    // call internal method to add Data into series
     stepImpl();
 
-    if (m_cptStep > m_bufferSize) // start swipping
+    if (m_cptStep > m_bufferSize) // start swipping the Xaxis
     {
         qreal min = m_axisX->min() + m_node->getDt();
         m_axisX->setRange(min, time);
 
+        // flush series data not anymore display for memory storage
         if ((m_cptStep% m_bufferSize * 2) == 0)
         {
-            reduceSeries();
+            flushSeries();
         }
     }
 
     m_lastTime = time;
     m_cptStep++;
-    
 }
 
-void QGraphStatWidget::reduceSeries()
+void QGraphStatWidget::flushSeries()
 {
     for (auto serie : m_curves)
     {
-        serie->removePoints(0, m_bufferSize);
+        if (serie->count() >= m_bufferSize) {
+            serie->removePoints(0, m_bufferSize);
+        }
     }
 }
 
@@ -123,12 +130,10 @@ void QGraphStatWidget::setCurve( unsigned index, const QString& name, const QCol
     m_curves[index]->setName(name);
     m_curves[index]->setPen(QPen(color));
     
-    m_chart->addSeries(m_curves[index]);    
+    m_chart->addSeries(m_curves[index]);
 
-    //for (unsigned int i = 0; i < m_bufferSize; i++)
     m_curves[index]->attachAxis(m_axisY);
     m_curves[index]->attachAxis(m_axisX);
-   // m_chart->setAxisY(m_Xaxis, m_curves[index]);
 }
 
 

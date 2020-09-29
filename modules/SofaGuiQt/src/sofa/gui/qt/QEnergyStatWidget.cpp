@@ -19,8 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "QEnergyStatWidget.h"
-
+#include <sofa/gui/qt/QEnergyStatWidget.h>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
 
 namespace sofa
 {

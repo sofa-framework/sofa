@@ -20,7 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "QMomentumStatWidget.h"
+#include <sofa/gui/qt/QMomentumStatWidget.h>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
 
 namespace sofa
 {

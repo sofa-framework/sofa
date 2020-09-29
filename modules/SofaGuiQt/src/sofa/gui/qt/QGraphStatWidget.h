@@ -31,10 +31,14 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include <QtCharts/QChartView>
-#include <QtCharts/QChart>
-#include <QtCharts/QLineSeries>
-#include <QtCharts/QValueAxis>
+
+namespace QtCharts
+{
+    class QChartView;
+    class QChart;
+    class QLineSeries;
+    class QValueAxis;
+}
 
 namespace sofa
 {
@@ -65,23 +69,33 @@ protected:
     /// set the index-th curve (index must be < _numberOfCurves)
     void setCurve( unsigned index, const QString& name, const QColor& color );
 
-    void reduceSeries();
+    /// flush data from series not anymore displayed
+    void flushSeries();
 
+    /// pointer to the node monitored
     simulation::Node *m_node;
+
+    /// size of the buffers to stored
+    int m_bufferSize;
 
     /// Pointer to the chart Data
     QtCharts::QChart *m_chart;
-    QtCharts::QChartView* m_chartView;
+
+    /// vector of series to be ploted
     std::vector< QtCharts::QLineSeries *> m_curves;
+
+    /// x axis pointer
     QtCharts::QValueAxis* m_axisX;
+    /// y axis pointer
     QtCharts::QValueAxis* m_axisY;
-
-
+    
+    /// min y axis value stored
     SReal m_yMin;
-    SReal m_yMax;
-    int m_bufferSize;
-
+    /// max y axis value stored
+    SReal m_yMax;    
+    /// last timestep monitored
     SReal m_lastTime;
+    /// step counter monitored
     int m_cptStep;
 };
 

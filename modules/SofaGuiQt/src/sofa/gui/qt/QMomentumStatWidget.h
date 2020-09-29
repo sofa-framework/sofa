@@ -22,8 +22,7 @@
 #ifndef SOFA_GUI_QT_QMOMENTUMSTATWIDGET_H
 #define SOFA_GUI_QT_QMOMENTUMSTATWIDGET_H
 
-#include "QGraphStatWidget.h"
-
+#include <sofa/gui/qt/QGraphStatWidget.h>
 #include <sofa/simulation/MechanicalGetMomentumVisitor.h>
 
 namespace sofa
