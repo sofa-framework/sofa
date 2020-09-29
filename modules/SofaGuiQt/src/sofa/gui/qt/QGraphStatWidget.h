@@ -67,6 +67,9 @@ protected:
     /// set the index-th curve (index must be < _numberOfCurves)
     void setCurve( unsigned index, const QString& name, const QColor& color );
 
+    /// Method to update Y axis scale
+    void updateYAxisBounds(SReal value);
+
     /// flush data from series not anymore displayed
     void flushSeries();
 
@@ -90,7 +93,7 @@ protected:
     /// min y axis value stored
     SReal m_yMin;
     /// max y axis value stored
-    SReal m_yMax;    
+    SReal m_yMax;
     /// last timestep monitored
     SReal m_lastTime;
     /// step counter monitored

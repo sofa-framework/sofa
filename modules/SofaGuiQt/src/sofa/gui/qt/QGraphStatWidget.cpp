@@ -50,6 +50,9 @@ QGraphStatWidget::QGraphStatWidget( QWidget* parent, simulation::Node* node, con
     layout->setObjectName(QString( "tabStats" ) + title);
 
     m_chart = new QChart();
+    QFont font;
+    font.setPixelSize(18);
+    m_chart->setTitleFont(font);
     m_chart->setTitle(title);
 
     m_axisX = new QValueAxis();       
@@ -87,7 +90,7 @@ void QGraphStatWidget::step()
     if (m_cptStep > m_bufferSize) // start swipping the Xaxis
     {
         qreal min = m_axisX->min() + m_node->getDt();
-        m_axisX->setRange(min, time);
+        m_axisX->setRange(min, time);        
 
         // flush series data not anymore display for memory storage
         if ((m_cptStep% m_bufferSize * 2) == 0)
@@ -96,9 +99,22 @@ void QGraphStatWidget::step()
         }
     }
 
+    if ((m_cptStep% m_bufferSize) == 0)
+    {
+        if (m_axisY->max() > m_yMax)
+            m_axisY->setMax(m_yMax*1.01);
+
+        if (m_axisY->min() < m_yMin)
+            m_axisY->setMin(m_yMin*0.99);
+
+        m_yMax = -10000;
+        m_yMin = 10000;
+    }
+
     m_lastTime = time;
     m_cptStep++;
 }
+
 
 void QGraphStatWidget::flushSeries()
 {
@@ -126,6 +142,30 @@ void QGraphStatWidget::setCurve( unsigned index, const QString& name, const QCol
 
     m_curves[index]->attachAxis(m_axisY);
     m_curves[index]->attachAxis(m_axisX);
+}
+
+
+void QGraphStatWidget::updateYAxisBounds(SReal value)
+{
+    if (value > m_axisY->max())
+    {
+        m_axisY->setMax(value*1.01);
+    }
+    if (value < m_axisY->min())
+    {
+        m_axisY->setMin(value*0.99);
+    }
+
+    // for record
+    if (value > m_yMax)
+    {
+        m_yMax = value;
+    }
+
+    if (value < m_yMin)
+    {
+        m_yMin = value;
+    }
 }
 
 

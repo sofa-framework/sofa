@@ -61,10 +61,21 @@ void QMomentumStatWidget::stepImpl()
 
     // Update series
     SReal time = m_node->getTime();
+    SReal min = 100000;
+    SReal max = -100000;
     for (unsigned i = 0; i < 6; ++i)
     {
         m_curves[i]->append(time, momenta[i]);
+        if (momenta[i] < min)
+            min = momenta[i];
+        if (momenta[i] > max)
+            max = momenta[i];
     }
+
+    // update minY
+    updateYAxisBounds(min);
+    // update maxY
+    updateYAxisBounds(max);
 }
 
 

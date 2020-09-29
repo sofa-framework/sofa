@@ -38,7 +38,6 @@ QEnergyStatWidget::QEnergyStatWidget( QWidget* parent, simulation::Node* node )
     setCurve( 2, "Mechanical", Qt::blue );
 
     m_energyVisitor   = new sofa::simulation::MechanicalComputeEnergyVisitor(core::MechanicalParams::defaultInstance());
-    m_yMin = 0;
 }
 
 QEnergyStatWidget::~QEnergyStatWidget()
@@ -64,11 +63,14 @@ void QEnergyStatWidget::stepImpl()
     //Add Mechanical Energy
     m_curves[2]->append(time, kinectic + potential);
 
-    if (potential > m_yMax)
-    {
-        m_yMax = potential;
-        m_axisY->setRange(0, m_yMax*1.1);
-    }
+    // update maxY
+    updateYAxisBounds(kinectic + potential);
+    
+    // update minY
+    if (kinectic < potential)
+        updateYAxisBounds(kinectic);
+    else
+        updateYAxisBounds(potential);
 }
 
 
