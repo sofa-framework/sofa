@@ -120,8 +120,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::Me
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    sout << "addDForce(" << mparams->kFactor() << "," << mparams->bFactor() << ")" << sendl;
-    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    msg_info() << "addDForce(" << mparams->kFactor() << "," << mparams->bFactor() << ")";
     const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     data.fillParams(this, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());

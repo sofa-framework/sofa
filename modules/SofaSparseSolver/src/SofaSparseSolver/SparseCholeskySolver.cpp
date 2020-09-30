@@ -101,7 +101,6 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     int order = -1; //?????
     if (S) cs_sfree(S);
     if (N) cs_nfree(N);
-    //if (tmp) cs_free(tmp);
     M.compress();
 
     A.nzmax = M.getColsValue().size();	// maximum number of entries
@@ -117,16 +116,9 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     A.x = (double*) &(A_x[0]);				// numerical values, size nzmax
     A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &A );
-    //M.check_matrix();
-    //CompressedRowSparseMatrix<double>::check_matrix(-1 /*A.nzmax*/,A.m,A.n,A.p,A.i,A.x);
-    //sout << "diag =";
-    //for (int i=0;i<A.n;++i) sout << " " << M.element(i,i);
-    //sout << sendl;
-    //tmp = (double *) cs_malloc (A.n, sizeof (double)) ;
     tmp.resize(A.n);
     S = cs_schol (&A, order) ;		/* ordering and symbolic analysis */
     N = cs_chol (&A, S) ;		/* numeric Cholesky factorization */
-    //sout << "SparseCholeskySolver: factorization complete, nnz = " << N->L->p[N->L->n] << sendl;
 }
 
 int SparseCholeskySolverClass = core::RegisterObject("Direct linear solver based on Sparse Cholesky factorization, implemented with the CSPARSE library")

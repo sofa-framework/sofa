@@ -44,8 +44,8 @@ namespace linearsolver
 
 template<class TMatrix, class TVector>
 BlockJacobiPreconditioner<TMatrix,TVector>::BlockJacobiPreconditioner()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
 {
+    this->addAlias(&(this->f_printLog), "verbose");
 }
 
 template<class TMatrix, class TVector>
@@ -58,7 +58,7 @@ template<class TMatrix, class TVector>
 void BlockJacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
 {
     M.invert();
-    if (f_verbose.getValue()) sout<<M<<sendl;
+    msg_info() << M;
 }
 
 } // namespace linearsolver

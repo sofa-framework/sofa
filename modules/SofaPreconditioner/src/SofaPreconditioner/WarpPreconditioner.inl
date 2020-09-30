@@ -84,10 +84,12 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit() {
     sofa::core::objectmodel::BaseContext * c = this->getContext();
     c->get<sofa::core::behavior::BaseRotationFinder >(&rotationFinders, sofa::core::objectmodel::BaseContext::Local);
 
-    sout << "Found " << rotationFinders.size() << " Rotation finders" << sendl;
+    std::stringstream tmpStr;
+    tmpStr << "Found " << rotationFinders.size() << " Rotation finders" << msgendl;
     for (unsigned i=0; i<rotationFinders.size(); i++) {
-        sout << i << " : " << rotationFinders[i]->getName() << sendl;
+        tmpStr << i << " : " << rotationFinders[i]->getName() << msgendl;
     }
+    msg_info() << tmpStr.str();
 
     first = true;
     indexwork = 0;

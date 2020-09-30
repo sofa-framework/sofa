@@ -73,7 +73,6 @@ void SPHFluidForceField<DataTypes>::init()
     if (!Kp.CheckAll(1, sout.ostringstream(), serr.ostringstream())) serr << sendl;
     SPHKernel<SPH_KERNEL_DEFAULT_VISCOSITY,Deriv> Kv(4);
     if (!Kv.CheckAll(2, sout.ostringstream(), serr.ostringstream())) serr << sendl;
-    sout << sendl;
 
     this->getContext()->get(m_grid); //new Grid(d_particleRadius.getValue());
     if (m_grid==nullptr)

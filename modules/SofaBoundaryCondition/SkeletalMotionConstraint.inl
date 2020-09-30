@@ -316,18 +316,17 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatri
 {
     if( !active.getValue() ) return;
 
-    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     /*const unsigned int N = Deriv::size();
     const SetIndexArray & indices = m_indices.getValue();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-    	// Reset Fixed Row and Col
-    	for (unsigned int c=0;c<N;++c)
-    		mat->clearRowCol(offset + N * (*it) + c);
-    	// Set Fixed Vertex
-    	for (unsigned int c=0;c<N;++c)
-    		mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+        // Reset Fixed Row and Col
+        for (unsigned int c=0;c<N;++c)
+            mat->clearRowCol(offset + N * (*it) + c);
+        // Set Fixed Vertex
+        for (unsigned int c=0;c<N;++c)
+            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
     }*/
 }
 
@@ -336,7 +335,6 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
 {
     if( !active.getValue() ) return;
 
-    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     /*const unsigned int N = Deriv::size();
 
     const SetIndexArray & indices = m_indices.getValue();
