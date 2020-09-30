@@ -48,18 +48,6 @@ endif()
 sofa_set_01(SOFAGUIQT_HAVE_QTVIEWER VALUE ${SOFAGUI_QTVIEWER} BOTH_SCOPES)
 sofa_set_01(SOFAGUIQT_HAVE_QGLVIEWER VALUE ${SOFAGUI_QGLVIEWER} BOTH_SCOPES)
 
-# QWT
-# TODO: rename SOFAGUI_ENABLE_QWT into SOFAGUIQT_ENABLE_QWT
-option(SOFAGUI_ENABLE_QWT "Enable QWT for Qt GUIs")
-sofa_set_01(SOFAGUIQT_HAVE_QWT VALUE ${SOFAGUI_ENABLE_QWT} BOTH_SCOPES) # see SofaGuiQt.h.in
-if(SOFAGUI_ENABLE_QWT)
-    message("Qwt activated")
-    find_package(Qwt QUIET)
-    if(NOT QWT_FOUND)
-        add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/qwt-6.1.4/src ${CMAKE_BINARY_DIR}/extlibs/qwt)
-    endif()
-endif()
-
 # VSync
 # TODO: rename SOFAGUI_ENABLE_VSYNC into SOFAGUIQT_ENABLE_VSYNC
 option(SOFAGUI_ENABLE_VSYNC "Enable vertical refresh sync" OFF)
@@ -224,16 +212,6 @@ if(NOT SOFA_NO_OPENGL)
     endif()
 endif()
 
-# QWT
-if(SOFAGUI_ENABLE_QWT)
-    list(APPEND MOC_HEADER_FILES
-        ${SRC_ROOT}/GraphDataWidget.h
-        )
-    list(APPEND SOURCE_FILES
-        ${SRC_ROOT}/GraphDataWidget.cpp
-        )
-endif()
-
 # QtCharts
 if(Qt5Charts_FOUND)
     list(APPEND MOC_HEADER_FILES 
@@ -241,12 +219,14 @@ if(Qt5Charts_FOUND)
 		${SRC_ROOT}/QGraphStatWidget.h
         ${SRC_ROOT}/QEnergyStatWidget.h
         ${SRC_ROOT}/QMomentumStatWidget.h
+		${SRC_ROOT}/GraphDataWidget.h
 		)
     list(APPEND SOURCE_FILES 
 		${SRC_ROOT}/SofaWindowProfiler.cpp
         ${SRC_ROOT}/QGraphStatWidget.cpp
         ${SRC_ROOT}/QEnergyStatWidget.cpp
         ${SRC_ROOT}/QMomentumStatWidget.cpp
+		${SRC_ROOT}/GraphDataWidget.cpp
 		)
     list(APPEND UI_FILES ${SRC_ROOT}/WindowProfiler.ui)
 else()
@@ -291,9 +271,6 @@ if(SOFA_DUMP_VISITOR_INFO)
     target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml)
 endif()
 
-if(SOFAGUI_ENABLE_QWT)
-    target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
-endif()
 if(NOT SOFA_NO_OPENGL)
     if(SOFAGUI_QGLVIEWER)
         target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
