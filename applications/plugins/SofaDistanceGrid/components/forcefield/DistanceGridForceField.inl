@@ -24,6 +24,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include "DistanceGridForceField.h"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/gl/template.h>
