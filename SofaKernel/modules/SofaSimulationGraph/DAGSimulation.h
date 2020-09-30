@@ -50,10 +50,10 @@ public:
     ~DAGSimulation() override; // this is a terminal class
 
     /// create a new graph(or tree) and return its root node.
-    virtual Node::SPtr createNewGraph(const std::string& name) override;
+    virtual sofa::core::sptr<Node> createNewGraph(const std::string& name) override;
 
     /// creates and returns a new node.
-    virtual Node::SPtr createNewNode(const std::string& name) override;
+    virtual sofa::core::sptr<Node> createNewNode(const std::string& name) override;
 
     /// Can the simulation handle a directed acyclic graph?
     bool isDirectedAcyclicGraph() override { return true; }

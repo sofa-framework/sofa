@@ -24,8 +24,13 @@
 
 #include <SofaSimulationGraph/config.h>
 #include <sofa/helper/testing/BaseTest.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
+#include <sofa/core/sptr.h>
+
+namespace sofa::simulation
+{
+    class Node;
+    class Simulation;
+}
 
 namespace sofa
 {
@@ -53,7 +58,7 @@ public:
         /// Create a new scene instance from the content of the filename using the factory.
         static SceneInstance LoadFromFile(const std::string& filename) ;
 
-        Node::SPtr root ;
+        sofa::core::sptr<Node> root ;
         Simulation* simulation {nullptr} ;
 
         void initScene() ;

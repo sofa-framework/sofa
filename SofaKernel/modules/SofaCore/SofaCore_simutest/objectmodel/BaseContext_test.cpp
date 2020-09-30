@@ -26,6 +26,8 @@ using sofa::core::objectmodel::BaseContext ;
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
+#include <sofa/simulation/Node.h>
+
 #include <SofaBaseUtils/InfoComponent.h>
 using sofa::component::InfoComponent;
 

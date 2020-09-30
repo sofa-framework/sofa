@@ -1,6 +1,8 @@
 #include <SofaTest/Sofa_test.h>
 #include <sofa/helper/BackTrace.h>
 
+#include <sofa/simulation/Node.h>
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;

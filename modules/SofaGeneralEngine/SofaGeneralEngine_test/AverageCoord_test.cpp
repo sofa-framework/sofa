@@ -38,6 +38,8 @@ using sofa::simulation::graph::DAGSimulation;
 #include <SofaGeneralEngine/AverageCoord.h>
 using sofa::component::engine::AverageCoord ;
 
+#include <sofa/simulation/Node.h>
+
 using sofa::helper::vector;
 
 

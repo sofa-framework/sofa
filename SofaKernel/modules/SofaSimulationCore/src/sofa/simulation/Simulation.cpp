@@ -60,6 +60,7 @@
 #include <sofa/simulation/events/SimulationInitStartEvent.h>
 #include <sofa/simulation/events/SimulationInitDoneEvent.h>
 
+#include <sofa/simulation/Node.h>
 
 #include <fstream>
 #include <cstring>

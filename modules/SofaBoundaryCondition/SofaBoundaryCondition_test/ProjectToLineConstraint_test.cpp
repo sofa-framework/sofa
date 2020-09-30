@@ -30,6 +30,8 @@
 
 #include <SofaTest/TestMessageHandler.h>
 
+#include <sofa/simulation/Node.h>
+
 
 namespace sofa {
 using namespace component;

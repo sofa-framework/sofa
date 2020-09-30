@@ -29,6 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaTest/TestMessageHandler.h>
+#include <sofa/simulation/Node.h>
 
 
 namespace sofa {

@@ -39,6 +39,7 @@ using sofa::core::visual::VisualParams;
 #include <SofaGeneralEngine/DifferenceEngine.h>
 using sofa::component::engine::DifferenceEngine ;
 
+#include <sofa/simulation/Node.h>
 using sofa::helper::vector;
 
 namespace sofa

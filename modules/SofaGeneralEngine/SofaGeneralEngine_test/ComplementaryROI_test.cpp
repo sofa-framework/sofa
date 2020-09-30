@@ -22,7 +22,6 @@
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
 
-
 #include <sofa/helper/BackTrace.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -38,6 +37,8 @@ using sofa::core::visual::VisualParams;
 
 #include <SofaGeneralEngine/ComplementaryROI.h>
 using sofa::component::engine::ComplementaryROI ;
+
+#include <sofa/simulation/Node.h>
 
 using sofa::helper::vector;
 

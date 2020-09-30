@@ -31,6 +31,8 @@ using sofa::component::topology::TriangleSetTopologyContainer;
 using sofa::component::topology::TetrahedronSetTopologyContainer;
 using sofa::core::topology::BaseMeshTopology;
 
+#include <sofa/simulation/Node.h>
+
 #include <gtest/gtest.h>
 using testing::Test;
 

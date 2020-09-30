@@ -29,6 +29,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
 #include <sofa/helper/cast.h>
+#include <sofa/simulation/Node.h>
 
 
 namespace sofa
