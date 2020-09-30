@@ -24,6 +24,7 @@
 #include <SofaImplicitField/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/Mat.h>
 
 namespace sofa
 {
@@ -39,6 +40,7 @@ namespace _scalarfield_
 
 using sofa::core::objectmodel::BaseObject ;
 using sofa::defaulttype::Vec3d ;
+using sofa::defaulttype::Mat3x3 ;
 
 ////////////////// ///////////////
 class SOFA_SOFAIMPLICITFIELD_API ScalarField : public BaseObject
@@ -51,7 +53,8 @@ public:
     /// This is of lower precision compared to analytical gradient computed by derivating
     /// the equations.
     Vec3d getGradientByFinitDifference(Vec3d& pos, int& domain) ;
-
+    void getHessianByCentralFiniteDifference(const Vec3d& x, const double dx,
+                                             Mat3x3& hessian);
     virtual int getDomain(Vec3d& pos, int domain) {
         SOFA_UNUSED(pos);
         SOFA_UNUSED(domain);
@@ -65,6 +68,7 @@ public:
     /// If you have analytical derivative don't hesitate to override this function.
     virtual Vec3d getGradient(Vec3d& pos, int& domain);
     inline Vec3d getGradient(Vec3d& pos) {int domain=-1; return getGradient(pos,domain); }
+    virtual void getHessian(Vec3d &Pos, Mat3x3& h);
 
     /// Returns the value and the gradiant by evaluating one after an other.
     /// For some computation it is possible to implement more efficiently the computation
@@ -116,6 +120,7 @@ public:
 protected:
     ScalarField( ) { }
     ~ScalarField() override { }
+    double epsilon=0.0001;
 
 private:
     ScalarField(const ScalarField& n) ;

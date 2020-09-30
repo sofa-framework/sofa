@@ -39,6 +39,7 @@ set(HEADER_FILES
     src/SofaOpenglVisual/OglRenderingSRGB.h
     src/SofaOpenglVisual/OglLineAxis.h
     src/SofaOpenglVisual/OglSceneFrame.h
+    src/SofaOpenglVisual/PointSplatRenderer.h
     src/SofaOpenglVisual/PostProcessManager.h
     src/SofaOpenglVisual/SlicedVolumetricModel.h
     src/SofaOpenglVisual/VisualManagerPass.h
@@ -73,6 +74,7 @@ set(SOURCE_FILES
     src/SofaOpenglVisual/OglRenderingSRGB.cpp
     src/SofaOpenglVisual/OglLineAxis.cpp
     src/SofaOpenglVisual/OglSceneFrame.cpp
+    src/SofaOpenglVisual/PointSplatRenderer.cpp
     src/SofaOpenglVisual/PostProcessManager.cpp
     src/SofaOpenglVisual/SlicedVolumetricModel.cpp
     src/SofaOpenglVisual/VisualManagerPass.cpp
