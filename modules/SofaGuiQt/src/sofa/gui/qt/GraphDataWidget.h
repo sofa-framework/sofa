@@ -63,18 +63,32 @@ public:
         : QLineSeries()
         , data0(c.data0) 
     {
+        parseData();
     }
 
     void setData(const T* p) 
     { 
         data0 = p; 
-        
+        parseData();
+    }
+
+    virtual QLineSeries* copy() const { return new QDataSeries<T>(*this); }
+    virtual size_t size() const
+    {
+        if (data0 == NULL)
+            return 0;
+        else
+            return trait::size(*(data0));
+    }
+
+    virtual void parseData()
+    {
         clear();
         m_xMin = m_yMin = 1000000000.0;
         m_xMax = m_yMax = -1000000000.0;
 
         for (auto i = 0; i < this->size(); i++)
-        {            
+        {
             QPointF data = sample(i);
             append(data);
 
@@ -88,37 +102,7 @@ public:
             if (data.y() < m_yMin)
                 m_yMin = data.y();
         }
-
     }
-    virtual QLineSeries* copy() const { return new QDataSeries<T>(*this); }
-    virtual size_t size() const
-    {
-        if (data0 == NULL)
-            return 0;
-        else
-            return trait::size(*(data0));
-    }
-
-    /*
-    virtual double x (size_t i) const
-    {
-    if (i >= size())
-        return 0.0;
-    else if (vtrait::size(*trait::get(*(data0), i)) < 2)
-        return (double)i;
-    else
-        return (double)(*vtrait::get(*trait::get(*(data0), i), 0));
-    }
-    virtual double y (size_t i) const
-    {
-    if (i >= size())
-        return 0.0;
-    else if (vtrait::size(*trait::get(*(data0), i)) < 2)
-        return (double)(*vtrait::get(*trait::get(*(data0), i), 0));
-    else
-        return (double)(*vtrait::get(*trait::get(*(data0), i), 1));
-    }
-    */
 
     virtual QPointF sample (size_t i) const
     {
@@ -128,52 +112,7 @@ public:
             return QPointF(i, (double)(*vtrait::get(*trait::get(*(data0), i), 0)));
         else
             return QPointF((double)(*vtrait::get(*trait::get(*(data0), i), 0)), (double)(*vtrait::get(*trait::get(*(data0), i), 1)));
-    }
-
-    virtual QRectF boundingRect () const
-    {
-        if (size() == 0)
-            return QRectF();
-
-        real_type x, y , xMin, xMax, yMin, yMax;
-
-        if (vtrait::size(*trait::get(*(data0), 0)) < 2)
-        {
-            x = xMin = xMax = 0;
-            y = yMin = yMax = (*vtrait::get(*trait::get(*(data0), 0), 0));
-        }
-        else
-        {
-            x = xMin = xMax = (*vtrait::get(*trait::get(*(data0), 0), 0));
-            y = yMin = yMax = (*vtrait::get(*trait::get(*(data0), 0), 1));
-        }
-
-        for (size_t i=1; i < size(); i++)
-        {
-            if (vtrait::size(*trait::get(*(data0), i)) < 2)
-            {
-                x = i;
-                y = (*vtrait::get(*trait::get(*(data0), i), 0));
-            }
-            else
-            {
-                x = (*vtrait::get(*trait::get(*(data0), i), 0));
-                y = (*vtrait::get(*trait::get(*(data0), i), 1));
-            }
-
-            if (x > xMax)
-                xMax = x;
-            else if (x < xMin)
-                xMin = x;
-
-            if (y > yMax)
-                yMax = y;
-            else if (y < yMin)
-                yMin = y;
-        }
-
-        return QRectF(xMin, yMin, xMax-xMin, yMax-yMin);
-    }
+    }    
 
     real_type m_xMin, m_yMin;
     real_type m_xMax, m_yMax;
@@ -229,7 +168,6 @@ public:
     typedef vector_data_trait<DataType> trait;
     typedef typename trait::value_type curve_type;
     typedef QChartView Widget;
-    typedef QLineSeries Curve;
     typedef QDataSeries<curve_type> CurveData;
 
     GraphWidget(QWidget *parent)
@@ -261,7 +199,6 @@ public:
         const data_type& d = currentData;
         int nbCurves = m_curves.size();
         int nbData = trait::size(d);
-        std::cout << "readFromData size trait: " << nbData << std::endl;
 
         for (int i = 0; i < nbData; ++i)
         {
@@ -273,7 +210,6 @@ public:
             else
                 sName = "Unknown_" + QString::number(m_curves.size());
 
-            std::cout << "Parsing Data name: " << sName.toStdString() << std::endl;
             auto itM = m_curves.find(sName);
             CurveData* cdata;
             if (itM != m_curves.end())
@@ -303,69 +239,6 @@ public:
 
         m_axisX->setRange(minX, maxX);
         m_axisY->setRange(minY, maxY);
-
-        //for (int i=0; i<n; ++i)
-        //{
-        //    const curve_type* v = trait::get(d,i);
-        //    const char* name = trait::header(d,i);
-        //    Curve *c;
-        //    CurveData* cd;
-
-        //    if (i >= s)
-        //    {
-        //        QString s;
-        //        if (name && *name) s = name;
-        //        c = new Curve();
-        //        c->setName(name);
-        //        m_chart->addSeries(c);
-
-        //        cd = new CurveData;
-        //        m_curves.push_back(c);
-        //        cdata.push_back(cd);
-        //        s = i+1;
-        //    }
-        //    else
-        //    {
-        //        c = m_curves[i];
-        //        cd = cdata[i];
-        //        QString s;
-        //        if (name && *name) s = name;
-        //        if (s != c->name())
-        //            c->setName(s);
-        //    }
-
-        //    // c->setPen(getColor(i / (float)n));
-        //    c->setPen(QColor::fromHsv(255*i/n, 255, 255));
-        //    cd->setData(v);
-        //    std::cout << i << " -> size: " << cd->size() << std::endl;
-        //    //c->setData(cd);
-        //    /*if(c->minXValue() < minX) minX = c->minXValue();
-        //    if(c->maxXValue() > maxX) maxX = c->maxXValue();
-        //    if(c->minYValue() < minY) minY = c->minYValue();
-        //    if(c->maxYValue() > maxY) maxY = c->maxYValue();*/
-
-        //    //rect = rect.united(cdata[i]->boundingRect());
-        //}
-
-
-        //if (s != n)
-        //{
-        //    for (int i=n; i < s; ++i)
-        //    {
-        //        Curve* c = m_curves[i];
-        //        m_chart->removeSeries(c);
-        //        delete c;	// Curve has ownership of the CurveData
-        //    }
-        //    m_curves.resize(n);
-        //    cdata.resize(n);
-        //    s = n;
-        //}
-        ////if (n > 0 && minX <= maxX)
-        ////{
-        ////    w->setAxisScale(Widget::yLeft, minY, maxY);
-        ////    w->setAxisScale(Widget::xTop, minX, maxX);
-        ////}
-        ////w->replot();
     }
 
     void exportGNUPlot(const std::string &baseFileName) const
@@ -512,11 +385,11 @@ public:
     virtual bool createWidgets()
     {
         bool b = GraphDataWidget<T>::createWidgets();
-        typename GraphWidget<T>::Widget* w = dynamic_cast<typename GraphWidget<T>::Widget*>(this->container.w->getWidget());
-        if (w)
-        {
-            //w->setAxisScaleEngine(GraphWidget<T>::Widget::yLeft, new QwtLinearScaleEngine);
-        }
+        //typename GraphWidget<T>::Widget* w = dynamic_cast<typename GraphWidget<T>::Widget*>(this->container.w->getWidget());
+        //if (w)
+        //{
+        //    w->setAxisScaleEngine(GraphWidget<T>::Widget::yLeft, new QwtLinearScaleEngine);
+        //}
         return b;
     }
 };
