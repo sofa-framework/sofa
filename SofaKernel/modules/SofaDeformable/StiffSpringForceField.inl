@@ -24,7 +24,7 @@
 
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/helper/AdvancedTimer.h>
-
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 namespace sofa

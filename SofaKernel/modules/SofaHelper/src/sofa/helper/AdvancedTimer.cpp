@@ -27,6 +27,8 @@
 #include <sofa/helper/map.h>
 #include "../../extlibs/json/json.h"
 
+//TODO(dmarchal 2020-09-30): it make no sense to have a dependency from sofa::simulation into sofa::helper. Please refactor to cut that.
+#include <sofa/simulation/Node.h>
 
 #include <cmath>
 #include <cstdlib>

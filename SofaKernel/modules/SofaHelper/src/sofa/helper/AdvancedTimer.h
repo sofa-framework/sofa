@@ -21,13 +21,18 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_ADVANCEDTIMER_H
 #define SOFA_HELPER_ADVANCEDTIMER_H
+#include <map>
 #include <sofa/helper/config.h>
-#include <sofa/simulation/Simulation.h>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 
 #include <iostream>
 #include <string>
 #include <vector>
+
+/// Forward declaration
+namespace sofa::simulation { class Node; }
 
 
 namespace sofa

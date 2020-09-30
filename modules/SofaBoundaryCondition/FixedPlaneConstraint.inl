@@ -27,6 +27,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
