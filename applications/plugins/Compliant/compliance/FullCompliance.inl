@@ -28,9 +28,8 @@ FullCompliance<DataTypes>::FullCompliance( core::behavior::MechanicalState<DataT
 }
 
 template<class DataTypes>
-void FullCompliance<DataTypes>::init()
+void FullCompliance<DataTypes>::doInit()
 {
-    Inherit::init();
     if( this->getMState()==NULL ) serr<<"init(), no mstate !" << sendl;
     reinit();
 }

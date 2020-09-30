@@ -35,7 +35,7 @@ public:
     Data< Real > d_complianceMin; ///< Minimum compliance
     Data< Real > d_errorMin; ///< complianceMin is reached for this error value
 
-    virtual void init() override;
+    virtual void doInit() override;
 
 //    virtual SReal getPotentialEnergy( const core::MechanicalParams* mparams, const typename Inherit::DataVecCoord& x ) const;
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*) override;

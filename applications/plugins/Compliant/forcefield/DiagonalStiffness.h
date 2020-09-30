@@ -41,7 +41,7 @@ public:
 
     Data< helper::vector<SReal> > damping; ///< diagonal damping
 
-    virtual void init() override;
+    virtual void doInit() override;
 
     /// Compute the Stiffness matrix
     virtual void reinit() override;

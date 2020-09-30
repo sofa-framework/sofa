@@ -29,9 +29,8 @@ DiagonalCompliance<DataTypes>::DiagonalCompliance( core::behavior::MechanicalSta
 }
 
 template<class DataTypes>
-void DiagonalCompliance<DataTypes>::init()
+void DiagonalCompliance<DataTypes>::doInit()
 {
-    Inherit::init();
     if( this->getMState()==NULL ) serr<<"init(), no mstate !" << sendl;
     reinit();
 }

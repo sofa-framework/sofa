@@ -40,7 +40,7 @@ public:
     Data< bool > resizable; ///< can the associated dofs can be resized? (in which case the matrices must be updated)
 
 
-    virtual void init() override;
+    virtual void doInit() override;
 
     /// Compute the compliance matrix
     virtual void reinit() override;
