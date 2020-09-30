@@ -50,9 +50,8 @@ ParticlesRepulsionForceField<DataTypes>::ParticlesRepulsionForceField()
 }
 
 template<class DataTypes>
-void ParticlesRepulsionForceField<DataTypes>::init()
+void ParticlesRepulsionForceField<DataTypes>::doInit()
 {
-    this->Inherit::init();
     this->getContext()->get(grid); //new Grid(distance.getValue());
     if (grid==nullptr)
         serr<<"SpatialGridContainer not found by ParticlesRepulsionForceField, slow O(n2) method will be used !!!" << sendl;
