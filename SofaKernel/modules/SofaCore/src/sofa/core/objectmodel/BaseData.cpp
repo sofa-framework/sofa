@@ -180,7 +180,7 @@ void BaseData::update()
     {
 #ifdef SOFA_DDG_TRACE
         if (m_owner)
-            m_owner->sout << "Data " << m_name << ": update from parent " << parentBaseData->m_name<< m_owner->sendl;
+            dmsg_warning(m_owner) << "Data " << m_name << ": update from parent " << parentBaseData->m_name;
 #endif
         updateFromParentValue(parentBaseData);
         // If the value is dirty clean it
@@ -280,10 +280,11 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
 #endif
     )
     {
-        m_owner->sout << "Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName() << " : ";
-        if (!m.empty()) m_owner->sout << m;
-        else            m_owner->sout << "OK, " << nbl << "*"<<copySize<<" values copied.";
-        m_owner->sout << m_owner->sendl;
+        std::stringstream tmp;
+        tmp << "Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName() << " : ";
+        if (!m.empty()) tmp << m;
+        else            tmp << "OK, " << nbl << "*"<<copySize<<" values copied.";
+        msg_info(m_owner) << tmp.str();
     }
 
     return true;

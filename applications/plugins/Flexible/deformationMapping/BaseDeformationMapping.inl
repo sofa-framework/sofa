@@ -93,7 +93,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0,
     size_t cSize = c0.size();
     if(cSize != x0.size() || cSize != index.size() || cSize != w.size() || cSize != dw.size() || cSize != ddw.size())
     {
-        sout << SOFA_CLASS_METHOD << " : wrong sizes " << sendl;
+        msg_warning() << " : wrong sizes ";
     }
 
     helper::WriteOnlyAccessor<Data<VecCoord> > wa_x0 (this->f_pos0);
@@ -168,14 +168,15 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         F0.resize(size);
         if(restPositionSet)     // use custom rest positions defined in state (to set material directions or set residual deformations)
         {
-            for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
-            sout<<rest.size()<<" rest positions imported "<<sendl;
+            for(size_t i=0; i<rest.size(); ++i)
+                F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
+            msg_info()<<rest.size()<<" rest positions imported ";
         }
         else
         {
             for(size_t i=0; i<size; ++i) copy(F0[i],_sampler->getTransforms()[i]);
         }
-        sout<<size <<" gauss points imported"<<sendl;
+        msg_info()<<size <<" gauss points imported";
     }
     else  // retrieve initial positions from children dofs (vec types)
     {
@@ -198,11 +199,11 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 
     if(0 != f_index.getValue().size() && pos0.size() == f_index.getValue().size() && f_w.getValue().size() == f_index.getValue().size()) // we already have the needed data, we directly use them
     {
-        sout<<"using filled data" <<sendl;
+        msg_info()<<"using filled data";
     }
     else if(_shapeFunction) // if we do not have the needed data, and have a shape function, we use it to compute needed data (index, weights, etc.)
     {
-        sout<<"found shape function "<<_shapeFunction->getName()<<sendl;
+        msg_info()<<"found shape function "<<_shapeFunction->getName();
         helper::vector<mCoord> mpos0;
         mpos0.resize(pos0.size());
         for(size_t i=0; i<pos0.size(); ++i) defaulttype::StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
@@ -271,7 +272,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const helper::vector<
     helper::WriteOnlyAccessor<Data<VecVHessian > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
     helper::WriteOnlyAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
 
-    sout<<size <<" custom gauss points imported"<<sendl;
+    msg_info()<<size <<" custom gauss points imported";
 
     // init jacobians
     initJacobianBlocks();

@@ -84,7 +84,7 @@ void OglTetrahedralModel<DataTypes>::init()
 
     if (!m_mappingTableValues)
     {
-        sout << "No MappingTable found, instanciating one" << sendl;
+        msg_info() << "No MappingTable found, instanciating one";
         m_mappingTableValues = sofa::core::objectmodel::New<sofa::component::visualmodel::OglFloatVector4Variable>();
         m_mappingTableValues->setName("MappingTable");
         m_mappingTableValues->setID("MappingTable");
@@ -107,7 +107,7 @@ void OglTetrahedralModel<DataTypes>::init()
     }
     if (!m_runSelectTableValues)
     {
-        sout << "No RunSelectTable found, instanciating one" << sendl;
+        msg_info() << "No RunSelectTable found, instanciating one";
 
         m_runSelectTableValues = sofa::core::objectmodel::New<sofa::component::visualmodel::OglFloatVector4Variable>();
         m_runSelectTableValues->setName("RunSelectTable");
@@ -130,8 +130,9 @@ void OglTetrahedralModel<DataTypes>::init()
     }
 
     if (!m_topology)
-    {// currently OglTetrahedralMedal has to use topology to initialize data
-        serr << "OglTetrahedralModel : Error : no BaseMeshTopology found." << sendl;
+    {
+        // currently OglTetrahedralMedal has to use topology to initialize data
+        msg_error() << "No BaseMeshTopology found.";
         return;
     }
     // for now, no mesh file will be loaded directly from OglTetrahedralModel component
@@ -213,8 +214,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     // update m_positions
     if (m_topology->hasPos())
     {
-        if (this->f_printLog.getValue())
-            sout << "OglTetrahedralModel: copying " << m_topology->getNbPoints() << "points from topology." << sendl;
+        msg_info() << "Copying " << m_topology->getNbPoints() << "points from topology.";
         helper::WriteAccessor<  Data<helper::vector<Coord> > > position = m_positions;
         position.resize(m_topology->getNbPoints());
         for (unsigned int i = 0; i<position.size(); i++) 
@@ -226,8 +226,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     }
     else if (BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState()))
     {
-        if (this->f_printLog.getValue())
-            sout << "OglTetrahedralModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
+        msg_info() << "Copying " << mstate->getSize() << " points from mechanical state.";
         helper::WriteAccessor< Data<helper::vector<Coord> > > position = m_positions;
         position.resize(mstate->getSize());
         for (unsigned int i = 0; i<position.size(); i++)
@@ -239,13 +238,13 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     }
     else
     {
-        serr << "OglTetrahedralModel: can not update vertices!" << sendl;
+        msg_error() << "OglTetrahedralModel: can not update vertices!";
     }
     lastMeshRev = m_topology->getRevision();
     // update m_tetrahedrons
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& inputTetrahedrons = m_topology->getTetrahedra();
     if (this->f_printLog.getValue())
-        sout << "OglTetrahedralModel: copying " << inputTetrahedrons.size() << " tetrahedrons from topology." << sendl;
+        msg_info() << "Copying " << inputTetrahedrons.size() << " tetrahedrons from topology.";
     helper::WriteAccessor< Data< helper::vector<Tetrahedron> > > tetrahedrons = m_tetrahedrons;
     tetrahedrons.resize(inputTetrahedrons.size());
     for (unsigned int i = 0; i<inputTetrahedrons.size(); i++) {

@@ -208,6 +208,7 @@ void ClusteringEngine<DataTypes>::farthestPointSampling(VI& ptIndices,VI& vorono
     voronoi.resize(nbp); voronoi.fill(0);
     VD distances((int)nbp,distMax);
 
+    std::stringstream tmpStr;
     while(ptIndices.size()<nbc)
     {
         if(this->topo && this->d_useTopo.getValue()) 	dijkstra(ptIndices , distances, voronoi);
@@ -217,9 +218,10 @@ void ClusteringEngine<DataTypes>::farthestPointSampling(VI& ptIndices,VI& vorono
         for (unsigned int i=0; i<nbp; i++) if(distances[i]>dmax) {dmax=distances[i]; imax=(ID)i;}
         if(dmax==0) break;
         else ptIndices.push_back(imax);
-        sout<<"ClusteringEngine :"<<(int)floor(100.*(double)ptIndices.size()/(double)nbc)<<" % done\r";
+        tmpStr<<(int)floor(100.*(double)ptIndices.size()/(double)nbc)<<" % done\r";
     }
-    sout<<"ClusteringEngine :100 % done\n";
+    tmpStr <<"Clustering 100 % done";
+    msg_info() << tmpStr.str();
 
     if(this->topo && this->d_useTopo.getValue()) 	dijkstra(ptIndices , distances, voronoi);
     else Voronoi(ptIndices , distances, voronoi);
@@ -330,7 +332,7 @@ bool ClusteringEngine<DataTypes>::load()
     }
 
     loadedFilename = fname;
-    sout << "ClusteringEngine: loaded clusters from "<<fname<<sendl;
+    msg_info() << "ClusteringEngine: loaded clusters from "<<fname;
     return true;
 }
 
@@ -361,7 +363,7 @@ bool ClusteringEngine<DataTypes>::save()
         fileStream << std::endl;
     }
 
-    sout << "ClusteringEngine: saved clusters in "<<fname;
+    msg_info() << "ClusteringEngine: saved clusters in ";
 
     return true;
 }

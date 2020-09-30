@@ -51,7 +51,6 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(false); // this solver is explicit only
-    //sout << "RK4 Init"<<sendl;
     // Get the Ids of the state vectors
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
@@ -69,7 +68,6 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     MultiVecDeriv k4v(&vop);
 
     MultiVecCoord newX(&vop);
-    //MultiVecDeriv newV(&vop);
 
     double stepBy2 = double(dt / 2.0);
     double stepBy3 = double(dt / 3.0);

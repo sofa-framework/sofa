@@ -168,9 +168,9 @@ void PersistentContactRigidMapping<TIn, TOut>::bwdInit()
     }
 
     if (!m_inputMapping)
-        serr << "WARNING : can not found the input mapping" << sendl;
+        msg_warning() << "Can not found the input mapping";
     else
-        sout << "Input mapping named " << m_inputMapping->getName() << " is found" << sendl;
+        msg_info() << "Input mapping named " << m_inputMapping->getName() << " is found";
 }
 
 

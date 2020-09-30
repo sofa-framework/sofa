@@ -85,22 +85,24 @@ void DecimateMesh<DataTypes>::doUpdate()
     geometry_to_surface(surface);
 
     // Edge collapse simplification method
-    sout << "DecimateMesh: Initial mesh has " << m_inVertices.getValue().size() << " vertices and " << m_inTriangles.getValue().size() << " triangles." << sendl;
-    sout << "DecimateMesh: Processing mesh simplification..." << sendl;
+
+    msg_info() << "Initial mesh has " << m_inVertices.getValue().size() << " vertices and " << m_inTriangles.getValue().size() << " triangles." << msgendl
+               << "Processing mesh simplification...";
+
     if (m_edgesTarget != 0)
     {
         SMS::Count_stop_predicate<Surface> stop(m_edgesTarget.getValue());
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,5,0)
         SMS::edge_collapse(surface
                            ,stop
-#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,7,-1)
+                   #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,7,-1)
                            ,CGAL::parameters::vertex_index_map( get(CGAL::vertex_external_index,surface))
-#else
-                            , CGAL::vertex_index_map(get(CGAL::vertex_external_index, surface))
-#endif // CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,7,0)
+                   #else
+                           , CGAL::vertex_index_map(get(CGAL::vertex_external_index, surface))
+                   #endif // CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,7,0)
                            .halfedge_index_map( get(CGAL::halfedge_external_index,surface  )));
 #else 
-       SMS::edge_collapse(surface, stop, CGAL::vertex_index_map( boost::get(CGAL::vertex_external_index,surface)).edge_index_map( boost::get(CGAL::edge_external_index,surface  )));
+        SMS::edge_collapse(surface, stop, CGAL::vertex_index_map( boost::get(CGAL::vertex_external_index,surface)).edge_index_map( boost::get(CGAL::edge_external_index,surface  )));
 #endif // CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,5,0)
 
     }
@@ -110,11 +112,11 @@ void DecimateMesh<DataTypes>::doUpdate()
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,5,0)
         SMS::edge_collapse(surface
                            ,stop
-#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,7,-1)
+                   #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,7,-1)
                            ,CGAL::parameters::vertex_index_map( get(CGAL::vertex_external_index,surface))
-#else
+                   #else
                            , CGAL::vertex_index_map(get(CGAL::vertex_external_index, surface))
-#endif // CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,7,0)
+                   #endif // CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,7,0)
                            .halfedge_index_map( get(CGAL::halfedge_external_index,surface  )));
 #else
         SMS::edge_collapse(surface, stop, CGAL::vertex_index_map( boost::get(CGAL::vertex_external_index,surface)).edge_index_map( boost::get(CGAL::edge_external_index,surface  )));
@@ -123,7 +125,7 @@ void DecimateMesh<DataTypes>::doUpdate()
     }
     else
     {
-        serr << "You must add a stop condition using either targetedNumberOfEdges or targetedRatioOfEdges" << sendl;
+        msg_erro() << "You must add a stop condition using either targetedNumberOfEdges or targetedRatioOfEdges" ;
     }
 
 
@@ -139,7 +141,7 @@ void DecimateMesh<DataTypes>::doUpdate()
         writeObj();
     }
 
-    sout << "DecimateMesh: Decimated mesh has " << m_outVertices.getValue().size() << " vertices and " << m_outTriangles.getValue().size() << " triangles." << sendl;
+    msg_info() << "DecimateMesh: Decimated mesh has " << m_outVertices.getValue().size() << " vertices and " << m_outTriangles.getValue().size() << " triangles.";
 }
 
 template <class DataTypes>
@@ -202,29 +204,29 @@ void DecimateMesh<DataTypes>::computeNormals()
 template <class DataTypes>
 void DecimateMesh<DataTypes>::handleEvent(sofa::core::objectmodel::Event * /*event*/)
 {
-//        std::cout << "handleEvent called" << std::endl;
+    //        std::cout << "handleEvent called" << std::endl;
 
-//        if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
-//        {
-//            std::cout << "KeypressedEvent detected" << std::endl;
-//
-//            switch(ev->getKey())
-//            {
-//
-//            case 'M':
-//            case 'm':
-//                std::cout << "key pressed" << std::endl;
-//                writeObj();
-//                break;
-//            }
-//        }
+    //        if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    //        {
+    //            std::cout << "KeypressedEvent detected" << std::endl;
+    //
+    //            switch(ev->getKey())
+    //            {
+    //
+    //            case 'M':
+    //            case 'm':
+    //                std::cout << "key pressed" << std::endl;
+    //                writeObj();
+    //                break;
+    //            }
+    //        }
 }
 
 template <class DataTypes>
 void DecimateMesh<DataTypes>::geometry_to_surface(Surface &s)
 {
-//        helper::ReadAccessor< Data< VecCoord > > inVertices = m_inVertices;
-//        helper::ReadAccessor< Data< SeqTriangles > > inTriangles = m_inTriangles;
+    //        helper::ReadAccessor< Data< VecCoord > > inVertices = m_inVertices;
+    //        helper::ReadAccessor< Data< SeqTriangles > > inTriangles = m_inTriangles;
 
     VecCoord inVertices = m_inVertices.getValue();
     SeqTriangles inTriangles = m_inTriangles.getValue();

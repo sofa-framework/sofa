@@ -458,7 +458,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 #ifndef DN_USE_J
                         k = J_1t*k*J_1;
 #endif
-                        if (verbose) sout << "K"<<i<<j<<" += "<<k<<" * "<<detJ<<""<<sendl;
+                        dmsg_info_when(verbose) << "K"<<i<<j<<" += "<<k<<" * "<<detJ<<"";
                         k *= detJ;
                         for(int m=0; m<3; ++m)
                             for(int l=0; l<3; ++l)

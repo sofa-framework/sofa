@@ -113,7 +113,6 @@ void ConicalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
                     pp_prime = p_prime - p;
                     d = pp_prime.norm();
                     dir = pp_prime/pp_prime.norm();
-                    //sout << t << " " << alpha << sendl;
                 }
                 //top of the cone
                 else

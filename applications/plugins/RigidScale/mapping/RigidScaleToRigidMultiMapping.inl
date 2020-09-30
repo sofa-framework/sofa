@@ -253,7 +253,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
             if (!sf.empty())
                 m_shapeFunction = sf[0]; // just pick the first one
             if (m_shapeFunction) {
-                sout << "Using shape function: " << m_shapeFunction->name << " to compute index" << sendl;
+                msg_info() << "Using shape function: " << m_shapeFunction->name << " to compute index";
 
                 typename BaseShapeFunction::Coord out_pos;
                 typename BaseShapeFunction::VRef ref;
@@ -263,7 +263,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
                     defaulttype::StdVectorTypes<typename BaseShapeFunction::Coord,typename BaseShapeFunction::Coord>::set( out_pos, xout_const[ind0][0] , xout_const[ind0][1] , xout_const[ind0][2]);
                     m_shapeFunction->computeShapeFunction(out_pos, ref, w, NULL, NULL);
                     if (ref.size() == 0) {
-                        serr << "Child " << ind0 << " has no parent" << sendl;
+                        msg_warning() << "Child " << ind0 << " has no parent";
                         return;
                     }
                     else if (ref.size() == 1) {
@@ -273,12 +273,12 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
                         typename BaseShapeFunction::VReal::iterator itMax = std::max_element(w.begin(),w.end());
                         std::size_t indexMax = std::distance(w.begin(), itMax);
                         ra_index.push_back(ind0);ra_index.push_back(indexMax);ra_index.push_back(indexMax);
-                        serr << "Child " << ind0 << " has more than one parent, use the most important parent with weight: " << *itMax << sendl;
+                        msg_warning() << "Child " << ind0 << " has more than one parent, use the most important parent with weight: " << *itMax;
                     }
                 }
             }
             else {
-                serr << "No index given, no shapefunction found" << sendl;
+                msg_error() << "No index given, no shapefunction found";
                 return;
             }
         }
@@ -287,7 +287,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
 		// Check of the index pair size
 		if (index_const.size() % 3 != 0 || index_const.size() < 3)
 		{
-			std::cout << "RigidScaleToRigidMultiMapping : Setup failed. Some affine are connected to only a rigid, while they require a rigid and a scale, check the data index. " << std::endl;
+            msg_info() << "Setup failed. Some affine are connected to only a rigid, while they require a rigid and a scale, check the data index. ";
 			return;
 		}
 

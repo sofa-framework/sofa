@@ -141,7 +141,7 @@ void VoxelGridLoader::reinit()
                     }
                 }
 
-        sout << "inserting " << keepPoint.size() << " points ... " << sendl;
+        msg_info() << "inserting " << keepPoint.size() << " points ... ";
 
         unsigned int pointIdx = 0;
         seqPoints.resize ( keepPoint.size() );
@@ -164,7 +164,7 @@ void VoxelGridLoader::reinit()
                 }
         keepPoint.clear();
 
-        sout << " done. " << sendl;
+        msg_info() << " done. ";
 
         helper::vector<Hexahedron>& seqHexahedra = *hexahedra.beginEdit();
 

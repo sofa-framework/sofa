@@ -225,7 +225,7 @@ void VectorSpringForceField<DataTypes>::bwdInit()
         else
         {
             int n = this->mstate1->getSize();
-            sout << "VectorSpringForceField: linking "<<n<<" pairs of points." << sendl;
+            msg_info() << "VectorSpringForceField: linking "<<n<<" pairs of points.";
             springArrayData.resize(n);
             edgeArray.resize(n);
             for (int i=0; i<n; ++i)
@@ -244,13 +244,11 @@ void VectorSpringForceField<DataTypes>::bwdInit()
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::createDefaultSprings()
 {
-    sout << "Creating "<< m_topology->getNbEdges() <<" Vector Springs from EdgeSetTopology"<<sendl;
+    msg_info() << "Creating "<< m_topology->getNbEdges() <<" Vector Springs from EdgeSetTopology";
 
     helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     springArrayData.resize(m_topology->getNbEdges());
-    //EdgeLengthArrayInterface<Real,DataTypes> elai(springArray);
-    //edgeGEO->computeEdgeLength(elai);
     const VecCoord& x0 = this->mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
     unsigned int i;
     for (i=0; i<m_topology->getNbEdges(); ++i)
@@ -264,7 +262,6 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
 }
 
 template<class DataTypes>
-//void VectorSpringForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& p, const VecDeriv& v)
 void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
 {
 

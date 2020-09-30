@@ -245,7 +245,6 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             mt.transpose ( m );
             bases[t].invert ( mt );
             centers[t] = ( (in)[tetrahedra[t][0]]+(in)[tetrahedra[t][1]]+(in)[tetrahedra[t][2]]+(in)[tetrahedra[t][3]] ) *0.25;
-            //sout << "Tetra "<<t<<" center="<<centers[t]<<" base="<<m<<sendl;
         }
         for ( unsigned int c = 0; c < cubes.size(); c++ )
         {
