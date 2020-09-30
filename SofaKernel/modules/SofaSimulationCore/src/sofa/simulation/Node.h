@@ -42,7 +42,6 @@
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -59,12 +58,14 @@
 
 #include <type_traits>
 
-namespace sofa
+namespace sofa::simulation
 {
-namespace simulation
-{
-class Visitor;
+    class Visitor;
 }
+
+namespace sofa::core::behavior
+{
+    class BaseConstraintSet;
 }
 
 #include <sofa/helper/system/thread/CTime.h>

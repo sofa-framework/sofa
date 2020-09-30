@@ -29,6 +29,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
