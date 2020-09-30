@@ -93,7 +93,6 @@ public:
         const char* p = arg->getAttribute(size.getName().c_str());
         if (p) {
             std::string nbStr = p;
-            //            sout << "parse: setting " << size.getName() << "="<<nbStr<<sendl;
             size.read(nbStr);
             resize(size.getValue());
         }
@@ -106,7 +105,6 @@ public:
         if (it != str.end() && it->second)
         {
             std::string nbStr = *it->second;
-            //            sout << "parseFields: setting "<< size.getName() << "=" <<nbStr<<sendl;
             size.read(nbStr);
             resize(size.getValue());
         }

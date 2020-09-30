@@ -49,11 +49,13 @@ void GNodeMultiMappingElement::updateSceneGraph(
 {
 
     helper::vector<simulation::Node*>::const_iterator it;
+    std::stringstream tmpStr;
     for( it = otherInputs.begin(); it != otherInputs.end(); ++it)
     {
-        multiMapping->sout << "Node " << (*it)->getName() << " does not belong to "
-                << multiMapping->getContext()->getName() << " ancestors" << multiMapping->sendl;
+        tmpStr << "Node " << (*it)->getName() << " does not belong to "
+                << multiMapping->getContext()->getName() << " ancestors";
     }
+    msg_info("GnodeMultiMapping") << tmpStr.str();
 }
 
 

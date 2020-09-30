@@ -197,43 +197,12 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
             }
             else wimage->getCImgList().push_back(cimg_library::CImg<T>().load(fname.c_str()));
 
-        if(!wimage->isEmpty()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
+        if(!wimage->isEmpty())
+            msg_info(container) << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")";
         else return false;
 
         return true;
     }
-
-    //    static bool load( ImageContainerT* container, std::FILE* const file, std::string fname)
-    //    {
-    //        typedef typename ImageContainerT::Real Real;
-
-    //        typename ImageContainerT::waImage wimage(container->image);
-    //        typename ImageContainerT::waTransform wtransform(container->transform);
-
-    //        if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
-    //            wimage->getCImgList().load_cimg(file);
-    //        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
-    //        {
-    //            float voxsize[3];
-    //            wimage->getCImgList().push_back(CImg<T>().load_analyze(file,voxsize));
-    //            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-    //        }
-    //        else if (fname.find(".inr")!=std::string::npos)
-    //        {
-    //            float voxsize[3];
-    //            wimage->getCImgList().push_back(CImg<T>().load_inr(file,voxsize));
-    //            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-    //        }
-    //        else
-    //        {
-    //            container->serr << "Error (ImageContainer): Compression is not supported for container filetype: " << fname << container->sendl;
-    //        }
-
-    //        if(wimage->getCImg()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
-    //        else return false;
-
-    //        return true;
-    //    }
 
     static bool loadCamera( ImageContainerT* container )
     {
@@ -400,9 +369,9 @@ public:
         if (!this->transformIsSet) this->transform.unset();
 
         if (this->transformIsSet)
-            sout << "Transform is set" << sendl;
+            msg_info() << "Transform is set";
         else
-            sout << "Transform is NOT set" << sendl;
+            msg_info() << "Transform is NOT set";
 
         ImageContainerSpecialization<ImageTypes>::parse( this, arg );
     }

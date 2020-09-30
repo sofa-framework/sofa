@@ -70,10 +70,10 @@ MeshGenerationFromPolyhedron<DataTypes>::MeshGenerationFromPolyhedron()
     , facetApproximation(initData(&facetApproximation, 0.008, "facetApproximation", "Upper bound for the center-center distances of the surface mesh facets"))
     , cellRatio(initData(&cellRatio, 4.0, "cellRatio", "Upper bound for the radius-edge ratio of the tetrahedra"))
     , cellSize(initData(&cellSize, 0.2, "cellSize", "Uniform upper bound for the circumradii of the tetrahedra in the mesh"))
-#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
+    #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
     , sharpEdgeAngle(initData(&sharpEdgeAngle, 120.0, "sharpEdgeAngle", "Threshold angle to detect sharp edges in input surface (activated with CGAL 3.8+ if sharpEdgeSize > 0)"))
     , sharpEdgeSize(initData(&sharpEdgeSize, 0.0, "sharpEdgeSize", "Meshing size for sharp feature edges (activated with CGAL 3.8+ if sharpEdgeSize > 0)"))
-#endif
+    #endif
     , odt(initData(&odt, false, "odt", "activate odt optimization"))
     , lloyd(initData(&lloyd, false, "lloyd", "activate lloyd optimization"))
     , perturb(initData(&perturb, false, "perturb", "activate perturb optimization"))
@@ -152,8 +152,8 @@ template <class C3t3,class Obj>
 void printStats(C3t3& c3t3, Obj* obj, const char* step = "")
 {
     int nb_in = countWellCentered(c3t3);
-    obj->sout << step << ":  number of tetra     = " << c3t3.number_of_cells() << obj->sendl;
-    obj->sout << step << ":  well-centered tetra = " << ((double)nb_in/(double)c3t3.number_of_cells())*100 << "%" << obj->sendl;
+    msg_info(obj) << step << ":  number of tetra     = " << c3t3.number_of_cells()
+                  << step << ":  well-centered tetra = " << ((double)nb_in/(double)c3t3.number_of_cells())*100 << "%";
 }
 
 template <class DataTypes>
@@ -210,37 +210,32 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
     {
         return;
     }
-    //if (!tetrahedra.empty()) return;
 
-    // Create polyhedron
-    sout << "Create polyhedron" << sendl;
+    /// Create polyhedron
+    msg_info() << "Create polyhedron";
     Polyhedron polyhedron;
     AddTriangles<HalfedgeDS> builder(oldPoints, triangles, quads);
     polyhedron.delegate(builder);
 
-//	std::ifstream input("share/mesh/elephant.off");
-//        input >> polyhedron;
-
-//    CGAL::set_ascii_mode( std::cout);
-    sout << polyhedron.size_of_vertices() << " vertices, " << polyhedron.size_of_facets() << " facets." << sendl;
+    msg_info() << polyhedron.size_of_vertices() << " vertices, " << polyhedron.size_of_facets() << " facets.";
 
     if (polyhedron.size_of_vertices() == 0 || polyhedron.size_of_facets() == 0)
     {
         return;
     }
-    // Create domain
-    sout << "Create domain" << sendl;
+    /// Create domain
+    msg_info() << "Create domain";
     Mesh_domain domain(polyhedron);
 
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
     if (sharpEdgeSize.getValue() > 0)
     {
-        sout << "Detect sharp edges (angle="<<sharpEdgeAngle.getValue()<<")" << sendl;
+        msg_info() << "Detect sharp edges (angle="<<sharpEdgeAngle.getValue()<<")" ;
         domain.detect_features(sharpEdgeAngle.getValue());
     }
 #endif
 
-//    Mesh generation random or deterministic
+    //    Mesh generation random or deterministic
     if (constantMeshProcess.getValue())
     {
         CGAL::default_random = CGAL::Random(meshingSeed.getValue());
@@ -251,38 +246,29 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
     }
 
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,6,0)
-    // Mesh criteria (no cell_size set)
-//    Mesh_criteria criteria(facet_angle=facetAngle.getValue(), facet_size=facetSize.getValue(), facet_distance=facetApproximation.getValue(),
-//                           cell_radius_edge=cellRatio.getValue());
-//    // Mesh generation
-    sout << "Create Mesh" << sendl;
+    /// Mesh generation
+    msg_info() << "Create Mesh";
     Mesh_criteria criteria(
-#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
-        edge_size=sharpEdgeSize.getValue(),
-#endif
+            #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
+                edge_size=sharpEdgeSize.getValue(),
+            #endif
 
-        facet_angle=facetAngle.getValue(), facet_size=facetSize.getValue(), facet_distance=facetApproximation.getValue(),
-        cell_radius_edge=cellRatio.getValue(), cell_size=cellSize.getValue());
+                facet_angle=facetAngle.getValue(), facet_size=facetSize.getValue(), facet_distance=facetApproximation.getValue(),
+                cell_radius_edge=cellRatio.getValue(), cell_size=cellSize.getValue());
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria, no_perturb(), no_exude());
 
-    // Set tetrahedron size (keep cell_radius_edge), ignore facets
-//    Mesh_criteria new_criteria(cell_radius_edge=cellRatio.getValue(), cell_size=cellSize.getValue());
-
-    // Mesh refinement
-//	sout << "Refine Mesh" << sendl;
-//    CGAL::refine_mesh_3(c3t3, domain, new_criteria);
 #else
     // Set mesh criteria
     Facet_criteria facet_criteria(facetAngle.getValue(), facetSize.getValue(), facetApproximation.getValue()); // angle, size, approximation
     Cell_criteria cell_criteria(cellRatio.getValue(), cellSize.getValue()); // radius-edge ratio, size
     Mesh_criteria criteria(facet_criteria, cell_criteria);
 
-    sout << "Create Mesh" << sendl;
+    msg_info() << "Create Mesh";
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria, no_perturb(), no_exude());
 #endif
     printStats(c3t3,this,"Initial mesh");
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,5,0)
-    sout << "Optimize Mesh" << sendl;
+    msg_info() << "Optimize Mesh";
     if(lloyd.getValue())
     {
         CGAL::lloyd_optimize_mesh_3(c3t3, domain, max_iteration_number=lloyd_max_it.getValue());
@@ -351,7 +337,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
                 bbmin = bbmax = p;
             else
                 for (size_t c=0; c<p.size(); c++)
-                            if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
+                    if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
             newPoints.push_back(p);
         }
     }
@@ -377,7 +363,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
         int axis = 0;
         for (int c=1; c<3; c++)
             if (bbmax[c]-bbmin[c] > bbmax[axis]-bbmin[axis]) axis=c;
-        sout << "Ordering along the " << (char)('X'+axis) << " axis." << sendl;
+        msg_info() << "Ordering along the " << (char)('X'+axis) << " axis.";
         helper::vector< std::pair<float,int> > sortArray;
         for (size_t i=0; i<nbp; ++i)
             sortArray.push_back(std::make_pair((float)newPoints[i][axis], i));
@@ -414,7 +400,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
     default: break;
     }
 
-    sout << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra." << sendl;
+    msg_info() << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra.";
 
     frozen.setValue(true);
     meshingSeed.setValue(CGAL::default_random.get_seed());
@@ -427,9 +413,6 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
     {
         helper::ReadAccessor< Data<VecCoord> > x = f_newX0;
         helper::ReadAccessor< Data<SeqTetrahedra> > tetrahedra = f_tetrahedra;
-
-        //if (this->getContext()->getShowWireFrame())
-        //    simulation::getSimulation()->DrawUtility().setPolygonMode(0,true);
 
         vparams->drawTool()->setLightingEnabled(false);
         std::vector< defaulttype::Vector3 > points[4];
@@ -445,22 +428,18 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
             Coord pc = (x[c]+center)*(Real)0.666667;
             Coord pd = (x[d]+center)*(Real)0.666667;
 
-// 		glColor4f(0,0,1,1);
             points[0].push_back(pa);
             points[0].push_back(pb);
             points[0].push_back(pc);
 
-// 		glColor4f(0,0.5,1,1);
             points[1].push_back(pb);
             points[1].push_back(pc);
             points[1].push_back(pd);
 
-// 		glColor4f(0,1,1,1);
             points[2].push_back(pc);
             points[2].push_back(pd);
             points[2].push_back(pa);
 
-// 		glColor4f(0.5,1,1,1);
             points[3].push_back(pd);
             points[3].push_back(pa);
             points[3].push_back(pb);
@@ -471,8 +450,6 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
         vparams->drawTool()->drawTriangles(points[2], defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
         vparams->drawTool()->drawTriangles(points[3], defaulttype::Vec<4,float>(0.5,1.0,1.0,1.0));
 
-        //if (this->getContext()->getShowWireFrame())
-        //    simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
     }
     if (drawSurface.getValue())
     {

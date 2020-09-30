@@ -96,16 +96,9 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     invertData->A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &invertData->A );
 
-    //M.check_matrix();
-    //CompressedRowSparseMatrix<double>::check_matrix(-1 /*A.nzmax*/,A.m,A.n,A.p,A.i,A.x);
-    //sout << "diag =";
-    //for (int i=0;i<A.n;++i) sout << " " << M.element(i,i);
-    //sout << sendl;
-    //sout << "SparseCholeskySolver: start factorization, n = " << A.n << " nnz = " << A.p[A.n] << sendl;
     invertData->tmp = (Real *) cs_malloc (invertData->A.n, sizeof (Real)) ;
     invertData->S = cs_sqr (&invertData->A, order, 0) ;		/* ordering and symbolic analysis */
     invertData->N = cs_lu (&invertData->A, invertData->S, f_tol.getValue()) ;		/* numeric LU factorization */
-    //sout << "SparseCholeskySolver: factorization complete, nnz = " << N->L->p[N->L->n] << sendl;
 }
 
 

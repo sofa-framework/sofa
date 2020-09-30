@@ -39,14 +39,14 @@ namespace cuda
 extern "C"
 {
 
-    void SPHFluidForceFieldCuda3f_computeDensity(int kernelType, int pressureType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* pos4, const void* x);
-    void SPHFluidForceFieldCuda3f_addForce (int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v);
+void SPHFluidForceFieldCuda3f_computeDensity(int kernelType, int pressureType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* pos4, const void* x);
+void SPHFluidForceFieldCuda3f_addForce (int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v);
 //void SPHFluidForceFieldCuda3f_addDForce(int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v, const void* dx);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-    void SPHFluidForceFieldCuda3d_computeDensity(int kernelType, int pressureType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* pos4, const void* x);
-    void SPHFluidForceFieldCuda3d_addForce (int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v);
+void SPHFluidForceFieldCuda3d_computeDensity(int kernelType, int pressureType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* pos4, const void* x);
+void SPHFluidForceFieldCuda3d_addForce (int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v);
 //void SPHFluidForceFieldCuda3d_addDForce(int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v, const void* dx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
@@ -104,16 +104,15 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::Mechani
     Grid::Grid* g = m_grid->getGrid();
     data.pos4.recreate(x.size());
     data.Kernels_computeDensity( kernelT, pressureT,
-            g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
-            data.pos4.deviceWrite(), x.deviceRead());
-    if (this->f_printLog.getValue())
-    {
-        sout << "density[" << 0 << "] = " << data.pos4[0][3] << sendl;
-        sout << "density[" << data.pos4.size()/2 << "] = " << data.pos4[data.pos4.size()/2][3] << sendl;
-    }
+                                 g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+                                 data.pos4.deviceWrite(), x.deviceRead());
+
+    msg_info() << "density[" << 0 << "] = " << data.pos4[0][3]
+            << "density[" << data.pos4.size()/2 << "] = " << data.pos4[data.pos4.size()/2][3];
+
     data.Kernels_addForce( kernelT, pressureT, viscosityT, surfaceTensionT,
-            g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
-            f.deviceWrite(), data.pos4.deviceRead(), v.deviceRead());
+                           g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+                           f.deviceWrite(), data.pos4.deviceRead(), v.deviceRead());
 
     d_f.endEdit();
 }
@@ -135,15 +134,13 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::Mechan
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    //sout << "addDForce(" << mparams->kFactor() << "," << mparams->bFactor() << ")" << sendl;
-    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     data.fillParams(this, kernelT, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());
     Grid::Grid* g = m_grid->getGrid();
     data.Kernels_addDForce( kernelT, pressureT, viscosityT, surfaceTensionT,
-            g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
-            df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
+                            g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+                            df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
 
     d_df.endEdit();
 #endif
@@ -193,16 +190,13 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::Mechani
     Grid::Grid* g = m_grid->getGrid();
     data.pos4.recreate(x.size());
     data.Kernels_computeDensity( kernelT, pressureT,
-            g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
-            data.pos4.deviceWrite(), x.deviceRead());
-    if (this->f_printLog.getValue())
-    {
-        sout << "density[" << 0 << "] = " << data.pos4[0][3] << sendl;
-        sout << "density[" << data.pos4.size()/2 << "] = " << data.pos4[data.pos4.size()/2][3] << sendl;
-    }
+                                 g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+                                 data.pos4.deviceWrite(), x.deviceRead());
+    msg_info() << "density[" << 0 << "] = " << data.pos4[0][3]
+            << "density[" << data.pos4.size()/2 << "] = " << data.pos4[data.pos4.size()/2][3];
     data.Kernels_addForce( kernelT, pressureT, viscosityT, surfaceTensionT,
-            g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
-            f.deviceWrite(), data.pos4.deviceRead(), v.deviceRead());
+                           g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+                           f.deviceWrite(), data.pos4.deviceRead(), v.deviceRead());
 
     d_f.endEdit();
 }
@@ -229,8 +223,8 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::Mechan
     df.resize(dx.size());
     Grid::Grid* g = m_grid->getGrid();
     data.Kernels_addDForce( kernelT, pressureT, viscosityT, surfaceTensionT,
-            g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
-            df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
+                            g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+                            df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
     d_df.endEdit();
 #endif
 }

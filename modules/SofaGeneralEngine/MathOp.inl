@@ -419,7 +419,7 @@ void MathOp<VecT>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
     if (p)
     {
         std::string nbStr = p;
-        sout << "parse: setting nbInputs="<<nbStr<<sendl;
+        msg_info() << "parse: setting nbInputs=";
         f_nbInputs.read(nbStr);
         createInputs();
     }
@@ -434,7 +434,7 @@ void MathOp<VecT>::parseFields ( const std::map<std::string,std::string*>& str )
     if (it != str.end() && it->second)
     {
         std::string nbStr = *it->second;
-        sout << "parseFields: setting nbInputs="<<nbStr<<sendl;
+        msg_info() << "parseFields: setting nbInputs="<<nbStr;
         f_nbInputs.read(nbStr);
         createInputs();
     }

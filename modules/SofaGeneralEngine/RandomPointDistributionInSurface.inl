@@ -61,7 +61,7 @@ void RandomPointDistributionInSurface<DataTypes>::init()
     unsigned int nb = numberOfTests.getValue();
     if (nb%2 == 0)
     {
-        sout << "Warning : even number of tests, adding an other ..." << sendl;
+        msg_warning() << "even number of tests, adding an other ...";
         numberOfTests.setValue(nb+1);
     }
 

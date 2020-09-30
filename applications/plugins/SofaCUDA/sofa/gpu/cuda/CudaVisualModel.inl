@@ -227,7 +227,7 @@ void CudaVisualModel< TDataTypes >::updateTopology()
     int nbv = 0;
     if (!nelems.empty())
         nbv = nelems.rbegin()->first + 1;
-    sout << "CUDA CudaVisualModel: "<<triangles.size()<<" triangles, "<<quads.size()<<" quads, "<<nbv<<"/"<<state->getSize()<<" attached points, max "<<nmax<<" elements per point."<<sendl;
+    msg_info() << "CUDA CudaVisualModel: "<<triangles.size()<<" triangles, "<<quads.size()<<" quads, "<<nbv<<"/"<<state->getSize()<<" attached points, max "<<nmax<<" elements per point.";
     initV(triangles.size()+quads.size(), nbv, nmax);
 
     nelems.clear();

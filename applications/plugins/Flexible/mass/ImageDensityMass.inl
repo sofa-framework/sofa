@@ -51,7 +51,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
     if( !m_shapeFunction )  this->getContext()->get( m_shapeFunction, core::objectmodel::BaseContext::SearchUp );
     if( !m_shapeFunction )
     {
-        serr << "ShapeFunction<"<<ShapeFunctionTypes::Name()<<"> component not found" << sendl;
+        msg_error() << "ShapeFunction<"<<ShapeFunctionTypes::Name()<<"> component not found";
         return;
     }
 
@@ -59,9 +59,9 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
 
     if( f_printMassMatrix.getValue() )
     {
-        sout<<m_massMatrix<<sendl;
-        sout<<"Total Volume = "<<m_totalVolume<<" ("<<pow((double)m_totalVolume,1.0/3.0)<<")"<<sendl;
-        sout<<"Total Mass = "<<m_totalMass<<sendl;
+        msg_info()<<m_massMatrix<<msgendl
+                 <<"Total Volume = "<<m_totalVolume<<" ("<<pow((double)m_totalVolume,1.0/3.0)<<")"<<msgendl
+                 <<"Total Mass = "<<m_totalMass;
     }
 }
 

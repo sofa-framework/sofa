@@ -106,7 +106,7 @@ void OglShader::init()
     nshaders = std::max(nshaders, (unsigned int)tessellationEvaluationFilename.getValue().size());
 #endif
 
-    sout << nshaders << " shader version(s)" << sendl;
+    msg_info() << nshaders << " shader version(s)";
 
     shaderVector.resize(nshaders);
 
