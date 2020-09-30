@@ -28,6 +28,7 @@
 #include <sofa/helper/testing/BaseTest.h>
 #include <sofa/helper/testing/NumericTest.h>
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>

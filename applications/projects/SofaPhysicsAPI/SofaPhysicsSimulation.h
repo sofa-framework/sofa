@@ -28,6 +28,7 @@
 #include "SofaPhysicsDataController_impl.h"
 
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>

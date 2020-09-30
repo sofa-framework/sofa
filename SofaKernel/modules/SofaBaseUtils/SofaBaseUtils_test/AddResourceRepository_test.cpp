@@ -27,6 +27,7 @@
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 
 #include <SofaBaseUtils/AddResourceRepository.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
