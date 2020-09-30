@@ -21,7 +21,8 @@
 ******************************************************************************/
 #include <SofaGeneralLoader/ReadTopology.inl>
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/simulation/Node.h>
+#include <sofa/core/MechanicalParams.h>
 namespace sofa
 {
 

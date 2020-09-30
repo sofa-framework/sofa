@@ -25,6 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaBaseUtils/RequiredPlugin.h>
 

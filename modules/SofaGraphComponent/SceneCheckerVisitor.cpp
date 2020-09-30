@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SceneCheckerVisitor.h"
+#include <sofa/simulation/Node.h>
 
 #include <algorithm>
 #include <sofa/version.h>

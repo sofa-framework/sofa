@@ -41,6 +41,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 
 #include <sofa/helper/Quater.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>

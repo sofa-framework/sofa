@@ -2,6 +2,7 @@
 #include "PythonVisitor.h"
 #include "PythonFactory.h"
 
+#include <sofa/simulation/Node.h>
 
 
 namespace sofa

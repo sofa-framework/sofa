@@ -23,16 +23,19 @@
 #define SOFA_SIMULATION_VISITOR_H
 
 #include <sofa/simulation/config.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/simulation/LocalStorage.h>
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/ExecParams.h>
 
+#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/set.h>
 #include <iostream>
 
+namespace sofa::simulation { class Node; }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/thread/CTime.h>
 #endif
 

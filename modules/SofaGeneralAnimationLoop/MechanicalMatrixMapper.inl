@@ -39,6 +39,9 @@
 //  Eigen Sparse Matrix
 #include <Eigen/Sparse>
 
+#include <sofa/simulation/Node.h>
+
+
 namespace sofa
 {
 

@@ -35,6 +35,9 @@
 #include <Eigen/LU>
 #include <Eigen/QR>
 
+#include <sofa/simulation/Node.h>
+
+
 namespace sofa
 {
 

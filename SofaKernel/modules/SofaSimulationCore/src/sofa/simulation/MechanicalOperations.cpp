@@ -28,6 +28,7 @@
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
 
 using namespace sofa::core;
 namespace sofa

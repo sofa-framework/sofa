@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa

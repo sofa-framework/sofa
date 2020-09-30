@@ -25,6 +25,7 @@
 #include <SofaPython/config.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 
+#include <sofa/simulation/Node.h>
 
 #include <sofa/simulation/Visitor.h>
 #include <string>

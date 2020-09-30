@@ -31,7 +31,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/Visitor.h>
-
+#include <sofa/core/objectmodel/DataFileName.h>
 #if SOFAEXPORTER_HAVE_ZLIB
 #include <zlib.h>
 #endif

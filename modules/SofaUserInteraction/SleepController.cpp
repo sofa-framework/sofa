@@ -24,6 +24,7 @@
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>

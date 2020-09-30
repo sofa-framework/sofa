@@ -29,6 +29,8 @@ using sofa::helper::testing::BaseTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 
+#include <sofa/simulation/Node.h>
+
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>

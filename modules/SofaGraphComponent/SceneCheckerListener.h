@@ -23,6 +23,7 @@
 #define SOFA_SIMULATION_SCENECHECKERLISTENER_H
 
 #include "config.h"
+#include <sofa/simulation/Node.h>
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <sofa/simulation/Visitor.h>

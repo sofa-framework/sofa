@@ -26,6 +26,8 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
 #include "ConstraintStoreLambdaVisitor.h"
+#include <sofa/simulation/Node.h>
+
 #include <algorithm>
 
 namespace sofa

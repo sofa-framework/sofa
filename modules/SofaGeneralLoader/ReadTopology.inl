@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_READTOPOLOGY_INL
 #define SOFA_COMPONENT_MISC_READTOPOLOGY_INL
-
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaGeneralLoader/ReadTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>

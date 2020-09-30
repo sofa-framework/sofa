@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_INL
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/BackTrace.h>
 
 namespace sofa {

@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_MISC_READTOPOLOGY_H
 #include <SofaGeneralLoader/config.h>
 
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
