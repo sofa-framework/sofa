@@ -34,6 +34,8 @@
 #include <QtCharts/QChart>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+#include <QPixmap>
+#include <QFile>
 
 using namespace QtCharts;
 
@@ -258,24 +260,20 @@ public:
 
     void exportImage(const std::string &baseFileName) const
     {
-        const std::string filename=baseFileName + ".svg";
+        const std::string filename= baseFileName + ".png";
 
         const float resolution = 72.f; // dpi
         const float inch2mm = 25.4f;
 
-        //QwtPlotRenderer renderer;
-        //renderer.setDiscardFlag(QwtPlotRenderer::DiscardNone);
-        //renderer.renderDocument(w, filename.c_str(), "svg", QSizeF(inch2mm * w->width() / resolution, inch2mm * w->height() / resolution), resolution);
+        QPixmap p(w->size());
+        QPainter *paint = new QPainter(&p);
+        w->render(paint);
+
+        QFile* file = new QFile(QString::fromStdString(filename));
+        file->open(QIODevice::WriteOnly);
+        p.save(file, "PNG");
 
         std::cerr << "Export Image: " << filename << std::endl;
-
-        //	Qwt 5.2.0 Code
-        //	QwtPlotPrintFilter filter;
-        //	filter.setOptions(QwtPlotPrintFilter::PrintAll);
-        //	QImage image(w->width(), w->height(),QImage::Format_RGB32);
-        //	image.fill(0xffffffff); //white image
-        //	w->print(image,filter);
-        //	image.save(filename.c_str());
     }
 
 protected:
