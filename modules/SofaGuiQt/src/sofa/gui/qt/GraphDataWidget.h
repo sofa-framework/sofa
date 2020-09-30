@@ -29,14 +29,13 @@
 #include <sofa/helper/system/SetDirectory.h>
 
 #include <SofaBaseTopology/TopologyData.h>
-#include <qwt_compat.h>
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-#include <qwt_legend.h>
-#include <qwt_scale_engine.h>
-#include <qwt_series_data.h>
-// #include <qwt_plot_printfilter.h>
-#include <qwt_plot_renderer.h>
+
+#include <QtCharts/QChartView>
+#include <QtCharts/QChart>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
+
+using namespace QtCharts;
 
 #include <fstream>
 
@@ -50,7 +49,7 @@ namespace qt
 {
 
 template<class T>
-class QwtDataAccess : public QwtSeriesData< QPointF >
+class QDataSeries : public QLineSeries
 {
 protected:
     const T* data0;
@@ -59,11 +58,39 @@ public:
     typedef typename trait::value_type value_type;
     typedef vector_data_trait<value_type> vtrait;
     typedef typename vtrait::value_type real_type;
-    QwtDataAccess() : data0(NULL) {}
-    QwtDataAccess(const QwtDataAccess<T>& c) : QwtSeriesData<QPointF>(c), data0(c.data0) {}
+    QDataSeries() : data0(NULL) {}
+    QDataSeries(const QDataSeries<T>& c) 
+        : QLineSeries()
+        , data0(c.data0) 
+    {
+    }
 
-    void setData(const T* p) { data0 = p; }
-    virtual QwtSeriesData<QPointF>* copy() const { return new QwtDataAccess<T>(*this); }
+    void setData(const T* p) 
+    { 
+        data0 = p; 
+        
+        clear();
+        m_xMin = m_yMin = 1000000000.0;
+        m_xMax = m_yMax = -1000000000.0;
+
+        for (auto i = 0; i < this->size(); i++)
+        {            
+            QPointF data = sample(i);
+            append(data);
+
+            if (data.x() > m_xMax)
+                m_xMax = data.x();
+            if (data.x() < m_xMin)
+                m_xMin = data.x();
+
+            if (data.y() > m_yMax)
+                m_yMax = data.y();
+            if (data.y() < m_yMin)
+                m_yMin = data.y();
+        }
+
+    }
+    virtual QLineSeries* copy() const { return new QDataSeries<T>(*this); }
     virtual size_t size() const
     {
         if (data0 == NULL)
@@ -147,6 +174,9 @@ public:
 
         return QRectF(xMin, yMin, xMax-xMin, yMax-yMin);
     }
+
+    real_type m_xMin, m_yMin;
+    real_type m_xMax, m_yMax;
 };
 
 class GraphSetting
@@ -198,38 +228,28 @@ public:
     typedef DataType data_type;
     typedef vector_data_trait<DataType> trait;
     typedef typename trait::value_type curve_type;
-    typedef QwtPlot Widget;
-    typedef QwtPlotCurve Curve;
-    typedef QwtDataAccess<curve_type> CurveData;
+    typedef QChartView Widget;
+    typedef QLineSeries Curve;
+    typedef QDataSeries<curve_type> CurveData;
 
     GraphWidget(QWidget *parent)
     {
-        w = new Widget(QwtText(""), parent);
+        m_chart = new QChart();
+        w = new QChartView(m_chart, parent);
+        w->setMinimumHeight(300);
 
-        w->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
-        w->setAxisScaleEngine(Widget::yLeft, new QwtLogScaleEngine(10));
+        m_axisX = new QValueAxis();
+        m_axisX->setRange(0, 100);
+
+        m_axisY = new QValueAxis();
+        m_chart->addAxis(m_axisX, Qt::AlignBottom);
+        m_chart->addAxis(m_axisY, Qt::AlignLeft);
+        m_chart->legend()->setAlignment(Qt::AlignBottom);
     }
 
     virtual ~GraphWidget() {};
 
     QWidget *getWidget() {return w;}
-
-    /* QColor getColor(float h)
-     {
-    int i = int(h * 6) % 6;
-    float f = h * 6 - floor(h * 6);
-    int c1 = 255 - floor(255 * f);
-    int c2 = floor(255 * f);
-
-    switch(i) {
-    case 0: return QColor(255, c2, 0);
-    case 1: return QColor(c1, 255, 0);
-    case 2: return QColor(0, 255, c2);
-    case 3: return QColor(0, c1, 255);
-    case 4: return QColor(c2, 0, 255);
-    case 5: default: return QColor(255, 0, c1);
-    }
-     }*/
 
     void readFromData(const data_type& d0)
     {
@@ -239,67 +259,113 @@ public:
         double maxY = -1000000000.0;
         currentData=d0;
         const data_type& d = currentData;
-        int s = curve.size();
-        int n = trait::size(d);
-        for (int i=0; i<n; ++i)
-        {
-            const curve_type* v = trait::get(d,i);
-            const char* name = trait::header(d,i);
-            Curve *c;
-            CurveData* cd;
+        int nbCurves = m_curves.size();
+        int nbData = trait::size(d);
+        std::cout << "readFromData size trait: " << nbData << std::endl;
 
-            if (i >= s)
-            {
-                QString s;
-                if (name && *name) s = name;
-                c = new Curve(s);
-                c->attach(w);
-                cd = new CurveData;
-                curve.push_back(c);
-                cdata.push_back(cd);
-                s = i+1;
-            }
+        for (int i = 0; i < nbData; ++i)
+        {
+            const curve_type* v = trait::get(d, i);
+            const char* name = trait::header(d, i);
+            QString sName;
+            if (name && *name)
+                sName = name;
             else
+                sName = "Unknown_" + QString::number(m_curves.size());
+
+            std::cout << "Parsing Data name: " << sName.toStdString() << std::endl;
+            auto itM = m_curves.find(sName);
+            CurveData* cdata;
+            if (itM != m_curves.end())
             {
-                c = curve[i];
-                cd = cdata[i];
-                QString s;
-                if (name && *name) s = name;
-                if (s != c->title().text())
-                    c->setTitle(s);
+                cdata = itM->second;
+            }
+            else {
+                // new curve data to register and plot
+                cdata = new CurveData();
+                m_curves[sName] = cdata;
+
+                cdata->setName(sName);
+                cdata->setPen(QColor::fromHsv(255 * i / nbData, 255, 255));
+                m_chart->addSeries(cdata);
+
+                cdata->attachAxis(m_axisY);
+                cdata->attachAxis(m_axisX);
             }
 
-            // c->setPen(getColor(i / (float)n));
-            c->setPen(QColor::fromHsv(255*i/n, 255, 255));
-            cd->setData(v);
-            c->setData(cd);
-            if(c->minXValue() < minX) minX = c->minXValue();
-            if(c->maxXValue() > maxX) maxX = c->maxXValue();
-            if(c->minYValue() < minY) minY = c->minYValue();
-            if(c->maxYValue() > maxY) maxY = c->maxYValue();
-
-            rect = rect.united(cdata[i]->boundingRect());
+            cdata->setData(v);
+            // gather min and max over all curves
+           if(cdata->m_xMin < minX) minX = cdata->m_xMin;
+           if(cdata->m_xMax > maxX) maxX = cdata->m_xMax;
+           if(cdata->m_yMin < minY) minY = cdata->m_yMin;
+           if(cdata->m_yMax > maxY) maxY = cdata->m_yMax;
         }
 
+        m_axisX->setRange(minX, maxX);
+        m_axisY->setRange(minY, maxY);
 
-        if (s != n)
-        {
-            for (int i=n; i < s; ++i)
-            {
-                Curve* c = curve[i];
-                c->detach();
-                delete c;	// Curve has ownership of the CurveData
-            }
-            curve.resize(n);
-            cdata.resize(n);
-            s = n;
-        }
-        if (n > 0 && minX <= maxX)
-        {
-            w->setAxisScale(Widget::yLeft, minY, maxY);
-            w->setAxisScale(Widget::xTop, minX, maxX);
-        }
-        w->replot();
+        //for (int i=0; i<n; ++i)
+        //{
+        //    const curve_type* v = trait::get(d,i);
+        //    const char* name = trait::header(d,i);
+        //    Curve *c;
+        //    CurveData* cd;
+
+        //    if (i >= s)
+        //    {
+        //        QString s;
+        //        if (name && *name) s = name;
+        //        c = new Curve();
+        //        c->setName(name);
+        //        m_chart->addSeries(c);
+
+        //        cd = new CurveData;
+        //        m_curves.push_back(c);
+        //        cdata.push_back(cd);
+        //        s = i+1;
+        //    }
+        //    else
+        //    {
+        //        c = m_curves[i];
+        //        cd = cdata[i];
+        //        QString s;
+        //        if (name && *name) s = name;
+        //        if (s != c->name())
+        //            c->setName(s);
+        //    }
+
+        //    // c->setPen(getColor(i / (float)n));
+        //    c->setPen(QColor::fromHsv(255*i/n, 255, 255));
+        //    cd->setData(v);
+        //    std::cout << i << " -> size: " << cd->size() << std::endl;
+        //    //c->setData(cd);
+        //    /*if(c->minXValue() < minX) minX = c->minXValue();
+        //    if(c->maxXValue() > maxX) maxX = c->maxXValue();
+        //    if(c->minYValue() < minY) minY = c->minYValue();
+        //    if(c->maxYValue() > maxY) maxY = c->maxYValue();*/
+
+        //    //rect = rect.united(cdata[i]->boundingRect());
+        //}
+
+
+        //if (s != n)
+        //{
+        //    for (int i=n; i < s; ++i)
+        //    {
+        //        Curve* c = m_curves[i];
+        //        m_chart->removeSeries(c);
+        //        delete c;	// Curve has ownership of the CurveData
+        //    }
+        //    m_curves.resize(n);
+        //    cdata.resize(n);
+        //    s = n;
+        //}
+        ////if (n > 0 && minX <= maxX)
+        ////{
+        ////    w->setAxisScale(Widget::yLeft, minY, maxY);
+        ////    w->setAxisScale(Widget::xTop, minX, maxX);
+        ////}
+        ////w->replot();
     }
 
     void exportGNUPlot(const std::string &baseFileName) const
@@ -324,9 +390,9 @@ public:
         const float resolution = 72.f; // dpi
         const float inch2mm = 25.4f;
 
-        QwtPlotRenderer renderer;
-        renderer.setDiscardFlag(QwtPlotRenderer::DiscardNone);
-        renderer.renderDocument(w, filename.c_str(), "svg", QSizeF(inch2mm * w->width() / resolution, inch2mm * w->height() / resolution), resolution);
+        //QwtPlotRenderer renderer;
+        //renderer.setDiscardFlag(QwtPlotRenderer::DiscardNone);
+        //renderer.renderDocument(w, filename.c_str(), "svg", QSizeF(inch2mm * w->width() / resolution, inch2mm * w->height() / resolution), resolution);
 
         std::cerr << "Export Image: " << filename << std::endl;
 
@@ -347,13 +413,20 @@ protected:
         return name;
     }
 
-    Widget* w;
+    QChartView* w;
 
-    helper::vector<Curve*> curve;
-    helper::vector<CurveData*> cdata;
+    /// Pointer to the chart Data
+    QtCharts::QChart *m_chart;
+
+    /// x axis pointer
+    QtCharts::QValueAxis* m_axisX;
+    /// y axis pointer
+    QtCharts::QValueAxis* m_axisY;
+
+    /// vector of series to be ploted
+    std::map<QString, CurveData*> m_curves;
+
     data_type currentData;
-    QwtDoubleRect rect;
-
 };
 
 
@@ -440,7 +513,10 @@ public:
     {
         bool b = GraphDataWidget<T>::createWidgets();
         typename GraphWidget<T>::Widget* w = dynamic_cast<typename GraphWidget<T>::Widget*>(this->container.w->getWidget());
-        if(w) w->setAxisScaleEngine(GraphWidget<T>::Widget::yLeft, new QwtLinearScaleEngine);
+        if (w)
+        {
+            //w->setAxisScaleEngine(GraphWidget<T>::Widget::yLeft, new QwtLinearScaleEngine);
+        }
         return b;
     }
 };
