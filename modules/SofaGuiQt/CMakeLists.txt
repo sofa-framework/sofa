@@ -228,22 +228,26 @@ endif()
 if(SOFAGUI_ENABLE_QWT)
     list(APPEND MOC_HEADER_FILES
         ${SRC_ROOT}/GraphDataWidget.h
-        ${SRC_ROOT}/QGraphStatWidget.h
-        ${SRC_ROOT}/QEnergyStatWidget.h
-        ${SRC_ROOT}/QMomentumStatWidget.h
         )
     list(APPEND SOURCE_FILES
         ${SRC_ROOT}/GraphDataWidget.cpp
-        ${SRC_ROOT}/QGraphStatWidget.cpp
-        ${SRC_ROOT}/QEnergyStatWidget.cpp
-        ${SRC_ROOT}/QMomentumStatWidget.cpp
         )
 endif()
 
 # QtCharts
 if(Qt5Charts_FOUND)
-    list(APPEND MOC_HEADER_FILES ${SRC_ROOT}/SofaWindowProfiler.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/SofaWindowProfiler.cpp)
+    list(APPEND MOC_HEADER_FILES 
+		${SRC_ROOT}/SofaWindowProfiler.h
+		${SRC_ROOT}/QGraphStatWidget.h
+        ${SRC_ROOT}/QEnergyStatWidget.h
+        ${SRC_ROOT}/QMomentumStatWidget.h
+		)
+    list(APPEND SOURCE_FILES 
+		${SRC_ROOT}/SofaWindowProfiler.cpp
+        ${SRC_ROOT}/QGraphStatWidget.cpp
+        ${SRC_ROOT}/QEnergyStatWidget.cpp
+        ${SRC_ROOT}/QMomentumStatWidget.cpp
+		)
     list(APPEND UI_FILES ${SRC_ROOT}/WindowProfiler.ui)
 else()
     message(STATUS "SofaGuiQt: QtCharts not found, SofaWindowProfiler will not be built.")
