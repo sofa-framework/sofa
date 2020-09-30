@@ -58,7 +58,7 @@ public:
         /// Create a new scene instance from the content of the filename using the factory.
         static SceneInstance LoadFromFile(const std::string& filename) ;
 
-        sofa::core::sptr<Node> root ;
+        sofa::core::sptr<sofa::simulation::Node> root ;
         Simulation* simulation {nullptr} ;
 
         void initScene() ;

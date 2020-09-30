@@ -140,7 +140,7 @@ void getMyBoxes(sofa::core::CollisionModel * cm,std::vector<MyBox> & my_boxes){
         my_boxes.push_back(MyBox(sofa::component::collision::Cube(cbm,i)));
 }
 
-sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeOBBModel(const std::vector<Vector3> & p,sofa::simulation::Node::SPtr &father,double default_extent);
+sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeOBBModel(const std::vector<Vector3> & p,sofa::core::sptr<sofa::simulation::Node> &father,double default_extent);
 
 void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Vector3 & max_vect){
     sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types> * obbm = dynamic_cast<sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>*>(cm->getLast());
@@ -383,10 +383,10 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 }
 
 
-sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeOBBModel(const std::vector<Vector3> & p,sofa::simulation::Node::SPtr &father,double default_extent){
+sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeOBBModel(const std::vector<Vector3> & p,sofa::core::sptr<sofa::simulation::Node> &father,double default_extent){
     int n = p.size();
     //creating node containing OBBModel
-    sofa::simulation::Node::SPtr obb = father->createChild("obb");
+    sofa::core::sptr<sofa::simulation::Node> obb = father->createChild("obb");
 
     //creating a mechanical object which will be attached to the OBBModel
     MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
@@ -458,7 +458,7 @@ bool BroadPhaseTest<BroadPhase>::randTest(int seed,int nb1,int nb2,const Vector3
     for(int i = 0 ; i < nb2 ; ++i)
         secondCollision.push_back(randVect(min,max));
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::core::sptr<sofa::simulation::Node> scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbm1,obbm2;
     obbm1 = makeOBBModel(firstCollision,scn,getExtent());
     obbm2 = makeOBBModel(secondCollision,scn,getExtent());

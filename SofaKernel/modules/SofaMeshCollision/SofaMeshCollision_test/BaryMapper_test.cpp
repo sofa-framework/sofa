@@ -30,7 +30,7 @@ using defaulttype::Vector3;
 using core::objectmodel::New;
 
 typedef sofa::component::topology::MeshTopology MeshTopology;
-typedef sofa::simulation::Node::SPtr NodePtr;
+typedef sofa::core::sptr<sofa::simulation::Node> NodePtr;
 typedef sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> TriangleModel;
 typedef sofa::defaulttype::Vec3Types DataTypes;
 typedef DataTypes::VecCoord VecCoord;
@@ -91,7 +91,7 @@ MeshTopology* BaryMapperTest::initMesh(NodePtr &father){
 
 bool BaryMapperTest::test_inside(SReal alpha,SReal beta){
     initTriPts();
-    sofa::simulation::Node::SPtr father = New<sofa::simulation::tree::GNode>();
+    sofa::core::sptr<sofa::simulation::Node> father = New<sofa::simulation::tree::GNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
     component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0/*model->getMeshTopology(), (topology::PointSetTopologyContainer*)nullptr, &model->getMechanicalState()->forceMask, &mstate->forceMask*/);
@@ -116,7 +116,7 @@ bool BaryMapperTest::test_inside(SReal alpha,SReal beta){
 
 bool BaryMapperTest::test_outside(int index){
     initTriPts();
-    sofa::simulation::Node::SPtr father = New<sofa::simulation::tree::GNode>();
+    sofa::core::sptr<sofa::simulation::Node> father = New<sofa::simulation::tree::GNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
     component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0/*model->getMeshTopology(), (topology::PointSetTopologyContainer*)nullptr, &model->getMechanicalState()->forceMask, &mstate->forceMask*/);

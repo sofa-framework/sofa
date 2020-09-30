@@ -55,7 +55,7 @@
 #include <SofaBaseVisual/InteractiveCamera.h>
 
 #include <sofa/helper/io/Image.h>
-
+#include <sofa/simulation/Node.h>
 #include <string>
 
 namespace sofa
@@ -83,7 +83,7 @@ public:
     virtual sofa::simulation::Node* getScene();
     virtual const std::string& getSceneFileName();
     virtual void setSceneFileName(const std::string &f);
-    virtual void setScene(sofa::simulation::Node::SPtr scene, const char* filename = nullptr, bool /*keepParams*/= false);
+    virtual void setScene(sofa::core::sptr<sofa::simulation::Node> scene, const char* filename = nullptr, bool /*keepParams*/= false);
     virtual void setCameraMode(core::visual::VisualParams::CameraType);
 
     /// true when the viewer keep the hand on the render
@@ -145,7 +145,7 @@ protected:
     virtual void redraw() = 0;
 
     /// the sofa root note of the current scene
-    sofa::simulation::Node::SPtr groot;
+    sofa::core::sptr<sofa::simulation::Node> groot;
 
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 

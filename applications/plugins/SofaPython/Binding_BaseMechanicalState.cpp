@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/simulation/Node.h>
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_BaseState.h"
 #include "PythonToSofa.inl"

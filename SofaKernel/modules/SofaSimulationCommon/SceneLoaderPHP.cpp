@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include "SceneLoaderPHP.h"
 
+#include <sofa/simulation/Node.h>
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 #include <sofa/helper/system/PipeProcess.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
@@ -60,10 +61,10 @@ void SceneLoaderPHP::getExtensionList(ExtensionList* list)
 }
 
 
-sofa::simulation::Node::SPtr SceneLoaderPHP::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
+sofa::core::sptr<sofa::simulation::Node> SceneLoaderPHP::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
     SOFA_UNUSED(sceneArgs);
-    sofa::simulation::Node::SPtr root;
+    sofa::core::sptr<sofa::simulation::Node> root;
 
     if (!canLoadFileName(filename.c_str()))
         return 0;

@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_INL
 
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

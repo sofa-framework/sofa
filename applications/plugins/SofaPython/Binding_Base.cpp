@@ -32,6 +32,7 @@
 
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
+#include <sofa/simulation/Node.h>
 
 #include "PythonEnvironment.h"
 using sofa::simulation::PythonEnvironment ;

@@ -28,6 +28,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
 #include <sofa/helper/cast.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 
@@ -186,7 +187,7 @@ void AffineMovementConstraint<DataTypes>::projectVelocity(const core::Mechanical
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
-    sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
+    sofa::core::sptr<sofa::simulation::Node> root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
     helper::WriteAccessor<DataVecCoord> x = xData;
     const SetIndexArray & indices = m_indices.getValue();
 

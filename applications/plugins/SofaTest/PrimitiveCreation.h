@@ -22,17 +22,17 @@ using sofa::defaulttype::Vec3;
   *\param extents it contains half-extents of the OBB
   *\param father it is a node that will contain the returned OBBModel
   */
-SOFA_SOFATEST_API sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeOBB(const Vec3 & p,const double *angles,const int *order,const Vec3 &v,const Vec3 &extents, sofa::simulation::Node::SPtr &father);
+SOFA_SOFATEST_API sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeOBB(const Vec3 & p,const double *angles,const int *order,const Vec3 &v,const Vec3 &extents, sofa::core::sptr<sofa::simulation::Node> &father);
 
-SOFA_SOFATEST_API sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3 & p0,const Vec3 & p1,const Vec3 & p2,const Vec3 & v, sofa::simulation::Node::SPtr &father);
+SOFA_SOFATEST_API sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3 & p0,const Vec3 & p1,const Vec3 & p2,const Vec3 & v, sofa::core::sptr<sofa::simulation::Node> &father);
 
 SOFA_SOFATEST_API sofa::component::collision::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeCap(const Vec3 & p0,const Vec3 & p1,double radius,const Vec3 & v,
-                                                                   sofa::simulation::Node::SPtr & father);
+                                                                   sofa::core::sptr<sofa::simulation::Node> & father);
 
 SOFA_SOFATEST_API sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeRigidSphere(const Vec3 & p,SReal radius,const Vec3 &v,const double *angles,const int *order,
-                                                                            sofa::simulation::Node::SPtr & father);
+                                                                            sofa::core::sptr<sofa::simulation::Node> & father);
 
-SOFA_SOFATEST_API sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeSphere(const Vec3 & p,SReal radius,const Vec3 & v,sofa::simulation::Node::SPtr & father);
+SOFA_SOFATEST_API sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeSphere(const Vec3 & p,SReal radius,const Vec3 & v,sofa::core::sptr<sofa::simulation::Node> & father);
 
 void rotx(double ax,Vec3 & x,Vec3 & y,Vec3 & z);
 

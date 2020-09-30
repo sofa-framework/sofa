@@ -84,7 +84,7 @@ public:
     /// @name registration of each GUI
     /// @{
 
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
+    static BaseGUI* CreateGUI(const char* name, sofa::core::sptr<sofa::simulation::Node> groot = NULL, const char* filename = nullptr);
     void setViewerResolution(int width , int height) override;
     /// @}
 
@@ -127,7 +127,7 @@ private:
     enum { MINMOVE = 10 };
 
 
-    sofa::simulation::Node::SPtr groot;
+    sofa::core::sptr<sofa::simulation::Node> groot;
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
@@ -201,7 +201,7 @@ protected:
     void calcProjection();
 
 public:
-    void setScene(sofa::simulation::Node::SPtr scene, const char* filename=nullptr, bool temporaryFile=false);
+    void setScene(sofa::core::sptr<sofa::simulation::Node> scene, const char* filename=nullptr, bool temporaryFile=false);
     sofa::simulation::Node* getScene()
     {
         return groot.get();
@@ -237,7 +237,7 @@ public:
     int _mouseInteractorSavedPosY;
 
     static int     InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/);
-    static sofa::gui::BaseGUI* CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename);
+    static sofa::gui::BaseGUI* CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::core::sptr<sofa::simulation::Node> groot, const char* filename);
 private:
 
     void	InitGFX();

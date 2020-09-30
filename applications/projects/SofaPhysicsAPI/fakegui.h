@@ -37,7 +37,7 @@ public:
     int mainLoop() override {return 0;}
     void redraw() override {}
     int closeGUI() override {return 0;}
-    virtual void setScene(sofa::simulation::Node::SPtr /*groot*/, const char* /*filename*/=nullptr, bool /*temporaryFile*/=false) override {}
+    virtual void setScene(sofa::core::sptr<sofa::simulation::Node> /*groot*/, const char* /*filename*/=nullptr, bool /*temporaryFile*/=false) override {}
     sofa::simulation::Node* currentSimulation() override {return nullptr;}
     /// @}
 

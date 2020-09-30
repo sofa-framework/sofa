@@ -45,7 +45,7 @@ public:
 
     BatchGUI();
 
-    void setScene(sofa::simulation::Node::SPtr groot, const char* filename="", bool temporaryFile=false) override;
+    void setScene(sofa::core::sptr<sofa::simulation::Node> groot, const char* filename="", bool temporaryFile=false) override;
 
     void resetScene();
 
@@ -78,7 +78,7 @@ public:
     /// @name registration of each GUI
     /// @{
 
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
+    static BaseGUI* CreateGUI(const char* name, sofa::core::sptr<sofa::simulation::Node> groot = nullptr, const char* filename = nullptr);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
 
 
@@ -94,7 +94,7 @@ protected:
 
     std::ostringstream m_dumpVisitorStream;
 
-    sofa::simulation::Node::SPtr groot;
+    sofa::core::sptr<sofa::simulation::Node> groot;
     std::string filename;
     static signed int nbIter;
     static std::string nbIterInp;

@@ -66,10 +66,10 @@ void SceneLoaderXML::getExtensionList(ExtensionList* list)
     list->push_back("scn");
 }
 
-sofa::simulation::Node::SPtr SceneLoaderXML::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
+sofa::core::sptr<sofa::simulation::Node> SceneLoaderXML::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
     SOFA_UNUSED(sceneArgs);
-    sofa::simulation::Node::SPtr root;
+    sofa::core::sptr<sofa::simulation::Node> root;
 
     if (!canLoadFileName(filename.c_str()))
         return 0;

@@ -70,7 +70,7 @@ public:
 	virtual ~GeomagicVisualModel();
 
     /// Main Method to init the visual component tree of OGLModels. Called by Geomagic InitDevice() if drawVisual is on.
-    void initDisplay(sofa::simulation::Node::SPtr node, const std::string& _deviceName, double _scale);
+    void initDisplay(sofa::core::sptr<sofa::simulation::Node> node, const std::string& _deviceName, double _scale);
 
     /// Method to update the visualNode using the current device position and the angles of the different node of the device. Updated by Geomagic UpdatePosition()
     void updateDisplay(const GeomagicDriver::Coord& posDevice, HDdouble angle1[3], HDdouble angle2[3]);

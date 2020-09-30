@@ -21,9 +21,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SceneLoaderFactory.h"
-
-
-
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
@@ -118,6 +116,23 @@ SceneLoader* SceneLoaderFactory::addEntry(SceneLoader *loader)
     return loader;
 }
 
+/// load the file
+sofa::core::sptr<sofa::simulation::Node> SceneLoader::load(const std::string& filename, bool reload, const std::vector<std::string>& sceneArgs)
+{
+    if(reload)
+        notifyReloadingSceneBefore();
+    else
+        notifyLoadingSceneBefore();
+
+    sofa::core::sptr<sofa::simulation::Node> root = doLoad(filename, sceneArgs);
+
+    if(reload)
+        notifyReloadingSceneAfter(root);
+    else
+        notifyLoadingSceneAfter(root);
+
+    return root;
+}
 
 
 } // namespace simulation

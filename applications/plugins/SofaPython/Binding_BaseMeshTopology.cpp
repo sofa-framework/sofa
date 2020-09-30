@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+
+#include <sofa/simulation/Node.h>
 #include "Binding_BaseMeshTopology.h"
 #include "Binding_Topology.h"
 #include "PythonToSofa.inl"

@@ -59,7 +59,7 @@ using sofa::core::objectmodel::New ;
 
 using sofa::helper::system::DataRepository ;
 
-static sofa::simulation::Node::SPtr root = nullptr;
+static sofa::core::sptr<sofa::simulation::Node> root = nullptr;
 
 using sofa::core::objectmodel::BaseObject ;
 
@@ -397,7 +397,7 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
         isRigid = true;
 
     // Add Cube Node
-    sofa::simulation::Node::SPtr cube;
+    sofa::core::sptr<sofa::simulation::Node> cube;
     if (isRigid)
         cube = parent->createChild(objectName + "_node");
     else
@@ -470,7 +470,7 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
         isRigid = true;
 
     // Add Cylinder Node
-    sofa::simulation::Node::SPtr cylinder;
+    sofa::core::sptr<sofa::simulation::Node> cylinder;
     if (isRigid)
         cylinder = parent->createChild(objectName + "_node");
     else
@@ -534,7 +534,7 @@ simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::strin
         isRigid = true;
 
     // Add Sphere Node
-    sofa::simulation::Node::SPtr sphere;
+    sofa::core::sptr<sofa::simulation::Node> sphere;
     if (isRigid)
         sphere = parent->createChild(objectName + "_node");
     else
@@ -594,7 +594,7 @@ simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string
         isRigid = true;
 
     // Add plane node
-    sofa::simulation::Node::SPtr plane;
+    sofa::core::sptr<sofa::simulation::Node> plane;
     if (isRigid)
         plane = parent->createChild(objectName + "_node");
     else

@@ -227,7 +227,7 @@ public:
 
 //======================= STATIC METHODS ========================= {
 
-BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::simulation::Node::SPtr root, const char* filename )
+BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::core::sptr<sofa::simulation::Node> root, const char* filename )
 {
 
     CreateApplication();

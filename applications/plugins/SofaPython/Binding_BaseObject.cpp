@@ -35,6 +35,8 @@ using sofa::core::ObjectCreator ;
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
 
+#include <sofa/simulation/Node.h>
+
 using sofa::core::objectmodel::BaseObject;
 
 static BaseObject* get_baseobject(PyObject* self) {

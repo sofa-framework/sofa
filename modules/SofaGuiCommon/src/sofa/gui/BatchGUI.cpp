@@ -110,7 +110,7 @@ int BatchGUI::closeGUI()
     return 0;
 }
 
-void BatchGUI::setScene(sofa::simulation::Node::SPtr groot, const char* filename, bool )
+void BatchGUI::setScene(sofa::core::sptr<sofa::simulation::Node> groot, const char* filename, bool )
 {
     this->groot = groot;
     this->filename = (filename?filename:"");
@@ -158,7 +158,7 @@ sofa::simulation::Node* BatchGUI::currentSimulation()
     return groot.get();
 }
 
-BaseGUI* BatchGUI::CreateGUI(const char* name, sofa::simulation::Node::SPtr groot, const char* filename)
+BaseGUI* BatchGUI::CreateGUI(const char* name, sofa::core::sptr<sofa::simulation::Node> groot, const char* filename)
 {
     BatchGUI::mGuiName = name;
     BatchGUI* gui = new BatchGUI();

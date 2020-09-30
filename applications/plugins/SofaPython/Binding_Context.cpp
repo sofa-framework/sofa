@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/simulation/Node.h>
 #include "Binding_Context.h"
 #include "Binding_BaseContext.h"
 

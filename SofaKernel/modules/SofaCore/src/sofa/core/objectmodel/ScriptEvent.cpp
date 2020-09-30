@@ -33,7 +33,7 @@ namespace objectmodel
 
 SOFA_EVENT_CPP( ScriptEvent )
 
-ScriptEvent::ScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName)
+ScriptEvent::ScriptEvent(sofa::core::sptr<sofa::simulation::Node> sender, const char* eventName)
     : sofa::core::objectmodel::Event()
     , m_sender(sender)
     , m_eventName(eventName)

@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/simulation/Node.h>
 #include "Binding_BaseLoader.h"
 #include "Binding_BaseObject.h"
 #include "PythonToSofa.inl"

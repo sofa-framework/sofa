@@ -83,7 +83,7 @@ public:
 protected:
 
     sofa::simulation::Simulation* m_Simulation;
-    sofa::simulation::Node::SPtr m_RootNode;
+    sofa::core::sptr<sofa::simulation::Node> m_RootNode;
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
@@ -140,7 +140,7 @@ public:
         return m_RootNode.get();
     }
 
-    sofa::simulation::Node::SPtr getRootNode() const
+    sofa::core::sptr<sofa::simulation::Node> getRootNode() const
     {
         return m_RootNode;
     }

@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/simulation/Node.h>
 #include "Binding_BaseTopologyObject.h"
 #include "Binding_BaseObject.h"
 

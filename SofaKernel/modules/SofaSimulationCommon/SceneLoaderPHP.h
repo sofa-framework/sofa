@@ -38,7 +38,7 @@ public:
     bool canLoadFileExtension(const char *extension) override;
 
     /// load the file
-    virtual sofa::simulation::Node::SPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs) override;
+    virtual sofa::core::sptr<sofa::simulation::Node> doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs) override;
 
     /// get the file type description
     virtual std::string getFileTypeDesc() override;

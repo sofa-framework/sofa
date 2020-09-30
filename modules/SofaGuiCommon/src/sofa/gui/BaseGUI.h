@@ -55,13 +55,13 @@ public:
     /// Close the GUI
     virtual int closeGUI()=0;
     /// Register the scene in our GUI
-    virtual void setScene(sofa::simulation::Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false)=0;
+    virtual void setScene(sofa::core::sptr<sofa::simulation::Node> groot, const char* filename=nullptr, bool temporaryFile=false)=0;
     /// Get the rootNode of the sofa scene
     virtual sofa::simulation::Node* currentSimulation() = 0;
     /// @}
 
     /// Use a component setting to configure our GUI
-    virtual void configureGUI(sofa::simulation::Node::SPtr groot);
+    virtual void configureGUI(sofa::core::sptr<sofa::simulation::Node> groot);
 
     /// @name methods to configure the GUI
     /// @{

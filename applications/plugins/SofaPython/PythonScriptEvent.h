@@ -49,7 +49,7 @@ public:
     /**
      * @brief Constructor.
      */
-    PythonScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName, PyObject* userData);
+    PythonScriptEvent(sofa::core::sptr<sofa::simulation::Node> sender, const char* eventName, PyObject* userData);
 
     /**
      * @brief Destructor.

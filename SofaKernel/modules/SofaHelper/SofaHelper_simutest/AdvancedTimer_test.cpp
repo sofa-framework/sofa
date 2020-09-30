@@ -22,7 +22,9 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
-using sofa::simulation::SceneLoaderXML ;
+using sofa::simulation::SceneLoaderXML;
+
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::core::ExecParams;
 

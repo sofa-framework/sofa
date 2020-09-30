@@ -263,7 +263,7 @@ bool SceneCreator_test::createRigidCylinderSuccess()
 bool SceneCreator_test::createSphereFailed()
 {
     // Null parent for Sphere case
-    sofa::simulation::Node::SPtr cyl = sofa::modeling::addSphere(nullptr, "SphereFEM_1", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+    sofa::core::sptr<sofa::simulation::Node> cyl = sofa::modeling::addSphere(nullptr, "SphereFEM_1", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
                                                                    sofa::defaulttype::Vec3Types::Deriv(0, 1, 0), 1.0,
                                                                    10, 1000, 0.45,
                                                                    sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
@@ -277,7 +277,7 @@ bool SceneCreator_test::createSphereFailed()
     EXPECT_EQ(cyl, nullptr);
 
     // Sphere with bad grid size
-    sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    sofa::core::sptr<sofa::simulation::Node> root = sofa::modeling::createRootWithCollisionPipeline();
     cyl = sofa::modeling::addRigidSphere(root, "SphereFIX_3", sofa::defaulttype::Vec3Types::Deriv(0, 5, 5),
                                             sofa::defaulttype::Vec3Types::Deriv(1, 0, 0), 0.5,
                                             sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
@@ -292,8 +292,8 @@ bool SceneCreator_test::createSphereSuccess()
 {
     // Create Sphere
     SReal poissonRatio = 0.45;
-    sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
-    sofa::simulation::Node::SPtr node = sofa::modeling::addSphere(root, "SphereFEM_1", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+    sofa::core::sptr<sofa::simulation::Node> root = sofa::modeling::createRootWithCollisionPipeline();
+    sofa::core::sptr<sofa::simulation::Node> node = sofa::modeling::addSphere(root, "SphereFEM_1", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
                                                                     sofa::defaulttype::Vec3Types::Deriv(0, 1, 0), 1.0,
                                                                     10, 1000, 0.45,
                                                                     sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
@@ -329,8 +329,8 @@ bool SceneCreator_test::createSphereSuccess()
 
 bool SceneCreator_test::createRigidSphereSuccess()
 {
-    sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
-    sofa::simulation::Node::SPtr node = sofa::modeling::addRigidSphere(root, "SphereFIX_3", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+    sofa::core::sptr<sofa::simulation::Node> root = sofa::modeling::createRootWithCollisionPipeline();
+    sofa::core::sptr<sofa::simulation::Node> node = sofa::modeling::addRigidSphere(root, "SphereFIX_3", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
                                                                          sofa::defaulttype::Vec3Types::Deriv(1, 0, 0), 0.5,
                                                                          sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
 

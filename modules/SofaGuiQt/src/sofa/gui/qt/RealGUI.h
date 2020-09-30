@@ -118,7 +118,7 @@ class SOFA_SOFAGUIQT_API RealGUI : public QMainWindow, public Ui::GUI, public so
 
 //-----------------STATIC METHODS------------------------{
 public:
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
+    static BaseGUI* CreateGUI(const char* name, sofa::core::sptr<sofa::simulation::Node> groot = nullptr, const char* filename = nullptr);
 
     static void SetPixmap(std::string pixmap_filename, QPushButton* b);
 
@@ -334,7 +334,7 @@ protected:
         while (goal > clock()/(float)CLOCKS_PER_SEC) t++;
     }
 
-    sofa::simulation::Node::SPtr mSimulation;
+    sofa::core::sptr<sofa::simulation::Node> mSimulation;
 
     sofa::helper::system::FileEventListener* m_filelistener {nullptr};
 private:

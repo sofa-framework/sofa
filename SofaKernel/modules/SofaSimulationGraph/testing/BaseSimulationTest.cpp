@@ -35,6 +35,8 @@ using sofa::simulation::SceneLoaderXML ;
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
+#include <sofa/simulation/Node.h>
+
 namespace sofa
 {
 namespace helper

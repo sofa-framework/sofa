@@ -37,12 +37,12 @@ namespace sofa
 namespace gui
 {
 class BaseGUI;
-
+using sofa::simulation::Node;
 
 class SOFA_SOFAGUICOMMON_API GUIManager
 {
 public:
-    typedef BaseGUI* CreateGUIFn(const char* name, sofa::simulation::Node::SPtr groot, const char* filename);
+    typedef BaseGUI* CreateGUIFn(const char* name, sofa::core::sptr<sofa::simulation::Node> groot, const char* filename);
     typedef int RegisterGUIParameters(ArgumentParser* argumentParser);
 
     struct GUICreator
@@ -69,18 +69,18 @@ public:
     static std::vector<std::string> ListSupportedGUI();
     static std::string ListSupportedGUI(char separator);
     static void RegisterParameters(ArgumentParser* parser);
-    static int createGUI(sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
+    static int createGUI(sofa::core::sptr<sofa::simulation::Node> groot = nullptr, const char* filename = nullptr);
     static void closeGUI();
 
     /// @name Static methods for direct access to GUI
     /// @{
-    static int MainLoop(sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
+    static int MainLoop(sofa::core::sptr<sofa::simulation::Node> groot = nullptr, const char* filename = nullptr);
 
     static void Redraw();
 
     static sofa::simulation::Node* CurrentSimulation();
 
-    static void SetScene(sofa::simulation::Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false);
+    static void SetScene(sofa::core::sptr<sofa::simulation::Node> groot, const char* filename=nullptr, bool temporaryFile=false);
     static void SetDimension(int  width , int  height );
     static void SetFullScreen();
     static void SaveScreenshot(const char* filename);

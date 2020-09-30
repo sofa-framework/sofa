@@ -36,7 +36,7 @@ const std::string& END_STR("</Node>");
 
 struct AddResourceRepository_test : public Sofa_test<>
 {
-    sofa::simulation::Node::SPtr m_root;
+    sofa::core::sptr<sofa::simulation::Node> m_root;
     std::string m_testRepoDir;
 
     void SetUp()

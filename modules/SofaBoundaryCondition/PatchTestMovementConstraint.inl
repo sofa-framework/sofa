@@ -277,7 +277,7 @@ void PatchTestMovementConstraint<DataTypes>::projectVelocity(const core::Mechani
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
-    sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
+    sofa::core::sptr<sofa::simulation::Node> root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
     helper::WriteAccessor<DataVecCoord> x = xData;
     const SetIndexArray & indices = d_indices.getValue();
 

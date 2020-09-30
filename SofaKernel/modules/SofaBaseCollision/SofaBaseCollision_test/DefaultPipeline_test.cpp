@@ -37,6 +37,8 @@ using sofa::component::collision::DefaultPipeline ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Simulation ;
+
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>

@@ -81,7 +81,7 @@ public:
     void saveView();
     void initializeGL();
     void paintGL();
-    void setScene(sofa::simulation::Node::SPtr scene, const char* filename=NULL, bool temporaryFile=false) override;
+    void setScene(sofa::core::sptr<sofa::simulation::Node> scene, const char* filename=NULL, bool temporaryFile=false) override;
     void newView();
 
     // Virtual from BaseGUI
@@ -90,7 +90,7 @@ public:
     virtual void setViewerResolution(int width, int height) override;
 
     // Needed for the registration
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::core::sptr<sofa::simulation::Node> groot = NULL, const char* filename = NULL);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
     static void parseRecordingModeOption();
 
@@ -109,7 +109,7 @@ private:
     VisualParams* vparams;
     DrawToolGL   drawTool;
 
-    sofa::simulation::Node::SPtr groot;
+    sofa::core::sptr<sofa::simulation::Node> groot;
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 

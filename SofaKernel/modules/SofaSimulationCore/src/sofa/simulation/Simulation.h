@@ -118,16 +118,16 @@ public:
     virtual void dumpState( Node* root, std::ofstream& out );
 
     /// Load a scene from a file
-    virtual sofa::core::sptr<Node> load(const std::string& /* filename */, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0));
+    virtual sofa::core::sptr<sofa::simulation::Node> load(const std::string& /* filename */, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0));
 
     /// Unload a scene from a Node.
-    virtual void unload(sofa::core::sptr<Node> root);
+    virtual void unload(sofa::core::sptr<sofa::simulation::Node> root);
 
     /// create a new graph(or tree) and return its root node.
-    virtual sofa::core::sptr<Node> createNewGraph(const std::string& name)=0;//Todo replace newNode method
+    virtual sofa::core::sptr<sofa::simulation::Node> createNewGraph(const std::string& name)=0;//Todo replace newNode method
 
     /// creates and returns a new node.
-    virtual sofa::core::sptr<Node> createNewNode(const std::string& name)=0;
+    virtual sofa::core::sptr<sofa::simulation::Node> createNewNode(const std::string& name)=0;
 
     /// @warning this singleton has one limitation: it is easy to create several types of
     /// simulations at the same time (e.g. DAGSimulation + TreeSimulation)
