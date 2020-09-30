@@ -2732,15 +2732,13 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualParams* vparams)
 {
-    defaulttype::Vec4f color(1.0, 1.0, 1.0, 1.0);
-
     float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
     std::vector<defaulttype::Vector3> positions;
     for (size_t i = 0; i <(size_t)d_size.getValue(); ++i)
         positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
 
-    vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+    vparams->drawTool()->draw3DText_Indices(positions, scale, d_color.getValue());
 }
 
 template <class DataTypes>
