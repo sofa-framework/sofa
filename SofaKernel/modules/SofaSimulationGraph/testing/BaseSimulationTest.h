@@ -24,7 +24,7 @@
 
 #include <SofaSimulationGraph/config.h>
 #include <sofa/helper/testing/BaseTest.h>
-#include <sofa/core/sptr.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::simulation
 {
