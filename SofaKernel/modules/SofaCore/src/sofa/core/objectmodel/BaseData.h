@@ -224,7 +224,7 @@ public:
     /// @}
 
     /// If we use the Data as a link and not as value directly
-    virtual std::string getLinkPath() const { return parentBaseData.getPath(); }
+    virtual std::string getLinkPath() const { return parentData.getPath(); }
     /// Return whether this %Data can be used as a linkPath.
     ///
     /// True by default.
@@ -285,7 +285,7 @@ public:
     /// Check if a given Data can be linked as a parent of this data
     virtual bool validParent(BaseData* parent);
 
-    BaseData* getParent() const { return parentBaseData.get(); }
+    BaseData* getParent() const { return parentData.get(); }
 
     /// Update the value of this %Data
     void update() override;
@@ -324,8 +324,7 @@ protected:
 
     /// @}
 
-    virtual void doSetParent(BaseData* parent);
-
+    /// Delegates from DDGNode.
     void doDelInput(DDGNode* n) override;
 
     /// Update this %Data from the value of its parent
@@ -351,7 +350,7 @@ protected:
     std::string m_name;
 
     /// Parent Data
-    SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentBaseData;
+    SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentData;
 
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);

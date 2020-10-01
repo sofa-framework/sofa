@@ -27,6 +27,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/MechanicalParams.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetData.inl> 
 
 namespace sofa
 {

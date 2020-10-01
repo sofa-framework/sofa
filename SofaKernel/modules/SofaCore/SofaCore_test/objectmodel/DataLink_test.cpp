@@ -25,6 +25,9 @@ using sofa::core::objectmodel::Data;
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
 
+#include <sofa/defaulttype/Vec.h>
+using sofa::defaulttype::Vec3d;
+using sofa::defaulttype::Vec3f;
 
 /**  Test suite for data link.
 Create two datas and a link between them.
@@ -34,6 +37,8 @@ struct DataLink_test: public BaseTest
 {
     Data<int> data1;
     Data<int> data2;
+    Data<Vec3f> dataVec3f;
+    Data<Vec3d> dataVec3d;
 
     /// This method is defined in gtest framework to setting the test up.
     void SetUp() override
@@ -41,6 +46,9 @@ struct DataLink_test: public BaseTest
         /// Setup the data and create a link between the two datas
         data1.setName("data1");
         data2.setName("data2");
+
+        data1.setName("dataVec3f");
+        data2.setName("dataVec3d");
     }
 
     void TearDown() override
@@ -58,6 +66,17 @@ TEST_F(DataLink_test, UnsetByValue)
     ASSERT_NE(data2.getParent(), nullptr);
     data2.setValue(0);
     ASSERT_NE(data2.getParent(), nullptr);
+}
+
+/// We should be able to set a parent of different type and rely on type conversion at runtime
+TEST_F(DataLink_test, SetParentOfDifferentType)
+{
+    ASSERT_TRUE(dataVec3f.setParent(&dataVec3d));
+    ASSERT_NE(dataVec3f.getParent(), nullptr);
+    dataVec3d.setValue(Vec3d(1.0,2.0,3.0));
+    ASSERT_FLOAT_EQ(dataVec3f.getValue().x(), 1.0f);
+    ASSERT_FLOAT_EQ(dataVec3f.getValue().y(), 2.0f);
+    ASSERT_FLOAT_EQ(dataVec3f.getValue().z(), 3.0f);
 }
 
 /// This test check that the setting/unsetting mechanisme is working
