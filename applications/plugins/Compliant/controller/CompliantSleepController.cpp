@@ -4,6 +4,7 @@
 #include "../compliance/DiagonalCompliance.h"
 #include "../compliance/UniformCompliance.h"
 #include <sofa/helper/cast.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
