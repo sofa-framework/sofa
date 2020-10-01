@@ -174,6 +174,7 @@ public:
         T value;
     };
 
+
     static std::string templateName()
     {
         return sofa::core::objectmodel::BaseData::typeName<Data<T>>();
