@@ -121,7 +121,7 @@ public:
 class SOFA_CORE_API TopologyModifier : public sofa::core::topology::BaseTopologyObject
 {
 public:
-    typedef std::size_t index_type;
+    typedef sofa::defaulttype::index_type index_type;
 
     SOFA_CLASS(TopologyModifier, BaseTopologyObject);
 
