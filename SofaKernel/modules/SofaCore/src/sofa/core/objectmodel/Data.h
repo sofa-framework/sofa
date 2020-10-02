@@ -161,6 +161,12 @@ public:
     using TData<T>::updateIfDirty;
     using TData<T>::notifyEndEdit;
 
+    static std::string templateName(const TData<T>* = nullptr)
+    {
+        T* ptr = nullptr;
+        return BaseData::typeName(ptr);
+    }
+
     /// @name Construction / destruction
     /// @{
 
